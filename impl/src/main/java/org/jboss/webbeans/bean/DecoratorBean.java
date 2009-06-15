@@ -132,7 +132,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
       {
          if (decoratedType instanceof Class)
          {
-            if (!((Class<?>) decoratedType).isAssignableFrom(decorates.getRawType()))
+            if (!((Class<?>) decoratedType).isAssignableFrom(decorates.getJavaClass()))
             {
                throw new DefinitionException("The delegate type must extend or implement every decorated type. Decorated type " + decoratedType + "." + this );
             }
@@ -146,7 +146,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
             }
             if (!Arrays.equals(decorates.getActualTypeArguments(), parameterizedType.getActualTypeArguments()));
             Type rawType = ((ParameterizedType) decoratedType).getRawType();
-            if (rawType instanceof Class && !((Class<?>) rawType).isAssignableFrom(decorates.getRawType()))
+            if (rawType instanceof Class && !((Class<?>) rawType).isAssignableFrom(decorates.getJavaClass()))
             {
                throw new DefinitionException("The delegate type must extend or implement every decorated type. Decorated type " + decoratedType + "." + this );
             }

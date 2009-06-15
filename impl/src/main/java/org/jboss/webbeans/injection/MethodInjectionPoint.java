@@ -20,6 +20,7 @@ import static org.jboss.webbeans.injection.Exceptions.rethrowException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.AbstractList;
@@ -283,6 +284,11 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
    public Type getType()
    {
       return getBaseType();
+   }
+
+   public Member getMember()
+   {
+      return getJavaMember();
    }
 
 }

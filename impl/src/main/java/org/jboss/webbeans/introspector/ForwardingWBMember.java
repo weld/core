@@ -24,9 +24,9 @@ public abstract class ForwardingWBMember<T, S extends Member> extends Forwarding
    @Override
    protected abstract WBMember<T, S> delegate();
    
-   public S getMember()
+   public S getJavaMember()
    {
-      return delegate().getMember();
+      return delegate().getJavaMember();
    }
    
 }

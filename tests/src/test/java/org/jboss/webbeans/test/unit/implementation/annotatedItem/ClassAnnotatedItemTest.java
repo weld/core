@@ -27,7 +27,7 @@ public class ClassAnnotatedItemTest extends AbstractWebBeansTest
       WBClass<Order> annotatedElement = WBClassImpl.of(Order.class, transformer);
       assert annotatedElement.getAnnotations().size() == 1;
       assert annotatedElement.getAnnotation(Production.class) != null;
-      assert annotatedElement.getRawType().equals(Order.class);
+      assert annotatedElement.getJavaClass().equals(Order.class);
    }
    
    @Test

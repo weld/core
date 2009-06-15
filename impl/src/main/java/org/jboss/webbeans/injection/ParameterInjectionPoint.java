@@ -64,9 +64,9 @@ public class ParameterInjectionPoint<T> extends ForwardingWBParameter<T> impleme
       return delegate().getBindings();
    }
 
-   public Member getMember()
+   public Member getJavaMember()
    {
-      return delegate().getDeclaringMember().getMember();
+      return delegate().getDeclaringMember().getJavaMember();
    }
 
    public void inject(Object declaringInstance, Object value)
@@ -101,5 +101,11 @@ public class ParameterInjectionPoint<T> extends ForwardingWBParameter<T> impleme
    {
       return getBaseType();
    }
+
+   public Member getMember()
+   {
+      return getJavaMember();
+   }
+
 
 }

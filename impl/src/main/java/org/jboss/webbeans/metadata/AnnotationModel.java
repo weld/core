@@ -81,7 +81,7 @@ public abstract class AnnotationModel<T extends Annotation>
     */
    public Class<T> getRawType()
    {
-      return annotatedAnnotation.getRawType();
+      return annotatedAnnotation.getJavaClass();
    }
 
    /**
@@ -119,7 +119,7 @@ public abstract class AnnotationModel<T extends Annotation>
    @Override
    public String toString()
    {
-     return (isValid() ? "Valid" : "Invalid") + " annotation model for " + getRawType();
+      return (isValid() ? "Valid" : "Invalid") + " annotation model for " + getRawType();
    }
-   
+
 }

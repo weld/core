@@ -300,7 +300,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       for (WBInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
       {
          Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
-         Bean<?> resolvedBean = manager.getBeans(injectionPoint.getRawType(), bindings).iterator().next();
+         Bean<?> resolvedBean = manager.getBeans(injectionPoint.getJavaClass(), bindings).iterator().next();
          if (passivating)
          {
             if (Dependent.class.equals(resolvedBean.getScopeType()) && !resolvedBean.isSerializable() && (((injectionPoint instanceof WBField) && !((WBField<?>) injectionPoint).isTransient()) || (injectionPoint instanceof WBParameter)) )
@@ -346,7 +346,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       {
          throw new DefinitionException("type: " + getType() + " must specify a deployment type");
       }
-      else if (deploymentType.equals(Standard.class) && !STANDARD_WEB_BEAN_CLASSES.contains(getAnnotatedItem().getRawType()))
+      else if (deploymentType.equals(Standard.class) && !STANDARD_WEB_BEAN_CLASSES.contains(getAnnotatedItem().getJavaClass()))
       {
          throw new DefinitionException(getAnnotatedItem().getName() + " cannot have deployment type @Standard");
       }

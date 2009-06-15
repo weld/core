@@ -20,6 +20,7 @@ import static org.jboss.webbeans.injection.Exceptions.rethrowException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -113,5 +114,11 @@ public class FieldInjectionPoint<T> extends ForwardingWBField<T> implements WBIn
    {
       return getBaseType();
    }
+
+   public Member getMember()
+   {
+      return getJavaMember();
+   }
+
 
 }

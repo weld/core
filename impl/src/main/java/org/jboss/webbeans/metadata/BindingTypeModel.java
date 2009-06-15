@@ -69,7 +69,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
    {
       for (WBMethod<?> annotatedMethod : getAnnotatedAnnotation().getMembers())
       {
-         if ((Reflections.isArrayType(annotatedMethod.getRawType()) || Annotation.class.isAssignableFrom(annotatedMethod.getRawType())) && !nonBindingTypes.contains(annotatedMethod))
+         if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingTypes.contains(annotatedMethod))
          {
             throw new DefinitionException("Member of array type or annotation type must be annotated @NonBinding " + annotatedMethod);
          }

@@ -160,7 +160,7 @@ public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> imple
    }
 
    @Override
-   public Class<T> getRawType()
+   public Class<T> getJavaClass()
    {
       return rawType;
    }
@@ -194,7 +194,7 @@ public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> imple
    @Override
    public Type getBaseType()
    {
-      return getRawType();
+      return getJavaClass();
    }
 
    public boolean isAssignableTo(Class<?> clazz)

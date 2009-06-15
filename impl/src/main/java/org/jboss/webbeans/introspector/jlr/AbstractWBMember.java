@@ -136,7 +136,7 @@ public abstract class AbstractWBMember<T, S extends Member> extends AbstractWBAn
       return toString;
    }
 
-   public S getMember()
+   public S getJavaMember()
    {
       return getDelegate();
    }

@@ -162,7 +162,7 @@ public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
       if (other instanceof WBAnnotated)
       {
          WBAnnotated<?, ?> that = (WBAnnotated<?, ?>) other;
-         return this.getAnnotations().equals(that.getAnnotations()) && this.getRawType().equals(that.getRawType());
+         return this.getAnnotations().equals(that.getAnnotations()) && this.getJavaClass().equals(that.getJavaClass());
       }
       return false;
    }
@@ -178,12 +178,12 @@ public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
     */
    public boolean isAssignableFrom(WBAnnotated<?, ?> that)
    {
-      return isAssignableFrom(that.getRawType(), that.getActualTypeArguments());
+      return isAssignableFrom(that.getJavaClass(), that.getActualTypeArguments());
    }
 
    public boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments)
    {
-      return Reflections.isAssignableFrom(getRawType(), getActualTypeArguments(), type, actualTypeArguments);
+      return Reflections.isAssignableFrom(getJavaClass(), getActualTypeArguments(), type, actualTypeArguments);
    }
 
    public boolean isAssignableFrom(Type type)
@@ -199,7 +199,7 @@ public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
    @Override
    public int hashCode()
    {
-      return getRawType().hashCode();
+      return getJavaClass().hashCode();
    }
 
    /**
@@ -252,7 +252,7 @@ public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
       return proxyable;
    }
 
-   public Class<T> getRawType()
+   public Class<T> getJavaClass()
    {
       return rawType;
    }

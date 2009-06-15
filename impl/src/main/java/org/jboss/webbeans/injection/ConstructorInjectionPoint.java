@@ -21,6 +21,7 @@ import static org.jboss.webbeans.injection.Exceptions.rethrowException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.AbstractList;
 import java.util.Iterator;
@@ -173,7 +174,12 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
 
    public Type getType()
    {
-      return getRawType();
+      return getJavaClass();
+   }
+
+   public Member getMember()
+   {
+      return getJavaMember();
    }
 
    public Annotated getAnnotated()

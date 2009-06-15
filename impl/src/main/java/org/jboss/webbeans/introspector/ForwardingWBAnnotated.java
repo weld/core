@@ -68,9 +68,9 @@ public abstract class ForwardingWBAnnotated<T, S> extends ForwardingAnnotated<T,
       return delegate().getName();
    }
 
-   public Class<T> getRawType()
+   public Class<T> getJavaClass()
    {
-      return delegate().getRawType();
+      return delegate().getJavaClass();
    }
 
    public boolean isAssignableFrom(WBAnnotated<?, ?> that)

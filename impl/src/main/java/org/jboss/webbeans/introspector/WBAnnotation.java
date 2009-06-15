@@ -33,7 +33,7 @@ public interface WBAnnotation<T extends Annotation> extends WBType<T>
     * @return A set of abstracted members
     */
    public Set<WBMethod<?>> getMembers();
-   
+
    /**
     * Gets all the members annotated with annotationType
     * 
@@ -41,7 +41,7 @@ public interface WBAnnotation<T extends Annotation> extends WBType<T>
     * @return A set of abstracted members with the annotation type
     */
    public Set<WBMethod<?>> getAnnotatedMembers(Class<? extends Annotation> annotationType);
-   
+
    /**
     * Get an annotation member by name
     * 
@@ -49,7 +49,7 @@ public interface WBAnnotation<T extends Annotation> extends WBType<T>
     * @return
     */
    public <A> WBMethod<A> getMember(String memberName, WBClass<A> expectedType);
-   
-   public Class<T> getRawType();
-   
+
+   public Class<T> getJavaClass();
+
 }

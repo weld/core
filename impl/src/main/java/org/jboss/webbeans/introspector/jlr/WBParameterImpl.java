@@ -145,7 +145,7 @@ public class WBParameterImpl<T> extends AbstractWBAnnotated<T, Object> implement
             buffer.append("static ");
          if (_final)
             buffer.append("final ");
-         buffer.append(getRawType().getName());
+         buffer.append(getJavaClass().getName());
          buffer.append(" for operation ");
          buffer.append(getDeclaringMember().toString());
          toString = buffer.toString();

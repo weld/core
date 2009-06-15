@@ -120,7 +120,7 @@ public class BeanDeployer
    {
       for (WBClass<?> clazz : classes)
       {
-         if (environment.getEjbDescriptors().containsKey(clazz.getRawType()))
+         if (environment.getEjbDescriptors().containsKey(clazz.getJavaClass()))
          {
             createEnterpriseBean(clazz);
          }
@@ -316,7 +316,7 @@ public class BeanDeployer
     */
    private boolean isTypeManagedBeanOrDecorator(WBClass<?> clazz)
    {
-      Class<?> rawType = clazz.getRawType();
+      Class<?> rawType = clazz.getJavaClass();
       EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
       JsfApiAbstraction jsfApiAbstraction = manager.getServices().get(JsfApiAbstraction.class);
       ServletApiAbstraction servletApiAbstraction = manager.getServices().get(ServletApiAbstraction.class);

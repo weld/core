@@ -194,7 +194,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
       super.preSpecialize(environment);
-      if (!environment.getEjbDescriptors().containsKey(getAnnotatedItem().getSuperclass().getRawType()))
+      if (!environment.getEjbDescriptors().containsKey(getAnnotatedItem().getSuperclass().getJavaClass()))
       {
          throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
       }

@@ -119,7 +119,7 @@ public class BeanValidator
             {
                throw new UnproxyableResolutionException("The injection point " + injectionPoint + " has non-proxyable dependencies");
             }
-            if (Reflections.isPrimitive(annotatedItem.getRawType()) && resolvedBean.isNullable())
+            if (Reflections.isPrimitive(annotatedItem.getJavaClass()) && resolvedBean.isNullable())
             {
                throw new NullableDependencyException("The injection point " + injectionPoint + " has nullable dependencies");
             }

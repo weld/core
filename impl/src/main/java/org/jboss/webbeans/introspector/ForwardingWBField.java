@@ -29,11 +29,6 @@ public abstract class ForwardingWBField<T> extends ForwardingWBMember<T, Field> 
       return delegate().get(instance);
    }
 
-   public Field getAnnotatedField()
-   {
-      return delegate().getAnnotatedField();
-   }
-
    public WBType<?> getDeclaringType()
    {
       return delegate().getDeclaringType();

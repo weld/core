@@ -29,13 +29,6 @@ public interface WBField<T> extends WBMember<T, Field>
 {
 
    /**
-    * Gets the annotated field
-    * 
-    * @return The annotated field
-    */
-   public Field getAnnotatedField();
-
-   /**
     * Injects an instance
     * 
     * 
@@ -45,13 +38,6 @@ public interface WBField<T> extends WBMember<T, Field>
    public void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException;
 
    public T get(Object instance);
-
-   /**
-    * Gets an abstraction of the declaring class
-    * 
-    * @return The declaring class
-    */
-   public WBType<?> getDeclaringType();
 
    /**
     * Gets the property name of the field

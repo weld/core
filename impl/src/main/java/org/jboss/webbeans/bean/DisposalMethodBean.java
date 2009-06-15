@@ -69,7 +69,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    @SuppressWarnings("unchecked")
    protected void initType()
    {
-      this.type = (Class<T>) disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getRawType();
+      this.type = (Class<T>) disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getJavaClass();
    }
 
    @Override

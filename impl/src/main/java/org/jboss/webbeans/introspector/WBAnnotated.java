@@ -117,7 +117,7 @@ public interface WBAnnotated<T, S> extends Annotated
     * 
     * @return The type of the element
     */
-   public Class<T> getRawType();
+   public Class<T> getJavaClass();
 
    /**
     * Extends Java Class assignability such that actual type parameters are also

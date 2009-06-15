@@ -248,7 +248,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
     */
    public Class<? extends T> getAnnotatedClass()
    {
-      return getRawType();
+      return getJavaClass();
    }
    
    /**
@@ -258,7 +258,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
     */
    public Class<T> getDelegate()
    {
-      return getRawType();
+      return getJavaClass();
    }
    
    /**
