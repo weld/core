@@ -18,7 +18,9 @@
 package org.jboss.webbeans.manager.api;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.spi.BeanManager;
 
 /**
@@ -30,7 +32,31 @@ import javax.enterprise.inject.spi.BeanManager;
  */
 public interface WebBeansManager extends BeanManager, Serializable
 {
-   
+
    public void shutdown();
-   
+
+   /**
+    * Create a new child activity. A child activity inherits all beans,
+    * interceptors, decorators, observers, and contexts defined by its direct
+    * and indirect parent activities.
+    * 
+    * This method should not be called by the application.
+    * 
+    * @return the child activity
+    */
+   public WebBeansManager createActivity();
+
+   /**
+    * Associate an activity with the current context for a normal scope
+    * 
+    * @param scopeType
+    *           the scope to associate the activity with
+    * @return the activity
+    * @throws ContextNotActiveException
+    *            if the given scope is inactive
+    * @throws IllegalArgumentException
+    *            if the given scope is not a normal scope
+    */
+   public WebBeansManager setCurrent(Class<? extends Annotation> scopeType);
+
 }

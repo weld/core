@@ -12,13 +12,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import javax.el.ELContext;
+import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.deployment.Production;
 import javax.enterprise.inject.deployment.Standard;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.AbstractTest;
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.mock.el.EL;
 import org.jboss.webbeans.util.EnumerationIterable;
@@ -29,20 +31,20 @@ import org.testng.annotations.BeforeSuite;
 
 public abstract class AbstractWebBeansTest extends AbstractTest
 {
-   
+
    protected abstract static class RunInDependentContext 
    {
-      
+
       protected void setup()
       {
          DependentContext.instance().setActive(true);
       }
-      
+
       protected void cleanup()
       {
          DependentContext.instance().setActive(false);
       }
-      
+
       public final void run() throws Exception
       {
          try
@@ -55,17 +57,17 @@ public abstract class AbstractWebBeansTest extends AbstractTest
             cleanup();
          }
       }
-      
+
       protected abstract void execute() throws Exception;
-      
+
    }
-   
+
    protected static final int BUILT_IN_BEANS = 3;
-   
+
    private BeanManagerImpl manager;
 
    public static boolean visited = false;
-   
+
    @Override
    @BeforeSuite
    public void beforeSuite(ITestContext context) throws Exception
@@ -83,25 +85,25 @@ public abstract class AbstractWebBeansTest extends AbstractTest
    {
       this.manager = CurrentManager.rootManager();
    }
-   
+
    @AfterMethod
    public void after() throws Exception
    {
       this.manager = null;
    }
-   
+
 
    protected List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
       return getDefaultDeploymentTypes();
    }
-   
+
    @SuppressWarnings("unchecked")
    protected final List<Class<? extends Annotation>> getDefaultDeploymentTypes()
    {
       return Arrays.asList(Standard.class, Production.class);
    }
-   
+
    protected Iterable<URL> getResources(String name)
    {
       if (name.startsWith("/"))
@@ -121,7 +123,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
          throw new RuntimeException("Error loading resource from classloader" + name, e);
       }
    }
-   
+
    protected byte[] serialize(Object instance) throws IOException
    {
       ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -140,7 +142,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
    {
       return manager;
    }
-   
+
    public boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException )
    {
       while (exception != null)
@@ -153,7 +155,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       }
       return false;
    }
-   
+
    public <T> Bean<T> getBean(Type beanType, Annotation... bindings)
    {
       Set<Bean<?>> beans = getCurrentManager().getBeans(beanType, bindings);
@@ -169,16 +171,35 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       Bean<T> bean = (Bean<T>) beans.iterator().next();
       return bean;
    }
-   
+
+   @SuppressWarnings("unchecked")
+   public <T> Set<Bean<T>> getBeans(Class<T> type, Annotation... bindings)
+   {
+      return (Set) getCurrentManager().getBeans(type, bindings);
+   }
+
+   @SuppressWarnings("unchecked")
+   public <T> Set<Bean<T>> getBeans(TypeLiteral<T> type, Annotation... bindings)
+   {
+      return (Set)getCurrentManager().getBeans(type.getType(), bindings);
+   }
+
    @SuppressWarnings("unchecked")
    public <T> T createContextualInstance(Class<T> beanType, Annotation... bindings)
    {
       return (T) createContextualInstance((Type) beanType, bindings);
    }
-   
+
    public Object createContextualInstance(Type beanType, Annotation... bindings)
    {
       return getCurrentManager().getReference(getBean(beanType, bindings), beanType);
    }
-   
+
+   @SuppressWarnings("unchecked")
+   public <T> T evaluateValueExpression(String expression, Class<T> expectedType)
+   {
+      ELContext elContext = EL.createELContext();
+      return (T) EL.EXPRESSION_FACTORY.createValueExpression(elContext, expression, expectedType).getValue(elContext);
+   }
+
 }

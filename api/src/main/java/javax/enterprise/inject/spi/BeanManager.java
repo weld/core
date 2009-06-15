@@ -44,7 +44,7 @@ import javax.event.Observer;
  */
 public interface BeanManager
 {
-   
+
    /** 
     * Obtains a contextual reference for a given bean and a given bean type.
     * 
@@ -57,7 +57,7 @@ public interface BeanManager
     * 			if the given type is not a bean type of the given bean
     */
    public Object getReference(Bean<?> bean, Type beanType); 
-   
+
    /**
     * Obtains an instance of bean for a given injection point.
     * 
@@ -75,7 +75,7 @@ public interface BeanManager
     *            bindings
     */
    public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext);
-   
+
    /**
     * Returns the set of beans which match the given required type and bindings and are
     * accessible to the class into which the BeanManager was injected, according to the 
@@ -95,7 +95,7 @@ public interface BeanManager
     *            if an instance of an annotation that is not a binding type is given
     */
    public  Set<Bean<?>> getBeans(Type beanType, Annotation... bindings);
-   
+
 
    /**
     * Returns the set of beans which match the given EL name and are accessible to the 
@@ -107,7 +107,7 @@ public interface BeanManager
     * @return the matched beans
     */
    public Set<Bean<?>> getBeans(String name); 
-   
+
    /**
     * Returns the Bean object representing the most specialized enabled bean registered 
     * with the container that specializes the given bean,
@@ -132,7 +132,7 @@ public interface BeanManager
     * @param beans A set of beans of the given type
     */
    public <X> Bean<? extends X> getHighestPrecedenceBean(Set<Bean<? extends X>> beans);
-   
+
    /**
     * Allows a new bean to be registered.  This fires a ProcessBean event and then 
     * registers a new bean with the container, thereby making it available for injection 
@@ -145,8 +145,8 @@ public interface BeanManager
     */
    public void addBean(Bean<?> bean); 
 
-   
-   
+
+
    /**
     * Register an observer with the container, allowing it to begin receiving
     * event notifications.
@@ -167,7 +167,7 @@ public interface BeanManager
     *            if the runtime type of the observer object contains a type variable
     */
    public void addObserver(Observer<?> observer, Annotation... bindings);
-   
+
 
    /**
     * An alternative mechanism for registering an observer.  The observed event
@@ -177,8 +177,8 @@ public interface BeanManager
     * 			a the method to register for receiving events
     */
    public void addObserver(ObserverMethod<?, ?> observerMethod); 
-   
-   
+
+
    /**
     * Remove an observer registration
     * 
@@ -189,8 +189,8 @@ public interface BeanManager
     *            if two instances of the same binding type are passed
     */
    public void removeObserver(Observer<?> observer);
-   
-   
+
+
    /**
     * Fire an event
     * 
@@ -204,7 +204,7 @@ public interface BeanManager
     *           if an instance of an annotation that is not a binding type is given,
     */
    public void fireEvent(Object event, Annotation... bindings); 
-   
+
    /**
     * Obtains observers for an event by considering event type and bindings.
     * 
@@ -276,41 +276,41 @@ public interface BeanManager
     * Determine if the given annotationType is a scope type
     */
    public boolean isScopeType(Class<? extends Annotation> annotationType);
-   
+
    /**
     * Determine if the given annotationType is a binding type
     */
    public boolean isBindingType(Class<? extends Annotation> annotationType);
-   
-   
+
+
    /**
     * Determine if the given annotationType is an interceptor binding type
     */
    public boolean isInterceptorBindingType(Class<? extends Annotation> annotationType);
-   
+
    /**
     * Determine if the given annotationType is a stereotype
     */
    public boolean isStereotype(Class<? extends Annotation> annotationType);
-   
+
    /**
     * Return a ScopeType definition type for a given annotation representing a scope type
     */
    public ScopeType getScopeDefinition(Class<? extends Annotation> scopeType);
-   
+
    /**
     * Obtain the set of interceptor binding types meta-annotatinos for the given binding type
     * annotation
     */
    public Set<Annotation> getInterceptorBindingTypeDefinition(Class<? extends Annotation> bindingType);
-   
-   
+
+
    /**
     * Obtain the set of binding types meta-annotations for the given stereotype annotation
     */
    public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype);
 
-   
+
    /**
     * Exposes the list of enabled deployment types, in order of lower to higher precedence,
     * This method may be used by portable extensions to discover information about the 
@@ -340,14 +340,14 @@ public interface BeanManager
     *            if more than one active context exists for the given scope type
     */
    public Context getContext(Class<? extends Annotation> scopeType);
-   
+
    /**
     * Returns the ELResolver for integration with the servlet engine and JSF implementation
     * This resolver will return a contextual instance of a bean if the name for resolution
     * resolves to exactly one bean
     */
    public ELResolver getELResolver();
-   
+
    /**
     * Parse and validate the standard metadata defined by JSR-299 for the specified class, 
     * returning an InjectionTarget to allow injection into custom beans or 
@@ -404,30 +404,5 @@ public interface BeanManager
     * 			The metadata for construction of the ManagedBean
     */
    public <T> ManagedBean<T> createManagedBean(AnnotatedType<T> type);
-
-   /**
-    * Create a new child activity. A child activity inherits all beans,
-    * interceptors, decorators, observers, and contexts defined by its direct
-    * and indirect parent activities.
-    * 
-    * This method should not be called by the application.
-    * 
-    * @return the child activity
-    */
-   public BeanManager createActivity();
-   
-   /**
-    * Associate an activity with the current context for a normal scope
-    * 
-    * @param scopeType
-    *           the scope to associate the activity with
-    * @return the activity
-    * @throws ContextNotActiveException
-    *            if the given scope is inactive
-    * @throws IllegalArgumentException
-    *            if the given scope is not a normal scope
-    */
-   public BeanManager setCurrent(Class<? extends Annotation> scopeType);
-
 
 }
