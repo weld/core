@@ -8,8 +8,8 @@ import java.util.Map;
 import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.mock.MockServletLifecycle;

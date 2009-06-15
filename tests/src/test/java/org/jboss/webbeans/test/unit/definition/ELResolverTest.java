@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.unit.definition;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;

@@ -20,9 +20,9 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
-import org.jboss.webbeans.introspector.WBMember;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.ForwardingWBMember;
+import org.jboss.webbeans.introspector.WBMember;
 import org.jboss.webbeans.util.Reflections;
 
 /**

@@ -24,8 +24,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.webbeans.injection.resolution.ForwardingResolvable;
-import org.jboss.webbeans.injection.resolution.ResolvableTransformer;
 import org.jboss.webbeans.injection.resolution.Resolvable;
+import org.jboss.webbeans.injection.resolution.ResolvableTransformer;
 
 /**
  * AnnotatedItem transformer which can be used for FacadeBeans

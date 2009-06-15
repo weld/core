@@ -19,9 +19,9 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
+import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBType;
-import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Reflections;
 

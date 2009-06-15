@@ -23,8 +23,8 @@ import java.util.Set;
 import javax.event.Event;
 import javax.event.Observer;
 
-import org.jboss.webbeans.FacadeImpl;
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.FacadeImpl;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.util.Strings;
 

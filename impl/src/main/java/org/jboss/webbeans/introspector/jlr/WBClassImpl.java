@@ -29,13 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.webbeans.introspector.AnnotationStore;
+import org.jboss.webbeans.introspector.ConstructorSignature;
+import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBConstructor;
 import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.introspector.WBMethod;
-import org.jboss.webbeans.introspector.AnnotationStore;
-import org.jboss.webbeans.introspector.ConstructorSignature;
-import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;

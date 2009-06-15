@@ -36,8 +36,8 @@ import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.resolution.ResolvableFactory;
 import org.jboss.webbeans.injection.resolution.Resolver;
-import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBAnnotated;
+import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
 
 public class BeanDeployerEnvironment

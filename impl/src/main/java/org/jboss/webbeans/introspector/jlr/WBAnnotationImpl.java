@@ -24,10 +24,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.WBAnnotation;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
-import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.collections.multi.SetHashMultiMap;
 import org.jboss.webbeans.util.collections.multi.SetMultiMap;

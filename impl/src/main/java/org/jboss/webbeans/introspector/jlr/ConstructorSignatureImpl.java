@@ -18,9 +18,9 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.util.Arrays;
 
-import org.jboss.webbeans.introspector.WBConstructor;
 import org.jboss.webbeans.introspector.ConstructorSignature;
 import org.jboss.webbeans.introspector.MethodSignature;
+import org.jboss.webbeans.introspector.WBConstructor;
 
 public class ConstructorSignatureImpl implements ConstructorSignature
 {

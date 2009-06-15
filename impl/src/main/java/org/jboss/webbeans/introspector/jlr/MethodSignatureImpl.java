@@ -19,8 +19,8 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.MethodSignature;
+import org.jboss.webbeans.introspector.WBMethod;
 
 public class MethodSignatureImpl implements MethodSignature
 {

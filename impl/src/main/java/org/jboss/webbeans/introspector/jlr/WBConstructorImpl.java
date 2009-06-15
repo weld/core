@@ -25,11 +25,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.introspector.AnnotationStore;
+import org.jboss.webbeans.introspector.ConstructorSignature;
 import org.jboss.webbeans.introspector.WBConstructor;
 import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.introspector.WBType;
-import org.jboss.webbeans.introspector.AnnotationStore;
-import org.jboss.webbeans.introspector.ConstructorSignature;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.collections.multi.ListHashMultiMap;
 import org.jboss.webbeans.util.collections.multi.ListMultiMap;

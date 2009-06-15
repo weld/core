@@ -20,9 +20,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.WBMember;
 import org.jboss.webbeans.introspector.WBParameter;
-import org.jboss.webbeans.introspector.AnnotationStore;
 
 /**
  * Represents a parameter
