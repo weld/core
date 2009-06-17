@@ -19,8 +19,8 @@ package org.jboss.webbeans.environment.se.example.simple;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.context.ApplicationScoped;
-import javax.inject.Initializer;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Initializer;
 import org.jboss.webbeans.environment.se.bindings.Parameters;
 
 /**

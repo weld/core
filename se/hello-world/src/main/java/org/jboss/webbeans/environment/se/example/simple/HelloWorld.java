@@ -16,10 +16,9 @@
  */
 package org.jboss.webbeans.environment.se.example.simple;
 
+import javax.enterprise.inject.Current;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.event.Observes;
-import javax.inject.Current;
-import javax.inject.manager.Deployed;
-import javax.inject.manager.Manager;
 
 /**
  * @author Peter Royle
@@ -35,7 +34,7 @@ public class HelloWorld
      * @param firstName The first name.
      */
     public void printHello( @Observes
-            @Deployed Manager manager )
+            AfterDeploymentValidation after )
     {
         if (!argsVlidator.hasErrors())
         {
