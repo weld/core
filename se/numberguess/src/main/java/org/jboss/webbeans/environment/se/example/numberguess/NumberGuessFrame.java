@@ -20,7 +20,6 @@ import java.awt.CardLayout;
 
 import javax.enterprise.inject.Current;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.event.Observes;
 
 /**
