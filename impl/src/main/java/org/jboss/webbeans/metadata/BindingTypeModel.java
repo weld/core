@@ -22,9 +22,9 @@ import java.util.Set;
 
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.NonBinding;
-import javax.inject.DefinitionException;
 import javax.inject.ExecutionException;
 
+import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Reflections;

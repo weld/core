@@ -24,9 +24,9 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
 import javax.event.Observes;
-import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;

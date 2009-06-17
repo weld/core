@@ -24,10 +24,10 @@ import javax.event.AfterTransactionFailure;
 import javax.event.AfterTransactionSuccess;
 import javax.event.Asynchronously;
 import javax.event.BeforeTransactionCompletion;
-import javax.inject.DefinitionException;
 import javax.transaction.Synchronization;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.transaction.spi.TransactionServices;

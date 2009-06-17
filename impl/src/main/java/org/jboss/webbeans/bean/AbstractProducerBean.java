@@ -36,9 +36,9 @@ import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.deployment.DeploymentType;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;

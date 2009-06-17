@@ -33,9 +33,9 @@ import javax.enterprise.inject.deployment.Specializes;
 import javax.enterprise.inject.deployment.Standard;
 import javax.enterprise.inject.spi.Bean;
 import javax.event.Event;
-import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.conversation.ConversationImpl;

@@ -36,7 +36,6 @@ import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.event.Event;
-import javax.inject.DefinitionException;
 import javax.inject.InconsistentSpecializationException;
 import javax.inject.NullableDependencyException;
 import javax.inject.Obtains;

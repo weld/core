@@ -8,6 +8,7 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.jsr299.tck.spi.Managers;
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.WebBean;
 
 public class ManagersImpl implements Managers
@@ -28,6 +29,22 @@ public class ManagersImpl implements Managers
       List<Class<? extends Annotation>> deploymentTypes = new ArrayList<Class<? extends Annotation>>(CurrentManager.rootManager().getEnabledDeploymentTypes());
       deploymentTypes.remove(WebBean.class);
       return deploymentTypes;
+   }
+
+   public boolean isDefinitionError(Throwable throwable)
+   {
+      if (throwable == null)
+      {
+         return false;
+      }
+      else if (DefinitionException.class.isAssignableFrom(throwable.getClass()))
+      {
+         return true;
+      }
+      else
+      {
+         return isDefinitionError(throwable.getCause());
+      }
    }
    
 }

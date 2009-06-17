@@ -24,9 +24,9 @@ import javax.decorator.Decorates;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
-import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.injection.FieldInjectionPoint;

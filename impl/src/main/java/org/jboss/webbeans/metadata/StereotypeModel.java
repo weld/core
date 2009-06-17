@@ -26,9 +26,9 @@ import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Named;
 import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.deployment.DeploymentType;
-import javax.inject.DefinitionException;
 import javax.interceptor.InterceptorBindingType;
 
+import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.resources.ClassTransformer;
 
 /**

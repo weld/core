@@ -32,9 +32,9 @@ import javax.event.IfExists;
 import javax.event.Observer;
 import javax.event.ObserverException;
 import javax.event.Observes;
-import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;

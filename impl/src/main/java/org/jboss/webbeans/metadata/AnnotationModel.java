@@ -18,8 +18,8 @@ package org.jboss.webbeans.metadata;
 
 import java.lang.annotation.Annotation;
 
-import javax.inject.DefinitionException;
 
+import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.introspector.WBAnnotation;
 import org.jboss.webbeans.resources.ClassTransformer;
 
