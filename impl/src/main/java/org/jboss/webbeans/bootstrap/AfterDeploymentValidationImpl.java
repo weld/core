@@ -1,16 +1,21 @@
 package org.jboss.webbeans.bootstrap;
 
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.jboss.webbeans.DeploymentException;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 
 public class AfterDeploymentValidationImpl implements AfterDeploymentValidation
 {
+   private List<Throwable> deploymentProblems = new ArrayList<Throwable>();
+   
    public void addDeploymentProblem(Throwable t)
    {
-      //XXX spec says need to delay abort until all observers
-      //have been notified
-      throw new DeploymentException(t);
+      deploymentProblems.add(t);
    }
 
+   public List<Throwable> getDeploymentProblems()
+   {
+      return deploymentProblems;
+   }
 }

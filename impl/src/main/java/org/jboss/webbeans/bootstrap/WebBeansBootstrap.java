@@ -240,7 +240,11 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          throw new DefinitionException(e);
       }
       
-      // TODO handle registered definition errors
+      if (event.getDefinitionErrors().size() > 0)
+      {
+         // FIXME communicate all the captured definition errors in this exception
+         throw new DefinitionException(event.getDefinitionErrors().get(0));
+      }
    }
    
    protected void fireAfterDeploymentValidationEvent()
@@ -256,7 +260,11 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          throw new DeploymentException(e);
       }
       
-      // TODO handle registered deployment errors
+      if (event.getDeploymentProblems().size() > 0)
+      {
+         // FIXME communicate all the captured deployment problems in this exception
+         throw new DeploymentException(event.getDeploymentProblems().get(0));
+      }
    }
    
    /**
