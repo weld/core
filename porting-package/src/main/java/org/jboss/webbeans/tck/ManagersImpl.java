@@ -9,6 +9,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.jboss.jsr299.tck.spi.Managers;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.DefinitionException;
+import org.jboss.webbeans.DeploymentException;
 import org.jboss.webbeans.WebBean;
 
 public class ManagersImpl implements Managers
@@ -47,4 +48,19 @@ public class ManagersImpl implements Managers
       }
    }
    
+   public boolean isDeploymentError(Throwable throwable)
+   {
+      if (throwable == null)
+      {
+         return false;
+      }
+      else if (DeploymentException.class.isAssignableFrom(throwable.getClass()))
+      {
+         return true;
+      }
+      else
+      {
+         return isDeploymentError(throwable.getCause());
+      }
+   }
 }
