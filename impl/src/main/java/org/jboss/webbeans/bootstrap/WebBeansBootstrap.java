@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -19,6 +19,8 @@ package org.jboss.webbeans.bootstrap;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.DefinitionException;
+import org.jboss.webbeans.DeploymentException;
 import org.jboss.webbeans.bean.standard.EventBean;
 import org.jboss.webbeans.bean.standard.InjectionPointBean;
 import org.jboss.webbeans.bean.standard.InstanceBean;
@@ -201,18 +203,62 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
             manager.setEnabledInterceptorClasses(parser.getEnabledInterceptorClasses());
          }
          log.debug("Deployment types: " + manager.getEnabledDeploymentTypes());
-         manager.fireEvent(new BeforeBeanDiscoveryImpl());
+         fireBeforeBeanDiscoveryEvent();
          registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), ejbDescriptors);
-         manager.fireEvent(new AfterBeanDiscoveryImpl());
+         fireAfterBeanDiscoveryEvent();
          log.debug("Web Beans initialized. Validating beans.");
          manager.getResolver().resolveInjectionPoints();
          new BeanValidator(manager).validate();
          manager.getResolver().resolveInjectionPoints();
-         manager.fireEvent(new AfterDeploymentValidationImpl());
+         fireAfterDeploymentValidationEvent();
          endDeploy(requestBeanStore);
       }
    }
 
+   protected void fireBeforeBeanDiscoveryEvent()
+   {
+      BeforeBeanDiscoveryImpl event = new BeforeBeanDiscoveryImpl();
+      try
+      {
+         manager.fireEvent(event);
+      }
+      catch (Exception e)
+      {
+         throw new DefinitionException(e);
+      }
+   }
+   
+   protected void fireAfterBeanDiscoveryEvent()
+   {
+      AfterBeanDiscoveryImpl event = new AfterBeanDiscoveryImpl();
+      try
+      {
+         manager.fireEvent(event);
+      }
+      catch (Exception e)
+      {
+         throw new DefinitionException(e);
+      }
+      
+      // TODO handle registered definition errors
+   }
+   
+   protected void fireAfterDeploymentValidationEvent()
+   {
+      AfterDeploymentValidationImpl event = new AfterDeploymentValidationImpl();
+      
+      try
+      {
+         manager.fireEvent(event);
+      }
+      catch (Exception e)
+      {
+         throw new DeploymentException(e);
+      }
+      
+      // TODO handle registered deployment errors
+   }
+   
    /**
     * Gets version information
     * 
