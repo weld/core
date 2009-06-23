@@ -14,12 +14,12 @@ import org.jboss.webbeans.WebBean;
 
 public class ManagersImpl implements Managers
 {
-   
+
    public BeanManager getManager()
    {
       return CurrentManager.rootManager();
    }
-   
+
    public void setEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
       CurrentManager.rootManager().setEnabledDeploymentTypes(enabledDeploymentTypes);
@@ -32,35 +32,45 @@ public class ManagersImpl implements Managers
       return deploymentTypes;
    }
 
-   public boolean isDefinitionError(Throwable throwable)
+   public boolean isDefinitionError(org.jboss.testharness.api.DeploymentException deploymentException)
    {
-      if (throwable == null)
+      return isDefinitionException(deploymentException.getCause());
+   }
+
+   private boolean isDefinitionException(Throwable t)
+   {
+      if (t == null)
       {
          return false;
       }
-      else if (DefinitionException.class.isAssignableFrom(throwable.getClass()))
+      else if (DefinitionException.class.isAssignableFrom(t.getClass()))
       {
          return true;
       }
       else
       {
-         return isDefinitionError(throwable.getCause());
+         return isDefinitionException(t.getCause());
       }
    }
-   
-   public boolean isDeploymentError(Throwable throwable)
+
+   public boolean isDeploymentError(org.jboss.testharness.api.DeploymentException deploymentException)
    {
-      if (throwable == null)
+      return isDeploymentException(deploymentException.getCause());
+   }
+
+   public boolean isDeploymentException(Throwable t)
+   {
+      if (t == null)
       {
          return false;
       }
-      else if (DeploymentException.class.isAssignableFrom(throwable.getClass()))
+      else if (DeploymentException.class.isAssignableFrom(t.getClass()))
       {
          return true;
       }
       else
       {
-         return isDeploymentError(throwable.getCause());
+         return isDeploymentException(t.getCause());
       }
    }
 }

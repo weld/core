@@ -9,10 +9,12 @@ import org.jboss.webbeans.mock.MockWebBeanDiscovery;
 
 public abstract class AbstractStandaloneContainersImpl implements StandaloneContainers
 {
-   
+
+   private DeploymentException deploymentException;
+
    private MockServletLifecycle lifecycle;
-   
-   public void deploy(Iterable<Class<?>> classes, Iterable<URL> beansXml) throws DeploymentException
+
+   public boolean deploy(Iterable<Class<?>> classes, Iterable<URL> beansXml)
    {
       this.lifecycle = newLifecycle();
       lifecycle.initialize();
@@ -28,12 +30,14 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
       }
       catch (Exception e) 
       {
-         throw new DeploymentException("Error deploying beans", e);
+         this.deploymentException = new DeploymentException("Error deploying beans", e);
+         return false;
       }
       lifecycle.beginSession();
       lifecycle.beginRequest();
+      return true;
    }
-   
+
    protected abstract MockServletLifecycle newLifecycle();
 
    public void deploy(Iterable<Class<?>> classes) throws DeploymentException
@@ -44,12 +48,17 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
    public void cleanup()
    {
       // Np-op
-      
+
    }
-   
+
    public void setup()
    {
       // No-op
+   }
+
+   public DeploymentException getDeploymentException()
+   {
+      return deploymentException;
    }
 
    public void undeploy()
@@ -58,6 +67,7 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
       lifecycle.endSession();
       lifecycle.endApplication();
       lifecycle = null;
+      deploymentException = null;
    }
-   
+
 }

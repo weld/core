@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans;
+package org.jboss.webbeans.tck.jbossas;
 
 import java.util.Map.Entry;
 
@@ -34,10 +34,10 @@ public class WebBeansProfileServiceDeploymentExceptionTransformer implements Dep
 
    public DeploymentException transform(DeploymentException exception)
    {
-      Throwable failure = exception.getCause();
-      if (failure.getCause() instanceof IncompleteDeploymentException)
+      Throwable failure = exception.getCause().getCause();
+      if (failure instanceof IncompleteDeploymentException)
       {
-         IncompleteDeploymentException incompleteDeploymentException = (IncompleteDeploymentException) failure.getCause();
+         IncompleteDeploymentException incompleteDeploymentException = (IncompleteDeploymentException) failure;
          for (Entry<String, Throwable> entry : incompleteDeploymentException.getIncompleteDeployments().getContextsInError().entrySet())
          {
             if (entry.getKey().endsWith(exception.getName() + "/_WebBeansBootstrapBean"))
