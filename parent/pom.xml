@@ -97,6 +97,24 @@
                            true
                         </addDefaultSpecificationEntries>
                      </manifest>
+                     <manifestEntries>
+                        <Implementation-URL>${pom.url}</Implementation-URL>
+                     </manifestEntries>
+                     <manifestSections>
+                        <manifestSection>
+                           <name>Build-Information</name>
+                           <manifestEntries>
+                              <Maven-Version>${maven.version}</Maven-Version>
+                              <Java-Version>${java.version}</Java-Version>
+                              <Java-Vendor>${java.vendor}</Java-Vendor>
+                              <Os-Name>${os.name}</Os-Name>
+                              <Os-Arch>${os.arch}</Os-Arch>
+                              <Os-Version>${os.version}</Os-Version>
+                              <Scm-Revision>${buildNumber}</Scm-Revision>
+                              <Build-Time>${timestamp}</Build-Time>
+                           </manifestEntries>
+                        </manifestSection>
+                     </manifestSections>
                   </archive>
                </configuration>
             </plugin>
@@ -109,6 +127,38 @@
                   <outputDirectory>${project.build.directory}/generated-classes</outputDirectory>
                </configuration>
             </plugin>
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>build-helper-maven-plugin</artifactId>
+               <executions>
+                  <execution>
+                     <phase>validate</phase>
+                     <goals>
+                        <goal>maven-version</goal>
+                     </goals>
+                  </execution>
+               </executions>
+            </plugin>
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>buildnumber-maven-plugin</artifactId>
+               <executions>
+                  <execution>
+                     <id>set-build-properties</id>
+                     <goals>
+                        <goal>create</goal>
+                     </goals>
+                     <phase>validate</phase>
+                  </execution>
+               </executions>
+               <inherited>true</inherited>
+               <configuration>
+                  <!-- If the plugin fails to get the scm revision, set it to "unavailable" -->
+                  <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                  <revisionOnScmFailure>unavailable</revisionOnScmFailure>
+                  <timestampFormat>{0, date, long} {0, time, long}</timestampFormat>
+               </configuration>
+            </plugin> 
          </plugins>
       </pluginManagement>
    </build>

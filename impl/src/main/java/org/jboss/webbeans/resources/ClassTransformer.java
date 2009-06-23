@@ -28,11 +28,11 @@ import org.jboss.webbeans.util.collections.ConcurrentCache;
 
 public class ClassTransformer implements Service 
 {
-   
+
    private final ConcurrentCache<Class<?>, WBClass<?>> classes;
    private final ConcurrentCache<Class<?>, WBAnnotation<?>> annotations;
    private final ClassTransformer transformer = this;
-   
+
    /**
     * 
     */
@@ -41,31 +41,31 @@ public class ClassTransformer implements Service
       classes = new ConcurrentCache<Class<?>, WBClass<?>>();
       annotations = new ConcurrentCache<Class<?>, WBAnnotation<?>>();
    }
-   
+
    public <T> WBClass<T> classForName(final Class<T> clazz)
    {
       return classes.putIfAbsent(clazz, new Callable<WBClass<T>>()
-      {
+            {
 
          public WBClass<T> call() throws Exception
          {
             return WBClassImpl.of(clazz, transformer);
          }
-            
-      });
+
+            });
    }
-   
-   public <T extends Annotation> WBAnnotation<T> classForName(final Class<T> clazz)
+
+   public <T extends Annotation> WBAnnotation<T> annotationTypeForName(final Class<T> clazz)
    {
       return annotations.putIfAbsent(clazz, new Callable<WBAnnotation<T>>()
-      {
+            {
 
          public WBAnnotation<T> call() throws Exception
          {
             return WBAnnotationImpl.of(clazz, transformer);
          }
-            
-      });
+
+            });
    }
 
 }

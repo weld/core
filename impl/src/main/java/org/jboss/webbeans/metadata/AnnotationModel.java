@@ -18,7 +18,6 @@ package org.jboss.webbeans.metadata;
 
 import java.lang.annotation.Annotation;
 
-
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.introspector.WBAnnotation;
 import org.jboss.webbeans.resources.ClassTransformer;
@@ -42,7 +41,7 @@ public abstract class AnnotationModel<T extends Annotation>
     */
    public AnnotationModel(Class<T> type, ClassTransformer transformer)
    {
-      this.annotatedAnnotation = transformer.classForName(type);
+      this.annotatedAnnotation = transformer.annotationTypeForName(type);
       init();
    }
 
