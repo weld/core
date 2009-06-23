@@ -2,6 +2,7 @@ package org.jboss.webbeans.injection.resolution;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +24,16 @@ public class ResolvableFactory
          types.add(element.getBaseType());
          return new ResolvableImpl(element.getBindings(), types);
       }
+   }
+
+   public static Resolvable of(Set<Type> typeClosure, Set<Annotation> bindings)
+   {
+      return new ResolvableImpl(bindings, typeClosure);
+   }
+
+   public static Resolvable of(Set<Type> typeClosure, Annotation... bindings)
+   {
+      return new ResolvableImpl(new HashSet<Annotation>(Arrays.asList(bindings)), typeClosure);
    }
 
    private ResolvableFactory() {}

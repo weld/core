@@ -64,6 +64,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    private WBAnnotated<?, ?> decorates;
    private Set<Annotation> delegateBindings;
    private Type delegateType;
+   private Set<Type> delegateTypes;
    private Set<Type> decoratedTypes;
 
    protected DecoratorBean(WBClass<T> type, BeanManagerImpl manager)
@@ -81,6 +82,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
          initDecoratedTypes();
          initDelegateBindings();
          initDelegateType();
+         checkDelegateType();
       }
    }
 
@@ -124,6 +126,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    protected void initDelegateType()
    {
       this.delegateType = this.decorates.getBaseType();
+      this.delegateTypes = this.decorates.getTypeClosure();
    }
 
    protected void checkDelegateType()
@@ -172,6 +175,16 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    public Set<Type> getDecoratedTypes()
    {
       return decoratedTypes;
+   }
+
+   /**
+    * The type closure of the delegate type
+    * 
+    * @return the delegateTypes
+    */
+   public Set<Type> getDelegateTypes()
+   {
+      return delegateTypes;
    }
 
 }

@@ -80,6 +80,7 @@ import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.NonContextualInjector;
+import org.jboss.webbeans.injection.resolution.DecoratorResolver;
 import org.jboss.webbeans.injection.resolution.ResolvableFactory;
 import org.jboss.webbeans.injection.resolution.ResolvableWBClass;
 import org.jboss.webbeans.injection.resolution.Resolver;
@@ -110,10 +111,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    
    private static class CurrentActivity
    {
-      
+	
       private final Context context;
-      private final BeanManagerImpl manager;      
-      
+      private final BeanManagerImpl manager;
+		
       public CurrentActivity(Context context, BeanManagerImpl manager)
       {
          this.context = context;
@@ -164,14 +165,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public static final String JNDI_KEY = "java:app/Manager";
    
    /*
-    * Application scoped services
-    * ****************************
-    */  
+    * Application scoped services 
+    * ***************************
+    */
    private transient final ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
    private transient final ServiceRegistry services;
-   
+
    /*
-    * Application scoped data structures
+    * Application scoped data structures 
     * ***********************************
     */
    private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
@@ -184,19 +185,19 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final Map<String, RIBean<?>> riBeans;
    private final transient Map<Bean<?>, Bean<?>> specializedBeans;
    private final transient AtomicInteger ids;
-   
+
    /*
-    * Activity scoped services
+    * Activity scoped services 
     * *************************
-    */  
+    */
    private transient final EventManager eventManager;
    private transient final Resolver resolver;
    private transient final Resolver decoratorResolver;
    private final transient NonContextualInjector nonContextualInjector;
    private final transient ELResolver webbeansELResolver;
-   
+
    /*
-    * Activity scoped data structures
+    * Activity scoped data structures 
     * ********************************
     */
    private transient final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
@@ -206,8 +207,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private final transient ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers;
    private final transient Set<BeanManagerImpl> childActivities;
    private final Integer id;
-   
-   
+
    /**
     * Create a new, root, manager
     * 
@@ -220,23 +220,23 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       defaultEnabledDeploymentTypes.add(0, Standard.class);
       defaultEnabledDeploymentTypes.add(1, Production.class);
       
+      List<Class<?>> defaultEnabledDecoratorClasses = new ArrayList<Class<?>>();
+
       return new BeanManagerImpl(
             serviceRegistry, 
-            new CopyOnWriteArrayList<Bean<?>>(), 
+            new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<Decorator<?>>(),
             new ConcurrentSetHashMultiMap<Type, EventObserver<?>>(),
             new Namespace(),
             new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>(),
-            new ConcurrentHashMap<String, RIBean<?>>(), 
-            new ClientProxyProvider(), 
+            new ConcurrentHashMap<String, RIBean<?>>(),
+            new ClientProxyProvider(),
             new ConcurrentListHashMultiMap<Class<? extends Annotation>, Context>(),
-            new CopyOnWriteArraySet<CurrentActivity>(),
-            new HashMap<Bean<?>, Bean<?>>(),
-            defaultEnabledDeploymentTypes,
-            new AtomicInteger()
-            );
+            new CopyOnWriteArraySet<CurrentActivity>(), 
+            new HashMap<Bean<?>, Bean<?>>(), defaultEnabledDeploymentTypes, defaultEnabledDecoratorClasses, 
+            new AtomicInteger());
    }
-   
+
    /**
     * Create a new child manager
     * 
@@ -251,44 +251,29 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers = new ConcurrentSetHashMultiMap<Type, EventObserver<?>>();
       registeredObservers.deepPutAll(parentManager.getRegisteredObservers());
       Namespace rootNamespace = new Namespace(parentManager.getRootNamespace());
-      
+
       return new BeanManagerImpl(
-            parentManager.getServices(),
-            beans,
-            parentManager.getDecorators(),
-            registeredObservers,
-            rootNamespace,
+            parentManager.getServices(), 
+            beans, parentManager.getDecorators(), 
+            registeredObservers, rootNamespace, 
             parentManager.getNewEnterpriseBeanMap(), 
-            parentManager.getRiBeans(),
-            parentManager.getClientProxyProvider(),
-            parentManager.getContexts(),
-            parentManager.getCurrentActivities(),
-            parentManager.getSpecializedBeans(),
-            parentManager.getEnabledDeploymentTypes(),
-            parentManager.getIds()
-            );
+            parentManager.getRiBeans(), 
+            parentManager.getClientProxyProvider(), 
+            parentManager.getContexts(), 
+            parentManager.getCurrentActivities(), 
+            parentManager.getSpecializedBeans(), 
+            parentManager.getEnabledDeploymentTypes(), 
+            parentManager.getEnabledDecoratorClasses(), 
+            parentManager.getIds());
    }
 
    /**
     * Create a new manager
+    * @param enabledDecoratorClasses 
     * 
     * @param ejbServices the ejbResolver to use
     */
-   private BeanManagerImpl(
-         ServiceRegistry serviceRegistry, 
-         List<Bean<?>> beans,
-         List<Decorator<?>> decorators,
-         ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers,
-         Namespace rootNamespace,
-         Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, 
-         Map<String, RIBean<?>> riBeans,
-         ClientProxyProvider clientProxyProvider,
-         ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts,
-         Set<CurrentActivity> currentActivities,
-         Map<Bean<?>, Bean<?>> specializedBeans,
-         List<Class<? extends Annotation>> enabledDeploymentTypes,
-         AtomicInteger ids
-         )
+   private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<Decorator<?>> decorators, ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers, Namespace rootNamespace, Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, Map<String, RIBean<?>> riBeans, ClientProxyProvider clientProxyProvider, ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts, Set<CurrentActivity> currentActivities, Map<Bean<?>, Bean<?>> specializedBeans, List<Class<? extends Annotation>> enabledDeploymentTypes, List<Class<?>> enabledDecoratorClasses, AtomicInteger ids)
    {
       this.services = serviceRegistry;
       this.beans = beans;
@@ -301,12 +286,13 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.specializedBeans = specializedBeans;
       this.registeredObservers = registeredObservers;
       setEnabledDeploymentTypes(enabledDeploymentTypes);
+      setEnabledDecoratorClasses(enabledDecoratorClasses);
       this.rootNamespace = rootNamespace;
       this.ids = ids;
       this.id = ids.incrementAndGet();
-      
+
       this.resolver = new Resolver(this, beans);
-      this.decoratorResolver = new Resolver(this, decorators);
+      this.decoratorResolver = new DecoratorResolver(this, decorators);
       this.eventManager = new EventManager(this);
       this.nonContextualInjector = new NonContextualInjector(this);
       this.webbeansELResolver = new WebBeansELResolverImpl(this);
@@ -426,6 +412,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    }
 
    /**
+    * @return the enabledDecoratorClasses
+    */
+   public List<Class<?>> getEnabledDecoratorClasses()
+   {
+      return Collections.unmodifiableList(enabledDecoratorClasses);
+   }
+
+   /**
     * Set the enabled deployment types
     * 
     * @param enabledDeploymentTypes
@@ -446,7 +440,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       this.enabledInterceptorClasses = enabledInterceptorClasses;
    }
-
    
    public Set<Bean<?>> getBeans(Type beanType, Annotation... bindings)
    {
@@ -480,7 +473,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return resolver.get(ResolvableFactory.of(element));
    }
 
-   public Set<Bean<?>> getBeans(InjectionPoint injectionPoint)
+   public Set<Bean<?>> getInjectableBeans(InjectionPoint injectionPoint)
    {
       boolean registerInjectionPoint = !injectionPoint.getType().equals(InjectionPoint.class);
       try
@@ -490,7 +483,16 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             currentInjectionPoint.get().push(injectionPoint);
          }
          // TODO Do this properly
-         return getBeans(ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this));
+         Set<Bean<?>> beans = getBeans(ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this));
+         Set<Bean<?>> injectableBeans = new HashSet<Bean<?>>();
+         for (Bean<?> bean : beans)
+         {
+            if (!(bean instanceof Decorator || bean instanceof Interceptor))
+            {
+               injectableBeans.add(bean);
+            }
+         }
+         return injectableBeans;
       }
       finally
       {
@@ -523,7 +525,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             }
             if (bean instanceof DecoratorBean)
             {
-               decorators.add(DecoratorBean.wrapForResolver((Decorator<?>) bean));
+               decorators.add((Decorator<?>) bean);
             }
             riBeans.put(bean.getId(), bean);
             registerBeanNamespace(bean);
@@ -590,10 +592,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       contexts.put(context.getScopeType(), context);
    }
 
-  
    public void addObserver(Observer<?> observer, Annotation... bindings)
    {
-      addObserver(observer,eventManager.getTypeOfObserver(observer),bindings);
+      addObserver(observer, eventManager.getTypeOfObserver(observer), bindings);
    }
 
    /**
@@ -609,15 +610,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public void addObserver(ObserverMethod<?, ?> observerMethod)
    {
-      addObserver((Observer<?>)observerMethod, observerMethod.getObservedEventType(), 
-            new ArrayList<Annotation>(observerMethod.getObservedEventBindings()).toArray(new Annotation[0]));
-      
+      addObserver(observerMethod, observerMethod.getObservedEventType(), new ArrayList<Annotation>(observerMethod.getObservedEventBindings()).toArray(new Annotation[0]));
    }
-
 
    /**
     * Does the actual observer registration
-    *  
+    * 
     * @param observer
     * @param eventType
     * @param bindings
@@ -637,7 +635,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       eventManager.removeObserver(observer);
    }
-
 
    /**
     * Fires an event object with given event object for given bindings
@@ -722,15 +719,15 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          return getContext(bean.getScopeType()).get((Bean) bean, creationalContext);
       }
    }
-   
 
    /*
-    * TODO this is not correct, as the current implementation of getInstance does not 
-    * pay attention to what type the resulting instance needs to implement
+    * TODO this is not correct, as the current implementation of getInstance
+    * does not pay attention to what type the resulting instance needs to
+    * implement
     */
    public Object getReference(Bean<?> bean, Type beanType)
    {
-      return getInjectableReference(bean, CreationalContextImpl.of(bean));  
+      return getInjectableReference(bean, CreationalContextImpl.of(bean));
    }
 
    @SuppressWarnings("unchecked")
@@ -824,11 +821,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * @param bindings The binding types to match
     * @return A list of matching decorators
     * 
-    * @see javax.enterprise.inject.spi.BeanManager#resolveDecorators(java.util.Set, java.lang.annotation.Annotation[])
+    * @see javax.enterprise.inject.spi.BeanManager#resolveDecorators(java.util.Set,
+    *      java.lang.annotation.Annotation[])
     */
    public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... bindings)
    {
-      throw new UnsupportedOperationException();
+      return new ArrayList(decoratorResolver.get(ResolvableFactory.of(types, bindings)));
    }
    
    public List<Decorator<?>> resolveDecorators(Bean<?> bean)
@@ -910,7 +908,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       if (activeCurrentActivities.size() == 0)
       {
          return CurrentManager.rootManager();
-      } 
+      }
       else if (activeCurrentActivities.size() == 1)
       {
          return activeCurrentActivities.get(0).getManager();
@@ -1041,7 +1039,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return rootNamespace;
    }
 
-
    public <T> InjectionTarget<T> createInjectionTarget(Class<T> type)
    {
       throw new UnsupportedOperationException("Not yet implemented");
@@ -1062,8 +1059,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
-
-
    public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean)
    {
       Bean<?> key = bean;
@@ -1078,15 +1073,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return (Bean<X>) key;
    }
 
-
    public void validate(InjectionPoint injectionPoint)
    {
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
-
-   public Set<Annotation> getInterceptorBindingTypeDefinition(
-         Class<? extends Annotation> bindingType)
+   public Set<Annotation> getInterceptorBindingTypeDefinition(Class<? extends Annotation> bindingType)
    {
       throw new UnsupportedOperationException("Not yet implemented");
    }
@@ -1101,8 +1093,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
-   public Set<Annotation> getStereotypeDefinition(
-         Class<? extends Annotation> stereotype)
+   public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype)
    {
       throw new UnsupportedOperationException("Not yet implemented");
    }
@@ -1112,8 +1103,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
-   public boolean isInterceptorBindingType(
-         Class<? extends Annotation> annotationType)
+   public boolean isInterceptorBindingType(Class<? extends Annotation> annotationType)
    {
       throw new UnsupportedOperationException("Not yet implemented");
    }
@@ -1130,32 +1120,32 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public <X> Bean<? extends X> getHighestPrecedenceBean(Set<Bean<? extends X>> beans)
    {
-	   if (beans.size() == 1)
-	   {
-		   return beans.iterator().next();
-	   }
-	   else if (beans.isEmpty()) 
-	   {
-		   return null;
-	   }
-	   
-	   // make a copy so that the sort is stable with respect to new deployment types added through the SPI
-	   // TODO This code needs to be in Resolver
-	   // TODO This needs caching
+      if (beans.size() == 1)
+      {
+         return beans.iterator().next();
+      }
+      else if (beans.isEmpty())
+      {
+         return null;
+      }
+
+      // make a copy so that the sort is stable with respect to new deployment types added through the SPI
+      // TODO This code needs to be in Resolver
+      // TODO This needs caching
       final List<Class<? extends Annotation>> enabledDeploymentTypes = getEnabledDeploymentTypes();
-      
-      SortedSet<Bean<? extends X>> sortedBeans = new TreeSet<Bean<? extends X>>(new Comparator<Bean<? extends X>>() 
-      { 
-		   public int compare(Bean<? extends X> o1, Bean<? extends X> o2) 
-		   {
-			   int diff = enabledDeploymentTypes.indexOf(o1) - enabledDeploymentTypes.indexOf(o2);
-			   if (diff == 0)
-			   {
-				   throw new AmbiguousResolutionException();
-			   }
-			   return diff;
-		   }
-      });
+
+      SortedSet<Bean<? extends X>> sortedBeans = new TreeSet<Bean<? extends X>>(new Comparator<Bean<? extends X>>()
+      {
+         public int compare(Bean<? extends X> o1, Bean<? extends X> o2)
+         {
+            int diff = enabledDeploymentTypes.indexOf(o1) - enabledDeploymentTypes.indexOf(o2);
+            if (diff == 0)
+            {
+               throw new AmbiguousResolutionException();
+            }
+            return diff;
+         }
+            });
       sortedBeans.addAll(beans);
       return sortedBeans.last();
    }
@@ -1164,7 +1154,5 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       return webbeansELResolver;
    }
-
-
-
+   
 }

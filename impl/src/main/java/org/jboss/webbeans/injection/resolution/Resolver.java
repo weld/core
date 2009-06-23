@@ -47,7 +47,7 @@ public class Resolver
 {
    private static final long serialVersionUID = 1L;
    
-   private static abstract class MatchingResolvable extends ForwardingResolvable
+   protected static abstract class MatchingResolvable extends ForwardingResolvable
    {
       
       private final BeanManagerImpl manager;
@@ -144,7 +144,7 @@ public class Resolver
       {
          public Set<Bean<?>> call() throws Exception
          {
-            return retainHighestPrecedenceBeans(getMatchingBeans(wrapped, beans), manager.getEnabledDeploymentTypes());
+            return retainHighestPrecedenceBeans(getMatchingBeans(wrapped), manager.getEnabledDeploymentTypes());
          }
 
       };
@@ -207,7 +207,6 @@ public class Resolver
 
          public Set<Bean<? extends Object>> call() throws Exception
          {
-            
             Set<Bean<?>> matchedBeans = new HashSet<Bean<?>>();
             for (Bean<?> bean : beans)
             {
@@ -221,8 +220,6 @@ public class Resolver
 
       });
    }
-   
-   
 
    /**
     * Filters out the beans with the highest enabled deployment type
@@ -271,17 +268,22 @@ public class Resolver
     * @param beans The beans to filter
     * @return A set of filtered beans
     */
-   private static Set<Bean<?>> getMatchingBeans(MatchingResolvable resolvable, List<? extends Bean<?>> beans)
+   private Set<Bean<?>> getMatchingBeans(MatchingResolvable resolvable)
    {
       Set<Bean<?>> resolvedBeans = new HashSet<Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (resolvable.matches(bean.getTypes(), bean.getBindings()))
+         if (matches(resolvable, bean))
          {
             resolvedBeans.add(bean);
          }
       }
       return resolvedBeans;
+   }
+
+   protected boolean matches(MatchingResolvable resolvable, Bean<?> bean)
+   {
+      return resolvable.matches(bean.getTypes(), bean.getBindings());
    }
 
    /**
@@ -298,6 +300,11 @@ public class Resolver
       buffer.append("Resolved injection points: " + resolvedInjectionPoints.size() + "\n");
       buffer.append("Resolved names points: " + resolvedNames.size() + "\n");
       return buffer.toString();
+   }
+
+   protected BeanManagerImpl getManager()
+   {
+      return manager;
    }
 
 }

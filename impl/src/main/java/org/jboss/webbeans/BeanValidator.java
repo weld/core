@@ -104,7 +104,7 @@ public class BeanValidator
             checkFacadeInjectionPoint(injectionPoint, Any.class, Event.class);
             Annotation[] bindings = injectionPoint.getBindings().toArray(new Annotation[0]);
             WBAnnotated<?, ?> annotatedItem = ResolvableWBClass.of(injectionPoint.getType(), bindings, manager);
-            Set<?> resolvedBeans = manager.getBeans(injectionPoint);
+            Set<?> resolvedBeans = manager.getInjectableBeans(injectionPoint);
             if (resolvedBeans.isEmpty())
             {
                throw new UnsatisfiedResolutionException("The injection point " + injectionPoint + " with binding types "  + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has unsatisfied dependencies with binding types ");
