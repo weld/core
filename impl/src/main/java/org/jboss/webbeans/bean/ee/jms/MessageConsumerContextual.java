@@ -20,7 +20,6 @@ import java.io.Serializable;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.inject.ExecutionException;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 
@@ -37,7 +36,7 @@ abstract class MessageConsumerContextual<T extends MessageConsumer> implements C
       }
       catch (JMSException e)
       {
-         throw new ExecutionException("Error creating connection ", e);
+         throw new RuntimeException("Error creating connection ", e);
       }
    }
    
@@ -51,7 +50,7 @@ abstract class MessageConsumerContextual<T extends MessageConsumer> implements C
       }
       catch (JMSException e)
       {
-         throw new ExecutionException("Error creating connection ", e);
+         throw new RuntimeException("Error creating connection ", e);
       }
    }
    

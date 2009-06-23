@@ -19,7 +19,6 @@ package org.jboss.webbeans.injection;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.enterprise.inject.CreationException;
-import javax.inject.ExecutionException;
 
 class Exceptions
 {
@@ -39,11 +38,11 @@ class Exceptions
          }
          catch (InstantiationException e1)
          {
-            throw new ExecutionException(e1);
+            throw new RuntimeException(e1);
          }
          catch (IllegalAccessException e1)
          {
-            throw new ExecutionException(e1);
+            throw new RuntimeException(e1);
          }
          e.initCause(t);
          throw e;

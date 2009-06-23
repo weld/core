@@ -24,8 +24,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.inject.DuplicateBindingTypeException;
-
 import org.jboss.webbeans.metadata.MetaDataCache;
 
 /**
@@ -85,7 +83,7 @@ public abstract class FacadeImpl<T> implements Serializable
          }
          if (result.contains(newAnnotation))
          {
-            throw new DuplicateBindingTypeException(newAnnotation + " is already present in the bindings list for " + this);
+            throw new IllegalArgumentException(newAnnotation + " is already present in the bindings list for " + this);
          }
          result.add(newAnnotation);
       }

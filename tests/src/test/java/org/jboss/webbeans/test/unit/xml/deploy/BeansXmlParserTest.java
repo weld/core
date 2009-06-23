@@ -5,12 +5,12 @@ import java.util.Iterator;
 
 import javax.enterprise.inject.deployment.Production;
 import javax.enterprise.inject.deployment.Standard;
-import javax.inject.DeploymentException;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Classes;
 import org.jboss.testharness.impl.packaging.Resource;
 import org.jboss.testharness.impl.packaging.Resources;
+import org.jboss.webbeans.DeploymentException;
 import org.jboss.webbeans.mock.MockResourceLoader;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.jboss.webbeans.xml.BeansXmlParser;

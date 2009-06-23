@@ -3,7 +3,6 @@
  */
 package org.jboss.webbeans.resources.spi;
 
-import javax.inject.ExecutionException;
 
 
 /**
@@ -12,7 +11,7 @@ import javax.inject.ExecutionException;
  * @author Pete Muir
  *
  */
-public class ResourceLoadingException extends ExecutionException
+public class ResourceLoadingException extends RuntimeException
 {
    private static final long serialVersionUID = 1L;
 

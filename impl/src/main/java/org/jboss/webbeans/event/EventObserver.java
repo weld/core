@@ -23,7 +23,6 @@ import java.util.List;
 
 import javax.enterprise.inject.Current;
 import javax.event.Observer;
-import javax.inject.DuplicateBindingTypeException;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.metadata.MetaDataCache;
@@ -84,7 +83,7 @@ public class EventObserver<T>
          }
          if (eventBindings.contains(annotation))
          {
-            throw new DuplicateBindingTypeException(annotation + " is already present in the bindings list for " + this);
+            throw new IllegalArgumentException(annotation + " is already present in the bindings list for " + this);
          }
          if (!annotation.annotationType().equals(Current.class))
          {

@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 
 import javax.annotation.Resource;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.ExecutionException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
@@ -35,7 +34,7 @@ public abstract class AbstractResourceServices
       }
       catch (NamingException e)
       {
-         throw new ExecutionException("Error looking up " + name + " in JNDI", e);
+         throw new RuntimeException("Error looking up " + name + " in JNDI", e);
       }
    }
    
@@ -48,7 +47,7 @@ public abstract class AbstractResourceServices
       }
       catch (NamingException e)
       {
-         throw new ExecutionException("Error looking up " + name + " in JNDI", e);
+         throw new RuntimeException("Error looking up " + name + " in JNDI", e);
       }
    }
    

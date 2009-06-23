@@ -19,8 +19,6 @@ package javax.enterprise.inject;
 
 import java.lang.annotation.Annotation;
 
-import javax.inject.DuplicateBindingTypeException;
-
 
 /**
  * An interface for looking up beans of a particular type.
@@ -41,7 +39,7 @@ public interface Instance<T> extends Iterable<T>
     * @param bindings
     *           Additional binding types
     * @return an instance of a bean of the specified type
-    * @throws DuplicateBindingTypeException
+    * @throws IllegalArgumentException
     *            if two instances of the same binding type are passed
     * @throws IllegalArgumentException
     *            if an instance of an annotation that is not a binding type is

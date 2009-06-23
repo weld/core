@@ -18,7 +18,6 @@
 
 package javax.enterprise.inject;
 
-import javax.inject.DeploymentException;
 
 /**
  * Thrown if a bean has normal scope and the type cannot be proxied by the 
@@ -26,7 +25,7 @@ import javax.inject.DeploymentException;
  * 
  * @author Pete Muir
  */
-public class UnproxyableResolutionException extends DeploymentException
+public class UnproxyableResolutionException extends ResolutionException
 {
 
    private static final long serialVersionUID = 1667539354548135465L;

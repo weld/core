@@ -23,8 +23,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import javax.inject.ExecutionException;
-
 
 /**
  * Supports inline instantiation of annotation type instances.
@@ -159,15 +157,15 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
       }
       catch (IllegalArgumentException e)
       {
-         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new RuntimeException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
       catch (IllegalAccessException e)
       {
-         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new RuntimeException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
       catch (InvocationTargetException e)
       {
-         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new RuntimeException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
    }
 }

@@ -49,6 +49,7 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.BindingType;
+import javax.enterprise.inject.InjectionException;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.deployment.Production;
@@ -63,8 +64,6 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ManagedBean;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.event.Observer;
-import javax.inject.DeploymentException;
-import javax.inject.DuplicateBindingTypeException;
 
 import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
@@ -318,7 +317,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       if (!this.enabledDeploymentTypes.get(0).equals(Standard.class))
       {
-         throw new DeploymentException("@Standard must be the lowest precedence deployment type");
+         throw new InjectionException("@Standard must be the lowest precedence deployment type");
       }
    }
 
@@ -367,7 +366,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(Arrays.asList(bindings));
       if (bindingAnnotations.size() < bindings.length)
       {
-         throw new DuplicateBindingTypeException("Duplicate binding types: " + bindings);
+         throw new IllegalArgumentException("Duplicate binding types: " + bindings);
       }
       checkEventType(clazz);
       return eventManager.getObservers(event, bindings);
@@ -468,7 +467,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       }
       if (bindings != null && bindings.length > element.getMetaAnnotations(BindingType.class).size())
       {
-         throw new DuplicateBindingTypeException("Duplicate bindings (" + Arrays.asList(bindings) + ") type passed " + element.toString());
+         throw new IllegalArgumentException("Duplicate bindings (" + Arrays.asList(bindings) + ") type passed " + element.toString());
       }
       return resolver.get(ResolvableFactory.of(element));
    }

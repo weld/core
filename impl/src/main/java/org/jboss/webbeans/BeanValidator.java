@@ -37,10 +37,7 @@ import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.event.Event;
-import javax.inject.InconsistentSpecializationException;
-import javax.inject.NullableDependencyException;
 import javax.inject.Obtains;
-import javax.inject.UnserializableDependencyException;
 
 import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;

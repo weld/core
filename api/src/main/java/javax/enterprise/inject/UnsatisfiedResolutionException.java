@@ -18,14 +18,13 @@
 
 package javax.enterprise.inject;
 
-import javax.inject.DeploymentException;
 
 /**
  * Thrown if no beans can be resolved
  * 
  * @author Pete Muir
  */
-public class UnsatisfiedResolutionException extends DeploymentException
+public class UnsatisfiedResolutionException extends ResolutionException
 {
 
    private static final long serialVersionUID = 5350603312442756709L;

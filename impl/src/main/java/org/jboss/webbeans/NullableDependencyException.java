@@ -16,36 +16,39 @@
  */
 
 
-package javax.inject;
+package org.jboss.webbeans;
 
 /**
- * Thrown if an exception occurs during execution
+ * Thrown if an injection point of primitive type resolves to a bean which may
+ * be null
  * 
  * @author Pete Muir
  */
-public class ExecutionException extends RuntimeException
+public class NullableDependencyException extends DeploymentException
 {
 
-   private static final long serialVersionUID = -4418792077313780514L;
+   private static final long serialVersionUID = 6877485218767005761L;
 
-   public ExecutionException()
+   public NullableDependencyException()
    {
       super();
    }
 
-   public ExecutionException(String message, Throwable throwable)
+   public NullableDependencyException(String message, Throwable throwable)
    {
       super(message, throwable);
    }
 
-   public ExecutionException(String message)
+   public NullableDependencyException(String message)
    {
       super(message);
    }
 
-   public ExecutionException(Throwable throwable)
+   public NullableDependencyException(Throwable throwable)
    {
       super(throwable);
    }
+
    
+
 }

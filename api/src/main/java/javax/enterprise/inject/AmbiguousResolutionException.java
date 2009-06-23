@@ -17,7 +17,6 @@
 
 package javax.enterprise.inject;
 
-import javax.inject.DeploymentException;
 
 /**
  * An AmbiguousDependencyException is thrown when within the set of enabled
@@ -27,7 +26,7 @@ import javax.inject.DeploymentException;
  * 
  * @author Pete Muir
  */
-public class AmbiguousResolutionException extends DeploymentException
+public class AmbiguousResolutionException extends ResolutionException
 {
 
    private static final long serialVersionUID = -2132733164534544788L;

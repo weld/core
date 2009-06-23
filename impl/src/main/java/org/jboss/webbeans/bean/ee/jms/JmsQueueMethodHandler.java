@@ -17,7 +17,6 @@
 package org.jboss.webbeans.bean.ee.jms;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.inject.ExecutionException;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
@@ -91,7 +90,7 @@ class JmsQueueMethodHandler extends JmsMethodHandler<QueueConnection, QueueSessi
             }
             catch (JMSException e)
             {
-               throw new ExecutionException("Error creating QueueSender", e);
+               throw new RuntimeException("Error creating QueueSender", e);
             }
          }
 
@@ -116,7 +115,7 @@ class JmsQueueMethodHandler extends JmsMethodHandler<QueueConnection, QueueSessi
             }
             catch (JMSException e)
             {
-               throw new ExecutionException("Error creating QueueReceiver", e);
+               throw new RuntimeException("Error creating QueueReceiver", e);
             }
          }
 
@@ -137,7 +136,7 @@ class JmsQueueMethodHandler extends JmsMethodHandler<QueueConnection, QueueSessi
       }
       catch (JMSException e)
       {
-         throw new ExecutionException("Error creating session", e);
+         throw new RuntimeException("Error creating session", e);
       }
    }
 

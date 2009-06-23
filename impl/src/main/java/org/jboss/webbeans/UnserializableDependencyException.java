@@ -16,35 +16,38 @@
  */
 
 
-package javax.inject;
+package org.jboss.webbeans;
+
 
 /**
- * Thrown if an injection point of primitive type resolves to a bean which may
- * be null
+ * Thrown if a simple bean is dependent scoped and injected into a stateful 
+ * session bean, into a non-transient field, bean constructor parameter or 
+ * initializer method parameter of a bean which declares a passivating scope, or
+ * into a parameter of a producer method which declares a passivating scope
  * 
  * @author Pete Muir
  */
-public class NullableDependencyException extends DeploymentException
+public class UnserializableDependencyException extends DeploymentException
 {
 
-   private static final long serialVersionUID = 6877485218767005761L;
+   private static final long serialVersionUID = -6287506607413810688L;
 
-   public NullableDependencyException()
+   public UnserializableDependencyException()
    {
       super();
    }
 
-   public NullableDependencyException(String message, Throwable throwable)
+   public UnserializableDependencyException(String message, Throwable throwable)
    {
       super(message, throwable);
    }
 
-   public NullableDependencyException(String message)
+   public UnserializableDependencyException(String message)
    {
       super(message);
    }
 
-   public NullableDependencyException(Throwable throwable)
+   public UnserializableDependencyException(Throwable throwable)
    {
       super(throwable);
    }

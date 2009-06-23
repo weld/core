@@ -16,37 +16,33 @@
  */
 
 
-package javax.inject;
+package org.jboss.webbeans;
 
 /**
- * Thrown if a simple bean is dependent scoped and injected into a stateful 
- * session bean, into a non-transient field, bean constructor parameter or 
- * initializer method parameter of a bean which declares a passivating scope, or
- * into a parameter of a producer method which declares a passivating scope
  * 
  * @author Pete Muir
  */
-public class UnserializableDependencyException extends DeploymentException
+public class InconsistentSpecializationException extends DeploymentException
 {
 
-   private static final long serialVersionUID = -6287506607413810688L;
+   private static final long serialVersionUID = 4359656880524913555L;
 
-   public UnserializableDependencyException()
+   public InconsistentSpecializationException()
    {
       super();
    }
 
-   public UnserializableDependencyException(String message, Throwable throwable)
+   public InconsistentSpecializationException(String message, Throwable throwable)
    {
       super(message, throwable);
    }
 
-   public UnserializableDependencyException(String message)
+   public InconsistentSpecializationException(String message)
    {
       super(message);
    }
 
-   public UnserializableDependencyException(Throwable throwable)
+   public InconsistentSpecializationException(Throwable throwable)
    {
       super(throwable);
    }

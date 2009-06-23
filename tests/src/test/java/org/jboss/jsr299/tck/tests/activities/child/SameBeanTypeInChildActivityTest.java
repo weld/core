@@ -8,11 +8,11 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.inject.InjectionException;
 import javax.enterprise.inject.deployment.Production;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.DeploymentException;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.literal.CurrentLiteral;
@@ -99,7 +99,7 @@ public class SameBeanTypeInChildActivityTest extends AbstractWebBeansTest
       return bean;
    }
 
-   @Test(groups = { "ri-broken" }, expectedExceptions = { DeploymentException.class })
+   @Test(groups = { "ri-broken" }, expectedExceptions = { InjectionException.class })
    public void testSameBeanTypeInChildAsParentInjection()
    {
       BeanManager childActivity = getCurrentManager().createActivity();
@@ -107,7 +107,7 @@ public class SameBeanTypeInChildActivityTest extends AbstractWebBeansTest
       childActivity.addBean(anotherMyBean);
    }
 
-   @Test(groups = { "ri-broken" }, expectedExceptions = { DeploymentException.class })
+   @Test(groups = { "ri-broken" }, expectedExceptions = { InjectionException.class })
    public void testSameBeanTypeInChildAsIndirectParentInjection()
    {
       WebBeansManager childActivity = getCurrentManager().createActivity();

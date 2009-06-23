@@ -22,7 +22,6 @@ import java.util.Iterator;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.enterprise.inject.spi.Bean;
-import javax.inject.ExecutionException;
 
 import org.jboss.webbeans.BeanManagerImpl;
 
@@ -149,7 +148,7 @@ public class WebBeansELResolverImpl extends ELResolver
          }
          catch (Exception e)
          {
-            throw new ExecutionException("Error resolving property " + propertyString + " against base " + base, e);
+            throw new RuntimeException("Error resolving property " + propertyString + " against base " + base, e);
          }
          if (holder.getValue() != null)
          {

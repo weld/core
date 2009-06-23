@@ -20,8 +20,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.inject.ExecutionException;
-
 /**
  * Supports instantiation of annotation type instances.
  * 
@@ -109,15 +107,15 @@ public class AnnotationImpl<T extends Annotation> implements Annotation
       }
       catch (IllegalArgumentException e)
       {
-         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new RuntimeException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
       catch (IllegalAccessException e)
       {
-         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new RuntimeException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
       catch (InvocationTargetException e)
       {
-         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new RuntimeException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
    }
 }

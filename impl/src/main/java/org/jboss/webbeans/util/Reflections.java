@@ -35,7 +35,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.BindingType;
-import javax.inject.ExecutionException;
 
 import org.jboss.webbeans.util.reflection.ParameterizedTypeImpl;
 
@@ -409,15 +408,15 @@ public class Reflections
       }
       catch (IllegalArgumentException e)
       {
-         throw new ExecutionException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new RuntimeException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
       catch (IllegalAccessException e)
       {
-         throw new ExecutionException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new RuntimeException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
       catch (InvocationTargetException e)
       {
-         throw new ExecutionException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new RuntimeException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
    }
    
@@ -434,11 +433,11 @@ public class Reflections
       }
       catch (SecurityException e)
       {
-         throw new ExecutionException("Error invoking method " + methodName + " on " + instance.getClass(), e);
+         throw new RuntimeException("Error invoking method " + methodName + " on " + instance.getClass(), e);
       }
       catch (NoSuchMethodException e)
       {
-         throw new ExecutionException("Error invoking method " + methodName + " on " + instance.getClass(), e);
+         throw new RuntimeException("Error invoking method " + methodName + " on " + instance.getClass(), e);
       }
    }
 
@@ -457,11 +456,11 @@ public class Reflections
       }
       catch (IllegalArgumentException e)
       {
-         throw new ExecutionException("Error getting field " + field.getName() + " on " + field.getDeclaringClass(), e);
+         throw new RuntimeException("Error getting field " + field.getName() + " on " + field.getDeclaringClass(), e);
       }
       catch (IllegalAccessException e)
       {
-         throw new ExecutionException("Error getting field " + field.getName() + " on " + field.getDeclaringClass(), e);
+         throw new RuntimeException("Error getting field " + field.getName() + " on " + field.getDeclaringClass(), e);
       }
    }
    
@@ -473,11 +472,11 @@ public class Reflections
       }
       catch (SecurityException e)
       {
-         throw new ExecutionException("Error getting field " + fieldName + " on " + target.getClass(), e);
+         throw new RuntimeException("Error getting field " + fieldName + " on " + target.getClass(), e);
       }
       catch (NoSuchFieldException e)
       {
-         throw new ExecutionException("Error getting field " + fieldName + " on " + target.getClass(), e);
+         throw new RuntimeException("Error getting field " + fieldName + " on " + target.getClass(), e);
       }
    }
 

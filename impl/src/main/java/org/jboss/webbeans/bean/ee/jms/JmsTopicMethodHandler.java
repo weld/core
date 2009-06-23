@@ -17,7 +17,6 @@
 package org.jboss.webbeans.bean.ee.jms;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.inject.ExecutionException;
 import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.jms.Topic;
@@ -95,7 +94,7 @@ class JmsTopicMethodHandler extends JmsMethodHandler<TopicConnection, TopicSessi
             }
             catch (JMSException e)
             {
-               throw new ExecutionException("Error creating TopicPublisher", e);
+               throw new RuntimeException("Error creating TopicPublisher", e);
             }
          }
 
@@ -120,7 +119,7 @@ class JmsTopicMethodHandler extends JmsMethodHandler<TopicConnection, TopicSessi
             }
             catch (JMSException e)
             {
-               throw new ExecutionException("Error creating TopicSubscriber", e);
+               throw new RuntimeException("Error creating TopicSubscriber", e);
             }
          }
 
@@ -141,7 +140,7 @@ class JmsTopicMethodHandler extends JmsMethodHandler<TopicConnection, TopicSessi
       }
       catch (JMSException e)
       {
-         throw new ExecutionException("Error creating session", e);
+         throw new RuntimeException("Error creating session", e);
       }
    }
 

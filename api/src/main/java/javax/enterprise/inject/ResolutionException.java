@@ -14,35 +14,33 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package javax.inject;
+package javax.enterprise.inject;
+
 
 /**
- * This exception is thrown whenever more than one binding type instance of the
- * same type is used with the API.
- * 
- * @author David Allen
+ * Thrown if resolution fails
  */
-public class DuplicateBindingTypeException extends ExecutionException
+public class ResolutionException extends InjectionException 
 {
 
-   private static final long serialVersionUID = 4194175477451120383L;
+   private static final long serialVersionUID = -6280627846071966243L;
 
-   public DuplicateBindingTypeException()
+   public ResolutionException()
    {
       super();
    }
 
-   public DuplicateBindingTypeException(String message, Throwable cause)
+   public ResolutionException(String message, Throwable cause)
    {
       super(message, cause);
    }
 
-   public DuplicateBindingTypeException(String message)
+   public ResolutionException(String message)
    {
       super(message);
    }
 
-   public DuplicateBindingTypeException(Throwable cause)
+   public ResolutionException(Throwable cause)
    {
       super(cause);
    }

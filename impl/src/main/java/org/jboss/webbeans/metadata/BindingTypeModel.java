@@ -22,7 +22,6 @@ import java.util.Set;
 
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.NonBinding;
-import javax.inject.ExecutionException;
 
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.introspector.WBMethod;
@@ -143,15 +142,15 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
                }
                catch (IllegalArgumentException e)
                {
-                  throw new ExecutionException(e);
+                  throw new RuntimeException(e);
                }
                catch (IllegalAccessException e)
                {
-                  throw new ExecutionException(e);
+                  throw new RuntimeException(e);
                }
                catch (InvocationTargetException e)
                {
-                  throw new ExecutionException(e);
+                  throw new RuntimeException(e);
                }
               
             }

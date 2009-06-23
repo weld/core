@@ -15,38 +15,39 @@
  * limitations under the License.
  */
 
-package javax.inject;
+package javax.enterprise.inject;
+
 
 /**
- * Thrown if an error occurs during bean deployment
+ * An AmbiguousDependencyException is thrown when within the set of enabled
+ * beans with the API type and bind- ing types declared there exists no unique
+ * Web Bean with a higher precedence than all other beans in the set.
+ * 
  * 
  * @author Pete Muir
  */
-public class DeploymentException extends RuntimeException
+public class InjectionException extends RuntimeException
 {
 
-   private static final long serialVersionUID = -332013557319725211L;
+   private static final long serialVersionUID = -2132733164534544788L;
 
-   public DeploymentException()
+   public InjectionException()
    {
-      super();
    }
-
-   public DeploymentException(String message, Throwable throwable)
+   
+   public InjectionException(String message, Throwable throwable)
    {
       super(message, throwable);
    }
-
-   public DeploymentException(String message)
+   
+   public InjectionException(String message)
    {
       super(message);
    }
-
-   public DeploymentException(Throwable throwable)
+   
+   public InjectionException(Throwable throwable)
    {
       super(throwable);
    }
    
-   
-
 }

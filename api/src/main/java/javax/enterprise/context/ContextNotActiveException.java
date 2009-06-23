@@ -17,7 +17,6 @@
 
 package javax.enterprise.context;
 
-import javax.inject.ExecutionException;
 
 /**
  * A ContextNotActiveException is thrown if at a particular point in the
@@ -30,7 +29,7 @@ import javax.inject.ExecutionException;
  * @author Shane Bryzak
  */
 
-public class ContextNotActiveException extends ExecutionException
+public class ContextNotActiveException extends RuntimeException
 {
    
    private static final long serialVersionUID = -3599813072560026919L;
