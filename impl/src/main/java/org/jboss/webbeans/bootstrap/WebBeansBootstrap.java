@@ -207,8 +207,8 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), ejbDescriptors);
          fireAfterBeanDiscoveryEvent();
          log.debug("Web Beans initialized. Validating beans.");
-         manager.getResolver().resolveInjectionPoints();
          new BeanValidator(manager).validate();
+         // TODO I don't really think this is needed anymore, as we validate all points
          manager.getResolver().resolveInjectionPoints();
          fireAfterDeploymentValidationEvent();
          endDeploy(requestBeanStore);

@@ -202,7 +202,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    private transient final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
    private transient final List<Bean<?>> beans;
-   private transient final List<Decorator<?>> decorators;
+   private transient final List<DecoratorBean<?>> decorators;
    private final transient Namespace rootNamespace;
    private final transient ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers;
    private final transient Set<BeanManagerImpl> childActivities;
@@ -225,7 +225,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return new BeanManagerImpl(
             serviceRegistry, 
             new CopyOnWriteArrayList<Bean<?>>(),
-            new CopyOnWriteArrayList<Decorator<?>>(),
+            new CopyOnWriteArrayList<DecoratorBean<?>>(),
             new ConcurrentSetHashMultiMap<Type, EventObserver<?>>(),
             new Namespace(),
             new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>(),
@@ -273,7 +273,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * 
     * @param ejbServices the ejbResolver to use
     */
-   private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<Decorator<?>> decorators, ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers, Namespace rootNamespace, Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, Map<String, RIBean<?>> riBeans, ClientProxyProvider clientProxyProvider, ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts, Set<CurrentActivity> currentActivities, Map<Bean<?>, Bean<?>> specializedBeans, List<Class<? extends Annotation>> enabledDeploymentTypes, List<Class<?>> enabledDecoratorClasses, AtomicInteger ids)
+   private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<DecoratorBean<?>> decorators, ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers, Namespace rootNamespace, Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, Map<String, RIBean<?>> riBeans, ClientProxyProvider clientProxyProvider, ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts, Set<CurrentActivity> currentActivities, Map<Bean<?>, Bean<?>> specializedBeans, List<Class<? extends Annotation>> enabledDeploymentTypes, List<Class<?>> enabledDecoratorClasses, AtomicInteger ids)
    {
       this.services = serviceRegistry;
       this.beans = beans;
@@ -525,7 +525,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             }
             if (bean instanceof DecoratorBean)
             {
-               decorators.add((Decorator<?>) bean);
+               decorators.add((DecoratorBean<?>) bean);
             }
             riBeans.put(bean.getId(), bean);
             registerBeanNamespace(bean);
@@ -569,7 +569,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return Collections.unmodifiableList(beans);
    }
    
-   public List<Decorator<?>> getDecorators()
+   public List<DecoratorBean<?>> getDecorators()
    {
       return Collections.unmodifiableList(decorators);
    }
@@ -826,6 +826,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... bindings)
    {
+      // TODO Fix this cast and make the resolver return a list
       return new ArrayList(decoratorResolver.get(ResolvableFactory.of(types, bindings)));
    }
    

@@ -18,8 +18,10 @@ package org.jboss.webbeans.injection.resolution;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.enterprise.inject.spi.Bean;
 
@@ -60,6 +62,33 @@ public class DecoratorResolver extends Resolver
    private Set<Type> getBeanTypes(DecoratorBean<?> bean)
    {
       return bean.getDelegateTypes();
+   }
+   
+   @Override
+   protected Set<Bean<?>> sortBeans(Set<Bean<?>> matchedBeans)
+   {
+      Set<Bean<?>> sortedBeans = new TreeSet<Bean<?>>(new Comparator<Bean<?>>()
+      {
+         
+         public int compare(Bean<?> o1, Bean<?> o2)
+         {
+            if (o1 instanceof DecoratorBean && o2 instanceof DecoratorBean)
+            {
+               List<Class<?>> enabledDecorators = getManager().getEnabledDecoratorClasses();
+               int p1 = enabledDecorators.indexOf(((DecoratorBean<?>) o1).getType());
+               int p2 = enabledDecorators.indexOf(((DecoratorBean<?>) o2).getType());
+               return p1 - p2;
+            }
+            else
+            {
+               throw new IllegalStateException("Unable to process non container generated decorator!");
+            }
+            
+         }
+   
+      });
+      sortedBeans.addAll(matchedBeans);
+      return sortedBeans;
    }
 
 }

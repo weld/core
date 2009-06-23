@@ -86,7 +86,7 @@ public class Resolver
    private ConcurrentCache<String, Set<Bean<?>>> resolvedNames;
    
    // The beans to search
-   private final List<? extends Bean<?>> beans;
+   private final List<? extends Bean<?>> allBeans;
    
    // The Web Beans manager
    private final BeanManagerImpl manager;
@@ -98,10 +98,10 @@ public class Resolver
     * Constructor
     * 
     */
-   public Resolver(BeanManagerImpl manager, List<? extends Bean<?>> beans)
+   public Resolver(BeanManagerImpl manager, List<? extends Bean<?>> allBeans)
    {
       this.manager = manager;
-      this.beans = beans;
+      this.allBeans = allBeans;
       this.injectionPoints = new HashSet<WBAnnotated<?, ?>>();
       this.resolvedInjectionPoints = new ConcurrentCache<Resolvable, Set<Bean<?>>>();
       this.resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
@@ -144,7 +144,9 @@ public class Resolver
       {
          public Set<Bean<?>> call() throws Exception
          {
-            return retainHighestPrecedenceBeans(getMatchingBeans(wrapped), manager.getEnabledDeploymentTypes());
+            Set<Bean<?>> matchedBeans = getMatchingBeans(wrapped);
+            matchedBeans = retainHighestPrecedenceBeans(matchedBeans);
+            return sortBeans(matchedBeans);
          }
 
       };
@@ -208,17 +210,24 @@ public class Resolver
          public Set<Bean<? extends Object>> call() throws Exception
          {
             Set<Bean<?>> matchedBeans = new HashSet<Bean<?>>();
-            for (Bean<?> bean : beans)
+            for (Bean<?> bean : allBeans)
             {
                if ((bean.getName() == null && name == null) || (bean.getName() != null && bean.getName().equals(name)))
                {
                   matchedBeans.add(bean);
                }
             }
-            return retainHighestPrecedenceBeans(matchedBeans, manager.getEnabledDeploymentTypes());
+            matchedBeans = retainHighestPrecedenceBeans(matchedBeans);
+            return sortBeans(matchedBeans);
          }
 
       });
+   }
+   
+
+   protected Set<Bean<?>> sortBeans(Set<Bean<?>> matchedBeans)
+   {
+      return matchedBeans;
    }
 
    /**
@@ -229,16 +238,16 @@ public class Resolver
     * @param enabledDeploymentTypes The enabled deployment types
     * @return The filtered beans
     */
-   private static Set<Bean<?>> retainHighestPrecedenceBeans(Set<Bean<?>> beans, List<Class<? extends Annotation>> enabledDeploymentTypes)
+   protected Set<Bean<?>> retainHighestPrecedenceBeans(Set<Bean<?>> beans)
    {
       if (beans.size() > 0)
       {
-         SortedSet<Class<? extends Annotation>> possibleDeploymentTypes = new TreeSet<Class<? extends Annotation>>(new ListComparator<Class<? extends Annotation>>(enabledDeploymentTypes));
+         SortedSet<Class<? extends Annotation>> possibleDeploymentTypes = new TreeSet<Class<? extends Annotation>>(new ListComparator<Class<? extends Annotation>>(manager.getEnabledDeploymentTypes()));
          for (Bean<?> bean : beans)
          {
             possibleDeploymentTypes.add(bean.getDeploymentType());
          }
-         possibleDeploymentTypes.retainAll(enabledDeploymentTypes);
+         possibleDeploymentTypes.retainAll(manager.getEnabledDeploymentTypes());
          Set<Bean<?>> trimmed = new HashSet<Bean<?>>();
          if (possibleDeploymentTypes.size() > 0)
          {
@@ -271,7 +280,7 @@ public class Resolver
    private Set<Bean<?>> getMatchingBeans(MatchingResolvable resolvable)
    {
       Set<Bean<?>> resolvedBeans = new HashSet<Bean<?>>();
-      for (Bean<?> bean : beans)
+      for (Bean<?> bean : allBeans)
       {
          if (matches(resolvable, bean))
          {

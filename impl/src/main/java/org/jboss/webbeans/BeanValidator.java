@@ -23,6 +23,7 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +42,7 @@ import javax.inject.NullableDependencyException;
 import javax.inject.Obtains;
 import javax.inject.UnserializableDependencyException;
 
+import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.RIBean;
@@ -149,7 +151,26 @@ public class BeanValidator
             throw new UnproxyableResolutionException("Normal scoped bean " + bean + " is not proxyable");
          }
       }
-
+      
+      validateEnabledDecoratorClasses();
+      
+   }
+   
+   private void validateEnabledDecoratorClasses()
+   {
+      // TODO Move building this list to the boot or sth
+      Set<Class<?>> decoratorBeanClasses = new HashSet<Class<?>>();
+      for (DecoratorBean<?> bean : manager.getDecorators())
+      {
+         decoratorBeanClasses.add(bean.getType());
+      }
+      for (Class<?> clazz : manager.getEnabledDecoratorClasses())
+      {
+         if (!decoratorBeanClasses.contains(clazz))
+         {
+            throw new DeploymentException("Enabled decorator " + clazz + " is not the bean class of at least one decorator (detected decorators " + decoratorBeanClasses + ")");
+         }
+      }
    }
 
    private boolean hasHigherPrecedence(Class<? extends Annotation> deploymentType, Class<? extends Annotation> otherDeploymentType)
