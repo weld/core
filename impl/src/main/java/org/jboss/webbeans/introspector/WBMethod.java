@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -28,9 +28,7 @@ import javax.enterprise.inject.Disposes;
 import javax.event.AfterTransactionCompletion;
 import javax.event.AfterTransactionFailure;
 import javax.event.AfterTransactionSuccess;
-import javax.event.Asynchronously;
 import javax.event.BeforeTransactionCompletion;
-import javax.event.IfExists;
 import javax.event.Observes;
 
 /**
@@ -43,7 +41,7 @@ import javax.event.Observes;
 public interface WBMethod<T> extends WBMember<T, Method>
 {
    @SuppressWarnings("unchecked")
-   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, IfExists.class, BeforeTransactionCompletion.class, AfterTransactionCompletion.class, AfterTransactionFailure.class, AfterTransactionSuccess.class, Asynchronously.class, Disposes.class));
+   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, BeforeTransactionCompletion.class, AfterTransactionCompletion.class, AfterTransactionFailure.class, AfterTransactionSuccess.class, Disposes.class));
 
    /**
     * Gets the abstracted parameters of the method
@@ -77,7 +75,7 @@ public interface WBMethod<T> extends WBMember<T, Method>
    public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
 
    /**
-    * Invokes the method on the class of the passed instance, not the declaring 
+    * Invokes the method on the class of the passed instance, not the declaring
     * class. Useful with proxies
     * 
     * @param instance The instance to invoke

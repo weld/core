@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -22,8 +22,9 @@ import java.util.List;
 import javax.event.AfterTransactionCompletion;
 import javax.event.AfterTransactionFailure;
 import javax.event.AfterTransactionSuccess;
-import javax.event.Asynchronously;
 import javax.event.BeforeTransactionCompletion;
+import javax.event.Notify;
+import javax.event.Observes;
 import javax.transaction.Synchronization;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -104,9 +105,9 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
       if (!observerMethod.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty())
       {
          observationPhases.add(TransactionObservationPhase.BEFORE_COMPLETION);
-         if (!observerMethod.getAnnotatedParameters(Asynchronously.class).isEmpty())
+         if (observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class).notifyObserver().equals(Notify.ASYNCHRONOUSLY))
          {
-            throw new DefinitionException("@BeforeTransactionCompletion cannot be used with @Asynchronously on " + observerMethod);
+            throw new DefinitionException("@BeforeTransactionCompletion cannot be used on an asynchronous observer on " + observerMethod);
          }
       }
       if (!observerMethod.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty())
@@ -144,7 +145,7 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
    private void deferEvent(T event)
    {
       DeferredEventNotification<T> deferredEvent = null;
-      if (this.observerMethod.getAnnotatedParameters(Asynchronously.class).isEmpty())
+      if (this.observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class).notifyObserver().equals(Notify.ASYNCHRONOUSLY))
       {
          deferredEvent = new DeferredEventNotification<T>(event, this);
       }

@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -27,8 +27,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
-import javax.event.Asynchronously;
-import javax.event.IfExists;
+import javax.event.Notify;
 import javax.event.Observer;
 import javax.event.ObserverException;
 import javax.event.Observes;
@@ -82,8 +81,9 @@ public class ObserverImpl<T> implements Observer<T>
       this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
 
       this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray();
-      this.conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
-      this.asynchronous = !observerMethod.getAnnotatedParameters(Asynchronously.class).isEmpty();
+      Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
+      this.conditional = observesAnnotation.notifyObserver().equals(Notify.IF_EXISTS);
+      this.asynchronous = observesAnnotation.notifyObserver().equals(Notify.ASYNCHRONOUSLY);
    }
 
    /**
@@ -204,7 +204,7 @@ public class ObserverImpl<T> implements Observer<T>
    }
 
    /**
-    * Queues the event for later execution 
+    * Queues the event for later execution
     * @param event
     */
    protected void sendEventAsynchronously(final T event)
