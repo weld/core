@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -19,6 +19,8 @@ package org.jboss.webbeans.util;
 import java.beans.Introspector;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -125,7 +127,7 @@ public class Reflections
             }
             if (beanType instanceof Class)
             {
-               return resolveType(((Class<?>) beanType).getGenericSuperclass(), (ParameterizedType) type);
+               return resolveType(((Class<?>) beanType).getGenericSuperclass(), type);
             }
          }
 
@@ -137,7 +139,7 @@ public class Reflections
             }
             if (beanType instanceof Class)
             {
-               return resolveType(((Class<?>) beanType).getGenericSuperclass(), (TypeVariable<?>) type);
+               return resolveType(((Class<?>) beanType).getGenericSuperclass(), type);
             }
          }
          return type;
@@ -493,7 +495,7 @@ public class Reflections
       {
          return lookupMethod(method.getName(), method.getParameterTypes(), instance);
       }
-      catch (NoSuchMethodException e) 
+      catch (NoSuchMethodException e)
       {
          throw new IllegalArgumentException(e);
       }
@@ -522,7 +524,7 @@ public class Reflections
             {
                return lookupMethod(methodName, parameterTypes, intf);
             }
-            catch (NoSuchMethodException e) 
+            catch (NoSuchMethodException e)
             {
                // Expected
             }
@@ -546,7 +548,8 @@ public class Reflections
    
    /**
     * Checks the bindingType to make sure the annotation was declared properly
-    * as a binding type (annotated with @BindingType).
+    * as a binding type (annotated with @BindingType) and that it has
+    * a runtime retention policy.
     * 
     * @param binding The binding type to check
     * @return true only if the annotation is really a binding type
@@ -556,7 +559,9 @@ public class Reflections
    public static boolean isBindings(Annotation binding)
    {
       boolean isBindingAnnotation = false;
-      if (binding.annotationType().isAnnotationPresent(BindingType.class))
+      if (binding.annotationType().isAnnotationPresent(BindingType.class) &&
+         binding.annotationType().isAnnotationPresent(Retention.class) &&
+         binding.annotationType().getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))
       {
          isBindingAnnotation = true;
       }
