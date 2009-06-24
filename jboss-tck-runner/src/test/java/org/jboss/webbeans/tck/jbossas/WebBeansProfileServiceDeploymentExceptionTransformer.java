@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -24,10 +24,12 @@ import org.jboss.testharness.api.DeploymentExceptionTransformer;
 
 /**
  * An implementation which can transform deployment exceptions from JBoss AS
- * reported via the Profile Service
+ * reported via the Profile Service.
+ * 
+ * Please note that if the deployment fails for a secondary reason, such as a NullPointerException in the init() method
+ * of a filter, to provide an example, then this translator will not be made aware of the bootstrap exception.
  * 
  * @author Pete Muir
- *
  */
 public class WebBeansProfileServiceDeploymentExceptionTransformer implements DeploymentExceptionTransformer
 {
