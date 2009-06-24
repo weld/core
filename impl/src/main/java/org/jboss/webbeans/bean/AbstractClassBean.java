@@ -17,7 +17,9 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -29,6 +31,7 @@ import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.deployment.DeploymentType;
 import javax.enterprise.inject.deployment.Production;
+import javax.enterprise.inject.spi.Decorator;
 import javax.event.Observes;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -65,6 +68,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    private Set<MethodInjectionPoint<?>> initializerMethods;
    private Set<String> dependencies;
    
+   private List<Decorator<?>> decoratorStack;
+   
    private final String id;
 
    /**
@@ -90,6 +95,22 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       super.initialize(environment);
       checkScopeAllowed();
       checkBeanImplementation();
+      initDecoratorStack();
+   }
+   
+   protected void initDecoratorStack()
+   {
+      this.decoratorStack = getManager().resolveDecorators(getTypes(), getBindings());
+   }
+   
+   public boolean hasDecorators()
+   {
+      return this.decoratorStack != null && this.decoratorStack.size() > 0;
+   }
+   
+   protected List<Decorator<?>> getDecoratorStack()
+   {
+      return Collections.unmodifiableList(decoratorStack);
    }
 
    /**

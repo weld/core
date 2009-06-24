@@ -35,6 +35,13 @@ public interface WBClass<T> extends WBType<T>
     * @return A set of abstracted fields
     */
    public Set<WBField<?>> getFields();
+   
+   /**
+    * Gets all fields on the type
+    * 
+    * @return A set of abstracted fields
+    */
+   public Set<WBMethod<?>> getMethods();
 
    /**
     * Get a field by name
@@ -144,6 +151,15 @@ public interface WBClass<T> extends WBType<T>
     * @return the method, or null if it doesn't exist
     */
    public <M> WBMethod<M> getDeclaredMethod(MethodSignature signature, WBClass<M> expectedReturnType);
+   
+   /**
+    * Get a method by name
+    * 
+    * @param <M> the expected return type
+    * @param signature the name of the method
+    * @return the method, or null if it doesn't exist
+    */
+   public <M> WBMethod<M> getMethod(MethodSignature signature);
 
    // TODO Replace with AnnotatedMethod variant
    @Deprecated

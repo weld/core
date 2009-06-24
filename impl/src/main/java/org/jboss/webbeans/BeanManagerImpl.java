@@ -339,18 +339,21 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    public void addBean(Bean<?> bean)
    {
-      if (beans.contains(bean))
+      synchronized (bean)
       {
+         if (beans.contains(bean))
+         {
+            return;
+         }
+         resolver.clear();
+         beans.add(bean);
+         registerBeanNamespace(bean);
+         for (BeanManagerImpl childActivity : childActivities)
+         {
+            childActivity.addBean(bean);
+         }
          return;
       }
-      resolver.clear();
-      beans.add(bean);
-      registerBeanNamespace(bean);
-      for (BeanManagerImpl childActivity : childActivities)
-      {
-         childActivity.addBean(bean);
-      }
-      return;
    }
 
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
@@ -501,37 +504,21 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          }
       }
    }
-
-   /**
-    * Wraps a collection of beans into a thread safe list. Since this overwrites
-    * any existing list of beans in the manager, this should only be done on
-    * startup and other controlled situations. Also maps the beans by
-    * implementation class. For internal use.
-    * 
-    * @param beans The set of beans to add
-    * @return A reference to the manager
-    */
-   // TODO Build maps in the deployer :-)
-   public void setBeans(Set<RIBean<?>> beans)
+   
+   public void addRIBean(RIBean<?> bean)
    {
-      synchronized (beans)
+      if (bean instanceof NewEnterpriseBean)
       {
-         for (RIBean<?> bean : beans)
-         {
-            if (bean instanceof NewEnterpriseBean)
-            {
-               newEnterpriseBeans.put(bean.getType(), (EnterpriseBean<?>) bean);
-            }
-            if (bean instanceof DecoratorBean)
-            {
-               decorators.add((DecoratorBean<?>) bean);
-            }
-            riBeans.put(bean.getId(), bean);
-            registerBeanNamespace(bean);
-            this.beans.add(bean);
-         }
-         resolver.clear();
+         newEnterpriseBeans.put(bean.getType(), (EnterpriseBean<?>) bean);
       }
+      if (bean instanceof DecoratorBean)
+      {
+         decorators.add((DecoratorBean<?>) bean);
+      }
+      riBeans.put(bean.getId(), bean);
+      registerBeanNamespace(bean);
+      this.beans.add(bean);
+      resolver.clear();
    }
    
    protected void registerBeanNamespace(Bean<?> bean)
@@ -824,6 +811,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     *      java.lang.annotation.Annotation[])
     */
    public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... bindings)
+   {
+      // TODO Fix this cast and make the resolver return a list
+      return new ArrayList(decoratorResolver.get(ResolvableFactory.of(types, bindings)));
+   }
+   
+   public List<Decorator<?>> resolveDecorators(Set<Type> types, Set<Annotation> bindings)
    {
       // TODO Fix this cast and make the resolver return a list
       return new ArrayList(decoratorResolver.get(ResolvableFactory.of(types, bindings)));

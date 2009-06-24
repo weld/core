@@ -102,6 +102,11 @@ public abstract class ForwardingWBAnnotated<T, S> extends ForwardingAnnotated<T,
    {
       return delegate().isPublic();
    }
+   
+   public boolean isPrivate()
+   {
+      return delegate().isPrivate();
+   }
 
    protected abstract WBAnnotated<T, S> delegate();
 

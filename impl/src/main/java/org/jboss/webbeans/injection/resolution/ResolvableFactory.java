@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.webbeans.introspector.WBAnnotated;
+import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.util.Reflections;
 
 public class ResolvableFactory
@@ -48,6 +49,10 @@ public class ResolvableFactory
       public ResolvableImpl(Set<Annotation> bindings, Set<Type> typeClosure)
       {
          this.bindings = bindings;
+         if (bindings.size() == 0)
+         {
+            this.bindings.add(new CurrentLiteral());
+         }
          this.annotationTypes = new HashSet<Class<? extends Annotation>>();
          this.typeClosure = typeClosure;
          for (Annotation annotation : bindings)

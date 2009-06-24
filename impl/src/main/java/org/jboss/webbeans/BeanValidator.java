@@ -165,7 +165,7 @@ public class BeanValidator
       {
          if (!decoratorBeanClasses.contains(clazz))
          {
-            throw new DeploymentException("Enabled decorator " + clazz + " is not the bean class of at least one decorator (detected decorators " + decoratorBeanClasses + ")");
+            throw new DeploymentException("Enabled decorator class " + clazz + " is not the bean class of at least one decorator bean (detected decorator beans " + decoratorBeanClasses + ")");
          }
       }
    }

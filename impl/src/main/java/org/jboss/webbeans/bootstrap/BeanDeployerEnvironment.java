@@ -28,6 +28,7 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.NewBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
@@ -50,6 +51,7 @@ public class BeanDeployerEnvironment
    private final Set<ObserverImpl<?>> observers;
    private final List<DisposalMethodBean<?>> allDisposalBeans;
    private final Set<DisposalMethodBean<?>> resolvedDisposalBeans;
+   private final Set<DecoratorBean<?>> decorators;
    private final EjbDescriptorCache ejbDescriptors;
    private final Resolver disposalMethodResolver;
    private final BeanManagerImpl manager;
@@ -62,6 +64,7 @@ public class BeanDeployerEnvironment
       this.allDisposalBeans = new ArrayList<DisposalMethodBean<?>>();
       this.resolvedDisposalBeans = new HashSet<DisposalMethodBean<?>>();
       this.beans = new HashSet<RIBean<?>>();
+      this.decorators = new HashSet<DecoratorBean<?>>();
       this.observers = new HashSet<ObserverImpl<?>>();
       this.ejbDescriptors = ejbDescriptors;
       this.disposalMethodResolver = new Resolver(manager, allDisposalBeans);
@@ -113,7 +116,6 @@ public class BeanDeployerEnvironment
 
    public void addBean(RIBean<?> value)
    {
-
       if (value instanceof AbstractClassBean && !(value instanceof NewBean))
       {
          AbstractClassBean<?> bean = (AbstractClassBean<?>) value;
@@ -130,11 +132,20 @@ public class BeanDeployerEnvironment
          disposalMethodBeanMap.put(bean.getAnnotatedItem(), bean);
       }
       beans.add(value);
+      if (value instanceof DecoratorBean)
+      {
+         decorators.add((DecoratorBean<?>) value);
+      }
    }
 
    public Set<RIBean<?>> getBeans()
    {
       return Collections.unmodifiableSet(beans);
+   }
+   
+   public Set<DecoratorBean<?>> getDecorators()
+   {
+      return Collections.unmodifiableSet(decorators);
    }
 
    public Set<ObserverImpl<?>> getObservers()

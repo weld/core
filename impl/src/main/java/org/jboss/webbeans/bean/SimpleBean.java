@@ -24,6 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Initializer;
+import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -349,6 +350,32 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       if (passivating && !_serializable)
       {
          throw new DefinitionException("Simple bean declaring a passivating scope must have a serializable implementation class " + toString());
+      }
+      if (hasDecorators())
+      {
+         if (getAnnotatedItem().isFinal())
+         {
+            throw new DefinitionException("Bean class which has decorators cannot be declared final " + this);
+         }
+         for (Decorator<?> decorator : getDecoratorStack())
+         {
+            if (decorator instanceof DecoratorBean)
+            {
+               DecoratorBean<?> decoratorBean = (DecoratorBean<?>) decorator;
+               for (WBMethod<?> decoratorMethod : decoratorBean.getAnnotatedItem().getMethods())
+               {
+                  WBMethod<?> method = getAnnotatedItem().getMethod(decoratorMethod.getSignature());  
+                  if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal())
+                  {
+                     throw new DefinitionException("Decorated bean method " + method + " (decorated by "+ decoratorMethod + ") cannot be declarted final");
+                  }
+               }
+            }
+            else
+            {
+               throw new IllegalStateException("Can only operate on container provided decorators " + decorator);
+            }
+         }
       }
    }
 

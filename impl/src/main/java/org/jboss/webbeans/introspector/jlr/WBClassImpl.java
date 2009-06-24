@@ -74,6 +74,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    // The set of abstracted methods
    private final Set<WBMethod<?>> methods;
    private final Map<MethodSignature, WBMethod<?>> declaredMethodsBySignature;
+   private final Map<MethodSignature, WBMethod<?>> methodsBySignature;
    // The map from annotation type to abstracted method with annotation
    private final SetMultiMap<Class<? extends Annotation>, WBMethod<?>> annotatedMethods;
    // The map from annotation type to method with a parameter with annotation
@@ -202,6 +203,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
       this.declaredAnnotatedMethods = new SetHashMultiMap<Class<? extends Annotation>, WBMethod<?>>();
       this.declaredMethodsByAnnotatedParameters = new SetHashMultiMap<Class<? extends Annotation>, WBMethod<?>>();
       this.declaredMethodsBySignature = new HashMap<MethodSignature, WBMethod<?>>();
+      this.methodsBySignature = new HashMap<MethodSignature, WBMethod<?>>();
       for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
       {
          for (Method method : c.getDeclaredMethods())
@@ -213,6 +215,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
             
             WBMethod<?> annotatedMethod = WBMethodImpl.of(method, this);
             this.methods.add(annotatedMethod);
+            this.methodsBySignature.put(annotatedMethod.getSignature(), annotatedMethod);
             if (c == rawType)
             {
                this.declaredMethods.add(annotatedMethod);
@@ -424,6 +427,11 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
       return null;
    }
    
+   public Set<WBMethod<?>> getMethods()
+   {
+      return Collections.unmodifiableSet(methods);
+   }
+   
    public WBMethod<?> getDeclaredMethod(Method method)
    {
       // TODO Should be cached
@@ -441,6 +449,12 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    public <M> WBMethod<M> getDeclaredMethod(MethodSignature signature, WBClass<M> expectedReturnType)
    {
       return (WBMethod<M>) declaredMethodsBySignature.get(signature);
+   }
+   
+   @SuppressWarnings("unchecked")
+   public <M> WBMethod<M> getMethod(MethodSignature signature)
+   {
+      return (WBMethod<M>) methodsBySignature.get(signature);
    }
    
    /**

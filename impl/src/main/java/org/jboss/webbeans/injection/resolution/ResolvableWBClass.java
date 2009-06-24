@@ -174,6 +174,11 @@ public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> imple
    {
       throw new UnsupportedOperationException();
    }
+   
+   public boolean isPrivate()
+   {
+      throw new UnsupportedOperationException();
+   }
 
    public boolean isStatic()
    {

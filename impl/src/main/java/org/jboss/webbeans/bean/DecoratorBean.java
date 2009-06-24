@@ -120,13 +120,15 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
 
    protected void initDelegateBindings()
    {
-      this.delegateBindings = this.decorates.getBindings();
+      this.delegateBindings = new HashSet<Annotation>(); 
+      this.delegateBindings.addAll(this.decorates.getBindings());
    }
 
    protected void initDelegateType()
    {
       this.delegateType = this.decorates.getBaseType();
-      this.delegateTypes = this.decorates.getTypeClosure();
+      this.delegateTypes = new HashSet<Type>();
+      delegateTypes.add(delegateType);
    }
 
    protected void checkDelegateType()
@@ -185,6 +187,12 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    public Set<Type> getDelegateTypes()
    {
       return delegateTypes;
+   }
+   
+   @Override
+   protected void initDecoratorStack()
+   {
+      // No-op, decorators can't have decorators
    }
 
 }

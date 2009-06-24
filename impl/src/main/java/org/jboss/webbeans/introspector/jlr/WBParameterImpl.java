@@ -41,6 +41,7 @@ public class WBParameterImpl<T> extends AbstractWBAnnotated<T, Object> implement
    // The static state
    private final boolean _static = false;
    private final boolean _public = false;
+   private final boolean _private = false;
    private final WBMember<?, ?> declaringMember;
 
    // Cached string representation
@@ -102,6 +103,11 @@ public class WBParameterImpl<T> extends AbstractWBAnnotated<T, Object> implement
    public boolean isPublic()
    {
       return _public;
+   }
+   
+   public boolean isPrivate()
+   {
+      return _private;
    }
 
    /**

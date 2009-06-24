@@ -172,6 +172,8 @@ public interface WBAnnotated<T, S> extends Annotated
     * @return if public, returns true
     */
    public boolean isPublic();
+   
+   public boolean isPrivate();
 
    /**
     * Gets the name of this AnnotatedItem

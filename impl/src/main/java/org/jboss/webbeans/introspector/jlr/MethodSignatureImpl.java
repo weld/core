@@ -70,7 +70,7 @@ public class MethodSignatureImpl implements MethodSignature
    {
       int hashCode = 17;
       hashCode += getMethodName().hashCode() * 5;
-      hashCode += getParameterTypes().hashCode() * 7;
+      hashCode += Arrays.hashCode(getParameterTypes()) * 7;
       return hashCode;
    }
    

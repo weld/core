@@ -50,6 +50,8 @@ public abstract class AbstractWBMember<T, S extends Member> extends AbstractWBAn
    private String toString;
    
    private final boolean _public;
+   
+   private final boolean _private;
 
    /**
     * Constructor
@@ -61,6 +63,7 @@ public abstract class AbstractWBMember<T, S extends Member> extends AbstractWBAn
       super(annotatedItemHelper, rawType, type);
       name = member.getName();
       _public = Modifier.isPublic(member.getModifiers());
+      _private = Modifier.isPrivate(member.getModifiers());
    }
 
    /**
@@ -95,6 +98,11 @@ public abstract class AbstractWBMember<T, S extends Member> extends AbstractWBAn
    public boolean isPublic()
    {
       return _public;
+   }
+   
+   public boolean isPrivate()
+   {
+      return _private;
    }
 
    /**

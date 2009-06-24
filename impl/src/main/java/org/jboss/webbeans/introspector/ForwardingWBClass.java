@@ -49,6 +49,11 @@ public abstract class ForwardingWBClass<T> extends ForwardingWBType<T> implement
    {
       return delegate().getConstructors();
    }
+   
+   public Set<WBMethod<?>> getMethods()
+   {
+      return delegate().getMethods();
+   }
 
    public Set<WBField<?>> getDeclaredAnnotatedFields(Class<? extends Annotation> annotationType)
    {
@@ -79,6 +84,11 @@ public abstract class ForwardingWBClass<T> extends ForwardingWBType<T> implement
    public WBMethod<?> getMethod(Method method)
    {
       return delegate().getMethod(method);
+   }
+   
+   public <M> WBMethod<M> getMethod(MethodSignature signature)
+   {
+      return delegate().getMethod(signature);
    }
 
    public Set<WBMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)

@@ -16,8 +16,6 @@
  */
 package org.jboss.webbeans.injection.resolution;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +25,8 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.DecoratorBean;
+import org.jboss.webbeans.util.Beans;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * @author pmuir
@@ -46,22 +46,12 @@ public class DecoratorResolver extends Resolver
       if (bean instanceof DecoratorBean)
       {
          DecoratorBean<?> decoratorBean = (DecoratorBean<?>) bean;
-         return resolvable.matches(getBeanTypes(decoratorBean), getBeanBindings(decoratorBean)) && getManager().getEnabledDecoratorClasses().contains(decoratorBean.getType());
+         return Reflections.isAssignableFrom(decoratorBean.getDelegateTypes(), resolvable.getTypeClosure()) && Beans.containsAllBindings(decoratorBean.getDelegateBindings(), resolvable.getBindings(), getManager()) && getManager().getEnabledDecoratorClasses().contains(decoratorBean.getType());
       }
       else
       {
          throw new IllegalStateException("Unable to process non container generated decorator!");
       }
-   }
-
-   private Set<Annotation> getBeanBindings(DecoratorBean<?> bean)
-   {
-      return bean.getDelegateBindings();
-   }
-
-   private Set<Type> getBeanTypes(DecoratorBean<?> bean)
-   {
-      return bean.getDelegateTypes();
    }
    
    @Override

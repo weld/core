@@ -47,6 +47,7 @@ public abstract class AbstractWBType<T> extends AbstractWBAnnotated<T, Class<T>>
    // Cached string representation
    private String toString;
    private final boolean _public;
+   private final boolean _private;
 
    /**
     * Constructor
@@ -67,6 +68,7 @@ public abstract class AbstractWBType<T> extends AbstractWBAnnotated<T, Class<T>>
          this.superclass = null;
       }
       this._public = Modifier.isFinal(rawType.getModifiers());
+      _private = Modifier.isPrivate(rawType.getModifiers());
    }
 
    /**
@@ -123,6 +125,11 @@ public abstract class AbstractWBType<T> extends AbstractWBAnnotated<T, Class<T>>
    public boolean isEquivalent(Class<?> clazz)
    {
       return getDelegate().equals(clazz);
+   }
+   
+   public boolean isPrivate()
+   {
+      return _private;
    }
 
    /**

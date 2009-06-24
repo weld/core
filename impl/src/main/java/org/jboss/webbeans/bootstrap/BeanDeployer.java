@@ -143,12 +143,20 @@ public class BeanDeployer
    public BeanDeployer deploy()
    {
       Set<RIBean<?>> beans = environment.getBeans();
+      // ensure that all disposal methods are initialized before initializing 
+      // the rest of the beans
+      for (DecoratorBean<?> bean : environment.getDecorators())
+      {
+         bean.initialize(environment);
+         manager.addRIBean(bean);
+         log.debug("Bean: " + bean);
+      }
       for (RIBean<?> bean : beans)
       {
          bean.initialize(environment);
+         manager.addRIBean(bean);
          log.debug("Bean: " + bean);
       }
-      manager.setBeans(beans);
       for (ObserverImpl<?> observer : environment.getObservers())
       {
          observer.initialize();
