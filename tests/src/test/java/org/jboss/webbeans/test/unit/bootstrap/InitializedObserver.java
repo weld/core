@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.bootstrap;
 
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.event.Observes;
 
 
 class InitializedObserver

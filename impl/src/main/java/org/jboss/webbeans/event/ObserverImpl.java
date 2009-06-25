@@ -24,13 +24,13 @@ import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Notify;
+import javax.enterprise.event.Observer;
+import javax.enterprise.event.ObserverException;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
-import javax.event.Notify;
-import javax.event.Observer;
-import javax.event.ObserverException;
-import javax.event.Observes;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;

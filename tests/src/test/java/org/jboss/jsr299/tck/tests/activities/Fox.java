@@ -1,6 +1,6 @@
 package org.jboss.jsr299.tck.tests.activities;
 
-import javax.event.Observes;
+import javax.enterprise.event.Observes;
 
 class Fox
 {

@@ -9,32 +9,25 @@
 * You may obtain a copy of the License at
 * http://www.apache.org/licenses/LICENSE-2.0
 * Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,  
+* distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
-package javax.inject;
-
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+package javax.enterprise.event;
 
 /**
- * Specifies that an implementation class directly specializes its superclass,
- * of that a producer method directly specializes the method it overrides.
+ * The contract between the manager and an observer object.
+ * This interface should not be called directly by the application.
  * 
  * @author Gavin King
- * @author Pete Muir
+ * 
+ * @deprecated Removed in latest rev of spec.
+ * 
+ * TODO Move into RI and remove TCK assertions
  */
-
-@Target(TYPE)
-@Retention(RUNTIME)
-@Documented
-public @interface Realizes
+@Deprecated
+public interface Observer<T>
 {
+   public boolean notify(T event);
 }

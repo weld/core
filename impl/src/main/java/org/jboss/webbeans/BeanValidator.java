@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -37,7 +38,6 @@ import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.event.Event;
 import javax.inject.Obtains;
 
 import org.jboss.webbeans.bean.AbstractClassBean;

@@ -26,13 +26,13 @@ import java.util.Set;
 
 import javax.decorator.Decorates;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Named;
-import javax.enterprise.inject.Stereotype;
-import javax.enterprise.inject.deployment.Specializes;
+import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.deployment.Standard;
 import javax.enterprise.inject.spi.Bean;
-import javax.event.Event;
+import javax.enterprise.inject.stereotype.Stereotype;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;

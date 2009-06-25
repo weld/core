@@ -22,16 +22,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.decorator.Decorator;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.deployment.DeploymentType;
-import javax.event.Observes;
-import javax.inject.Realizes;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.Realizes;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.DisposalMethodBean;

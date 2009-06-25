@@ -19,17 +19,18 @@ package javax.enterprise.context;
 
 
 /**
- * A ContextNotActiveException is thrown if at a particular point in the
- * execution of the program the scope is inactive with respect to the current
- * thread. When the scope is inactive, any invocation of the get() from the
+ * A {@link ContextNotActiveException} is thrown if at a particular point in the
+ * execution of the program the context is inactive with respect to the current
+ * thread. When the context is inactive, any invocation of the get() from the
  * current thread upon the Context object for that scope results in a
  * ContextNotActiveException.
+ * 
  * 
  * @author Pete Muir
  * @author Shane Bryzak
  */
 
-public class ContextNotActiveException extends RuntimeException
+public class ContextNotActiveException extends ContextException
 {
    
    private static final long serialVersionUID = -3599813072560026919L;

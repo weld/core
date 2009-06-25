@@ -38,6 +38,7 @@ import javax.enterprise.inject.BindingType;
 @Retention(RUNTIME)
 @Target( { TYPE, METHOD, FIELD, PARAMETER })
 @Documented
+@Deprecated
 public @interface Obtains
 {
 }

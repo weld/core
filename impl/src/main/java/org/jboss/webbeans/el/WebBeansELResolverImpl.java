@@ -133,7 +133,7 @@ public class WebBeansELResolverImpl extends ELResolver
          try
          {
             
-            Bean<?> bean = manager.getHighestPrecedenceBean(manager.getBeans(name));
+            Bean<?> bean = manager.resolve(manager.getBeans(name));
             CreationalContext<?> creationalContext = manager.createCreationalContext(bean);
             if (bean != null)
             {

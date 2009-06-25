@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.event.Observer;
+import javax.enterprise.event.Observer;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.context.DependentContext;

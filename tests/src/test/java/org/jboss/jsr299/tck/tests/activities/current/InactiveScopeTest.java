@@ -6,7 +6,7 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.event.Observer;
+import javax.enterprise.event.Observer;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.manager.api.WebBeansManager;

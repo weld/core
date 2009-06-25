@@ -24,12 +24,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.event.AfterTransactionCompletion;
+import javax.enterprise.event.AfterTransactionFailure;
+import javax.enterprise.event.AfterTransactionSuccess;
+import javax.enterprise.event.BeforeTransactionCompletion;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
-import javax.event.AfterTransactionCompletion;
-import javax.event.AfterTransactionFailure;
-import javax.event.AfterTransactionSuccess;
-import javax.event.BeforeTransactionCompletion;
-import javax.event.Observes;
 
 /**
  * AnnotatedType provides a uniform access to the annotations on an annotated

@@ -15,38 +15,26 @@
 * limitations under the License.
 */
 
-package javax.event;
+package org.jboss.webbeans;
 
-import java.lang.annotation.Annotation;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * An interface for firing events of a particular type, and registering
- * observers for events of that type.
+ * Specifies that an implementation class directly specializes its superclass,
+ * of that a producer method directly specializes the method it overrides.
  * 
  * @author Gavin King
  * @author Pete Muir
- * 
- * @param <T>
- *            the type of the event object
  */
 
-public interface Event<T>
+@Target(TYPE)
+@Retention(RUNTIME)
+@Documented
+public @interface Realizes
 {
-
-   /**
-    * Fire an event
-    * 
-    * @param event the event type
-    * @param bindings the event bindings
-    */
-   public void fire(T event, Annotation... bindings);
-   
-   /**
-    * Register an observer for a specific type
-    * 
-    * @param observer the observer to register
-    * @param bindings the bindings to observe the event for
-    */
-   public void observe(Observer<T> observer, Annotation... bindings);
-   
 }

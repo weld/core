@@ -26,11 +26,11 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.ScopeType;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.deployment.DeploymentType;
-import javax.event.Observes;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;

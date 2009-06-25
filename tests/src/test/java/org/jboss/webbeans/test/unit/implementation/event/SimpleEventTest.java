@@ -1,9 +1,9 @@
 package org.jboss.webbeans.test.unit.implementation.event;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.Any;
-import javax.event.Event;
-import javax.event.Observes;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.BeanManagerImpl;

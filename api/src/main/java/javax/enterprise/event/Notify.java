@@ -14,29 +14,32 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
-package javax.event;
-
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+package javax.enterprise.event;
 
 /**
- * Specifies that a parameter of a method of a bean
- * implementation class is the event parameter
- * of an observer method.
+ * An enumeration that is used to declare the condition under which an observer
+ * method should be called. The default behavior is to create the bean and
+ * invoke the observer method synchronously.
  * 
  * @author Gavin King
- * @author Pete Muir
+ * @author Dan Allen
  */
-
-@Target(PARAMETER)
-@Retention(RUNTIME)
-@Documented
-public @interface Observes
+public enum Notify
 {
-	public Notify notifyObserver() default Notify.SYNCHRONOUSLY;
+   /**
+    * Specifies that an observer method is only called if the current instance
+    * of the bean declaring the observer method already exists.
+    */
+   IF_EXISTS,
+
+   /**
+    * Specifies that an observer method is called synchronously.
+    */
+   SYNCHRONOUSLY,
+
+   /**
+    * Specifies that an observer method receives the event notifications
+    * asynchronously.
+    */
+   ASYNCHRONOUSLY
 }

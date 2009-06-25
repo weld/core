@@ -47,4 +47,15 @@ public interface Instance<T> extends Iterable<T>
     * 
     */
    public T get(Annotation... bindings);
+   
+   public Instance<T> select(Annotation... bindings); 
+
+   public <U extends T> Instance<U> select(Class<U> subtype, Annotation... bindings); 
+   
+   public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... bindings); 
+   
+   public boolean isUnsatisfied(); 
+   
+   public boolean isAmbiguous(); 
+
 }

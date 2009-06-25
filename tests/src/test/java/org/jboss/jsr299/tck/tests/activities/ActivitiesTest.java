@@ -10,6 +10,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observer;
 import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.deployment.Production;
@@ -17,7 +18,6 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.event.Observer;
 
 import org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle.MockCreationalContext;
 import org.jboss.testharness.impl.packaging.Artifact;

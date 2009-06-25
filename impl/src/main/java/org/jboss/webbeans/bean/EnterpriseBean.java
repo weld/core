@@ -30,8 +30,8 @@ import javassist.util.proxy.ProxyObject;
 import javax.decorator.Decorator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.CreationException;
-import javax.event.Observes;
 import javax.interceptor.Interceptor;
 
 import org.jboss.webbeans.BeanManagerImpl;

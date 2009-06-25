@@ -19,12 +19,12 @@ package org.jboss.webbeans.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.event.AfterTransactionCompletion;
-import javax.event.AfterTransactionFailure;
-import javax.event.AfterTransactionSuccess;
-import javax.event.BeforeTransactionCompletion;
-import javax.event.Notify;
-import javax.event.Observes;
+import javax.enterprise.event.AfterTransactionCompletion;
+import javax.enterprise.event.AfterTransactionFailure;
+import javax.enterprise.event.AfterTransactionSuccess;
+import javax.enterprise.event.BeforeTransactionCompletion;
+import javax.enterprise.event.Notify;
+import javax.enterprise.event.Observes;
 import javax.transaction.Synchronization;
 
 import org.jboss.webbeans.BeanManagerImpl;

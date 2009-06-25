@@ -15,23 +15,38 @@
  * limitations under the License.
  */
 
-package javax.event;
-
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+package javax.enterprise.event;
 
 /**
- * Specifies that an observer method is an after transaction completion 
- * observer.
+ * Wraps any checked exceptions which occur during the notification of an
+ * observer
  * 
- * @author Gavin King
- * 
+ * @author Pete Muir
  */
-@Retention(RUNTIME)
-@Target(PARAMETER)
-public @interface BeforeTransactionCompletion
+
+public class ObserverException extends RuntimeException
 {
+
+   private static final long serialVersionUID = -801836224808304381L;
+
+   public ObserverException()
+   {
+
+   }
+
+   public ObserverException(String message)
+   {
+      super(message);
+   }
+
+   public ObserverException(Throwable cause)
+   {
+      super(cause);
+   }
+
+   public ObserverException(String message, Throwable cause)
+   {
+      super(message, cause);
+   }
+
 }

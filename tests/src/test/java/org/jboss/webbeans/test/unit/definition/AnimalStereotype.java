@@ -9,7 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Stereotype;
+import javax.enterprise.inject.stereotype.Stereotype;
 
 @Stereotype(requiredTypes=Animal.class)
 @Target( { TYPE, METHOD, FIELD })

@@ -22,8 +22,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.TypeLiteral;
-import javax.event.Event;
 import javax.inject.Obtains;
 
 import org.jboss.webbeans.BeanManagerImpl;

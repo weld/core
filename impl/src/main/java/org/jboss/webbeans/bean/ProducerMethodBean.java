@@ -21,9 +21,9 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
-import javax.event.Observes;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;

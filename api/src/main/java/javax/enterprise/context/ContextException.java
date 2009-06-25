@@ -15,22 +15,39 @@
  * limitations under the License.
  */
 
-package javax.event;
+package javax.enterprise.context;
 
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 
 /**
- * Specifies that an observer method is an after transaction completion observer.
+ * A ContextException is the base type for any context problem
  * 
- * @author Gavin King
- * 
+ * @author Pete Muir
+ * @author Shane Bryzak
  */
-@Retention(RUNTIME)
-@Target(PARAMETER)
-public @interface AfterTransactionCompletion
+
+public class ContextException extends RuntimeException
 {
+   
+   private static final long serialVersionUID = -3599813072560026919L;
+
+   public ContextException()
+   {
+      super();
+   }
+   
+   public ContextException(String message)
+   {
+      super(message);
+   }
+   
+   public ContextException(Throwable cause)
+   {
+      super(cause);
+   }
+   
+   public ContextException(String message, Throwable cause)
+   {
+      super(message, cause);
+   }
+   
 }

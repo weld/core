@@ -13,7 +13,7 @@ public class ProxyTest extends AbstractWebBeansTest
    @Test(description="WBRI-122")
    public void testImplementationClassImplementsSerializable()
    {
-      Bean<?> bean = getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("foo"));
+      Bean<?> bean = getCurrentManager().resolve(getCurrentManager().getBeans("foo"));
       getCurrentManager().getReference(bean, Object.class, getCurrentManager().createCreationalContext(bean));
    }
    

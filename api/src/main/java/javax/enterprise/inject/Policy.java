@@ -15,39 +15,25 @@
 * limitations under the License.
 */
 
-package javax.event;
+package javax.enterprise.inject;
 
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * Wraps any checked exceptions which occur during the notification of an
- * observer
+ * Specifies that an annotation type is a deployment type.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 
-public class ObserverException extends RuntimeException
+@Target(TYPE)
+@Retention(RUNTIME)
+@Documented
+public @interface Policy
 {
-
-   private static final long serialVersionUID = -801836224808304381L;
-
-   public ObserverException()
-   {
-      
-   }
-
-   public ObserverException(String message)
-   {
-      super(message);
-   }
-
-   public ObserverException(Throwable cause)
-   {
-      super(cause);
-   }
-
-   public ObserverException(String message, Throwable cause)
-   {
-      super(message, cause);
-   }
-
 }

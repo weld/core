@@ -17,39 +17,25 @@
 
 package javax.enterprise.inject;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that an annotation type is a stereotype.
+ * Specifies that an implementation class directly specializes its superclass,
+ * of that a producer method directly specializes the method it overrides.
  * 
- * @author Pete Muir
  * @author Gavin King
+ * @author Pete Muir
  */
 
+@Target({TYPE, METHOD})
 @Retention(RUNTIME)
-@Target(ANNOTATION_TYPE)
 @Documented
-public @interface Stereotype
+public @interface Specializes
 {
-
-   /**
-    * Restrict the scope of the stereotyped bean
-    * 
-    * @return the allowed scopes
-    */
-   public Class<? extends Annotation>[] supportedScopes() default {};
-   
-   /**
-    * Require that stereotype beans have certain API types 
-    * 
-    * @return the required types
-    */
-   public Class<?>[] requiredTypes() default {};
-   
 }

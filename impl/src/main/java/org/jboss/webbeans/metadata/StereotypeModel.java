@@ -24,8 +24,8 @@ import java.util.Set;
 import javax.enterprise.context.ScopeType;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Named;
-import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.deployment.DeploymentType;
+import javax.enterprise.inject.stereotype.Stereotype;
 import javax.interceptor.InterceptorBindingType;
 
 import org.jboss.webbeans.DefinitionException;

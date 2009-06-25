@@ -12,10 +12,10 @@ public class NamedProducerTest extends AbstractWebBeansTest
    @Test
    public void testNamedProducer()
    {
-      Bean<?> iemonBean = getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("iemon"));
+      Bean<?> iemonBean = getCurrentManager().resolve(getCurrentManager().getBeans("iemon"));
       String[] iemon = (String[]) getCurrentManager().getReference(iemonBean, Object.class, getCurrentManager().createCreationalContext(iemonBean));
       assert iemon.length == 3;
-      Bean<?> itoenBean = getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("itoen"));
+      Bean<?> itoenBean = getCurrentManager().resolve(getCurrentManager().getBeans("itoen"));
       String[] itoen = (String[]) getCurrentManager().getReference(itoenBean, Object.class, getCurrentManager().createCreationalContext(itoenBean));
       assert itoen.length == 2;
    }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package javax.event;
+package javax.enterprise.event;
 
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -24,13 +24,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that an observer method is an after transaction failure observer.
+ * Specifies that an observer method is an after transaction completion observer.
  * 
  * @author Gavin King
  * 
  */
 @Retention(RUNTIME)
 @Target(PARAMETER)
-public @interface AfterTransactionFailure
+@Deprecated
+public @interface AfterTransactionCompletion
 {
 }

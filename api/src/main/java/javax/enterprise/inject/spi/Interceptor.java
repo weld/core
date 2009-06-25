@@ -18,8 +18,9 @@
 package javax.enterprise.inject.spi;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.Set;
+
+import javax.interceptor.InvocationContext;
 
 
 public interface Interceptor<T> extends Bean<T>
@@ -31,16 +32,9 @@ public interface Interceptor<T> extends Bean<T>
     * @return the interceptor bindings
     */
    public Set<Annotation> getInterceptorBindingTypes();
+   
+   public boolean intercepts(InterceptionType type); 
+   public Object intercept(InterceptionType type, T instance, InvocationContext ctx); 
 
-   /**
-    * The interceptor method for the specified lifecycle callback or business
-    * method
-    * 
-    * @param type
-    *           the interception type
-    * @return the method, or null if the interceptor does not intercept
-    *         lifecycle callbacks or business methods
-    */
-   public Method getMethod(InterceptionType type);
 
 }

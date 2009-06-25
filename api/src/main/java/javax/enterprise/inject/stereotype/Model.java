@@ -1,4 +1,4 @@
-package javax.enterprise.inject;
+package javax.enterprise.inject.stereotype;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -9,6 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Named;
 
 /**
  * A stereotype for MVC model objects

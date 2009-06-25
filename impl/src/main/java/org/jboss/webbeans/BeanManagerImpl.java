@@ -48,6 +48,7 @@ import javax.enterprise.context.ScopeType;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observer;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.InjectionException;
@@ -62,9 +63,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.ManagedBean;
 import javax.enterprise.inject.spi.ObserverMethod;
-import javax.event.Observer;
 
 import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
@@ -595,11 +594,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       addObserver(observer, observer.getEventType(), observer.getBindingsAsArray());
    }
 
-   public void addObserver(ObserverMethod<?, ?> observerMethod)
-   {
-      addObserver(observerMethod, observerMethod.getObservedEventType(), new ArrayList<Annotation>(observerMethod.getObservedEventBindings()).toArray(new Annotation[0]));
-   }
-
    /**
     * Does the actual observer registration
     * 
@@ -1048,16 +1042,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
-   public <T> ManagedBean<T> createManagedBean(Class<T> type)
-   {
-      throw new UnsupportedOperationException("Not yet implemented");
-   }
-
-   public <T> ManagedBean<T> createManagedBean(AnnotatedType<T> type)
-   {
-      throw new UnsupportedOperationException("Not yet implemented");
-   }
-
    public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean)
    {
       Contextual<?> key = bean;
@@ -1117,6 +1101,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
+   @Deprecated
    public <X> Bean<? extends X> getHighestPrecedenceBean(Set<Bean<? extends X>> beans)
    {
       if (beans.size() == 1)
@@ -1157,6 +1142,30 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public <T> CreationalContextImpl<T> createCreationalContext(Contextual<T> contextual)
    {
       return new CreationalContextImpl<T>(contextual);
+   }
+
+   /* (non-Javadoc)
+    * @see javax.enterprise.inject.spi.BeanManager#createAnnotatedType(java.lang.Class)
+    */
+   public <T> AnnotatedType<T> createAnnotatedType(Class<T> type)
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   /* (non-Javadoc)
+    * @see javax.enterprise.inject.spi.BeanManager#resolve(java.util.Set)
+    */
+   public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans)
+   {
+      return getHighestPrecedenceBean(beans);
+   }
+
+   /* (non-Javadoc)
+    * @see javax.enterprise.inject.spi.BeanManager#resolveObserverMethods(java.lang.Object, java.lang.annotation.Annotation[])
+    */
+   public <T> Set<ObserverMethod<T, ?>> resolveObserverMethods(T event, Annotation... bindings)
+   {
+      throw new UnsupportedOperationException();
    }
    
 }

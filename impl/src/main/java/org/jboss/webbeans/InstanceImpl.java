@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.injection.resolution.ResolvableWBClass;
@@ -72,6 +73,46 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
    public Iterator<T> iterator()
    {
       throw new UnsupportedOperationException("Not yet implemented");
+   }
+
+   /* (non-Javadoc)
+    * @see javax.enterprise.inject.Instance#isAmbiguous()
+    */
+   public boolean isAmbiguous()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   /* (non-Javadoc)
+    * @see javax.enterprise.inject.Instance#isUnsatisfied()
+    */
+   public boolean isUnsatisfied()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   /* (non-Javadoc)
+    * @see javax.enterprise.inject.Instance#select(java.lang.annotation.Annotation[])
+    */
+   public Instance<T> select(Annotation... bindings)
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   /* (non-Javadoc)
+    * @see javax.enterprise.inject.Instance#select(java.lang.Class, java.lang.annotation.Annotation[])
+    */
+   public <U extends T> Instance<U> select(Class<U> subtype, Annotation... bindings)
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   /* (non-Javadoc)
+    * @see javax.enterprise.inject.Instance#select(javax.enterprise.inject.TypeLiteral, java.lang.annotation.Annotation[])
+    */
+   public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... bindings)
+   {
+      throw new UnsupportedOperationException();
    }
 
 }

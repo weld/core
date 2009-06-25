@@ -24,9 +24,9 @@ import java.util.Set;
 
 import javax.enterprise.context.ScopeType;
 import javax.enterprise.inject.BindingType;
-import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.deployment.DeploymentType;
 import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.stereotype.Stereotype;
 
 /**
  * AnnotatedItem provides a uniform access to the annotations on an annotated

@@ -24,7 +24,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.enterprise.inject.Stereotype;
+import javax.enterprise.inject.stereotype.Stereotype;
 
 /**
  * Specifies that a class is a decorator.

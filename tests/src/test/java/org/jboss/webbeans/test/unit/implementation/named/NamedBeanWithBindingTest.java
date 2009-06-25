@@ -15,7 +15,7 @@ public class NamedBeanWithBindingTest extends AbstractWebBeansTest
    @Test
    public void testGetNamedBeanWithBinding()
    {
-      Bean<?> bean = getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("namedBeanWithBinding"));
+      Bean<?> bean = getCurrentManager().resolve(getCurrentManager().getBeans("namedBeanWithBinding"));
       NamedBeanWithBinding instance = (NamedBeanWithBinding) getCurrentManager().getReference(bean, Object.class, getCurrentManager().createCreationalContext(bean));
       assert instance != null;
    }

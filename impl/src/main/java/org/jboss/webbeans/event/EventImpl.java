@@ -20,8 +20,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.event.Event;
-import javax.event.Observer;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observer;
+import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.FacadeImpl;
@@ -34,7 +35,7 @@ import org.jboss.webbeans.util.Strings;
  * @author David Allen
  * 
  * @param <T> The type of event being wrapped
- * @see javax.event.Event
+ * @see javax.enterprise.event.Event
  */
 public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
 {
@@ -65,6 +66,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
     * @param event The event object
     * @param bindings Additional binding types
     */
+   @Deprecated
    public void fire(T event, Annotation... bindings)
    {
       getManager().fireEvent(event, mergeInBindings(bindings));
@@ -89,6 +91,26 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
       buffer.append("  Event Type: " + getType().toString() + "\n");
       buffer.append(Strings.collectionToString("  Event Bindings: ", getBindings()));
       return buffer.toString();
+   }
+
+   public void fire(T event)
+   {
+      getManager().fireEvent(event, mergeInBindings());
+   }
+
+   public <U extends T> Event<U> select(Annotation... bindings)
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   public <U extends T> Event<U> select(Class<U> subtype, Annotation... bindings)
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... bindings)
+   {
+      throw new UnsupportedOperationException();
    }
 
 }

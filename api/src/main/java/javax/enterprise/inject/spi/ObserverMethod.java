@@ -4,13 +4,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.event.Observer;
+import javax.enterprise.event.Notify;
+import javax.enterprise.event.TransactionPhase;
 
-public interface ObserverMethod<X, T> extends Observer<T> {
-    public AnnotatedMethod<? super X> getAnnotatedMethod();
+public interface ObserverMethod<X, T> {
     public Bean<X> getBean();
-    public Type getObservedEventType();
-    public Set<Annotation> getObservedEventBindings();
-    public void notify(X instance, T event);
-    public Set<InjectionPoint> getInjectionPoints();
+    public Type getObservedType();
+    public Set<Annotation> getObservedBindings();
+    public Notify getNotify();
+    public TransactionPhase getTransactionPhase();
+    public void notify(T event);
 }

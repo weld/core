@@ -178,4 +178,10 @@ public class ConversationImpl implements Conversation
    {
       return cid == null ? super.hashCode() : cid.hashCode();
    }
+
+
+   public boolean isTransient()
+   {
+      return !isLongRunning();
+   }
 }

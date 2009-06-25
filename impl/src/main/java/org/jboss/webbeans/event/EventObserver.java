@@ -21,8 +21,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.event.Observer;
 import javax.enterprise.inject.Current;
-import javax.event.Observer;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.metadata.MetaDataCache;

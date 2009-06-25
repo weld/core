@@ -19,7 +19,7 @@ public class NamedProducerWithBindingTest extends AbstractWebBeansTest
    @Test
    public void testGetNamedProducerWithBinding()
    {
-      Bean<?> bean = getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("date"));
+      Bean<?> bean = getCurrentManager().resolve(getCurrentManager().getBeans("date"));
       Date date = (Date) getCurrentManager().getReference(bean, Object.class, getCurrentManager().createCreationalContext(bean));
       assertNotNull(date);
    }

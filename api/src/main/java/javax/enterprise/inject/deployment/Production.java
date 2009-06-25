@@ -37,6 +37,7 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Documented
 @DeploymentType
+@Deprecated
 public @interface Production
 {
 }

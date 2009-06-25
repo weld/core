@@ -34,6 +34,4 @@ import java.lang.annotation.Target;
 @Target(ANNOTATION_TYPE)
 @Retention(RUNTIME)
 @Documented
-public @interface InterceptorBindingType
-{
-}
+public @interface InterceptorBindingType {}
