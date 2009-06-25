@@ -40,7 +40,6 @@ import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
@@ -230,9 +229,9 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          DependentContext.instance().setActive(true);
          T instance = proxyClass.newInstance();
          creationalContext.push(instance);
-         ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler(this));
+         ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler<T>(this, creationalContext));
          log.trace("Enterprise bean instance created for bean {0}", this);
-         return applyDecorators(instance);
+         return applyDecorators(instance, creationalContext);
       }
       catch (InstantiationException e)
       {
@@ -269,7 +268,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       else
       {
-         enterpiseBeanInstance.destroy();
+         enterpiseBeanInstance.destroy(this, creationalContext);
       }
    }
 
@@ -310,7 +309,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    public void postConstruct(T instance)
    {
-      DependentStorageRequest dependentStorageRequest = DependentStorageRequest.of(dependentInstancesStore, instance);
       try
       {
          CreationalContext<T> creationalContext = new CreationalContext<T>() 
@@ -324,22 +322,20 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
             }
             
          };
-         DependentContext.instance().startCollectingDependents(dependentStorageRequest);
          DependentContext.instance().setActive(true);
          injectBoundFields(instance, creationalContext);
          callInitializers(instance, creationalContext);
       }
       finally
       {
-         DependentContext.instance().stopCollectingDependents(dependentStorageRequest);
          DependentContext.instance().setActive(false);
       }
 
    }
 
-   public void preDestroy(T instance)
+   public void preDestroy(CreationalContext<T> creationalContext)
    {
-      dependentInstancesStore.destroyDependentInstances(instance);
+      creationalContext.release();
    }
 
    @Override

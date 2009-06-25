@@ -22,6 +22,8 @@ import java.util.Collection;
 
 import javassist.util.proxy.MethodHandler;
 
+import javax.enterprise.context.spi.CreationalContext;
+
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.introspector.MethodSignature;
@@ -37,7 +39,7 @@ import org.jboss.webbeans.util.Reflections;
  * @author Pete Muir
  * 
  */
-public class EnterpriseBeanProxyMethodHandler implements MethodHandler, Serializable
+public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
 {
 
    private static final long serialVersionUID = 2107723373882153667L;
@@ -47,10 +49,12 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler, Serializ
    
    private static final ThreadLocal<EnterpriseBean<?>> enterpriseBean;
    
+   private static final ThreadLocal<CreationalContext<?>> enterpriseBeanCreationalContext;
+   
    static
    {
       enterpriseBean = new ThreadLocal<EnterpriseBean<?>>();
-      
+      enterpriseBeanCreationalContext = new ThreadLocal<CreationalContext<?>>();
    }
    
    public static EnterpriseBean<?> getEnterpriseBean()
@@ -58,9 +62,18 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler, Serializ
       return enterpriseBean.get();
    }
    
-   private static void setEnterpriseBean(EnterpriseBean<?> bean)
+   /**
+    * @return the enterpriseBeanCreationalContext
+    */
+   public static CreationalContext<?> getEnterpriseBeanCreationalContext()
+   {
+      return enterpriseBeanCreationalContext.get();
+   }
+   
+   private static <T> void setEnterpriseBean(EnterpriseBean<T> bean, CreationalContext<T> creationalContext)
    {
       enterpriseBean.set(bean);
+      enterpriseBeanCreationalContext.set(creationalContext);
    }
 
    private final SessionObjectReference reference; 
@@ -77,7 +90,7 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler, Serializ
     * 
     * @param proxy The generic proxy
     */
-   public EnterpriseBeanProxyMethodHandler(EnterpriseBean<?> bean)
+   public EnterpriseBeanProxyMethodHandler(EnterpriseBean<T> bean, CreationalContext<T> creationalContext)
    {
       this.destroyed = false;
       this.objectInterface = bean.getEjbDescriptor().getObjectInterface();
@@ -85,12 +98,12 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler, Serializ
       this.clientCanCallRemoveMethods = bean.isClientCanCallRemoveMethods();
       try
       {
-         setEnterpriseBean(bean);
+         setEnterpriseBean(bean, creationalContext);
          this.reference = bean.createReference();
       }
       finally
       {
-         setEnterpriseBean(null);
+         setEnterpriseBean(null, null);
       }
       log.trace("Created enterprise bean proxy method handler for " + bean);
    }

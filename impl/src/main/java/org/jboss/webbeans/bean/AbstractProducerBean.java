@@ -42,7 +42,6 @@ import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.introspector.WBMember;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -325,7 +324,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
                return creationalContextImpl.getIncompleteInstance(getDeclaringBean());
             }
          }
-         return manager.getReference(getDeclaringBean(), getDeclaringBean().getType());
+         return manager.getReference(getDeclaringBean(), getDeclaringBean().getType(), creationalContext);
       }
    }
 
@@ -336,13 +335,8 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
     */
    public T create(CreationalContext<T> creationalContext)
    {
-      DependentStorageRequest dependentStorageRequest = DependentStorageRequest.of(dependentInstancesStore, new Object());
       try
       {
-         if (getDeclaringBean().isDependent())
-         {
-            DependentContext.instance().startCollectingDependents(dependentStorageRequest);
-         }
          DependentContext.instance().setActive(true);
          T instance = produceInstance(creationalContext);
          checkReturnValue(instance);
@@ -352,8 +346,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       {
          if (getDeclaringBean().isDependent())
          {
-            DependentContext.instance().stopCollectingDependents(dependentStorageRequest);
-            dependentInstancesStore.destroyDependentInstances(dependentStorageRequest.getKey());
+            creationalContext.release();
          }
          DependentContext.instance().setActive(false);
       }

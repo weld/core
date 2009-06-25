@@ -30,7 +30,6 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
@@ -115,23 +114,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          DependentContext.instance().setActive(true);
          T instance = null;
-         DependentStorageRequest dependentStorageRequest = null;
-         try
-         {
-            instance = constructor.newInstance(manager, creationalContext);
-            instance = applyDecorators(instance);
-            creationalContext.push(instance);
-            dependentStorageRequest = DependentStorageRequest.of(dependentInstancesStore, instance);
-            DependentContext.instance().startCollectingDependents(dependentStorageRequest);
-            injectEjbAndCommonFields(instance);
-            injectBoundFields(instance, creationalContext);
-            callInitializers(instance, creationalContext);
-            callPostConstruct(instance);
-         }
-         finally
-         {
-            DependentContext.instance().stopCollectingDependents(dependentStorageRequest);
-         }
+         instance = constructor.newInstance(manager, creationalContext);
+         instance = applyDecorators(instance, creationalContext);
+         creationalContext.push(instance);
+         injectEjbAndCommonFields(instance);
+         injectBoundFields(instance, creationalContext);
+         callInitializers(instance, creationalContext);
+         callPostConstruct(instance);
          return instance;
       }
       finally
@@ -151,7 +140,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          DependentContext.instance().setActive(true);
          callPreDestroy(instance);
-         dependentInstancesStore.destroyDependentInstances(instance);
+         creationalContext.release();
       }
       catch (Exception e)
       {

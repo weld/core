@@ -19,51 +19,60 @@ package org.jboss.webbeans.context;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
 
 public class CreationalContextImpl<T> implements CreationalContext<T>
 {
 
-   private final Map<Bean<?>, Object> incompleteInstances;
-   private final Bean<T> bean;
+   private final Map<Contextual<?>, Object> incompleteInstances;
+   private final Contextual<T> contextual;
    
-   public CreationalContextImpl()
+   private final DependentInstancesStore dependentInstancesStore;
+   
+   private final DependentInstancesStore parentDependentInstancesStore;
+   
+   public CreationalContextImpl(Contextual<T> contextual)
    {
-      this.incompleteInstances = new HashMap<Bean<?>, Object>();
-      this.bean = null;
+      this(contextual, new HashMap<Contextual<?>, Object>(), new DependentInstancesStore());
    }
    
-   private CreationalContextImpl(Bean<T> bean, Map<Bean<?>, Object> incompleteInstances)
+   private CreationalContextImpl(Contextual<T> contextual, Map<Contextual<?>, Object> incompleteInstances, DependentInstancesStore parentDependentInstancesStore)
    {
       this.incompleteInstances = incompleteInstances;
-      this.bean = bean;
+      this.contextual = contextual;
+      this.dependentInstancesStore = new DependentInstancesStore();
+      this.parentDependentInstancesStore = parentDependentInstancesStore;
    }
    
    public void push(T incompleteInstance)
    {
-      incompleteInstances.put(bean, incompleteInstance);
+      incompleteInstances.put(contextual, incompleteInstance);
    }
    
-   public <S> CreationalContextImpl<S> getCreationalContext(Bean<S> bean)
+   public <S> CreationalContextImpl<S> getCreationalContext(Contextual<S> Contextual)
    {
-      return new CreationalContextImpl<S>(bean, new HashMap<Bean<?>, Object>(incompleteInstances));
+      return new CreationalContextImpl<S>(Contextual, new HashMap<Contextual<?>, Object>(incompleteInstances), dependentInstancesStore);
    }
    
-   public <S> S getIncompleteInstance(Bean<S> bean)
+   public <S> S getIncompleteInstance(Contextual<S> bean)
    {
       return (S) incompleteInstances.get(bean);
    }
    
-   public boolean containsIncompleteInstance(Bean<?> bean)
+   public boolean containsIncompleteInstance(Contextual<?> bean)
    {
       return incompleteInstances.containsKey(bean);
+   }
+   
+   public DependentInstancesStore getParentDependentInstancesStore()
+   {
+      return parentDependentInstancesStore;
    }
 
    public void release()
    {
-      // TODO Auto-generated method stub
-      
+      dependentInstancesStore.destroyDependentInstances();
    }
    
 }

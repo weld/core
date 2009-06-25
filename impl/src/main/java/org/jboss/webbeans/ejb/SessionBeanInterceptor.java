@@ -22,6 +22,7 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.webbeans.CurrentManager;
@@ -43,6 +44,8 @@ public class SessionBeanInterceptor implements Serializable
    private transient Log log = Logging.getLog(SessionBeanInterceptor.class);
    
    private transient EnterpriseBean<Object> bean;
+   private transient CreationalContext<Object> creationalContext;
+   
    private String beanId;
    private boolean contextual;
    
@@ -71,13 +74,10 @@ public class SessionBeanInterceptor implements Serializable
    public void preDestroy(InvocationContext invocationContext) throws Exception
    {
       Object target = invocationContext.getTarget();
-      if (bean == null)
-      {
-         log.warn("Support for destroying passivated EJBs not yet implemented");
-      }
-      bean.preDestroy(target);
+      initBean(target.getClass());
       if (contextual)
       {
+         bean.preDestroy(creationalContext);
          EnterpriseBeanInstance instance = getEnterpriseBeanInstance(bean);
          if (instance != null)
          {
@@ -100,6 +100,7 @@ public class SessionBeanInterceptor implements Serializable
       {
          this.bean = bean;
          this.contextual = true;
+         this.creationalContext = (CreationalContext<Object>) EnterpriseBeanProxyMethodHandler.getEnterpriseBeanCreationalContext();
       }
       else
       {

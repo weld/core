@@ -150,7 +150,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       }
    }
    
-   protected T applyDecorators(T instance)
+   protected T applyDecorators(T instance, CreationalContext<T> creationalContext)
    {
       if (hasDecorators())
       {
@@ -165,7 +165,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
                if (decorator instanceof DecoratorBean)
                {
                   decoratorStackPosition.set(++i);
-                  decoratorInstances.add(new SerializableBeanInstance<DecoratorBean<Object>, Object>((DecoratorBean) decorator, getManager().getReference(decorator, Object.class)));
+                  decoratorInstances.add(new SerializableBeanInstance<DecoratorBean<Object>, Object>((DecoratorBean) decorator, getManager().getReference(decorator, Object.class, creationalContext)));
                }
                else
                {

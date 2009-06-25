@@ -37,7 +37,6 @@ import javax.event.Event;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.introspector.WBAnnotated;
@@ -68,9 +67,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    @SuppressWarnings("unchecked")
    private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, BeanManagerImpl.class, ConversationImpl.class));
 
-   private boolean proxyable;
-
-   protected final DependentInstancesStore dependentInstancesStore;   
+   private boolean proxyable; 
 
    /**
     * Helper class for getting deployment type
@@ -138,8 +135,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    {
       super(manager);
       this.manager = manager;
-      injectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
-      dependentInstancesStore = new DependentInstancesStore();      
+      injectionPoints = new HashSet<WBInjectionPoint<?, ?>>();  
    }
 
    /**

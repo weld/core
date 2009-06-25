@@ -192,7 +192,8 @@ public abstract class AbstractWebBeansTest extends AbstractTest
 
    public Object createContextualInstance(Type beanType, Annotation... bindings)
    {
-      return getCurrentManager().getReference(getBean(beanType, bindings), beanType);
+      Bean<?> bean = getBean(beanType, bindings);
+      return getCurrentManager().getReference(bean, beanType, getCurrentManager().createCreationalContext(bean));
    }
 
    @SuppressWarnings("unchecked")

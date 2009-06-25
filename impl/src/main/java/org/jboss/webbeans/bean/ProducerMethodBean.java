@@ -29,7 +29,6 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.WBMethod;
@@ -176,13 +175,8 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 
    public void destroy(T instance, CreationalContext<T> creationalContext)
    {
-      DependentStorageRequest dependentStorageRequest = DependentStorageRequest.of(dependentInstancesStore, new Object());
       try
       {
-         if (getDeclaringBean().isDependent())
-         {
-            DependentContext.instance().startCollectingDependents(dependentStorageRequest);
-         }
          DependentContext.instance().setActive(true);
          if (disposalMethodBean != null)
             disposalMethodBean.invokeDisposeMethod(instance, creationalContext);
@@ -191,8 +185,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       {
          if (getDeclaringBean().isDependent())
          {
-            DependentContext.instance().stopCollectingDependents(dependentStorageRequest);
-            dependentInstancesStore.destroyDependentInstances(dependentStorageRequest.getKey());
+            creationalContext.release();
          }
          DependentContext.instance().setActive(false);
       }      

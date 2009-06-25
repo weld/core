@@ -35,9 +35,6 @@ import javax.event.Observes;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.context.DependentInstancesStore;
-import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.WBParameter;
@@ -171,18 +168,13 @@ public class ObserverImpl<T> implements Observer<T>
    protected void sendEvent(final T event)
    {
       Object instance = null;
-      DependentStorageRequest dependentStorageRequest = DependentStorageRequest.of(new DependentInstancesStore(), new Object());
+      CreationalContext<?> creationalContext = null;
       try
       {
-         if (Dependent.class.equals(observerBean.getScopeType()) && observerBean instanceof RIBean)
-         {
-            DependentContext.instance().startCollectingDependents(dependentStorageRequest);
-         }
          // Get the most specialized instance of the component
-         CreationalContext<?> creationalContext = null;
          if (!conditional)
          {
-            creationalContext = manager.createCreationalContext().getCreationalContext(observerBean);
+            creationalContext = manager.createCreationalContext(observerBean);
          }
          instance = manager.getInjectableReference(observerBean, creationalContext);
          if (instance == null)
@@ -194,10 +186,9 @@ public class ObserverImpl<T> implements Observer<T>
       }
       finally
       {
-         if (Dependent.class.equals(observerBean.getScopeType()))
+         if (creationalContext != null && Dependent.class.equals(observerBean.getScopeType()))
          {
-            DependentContext.instance().stopCollectingDependents(dependentStorageRequest);
-            dependentStorageRequest.getDependentInstancesStore().destroyDependentInstances(dependentStorageRequest.getKey());
+            creationalContext.release();
          }
       }
    }

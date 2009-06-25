@@ -26,6 +26,7 @@ import javax.el.ELResolver;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.ScopeType;
 import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
@@ -56,7 +57,7 @@ public interface BeanManager
     * @throws IllegalArgumentException 
     * 			if the given type is not a bean type of the given bean
     */
-   public Object getReference(Bean<?> bean, Type beanType); 
+   public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> creationalContext); 
 
    /**
     * Obtains an instance of bean for a given injection point.
@@ -406,10 +407,11 @@ public interface BeanManager
    public <T> ManagedBean<T> createManagedBean(AnnotatedType<T> type);
    
    /**
-    * Obtain an instance of a {@link CreationalContext}
+    * Obtain an instance of a {@link CreationalContext} for the given contextual
     * 
+    * @param contextual the contextual to create a creational context for
     * @return the {@link CreationalContext} instance
     */
-   public CreationalContext<?> createCreationalContext();
+   public <T> CreationalContext<T> createCreationalContext(Contextual<T> contextual);
 
 }

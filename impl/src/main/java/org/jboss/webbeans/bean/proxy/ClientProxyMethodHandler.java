@@ -112,7 +112,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       boolean outer;
       if (currentCreationalContext.get() == null)
       {
-         creationalContext = manager.createCreationalContext().getCreationalContext(bean);
+         creationalContext = manager.createCreationalContext(bean);
          currentCreationalContext.set(creationalContext);
          outer = true;
       }

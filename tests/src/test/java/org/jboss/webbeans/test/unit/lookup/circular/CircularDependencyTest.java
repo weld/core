@@ -12,7 +12,6 @@ public class CircularDependencyTest extends AbstractWebBeansTest
    @Test
    public void testCircularInjectionOnTwoNormalBeans() throws Exception
    {
-      //deployBeans(Pig.class, Food.class);
       getCurrentManager().getInstanceByType(Pig.class).getName();
       assert Pig.success;
       assert Food.success;

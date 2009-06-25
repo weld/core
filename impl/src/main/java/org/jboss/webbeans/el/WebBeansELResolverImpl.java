@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -131,20 +132,14 @@ public class WebBeansELResolverImpl extends ELResolver
          final ValueHolder<Object> holder = new ValueHolder<Object>();
          try
          {
-            new RunInDependentContext()
+            
+            Bean<?> bean = manager.getHighestPrecedenceBean(manager.getBeans(name));
+            CreationalContext<?> creationalContext = manager.createCreationalContext(bean);
+            if (bean != null)
             {
-
-               @Override
-               protected void execute() throws Exception
-               {
-                  Bean<?> bean = manager.getHighestPrecedenceBean(manager.getBeans(name));
-                  if (bean != null)
-                  {
-                     holder.setValue(manager.getReference(bean, Object.class));
-                  }
-               }
-               
-            }.run();
+               holder.setValue(manager.getInjectableReference(bean, creationalContext));
+            }
+            creationalContext.release();
          }
          catch (Exception e)
          {

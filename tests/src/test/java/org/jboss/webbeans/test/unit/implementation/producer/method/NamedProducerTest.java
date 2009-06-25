@@ -1,5 +1,7 @@
 package org.jboss.webbeans.test.unit.implementation.producer.method;
 
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
@@ -10,9 +12,11 @@ public class NamedProducerTest extends AbstractWebBeansTest
    @Test
    public void testNamedProducer()
    {
-      String[] iemon = (String[]) getCurrentManager().getReference(getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("iemon")), Object.class);
+      Bean<?> iemonBean = getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("iemon"));
+      String[] iemon = (String[]) getCurrentManager().getReference(iemonBean, Object.class, getCurrentManager().createCreationalContext(iemonBean));
       assert iemon.length == 3;
-      String[] itoen = (String[]) getCurrentManager().getReference(getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("itoen")), Object.class);
+      Bean<?> itoenBean = getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("itoen"));
+      String[] itoen = (String[]) getCurrentManager().getReference(itoenBean, Object.class, getCurrentManager().createCreationalContext(itoenBean));
       assert itoen.length == 2;
    }
 

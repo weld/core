@@ -176,7 +176,7 @@ public class ActivitiesTest extends AbstractWebBeansTest
    public void testBeanBelongingToParentActivityBelongsToChildActivity()
    {
       assert getBeans(Cow.class).size() == 1;
-      Bean<?> bean = getBeans(Cow.class).iterator().next();
+      Contextual<?> bean = getBeans(Cow.class).iterator().next();
       BeanManager childActivity = getCurrentManager().createActivity();
       assert childActivity.getBeans(Cow.class).size() == 1;
       assert childActivity.getBeans(Cow.class).iterator().next().equals(bean);
@@ -186,7 +186,7 @@ public class ActivitiesTest extends AbstractWebBeansTest
    public void testBeanBelongingToParentActivityCanBeInjectedIntoChildActivityBean()
    {
       assert getBeans(Cow.class).size() == 1;
-      Bean<?> bean = getBeans(Cow.class).iterator().next();
+      Contextual<?> bean = getBeans(Cow.class).iterator().next();
       BeanManager childActivity = getCurrentManager().createActivity();
       Bean<?> dummyBean = createDummyBean(childActivity, Cow.class);
       childActivity.addBean(dummyBean);

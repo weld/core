@@ -16,13 +16,12 @@
  */
 package org.jboss.webbeans.context;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.webbeans.context.api.BeanInstance;
-import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 
 /**
@@ -32,17 +31,17 @@ import org.jboss.webbeans.log.Logging;
  */
 public class DependentInstancesStore
 {
-   private static LogProvider log = Logging.getLogProvider(DependentInstancesStore.class);
+   private static Log log = Logging.getLog(DependentInstancesStore.class);
    
    // A object -> List of contextual instances mapping
-   private Map<Object, List<BeanInstance<?>>> dependentInstances;
+   private List<BeanInstance<?>> dependentInstances;
 
    /**
     * Creates a new DependentInstancesStore
     */
    public DependentInstancesStore()
    {
-      dependentInstances = new ConcurrentHashMap<Object, List<BeanInstance<?>>>();
+      dependentInstances = Collections.synchronizedList(new ArrayList<BeanInstance<?>>());
    }
 
    /**
@@ -51,41 +50,35 @@ public class DependentInstancesStore
     * @param key The key to store the instance under
     * @param contextualInstance The instance to store
     */
-   public <T> void addDependentInstance(Object key, BeanInstance<T> contextualInstance)
+   public <T> void addDependentInstance(BeanInstance<T> contextualInstance)
    {
-      List<BeanInstance<?>> instances = dependentInstances.get(key);
-      if (instances == null)
-      {
-         instances = new CopyOnWriteArrayList<BeanInstance<?>>();
-         dependentInstances.put(key, instances);
-      }
-      log.trace("Registered dependent instance " + contextualInstance + " under key " + key);
-      instances.add(contextualInstance);
+      log.trace("Registered dependent instance #0", contextualInstance);
+      dependentInstances.add(contextualInstance);
    }
 
    /**
-    * Destroys all dependent objects associated with a particular key and remove
-    * that key from the store
+    * Destroys all dependent objects
     * 
     * @param key The key to remove
     */
-   public void destroyDependentInstances(Object key)
+   public void destroyDependentInstances()
    {
-      log.trace("Destroying dependent instances under key " + key);
-      if (!dependentInstances.containsKey(key))
-      {
-         return;
-      }
-      for (BeanInstance<?> injectedInstance : dependentInstances.get(key))
+      log.trace("Destroying dependent instances");
+      for (BeanInstance<?> injectedInstance : dependentInstances)
       {
          destroy(injectedInstance);
       }
-      dependentInstances.remove(key);
    }
    
    private static <T> void destroy(BeanInstance<T> beanInstance)
    {
       beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "Dependent Instances: " + dependentInstances;
    }
 
 }

@@ -1,5 +1,7 @@
 package org.jboss.webbeans.test.unit.implementation.proxy;
 
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
@@ -11,7 +13,8 @@ public class ProxyTest extends AbstractWebBeansTest
    @Test(description="WBRI-122")
    public void testImplementationClassImplementsSerializable()
    {
-      getCurrentManager().getReference(getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("foo")), Object.class);
+      Bean<?> bean = getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("foo"));
+      getCurrentManager().getReference(bean, Object.class, getCurrentManager().createCreationalContext(bean));
    }
    
 }

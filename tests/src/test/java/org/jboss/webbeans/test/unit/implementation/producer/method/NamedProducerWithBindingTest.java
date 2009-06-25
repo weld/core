@@ -4,6 +4,8 @@ import static org.testng.Assert.assertNotNull;
 
 import java.util.Date;
 
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
@@ -17,7 +19,8 @@ public class NamedProducerWithBindingTest extends AbstractWebBeansTest
    @Test
    public void testGetNamedProducerWithBinding()
    {
-      Date date = (Date) getCurrentManager().getReference(getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("date")), Object.class);
+      Bean<?> bean = getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("date"));
+      Date date = (Date) getCurrentManager().getReference(bean, Object.class, getCurrentManager().createCreationalContext(bean));
       assertNotNull(date);
    }
 }

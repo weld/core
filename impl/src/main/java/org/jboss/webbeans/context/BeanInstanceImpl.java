@@ -32,6 +32,12 @@ public class BeanInstanceImpl<T> implements BeanInstance<T>
    public CreationalContext<T> getCreationalContext()
    {
       return creationalContext;
-   } 
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "Bean: " + contextual + "; Instance: " + instance + "; CreationalContext: " + creationalContext;
+   }
 
 }

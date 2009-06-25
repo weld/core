@@ -16,6 +16,10 @@
  */
 package org.jboss.webbeans.bean.proxy;
 
+import javax.enterprise.context.spi.CreationalContext;
+
+import org.jboss.webbeans.bean.EnterpriseBean;
+
 /**
  * Interface implemented by all enterprise bean proxies to query/control the proxy
  * 
@@ -35,6 +39,6 @@ public interface EnterpriseBeanInstance
    
    public void setDestroyed(boolean destroyed);
    
-   public void destroy();
+   public void destroy(EnterpriseBean<?> enterpriseBean, CreationalContext<?> creationalContext);
    
 }

@@ -46,6 +46,7 @@ import javax.el.ELResolver;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.ScopeType;
 import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.BindingType;
@@ -182,7 +183,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final ClientProxyProvider clientProxyProvider;
    private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans;
    private transient final Map<String, RIBean<?>> riBeans;
-   private final transient Map<Bean<?>, Bean<?>> specializedBeans;
+   private final transient Map<Contextual<?>, Contextual<?>> specializedBeans;
    private final transient AtomicInteger ids;
 
    /*
@@ -232,7 +233,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new ClientProxyProvider(),
             new ConcurrentListHashMultiMap<Class<? extends Annotation>, Context>(),
             new CopyOnWriteArraySet<CurrentActivity>(), 
-            new HashMap<Bean<?>, Bean<?>>(), defaultEnabledDeploymentTypes, defaultEnabledDecoratorClasses, 
+            new HashMap<Contextual<?>, Contextual<?>>(), defaultEnabledDeploymentTypes, defaultEnabledDecoratorClasses, 
             new AtomicInteger());
    }
 
@@ -272,7 +273,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * 
     * @param ejbServices the ejbResolver to use
     */
-   private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<DecoratorBean<?>> decorators, ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers, Namespace rootNamespace, Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, Map<String, RIBean<?>> riBeans, ClientProxyProvider clientProxyProvider, ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts, Set<CurrentActivity> currentActivities, Map<Bean<?>, Bean<?>> specializedBeans, List<Class<? extends Annotation>> enabledDeploymentTypes, List<Class<?>> enabledDecoratorClasses, AtomicInteger ids)
+   private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<DecoratorBean<?>> decorators, ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers, Namespace rootNamespace, Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, Map<String, RIBean<?>> riBeans, ClientProxyProvider clientProxyProvider, ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts, Set<CurrentActivity> currentActivities, Map<Contextual<?>, Contextual<?>> specializedBeans, List<Class<? extends Annotation>> enabledDeploymentTypes, List<Class<?>> enabledDecoratorClasses, AtomicInteger ids)
    {
       this.services = serviceRegistry;
       this.beans = beans;
@@ -689,6 +690,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public Object getInjectableReference(Bean<?> bean, CreationalContext<?> creationalContext)
    {
       bean = getMostSpecializedBean(bean);
+      if (creationalContext instanceof CreationalContextImpl)
+      {
+         creationalContext = ((CreationalContextImpl<?>) creationalContext).getCreationalContext(bean);
+      }
       if (getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isNormal())
       {
          if (creationalContext != null || (creationalContext == null && getContext(bean.getScopeType()).get(bean) != null))
@@ -702,7 +707,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       }
       else
       {
-         return getContext(bean.getScopeType()).get((Bean) bean, creationalContext);
+         return getContext(bean.getScopeType()).get((Contextual) bean, creationalContext);
       }
    }
 
@@ -711,9 +716,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * does not pay attention to what type the resulting instance needs to
     * implement
     */
-   public Object getReference(Bean<?> bean, Type beanType)
+   public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> creationalContext)
    {
-      return getInjectableReference(bean, createCreationalContext().getCreationalContext(bean));
+      return getInjectableReference(bean, creationalContext);
    }
 
    @SuppressWarnings("unchecked")
@@ -734,14 +739,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          }
          if (creationalContext instanceof CreationalContextImpl)
          {
-            CreationalContextImpl<?> ctx = (CreationalContextImpl<?>) creationalContext;
-            if (ctx.containsIncompleteInstance(resolvedBean))
+            CreationalContextImpl<?> creationalContextImpl = (CreationalContextImpl<?>) creationalContext;
+            if (creationalContextImpl.containsIncompleteInstance(resolvedBean))
             {
-               return ctx.getIncompleteInstance(resolvedBean);
+               return creationalContextImpl.getIncompleteInstance(resolvedBean);
             }
             else
             {
-               return getInjectableReference(resolvedBean, ctx.getCreationalContext(resolvedBean));
+               return getInjectableReference(resolvedBean, creationalContextImpl);
             }
          }
          else
@@ -772,7 +777,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public <T> T getInstanceByType(Class<T> type, Annotation... bindings)
    {
       WBAnnotated<T, ?> element = ResolvableWBClass.of(type, bindings, this);
-      return (T) getReference(getBean(element, bindings), type);
+      Bean<T> bean = getBean(element, bindings);
+      return (T) getReference(bean, type, createCreationalContext(bean));
    }
 
    public <T> Bean<T> getBean(WBAnnotated<T, ?> element, Annotation... bindings)
@@ -822,7 +828,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return new ArrayList(decoratorResolver.get(ResolvableFactory.of(types, bindings)));
    }
    
-   public List<Decorator<?>> resolveDecorators(Bean<?> bean)
+   public List<Decorator<?>> resolveDecorators(Contextual<?> bean)
    {
       throw new UnsupportedOperationException();
    }
@@ -936,7 +942,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * 
     * @return
     */
-   public Map<Bean<?>, Bean<?>> getSpecializedBeans()
+   public Map<Contextual<?>, Contextual<?>> getSpecializedBeans()
    {
       // TODO make this unmodifiable after deploy!
       return specializedBeans;
@@ -1054,7 +1060,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean)
    {
-      Bean<?> key = bean;
+      Contextual<?> key = bean;
       while (specializedBeans.containsKey(key))
       {
          if (key == null)
@@ -1148,9 +1154,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return webbeansELResolver;
    }
    
-   public CreationalContextImpl<?> createCreationalContext()
+   public <T> CreationalContextImpl<T> createCreationalContext(Contextual<T> contextual)
    {
-      return new CreationalContextImpl<Object>();
+      return new CreationalContextImpl<T>(contextual);
    }
    
 }

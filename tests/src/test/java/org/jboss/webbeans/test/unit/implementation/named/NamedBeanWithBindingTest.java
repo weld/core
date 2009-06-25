@@ -1,5 +1,7 @@
 package org.jboss.webbeans.test.unit.implementation.named;
 
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
@@ -13,7 +15,8 @@ public class NamedBeanWithBindingTest extends AbstractWebBeansTest
    @Test
    public void testGetNamedBeanWithBinding()
    {
-      NamedBeanWithBinding bean = (NamedBeanWithBinding) getCurrentManager().getReference(getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("namedBeanWithBinding")), Object.class);
-      assert bean != null;
+      Bean<?> bean = getCurrentManager().getHighestPrecedenceBean(getCurrentManager().getBeans("namedBeanWithBinding"));
+      NamedBeanWithBinding instance = (NamedBeanWithBinding) getCurrentManager().getReference(bean, Object.class, getCurrentManager().createCreationalContext(bean));
+      assert instance != null;
    }
 }

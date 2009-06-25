@@ -54,7 +54,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
       Bean<T> bean = getManager().getBean(ResolvableWBClass.<T>of(getType(), annotations, getManager()), annotations);
       
       @SuppressWarnings("unchecked")
-      T instance = (T) getManager().getReference(bean, getType());
+      T instance = (T) getManager().getReference(bean, getType(), getManager().createCreationalContext(bean));
       return instance;
    }
 

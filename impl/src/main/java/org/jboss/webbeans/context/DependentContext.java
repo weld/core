@@ -28,7 +28,6 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.api.Service;
@@ -48,8 +47,6 @@ public class DependentContext extends AbstractContext implements Service
    }
 
    private final ThreadLocal<AtomicInteger> reentrantActiveCount;
-   // A (possible null) request to store dependents created
-   private final ThreadLocal<DependentStorageRequest> dependentStorageRequest;
 
    /**
     * Constructor
@@ -66,7 +63,6 @@ public class DependentContext extends AbstractContext implements Service
             return new AtomicInteger(0);
          }
       };
-      this.dependentStorageRequest = new ThreadLocal<DependentStorageRequest>();
    }
 
    /**
@@ -84,10 +80,11 @@ public class DependentContext extends AbstractContext implements Service
       if (creationalContext != null)
       {
          T instance = contextual.create(creationalContext);
-         if (dependentStorageRequest.get() != null)
+         if (creationalContext instanceof CreationalContextImpl)
          {
+            CreationalContextImpl<T> creationalContextImpl = (CreationalContextImpl<T>) creationalContext;
             BeanInstance<T> beanInstance = new BeanInstanceImpl<T>(contextual, instance, creationalContext);
-            dependentStorageRequest.get().getDependentInstancesStore().addDependentInstance(dependentStorageRequest.get().getKey(), beanInstance);
+            creationalContextImpl.getParentDependentInstancesStore().addDependentInstance(beanInstance);
          }
          return instance;
       }
@@ -127,45 +124,14 @@ public class DependentContext extends AbstractContext implements Service
          }
       }
    }
-
-   /**
-    * Starts collecting dependent instances created by placing in the dependent
-    * instances store specified in the request. The request is only honored if
-    * there are no current request present.
-    * 
-    * @param dependentStorageRequest The storage request
-    */
-   public void startCollectingDependents(DependentStorageRequest dependentStorageRequest)
-   {
-      if (this.dependentStorageRequest.get() == null)
-      {
-         this.dependentStorageRequest.set(dependentStorageRequest);
-      }
-   }
-
-   /**
-    * Stops collecting dependent instances created. The request is only honored
-    * if the request passed is the same that was used for starting the
-    * collection
-    * 
-    * @param dependentStorageRequest The storage request
-    */
-   public void stopCollectingDependents(DependentStorageRequest dependentStorageRequest)
-   {
-      // Could also be null if we hit the finally block before the collection
-      // has started
-      if (this.dependentStorageRequest.get() != null && this.dependentStorageRequest.get().equals(dependentStorageRequest))
-      {
-         this.dependentStorageRequest.set(null);
-      }
-   }
    
+   @Deprecated
    public <T> void destroyAndRemove(Contextual<T> contextual, T instance)
    {
-      if (contextual instanceof Bean)
+      if (contextual instanceof Contextual)
       {
-         CreationalContextImpl<T> creationalContext = new CreationalContextImpl<T>(); 
-         contextual.destroy(instance, creationalContext.getCreationalContext((Bean<T>) contextual));
+         CreationalContextImpl<T> creationalContext = new CreationalContextImpl<T>(contextual); 
+         contextual.destroy(instance, creationalContext.getCreationalContext(contextual));
       }
    }
 
