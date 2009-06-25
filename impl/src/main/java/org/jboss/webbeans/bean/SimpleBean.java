@@ -119,6 +119,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          try
          {
             instance = constructor.newInstance(manager, creationalContext);
+            instance = applyDecorators(instance);
             creationalContext.push(instance);
             dependentStorageRequest = DependentStorageRequest.of(dependentInstancesStore, instance);
             DependentContext.instance().startCollectingDependents(dependentStorageRequest);
@@ -302,7 +303,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          initConstructor();
          super.initialize(environment);
-         checkType();
          initPostConstruct();
          initPreDestroy();
          if (getManager().getServices().contains(EjbServices.class))
@@ -357,7 +357,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          {
             throw new DefinitionException("Bean class which has decorators cannot be declared final " + this);
          }
-         for (Decorator<?> decorator : getDecoratorStack())
+         for (Decorator<?> decorator : getDecorators())
          {
             if (decorator instanceof DecoratorBean)
             {

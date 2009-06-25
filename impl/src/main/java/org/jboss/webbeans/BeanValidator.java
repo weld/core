@@ -35,10 +35,12 @@ import javax.enterprise.inject.New;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.event.Event;
 import javax.inject.Obtains;
 
+import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
@@ -140,6 +142,21 @@ public class BeanValidator
                   throw new InconsistentSpecializationException("Two beans cannot specialize the same bean: " + bean);
                }
                specializedBeans.add(abstractBean.getSpecializedBean());
+            }
+            if (Beans.isPassivatingBean(bean, manager) && bean instanceof AbstractClassBean)
+            {
+               AbstractClassBean<?> classBean = (AbstractClassBean<?>) bean;
+               if (classBean.hasDecorators())
+               {
+                  for (Decorator<?> decorator : classBean.getDecorators())
+                  {
+                     if (!decorator.isSerializable())
+                     {
+                        throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scope but has non-serializable decorator: " + decorator); 
+                     }
+                  }
+               }
+               
             }
          }
          boolean normalScoped = manager.getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isNormal();

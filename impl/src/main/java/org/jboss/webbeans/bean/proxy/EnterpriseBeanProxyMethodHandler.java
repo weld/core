@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.bean.proxy;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
@@ -36,8 +37,11 @@ import org.jboss.webbeans.util.Reflections;
  * @author Pete Muir
  * 
  */
-public class EnterpriseBeanProxyMethodHandler implements MethodHandler
+public class EnterpriseBeanProxyMethodHandler implements MethodHandler, Serializable
 {
+
+   private static final long serialVersionUID = 2107723373882153667L;
+
    // The log provider
    static final transient Log log = Logging.getLog(EnterpriseBeanProxyMethodHandler.class);
    

@@ -232,7 +232,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          creationalContext.push(instance);
          ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler(this));
          log.trace("Enterprise bean instance created for bean {0}", this);
-         return instance;
+         return applyDecorators(instance);
       }
       catch (InstantiationException e)
       {

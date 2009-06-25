@@ -17,10 +17,16 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import javassist.util.proxy.ProxyFactory;
+import javassist.util.proxy.ProxyObject;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.ScopeType;
@@ -36,6 +42,7 @@ import javax.event.Observes;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
+import org.jboss.webbeans.bean.proxy.DecoratorProxyMethodHandler;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
@@ -46,6 +53,7 @@ import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Beans;
+import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -68,9 +76,12 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    private Set<MethodInjectionPoint<?>> initializerMethods;
    private Set<String> dependencies;
    
-   private List<Decorator<?>> decoratorStack;
+   private List<Decorator<?>> decorators;
    
    private final String id;
+   private Class<T> proxyClassForDecorators;
+   
+   private final ThreadLocal<Integer> decoratorStackPosition;
 
    /**
     * Constructor
@@ -83,6 +94,16 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       super(manager);
       this.annotatedItem = type;
       this.id = createId(getClass().getSimpleName() + "-" + type.getName());
+      this.decoratorStackPosition = new ThreadLocal<Integer>()
+      {
+         
+         @Override
+         protected Integer initialValue()
+         {
+            return 0;
+         }
+         
+      };
    }
 
    /**
@@ -95,22 +116,94 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       super.initialize(environment);
       checkScopeAllowed();
       checkBeanImplementation();
-      initDecoratorStack();
+      initDecorators();
+      checkType();
+      initProxyClassForDecoratedBean();
    }
    
-   protected void initDecoratorStack()
+   protected void checkType()
    {
-      this.decoratorStack = getManager().resolveDecorators(getTypes(), getBindings());
+      
+   }
+   
+   protected void initDecorators()
+   {
+      this.decorators = getManager().resolveDecorators(getTypes(), getBindings());
    }
    
    public boolean hasDecorators()
    {
-      return this.decoratorStack != null && this.decoratorStack.size() > 0;
+      return this.decorators != null && this.decorators.size() > 0;
    }
    
-   protected List<Decorator<?>> getDecoratorStack()
+   protected void initProxyClassForDecoratedBean()
    {
-      return Collections.unmodifiableList(decoratorStack);
+      if (hasDecorators())
+      {
+         Set<Type> types = new LinkedHashSet<Type>(getTypes());
+         ProxyFactory proxyFactory = Proxies.getProxyFactory(types);
+   
+         @SuppressWarnings("unchecked")
+         Class<T> proxyClass = proxyFactory.createClass();
+   
+         this.proxyClassForDecorators = proxyClass;
+      }
+   }
+   
+   protected T applyDecorators(T instance)
+   {
+      if (hasDecorators())
+      {
+         List<SerializableBeanInstance<DecoratorBean<Object>, Object>> decoratorInstances = new ArrayList<SerializableBeanInstance<DecoratorBean<Object>,Object>>();
+         boolean outside = decoratorStackPosition.get().intValue() == 0;
+         try
+         {
+            int i = decoratorStackPosition.get();
+            while (i < decorators.size())
+            {
+               Decorator<?> decorator = decorators.get(i);
+               if (decorator instanceof DecoratorBean)
+               {
+                  decoratorStackPosition.set(++i);
+                  decoratorInstances.add(new SerializableBeanInstance<DecoratorBean<Object>, Object>((DecoratorBean) decorator, getManager().getReference(decorator, Object.class)));
+               }
+               else
+               {
+                  throw new IllegalStateException("Cannot operate on non container provided decorator " + decorator);
+               }
+            }
+         }
+         finally
+         {
+            if (outside)
+            {
+               decoratorStackPosition.remove();
+            }
+         }
+         try
+         {
+            T proxy = proxyClassForDecorators.newInstance();
+            ((ProxyObject) proxy).setHandler(new DecoratorProxyMethodHandler(decoratorInstances, instance));
+            return proxy;
+         }
+         catch (InstantiationException e)
+         {
+            throw new RuntimeException("Could not instantiate decorator proxy for " + toString(), e);
+         }
+         catch (IllegalAccessException e)
+         {
+            throw new RuntimeException("Could not access bean correctly when creating decorator proxy for " + toString(), e);
+         }
+      }
+      else
+      {
+         return instance;
+      }
+   }
+   
+   public List<Decorator<?>> getDecorators()
+   {
+      return Collections.unmodifiableList(decorators);
    }
 
    /**

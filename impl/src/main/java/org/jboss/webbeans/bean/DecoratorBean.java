@@ -190,7 +190,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    }
    
    @Override
-   protected void initDecoratorStack()
+   protected void initDecorators()
    {
       // No-op, decorators can't have decorators
    }

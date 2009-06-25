@@ -534,6 +534,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 
    public boolean isSerializable()
    {
+      // TODO WTF - why are we not caching the serializability of injection points!
       return _serializable && checkInjectionPointsAreSerializable();
    }
 
