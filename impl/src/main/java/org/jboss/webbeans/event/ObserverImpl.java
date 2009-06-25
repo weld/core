@@ -35,7 +35,6 @@ import javax.event.Observes;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.context.DependentStorageRequest;
@@ -183,7 +182,7 @@ public class ObserverImpl<T> implements Observer<T>
          CreationalContext<?> creationalContext = null;
          if (!conditional)
          {
-            creationalContext = CreationalContextImpl.of(observerBean);
+            creationalContext = manager.createCreationalContext().getCreationalContext(observerBean);
          }
          instance = manager.getInjectableReference(observerBean, creationalContext);
          if (instance == null)

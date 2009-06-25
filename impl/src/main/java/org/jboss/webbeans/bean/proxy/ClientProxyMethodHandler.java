@@ -109,14 +109,17 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    private <T> T getProxiedInstance(Bean<T> bean)
    {
       CreationalContextImpl<T> creationalContext;
+      boolean outer;
       if (currentCreationalContext.get() == null)
       {
-         creationalContext = CreationalContextImpl.of(bean);
+         creationalContext = manager.createCreationalContext().getCreationalContext(bean);
          currentCreationalContext.set(creationalContext);
+         outer = true;
       }
       else
       {
          creationalContext = currentCreationalContext.get().getCreationalContext(bean);
+         outer = false;
       }
       try
       {
@@ -125,7 +128,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       }
       finally
       {
-         if (creationalContext.isOuter())
+         if (outer)
          {
             currentCreationalContext.remove();
          }

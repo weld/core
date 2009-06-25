@@ -24,28 +24,20 @@ import javax.enterprise.inject.spi.Bean;
 
 public class CreationalContextImpl<T> implements CreationalContext<T>
 {
-   
-   public static <T> CreationalContextImpl<T> of(Bean<T> bean)
-   {
-      return new CreationalContextImpl<T>(bean);
-   }
 
    private final Map<Bean<?>, Object> incompleteInstances;
    private final Bean<T> bean;
-   private final boolean outer;
    
-   private CreationalContextImpl(Bean<T> bean)
+   public CreationalContextImpl()
    {
       this.incompleteInstances = new HashMap<Bean<?>, Object>();
-      this.bean = bean;
-      this.outer = true;
+      this.bean = null;
    }
    
    private CreationalContextImpl(Bean<T> bean, Map<Bean<?>, Object> incompleteInstances)
    {
       this.incompleteInstances = incompleteInstances;
       this.bean = bean;
-      this.outer = false;
    }
    
    public void push(T incompleteInstance)
@@ -66,11 +58,6 @@ public class CreationalContextImpl<T> implements CreationalContext<T>
    public boolean containsIncompleteInstance(Bean<?> bean)
    {
       return incompleteInstances.containsKey(bean);
-   }
-   
-   public boolean isOuter()
-   {
-      return outer;
    }
 
    public void release()

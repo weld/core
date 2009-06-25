@@ -404,5 +404,12 @@ public interface BeanManager
     * 			The metadata for construction of the ManagedBean
     */
    public <T> ManagedBean<T> createManagedBean(AnnotatedType<T> type);
+   
+   /**
+    * Obtain an instance of a {@link CreationalContext}
+    * 
+    * @return the {@link CreationalContext} instance
+    */
+   public CreationalContext<?> createCreationalContext();
 
 }

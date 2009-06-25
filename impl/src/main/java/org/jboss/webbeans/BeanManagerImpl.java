@@ -713,7 +713,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    public Object getReference(Bean<?> bean, Type beanType)
    {
-      return getInjectableReference(bean, CreationalContextImpl.of(bean));
+      return getInjectableReference(bean, createCreationalContext().getCreationalContext(bean));
    }
 
    @SuppressWarnings("unchecked")
@@ -1146,6 +1146,11 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public ELResolver getELResolver()
    {
       return webbeansELResolver;
+   }
+   
+   public CreationalContextImpl<?> createCreationalContext()
+   {
+      return new CreationalContextImpl<Object>();
    }
    
 }

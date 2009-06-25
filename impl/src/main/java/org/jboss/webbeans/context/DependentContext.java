@@ -164,8 +164,8 @@ public class DependentContext extends AbstractContext implements Service
    {
       if (contextual instanceof Bean)
       {
-         CreationalContext<T> creationalContext = CreationalContextImpl.of((Bean<T>) contextual);
-         contextual.destroy(instance, creationalContext);
+         CreationalContextImpl<T> creationalContext = new CreationalContextImpl<T>(); 
+         contextual.destroy(instance, creationalContext.getCreationalContext((Bean<T>) contextual));
       }
    }
 
