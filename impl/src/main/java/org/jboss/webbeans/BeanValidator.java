@@ -30,7 +30,6 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.AmbiguousResolutionException;
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.UnproxyableResolutionException;
@@ -38,7 +37,6 @@ import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Obtains;
 
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.DecoratorBean;
@@ -101,8 +99,8 @@ public class BeanValidator
                   }
                }
             }
-            checkFacadeInjectionPoint(injectionPoint, Obtains.class, Instance.class);
-            checkFacadeInjectionPoint(injectionPoint, Any.class, Event.class);
+            checkFacadeInjectionPoint(injectionPoint, Instance.class);
+            checkFacadeInjectionPoint(injectionPoint, Event.class);
             Annotation[] bindings = injectionPoint.getBindings().toArray(new Annotation[0]);
             WBAnnotated<?, ?> annotatedItem = ResolvableWBClass.of(injectionPoint.getType(), bindings, manager);
             Set<?> resolvedBeans = manager.getInjectableBeans(injectionPoint);
@@ -193,29 +191,25 @@ public class BeanValidator
       return comparator.compare(deploymentType, otherDeploymentType) > 0;
    }
    
-   private void checkFacadeInjectionPoint(InjectionPoint injectionPoint, Class<? extends Annotation> annotationType, Class<?> type)
+   private void checkFacadeInjectionPoint(InjectionPoint injectionPoint, Class<?> type)
    {
-      if (injectionPoint.getAnnotated().isAnnotationPresent(annotationType))
+      if (injectionPoint.getAnnotated().getBaseType().equals(type))
       {
          if (injectionPoint.getType() instanceof ParameterizedType)
          {
             ParameterizedType parameterizedType = (ParameterizedType) injectionPoint.getType();
-            if (!type.isAssignableFrom((Class<?>) parameterizedType.getRawType()))
-            {
-               throw new DefinitionException("An injection point annotated " + annotationType + " must have type " + type + " " + injectionPoint);
-            }
             if (parameterizedType.getActualTypeArguments()[0] instanceof TypeVariable)
             {
-               throw new DefinitionException("An injection point annotated " + annotationType + " cannot have a type variable type parameter " + injectionPoint);
+               throw new DefinitionException("An injection point of type " + type + " cannot have a type variable type parameter " + injectionPoint);
             }
             if (parameterizedType.getActualTypeArguments()[0] instanceof WildcardType)
             {
-               throw new DefinitionException("An injection point annotated " + annotationType + " cannot have a wildcard type parameter " + injectionPoint);
+               throw new DefinitionException("An injection point of type " + type + " cannot have a wildcard type parameter " + injectionPoint);
             }
          }
          else
          {
-            throw new DefinitionException("An injection point annotated " + annotationType + " must have a type parameter " + injectionPoint);
+            throw new DefinitionException("An injection point of type " + type + " must have a type parameter " + injectionPoint);
          }
       }
       
