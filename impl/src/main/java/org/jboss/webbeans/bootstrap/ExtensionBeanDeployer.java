@@ -48,7 +48,7 @@ public class ExtensionBeanDeployer extends AbstractBeanDeployer
       for (Extension extension : extensions)
       {
          @SuppressWarnings("unchecked")
-         WBClass<Extension> clazz = (WBClass<Extension>) classTransformer.classForName(extension.getClass());
+         WBClass<Extension> clazz = (WBClass<Extension>) classTransformer.loadClass(extension.getClass());
          
          ExtensionBean bean = ExtensionBean.of(getManager(), clazz, extension);
          addBean(bean);

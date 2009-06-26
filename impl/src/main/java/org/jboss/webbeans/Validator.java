@@ -48,7 +48,7 @@ import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.injection.resolution.ResolvableWBClass;
 import org.jboss.webbeans.introspector.WBAnnotated;
-import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaDataCache;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.ListComparator;
 import org.jboss.webbeans.util.Names;

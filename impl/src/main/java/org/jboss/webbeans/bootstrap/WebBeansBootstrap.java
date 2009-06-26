@@ -51,7 +51,7 @@ import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.messaging.spi.JmsServices;
-import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaDataCache;
 import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.ClassTransformer;

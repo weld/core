@@ -5,7 +5,7 @@ import java.util.Arrays;
 import javax.enterprise.context.RequestScoped;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.webbeans.metadata.StereotypeModel;
+import org.jboss.webbeans.metadata.cache.StereotypeModel;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;

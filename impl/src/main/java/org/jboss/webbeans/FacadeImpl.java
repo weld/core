@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaDataCache;
 
 /**
  * Common implementation for binding-type-based helpers

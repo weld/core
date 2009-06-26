@@ -45,7 +45,7 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.WBMember;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaDataCache;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;

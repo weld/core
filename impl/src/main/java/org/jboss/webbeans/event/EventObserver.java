@@ -25,7 +25,7 @@ import javax.enterprise.event.Observer;
 import javax.enterprise.inject.Current;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaDataCache;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 

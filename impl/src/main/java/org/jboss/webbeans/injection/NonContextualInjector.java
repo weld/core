@@ -117,7 +117,7 @@ public class NonContextualInjector
             
             public Set<FieldInjectionPoint<?>> call() throws Exception
             {
-               return Beans.getFieldInjectionPoints(manager.getServices().get(ClassTransformer.class).classForName(instance.getClass()), nonContextualBean);
+               return Beans.getFieldInjectionPoints(manager.getServices().get(ClassTransformer.class).loadClass(instance.getClass()), nonContextualBean);
             }
             
          }

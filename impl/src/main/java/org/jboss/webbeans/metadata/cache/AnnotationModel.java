@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.metadata;
+package org.jboss.webbeans.metadata.cache;
 
 import java.lang.annotation.Annotation;
 
@@ -41,7 +41,7 @@ public abstract class AnnotationModel<T extends Annotation>
     */
    public AnnotationModel(Class<T> type, ClassTransformer transformer)
    {
-      this.annotatedAnnotation = transformer.annotationTypeForName(type);
+      this.annotatedAnnotation = transformer.loadAnnotation(type);
       init();
    }
 

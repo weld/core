@@ -32,8 +32,8 @@ import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBField;
-import org.jboss.webbeans.metadata.BindingTypeModel;
-import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.BindingTypeModel;
+import org.jboss.webbeans.metadata.cache.MetaDataCache;
 
 /**
  * Helper class for bean inspection

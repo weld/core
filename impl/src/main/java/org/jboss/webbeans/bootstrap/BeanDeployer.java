@@ -61,7 +61,7 @@ public class BeanDeployer extends AbstractBeanDeployer
       ClassTransformer classTransformer = getManager().getServices().get(ClassTransformer.class);
       if (!clazz.isAnnotation() && !clazz.isEnum())
       {
-         classes.add(classTransformer.classForName(clazz));
+         classes.add(classTransformer.loadClass(clazz));
       }
       return this;
    }

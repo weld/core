@@ -61,7 +61,7 @@ public abstract class AbstractWBType<T> extends AbstractWBAnnotated<T, Class<T>>
       this._simpleName = rawType.getSimpleName();
       if (rawType.getSuperclass() != null)
       {
-         this.superclass = classTransformer.classForName(rawType.getSuperclass());
+         this.superclass = classTransformer.loadClass(rawType.getSuperclass());
       }
       else
       {
