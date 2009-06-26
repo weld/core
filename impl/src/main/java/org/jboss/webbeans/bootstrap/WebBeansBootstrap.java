@@ -16,6 +16,8 @@
  */
 package org.jboss.webbeans.bootstrap;
 
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.DefinitionException;
@@ -59,6 +61,7 @@ import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.servlet.HttpSessionManager;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
+import org.jboss.webbeans.util.serviceProvider.ServiceLoader;
 import org.jboss.webbeans.ws.spi.WebServices;
 import org.jboss.webbeans.xml.BeansXmlParser;
 
@@ -81,6 +84,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
 
    // The Web Beans manager
    private BeanManagerImpl manager;
+   
    public WebBeansBootstrap()
    {
       // initialize default services
@@ -146,9 +150,8 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
     * 
     * @param classes The classes to register as Web Beans
     */
-   protected void registerBeans(Iterable<Class<?>> classes, EjbDescriptorCache ejbDescriptors)
+   protected void registerBeans(Iterable<Class<?>> classes, BeanDeployer beanDeployer)
    {
-      BeanDeployer beanDeployer = new BeanDeployer(manager, ejbDescriptors);
       beanDeployer.addClasses(classes);
       beanDeployer.addBean(ManagerBean.of(manager));
       beanDeployer.addBean(InjectionPointBean.of(manager));
@@ -165,6 +168,11 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       beanDeployer.createBeans().deploy();
    }
    
+   private void registerExtensionBeans(Iterable<Extension> instances, AbstractBeanDeployer beanDeployer)
+   {
+      
+   }
+   
    public void boot()
    {
       synchronized (this)
@@ -177,9 +185,13 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          {
             throw new IllegalStateException("No application context BeanStore set");
          }
+         
+         parseBeansXml();
+         
          beginApplication(getApplicationContext());
          BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
          beginDeploy(requestBeanStore);
+         
          EjbDescriptorCache ejbDescriptors = new EjbDescriptorCache();
          if (getServices().contains(EjbServices.class))
          {
@@ -188,35 +200,48 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
             ejbDescriptors.addAll(getServices().get(EjbServices.class).discoverEjbs());
          }
          
-         BeansXmlParser parser = new BeansXmlParser(getServices().get(ResourceLoader.class), getServices().get(WebBeanDiscovery.class).discoverWebBeansXml());
-         parser.parse();
+         // TODO Should use a separate event manager for sending bootstrap events
+         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(manager);
+         extensionBeanDeployer.addExtensions(ServiceLoader.load(Extension.class));
+         extensionBeanDeployer.createBeans().deploy();
          
-         if (parser.getEnabledDeploymentTypes() != null)
-         {
-            manager.setEnabledDeploymentTypes(parser.getEnabledDeploymentTypes());
-         }
-         if (parser.getEnabledDecoratorClasses() != null)
-         {
-            manager.setEnabledDecoratorClasses(parser.getEnabledDecoratorClasses());
-         }
-         if (parser.getEnabledInterceptorClasses() != null)
-         {
-            manager.setEnabledInterceptorClasses(parser.getEnabledInterceptorClasses());
-         }
-         log.debug("Deployment types: " + manager.getEnabledDeploymentTypes());
+         BeanDeployer beanDeployer = new BeanDeployer(manager, ejbDescriptors);
+         
          fireBeforeBeanDiscoveryEvent();
-         registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), ejbDescriptors);
+         registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), beanDeployer);
          fireAfterBeanDiscoveryEvent();
          log.debug("Web Beans initialized. Validating beans.");
-         getServices().get(Validator.class).validateDeployment(manager);
+         getServices().get(Validator.class).validateDeployment(manager, beanDeployer.getBeanDeployerEnvironment());
          // TODO I don't really think this is needed anymore, as we validate all points
          manager.getResolver().resolveInjectionPoints();
          fireAfterDeploymentValidationEvent();
          endDeploy(requestBeanStore);
       }
    }
+   
+   private void parseBeansXml()
+   {
+      BeansXmlParser parser = new BeansXmlParser(getServices().get(ResourceLoader.class), getServices().get(WebBeanDiscovery.class).discoverWebBeansXml());
+      parser.parse();
+      
+      if (parser.getEnabledDeploymentTypes() != null)
+      {
+         manager.setEnabledDeploymentTypes(parser.getEnabledDeploymentTypes());
+      }
+      if (parser.getEnabledDecoratorClasses() != null)
+      {
+         manager.setEnabledDecoratorClasses(parser.getEnabledDecoratorClasses());
+      }
+      if (parser.getEnabledInterceptorClasses() != null)
+      {
+         manager.setEnabledInterceptorClasses(parser.getEnabledInterceptorClasses());
+      }
+      log.debug("Enabled deployment types: " + manager.getEnabledDeploymentTypes());
+      log.debug("Enabled decorator types: " + manager.getEnabledDecoratorClasses());
+      log.debug("Enabled interceptor types: " + manager.getEnabledInterceptorClasses());
+   }
 
-   protected void fireBeforeBeanDiscoveryEvent()
+   private void fireBeforeBeanDiscoveryEvent()
    {
       BeforeBeanDiscoveryImpl event = new BeforeBeanDiscoveryImpl();
       try

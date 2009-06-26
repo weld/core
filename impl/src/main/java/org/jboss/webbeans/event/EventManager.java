@@ -84,13 +84,13 @@ public class EventManager
       {
          for (EventObserver<?> observer : manager.getRegisteredObservers().get(type))
          {
-            log.debug("Checking observer " + observer + " to see if it is interested in event [" + event + "]");
+            log.trace("Checking observer " + observer + " to see if it is interested in event [" + event + "]");
             if (observer.isObserverInterested(bindings))
             {
                @SuppressWarnings("unchecked")
                Observer<T> o = (Observer<T>) observer.getObserver();
                interestedObservers.add(o);
-               log.debug("Added observer " + observer + " for event [" + event + "]");
+               log.trace("Added observer " + observer + " for event [" + event + "]");
             }
          }
       }

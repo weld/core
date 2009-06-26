@@ -9,8 +9,7 @@ public class BeforeBeanDiscoveryImpl implements BeforeBeanDiscovery
 
    public void addBindingType(Class<? extends Annotation> bindingType)
    {
-      throw new RuntimeException("Not Yet Implemented");
-
+      
    }
 
    public void addInterceptorBindingType(Class<? extends Annotation> bindingType)

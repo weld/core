@@ -40,9 +40,11 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.DecoratorBean;
+import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.injection.resolution.ResolvableWBClass;
 import org.jboss.webbeans.introspector.WBAnnotated;
@@ -170,7 +172,7 @@ public class Validator implements Service
       }
    }
    
-   public void validateDeployment(BeanManagerImpl manager)
+   public void validateDeployment(BeanManagerImpl manager, BeanDeployerEnvironment environment)
    {
       List<RIBean<?>> specializedBeans = new ArrayList<RIBean<?>>();
       for (Bean<?> bean : manager.getBeans())
@@ -185,6 +187,7 @@ public class Validator implements Service
          }
       }
       validateEnabledDecoratorClasses(manager);
+      validateDisposalMethods(environment);
       
    }
    
@@ -204,6 +207,23 @@ public class Validator implements Service
          }
       }
    }
+   
+   private void validateDisposalMethods(BeanDeployerEnvironment environment)
+   {
+      Set<DisposalMethodBean<?>> all = new HashSet<DisposalMethodBean<?>>(environment.getAllDisposalBeans());
+      Set<DisposalMethodBean<?>> resolved = new HashSet<DisposalMethodBean<?>>(environment.getResolvedDisposalBeans());
+      if (all.size() > 0 && !resolved.containsAll(all))
+      {
+         StringBuffer buff = new StringBuffer();
+         buff.append("The following Disposal methods where not resolved\n");
+         all.removeAll(resolved);
+         for (DisposalMethodBean<?> bean : all)
+         {
+            buff.append(bean.toString());
+         }
+         throw new UnsatisfiedResolutionException(buff.toString());
+      }
+   }   
 
    private static boolean hasHigherPrecedence(Class<? extends Annotation> deploymentType, Class<? extends Annotation> otherDeploymentType, BeanManagerImpl manager)
    {
