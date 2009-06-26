@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -92,6 +93,31 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       this.manager = null;
    }
 
+
+   /**
+    * Checks if all annotations are in a given set of annotations
+    * 
+    * @param annotations The annotation set
+    * @param annotationTypes The annotations to match
+    * @return True if match, false otherwise
+    */
+   public boolean annotationSetMatches(Set<? extends Annotation> annotations, Class<? extends Annotation>... annotationTypes)
+   {
+      List<Class<? extends Annotation>> annotationTypeList = new ArrayList<Class<? extends Annotation>>();
+      annotationTypeList.addAll(Arrays.asList(annotationTypes));
+      for (Annotation annotation : annotations)
+      {
+         if (annotationTypeList.contains(annotation.annotationType()))
+         {
+            annotationTypeList.remove(annotation.annotationType());
+         }
+         else
+         {
+            return false;
+         }
+      }
+      return annotationTypeList.size() == 0;
+   }
 
    protected List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
