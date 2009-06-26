@@ -43,11 +43,11 @@
       <packages>
 <!--         <package name="org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle" />-->
          <package name="org.jboss.webbeans.test.examples" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap" />
+         
          <package name="org.jboss.webbeans.test.unit.activities" />
          <package name="org.jboss.webbeans.test.unit.activities.current" />
          <package name="org.jboss.webbeans.test.unit.activities.child" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.ordering" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments.multipleEnterprise" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments.multipleEnterpriseAndSimple" />
@@ -61,19 +61,22 @@
          <package name="org.jboss.webbeans.test.unit.implementation" />
          <package name="org.jboss.webbeans.test.unit.implementation.annotatedItem" />
          <package name="org.jboss.webbeans.test.unit.implementation.enterpise" />
+         <package name="org.jboss.webbeans.test.unit.implementation.enterpise.lifecycle" />
          <package name="org.jboss.webbeans.test.unit.implementation.enterprise.sbi" />
          <package name="org.jboss.webbeans.test.unit.implementation.event" />
+         <package name="org.jboss.webbeans.test.unit.implementation.exceptions" />
+         <package name="org.jboss.webbeans.test.unit.implementation.named" />
          <package name="org.jboss.webbeans.test.unit.implementation.newsimple" />
          <package name="org.jboss.webbeans.test.unit.implementation.producer.field" />
          <package name="org.jboss.webbeans.test.unit.implementation.producer.method" />
          <package name="org.jboss.webbeans.test.unit.implementation.proxy" />
          <package name="org.jboss.webbeans.test.unit.implementation.proxy.enterprise" />
          <package name="org.jboss.webbeans.test.unit.lookup" />
-         <package name="org.jboss.webbeans.test.unit.manager" />
          <package name="org.jboss.webbeans.test.unit.lookup.circular" />
+         <package name="org.jboss.webbeans.test.unit.lookup.wbri279" />
+         <package name="org.jboss.webbeans.test.unit.manager" />
+         <package name="org.jboss.webbeans.test.unit.servlet" />
          <package name="org.jboss.webbeans.test.unit.xml.deploy" />
-         <package name="org.jboss.webbeans.test.unit.xml.parser" />
-         <package name="org.jboss.webbeans.test.unit.xml.parser.schema" />
       </packages>
    </test>
    
