@@ -176,7 +176,7 @@ public class ObserverImpl<T> implements Observer<T>
          {
             creationalContext = manager.createCreationalContext(observerBean);
          }
-         instance = manager.getInjectableReference(observerBean, creationalContext);
+         instance = manager.getReference(observerBean, creationalContext);
          if (instance == null)
          {
             return;

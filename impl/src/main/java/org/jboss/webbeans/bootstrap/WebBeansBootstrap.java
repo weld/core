@@ -17,10 +17,10 @@
 package org.jboss.webbeans.bootstrap;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.DeploymentException;
+import org.jboss.webbeans.Validator;
 import org.jboss.webbeans.bean.standard.EventBean;
 import org.jboss.webbeans.bean.standard.InjectionPointBean;
 import org.jboss.webbeans.bean.standard.InstanceBean;
@@ -132,6 +132,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       // TODO expose AnnotatedClass on SPI and allow container to provide impl of this via ResourceLoader
       getServices().add(ClassTransformer.class, new ClassTransformer());
       getServices().add(MetaDataCache.class, new MetaDataCache(getServices().get(ClassTransformer.class)));
+      getServices().add(Validator.class, new Validator());
    }
    
    public BeanManagerImpl getManager()
@@ -207,7 +208,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), ejbDescriptors);
          fireAfterBeanDiscoveryEvent();
          log.debug("Web Beans initialized. Validating beans.");
-         new BeanValidator(manager).validate();
+         getServices().get(Validator.class).validateDeployment(manager);
          // TODO I don't really think this is needed anymore, as we validate all points
          manager.getResolver().resolveInjectionPoints();
          fireAfterDeploymentValidationEvent();

@@ -78,7 +78,6 @@ import org.jboss.webbeans.el.WebBeansELResolverImpl;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.event.ObserverImpl;
-import org.jboss.webbeans.injection.NonContextualInjector;
 import org.jboss.webbeans.injection.resolution.DecoratorResolver;
 import org.jboss.webbeans.injection.resolution.ResolvableFactory;
 import org.jboss.webbeans.injection.resolution.ResolvableWBClass;
@@ -192,7 +191,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final EventManager eventManager;
    private transient final Resolver resolver;
    private transient final Resolver decoratorResolver;
-   private final transient NonContextualInjector nonContextualInjector;
    private final transient ELResolver webbeansELResolver;
 
    /*
@@ -293,7 +291,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.resolver = new Resolver(this, beans);
       this.decoratorResolver = new DecoratorResolver(this, decorators);
       this.eventManager = new EventManager(this);
-      this.nonContextualInjector = new NonContextualInjector(this);
       this.webbeansELResolver = new WebBeansELResolverImpl(this);
       this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
       this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
@@ -337,6 +334,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * 
     * @see javax.enterprise.inject.spi.BeanManager#addBean(javax.inject.manager.Bean)
     */
+   @Deprecated
    public void addBean(Bean<?> bean)
    {
       synchronized (bean)
@@ -373,6 +371,11 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       }
       checkEventType(clazz);
       return eventManager.getObservers(event, bindings);
+   }
+   
+   public <T> Set<ObserverMethod<T, ?>> resolveObserverMethods(T event, Annotation... bindings)
+   {
+      throw new UnsupportedOperationException();
    }
    
    private void checkEventType(Type eventType)
@@ -419,6 +422,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public List<Class<?>> getEnabledDecoratorClasses()
    {
       return Collections.unmodifiableList(enabledDecoratorClasses);
+   }
+   
+   /**
+    * @return the enabledInterceptorClasses
+    */
+   public List<Class<?>> getEnabledInterceptorClasses()
+   {
+      return Collections.unmodifiableList(enabledInterceptorClasses);
    }
 
    /**
@@ -573,11 +584,13 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * 
     * @see javax.enterprise.inject.spi.BeanManager#addContext(javax.enterprise.context.spi.Context)
     */
+   @Deprecated
    public void addContext(Context context)
    {
       contexts.put(context.getScopeType(), context);
    }
 
+   @Deprecated
    public void addObserver(Observer<?> observer, Annotation... bindings)
    {
       addObserver(observer, eventManager.getTypeOfObserver(observer), bindings);
@@ -589,6 +602,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * @param <T>
     * @param observer
     */
+   @Deprecated
    public <T> void addObserver(ObserverImpl<T> observer)
    {
       addObserver(observer, observer.getEventType(), observer.getBindingsAsArray());
@@ -602,6 +616,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * @param bindings
     * @return
     */
+   @Deprecated
    public void addObserver(Observer<?> observer, Type eventType, Annotation... bindings)
    {
       checkEventType(eventType);
@@ -612,6 +627,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       }
    }
    
+   @Deprecated
    public void removeObserver(Observer<?> observer)
    {
       eventManager.removeObserver(observer);
@@ -681,7 +697,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    }
    
-   public Object getInjectableReference(Bean<?> bean, CreationalContext<?> creationalContext)
+   public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext)
    {
       bean = getMostSpecializedBean(bean);
       if (creationalContext instanceof CreationalContextImpl)
@@ -705,14 +721,13 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       }
    }
 
-   /*
-    * TODO this is not correct, as the current implementation of getInstance
-    * does not pay attention to what type the resulting instance needs to
-    * implement
-    */
    public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> creationalContext)
    {
-      return getInjectableReference(bean, creationalContext);
+      if (!bean.getTypes().contains(beanType))
+      {
+         throw new IllegalArgumentException("The given beanType is not a type " + beanType +" of the bean " + bean );
+      }
+      return getReference(bean, creationalContext);
    }
 
    @SuppressWarnings("unchecked")
@@ -740,12 +755,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             }
             else
             {
-               return getInjectableReference(resolvedBean, creationalContextImpl);
+               return getReference(resolvedBean, creationalContextImpl);
             }
          }
          else
          {
-            return getInjectableReference(resolvedBean, creationalContext);
+            return getReference(resolvedBean, creationalContext);
          }
       }
       finally
@@ -820,11 +835,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       // TODO Fix this cast and make the resolver return a list
       return new ArrayList(decoratorResolver.get(ResolvableFactory.of(types, bindings)));
-   }
-   
-   public List<Decorator<?>> resolveDecorators(Contextual<?> bean)
-   {
-      throw new UnsupportedOperationException();
    }
 
    /**
@@ -1056,9 +1066,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return (Bean<X>) key;
    }
 
-   public void validate(InjectionPoint injectionPoint)
+   public void validate(InjectionPoint ij)
    {
-      throw new UnsupportedOperationException("Not yet implemented");
+      getServices().get(Validator.class).validateInjectionPoint(ij, this);
    }
 
    public Set<Annotation> getInterceptorBindingTypeDefinition(Class<? extends Annotation> bindingType)
@@ -1104,6 +1114,26 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    @Deprecated
    public <X> Bean<? extends X> getHighestPrecedenceBean(Set<Bean<? extends X>> beans)
    {
+      return resolve(beans);
+   }
+   
+   public ELResolver getELResolver()
+   {
+      return webbeansELResolver;
+   }
+   
+   public <T> CreationalContextImpl<T> createCreationalContext(Contextual<T> contextual)
+   {
+      return new CreationalContextImpl<T>(contextual);
+   }
+
+   public <T> AnnotatedType<T> createAnnotatedType(Class<T> type)
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans)
+   {
       if (beans.size() == 1)
       {
          return beans.iterator().next();
@@ -1133,39 +1163,5 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       sortedBeans.addAll(beans);
       return sortedBeans.last();
    }
-   
-   public ELResolver getELResolver()
-   {
-      return webbeansELResolver;
-   }
-   
-   public <T> CreationalContextImpl<T> createCreationalContext(Contextual<T> contextual)
-   {
-      return new CreationalContextImpl<T>(contextual);
-   }
 
-   /* (non-Javadoc)
-    * @see javax.enterprise.inject.spi.BeanManager#createAnnotatedType(java.lang.Class)
-    */
-   public <T> AnnotatedType<T> createAnnotatedType(Class<T> type)
-   {
-      throw new UnsupportedOperationException();
-   }
-
-   /* (non-Javadoc)
-    * @see javax.enterprise.inject.spi.BeanManager#resolve(java.util.Set)
-    */
-   public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans)
-   {
-      return getHighestPrecedenceBean(beans);
-   }
-
-   /* (non-Javadoc)
-    * @see javax.enterprise.inject.spi.BeanManager#resolveObserverMethods(java.lang.Object, java.lang.annotation.Annotation[])
-    */
-   public <T> Set<ObserverMethod<T, ?>> resolveObserverMethods(T event, Annotation... bindings)
-   {
-      throw new UnsupportedOperationException();
-   }
-   
 }

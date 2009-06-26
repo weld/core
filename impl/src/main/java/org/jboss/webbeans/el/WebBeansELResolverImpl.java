@@ -137,7 +137,7 @@ public class WebBeansELResolverImpl extends ELResolver
             CreationalContext<?> creationalContext = manager.createCreationalContext(bean);
             if (bean != null)
             {
-               holder.setValue(manager.getInjectableReference(bean, creationalContext));
+               holder.setValue(manager.getReference(bean, creationalContext));
             }
             creationalContext.release();
          }

@@ -40,7 +40,6 @@ public class ParameterizedProducerTest extends AbstractWebBeansTest
    @Test
    public void testNoParameterizedCollectionInjection()
    {
-      assert getCurrentManager().getInstanceByType(Collection.class).size() == 3;
 
       NoParameterizedCollectionInjection item = getCurrentManager().getInstanceByType(NoParameterizedCollectionInjection.class);
       assert item.getFieldInjection().size() == 3;
