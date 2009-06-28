@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.bootstrap.environments;
+package org.jboss.webbeans.test.unit.environments.servlet;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;

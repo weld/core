@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.servlet;
+package org.jboss.webbeans.test.unit.environments.servlet;
 
 import javax.servlet.http.HttpSession;
 
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 @Classes(ConversationManager.class)
 public class ServletLifecycleTest extends AbstractWebBeansTest
 {
-   @Test(groups = "contexts")
+   @Test(groups = "incontainer-broken")
    public void testEndSessionWithActiveRequestAndSessionContexts()
    {
       ServletLifecycle servletLifecycle = new ServletLifecycle(new ContextLifecycle());
@@ -44,7 +44,7 @@ public class ServletLifecycleTest extends AbstractWebBeansTest
       assert Boolean.TRUE.equals(RequestContext.instance().isActive()) : "Request context should still be active";
    }
    
-   @Test(groups = "contexts")
+   @Test(groups = "incontainer-broken")
    public void testEndSessionWithActiveRequestContextOnly()
    {
       ServletLifecycle servletLifecycle = new ServletLifecycle(new ContextLifecycle());
@@ -58,7 +58,7 @@ public class ServletLifecycleTest extends AbstractWebBeansTest
       assert Boolean.TRUE.equals(RequestContext.instance().isActive()) : "Request context should still be active";
    }
    
-   @Test(groups = "contexts")
+   @Test(groups = "incontainer-broken")
    public void testEndSessionWithNoActiveRequestOrSessionContexts()
    {
       ServletLifecycle servletLifecycle = new ServletLifecycle(new ContextLifecycle());
@@ -69,7 +69,7 @@ public class ServletLifecycleTest extends AbstractWebBeansTest
       assert Boolean.FALSE.equals(RequestContext.instance().isActive()) : "Temporary request context should have been deactivated";
    }
    
-   @BeforeMethod(groups = "contexts")
+   @BeforeMethod(groups = "incontainer-broken")
    public void beforeMethod()
    {
       RequestContext.instance().setBeanStore(null);

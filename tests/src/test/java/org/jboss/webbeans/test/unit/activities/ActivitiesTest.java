@@ -23,7 +23,6 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.bean.ForwardingBean;
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
-import org.jboss.webbeans.test.unit.implementation.enterprise.lifecycle.MockCreationalContext;
 import org.testng.annotations.Test;
 
 
@@ -190,7 +189,7 @@ public class ActivitiesTest extends AbstractWebBeansTest
       BeanManager childActivity = getCurrentManager().createActivity();
       Bean<?> dummyBean = createDummyBean(childActivity, Cow.class);
       childActivity.addBean(dummyBean);
-      assert childActivity.getInjectableReference(dummyBean.getInjectionPoints().iterator().next(), new MockCreationalContext<Cow>()) != null;
+      assert childActivity.getInjectableReference(dummyBean.getInjectionPoints().iterator().next(), childActivity.createCreationalContext(dummyBean)) != null;
    }
 
    @Test

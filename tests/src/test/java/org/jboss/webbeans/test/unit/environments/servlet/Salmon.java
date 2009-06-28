@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.bootstrap.environments;
+package org.jboss.webbeans.test.unit.environments.servlet;
 
 import javax.enterprise.inject.Named;
 import javax.enterprise.inject.deployment.Production;

@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.bootstrap.environments;
+package org.jboss.webbeans.test.unit.environments.servlet;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -16,7 +16,7 @@ import javax.enterprise.inject.BindingType;
 @Retention(RUNTIME)
 @Documented
 @BindingType
-@interface Tame
+public @interface Whitefish
 {
 
 }

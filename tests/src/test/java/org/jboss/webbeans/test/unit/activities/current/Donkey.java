@@ -11,7 +11,7 @@ class Donkey
    
    public Donkey() throws NamingException
    {
-      beanManager = (BeanManager) new InitialContext().lookup("java:app/Manager");
+      beanManager = (BeanManager) new InitialContext().lookup("java:app/BeanManager");
    }
    
    public BeanManager getManager()
