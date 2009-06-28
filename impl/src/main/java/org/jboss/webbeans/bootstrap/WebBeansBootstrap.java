@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.bootstrap;
 
+import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -256,16 +257,29 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       }
    }
    
-   protected void fireAfterBeanDiscoveryEvent()
+   private void fireBeforeShutdownEvent()
    {
-      AfterBeanDiscoveryImpl event = new AfterBeanDiscoveryImpl();
+      BeforeShutdown event = new BeforeShutdownImpl();
+      try
+      {
+         getManager().fireEvent(event);
+      }
+      catch (Exception e)
+      {
+         throw new DeploymentException(e);
+      }
+   }
+   
+   private void fireAfterBeanDiscoveryEvent()
+   {
+      AfterBeanDiscoveryImpl event = new AfterBeanDiscoveryImpl(getManager());
       try
       {
          manager.fireEvent(event);
       }
       catch (Exception e)
       {
-         throw new DefinitionException(e);
+         event.addDefinitionError(e);
       }
       
       if (event.getDefinitionErrors().size() > 0)
@@ -275,7 +289,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       }
    }
    
-   protected void fireAfterDeploymentValidationEvent()
+   private void fireAfterDeploymentValidationEvent()
    {
       AfterDeploymentValidationImpl event = new AfterDeploymentValidationImpl();
       
@@ -285,7 +299,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       }
       catch (Exception e)
       {
-         throw new DeploymentException(e);
+         event.addDeploymentProblem(e);
       }
       
       if (event.getDeploymentProblems().size() > 0)
@@ -347,7 +361,14 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    
    public void shutdown()
    {
-      manager.shutdown();
+      try
+      {
+         fireBeforeShutdownEvent();
+      }
+      finally
+      {
+         manager.shutdown();
+      }
    }
 
 }

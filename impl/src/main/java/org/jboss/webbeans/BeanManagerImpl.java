@@ -326,15 +326,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       }
    }
 
-   /**
-    * Registers a bean with the manager
-    * 
-    * @param bean The bean to register
-    * @return A reference to manager
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#addBean(javax.inject.manager.Bean)
-    */
-   @Deprecated
    public void addBean(Bean<?> bean)
    {
       synchronized (bean)
@@ -576,15 +567,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return Collections.unmodifiableMap(riBeans);
    }
 
-   /**
-    * Registers a context with the manager
-    * 
-    * @param context The context to add
-    * @return A reference to the manager
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#addContext(javax.enterprise.context.spi.Context)
-    */
-   @Deprecated
    public void addContext(Context context)
    {
       contexts.put(context.getScopeType(), context);
