@@ -37,10 +37,6 @@ public class MergedStereotypes<T, E>
    private final Set<Annotation> possibleScopeTypes;
    // Is the bean name defaulted?
    private boolean beanNameDefaulted;
-   // The required types
-   private final Set<Class<?>> requiredTypes;
-   // The supported scopes
-   private final Set<Class<? extends Annotation>> supportedScopes;
    
    private final BeanManagerImpl manager;
    
@@ -53,8 +49,6 @@ public class MergedStereotypes<T, E>
    {
       this.possibleDeploymentTypes = new HashMap<Class<? extends Annotation>, Annotation>();
       this.possibleScopeTypes = new HashSet<Annotation>();
-      this.requiredTypes = new HashSet<Class<?>>();
-      this.supportedScopes = new HashSet<Class<? extends Annotation>>();
       this.manager = manager;
       merge(stereotypeAnnotations);
    }
@@ -82,8 +76,6 @@ public class MergedStereotypes<T, E>
          {
             possibleScopeTypes.add(stereotype.getDefaultScopeType());
          }
-         requiredTypes.addAll(stereotype.getRequiredTypes());
-         supportedScopes.addAll(stereotype.getSupportedScopes());
          if (stereotype.isBeanNameDefaulted())
          {
             beanNameDefaulted = true;
@@ -122,26 +114,6 @@ public class MergedStereotypes<T, E>
    }
 
    /**
-    * Returns the required types
-    * 
-    * @return The required types
-    */
-   public Set<Class<?>> getRequiredTypes()
-   {
-      return requiredTypes;
-   }
-
-   /**
-    * Returns the supported scopes
-    * 
-    * @return The supported scopes
-    */
-   public Set<Class<? extends Annotation>> getSupportedScopes()
-   {
-      return supportedScopes;
-   }
-
-   /**
     * Indicates if the bean was declared in XML
     * 
     * @return True if declared in XML, else false
@@ -160,8 +132,7 @@ public class MergedStereotypes<T, E>
    public String toString()
    {
      return "Merged stereotype model with possible deployment types " + 
-        possibleDeploymentTypes + ", required types " + requiredTypes +
-        ", possible scopes " + possibleScopeTypes + " and supported scopes " + supportedScopes; 
+        possibleDeploymentTypes + " and possible scopes " + possibleScopeTypes; 
    }
    
 }

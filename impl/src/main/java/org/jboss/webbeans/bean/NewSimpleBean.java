@@ -110,10 +110,4 @@ public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
       return false;
    }
    
-   @Override
-   protected void checkScopeAllowed()
-   {
-      // No-op
-   }
-   
 }

@@ -114,7 +114,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       initInitializerMethods();
       super.initialize(environment);
-      checkScopeAllowed();
       checkBeanImplementation();
       initDecorators();
       checkType();
@@ -358,22 +357,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          this.deploymentType = getDefaultDeploymentType();
          log.trace("Using default @Production deployment type");
          return;
-      }
-   }
-
-   /**
-    * Validate that the scope type is allowed by the stereotypes on the bean and
-    * the bean type
-    */
-   protected void checkScopeAllowed()
-   {
-      log.trace("Checking if " + getScopeType() + " is allowed for " + type);
-      if (getMergedStereotypes().getSupportedScopes().size() > 0)
-      {
-         if (!getMergedStereotypes().getSupportedScopes().contains(getScopeType()))
-         {
-            throw new DefinitionException("Scope " + getScopeType() + " is not an allowed by the stereotype for " + type);
-         }
       }
    }
 

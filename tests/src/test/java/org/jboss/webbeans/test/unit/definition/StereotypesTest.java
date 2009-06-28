@@ -1,7 +1,5 @@
 package org.jboss.webbeans.test.unit.definition;
 
-import java.util.Arrays;
-
 import javax.enterprise.context.RequestScoped;
 
 import org.jboss.testharness.impl.packaging.Artifact;
@@ -23,9 +21,6 @@ public class StereotypesTest extends AbstractWebBeansTest
       StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(AnimalStereotype.class, transformer);
       assert animalStereotype.getDefaultScopeType().annotationType().equals(RequestScoped.class);
       assert animalStereotype.getInterceptorBindings().size() == 0;
-      assert animalStereotype.getRequiredTypes().size() == 1;
-      assert animalStereotype.getRequiredTypes().contains(Animal.class);
-      assert animalStereotype.getSupportedScopes().size() == 0;
       assert !animalStereotype.isBeanNameDefaulted();
       assert animalStereotype.getDefaultDeploymentType() == null;
    }
@@ -36,10 +31,6 @@ public class StereotypesTest extends AbstractWebBeansTest
       StereotypeModel<AnimalOrderStereotype> animalStereotype = new StereotypeModel<AnimalOrderStereotype>(AnimalOrderStereotype.class, transformer);
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
-      assert animalStereotype.getRequiredTypes().size() == 2;
-      Class<?> [] requiredTypes = {Animal.class, Order.class};
-      assert animalStereotype.getRequiredTypes().containsAll(Arrays.asList(requiredTypes));
-      assert animalStereotype.getSupportedScopes().size() == 0;
       assert !animalStereotype.isBeanNameDefaulted();
       assert animalStereotype.getDefaultDeploymentType() == null;
    }
@@ -50,10 +41,6 @@ public class StereotypesTest extends AbstractWebBeansTest
       StereotypeModel<RequestScopedAnimalStereotype> animalStereotype = new StereotypeModel<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class, transformer);
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
-      assert animalStereotype.getRequiredTypes().size() == 1;
-      assert Animal.class.equals(animalStereotype.getRequiredTypes().iterator().next());
-      assert animalStereotype.getSupportedScopes().size() == 1;
-      assert animalStereotype.getSupportedScopes().contains(RequestScoped.class);
       assert !animalStereotype.isBeanNameDefaulted();
       assert animalStereotype.getDefaultDeploymentType() == null;
    }

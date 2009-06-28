@@ -124,6 +124,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          checkEJBTypeAllowed();
          checkConflictingRoles();
          checkObserverMethods();
+         checkScopeAllowed();
       }
    }
 
@@ -172,10 +173,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * Check that the scope type is allowed by the stereotypes on the bean and
     * the bean type
     */
-   @Override
    protected void checkScopeAllowed()
    {
-      super.checkScopeAllowed();
       if (ejbDescriptor.isStateless() && !isDependent())
       {
          throw new DefinitionException("Scope " + getScopeType() + " is not allowed on stateless enterpise beans for " + getType() + ". Only @Dependent is allowed on stateless enterprise beans");

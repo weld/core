@@ -161,7 +161,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       initScopeType();
       initSerializable();
       initProxyable();
-      checkRequiredTypesImplemented();
       initInjectionPoints();
       initDecorates();
       checkDecorates();
@@ -345,22 +344,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       else if (deploymentType.equals(Standard.class) && !STANDARD_WEB_BEAN_CLASSES.contains(getAnnotatedItem().getJavaClass()))
       {
          throw new DefinitionException(getAnnotatedItem().getName() + " cannot have deployment type @Standard");
-      }
-   }
-
-   /**
-    * Validates that the required types are implemented
-    */
-   protected void checkRequiredTypesImplemented()
-   {
-      for (Class<?> requiredType : getMergedStereotypes().getRequiredTypes())
-      {
-         if (log.isTraceEnabled())
-            log.trace("Checking if required type " + requiredType + " is implemented");
-         if (!requiredType.isAssignableFrom(type))
-         {
-            throw new DefinitionException("Required type " + requiredType + " isn't implemented on " + type);
-         }
       }
    }
 

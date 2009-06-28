@@ -44,10 +44,6 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    private Annotation defaultScopeType;
    // Is the bean name defaulted
    private boolean beanNameDefaulted;
-   // The supported scopes
-   private Set<Class<? extends Annotation>> supportedScopes;
-   // The required types
-   private Set<Class<?>> requiredTypes;
    // The interceptor bindings
    private Set<Annotation> interceptorBindings;
 
@@ -172,48 +168,6 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    {
       return beanNameDefaulted;
    }
-
-   /**
-    * Gets the supported scopes
-    * 
-    * @return A set of supported scopes, or an empty set if none are specified
-    */
-   public Set<Class<? extends Annotation>> getSupportedScopes()
-   {
-      return supportedScopes;
-   }
-
-   /**
-    * Gets the required types
-    * 
-    * @return A set of required types, or an empty set if none are specified
-    */
-   public Set<Class<?>> getRequiredTypes()
-   {
-      return requiredTypes;
-   }
-
-   /**
-    * Gets the type
-    * 
-    * @return The type
-    */
-   @Deprecated
-   public Class<? extends Annotation> getStereotypeClass()
-   {
-      return getRawType();
-   }
-
-   /**
-    * Gets a string representation of the stereotype
-    * 
-    * @return The string representation
-    */
-   @Override
-   public String toString()
-   {
-     return "Stereotype model with required types " + requiredTypes + " and supported scopes " + supportedScopes; 
-   }   
 
    /**
     * Gets the meta-annotation type
