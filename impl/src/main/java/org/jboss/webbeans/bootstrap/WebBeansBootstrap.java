@@ -51,7 +51,8 @@ import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.messaging.spi.JmsServices;
-import org.jboss.webbeans.metadata.cache.MetaDataCache;
+import org.jboss.webbeans.metadata.TypeStore;
+import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.ClassTransformer;
@@ -134,9 +135,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       getServices().add(ServletApiAbstraction.class, new ServletApiAbstraction(resourceLoader));
       // Temporary workaround to provide context for building annotated class
       // TODO expose AnnotatedClass on SPI and allow container to provide impl of this via ResourceLoader
-      getServices().add(ClassTransformer.class, new ClassTransformer());
-      getServices().add(MetaDataCache.class, new MetaDataCache(getServices().get(ClassTransformer.class)));
       getServices().add(Validator.class, new Validator());
+      getServices().add(TypeStore.class, new TypeStore());
+      getServices().add(ClassTransformer.class, new ClassTransformer(getServices().get(TypeStore.class)));
+      getServices().add(MetaAnnotationStore.class, new MetaAnnotationStore(getServices().get(ClassTransformer.class)));
    }
    
    public BeanManagerImpl getManager()
@@ -207,7 +209,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          
          BeanDeployer beanDeployer = new BeanDeployer(manager, ejbDescriptors);
          
-         fireBeforeBeanDiscoveryEvent();
+         fireBeforeBeanDiscoveryEvent(beanDeployer);
          registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), beanDeployer);
          fireAfterBeanDiscoveryEvent();
          log.debug("Web Beans initialized. Validating beans.");
@@ -241,12 +243,12 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       log.debug("Enabled interceptor types: " + manager.getEnabledInterceptorClasses());
    }
 
-   private void fireBeforeBeanDiscoveryEvent()
+   private void fireBeforeBeanDiscoveryEvent(BeanDeployer beanDeployer)
    {
-      BeforeBeanDiscoveryImpl event = new BeforeBeanDiscoveryImpl();
+      BeforeBeanDiscoveryImpl event = new BeforeBeanDiscoveryImpl(getManager(), beanDeployer);
       try
       {
-         manager.fireEvent(event);
+         getManager().fireEvent(event);
       }
       catch (Exception e)
       {

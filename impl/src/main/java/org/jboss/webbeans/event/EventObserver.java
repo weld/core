@@ -25,7 +25,7 @@ import javax.enterprise.event.Observer;
 import javax.enterprise.inject.Current;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.metadata.cache.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
@@ -140,7 +140,7 @@ public class EventObserver<T>
             boolean found = false;
             for (Annotation y : bindings)
             {
-               if (manager.getServices().get(MetaDataCache.class).getBindingTypeModel(x.annotationType()).isEqual(x, y))
+               if (manager.getServices().get(MetaAnnotationStore.class).getBindingTypeModel(x.annotationType()).isEqual(x, y))
                {
                   found = true;
                }

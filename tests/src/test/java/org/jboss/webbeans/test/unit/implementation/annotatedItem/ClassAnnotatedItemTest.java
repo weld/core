@@ -11,6 +11,7 @@ import javax.enterprise.inject.stereotype.Stereotype;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.jlr.WBClassImpl;
+import org.jboss.webbeans.metadata.TypeStore;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
@@ -19,7 +20,7 @@ import org.testng.annotations.Test;
 public class ClassAnnotatedItemTest extends AbstractWebBeansTest
 {
 	
-   private final ClassTransformer transformer = new ClassTransformer();
+   private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
    
    @Test
    public void testDeclaredAnnotations()

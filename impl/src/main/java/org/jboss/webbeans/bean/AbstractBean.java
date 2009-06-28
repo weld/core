@@ -47,7 +47,7 @@ import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.cache.MergedStereotypes;
-import org.jboss.webbeans.metadata.cache.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -292,7 +292,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 
    private boolean checkInjectionPointsAreSerializable()
    {
-      boolean passivating = manager.getServices().get(MetaDataCache.class).getScopeModel(this.getScopeType()).isPassivating();
+      boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(this.getScopeType()).isPassivating();
       for (WBInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
       {
          Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);

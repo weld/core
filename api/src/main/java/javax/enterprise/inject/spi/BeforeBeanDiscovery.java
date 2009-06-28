@@ -32,4 +32,6 @@ public interface BeforeBeanDiscovery
    public void addStereotype(Class<? extends Annotation> stereotype, Annotation... stereotypeDef);
 
    public void addInterceptorBindingType(Class<? extends Annotation> bindingType);
+   
+   public void addAnnotatedType(AnnotatedType<?> type);
 }

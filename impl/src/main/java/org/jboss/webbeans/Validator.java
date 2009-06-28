@@ -48,7 +48,7 @@ import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.injection.resolution.ResolvableWBClass;
 import org.jboss.webbeans.introspector.WBAnnotated;
-import org.jboss.webbeans.metadata.cache.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.ListComparator;
 import org.jboss.webbeans.util.Names;
@@ -70,7 +70,7 @@ public class Validator implements Service
       {
          validateInjectionPoint(ij, beanManager);
       }
-      boolean normalScoped = beanManager.getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isNormal();
+      boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScopeType()).isNormal();
       if (normalScoped && !Beans.isBeanProxyable(bean))
       {
          throw new UnproxyableResolutionException("Normal scoped bean " + bean + " is not proxyable");
@@ -158,7 +158,7 @@ public class Validator implements Service
          throw new AmbiguousResolutionException("The injection point " + ij + " with binding types " + Names.annotationsToString(ij.getBindings()) + " in " + ij.getBean() + " has ambiguous dependencies");
       }
       Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
-      if (beanManager.getServices().get(MetaDataCache.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(ij.getType()))
+      if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(ij.getType()))
       {
          throw new UnproxyableResolutionException("The injection point " + ij + " has non-proxyable dependencies");
       }

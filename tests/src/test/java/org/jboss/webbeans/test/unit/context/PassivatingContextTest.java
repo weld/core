@@ -6,7 +6,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.webbeans.metadata.cache.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -20,7 +20,7 @@ public class PassivatingContextTest extends org.jboss.webbeans.test.AbstractWebB
    @Test(groups = { "contexts", "passivation" })
    public void testIsSessionScopePassivating()
    {
-      assert getCurrentManager().getServices().get(MetaDataCache.class).getScopeModel(SessionScoped.class).isPassivating();
+      assert getCurrentManager().getServices().get(MetaAnnotationStore.class).getScopeModel(SessionScoped.class).isPassivating();
    }
 
    /**
@@ -30,7 +30,7 @@ public class PassivatingContextTest extends org.jboss.webbeans.test.AbstractWebB
    @Test(groups = { "contexts", "passivation" })
    public void testIsConversationScopePassivating()
    {
-      assert getCurrentManager().getServices().get(MetaDataCache.class).getScopeModel(ConversationScoped.class).isPassivating();
+      assert getCurrentManager().getServices().get(MetaAnnotationStore.class).getScopeModel(ConversationScoped.class).isPassivating();
    }
 
    /**
@@ -40,7 +40,7 @@ public class PassivatingContextTest extends org.jboss.webbeans.test.AbstractWebB
    @Test(groups = { "contexts", "passivation" })
    public void testIsApplicationScopeNonPassivating()
    {
-      assert !getCurrentManager().getServices().get(MetaDataCache.class).getScopeModel(ApplicationScoped.class).isPassivating();
+      assert !getCurrentManager().getServices().get(MetaAnnotationStore.class).getScopeModel(ApplicationScoped.class).isPassivating();
    }
 
    /**
@@ -50,7 +50,7 @@ public class PassivatingContextTest extends org.jboss.webbeans.test.AbstractWebB
    @Test(groups = { "contexts", "passivation" })
    public void testIsRequestScopeNonPassivating()
    {
-      assert !getCurrentManager().getServices().get(MetaDataCache.class).getScopeModel(RequestScoped.class).isPassivating();
+      assert !getCurrentManager().getServices().get(MetaAnnotationStore.class).getScopeModel(RequestScoped.class).isPassivating();
    }
    
 }

@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.webbeans.metadata.cache.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 
 /**
  * Common implementation for binding-type-based helpers
@@ -77,7 +77,7 @@ public abstract class FacadeImpl<T> implements Serializable
       result.addAll(bindings);
       for (Annotation newAnnotation : newBindings)
       {
-         if (!getManager().getServices().get(MetaDataCache.class).getBindingTypeModel(newAnnotation.annotationType()).isValid())
+         if (!getManager().getServices().get(MetaAnnotationStore.class).getBindingTypeModel(newAnnotation.annotationType()).isValid())
          {
             throw new IllegalArgumentException(newAnnotation + " is not a binding for " + this);
          }

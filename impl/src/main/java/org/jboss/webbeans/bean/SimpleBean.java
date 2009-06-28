@@ -44,7 +44,7 @@ import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.metadata.cache.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.ResourceServices;
@@ -335,7 +335,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          throw new DefinitionException("Simple bean " + type + " cannot be a parameterized type");
       }
-      boolean passivating = manager.getServices().get(MetaDataCache.class).getScopeModel(scopeType).isPassivating();
+      boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).isPassivating();
       if (passivating && !_serializable)
       {
          throw new DefinitionException("Simple bean declaring a passivating scope must have a serializable implementation class " + toString());

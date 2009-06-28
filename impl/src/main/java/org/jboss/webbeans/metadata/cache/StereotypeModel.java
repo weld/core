@@ -17,8 +17,6 @@
 package org.jboss.webbeans.metadata.cache;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.ScopeType;
@@ -64,8 +62,6 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       initDefaultDeploymentType();
       initDefaultScopeType();
       initBeanNameDefaulted();
-      initSupportedScopes();
-      initRequiredTypes();
       initInterceptorBindings();
       checkBindings();
    }
@@ -88,32 +84,6 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    private void initInterceptorBindings()
    {
       interceptorBindings = getAnnotatedAnnotation().getMetaAnnotations(InterceptorBindingType.class);
-   }
-
-   /**
-    * Initializes the supported scopes
-    */
-   private void initSupportedScopes()
-   {
-      this.supportedScopes = new HashSet<Class<? extends Annotation>>();
-      Class<? extends Annotation>[] supportedScopes = getAnnotatedAnnotation().getAnnotation(Stereotype.class).supportedScopes();
-      if (supportedScopes.length > 0)
-      {
-         this.supportedScopes.addAll(Arrays.asList(supportedScopes));
-      }
-   }
-
-   /**
-    * Initializes the required types
-    */
-   private void initRequiredTypes()
-   {
-      this.requiredTypes = new HashSet<Class<?>>();
-      Class<?>[] requiredTypes = getAnnotatedAnnotation().getAnnotation(Stereotype.class).requiredTypes();
-      if (requiredTypes.length > 0)
-      {
-         this.requiredTypes.addAll(Arrays.asList(requiredTypes));
-      }
    }
 
    /**

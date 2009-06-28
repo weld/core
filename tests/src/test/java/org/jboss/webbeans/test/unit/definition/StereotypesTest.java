@@ -5,6 +5,7 @@ import java.util.Arrays;
 import javax.enterprise.context.RequestScoped;
 
 import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.webbeans.metadata.TypeStore;
 import org.jboss.webbeans.metadata.cache.StereotypeModel;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
@@ -14,7 +15,7 @@ import org.testng.annotations.Test;
 public class StereotypesTest extends AbstractWebBeansTest
 {
 	
-   private final ClassTransformer transformer = new ClassTransformer();
+   private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
 	
    @Test
    public void testAnimalStereotype()

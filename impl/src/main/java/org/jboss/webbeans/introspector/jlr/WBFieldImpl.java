@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.introspector.WBType;
+import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -53,9 +54,9 @@ public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBFiel
     * @param field The actual field
     * @param declaringClass The abstraction of the declaring class
     */
-   protected WBFieldImpl(Field field, WBType<?> declaringClass)
+   protected WBFieldImpl(Field field, WBType<?> declaringClass, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(field), field, (Class<T>) field.getType(), field.getGenericType());
+      super(AnnotationStore.of(field, classTransformer.getTypeStore()), field, (Class<T>) field.getType(), field.getGenericType());
       this.field = field;
       field.setAccessible(true);
       this.declaringClass = declaringClass;

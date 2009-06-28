@@ -45,7 +45,7 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.WBMember;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.metadata.cache.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
@@ -206,7 +206,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       {
          throw new IllegalProductException("Cannot return null from a non-dependent producer method");
       }
-      boolean passivating = manager.getServices().get(MetaDataCache.class).getScopeModel(getScopeType()).isPassivating();
+      boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScopeType()).isPassivating();
       if (passivating && !Reflections.isSerializable(instance.getClass()))
       {
          throw new IllegalProductException("Producers cannot declare passivating scope and return a non-serializable class");

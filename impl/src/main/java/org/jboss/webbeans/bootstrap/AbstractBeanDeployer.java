@@ -16,18 +16,14 @@
  */
 package org.jboss.webbeans.bootstrap;
 
-import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.deployment.DeploymentType;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.Realizes;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.DisposalMethodBean;
@@ -44,8 +40,6 @@ import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.introspector.WBMethod;
-import org.jboss.webbeans.introspector.WrappedWBField;
-import org.jboss.webbeans.introspector.WrappedWBMethod;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -121,13 +115,6 @@ public class AbstractBeanDeployer
       createObserverMethods(bean, bean.getAnnotatedItem());
       createDisposalMethods(bean, bean.getAnnotatedItem());
       
-      if (bean.getAnnotatedItem().isAnnotationPresent(Realizes.class))
-      {
-         createRealizedProducerMethods(bean, bean.getAnnotatedItem());
-         createRealizedProducerFields(bean, bean.getAnnotatedItem());
-         createRealizedObserverMethods(bean, bean.getAnnotatedItem());
-      }
-      
    }
    
    protected void createProducerMethods(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
@@ -154,24 +141,6 @@ public class AbstractBeanDeployer
       manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
    }
    
-   protected void createRealizedProducerMethods(AbstractClassBean<?> declaringBean, WBClass<?> realizingClass)
-   {
-      WBClass<?> realizedClass = realizingClass.getSuperclass();
-      for (WBMethod<?> realizedMethod : realizedClass.getDeclaredAnnotatedMethods(Produces.class))
-      {
-         createProducerMethod(declaringBean, realizeProducerMethod(realizedMethod, realizingClass));
-      }
-   }
-   
-   protected void createRealizedProducerFields(AbstractClassBean<?> declaringBean, WBClass<?> realizingClass)
-   {
-      WBClass<?> realizedClass = realizingClass.getSuperclass();
-      for (final WBField<?> realizedField : realizedClass.getDeclaredAnnotatedFields(Produces.class))
-      {
-         createProducerField(declaringBean, realizeProducerField(realizedField, realizingClass));
-      }
-   }
-   
    protected <T> void createProducerField(AbstractClassBean<?> declaringBean, WBField<T> field)
    {
       ProducerFieldBean<T> bean = ProducerFieldBean.of(field, declaringBean, manager);
@@ -192,11 +161,6 @@ public class AbstractBeanDeployer
       {
          createObserverMethod(declaringBean, method);
       }
-   }
-   
-   protected void createRealizedObserverMethods(AbstractClassBean<?> declaringBean, WBClass<?> realizingClass)
-   {
-      createObserverMethods(declaringBean, realizingClass.getSuperclass());
    }
    
    protected void createObserverMethod(RIBean<?> declaringBean, WBMethod<?> method)
@@ -257,75 +221,7 @@ public class AbstractBeanDeployer
    {
       return type.getNoArgsConstructor() != null || type.getAnnotatedConstructors(Initializer.class).size() > 0;
    }
-   
-   private static <T> WBMethod<T> realizeProducerMethod(final WBMethod<T> method, final WBClass<?> realizingClass)
-   {
-      return new WrappedWBMethod<T>(method, realizingClass.getMetaAnnotations(BindingType.class))
-      {
-         
-         @Override
-         public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
-         {
-            if (metaAnnotationType.equals(DeploymentType.class))
-            {
-               return realizingClass.getMetaAnnotations(DeploymentType.class);
-            }
-            else
-            {
-               return super.getMetaAnnotations(metaAnnotationType);
-            }
-         }
-         
-         @Override
-         public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
-         {
-            if (metaAnnotationType.equals(DeploymentType.class))
-            {
-               return realizingClass.getDeclaredMetaAnnotations(DeploymentType.class);
-            }
-            else
-            {
-               return super.getDeclaredMetaAnnotations(metaAnnotationType);
-            }
-         }
-         
-      };
-   }
-   
-   private static <T> WBField<T> realizeProducerField(final WBField<T> field, final WBClass<?> realizingClass)
-   {
-      return new WrappedWBField<T>(field, realizingClass.getMetaAnnotations(BindingType.class))
-      {
-         
-         @Override
-         public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
-         {
-            if (metaAnnotationType.equals(DeploymentType.class))
-            {
-               return realizingClass.getMetaAnnotations(DeploymentType.class);
-            }
-            else
-            {
-               return super.getMetaAnnotations(metaAnnotationType);
-            }
-         }
-         
-         @Override
-         public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
-         {
-            if (metaAnnotationType.equals(DeploymentType.class))
-            {
-               return realizingClass.getDeclaredMetaAnnotations(DeploymentType.class);
-            }
-            else
-            {
-               return super.getDeclaredMetaAnnotations(metaAnnotationType);
-            }
-         }
-         
-      };
-   }
-   
+      
    public BeanDeployerEnvironment getBeanDeployerEnvironment()
    {
       return environment;

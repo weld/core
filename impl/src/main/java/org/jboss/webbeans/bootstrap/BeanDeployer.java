@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.decorator.Decorator;
+import javax.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
@@ -60,6 +61,16 @@ public class BeanDeployer extends AbstractBeanDeployer
    {
       ClassTransformer classTransformer = getManager().getServices().get(ClassTransformer.class);
       if (!clazz.isAnnotation() && !clazz.isEnum())
+      {
+         classes.add(classTransformer.loadClass(clazz));
+      }
+      return this;
+   }
+   
+   public AbstractBeanDeployer addClass(AnnotatedType<?> clazz)
+   {
+      ClassTransformer classTransformer = getManager().getServices().get(ClassTransformer.class);
+      if (!clazz.getJavaClass().isAnnotation() && !clazz.getJavaClass().isEnum())
       {
          classes.add(classTransformer.loadClass(clazz));
       }

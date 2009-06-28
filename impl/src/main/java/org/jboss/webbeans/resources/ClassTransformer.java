@@ -19,32 +19,52 @@ package org.jboss.webbeans.resources;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.Callable;
 
+import javax.enterprise.inject.spi.AnnotatedType;
+
 import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.introspector.WBAnnotation;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.jlr.WBAnnotationImpl;
 import org.jboss.webbeans.introspector.jlr.WBClassImpl;
+import org.jboss.webbeans.metadata.TypeStore;
 import org.jboss.webbeans.util.collections.ConcurrentCache;
 
 public class ClassTransformer implements Service
 {
 
    private final ConcurrentCache<Class<?>, WBClass<?>> classes;
+   private final ConcurrentCache<AnnotatedType<?>, WBClass<?>> annotatedTypes;
    private final ConcurrentCache<Class<?>, WBAnnotation<?>> annotations;
    private final ClassTransformer transformer = this;
+   private final TypeStore typeStore;
 
    /**
     * 
     */
-   public ClassTransformer()
+   public ClassTransformer(TypeStore typeStore)
    {
       classes = new ConcurrentCache<Class<?>, WBClass<?>>();
+      this.annotatedTypes = new ConcurrentCache<AnnotatedType<?>, WBClass<?>>();
       annotations = new ConcurrentCache<Class<?>, WBAnnotation<?>>();
+      this.typeStore = typeStore;
    }
 
    public <T> WBClass<T> loadClass(final Class<T> clazz)
    {
       return classes.putIfAbsent(clazz, new Callable<WBClass<T>>()
+      {
+
+         public WBClass<T> call() throws Exception
+         {
+            return WBClassImpl.of(clazz, transformer);
+         }
+
+      });
+   }
+   
+   public <T> WBClass<T> loadClass(final AnnotatedType<T> clazz)
+   {
+      return annotatedTypes.putIfAbsent(clazz, new Callable<WBClass<T>>()
       {
 
          public WBClass<T> call() throws Exception
@@ -65,6 +85,11 @@ public class ClassTransformer implements Service
          }
 
       });
+   }
+   
+   public TypeStore getTypeStore()
+   {
+      return typeStore;
    }
 
 }

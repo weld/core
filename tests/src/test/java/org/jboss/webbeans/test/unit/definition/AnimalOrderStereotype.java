@@ -10,7 +10,7 @@ import javax.enterprise.inject.stereotype.Stereotype;
 
 
 
-@Stereotype(requiredTypes={Animal.class, Order.class})
+@Stereotype
 @Target( { TYPE })
 @Retention(RUNTIME)
 @interface AnimalOrderStereotype

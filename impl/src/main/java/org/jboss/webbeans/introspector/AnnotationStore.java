@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.enterprise.inject.BindingType;
 
 import org.jboss.webbeans.literal.CurrentLiteral;
+import org.jboss.webbeans.metadata.TypeStore;
 import org.jboss.webbeans.util.collections.multi.SetHashMultiMap;
 import org.jboss.webbeans.util.collections.multi.SetMultiMap;
 
@@ -81,22 +82,22 @@ public class AnnotationStore
     * @param annotatedElement
     * @return
     */
-   public static AnnotationStore of(AnnotatedElement annotatedElement)
+   public static AnnotationStore of(AnnotatedElement annotatedElement, TypeStore typeStore)
    {
-      return new AnnotationStore(buildAnnotationMap(annotatedElement.getAnnotations()), buildAnnotationMap(annotatedElement.getDeclaredAnnotations()));
+      return new AnnotationStore(buildAnnotationMap(annotatedElement.getAnnotations()), buildAnnotationMap(annotatedElement.getDeclaredAnnotations()), typeStore);
    }
    
-   public static AnnotationStore of(Annotation[] annotations, Annotation[] declaredAnnotations)
+   public static AnnotationStore of(Annotation[] annotations, Annotation[] declaredAnnotations, TypeStore typeStore)
    {
-      return new AnnotationStore(buildAnnotationMap(annotations), buildAnnotationMap(declaredAnnotations));
+      return new AnnotationStore(buildAnnotationMap(annotations), buildAnnotationMap(declaredAnnotations), typeStore);
    }
    
-   public static AnnotationStore of(Set<Annotation> annotations, Set<Annotation> declaredAnnotations)
+   public static AnnotationStore of(Set<Annotation> annotations, Set<Annotation> declaredAnnotations, TypeStore typeStore)
    {
-      return new AnnotationStore(buildAnnotationMap(annotations), buildAnnotationMap(declaredAnnotations));
+      return new AnnotationStore(buildAnnotationMap(annotations), buildAnnotationMap(declaredAnnotations), typeStore);
    }
    
-   public static AnnotationStore wrap(AnnotationStore annotationStore, Set<Annotation> annotations, Set<Annotation> declaredAnnotations)
+   public static AnnotationStore wrap(AnnotationStore annotationStore, Set<Annotation> annotations, Set<Annotation> declaredAnnotations, TypeStore typeStore)
    {
       Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
       annotationMap.putAll(buildAnnotationMap(annotations));
@@ -106,7 +107,7 @@ public class AnnotationStore
       declaredAnnotationMap.putAll(buildAnnotationMap(declaredAnnotations));
       declaredAnnotationMap.putAll(annotationStore.getDeclaredAnnotationMap());
       
-      return new AnnotationStore(annotationMap, declaredAnnotationMap);
+      return new AnnotationStore(annotationMap, declaredAnnotationMap, typeStore);
    }
    
    // The annotation map (annotation type -> annotation) of the item
@@ -134,7 +135,7 @@ public class AnnotationStore
     * @param annotationMap A map of annotation to register
     * 
     */
-   protected AnnotationStore(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap)
+   protected AnnotationStore(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, TypeStore typeStore)
    {
       if (annotationMap == null)
       {
@@ -145,14 +146,8 @@ public class AnnotationStore
       this.metaAnnotationMap = new SetHashMultiMap<Class<? extends Annotation>, Annotation>();
       for (Annotation annotation : annotationMap.values())
       {
-         for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
-         {
-            // Only map meta-annotations we are interested in
-            if (MAPPED_METAANNOTATIONS.contains(metaAnnotation.annotationType()))
-            {
-               metaAnnotationMap.put(metaAnnotation.annotationType(), annotation);
-            }
-         }
+         addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations());
+         addMetaAnnotations(metaAnnotationMap, annotation, typeStore.get(annotation.annotationType()));
          annotationSet.add(annotation);
       }
       
@@ -163,17 +158,36 @@ public class AnnotationStore
       this.declaredAnnotationMap = declaredAnnotationMap;
       this.declaredAnnotationSet = new HashSet<Annotation>();
       this.declaredMetaAnnotationMap = new SetHashMultiMap<Class<? extends Annotation>, Annotation>();
-      for (Annotation annotation : declaredAnnotationMap.values())
+      for (Annotation declaredAnnotation : declaredAnnotationMap.values())
       {
-         for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
-         {
-            // Only map meta-annotations we are interested in
-            if (MAPPED_METAANNOTATIONS.contains(metaAnnotation.annotationType()))
-            {
-               declaredMetaAnnotationMap.put(metaAnnotation.annotationType(), annotation);
-            }
-         }
-         declaredAnnotationSet.add(annotation);
+         addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, declaredAnnotation.annotationType().getAnnotations());
+         addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, typeStore.get(declaredAnnotation.annotationType()));
+         declaredAnnotationSet.add(declaredAnnotation);
+      }
+   }
+   
+   private static void addMetaAnnotations(SetMultiMap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Annotation[] metaAnnotations)
+   {
+      for (Annotation metaAnnotation : metaAnnotations)
+      {
+         addMetaAnnotation(metaAnnotationMap, annotation, metaAnnotation.annotationType());
+      }
+   }
+   
+   private static void addMetaAnnotations(SetMultiMap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Iterable<Annotation> metaAnnotations)
+   {
+      for (Annotation metaAnnotation : metaAnnotations)
+      {
+         addMetaAnnotation(metaAnnotationMap, annotation, metaAnnotation.annotationType());
+      }
+   }
+   
+   private static void addMetaAnnotation(SetMultiMap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Class<? extends Annotation> metaAnnotationType)
+   {
+      // Only map meta-annotations we are interested in
+      if (MAPPED_METAANNOTATIONS.contains(metaAnnotationType))
+      {
+         metaAnnotationMap.put(metaAnnotationType, annotation);
       }
    }
    

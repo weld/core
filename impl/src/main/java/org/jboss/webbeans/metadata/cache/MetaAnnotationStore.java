@@ -29,7 +29,7 @@ import org.jboss.webbeans.util.collections.ConcurrentCache;
  * @author Pete Muir
  * 
  */
-public class MetaDataCache implements Service
+public class MetaAnnotationStore implements Service
 {
 
    // The stereotype models
@@ -41,7 +41,7 @@ public class MetaDataCache implements Service
    
    private final ClassTransformer classTransformer;
 
-   public MetaDataCache(ClassTransformer classTransformer)
+   public MetaAnnotationStore(ClassTransformer classTransformer)
    {
       this.classTransformer = classTransformer;
    }

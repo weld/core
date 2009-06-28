@@ -35,6 +35,7 @@ import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.introspector.jlr.AbstractWBAnnotated;
+import org.jboss.webbeans.metadata.TypeStore;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -128,12 +129,12 @@ public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> imple
 
    private ResolvableWBClass(Type type, Annotation[] annotations, BeanManagerImpl manager)
    {
-      this(type, AnnotationStore.of(annotations, EMPTY_ANNOTATION_ARRAY), manager);
+      this(type, AnnotationStore.of(annotations, EMPTY_ANNOTATION_ARRAY, manager.getServices().get(TypeStore.class)), manager);
    }
 
    private ResolvableWBClass(Type type, Set<Annotation>annotations, BeanManagerImpl manager)
    {
-      this(type, AnnotationStore.of(annotations, EMPTY_ANNOTATION_SET), manager);
+      this(type, AnnotationStore.of(annotations, EMPTY_ANNOTATION_SET, manager.getServices().get(TypeStore.class)), manager);
    }
 
    @Override

@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedType;
+
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.ConstructorSignature;
 import org.jboss.webbeans.introspector.MethodSignature;
@@ -53,16 +55,16 @@ import org.jboss.webbeans.util.collections.multi.SetMultiMap;
  */
 public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
 {
-   
+
    private static List<Class<?>> NO_ARGUMENTS = Collections.emptyList();
-   
+
    // The set of abstracted fields
    private final Set<WBField<?>> fields;
    // The map from annotation type to abstracted field with annotation
    private final SetMultiMap<Class<? extends Annotation>, WBField<?>> annotatedFields;
    // The map from annotation type to abstracted field with meta-annotation
    private final SetMultiMap<Class<? extends Annotation>, WBField<?>> metaAnnotatedFields;
-   
+
    // The set of abstracted fields
    private final Set<WBField<?>> declaredFields;
    private final Map<String, WBField<?>> declaredFieldsByName;
@@ -70,7 +72,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    private final SetMultiMap<Class<? extends Annotation>, WBField<?>> declaredAnnotatedFields;
    // The map from annotation type to abstracted field with meta-annotation
    private final SetMultiMap<Class<? extends Annotation>, WBField<?>> declaredMetaAnnotatedFields;
-   
+
    // The set of abstracted methods
    private final Set<WBMethod<?>> methods;
    private final Map<MethodSignature, WBMethod<?>> declaredMethodsBySignature;
@@ -79,14 +81,14 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    private final SetMultiMap<Class<? extends Annotation>, WBMethod<?>> annotatedMethods;
    // The map from annotation type to method with a parameter with annotation
    private final SetMultiMap<Class<? extends Annotation>, WBMethod<?>> methodsByAnnotatedParameters;
-   
+
    // The set of abstracted methods
    private final Set<WBMethod<?>> declaredMethods;
    // The map from annotation type to abstracted method with annotation
    private final SetMultiMap<Class<? extends Annotation>, WBMethod<?>> declaredAnnotatedMethods;
    // The map from annotation type to method with a parameter with annotation
    private final SetMultiMap<Class<? extends Annotation>, WBMethod<?>> declaredMethodsByAnnotatedParameters;
-   
+
    // The set of abstracted constructors
    private final Set<WBConstructor<T>> constructors;
    private final Map<ConstructorSignature, WBConstructor<?>> declaredConstructorsBySignature;
@@ -94,26 +96,32 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    private final SetMultiMap<Class<? extends Annotation>, WBConstructor<T>> annotatedConstructors;
    // The map from class list to abstracted constructor
    private final Map<List<Class<?>>, WBConstructor<T>> constructorsByArgumentMap;
-   
+
    private final SetMultiMap<Class<? extends Annotation>, WBConstructor<?>> constructorsByAnnotatedParameters;
-   
+
    // Cached string representation
    private String toString;
-   
+
    private final boolean _nonStaticMemberClass;
    private final boolean _abstract;
    private final boolean _enum;
 
-   
    public static <T> WBClass<T> of(Class<T> clazz, ClassTransformer classTransformer)
    {
-      return new WBClassImpl<T>(clazz, clazz, clazz.getAnnotations(), clazz.getDeclaredAnnotations(), classTransformer);
+      AnnotationStore annotationStore = AnnotationStore.of(clazz.getAnnotations(), clazz.getDeclaredAnnotations(), classTransformer.getTypeStore());
+      return new WBClassImpl<T>(clazz, clazz, annotationStore, classTransformer);
+   }
+   
+   public static <T> WBClass<T> of(AnnotatedType<T> annotatedType, ClassTransformer classTransformer)
+   {
+      AnnotationStore annotationStore = AnnotationStore.of(annotatedType.getAnnotations(), annotatedType.getAnnotations(), classTransformer.getTypeStore());
+      return new WBClassImpl<T>(annotatedType.getJavaClass(), annotatedType.getBaseType(), annotationStore, classTransformer);
    }
 
-   private WBClassImpl(Class<T> rawType, Type type, Annotation[] annotations, Annotation[] declaredAnnotations, ClassTransformer classTransformer)
+   private WBClassImpl(Class<T> rawType, Type type, AnnotationStore annotationStore, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(annotations, declaredAnnotations), rawType, type, classTransformer);
-      
+      super(annotationStore, rawType, type, classTransformer);
+
       this.fields = new HashSet<WBField<?>>();
       this.annotatedFields = new SetHashMultiMap<Class<? extends Annotation>, WBField<?>>();
       this.metaAnnotatedFields = new SetHashMultiMap<Class<? extends Annotation>, WBField<?>>();
@@ -132,7 +140,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
             {
                field.setAccessible(true);
             }
-            WBField<?> annotatedField = new WBFieldImpl<Object>(field, this);
+            WBField<?> annotatedField = new WBFieldImpl<Object>(field, this, classTransformer);
             this.fields.add(annotatedField);
             if (c == rawType)
             {
@@ -155,10 +163,10 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
                   }
                }
             }
-            
+
          }
       }
-      
+
       this.constructors = new HashSet<WBConstructor<T>>();
       this.constructorsByArgumentMap = new HashMap<List<Class<?>>, WBConstructor<T>>();
       this.annotatedConstructors = new SetHashMultiMap<Class<? extends Annotation>, WBConstructor<T>>();
@@ -168,16 +176,16 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
       {
          @SuppressWarnings("unchecked")
          Constructor<T> c = (Constructor<T>) constructor;
-         WBConstructor<T> annotatedConstructor = WBConstructorImpl.of(c, this);
+         WBConstructor<T> annotatedConstructor = WBConstructorImpl.of(c, this, classTransformer);
          if (!constructor.isAccessible())
          {
             constructor.setAccessible(true);
          }
          this.constructors.add(annotatedConstructor);
          this.constructorsByArgumentMap.put(Arrays.asList(constructor.getParameterTypes()), annotatedConstructor);
-         
+
          this.declaredConstructorsBySignature.put(annotatedConstructor.getSignature(), annotatedConstructor);
-         
+
          for (Annotation annotation : annotatedConstructor.getAnnotations())
          {
             if (!annotatedConstructors.containsKey(annotation.annotationType()))
@@ -186,7 +194,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
             }
             annotatedConstructors.get(annotation.annotationType()).add(annotatedConstructor);
          }
-         
+
          for (Class<? extends Annotation> annotationType : WBConstructor.MAPPED_PARAMETER_ANNOTATIONS)
          {
             if (annotatedConstructor.getAnnotatedParameters(annotationType).size() > 0)
@@ -195,7 +203,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
             }
          }
       }
-      
+
       this.methods = new HashSet<WBMethod<?>>();
       this.annotatedMethods = new SetHashMultiMap<Class<? extends Annotation>, WBMethod<?>>();
       this.methodsByAnnotatedParameters = new SetHashMultiMap<Class<? extends Annotation>, WBMethod<?>>();
@@ -212,8 +220,8 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
             {
                method.setAccessible(true);
             }
-            
-            WBMethod<?> annotatedMethod = WBMethodImpl.of(method, this);
+
+            WBMethod<?> annotatedMethod = WBMethodImpl.of(method, this, classTransformer);
             this.methods.add(annotatedMethod);
             this.methodsBySignature.put(annotatedMethod.getSignature(), annotatedMethod);
             if (c == rawType)
@@ -243,7 +251,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
          }
       }
    }
-   
+
    /**
     * Gets the implementing class
     * 
@@ -253,7 +261,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    {
       return getJavaClass();
    }
-   
+
    /**
     * Gets the delegate (class)
     * 
@@ -263,7 +271,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    {
       return getJavaClass();
    }
-   
+
    /**
     * Gets the abstracted fields of the class
     * 
@@ -275,22 +283,22 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    {
       return Collections.unmodifiableSet(fields);
    }
-   
+
    public Set<WBField<?>> getDeclaredFields()
    {
       return Collections.unmodifiableSet(declaredFields);
    }
-   
+
    public <F> WBField<F> getDeclaredField(String fieldName, WBClass<F> expectedType)
    {
       return (WBField<F>) declaredFieldsByName.get(fieldName);
    }
-   
+
    public Set<WBField<?>> getDeclaredAnnotatedFields(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(declaredAnnotatedFields.get(annotationType));
    }
-   
+
    /**
     * Gets the abstracted constructors of the class
     * 
@@ -302,12 +310,12 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    {
       return Collections.unmodifiableSet(constructors);
    }
-   
+
    public WBConstructor<T> getDeclaredConstructor(ConstructorSignature signature)
    {
       return (WBConstructor<T>) declaredConstructorsBySignature.get(signature);
    }
-   
+
    /**
     * Gets abstracted fields with requested meta-annotation type present
     * 
@@ -316,8 +324,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
     * populated for the requested meta-annotation type and the result is
     * returned
     * 
-    * @param metaAnnotationType
-    *           The meta-annotation type to match
+    * @param metaAnnotationType The meta-annotation type to match
     * @return The set of abstracted fields with meta-annotation present. Returns
     *         an empty set if no matches are found.
     */
@@ -325,14 +332,13 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    {
       return Collections.unmodifiableSet(metaAnnotatedFields.get(metaAnnotationType));
    }
-   
+
    /**
     * Gets the abstracted field annotated with a specific annotation type
     * 
     * If the fields map is null, initialize it first
     * 
-    * @param annotationType
-    *           The annotation type to match
+    * @param annotationType The annotation type to match
     * @return A set of matching abstracted fields, null if none are found.
     * 
     */
@@ -340,29 +346,28 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    {
       return Collections.unmodifiableSet(annotatedFields.get(annotationType));
    }
-   
+
    public boolean isNonStaticMemberClass()
    {
       return _nonStaticMemberClass;
    }
-   
+
    public boolean isAbstract()
    {
       return _abstract;
    }
-   
+
    public boolean isEnum()
    {
       return _enum;
    }
-   
+
    /**
     * Gets the abstracted methods that have a certain annotation type present
     * 
     * If the annotated methods map is null, initialize it first
     * 
-    * @param annotationType
-    *           The annotation type to match
+    * @param annotationType The annotation type to match
     * @return A set of matching method abstractions. Returns an empty set if no
     *         matches are found.
     * 
@@ -372,17 +377,16 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    {
       return Collections.unmodifiableSet(annotatedMethods.get(annotationType));
    }
-   
+
    public Set<WBMethod<?>> getDeclaredAnnotatedMethods(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(declaredAnnotatedMethods.get(annotationType));
    }
-   
+
    /**
     * Gets constructors with given annotation type
     * 
-    * @param annotationType
-    *           The annotation type to match
+    * @param annotationType The annotation type to match
     * @return A set of abstracted constructors with given annotation type. If
     *         the constructors set is empty, initialize it first. Returns an
     *         empty set if there are no matches.
@@ -393,27 +397,27 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
    {
       return Collections.unmodifiableSet(annotatedConstructors.get(annotationType));
    }
-   
+
    public WBConstructor<T> getNoArgsConstructor()
    {
       return constructorsByArgumentMap.get(NO_ARGUMENTS);
    }
-   
+
    public Set<WBMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(methodsByAnnotatedParameters.get(annotationType));
    }
-   
+
    public Set<WBConstructor<?>> getConstructorsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(constructorsByAnnotatedParameters.get(annotationType));
    }
-   
+
    public Set<WBMethod<?>> getDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(declaredMethodsByAnnotatedParameters.get(annotationType));
    }
-   
+
    public WBMethod<?> getMethod(Method methodDescriptor)
    {
       // TODO Should be cached
@@ -426,12 +430,12 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
       }
       return null;
    }
-   
+
    public Set<WBMethod<?>> getMethods()
    {
       return Collections.unmodifiableSet(methods);
    }
-   
+
    public WBMethod<?> getDeclaredMethod(Method method)
    {
       // TODO Should be cached
@@ -444,19 +448,19 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
       }
       return null;
    }
-   
+
    @SuppressWarnings("unchecked")
    public <M> WBMethod<M> getDeclaredMethod(MethodSignature signature, WBClass<M> expectedReturnType)
    {
       return (WBMethod<M>) declaredMethodsBySignature.get(signature);
    }
-   
+
    @SuppressWarnings("unchecked")
    public <M> WBMethod<M> getMethod(MethodSignature signature)
    {
       return (WBMethod<M>) methodsBySignature.get(signature);
    }
-   
+
    /**
     * Gets a string representation of the class
     * 
@@ -472,17 +476,17 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
       toString = "Annotated class " + Names.classToString(getDelegate());
       return toString;
    }
-   
+
    @SuppressWarnings("unchecked")
    public <U> WBClass<? extends U> asSubclass(WBClass<U> clazz)
    {
       return (WBClass<? extends U>) this;
    }
-   
+
    @SuppressWarnings("unchecked")
    public T cast(Object object)
    {
       return (T) object;
    }
-   
+
 }

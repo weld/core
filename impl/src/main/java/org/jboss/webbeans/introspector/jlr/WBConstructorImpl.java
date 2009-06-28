@@ -30,6 +30,7 @@ import org.jboss.webbeans.introspector.ConstructorSignature;
 import org.jboss.webbeans.introspector.WBConstructor;
 import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.introspector.WBType;
+import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.collections.multi.ListHashMultiMap;
 import org.jboss.webbeans.util.collections.multi.ListMultiMap;
@@ -62,9 +63,9 @@ public class WBConstructorImpl<T> extends AbstractWBMember<T, Constructor<T>> im
    // Cached string representation
    private String toString;
    
-   public static <T> WBConstructor<T> of(Constructor<T> constructor, WBType<T> declaringClass)
+   public static <T> WBConstructor<T> of(Constructor<T> constructor, WBType<T> declaringClass, ClassTransformer classTransformer)
    {
-      return new WBConstructorImpl<T>(constructor, declaringClass);
+      return new WBConstructorImpl<T>(constructor, declaringClass, classTransformer);
    }
 
    /**
@@ -75,9 +76,9 @@ public class WBConstructorImpl<T> extends AbstractWBMember<T, Constructor<T>> im
     * @param constructor The constructor method
     * @param declaringClass The declaring class
     */
-   protected WBConstructorImpl(Constructor<T> constructor, WBType<T> declaringClass)
+   protected WBConstructorImpl(Constructor<T> constructor, WBType<T> declaringClass, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(constructor), constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass());
+      super(AnnotationStore.of(constructor, classTransformer.getTypeStore()), constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass());
       this.constructor = constructor;
       this.declaringClass = declaringClass;
 
@@ -90,7 +91,7 @@ public class WBConstructorImpl<T> extends AbstractWBMember<T, Constructor<T>> im
          {
             Class<?> clazz = constructor.getParameterTypes()[i];
             Type type = constructor.getGenericParameterTypes()[i];
-            WBParameter<?> parameter = WBParameterImpl.of(constructor.getParameterAnnotations()[i], clazz, type, this);
+            WBParameter<?> parameter = WBParameterImpl.of(constructor.getParameterAnnotations()[i], clazz, type, this, classTransformer);
             parameters.add(parameter);
 
             for (Annotation annotation : parameter.getAnnotations())
@@ -110,7 +111,7 @@ public class WBConstructorImpl<T> extends AbstractWBMember<T, Constructor<T>> im
             {
                type = clazz;
             }
-            WBParameter<?> parameter = WBParameterImpl.of(new Annotation[0], clazz, type, this);
+            WBParameter<?> parameter = WBParameterImpl.of(new Annotation[0], clazz, type, this, classTransformer);
             parameters.add(parameter);
 
             for (Annotation annotation : parameter.getAnnotations())

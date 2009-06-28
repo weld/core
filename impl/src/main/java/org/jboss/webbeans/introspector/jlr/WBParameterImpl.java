@@ -23,6 +23,7 @@ import java.util.Set;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.WBMember;
 import org.jboss.webbeans.introspector.WBParameter;
+import org.jboss.webbeans.resources.ClassTransformer;
 
 /**
  * Represents a parameter
@@ -47,9 +48,9 @@ public class WBParameterImpl<T> extends AbstractWBAnnotated<T, Object> implement
    // Cached string representation
    private String toString;
    
-   public static <T> WBParameter<T> of(Annotation[] annotations, Class<T> rawType, Type type, WBMember<?, ?> declaringMember)
+   public static <T> WBParameter<T> of(Annotation[] annotations, Class<T> rawType, Type type, WBMember<?, ?> declaringMember, ClassTransformer classTransformer)
    {
-      return new WBParameterImpl<T>(annotations, rawType, type, declaringMember);
+      return new WBParameterImpl<T>(annotations, rawType, type, declaringMember, classTransformer);
    }
 
    /**
@@ -58,9 +59,9 @@ public class WBParameterImpl<T> extends AbstractWBAnnotated<T, Object> implement
     * @param annotations The annotations array
     * @param type The type of the parameter
     */
-   protected WBParameterImpl(Annotation[] annotations, Class<T> rawType, Type type, WBMember<?, ?> declaringMember)
+   protected WBParameterImpl(Annotation[] annotations, Class<T> rawType, Type type, WBMember<?, ?> declaringMember, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(annotations, annotations), rawType, type);
+      super(AnnotationStore.of(annotations, annotations, classTransformer.getTypeStore()), rawType, type);
       this.declaringMember = declaringMember;
    }
 

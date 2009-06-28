@@ -33,7 +33,7 @@ import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.metadata.cache.BindingTypeModel;
-import org.jboss.webbeans.metadata.cache.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 
 /**
  * Helper class for bean inspection
@@ -58,7 +58,7 @@ public class Beans
       }
       else
       {
-         return manager.getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isPassivating();
+         return manager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScopeType()).isPassivating();
       }
    }
 
@@ -122,7 +122,7 @@ public class Beans
    {
       for (Annotation binding : bindings1)
       {
-         BindingTypeModel<?> bindingType = manager.getServices().get(MetaDataCache.class).getBindingTypeModel(binding.annotationType());
+         BindingTypeModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class).getBindingTypeModel(binding.annotationType());
          if (bindingType.getNonBindingTypes().size() > 0)
          {
             boolean matchFound = false;

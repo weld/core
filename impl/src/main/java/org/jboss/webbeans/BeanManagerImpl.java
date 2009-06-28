@@ -86,7 +86,7 @@ import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.manager.api.WebBeansManager;
-import org.jboss.webbeans.metadata.cache.MetaDataCache;
+import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
@@ -359,7 +359,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       Class<?> clazz = event.getClass();
       for (Annotation annotation : bindings)
       {
-         if (!getServices().get(MetaDataCache.class).getBindingTypeModel(annotation.annotationType()).isValid())
+         if (!getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotation.annotationType()).isValid())
          {
             throw new IllegalArgumentException("Not a binding type " + annotation);
          }
@@ -463,7 +463,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       for (Annotation annotation : element.getAnnotations())
       {
-         if (!getServices().get(MetaDataCache.class).getBindingTypeModel(annotation.annotationType()).isValid())
+         if (!getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotation.annotationType()).isValid())
          {
             throw new IllegalArgumentException("Not a binding type " + annotation);
          }
@@ -704,7 +704,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       {
          creationalContext = ((CreationalContextImpl<?>) creationalContext).getCreationalContext(bean);
       }
-      if (getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isNormal())
+      if (getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScopeType()).isNormal())
       {
          if (creationalContext != null || (creationalContext == null && getContext(bean.getScopeType()).get(bean) != null))
          {
@@ -742,7 +742,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          }
          WBAnnotated<?, ?> element = ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this);
          Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
-         if (getServices().get(MetaDataCache.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
+         if (getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
          {
             throw new UnproxyableResolutionException("Attempting to inject an unproxyable normal scoped bean " + resolvedBean + " into " + injectionPoint);
          }
@@ -802,7 +802,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          throw new AmbiguousResolutionException(element + "Resolved multiple Web Beans");
       }
       Bean<T> bean = (Bean<T>) beans.iterator().next();
-      boolean normalScoped = getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isNormal();
+      boolean normalScoped = getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScopeType()).isNormal();
       if (normalScoped && !Beans.isBeanProxyable(bean))
       {
          throw new UnproxyableResolutionException("Normal scoped bean " + bean + " is not proxyable");
@@ -890,7 +890,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public BeanManagerImpl setCurrent(Class<? extends Annotation> scopeType)
    {
-      if (!getServices().get(MetaDataCache.class).getScopeModel(scopeType).isNormal())
+      if (!getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).isNormal())
       {
          throw new IllegalArgumentException("Scope must be a normal scope type " + scopeType);
       }

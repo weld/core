@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.stereotype.Stereotype;
 
-@Stereotype(requiredTypes=Animal.class)
+@Stereotype
 @Target( { TYPE, METHOD, FIELD })
 @Retention(RUNTIME)
 @RequestScoped
