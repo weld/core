@@ -19,7 +19,7 @@ package org.jboss.webbeans.literal;
 import javax.enterprise.context.ScopeType;
 import javax.enterprise.inject.AnnotationLiteral;
 
-public class ScopeTypeLiteral extends AnnotationLiteral<ScopeTypeLiteral> implements ScopeType
+public class ScopeTypeLiteral extends AnnotationLiteral<ScopeType> implements ScopeType
 {
    
    private final boolean normal;
