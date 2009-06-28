@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.jsr299.tck.spi.Managers;
@@ -65,6 +66,10 @@ public class ManagersImpl implements Managers
          return false;
       }
       else if (DeploymentException.class.isAssignableFrom(t.getClass()))
+      {
+         return true;
+      }
+      else if (UnproxyableResolutionException.class.isAssignableFrom(t.getClass()))
       {
          return true;
       }
