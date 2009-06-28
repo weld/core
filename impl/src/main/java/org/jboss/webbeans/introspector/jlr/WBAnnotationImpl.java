@@ -70,7 +70,7 @@ public class WBAnnotationImpl<T extends Annotation> extends AbstractWBType<T> im
     */
    protected WBAnnotationImpl(Class<T> annotationType, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(annotationType, classTransformer.getTypeStore()), annotationType, annotationType, classTransformer);
+      super(AnnotationStore.of(annotationType, classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore()), annotationType, annotationType, classTransformer);
       this.clazz = annotationType;
       members = new HashSet<WBMethod<?>>();
       annotatedMembers = new SetHashMultiMap<Class<? extends Annotation>, WBMethod<?>>();

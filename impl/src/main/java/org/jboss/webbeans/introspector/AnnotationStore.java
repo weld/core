@@ -87,6 +87,19 @@ public class AnnotationStore
       return new AnnotationStore(buildAnnotationMap(annotatedElement.getAnnotations()), buildAnnotationMap(annotatedElement.getDeclaredAnnotations()), typeStore);
    }
    
+   public static AnnotationStore of(AnnotatedElement annotatedElement, Set<Annotation> extraAnnotations, Set<Annotation> extraDeclaredAnnotations, TypeStore typeStore)
+   {
+      Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
+      annotationMap.putAll(buildAnnotationMap(annotatedElement.getAnnotations()));
+      annotationMap.putAll(buildAnnotationMap(extraAnnotations));
+      
+      Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
+      declaredAnnotationMap.putAll(buildAnnotationMap(annotatedElement.getDeclaredAnnotations()));
+      declaredAnnotationMap.putAll(buildAnnotationMap(extraDeclaredAnnotations));
+      
+      return new AnnotationStore(annotationMap, declaredAnnotationMap, typeStore);
+   }
+   
    public static AnnotationStore of(Annotation[] annotations, Annotation[] declaredAnnotations, TypeStore typeStore)
    {
       return new AnnotationStore(buildAnnotationMap(annotations), buildAnnotationMap(declaredAnnotations), typeStore);
