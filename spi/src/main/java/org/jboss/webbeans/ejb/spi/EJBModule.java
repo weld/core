@@ -17,6 +17,7 @@
 package org.jboss.webbeans.ejb.spi;
 
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 
 /**
  * Represents an EJB bean deployment archive.
@@ -25,6 +26,9 @@ import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
  * instance of {@link EJBModule} should be returned instead of
  * {@link BeanDeploymentArchive}; the Java EE container is responsible for
  * identifying EJB bean deployment archives.
+ * 
+ * @see BeanDeploymentArchive
+ * @see Deployment
  * 
  * @author Pete Muir
  * 

@@ -19,42 +19,47 @@ package org.jboss.webbeans.bootstrap.spi;
 import java.net.URL;
 import java.util.List;
 
+import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.ejb.spi.EJBModule;
 
 /**
  * Represents a CDI bean deployment archive.
  * 
- * A bean deployment archive is any library jar, EJB jar or rar archive with a
- * META-INF/beans.xml file, any WEB-INF/classes directory in war with a
- * WEB-INF/beans.xml, or any directory in the classpath with a
- * META-INF/beans.xml.
+ * A deployment archive is any library jar, library directory, EJB jar, rar
+ * archive or any war WEB-INF/classes directory contained in the Java EE
+ * deployment (as defined in the Java Platform, Enterprise Edition (Java EE)
+ * Specification, v6, Section 8.1.2).
  * 
- * For an application deployed as an ear, all library jars, EJB jars, rars and
- * war WEB-INF/classes directories should be searched.
+ * TODO Java SE definition of a deployment archive
  * 
- * For an application deployed as a war, all library jars and the
- * WEB-INF/classes directory should be searched.
+ * A bean deployment archive is any deployment archive with a META-INF/beans.xml
+ * file, or for a war, with a WEB-INF/beans.xml.
  * 
- * The container is allowed to specify archives as {@link BeanDeploymentArchive}
- * even if no beans.xml is present.
+ * The container is allowed to specify a deployment archive as
+ * {@link BeanDeploymentArchive} even if no beans.xml is present (for example, a
+ * container could define a deployment archive with container specific metadata
+ * to be a bean deployment archive).
  * 
  * @see EJBModule
+ * @see Deployment
  * 
  * @author Pete Muir
  * 
  */
-public interface BeanDeploymentArchive
+public interface BeanDeploymentArchive extends Service
 {
 
    /**
-    * Get the ordered transitive closure of modules which are accessible to this
-    * module. The order will be used both in bean discovery and resolution.
+    * Get the ordered bean deployment archives which are accessible to this bean
+    * deployment archive and adjacent to it in the deployment archive graph.
+    * 
+    * The bean deployment archives will be processed in the order specified.
     * 
     * Circular dependencies will be detected and ignored by the container
     * 
-    * @return the ordered transitive closure
+    * @return the ordered accessible bean deployment archives
     */
-   public List<BeanDeploymentArchive> getBeanDeploymentArchiveClosure();
+   public List<BeanDeploymentArchive> getBeanDeploymentArchives();
 
    /**
     * Gets all classes in the bean deployment archive
