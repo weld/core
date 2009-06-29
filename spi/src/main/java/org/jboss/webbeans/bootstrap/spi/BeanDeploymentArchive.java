@@ -19,6 +19,8 @@ package org.jboss.webbeans.bootstrap.spi;
 import java.net.URL;
 import java.util.List;
 
+import org.jboss.webbeans.ejb.spi.EJBModule;
+
 /**
  * Represents a CDI bean deployment archive.
  * 
@@ -33,7 +35,10 @@ import java.util.List;
  * For an application deployed as a war, all library jars and the
  * WEB-INF/classes directory should be searched.
  * 
- * @see
+ * The container is allowed to specify archives as {@link BeanDeploymentArchive}
+ * even if no beans.xml is present.
+ * 
+ * @see EJBModule
  * 
  * @author Pete Muir
  * 
@@ -54,14 +59,15 @@ public interface BeanDeploymentArchive
    /**
     * Gets all classes in the bean deployment archive
     * 
-    * @return an iteration over the classes
+    * @return an iteration over the classes, empty if no classes are present
     */
    public Iterable<Class<?>> getBeanClasses();
 
    /**
     * Get the deployment descriptor
     * 
-    * @return a URL pointing to the deployment descriptor
+    * @return a URL pointing to the deployment descriptor, or null if it is not
+    *         present
     */
    public URL getBeansXml();
 

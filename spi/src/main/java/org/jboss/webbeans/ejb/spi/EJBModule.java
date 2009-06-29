@@ -35,7 +35,7 @@ public interface EJBModule extends BeanDeploymentArchive
    /**
     * Get all the EJBs in the deployment archive 
     * 
-    * @return
+    * @return an iteration of the EJBs, or empty if no EJBs are present
     */
    public Iterable<EjbDescriptor<?>> getEjbs();
 
