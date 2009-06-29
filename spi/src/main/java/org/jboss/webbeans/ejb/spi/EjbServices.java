@@ -74,8 +74,10 @@ public interface EjbServices extends Service
    /**
     * Gets a descriptor for each EJB in the application
     * 
+    * @deprecated an {@link EJBModule} should be used to represent all EJBs
     * @return the EJB descriptors
     */
+   @Deprecated
    public Iterable<EjbDescriptor<?>> discoverEjbs();
    
 }

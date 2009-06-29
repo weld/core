@@ -23,11 +23,6 @@ public abstract class ForwadingBusinessInterfaceDescriptor<T> implements Busines
       return delegate().getInterface();
    }
    
-   public String getJndiName()
-   {
-      return delegate().getJndiName();
-   }
-   
    @Override
    public boolean equals(Object obj)
    {

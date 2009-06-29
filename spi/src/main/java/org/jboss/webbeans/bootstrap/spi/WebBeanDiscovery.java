@@ -26,8 +26,10 @@ import org.jboss.webbeans.bootstrap.api.Service;
  * discover the beans to deploy
  * 
  * @author Pete Muir
+ * @deprecated now encapsulated by {@link BeanDeploymentArchive}
  *
  */
+@Deprecated
 public interface WebBeanDiscovery extends Service
 {
    

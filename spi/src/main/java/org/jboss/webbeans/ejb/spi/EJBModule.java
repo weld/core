@@ -14,22 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.ejb.spi;
 
+import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
+
 /**
- * Represents the business interface of an EJB
+ * Represents an EJB bean deployment archive.
+ * 
+ * If a bean deployment archive is identified as an EJB bean deployment, an
+ * instance of {@link EJBModule} should be returned instead of
+ * {@link BeanDeploymentArchive}; the Java EE container is responsible for
+ * identifying EJB bean deployment archives.
  * 
  * @author Pete Muir
- *
- * @param <T>
+ * 
  */
-public interface BusinessInterfaceDescriptor<T>
+public interface EJBModule extends BeanDeploymentArchive
 {
 
    /**
-    * Gets the business interface class
+    * Get all the EJBs in the deployment archive 
+    * 
+    * @return
     */
-   public Class<T> getInterface();
-   
+   public Iterable<EjbDescriptor<?>> getEjbs();
+
 }

@@ -35,7 +35,7 @@ public interface EjbDescriptor<T>
     * 
     * @return The EJB Bean class
     */
-   public Class<T> getType();
+   public Class<T> getBeanClass();
 
    /**
     * Gets the local business interfaces of the EJB
@@ -45,13 +45,6 @@ public interface EjbDescriptor<T>
    public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces();
    
    /**
-    * Gets the remote business interfaces of the EJB
-    * 
-    * @return An iterator over the remote business interfaces
-    */
-   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces();
-   
-   /**
     * Get the remove methods of the EJB
     * 
     * @return An iterator over the remove methods
@@ -59,38 +52,31 @@ public interface EjbDescriptor<T>
    public Iterable<Method> getRemoveMethods();
 
    /**
-    * Indicates if the bean is stateless
+    * Indicates if the bean is a stateless session bean 
     * 
     * @return True if stateless, false otherwise
     */
    public boolean isStateless();
 
    /**
-    * Indicates if the bean is a EJB 3.1 Singleton
+    * Indicates if the bean is a EJB 3.1 Singleton session bean
     * 
     * @return True if the bean is a singleton, false otherwise
     */
    public boolean isSingleton();
 
    /**
-    * Indicates if the EJB is stateful
+    * Indicates if the EJB is a stateful session bean
     * 
     * @return True if the bean is stateful, false otherwise
     */
    public boolean isStateful();
 
    /**
-    * Indicates if the EJB is and MDB
+    * Indicates if the EJB is an MDB
     * 
     * @return True if the bean is an MDB, false otherwise
     */
    public boolean isMessageDriven();
-
-   /**
-    * Gets the EJB name
-    * 
-    * @return The name
-    */
-   public String getEjbName();
    
 }

@@ -20,21 +20,10 @@ public abstract class ForwardingEjbDescriptor<T> implements EjbDescriptor<T>
 {
    
    protected abstract EjbDescriptor<T> delegate();
-   
-   
-   public String getEjbName()
-   {
-      return delegate().getEjbName();
-   }
-   
+      
    public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces()
    {
       return delegate().getLocalBusinessInterfaces();
-   }
-   
-   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces()
-   {
-      return delegate().getRemoteBusinessInterfaces();
    }
    
    public Iterable<Method> getRemoveMethods()
@@ -42,9 +31,9 @@ public abstract class ForwardingEjbDescriptor<T> implements EjbDescriptor<T>
       return delegate().getRemoveMethods();
    }
    
-   public Class<T> getType()
+   public Class<T> getBeanClass()
    {
-      return delegate().getType();
+      return delegate().getBeanClass();
    }
    
    public boolean isMessageDriven()
