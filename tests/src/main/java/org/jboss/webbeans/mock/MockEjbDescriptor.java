@@ -34,7 +34,7 @@ import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
 public class MockEjbDescriptor<T> implements EjbDescriptor<T>
 {
-   private final Class<T> type;
+   private final Class<T> beanClass;
    private final String ejbName;
    private final List<BusinessInterfaceDescriptor<?>> localInterfaces;
    private final HashSet<Method> removeMethods;
@@ -46,7 +46,7 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
 
    private MockEjbDescriptor(final Class<T> type)
    {
-      this.type = type;
+      this.beanClass = type;
       this.ejbName = type.getSimpleName();
       this.localInterfaces = new ArrayList<BusinessInterfaceDescriptor<?>>();
       
@@ -121,34 +121,34 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       return removeMethods;
    }
 
-   public Class<T> getType()
+   public Class<T> getBeanClass()
    {
-      return type;
+      return beanClass;
    }
 
    public boolean isMessageDriven()
    {
-      return type.isAnnotationPresent(MessageDriven.class);
+      return beanClass.isAnnotationPresent(MessageDriven.class);
    }
 
    public boolean isSingleton()
    {
-      return type.isAnnotationPresent(Singleton.class);
+      return beanClass.isAnnotationPresent(Singleton.class);
    }
 
    public boolean isStateful()
    {
-      return type.isAnnotationPresent(Stateful.class);
+      return beanClass.isAnnotationPresent(Stateful.class);
    }
 
    public boolean isStateless()
    {
-      return type.isAnnotationPresent(Stateless.class);
+      return beanClass.isAnnotationPresent(Stateless.class);
    }
    
    public String getLocalJndiName()
    {
-      return type.getSimpleName() + "/local";
+      return beanClass.getSimpleName() + "/local";
    }
    
    @Override
@@ -173,7 +173,7 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
          builder.append(" (MDB)");
       }
       builder.append("remove methods; " + removeMethods + "; ");
-      builder.append("; BeanClass: " + getType() + "; Local Business Interfaces: " + getLocalBusinessInterfaces());
+      builder.append("; BeanClass: " + getBeanClass() + "; Local Business Interfaces: " + getLocalBusinessInterfaces());
       return builder.toString(); 
    }
    
@@ -183,7 +183,7 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       if (other instanceof EjbDescriptor)
       {
          EjbDescriptor<T> that = (EjbDescriptor<T>) other;
-         return this.getEjbName().equals(that.getEjbName());
+         return this.getBeanClass().equals(that.getBeanClass());
       }
       else
       {

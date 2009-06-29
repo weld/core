@@ -31,9 +31,6 @@ import org.jboss.webbeans.ejb.spi.EjbDescriptor;
  */
 public class EjbDescriptorCache
 {
-
-   // EJB name -> EJB descriptor map
-   private Map<String, InternalEjbDescriptor<?>> ejbsByName;
    // EJB implementation class -> EJB descriptors map
    private Map<Class<?>, Set<InternalEjbDescriptor<?>>> ejbsByBeanClass;
 
@@ -42,19 +39,7 @@ public class EjbDescriptorCache
     */
    public EjbDescriptorCache()
    {
-      this.ejbsByName = new HashMap<String, InternalEjbDescriptor<?>>();
       this.ejbsByBeanClass = new HashMap<Class<?>, Set<InternalEjbDescriptor<?>>>();
-   }
-
-   /**
-    * Gets the EJB descriptor for a given name
-    * 
-    * @param ejbName The EJB name
-    * @return The EJB descriptor
-    */
-   public InternalEjbDescriptor<?> get(String ejbName)
-   {
-      return ejbsByName.get(ejbName);
    }
 
    /**
@@ -77,23 +62,11 @@ public class EjbDescriptorCache
    public <T> void add(EjbDescriptor<T> ejbDescriptor)
    {
       InternalEjbDescriptor<T> internalEjbDescriptor = new InternalEjbDescriptor<T>(ejbDescriptor);
-      ejbsByName.put(ejbDescriptor.getEjbName(), internalEjbDescriptor);
-      if (!ejbsByBeanClass.containsKey(ejbDescriptor.getType()))
+      if (!ejbsByBeanClass.containsKey(ejbDescriptor.getBeanClass()))
       {
-         ejbsByBeanClass.put(ejbDescriptor.getType(), new CopyOnWriteArraySet<InternalEjbDescriptor<?>>());  
+         ejbsByBeanClass.put(ejbDescriptor.getBeanClass(), new CopyOnWriteArraySet<InternalEjbDescriptor<?>>());  
       }
-      ejbsByBeanClass.get(ejbDescriptor.getType()).add(internalEjbDescriptor);
-   }
-
-   /**
-    * Indicates if there are EJB descriptors available for an EJB name
-    * 
-    * @param ejbName The EJB name to match
-    * @return True if present, otherwise false
-    */
-   public boolean containsKey(String ejbName)
-   {
-      return ejbsByName.containsKey(ejbName);
+      ejbsByBeanClass.get(ejbDescriptor.getBeanClass()).add(internalEjbDescriptor);
    }
 
    /**
@@ -127,13 +100,12 @@ public class EjbDescriptorCache
    public void clear()
    {
       ejbsByBeanClass.clear();
-      ejbsByName.clear();
    }
 
    @Override
    public String toString()
    {
-      return "EJB Descriptor cache has indexed " + ejbsByBeanClass.size() + " EJBs by class and " + ejbsByName + " by name";
+      return "EJB Descriptor cache has indexed " + ejbsByBeanClass.size() + " EJBs by class";
    }
 
 }

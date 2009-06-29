@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
+import org.jboss.webbeans.ejb.spi.helpers.ForwardingEjbDescriptor;
 import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.introspector.jlr.MethodSignatureImpl;
 
