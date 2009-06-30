@@ -12,8 +12,8 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.mock.MockBeanDeploymentArchive;
 import org.jboss.webbeans.mock.MockServletLifecycle;
-import org.jboss.webbeans.mock.MockWebBeanDiscovery;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -29,8 +29,8 @@ public class ServletEnvironmentTest
    {
       lifecycle = new MockServletLifecycle(); 
       lifecycle.initialize();
-      MockWebBeanDiscovery discovery = lifecycle.getWebBeanDiscovery();
-      discovery.setWebBeanClasses(Arrays.asList(Animal.class, DeadlyAnimal.class, DeadlySpider.class, DeadlyAnimal.class, Hound.class, HoundLocal.class, Salmon.class, ScottishFish.class, SeaBass.class, Sole.class, Spider.class, Tarantula.class, TarantulaProducer.class, Tuna.class));
+      MockBeanDeploymentArchive archive = lifecycle.getDeployment().getEjbModule();
+      archive.setBeanClasses(Arrays.asList(Animal.class, DeadlyAnimal.class, DeadlySpider.class, DeadlyAnimal.class, Hound.class, HoundLocal.class, Salmon.class, ScottishFish.class, SeaBass.class, Sole.class, Spider.class, Tarantula.class, TarantulaProducer.class, Tuna.class));
       lifecycle.beginApplication();
       lifecycle.beginSession();
       lifecycle.beginRequest();

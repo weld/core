@@ -51,11 +51,6 @@ public abstract class ForwardingEjbServices implements EjbServices
    {
       return delegate().resolveRemoteEjb(jndiName, mappedName, ejbLink);
    }
-
-   public Iterable<EjbDescriptor<?>> discoverEjbs()
-   {
-      return delegate().discoverEjbs();
-   }
    
    @Override
    public boolean equals(Object obj)

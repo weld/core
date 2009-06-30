@@ -173,16 +173,27 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * Application scoped data structures 
     * ***********************************
     */
+   
+   private transient final ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts;
+   private transient final ClientProxyProvider clientProxyProvider;
+   private final transient AtomicInteger ids;
+   private transient final Map<String, RIBean<?>> riBeans;
+   private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans;
+   
+   /*
+    * Archive scoped services
+    * *********************** 
+    */
+   
+   /*
+    * Archive scoped data structures
+    * ******************************
+    */
    private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
    private transient List<Class<?>> enabledDecoratorClasses;
    private transient List<Class<?>> enabledInterceptorClasses;
-   private transient final ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts;
    private final transient Set<CurrentActivity> currentActivities;
-   private transient final ClientProxyProvider clientProxyProvider;
-   private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans;
-   private transient final Map<String, RIBean<?>> riBeans;
    private final transient Map<Contextual<?>, Contextual<?>> specializedBeans;
-   private final transient AtomicInteger ids;
 
    /*
     * Activity scoped services 
@@ -251,8 +262,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
       return new BeanManagerImpl(
             parentManager.getServices(), 
-            beans, parentManager.getDecorators(), 
-            registeredObservers, rootNamespace, 
+            beans, 
+            parentManager.getDecorators(), 
+            registeredObservers, 
+            rootNamespace, 
             parentManager.getNewEnterpriseBeanMap(), 
             parentManager.getRiBeans(), 
             parentManager.getClientProxyProvider(), 

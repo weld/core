@@ -2,7 +2,7 @@ package org.jboss.webbeans.bootstrap.api.test;
 
 import org.jboss.webbeans.bootstrap.api.Environments;
 import org.jboss.webbeans.bootstrap.api.helpers.AbstractBootstrap;
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.messaging.spi.JmsServices;
@@ -34,7 +34,7 @@ public class BootstrapTest
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
       bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
-      bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
+      bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.getServices().add(WebServices.class, new MockWebServices());
@@ -50,7 +50,7 @@ public class BootstrapTest
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
       bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
-      bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
+      bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.getServices().add(WebServices.class, new MockWebServices());
@@ -66,7 +66,7 @@ public class BootstrapTest
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
       bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
-      bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
+      bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
@@ -82,7 +82,7 @@ public class BootstrapTest
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
       bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
-      bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
+      bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
@@ -99,7 +99,7 @@ public class BootstrapTest
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
       bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
-      bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
+      bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
@@ -116,7 +116,7 @@ public class BootstrapTest
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
       bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
-      bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
+      bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
@@ -131,7 +131,7 @@ public class BootstrapTest
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices()); 
-      bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
+      bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.initialize();
@@ -145,7 +145,7 @@ public class BootstrapTest
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices()); 
-      bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
+      bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
       bootstrap.initialize();
@@ -158,7 +158,7 @@ public class BootstrapTest
       bootstrap.setEnvironment(Environments.SE);
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
-      bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());      
+      bootstrap.getServices().add(Deployment.class, new MockDeployment());      
       bootstrap.initialize();
    }
    
@@ -169,7 +169,7 @@ public class BootstrapTest
       bootstrap.setEnvironment(Environments.SERVLET);
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
-      bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());      
+      bootstrap.getServices().add(Deployment.class, new MockDeployment());      
       bootstrap.initialize();
    }
    

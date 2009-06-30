@@ -4,8 +4,8 @@ import java.net.URL;
 
 import org.jboss.testharness.api.DeploymentException;
 import org.jboss.testharness.spi.StandaloneContainers;
+import org.jboss.webbeans.mock.MockBeanDeploymentArchive;
 import org.jboss.webbeans.mock.MockServletLifecycle;
-import org.jboss.webbeans.mock.MockWebBeanDiscovery;
 
 public abstract class AbstractStandaloneContainersImpl implements StandaloneContainers
 {
@@ -20,11 +20,11 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
       lifecycle.initialize();
       try
       {
-         MockWebBeanDiscovery discovery = lifecycle.getWebBeanDiscovery();
-         discovery.setWebBeanClasses(classes);
+         MockBeanDeploymentArchive archive = lifecycle.getDeployment().getEjbModule();
+         archive.setBeanClasses(classes);
          if (beansXml != null)
          {
-            discovery.setWebBeansXmlFiles(beansXml);
+            archive.setWebBeansXmlFiles(beansXml);
          }
          lifecycle.beginApplication();
       }

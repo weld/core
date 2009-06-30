@@ -2,7 +2,7 @@ package org.jboss.webbeans.mock;
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.api.Environments;
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
@@ -13,22 +13,22 @@ public class MockServletLifecycle extends ContextLifecycle
    private static final ResourceLoader MOCK_RESOURCE_LOADER = new MockResourceLoader();
    
    private final WebBeansBootstrap bootstrap;
-   private final MockWebBeanDiscovery webBeanDiscovery;
+   private final MockDeployment deployment;
    private final BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
    private final BeanStore sessionBeanStore = new ConcurrentHashMapBeanStore();
    private final BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
    
    public MockServletLifecycle()
    {
-      this.webBeanDiscovery = new MockWebBeanDiscovery();
-      if (webBeanDiscovery == null)
+      this.deployment = new MockDeployment();
+      if (deployment == null)
       {
          throw new IllegalStateException("No WebBeanDiscovery is available");
       }
       bootstrap = new WebBeansBootstrap();
       bootstrap.setEnvironment(Environments.SERVLET);
       bootstrap.getServices().add(ResourceLoader.class, MOCK_RESOURCE_LOADER);
-      bootstrap.getServices().add(WebBeanDiscovery.class, webBeanDiscovery);
+      bootstrap.getServices().add(Deployment.class, deployment);
       bootstrap.setApplicationContext(applicationBeanStore);
    }
    
@@ -37,9 +37,9 @@ public class MockServletLifecycle extends ContextLifecycle
       bootstrap.initialize();
    }
    
-   public MockWebBeanDiscovery getWebBeanDiscovery()
+   public MockDeployment getDeployment()
    {
-      return webBeanDiscovery;
+      return deployment;
    }
    
    public WebBeansBootstrap getBootstrap()

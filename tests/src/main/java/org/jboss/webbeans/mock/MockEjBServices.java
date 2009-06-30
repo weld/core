@@ -8,20 +8,12 @@ import java.util.Collection;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 
 public class MockEjBServices implements EjbServices
 {
-   
-   private final MockEjbDiscovery ejbDiscovery;
-   
-   public MockEjBServices(WebBeanDiscovery webBeanDiscovery)
-   {
-      this.ejbDiscovery = new MockEjbDiscovery(webBeanDiscovery);
-   }
    
    public Object resolveEjb(InjectionPoint injectionPoint)
    {
@@ -36,11 +28,6 @@ public class MockEjBServices implements EjbServices
    public Object resolveRemoteEjb(String jndiName, String mappedName, String ejbLink)
    {
       return null;
-   }
-   
-   public Iterable<EjbDescriptor<?>> discoverEjbs()
-   {
-      return ejbDiscovery.discoverEjbs();
    }
 
    public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor)

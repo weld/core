@@ -16,6 +16,10 @@
  */
 package org.jboss.webbeans.bootstrap;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
@@ -32,7 +36,8 @@ import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.api.Environments;
 import org.jboss.webbeans.bootstrap.api.helpers.AbstractBootstrap;
 import org.jboss.webbeans.bootstrap.api.helpers.ServiceRegistries;
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.ConversationContext;
@@ -47,6 +52,8 @@ import org.jboss.webbeans.conversation.NumericConversationIdGenerator;
 import org.jboss.webbeans.conversation.ServletConversationManager;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
+import org.jboss.webbeans.ejb.spi.EJBModule;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.Log;
@@ -75,6 +82,73 @@ import org.jboss.webbeans.xml.BeansXmlParser;
  */
 public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
 {
+   
+   // Temporary workaround for reading from a Deployment
+   private static class DeploymentVisitor
+   {
+      
+      private final Collection<Class<?>> beanClasses;
+      private final Collection<URL> beansXmlUrls;
+      private final Collection<EjbDescriptor<?>> ejbDescriptors;
+      private final Deployment deployment;
+      
+      public DeploymentVisitor(Deployment deployment)
+      {
+         this.deployment = deployment;
+         this.beanClasses = new ArrayList<Class<?>>();
+         this.beansXmlUrls = new ArrayList<URL>();
+         this.ejbDescriptors = new ArrayList<EjbDescriptor<?>>();
+      }
+      
+      public DeploymentVisitor visit()
+      {
+         for (BeanDeploymentArchive archvive : deployment.getBeanDeploymentArchives())
+         {
+            visit(archvive);
+         }
+         return this;
+      }
+      
+      private void visit(BeanDeploymentArchive beanDeploymentArchive)
+      {
+         for (Class<?> clazz : beanDeploymentArchive.getBeanClasses())
+         {
+            beanClasses.add(clazz);
+         }
+         for (URL url : beanDeploymentArchive.getBeansXml())
+         {
+            beansXmlUrls.add(url);
+         }
+         if (beanDeploymentArchive instanceof EJBModule)
+         {
+            EJBModule ejbModule = (EJBModule) beanDeploymentArchive;
+            for (EjbDescriptor<?> ejbDescriptor : ejbModule.getEjbs())
+            {
+               ejbDescriptors.add(ejbDescriptor);
+            }
+         }
+         for (BeanDeploymentArchive archive : beanDeploymentArchive.getBeanDeploymentArchives())
+         {
+            visit(archive);
+         }
+      }
+      
+      public Iterable<Class<?>> getBeanClasses()
+      {
+         return beanClasses;
+      }
+      
+      public Iterable<URL> getBeansXmlUrls()
+      {
+         return beansXmlUrls;
+      }
+      
+      public Iterable<EjbDescriptor<?>> getEjbDescriptors()
+      {
+         return ejbDescriptors;
+      }
+      
+   }
   
    // The log provider
    private static Log log = Logging.getLog(WebBeansBootstrap.class);
@@ -171,11 +245,6 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       beanDeployer.createBeans().deploy();
    }
    
-   private void registerExtensionBeans(Iterable<Extension> instances, AbstractBeanDeployer beanDeployer)
-   {
-      
-   }
-   
    public void boot()
    {
       synchronized (this)
@@ -189,7 +258,9 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
             throw new IllegalStateException("No application context BeanStore set");
          }
          
-         parseBeansXml();
+         DeploymentVisitor deploymentVisitor = new DeploymentVisitor(getServices().get(Deployment.class)).visit();
+         
+         parseBeansXml(deploymentVisitor.getBeansXmlUrls());
          
          beginApplication(getApplicationContext());
          BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
@@ -200,7 +271,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          {
             // Must populate EJB cache first, as we need it to detect whether a
             // bean is an EJB!
-            ejbDescriptors.addAll(getServices().get(EjbServices.class).discoverEjbs());
+            ejbDescriptors.addAll(deploymentVisitor.getEjbDescriptors());
          }
          
          // TODO Should use a separate event manager for sending bootstrap events
@@ -211,7 +282,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          BeanDeployer beanDeployer = new BeanDeployer(manager, ejbDescriptors);
          
          fireBeforeBeanDiscoveryEvent(beanDeployer);
-         registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), beanDeployer);
+         registerBeans(deploymentVisitor.getBeanClasses(), beanDeployer);
          fireAfterBeanDiscoveryEvent();
          log.debug("Web Beans initialized. Validating beans.");
          getServices().get(Validator.class).validateDeployment(manager, beanDeployer.getBeanDeployerEnvironment());
@@ -222,9 +293,9 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       }
    }
    
-   private void parseBeansXml()
+   private void parseBeansXml(Iterable<URL> urls)
    {
-      BeansXmlParser parser = new BeansXmlParser(getServices().get(ResourceLoader.class), getServices().get(WebBeanDiscovery.class).discoverWebBeansXml());
+      BeansXmlParser parser = new BeansXmlParser(getServices().get(ResourceLoader.class), urls);
       parser.parse();
       
       if (parser.getEnabledDeploymentTypes() != null)

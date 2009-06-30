@@ -12,17 +12,18 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 
 public class MockJpaServices implements JpaServices
 {
    
-   private final WebBeanDiscovery webBeanDiscovery;
+   private final Deployment deployment;
    
-   public MockJpaServices(WebBeanDiscovery webBeanDiscovery)
+   public MockJpaServices(Deployment deployment)
    {
-      this.webBeanDiscovery = webBeanDiscovery;
+      this.deployment = deployment;
    }
    
    public EntityManager resolvePersistenceContext(InjectionPoint injectionPoint)
@@ -43,14 +44,26 @@ public class MockJpaServices implements JpaServices
    public Collection<Class<?>> discoverEntities()
    {
       Set<Class<?>> classes = new HashSet<Class<?>>();
-      for (Class<?> clazz : webBeanDiscovery.discoverWebBeanClasses())
+      for (BeanDeploymentArchive archive : deployment.getBeanDeploymentArchives())
+      {
+         discoverEntities(archive, classes);
+      }
+      return classes;
+   }
+   
+   private void discoverEntities(BeanDeploymentArchive archive, Set<Class<?>> classes)
+   {
+      for (Class<?> clazz : archive.getBeanClasses())
       {
          if (clazz.isAnnotationPresent(Entity.class))
          {
             classes.add(clazz);
          }
       }
-      return classes;
+      for (BeanDeploymentArchive child : archive.getBeanDeploymentArchives())
+      {
+         discoverEntities(child, classes);
+      }
    }
 
 }

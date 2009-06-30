@@ -71,13 +71,4 @@ public interface EjbServices extends Service
     */
    public Object resolveRemoteEjb(String jndiName, String mappedName, String ejbLink);
    
-   /**
-    * Gets a descriptor for each EJB in the application
-    * 
-    * @deprecated an {@link EJBModule} should be used to represent all EJBs
-    * @return the EJB descriptors
-    */
-   @Deprecated
-   public Iterable<EjbDescriptor<?>> discoverEjbs();
-   
 }

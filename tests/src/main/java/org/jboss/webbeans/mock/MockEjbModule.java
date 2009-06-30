@@ -26,26 +26,31 @@ import javax.ejb.Singleton;
 import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.ejb.spi.EJBModule;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
-public class MockEjbDiscovery
+/**
+ * @author pmuir
+ *
+ */
+public class MockEjbModule extends MockBeanDeploymentArchive implements EJBModule
 {
    
-   private final WebBeanDiscovery webBeanDiscovery;
+   private List<EjbDescriptor<?>> ejbs;
 
-   public MockEjbDiscovery(WebBeanDiscovery webBeanDiscovery)
+   @Override
+   public void setBeanClasses(Iterable<Class<?>> webBeanClasses)
    {
-      this.webBeanDiscovery = webBeanDiscovery;
-   }
-
-   public Iterable<EjbDescriptor<?>> discoverEjbs()
-   {
-      List<EjbDescriptor<?>> ejbs = new ArrayList<EjbDescriptor<?>>();
-      for (Class<?> ejbClass : discoverEjbs(webBeanDiscovery.discoverWebBeanClasses()))
+      super.setBeanClasses(webBeanClasses);
+      ejbs = new ArrayList<EjbDescriptor<?>>();
+      for (Class<?> ejbClass : discoverEjbs(getBeanClasses()))
       {
          ejbs.add(MockEjbDescriptor.of(ejbClass));
       }
+   }
+   
+   public Iterable<EjbDescriptor<?>> getEjbs()
+   {
       return ejbs;
    }
    
@@ -61,7 +66,5 @@ public class MockEjbDiscovery
       }
       return ejbs;
    }
-   
 
-   
 }

@@ -18,6 +18,7 @@ package org.jboss.webbeans.bootstrap.spi;
 
 import java.util.List;
 
+import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.ejb.spi.EJBModule;
 
 /**
@@ -49,7 +50,7 @@ import org.jboss.webbeans.ejb.spi.EJBModule;
  * @author Pete Muir
  * 
  */
-public interface Deployment
+public interface Deployment extends Service
 {
 
    /**

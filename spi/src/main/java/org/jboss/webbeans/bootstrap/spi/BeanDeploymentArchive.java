@@ -19,7 +19,6 @@ package org.jboss.webbeans.bootstrap.spi;
 import java.net.URL;
 import java.util.List;
 
-import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.ejb.spi.EJBModule;
 
 /**
@@ -46,12 +45,12 @@ import org.jboss.webbeans.ejb.spi.EJBModule;
  * @author Pete Muir
  * 
  */
-public interface BeanDeploymentArchive extends Service
+public interface BeanDeploymentArchive
 {
 
    /**
     * Get the ordered bean deployment archives which are accessible to this bean
-    * deployment archive and adjacent to it in the deployment archive graph.
+    * deployment archive and adjacent to it i n the deployment archive graph.
     * 
     * The bean deployment archives will be processed in the order specified.
     * 
@@ -69,11 +68,16 @@ public interface BeanDeploymentArchive extends Service
    public Iterable<Class<?>> getBeanClasses();
 
    /**
-    * Get the deployment descriptor
+    * Get any deployment descriptors in the bean deployment archive.
     * 
-    * @return a URL pointing to the deployment descriptor, or null if it is not
-    *         present
+    * The container will normally return a single deployment descriptor per bean
+    * deployment archive (the physical META-INF/beans.xml or WEB-INF/beans.xml),
+    * however it is permitted to return other deployment descriptors defined
+    * using other methods.
+    * 
+    * @return an iteration over the URLs pointing to the deployment descriptor,
+    *         or an empty set if none are present
     */
-   public URL getBeansXml();
+   public Iterable<URL> getBeansXml();
 
 }

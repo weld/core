@@ -14,38 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.mock;
+package org.jboss.webbeans.bootstrap.api.test;
 
-import java.net.URL;
-import java.util.HashSet;
+import java.util.List;
 
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 
-public class MockWebBeanDiscovery implements WebBeanDiscovery
+/**
+ * @author pmuir
+ *
+ */
+public class MockDeployment implements Deployment
 {
 
-   private Iterable<Class<?>> webBeanClasses = new HashSet<Class<?>>();
-
-   private Iterable<URL> webBeansXmlFiles = new HashSet<URL>();
-
-   public Iterable<Class<?>> discoverWebBeanClasses()
+   public List<BeanDeploymentArchive> getBeanDeploymentArchives()
    {
-      return webBeanClasses;
+      return null;
    }
 
-   public Iterable<URL> discoverWebBeansXml()
+   public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
    {
-      return webBeansXmlFiles;
-   }
-   
-   public void setWebBeanClasses(Iterable<Class<?>> webBeanClasses)
-   {
-      this.webBeanClasses = webBeanClasses;
-   }
-   
-   public void setWebBeansXmlFiles(Iterable<URL> webBeansXmlFiles)
-   {
-      this.webBeansXmlFiles = webBeansXmlFiles;
+      return null;
    }
 
 }

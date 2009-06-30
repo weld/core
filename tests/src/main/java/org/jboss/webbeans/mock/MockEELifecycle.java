@@ -33,8 +33,8 @@ public class MockEELifecycle extends MockServletLifecycle
    {
       super();
       getBootstrap().getServices().add(TransactionServices.class, MOCK_TRANSACTION_SERVICES);
-      getBootstrap().getServices().add(EjbServices.class, new MockEjBServices(getWebBeanDiscovery()));
-      getBootstrap().getServices().add(JpaServices.class, new MockJpaServices(getWebBeanDiscovery()));
+      getBootstrap().getServices().add(EjbServices.class, new MockEjBServices());
+      getBootstrap().getServices().add(JpaServices.class, new MockJpaServices(getDeployment()));
       getBootstrap().getServices().add(ResourceServices.class, new MockResourceServices());
       getBootstrap().getServices().add(WebServices.class, new MockWebServices());
       getBootstrap().getServices().add(JmsServices.class, new MockJmsServices());

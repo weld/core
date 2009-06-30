@@ -3,7 +3,7 @@ package org.jboss.webbeans.bootstrap.api.helpers;
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.api.Environment;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.manager.api.WebBeansManager;
@@ -59,17 +59,17 @@ public class BootstrapBean implements Bootstrap
    {
       bootstrap.getServices().add(ResourceServices.class, resourceServices);
    }
-
-   public void setWebBeanDiscovery(WebBeanDiscovery webBeanDiscovery)
+   
+   public void setDeployment(Deployment deployment)
    {
-      bootstrap.getServices().add(WebBeanDiscovery.class, webBeanDiscovery);
+      bootstrap.getServices().add(Deployment.class, deployment);
    }
-
-   public WebBeanDiscovery getWebBeanDiscovery()
+   
+   public Deployment getDeployment()
    {
-      return bootstrap.getServices().get(WebBeanDiscovery.class);
+      return bootstrap.getServices().get(Deployment.class);
    }
-
+   
    public void setTransactionServices(TransactionServices transactionServices)
    {
       bootstrap.getServices().add(TransactionServices.class, transactionServices);

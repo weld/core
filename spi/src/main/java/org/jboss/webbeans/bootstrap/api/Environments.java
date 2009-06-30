@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.messaging.spi.JmsServices;
 import org.jboss.webbeans.persistence.spi.JpaServices;
@@ -41,22 +41,22 @@ public enum Environments implements Environment
    /**
     * Java EE5 or Java EE6
     */
-   EE(WebBeanDiscovery.class, EjbServices.class, JpaServices.class, WebServices.class, JmsServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class),
+   EE(Deployment.class, EjbServices.class, JpaServices.class, WebServices.class, JmsServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class),
    
    /**
     * Java EE6 Web Profile
     */
-   EE_WEB_PROFILE(WebBeanDiscovery.class, EjbServices.class, JpaServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class),
+   EE_WEB_PROFILE(Deployment.class, EjbServices.class, JpaServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class),
    
    /**
     * Servlet container such as Tomcat
     */
-   SERVLET(WebBeanDiscovery.class, ResourceLoader.class),
+   SERVLET(Deployment.class, ResourceLoader.class),
    
    /**
     * Java SE
     */
-   SE(WebBeanDiscovery.class, ResourceLoader.class);
+   SE(Deployment.class, ResourceLoader.class);
    
    private final Set<Class<? extends Service>> requiredServices;
    
