@@ -16,9 +16,6 @@
  */
 package org.jboss.webbeans.introspector;
 
-
-
-
 /**
  * AnnotatedParameter provides a uniform access to a method parameter defined
  * either in Java or XML

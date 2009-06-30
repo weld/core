@@ -16,8 +16,6 @@
  */
 package org.jboss.webbeans.injection.resolution;
 
-
-
 public interface ResolvableTransformer
 {
    

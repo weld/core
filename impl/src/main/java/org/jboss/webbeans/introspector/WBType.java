@@ -16,8 +16,6 @@
  */
 package org.jboss.webbeans.introspector;
 
-
-
 /**
  * AnnotatedType provides a uniform access to a type defined either in Java or
  * XML
