@@ -1,11 +1,9 @@
 package org.jboss.webbeans.tck;
 
-import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.jsr299.tck.spi.Beans;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.context.AbstractContext;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.util.Proxies;
@@ -85,20 +83,5 @@ public class BeansImpl implements Beans
    {
       return (T) CurrentManager.rootManager().getCurrent().getReference(bean, Object.class, CurrentManager.rootManager().getCurrent().createCreationalContext(bean));
    }
-
-   public <T> void destroyAndRemoveBeanInstance(Bean<T> bean, T instance)
-   {
-      Context context = CurrentManager.rootManager().getCurrent().getContext(bean.getScopeType());
-      if (context instanceof AbstractContext)
-      {
-         ((AbstractContext) context).destroyAndRemove(bean, instance);
-      }
-      else
-      {
-         throw new IllegalStateException("Don't know how to destroy a bean from " + context);
-      }
-   }
-
-
 
 }

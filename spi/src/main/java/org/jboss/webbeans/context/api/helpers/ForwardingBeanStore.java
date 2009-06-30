@@ -29,11 +29,6 @@ public abstract class ForwardingBeanStore implements BeanStore
    {
       delegate().put(beanInstance);
    }
-   
-   public <T> T remove(Contextual<? extends T> bean)
-   {
-      return delegate().remove(bean);
-   }
 
    @Override
    public String toString()

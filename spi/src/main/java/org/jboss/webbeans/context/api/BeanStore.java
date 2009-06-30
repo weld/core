@@ -38,14 +38,6 @@ public interface BeanStore
    public abstract <T> BeanInstance<T> get(Contextual<? extends T> bean);
 
    /**
-    * Removes an instance of a bean from the storage
-    * 
-    * @param bean The bean whose instance to remove
-    * @return The removed instance. Null if not found in storage.
-    */
-   public abstract <T extends Object> T remove(Contextual<? extends T> bean);
-
-   /**
     * Clears the storage of any bean instances
     */
    public abstract void clear();

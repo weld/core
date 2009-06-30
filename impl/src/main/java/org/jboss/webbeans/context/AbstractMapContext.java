@@ -120,18 +120,6 @@ public abstract class AbstractMapContext extends AbstractContext
    {
       return get(contextual, null);
    }
-
-   /**
-    * Destroys and removes bean
-    * 
-    * @param <T> The type of the bean
-    * @param contextual The contextual type to destroy
-    */
-   public <T> void destroyAndRemove(Contextual<T> contextual, T instance)
-   {
-      destroy(contextual);
-      getBeanStore().remove(contextual);
-   }
    
    private <T> void destroy(Contextual<T> contextual)
    {

@@ -19,7 +19,6 @@ package org.jboss.webbeans.context;
 import java.lang.annotation.Annotation;
 
 import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
 
 /**
  * Common Context operation
@@ -94,7 +93,5 @@ public abstract class AbstractContext implements Context
    {
       return active.get();
    }
-   
-   public abstract <T> void destroyAndRemove(Contextual<T> contextual, T instance);
 
 }

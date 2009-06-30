@@ -34,21 +34,6 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore
    }
 
    /**
-    * Removed a instance from the store
-    * 
-    * @param bean the bean to remove
-    * @return The instance removed
-    *
-    * @see org.jboss.webbeans.context.api.BeanStore#remove(BaseBean)
-    */
-   public <T extends Object> T remove(Contextual<? extends T> bean)
-   {
-      @SuppressWarnings("unchecked")
-      T instance = (T) delegate().remove(bean);
-      return instance;
-   }
-
-   /**
     * Clears the store
     * 
     * @see org.jboss.webbeans.context.api.BeanStore#clear()
