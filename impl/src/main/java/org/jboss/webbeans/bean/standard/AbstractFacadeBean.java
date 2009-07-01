@@ -19,7 +19,6 @@ package org.jboss.webbeans.bean.standard;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -52,7 +51,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
             if (genericType instanceof ParameterizedType )
             {
                Type type = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-               return newInstance(type, fixBindings(injectionPoint.getBindings()));
+               return newInstance(type, injectionPoint.getBindings());
             }
             else
             {
@@ -71,28 +70,6 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
       }
    }
    
-   /**
-    * Merges and validates the current and new bindings
-    * 
-    * Checks with an abstract method for annotations to exclude
-    * 
-    * @param currentBindings Existing bindings
-    * @param newBindings New bindings
-    * @return The union of the bindings
-    */
-   protected Set<Annotation> fixBindings(Set<? extends Annotation> bindings)
-   {
-      Set<Annotation> result = new HashSet<Annotation>();
-      for (Annotation newAnnotation : bindings)
-      {
-         if (!getFilteredAnnotationTypes().contains(newAnnotation.annotationType()))
-         {
-            result.add(newAnnotation);
-         }
-      }
-      return result;
-   }
-   
    public void destroy(T instance, CreationalContext<T> creationalContext)
    {
       // TODO Auto-generated method stub
@@ -103,13 +80,6 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
    {
       return true;
    }
-
-   /**
-    * Gets a set of annotation classes to ignore
-    * 
-    * @return A set of annotation classes to ignore
-    */
-   protected abstract Set<Class<? extends Annotation>> getFilteredAnnotationTypes();
    
    protected abstract T newInstance(Type type, Set<Annotation> annotations);
    

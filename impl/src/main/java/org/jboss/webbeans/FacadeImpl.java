@@ -19,7 +19,6 @@ package org.jboss.webbeans;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -93,13 +92,6 @@ public abstract class FacadeImpl<T> implements Serializable
    protected BeanManagerImpl getManager()
    {
       return manager.getCurrent();
-   }
-   
-   protected static Set<Annotation> removeBindings(Set<Annotation> bindings, Annotation...remove)
-   {
-      Set<Annotation> a = new HashSet<Annotation>(bindings);
-      a.removeAll(Arrays.asList(remove));
-      return a;
    }
    
    protected Set<? extends Annotation> getBindings()

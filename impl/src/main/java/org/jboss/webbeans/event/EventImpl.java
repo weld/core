@@ -26,7 +26,6 @@ import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.FacadeImpl;
-import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -57,7 +56,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
     */
    public EventImpl(Type eventType, BeanManagerImpl manager, Set<Annotation> bindings)
    {
-      super(eventType, manager, removeBindings(bindings, new AnyLiteral()));
+      super(eventType, manager, bindings);
    }
 
    /**

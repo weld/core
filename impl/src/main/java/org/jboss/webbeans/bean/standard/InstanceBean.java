@@ -38,7 +38,6 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    private static final Set<Type> DEFAULT_TYPES = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
    private static final Any ANY = new AnyLiteral();
    private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(ANY));
-   private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATION_TYPES = new HashSet<Class<? extends Annotation>>(Arrays.asList(Any.class));
    public static final ResolvableTransformer TRANSFORMER = new FacadeBeanResolvableTransformer(TYPE);
    
    
@@ -73,12 +72,6 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    protected Instance<?> newInstance(Type type, Set<Annotation> annotations)
    {
       return InstanceImpl.of(type, getManager(), annotations);
-   }
-
-   @Override
-   protected Set<Class<? extends Annotation>> getFilteredAnnotationTypes()
-   {
-      return FILTERED_ANNOTATION_TYPES;
    }
    
    @Override

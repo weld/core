@@ -80,6 +80,8 @@ import org.jboss.webbeans.el.WebBeansELResolverImpl;
 import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.WBAnnotated;
+import org.jboss.webbeans.literal.AnyLiteral;
+import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.manager.api.WebBeansManager;
@@ -487,6 +489,13 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       {
          throw new IllegalArgumentException("Duplicate binding types: " + bindings);
       }
+      
+      // Manually hack in the default annotations here. We need to redo all the annotation defaulting throughout. PLM
+      if (bindingAnnotations.size() == 0)
+      {
+         bindingAnnotations.add(new CurrentLiteral());
+      }
+      bindingAnnotations.add(new AnyLiteral());
       checkEventType(clazz);
       Set<Observer<T>> observers = new HashSet<Observer<T>>();
       Set<EventObserver<?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(clazz).getFlattenedTypes(),  bindingAnnotations));
@@ -769,7 +778,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             throw new IllegalArgumentException("Event type " + event.getClass().getName() + " cannot be fired with non-binding type " + binding.getClass().getName() + " specified");
          }
       }
-
+      
       Set<Observer<Object>> observers = resolveObservers(event, bindings);
       try
       {

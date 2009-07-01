@@ -4,72 +4,70 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Current;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
-@Artifact
+@Artifact 
 public class SimpleEventTest extends AbstractWebBeansTest
 {
-   private static boolean called_flag_for_BindingType;
-   private static boolean called_flag_for_NonBindingType;
+   private static boolean RECEIVE_1_OBSERVED;
+   private static boolean RECEIVE_2_OBSERVED;
    
-   private static void initCalledFlag() {
-      called_flag_for_BindingType = false;
-      called_flag_for_NonBindingType = false;
+   private static void initFlags() {
+      RECEIVE_1_OBSERVED = false;
+      RECEIVE_2_OBSERVED = false;
    }
    
    @Test
-   public void testEventUsingManager()
+   public void testFireEventOnManager()
    {
       BeanManagerImpl manager = getCurrentManager();
       
-      initCalledFlag();
+      initFlags();
 
-      manager.fireEvent("Fired using Manager Interface with AnnotationLiteral.",
-            new AnnotationLiteral<Updated>(){});
+      manager.fireEvent("Fired using Manager Interface with AnnotationLiteral.", new AnnotationLiteral<Updated>(){});
 
-      assert called_flag_for_NonBindingType == true;
-      assert called_flag_for_BindingType == true;
+      assert RECEIVE_2_OBSERVED == true;
+      assert RECEIVE_1_OBSERVED == true;
       
-      initCalledFlag();
+      initFlags();
       
       manager.fireEvent("Fired using Manager Interface.");
       
-      assert called_flag_for_NonBindingType == true;
-      assert called_flag_for_BindingType == false; // not called
+      assert RECEIVE_2_OBSERVED == true;
+      assert RECEIVE_1_OBSERVED == false; // not called
    }
    
    @Test
-   public void testEventUsingEvent()
+   public void testFireEventOnEvent()
    {
       BeanManagerImpl manager = getCurrentManager();
 
-      App app = manager.getInstanceByType(App.class);
+      App app = createContextualInstance(App.class);
       
-      initCalledFlag();
+      initFlags();
       
-//      app.fireEventByBindingDeclaredAtInjectionPoint();
-//
-//      assert called_flag_for_NonBindingType == true;
-//      assert called_flag_for_BindingType == true;
+      app.fireEventByBindingDeclaredAtInjectionPoint();
+
+      assert RECEIVE_1_OBSERVED == true;
+      assert RECEIVE_2_OBSERVED == true;
       
-      initCalledFlag();
+      initFlags();
       
       app.fireEventByAnnotationLiteral();
       
-      assert called_flag_for_NonBindingType == true;
-      assert called_flag_for_BindingType == true;
+      assert RECEIVE_2_OBSERVED == true;
+      assert RECEIVE_1_OBSERVED == true;
       
-      initCalledFlag();
+      initFlags();
       
-      app.fireEventNonBindingType();
+      app.fireEventViaAny();
       
-      assert called_flag_for_NonBindingType == true;
-      assert called_flag_for_BindingType == false; // not called
+      assert RECEIVE_2_OBSERVED == true;
+      assert RECEIVE_1_OBSERVED == false; // not called
    }
 
    public static class App
@@ -94,7 +92,7 @@ public class SimpleEventTest extends AbstractWebBeansTest
          event2.fire("Fired using Event Interface with Binding Declared.");
       }
       
-      public void fireEventNonBindingType()
+      public void fireEventViaAny()
       {
          event3.fire("Fired using Event Interface with Non-BindingType.");
       }
@@ -104,12 +102,12 @@ public class SimpleEventTest extends AbstractWebBeansTest
    {
       public void receive1(@Observes @Updated String s)
       {
-         called_flag_for_BindingType = true;
+         RECEIVE_1_OBSERVED = true;
       }
 
-      public void receive2(@Observes String s)
+      public void receive2(@Any @Observes String s)
       {
-         called_flag_for_NonBindingType = true;
+         RECEIVE_2_OBSERVED = true;
       }
    }
 }
