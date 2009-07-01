@@ -56,7 +56,6 @@ public class ObserverImpl<T> implements Observer<T>
    protected final RIBean<?> observerBean;
    protected final MethodInjectionPoint<?> observerMethod;
    private final boolean conditional;
-   private final boolean asynchronous;
    protected BeanManagerImpl manager;
    private final Type eventType;
    private final Annotation[] bindings;
@@ -79,7 +78,6 @@ public class ObserverImpl<T> implements Observer<T>
       this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray();
       Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
       this.conditional = observesAnnotation.notifyObserver().equals(Notify.IF_EXISTS);
-      this.asynchronous = observesAnnotation.notifyObserver().equals(Notify.ASYNCHRONOUSLY);
    }
 
    /**
@@ -140,23 +138,11 @@ public class ObserverImpl<T> implements Observer<T>
          throw new DefinitionException(this + " cannot be annotated with @Initializer");
       }
 
-      // We cannot allow asynchronously invoked conditional observers either
-      if (this.asynchronous && this.conditional)
-      {
-         throw new DefinitionException(this + " cannot be annotated with both @Asynchronously and @IfExists");
-      }
    }
 
    public boolean notify(final T event)
    {
-      if (this.asynchronous)
-      {
-         sendEventAsynchronously(event);
-      }
-      else
-      {
-         sendEvent(event);
-      }
+      sendEvent(event);
       return false;
    }
 

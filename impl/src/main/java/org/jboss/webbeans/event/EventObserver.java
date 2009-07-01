@@ -91,10 +91,7 @@ public class EventObserver<T>
          {
             throw new IllegalArgumentException(annotation + " is already present in the bindings list for " + this);
          }
-         if (!annotation.annotationType().equals(Current.class))
-         {
-            eventBindings.add(annotation);
-         }
+         eventBindings.add(annotation);
       }
    }
 

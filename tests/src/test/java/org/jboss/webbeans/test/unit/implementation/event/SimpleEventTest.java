@@ -4,12 +4,11 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Current;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -21,22 +20,6 @@ public class SimpleEventTest extends AbstractWebBeansTest
    private static void initCalledFlag() {
       called_flag_for_BindingType = false;
       called_flag_for_NonBindingType = false;
-   }
-   
-   @Override
-   @BeforeMethod
-   public void before() throws Exception
-   {
-      initCalledFlag();
-      super.before();
-   }
-   
-   @Override
-   @AfterMethod
-   public void after() throws Exception
-   {
-      initCalledFlag();
-      super.after();
    }
    
    @Test
@@ -94,7 +77,7 @@ public class SimpleEventTest extends AbstractWebBeansTest
       @Any
       Event<String> event1;
       
-      @Updated @Any
+      @Updated
       Event<String> event2;
 
       @Any

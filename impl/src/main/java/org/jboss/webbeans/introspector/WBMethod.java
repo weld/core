@@ -24,10 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.event.AfterTransactionCompletion;
-import javax.enterprise.event.AfterTransactionFailure;
-import javax.enterprise.event.AfterTransactionSuccess;
-import javax.enterprise.event.BeforeTransactionCompletion;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 
@@ -41,7 +37,7 @@ import javax.enterprise.inject.Disposes;
 public interface WBMethod<T> extends WBMember<T, Method>
 {
    @SuppressWarnings("unchecked")
-   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, BeforeTransactionCompletion.class, AfterTransactionCompletion.class, AfterTransactionFailure.class, AfterTransactionSuccess.class, Disposes.class));
+   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, Disposes.class));
 
    /**
     * Gets the abstracted parameters of the method

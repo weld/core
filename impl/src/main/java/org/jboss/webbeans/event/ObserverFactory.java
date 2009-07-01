@@ -16,6 +16,8 @@
  */
 package org.jboss.webbeans.event;
 
+import javax.enterprise.event.TransactionPhase;
+
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.introspector.WBMethod;
@@ -40,9 +42,10 @@ public class ObserverFactory
    public static <T> ObserverImpl<T> create(WBMethod<?> method, RIBean<?> declaringBean, BeanManagerImpl manager)
    {
       ObserverImpl<T> result = null;
-      if (manager.getServices().contains(TransactionServices.class) && TransactionalObserverImpl.isObserverMethodTransactional(method))
+      TransactionPhase transactionPhase = TransactionalObserverImpl.getTransactionalPhase(method);
+      if (manager.getServices().contains(TransactionServices.class) && !transactionPhase.equals(TransactionPhase.IN_PROGRESS))
       {
-         result = new TransactionalObserverImpl<T>(method, declaringBean, manager);
+         result = new TransactionalObserverImpl<T>(method, declaringBean, transactionPhase, manager);
       }
       else
       {

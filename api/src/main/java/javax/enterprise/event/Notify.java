@@ -23,6 +23,7 @@ package javax.enterprise.event;
  * 
  * @author Gavin King
  * @author Dan Allen
+ * @author David Allen
  */
 public enum Notify
 {
@@ -33,13 +34,7 @@ public enum Notify
    IF_EXISTS,
 
    /**
-    * Specifies that an observer method is called synchronously.
+    * Specifies that an observer method always receives the event notifications.
     */
-   SYNCHRONOUSLY,
-
-   /**
-    * Specifies that an observer method receives the event notifications
-    * asynchronously.
-    */
-   ASYNCHRONOUSLY
+   ALWAYS
 }

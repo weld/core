@@ -16,21 +16,14 @@
  */
 package org.jboss.webbeans.event;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.event.AfterTransactionCompletion;
-import javax.enterprise.event.AfterTransactionFailure;
-import javax.enterprise.event.AfterTransactionSuccess;
-import javax.enterprise.event.BeforeTransactionCompletion;
-import javax.enterprise.event.Notify;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
 import javax.transaction.Synchronization;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.introspector.WBMethod;
+import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 
 /**
@@ -39,16 +32,7 @@ import org.jboss.webbeans.transaction.spi.TransactionServices;
  */
 class TransactionalObserverImpl<T> extends ObserverImpl<T>
 {
-   /**
-    * The known transactional phases a transactional event observer can be
-    * interested in
-    */
-   protected enum TransactionObservationPhase
-   {
-      BEFORE_COMPLETION, AFTER_COMPLETION, AFTER_FAILURE, AFTER_SUCCESS
-   }
-
-   private TransactionObservationPhase transactionObservationPhase;
+   private TransactionPhase transactionPhase;
 
    /**
     * Tests an observer method to see if it is transactional.
@@ -56,14 +40,10 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
     * @param observer The observer method
     * @return true if the observer method is annotated as transactional
     */
-   public static boolean isObserverMethodTransactional(WBMethod<?> observer)
+   public static TransactionPhase getTransactionalPhase(WBMethod<?> observer)
    {
-      boolean transactional = true;
-      if ((observer.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty()) && (observer.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty()) && (observer.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty()) && (observer.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty()))
-      {
-         transactional = false;
-      }
-      return transactional;
+      WBParameter<?> parameter = observer.getAnnotatedParameters(Observes.class).iterator().next();
+      return parameter.getAnnotationStore().getAnnotation(Observes.class).during();
    }
 
    /**
@@ -73,16 +53,16 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
     * @param observerBean The bean declaring the observer method
     * @param manager The JCDI manager in use
     */
-   protected TransactionalObserverImpl(WBMethod<?> observer, RIBean<?> observerBean, BeanManagerImpl manager)
+   protected TransactionalObserverImpl(WBMethod<?> observer, RIBean<?> observerBean, TransactionPhase transactionPhase, BeanManagerImpl manager)
    {
       super(observer, observerBean, manager);
+      this.transactionPhase = transactionPhase;
    }
 
    @Override
    public void initialize()
    {
       super.initialize();
-      initTransactionObservationPhase();
    }
 
    @Override
@@ -99,43 +79,6 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
       return false;
    }
 
-   private void initTransactionObservationPhase()
-   {
-      List<TransactionObservationPhase> observationPhases = new ArrayList<TransactionObservationPhase>();
-      if (!observerMethod.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty())
-      {
-         observationPhases.add(TransactionObservationPhase.BEFORE_COMPLETION);
-         if (observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class).notifyObserver().equals(Notify.ASYNCHRONOUSLY))
-         {
-            throw new DefinitionException("@BeforeTransactionCompletion cannot be used on an asynchronous observer on " + observerMethod);
-         }
-      }
-      if (!observerMethod.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty())
-      {
-         observationPhases.add(TransactionObservationPhase.AFTER_COMPLETION);
-      }
-      if (!observerMethod.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty())
-      {
-         observationPhases.add(TransactionObservationPhase.AFTER_FAILURE);
-      }
-      if (!observerMethod.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty())
-      {
-         observationPhases.add(TransactionObservationPhase.AFTER_SUCCESS);
-      }
-      if (observationPhases.size() > 1)
-      {
-         throw new DefinitionException("Transactional observers can only observe on a single phase: " + observerMethod);
-      }
-      else if (observationPhases.size() == 1)
-      {
-         transactionObservationPhase = observationPhases.iterator().next();
-      }
-      else
-      {
-         throw new IllegalStateException("This observer method is not transactional: " + observerMethod);
-      }
-   }
-
    /**
     * Defers an event for processing in a later phase of the current
     * transaction.
@@ -144,30 +87,22 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
     */
    private void deferEvent(T event)
    {
-      DeferredEventNotification<T> deferredEvent = null;
-      if (this.observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class).notifyObserver().equals(Notify.ASYNCHRONOUSLY))
-      {
-         deferredEvent = new DeferredEventNotification<T>(event, this);
-      }
-      else
-      {
-         deferredEvent = new AsynchronousTransactionalEventNotification<T>(event, this);
-      }
+      DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, this);;
 
       Synchronization synchronization = null;
-      if (transactionObservationPhase.equals(TransactionObservationPhase.BEFORE_COMPLETION))
+      if (transactionPhase.equals(transactionPhase.BEFORE_COMPLETION))
       {
          synchronization = new TransactionSynchronizedRunnable(deferredEvent, true);
       }
-      else if (transactionObservationPhase.equals(TransactionObservationPhase.AFTER_COMPLETION))
+      else if (transactionPhase.equals(transactionPhase.AFTER_COMPLETION))
       {
          synchronization = new TransactionSynchronizedRunnable(deferredEvent, false);
       }
-      else if (transactionObservationPhase.equals(TransactionObservationPhase.AFTER_SUCCESS))
+      else if (transactionPhase.equals(transactionPhase.AFTER_SUCCESS))
       {
          synchronization = new TransactionSynchronizedRunnable(deferredEvent, TransactionServices.Status.SUCCESS);
       }
-      else if (transactionObservationPhase.equals(TransactionObservationPhase.AFTER_FAILURE))
+      else if (transactionPhase.equals(transactionPhase.AFTER_FAILURE))
       {
          synchronization = new TransactionSynchronizedRunnable(deferredEvent, TransactionServices.Status.FAILURE);
       }

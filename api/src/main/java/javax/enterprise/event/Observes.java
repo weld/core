@@ -31,6 +31,7 @@ import java.lang.annotation.Target;
  * 
  * @author Gavin King
  * @author Pete Muir
+ * @author David Allen
  */
 
 @Target(PARAMETER)
@@ -38,5 +39,19 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Observes
 {
-	public Notify notifyObserver() default Notify.SYNCHRONOUSLY;
+   /**
+    * Specifies when an observer method should be notified of an event.
+    * Defaults to ALWAYS meaning that if a bean instance with the observer
+    * method does not already exist, one will be created to receive the
+    * event.
+    */
+	public Notify notifyObserver() default Notify.ALWAYS;
+	
+	/**
+	 * Specifies whether or not the notification should occur as part of
+	 * an ongoing transaction, and if so, in which phase of the transaction
+	 * the notification should occur.  The default is IN_PROGRESS meaning
+	 * the notification is not transactional.
+	 */
+	public TransactionPhase during() default TransactionPhase.IN_PROGRESS;
 }
