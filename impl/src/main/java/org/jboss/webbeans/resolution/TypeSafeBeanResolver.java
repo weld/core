@@ -16,11 +16,14 @@
  */
 package org.jboss.webbeans.resolution;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.bean.standard.EventBean;
+import org.jboss.webbeans.bean.standard.InstanceBean;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 
@@ -32,6 +35,14 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
 {
 
    private final BeanManagerImpl manager;
+   public static final Set<ResolvableTransformer> TRANSFORMERS;
+   
+   static
+   {
+      TRANSFORMERS = new HashSet<ResolvableTransformer>();
+      TRANSFORMERS.add(EventBean.TRANSFORMER);
+      TRANSFORMERS.add(InstanceBean.TRANSFORMER);
+   }
 
    public TypeSafeBeanResolver(BeanManagerImpl manager, Iterable<T> beans)
    {
@@ -57,6 +68,18 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
    protected Set<T> filterResult(Set<T> matched)
    {
       return Beans.retainHighestPrecedenceBeans(matched, manager.getEnabledDeploymentTypes());
+   }
+
+   @Override
+   protected Iterable<ResolvableTransformer> getTransformers()
+   {
+      return TRANSFORMERS;
+   }
+
+   @Override
+   protected Set<T> sortResult(Set<T> matched)
+   {
+      return matched;
    }
 
 }

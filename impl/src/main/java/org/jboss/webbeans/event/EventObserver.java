@@ -50,6 +50,11 @@ public class EventObserver<T>
    private final Set<Annotation> eventBindings;
    private final Observer<T> observer;
    private final BeanManagerImpl manager;
+   
+   public static <T> EventObserver<T> of(Observer<T> observer, final Type eventType, BeanManagerImpl manager, final Annotation[] eventBindings)
+   {
+      return new EventObserver<T>(observer, eventType, manager, eventBindings);
+   }
 
    /**
     * Constructs a new wrapper for an observer.
@@ -58,7 +63,7 @@ public class EventObserver<T>
     * @param eventType The class of event being observed
     * @param eventBindings The array of annotation event bindings, if any
     */
-   public EventObserver(final Observer<T> observer, final Type eventType, BeanManagerImpl manager, final Annotation... eventBindings)
+   private EventObserver(final Observer<T> observer, final Type eventType, BeanManagerImpl manager, final Annotation... eventBindings)
    {
       this.observer = observer;
       this.eventType = eventType;

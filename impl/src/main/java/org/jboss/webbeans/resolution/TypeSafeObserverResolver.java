@@ -16,6 +16,9 @@
  */
 package org.jboss.webbeans.resolution;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.util.Beans;
@@ -48,6 +51,24 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<EventObserver<?>>
    public BeanManagerImpl getManager()
    {
       return manager;
+   }
+
+   @Override
+   protected Set<EventObserver<?>> filterResult(Set<EventObserver<?>> matched)
+   {
+      return matched;
+   }
+
+   @Override
+   protected Iterable<ResolvableTransformer> getTransformers()
+   {
+      return Collections.emptySet();
+   }
+
+   @Override
+   protected Set<EventObserver<?>> sortResult(Set<EventObserver<?>> matched)
+   {
+      return matched;
    }
 
 }

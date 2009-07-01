@@ -21,8 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import org.jboss.webbeans.bean.standard.EventBean;
-import org.jboss.webbeans.bean.standard.InstanceBean;
 import org.jboss.webbeans.util.collections.ConcurrentCache;
 
 /**
@@ -72,9 +70,6 @@ public abstract class TypeSafeResolver<T>
    
    // The beans to search
    private final Iterable<? extends T> iterable;
-   
-   // Annotation transformers used to mutate annotations during resolution
-   private final Set<ResolvableTransformer> transformers;
 
    /**
     * Constructor
@@ -84,9 +79,7 @@ public abstract class TypeSafeResolver<T>
    {
       this.iterable = allBeans;
       this.resolved = new ConcurrentCache<MatchingResolvable, Set<T>>();
-      this.transformers = new HashSet<ResolvableTransformer>();
-      transformers.add(EventBean.TRANSFORMER);
-      transformers.add(InstanceBean.TRANSFORMER);
+      
    }
 
    /**
@@ -119,25 +112,20 @@ public abstract class TypeSafeResolver<T>
       return Collections.unmodifiableSet(beans);
    }
    
-   private Resolvable transform(Resolvable resolvable)
+   protected Resolvable transform(Resolvable resolvable)
    {
-      for (ResolvableTransformer transformer : transformers)
+      for (ResolvableTransformer transformer : getTransformers())
       {
          resolvable = transformer.transform(resolvable);
       }
       return resolvable;
    }
    
-   protected Set<T> filterResult(Set<T> matched)
-   {
-      //matchedBeans = Beans.retainHighestPrecedenceBeans(matchedBeans, manager.getEnabledDeploymentTypes());
-      return matched;
-   }
+   protected abstract Iterable<ResolvableTransformer> getTransformers();
+   
+   protected abstract Set<T> filterResult(Set<T> matched);
 
-   protected Set<T> sortResult(Set<T> matched)
-   {
-      return matched;
-   }
+   protected abstract Set<T> sortResult(Set<T> matched);
 
    /**
     * Gets the matching beans for binding criteria from a list of beans

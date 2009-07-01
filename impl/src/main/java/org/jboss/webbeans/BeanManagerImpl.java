@@ -73,9 +73,9 @@ import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.CreationalContextImpl;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.el.Namespace;
 import org.jboss.webbeans.el.WebBeansELResolverImpl;
-import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.WBAnnotated;
@@ -91,6 +91,7 @@ import org.jboss.webbeans.resolution.TypeSafeDecoratorResolver;
 import org.jboss.webbeans.resolution.TypeSafeObserverResolver;
 import org.jboss.webbeans.resolution.TypeSafeResolver;
 import org.jboss.webbeans.util.Beans;
+import org.jboss.webbeans.util.Observers;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.collections.multi.ConcurrentListHashMultiMap;
@@ -200,7 +201,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * Activity scoped services 
     * *************************
     */
-   private transient final EventManager eventManager;
    private transient final TypeSafeResolver<Bean<?>> beanResolver;
    private transient final TypeSafeResolver<DecoratorBean<?>> decoratorResolver;
    private transient final TypeSafeResolver<EventObserver<?>> observerResolver;
@@ -215,7 +215,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final List<Bean<?>> beans;
    private transient final List<DecoratorBean<?>> decorators;
    private final transient Namespace rootNamespace;
-   private final transient List<EventObserver<?>> registeredObservers;
+   private final transient List<EventObserver<?>> observers;
    private final transient Set<BeanManagerImpl> childActivities;
    private final Integer id;
 
@@ -260,7 +260,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       beans.addAll(parentManager.getBeans());
       
       List<EventObserver<?>> registeredObservers = new CopyOnWriteArrayList<EventObserver<?>>();
-      registeredObservers.addAll(parentManager.getRegisteredObservers());
+      registeredObservers.addAll(parentManager.getObservers());
       Namespace rootNamespace = new Namespace(parentManager.getRootNamespace());
 
       return new BeanManagerImpl(
@@ -297,7 +297,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.contexts = contexts;
       this.currentActivities = currentActivities;
       this.specializedBeans = specializedBeans;
-      this.registeredObservers = registeredObservers;
+      this.observers = registeredObservers;
       setEnabledDeploymentTypes(enabledDeploymentTypes);
       setEnabledDecoratorClasses(enabledDecoratorClasses);
       this.rootNamespace = rootNamespace;
@@ -308,7 +308,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.decoratorResolver = new TypeSafeDecoratorResolver(this, decorators);
       this.observerResolver = new TypeSafeObserverResolver(this, registeredObservers);
       this.nameBasedResolver = new NameBasedResolver(this, beans);
-      this.eventManager = new EventManager(this);
       this.webbeansELResolver = new WebBeansELResolverImpl(this);
       this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
       this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
@@ -599,7 +598,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    @Deprecated
    public void addObserver(Observer<?> observer, Annotation... bindings)
    {
-      addObserver(observer, eventManager.getTypeOfObserver(observer), bindings);
+      addObserver(observer, Observers.getTypeOfObserver(observer), bindings);
    }
 
    /**
@@ -626,7 +625,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public void addObserver(Observer<?> observer, Type eventType, Annotation... bindings)
    {
       checkEventType(eventType);
-      this.eventManager.addObserver(observer, eventType, bindings);
+      EventObserver<?> eventObserver = EventObserver.of(observer, eventType, this, bindings);
+      observers.add(eventObserver);
+      log.trace("Added observer " + observer + " observing event type " + eventType);
       for (BeanManagerImpl childActivity : childActivities)
       {
          childActivity.addObserver(observer, eventType, bindings);
@@ -665,11 +666,20 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          }
       }
 
-      // Get the observers for this event. Although resolveObservers is
-      // parameterized, this method is not, so we have to use
-      // Observer<Object> for observers.
       Set<Observer<Object>> observers = resolveObservers(event, bindings);
-      eventManager.notifyObservers(observers, event);
+      try
+      {
+         DependentContext.instance().setActive(true);
+         for (Observer<Object> observer : observers)
+         {
+            observer.notify(event);
+         }
+      }
+      finally
+      {
+         // TODO This breaks SE shutdown, also we need to tidy up how dependent context is activated....
+         DependentContext.instance().setActive(false);
+      }
    }
 
    /**
@@ -1038,9 +1048,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return id;
    }
    
-   public List<EventObserver<?>> getRegisteredObservers()
+   public List<EventObserver<?>> getObservers()
    {
-      return registeredObservers;
+      return observers;
    }
    
    public Namespace getRootNamespace()
