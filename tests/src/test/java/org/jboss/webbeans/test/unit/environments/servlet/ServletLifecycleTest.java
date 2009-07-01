@@ -3,13 +3,11 @@ package org.jboss.webbeans.test.unit.environments.servlet;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.Classes;
 import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
-import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.mock.MockHttpSession;
 import org.jboss.webbeans.servlet.ServletLifecycle;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
@@ -23,7 +21,6 @@ import org.testng.annotations.Test;
  * @author Dan Allen
  */
 @Artifact
-@Classes(ConversationManager.class)
 public class ServletLifecycleTest extends AbstractWebBeansTest
 {
    @Test(groups = "incontainer-broken")
