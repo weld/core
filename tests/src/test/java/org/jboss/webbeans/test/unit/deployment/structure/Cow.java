@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.literal;
+package org.jboss.webbeans.test.unit.deployment.structure;
 
-import javax.enterprise.inject.AnnotationLiteral;
-import javax.inject.Obtains;
-
-public class ObtainsLiteral extends AnnotationLiteral<Obtains> implements Obtains
+/**
+ * @author pmuir
+ *
+ */
+public class Cow
 {
-   
+
 }

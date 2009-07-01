@@ -149,8 +149,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       }
       initDefaultBindings();
       initPrimitive();
-      if (log.isDebugEnabled())
-         log.debug("Building Web Bean bean metadata for " + getType());
+      log.trace("Building Web Bean bean metadata for #0", getType());
       initName();
       initDeploymentType();
       checkDeploymentType();

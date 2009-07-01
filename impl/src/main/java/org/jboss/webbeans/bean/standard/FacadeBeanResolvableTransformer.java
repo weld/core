@@ -18,11 +18,13 @@ package org.jboss.webbeans.bean.standard;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.inject.Any;
+
+import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.resolution.ForwardingResolvable;
 import org.jboss.webbeans.resolution.Resolvable;
 import org.jboss.webbeans.resolution.ResolvableTransformer;
@@ -36,16 +38,20 @@ import org.jboss.webbeans.resolution.ResolvableTransformer;
 public class FacadeBeanResolvableTransformer implements ResolvableTransformer
 {
 
+   private static final Set<Annotation> bindings;
+   
+   static
+   {
+      bindings = new HashSet<Annotation>();
+      bindings.add(new AnyLiteral());
+   }
+
    private final Class<?> clazz;
-   private final Annotation annotation;
-   private final Set<Annotation> bindings;
    private final HashSet<Type> types;
 
-   public FacadeBeanResolvableTransformer(Class<?> clazz, Annotation annotation)
+   public FacadeBeanResolvableTransformer(Class<?> clazz)
    {
       this.clazz = clazz;
-      this.annotation = annotation;
-      this.bindings = new HashSet<Annotation>(Arrays.asList(annotation));
       this.types = new HashSet<Type>();
       types.add(clazz);
    }
@@ -54,44 +60,40 @@ public class FacadeBeanResolvableTransformer implements ResolvableTransformer
    {
       if (resolvable.isAssignableTo(clazz))
       {
-         if (resolvable.isAnnotationPresent(annotation.annotationType()))
+         return new ForwardingResolvable()
          {
 
-            return new ForwardingResolvable()
+            @Override
+            protected Resolvable delegate()
             {
+               return resolvable;
+            }
 
-               @Override
-               protected Resolvable delegate()
-               {
-                  return resolvable;
-               }
+            @Override
+            public Set<Annotation> getBindings()
+            {
+               return Collections.unmodifiableSet(bindings);
+            }
 
-               @Override
-               public Set<Annotation> getBindings()
-               {
-                  return Collections.unmodifiableSet(bindings);
-               }
+            @Override
+            public Set<Type> getTypeClosure()
+            {
+               return Collections.unmodifiableSet(types);
+            }
 
-               @Override
-               public Set<Type> getTypeClosure()
-               {
-                  return Collections.unmodifiableSet(types);
-               }
+            @Override
+            public boolean isAssignableTo(Class<?> c)
+            {
+               return c.isAssignableFrom(clazz);
+            }
 
-               @Override
-               public boolean isAssignableTo(Class<?> clazz)
-               {
-                  return clazz.isAssignableFrom(clazz);
-               }
+            @Override
+            public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
+            {
+               return Any.class.equals(annotationType);
+            }
 
-               @Override
-               public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
-               {
-                  return annotation.annotationType().equals(annotationType);
-               }
-
-            };
-         }
+         };
       }
       return resolvable;
    }

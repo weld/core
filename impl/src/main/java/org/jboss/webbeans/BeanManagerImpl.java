@@ -24,6 +24,7 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -94,6 +95,7 @@ import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Observers;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.collections.Iterators;
 import org.jboss.webbeans.util.collections.multi.ConcurrentListHashMultiMap;
 import org.jboss.webbeans.util.collections.multi.ConcurrentListMultiMap;
 
@@ -176,30 +178,46 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * ***********************************
     */
    
+   // Contexts are shared across the application
    private transient final ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts;
+   
+   // Client proxies can be used application wide
    private transient final ClientProxyProvider clientProxyProvider;
+   
+   // We want to generate unique id's across the whole deployment
    private transient final AtomicInteger ids;
+   
+   // TODO review this structure
    private transient final Map<String, RIBean<?>> riBeans;
+   
+   // TODO review this structure
    private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans;
    
-   /*
-    * Archive scoped services
-    * *********************** 
-    */
+   // TODO This isn't right, specialization should follow accessibility rules, but I think we can enforce these in resolve()
+   private transient final Map<Contextual<?>, Contextual<?>> specializedBeans;
    
    /*
     * Archive scoped data structures
     * ******************************
     */
+   
+   /* These data structures are all non-transitive in terms of bean deployment 
+    * archive accessibility, and the configuration for this bean deployment
+    * archive
+    */
    private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
    private transient List<Class<?>> enabledDecoratorClasses;
    private transient List<Class<?>> enabledInterceptorClasses;
-   private transient final Set<CurrentActivity> currentActivities;
-   private transient final Map<Contextual<?>, Contextual<?>> specializedBeans;
+   private transient final Set<CurrentActivity> currentActivities;   
 
    /*
     * Activity scoped services 
     * *************************
+    */ 
+   
+   /* These services are scoped to this activity only, but use data 
+    * structures that are transitive accessible from other bean deployment 
+    * archives
     */
    private transient final TypeSafeResolver<Bean<?>> beanResolver;
    private transient final TypeSafeResolver<DecoratorBean<?>> decoratorResolver;
@@ -212,11 +230,30 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * Activity scoped data structures 
     * ********************************
     */
+    
+   /* These data structures are scoped to this bean deployment archive activity
+    * only and represent the beans, decorators, interceptors, namespaces and 
+    * observers deployed in this bean deployment archive activity
+    */
    private transient final List<Bean<?>> beans;
    private transient final List<DecoratorBean<?>> decorators;
    private transient final List<String> namespaces;
    private transient final List<EventObserver<?>> observers;
    
+   /*
+    * These data structures represent the beans, decorators, interceptors, 
+    * namespaces and observers *accessible* from this bean deployment archive
+    * activity
+    */
+   private transient final Set<Iterable<Iterable<Bean<?>>>> accessibleBeans;
+   private transient final Set<Iterable<Iterable<DecoratorBean<?>>>> accessibleDecorators;
+   private transient final Set<Iterable<Iterable<String>>> accessibleNamespaces;
+   private transient final Set<Iterable<Iterable<EventObserver<?>>>> accessibleObservers;
+   
+   /*
+    * This data structures represents child activities for this activity, it is
+    * not transitively accessible
+    */
    private transient final Set<BeanManagerImpl> childActivities;
    
    private final Integer id;
@@ -299,7 +336,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          ServiceRegistry serviceRegistry, 
          List<Bean<?>> beans, 
          List<DecoratorBean<?>> decorators, 
-         List<EventObserver<?>> registeredObservers, 
+         List<EventObserver<?>> observers, 
          List<String> namespaces,
          Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, 
          Map<String, RIBean<?>> riBeans, 
@@ -321,17 +358,30 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.contexts = contexts;
       this.currentActivities = currentActivities;
       this.specializedBeans = specializedBeans;
-      this.observers = registeredObservers;
+      this.observers = observers;
       setEnabledDeploymentTypes(enabledDeploymentTypes);
       setEnabledDecoratorClasses(enabledDecoratorClasses);
       this.namespaces = namespaces;
       this.ids = ids;
       this.id = ids.incrementAndGet();
+      
+      // Set up the structures to store accessible beans etc.
+      
+      this.accessibleBeans = new HashSet<Iterable<Iterable<Bean<?>>>>();
+      this.accessibleDecorators = new HashSet<Iterable<Iterable<DecoratorBean<?>>>>();
+      this.accessibleNamespaces = new HashSet<Iterable<Iterable<String>>>();
+      this.accessibleObservers = new HashSet<Iterable<Iterable<EventObserver<?>>>>();
+      
+      // Add this bean deployment archvies beans etc. to the accessible
+      add(accessibleBeans, beans);
+      add(accessibleDecorators, decorators);
+      add(accessibleNamespaces, namespaces);
+      add(accessibleObservers, observers);
 
-      this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, beans);
-      this.decoratorResolver = new TypeSafeDecoratorResolver(this, decorators);
-      this.observerResolver = new TypeSafeObserverResolver(this, registeredObservers);
-      this.nameBasedResolver = new NameBasedResolver(this, beans);
+      this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, Iterators.concat(getAccessibleBeans()));
+      this.decoratorResolver = new TypeSafeDecoratorResolver(this, Iterators.concat(getAccessibleDecorators()));
+      this.observerResolver = new TypeSafeObserverResolver(this, Iterators.concat(getAccessibleObservers()));
+      this.nameBasedResolver = new NameBasedResolver(this, Iterators.concat(getAccessibleBeans()));
       this.webbeansELResolver = new WebBeansELResolverImpl(this);
       this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
       
@@ -343,6 +393,41 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             return new Stack<InjectionPoint>();
          }
       };
+   }
+   
+   private static <X> void add(Collection<Iterable<Iterable<X>>> collection, Iterable<X> instance)
+   {
+      Collection<Iterable<X>> c = new ArrayList<Iterable<X>>();
+      c.add(instance);
+      collection.add(c);
+   }
+   
+   public void addAccessibleBeanManager(BeanManagerImpl accessibleBeanManager)
+   {
+      accessibleBeans.add(accessibleBeanManager.getAccessibleBeans());
+      accessibleDecorators.add(accessibleBeanManager.getAccessibleDecorators());
+      accessibleNamespaces.add(accessibleBeanManager.getAccessibleNamespaces());
+      accessibleObservers.add(accessibleBeanManager.getAccessibleObservers());
+   }
+   
+   protected Iterable<Iterable<Bean<?>>> getAccessibleBeans()
+   {
+      return Iterators.concat(accessibleBeans);
+   }
+   
+   protected Iterable<Iterable<String>> getAccessibleNamespaces()
+   {
+      return Iterators.concat(accessibleNamespaces);
+   }
+   
+   protected Iterable<Iterable<DecoratorBean<?>>> getAccessibleDecorators()
+   {
+      return Iterators.concat(accessibleDecorators);
+   }
+   
+   protected Iterable<Iterable<EventObserver<?>>> getAccessibleObservers()
+   {
+      return Iterators.concat(accessibleObservers);
    }
 
    /**
@@ -1065,7 +1150,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return ids;
    }
    
-   protected Set<CurrentActivity> getCurrentActivities()
+   private Set<CurrentActivity> getCurrentActivities()
    {
       return currentActivities;
    }
@@ -1085,7 +1170,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       // TODO I don't like this lazy init
       if (rootNamespace == null)
       {
-         rootNamespace = new Namespace(getNamespaces());
+         rootNamespace = new Namespace(Iterators.concat(getAccessibleNamespaces()));
       }
       return rootNamespace;
    }

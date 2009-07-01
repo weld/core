@@ -57,6 +57,7 @@
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments.singleSimple" />
          <package name="org.jboss.webbeans.test.unit.context" />
          <package name="org.jboss.webbeans.test.unit.definition" />
+         <package name="org.jboss.webbeans.test.unit.deployment.structure" />
          <package name="org.jboss.webbeans.test.unit.event" />
          <package name="org.jboss.webbeans.test.unit.implementation" />
          <package name="org.jboss.webbeans.test.unit.implementation.annotatedItem" />

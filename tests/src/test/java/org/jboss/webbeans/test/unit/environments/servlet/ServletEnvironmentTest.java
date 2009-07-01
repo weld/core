@@ -16,7 +16,6 @@ import org.jboss.webbeans.mock.MockBeanDeploymentArchive;
 import org.jboss.webbeans.mock.MockServletLifecycle;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 public class ServletEnvironmentTest
 {
@@ -46,7 +45,6 @@ public class ServletEnvironmentTest
       lifecycle = null;
    }
    
-   @Test(groups="incontainer-broken")
    public void testSimpleBeans()
    {
       Map<Class<?>, Bean<?>> beans = new HashMap<Class<?>, Bean<?>>();
@@ -69,7 +67,6 @@ public class ServletEnvironmentTest
       manager.getInstanceByType(Sole.class, new AnnotationLiteral<Whitefish>() {}).ping();
    }
    
-   @Test(groups="incontainer-broken")
    public void testProducerMethodBean()
    {
       Map<Class<?>, Bean<?>> beans = new HashMap<Class<?>, Bean<?>>();
@@ -89,7 +86,6 @@ public class ServletEnvironmentTest
       manager.getInstanceByType(Tarantula.class, new AnnotationLiteral<Tame>() {}).ping();
    }
    
-   @Test(groups="incontainer-broken")
    public void testSingleEnterpriseBean()
    {
       List<Bean<?>> beans = manager.getBeans();

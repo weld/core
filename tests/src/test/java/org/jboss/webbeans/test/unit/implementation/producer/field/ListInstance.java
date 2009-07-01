@@ -2,12 +2,12 @@ package org.jboss.webbeans.test.unit.implementation.producer.field;
 
 import java.util.List;
 
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
-import javax.inject.Obtains;
 
 public class ListInstance
 {
-   @Obtains
+   @Any
    Instance<List> instance;
    
    public List get()

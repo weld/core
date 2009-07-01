@@ -23,8 +23,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.TypeLiteral;
-import javax.inject.Obtains;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.event.EventImpl;
@@ -38,8 +38,8 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    private static final Set<Type>                        DEFAULT_TYPES             = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
    private static final Annotation                       ANY                       = new AnyLiteral();
    private static final Set<Annotation>                  DEFAULT_BINDINGS          = new HashSet<Annotation>(Arrays.asList(ANY));
-   public static final ResolvableTransformer          TRANSFORMER               = new FacadeBeanResolvableTransformer(Event.class, ANY);
-   private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATION_TYPES = new HashSet<Class<? extends Annotation>>(Arrays.asList(Obtains.class));
+   public static final ResolvableTransformer          TRANSFORMER               = new FacadeBeanResolvableTransformer(TYPE);
+   private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATION_TYPES = new HashSet<Class<? extends Annotation>>(Arrays.asList(Any.class));
    
    
    public static AbstractFacadeBean<Event<?>> of(BeanManagerImpl manager)

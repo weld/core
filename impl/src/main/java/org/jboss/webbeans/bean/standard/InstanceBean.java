@@ -22,13 +22,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.TypeLiteral;
-import javax.inject.Obtains;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.InstanceImpl;
-import org.jboss.webbeans.literal.ObtainsLiteral;
+import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.resolution.ResolvableTransformer;
 
 public class InstanceBean extends AbstractFacadeBean<Instance<?>>
@@ -36,10 +36,10 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
 
    private static final Class<Instance<?>> TYPE = new TypeLiteral<Instance<?>>() {}.getRawType();
    private static final Set<Type> DEFAULT_TYPES = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
-   private static final Obtains OBTAINS = new ObtainsLiteral();
-   private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(OBTAINS));
-   private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATION_TYPES = new HashSet<Class<? extends Annotation>>(Arrays.asList(Obtains.class));
-   public static final ResolvableTransformer TRANSFORMER = new FacadeBeanResolvableTransformer(TYPE, OBTAINS);
+   private static final Any ANY = new AnyLiteral();
+   private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(ANY));
+   private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATION_TYPES = new HashSet<Class<? extends Annotation>>(Arrays.asList(Any.class));
+   public static final ResolvableTransformer TRANSFORMER = new FacadeBeanResolvableTransformer(TYPE);
    
    
    public static AbstractFacadeBean<Instance<?>> of(BeanManagerImpl manager)

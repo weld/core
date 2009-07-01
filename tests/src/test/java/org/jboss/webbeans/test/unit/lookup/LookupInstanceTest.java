@@ -6,7 +6,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.webbeans.literal.ObtainsLiteral;
+import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
@@ -18,7 +18,7 @@ public class LookupInstanceTest extends AbstractWebBeansTest
    @Test
    public void testLookupInstance() throws Exception
    {
-      assert createContextualInstance(new TypeLiteral<Instance<List<?>>>(){}.getRawType(), new ObtainsLiteral()) == null; 
+      assert createContextualInstance(new TypeLiteral<Instance<List<?>>>(){}.getRawType(), new CurrentLiteral()) == null; 
    }
    
 }
