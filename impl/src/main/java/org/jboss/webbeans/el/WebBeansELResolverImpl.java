@@ -129,7 +129,7 @@ public class WebBeansELResolverImpl extends ELResolver
          {
             name = propertyString;
          }
-         final ValueHolder<Object> holder = new ValueHolder<Object>();
+         Object value = null;
          try
          {
             
@@ -137,7 +137,7 @@ public class WebBeansELResolverImpl extends ELResolver
             CreationalContext<?> creationalContext = manager.createCreationalContext(bean);
             if (bean != null)
             {
-               holder.setValue(manager.getReference(bean, creationalContext));
+               value = manager.getReference(bean, creationalContext);
             }
             creationalContext.release();
          }
@@ -145,10 +145,10 @@ public class WebBeansELResolverImpl extends ELResolver
          {
             throw new RuntimeException("Error resolving property " + propertyString + " against base " + base, e);
          }
-         if (holder.getValue() != null)
+         if (value != null)
          {
             context.setPropertyResolved(true);
-            return holder.getValue();
+            return value;
          }
       }
       return null;

@@ -216,7 +216,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final Namespace rootNamespace;
    private transient final List<EventObserver<?>> observers;
    private transient final Set<BeanManagerImpl> childActivities;
-   private transient final Integer id;
+   
+   private final Integer id;
    
    /*
     * Runtime data transfer
