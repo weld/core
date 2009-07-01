@@ -206,6 +206,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final TypeSafeResolver<EventObserver<?>> observerResolver;
    private transient final NameBasedResolver nameBasedResolver;
    private transient final ELResolver webbeansELResolver;
+   private transient Namespace rootNamespace;
 
    /*
     * Activity scoped data structures 
@@ -213,8 +214,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    private transient final List<Bean<?>> beans;
    private transient final List<DecoratorBean<?>> decorators;
-   private transient final Namespace rootNamespace;
+   private transient final List<String> namespaces;
    private transient final List<EventObserver<?>> observers;
+   
    private transient final Set<BeanManagerImpl> childActivities;
    
    private final Integer id;
@@ -244,7 +246,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<DecoratorBean<?>>(),
             new CopyOnWriteArrayList<EventObserver<?>>(),
-            new Namespace(),
+            new CopyOnWriteArrayList<String>(),
             new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>(),
             new ConcurrentHashMap<String, RIBean<?>>(),
             new ClientProxyProvider(),
@@ -267,14 +269,15 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       
       List<EventObserver<?>> registeredObservers = new CopyOnWriteArrayList<EventObserver<?>>();
       registeredObservers.addAll(parentManager.getObservers());
-      Namespace rootNamespace = new Namespace(parentManager.getRootNamespace());
+      List<String> namespaces = new CopyOnWriteArrayList<String>();
+      namespaces.addAll(parentManager.getNamespaces());
 
       return new BeanManagerImpl(
             parentManager.getServices(), 
             beans, 
             parentManager.getDecorators(), 
             registeredObservers, 
-            rootNamespace, 
+            namespaces, 
             parentManager.getNewEnterpriseBeanMap(), 
             parentManager.getRiBeans(), 
             parentManager.getClientProxyProvider(), 
@@ -292,7 +295,22 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * 
     * @param ejbServices the ejbResolver to use
     */
-   private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<DecoratorBean<?>> decorators, List<EventObserver<?>> registeredObservers, Namespace rootNamespace, Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, Map<String, RIBean<?>> riBeans, ClientProxyProvider clientProxyProvider, ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts, Set<CurrentActivity> currentActivities, Map<Contextual<?>, Contextual<?>> specializedBeans, List<Class<? extends Annotation>> enabledDeploymentTypes, List<Class<?>> enabledDecoratorClasses, AtomicInteger ids)
+   private BeanManagerImpl(
+         ServiceRegistry serviceRegistry, 
+         List<Bean<?>> beans, 
+         List<DecoratorBean<?>> decorators, 
+         List<EventObserver<?>> registeredObservers, 
+         List<String> namespaces,
+         Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, 
+         Map<String, RIBean<?>> riBeans, 
+         ClientProxyProvider clientProxyProvider, 
+         ConcurrentListMultiMap<Class<? extends Annotation>,
+         Context> contexts, 
+         Set<CurrentActivity> currentActivities, 
+         Map<Contextual<?>, Contextual<?>> specializedBeans, 
+         List<Class<? extends Annotation>> enabledDeploymentTypes, 
+         List<Class<?>> enabledDecoratorClasses, 
+         AtomicInteger ids)
    {
       this.services = serviceRegistry;
       this.beans = beans;
@@ -306,7 +324,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.observers = registeredObservers;
       setEnabledDeploymentTypes(enabledDeploymentTypes);
       setEnabledDecoratorClasses(enabledDecoratorClasses);
-      this.rootNamespace = rootNamespace;
+      this.namespaces = namespaces;
       this.ids = ids;
       this.id = ids.incrementAndGet();
 
@@ -557,13 +575,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       if (bean.getName() != null && bean.getName().indexOf('.') > 0)
       {
-         String name = bean.getName().substring(0, bean.getName().lastIndexOf('.'));
-         String[] hierarchy = name.split("\\.");
-         Namespace namespace = getRootNamespace();
-         for (String s : hierarchy)
-         {
-            namespace = namespace.putIfAbsent(s);
-         }
+         namespaces.add(bean.getName().substring(0, bean.getName().lastIndexOf('.')));
       }
    }
 
@@ -1040,6 +1052,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return contexts;
    }
    
+   /**
+    * @return the namespaces
+    */
+   protected List<String> getNamespaces()
+   {
+      return namespaces;
+   }
+   
    protected AtomicInteger getIds()
    {
       return ids;
@@ -1062,6 +1082,11 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    
    public Namespace getRootNamespace()
    {
+      // TODO I don't like this lazy init
+      if (rootNamespace == null)
+      {
+         rootNamespace = new Namespace(getNamespaces());
+      }
       return rootNamespace;
    }
 
