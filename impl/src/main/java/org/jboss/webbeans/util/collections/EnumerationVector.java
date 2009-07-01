@@ -14,41 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.util;
+package org.jboss.webbeans.util.collections;
 
-import java.util.Comparator;
-import java.util.List;
 
-/**
- * List comparator based on element location
- * 
- * @author Pete Muir
- * 
- * @param <T>
- */
-public class ListComparator<T> implements Comparator<T>
-{
-   // The source list
-   private List<T> list;
-
-   /**
-    * Constructor
-    * 
-    * @param list The source list
-    */
-   public ListComparator(List<T> list)
-   {
-      this.list = list;
-   }
-
-   /**
-    * Compares the entries
-    */
-   public int compare(T o1, T o2)
-   {
-      int p1 = list.indexOf(o1);
-      int p2 = list.indexOf(o2);
-      return p1 - p2;
-   }
-
-}

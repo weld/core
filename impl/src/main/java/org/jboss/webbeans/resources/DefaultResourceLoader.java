@@ -21,7 +21,7 @@ import java.net.URL;
 
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceLoadingException;
-import org.jboss.webbeans.util.EnumerationIterable;
+import org.jboss.webbeans.util.collections.EnumerationIterable;
 
 /**
  * A simple resource loader.

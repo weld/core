@@ -50,10 +50,10 @@ import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.resolution.ResolvableWBClass;
 import org.jboss.webbeans.util.Beans;
-import org.jboss.webbeans.util.ListComparator;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.collections.ListComparator;
 
 /**
  * Checks a list of beans for DeploymentExceptions and their subclasses

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.util;
+package org.jboss.webbeans.util.collections;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +26,7 @@ import java.util.List;
  * An Enumeration -> Iteratble adaptor
  *  
  * @author Pete Muir
- * @see org.jboss.webbeans.util.EnumerationIterator
+ * @see org.jboss.webbeans.util.collections.EnumerationIterator
  */
 public class EnumerationIterable<T> implements Iterable<T>
 {

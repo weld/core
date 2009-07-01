@@ -44,7 +44,7 @@ import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.literal.CurrentLiteral;
-import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.cache.MergedStereotypes;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
@@ -67,14 +67,10 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    @SuppressWarnings("unchecked")
    private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, BeanManagerImpl.class, ConversationImpl.class));
 
-   private boolean proxyable; 
+   private boolean proxyable;
 
    /**
-    * Helper class for getting deployment type
-    * 
-    * Loops through the enabled deployment types (backwards) and returns the
-    * first one present in the possible deployments type, resulting in the
-    * deployment type of highest priority
+    * Helper method for getting the highest precedence enabled deployment type
     * 
     * @param enabledDeploymentTypes The currently enabled deployment types
     * @param possibleDeploymentTypes The possible deployment types
@@ -93,7 +89,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    }
 
    // Logger
-   private final LogProvider log = Logging.getLogProvider(AbstractBean.class);
+   private final Log log = Logging.getLog(AbstractBean.class);
    // The binding types
    protected Set<Annotation> bindings;
    // The name
@@ -135,7 +131,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    {
       super(manager);
       this.manager = manager;
-      injectionPoints = new HashSet<WBInjectionPoint<?, ?>>();  
+      injectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
    }
 
    /**
@@ -176,7 +172,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 
    protected void initDecorates()
    {
-      this.decoratesInjectionPoint = new HashSet<WBInjectionPoint<?,?>>();
+      this.decoratesInjectionPoint = new HashSet<WBInjectionPoint<?, ?>>();
       for (WBInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
       {
          if (injectionPoint.isAnnotationPresent(Decorates.class))
@@ -233,8 +229,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       if (possibleDeploymentTypes.size() > 0)
       {
          this.deploymentType = getDeploymentType(manager.getEnabledDeploymentTypes(), possibleDeploymentTypes);
-         if (log.isTraceEnabled())
-            log.trace("Deployment type " + deploymentType + " specified by stereotype");
+         log.trace("Deployment type #0 specified by stereotype", deploymentType);
          return;
       }
    }
@@ -298,7 +293,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
          Bean<?> resolvedBean = manager.getBeans(injectionPoint.getJavaClass(), bindings).iterator().next();
          if (passivating)
          {
-            if (Dependent.class.equals(resolvedBean.getScopeType()) && !resolvedBean.isSerializable() && (((injectionPoint instanceof WBField) && !((WBField<?>) injectionPoint).isTransient()) || (injectionPoint instanceof WBParameter)) )
+            if (Dependent.class.equals(resolvedBean.getScopeType()) && !resolvedBean.isSerializable() && (((injectionPoint instanceof WBField) && !((WBField<?>) injectionPoint).isTransient()) || (injectionPoint instanceof WBParameter)))
             {
                return false;
             }
@@ -513,7 +508,8 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 
    public boolean isSerializable()
    {
-      // TODO WTF - why are we not caching the serializability of injection points!
+      // TODO WTF - why are we not caching the serializability of injection
+      // points!
       return _serializable && checkInjectionPointsAreSerializable();
    }
 
@@ -550,6 +546,5 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    {
       return getAnnotatedItem().isAnnotationPresent(Specializes.class);
    }
-
 
 }

@@ -24,7 +24,7 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.mock.el.EL;
-import org.jboss.webbeans.util.EnumerationIterable;
+import org.jboss.webbeans.util.collections.EnumerationIterable;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;

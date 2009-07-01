@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.util;
+package org.jboss.webbeans.util.collections;
 
 import java.util.Enumeration;
 import java.util.Iterator;

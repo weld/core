@@ -27,8 +27,8 @@ import org.jboss.webbeans.context.api.BeanInstance;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.util.EnumerationIterable;
 import org.jboss.webbeans.util.Names;
+import org.jboss.webbeans.util.collections.EnumerationIterable;
 
 /**
  * Provides common BeanStore operations

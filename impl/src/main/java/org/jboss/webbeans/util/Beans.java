@@ -37,6 +37,7 @@ import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.metadata.cache.BindingTypeModel;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
+import org.jboss.webbeans.util.collections.ListComparator;
 
 /**
  * Helper class for bean inspection
