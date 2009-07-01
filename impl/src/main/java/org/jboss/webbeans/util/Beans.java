@@ -18,7 +18,10 @@ package org.jboss.webbeans.util;
 
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.decorator.Decorates;
 import javax.enterprise.inject.BindingType;
@@ -123,27 +126,63 @@ public class Beans
       for (Annotation binding : bindings1)
       {
          BindingTypeModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class).getBindingTypeModel(binding.annotationType());
-         if (bindingType.getNonBindingTypes().size() > 0)
+         boolean matchFound = false;
+         // TODO Something wrong with annotation proxy hashcode in JDK/AnnotationLiteral hashcode, so always do a full check, don't use contains
+         for (Annotation otherBinding : bindings2)
          {
-            boolean matchFound = false;
-            for (Annotation otherBinding : bindings2)
+            if (bindingType.isEqual(binding, otherBinding))
             {
-               if (bindingType.isEqual(binding, otherBinding))
-               {
-                  matchFound = true;
-               }
-            }
-            if (!matchFound)
-            {
-               return false;
+               matchFound = true;
             }
          }
-         else if (!bindings2.contains(binding))
+         if (!matchFound)
          {
             return false;
          }
       }
       return true;
+   }
+   
+
+   /**
+    * Retains only beans which have deployment type X.
+    * 
+    * The deployment type X is
+    * 
+    * @param <T>
+    * @param beans The beans to filter
+    * @param enabledDeploymentTypes The enabled deployment types
+    * @return The filtered beans
+    */
+   public static <T extends Bean<?>> Set<T> retainHighestPrecedenceBeans(Set<T> beans, List<Class<? extends Annotation>> enabledDeployentTypes)
+   {
+      if (beans.size() > 0)
+      {
+         SortedSet<Class<? extends Annotation>> possibleDeploymentTypes = new TreeSet<Class<? extends Annotation>>(new ListComparator<Class<? extends Annotation>>(enabledDeployentTypes));
+         for (Bean<?> bean : beans)
+         {
+            possibleDeploymentTypes.add(bean.getDeploymentType());
+         }
+         possibleDeploymentTypes.retainAll(enabledDeployentTypes);
+         Set<T> trimmed = new HashSet<T>();
+         if (possibleDeploymentTypes.size() > 0)
+         {
+            Class<? extends Annotation> highestPrecedencePossibleDeploymentType = possibleDeploymentTypes.last();
+
+            for (T bean : beans)
+            {
+               if (bean.getDeploymentType().equals(highestPrecedencePossibleDeploymentType))
+               {
+                  trimmed.add(bean);
+               }
+            }
+         }
+         return trimmed;
+      }
+      else
+      {
+         return beans;
+      }
    }
    
 }

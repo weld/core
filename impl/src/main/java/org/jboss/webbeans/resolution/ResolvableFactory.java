@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.injection.resolution;
+package org.jboss.webbeans.resolution;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

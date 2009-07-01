@@ -19,8 +19,6 @@ package org.jboss.webbeans.event;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.event.Observer;
@@ -29,7 +27,6 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.util.Reflections.HierarchyDiscovery;
 
 /**
  * The event bus is where observers are registered and events are fired.
@@ -62,39 +59,8 @@ public class EventManager
    public <T> void addObserver(Observer<T> observer, Type eventType, Annotation... bindings)
    {
       EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, manager, bindings);
-      manager.getRegisteredObservers().put(eventType, eventObserver);
+      manager.getRegisteredObservers().add(eventObserver);
       log.debug("Added observer " + observer + " observing event type " + eventType);
-   }
-
-   /**
-    * Resolves the list of observers to be notified for a given event and
-    * optional event bindings.
-    * 
-    * @param event The event object
-    * @param bindings Optional event bindings
-    * @return A set of Observers. An empty set is returned if there are no
-    *         matches.
-    */
-   public <T> Set<Observer<T>> getObservers(T event, Annotation... bindings)
-   {
-//      checkEventType(event.getClass());
-      Set<Observer<T>> interestedObservers = new HashSet<Observer<T>>();
-      Set<Type> types = new HierarchyDiscovery(event.getClass()).getFlattenedTypes();
-      for (Type type : types)
-      {
-         for (EventObserver<?> observer : manager.getRegisteredObservers().get(type))
-         {
-            log.trace("Checking observer " + observer + " to see if it is interested in event [" + event + "]");
-            if (observer.isObserverInterested(bindings))
-            {
-               @SuppressWarnings("unchecked")
-               Observer<T> o = (Observer<T>) observer.getObserver();
-               interestedObservers.add(o);
-               log.trace("Added observer " + observer + " for event [" + event + "]");
-            }
-         }
-      }
-      return interestedObservers;
    }
 
    /**
@@ -112,11 +78,7 @@ public class EventManager
          DependentContext.instance().setActive(true);
          for (Observer<T> observer : observers)
          {
-            if (observer.notify(event))
-            {
-               // We can remove the once-only observer
-               removeObserver(observer);
-            }
+            observer.notify(event);
          }
       }
       finally
@@ -124,20 +86,6 @@ public class EventManager
          // TODO This breaks SE shutdown, also we need to tidy up how dependent context is activated....
          //DependentContext.instance().setActive(false);
       }
-   }
-
-   /**
-    * Removes an observer from the event bus.
-    * 
-    * @param observer The observer to remove
-    * @param eventType The event type of the observer to remove
-    */
-   public void removeObserver(Observer<?> observer) 
-   {
-      Collection<EventObserver<?>> observers = manager.getRegisteredObservers().get(getTypeOfObserver(observer));
-      for (EventObserver<?> eventObserver : observers)
-         if (eventObserver.getObserver() == observer)
-            observers.remove(eventObserver);
    }
 
    @Override

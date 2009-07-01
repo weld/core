@@ -14,35 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.injection.resolution;
+package org.jboss.webbeans.resolution;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Set;
-
-public abstract class ForwardingResolvable implements Resolvable
+public interface ResolvableTransformer
 {
    
-   protected abstract Resolvable delegate();
-
-   public Set<Annotation> getBindings()
-   {
-      return delegate().getBindings();
-   }
+   public Resolvable transform(Resolvable element);
    
-   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
-   {
-      return delegate().isAnnotationPresent(annotationType);
-   }
-   
-   public Set<Type> getTypeClosure()
-   {
-      return delegate().getTypeClosure();
-   }
-   
-   public boolean isAssignableTo(Class<?> clazz)
-   {
-      return delegate().isAssignableTo(clazz);
-   }
-
 }

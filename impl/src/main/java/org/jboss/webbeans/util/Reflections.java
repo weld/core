@@ -661,6 +661,26 @@ public class Reflections
       }
       return false;
    }
+   
+   /**
+    * Check the assiginability of a set of <b>flattened</b> types. This algorithm
+    * will check whether any of the types1 matches a type in types2
+    * 
+    * @param types1
+    * @param types2
+    * @return
+    */
+   public static boolean isAssignableFrom(Set<Type> types1, Type type2)
+   {
+      for (Type type : types1)
+      {
+         if (isAssignableFrom(type, type2))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
 
    public static boolean isSerializable(Class<?> clazz)
    {

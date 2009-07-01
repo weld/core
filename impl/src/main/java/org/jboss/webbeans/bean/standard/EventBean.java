@@ -28,8 +28,8 @@ import javax.inject.Obtains;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.event.EventImpl;
-import org.jboss.webbeans.injection.resolution.ResolvableTransformer;
 import org.jboss.webbeans.literal.AnyLiteral;
+import org.jboss.webbeans.resolution.ResolvableTransformer;
 
 public class EventBean extends AbstractFacadeBean<Event<?>>
 {

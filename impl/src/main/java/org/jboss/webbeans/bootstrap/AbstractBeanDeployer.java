@@ -107,9 +107,6 @@ public class AbstractBeanDeployer
     */
    protected <T> void createSubBeans(AbstractClassBean<T> bean)
    {
-      // TODO I don't think this is needed due to validation
-      manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
-      
       createProducerMethods(bean, bean.getAnnotatedItem());
       createProducerFields(bean, bean.getAnnotatedItem());
       createObserverMethods(bean, bean.getAnnotatedItem());
@@ -138,7 +135,6 @@ public class AbstractBeanDeployer
    {
       ProducerMethodBean<T> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
       addBean(bean);
-      manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
    }
    
    protected <T> void createProducerField(AbstractClassBean<?> declaringBean, WBField<T> field)

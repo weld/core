@@ -14,11 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.injection.resolution;
+package org.jboss.webbeans.resolution;
 
-public interface ResolvableTransformer
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Set;
+
+/**
+ * Something that is resovable by the resolver
+ * 
+ * @author pmuir
+ *
+ */
+public interface Resolvable
 {
    
-   public Resolvable transform(Resolvable element);
+   public Set<Annotation> getBindings();
    
+   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
+   
+   public boolean isAssignableTo(Class<?> clazz);
+   
+   public Set<Type> getTypeClosure();
+
 }

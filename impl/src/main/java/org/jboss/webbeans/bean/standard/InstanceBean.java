@@ -28,8 +28,8 @@ import javax.inject.Obtains;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.InstanceImpl;
-import org.jboss.webbeans.injection.resolution.ResolvableTransformer;
 import org.jboss.webbeans.literal.ObtainsLiteral;
+import org.jboss.webbeans.resolution.ResolvableTransformer;
 
 public class InstanceBean extends AbstractFacadeBean<Instance<?>>
 {

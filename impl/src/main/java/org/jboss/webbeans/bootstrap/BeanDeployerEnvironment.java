@@ -35,11 +35,12 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.ObserverImpl;
-import org.jboss.webbeans.injection.resolution.ResolvableFactory;
-import org.jboss.webbeans.injection.resolution.Resolver;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
+import org.jboss.webbeans.resolution.ResolvableFactory;
+import org.jboss.webbeans.resolution.TypeSafeBeanResolver;
+import org.jboss.webbeans.resolution.TypeSafeResolver;
 
 public class BeanDeployerEnvironment
 {
@@ -53,7 +54,7 @@ public class BeanDeployerEnvironment
    private final Set<DisposalMethodBean<?>> resolvedDisposalBeans;
    private final Set<DecoratorBean<?>> decorators;
    private final EjbDescriptorCache ejbDescriptors;
-   private final Resolver disposalMethodResolver;
+   private final TypeSafeResolver disposalMethodResolver;
    private final BeanManagerImpl manager;
 
    public BeanDeployerEnvironment(EjbDescriptorCache ejbDescriptors, BeanManagerImpl manager)
@@ -67,7 +68,7 @@ public class BeanDeployerEnvironment
       this.decorators = new HashSet<DecoratorBean<?>>();
       this.observers = new HashSet<ObserverImpl<?>>();
       this.ejbDescriptors = ejbDescriptors;
-      this.disposalMethodResolver = new Resolver(manager, allDisposalBeans);
+      this.disposalMethodResolver = new TypeSafeBeanResolver(manager, allDisposalBeans);
       this.manager = manager;
    }
 
@@ -189,7 +190,7 @@ public class BeanDeployerEnvironment
    public <T> Set<DisposalMethodBean<T>> resolveDisposalBeans(WBAnnotated<T, ?> annotatedItem)
    {
       // Correct?
-      Set<Bean<?>> beans = disposalMethodResolver.get(ResolvableFactory.of(annotatedItem));
+      Set<Bean<?>> beans = disposalMethodResolver.resolve(ResolvableFactory.of(annotatedItem));
       Set<DisposalMethodBean<T>> disposalBeans = new HashSet<DisposalMethodBean<T>>();
       for (Bean<?> bean : beans)
       {

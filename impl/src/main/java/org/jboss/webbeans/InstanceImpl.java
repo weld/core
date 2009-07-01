@@ -25,7 +25,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.webbeans.injection.resolution.ResolvableWBClass;
+import org.jboss.webbeans.resolution.ResolvableWBClass;
 
 /**
  * Helper implementation for Instance for getting instances

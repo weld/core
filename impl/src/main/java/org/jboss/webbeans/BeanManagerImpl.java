@@ -78,22 +78,23 @@ import org.jboss.webbeans.el.WebBeansELResolverImpl;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.event.ObserverImpl;
-import org.jboss.webbeans.injection.resolution.DecoratorResolver;
-import org.jboss.webbeans.injection.resolution.ResolvableFactory;
-import org.jboss.webbeans.injection.resolution.ResolvableWBClass;
-import org.jboss.webbeans.injection.resolution.Resolver;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
+import org.jboss.webbeans.resolution.NameBasedResolver;
+import org.jboss.webbeans.resolution.ResolvableFactory;
+import org.jboss.webbeans.resolution.ResolvableWBClass;
+import org.jboss.webbeans.resolution.TypeSafeBeanResolver;
+import org.jboss.webbeans.resolution.TypeSafeDecoratorResolver;
+import org.jboss.webbeans.resolution.TypeSafeObserverResolver;
+import org.jboss.webbeans.resolution.TypeSafeResolver;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.collections.multi.ConcurrentListHashMultiMap;
 import org.jboss.webbeans.util.collections.multi.ConcurrentListMultiMap;
-import org.jboss.webbeans.util.collections.multi.ConcurrentSetHashMultiMap;
-import org.jboss.webbeans.util.collections.multi.ConcurrentSetMultiMap;
 
 /**
  * Implementation of the Web Beans Manager.
@@ -200,8 +201,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * *************************
     */
    private transient final EventManager eventManager;
-   private transient final Resolver resolver;
-   private transient final Resolver decoratorResolver;
+   private transient final TypeSafeResolver<Bean<?>> beanResolver;
+   private transient final TypeSafeResolver<DecoratorBean<?>> decoratorResolver;
+   private transient final TypeSafeResolver<EventObserver<?>> observerResolver;
+   private transient final NameBasedResolver nameBasedResolver;
    private final transient ELResolver webbeansELResolver;
 
    /*
@@ -212,7 +215,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final List<Bean<?>> beans;
    private transient final List<DecoratorBean<?>> decorators;
    private final transient Namespace rootNamespace;
-   private final transient ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers;
+   private final transient List<EventObserver<?>> registeredObservers;
    private final transient Set<BeanManagerImpl> childActivities;
    private final Integer id;
 
@@ -234,7 +237,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             serviceRegistry, 
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<DecoratorBean<?>>(),
-            new ConcurrentSetHashMultiMap<Type, EventObserver<?>>(),
+            new CopyOnWriteArrayList<EventObserver<?>>(),
             new Namespace(),
             new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>(),
             new ConcurrentHashMap<String, RIBean<?>>(),
@@ -256,8 +259,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       List<Bean<?>> beans = new CopyOnWriteArrayList<Bean<?>>();
       beans.addAll(parentManager.getBeans());
       
-      ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers = new ConcurrentSetHashMultiMap<Type, EventObserver<?>>();
-      registeredObservers.deepPutAll(parentManager.getRegisteredObservers());
+      List<EventObserver<?>> registeredObservers = new CopyOnWriteArrayList<EventObserver<?>>();
+      registeredObservers.addAll(parentManager.getRegisteredObservers());
       Namespace rootNamespace = new Namespace(parentManager.getRootNamespace());
 
       return new BeanManagerImpl(
@@ -283,7 +286,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * 
     * @param ejbServices the ejbResolver to use
     */
-   private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<DecoratorBean<?>> decorators, ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers, Namespace rootNamespace, Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, Map<String, RIBean<?>> riBeans, ClientProxyProvider clientProxyProvider, ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts, Set<CurrentActivity> currentActivities, Map<Contextual<?>, Contextual<?>> specializedBeans, List<Class<? extends Annotation>> enabledDeploymentTypes, List<Class<?>> enabledDecoratorClasses, AtomicInteger ids)
+   private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<DecoratorBean<?>> decorators, List<EventObserver<?>> registeredObservers, Namespace rootNamespace, Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, Map<String, RIBean<?>> riBeans, ClientProxyProvider clientProxyProvider, ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts, Set<CurrentActivity> currentActivities, Map<Contextual<?>, Contextual<?>> specializedBeans, List<Class<? extends Annotation>> enabledDeploymentTypes, List<Class<?>> enabledDecoratorClasses, AtomicInteger ids)
    {
       this.services = serviceRegistry;
       this.beans = beans;
@@ -301,8 +304,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.ids = ids;
       this.id = ids.incrementAndGet();
 
-      this.resolver = new Resolver(this, beans);
-      this.decoratorResolver = new DecoratorResolver(this, decorators);
+      this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, beans);
+      this.decoratorResolver = new TypeSafeDecoratorResolver(this, decorators);
+      this.observerResolver = new TypeSafeObserverResolver(this, registeredObservers);
+      this.nameBasedResolver = new NameBasedResolver(this, beans);
       this.eventManager = new EventManager(this);
       this.webbeansELResolver = new WebBeansELResolverImpl(this);
       this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
@@ -347,7 +352,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          {
             return;
          }
-         resolver.clear();
+         beanResolver.clear();
          beans.add(bean);
          registerBeanNamespace(bean);
          for (BeanManagerImpl childActivity : childActivities)
@@ -374,7 +379,13 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          throw new IllegalArgumentException("Duplicate binding types: " + bindings);
       }
       checkEventType(clazz);
-      return eventManager.getObservers(event, bindings);
+      Set<Observer<T>> observers = new HashSet<Observer<T>>();
+      Set<EventObserver<?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(clazz).getFlattenedTypes(),  bindingAnnotations));
+      for (EventObserver<?> observer : eventObservers)
+      {
+         observers.add((Observer<T>) observer.getObserver());
+      }
+      return observers;
    }
    
    public <T> Set<ObserverMethod<T, ?>> resolveObserverMethods(T event, Annotation... bindings)
@@ -487,7 +498,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       {
          throw new IllegalArgumentException("Duplicate bindings (" + Arrays.asList(bindings) + ") type passed " + element.toString());
       }
-      return resolver.get(ResolvableFactory.of(element));
+      return beanResolver.resolve(ResolvableFactory.of(element));
    }
 
    public Set<Bean<?>> getInjectableBeans(InjectionPoint injectionPoint)
@@ -533,7 +544,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       riBeans.put(bean.getId(), bean);
       registerBeanNamespace(bean);
       this.beans.add(bean);
-      resolver.clear();
+      beanResolver.clear();
    }
    
    protected void registerBeanNamespace(Bean<?> bean)
@@ -625,7 +636,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    @Deprecated
    public void removeObserver(Observer<?> observer)
    {
-      eventManager.removeObserver(observer);
+      throw new UnsupportedOperationException();
    }
 
    /**
@@ -807,7 +818,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public Set<Bean<?>> getBeans(String name)
    {
-      return resolver.get(name);
+      return nameBasedResolver.resolve(name);
    }
 
    /**
@@ -823,13 +834,13 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... bindings)
    {
       // TODO Fix this cast and make the resolver return a list
-      return new ArrayList(decoratorResolver.get(ResolvableFactory.of(types, bindings)));
+      return new ArrayList(decoratorResolver.resolve(ResolvableFactory.of(types, bindings)));
    }
    
    public List<Decorator<?>> resolveDecorators(Set<Type> types, Set<Annotation> bindings)
    {
       // TODO Fix this cast and make the resolver return a list
-      return new ArrayList(decoratorResolver.get(ResolvableFactory.of(types, bindings)));
+      return new ArrayList(decoratorResolver.resolve(ResolvableFactory.of(types, bindings)));
    }
 
    /**
@@ -853,9 +864,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * 
     * @return The resolver
     */
-   public Resolver getResolver()
+   public TypeSafeResolver getBeanResolver()
    {
-      return resolver;
+      return beanResolver;
    }
 
    /**
@@ -1027,7 +1038,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return id;
    }
    
-   public ConcurrentSetMultiMap<Type, EventObserver<?>> getRegisteredObservers()
+   public List<EventObserver<?>> getRegisteredObservers()
    {
       return registeredObservers;
    }

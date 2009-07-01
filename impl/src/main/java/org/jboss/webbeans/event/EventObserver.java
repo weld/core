@@ -18,8 +18,8 @@ package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.enterprise.event.Observer;
 import javax.enterprise.inject.Current;
@@ -46,7 +46,8 @@ public class EventObserver<T>
 {
 
    private final Type eventType;
-   private final List<Annotation> eventBindings;
+   
+   private final Set<Annotation> eventBindings;
    private final Observer<T> observer;
    private final BeanManagerImpl manager;
 
@@ -61,7 +62,7 @@ public class EventObserver<T>
    {
       this.observer = observer;
       this.eventType = eventType;
-      this.eventBindings = new ArrayList<Annotation>();
+      this.eventBindings = new HashSet<Annotation>();
       this.manager = manager;
       checkEventBindings(eventBindings);
    }
@@ -103,7 +104,7 @@ public class EventObserver<T>
    /**
     * @return the eventBindings
     */
-   public final List<Annotation> getEventBindings()
+   public final Set<Annotation> getEventBindings()
    {
       return eventBindings;
    }
