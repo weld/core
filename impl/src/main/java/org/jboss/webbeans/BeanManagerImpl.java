@@ -178,7 +178,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    
    private transient final ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts;
    private transient final ClientProxyProvider clientProxyProvider;
-   private final transient AtomicInteger ids;
+   private transient final AtomicInteger ids;
    private transient final Map<String, RIBean<?>> riBeans;
    private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans;
    
@@ -194,8 +194,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
    private transient List<Class<?>> enabledDecoratorClasses;
    private transient List<Class<?>> enabledInterceptorClasses;
-   private final transient Set<CurrentActivity> currentActivities;
-   private final transient Map<Contextual<?>, Contextual<?>> specializedBeans;
+   private transient final Set<CurrentActivity> currentActivities;
+   private transient final Map<Contextual<?>, Contextual<?>> specializedBeans;
 
    /*
     * Activity scoped services 
@@ -205,19 +205,24 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final TypeSafeResolver<DecoratorBean<?>> decoratorResolver;
    private transient final TypeSafeResolver<EventObserver<?>> observerResolver;
    private transient final NameBasedResolver nameBasedResolver;
-   private final transient ELResolver webbeansELResolver;
+   private transient final ELResolver webbeansELResolver;
 
    /*
     * Activity scoped data structures 
     * ********************************
     */
-   private transient final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
    private transient final List<Bean<?>> beans;
    private transient final List<DecoratorBean<?>> decorators;
-   private final transient Namespace rootNamespace;
-   private final transient List<EventObserver<?>> observers;
-   private final transient Set<BeanManagerImpl> childActivities;
-   private final Integer id;
+   private transient final Namespace rootNamespace;
+   private transient final List<EventObserver<?>> observers;
+   private transient final Set<BeanManagerImpl> childActivities;
+   private transient final Integer id;
+   
+   /*
+    * Runtime data transfer
+    * *********************
+    */
+   private transient final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
 
    /**
     * Create a new, root, manager
@@ -310,6 +315,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.nameBasedResolver = new NameBasedResolver(this, beans);
       this.webbeansELResolver = new WebBeansELResolverImpl(this);
       this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
+      
       this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
       {
          @Override
