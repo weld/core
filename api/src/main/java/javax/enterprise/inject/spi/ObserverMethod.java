@@ -7,11 +7,17 @@ import java.util.Set;
 import javax.enterprise.event.Notify;
 import javax.enterprise.event.TransactionPhase;
 
-public interface ObserverMethod<X, T> {
-    public Bean<X> getBean();
-    public Type getObservedType();
-    public Set<Annotation> getObservedBindings();
-    public Notify getNotify();
-    public TransactionPhase getTransactionPhase();
-    public void notify(T event);
+public interface ObserverMethod<X, T>
+{
+   public Bean<X> getBean();
+
+   public Type getObservedType();
+
+   public Set<Annotation> getObservedBindings();
+
+   public Notify getNotify();
+
+   public TransactionPhase getTransactionPhase();
+
+   public void notify(T event);
 }
