@@ -21,6 +21,7 @@ import static org.jboss.webbeans.introspector.WBAnnotated.MAPPED_METAANNOTATIONS
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,8 +32,10 @@ import javax.enterprise.inject.BindingType;
 
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.metadata.TypeStore;
-import org.jboss.webbeans.util.collections.multi.SetHashMultiMap;
-import org.jboss.webbeans.util.collections.multi.SetMultiMap;
+
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 
 public class AnnotationStore
 {
@@ -127,7 +130,7 @@ public class AnnotationStore
    private final Map<Class<? extends Annotation>, Annotation> annotationMap;
    // The meta-annotation map (annotation type -> set of annotations containing
    // meta-annotation) of the item
-   private final SetMultiMap<Class<? extends Annotation>, Annotation> metaAnnotationMap;
+   private final SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap;
    // The set of all annotations on the item
    private final Set<Annotation> annotationSet;
    
@@ -135,7 +138,7 @@ public class AnnotationStore
    private final Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap;
    // The meta-annotation map (annotation type -> set of annotations containing
    // meta-annotation) of the item
-   private final SetMultiMap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap;
+   private final SetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap;
    // The set of all annotations on the item
    private final Set<Annotation> declaredAnnotationSet;
    
@@ -156,7 +159,14 @@ public class AnnotationStore
       }
       this.annotationMap = annotationMap;
       this.annotationSet = new HashSet<Annotation>();
-      this.metaAnnotationMap = new SetHashMultiMap<Class<? extends Annotation>, Annotation>();
+      this.metaAnnotationMap = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<Annotation>>(), new Supplier<Set<Annotation>>()
+      {
+
+         public Set<Annotation> get()
+         {
+            return new HashSet<Annotation>();
+         }
+      });
       for (Annotation annotation : annotationMap.values())
       {
          addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations());
@@ -170,7 +180,14 @@ public class AnnotationStore
       }
       this.declaredAnnotationMap = declaredAnnotationMap;
       this.declaredAnnotationSet = new HashSet<Annotation>();
-      this.declaredMetaAnnotationMap = new SetHashMultiMap<Class<? extends Annotation>, Annotation>();
+      this.declaredMetaAnnotationMap = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<Annotation>>(), new Supplier<Set<Annotation>>()
+      {
+
+         public Set<Annotation> get()
+         {
+            return new HashSet<Annotation>();
+         }
+      });
       for (Annotation declaredAnnotation : declaredAnnotationMap.values())
       {
          addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, declaredAnnotation.annotationType().getAnnotations());
@@ -179,7 +196,7 @@ public class AnnotationStore
       }
    }
    
-   private static void addMetaAnnotations(SetMultiMap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Annotation[] metaAnnotations)
+   private static void addMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Annotation[] metaAnnotations)
    {
       for (Annotation metaAnnotation : metaAnnotations)
       {
@@ -187,7 +204,7 @@ public class AnnotationStore
       }
    }
    
-   private static void addMetaAnnotations(SetMultiMap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Iterable<Annotation> metaAnnotations)
+   private static void addMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Iterable<Annotation> metaAnnotations)
    {
       for (Annotation metaAnnotation : metaAnnotations)
       {
@@ -195,7 +212,7 @@ public class AnnotationStore
       }
    }
    
-   private static void addMetaAnnotation(SetMultiMap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Class<? extends Annotation> metaAnnotationType)
+   private static void addMetaAnnotation(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Class<? extends Annotation> metaAnnotationType)
    {
       // Only map meta-annotations we are interested in
       if (MAPPED_METAANNOTATIONS.contains(metaAnnotationType))

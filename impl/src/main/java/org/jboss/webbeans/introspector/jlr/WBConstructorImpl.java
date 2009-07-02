@@ -21,7 +21,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -32,8 +34,10 @@ import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.introspector.WBType;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Names;
-import org.jboss.webbeans.util.collections.multi.ListHashMultiMap;
-import org.jboss.webbeans.util.collections.multi.ListMultiMap;
+
+import com.google.common.base.Supplier;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * Represents an annotated constructor
@@ -53,7 +57,7 @@ public class WBConstructorImpl<T> extends AbstractWBMember<T, Constructor<T>> im
    // The list of parameter abstractions
    private final List<WBParameter<?>> parameters;
    // The mapping of annotation -> parameter abstraction
-   private final ListMultiMap<Class<? extends Annotation>, WBParameter<?>> annotatedParameters;
+   private final ListMultimap<Class<? extends Annotation>, WBParameter<?>> annotatedParameters;
 
    // The declaring class abstraction
    private final WBType<T> declaringClass;
@@ -83,7 +87,15 @@ public class WBConstructorImpl<T> extends AbstractWBMember<T, Constructor<T>> im
       this.declaringClass = declaringClass;
 
       this.parameters = new ArrayList<WBParameter<?>>();
-      annotatedParameters = new ListHashMultiMap<Class<? extends Annotation>, WBParameter<?>>();
+      annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WBParameter<?>>>(), new Supplier< List<WBParameter<?>>>()
+      {
+         
+         public List<WBParameter<?>> get()
+         {
+            return new ArrayList<WBParameter<?>>();
+         }
+        
+      });
       
       for (int i = 0; i < constructor.getParameterTypes().length; i++)
       {

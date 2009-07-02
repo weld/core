@@ -17,10 +17,12 @@
 package org.jboss.webbeans.util.collections;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+
+import com.google.common.collect.Iterables;
+
 
 /**
  * An Enumeration -> Iteratble adaptor
@@ -53,7 +55,7 @@ public class EnumerationIterable<T> implements Iterable<T>
     */
    public Iterator<T> iterator()
    {
-      return Collections.unmodifiableList(list).iterator();
+      return Iterables.unmodifiableIterable(list).iterator();
    }
    
 }

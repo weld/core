@@ -98,11 +98,13 @@ import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Observers;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.collections.ForwardingIterable;
-import org.jboss.webbeans.util.collections.Iterables;
-import org.jboss.webbeans.util.collections.Iterators;
-import org.jboss.webbeans.util.collections.multi.ConcurrentListHashMultiMap;
-import org.jboss.webbeans.util.collections.multi.ConcurrentListMultiMap;
+
+import com.google.common.base.Function;
+import com.google.common.base.Supplier;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * Implementation of the Web Beans Manager.
@@ -184,7 +186,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    
    // Contexts are shared across the application
-   private transient final ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts;
+   private transient final ListMultimap<Class<? extends Annotation>, Context> contexts;
    
    // Client proxies can be used application wide
    private transient final ClientProxyProvider clientProxyProvider;
@@ -278,6 +280,16 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       defaultEnabledDeploymentTypes.add(1, Production.class);
       
       List<Class<?>> defaultEnabledDecoratorClasses = new ArrayList<Class<?>>();
+      
+      ListMultimap<Class<? extends Annotation>, Context> contexts = Multimaps.newListMultimap(new ConcurrentHashMap<Class<? extends Annotation>, Collection<Context>>(), new Supplier<List<Context>>() 
+            {
+         
+         public List<Context> get()
+         {
+            return new CopyOnWriteArrayList<Context>();
+         }
+         
+      });
 
       return new BeanManagerImpl(
             serviceRegistry, 
@@ -288,7 +300,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>(),
             new ConcurrentHashMap<String, RIBean<?>>(),
             new ClientProxyProvider(),
-            new ConcurrentListHashMultiMap<Class<? extends Annotation>, Context>(),
+            contexts, 
             new CopyOnWriteArraySet<CurrentActivity>(), 
             new HashMap<Contextual<?>, Contextual<?>>(), defaultEnabledDeploymentTypes, defaultEnabledDecoratorClasses, 
             new AtomicInteger());
@@ -342,8 +354,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, 
          Map<String, RIBean<?>> riBeans, 
          ClientProxyProvider clientProxyProvider, 
-         ConcurrentListMultiMap<Class<? extends Annotation>,
-         Context> contexts, 
+         ListMultimap<Class<? extends Annotation>, Context> contexts, 
          Set<CurrentActivity> currentActivities, 
          Map<Contextual<?>, Contextual<?>> specializedBeans, 
          List<Class<? extends Annotation>> enabledDeploymentTypes, 
@@ -409,11 +420,21 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       return new Iterable<T>()
       {
+         
+         private Function<Iterable<T>, Iterator<T>> function = new Function<Iterable<T>, Iterator<T>>()
+         {
+
+            public Iterator<T> apply(Iterable<T> iterable)
+            {
+               return iterable.iterator();
+            }
+            
+         };
 
          public Iterator<T> iterator()
          {
             Set<Iterable<T>> iterable = buildAccessibleClosure(new ArrayList<BeanManagerImpl>(), transform);
-            return Iterators.concat(Iterators.transform(iterable.iterator(), Iterables.<T>iteratorTransform()));
+            return Iterators.concat(Iterators.transform(iterable.iterator(), function));
          }
          
       };
@@ -475,31 +496,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public void addAccessibleBeanManager(BeanManagerImpl accessibleBeanManager)
    {
       accessibleManagers.add(accessibleBeanManager);
-   }
-   
-   private static class ManagerAttachedIterable<X> extends ForwardingIterable<X>
-   {
-     
-      private final BeanManagerImpl beanManager;
-      private final Iterable<X> iterable;
-
-      public ManagerAttachedIterable(BeanManagerImpl beanManager, Iterable<X> iterable)
-      {
-         this.beanManager = beanManager;
-         this.iterable = iterable;
-      }
-
-      public BeanManagerImpl getBeanManager()
-      {
-         return beanManager;
-      }
-      
-      @Override
-      protected Iterable<X> delegate()
-      {
-         return iterable;
-      }
-      
    }
    
    protected Set<BeanManagerImpl> getAccessibleManagers()
@@ -1216,7 +1212,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return clientProxyProvider;
    }
    
-   protected ConcurrentListMultiMap<Class<? extends Annotation>, Context> getContexts()
+   protected ListMultimap<Class<? extends Annotation>, Context> getContexts()
    {
       return contexts;
    }

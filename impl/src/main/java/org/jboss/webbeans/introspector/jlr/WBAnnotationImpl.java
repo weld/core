@@ -18,6 +18,7 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,8 +30,10 @@ import org.jboss.webbeans.introspector.WBAnnotation;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.resources.ClassTransformer;
-import org.jboss.webbeans.util.collections.multi.SetHashMultiMap;
-import org.jboss.webbeans.util.collections.multi.SetMultiMap;
+
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 
 /**
  * Represents an annotated annotation
@@ -45,7 +48,7 @@ public class WBAnnotationImpl<T extends Annotation> extends AbstractWBType<T> im
 {
 
    // The annotated members map (annotation -> member with annotation)
-   private final SetMultiMap<Class<? extends Annotation>, WBMethod<?>> annotatedMembers;
+   private final SetMultimap<Class<? extends Annotation>, WBMethod<?>> annotatedMembers;
    // The implementation class of the annotation
    private final Class<T> clazz;
    // The set of abstracted members
@@ -73,7 +76,15 @@ public class WBAnnotationImpl<T extends Annotation> extends AbstractWBType<T> im
       super(AnnotationStore.of(annotationType, classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore()), annotationType, annotationType, classTransformer);
       this.clazz = annotationType;
       members = new HashSet<WBMethod<?>>();
-      annotatedMembers = new SetHashMultiMap<Class<? extends Annotation>, WBMethod<?>>();
+      annotatedMembers = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WBMethod<?>>>(), new Supplier<Set<WBMethod<?>>>()
+      {
+   
+          public Set<WBMethod<?>> get()
+          {
+             return new HashSet<WBMethod<?>>();
+          }
+         
+      });
       this.namedMembers = new HashMap<String, WBMethod<?>>();
       for (Method member : clazz.getDeclaredMethods())
       {

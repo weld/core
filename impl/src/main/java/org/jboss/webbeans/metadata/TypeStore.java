@@ -17,12 +17,16 @@
 package org.jboss.webbeans.metadata;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jboss.webbeans.bootstrap.api.Service;
-import org.jboss.webbeans.util.collections.multi.ConcurrentSetHashMultiMap;
-import org.jboss.webbeans.util.collections.multi.ConcurrentSetMultiMap;
+
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 
 /**
  * @author pmuir
@@ -31,11 +35,19 @@ import org.jboss.webbeans.util.collections.multi.ConcurrentSetMultiMap;
 public class TypeStore implements Service
 {
    
-   private final ConcurrentSetMultiMap<Class<? extends Annotation>, Annotation> extraAnnotations;
+   private final SetMultimap<Class<? extends Annotation>, Annotation> extraAnnotations;
    
    public TypeStore()
    {
-      this.extraAnnotations = new ConcurrentSetHashMultiMap<Class<? extends Annotation>, Annotation>();
+      this.extraAnnotations = Multimaps.synchronizedSetMultimap(Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<Annotation>>(), new Supplier<Set<Annotation>>()
+      {
+
+         public Set<Annotation> get()
+         {
+            return new HashSet<Annotation>();
+         }
+         
+      }));
    }
    
    public Set<Annotation> get(Class<? extends Annotation> annotationType)
@@ -50,7 +62,6 @@ public class TypeStore implements Service
    
    public void addAll(Class<? extends Annotation> annotationType, Set<Annotation> annotations)
    {
-      this.extraAnnotations.putIfAbsent(annotationType, new CopyOnWriteArraySet<Annotation>());
       this.extraAnnotations.get(annotationType).addAll(annotations);
    }
 }

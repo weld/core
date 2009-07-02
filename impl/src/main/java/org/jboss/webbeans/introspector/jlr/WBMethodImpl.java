@@ -22,7 +22,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jboss.webbeans.introspector.AnnotationStore;
@@ -33,8 +35,10 @@ import org.jboss.webbeans.introspector.WBType;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.collections.multi.ListHashMultiMap;
-import org.jboss.webbeans.util.collections.multi.ListMultiMap;
+
+import com.google.common.base.Supplier;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * Represents an annotated method
@@ -55,7 +59,7 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
    private final List<WBParameter<?>> parameters;
    // A mapping from annotation type to parameter abstraction with that
    // annotation present
-   private final ListMultiMap<Class<? extends Annotation>, WBParameter<?>> annotatedParameters;
+   private final ListMultimap<Class<? extends Annotation>, WBParameter<?>> annotatedParameters;
 
    // The property name
    private final String propertyName;
@@ -90,7 +94,15 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
       this.method.setAccessible(true);
       this.declaringClass = declaringClass;
       this.parameters = new ArrayList<WBParameter<?>>();
-      this.annotatedParameters = new ListHashMultiMap<Class<? extends Annotation>, WBParameter<?>>();
+      this.annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WBParameter<?>>>(), new Supplier< List<WBParameter<?>>>()
+      {
+         
+         public List<WBParameter<?>> get()
+         {
+            return new ArrayList<WBParameter<?>>();
+         }
+        
+      });
 
       for (int i = 0; i < method.getParameterTypes().length; i++)
       {
