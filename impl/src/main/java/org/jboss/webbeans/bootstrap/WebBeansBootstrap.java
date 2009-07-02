@@ -23,6 +23,7 @@ import java.util.Collection;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.webbeans.BeanIdStore;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.DefinitionException;
@@ -214,6 +215,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       getServices().add(TypeStore.class, new TypeStore());
       getServices().add(ClassTransformer.class, new ClassTransformer(getServices().get(TypeStore.class)));
       getServices().add(MetaAnnotationStore.class, new MetaAnnotationStore(getServices().get(ClassTransformer.class)));
+      getServices().add(BeanIdStore.class, new BeanIdStore());
    }
    
    public BeanManagerImpl getManager()
