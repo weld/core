@@ -55,25 +55,44 @@ public class AccessibleManagerResolutionTest
    }
    
    @Test
-   public void testAccessibleTwoLevels()
+   public void testAccessibleThreeLevelsWithMultiple()
    {
       BeanManagerImpl root = BeanManagerImpl.newRootManager(services);
       BeanManagerImpl child = BeanManagerImpl.newRootManager(services);
+      BeanManagerImpl child1 = BeanManagerImpl.newRootManager(services);
       BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(services);
-      grandchild.addAccessibleBeanManager(child);
+      BeanManagerImpl greatGrandchild = BeanManagerImpl.newRootManager(services);
       child.addAccessibleBeanManager(root);
+      grandchild.addAccessibleBeanManager(child1);
+      grandchild.addAccessibleBeanManager(child);
+      addBean(greatGrandchild, Cat.class);
+      greatGrandchild.addAccessibleBeanManager(grandchild);
       addBean(root, Cow.class);
       addBean(child, Chicken.class);
       addBean(grandchild, Pig.class);
+      addBean(child1, Horse.class);
       assert root.getBeans(Pig.class).size() == 0;
       assert root.getBeans(Chicken.class).size() == 0;
       assert root.getBeans(Cow.class).size() == 1;
+      assert root.getBeans(Horse.class).size() == 0;
+      assert root.getBeans(Cat.class).size() == 0;
       assert child.getBeans(Pig.class).size() == 0;
       assert child.getBeans(Chicken.class).size() == 1;
       assert child.getBeans(Cow.class).size() == 1;
+      assert child.getBeans(Horse.class).size() == 0;
+      assert child.getBeans(Cat.class).size() == 0;
+      assert child1.getBeans(Cow.class).size() == 0;
+      assert child1.getBeans(Horse.class).size() == 1;
       assert grandchild.getBeans(Pig.class).size() == 1;
       assert grandchild.getBeans(Chicken.class).size() == 1;
       assert grandchild.getBeans(Cow.class).size() == 1;
+      assert grandchild.getBeans(Horse.class).size() ==1;
+      assert grandchild.getBeans(Cat.class).size() == 0;
+      assert greatGrandchild.getBeans(Pig.class).size() == 1;
+      assert greatGrandchild.getBeans(Chicken.class).size() == 1;
+      assert greatGrandchild.getBeans(Cow.class).size() == 1;
+      assert greatGrandchild.getBeans(Horse.class).size() ==1;
+      assert greatGrandchild.getBeans(Cat.class).size() == 1;
    }
    
    @Test
@@ -92,6 +111,30 @@ public class AccessibleManagerResolutionTest
       assert root.getBeans(Chicken.class).size() == 0;
       assert root.getBeans(Cow.class).size() == 1;
       assert child.getBeans(Pig.class).size() == 0;
+      assert child.getBeans(Chicken.class).size() == 1;
+      assert child.getBeans(Cow.class).size() == 1;
+      assert grandchild.getBeans(Pig.class).size() == 1;
+      assert grandchild.getBeans(Chicken.class).size() == 1;
+      assert grandchild.getBeans(Cow.class).size() == 1;
+   }
+   
+   @Test
+   public void testCircular()
+   {
+      BeanManagerImpl root = BeanManagerImpl.newRootManager(services);
+      BeanManagerImpl child = BeanManagerImpl.newRootManager(services);
+      BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(services);
+      grandchild.addAccessibleBeanManager(child);
+      child.addAccessibleBeanManager(root);
+      grandchild.addAccessibleBeanManager(root);
+      root.addAccessibleBeanManager(grandchild);
+      addBean(root, Cow.class);
+      addBean(child, Chicken.class);
+      addBean(grandchild, Pig.class);
+      assert root.getBeans(Pig.class).size() == 1;
+      assert root.getBeans(Chicken.class).size() == 1;
+      assert root.getBeans(Cow.class).size() == 1;
+      assert child.getBeans(Pig.class).size() == 1;
       assert child.getBeans(Chicken.class).size() == 1;
       assert child.getBeans(Cow.class).size() == 1;
       assert grandchild.getBeans(Pig.class).size() == 1;

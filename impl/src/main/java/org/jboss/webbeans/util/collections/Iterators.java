@@ -51,19 +51,6 @@ public class Iterators
    {
       return (UnmodifiableIterator<T>) EMPTY_ITERATOR;
    }
-   
-   public static <T> Iterable<T> concat(final Iterable<? extends Iterable<? extends T>> inputs)
-   {
-      return new Iterable<T>()
-      {
-
-         public Iterator<T> iterator()
-         {
-            return concat(inputs.iterator());
-         }
-         
-      };
-   }
 
    /**
     * Combines multiple iterators into a single iterator. The returned iterator
@@ -75,29 +62,29 @@ public class Iterators
     * input iterator supports it. The methods of the returned iterator may throw
     * {@code NullPointerException} if any of the input iterators are null.
     */
-   public static <T> Iterator<T> concat(final Iterator<? extends Iterable<? extends T>> inputs)
+   public static <E> Iterator<E> concat(final Iterator<? extends Iterator<? extends E>> inputs)
    {
       if (inputs == null)
       {
          throw new NullPointerException();
       }
 
-      return new Iterator<T>()
+      return new Iterator<E>()
       {
-         Iterator<? extends T> current = emptyIterator();
-         Iterator<? extends T> removeFrom;
+         Iterator<? extends E> current = emptyIterator();
+         Iterator<? extends E> removeFrom;
 
          public boolean hasNext()
          {
             boolean currentHasNext;
             while (!(currentHasNext = current.hasNext()) && inputs.hasNext())
             {
-               current = inputs.next().iterator();
+               current = inputs.next();
             }
             return currentHasNext;
          }
 
-         public T next()
+         public E next()
          {
             if (!hasNext())
             {
@@ -115,6 +102,37 @@ public class Iterators
             }
             removeFrom.remove();
             removeFrom = null;
+         }
+      };
+   }
+
+   public static interface Function<F, T>
+   {
+      public T apply(F from);
+   }
+
+   public static <F, T> Iterator<T> transform(final Iterator<F> fromIterator, final Function<? super F, ? extends T> function)
+   {
+      if (function == null)
+      {
+         throw new IllegalStateException();
+      }
+      return new Iterator<T>()
+      {
+         public boolean hasNext()
+         {
+            return fromIterator.hasNext();
+         }
+
+         public T next()
+         {
+            F from = fromIterator.next();
+            return function.apply(from);
+         }
+
+         public void remove()
+         {
+            fromIterator.remove();
          }
       };
    }

@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -97,6 +98,8 @@ import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Observers;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.collections.ForwardingIterable;
+import org.jboss.webbeans.util.collections.Iterables;
 import org.jboss.webbeans.util.collections.Iterators;
 import org.jboss.webbeans.util.collections.multi.ConcurrentListHashMultiMap;
 import org.jboss.webbeans.util.collections.multi.ConcurrentListMultiMap;
@@ -243,14 +246,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final List<EventObserver<?>> observers;
    
    /*
-    * These data structures represent the beans, decorators, interceptors, 
-    * namespaces and observers *accessible* from this bean deployment archive
-    * activity
+    * These data structures represent the managers *accessible* from this bean 
+    * deployment archive activity
     */
-   private transient final Set<Iterable<Iterable<Bean<?>>>> accessibleBeans;
-   private transient final Set<Iterable<Iterable<DecoratorBean<?>>>> accessibleDecorators;
-   private transient final Set<Iterable<Iterable<String>>> accessibleNamespaces;
-   private transient final Set<Iterable<Iterable<EventObserver<?>>>> accessibleObservers;
+   private transient final HashSet<BeanManagerImpl> accessibleManagers;
    
    /*
     * This data structures represents child activities for this activity, it is
@@ -367,23 +366,16 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.ids = ids;
       this.id = ids.incrementAndGet();
       
-      // Set up the structures to store accessible beans etc.
+      // Set up the structure to store accessible managers in
+      this.accessibleManagers = new HashSet<BeanManagerImpl>();
       
-      this.accessibleBeans = new HashSet<Iterable<Iterable<Bean<?>>>>();
-      this.accessibleDecorators = new HashSet<Iterable<Iterable<DecoratorBean<?>>>>();
-      this.accessibleNamespaces = new HashSet<Iterable<Iterable<String>>>();
-      this.accessibleObservers = new HashSet<Iterable<Iterable<EventObserver<?>>>>();
       
-      // Add this bean deployment archvies beans etc. to the accessible
-      add(accessibleBeans, beans);
-      add(accessibleDecorators, decorators);
-      add(accessibleNamespaces, namespaces);
-      add(accessibleObservers, observers);
 
-      this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, Iterators.concat(getAccessibleBeans()));
-      this.decoratorResolver = new TypeSafeDecoratorResolver(this, Iterators.concat(getAccessibleDecorators()));
-      this.observerResolver = new TypeSafeObserverResolver(this, Iterators.concat(getAccessibleObservers()));
-      this.nameBasedResolver = new NameBasedResolver(this, Iterators.concat(getAccessibleBeans()));
+      // TODO Currently we build the accessible bean list on the fly, we need to set it in stone once bootstrap is finished...
+      this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, createDynamicAccessibleIterable(Transform.BEAN));
+      this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicAccessibleIterable(Transform.DECORATOR_BEAN));
+      this.observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(Transform.EVENT_OBSERVER));
+      this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(Transform.BEAN));
       this.webbeansELResolver = new WebBeansELResolverImpl(this);
       this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
       
@@ -397,39 +389,122 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       };
    }
    
-   private static <X> void add(Collection<Iterable<Iterable<X>>> collection, Iterable<X> instance)
+   private <T> Set<Iterable<T>> buildAccessibleClosure(Collection<BeanManagerImpl> hierarchy, Transform<T> transform)
    {
-      Collection<Iterable<X>> c = new ArrayList<Iterable<X>>();
-      c.add(instance);
-      collection.add(c);
+      Set<Iterable<T>> result = new HashSet<Iterable<T>>();
+      hierarchy.add(this);
+      result.add(transform.transform(this));
+      for (BeanManagerImpl beanManager : accessibleManagers)
+      {
+         // Only add if we aren't already in the tree (remove cycles)
+         if (!hierarchy.contains(beanManager))
+         {
+            result.addAll(beanManager.buildAccessibleClosure(new ArrayList<BeanManagerImpl>(hierarchy), transform));
+         }
+      }
+      return result;
+   }
+   
+   private <T> Iterable<T> createDynamicAccessibleIterable(final Transform<T> transform)
+   {
+      return new Iterable<T>()
+      {
+
+         public Iterator<T> iterator()
+         {
+            Set<Iterable<T>> iterable = buildAccessibleClosure(new ArrayList<BeanManagerImpl>(), transform);
+            return Iterators.concat(Iterators.transform(iterable.iterator(), Iterables.<T>iteratorTransform()));
+         }
+         
+      };
+   }
+   
+   private <T> Iterable<T> createStaticAccessibleIterable(final Transform<T> transform)
+   {
+      Set<Iterable<T>> iterable = buildAccessibleClosure(new ArrayList<BeanManagerImpl>(), transform);
+      return Iterables.concat(iterable); 
+   }
+   
+   private static interface Transform<T>
+   {
+      
+      public static Transform<Bean<?>> BEAN = new Transform<Bean<?>>()
+      {
+
+         public Iterable<Bean<?>> transform(BeanManagerImpl beanManager)
+         {
+            return beanManager.getBeans();
+         }
+         
+      };
+      
+      public static Transform<DecoratorBean<?>> DECORATOR_BEAN = new Transform<DecoratorBean<?>>()
+      {
+
+         public Iterable<DecoratorBean<?>> transform(BeanManagerImpl beanManager)
+         {
+            return beanManager.getDecorators();
+         }
+         
+      };
+      
+      public static Transform<EventObserver<?>> EVENT_OBSERVER = new Transform<EventObserver<?>>()
+      {
+
+         public Iterable<EventObserver<?>> transform(BeanManagerImpl beanManager)
+         {
+            return beanManager.getObservers();
+         }
+         
+      };
+      
+      public static Transform<String> NAMESPACE = new Transform<String>()
+      {
+
+         public Iterable<String> transform(BeanManagerImpl beanManager)
+         {
+            return beanManager.getNamespaces();
+         }
+         
+      };
+      
+      public Iterable<T> transform(BeanManagerImpl beanManager);
+      
    }
    
    public void addAccessibleBeanManager(BeanManagerImpl accessibleBeanManager)
    {
-      accessibleBeans.add(accessibleBeanManager.getAccessibleBeans());
-      accessibleDecorators.add(accessibleBeanManager.getAccessibleDecorators());
-      accessibleNamespaces.add(accessibleBeanManager.getAccessibleNamespaces());
-      accessibleObservers.add(accessibleBeanManager.getAccessibleObservers());
+      accessibleManagers.add(accessibleBeanManager);
    }
    
-   protected Iterable<Iterable<Bean<?>>> getAccessibleBeans()
+   private static class ManagerAttachedIterable<X> extends ForwardingIterable<X>
    {
-      return Iterators.concat(accessibleBeans);
+     
+      private final BeanManagerImpl beanManager;
+      private final Iterable<X> iterable;
+
+      public ManagerAttachedIterable(BeanManagerImpl beanManager, Iterable<X> iterable)
+      {
+         this.beanManager = beanManager;
+         this.iterable = iterable;
+      }
+
+      public BeanManagerImpl getBeanManager()
+      {
+         return beanManager;
+      }
+      
+      @Override
+      protected Iterable<X> delegate()
+      {
+         return iterable;
+      }
+      
    }
    
-   protected Iterable<Iterable<String>> getAccessibleNamespaces()
+   protected Set<BeanManagerImpl> getAccessibleManagers()
    {
-      return Iterators.concat(accessibleNamespaces);
-   }
-   
-   protected Iterable<Iterable<DecoratorBean<?>>> getAccessibleDecorators()
-   {
-      return Iterators.concat(accessibleDecorators);
-   }
-   
-   protected Iterable<Iterable<EventObserver<?>>> getAccessibleObservers()
-   {
-      return Iterators.concat(accessibleObservers);
+      return accessibleManagers;
    }
 
    /**
@@ -1179,7 +1254,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       // TODO I don't like this lazy init
       if (rootNamespace == null)
       {
-         rootNamespace = new Namespace(Iterators.concat(getAccessibleNamespaces()));
+         rootNamespace = new Namespace(createDynamicAccessibleIterable(Transform.NAMESPACE));
       }
       return rootNamespace;
    }
