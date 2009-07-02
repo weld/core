@@ -3,12 +3,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection "
-"VERSION\n"
+"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-04-19 20:36+0000\n"
-"PO-Revision-Date: 2009-03-28 17:09+0000\n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2009-05-22 22:46+0900\n"
+"Last-Translator: TANABE Junnichi <jun@lmns.biz>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,30 +17,25 @@ msgstr ""
 #: extensions.xml:4
 #, no-c-format
 msgid "JSR-299 extensions available as part of Web Beans"
-msgstr ""
+msgstr "Web Beansの一部として利用可能なJSR-299拡張機能"
 
 #. Tag: para
 #: extensions.xml:7
 #, no-c-format
-msgid ""
-"These modules are usable on any JSR-299 implementation, not just Web Beans!"
-msgstr ""
+msgid "These modules are usable on any JSR-299 implementation, not just Web Beans!"
+msgstr "これらのモジュールはWeb Beansだけではなく、あらゆるJSR-299実装においても利用できます！"
 
 #. Tag: title
 #: extensions.xml:15
 #, no-c-format
 msgid "Web Beans Logger"
-msgstr ""
+msgstr "Web Beansロガー"
 
 #. Tag: para
 #: extensions.xml:17
 #, no-c-format
-msgid ""
-"Adding logging to your application is now even easier with simple injection "
-"of a logger object into any JSR-299 bean. Simply annotate a org.jboss."
-"webbeans.log.Log type member with <emphasis>@Logger</emphasis> and an "
-"appropriate logger object will be injected into any instance of the bean."
-msgstr ""
+msgid "Adding logging to your application is now even easier with simple injection of a logger object into any JSR-299 bean. Simply annotate a org.jboss.webbeans.log.Log type member with <emphasis>@Logger</emphasis> and an appropriate logger object will be injected into any instance of the bean."
+msgstr "あなたのアプリケーションへのロギングの追加はJSR-299 beanへのロガーオブジェクトを単純なインジェクションよりも今やずっと簡単です。単に <emphasis>@Logger</emphasis> アノテーションでorg.jboss.webbeans.log.Log型のメンバにアノテーションを付けることで適切なロガーオブジェクトがそのbeanのインスタンスにインジェクトされるでしょう。"
 
 #. Tag: programlisting
 #: extensions.xml:25
@@ -62,40 +56,36 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class Checkout {\n"
+"    import org.jboss.webbeans.annotation.Logger;\n"
+"    import org.jboss.webbeans.log.Log;\n"
+"    \n"
+"    @Logger\n"
+"    private Log log;\n"
+"\n"
+"    void invoiceItems() {\n"
+"        ShoppingCart cart;\n"
+"        . . .\n"
+"        log.debug(\"Items invoiced for {0}\", cart);\n"
+"    }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: extensions.xml:27
 #, no-c-format
-msgid ""
-"The example shows how objects can be interpolated into a message. This "
-"interpolation is done using <emphasis>java.text.MessageFormat</emphasis>, so "
-"see the JavaDoc for that class for more details. In this case, the "
-"ShoppingCart should have implemented the <emphasis>toString()</emphasis> "
-"method to produce a human readable value that is meaningful in messages. "
-"Normally, this call would have involved evaluating cart.toString() with "
-"String concatenation to produce a single String argument. Thus it was "
-"necessary to surround the call with an if-statement using the condition "
-"<emphasis>log.isDebugEnabled()</emphasis> to avoid the expensive String "
-"concatenation if the message was not actually going to be used. However, "
-"when using @Logger injected logging, the conditional test can be left out "
-"since the object arguments are not evaluated unless the message is going to "
-"be logged."
-msgstr ""
+msgid "The example shows how objects can be interpolated into a message. This interpolation is done using <emphasis>java.text.MessageFormat</emphasis>, so see the JavaDoc for that class for more details. In this case, the ShoppingCart should have implemented the <emphasis>toString()</emphasis> method to produce a human readable value that is meaningful in messages. Normally, this call would have involved evaluating cart.toString() with String concatenation to produce a single String argument. Thus it was necessary to surround the call with an if-statement using the condition <emphasis>log.isDebugEnabled()</emphasis> to avoid the expensive String concatenation if the message was not actually going to be used. However, when using @Logger injected logging, the conditional test can be left out since the object arguments are not evaluated unless the message is going to be logged."
+msgstr "サンプルはどのようにオブジェクトがメッセージに保管され得るかを示しています。保管は <emphasis>java.text.MessageFormat</emphasis> を使用することでなされます。より詳細についてはJavaDocを参照して下さい。この場合では、ShoppingCart はメッセージに人間が読み取れて意味のある値を生成するために <emphasis>toString()</emphasis> メソッドが実装されているべきです。通常、この呼び出しにより単一のString引数を生成する為にcart.toString()をString連結することが必要となるでしょう。それゆえに、そのメッセージを実際に使用される意図が無い場合に高コストなString連結を避けるために <emphasis>log.isDebugEnabled()</emphasis> 条件を使ったif文で囲って呼び出してやる必要がありました。しかしながら、@Logger アノテーションを使ってロギングをインジェクトするとき、そのメッセージが実際にログ出力されない限りはそのオブジェクト引数は評価されないので条件テストは除外することができます。"
 
 #. Tag: para
 #: extensions.xml:44
 #, no-c-format
-msgid ""
-"You can add the Web Beans Logger to your project by including webbeans-"
-"logger.jar and webbeans-logging.jar to your project. Alternatively, express "
-"a dependency on the <literal>org.jboss.webbeans:webbeans-logger</literal> "
-"Maven artifact."
-msgstr ""
+msgid "You can add the Web Beans Logger to your project by including webbeans-logger.jar and webbeans-logging.jar to your project. Alternatively, express a dependency on the <literal>org.jboss.webbeans:webbeans-logger</literal> Maven artifact."
+msgstr "あなたは webbeans-logger.jar と webbeans-logging.jar を含めることであなたのプロジェクトにWeb Beansロガーを追加することが出来ます。もしくは、 <literal>org.jboss.webbeans:webbeans-logger</literal> Mavenアーティファクトに依存性を表現しても良いです。"
 
 #. Tag: para
 #: extensions.xml:51
 #, no-c-format
-msgid ""
-"If you are using Web Beans as your JSR-299 implementation, there is no need "
-"to include <literal>webbeans-logging.jar</literal> as it's already included."
-msgstr ""
+msgid "If you are using Web Beans as your JSR-299 implementation, there is no need to include <literal>webbeans-logging.jar</literal> as it's already included."
+msgstr "もしあなたがJSR-299実装としてWeb Beansを利用しているのであれば、すでにインクルード済みなので、 <literal>webbeans-logging.jar</literal> をインクルードする必要はありません。"
+

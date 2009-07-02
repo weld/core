@@ -1,12 +1,12 @@
-# Language ja-JP translations for Introduction_to_Web_Beans package.
+# Language ja-JP translations for webbeans-reference-guide package.
 # Automatically generated, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: webbeans-reference-guide 1.0.0.PREVIEW1\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-28 17:09+0000\n"
-"PO-Revision-Date: 2009-01-04 23:18+0000\n"
+"POT-Creation-Date: 2009-04-19 20:36+0000\n"
+"PO-Revision-Date: 2009-04-19 20:36+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,8 @@ msgstr ""
 #: Author_Group.xml:4
 #, no-c-format
 msgid "<firstname>Gavin</firstname> <surname>King</surname>"
-msgstr ""
+msgstr "<firstname>Gavin</firstname> <surname>King<"
+       "/surname>"
 
 #. Tag: affiliation
 #: Author_Group.xml:7
@@ -25,13 +26,15 @@ msgstr ""
 msgid ""
 "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware "
 "LLC</orgname>"
-msgstr ""
+msgstr "<jobtitle>JSR-299 スペックリード</jobtitle> <orgname>Red "
+       "Hat Middleware LLC</orgname>"
 
 #. Tag: author
 #: Author_Group.xml:12
 #, no-c-format
 msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
-msgstr ""
+msgstr "<firstname>Pete</firstname> <surname>Muir<"
+       "/surname>"
 
 #. Tag: affiliation
 #: Author_Group.xml:15
@@ -39,88 +42,96 @@ msgstr ""
 msgid ""
 "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
 "<orgname>Red Hat Middleware LLC</orgname>"
-msgstr ""
+msgstr "<jobtitle>Web Beans (JSR-299 参照実装) リード </jobtitle> <"
+       "orgname>Red Hat Middleware LLC</orgname>"
 
 #. Tag: author
 #: Author_Group.xml:21
 #, no-c-format
 msgid "<firstname>David</firstname> <surname>Allen</surname>"
-msgstr ""
+msgstr "<firstname>David</firstname> <surname>Allen<"
+       "/surname>"
 
 #. Tag: othercredit
 #: Author_Group.xml:25
 #, no-c-format
 msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
-msgstr ""
+msgstr "<firstname>Nicola</firstname> <surname>Benaglia<"
+       "/surname>"
 
 #. Tag: contrib
 #: Author_Group.xml:28 Author_Group.xml:57
 #, no-c-format
 msgid "Italian Translation"
-msgstr ""
+msgstr "イタリア語翻訳"
 
 #. Tag: othercredit
 #: Author_Group.xml:30
 #, no-c-format
 msgid "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
-msgstr ""
+msgstr "<firstname>Gladys</firstname> <surname>Guerrero<"
+       "/surname>"
 
 #. Tag: contrib
 #: Author_Group.xml:33
 #, no-c-format
 msgid "Spanish Translation"
-msgstr ""
+msgstr "スペイン語翻訳"
 
 #. Tag: orgname
 #: Author_Group.xml:35 Author_Group.xml:43 Author_Group.xml:51
 #, no-c-format
 msgid "Red Hat Middleware LLC"
-msgstr ""
+msgstr "Red Hat Middleware LLC"
 
 #. Tag: othercredit
 #: Author_Group.xml:38
 #, no-c-format
 msgid "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
-msgstr ""
+msgstr "<firstname>Eun-Ju</firstname> <surname>Ki,<"
+       "/surname>"
 
 #. Tag: contrib
 #: Author_Group.xml:41
 #, no-c-format
 msgid "Korean Translation"
-msgstr ""
+msgstr "韓国語翻訳"
 
 #. Tag: othercredit
 #: Author_Group.xml:46
 #, no-c-format
 msgid "<firstname>Terry</firstname> <surname>Chuang</surname>"
-msgstr ""
+msgstr "<firstname>Terry</firstname> <surname>Chuang<"
+       "/surname>"
 
 #. Tag: contrib
 #: Author_Group.xml:49
 #, no-c-format
 msgid "Traditional Chinese Translation"
-msgstr ""
+msgstr "繁體中文翻訳"
 
 #. Tag: othercredit
 #: Author_Group.xml:54
 #, no-c-format
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
-msgstr ""
+msgstr "<firstname>Francesco</firstname> <surname>"
+       "Milesi</surname>"
 
 #. Tag: othercredit
 #: Author_Group.xml:59
 #, no-c-format
 msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
-msgstr ""
+msgstr "<firstname>Sean</firstname> <surname>Wu<"
+       "/surname>"
 
 #. Tag: contrib
 #: Author_Group.xml:62
 #, no-c-format
 msgid "Simplified Chinese Translation"
-msgstr ""
+msgstr "簡体中文翻訳"
 
 #. Tag: orgname
 #: Author_Group.xml:64
 #, no-c-format
 msgid "Kava Community"
-msgstr ""
+msgstr "Kava Community"

@@ -3,11 +3,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
+"Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 20:26+0000\n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2009-04-19 02:20+0900\n"
+"Last-Translator: wadahiro <wadahiro@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,33 +17,24 @@ msgstr ""
 #: next.xml:4
 #, no-c-format
 msgid "Next steps"
-msgstr ""
+msgstr "次のステップ"
 
 #. Tag: para
 #: next.xml:6
 #, no-c-format
-msgid ""
-"Because Web Beans is so new, there's not yet a lot of information available "
-"online."
-msgstr ""
+msgid "Because Web Beans is so new, there's not yet a lot of information available online."
+msgstr "Web Beansは非常に新しいため、オンラインで利用可能な情報がまだありません。"
 
 #. Tag: para
 #: next.xml:9
 #, no-c-format
-msgid ""
-"Of course, the Web Beans specification is the best source of more "
-"information about Web Beans. The spec is about 100 pages long, only twice "
-"the length of this article, and almost as readable. But, of course, it "
-"covers many details that we've skipped over. The spec is available from "
-"<literal>http://jcp.org/en/jsr/detail?id=299</literal>."
-msgstr ""
+msgid "Of course, the Web Beans specification is the best source of more information about Web Beans. The spec is about 100 pages long, only twice the length of this article, and almost as readable. But, of course, it covers many details that we've skipped over. The spec is available from <literal>http://jcp.org/en/jsr/detail?id=299</literal>."
+msgstr "もちろん、Web Beansの仕様書は、Web Beansについて最も詳しい情報源です。仕様書は、約100ページあり、この記事の二倍の長さだけで読みやすいです。しかしやはり仕様書はここでは省略した多くの詳細をカバーしています。仕様書は、<literal>http://jcp.org/en/jsr/detail?id=299</literal>から利用可能です。"
 
+# substantiallyってどう訳す
 #. Tag: para
 #: next.xml:15
 #, no-c-format
-msgid ""
-"The Web Beans Reference implementation is being developed at <literal>http://"
-"seamframework.org/WebBeans</literal>. The RI development team and the Web "
-"Beans spec lead blog at <literal>http://in.relation.to</literal>. This "
-"article is substantially based upon a series of blog entries published there."
-msgstr ""
+msgid "The Web Beans Reference implementation is being developed at <literal>http://seamframework.org/WebBeans</literal>. The RI development team and the Web Beans spec lead blog at <literal>http://in.relation.to</literal>. This article is substantially based upon a series of blog entries published there."
+msgstr "Web Beansの参照実装は、<literal>http://seamframework.org/WebBeans</literal>で開発されています。RI開発チームとWeb Beansのスペックリードは<literal>http://in.relation.to</literal>でブログを書いています。この記事は、大体はそこで書かかれた一連のブログエントリーに基づいています。"
+
