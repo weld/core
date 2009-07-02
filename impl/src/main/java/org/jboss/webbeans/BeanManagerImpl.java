@@ -528,21 +528,32 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public void addBean(Bean<?> bean)
    {
-      synchronized (bean)
-      {
          if (beans.contains(bean))
          {
             return;
          }
-         beanResolver.clear();
-         beans.add(bean);
+         if (bean instanceof NewEnterpriseBean)
+         {
+            NewEnterpriseBean<?> newEnterpriseBean = (NewEnterpriseBean<?>) bean;
+            newEnterpriseBeans.put(newEnterpriseBean.getType(), newEnterpriseBean);
+         }
+         else if (bean instanceof DecoratorBean)
+         {
+            decorators.add((DecoratorBean<?>) bean);
+         }
+         if (bean instanceof RIBean)
+         {
+            RIBean<?> riBean = (RIBean<?>) bean;
+            riBeans.put(riBean.getId(), riBean);
+         }
+         getServices().get(BeanIdStore.class).put(bean, this);
          registerBeanNamespace(bean);
          for (BeanManagerImpl childActivity : childActivities)
          {
             childActivity.addBean(bean);
          }
-         return;
-      }
+         this.beans.add(bean);
+         beanResolver.clear();
    }
 
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
@@ -718,22 +729,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             currentInjectionPoint.get().pop();
          }
       }
-   }
-   
-   public void addRIBean(RIBean<?> bean)
-   {
-      if (bean instanceof NewEnterpriseBean)
-      {
-         newEnterpriseBeans.put(bean.getType(), (EnterpriseBean<?>) bean);
-      }
-      if (bean instanceof DecoratorBean)
-      {
-         decorators.add((DecoratorBean<?>) bean);
-      }
-      riBeans.put(bean.getId(), bean);
-      registerBeanNamespace(bean);
-      this.beans.add(bean);
-      beanResolver.clear();
    }
    
    protected void registerBeanNamespace(Bean<?> bean)
@@ -1375,6 +1370,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             });
       sortedBeans.addAll(beans);
       return sortedBeans.last();
+   }
+
+   /**
+    * @param bean
+    */
+   public void addRIBean(RIBean<?> bean)
+   {
+      addBean(bean);
    }
 
 }

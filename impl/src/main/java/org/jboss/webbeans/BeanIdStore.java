@@ -103,7 +103,7 @@ public class BeanIdStore implements Service
       return beans.containsKey(id);
    }
    
-   public Integer get(Bean<?> bean, BeanManagerImpl manager)
+   public Integer put(Bean<?> bean, BeanManagerImpl manager)
    {
       if (beans.inverse().containsKey(bean))
       {
