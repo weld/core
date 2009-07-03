@@ -218,8 +218,8 @@
    </licenses>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri</developerConnection>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/trunk/parent</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/trunk/parent</developerConnection>
       <url>http://fisheye.jboss.org/browse/WebBeans/ri</url>
    </scm>
 
