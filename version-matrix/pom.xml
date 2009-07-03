@@ -3,7 +3,7 @@
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>webbeans-version-matrix</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.0.PREVIEW2</version>
+   <version>1.0.0-SNAPSHOT</version>
 
    <name>Web Beans Version Matrix</name>
    <url>http://www.seamframework.org/WebBeans</url>
@@ -48,7 +48,7 @@
    
    <properties>
       <jsr299.tck.version>1.0.0.BETA3</jsr299.tck.version>
-      <webbeans.version>1.0.0.PREVIEW2</webbeans.version>
+      <webbeans.version>1.0.0-SNAPSHOT</webbeans.version>
       <webbeans.servlet.version>1.0.0.CR1</webbeans.servlet.version>
       <webbeans.se.version>1.0.0.BETA1</webbeans.se.version>
       <jboss.test.harness.version>1.0.0.BETA3</jboss.test.harness.version>
@@ -537,9 +537,9 @@
    </distributionManagement>
    
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/tags/1.0.0.PREVIEW2/trunk/version-matrix</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/tags/1.0.0.PREVIEW2/trunk/version-matrix</developerConnection>
-      <url>http://fisheye.jboss.org/browse/WebBeans/ri/tags/1.0.0.PREVIEW2/ri</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/trunk/version-matrix</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/trunk/version-matrix</developerConnection>
+      <url>http://fisheye.jboss.org/browse/WebBeans/ri</url>
    </scm>
 
 </project>
