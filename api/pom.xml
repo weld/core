@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>org.jboss.webbeans</groupId>
 		<artifactId>webbeans-parent</artifactId>
-		<version>1.0.0.PREVIEW2</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.jboss.webbeans</groupId>
 	<artifactId>jsr299-api</artifactId>
-	<version>1.0.0.PREVIEW2</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>JSR-299 API</name>
 	<url>http://www.seamframework.org/WebBeans</url>
