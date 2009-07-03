@@ -3,7 +3,7 @@
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>webbeans-parent</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.0-SNAPSHOT</version>
+   <version>1.0.0.PREVIEW2</version>
    
    <parent>
       <groupId>org.jboss.webbeans</groupId>
@@ -218,9 +218,9 @@
    </licenses>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/trunk/parent</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/trunk/parent</developerConnection>
-      <url>http://fisheye.jboss.org/browse/WebBeans/ri</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/tags/webbeans-parent-1.0.0.PREVIEW2</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/tags/webbeans-parent-1.0.0.PREVIEW2</developerConnection>
+      <url>scm:svn:https://svn.jboss.org/repos/webbeans/ri/tags/webbeans-parent-1.0.0.PREVIEW2</url>
    </scm>
 
    <distributionManagement>
