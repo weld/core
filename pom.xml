@@ -3,15 +3,15 @@
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>webbeans-build-aggregator</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.0-SNAPSHOT</version>
+   <version>1.0.0.PREVIEW2</version>
 
    <name>Web Beans Build Aggregator</name>
    <url>http://www.seamframework.org/WebBeans</url>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/trunk</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/trunk</developerConnection>
-      <url>http://fisheye.jboss.org/browse/WebBeans</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/tags/1.0.0.PREVIEW2</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/tags/1.0.0.PREVIEW2</developerConnection>
+      <url>http://fisheye.jboss.org/browse/WebBeans/tags/1.0.0.PREVIEW2</url>
    </scm>
 
    <distributionManagement>
