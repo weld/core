@@ -50,8 +50,8 @@
       <jsr299.tck.version>1.0.0.BETA3</jsr299.tck.version>
       <webbeans.version>1.0.0.PREVIEW2</webbeans.version>
       <webbeans.servlet.version>1.0.0.CR1</webbeans.servlet.version>
-      <webbeans.se.version>1.0.0-SNAPSHOT</webbeans.se.version>
-      <jboss.test.harness.version>1.0.0-SNAPSHOT</jboss.test.harness.version>
+      <webbeans.se.version>1.0.0.BETA1<webbeans.se.version>
+      <jboss.test.harness.version>1.0.0.BETA3</jboss.test.harness.version>
    </properties>
    
    <dependencyManagement>
