@@ -9,7 +9,7 @@
 
 	<groupId>org.jboss.webbeans</groupId>
 	<artifactId>jsr299-api</artifactId>
-	<version>1.0.0.PREVIEW2</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>JSR-299 API</name>
 	<url>http://www.seamframework.org/WebBeans</url>
@@ -24,10 +24,4 @@
          <artifactId>ejb-api</artifactId>
       </dependency>
 	</dependencies>
-
-  <scm>
-    <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/tags/jsr299-api-1.0.0.PREVIEW2</connection>
-    <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/tags/jsr299-api-1.0.0.PREVIEW2</developerConnection>
-    <url>scm:svn:https://svn.jboss.org/repos/webbeans/ri/tags/jsr299-api-1.0.0.PREVIEW2</url>
-  </scm>
 </project>
