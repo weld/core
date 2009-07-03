@@ -9,8 +9,8 @@
    <url>http://www.seamframework.org/WebBeans</url>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri</developerConnection>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/trunk</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/trunk</developerConnection>
       <url>http://fisheye.jboss.org/browse/WebBeans</url>
    </scm>
 
