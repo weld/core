@@ -83,8 +83,7 @@ public class SimpleEventTest extends AbstractWebBeansTest
 
       public void fireEventByAnnotationLiteral()
       {
-         event1.fire("Fired using Event Interface with AnnotationLiteral.",
-               new AnnotationLiteral<Updated>(){});
+         event1.select(new AnnotationLiteral<Updated>(){}).fire("Fired using Event Interface with AnnotationLiteral.");
       }
       
       public void fireEventByBindingDeclaredAtInjectionPoint()

@@ -33,7 +33,7 @@ public class DeferredEventNotification<T> implements Runnable
    private static Log log = Logging.getLog(DeferredEventNotification.class);
    
    // The observer
-   protected ObserverImpl<T> observer;
+   protected ObserverMethodImpl<?, T> observer;
    // The event object
    protected T event;
 
@@ -43,7 +43,7 @@ public class DeferredEventNotification<T> implements Runnable
     * @param observer The observer to be notified
     * @param event The event being fired
     */
-   public DeferredEventNotification(T event, ObserverImpl<T> observer)
+   public DeferredEventNotification(T event, ObserverMethodImpl<?, T> observer)
    {
       this.observer = observer;
       this.event = event;

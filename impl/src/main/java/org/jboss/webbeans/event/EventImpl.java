@@ -18,6 +18,8 @@ package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
@@ -59,29 +61,6 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
       super(eventType, manager, bindings);
    }
 
-   /**
-    * Fires an event
-    * 
-    * @param event The event object
-    * @param bindings Additional binding types
-    */
-   @Deprecated
-   public void fire(T event, Annotation... bindings)
-   {
-      getManager().fireEvent(event, mergeInBindings(bindings));
-   }
-
-   /**
-    * Registers an observer
-    * 
-    * @param observer
-    * @param bindings Additional binding types
-    */
-   public void observe(Observer<T> observer, Annotation... bindings)
-   {
-      getManager().addObserver(observer, mergeInBindings(bindings));
-   }
-
    @Override
    public String toString()
    {
@@ -97,19 +76,28 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
       getManager().fireEvent(event, mergeInBindings());
    }
 
-   public <U extends T> Event<U> select(Annotation... bindings)
+   public Event<T> select(Annotation... bindings)
    {
-      throw new UnsupportedOperationException();
+      return new EventImpl<T>(
+            this.getType(), 
+            this.getManager(), 
+            new HashSet<Annotation>(Arrays.asList(mergeInBindings(bindings))));
    }
 
    public <U extends T> Event<U> select(Class<U> subtype, Annotation... bindings)
    {
-      throw new UnsupportedOperationException();
+      return new EventImpl<U>(
+            subtype, 
+            this.getManager(), 
+            new HashSet<Annotation>(Arrays.asList(mergeInBindings(bindings))));
    }
 
    public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... bindings)
    {
-      throw new UnsupportedOperationException();
+      return new EventImpl<U>(
+            subtype.getType(), 
+            this.getManager(), 
+            new HashSet<Annotation>(Arrays.asList(mergeInBindings(bindings))));
    }
 
 }

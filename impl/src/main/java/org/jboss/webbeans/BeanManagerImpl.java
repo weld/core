@@ -78,8 +78,6 @@ import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.el.Namespace;
 import org.jboss.webbeans.el.WebBeansELResolverImpl;
-import org.jboss.webbeans.event.EventObserver;
-import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.literal.CurrentLiteral;
@@ -95,7 +93,6 @@ import org.jboss.webbeans.resolution.TypeSafeDecoratorResolver;
 import org.jboss.webbeans.resolution.TypeSafeObserverResolver;
 import org.jboss.webbeans.resolution.TypeSafeResolver;
 import org.jboss.webbeans.util.Beans;
-import org.jboss.webbeans.util.Observers;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 
@@ -228,7 +225,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    private transient final TypeSafeResolver<Bean<?>> beanResolver;
    private transient final TypeSafeResolver<DecoratorBean<?>> decoratorResolver;
-   private transient final TypeSafeResolver<EventObserver<?>> observerResolver;
+   private transient final TypeSafeResolver<ObserverMethod<?,?>> observerResolver;
    private transient final NameBasedResolver nameBasedResolver;
    private transient final ELResolver webbeansELResolver;
    private transient Namespace rootNamespace;
@@ -245,7 +242,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final List<Bean<?>> beans;
    private transient final List<DecoratorBean<?>> decorators;
    private transient final List<String> namespaces;
-   private transient final List<EventObserver<?>> observers;
+   private transient final List<ObserverMethod<?,?>> observers;
    
    /*
     * These data structures represent the managers *accessible* from this bean 
@@ -295,7 +292,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             serviceRegistry, 
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<DecoratorBean<?>>(),
-            new CopyOnWriteArrayList<EventObserver<?>>(),
+            new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
             new CopyOnWriteArrayList<String>(),
             new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>(),
             new ConcurrentHashMap<String, RIBean<?>>(),
@@ -317,7 +314,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       List<Bean<?>> beans = new CopyOnWriteArrayList<Bean<?>>();
       beans.addAll(parentManager.getBeans());
       
-      List<EventObserver<?>> registeredObservers = new CopyOnWriteArrayList<EventObserver<?>>();
+      List<ObserverMethod<?,?>> registeredObservers = new CopyOnWriteArrayList<ObserverMethod<?,?>>();
       registeredObservers.addAll(parentManager.getObservers());
       List<String> namespaces = new CopyOnWriteArrayList<String>();
       namespaces.addAll(parentManager.getNamespaces());
@@ -349,7 +346,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          ServiceRegistry serviceRegistry, 
          List<Bean<?>> beans, 
          List<DecoratorBean<?>> decorators, 
-         List<EventObserver<?>> observers, 
+         List<ObserverMethod<?,?>> observers, 
          List<String> namespaces,
          Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, 
          Map<String, RIBean<?>> riBeans, 
@@ -469,10 +466,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          
       };
       
-      public static Transform<EventObserver<?>> EVENT_OBSERVER = new Transform<EventObserver<?>>()
+      public static Transform<ObserverMethod<?,?>> EVENT_OBSERVER = new Transform<ObserverMethod<?,?>>()
       {
 
-         public Iterable<EventObserver<?>> transform(BeanManagerImpl beanManager)
+         public Iterable<ObserverMethod<?,?>> transform(BeanManagerImpl beanManager)
          {
             return beanManager.getObservers();
          }
@@ -556,7 +553,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          beanResolver.clear();
    }
 
-   public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
+   @SuppressWarnings("unchecked")
+   public <T> Set<ObserverMethod<?, T>> resolveObserverMethods(T event, Annotation... bindings)
    {
       Class<?> clazz = event.getClass();
       for (Annotation annotation : bindings)
@@ -579,18 +577,13 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       }
       bindingAnnotations.add(new AnyLiteral());
       checkEventType(clazz);
-      Set<Observer<T>> observers = new HashSet<Observer<T>>();
-      Set<EventObserver<?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(clazz).getFlattenedTypes(),  bindingAnnotations));
-      for (EventObserver<?> observer : eventObservers)
+      Set<ObserverMethod<?, T>> observers = new HashSet<ObserverMethod<?, T>>();
+      Set<ObserverMethod<?,?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(clazz).getFlattenedTypes(),  bindingAnnotations));
+      for (ObserverMethod<?,?> observer : eventObservers)
       {
-         observers.add((Observer<T>) observer.getObserver());
+         observers.add((ObserverMethod<?, T>) observer);
       }
       return observers;
-   }
-   
-   public <T> Set<ObserverMethod<T, ?>> resolveObserverMethods(T event, Annotation... bindings)
-   {
-      throw new UnsupportedOperationException();
    }
    
    private void checkEventType(Type eventType)
@@ -774,51 +767,22 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       contexts.put(context.getScopeType(), context);
    }
 
-   @Deprecated
-   public void addObserver(Observer<?> observer, Annotation... bindings)
-   {
-      addObserver(observer, Observers.getTypeOfObserver(observer), bindings);
-   }
-
-   /**
-    * Shortcut to register an ObserverImpl
-    * 
-    * @param <T>
-    * @param observer
-    */
-   @Deprecated
-   public <T> void addObserver(ObserverImpl<T> observer)
-   {
-      addObserver(observer, observer.getEventType(), observer.getBindingsAsArray());
-   }
-
    /**
     * Does the actual observer registration
     * 
     * @param observer
-    * @param eventType
-    * @param bindings
-    * @return
-    */
-   @Deprecated
-   public void addObserver(Observer<?> observer, Type eventType, Annotation... bindings)
+=    */
+   public void addObserver(ObserverMethod<?, ?> observer)
    {
-      checkEventType(eventType);
-      EventObserver<?> eventObserver = EventObserver.of(observer, eventType, this, bindings);
-      observers.add(eventObserver);
-      log.trace("Added observer " + observer + " observing event type " + eventType);
+      checkEventType(observer.getObservedType());
+      observers.add(observer);
+      log.trace("Added observer " + observer);
       for (BeanManagerImpl childActivity : childActivities)
       {
-         childActivity.addObserver(observer, eventType, bindings);
+         childActivity.addObserver(observer);
       }
    }
    
-   @Deprecated
-   public void removeObserver(Observer<?> observer)
-   {
-      throw new UnsupportedOperationException();
-   }
-
    /**
     * Fires an event object with given event object for given bindings
     * 
@@ -845,11 +809,15 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          }
       }
       
-      Set<Observer<Object>> observers = resolveObservers(event, bindings);
+      notifyObservers(event, resolveObserverMethods(event, bindings));
+   }
+
+   private <T> void notifyObservers(T event, Set<ObserverMethod<?, T>> observers)
+   {
       try
       {
          DependentContext.instance().setActive(true);
-         for (Observer<Object> observer : observers)
+         for (ObserverMethod<?, T> observer : observers)
          {
             observer.notify(event);
          }
@@ -858,7 +826,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       {
          // TODO This breaks SE shutdown, also we need to tidy up how dependent context is activated....
          DependentContext.instance().setActive(false);
-      }
+      }      
    }
 
    /**
@@ -1235,7 +1203,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return id;
    }
    
-   public List<EventObserver<?>> getObservers()
+   public List<ObserverMethod<?,?>> getObservers()
    {
       return observers;
    }

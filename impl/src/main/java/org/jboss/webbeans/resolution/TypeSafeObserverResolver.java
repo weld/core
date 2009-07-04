@@ -19,8 +19,9 @@ package org.jboss.webbeans.resolution;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.ObserverMethod;
+
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 
@@ -28,21 +29,21 @@ import org.jboss.webbeans.util.Reflections;
  * @author pmuir
  *
  */
-public class TypeSafeObserverResolver extends TypeSafeResolver<EventObserver<?>>
+public class TypeSafeObserverResolver extends TypeSafeResolver<ObserverMethod<?,?>>
 {
 
    private final BeanManagerImpl manager;
 
-   public TypeSafeObserverResolver(BeanManagerImpl manager, Iterable<EventObserver<?>> observers)
+   public TypeSafeObserverResolver(BeanManagerImpl manager, Iterable<ObserverMethod<?,?>> observers)
    {
       super(observers);
       this.manager = manager;
    }
 
    @Override
-   protected boolean matches(Resolvable resolvable, EventObserver<?> observer)
+   protected boolean matches(Resolvable resolvable, ObserverMethod<?,?> observer)
    {
-      return Reflections.isAssignableFrom(observer.getEventType(), resolvable.getTypeClosure()) && Beans.containsAllBindings(observer.getEventBindings(), resolvable.getBindings(), manager);
+      return Reflections.isAssignableFrom(observer.getObservedType(), resolvable.getTypeClosure()) && Beans.containsAllBindings(observer.getObservedBindings(), resolvable.getBindings(), manager);
    }
    
    /**
@@ -54,7 +55,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<EventObserver<?>>
    }
 
    @Override
-   protected Set<EventObserver<?>> filterResult(Set<EventObserver<?>> matched)
+   protected Set<ObserverMethod<?,?>> filterResult(Set<ObserverMethod<?,?>> matched)
    {
       return matched;
    }
@@ -66,7 +67,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<EventObserver<?>>
    }
 
    @Override
-   protected Set<EventObserver<?>> sortResult(Set<EventObserver<?>> matched)
+   protected Set<ObserverMethod<?,?>> sortResult(Set<ObserverMethod<?,?>> matched)
    {
       return matched;
    }

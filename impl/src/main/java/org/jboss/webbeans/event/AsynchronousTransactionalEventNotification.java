@@ -21,6 +21,10 @@ import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 
 /**
+ * A deferred event notification that will be delivered during the appropriate
+ * transaction phase, but asynchronously from the thread which generated the
+ * event.
+ * 
  * @author David Allen
  *
  */
@@ -28,7 +32,7 @@ public class AsynchronousTransactionalEventNotification<T> extends DeferredEvent
 {
    private static Log log = Logging.getLog(DeferredEventNotification.class);
 
-   public AsynchronousTransactionalEventNotification(T event, ObserverImpl<T> observer)
+   public AsynchronousTransactionalEventNotification(T event, ObserverMethodImpl<?, T> observer)
    {
       super(event, observer);
    }

@@ -20,17 +20,22 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Notify;
-import javax.enterprise.event.Observer;
 import javax.enterprise.event.ObserverException;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -42,7 +47,7 @@ import org.jboss.webbeans.util.Names;
 
 /**
  * <p>
- * Reference implementation for the Observer interface, which represents an
+ * Reference implementation for the ObserverMethod interface, which represents an
  * observer method. Each observer method has an event type which is the class of
  * the event object being observed, and event binding types that are annotations
  * applied to the event parameter to narrow the event notifications delivered.
@@ -51,14 +56,16 @@ import org.jboss.webbeans.util.Names;
  * @author David Allen
  * 
  */
-public class ObserverImpl<T> implements Observer<T>
+public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
 {
+
+   private final Set<Annotation> bindings;
+   private final Type eventType;
+   protected BeanManagerImpl manager;
+   private final Notify notifyType;
    protected final RIBean<?> observerBean;
    protected final MethodInjectionPoint<?> observerMethod;
-   private final boolean conditional;
-   protected BeanManagerImpl manager;
-   private final Type eventType;
-   private final Annotation[] bindings;
+   protected TransactionPhase transactionPhase;
 
    /**
     * Creates an Observer which describes and encapsulates an observer method
@@ -68,25 +75,17 @@ public class ObserverImpl<T> implements Observer<T>
     * @param observerBean The observer bean
     * @param manager The Web Beans manager
     */
-   protected ObserverImpl(final WBMethod<?> observer, final RIBean<?> observerBean, final BeanManagerImpl manager)
+   protected ObserverMethodImpl(final WBMethod<?> observer, final RIBean<?> observerBean, final BeanManagerImpl manager)
    {
       this.manager = manager;
       this.observerBean = observerBean;
       this.observerMethod = MethodInjectionPoint.of(observerBean, observer);
       this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
 
-      this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray();
+      this.bindings = new HashSet<Annotation>(Arrays.asList(observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray()));
       Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
-      this.conditional = observesAnnotation.notifyObserver().equals(Notify.IF_EXISTS);
-   }
-
-   /**
-    * Completes initialization of the observer and allows derived types to
-    * override behavior.
-    */
-   public void initialize()
-   {
-      checkObserverMethod();
+      this.notifyType = observesAnnotation.notifyObserver();
+      transactionPhase = TransactionPhase.IN_PROGRESS;
    }
 
    /**
@@ -140,10 +139,54 @@ public class ObserverImpl<T> implements Observer<T>
 
    }
 
-   public boolean notify(final T event)
+   @SuppressWarnings("unchecked")
+   public Bean<X> getBean()
+   {
+      return (Bean<X>) observerBean;
+   }
+
+   public Annotation[] getBindingsAsArray()
+   {
+      return bindings.toArray(new Annotation[0]);
+   }
+
+   public Type getEventType()
+   {
+      return eventType;
+   }
+
+   public Notify getNotify()
+   {
+      return notifyType;
+   }
+
+   public Set<Annotation> getObservedBindings()
+   {
+      return bindings;
+   }
+
+   public Type getObservedType()
+   {
+      return eventType;
+   }
+
+   public TransactionPhase getTransactionPhase()
+   {
+      return TransactionPhase.IN_PROGRESS;
+   }
+
+   /**
+    * Completes initialization of the observer and allows derived types to
+    * override behavior.
+    */
+   public void initialize()
+   {
+      checkObserverMethod();
+   }
+
+   public void notify(final T event)
    {
       sendEvent(event);
-      return false;
    }
 
    /**
@@ -158,7 +201,7 @@ public class ObserverImpl<T> implements Observer<T>
       try
       {
          // Get the most specialized instance of the component
-         if (!conditional)
+         if (notifyType.equals(Notify.ALWAYS))
          {
             creationalContext = manager.createCreationalContext(observerBean);
          }
@@ -189,16 +232,6 @@ public class ObserverImpl<T> implements Observer<T>
       manager.getTaskExecutor().execute(deferredEvent);
    }
 
-   /**
-    * Indicates if the observer is conditional
-    * 
-    * @return True if conditional, false otherwise
-    */
-   public boolean isConditional()
-   {
-      return conditional;
-   }
-
    @Override
    public String toString()
    {
@@ -207,16 +240,6 @@ public class ObserverImpl<T> implements Observer<T>
       builder.append("  Observer (Declaring) class: " + Names.typesToString(observerBean.getTypes()));
       builder.append("  Observer method: " + observerMethod);
       return builder.toString();
-   }
-
-   public Type getEventType()
-   {
-      return eventType;
-   }
-
-   public Annotation[] getBindingsAsArray()
-   {
-      return bindings;
    }
 
 }

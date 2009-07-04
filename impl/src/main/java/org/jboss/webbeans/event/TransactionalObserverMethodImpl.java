@@ -30,10 +30,8 @@ import org.jboss.webbeans.transaction.spi.TransactionServices;
  * @author David Allen
  * 
  */
-class TransactionalObserverImpl<T> extends ObserverImpl<T>
+class TransactionalObserverMethodImpl<X, T> extends ObserverMethodImpl<X, T>
 {
-   private TransactionPhase transactionPhase;
-
    /**
     * Tests an observer method to see if it is transactional.
     * 
@@ -53,7 +51,7 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
     * @param observerBean The bean declaring the observer method
     * @param manager The JCDI manager in use
     */
-   protected TransactionalObserverImpl(WBMethod<?> observer, RIBean<?> observerBean, TransactionPhase transactionPhase, BeanManagerImpl manager)
+   protected TransactionalObserverMethodImpl(WBMethod<?> observer, RIBean<?> observerBean, TransactionPhase transactionPhase, BeanManagerImpl manager)
    {
       super(observer, observerBean, manager);
       this.transactionPhase = transactionPhase;
@@ -66,7 +64,7 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
    }
 
    @Override
-   public boolean notify(T event)
+   public void notify(T event)
    {
       if ((manager.getServices().get(TransactionServices.class) != null)  && (manager.getServices().get(TransactionServices.class).isTransactionActive()))
       {
@@ -76,7 +74,6 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
       {
          sendEvent(event);
       }
-      return false;
    }
 
    /**

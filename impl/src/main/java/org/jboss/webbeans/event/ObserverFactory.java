@@ -39,17 +39,17 @@ public class ObserverFactory
     * @param manager The Web Beans manager
     * @return An observer implementation built from the method abstraction
     */
-   public static <T> ObserverImpl<T> create(WBMethod<?> method, RIBean<?> declaringBean, BeanManagerImpl manager)
+   public static <X, T> ObserverMethodImpl<X, T> create(WBMethod<?> method, RIBean<?> declaringBean, BeanManagerImpl manager)
    {
-      ObserverImpl<T> result = null;
-      TransactionPhase transactionPhase = TransactionalObserverImpl.getTransactionalPhase(method);
+      ObserverMethodImpl<X, T> result = null;
+      TransactionPhase transactionPhase = TransactionalObserverMethodImpl.getTransactionalPhase(method);
       if (manager.getServices().contains(TransactionServices.class) && !transactionPhase.equals(TransactionPhase.IN_PROGRESS))
       {
-         result = new TransactionalObserverImpl<T>(method, declaringBean, transactionPhase, manager);
+         result = new TransactionalObserverMethodImpl<X, T>(method, declaringBean, transactionPhase, manager);
       }
       else
       {
-         result = new ObserverImpl<T>(method, declaringBean, manager);
+         result = new ObserverMethodImpl<X, T>(method, declaringBean, manager);
       }
       return result;
    }

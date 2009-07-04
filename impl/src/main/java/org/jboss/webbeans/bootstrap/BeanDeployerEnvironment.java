@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
@@ -34,7 +35,6 @@ import org.jboss.webbeans.bean.NewBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
-import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
@@ -49,7 +49,7 @@ public class BeanDeployerEnvironment
    private final Map<WBMethod<?>, ProducerMethodBean<?>> producerMethodBeanMap;
    private final Map<WBMethod<?>, DisposalMethodBean<?>> disposalMethodBeanMap;
    private final Set<RIBean<?>> beans;
-   private final Set<ObserverImpl<?>> observers;
+   private final Set<ObserverMethod<?, ?>> observers;
    private final List<DisposalMethodBean<?>> allDisposalBeans;
    private final Set<DisposalMethodBean<?>> resolvedDisposalBeans;
    private final Set<DecoratorBean<?>> decorators;
@@ -66,7 +66,7 @@ public class BeanDeployerEnvironment
       this.resolvedDisposalBeans = new HashSet<DisposalMethodBean<?>>();
       this.beans = new HashSet<RIBean<?>>();
       this.decorators = new HashSet<DecoratorBean<?>>();
-      this.observers = new HashSet<ObserverImpl<?>>();
+      this.observers = new HashSet<ObserverMethod<?, ?>>();
       this.ejbDescriptors = ejbDescriptors;
       this.disposalMethodResolver = new TypeSafeBeanResolver(manager, allDisposalBeans);
       this.manager = manager;
@@ -149,7 +149,7 @@ public class BeanDeployerEnvironment
       return Collections.unmodifiableSet(decorators);
    }
 
-   public Set<ObserverImpl<?>> getObservers()
+   public Set<ObserverMethod<?, ?>> getObservers()
    {
       return observers;
    }

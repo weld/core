@@ -27,6 +27,7 @@ import javax.enterprise.inject.TypeLiteral;
  * 
  * @author Gavin King
  * @author Pete Muir
+ * @author David Allen
  * 
  * @param <T>
  *            the type of the event object
@@ -39,32 +40,31 @@ public interface Event<T>
     * Fire an event
     * 
     * @param event the event type
-    * @param bindings the event bindings
-    */
-   @Deprecated
-   public void fire(T event, Annotation... bindings);
-   
-   /**
-    * Fire an event
-    * 
-    * @param event the event type
     */
    public void fire(T event);
    
-   public <U extends T> Event<U> select(Annotation... bindings);
-   public <U extends T> Event<U> select(Class<U> subtype, Annotation... bindings);
-   public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... bindings);
-   
+   /**
+    * Returns a child Event with the additional specified bindings.
+    * @param bindings Additional bindings to add to child Event
+    * @return new child Event
+    */
+   public Event<T> select(Annotation... bindings);
    
    /**
-    * Register an observer for a specific type
-    * 
-    * @param observer the observer to register
-    * @param bindings the bindings to observe the event for
+    * Returns a child Event of the type specified and additional specified bindings.
+    * @param <U> The subtype of T for the child Event
+    * @param subtype The class of the subtype of T
+    * @param bindings Additional specified bindings
+    * @return new child Event
     */
-   @Deprecated
-   public void observe(Observer<T> observer, Annotation... bindings);
+   public <U extends T> Event<U> select(Class<U> subtype, Annotation... bindings);
    
-   
-   
+   /**
+    * Returns a child Event of the type specified and additional specified bindings.
+    * @param <U> The subtype of T for the child Event
+    * @param subtype The TypeLiteral of the subtype of T
+    * @param bindings Additional specified bindings
+    * @return new child Event
+    */   
+   public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... bindings);
 }

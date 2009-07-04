@@ -175,24 +175,7 @@ public interface BeanManager
     * @throws IllegalArgumentException if two instances of the same binding type
     *            are passed
     */
-   @Deprecated
-   public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings);
-
-   /**
-    * Obtains observers for an event by considering event type and bindings.
-    * 
-    * @param <T> the type of the event to obtain
-    * @param event the event object
-    * @param bindings the bindings used to restrict the matched observers
-    * @return the resolved observers
-    * @throws IllegalArgumentException if a parameterized type with a type
-    *            parameter or a wildcard is passed
-    * @throws IllegalArgumentException if an annotation which is not a event
-    *            binding type is passed
-    * @throws IllegalArgumentException if two instances of the same binding type
-    *            are passed
-    */
-   public <T> Set<ObserverMethod<T, ?>> resolveObserverMethods(T event, Annotation... bindings);
+   public <T> Set<ObserverMethod<?, T>> resolveObserverMethods(T event, Annotation... bindings);
 
    /**
     * Obtains an ordered list of enabled decorators for a set of bean types and
@@ -317,37 +300,6 @@ public interface BeanManager
     */
    @Deprecated
    public void addBean(Bean<?> bean);
-
-   /**
-    * Register an observer with the container, allowing it to begin receiving
-    * event notifications.
-    * 
-    * The observed event type is the actual type parameter of Observer declared
-    * by the class of the observer object. The observer is notified when an
-    * event object that is assignable to the observed event type is raised with
-    * the observed event bindings.
-    * 
-    * @param observer the observer to register
-    * @param bindings event bindings to further restrict the events observed
-    *           passed
-    * @throws IllegalArgumentException if an annotation which is not a binding
-    *            type is passed, or if two instances of the same binding type
-    *            are passed, or if the runtime type of the observer object
-    *            contains a type variable
-    */
-   @Deprecated
-   public void addObserver(Observer<?> observer, Annotation... bindings);
-
-   /**
-    * Remove an observer registration
-    * 
-    * @param observer the observer to register
-    * @throws IllegalArgumentException if an annotation which is not a event
-    *            binding type is passed or if two instances of the same binding
-    *            type are passed
-    */
-   @Deprecated
-   public void removeObserver(Observer<?> observer);
 
    /**
     * Exposes the list of enabled deployment types, in order of lower to higher

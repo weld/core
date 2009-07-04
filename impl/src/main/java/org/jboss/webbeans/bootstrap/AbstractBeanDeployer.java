@@ -22,6 +22,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
@@ -36,7 +37,7 @@ import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.event.ObserverFactory;
-import org.jboss.webbeans.event.ObserverImpl;
+import org.jboss.webbeans.event.ObserverMethodImpl;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.introspector.WBMethod;
@@ -88,9 +89,8 @@ public class AbstractBeanDeployer
          manager.addRIBean(bean);
          log.debug("Bean: " + bean);
       }
-      for (ObserverImpl<?> observer : environment.getObservers())
+      for (ObserverMethod<?, ?> observer : environment.getObservers())
       {
-         observer.initialize();
          log.debug("Observer : " + observer);
          manager.addObserver(observer);
       }
@@ -161,7 +161,7 @@ public class AbstractBeanDeployer
    
    protected void createObserverMethod(RIBean<?> declaringBean, WBMethod<?> method)
    {
-      ObserverImpl<?> observer = ObserverFactory.create(method, declaringBean, manager);
+      ObserverMethodImpl<?, ?> observer = ObserverFactory.create(method, declaringBean, manager);
       environment.getObservers().add(observer);
    }
    
