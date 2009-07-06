@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2008-12-19 20:26+0000\n"
+"POT-Creation-Date: 2009-07-06 02:29+0000\n"
 "PO-Revision-Date: 2009-06-04 00:47+0900\n"
 "Last-Translator: Daisuke Sano <d-sano@nri.co.jp>\n"
 "Language-Team: none\n"
@@ -22,8 +22,18 @@ msgstr "スコープとコンテキスト"
 #. Tag: para
 #: scopescontexts.xml:6
 #, no-c-format
-msgid "So far, we've seen a few examples of <emphasis>scope type annotations</emphasis>. The scope of a Web Bean determines the lifecycle of instances of the Web Bean. The scope also determines which clients refer to which instances of the Web Bean. According to the Web Beans specification, a scope determines:"
-msgstr "これまでも<emphasis>スコープタイプアノテーション</emphasis>に関するいくつかの例を見てきました。Web Beanのスコープは、Web Beanインスタンスのライフサイクルを定めるものです。また、どのクライアントがどのWeb Beanインスタンスを参照するかを定めるものでもあります。Web Beansの仕様では、スコープは以下のことを定めます。"
+msgid ""
+"So far, we've seen a few examples of <emphasis>scope type annotations</"
+"emphasis>. The scope of a Web Bean determines the lifecycle of instances of "
+"the Web Bean. The scope also determines which clients refer to which "
+"instances of the Web Bean. According to the Web Beans specification, a scope "
+"determines:"
+msgstr ""
+"これまでも<emphasis>スコープタイプアノテーション</emphasis>に関するいくつかの"
+"例を見てきました。Web Beanのスコープは、Web Beanインスタンスのライフサイクル"
+"を定めるものです。また、どのクライアントがどのWeb Beanインスタンスを参照する"
+"かを定めるものでもあります。Web Beansの仕様では、スコープは以下のことを定めま"
+"す。"
 
 #. Tag: para
 #: scopescontexts.xml:14
@@ -40,14 +50,27 @@ msgstr "そのスコープを持ったWeb Beanインスタンスがいつ破棄�
 #. Tag: para
 #: scopescontexts.xml:20
 #, no-c-format
-msgid "Which injected references refer to any instance of a Web Bean with that scope"
+msgid ""
+"Which injected references refer to any instance of a Web Bean with that scope"
 msgstr "注入された参照が、そのスコープを持ったどのWeb Beanインスタンスを指すか"
 
 #. Tag: para
 #: scopescontexts.xml:25
 #, no-c-format
-msgid "For example, if we have a session scoped Web Bean, <literal>CurrentUser</literal>, all Web Beans that are called in the context of the same <literal>HttpSession</literal> will see the same instance of <literal>CurrentUser</literal>. This instance will be automatically created the first time a <literal>CurrentUser</literal> is needed in that session, and automatically destroyed when the session ends."
-msgstr "例えば、セッションスコープを持ったWeb Beanである<literal>CurrentUser</literal>があった場合、同じHttpセッションのコンテキスト内で呼び出されるすべてのWeb Beanは、<literal>CurrentUser</literal>の同じインスタンスを参照することになります。このインスタンスは、そのセッションで最初に<literal>CurrentUser</literal>が必要となった際に自動的に生成され、セッションが終了した際に自動的に破棄されます。"
+msgid ""
+"For example, if we have a session scoped Web Bean, <literal>CurrentUser</"
+"literal>, all Web Beans that are called in the context of the same "
+"<literal>HttpSession</literal> will see the same instance of "
+"<literal>CurrentUser</literal>. This instance will be automatically created "
+"the first time a <literal>CurrentUser</literal> is needed in that session, "
+"and automatically destroyed when the session ends."
+msgstr ""
+"例えば、セッションスコープを持ったWeb Beanである<literal>CurrentUser</"
+"literal>があった場合、同じHttpセッションのコンテキスト内で呼び出されるすべて"
+"のWeb Beanは、<literal>CurrentUser</literal>の同じインスタンスを参照すること"
+"になります。このインスタンスは、そのセッションで最初に<literal>CurrentUser</"
+"literal>が必要となった際に自動的に生成され、セッションが終了した際に自動的に"
+"破棄されます。"
 
 #. Tag: title
 #: scopescontexts.xml:32
@@ -58,8 +81,13 @@ msgstr "スコープタイプ"
 #. Tag: para
 #: scopescontexts.xml:34
 #, no-c-format
-msgid "Web Beans features an <emphasis>extensible context model</emphasis>. It is possible to define new scopes by creating a new scope type annotation:"
-msgstr "Web Beansでは、<emphasis>拡張コンテキストモデル</emphasis>という特徴をもっており、新たなスコープタイプアノテーションを作成することによって、新たなスコープを定義することが可能になっています。"
+msgid ""
+"Web Beans features an <emphasis>extensible context model</emphasis>. It is "
+"possible to define new scopes by creating a new scope type annotation:"
+msgstr ""
+"Web Beansでは、<emphasis>拡張コンテキストモデル</emphasis>という特徴をもって"
+"おり、新たなスコープタイプアノテーションを作成することによって、新たなスコー"
+"プを定義することが可能になっています。"
 
 #. Tag: programlisting
 #: scopescontexts.xml:37
@@ -78,14 +106,26 @@ msgstr ""
 #. Tag: para
 #: scopescontexts.xml:39
 #, no-c-format
-msgid "Of course, that's the easy part of the job. For this scope type to be useful, we will also need to define a <literal>Context</literal> object that implements the scope! Implementing a <literal>Context</literal> is usually a very technical task, intended for framework development only."
-msgstr "もちろんこれは、新たなスコープを定義する作業の内のごく簡単な一部分であり、スコープタイプを使うためには、さらにそのスコープを実装するコンテキストオブジェクトを定義する必要があります。コンテキストを実装するのは通常とても技術のいる作業であり、フレームワークを開発する目的でのみ行われます。"
+msgid ""
+"Of course, that's the easy part of the job. For this scope type to be "
+"useful, we will also need to define a <literal>Context</literal> object that "
+"implements the scope! Implementing a <literal>Context</literal> is usually a "
+"very technical task, intended for framework development only."
+msgstr ""
+"もちろんこれは、新たなスコープを定義する作業の内のごく簡単な一部分であり、ス"
+"コープタイプを使うためには、さらにそのスコープを実装するコンテキストオブジェ"
+"クトを定義する必要があります。コンテキストを実装するのは通常とても技術のいる"
+"作業であり、フレームワークを開発する目的でのみ行われます。"
 
 #. Tag: para
 #: scopescontexts.xml:44
 #, no-c-format
-msgid "We can apply a scope type annotation to a Web Bean implementation class to specify the scope of the Web Bean:"
-msgstr "Web Beanのスコープを指定するために、Web Beanの実装クラスにスコープタイプアノテーションを適用することができます。"
+msgid ""
+"We can apply a scope type annotation to a Web Bean implementation class to "
+"specify the scope of the Web Bean:"
+msgstr ""
+"Web Beanのスコープを指定するために、Web Beanの実装クラスにスコープタイプアノ"
+"テーションを適用することができます。"
 
 #. Tag: programlisting
 #: scopescontexts.xml:47
@@ -148,8 +188,12 @@ msgstr "Web Beansを使用するWebアプリケーションでは、"
 #. Tag: para
 #: scopescontexts.xml:86
 #, no-c-format
-msgid "any servlet request has access to active request, session and application scopes, and, additionally"
-msgstr "すべてのサーブレットリクエストはアクティブなリクエストスコープ、セッションスコープ、アプリケーションスコープにアクセスし、さらに、"
+msgid ""
+"any servlet request has access to active request, session and application "
+"scopes, and, additionally"
+msgstr ""
+"すべてのサーブレットリクエストはアクティブなリクエストスコープ、セッションス"
+"コープ、アプリケーションスコープにアクセスし、さらに、"
 
 #. Tag: para
 #: scopescontexts.xml:90
@@ -161,7 +205,9 @@ msgstr "すべてのJSFリクエストはアクティブな対話スコープに
 #: scopescontexts.xml:94
 #, no-c-format
 msgid "The request and application scopes are also active:"
-msgstr "また、以下のケースではリクエストスコープやアプリケーションスコープがアクティブとなります。"
+msgstr ""
+"また、以下のケースではリクエストスコープやアプリケーションスコープがアクティ"
+"ブとなります。"
 
 #. Tag: para
 #: scopescontexts.xml:98
@@ -190,14 +236,26 @@ msgstr "Webサービスが起動する際"
 #. Tag: para
 #: scopescontexts.xml:111
 #, no-c-format
-msgid "If the application tries to invoke a Web Bean with a scope that does not have an active context, a <literal>ContextNotActiveException</literal> is thrown by the Web Bean manager at runtime."
-msgstr "アプリケーションが、アクティブなコンテキストを持っていないスコープのWeb Beanを起動しようとした場合、実行時にWeb Beanマネージャが<literal>ContextNotActiveException</literal>を送出します。"
+msgid ""
+"If the application tries to invoke a Web Bean with a scope that does not "
+"have an active context, a <literal>ContextNotActiveException</literal> is "
+"thrown by the Web Bean manager at runtime."
+msgstr ""
+"アプリケーションが、アクティブなコンテキストを持っていないスコープのWeb Bean"
+"を起動しようとした場合、実行時にWeb Beanマネージャが"
+"<literal>ContextNotActiveException</literal>を送出します。"
 
 #. Tag: para
 #: scopescontexts.xml:115
 #, no-c-format
-msgid "Three of the four built-in scopes should be extremely familiar to every Java EE developer, so let's not waste time discussing them here. One of the scopes, however, is new."
-msgstr "四つの組み込みスコープの内の三つはJava EE開発者にとっては極めて身近なものであるはずですので、ここではそれらの議論を行う時間を省くことにします。しかしながら、残りの一つは新たなスコープです。"
+msgid ""
+"Three of the four built-in scopes should be extremely familiar to every Java "
+"EE developer, so let's not waste time discussing them here. One of the "
+"scopes, however, is new."
+msgstr ""
+"四つの組み込みスコープの内の三つはJava EE開発者にとっては極めて身近なものであ"
+"るはずですので、ここではそれらの議論を行う時間を省くことにします。しかしなが"
+"ら、残りの一つは新たなスコープです。"
 
 #. Tag: title
 #: scopescontexts.xml:122
@@ -208,8 +266,16 @@ msgstr "対話スコープ"
 #. Tag: para
 #: scopescontexts.xml:124
 #, no-c-format
-msgid "The Web Beans conversation scope is a bit like the traditional session scope in that it holds state associated with a user of the system, and spans multiple requests to the server. However, unlike the session scope, the conversation scope:"
-msgstr "Web Beansの対話スコープは、システムユーザーに関連する状態を保持し、また、その範囲がサーバへの複数のリクエストにまたがるという意味では、伝統的なセッションスコープに少し似ているところがあります。しかしながら、以下の点でセッションスコープとは異なります。"
+msgid ""
+"The Web Beans conversation scope is a bit like the traditional session scope "
+"in that it holds state associated with a user of the system, and spans "
+"multiple requests to the server. However, unlike the session scope, the "
+"conversation scope:"
+msgstr ""
+"Web Beansの対話スコープは、システムユーザーに関連する状態を保持し、また、その"
+"範囲がサーバへの複数のリクエストにまたがるという意味では、伝統的なセッション"
+"スコープに少し似ているところがあります。しかしながら、以下の点でセッションス"
+"コープとは異なります。"
 
 #. Tag: para
 #: scopescontexts.xml:130
@@ -220,20 +286,39 @@ msgstr "対話スコープの境界は、アプリケーションによって明
 #. Tag: para
 #: scopescontexts.xml:133
 #, no-c-format
-msgid "holds state associated with a particular web browser tab in a JSF application."
-msgstr "対話スコープは、JSFアプリケーションの特定のブラウザタブに関連する状態を保持します。"
+msgid ""
+"holds state associated with a particular web browser tab in a JSF "
+"application."
+msgstr ""
+"対話スコープは、JSFアプリケーションの特定のブラウザタブに関連する状態を保持し"
+"ます。"
 
 #. Tag: para
 #: scopescontexts.xml:138
 #, no-c-format
-msgid "A conversation represents a task, a unit of work from the point of view of the user. The conversation context holds state associated with what the user is currently working on. If the user is doing multiple things at the same time, there are multiple conversations."
-msgstr "一つの対話は、一つのタスク、ユーザー視点での作業の単位を表現します。対話コンテキストは、ユーザーが今行っている作業に関連する状態を保持します。もし、ユーザーが複数の作業を同時に行っている場合は、対話も複数になります。"
+msgid ""
+"A conversation represents a task, a unit of work from the point of view of "
+"the user. The conversation context holds state associated with what the user "
+"is currently working on. If the user is doing multiple things at the same "
+"time, there are multiple conversations."
+msgstr ""
+"一つの対話は、一つのタスク、ユーザー視点での作業の単位を表現します。対話コン"
+"テキストは、ユーザーが今行っている作業に関連する状態を保持します。もし、ユー"
+"ザーが複数の作業を同時に行っている場合は、対話も複数になります。"
 
 #. Tag: para
 #: scopescontexts.xml:143
 #, no-c-format
-msgid "The conversation context is active during any JSF request. However, most conversations are destroyed at the end of the request. If a conversation should hold state across multiple requests, it must be explicitly promoted to a <emphasis>long-running conversation</emphasis>."
-msgstr "対話コンテキストは、どのようなJSFリクエストにおいても有効となりますが、ほとんどの対話はリクエストの終了と同時に破棄されます。もし、対話が複数のリクエストにまたがって状態を保持しなければならない場合は、対話を明示的に<emphasis>長期対話</emphasis>として導入する必要があります。"
+msgid ""
+"The conversation context is active during any JSF request. However, most "
+"conversations are destroyed at the end of the request. If a conversation "
+"should hold state across multiple requests, it must be explicitly promoted "
+"to a <emphasis>long-running conversation</emphasis>."
+msgstr ""
+"対話コンテキストは、どのようなJSFリクエストにおいても有効となりますが、ほとん"
+"どの対話はリクエストの終了と同時に破棄されます。もし、対話が複数のリクエスト"
+"にまたがって状態を保持しなければならない場合は、対話を明示的に<emphasis>長期"
+"対話</emphasis>として導入する必要があります。"
 
 #. Tag: title
 #: scopescontexts.xml:149
@@ -244,8 +329,14 @@ msgstr "対話の境界"
 #. Tag: para
 #: scopescontexts.xml:151
 #, no-c-format
-msgid "Web Beans provides a built-in Web Bean for controlling the lifecyle of conversations in a JSF application. This Web Bean may be obtained by injection:"
-msgstr "Web Beansは、JSFアプリケーションにおける対話のライフサイクルを制御するための組み込みWeb Beanを提供します。このWeb Beanは、注入によって取得することができます。"
+msgid ""
+"Web Beans provides a built-in Web Bean for controlling the lifecyle of "
+"conversations in a JSF application. This Web Bean may be obtained by "
+"injection:"
+msgstr ""
+"Web Beansは、JSFアプリケーションにおける対話のライフサイクルを制御するための"
+"組み込みWeb Beanを提供します。このWeb Beanは、注入によって取得することができ"
+"ます。"
 
 #. Tag: programlisting
 #: scopescontexts.xml:154
@@ -256,14 +347,27 @@ msgstr "@Current Conversation conversation;"
 #. Tag: para
 #: scopescontexts.xml:156
 #, no-c-format
-msgid "To promote the conversation associated with the current request to a long-running conversation, call the <literal>begin()</literal> method from application code. To schedule the current long-running conversation context for destruction at the end of the current request, call <literal>end()</literal>."
-msgstr "現在のリクエストに関連する対話を、長期対話として導入するためには、アプリケーションのコード上で<literal>begin()</literal>メソッドを呼びます。現在の長期対話を、現在のリクエスト終了時に破棄するためのスケジューリングを行うためには、<literal>end()</literal>メソッドを呼びます。"
+msgid ""
+"To promote the conversation associated with the current request to a long-"
+"running conversation, call the <literal>begin()</literal> method from "
+"application code. To schedule the current long-running conversation context "
+"for destruction at the end of the current request, call <literal>end()</"
+"literal>."
+msgstr ""
+"現在のリクエストに関連する対話を、長期対話として導入するためには、アプリケー"
+"ションのコード上で<literal>begin()</literal>メソッドを呼びます。現在の長期対"
+"話を、現在のリクエスト終了時に破棄するためのスケジューリングを行うためには、"
+"<literal>end()</literal>メソッドを呼びます。"
 
 #. Tag: para
 #: scopescontexts.xml:161
 #, no-c-format
-msgid "In the following example, a conversation-scoped Web Bean controls the conversation with which it is associated:"
-msgstr "次の例では、対話スコープをもつWeb Beanが、自分自身に関連した対話を制御します。"
+msgid ""
+"In the following example, a conversation-scoped Web Bean controls the "
+"conversation with which it is associated:"
+msgstr ""
+"次の例では、対話スコープをもつWeb Beanが、自分自身に関連した対話を制御しま"
+"す。"
 
 #. Tag: programlisting
 #: scopescontexts.xml:164
@@ -334,8 +438,14 @@ msgstr ""
 #. Tag: para
 #: scopescontexts.xml:166
 #, no-c-format
-msgid "This Web Bean is able to control its own lifecycle through use of the <literal>Conversation</literal> API. But some other Web Beans have a lifecycle which depends completely upon another object."
-msgstr "このWeb Beanは、<literal>Conversation</literal> APIを通じて、自分自身のライフサイクルを制御することができます。しかし、そのライフサイクルが完全に他のオブジェクトに依存するようなWeb Beanも存在します。"
+msgid ""
+"This Web Bean is able to control its own lifecycle through use of the "
+"<literal>Conversation</literal> API. But some other Web Beans have a "
+"lifecycle which depends completely upon another object."
+msgstr ""
+"このWeb Beanは、<literal>Conversation</literal> APIを通じて、自分自身のライフ"
+"サイクルを制御することができます。しかし、そのライフサイクルが完全に他のオブ"
+"ジェクトに依存するようなWeb Beanも存在します。"
 
 #. Tag: title
 #: scopescontexts.xml:173
@@ -346,14 +456,32 @@ msgstr "対話の伝播"
 #. Tag: para
 #: scopescontexts.xml:175
 #, no-c-format
-msgid "The conversation context automatically propagates with any JSF faces request (JSF form submission). It does not automatically propagate with non-faces requests, for example, navigation via a link."
-msgstr "対話コンテキストは、すべてのJSF facesリクエスト（JSFフォームのサブミット）について自動的に伝播されます。ハイパーリンクによる移動などのようなfacesでないリクエストについては自動的に伝播されません。"
+msgid ""
+"The conversation context automatically propagates with any JSF faces request "
+"(JSF form submission). It does not automatically propagate with non-faces "
+"requests, for example, navigation via a link."
+msgstr ""
+"対話コンテキストは、すべてのJSF facesリクエスト（JSFフォームのサブミット）に"
+"ついて自動的に伝播されます。ハイパーリンクによる移動などのようなfacesでないリ"
+"クエストについては自動的に伝播されません。"
 
 #. Tag: para
 #: scopescontexts.xml:179
 #, no-c-format
-msgid "We can force the conversation to propagate with a non-faces request by including the unique identifier of the conversation as a request parameter. The Web Beans specification reserves the request parameter named <literal>cid</literal> for this use. The unique identifier of the conversation may be obtained from the <literal>Conversation</literal> object, which has the Web Beans name <literal>conversation</literal>."
-msgstr "対話の一意な識別子をリクエストパラメタとして含めることによって、facesでないリクエストについても対話の伝播を強制させることができます。Web Beansの仕様では、<literal>cid</literal>という名前のリクエストパラメタはこの目的のために予約されています。対話の一意な識別子は、Web Beans名<literal>conversation</literal>を持つ<literal>Conversation</literal>オブジェクトによって取得することができます。"
+msgid ""
+"We can force the conversation to propagate with a non-faces request by "
+"including the unique identifier of the conversation as a request parameter. "
+"The Web Beans specification reserves the request parameter named "
+"<literal>cid</literal> for this use. The unique identifier of the "
+"conversation may be obtained from the <literal>Conversation</literal> "
+"object, which has the Web Beans name <literal>conversation</literal>."
+msgstr ""
+"対話の一意な識別子をリクエストパラメタとして含めることによって、facesでないリ"
+"クエストについても対話の伝播を強制させることができます。Web Beansの仕様では、"
+"<literal>cid</literal>という名前のリクエストパラメタはこの目的のために予約さ"
+"れています。対話の一意な識別子は、Web Beans名<literal>conversation</literal>"
+"を持つ<literal>Conversation</literal>オブジェクトによって取得することができま"
+"す。"
 
 #. Tag: para
 #: scopescontexts.xml:186
@@ -364,14 +492,29 @@ msgstr "ゆえに、次のリンクは対話を伝播します。"
 #. Tag: programlisting
 #: scopescontexts.xml:188
 #, no-c-format
-msgid "<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</a>]]>"
-msgstr "<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</a>]]>"
+msgid ""
+"<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</a>]]"
+">"
+msgstr ""
+"<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</a>]]"
+">"
 
 #. Tag: para
 #: scopescontexts.xml:190
 #, no-c-format
-msgid "The Web Bean manager is also required to propagate conversations across any redirect, even if the conversation is not marked long-running. This makes it very easy to implement the common POST-then-redirect pattern, without resort to fragile constructs such as a \"flash\" object. In this case, the Web Bean manager automatically adds a request parameter to the redirect URL."
-msgstr "またWeb Beanマネージャは、対話が長期対話として導入されていないとしても、あらゆるリダイレクトをまたがって対話を伝播させる必要があります。これは、よくあるPOST-then-redirectパターンの実装をとても簡単なものにし、Ruby on Railsの\"flash\"オブジェクトのような貧弱なアーキテクチャに頼る必要がありません。このようなケースで、Web Beanマネージャは自動的にリダイレクトURLにリクエストパラメタを付加します。"
+msgid ""
+"The Web Bean manager is also required to propagate conversations across any "
+"redirect, even if the conversation is not marked long-running. This makes it "
+"very easy to implement the common POST-then-redirect pattern, without resort "
+"to fragile constructs such as a \"flash\" object. In this case, the Web Bean "
+"manager automatically adds a request parameter to the redirect URL."
+msgstr ""
+"またWeb Beanマネージャは、対話が長期対話として導入されていないとしても、あら"
+"ゆるリダイレクトをまたがって対話を伝播させる必要があります。これは、よくある"
+"POST-then-redirectパターンの実装をとても簡単なものにし、Ruby on Railsの"
+"\"flash\"オブジェクトのような貧弱なアーキテクチャに頼る必要がありません。この"
+"ようなケースで、Web Beanマネージャは自動的にリダイレクトURLにリクエストパラメ"
+"タを付加します。"
 
 #. Tag: title
 #: scopescontexts.xml:200
@@ -382,14 +525,30 @@ msgstr "対話のタイムアウト"
 #. Tag: para
 #: scopescontexts.xml:202
 #, no-c-format
-msgid "The Web Bean manager is permitted to destroy a conversation and all state held in its context at any time in order to preserve resources. A Web Bean manager implementation will normally do this on the basis of some kind of timeout &#151; though this is not required by the Web Beans specification. The timeout is the period of inactivity before the conversation is destroyed."
-msgstr "Web Beanマネージャは、対話とそこに保持されたすべての状態を、リソースを保つ目的で破棄することを許されています。Web Beansの仕様で必須というわけではありませんが、Web Beanマネージャの通常の実装では、これをある種のタイムアウトに基づいて行うようになっています。タイムアウトは、対話が破棄されるまでに使用されない期間となります。"
+msgid ""
+"The Web Bean manager is permitted to destroy a conversation and all state "
+"held in its context at any time in order to preserve resources. A Web Bean "
+"manager implementation will normally do this on the basis of some kind of "
+"timeout &#151; though this is not required by the Web Beans specification. "
+"The timeout is the period of inactivity before the conversation is destroyed."
+msgstr ""
+"Web Beanマネージャは、対話とそこに保持されたすべての状態を、リソースを保つ目"
+"的で破棄することを許されています。Web Beansの仕様で必須というわけではありませ"
+"んが、Web Beanマネージャの通常の実装では、これをある種のタイムアウトに基づい"
+"て行うようになっています。タイムアウトは、対話が破棄されるまでに使用されない"
+"期間となります。"
 
 #. Tag: para
 #: scopescontexts.xml:208
 #, no-c-format
-msgid "The <literal>Conversation</literal> object provides a method to set the timeout. This is a hint to the Web Bean manager, which is free to ignore the setting."
-msgstr "<literal>Conversation</literal>オブジェクトは、タイムアウトを設定するためのメソッドを提供します。これはWeb Beanマネージャへのヒントにはなりますが、Web Beanマネージャはこれを自由に無視することもできます。"
+msgid ""
+"The <literal>Conversation</literal> object provides a method to set the "
+"timeout. This is a hint to the Web Bean manager, which is free to ignore the "
+"setting."
+msgstr ""
+"<literal>Conversation</literal>オブジェクトは、タイムアウトを設定するためのメ"
+"ソッドを提供します。これはWeb Beanマネージャへのヒントにはなりますが、Web "
+"Beanマネージャはこれを自由に無視することもできます。"
 
 #. Tag: programlisting
 #: scopescontexts.xml:212
@@ -398,79 +557,126 @@ msgid "conversation.setTimeout(timeoutInMillis);"
 msgstr "conversation.setTimeout(timeoutInMillis);"
 
 #. Tag: title
-#: scopescontexts.xml:219
+#: scopescontexts.xml:218
 #, no-c-format
 msgid "The dependent pseudo-scope"
 msgstr "依存擬似スコープ"
 
 #. Tag: para
-#: scopescontexts.xml:221
+#: scopescontexts.xml:220
 #, no-c-format
-msgid "In addition to the four built-in scopes, Web Beans features the so-called <emphasis>dependent pseudo-scope</emphasis>. This is the default scope for a Web Bean which does not explicitly declare a scope type."
-msgstr "四つの組み込みスコープに加えて、Web Beansはいわゆる<emphasis>依存擬似スコープ</emphasis>という特徴を持っています。これは、明示的にスコープタイプが宣言されていないWeb Beanのデフォルトのスコープになります。"
+msgid ""
+"In addition to the four built-in scopes, Web Beans features the so-called "
+"<emphasis>dependent pseudo-scope</emphasis>. This is the default scope for a "
+"Web Bean which does not explicitly declare a scope type."
+msgstr ""
+"四つの組み込みスコープに加えて、Web Beansはいわゆる<emphasis>依存擬似スコープ"
+"</emphasis>という特徴を持っています。これは、明示的にスコープタイプが宣言され"
+"ていないWeb Beanのデフォルトのスコープになります。"
 
 #. Tag: para
-#: scopescontexts.xml:225
+#: scopescontexts.xml:224
 #, no-c-format
-msgid "For example, this Web Bean has the scope type <literal>@Dependent</literal>:"
-msgstr "例えば、次のWeb Beanは<literal>@Dependent</literal>スコープタイプを持ちます。"
+msgid ""
+"For example, this Web Bean has the scope type <literal>@Dependent</literal>:"
+msgstr ""
+"例えば、次のWeb Beanは<literal>@Dependent</literal>スコープタイプを持ちます。"
 
 #. Tag: programlisting
-#: scopescontexts.xml:227
+#: scopescontexts.xml:226
 #, no-c-format
 msgid "<![CDATA[public class Calculator { ... }]]>"
 msgstr "<![CDATA[public class Calculator { ... }]]>"
 
 #. Tag: para
-#: scopescontexts.xml:229
+#: scopescontexts.xml:228
 #, no-c-format
-msgid "When an injection point of a Web Bean resolves to a dependent Web Bean, a new instance of the dependent Web Bean is created every time the first Web Bean is instantiated. Instances of dependent Web Beans are never shared between different Web Beans or different injection points. They are <emphasis>dependent objects</emphasis> of some other Web Bean instance."
-msgstr "Web Beanの注入箇所に、依存Web Beanが注入される場合、注入される側のWeb Beanがインスタンス化される度に、依存Web Beanのインスタンスも作成されます。依存Web Beanのインスタンスは決して異なるWeb Beanや異なる注入箇所で共有されることがありません。依存Web Beanは、他のWeb Beanインスタンスに<emphasis>依存したオブジェクト</emphasis>なのです。"
+msgid ""
+"When an injection point of a Web Bean resolves to a dependent Web Bean, a "
+"new instance of the dependent Web Bean is created every time the first Web "
+"Bean is instantiated. Instances of dependent Web Beans are never shared "
+"between different Web Beans or different injection points. They are "
+"<emphasis>dependent objects</emphasis> of some other Web Bean instance."
+msgstr ""
+"Web Beanの注入箇所に、依存Web Beanが注入される場合、注入される側のWeb Beanが"
+"インスタンス化される度に、依存Web Beanのインスタンスも作成されます。依存Web "
+"Beanのインスタンスは決して異なるWeb Beanや異なる注入箇所で共有されることがあ"
+"りません。依存Web Beanは、他のWeb Beanインスタンスに<emphasis>依存したオブ"
+"ジェクト</emphasis>なのです。"
 
 #. Tag: para
-#: scopescontexts.xml:235
+#: scopescontexts.xml:234
 #, no-c-format
-msgid "Dependent Web Bean instances are destroyed when the instance they depend upon is destroyed."
-msgstr "依存Web Beanは、依存するWeb Beanのインスタンスが破棄された際に、ともに破棄されます。"
+msgid ""
+"Dependent Web Bean instances are destroyed when the instance they depend "
+"upon is destroyed."
+msgstr ""
+"依存Web Beanは、依存するWeb Beanのインスタンスが破棄された際に、ともに破棄さ"
+"れます。"
 
 #. Tag: para
-#: scopescontexts.xml:243
+#: scopescontexts.xml:242
 #, no-c-format
-msgid "Web Beans makes it easy to obtain a dependent instance of a Java class or EJB bean, even if the class or EJB bean is already declared as a Web Bean with some other scope type."
-msgstr "Web Beansによって、JavaクラスやEJBが既にある異なるスコープタイプとともに宣言されている場合でも、それに依存したオブジェクトを取得することが簡単になります。"
+msgid ""
+"Web Beans makes it easy to obtain a dependent instance of a Java class or "
+"EJB bean, even if the class or EJB bean is already declared as a Web Bean "
+"with some other scope type."
+msgstr ""
+"Web Beansによって、JavaクラスやEJBが既にある異なるスコープタイプとともに宣言"
+"されている場合でも、それに依存したオブジェクトを取得することが簡単になりま"
+"す。"
 
 #. Tag: title
-#: scopescontexts.xml:248
+#: scopescontexts.xml:247
 #, no-c-format
 msgid "The <literal>@New</literal> annotation"
 msgstr "<literal>@New</literal>アノテーション"
 
 #. Tag: para
-#: scopescontexts.xml:250
+#: scopescontexts.xml:249
 #, no-c-format
-msgid "The built-in <literal>@New</literal> binding annotation allows <emphasis>implicit</emphasis> definition of a dependent Web Bean at an injection point. Suppose we declare the following injected field:"
-msgstr "組み込みバインディングアノテーションである<literal>@New</literal>によって、注入箇所に依存したWeb Beanを<emphasis>暗黙的に</emphasis>定義することができます。次のようなフィールドへの注入を考えてみることにしましょう。"
+msgid ""
+"The built-in <literal>@New</literal> binding annotation allows "
+"<emphasis>implicit</emphasis> definition of a dependent Web Bean at an "
+"injection point. Suppose we declare the following injected field:"
+msgstr ""
+"組み込みバインディングアノテーションである<literal>@New</literal>によって、注"
+"入箇所に依存したWeb Beanを<emphasis>暗黙的に</emphasis>定義することができま"
+"す。次のようなフィールドへの注入を考えてみることにしましょう。"
 
 #. Tag: programlisting
-#: scopescontexts.xml:254
+#: scopescontexts.xml:253
 #, no-c-format
 msgid "<![CDATA[@New Calculator calculator;]]>"
 msgstr "<![CDATA[@New Calculator calculator;]]>"
 
 #. Tag: para
-#: scopescontexts.xml:256
+#: scopescontexts.xml:255
 #, no-c-format
-msgid "Then a Web Bean with scope <literal>@Dependent</literal>, binding type <literal>@New</literal>, API type <literal>Calculator</literal>, implementation class <literal>Calculator</literal> and deployment type <literal>@Standard</literal> is implicitly defined."
-msgstr "これによって、<literal>@Dependent</literal>スコープを持ち、<literal>@New</literal>バインディングタイプを持ち、<literal>Calculator</literal> APIタイプを持ち、<literal>Calculator</literal>を実装クラスとして持ち、<literal>@Standard</literal>デプロイメントタイプを持つWeb Beanが暗黙的に定義されます。"
+msgid ""
+"Then a Web Bean with scope <literal>@Dependent</literal>, binding type "
+"<literal>@New</literal>, API type <literal>Calculator</literal>, "
+"implementation class <literal>Calculator</literal> and deployment type "
+"<literal>@Standard</literal> is implicitly defined."
+msgstr ""
+"これによって、<literal>@Dependent</literal>スコープを持ち、<literal>@New</"
+"literal>バインディングタイプを持ち、<literal>Calculator</literal> APIタイプを"
+"持ち、<literal>Calculator</literal>を実装クラスとして持ち、"
+"<literal>@Standard</literal>デプロイメントタイプを持つWeb Beanが暗黙的に定義"
+"されます。"
 
 #. Tag: para
-#: scopescontexts.xml:261
+#: scopescontexts.xml:260
 #, no-c-format
-msgid "This is true even if <literal>Calculator</literal> is <emphasis>already</emphasis> declared with a different scope type, for example:"
-msgstr "これは、<literal>Calculator</literal>が、次の例のように<emphasis>既に</emphasis>異なるスコープタイプを持って宣言されていた場合でも有効となります。"
+msgid ""
+"This is true even if <literal>Calculator</literal> is <emphasis>already</"
+"emphasis> declared with a different scope type, for example:"
+msgstr ""
+"これは、<literal>Calculator</literal>が、次の例のように<emphasis>既に</"
+"emphasis>異なるスコープタイプを持って宣言されていた場合でも有効となります。"
 
 #. Tag: programlisting
-#: scopescontexts.xml:264
+#: scopescontexts.xml:263
 #, no-c-format
 msgid ""
 "<![CDATA[@ConversationScoped\n"
@@ -480,13 +686,17 @@ msgstr ""
 "public class Calculator { ... }]]>"
 
 #. Tag: para
-#: scopescontexts.xml:266
+#: scopescontexts.xml:265
 #, no-c-format
-msgid "So the following injected attributes each get a different instance of <literal>Calculator</literal>:"
-msgstr "よって、次の注入された属性は、お互いに異なる<literal>Calculator</literal>のインスタンスを得ることとなります。"
+msgid ""
+"So the following injected attributes each get a different instance of "
+"<literal>Calculator</literal>:"
+msgstr ""
+"よって、次の注入された属性は、お互いに異なる<literal>Calculator</literal>のイ"
+"ンスタンスを得ることとなります。"
 
 #. Tag: programlisting
-#: scopescontexts.xml:269
+#: scopescontexts.xml:268
 #, no-c-format
 msgid ""
 "<![CDATA[public class PaymentCalc {\n"
@@ -504,14 +714,25 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: scopescontexts.xml:271
+#: scopescontexts.xml:270
 #, no-c-format
-msgid "The <literal>calculator</literal> field has a conversation-scoped instance of <literal>Calculator</literal> injected. The <literal>newCalculator</literal> field has a new instance of <literal>Calculator</literal> injected, with a lifecycle that is bound to the owning <literal>PaymentCalc</literal>."
-msgstr "<literal>calculator</literal>フィールドには対話スコープを持った<literal>Calculator</literal>インスタンスが注入され、<literal>newCalculator</literal>フィールドにはオーナーである<literal>PaymentCalc</literal>に依存したライフサイクルを持った<literal>Calculator</literal>インスタンスが、新たに作成され、注入されます。"
+msgid ""
+"The <literal>calculator</literal> field has a conversation-scoped instance "
+"of <literal>Calculator</literal> injected. The <literal>newCalculator</"
+"literal> field has a new instance of <literal>Calculator</literal> injected, "
+"with a lifecycle that is bound to the owning <literal>PaymentCalc</literal>."
+msgstr ""
+"<literal>calculator</literal>フィールドには対話スコープを持った"
+"<literal>Calculator</literal>インスタンスが注入され、<literal>newCalculator</"
+"literal>フィールドにはオーナーである<literal>PaymentCalc</literal>に依存した"
+"ライフサイクルを持った<literal>Calculator</literal>インスタンスが、新たに作成"
+"され、注入されます。"
 
 #. Tag: para
-#: scopescontexts.xml:276
+#: scopescontexts.xml:275
 #, no-c-format
-msgid "This feature is particularly useful with producer methods, as we'll see in the next chapter."
-msgstr "この機能は、特に次章で説明するプロデューサメソッドにおいて効果を発揮します。"
-
+msgid ""
+"This feature is particularly useful with producer methods, as we'll see in "
+"the next chapter."
+msgstr ""
+"この機能は、特に次章で説明するプロデューサメソッドにおいて効果を発揮します。"
