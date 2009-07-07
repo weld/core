@@ -5,7 +5,7 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.Contextual;
 
-import org.jboss.webbeans.context.api.BeanInstance;
+import org.jboss.webbeans.context.api.ContexutalInstance;
 import org.jboss.webbeans.context.api.BeanStore;
 
 public abstract class AbstractMapBackedBeanStore implements BeanStore
@@ -16,7 +16,7 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore
       super();
    }
 
-   public abstract Map<Contextual<? extends Object>, BeanInstance<? extends Object>> delegate();
+   public abstract Map<Contextual<? extends Object>, ContexutalInstance<? extends Object>> delegate();
 
    /**
     * Gets an instance from the store
@@ -26,10 +26,10 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore
     * 
     * @see org.jboss.webbeans.context.api.BeanStore#get(BaseBean)
     */
-   public <T extends Object> BeanInstance<T> get(Contextual<? extends T> bean)
+   public <T extends Object> ContexutalInstance<T> get(Contextual<? extends T> bean)
    {
       @SuppressWarnings("unchecked")
-      BeanInstance<T> instance = (BeanInstance<T>) delegate().get(bean);
+      ContexutalInstance<T> instance = (ContexutalInstance<T>) delegate().get(bean);
       return instance;
    }
 
@@ -48,9 +48,9 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore
     * 
     * @return The beans present
     * 
-    * @see org.jboss.webbeans.context.api.BeanStore#getBeans()
+    * @see org.jboss.webbeans.context.api.BeanStore#getContextuals()
     */
-   public Set<Contextual<? extends Object>> getBeans()
+   public Set<Contextual<? extends Object>> getContextuals()
    {
       return delegate().keySet();
    }
@@ -63,7 +63,7 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore
     * 
     * @see org.jboss.webbeans.context.api.BeanStore#put(Contextual, Object)
     */
-   public <T> void put(BeanInstance<T> beanInstance)
+   public <T> void put(ContexutalInstance<T> beanInstance)
    {
       delegate().put(beanInstance.getContextual(), beanInstance);
    }

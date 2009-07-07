@@ -24,7 +24,6 @@ package org.jboss.webbeans.context;
 
 import javax.enterprise.context.ConversationScoped;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -37,11 +36,6 @@ import org.jboss.webbeans.log.Logging;
 public class ConversationContext extends AbstractThreadLocalMapContext implements Service
 {
    private static LogProvider log = Logging.getLogProvider(ConversationContext.class);
-
-   public static ConversationContext instance()
-   {
-       return CurrentManager.rootManager().getServices().get(ConversationContext.class);
-   }
 
    /**
     * Constructor

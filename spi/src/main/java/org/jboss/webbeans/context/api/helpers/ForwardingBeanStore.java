@@ -2,7 +2,7 @@ package org.jboss.webbeans.context.api.helpers;
 
 import javax.enterprise.context.spi.Contextual;
 
-import org.jboss.webbeans.context.api.BeanInstance;
+import org.jboss.webbeans.context.api.ContexutalInstance;
 import org.jboss.webbeans.context.api.BeanStore;
 
 public abstract class ForwardingBeanStore implements BeanStore
@@ -15,17 +15,17 @@ public abstract class ForwardingBeanStore implements BeanStore
       delegate().clear();
    }
    
-   public <T> BeanInstance<T> get(Contextual<? extends T> bean)
+   public <T> ContexutalInstance<T> get(Contextual<? extends T> bean)
    {
       return delegate().get(bean);
    }
    
-   public Iterable<Contextual<? extends Object>> getBeans()
+   public Iterable<Contextual<? extends Object>> getContextuals()
    {
-      return delegate().getBeans();
+      return delegate().getContextuals();
    }
    
-   public <T> void put(BeanInstance<T> beanInstance)
+   public <T> void put(ContexutalInstance<T> beanInstance)
    {
       delegate().put(beanInstance);
    }

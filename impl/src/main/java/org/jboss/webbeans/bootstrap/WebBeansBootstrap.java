@@ -23,7 +23,7 @@ import java.util.Collection;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.webbeans.BeanIdStore;
+import org.jboss.webbeans.ContextualIdStore;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.DefinitionException;
@@ -215,7 +215,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       getServices().add(TypeStore.class, new TypeStore());
       getServices().add(ClassTransformer.class, new ClassTransformer(getServices().get(TypeStore.class)));
       getServices().add(MetaAnnotationStore.class, new MetaAnnotationStore(getServices().get(ClassTransformer.class)));
-      getServices().add(BeanIdStore.class, new BeanIdStore());
+      getServices().add(ContextualIdStore.class, new ContextualIdStore());
    }
    
    public BeanManagerImpl getManager()
@@ -393,11 +393,11 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    
    protected void initializeContexts()
    {
-      manager.addContext(DependentContext.instance());
-      manager.addContext(RequestContext.instance());
-      manager.addContext(ConversationContext.instance());
-      manager.addContext(SessionContext.instance());
-      manager.addContext(ApplicationContext.instance());
+      manager.addContext(getServices().get(DependentContext.class));
+      manager.addContext(getServices().get(RequestContext.class));
+      manager.addContext(getServices().get(ConversationContext.class));
+      manager.addContext(getServices().get(SessionContext.class));
+      manager.addContext(getServices().get(ApplicationContext.class));
    }
    
    protected void createContexts()
@@ -413,21 +413,24 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    protected void beginApplication(BeanStore applicationBeanStore)
    {
       log.trace("Starting application");
-      ApplicationContext.instance().setBeanStore(applicationBeanStore);
-      ApplicationContext.instance().setActive(true);
+      ApplicationContext applicationContext = manager.getServices().get(ApplicationContext.class);
+      applicationContext.setBeanStore(applicationBeanStore);
+      applicationContext.setActive(true);
 
    }
 
    protected void beginDeploy(BeanStore requestBeanStore)
    {
-      RequestContext.instance().setBeanStore(requestBeanStore);
-      RequestContext.instance().setActive(true);
+      RequestContext requestContext = CurrentManager.rootManager().getServices().get(RequestContext.class);
+      requestContext.setBeanStore(requestBeanStore);
+      requestContext.setActive(true);
    }
 
    protected void endDeploy(BeanStore requestBeanStore)
    {
-      RequestContext.instance().setBeanStore(null);
-      RequestContext.instance().setActive(false);
+      RequestContext requestContext = CurrentManager.rootManager().getServices().get(RequestContext.class);
+      requestContext.setBeanStore(null);
+      requestContext.setActive(false);
    }
    
    public void shutdown()

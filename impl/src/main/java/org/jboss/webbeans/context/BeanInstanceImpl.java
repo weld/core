@@ -19,9 +19,9 @@ package org.jboss.webbeans.context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.webbeans.context.api.BeanInstance;
+import org.jboss.webbeans.context.api.ContexutalInstance;
 
-public class BeanInstanceImpl<T> implements BeanInstance<T>
+public class BeanInstanceImpl<T> implements ContexutalInstance<T>
 {
 
    private final Contextual<T> contextual;

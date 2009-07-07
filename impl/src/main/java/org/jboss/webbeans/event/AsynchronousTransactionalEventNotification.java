@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.event;
 
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 
@@ -41,7 +40,6 @@ public class AsynchronousTransactionalEventNotification<T> extends DeferredEvent
    public void run()
    {
       // Let the event be deferred again as just an asynchronous event
-      DependentContext.instance().setActive(true);
       try
       {
          log.trace("Sending event [" + event + "] asynchronously to transaction observer " + observer);
@@ -50,10 +48,6 @@ public class AsynchronousTransactionalEventNotification<T> extends DeferredEvent
       catch (Exception e)
       {
          log.error("Failure while queuing observer for event [" + event + "]", e);
-      }
-      finally
-      {
-         DependentContext.instance().setActive(false);
       }
    }
 

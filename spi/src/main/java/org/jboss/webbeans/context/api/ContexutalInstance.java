@@ -3,7 +3,7 @@ package org.jboss.webbeans.context.api;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-public interface BeanInstance<T>
+public interface ContexutalInstance<T>
 {
    
    public T getInstance();

@@ -25,7 +25,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 
@@ -41,32 +40,24 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
 
    public T create(CreationalContext<T> creationalContext)
    {
-      try
+      InjectionPoint injectionPoint = this.getManager().getInjectionPoint();
+      if (injectionPoint != null)
       {
-         DependentContext.instance().setActive(true);
-         InjectionPoint injectionPoint = this.getManager().getInjectionPoint();
-         if (injectionPoint != null)
+         Type genericType = injectionPoint.getType();
+         if (genericType instanceof ParameterizedType )
          {
-            Type genericType = injectionPoint.getType();
-            if (genericType instanceof ParameterizedType )
-            {
-               Type type = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-               return newInstance(type, injectionPoint.getBindings());
-            }
-            else
-            {
-               throw new IllegalStateException("Must have concrete type argument " + injectionPoint);
-            }
+            Type type = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+            return newInstance(type, injectionPoint.getBindings());
          }
          else
          {
-            log.warn("Dynamic lookup of " + toString() + " is not supported");
-            return null;
+            throw new IllegalStateException("Must have concrete type argument " + injectionPoint);
          }
       }
-      finally
+      else
       {
-         DependentContext.instance().setActive(false);
+         log.warn("Dynamic lookup of " + toString() + " is not supported");
+         return null;
       }
    }
    

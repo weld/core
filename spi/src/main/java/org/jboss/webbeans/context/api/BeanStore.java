@@ -21,8 +21,7 @@ import javax.enterprise.context.spi.Contextual;
 
 
 /**
- * Interface for different implementations of Bean to Bean instance storage.
- * Used primarily by the contexts.
+ * Interface for different implementations of Contextual instance storage.
  * 
  * @author Nicklas Karlsson
  * 
@@ -30,31 +29,30 @@ import javax.enterprise.context.spi.Contextual;
 public interface BeanStore
 {
    /**
-    * Gets an instance of a bean from the storage.
+    * Gets an instance of a contextual from the store
     * 
-    * @param bean The bean whose instance to return
+    * @param contextual The contextual whose instance is to be return
     * @return The instance. Null if not found
     */
-   public abstract <T> BeanInstance<T> get(Contextual<? extends T> bean);
+   public abstract <T> ContexutalInstance<T> get(Contextual<? extends T> contextual);
 
    /**
-    * Clears the storage of any bean instances
+    * Clears the store of contextual instances
     */
    public abstract void clear();
 
    /**
-    * Returns an Iterable over the current contents in the storage
+    * Returns an iteration over the current contextual instances in the store
     * 
-    * @return An Iterable over the keys in the storage
+    * @return the iteration
     */
-   public abstract Iterable<Contextual<? extends Object>> getBeans();
+   public abstract Iterable<Contextual<?>> getContextuals();
 
    /**
     * Adds a bean instance to the storage
     * 
-    * @param bean The bean type. Used as key
-    * @param instance The instance to add
+    * @param contextualInstance the contextual instance
     * @return The instance added
     */
-   public abstract <T> void put(BeanInstance<T> beanInstance);
+   public abstract <T> void put(ContexutalInstance<T> contextualInstance);
 }

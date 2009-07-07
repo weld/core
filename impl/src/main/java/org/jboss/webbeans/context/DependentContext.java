@@ -22,16 +22,13 @@
  */
 package org.jboss.webbeans.context;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.api.Service;
-import org.jboss.webbeans.context.api.BeanInstance;
+import org.jboss.webbeans.context.api.ContexutalInstance;
 
 /**
  * The dependent context
@@ -41,28 +38,12 @@ import org.jboss.webbeans.context.api.BeanInstance;
 public class DependentContext extends AbstractContext implements Service
 {
 
-   public static DependentContext instance()
-   {
-      return CurrentManager.rootManager().getServices().get(DependentContext.class);
-   }
-
-   private final ThreadLocal<AtomicInteger> reentrantActiveCount;
-
    /**
     * Constructor
     */
    public DependentContext()
    {
       super(Dependent.class);
-      super.setActive(false);
-      this.reentrantActiveCount = new ThreadLocal<AtomicInteger>()
-      {
-         @Override
-         protected AtomicInteger initialValue()
-         {
-            return new AtomicInteger(0);
-         }
-      };
    }
 
    /**
@@ -83,7 +64,7 @@ public class DependentContext extends AbstractContext implements Service
          if (creationalContext instanceof CreationalContextImpl)
          {
             CreationalContextImpl<T> creationalContextImpl = (CreationalContextImpl<T>) creationalContext;
-            BeanInstance<T> beanInstance = new BeanInstanceImpl<T>(contextual, instance, creationalContext);
+            ContexutalInstance<T> beanInstance = new BeanInstanceImpl<T>(contextual, instance, creationalContext);
             creationalContextImpl.getParentDependentInstancesStore().addDependentInstance(beanInstance);
          }
          return instance;
@@ -102,27 +83,13 @@ public class DependentContext extends AbstractContext implements Service
    @Override
    public String toString()
    {
-      String active = isActive() ? "Active " : "Inactive ";
-      return active + "dependent context";
+      return "dependent context";
    }
-
+   
    @Override
-   public void setActive(boolean active)
+   public boolean isActive()
    {
-      if (active)
-      {
-         if (reentrantActiveCount.get().incrementAndGet() == 1)
-         {
-            super.setActive(true);
-         }
-      }
-      else
-      {
-         if (reentrantActiveCount.get().decrementAndGet() == 0)
-         {
-            super.setActive(false);
-         }
-      }
+      return true;
    }
    
    @Deprecated

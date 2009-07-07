@@ -50,7 +50,6 @@ import javax.enterprise.context.ScopeType;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observer;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.InjectionException;
@@ -75,7 +74,6 @@ import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.CreationalContextImpl;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.el.Namespace;
 import org.jboss.webbeans.el.WebBeansELResolverImpl;
 import org.jboss.webbeans.introspector.WBAnnotated;
@@ -543,7 +541,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             RIBean<?> riBean = (RIBean<?>) bean;
             riBeans.put(riBean.getId(), riBean);
          }
-         getServices().get(BeanIdStore.class).put(bean, this);
          registerBeanNamespace(bean);
          for (BeanManagerImpl childActivity : childActivities)
          {
@@ -812,21 +809,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       notifyObservers(event, resolveObserverMethods(event, bindings));
    }
 
-   private <T> void notifyObservers(T event, Set<ObserverMethod<?, T>> observers)
+   private <T> void notifyObservers(final T event, final Set<ObserverMethod<?, T>> observers)
    {
-      try
+      for (ObserverMethod<?, T> observer : observers)
       {
-         DependentContext.instance().setActive(true);
-         for (ObserverMethod<?, T> observer : observers)
-         {
-            observer.notify(event);
-         }
-      }
-      finally
-      {
-         // TODO This breaks SE shutdown, also we need to tidy up how dependent context is activated....
-         DependentContext.instance().setActive(false);
-      }      
+         observer.notify(event);
+      }     
    }
 
    /**
@@ -938,19 +926,21 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    /**
     * Returns an instance by API type and binding types
     * 
-    * @param type The API type to match
+    * @param beanType The API type to match
     * @param bindings The binding types to match
     * @return An instance of the bean
     * 
-    * @deprecated replace with non-contextual injection
-    * 
     */
-   @Deprecated
-   public <T> T getInstanceByType(Class<T> type, Annotation... bindings)
+   public <T> T getInstanceByType(Class<T> beanType, Annotation... bindings)
    {
-      WBAnnotated<T, ?> element = ResolvableWBClass.of(type, bindings, this);
-      Bean<T> bean = getBean(element, bindings);
-      return (T) getReference(bean, type, createCreationalContext(bean));
+      Set<Bean<?>> beans = getBeans(beanType, bindings);
+      Bean<?> bean = resolve(beans);
+      Object reference = getReference(bean, beanType, createCreationalContext(bean));
+      
+      @SuppressWarnings("unchecked")
+      T instance = (T) reference;
+      
+      return instance;
    }
 
    public <T> Bean<T> getBean(WBAnnotated<T, ?> element, Annotation... bindings)
@@ -1136,9 +1126,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       log.trace("Ending application");
       shutdownExecutors();
-      ApplicationContext.instance().destroy();
-      ApplicationContext.instance().setActive(false);
-      ApplicationContext.instance().setBeanStore(null);
+      ApplicationContext applicationContext = getServices().get(ApplicationContext.class);
+      applicationContext.destroy();
+      applicationContext.setActive(false);
+      applicationContext.setBeanStore(null);
       CurrentManager.cleanup();
    }
 

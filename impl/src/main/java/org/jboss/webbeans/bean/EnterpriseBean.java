@@ -39,7 +39,6 @@ import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
@@ -221,11 +220,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * 
     * @return The instance
     */
-   public T create(CreationalContext<T> creationalContext)
+   public T create(final CreationalContext<T> creationalContext)
    {
       try
       {
-         DependentContext.instance().setActive(true);
          T instance = proxyClass.newInstance();
          creationalContext.push(instance);
          ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler<T>(this, creationalContext));
@@ -243,10 +241,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       catch (Exception e)
       {
          throw new CreationException("could not find the EJB in JNDI " + proxyClass, e);
-      }
-      finally
-      {
-         DependentContext.instance().setActive(false);
       }
    }
 
@@ -308,28 +302,20 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    public void postConstruct(T instance)
    {
-      try
-      {
-         CreationalContext<T> creationalContext = new CreationalContext<T>() 
-         { 
-            
-            public void push(T incompleteInstance) {};
-            
-            public void release()
-            {
-               // TODO implement this
-            }
-            
-         };
-         DependentContext.instance().setActive(true);
-         injectBoundFields(instance, creationalContext);
-         callInitializers(instance, creationalContext);
-      }
-      finally
-      {
-         DependentContext.instance().setActive(false);
-      }
-
+      // TODO Why do we need a special CC for Enterprise beans?
+      CreationalContext<T> creationalContext = new CreationalContext<T>() 
+      { 
+         
+         public void push(T incompleteInstance) {};
+         
+         public void release()
+         {
+            // TODO implement this
+         }
+         
+      };
+      injectBoundFields(instance, creationalContext);
+      callInitializers(instance, creationalContext);
    }
 
    public void preDestroy(CreationalContext<T> creationalContext)

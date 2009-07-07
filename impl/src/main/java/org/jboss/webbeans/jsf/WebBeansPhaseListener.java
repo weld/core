@@ -112,11 +112,13 @@ public class WebBeansPhaseListener implements PhaseListener
     */
    private void afterRenderResponse()
    {
-      if (SessionContext.instance().isActive())
+      SessionContext sessionContext = CurrentManager.rootManager().getServices().get(SessionContext.class);
+      ConversationContext conversationContext = CurrentManager.rootManager().getServices().get(ConversationContext.class);
+      if (sessionContext.isActive())
       {
          log.trace("Cleaning up the conversation after the Render Response phase");
          CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
-         ConversationContext.instance().setActive(false);
+         conversationContext.setActive(false);
       }
       else
       {
@@ -129,7 +131,8 @@ public class WebBeansPhaseListener implements PhaseListener
     */
    private void afterResponseComplete(PhaseId phaseId)
    {
-      if (SessionContext.instance().isActive())
+      SessionContext sessionContext = CurrentManager.rootManager().getServices().get(SessionContext.class);
+      if (sessionContext.isActive())
       {
          log.trace("Cleaning up the conversation after the " + phaseId + " phase as the response has been marked complete");
          CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
@@ -152,8 +155,10 @@ public class WebBeansPhaseListener implements PhaseListener
       CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
       CurrentManager.rootManager().getInstanceByType(ConversationManager.class).beginOrRestoreConversation(PhaseHelper.getConversationId());
       String cid = CurrentManager.rootManager().getInstanceByType(Conversation.class).getId();
-      ConversationContext.instance().setBeanStore(new ConversationBeanStore(session, cid));
-      ConversationContext.instance().setActive(true);
+      
+      ConversationContext conversationContext = CurrentManager.rootManager().getServices().get(ConversationContext.class);
+      conversationContext.setBeanStore(new ConversationBeanStore(session, cid));
+      conversationContext.setActive(true);
    }
 
    /**

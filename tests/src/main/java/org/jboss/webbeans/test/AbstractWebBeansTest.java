@@ -22,7 +22,6 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.testharness.AbstractTest;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.mock.el.EL;
 import org.jboss.webbeans.util.collections.EnumerationIterable;
 import org.testng.ITestContext;
@@ -32,36 +31,6 @@ import org.testng.annotations.BeforeSuite;
 
 public abstract class AbstractWebBeansTest extends AbstractTest
 {
-
-   protected abstract static class RunInDependentContext 
-   {
-
-      protected void setup()
-      {
-         DependentContext.instance().setActive(true);
-      }
-
-      protected void cleanup()
-      {
-         DependentContext.instance().setActive(false);
-      }
-
-      public final void run() throws Exception
-      {
-         try
-         {
-            setup();
-            execute();
-         }
-         finally
-         {
-            cleanup();
-         }
-      }
-
-      protected abstract void execute() throws Exception;
-
-   }
 
    protected static final int BUILT_IN_BEANS = 3;
 

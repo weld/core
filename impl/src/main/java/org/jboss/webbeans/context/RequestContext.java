@@ -24,7 +24,6 @@ package org.jboss.webbeans.context;
 
 import javax.enterprise.context.RequestScoped;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.api.Service;
 
 /**
@@ -34,11 +33,6 @@ import org.jboss.webbeans.bootstrap.api.Service;
  */
 public class RequestContext extends AbstractThreadLocalMapContext implements Service
 {
-   
-   public static RequestContext instance()
-   {
-      return CurrentManager.rootManager().getServices().get(RequestContext.class);
-   }
 
    /**
     * Constructor

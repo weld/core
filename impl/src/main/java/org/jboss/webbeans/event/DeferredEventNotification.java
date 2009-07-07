@@ -51,7 +51,7 @@ public class DeferredEventNotification<T> implements Runnable
 
    public void run()
    {
-      ContextLifecycle lifecycle = getLifecycle();
+      ContextLifecycle lifecycle = CurrentManager.rootManager().getServices().get(ContextLifecycle.class);
       BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
       lifecycle.beginRequest("async invocation", requestBeanStore);
       try
@@ -75,8 +75,4 @@ public class DeferredEventNotification<T> implements Runnable
       return "Deferred event [" + event + "] for [" + observer + "]";
    }
    
-   private ContextLifecycle getLifecycle()
-   {
-      return CurrentManager.rootManager().getServices().get(ContextLifecycle.class);
-   }
 }

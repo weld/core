@@ -75,11 +75,13 @@ public class ServletLifecycle
     */
    public void endSession(HttpSession session)
    {
-      if (SessionContext.instance().isActive())
+      SessionContext sessionContext = CurrentManager.rootManager().getServices().get(SessionContext.class);
+      RequestContext requestContext = CurrentManager.rootManager().getServices().get(RequestContext.class);
+      if (sessionContext.isActive())
       {
-         lifecycle.endSession(session.getId(), SessionContext.instance().getBeanStore());
+         lifecycle.endSession(session.getId(), sessionContext.getBeanStore());
       }
-      else if (RequestContext.instance().isActive())
+      else if (requestContext.isActive())
       {
          lifecycle.endSession(session.getId(), restoreSessionContext(session));
       }
@@ -153,8 +155,9 @@ public class ServletLifecycle
          }
          lifecycle.endRequest(request.getRequestURI(), beanStore);
          request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
-         SessionContext.instance().setActive(false);
-         SessionContext.instance().setBeanStore(null);
+         SessionContext sessionContext = CurrentManager.rootManager().getServices().get(SessionContext.class);
+         sessionContext.setActive(false);
+         sessionContext.setBeanStore(null);
       }
    }
 

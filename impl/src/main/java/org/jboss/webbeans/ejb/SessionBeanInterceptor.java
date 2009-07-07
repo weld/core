@@ -25,6 +25,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.interceptor.InvocationContext;
 
+import org.jboss.webbeans.ContextualIdStore;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
@@ -46,7 +47,7 @@ public class SessionBeanInterceptor implements Serializable
    private transient EnterpriseBean<Object> bean;
    private transient CreationalContext<Object> creationalContext;
    
-   private String beanId;
+   private Integer beanId;
    private boolean contextual;
    
    /**
@@ -107,7 +108,7 @@ public class SessionBeanInterceptor implements Serializable
          this.bean = (EnterpriseBean<Object>) CurrentManager.rootManager().getNewEnterpriseBeanMap().get(beanClass);
          this.contextual = false;
       }
-      this.beanId = this.bean.getId();
+      this.beanId = CurrentManager.rootManager().getServices().get(ContextualIdStore.class).getId(this.bean);
    }
    
    private static <T> EnterpriseBeanInstance getEnterpriseBeanInstance(EnterpriseBean<T> bean)
@@ -132,7 +133,7 @@ public class SessionBeanInterceptor implements Serializable
       ois.defaultReadObject();
       if (beanId != null)
       {
-         bean = (EnterpriseBean<Object>) CurrentManager.rootManager().getRiBeans().get(beanId);
+         bean = (EnterpriseBean<Object>) CurrentManager.rootManager().getServices().get(ContextualIdStore.class).getContextual(beanId);
       }
    }
    

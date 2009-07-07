@@ -29,7 +29,6 @@ import javax.enterprise.inject.spi.Decorator;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
@@ -110,23 +109,15 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    public T create(CreationalContext<T> creationalContext)
    {
-      try
-      {
-         DependentContext.instance().setActive(true);
-         T instance = null;
-         instance = constructor.newInstance(manager, creationalContext);
-         instance = applyDecorators(instance, creationalContext);
-         creationalContext.push(instance);
-         injectEjbAndCommonFields(instance);
-         injectBoundFields(instance, creationalContext);
-         callInitializers(instance, creationalContext);
-         callPostConstruct(instance);
-         return instance;
-      }
-      finally
-      {
-         DependentContext.instance().setActive(false);
-      }
+      T instance = null;
+      instance = constructor.newInstance(manager, creationalContext);
+      instance = applyDecorators(instance, creationalContext);
+      creationalContext.push(instance);
+      injectEjbAndCommonFields(instance);
+      injectBoundFields(instance, creationalContext);
+      callInitializers(instance, creationalContext);
+      callPostConstruct(instance);
+      return instance;
    }
 
    /**
@@ -138,17 +129,12 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       try
       {
-         DependentContext.instance().setActive(true);
          callPreDestroy(instance);
          creationalContext.release();
       }
       catch (Exception e)
       {
          log.error("Error destroying " + toString(), e);
-      }
-      finally
-      {
-         DependentContext.instance().setActive(false);
       }
    }
 

@@ -28,7 +28,6 @@ import javax.enterprise.inject.Disposes;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.WBMethod;
@@ -177,9 +176,10 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       try
       {
-         DependentContext.instance().setActive(true);
          if (disposalMethodBean != null)
+         {
             disposalMethodBean.invokeDisposeMethod(instance, creationalContext);
+         }
       }
       finally
       {
@@ -187,9 +187,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          {
             creationalContext.release();
          }
-         DependentContext.instance().setActive(false);
-      }      
-
+      }
    }
 
    /**

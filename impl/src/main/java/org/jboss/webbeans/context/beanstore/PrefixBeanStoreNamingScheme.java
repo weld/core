@@ -16,12 +16,9 @@
  */
 package org.jboss.webbeans.context.beanstore;
 
-import javax.enterprise.context.spi.Contextual;
-
-import org.jboss.webbeans.CurrentManager;
 
 /**
- * Simple prefix-based implementation of a bean store naming scheme
+ * Simple prefix-based implementation of a BeanStore naming scheme
  * 
  * @author Nicklas Karlsson
  */
@@ -45,14 +42,13 @@ public class PrefixBeanStoreNamingScheme implements BeanStoreNamingScheme
       return key.startsWith(prefix);
    }
 
-   public int getBeanIndexFromKey(String key)
+   public Integer getIdFromKey(String key)
    {
       return Integer.parseInt(key.substring(prefix.length() + delimeter.length()));
    }
 
-   public String getContextualKey(Contextual<?> contextual)
+   public String getKeyFromId(Integer id)
    {
-      return prefix + delimeter + CurrentManager.rootManager().getBeans().indexOf(contextual);
+      return prefix + delimeter + id;
    }
-
 }

@@ -29,6 +29,7 @@ public class ManagerObjectFactory implements ObjectFactory
    
    public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception
    {
+      // TODO This should return the bean deployment archive manager
       return CurrentManager.rootManager().getCurrent();
    }
    

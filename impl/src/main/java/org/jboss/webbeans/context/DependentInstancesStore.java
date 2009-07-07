@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jboss.webbeans.context.api.BeanInstance;
+import org.jboss.webbeans.context.api.ContexutalInstance;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 
@@ -34,14 +34,14 @@ public class DependentInstancesStore
    private static Log log = Logging.getLog(DependentInstancesStore.class);
    
    // A object -> List of contextual instances mapping
-   private List<BeanInstance<?>> dependentInstances;
+   private List<ContexutalInstance<?>> dependentInstances;
 
    /**
     * Creates a new DependentInstancesStore
     */
    public DependentInstancesStore()
    {
-      dependentInstances = Collections.synchronizedList(new ArrayList<BeanInstance<?>>());
+      dependentInstances = Collections.synchronizedList(new ArrayList<ContexutalInstance<?>>());
    }
 
    /**
@@ -50,7 +50,7 @@ public class DependentInstancesStore
     * @param key The key to store the instance under
     * @param contextualInstance The instance to store
     */
-   public <T> void addDependentInstance(BeanInstance<T> contextualInstance)
+   public <T> void addDependentInstance(ContexutalInstance<T> contextualInstance)
    {
       log.trace("Registered dependent instance #0", contextualInstance);
       dependentInstances.add(contextualInstance);
@@ -64,13 +64,13 @@ public class DependentInstancesStore
    public void destroyDependentInstances()
    {
       log.trace("Destroying dependent instances");
-      for (BeanInstance<?> injectedInstance : dependentInstances)
+      for (ContexutalInstance<?> injectedInstance : dependentInstances)
       {
          destroy(injectedInstance);
       }
    }
    
-   private static <T> void destroy(BeanInstance<T> beanInstance)
+   private static <T> void destroy(ContexutalInstance<T> beanInstance)
    {
       beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
    }

@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.context.beanstore;
 
-import javax.enterprise.context.spi.Contextual;
 
 /**
  * Interface against a BeanStore to handle different naming schemes
@@ -40,13 +39,13 @@ public interface BeanStoreNamingScheme
     * @param contextual The contextual to make the key for
     * @return A map key
     */
-   public abstract String getContextualKey(Contextual<?> contextual);
+   public abstract String getKeyFromId(Integer id);
    
    /**
-    * Gets a bean index key from a key
+    * Gets a contextual id from a key
     * 
     * @param key The key to parse
-    * @return The bean index
+    * @return The contextual id
     */
-   public abstract int getBeanIndexFromKey(String key);
+   public abstract Integer getIdFromKey(String key);
 }

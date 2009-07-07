@@ -19,19 +19,9 @@ public class EnterpriseBeanProxyTest extends AbstractWebBeansTest
    @Test(description="WBRI-109")
    public void testNoInterfaceView() throws Exception
    {
-      new RunInDependentContext()
-      {
-         
-         @Override
-         protected void execute() throws Exception
-         {
-            Object mouse = getCurrentManager().getInstanceByType(MouseLocal.class);
-            assert mouse instanceof ProxyObject;
-            assert mouse instanceof MouseLocal;
-         }
-         
-      }.run();
-      
+      Object mouse = getCurrentManager().getInstanceByType(MouseLocal.class);
+      assert mouse instanceof ProxyObject;
+      assert mouse instanceof MouseLocal;
    }
    
 }

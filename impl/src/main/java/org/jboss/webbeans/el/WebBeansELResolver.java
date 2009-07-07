@@ -26,6 +26,7 @@ public class WebBeansELResolver extends ForwardingELResolver
    @Override
    protected ELResolver delegate()
    {
+      // TODO look in the correct manager
       return CurrentManager.rootManager().getCurrent().getELResolver();
    }
 

@@ -1,6 +1,7 @@
 package org.jboss.webbeans.tck;
 
 import org.jboss.jsr299.tck.spi.Contexts;
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.AbstractContext;
 import org.jboss.webbeans.context.AbstractMapContext;
 import org.jboss.webbeans.context.DependentContext;
@@ -11,7 +12,7 @@ public class ContextsImpl implements Contexts<AbstractContext>
 
    public RequestContext getRequestContext()
    {
-      return RequestContext.instance();
+      return CurrentManager.rootManager().getServices().get(RequestContext.class);
    }
 
    public void setActive(AbstractContext context)
@@ -26,7 +27,7 @@ public class ContextsImpl implements Contexts<AbstractContext>
 
    public AbstractContext getDependentContext()
    {
-      return DependentContext.instance();
+      return CurrentManager.rootManager().getServices().get(DependentContext.class);
    }
    
    public void destroyContext(AbstractContext context)

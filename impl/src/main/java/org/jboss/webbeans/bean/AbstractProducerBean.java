@@ -41,7 +41,6 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.CreationalContextImpl;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.WBMember;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -333,11 +332,10 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
     * 
     * @returns The instance
     */
-   public T create(CreationalContext<T> creationalContext)
+   public T create(final CreationalContext<T> creationalContext)
    {
       try
       {
-         DependentContext.instance().setActive(true);
          T instance = produceInstance(creationalContext);
          checkReturnValue(instance);
          return instance;
@@ -348,7 +346,6 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
          {
             creationalContext.release();
          }
-         DependentContext.instance().setActive(false);
       }
    }
 

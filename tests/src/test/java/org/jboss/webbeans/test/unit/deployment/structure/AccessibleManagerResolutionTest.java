@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.unit.deployment.structure;
 
-import org.jboss.webbeans.BeanIdStore;
+import org.jboss.webbeans.ContextualIdStore;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
@@ -28,7 +28,7 @@ public class AccessibleManagerResolutionTest
       this.classTransformer = new ClassTransformer(new TypeStore());
       this.services = new SimpleServiceRegistry();
       this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
-      this.services.add(BeanIdStore.class, new BeanIdStore());
+      this.services.add(ContextualIdStore.class, new ContextualIdStore());
    }
    
    private void addBean(BeanManagerImpl manager, Class<?> c)
