@@ -874,7 +874,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> creationalContext)
    {
-      if (!bean.getTypes().contains(beanType))
+      
+      if (!Beans.isTypePresent(bean, beanType))
       {
          throw new IllegalArgumentException("The given beanType is not a type " + beanType +" of the bean " + bean );
       }

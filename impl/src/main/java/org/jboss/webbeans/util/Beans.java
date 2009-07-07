@@ -17,6 +17,7 @@
 package org.jboss.webbeans.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -186,4 +187,16 @@ public class Beans
       }
    }
    
+   public static boolean isTypePresent(Bean<?> bean, Type type)
+   {
+      type = Types.boxedType(type);
+      for (Type beanType : bean.getTypes())
+      {
+         if (Types.boxedType(beanType).equals(type))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
 }

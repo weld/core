@@ -579,7 +579,7 @@ public class Reflections
     */
    public static boolean isAssignableFrom(Class<?> rawType1, Type[] actualTypeArguments1, Class<?> rawType2, Type[] actualTypeArguments2)
    {
-      return Types.boxedType(rawType1).isAssignableFrom(Types.boxedType(rawType2)) && Arrays.equals(actualTypeArguments1, actualTypeArguments2);
+      return Types.boxedClass(rawType1).isAssignableFrom(Types.boxedClass(rawType2)) && Arrays.equals(actualTypeArguments1, actualTypeArguments2);
    }
    
    public static boolean isAssignableFrom(Type type1, Set<? extends Type> types2)
