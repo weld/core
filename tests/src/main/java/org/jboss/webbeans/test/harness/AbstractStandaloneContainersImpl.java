@@ -20,7 +20,7 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
       lifecycle.initialize();
       try
       {
-         MockBeanDeploymentArchive archive = lifecycle.getDeployment().getEjbModule();
+         MockBeanDeploymentArchive archive = lifecycle.getDeployment().getArchive();
          archive.setBeanClasses(classes);
          if (beansXml != null)
          {

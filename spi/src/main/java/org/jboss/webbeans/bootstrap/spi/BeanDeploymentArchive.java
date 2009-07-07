@@ -19,7 +19,7 @@ package org.jboss.webbeans.bootstrap.spi;
 import java.net.URL;
 import java.util.List;
 
-import org.jboss.webbeans.ejb.spi.EJBModule;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
 /**
  * Represents a CDI bean deployment archive.
@@ -39,7 +39,6 @@ import org.jboss.webbeans.ejb.spi.EJBModule;
  * container could define a deployment archive with container specific metadata
  * to be a bean deployment archive).
  * 
- * @see EJBModule
  * @see Deployment
  * 
  * @author Pete Muir
@@ -79,5 +78,13 @@ public interface BeanDeploymentArchive
     *         or an empty set if none are present
     */
    public Iterable<URL> getBeansXml();
+
+   /**
+    * Get all the EJBs in the deployment archive
+    * 
+    * @return an iteration of the EJBs, or empty if no EJBs are present or if
+    *         this is not an EJB archive
+    */
+   public Iterable<EjbDescriptor<?>> getEjbs();
 
 }

@@ -19,7 +19,6 @@ package org.jboss.webbeans.bootstrap.spi;
 import java.util.List;
 
 import org.jboss.webbeans.bootstrap.api.Service;
-import org.jboss.webbeans.ejb.spi.EJBModule;
 
 /**
  * Represents a deployment of a CDI application.
@@ -45,7 +44,6 @@ import org.jboss.webbeans.ejb.spi.EJBModule;
  * TODO Java SE structure
  * 
  * @see BeanDeploymentArchive
- * @see EJBModule
  * 
  * @author Pete Muir
  * 

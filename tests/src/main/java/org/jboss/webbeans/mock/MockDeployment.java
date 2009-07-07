@@ -25,15 +25,15 @@ import org.jboss.webbeans.bootstrap.spi.Deployment;
 public class MockDeployment implements Deployment
 {
    
-   private MockEjbModule ejbModule;
+   private MockBeanDeploymentArchive archive;
    
    private List<BeanDeploymentArchive> beanDeploymentArchives;
    
    public MockDeployment()
    {
-      this.ejbModule = new MockEjbModule();
+      this.archive = new MockBeanDeploymentArchive();
       this.beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>();
-      this.beanDeploymentArchives.add(ejbModule);
+      this.beanDeploymentArchives.add(archive);
    }
    
    public List<BeanDeploymentArchive> getBeanDeploymentArchives()
@@ -43,12 +43,12 @@ public class MockDeployment implements Deployment
 
    public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
    {
-      return ejbModule;
+      return archive;
    }
    
-   public MockEjbModule getEjbModule()
+   public MockBeanDeploymentArchive getArchive()
    {
-      return ejbModule;
+      return archive;
    }
 
 }

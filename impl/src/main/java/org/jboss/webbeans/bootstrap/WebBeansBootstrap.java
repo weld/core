@@ -23,8 +23,8 @@ import java.util.Collection;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.webbeans.ContextualIdStore;
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.ContextualIdStore;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.DeploymentException;
@@ -53,7 +53,6 @@ import org.jboss.webbeans.conversation.NumericConversationIdGenerator;
 import org.jboss.webbeans.conversation.ServletConversationManager;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
-import org.jboss.webbeans.ejb.spi.EJBModule;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
@@ -120,13 +119,9 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          {
             beansXmlUrls.add(url);
          }
-         if (beanDeploymentArchive instanceof EJBModule)
+         for (EjbDescriptor<?> ejbDescriptor : beanDeploymentArchive.getEjbs())
          {
-            EJBModule ejbModule = (EJBModule) beanDeploymentArchive;
-            for (EjbDescriptor<?> ejbDescriptor : ejbModule.getEjbs())
-            {
-               ejbDescriptors.add(ejbDescriptor);
-            }
+            ejbDescriptors.add(ejbDescriptor);
          }
          for (BeanDeploymentArchive archive : beanDeploymentArchive.getBeanDeploymentArchives())
          {

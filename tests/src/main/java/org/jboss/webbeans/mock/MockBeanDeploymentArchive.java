@@ -17,11 +17,19 @@
 package org.jboss.webbeans.mock;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import javax.ejb.MessageDriven;
+import javax.ejb.Singleton;
+import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
 /**
  * @author pmuir
@@ -45,11 +53,6 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
       return webBeansXmlFiles;
    }
    
-   public void setBeanClasses(Iterable<Class<?>> webBeanClasses)
-   {
-      this.beanClasses = webBeanClasses;
-   }
-   
    public void setWebBeansXmlFiles(Iterable<URL> webBeansXmlFiles)
    {
       this.webBeansXmlFiles = webBeansXmlFiles;
@@ -58,6 +61,36 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
    public List<BeanDeploymentArchive> getBeanDeploymentArchives()
    {
       return Collections.emptyList();
+   }
+   
+   private List<EjbDescriptor<?>> ejbs;
+
+   public void setBeanClasses(Iterable<Class<?>> beanClasses)
+   {
+      this.beanClasses = beanClasses;
+      ejbs = new ArrayList<EjbDescriptor<?>>();
+      for (Class<?> ejbClass : discoverEjbs(getBeanClasses()))
+      {
+         ejbs.add(MockEjbDescriptor.of(ejbClass));
+      }
+   }
+   
+   public Iterable<EjbDescriptor<?>> getEjbs()
+   {
+      return ejbs;
+   }
+   
+   protected static Iterable<Class<?>> discoverEjbs(Iterable<Class<?>> webBeanClasses)
+   {
+      Set<Class<?>> ejbs = new HashSet<Class<?>>();
+      for (Class<?> clazz : webBeanClasses)
+      {
+         if (clazz.isAnnotationPresent(Stateless.class) || clazz.isAnnotationPresent(Stateful.class) || clazz.isAnnotationPresent(MessageDriven.class) || clazz.isAnnotationPresent(Singleton.class)) 
+         {
+            ejbs.add(clazz);
+         }
+      }
+      return ejbs;
    }
 
 }

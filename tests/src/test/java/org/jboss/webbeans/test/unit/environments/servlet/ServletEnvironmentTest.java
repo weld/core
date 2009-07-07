@@ -28,7 +28,7 @@ public class ServletEnvironmentTest
    {
       lifecycle = new MockServletLifecycle(); 
       lifecycle.initialize();
-      MockBeanDeploymentArchive archive = lifecycle.getDeployment().getEjbModule();
+      MockBeanDeploymentArchive archive = lifecycle.getDeployment().getArchive();
       archive.setBeanClasses(Arrays.asList(Animal.class, DeadlyAnimal.class, DeadlySpider.class, DeadlyAnimal.class, Hound.class, HoundLocal.class, Salmon.class, ScottishFish.class, SeaBass.class, Sole.class, Spider.class, Tarantula.class, TarantulaProducer.class, Tuna.class));
       lifecycle.beginApplication();
       lifecycle.beginSession();
