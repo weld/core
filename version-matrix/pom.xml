@@ -103,7 +103,7 @@
          <dependency>
             <groupId>javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.8.1.GA</version>
+            <version>3.11.0.GA</version>
          </dependency>
 
          <dependency>
