@@ -61,7 +61,7 @@
                         <Embed-Dependency>*; scope=compile; inline=true</Embed-Dependency>
                         <_exportcontents>javax.event; javax.context; javax.webbeans; javax.decorator; javax.inject; javax.enterprise.inject.spi; version=${osgi.version},
                                          org.jboss.webbeans.*.api.*; org.jboss.webbeans.*.spi.*; org.jboss.webbeans.conversation; org.jboss.webbeans.bootstrap; org.jboss.webbeans.introspector; org.jboss.webbeans.servlet; version=${osgi.version},
-                                         org.jboss.webbeans.el; include:="WebBeansELResolver"; version=${osgi.version},
+                                         org.jboss.webbeans.ejb; org.jboss.webbeans.el; include:="WebBeansELResolver"; version=${osgi.version},
                                          org.jboss.webbeans.jsf; include:="WebBeansPhaseListener"; version=${osgi.version},
                                          javassist.util.proxy;version="3.8.1.GA"
                         </_exportcontents>
