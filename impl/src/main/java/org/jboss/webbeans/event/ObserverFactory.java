@@ -51,6 +51,7 @@ public class ObserverFactory
       {
          result = new ObserverMethodImpl<X, T>(method, declaringBean, manager);
       }
+      result.initialize();
       return result;
    }
 }
