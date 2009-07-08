@@ -60,7 +60,7 @@ public class AfterBeanDiscoveryImpl implements AfterBeanDiscovery
 
    public void addObserverMethod(ObserverMethod<?, ?> observerMethod)
    {
-      throw new UnsupportedOperationException();
+      beanManager.addObserver(observerMethod);
    }
 
 }
