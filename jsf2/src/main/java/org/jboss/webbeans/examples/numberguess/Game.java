@@ -11,12 +11,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.inject.Obtains;
 
 @Named
 @SessionScoped
 public class Game implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    private int number;
    
    private int guess;
@@ -28,7 +29,7 @@ public class Game implements Serializable
    private int biggest;
    private int remainingGuesses;
    
-   @Obtains @Random Instance<Integer> randomNumber;
+   @Random Instance<Integer> randomNumber;
    
    public Game()
    {
