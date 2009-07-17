@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -17,7 +17,6 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -28,8 +27,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.AmbiguousResolutionException;
+import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.UnproxyableResolutionException;
@@ -39,6 +40,7 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.AbstractProducerBean;
 import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
@@ -46,7 +48,6 @@ import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.api.Service;
-import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.resolution.ResolvableWBClass;
@@ -114,7 +115,7 @@ public class Validator implements Service
                {
                   if (!Reflections.isSerializable(decorator.getBeanClass()))
                   {
-                     throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scope but has non-serializable decorator: " + decorator); 
+                     throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scope but has non-serializable decorator: " + decorator);
                   }
                }
             }
@@ -169,6 +170,10 @@ public class Validator implements Service
       }
       if (Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean))
       {
+         if (resolvedBean.getScopeType().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean)
+         {
+            throw new IllegalProductException("The bean " + ij.getBean() + " declares a passivating scope but the producer returned a non-serializable bean for injection: " + resolvedBean);
+         }
          throw new UnserializableDependencyException("The bean " + ij.getBean() + " declares a passivating scope but has non-serializable dependency: " + resolvedBean);
       }
    }
@@ -224,7 +229,7 @@ public class Validator implements Service
          }
          throw new UnsatisfiedResolutionException(buff.toString());
       }
-   }   
+   }
 
    private static boolean hasHigherPrecedence(Class<? extends Annotation> deploymentType, Class<? extends Annotation> otherDeploymentType, BeanManagerImpl manager)
    {
