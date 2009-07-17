@@ -16,6 +16,8 @@
  */
 package org.jboss.webbeans.conversation;
 
+import java.io.Serializable;
+
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Initializer;
@@ -34,8 +36,13 @@ import org.jboss.webbeans.log.Logging;
 @RequestScoped
 @Named("javax.context.conversation")
 @Standard
-public class ConversationImpl implements Conversation
+public class ConversationImpl implements Conversation, Serializable
 {
+
+   /**
+    * Eclipse generated UID.
+    */
+   private static final long serialVersionUID = 5262382965141841363L;
 
    private static LogProvider log = Logging.getLogProvider(ConversationImpl.class);
 

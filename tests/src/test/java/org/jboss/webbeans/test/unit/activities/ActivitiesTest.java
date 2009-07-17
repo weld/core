@@ -87,11 +87,6 @@ public class ActivitiesTest extends AbstractWebBeansTest
             return false;
          }
 
-         public boolean isSerializable()
-         {
-            return false;
-         }
-
          public Object create(CreationalContext<Object> creationalContext)
          {
             return null;
@@ -100,6 +95,16 @@ public class ActivitiesTest extends AbstractWebBeansTest
          public void destroy(Object instance, CreationalContext<Object> creationalContext)
          {
 
+         }
+
+         public Class<?> getBeanClass()
+         {
+            return Object.class;
+         }
+
+         public boolean isPolicy()
+         {
+            return false;
          }
 
       };

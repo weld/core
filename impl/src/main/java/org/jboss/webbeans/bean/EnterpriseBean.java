@@ -386,6 +386,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       return manager.getServices().get(EjbServices.class).resolveEjb(getEjbDescriptor().delegate());
    }
+
+   public boolean isPolicy()
+   {
+      return false;
+   }
    
 }
 

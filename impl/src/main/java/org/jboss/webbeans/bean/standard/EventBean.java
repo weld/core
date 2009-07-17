@@ -56,6 +56,12 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
       return TYPE;
    }
 
+   @Override
+   public Class<?> getBeanClass()
+   {
+      return EventImpl.class;
+   }
+
    public Set<Type> getTypes()
    {
       return DEFAULT_TYPES;

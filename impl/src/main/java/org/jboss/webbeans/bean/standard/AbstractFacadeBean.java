@@ -66,12 +66,6 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
       // TODO Auto-generated method stub
    }
    
-   @Override
-   public boolean isSerializable()
-   {
-      return true;
-   }
-   
    protected abstract T newInstance(Type type, Set<Annotation> annotations);
    
 }

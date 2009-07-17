@@ -79,11 +79,6 @@ public class ManagerTest extends AbstractWebBeansTest
          return true;
       }
 
-      public boolean isSerializable()
-      {
-         return false;
-      }
-
       public Dummy create(CreationalContext<Dummy> creationalContext)
       {
          return null;
@@ -92,6 +87,16 @@ public class ManagerTest extends AbstractWebBeansTest
       public void destroy(Dummy instance, CreationalContext<Dummy> creationalContext)
       {
          
+      }
+
+      public Class<?> getBeanClass()
+      {
+         return Dummy.class;
+      }
+
+      public boolean isPolicy()
+      {
+         return false;
       }
       
    }

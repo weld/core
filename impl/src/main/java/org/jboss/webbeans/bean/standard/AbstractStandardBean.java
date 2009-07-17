@@ -96,17 +96,18 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
       return false;
    }
    
-   public boolean isSerializable()
-   {
-      return false;
-   }
-   
    @Override
    public boolean isSpecializing()
    {
       return false;
    }
    
+   public boolean isPolicy()
+   {
+      //TODO Implement the isPolicy() method based on the annotations of this bean
+      return false;
+   }
+
    @Override
    public boolean isProxyable()
    {

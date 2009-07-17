@@ -138,11 +138,6 @@ public class InstanceCurrentActivityTest extends AbstractWebBeansTest
          return true;
       }
 
-      public boolean isSerializable()
-      {
-         return false;
-      }
-
       public Cow create(CreationalContext<Cow> creationalContext)
       {
          return new Cow();
@@ -152,6 +147,16 @@ public class InstanceCurrentActivityTest extends AbstractWebBeansTest
       {
          // TODO Auto-generated method stub
 
+      }
+
+      public Class<?> getBeanClass()
+      {
+         return Cow.class;
+      }
+
+      public boolean isPolicy()
+      {
+         return false;
       }
 
    }

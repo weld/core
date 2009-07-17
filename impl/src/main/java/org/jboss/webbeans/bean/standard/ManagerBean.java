@@ -63,12 +63,6 @@ public class ManagerBean extends AbstractStandardBean<BeanManagerImpl>
    }
    
    @Override
-   public boolean isSerializable()
-   {
-      return true;
-   }
-   
-   @Override
    public String toString()
    {
       return "Built-in javax.inject.manager.Manager bean";

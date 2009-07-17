@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Iterator;
@@ -34,7 +35,7 @@ import org.jboss.webbeans.resolution.ResolvableWBClass;
  * 
  * @param <T>
  */
-public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
+public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>, Serializable
 {
 
    private static final long serialVersionUID = -376721889693284887L;

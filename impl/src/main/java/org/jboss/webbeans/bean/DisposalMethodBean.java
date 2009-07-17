@@ -345,4 +345,9 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       return id;
    }
 
+   public boolean isPolicy()
+   {
+      return false;
+   }
+
 }

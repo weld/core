@@ -45,6 +45,13 @@ public abstract class ForwardingBean<T> implements Bean<T>
    }
 
    /**
+    * Abstract getter for the delegate
+    * 
+    * @return The delegate
+    */
+   protected abstract Bean<T> delegate();
+
+   /**
     * Destroys an instance through the delegate
     * 
     * @param instance The instance to destroy
@@ -52,6 +59,22 @@ public abstract class ForwardingBean<T> implements Bean<T>
    public void destroy(T instance, CreationalContext<T> creationalContext)
    {
       delegate().destroy(instance, creationalContext);
+   }
+
+   /**
+    * Compares an object with the delegate
+    * 
+    * @return True if equals, false otherwise
+    */
+   @Override
+   public boolean equals(Object obj)
+   {
+      return delegate().equals(obj);
+   }
+
+   public Class<?> getBeanClass()
+   {
+      return delegate().getBeanClass();
    }
 
    /**
@@ -72,6 +95,11 @@ public abstract class ForwardingBean<T> implements Bean<T>
    public Class<? extends Annotation> getDeploymentType()
    {
       return delegate().getDeploymentType();
+   }
+
+   public Set<InjectionPoint> getInjectionPoints()
+   {
+      return delegate().getInjectionPoints();
    }
 
    /**
@@ -105,31 +133,6 @@ public abstract class ForwardingBean<T> implements Bean<T>
    }
 
    /**
-    * Indicates if the delegate is nullable
-    * 
-    * @return True if nullable, false otherwise
-    */
-   public boolean isNullable()
-   {
-      return delegate().isNullable();
-   }
-
-   /**
-    * Indicates if the delegate is serializable
-    * 
-    * @return True if serializable, false otherwise
-    */
-   public boolean isSerializable()
-   {
-      return delegate().isSerializable();
-   }
-   
-   public Set<InjectionPoint> getInjectionPoints()
-   {
-      return delegate().getInjectionPoints();
-   }
-
-   /**
     * Gets the hash code of the delegate
     * 
     * @return The hash code
@@ -141,22 +144,19 @@ public abstract class ForwardingBean<T> implements Bean<T>
    }
 
    /**
-    * Compares an object with the delegate
+    * Indicates if the delegate is nullable
     * 
-    * @return True if equals, false otherwise
+    * @return True if nullable, false otherwise
     */
-   @Override
-   public boolean equals(Object obj)
+   public boolean isNullable()
    {
-      return delegate().equals(obj);
+      return delegate().isNullable();
    }
 
-   /**
-    * Abstract getter for the delegate
-    * 
-    * @return The delegate
-    */
-   protected abstract Bean<T> delegate();
+   public boolean isPolicy()
+   {
+      return delegate().isPolicy();
+   }
 
    /**
     * Returns a string representation

@@ -9,7 +9,7 @@ public class NullProducerTest extends AbstractWebBeansTest
 {
    
    @Test(description="WBRI-276")
-   public void testProduerMethodReturnsNull()
+   public void testProducerMethodReturnsNull()
    {
       getCurrentManager().getInstanceByType(Government.class).destabilize();
    }

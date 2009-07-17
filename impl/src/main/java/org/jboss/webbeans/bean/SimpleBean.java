@@ -533,4 +533,10 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       return specializedBean;
    }
 
+   public boolean isPolicy()
+   {
+      //TODO Implement the isPolicy() on SimpleBean
+      return false;
+   }
+
 }

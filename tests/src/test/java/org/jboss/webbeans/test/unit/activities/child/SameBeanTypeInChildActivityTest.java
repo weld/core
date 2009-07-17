@@ -80,11 +80,6 @@ public class SameBeanTypeInChildActivityTest extends AbstractWebBeansTest
             return false;
          }
 
-         public boolean isSerializable()
-         {
-            return false;
-         }
-
          public MyBean create(CreationalContext<MyBean> creationalContext)
          {
             return null;
@@ -93,6 +88,16 @@ public class SameBeanTypeInChildActivityTest extends AbstractWebBeansTest
          public void destroy(MyBean instance, CreationalContext<MyBean> creationalContext)
          {
 
+         }
+
+         public Class<?> getBeanClass()
+         {
+            return MyBean.class;
+         }
+
+         public boolean isPolicy()
+         {
+            return false;
          }
 
       };

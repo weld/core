@@ -141,6 +141,16 @@ public class ELCurrentActivityTest extends AbstractWebBeansTest
 
       }
 
+      public Class<?> getBeanClass()
+      {
+         return Cow.class;
+      }
+
+      public boolean isPolicy()
+      {
+         return false;
+      }
+
    }
 
    @Test

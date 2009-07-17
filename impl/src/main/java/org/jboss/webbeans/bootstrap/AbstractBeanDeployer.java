@@ -16,12 +16,15 @@
  */
 package org.jboss.webbeans.bootstrap;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -52,8 +55,9 @@ public class AbstractBeanDeployer
    
    private static final LogProvider log = Logging.getLogProvider(AbstractBeanDeployer.class);
    
-   private final BeanManagerImpl manager;
+   private final BeanManagerImpl         manager;
    private final BeanDeployerEnvironment environment;
+   private final List<Throwable>         definitionErrors = new ArrayList<Throwable>();
    
    public AbstractBeanDeployer(BeanManagerImpl manager, BeanDeployerEnvironment environment)
    {
@@ -163,8 +167,15 @@ public class AbstractBeanDeployer
    {
       ObserverMethodImpl<?, ?> observer = ObserverFactory.create(method, declaringBean, manager);
       environment.getObservers().add(observer);
+      //TODO Not sure how to create the templated event without any type information here
+      //fireProcessObserverMethod(observer, method);
    }
    
+   private <X, T> void fireProcessObserverMethod(final ObserverMethodImpl<X, T> observerMethod, final AnnotatedMethod<X> method)
+   {
+      manager.fireEvent(new ProcessObserverMethodImpl<X, T>(method, observerMethod, definitionErrors));
+   }
+
    protected <T> void createSimpleBean(WBClass<T> annotatedClass)
    {
       SimpleBean<T> bean = SimpleBean.of(annotatedClass, manager);

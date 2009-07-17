@@ -17,6 +17,7 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -27,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.Instance;
@@ -46,6 +46,7 @@ import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.api.Service;
+import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.resolution.ResolvableWBClass;
@@ -104,14 +105,14 @@ public class Validator implements Service
             }
             specializedBeans.add(abstractBean.getSpecializedBean());
          }
-         if (Beans.isPassivatingBean(bean, beanManager) && bean instanceof AbstractClassBean)
+         if (Beans.isPassivationCapableBean(bean) && bean instanceof AbstractClassBean<?>)
          {
             AbstractClassBean<?> classBean = (AbstractClassBean<?>) bean;
             if (classBean.hasDecorators())
             {
                for (Decorator<?> decorator : classBean.getDecorators())
                {
-                  if (!decorator.isSerializable())
+                  if (!Reflections.isSerializable(decorator.getBeanClass()))
                   {
                      throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scope but has non-serializable decorator: " + decorator); 
                   }
@@ -166,7 +167,7 @@ public class Validator implements Service
       {
          throw new NullableDependencyException("The injection point " + ij + " has nullable dependencies");
       }
-      if (Beans.isPassivatingBean(ij.getBean(), beanManager) && !resolvedBean.isSerializable() && resolvedBean.getScopeType().equals(Dependent.class))
+      if (Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean))
       {
          throw new UnserializableDependencyException("The bean " + ij.getBean() + " declares a passivating scope but has non-serializable dependency: " + resolvedBean);
       }
@@ -177,7 +178,7 @@ public class Validator implements Service
       List<RIBean<?>> specializedBeans = new ArrayList<RIBean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
-         if (bean instanceof RIBean)
+         if (bean instanceof RIBean<?>)
          {
             validateRIBean((RIBean<?>) bean, manager, specializedBeans);
          }

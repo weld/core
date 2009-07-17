@@ -44,26 +44,45 @@ import org.jboss.webbeans.util.collections.ListComparator;
  * Helper class for bean inspection
  * 
  * @author Pete Muir
+ * @author David Allen
  *
  */
 public class Beans
 {
-
    /**
-    * Indicates if a bean is passivating
+    * Indicates if a bean's scope type is passivating
     * 
     * @param bean The bean to inspect
-    * @return True if passivating, false otherwise
+    * @return True if the scope is passivating, false otherwise
     */
-   public static boolean isPassivatingBean(Bean<?> bean, BeanManagerImpl manager)
+   public static boolean isPassivatingScope(Bean<?> bean, BeanManagerImpl manager)
    {
-      if (bean instanceof EnterpriseBean)
+      if (bean instanceof EnterpriseBean<?>)
       {
          return ((EnterpriseBean<?>) bean).getEjbDescriptor().isStateful();
       }
       else
       {
          return manager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScopeType()).isPassivating();
+      }
+   }
+
+   /**
+    * Tests if a bean is capable of having its state temporarily stored to
+    * secondary storage
+    * 
+    * @param bean The bean to inspect
+    * @return True if the bean is passivation capable
+    */
+   public static boolean isPassivationCapableBean(Bean<?> bean)
+   {
+      if (bean instanceof EnterpriseBean<?>)
+      {
+         return ((EnterpriseBean<?>) bean).getEjbDescriptor().isStateful();
+      }
+      else
+      {
+         return Reflections.isSerializable(bean.getBeanClass());
       }
    }
 
@@ -75,7 +94,7 @@ public class Beans
     */
    public static boolean isBeanProxyable(Bean<?> bean)
    {
-      if (bean instanceof RIBean)
+      if (bean instanceof RIBean<?>)
       {
          return ((RIBean<?>) bean).isProxyable();
       }

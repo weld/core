@@ -60,6 +60,11 @@ public abstract class RIBean<T> implements Bean<T>
 
    public abstract Class<T> getType();
    
+   public Class<?> getBeanClass()
+   {
+      return getType();
+   }
+   
    public abstract void initialize(BeanDeployerEnvironment environment);
 
    public abstract boolean isSpecializing();

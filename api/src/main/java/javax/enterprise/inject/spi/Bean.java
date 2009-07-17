@@ -49,6 +49,7 @@ public interface Bean<T> extends Contextual<T>
 
    /**
     * The deployment type of a bean
+    * @deprecated
     * 
     * @return the deployment type
     */
@@ -62,11 +63,19 @@ public interface Bean<T> extends Contextual<T>
    public String getName();
 
    /**
-    * The serializability of a bean
+    * The bean class of the managed bean or session bean or of the bean that
+    * declares the producer method or field
     * 
-    * @return true if the bean is serializable
+    * @return the class of the managed bean
     */
-   public boolean isSerializable();
+   public Class<?> getBeanClass();
+
+   /**
+    * Test to see if the bean is a policy
+    * 
+    * @return true if the bean is a policy
+    */
+   public boolean isPolicy();
 
    /**
     * The nullability of a bean
