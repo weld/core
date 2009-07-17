@@ -91,6 +91,10 @@ public class ConversationImpl implements Conversation, Serializable
 
    public void begin()
    {
+      if (isLongRunning())
+      {
+         throw new IllegalStateException("Attempt to call begin() on a long-running conversation");
+      }
       log.debug("Promoted conversation " + cid + " to long-running");
       longRunning = true;
    }
@@ -109,6 +113,10 @@ public class ConversationImpl implements Conversation, Serializable
 
    public void end()
    {
+      if (!isLongRunning())
+      {
+         throw new IllegalStateException("Attempt to call end() on a transient conversation");
+      }
       log.debug("Demoted conversation " + cid + " to transient");
       longRunning = false;
    }
