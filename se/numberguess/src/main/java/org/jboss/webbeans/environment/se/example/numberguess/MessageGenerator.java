@@ -42,7 +42,7 @@ public class MessageGenerator
     {
         if ( game.isGameWon() )
         {
-            return "You guess it! The number was " + game.getNumber();
+            return "You guessed it! The number was " + game.getNumber();
         } else if ( game.isGameLost() )
         {
             return "You are fail! The number was " + game.getNumber();
