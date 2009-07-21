@@ -91,15 +91,11 @@ public class Validator implements Service
    private void validateRIBean(RIBean<?> bean, BeanManagerImpl beanManager, List<RIBean<?>> specializedBeans)
    {
       validateBean(bean, beanManager);
-      if (!(bean instanceof NewSimpleBean) && !(bean instanceof NewEnterpriseBean))
+      if (!(bean instanceof NewSimpleBean<?>) && !(bean instanceof NewEnterpriseBean<?>))
       {
          RIBean<?> abstractBean = bean;
          if (abstractBean.isSpecializing())
          {
-            if (!hasHigherPrecedence(bean.getDeploymentType(), abstractBean.getSpecializedBean().getDeploymentType(), beanManager))
-            {
-               throw new InconsistentSpecializationException("Specializing bean must have a higher precedence deployment type than the specialized bean: " + bean);
-            }
             if (specializedBeans.contains(abstractBean.getSpecializedBean()))
             {
                throw new InconsistentSpecializationException("Two beans cannot specialize the same bean: " + bean);
@@ -136,7 +132,7 @@ public class Validator implements Service
          ParameterizedType parameterizedType = (ParameterizedType) ij.getType();
          for (Type type : parameterizedType.getActualTypeArguments())
          {
-            if (type instanceof TypeVariable)
+            if (type instanceof TypeVariable<?>)
             {
                throw new DefinitionException("Injection point cannot have a type variable type parameter " + ij);
             }
@@ -170,7 +166,7 @@ public class Validator implements Service
       }
       if (Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean))
       {
-         if (resolvedBean.getScopeType().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean)
+         if (resolvedBean.getScopeType().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?,?>)
          {
             throw new IllegalProductException("The bean " + ij.getBean() + " declares a passivating scope but the producer returned a non-serializable bean for injection: " + resolvedBean);
          }
@@ -231,12 +227,6 @@ public class Validator implements Service
       }
    }
 
-   private static boolean hasHigherPrecedence(Class<? extends Annotation> deploymentType, Class<? extends Annotation> otherDeploymentType, BeanManagerImpl manager)
-   {
-      Comparator<Class<? extends Annotation>> comparator = new ListComparator<Class<? extends Annotation>>(manager.getEnabledDeploymentTypes());
-      return comparator.compare(deploymentType, otherDeploymentType) > 0;
-   }
-   
    private static void checkFacadeInjectionPoint(InjectionPoint injectionPoint, Class<?> type)
    {
       if (injectionPoint.getAnnotated().getBaseType().equals(type))
@@ -244,7 +234,7 @@ public class Validator implements Service
          if (injectionPoint.getType() instanceof ParameterizedType)
          {
             ParameterizedType parameterizedType = (ParameterizedType) injectionPoint.getType();
-            if (parameterizedType.getActualTypeArguments()[0] instanceof TypeVariable)
+            if (parameterizedType.getActualTypeArguments()[0] instanceof TypeVariable<?>)
             {
                throw new DefinitionException("An injection point of type " + type + " cannot have a type variable type parameter " + injectionPoint);
             }

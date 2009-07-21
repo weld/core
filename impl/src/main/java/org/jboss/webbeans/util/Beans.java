@@ -31,6 +31,7 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
+import org.jboss.webbeans.bean.AbstractProducerBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
@@ -79,6 +80,10 @@ public class Beans
       if (bean instanceof EnterpriseBean<?>)
       {
          return ((EnterpriseBean<?>) bean).getEjbDescriptor().isStateful();
+      }
+      else if (bean instanceof AbstractProducerBean<?, ?>)
+      {
+         return Reflections.isSerializable(((AbstractProducerBean<?, ?>) bean).getType());
       }
       else
       {

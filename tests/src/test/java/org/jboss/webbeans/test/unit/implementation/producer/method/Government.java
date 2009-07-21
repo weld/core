@@ -8,6 +8,8 @@ import javax.enterprise.context.SessionScoped;
 public class Government implements Serializable
 {
 
+   private static final long serialVersionUID = 1L;
+
    @Important Car governmentCar;
    
    public void destabilize()

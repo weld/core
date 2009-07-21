@@ -79,6 +79,26 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
    @Override
    protected abstract WBMember<T, S> getAnnotatedItem();
 
+   @Override
+   // Overriden to provide the class of the bean that declares the producer method/field
+   public Class<?> getBeanClass()
+   {
+      return getDeclaringBean().getBeanClass();
+   }
+
+   @Override
+   public String getId()
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public void destroy(T instance, CreationalContext<T> creationalContext)
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
    /**
     * Gets the deployment types
     * 
@@ -377,7 +397,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       {
          buffer.append("simple producer bean '" + getName() + "'");
       }
-      buffer.append(" [" + getType().getName() + "] API types " + getTypes() + ", binding types " + getBindings());
+      buffer.append(" [" + getBeanClass().getName() + "] for class type [" + getType().getName() + "] API types " + getTypes() + ", binding types " + getBindings());
       return buffer.toString();
    }
 
