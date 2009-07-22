@@ -49,7 +49,7 @@ public interface BeanDeploymentArchive
 
    /**
     * Get the ordered bean deployment archives which are accessible to this bean
-    * deployment archive and adjacent to it i n the deployment archive graph.
+    * deployment archive and adjacent to it in the deployment archive graph.
     * 
     * The bean deployment archives will be processed in the order specified.
     * 

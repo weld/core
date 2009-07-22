@@ -50,7 +50,7 @@
       <jsr299.tck.version>1.0.0-SNAPSHOT</jsr299.tck.version>
       <webbeans.version>1.0.0-SNAPSHOT</webbeans.version>
       <webbeans.servlet.version>1.0.0.CR1</webbeans.servlet.version>
-      <webbeans.se.version>1.0.0.BETA1</webbeans.se.version>
+      <webbeans.se.version>1.0.0-SNAPSHOT</webbeans.se.version>
       <jboss.test.harness.version>1.0.0-SNAPSHOT</jboss.test.harness.version>
    </properties>
    

@@ -42,6 +42,10 @@ import org.jboss.webbeans.bootstrap.api.Service;
  * bean deployment archive structure built.
  * 
  * TODO Java SE structure
+ * For an application deployed in the SE environment, all library jars and
+ * classpath directories should be searched, and the bean deployment archive
+ * structure built. A single, logical deployment archive will be built for
+ * all beans and beans.xml files found on the classpath.
  * 
  * @see BeanDeploymentArchive
  * 
