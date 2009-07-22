@@ -18,9 +18,9 @@ package org.jboss.webbeans.environment.se.example.numberguess;
 
 import java.awt.CardLayout;
 
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Current;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.event.Observes;
 
 /**
  * Swing-based number guess example, main application frame.

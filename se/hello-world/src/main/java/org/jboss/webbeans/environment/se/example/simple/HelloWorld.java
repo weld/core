@@ -16,9 +16,9 @@
  */
 package org.jboss.webbeans.environment.se.example.simple;
 
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Current;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.event.Observes;
 
 /**
  * @author Peter Royle
