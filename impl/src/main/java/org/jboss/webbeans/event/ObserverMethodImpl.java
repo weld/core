@@ -43,6 +43,7 @@ import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.WBParameter;
+import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.util.Names;
 
 /**
@@ -83,6 +84,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
       this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
 
       this.bindings = new HashSet<Annotation>(Arrays.asList(observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray()));
+      this.bindings.add(new AnyLiteral());  // Always add the Any annotation in case it is not there yet
       Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
       this.notifyType = observesAnnotation.notifyObserver();
       transactionPhase = TransactionPhase.IN_PROGRESS;
@@ -172,7 +174,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
 
    public TransactionPhase getTransactionPhase()
    {
-      return TransactionPhase.IN_PROGRESS;
+      return transactionPhase;
    }
 
    /**
