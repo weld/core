@@ -167,15 +167,8 @@ public class AbstractBeanDeployer
    {
       ObserverMethodImpl<?, ?> observer = ObserverFactory.create(method, declaringBean, manager);
       environment.getObservers().add(observer);
-      //TODO Not sure how to create the templated event without any type information here
-      //fireProcessObserverMethod(observer, method);
    }
    
-   private <X, T> void fireProcessObserverMethod(final ObserverMethodImpl<X, T> observerMethod, final AnnotatedMethod<X> method)
-   {
-      manager.fireEvent(new ProcessObserverMethodImpl<X, T>(method, observerMethod, definitionErrors));
-   }
-
    protected <T> void createSimpleBean(WBClass<T> annotatedClass)
    {
       SimpleBean<T> bean = SimpleBean.of(annotatedClass, manager);
