@@ -54,12 +54,29 @@ public class TCCLSingletonProvider extends SingletonProvider
 
       public T get()
       {
-         return store.get(getClassLoader());
+         T instance = store.get(getClassLoader());
+         if (instance == null)
+         {
+            throw new IllegalStateException("Singleton not set for " + getClassLoader());
+         }
+         return instance;
       }
 
       public void set(T object)
       {
+         // TODO remove this
+         System.out.println("Adding singleton for " + getClassLoader());
          store.put(getClassLoader(), object);
+      }
+      
+      public void clear()
+      {
+         store.remove(getClassLoader());
+      }
+      
+      public boolean isSet()
+      {
+         return store.containsKey(getClassLoader());
       }
 
       private ClassLoader getClassLoader()

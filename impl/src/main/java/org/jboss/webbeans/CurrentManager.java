@@ -48,10 +48,11 @@ public class CurrentManager
    
    private final static Singleton<Map<Integer, BeanManagerImpl>> managers = SingletonProvider.instance().create(new IntegerMangerImplMap().getRawType());
 
-   public static void cleanup()
+   public static void clear()
    {
-      rootManager.set(null);
       managers.get().clear();
+      rootManager.clear();
+      managers.clear();
    }
    
    /**
@@ -72,7 +73,7 @@ public class CurrentManager
    public static void setRootManager(BeanManagerImpl managerImpl) 
    {
       rootManager.set(managerImpl);
-      if (managers.get() == null) 
+      if (!managers.isSet()) 
       {
           managers.set(new ConcurrentHashMap<Integer, BeanManagerImpl>());
       }

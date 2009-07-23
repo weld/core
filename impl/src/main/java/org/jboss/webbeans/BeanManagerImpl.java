@@ -1131,7 +1131,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       applicationContext.destroy();
       applicationContext.setActive(false);
       applicationContext.setBeanStore(null);
-      CurrentManager.cleanup();
+      CurrentManager.clear();
    }
 
    /**

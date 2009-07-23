@@ -25,16 +25,12 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.mock.el.EL;
 import org.jboss.webbeans.util.collections.EnumerationIterable;
 import org.testng.ITestContext;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 
 public abstract class AbstractWebBeansTest extends AbstractTest
 {
 
    protected static final int BUILT_IN_BEANS = 3;
-
-   private BeanManagerImpl manager;
 
    public static boolean visited = false;
 
@@ -49,19 +45,6 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       }
       super.beforeSuite(context);
    }
-
-   @BeforeMethod
-   public void before() throws Exception
-   {
-      this.manager = CurrentManager.rootManager();
-   }
-
-   @AfterMethod
-   public void after() throws Exception
-   {
-      this.manager = null;
-   }
-
 
    /**
     * Checks if all annotations are in a given set of annotations
@@ -135,7 +118,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
 
    protected BeanManagerImpl getCurrentManager()
    {
-      return manager;
+      return CurrentManager.rootManager();
    }
 
    public boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException )

@@ -48,12 +48,26 @@ public class IsolatedStaticSingletonProvider extends SingletonProvider
 
       public T get()
       {
+         if (object == null)
+         {
+            throw new IllegalStateException("Singleton is not set");
+         }
          return object;
       }
 
       public void set(T object)
       {
          this.object = object;
+      }
+      
+      public void clear()
+      {
+         this.object = null;
+      }
+      
+      public boolean isSet()
+      {
+         return object != null;
       }
    }
 }
