@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 @Artifact
 public class ContextualReferenceTest extends AbstractWebBeansTest
 {
-   @Test
+   @Test(groups = "broken")
    public void testReferencesEqual() {
       Sheep sheep = getCurrentManager().getInstanceByType(Sheep.class);
       sheep.setAge(10);
