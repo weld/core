@@ -791,11 +791,17 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    public void fireEvent(Object event, Annotation... bindings)
    {
-      // Check the event object for template parameters which are not allowed by
-      // the spec.
+      // Make sure the event object above is not parameterized with a type
+      // variable
       if (Reflections.isParameterizedType(event.getClass()))
       {
-         throw new IllegalArgumentException("Event type " + event.getClass().getName() + " is not allowed because it is a generic");
+         for (Type type : Reflections.getActualTypeArguments(event.getClass()))
+         {
+            if (type instanceof TypeVariable<?>)
+            {
+               throw new IllegalArgumentException("Cannot use a type variable " + type + " in an parameterized type " + toString());
+            }
+         }
       }
       // Also check that the binding types are truly binding types
       for (Annotation binding : bindings)

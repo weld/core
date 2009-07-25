@@ -111,7 +111,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
          {
             for (Type type : eventParam.getActualTypeArguments())
             {
-               if (type instanceof TypeVariable)
+               if (type instanceof TypeVariable<?>)
                {
                   throw new DefinitionException("Cannot use a type variable " + type + " in an parameterized type " + toString());
                }

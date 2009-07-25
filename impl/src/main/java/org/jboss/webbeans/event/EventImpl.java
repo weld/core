@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observer;
 import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.webbeans.BeanManagerImpl;
