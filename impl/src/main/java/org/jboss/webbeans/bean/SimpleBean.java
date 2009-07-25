@@ -23,6 +23,8 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.spi.Decorator;
 
@@ -277,6 +279,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       if (!isInitialized())
       {
          initConstructor();
+         checkConstructor();
          super.initialize(environment);
          initPostConstruct();
          initPreDestroy();
@@ -367,6 +370,18 @@ public class SimpleBean<T> extends AbstractClassBean<T>
                throw new DefinitionException("Normal scoped Web Bean implementation class has a public field " + getAnnotatedItem());
             }
          }
+      }
+   }
+   
+   protected void checkConstructor()
+   {
+      if (!constructor.getAnnotatedParameters(Disposes.class).isEmpty())
+      {
+         throw new DefinitionException("Managed bean constructor must not have a parameter annotated @Disposes " + constructor);
+      }
+      if (!constructor.getAnnotatedParameters(Observes.class).isEmpty())
+      {
+         throw new DefinitionException("Managed bean constructor must not have a parameter annotated @Observes " + constructor);
       }
    }
 
