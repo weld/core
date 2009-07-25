@@ -22,7 +22,6 @@ import javax.enterprise.context.Conversation;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Named;
-import javax.enterprise.inject.deployment.Standard;
 
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -35,7 +34,6 @@ import org.jboss.webbeans.log.Logging;
  */
 @RequestScoped
 @Named("javax.enterprise.context.conversation")
-@Standard
 public class ConversationImpl implements Conversation, Serializable
 {
 
@@ -118,12 +116,19 @@ public class ConversationImpl implements Conversation, Serializable
          throw new IllegalStateException("Attempt to call end() on a transient conversation");
       }
       log.debug("Demoted conversation " + cid + " to transient");
-      longRunning = false;
+      this.longRunning = false;
    }
 
    public String getId()
    {
-      return cid;
+      if (isLongRunning())
+      {
+         return cid;
+      }
+      else
+      {
+         return null;
+      }
    }
 
    public long getTimeout()
