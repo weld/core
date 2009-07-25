@@ -255,6 +255,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          throw new IllegalArgumentException("Cannot destroy session bean instance not created by the container");
       }
       EnterpriseBeanInstance enterpiseBeanInstance = (EnterpriseBeanInstance) instance;
+      
       if (enterpiseBeanInstance.isDestroyed())
       {
          return;
@@ -263,6 +264,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          enterpiseBeanInstance.destroy(this, creationalContext);
       }
+      creationalContext.release();
    }
 
    /**
@@ -300,20 +302,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       return buffer.toString();
    }
 
-   public void postConstruct(T instance)
+   public void postConstruct(T instance, CreationalContext<T> creationalContext)
    {
-      // TODO Why do we need a special CC for Enterprise beans?
-      CreationalContext<T> creationalContext = new CreationalContext<T>() 
-      { 
-         
-         public void push(T incompleteInstance) {};
-         
-         public void release()
-         {
-            // TODO implement this
-         }
-         
-      };
       injectBoundFields(instance, creationalContext);
       callInitializers(instance, creationalContext);
    }

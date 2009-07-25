@@ -61,7 +61,7 @@ public class SessionBeanInterceptor implements Serializable
    {
       Object target = invocationContext.getTarget();
       initBean(target.getClass());
-      bean.postConstruct(target);
+      bean.postConstruct(target, creationalContext);
       invocationContext.proceed();
    }
 
@@ -107,6 +107,7 @@ public class SessionBeanInterceptor implements Serializable
       {
          this.bean = (EnterpriseBean<Object>) CurrentManager.rootManager().getNewEnterpriseBeanMap().get(beanClass);
          this.contextual = false;
+         this.creationalContext = CurrentManager.rootManager().createCreationalContext(bean);
       }
       this.beanId = CurrentManager.rootManager().getServices().get(ContextualIdStore.class).getId(this.bean);
    }
