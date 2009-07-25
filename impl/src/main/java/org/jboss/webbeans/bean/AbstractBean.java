@@ -234,13 +234,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    }
 
    /**
-    * Gets the default deployment type
-    * 
-    * @return The default deployment type
-    */
-   protected abstract Class<? extends Annotation> getDefaultDeploymentType();
-
-   /**
     * Initializes the name
     */
    protected void initName()

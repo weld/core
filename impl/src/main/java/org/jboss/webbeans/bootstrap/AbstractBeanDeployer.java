@@ -24,7 +24,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -131,6 +130,7 @@ public class AbstractBeanDeployer
       for (WBMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Disposes.class))
       {
          DisposalMethodBean<?> disposalBean = DisposalMethodBean.of(manager, method, declaringBean);
+         disposalBean.initialize(environment);
          environment.addDisposalBean(disposalBean);
       }
    }

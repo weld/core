@@ -54,7 +54,7 @@ public class BeanDeployerEnvironment
    private final Set<DisposalMethodBean<?>> resolvedDisposalBeans;
    private final Set<DecoratorBean<?>> decorators;
    private final EjbDescriptorCache ejbDescriptors;
-   private final TypeSafeResolver disposalMethodResolver;
+   private final TypeSafeResolver<DisposalMethodBean<?>> disposalMethodResolver;
    private final BeanManagerImpl manager;
 
    public BeanDeployerEnvironment(EjbDescriptorCache ejbDescriptors, BeanManagerImpl manager)
@@ -68,7 +68,7 @@ public class BeanDeployerEnvironment
       this.decorators = new HashSet<DecoratorBean<?>>();
       this.observers = new HashSet<ObserverMethod<?, ?>>();
       this.ejbDescriptors = ejbDescriptors;
-      this.disposalMethodResolver = new TypeSafeBeanResolver(manager, allDisposalBeans);
+      this.disposalMethodResolver = new TypeSafeBeanResolver<DisposalMethodBean<?>>(manager, allDisposalBeans);
       this.manager = manager;
    }
 
@@ -190,11 +190,11 @@ public class BeanDeployerEnvironment
    public <T> Set<DisposalMethodBean<T>> resolveDisposalBeans(WBAnnotated<T, ?> annotatedItem)
    {
       // Correct?
-      Set<Bean<?>> beans = disposalMethodResolver.resolve(ResolvableFactory.of(annotatedItem));
+      Set<DisposalMethodBean<?>> beans = disposalMethodResolver.resolve(ResolvableFactory.of(annotatedItem));
       Set<DisposalMethodBean<T>> disposalBeans = new HashSet<DisposalMethodBean<T>>();
       for (Bean<?> bean : beans)
       {
-         if (bean instanceof DisposalMethodBean)
+         if (bean instanceof DisposalMethodBean<?>)
          {
             disposalBeans.add((DisposalMethodBean<T>) bean);
          }

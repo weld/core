@@ -426,12 +426,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       return "AbstractClassBean " + getName();
    }
 
-   @Override
-   /*
-    * Gets the default deployment type
-    * 
-    * @return The default deployment type
-    */
    protected Class<? extends Annotation> getDefaultDeploymentType()
    {
       return Production.class;
@@ -442,5 +436,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       return id;
    }
+   
 
 }

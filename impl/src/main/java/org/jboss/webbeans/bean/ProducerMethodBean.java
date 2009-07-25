@@ -126,11 +126,11 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       {
          throw new DefinitionException("Producer method cannot have parameter annotated @Disposes");
       }
-      else if (declaringBean instanceof EnterpriseBean)
+      else if (getDeclaringBean() instanceof EnterpriseBean<?>)
       {
          boolean methodDeclaredOnTypes = false;
          // TODO use annotated item?
-         for (Type type : declaringBean.getTypes())
+         for (Type type : getDeclaringBean().getTypes())
          {
             if (type instanceof Class)
             {
@@ -148,7 +148,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          }
          if (!methodDeclaredOnTypes)
          {
-            throw new DefinitionException("Producer method " + toString() + " must be declared on a business interface of " + declaringBean);
+            throw new DefinitionException("Producer method " + toString() + " must be declared on a business interface of " + getDeclaringBean());
          }
       }
    }
@@ -253,7 +253,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    @Override
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
-      if (declaringBean.getAnnotatedItem().getSuperclass().getDeclaredMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
+      if (getDeclaringBean().getAnnotatedItem().getSuperclass().getDeclaredMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
       {
          throw new DefinitionException("Specialized producer method does not override a method on the direct superclass");
       }
@@ -262,7 +262,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      WBMethod<?> superClassMethod = declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod());
+      WBMethod<?> superClassMethod = getDeclaringBean().getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod());
       if (environment.getProducerMethod(superClassMethod) == null)
       {
          throw new IllegalStateException(toString() + " does not specialize a bean");

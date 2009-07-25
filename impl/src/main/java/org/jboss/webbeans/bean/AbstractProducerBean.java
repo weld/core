@@ -40,7 +40,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.introspector.WBMember;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -57,11 +56,8 @@ import org.jboss.webbeans.util.Reflections;
  * @param <T>
  * @param <S>
  */
-public abstract class AbstractProducerBean<T, S extends Member> extends AbstractBean<T, S>
+public abstract class AbstractProducerBean<T, S extends Member> extends AbstractReceiverBean<T, S>
 {
-   // The declaring bean
-   protected AbstractClassBean<?> declaringBean;
-
    private static final LogProvider log = Logging.getLogProvider(AbstractProducerBean.class);
 
    /**
@@ -72,8 +68,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
     */
    public AbstractProducerBean(AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
-      super(manager);
-      this.declaringBean = declaringBean;
+      super(declaringBean, manager);
    }
 
    @Override
@@ -86,28 +81,9 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       return getDeclaringBean().getBeanClass();
    }
 
-   @Override
-   public String getId()
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
-   public void destroy(T instance, CreationalContext<T> creationalContext)
-   {
-      // TODO Auto-generated method stub
-      
-   }
-
-   /**
-    * Gets the deployment types
-    * 
-    * @return The deployment types of the declaring bean
-    */
-   @Override
    protected Class<? extends Annotation> getDefaultDeploymentType()
    {
-      return deploymentType = declaringBean.getDeploymentType();
+      return getDeclaringBean().getDeploymentType();
    }
 
    /**
@@ -172,16 +148,6 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
    }
 
    /**
-    * Returns the declaring bean
-    * 
-    * @return The bean representation
-    */
-   public AbstractClassBean<?> getDeclaringBean()
-   {
-      return declaringBean;
-   }
-
-   /**
     * Validates the producer method
     */
    protected void checkProducerReturnType()
@@ -209,7 +175,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
-      declaringBean.initialize(environment);
+      getDeclaringBean().initialize(environment);
       super.initialize(environment);
       checkProducerReturnType();
    }
@@ -319,35 +285,6 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
    protected void initSerializable()
    {
       _serializable = true;
-   }
-
-   /**
-    * Gets the receiver of the product
-    * 
-    * @return The receiver
-    */
-   protected Object getReceiver(CreationalContext<?> creationalContext)
-   {
-      // This is a bit dangerous, as it means that producer methods can end of
-      // executing on partially constructed instances. Also, it's not required
-      // by the spec...
-      if (getAnnotatedItem().isStatic())
-      {
-         return null;
-      }
-      else
-      {
-         if (creationalContext instanceof CreationalContextImpl)
-         {
-            CreationalContextImpl<?> creationalContextImpl = (CreationalContextImpl<?>) creationalContext;
-            if (creationalContextImpl.containsIncompleteInstance(getDeclaringBean()))
-            {
-               log.warn("Executing producer field or method " + getAnnotatedItem() + " on incomplete declaring bean " + getDeclaringBean() + " due to circular injection");
-               return creationalContextImpl.getIncompleteInstance(getDeclaringBean());
-            }
-         }
-         return manager.getReference(getDeclaringBean(), Object.class, creationalContext);
-      }
    }
 
    /**
