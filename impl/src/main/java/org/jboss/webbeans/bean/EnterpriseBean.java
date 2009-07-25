@@ -38,6 +38,7 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
+import org.jboss.webbeans.bean.proxy.Marker;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
@@ -256,13 +257,13 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       EnterpriseBeanInstance enterpiseBeanInstance = (EnterpriseBeanInstance) instance;
       
-      if (enterpiseBeanInstance.isDestroyed())
+      if (enterpiseBeanInstance.isDestroyed(Marker.INSTANCE))
       {
          return;
       }
       else
       {
-         enterpiseBeanInstance.destroy(this, creationalContext);
+         enterpiseBeanInstance.destroy(Marker.INSTANCE, this, creationalContext);
       }
       creationalContext.release();
    }

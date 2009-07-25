@@ -128,21 +128,21 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
       // EnterpriseBeanInstance methods
-      if ("isDestroyed".equals(method.getName()))
+      if ("isDestroyed".equals(method.getName()) && Marker.isMarker(0, method, args))
       {
          return destroyed;
       }
-      else if ("setDestroyed".equals(method.getName()))
+      else if ("setDestroyed".equals(method.getName()) && Marker.isMarker(0, method, args))
       {
-         if (args.length != 1)
+         if (args.length != 2)
          {
-            throw new IllegalArgumentException("enterpriseBeanInstance.setDestroyed() called with >1 argument");
+            throw new IllegalArgumentException("enterpriseBeanInstance.setDestroyed() called with >2 argument");
          }
-         if (!(args[0].getClass().equals(boolean.class) || args[0].getClass().equals(Boolean.class)))
+         if (!(args[1].getClass().equals(boolean.class) || args[1].getClass().equals(Boolean.class)))
          {
             throw new IllegalArgumentException("enterpriseBeanInstance.setDestroyed() called with non-boolean argument");
          }
-         destroyed = ((Boolean) args[0]).booleanValue();
+         destroyed = ((Boolean) args[1]).booleanValue();
       }
       
       if (destroyed)
@@ -150,7 +150,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
          return null;
       }
       
-      if ("destroy".equals(method.getName()))
+      if ("destroy".equals(method.getName()) && Marker.isMarker(0, method, args))
       {
          reference.remove();
          return null;

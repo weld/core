@@ -30,6 +30,7 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
+import org.jboss.webbeans.bean.proxy.Marker;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 
@@ -82,7 +83,7 @@ public class SessionBeanInterceptor implements Serializable
          EnterpriseBeanInstance instance = getEnterpriseBeanInstance(bean);
          if (instance != null)
          {
-            instance.setDestroyed(true);
+            instance.setDestroyed(Marker.INSTANCE, true);
          }
       }
       invocationContext.proceed();

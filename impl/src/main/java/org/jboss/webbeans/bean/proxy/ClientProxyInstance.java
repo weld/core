@@ -16,28 +16,13 @@
  */
 package org.jboss.webbeans.bean.proxy;
 
-import javax.enterprise.context.spi.CreationalContext;
-
-import org.jboss.webbeans.bean.EnterpriseBean;
-
 /**
- * Interface implemented by all enterprise bean proxies to query/control the proxy
- * 
- * @author Pete Muir
+ * @author pmuir
  *
  */
-public interface EnterpriseBeanInstance
+public interface ClientProxyInstance
 {
    
-   /**
-    * Indicated if a remove method has been invoked by the application
-    * 
-    * @return True if invoked, false otherwise
-    */
-   public boolean isDestroyed(Marker marker);
-   
-   public void setDestroyed(Marker marker, boolean destroyed);
-   
-   public void destroy(Marker marker, EnterpriseBean<?> enterpriseBean, CreationalContext<?> creationalContext);
-   
+   public void touch(Marker marker);
+
 }

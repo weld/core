@@ -78,6 +78,7 @@ public class ClientProxyProvider
          ClientProxyMethodHandler proxyMethodHandler = new ClientProxyMethodHandler(bean, manager, beanIndex);
          Set<Type> classes = new LinkedHashSet<Type>(bean.getTypes());
          classes.add(Serializable.class);
+         classes.add(ClientProxyInstance.class);
          ProxyFactory proxyFactory = Proxies.getProxyFactory(classes);
          proxyFactory.setHandler(proxyMethodHandler);
          Class<?> clazz = proxyFactory.createClass();
@@ -108,7 +109,7 @@ public class ClientProxyProvider
     */
    public <T> T getClientProxy(final BeanManagerImpl manager, final Bean<T> bean)
    {
-      return pool.putIfAbsent(bean, new Callable<T>()
+      T instance = pool.putIfAbsent(bean, new Callable<T>()
       {
 
          public T call() throws Exception
@@ -122,6 +123,9 @@ public class ClientProxyProvider
          }
 
       });
+      // TODO Break circular injection. Can we somehow support both?
+      //((ClientProxyInstance) instance).touch(Marker.INSTANCE);
+      return instance;
    }
 
    /**

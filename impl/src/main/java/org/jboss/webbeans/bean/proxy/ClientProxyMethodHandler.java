@@ -42,6 +42,7 @@ import org.jboss.webbeans.util.Reflections;
  */
 public class ClientProxyMethodHandler implements MethodHandler, Serializable
 {
+
    private static final long serialVersionUID = -5391564935097267888L;
    // The log provider
    private static transient LogProvider log = Logging.getLogProvider(ClientProxyMethodHandler.class);
@@ -49,10 +50,10 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    private transient Bean<?> bean;
    // The bean index in the manager
    private final int beanIndex;
-   
-   private final BeanManagerImpl manager; 
-   
-   private static final ThreadLocal<CreationalContextImpl<?>> currentCreationalContext  = new ThreadLocal<CreationalContextImpl<?>>();
+
+   private final BeanManagerImpl manager;
+
+   private static final ThreadLocal<CreationalContextImpl<?>> currentCreationalContext = new ThreadLocal<CreationalContextImpl<?>>();
 
    /**
     * Constructor
@@ -69,23 +70,22 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    }
 
    /**
-    * Invokes the method on the correct version of the instance as obtained by
-    * a context lookup
+    * Invokes the method on the correct version of the instance as obtained by a
+    * context lookup
     * 
-    * @param self          the proxy instance.
-    * @param thisMethod    the overridden method declared in the super
-    *                      class or interface.
-    * @param proceed       the forwarder method for invoking the overridden 
-    *                      method.  It is null if the overridden mehtod is
-    *                      abstract or declared in the interface.
-    * @param args          an array of objects containing the values of
-    *                      the arguments passed in the method invocation
-    *                      on the proxy instance.  If a parameter type is
-    *                      a primitive type, the type of the array element
-    *                      is a wrapper class.
-    * @return              the resulting value of the method invocation.
-    *
-    * @throws Throwable    if the method invocation fails.
+    * @param self the proxy instance.
+    * @param thisMethod the overridden method declared in the super class or
+    *           interface.
+    * @param proceed the forwarder method for invoking the overridden method. It
+    *           is null if the overridden mehtod is abstract or declared in the
+    *           interface.
+    * @param args an array of objects containing the values of the arguments
+    *           passed in the method invocation on the proxy instance. If a
+    *           parameter type is a primitive type, the type of the array
+    *           element is a wrapper class.
+    * @return the resulting value of the method invocation.
+    * 
+    * @throws Throwable if the method invocation fails.
     */
    public Object invoke(Object self, Method proxiedMethod, Method proceed, Object[] args) throws Throwable
    {
@@ -93,7 +93,14 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       {
          bean = manager.getBeans().get(beanIndex);
       }
-      Object proxiedInstance = getProxiedInstance(bean); 
+      Object proxiedInstance = getProxiedInstance(bean);
+      if ("touch".equals(proxiedMethod.getName()) && Marker.isMarker(0, proxiedMethod, args))
+      {
+         // Our "touch" method, which simply ensures the proxy does any object
+         // instantiation needed, to avoid the annoying side effect of an object
+         // getting lazy created
+         return null;
+      }
       try
       {
          Object returnValue = Reflections.lookupMethod(proxiedMethod, proxiedInstance).invoke(proxiedInstance, args);
@@ -105,7 +112,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
          throw e.getCause();
       }
    }
-   
+
    private <T> T getProxiedInstance(Bean<T> bean)
    {
       CreationalContextImpl<T> creationalContext;
