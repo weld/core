@@ -22,7 +22,6 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,7 +54,6 @@ import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.collections.ListComparator;
 
 /**
  * Checks a list of beans for DeploymentExceptions and their subclasses
@@ -223,7 +221,7 @@ public class Validator implements Service
          {
             buff.append(bean.toString());
          }
-         throw new UnsatisfiedResolutionException(buff.toString());
+         throw new DefinitionException(buff.toString());
       }
    }
 
