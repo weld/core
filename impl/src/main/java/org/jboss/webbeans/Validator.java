@@ -215,7 +215,7 @@ public class Validator implements Service
       if (all.size() > 0 && !resolved.containsAll(all))
       {
          StringBuffer buff = new StringBuffer();
-         buff.append("The following Disposal methods where not resolved\n");
+         buff.append("The following Disposal methods where not declared but not resolved to a producer method\n");
          all.removeAll(resolved);
          for (DisposalMethodBean<?> bean : all)
          {
