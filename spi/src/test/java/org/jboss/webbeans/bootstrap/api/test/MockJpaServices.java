@@ -21,12 +21,7 @@ public class MockJpaServices implements JpaServices
       return null;
    }
    
-   public EntityManager resolvePersistenceContext(String unitName)
-   {
-      return null;
-   }
-   
-   public EntityManagerFactory resolvePersistenceUnit(String unitName)
+   public EntityManagerFactory resolvePersistenceUnit(InjectionPoint injectionPoint)
    {
       return null;
    }

@@ -26,6 +26,7 @@ public class PersistenceApiAbstraction extends ApiAbstraction implements Service
 {
 
    public final Class<? extends Annotation> PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
+   public final Class<? extends Annotation> PERSISTENCE_UNIT_ANNOTATION_CLASS;
    public final Object EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE;
    public final Class<?> PERSISTENCE_CONTEXT_TYPE_CLASS;
    public final Class<? extends Annotation> ENTITY_CLASS;
@@ -39,6 +40,7 @@ public class PersistenceApiAbstraction extends ApiAbstraction implements Service
    {
       super(resourceLoader);
       PERSISTENCE_CONTEXT_ANNOTATION_CLASS = annotationTypeForName("javax.persistence.PersistenceContext");
+      PERSISTENCE_UNIT_ANNOTATION_CLASS = annotationTypeForName("javax.persistence.PersistenceUnit");
       PERSISTENCE_CONTEXT_TYPE_CLASS = classForName("javax.persistence.PersistenceContextType");
       if (PERSISTENCE_CONTEXT_TYPE_CLASS.getClass().equals( Dummy.class)) 
       {

@@ -35,7 +35,6 @@ import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
-import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.introspector.WBClass;
@@ -50,7 +49,6 @@ import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.util.Names;
-import org.jboss.webbeans.util.Reflections;
 
 /**
  * Represents a simple bean
@@ -72,10 +70,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    private WBMethod<?> preDestroy;
 
    private Set<WBInjectionPoint<?, ?>> ejbInjectionPoints;
-   private Set<WBInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
+   private Set<WBInjectionPoint<?, ?>> persistenceContextInjectionPoints;
+   private HashSet<WBInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
    private Set<WBInjectionPoint<?, ?>> resourceInjectionPoints;
 
    private SimpleBean<?> specializedBean;
+
+   
 
    /**
     * Creates a simple, annotation defined Web Bean
@@ -191,35 +192,23 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          this.ejbInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
-
-      for (WBMethod<?> method : annotatedItem.getAnnotatedMethods(ejbAnnotationType))
-      {
-         this.ejbInjectionPoints.add(MethodInjectionPoint.of(this, method));
-      }
    }
 
-   protected void initPersistenceUnitInjectionPoints()
+   protected void initJpaInjectionPoints()
    {
+      this.persistenceContextInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
       this.persistenceUnitInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
-      Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-      Object extendedPersistenceContextEnum = manager.getServices().get(PersistenceApiAbstraction.class).EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE;
       
+      Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
       for (WBField<?> field : annotatedItem.getAnnotatedFields(persistenceContextAnnotationType))
       {
-         if (extendedPersistenceContextEnum.equals(Reflections.invokeAndWrap("type", field.getAnnotation(persistenceContextAnnotationType))))
-         {
-            throw new DefinitionException("Cannot inject an extended persistence context into " + field);
-         }
-         this.persistenceUnitInjectionPoints.add(FieldInjectionPoint.of(this, field));
+         this.persistenceContextInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
-
-      for (WBMethod<?> method : annotatedItem.getAnnotatedMethods(persistenceContextAnnotationType))
+      
+      Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
+      for (WBField<?> field : annotatedItem.getAnnotatedFields(persistenceUnitAnnotationType))
       {
-         if (extendedPersistenceContextEnum.equals(Reflections.invokeAndWrap("type", method.getAnnotation(persistenceContextAnnotationType))))
-         {
-            throw new DefinitionException("Cannot inject an extended persistence context into " + method);
-         }
-         this.persistenceUnitInjectionPoints.add(MethodInjectionPoint.of(this, method));
+         this.persistenceUnitInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
    }
 
@@ -253,9 +242,14 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 
       if (jpaServices != null)
       {
+         for (WBInjectionPoint<?, ?> injectionPoint : persistenceContextInjectionPoints)
+         {
+            Object pcInstance = jpaServices.resolvePersistenceContext(injectionPoint);
+            injectionPoint.inject(beanInstance, pcInstance);
+         }
          for (WBInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
          {
-            Object puInstance = jpaServices.resolvePersistenceContext(injectionPoint);
+            Object puInstance = jpaServices.resolvePersistenceUnit(injectionPoint);
             injectionPoint.inject(beanInstance, puInstance);
          }
       }
@@ -289,7 +283,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
          if (getManager().getServices().contains(JpaServices.class))
          {
-            initPersistenceUnitInjectionPoints();
+            initJpaInjectionPoints();
          }
          if (getManager().getServices().contains(ResourceServices.class))
          {

@@ -42,14 +42,9 @@ public abstract class ForwardingJpaServices implements JpaServices
       return delegate().resolvePersistenceContext(injectionPoint);
    }
    
-   public EntityManager resolvePersistenceContext(String unitName)
+   public EntityManagerFactory resolvePersistenceUnit(InjectionPoint injectionPoint)
    {
-      return delegate().resolvePersistenceContext(unitName);
-   }
-   
-   public EntityManagerFactory resolvePersistenceUnit(String unitName)
-   {
-      return delegate().resolvePersistenceUnit(unitName);
+      return delegate().resolvePersistenceUnit(injectionPoint);
    }
    
    @Override

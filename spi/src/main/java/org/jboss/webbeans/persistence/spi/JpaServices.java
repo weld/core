@@ -48,25 +48,18 @@ public interface JpaServices extends Service
    public EntityManager resolvePersistenceContext(InjectionPoint injectionPoint);
    
    /**
-    * Resolve a persistence context for a given persistence unit name
+    * Resolve the value for the given @PersistenceUnit injection point
     * 
-    * @param unitName the unit name
+    * @param injectionPoint
+    *           the injection point metadata
     * @return an instance of the entity manager
-    * @throws IllegalStateException
-    *            if no suitable persistence units can be resolved for injection
-    */
-   public EntityManager resolvePersistenceContext(String unitName);
-
-   /**
-    * Resolve a persistence unit for a given persistence unit name
-    * 
-    * @param unitName the unit name
-    * @return an instance of the entity manager factory
-    * @throws IllegalStateException
-    *            if no suitable persistence units can be resolved for injection
     * @throws IllegalArgumentException
-    *            if unitName is null
+    *            if the injection point is not annotated with 
+    *            @PersistenceUnit, or, if the injection point is a method 
+    *            that doesn't follow JavaBean conventions
+    * @throws IllegalStateException
+    *            if no suitable persistence units can be resolved for injection
     */
-   public EntityManagerFactory resolvePersistenceUnit(String unitName);
+   public EntityManagerFactory resolvePersistenceUnit(InjectionPoint injectionPoint);
    
 }
