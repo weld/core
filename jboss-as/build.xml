@@ -61,7 +61,7 @@
 	</target>
 
 	<target name="install-javassist-update">
-		<echo message="Upgrading Javassist to ${javassist.version} to ${jboss.home}" />
+		<echo message="Upgrading Javassist to ${javassist.version} for ${jboss.home}" />
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..." />
 
 		<artifact:dependencies filesetId="javassist.fileset" versionsId="javassist.versions">
