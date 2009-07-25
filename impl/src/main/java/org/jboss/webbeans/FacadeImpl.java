@@ -56,7 +56,9 @@ public abstract class FacadeImpl<T> implements Serializable
    {
       this.manager = manager;
       this.type = type;
-      this.bindings = bindings;
+      // Need to make sure the Set is serializable, some sets from Google Collections aren't
+      // TODO Work out how to not do this
+      this.bindings = new HashSet<Annotation>(bindings);
    }
 
    /**
