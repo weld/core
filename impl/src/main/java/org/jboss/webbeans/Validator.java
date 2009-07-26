@@ -28,7 +28,6 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
@@ -151,7 +150,7 @@ public class Validator implements Service
       }
       if (resolvedBeans.size() > 1)
       {
-         throw new AmbiguousResolutionException("The injection point " + ij + " with binding types " + Names.annotationsToString(ij.getBindings()) + " in " + ij.getBean() + " has ambiguous dependencies");
+         throw new DeploymentException("The injection point " + ij + " with binding types " + Names.annotationsToString(ij.getBindings()) + " in " + ij.getBean() + " has ambiguous dependencies");
       }
       Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
       if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(ij.getType()))
