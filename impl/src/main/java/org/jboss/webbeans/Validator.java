@@ -117,11 +117,26 @@ public class Validator implements Service
 
    }
    
+   /**
+    * Validate an injection point
+    * 
+    * @param ij the injection point to validate
+    * @param declaringBean the bean into which the injectionPoint has been injected, if null, certain validations aren't available
+    * @param beanManager
+    */
    public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager)
    {
       if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getBindings().size() > 1)
       {
          throw new DefinitionException("The injection point " + ij + " is annotated with @New which cannot be combined with other binding types");
+      }
+      if (!Dependent.class.equals(ij.getBean().getScopeType()) && ij.getType().equals(InjectionPoint.class))
+      {
+         throw new DefinitionException("Cannot inject an InjectionPoint into a non @Dependent scoped bean " + ij); 
+      }
+      if (ij.getType() instanceof TypeVariable<?>)
+      {
+         throw new DefinitionException("Cannot declare an injection point with a type variable " + ij);
       }
       if (ij.getType() instanceof ParameterizedType)
       {

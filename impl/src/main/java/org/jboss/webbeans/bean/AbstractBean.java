@@ -18,7 +18,6 @@ package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -33,7 +32,6 @@ import javax.enterprise.inject.Named;
 import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.deployment.Standard;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.stereotype.Stereotype;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -159,7 +157,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       initSerializable();
       initProxyable();
       initInjectionPoints();
-      checkInjectionPoints();
       initDecorates();
       checkDecorates();
    }
@@ -292,23 +289,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
             {
                return false;
             }
-         }
-      }
-      return true;
-   }
-   
-   protected boolean checkInjectionPoints()
-   {
-      // TODO Merge serializable check in here
-      for (WBInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
-      {
-         if (!Dependent.class.equals(getScopeType()) && injectionPoint.getType().equals(InjectionPoint.class))
-         {
-            throw new DefinitionException("Cannot inject an InjectionPoint into a non @Dependent scoped bean " + injectionPoint); 
-         }
-         if (injectionPoint.getType() instanceof TypeVariable<?>)
-         {
-            throw new DefinitionException("Cannot declare an injection point with a type variable " + injectionPoint);
          }
       }
       return true;
