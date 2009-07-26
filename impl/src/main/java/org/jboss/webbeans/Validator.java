@@ -32,7 +32,6 @@ import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.UnproxyableResolutionException;
-import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -146,7 +145,7 @@ public class Validator implements Service
       Set<?> resolvedBeans = beanManager.getInjectableBeans(ij);
       if (resolvedBeans.isEmpty())
       {
-         throw new UnsatisfiedResolutionException("The injection point " + ij + " with binding types "  + Names.annotationsToString(ij.getBindings()) + " in " + ij.getBean() + " has unsatisfied dependencies with binding types ");
+         throw new DeploymentException("The injection point " + ij + " with binding types "  + Names.annotationsToString(ij.getBindings()) + " in " + ij.getBean() + " has unsatisfied dependencies with binding types ");
       }
       if (resolvedBeans.size() > 1)
       {
