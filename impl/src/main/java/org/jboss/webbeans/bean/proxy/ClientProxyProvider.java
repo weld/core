@@ -77,8 +77,8 @@ public class ClientProxyProvider
       {
          ClientProxyMethodHandler proxyMethodHandler = new ClientProxyMethodHandler(bean, manager, beanIndex);
          Set<Type> classes = new LinkedHashSet<Type>(bean.getTypes());
+         //classes.add(ClientProxyInstance.class);
          classes.add(Serializable.class);
-         classes.add(ClientProxyInstance.class);
          ProxyFactory proxyFactory = Proxies.getProxyFactory(classes);
          proxyFactory.setHandler(proxyMethodHandler);
          Class<?> clazz = proxyFactory.createClass();
