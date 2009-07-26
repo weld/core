@@ -32,6 +32,7 @@ import javax.enterprise.inject.Named;
 import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.deployment.Standard;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.stereotype.Stereotype;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -157,6 +158,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       initSerializable();
       initProxyable();
       initInjectionPoints();
+      checkInjectionPoints();
       initDecorates();
       checkDecorates();
    }
@@ -289,6 +291,19 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
             {
                return false;
             }
+         }
+      }
+      return true;
+   }
+   
+   protected boolean checkInjectionPoints()
+   {
+      // TODO Merge serializable check in here
+      for (WBInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
+      {
+         if (!getScopeType().equals(Dependent.class) && injectionPoint.getType().equals(InjectionPoint.class))
+         {
+            throw new DefinitionException("Cannot inject an InjectionPoint into a non @Dependent scoped bean " + injectionPoint); 
          }
       }
       return true;
