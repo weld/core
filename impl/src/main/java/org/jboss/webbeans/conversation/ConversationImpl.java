@@ -45,9 +45,9 @@ public class ConversationImpl implements Conversation, Serializable
    private static LogProvider log = Logging.getLogProvider(ConversationImpl.class);
 
    // The conversation ID
-   private String cid;
+   private String id;
    // The original conversation ID (if any)
-   private String originalCid;
+   private String originalId;
    // Is the conversation long-running?
    private boolean longRunning;
    // The timeout in milliseconds
@@ -65,9 +65,9 @@ public class ConversationImpl implements Conversation, Serializable
     * 
     * @param conversation The old conversation
     */
-   public ConversationImpl(Conversation conversation)
+   public ConversationImpl(ConversationImpl conversation)
    {
-      this.cid = conversation.getId();
+      this.id = conversation.getUnderlyingId();
       this.longRunning = conversation.isLongRunning();
       this.timeout = conversation.getTimeout();
    }
@@ -81,7 +81,7 @@ public class ConversationImpl implements Conversation, Serializable
    @Initializer
    public void init(ConversationIdGenerator conversationIdGenerator, @ConversationInactivityTimeout long timeout)
    {
-      this.cid = conversationIdGenerator.nextId();
+      this.id = conversationIdGenerator.nextId();
       this.timeout = timeout;
       this.longRunning = false;
       log.debug("Created a new conversation " + this);
@@ -93,19 +93,21 @@ public class ConversationImpl implements Conversation, Serializable
       {
          throw new IllegalStateException("Attempt to call begin() on a long-running conversation");
       }
-      log.debug("Promoted conversation " + cid + " to long-running");
+      log.debug("Promoted conversation " + id + " to long-running");
       longRunning = true;
    }
 
    public void begin(String id)
    {
-      // Store away the (first) change to the conversation ID. If the original conversation was long-running,
-      // we might have to place it back for termination once the request is over.
-      if (originalCid == null)
+      // Store away the (first) change to the conversation ID. If the original
+      // conversation was long-running,
+      // we might have to place it back for termination once the request is
+      // over.
+      if (originalId == null)
       {
-         originalCid = cid;
+         originalId = id;
       }
-      cid = id;
+      this.id = id;
       begin();
    }
 
@@ -115,7 +117,7 @@ public class ConversationImpl implements Conversation, Serializable
       {
          throw new IllegalStateException("Attempt to call end() on a transient conversation");
       }
-      log.debug("Demoted conversation " + cid + " to transient");
+      log.debug("Demoted conversation " + id + " to transient");
       this.longRunning = false;
    }
 
@@ -123,12 +125,23 @@ public class ConversationImpl implements Conversation, Serializable
    {
       if (isLongRunning())
       {
-         return cid;
+         return id;
       }
       else
       {
          return null;
       }
+   }
+
+   /**
+    * Get the Conversation Id, regardless of whether the conversation is long
+    * running or transient, needed for internal operations
+    * 
+    * @return the id
+    */
+   public String getUnderlyingId()
+   {
+      return id;
    }
 
    public long getTimeout()
@@ -152,10 +165,10 @@ public class ConversationImpl implements Conversation, Serializable
     * @param conversation The new conversation
     * 
     */
-   public void switchTo(Conversation conversation)
+   public void switchTo(ConversationImpl conversation)
    {
       log.debug("Switched conversation from " + this);
-      cid = conversation.getId();
+      id = conversation.getUnderlyingId();
       longRunning = conversation.isLongRunning();
       timeout = conversation.getTimeout();
       log.debug(" to " + this);
@@ -164,12 +177,12 @@ public class ConversationImpl implements Conversation, Serializable
    @Override
    public String toString()
    {
-      return "ID: " + cid + ", long-running: " + longRunning + ", timeout: " + timeout + "ms";
+      return "ID: " + id + ", long-running: " + longRunning + ", timeout: " + timeout + "ms";
    }
 
    public void setLongRunning(boolean longRunning)
    {
-      log.debug("Set conversation " + cid + " to long-running: " + longRunning);
+      log.debug("Set conversation " + id + " to long-running: " + longRunning);
       this.longRunning = longRunning;
    }
 
@@ -178,27 +191,30 @@ public class ConversationImpl implements Conversation, Serializable
     * 
     * @return The id
     */
-   public String getOriginalCid()
+   public String getOriginalId()
    {
-      return originalCid;
+      return originalId;
    }
-   
+
    @Override
    public boolean equals(Object obj)
    {
-      
-      if (obj == null || !(obj instanceof Conversation))
+      if (obj instanceof ConversationImpl)
+      {
+         ConversationImpl that = (ConversationImpl) obj;
+         return (id == null || that.getUnderlyingId() == null) ? false : id.equals(that.getUnderlyingId());
+      }
+      else
+      {
          return false;
-      String otherCid = ((Conversation)obj).getId();
-      return (cid == null || otherCid == null) ? false : cid.equals(otherCid);
+      }
    }
-   
+
    @Override
    public int hashCode()
    {
-      return cid == null ? super.hashCode() : cid.hashCode();
+      return id == null ? super.hashCode() : id.hashCode();
    }
-
 
    public boolean isTransient()
    {

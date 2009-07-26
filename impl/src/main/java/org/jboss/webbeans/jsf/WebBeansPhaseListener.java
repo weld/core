@@ -22,7 +22,6 @@
  */
 package org.jboss.webbeans.jsf;
 
-import javax.enterprise.context.Conversation;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
@@ -31,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.context.SessionContext;
+import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -154,7 +154,7 @@ public class WebBeansPhaseListener implements PhaseListener
       HttpSession session = PhaseHelper.getHttpSession();
       CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
       CurrentManager.rootManager().getInstanceByType(ConversationManager.class).beginOrRestoreConversation(PhaseHelper.getConversationId());
-      String cid = CurrentManager.rootManager().getInstanceByType(Conversation.class).getId();
+      String cid = CurrentManager.rootManager().getInstanceByType(ConversationImpl.class).getUnderlyingId();
       
       ConversationContext conversationContext = CurrentManager.rootManager().getServices().get(ConversationContext.class);
       conversationContext.setBeanStore(new ConversationBeanStore(session, cid));

@@ -18,7 +18,6 @@ package org.jboss.webbeans.servlet;
 
 import java.io.IOException;
 
-import javax.enterprise.context.Conversation;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -29,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.jsf.FacesUrlTransformer;
 
@@ -66,10 +66,10 @@ public class ConversationPropagationFilter implements Filter
          @Override
          public void sendRedirect(String path) throws IOException
          {
-            Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
+            ConversationImpl conversation = CurrentManager.rootManager().getInstanceByType(ConversationImpl.class);
             if (conversation.isLongRunning())
             {
-               path = new FacesUrlTransformer(path).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversation.getId()).encode();
+               path = new FacesUrlTransformer(path).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversation.getUnderlyingId()).encode();
                CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
             }
             super.sendRedirect(path);

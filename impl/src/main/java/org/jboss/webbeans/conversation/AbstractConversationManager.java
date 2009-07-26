@@ -127,7 +127,7 @@ public abstract class AbstractConversationManager implements ConversationManager
    public void cleanupConversation()
    {
       log.trace("Cleaning up conversation for " + currentConversation);
-      String cid = currentConversation.getId();
+      String cid = currentConversation.getUnderlyingId();
       if (currentConversation.isLongRunning())
       {
          Future<?> terminationHandle = scheduleForTermination(cid, currentConversation.getTimeout());
@@ -170,7 +170,7 @@ public abstract class AbstractConversationManager implements ConversationManager
       // Conversation.begin(String), we need to unlock the original conversation
       // and re-schedule
       // it for termination
-      String originalCid = currentConversation.getOriginalCid();
+      String originalCid = currentConversation.getOriginalId();
       ConversationEntry longRunningConversation = originalCid == null ? null : longRunningConversations.get(originalCid);
       if (longRunningConversation != null)
       {

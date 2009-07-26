@@ -16,12 +16,12 @@
  */
 package org.jboss.webbeans.jsf;
 
-import javax.enterprise.context.Conversation;
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.context.FacesContext;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.conversation.ConversationImpl;
 
 /**
  * <p>
@@ -66,10 +66,10 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
    public String getActionURL(FacesContext context, String viewId)
    {
       String actionUrl = super.getActionURL(context, viewId);
-      Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);  
+      ConversationImpl conversation = CurrentManager.rootManager().getInstanceByType(ConversationImpl.class);  
       if (conversation.isLongRunning())
       {
-         return new FacesUrlTransformer(actionUrl).appendConversationIdIfNecessary(conversation.getId()).getUrl();
+         return new FacesUrlTransformer(actionUrl).appendConversationIdIfNecessary(conversation.getUnderlyingId()).getUrl();
       }
       else
       {
