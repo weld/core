@@ -18,6 +18,7 @@ package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -304,6 +305,10 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
          if (!Dependent.class.equals(getScopeType()) && injectionPoint.getType().equals(InjectionPoint.class))
          {
             throw new DefinitionException("Cannot inject an InjectionPoint into a non @Dependent scoped bean " + injectionPoint); 
+         }
+         if (injectionPoint.getType() instanceof TypeVariable<?>)
+         {
+            throw new DefinitionException("Cannot declare an injection point with a type variable " + injectionPoint);
          }
       }
       return true;
