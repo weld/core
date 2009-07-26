@@ -93,7 +93,7 @@
                <suiteXmlFiles>
                   <suiteXmlFile>${project.build.directory}/dependency/jsr299-tck-impl-suite.xml</suiteXmlFile>
                </suiteXmlFiles>
-               <argLine>-Xmx128m</argLine>
+               <argLine>-Xmx256m</argLine>
                <forkMode>once</forkMode>
             </configuration>
          </plugin>
