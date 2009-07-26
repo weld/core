@@ -301,7 +301,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       // TODO Merge serializable check in here
       for (WBInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
       {
-         if (!getScopeType().equals(Dependent.class) && injectionPoint.getType().equals(InjectionPoint.class))
+         if (!Dependent.class.equals(getScopeType()) && injectionPoint.getType().equals(InjectionPoint.class))
          {
             throw new DefinitionException("Cannot inject an InjectionPoint into a non @Dependent scoped bean " + injectionPoint); 
          }
