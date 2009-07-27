@@ -791,27 +791,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    public void fireEvent(Object event, Annotation... bindings)
    {
-      // Make sure the event object above is not parameterized with a type
-      // variable
-      if (Reflections.isParameterizedType(event.getClass()))
-      {
-         for (Type type : Reflections.getActualTypeArguments(event.getClass()))
-         {
-            if (type instanceof TypeVariable<?>)
-            {
-               throw new IllegalArgumentException("Cannot use a type variable " + type + " in an parameterized type " + toString());
-            }
-         }
-      }
-      // Also check that the binding types are truly binding types
-      for (Annotation binding : bindings)
-      {
-         if (!Reflections.isBindings(binding))
-         {
-            throw new IllegalArgumentException("Event type " + event.getClass().getName() + " cannot be fired with non-binding type " + binding.getClass().getName() + " specified");
-         }
-      }
-      
       notifyObservers(event, resolveObserverMethods(event, bindings));
    }
 

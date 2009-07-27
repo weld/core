@@ -84,7 +84,6 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
       this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
 
       this.bindings = new HashSet<Annotation>(Arrays.asList(observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray()));
-      this.bindings.add(new AnyLiteral());  // Always add the Any annotation in case it is not there yet
       Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
       this.notifyType = observesAnnotation.notifyObserver();
       transactionPhase = TransactionPhase.IN_PROGRESS;
