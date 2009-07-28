@@ -16,14 +16,12 @@
  */
 package org.jboss.webbeans.event;
 
-import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.transaction.Synchronization;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.introspector.WBMethod;
-import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 
 /**
@@ -32,17 +30,6 @@ import org.jboss.webbeans.transaction.spi.TransactionServices;
  */
 class TransactionalObserverMethodImpl<X, T> extends ObserverMethodImpl<X, T>
 {
-   /**
-    * Tests an observer method to see if it is transactional.
-    * 
-    * @param observer The observer method
-    * @return true if the observer method is annotated as transactional
-    */
-   public static TransactionPhase getTransactionalPhase(WBMethod<?> observer)
-   {
-      WBParameter<?> parameter = observer.getAnnotatedParameters(Observes.class).iterator().next();
-      return parameter.getAnnotationStore().getAnnotation(Observes.class).during();
-   }
 
    /**
     * Creates a new instance of a transactional observer method implicit object.

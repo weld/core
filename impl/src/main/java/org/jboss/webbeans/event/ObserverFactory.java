@@ -16,11 +16,13 @@
  */
 package org.jboss.webbeans.event;
 
+import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.introspector.WBMethod;
+import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 
 /**
@@ -42,7 +44,7 @@ public class ObserverFactory
    public static <X, T> ObserverMethodImpl<X, T> create(WBMethod<?> method, RIBean<?> declaringBean, BeanManagerImpl manager)
    {
       ObserverMethodImpl<X, T> result = null;
-      TransactionPhase transactionPhase = TransactionalObserverMethodImpl.getTransactionalPhase(method);
+      TransactionPhase transactionPhase = getTransactionalPhase(method);
       if (manager.getServices().contains(TransactionServices.class) && !transactionPhase.equals(TransactionPhase.IN_PROGRESS))
       {
          result = new TransactionalObserverMethodImpl<X, T>(method, declaringBean, transactionPhase, manager);
@@ -53,5 +55,17 @@ public class ObserverFactory
       }
       result.initialize();
       return result;
+   }
+   
+   /**
+    * Tests an observer method to see if it is transactional.
+    * 
+    * @param observer The observer method
+    * @return true if the observer method is annotated as transactional
+    */
+   public static TransactionPhase getTransactionalPhase(WBMethod<?> observer)
+   {
+      WBParameter<?> parameter = observer.getAnnotatedParameters(Observes.class).iterator().next();
+      return parameter.getAnnotationStore().getAnnotation(Observes.class).during();
    }
 }
