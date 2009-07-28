@@ -223,18 +223,10 @@ public class Validator implements Service
    
    private void validateDisposalMethods(BeanDeployerEnvironment environment)
    {
-      Set<DisposalMethodBean<?>> all = new HashSet<DisposalMethodBean<?>>(environment.getAllDisposalBeans());
-      Set<DisposalMethodBean<?>> resolved = new HashSet<DisposalMethodBean<?>>(environment.getResolvedDisposalBeans());
-      if (all.size() > 0 && !resolved.containsAll(all))
+      Set<DisposalMethodBean<?>> beans = environment.getUnresolvedDisposalBeans();
+      if (!beans.isEmpty())
       {
-         StringBuffer buff = new StringBuffer();
-         buff.append("The following Disposal methods where not declared but not resolved to a producer method\n");
-         all.removeAll(resolved);
-         for (DisposalMethodBean<?> bean : all)
-         {
-            buff.append(bean.toString());
-         }
-         throw new DefinitionException(buff.toString());
+         throw new DefinitionException("The following Disposal methods where not declared but not resolved to a producer method" + beans);
       }
    }
 

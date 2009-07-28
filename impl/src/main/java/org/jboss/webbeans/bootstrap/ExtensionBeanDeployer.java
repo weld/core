@@ -51,7 +51,7 @@ public class ExtensionBeanDeployer extends AbstractBeanDeployer
          WBClass<Extension> clazz = (WBClass<Extension>) classTransformer.loadClass(extension.getClass());
          
          ExtensionBean bean = ExtensionBean.of(getManager(), clazz, extension);
-         addBean(bean);
+         getEnvironment().addBean(bean);
          createObserverMethods(bean, clazz);
       }
       return this;

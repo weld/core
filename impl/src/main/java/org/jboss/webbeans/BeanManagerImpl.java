@@ -523,31 +523,33 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public void addBean(Bean<?> bean)
    {
-         if (beans.contains(bean))
-         {
-            return;
-         }
-         if (bean instanceof NewEnterpriseBean)
-         {
-            NewEnterpriseBean<?> newEnterpriseBean = (NewEnterpriseBean<?>) bean;
-            newEnterpriseBeans.put(newEnterpriseBean.getType(), newEnterpriseBean);
-         }
-         else if (bean instanceof DecoratorBean)
-         {
-            decorators.add((DecoratorBean<?>) bean);
-         }
-         if (bean instanceof RIBean)
-         {
-            RIBean<?> riBean = (RIBean<?>) bean;
-            riBeans.put(riBean.getId(), riBean);
-         }
-         registerBeanNamespace(bean);
-         for (BeanManagerImpl childActivity : childActivities)
-         {
-            childActivity.addBean(bean);
-         }
-         this.beans.add(bean);
-         beanResolver.clear();
+      if (beans.contains(bean))
+      {
+         return;
+      }
+      if (bean instanceof NewEnterpriseBean)
+      {
+         NewEnterpriseBean<?> newEnterpriseBean = (NewEnterpriseBean<?>) bean;
+         newEnterpriseBeans.put(newEnterpriseBean.getType(), newEnterpriseBean);
+      }
+      if (bean instanceof RIBean)
+      {
+         RIBean<?> riBean = (RIBean<?>) bean;
+         riBeans.put(riBean.getId(), riBean);
+      }
+      registerBeanNamespace(bean);
+      for (BeanManagerImpl childActivity : childActivities)
+      {
+         childActivity.addBean(bean);
+      }
+      this.beans.add(bean);
+      beanResolver.clear();
+   }
+   
+   public void addDecorator(DecoratorBean<?> bean)
+   {
+      decorators.add(bean);
+      decoratorResolver.clear();
    }
 
    @SuppressWarnings("unchecked")
@@ -1315,14 +1317,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             });
       sortedBeans.addAll(beans);
       return sortedBeans.last();
-   }
-
-   /**
-    * @param bean
-    */
-   public void addRIBean(RIBean<?> bean)
-   {
-      addBean(bean);
    }
 
 }

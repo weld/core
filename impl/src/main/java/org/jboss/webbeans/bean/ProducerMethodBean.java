@@ -163,7 +163,6 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       if (disposalBeans.size() == 1)
       {
          this.disposalMethodBean = disposalBeans.iterator().next();
-         environment.addResolvedDisposalBean(disposalMethodBean);
       }
       else if (disposalBeans.size() > 1)
       {

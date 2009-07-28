@@ -521,15 +521,20 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    @Override
    public String toString()
    {
+      return toString("simple bean");
+   }
+   
+   protected String toString(String beanType)
+   {
       StringBuilder buffer = new StringBuilder();
       buffer.append(Names.scopeTypeToString(getScopeType()));
       if (getName() == null)
       {
-         buffer.append("unnamed simple bean");
+         buffer.append("unnamed ").append(beanType);
       }
       else
       {
-         buffer.append("simple bean '" + getName() + "'");
+         buffer.append(beanType).append(" '" + getName() + "'");
       }
       buffer.append(" ").append(getType().getName()).append(", ");
       buffer.append(" API types = ").append(Names.typesToString(getTypes())).append(", binding types = " + Names.annotationsToString(getBindings()));

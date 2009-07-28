@@ -210,5 +210,15 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    {
       // No-op, decorators can't have decorators
    }
+   
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.bean.SimpleBean#toString()
+    */
+   @Override
+   public String toString()
+   {
+      // TODO Auto-generated method stub
+      return super.toString("decorator");
+   }
 
 }

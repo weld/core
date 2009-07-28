@@ -54,9 +54,9 @@ public class AbstractBeanDeployer
    
    private static final LogProvider log = Logging.getLogProvider(AbstractBeanDeployer.class);
    
-   private final BeanManagerImpl         manager;
+   private final BeanManagerImpl manager;
    private final BeanDeployerEnvironment environment;
-   private final List<Throwable>         definitionErrors = new ArrayList<Throwable>();
+   private final List<Throwable> definitionErrors = new ArrayList<Throwable>();
    
    public AbstractBeanDeployer(BeanManagerImpl manager, BeanDeployerEnvironment environment)
    {
@@ -69,30 +69,24 @@ public class AbstractBeanDeployer
       return manager;
    }
    
-   public <T> AbstractBeanDeployer addBean(RIBean<T> bean)
-   {
-      this.environment.addBean(bean);
-      return this;
-   }
-   
    public AbstractBeanDeployer deploy()
    {
-      Set<RIBean<?>> beans = environment.getBeans();
-      // ensure that all disposal methods are initialized before initializing 
+      Set<RIBean<?>> beans = getEnvironment().getBeans();
+      // ensure that all decorators are initialized before initializing 
       // the rest of the beans
-      for (DecoratorBean<?> bean : environment.getDecorators())
+      for (DecoratorBean<?> bean : getEnvironment().getDecorators())
       {
-         bean.initialize(environment);
-         manager.addRIBean(bean);
+         bean.initialize(getEnvironment());
+         manager.addDecorator(bean);
          log.debug("Bean: " + bean);
       }
       for (RIBean<?> bean : beans)
       {
-         bean.initialize(environment);
-         manager.addRIBean(bean);
+         bean.initialize(getEnvironment());
+         manager.addBean(bean);
          log.debug("Bean: " + bean);
       }
-      for (ObserverMethod<?, ?> observer : environment.getObservers())
+      for (ObserverMethod<?, ?> observer : getEnvironment().getObservers())
       {
          log.debug("Observer : " + observer);
          manager.addObserver(observer);
@@ -130,21 +124,21 @@ public class AbstractBeanDeployer
       for (WBMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Disposes.class))
       {
          DisposalMethodBean<?> disposalBean = DisposalMethodBean.of(manager, method, declaringBean);
-         disposalBean.initialize(environment);
-         environment.addDisposalBean(disposalBean);
+         disposalBean.initialize(getEnvironment());
+         getEnvironment().addBean(disposalBean);
       }
    }
    
    protected <T> void createProducerMethod(AbstractClassBean<?> declaringBean, WBMethod<T> annotatedMethod)
    {
       ProducerMethodBean<T> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
-      addBean(bean);
+      getEnvironment().addBean(bean);
    }
    
    protected <T> void createProducerField(AbstractClassBean<?> declaringBean, WBField<T> field)
    {
       ProducerFieldBean<T> bean = ProducerFieldBean.of(field, declaringBean, manager);
-      addBean(bean);
+      getEnvironment().addBean(bean);
    }
    
    protected void createProducerFields(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
@@ -166,30 +160,30 @@ public class AbstractBeanDeployer
    protected void createObserverMethod(RIBean<?> declaringBean, WBMethod<?> method)
    {
       ObserverMethodImpl<?, ?> observer = ObserverFactory.create(method, declaringBean, manager);
-      environment.getObservers().add(observer);
+      getEnvironment().addObserver(observer);
    }
    
    protected <T> void createSimpleBean(WBClass<T> annotatedClass)
    {
       SimpleBean<T> bean = SimpleBean.of(annotatedClass, manager);
-      addBean(bean);
+      getEnvironment().addBean(bean);
       createSubBeans(bean);
-      addBean(NewSimpleBean.of(annotatedClass, manager));
+      getEnvironment().addBean(NewSimpleBean.of(annotatedClass, manager));
    }
    
    protected <T> void createDecorator(WBClass<T> annotatedClass)
    {
       DecoratorBean<T> bean = DecoratorBean.of(annotatedClass, manager);
-      addBean(bean);
+      getEnvironment().addBean(bean);
    }
    
    protected <T> void createEnterpriseBean(WBClass<T> annotatedClass)
    {
       // TODO Don't create enterprise bean if it has no local interfaces!
-      EnterpriseBean<T> bean = EnterpriseBean.of(annotatedClass, manager, environment);
-      addBean(bean);
+      EnterpriseBean<T> bean = EnterpriseBean.of(annotatedClass, manager, getEnvironment());
+      getEnvironment().addBean(bean);
       createSubBeans(bean);
-      addBean(NewEnterpriseBean.of(annotatedClass, manager, environment));
+      getEnvironment().addBean(NewEnterpriseBean.of(annotatedClass, manager, getEnvironment()));
    }
    
    /**
@@ -222,7 +216,7 @@ public class AbstractBeanDeployer
       return type.getNoArgsConstructor() != null || type.getAnnotatedConstructors(Initializer.class).size() > 0;
    }
       
-   public BeanDeployerEnvironment getBeanDeployerEnvironment()
+   public BeanDeployerEnvironment getEnvironment()
    {
       return environment;
    }

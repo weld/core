@@ -22,9 +22,9 @@ import java.util.Set;
 
 import javax.decorator.Decorator;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.interceptor.Interceptor;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.resources.ClassTransformer;
@@ -46,15 +46,6 @@ public class BeanDeployer extends AbstractBeanDeployer
    {
       super(manager, new BeanDeployerEnvironment(ejbDescriptors, manager));
       this.classes = new HashSet<WBClass<?>>();
-   }
-
-   public AbstractBeanDeployer addBeans(Iterable<? extends RIBean<?>> beans)
-   {
-      for (RIBean<?> bean : beans)
-      {
-         addBean(bean);
-      }
-      return this;
    }
 
    public AbstractBeanDeployer addClass(Class<?> clazz)
@@ -96,7 +87,7 @@ public class BeanDeployer extends AbstractBeanDeployer
    {
       for (WBClass<?> clazz : classes)
       {
-         if (getBeanDeployerEnvironment().getEjbDescriptors().containsKey(clazz.getJavaClass()))
+         if (getEnvironment().getEjbDescriptors().containsKey(clazz.getJavaClass()))
          {
             createEnterpriseBean(clazz);
          }
@@ -106,6 +97,10 @@ public class BeanDeployer extends AbstractBeanDeployer
             if (managedBeanOrDecorator && clazz.isAnnotationPresent(Decorator.class))
             {
                createDecorator(clazz);
+            }
+            else if (managedBeanOrDecorator && clazz.isAnnotationPresent(Interceptor.class))
+            {
+               //createInterceptor(clazz);
             }
             else if (managedBeanOrDecorator && !clazz.isAbstract())
             {

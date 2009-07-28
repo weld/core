@@ -227,10 +227,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    protected void registerBeans(Iterable<Class<?>> classes, BeanDeployer beanDeployer)
    {
       beanDeployer.addClasses(classes);
-      beanDeployer.addBean(ManagerBean.of(manager));
-      beanDeployer.addBean(InjectionPointBean.of(manager));
-      beanDeployer.addBean(EventBean.of(manager));
-      beanDeployer.addBean(InstanceBean.of(manager));
+      beanDeployer.getEnvironment().addBean(ManagerBean.of(manager));
+      beanDeployer.getEnvironment().addBean(InjectionPointBean.of(manager));
+      beanDeployer.getEnvironment().addBean(EventBean.of(manager));
+      beanDeployer.getEnvironment().addBean(InstanceBean.of(manager));
       if (!getEnvironment().equals(Environments.SE))
       {
          beanDeployer.addClass(ConversationImpl.class);
@@ -282,7 +282,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          registerBeans(deploymentVisitor.getBeanClasses(), beanDeployer);
          fireAfterBeanDiscoveryEvent();
          log.debug("Web Beans initialized. Validating beans.");
-         getServices().get(Validator.class).validateDeployment(manager, beanDeployer.getBeanDeployerEnvironment());
+         getServices().get(Validator.class).validateDeployment(manager, beanDeployer.getEnvironment());
          fireAfterDeploymentValidationEvent();
          endDeploy(requestBeanStore);
       }

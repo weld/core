@@ -32,8 +32,11 @@ import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.NewBean;
+import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.bean.standard.AbstractStandardBean;
+import org.jboss.webbeans.bean.standard.ExtensionBean;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.introspector.WBClass;
@@ -55,7 +58,6 @@ public class BeanDeployerEnvironment
    private final Set<DecoratorBean<?>> decorators;
    private final EjbDescriptorCache ejbDescriptors;
    private final TypeSafeResolver<DisposalMethodBean<?>> disposalMethodResolver;
-   private final BeanManagerImpl manager;
 
    public BeanDeployerEnvironment(EjbDescriptorCache ejbDescriptors, BeanManagerImpl manager)
    {
@@ -69,7 +71,6 @@ public class BeanDeployerEnvironment
       this.observers = new HashSet<ObserverMethod<?, ?>>();
       this.ejbDescriptors = ejbDescriptors;
       this.disposalMethodResolver = new TypeSafeBeanResolver<DisposalMethodBean<?>>(manager, allDisposalBeans);
-      this.manager = manager;
    }
 
    public ProducerMethodBean<?> getProducerMethod(WBMethod<?> method)
@@ -115,28 +116,50 @@ public class BeanDeployerEnvironment
       }
    }
 
-   public void addBean(RIBean<?> value)
+   public void addBean(ProducerMethodBean<?> bean)
    {
-      if (value instanceof AbstractClassBean && !(value instanceof NewBean))
+      producerMethodBeanMap.put(bean.getAnnotatedItem(), bean);
+      beans.add(bean);
+   }
+   
+   public void addBean(ProducerFieldBean<?> bean)
+   {
+      beans.add(bean);
+   }
+   
+   public void addBean(ExtensionBean bean)
+   {
+      beans.add(bean);
+   }
+   
+   public void addBean(AbstractStandardBean<?> bean)
+   {
+      beans.add(bean);
+   }
+   
+   public void addBean(AbstractClassBean<?> bean)
+   {
+      if (!(bean instanceof NewBean))
       {
-         AbstractClassBean<?> bean = (AbstractClassBean<?>) value;
          classBeanMap.put(bean.getAnnotatedItem(), bean);
       }
-      else if (value instanceof ProducerMethodBean)
-      {
-         ProducerMethodBean<?> bean = (ProducerMethodBean<?>) value;
-         producerMethodBeanMap.put(bean.getAnnotatedItem(), bean);
-      }
-      else if (value instanceof DisposalMethodBean)
-      {
-         DisposalMethodBean<?> bean = (DisposalMethodBean<?>) value;
-         disposalMethodBeanMap.put(bean.getAnnotatedItem(), bean);
-      }
-      beans.add(value);
-      if (value instanceof DecoratorBean)
-      {
-         decorators.add((DecoratorBean<?>) value);
-      }
+      beans.add(bean);
+   }
+
+   public void addBean(DecoratorBean<?> bean)
+   {
+      decorators.add(bean);
+   }
+   
+   public void addBean(DisposalMethodBean<?> bean)
+   {
+      allDisposalBeans.add(bean);
+      disposalMethodBeanMap.put(bean.getAnnotatedItem(), bean);
+   }
+   
+   public void addObserver(ObserverMethod<?, ?> observer)
+   {
+      this.observers.add(observer);
    }
 
    public Set<RIBean<?>> getBeans()
@@ -151,27 +174,15 @@ public class BeanDeployerEnvironment
 
    public Set<ObserverMethod<?, ?>> getObservers()
    {
-      return observers;
+      return Collections.unmodifiableSet(observers);
    }
 
-   public List<DisposalMethodBean<?>> getAllDisposalBeans()
-   {
-      return allDisposalBeans;
-   }
 
-   public void addDisposalBean(DisposalMethodBean<?> disposalBean)
+   public Set<DisposalMethodBean<?>> getUnresolvedDisposalBeans()
    {
-      allDisposalBeans.add(disposalBean);
-   }
-
-   public void addResolvedDisposalBean(DisposalMethodBean<?> disposalBean)
-   {
-      resolvedDisposalBeans.add(disposalBean);
-   }
-
-   public Set<DisposalMethodBean<?>> getResolvedDisposalBeans()
-   {
-      return resolvedDisposalBeans;
+      Set<DisposalMethodBean<?>> beans = new HashSet<DisposalMethodBean<?>>(allDisposalBeans);
+      beans.removeAll(resolvedDisposalBeans);
+      return Collections.unmodifiableSet(beans);
    }
 
    public EjbDescriptorCache getEjbDescriptors()
@@ -180,8 +191,9 @@ public class BeanDeployerEnvironment
    }
    
    /**
-    * Resolve the disposal method for the given producer method. For internal
-    * use.
+    * Resolve the disposal method for the given producer method. Any resolved
+    * beans will be marked as such for the purpose of validating that all
+    * disposal methods are used. For internal use.
     * 
     * @param apiType The API type to match
     * @param bindings The binding types to match
@@ -199,7 +211,8 @@ public class BeanDeployerEnvironment
             disposalBeans.add((DisposalMethodBean<T>) bean);
          }
       }
-      return disposalBeans;
+      resolvedDisposalBeans.addAll(disposalBeans);
+      return Collections.unmodifiableSet(disposalBeans);
    }
 
 }
