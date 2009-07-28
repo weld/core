@@ -42,6 +42,16 @@ public class SerializableBeanInstance<T extends RIBean<I>, I> implements Seriali
       return (T) manager.getRiBeans().get(beanId);
    }
    
+   protected BeanManagerImpl getManager()
+   {
+      return manager;
+   }
+   
+   protected String getBeanId()
+   {
+      return beanId;
+   }
+   
    public I getInstance()
    {
       return instance;

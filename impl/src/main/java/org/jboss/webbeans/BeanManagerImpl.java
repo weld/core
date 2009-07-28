@@ -549,6 +549,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public void addDecorator(DecoratorBean<?> bean)
    {
       decorators.add(bean);
+      riBeans.put(bean.getId(), bean);
       decoratorResolver.clear();
    }
 
@@ -742,7 +743,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    }
 
    /**
-    * The beans registered with the Web Bean manager. For internal use
+    * The beans registered with the Web Bean manager which are resolvable. Does
+    * not include interceptor and decorator beans
     * 
     * @return The list of known beans
     */
@@ -756,6 +758,18 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return Collections.unmodifiableList(decorators);
    }
 
+   /**
+    * Get all the spec defined beans, including interceptor beans and decorator
+    * beans. This is behavior is different to getBeans() which returns only
+    * resolvable beans.
+    * 
+    * TODO Rename method, merge into whatever we use for passivation capable or
+    * split out decorators
+    * 
+    * WARNING, method will go away!
+    * 
+    * @return
+    */
    public Map<String, RIBean<?>> getRiBeans()
    {
       return Collections.unmodifiableMap(riBeans);

@@ -16,6 +16,8 @@
  */
 package org.jboss.webbeans.bean.proxy;
 
+import static org.jboss.webbeans.util.Reflections.ensureAccessible;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -83,7 +85,8 @@ public class DecoratorProxyMethodHandler implements MethodHandler, Serializable
             return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);
          }
       }
-      return method.invoke(instance, args);
+      
+      return ensureAccessible(method).invoke(instance, args);
    }
    
 }
