@@ -16,6 +16,8 @@
  */
 package org.jboss.webbeans.introspector.jlr;
 
+import static org.jboss.webbeans.util.Reflections.ensureAccessible;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -74,7 +76,7 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
 
    public static <T> WBMethodImpl<T> of(Method method, WBType<?> declaringClass, ClassTransformer classTransformer)
    {
-      return new WBMethodImpl<T>(method, declaringClass, classTransformer);
+      return new WBMethodImpl<T>(ensureAccessible(method), declaringClass, classTransformer);
    }
 
    /**
@@ -87,11 +89,10 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
     * @param declaringClass The declaring class abstraction
     */
    @SuppressWarnings("unchecked")
-   protected WBMethodImpl(Method method, WBType<?> declaringClass, ClassTransformer classTransformer)
+   private WBMethodImpl(Method method, WBType<?> declaringClass, ClassTransformer classTransformer)
    {
       super(AnnotationStore.of(method, classTransformer.getTypeStore()), method, (Class<T>) method.getReturnType(), method.getGenericReturnType());
       this.method = method;
-      this.method.setAccessible(true);
       this.declaringClass = declaringClass;
       this.parameters = new ArrayList<WBParameter<?>>();
       this.annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WBParameter<?>>>(), new Supplier< List<WBParameter<?>>>()

@@ -686,5 +686,32 @@ public class Reflections
    {
       return clazz.isPrimitive() || Serializable.class.isAssignableFrom(clazz);
    }
+   
+   public static Field ensureAccessible(Field field)
+   {
+      if (!field.isAccessible() && !field.getDeclaringClass().getPackage().getName().startsWith("java.util"))
+      {
+         field.setAccessible(true);
+      }
+      return field;
+   }
+   
+   public static Method ensureAccessible(Method method)
+   {
+      if (!method.isAccessible() && !method.getDeclaringClass().getPackage().getName().startsWith("java.util"))
+      {
+         method.setAccessible(true);
+      }
+      return method;
+   }
+   
+   public static <T> Constructor<T> ensureAccessible(Constructor<T> constructor)
+   {
+      if (!constructor.isAccessible() && !constructor.getDeclaringClass().getPackage().getName().startsWith("java.util"))
+      {
+         constructor.setAccessible(true);
+      }
+      return constructor;
+   }
 
 }

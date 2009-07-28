@@ -16,6 +16,8 @@
  */
 package org.jboss.webbeans.introspector.jlr;
 
+import static org.jboss.webbeans.util.Reflections.ensureAccessible;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -69,7 +71,7 @@ public class WBConstructorImpl<T> extends AbstractWBMember<T, Constructor<T>> im
    
    public static <T> WBConstructor<T> of(Constructor<T> constructor, WBType<T> declaringClass, ClassTransformer classTransformer)
    {
-      return new WBConstructorImpl<T>(constructor, declaringClass, classTransformer);
+      return new WBConstructorImpl<T>(ensureAccessible(constructor), declaringClass, classTransformer);
    }
 
    /**
@@ -80,7 +82,7 @@ public class WBConstructorImpl<T> extends AbstractWBMember<T, Constructor<T>> im
     * @param constructor The constructor method
     * @param declaringClass The declaring class
     */
-   protected WBConstructorImpl(Constructor<T> constructor, WBType<T> declaringClass, ClassTransformer classTransformer)
+   private WBConstructorImpl(Constructor<T> constructor, WBType<T> declaringClass, ClassTransformer classTransformer)
    {
       super(AnnotationStore.of(constructor, classTransformer.getTypeStore()), constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass());
       this.constructor = constructor;

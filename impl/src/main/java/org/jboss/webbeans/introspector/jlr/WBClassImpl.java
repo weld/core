@@ -175,7 +175,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
             {
                field.setAccessible(true);
             }
-            WBField<?> annotatedField = new WBFieldImpl<Object>(field, this, classTransformer);
+            WBField<?> annotatedField = WBFieldImpl.of(field, this, classTransformer);
             this.fields.add(annotatedField);
             if (c == rawType)
             {

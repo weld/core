@@ -16,6 +16,8 @@
  */
 package org.jboss.webbeans.introspector.jlr;
 
+import static org.jboss.webbeans.util.Reflections.ensureAccessible;
+
 import java.lang.reflect.Field;
 
 import org.jboss.webbeans.introspector.AnnotationStore;
@@ -45,6 +47,11 @@ public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBFiel
    // Cached string representation
    private String toString;
 
+   public static <T> WBFieldImpl<T> of(Field field, WBType<?> declaringClass, ClassTransformer classTransformer)
+   {
+      return new WBFieldImpl<T>(ensureAccessible(field), declaringClass, classTransformer);
+   }
+   
    /**
     * Constructor
     * 
@@ -54,11 +61,10 @@ public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBFiel
     * @param field The actual field
     * @param declaringClass The abstraction of the declaring class
     */
-   protected WBFieldImpl(Field field, WBType<?> declaringClass, ClassTransformer classTransformer)
+   private WBFieldImpl(Field field, WBType<?> declaringClass, ClassTransformer classTransformer)
    {
       super(AnnotationStore.of(field, classTransformer.getTypeStore()), field, (Class<T>) field.getType(), field.getGenericType());
       this.field = field;
-      field.setAccessible(true);
       this.declaringClass = declaringClass;
    }
 
