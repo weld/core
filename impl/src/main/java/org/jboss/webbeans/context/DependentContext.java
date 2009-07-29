@@ -91,15 +91,5 @@ public class DependentContext extends AbstractContext implements Service
    {
       return true;
    }
-   
-   @Deprecated
-   public <T> void destroyAndRemove(Contextual<T> contextual, T instance)
-   {
-      if (contextual instanceof Contextual)
-      {
-         CreationalContextImpl<T> creationalContext = new CreationalContextImpl<T>(contextual); 
-         contextual.destroy(instance, creationalContext.getCreationalContext(contextual));
-      }
-   }
 
 }

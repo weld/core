@@ -86,12 +86,4 @@ public abstract class AbstractContext implements Context
       this.active.set(Boolean.valueOf(active));
    }
 
-   /**
-    * Delegates to a ThreadLocal instance
-    */
-   protected Boolean getActive()
-   {
-      return active.get();
-   }
-
 }
