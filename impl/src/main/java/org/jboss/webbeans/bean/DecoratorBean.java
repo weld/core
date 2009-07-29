@@ -61,11 +61,6 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
             return decorator;
          }
 
-         public Set<Class<? extends Annotation>> getStereotypes()
-         {
-            return decorator.getStereotypes();
-         }
-
       };
    }
 

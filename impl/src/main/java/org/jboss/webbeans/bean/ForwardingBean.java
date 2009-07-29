@@ -113,6 +113,16 @@ public abstract class ForwardingBean<T> implements Bean<T>
    }
 
    /**
+    * The stereotypes applied to this bean
+    * 
+    * @return stereotypes if any
+    */
+   public Set<Class<? extends Annotation>> getStereotypes()
+   {
+      return delegate().getStereotypes();
+   }
+
+   /**
     * Gets the scope type of the delegate
     * 
     * @return The scope type

@@ -553,10 +553,4 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       return false;
    }
 
-   public Set<Class<? extends Annotation>> getStereotypes()
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
 }

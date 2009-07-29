@@ -539,4 +539,14 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       return getAnnotatedItem().isAnnotationPresent(Specializes.class);
    }
 
+   public Set<Class<? extends Annotation>> getStereotypes()
+   {
+      Set<Class<? extends Annotation>> stereotypes = new HashSet<Class<? extends Annotation>>();
+      for (Annotation stereotypeAnnotation : getAnnotatedItem().getMetaAnnotations(Stereotype.class))
+      {
+         stereotypes.add(stereotypeAnnotation.annotationType());
+      }
+      return stereotypes;
+   }
+
 }
