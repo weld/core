@@ -238,7 +238,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    {
       StringBuilder builder = new StringBuilder();
       builder.append("Observer Implementation: \n");
-      builder.append("  Observer (Declaring) class: " + Names.typesToString(observerBean.getTypes()));
+      builder.append("  Observer (Declaring) class: " + observerBean.getBeanClass());
       builder.append("  Observer method: " + observerMethod);
       return builder.toString();
    }
