@@ -83,7 +83,7 @@
         <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-core</artifactId>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
