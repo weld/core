@@ -16,7 +16,10 @@
  */
 package org.jboss.webbeans.bean;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 
@@ -157,6 +160,11 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
    protected void initInjectionPoints()
    {
       
+   }
+
+   public Set<Class<? extends Annotation>> getStereotypes()
+   {
+      return Collections.emptySet();
    }
 
 }

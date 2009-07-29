@@ -159,6 +159,11 @@ public class InstanceCurrentActivityTest extends AbstractWebBeansTest
          return false;
       }
 
+      public Set<Class<? extends Annotation>> getStereotypes()
+      {
+         return Collections.emptySet();
+      }
+
    }
 
    @Test

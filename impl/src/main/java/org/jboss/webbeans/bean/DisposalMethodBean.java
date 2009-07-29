@@ -19,6 +19,7 @@ package org.jboss.webbeans.bean;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -278,6 +279,11 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
    protected void checkDeploymentType()
    {
       // TODO sort out ordering of init, then we can use initDeploymentType and hence checkDeploymentType
+   }
+
+   public Set<Class<? extends Annotation>> getStereotypes()
+   {
+      return Collections.emptySet();
    }
 
 }

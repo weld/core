@@ -3,6 +3,7 @@ package org.jboss.webbeans.test.unit.activities;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -105,6 +106,11 @@ public class ActivitiesTest extends AbstractWebBeansTest
          public boolean isPolicy()
          {
             return false;
+         }
+
+         public Set<Class<? extends Annotation>> getStereotypes()
+         {
+            return Collections.emptySet();
          }
 
       };
@@ -267,6 +273,11 @@ public class ActivitiesTest extends AbstractWebBeansTest
          public Set<Annotation> getBindings()
          {
             return bindingTypes;
+         }
+
+         public Set<Class<? extends Annotation>> getStereotypes()
+         {
+            return Collections.emptySet();
          }
 
             });

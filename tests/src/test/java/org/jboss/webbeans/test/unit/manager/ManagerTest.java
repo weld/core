@@ -98,6 +98,11 @@ public class ManagerTest extends AbstractWebBeansTest
       {
          return false;
       }
+
+      public Set<Class<? extends Annotation>> getStereotypes()
+      {
+         return Collections.emptySet();
+      }
       
    }
    

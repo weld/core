@@ -16,8 +16,10 @@
  */
 package org.jboss.webbeans.bean;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -273,6 +275,11 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    public String getId()
    {
       return id;
+   }
+
+   public Set<Class<? extends Annotation>> getStereotypes()
+   {
+      return Collections.emptySet();
    }
 
 }

@@ -17,9 +17,11 @@
 package org.jboss.webbeans.bean;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -381,6 +383,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    public boolean isPolicy()
    {
       return false;
+   }
+
+   public Set<Class<? extends Annotation>> getStereotypes()
+   {
+      return Collections.emptySet();
    }
    
 }

@@ -63,6 +63,13 @@ public interface Bean<T> extends Contextual<T>
    public String getName();
 
    /**
+    * The stereotypes applied to this bean
+    * 
+    * @return stereotypes if any
+    */
+   public Set<Class<? extends Annotation>> getStereotypes();
+
+   /**
     * The bean class of the managed bean or session bean or of the bean that
     * declares the producer method or field
     * 

@@ -79,6 +79,11 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
       return null;
    }
    
+   public Set<Class<? extends Annotation>> getStereotypes()
+   {
+      return Collections.emptySet();
+   }
+
    @Override
    public Set<WBInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
    {

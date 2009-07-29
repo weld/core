@@ -151,6 +151,11 @@ public class ELCurrentActivityTest extends AbstractWebBeansTest
          return false;
       }
 
+      public Set<Class<? extends Annotation>> getStereotypes()
+      {
+         return Collections.emptySet();
+      }
+
    }
 
    @Test
