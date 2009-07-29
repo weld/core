@@ -40,7 +40,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
 
    public T create(CreationalContext<T> creationalContext)
    {
-      InjectionPoint injectionPoint = this.getManager().getInjectionPoint();
+      InjectionPoint injectionPoint = this.getManager().getCurrentInjectionPoint();
       if (injectionPoint != null)
       {
          Type genericType = injectionPoint.getType();

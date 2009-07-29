@@ -231,7 +231,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          creationalContext.push(instance);
          ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler<T>(this, creationalContext));
          log.trace("Enterprise bean instance created for bean {0}", this);
-         return applyDecorators(instance, creationalContext);
+         if (hasDecorators())
+         {
+            instance = applyDecorators(instance, creationalContext, null);
+         }
+         return instance;
       }
       catch (InstantiationException e)
       {
@@ -315,11 +319,17 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       creationalContext.release();
    }
-
+   
    @Override
    protected void initSerializable()
    {
-      super._serializable = true;
+      // No-op
+   }
+   
+   @Override
+   public boolean isSerializable()
+   {
+      return true;
    }
 
    public InternalEjbDescriptor<T> getEjbDescriptor()

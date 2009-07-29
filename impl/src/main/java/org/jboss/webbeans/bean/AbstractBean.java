@@ -105,17 +105,18 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    // The API types
    protected Set<Type> types;
    // The injection points
-   protected Set<WBInjectionPoint<?, ?>> injectionPoints;
+   private Set<WBInjectionPoint<?, ?>> injectionPoints;
+   private Set<WBInjectionPoint<?, ?>> delegateInjectionPoints;
    // If the type a primitive?
    private boolean primitive;
    // The Web Beans manager
    protected BeanManagerImpl manager;
 
-   protected boolean _serializable;
+   private boolean _serializable;
 
    private boolean initialized;
 
-   private Set<WBInjectionPoint<?, ?>> decoratesInjectionPoint;
+   
 
    protected boolean isInitialized()
    {
@@ -131,7 +132,8 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    {
       super(manager);
       this.manager = manager;
-      injectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
+      this.injectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
+      this.delegateInjectionPoints = new HashSet<WBInjectionPoint<?,?>>();
    }
 
    /**
@@ -156,34 +158,37 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       initScopeType();
       initSerializable();
       initProxyable();
-      initInjectionPoints();
-      initDecorates();
-      checkDecorates();
+      checkDelegateInjectionPoints();
    }
 
-   protected void checkDecorates()
+   protected void checkDelegateInjectionPoints()
    {
-      if (this.decoratesInjectionPoint.size() > 0)
+      if (this.delegateInjectionPoints.size() > 0)
       {
          throw new DefinitionException("Cannot place @Decorates at an injection point which is not on a Decorator " + this);
       }
    }
-
-   protected void initDecorates()
+   
+   protected void addInjectionPoint(WBInjectionPoint<?, ?> injectionPoint)
    {
-      this.decoratesInjectionPoint = new HashSet<WBInjectionPoint<?, ?>>();
-      for (WBInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
+      if (injectionPoint.isAnnotationPresent(Decorates.class))
       {
-         if (injectionPoint.isAnnotationPresent(Decorates.class))
-         {
-            this.decoratesInjectionPoint.add(injectionPoint);
-         }
+         this.delegateInjectionPoints.add(injectionPoint);
+      }
+      injectionPoints.add(injectionPoint);
+   }
+   
+   protected void addInjectionPoints(Iterable<? extends WBInjectionPoint<?, ?>> injectionPoints)
+   {
+      for (WBInjectionPoint<?, ?> injectionPoint : injectionPoints)
+      {
+         addInjectionPoint(injectionPoint);
       }
    }
 
-   protected Set<WBInjectionPoint<?, ?>> getDecoratesInjectionPoint()
+   protected Set<WBInjectionPoint<?, ?>> getDelegateInjectionPoints()
    {
-      return decoratesInjectionPoint;
+      return delegateInjectionPoints;
    }
 
    /**
@@ -204,8 +209,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       initDefaultBindings();
       log.trace("Using binding types " + bindings + " specified by annotations");
    }
-
-   protected abstract void initInjectionPoints();
 
    protected void initDefaultBindings()
    {

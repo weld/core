@@ -21,9 +21,11 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import javax.decorator.Decorates;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.introspector.ForwardingWBParameter;
@@ -41,11 +43,13 @@ public class ParameterInjectionPoint<T> extends ForwardingWBParameter<T> impleme
 
    private final Bean<?> declaringBean;
    private final WBParameter<T> parameter;
+   private final boolean delegate;
 
    private ParameterInjectionPoint(Bean<?> declaringBean, WBParameter<T> parameter)
    {
       this.declaringBean = declaringBean;
       this.parameter = parameter;
+      this.delegate = isAnnotationPresent(Decorates.class) && declaringBean instanceof Decorator<?>;
    }
 
    @Override
@@ -87,8 +91,7 @@ public class ParameterInjectionPoint<T> extends ForwardingWBParameter<T> impleme
 
    public boolean isDelegate()
    {
-      // TODO Auto-generated method stub
-      return false;
+      return delegate;
    }
 
    public boolean isTransient()

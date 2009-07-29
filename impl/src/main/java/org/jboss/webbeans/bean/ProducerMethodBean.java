@@ -98,6 +98,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       if (!isInitialized())
       {
+         initProducerMethodInjectableParameters();
          super.initialize(environment);
          checkProducerMethod();
          initDisposalMethod(environment);
@@ -107,11 +108,11 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    /**
     * Initializes the injection points
     */
-   protected void initInjectionPoints()
+   protected void initProducerMethodInjectableParameters()
    {
       for (WBParameter<?> parameter : method.getParameters())
       {
-         injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
+         addInjectionPoint(ParameterInjectionPoint.of(this, parameter));
       }
    }
 

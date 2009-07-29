@@ -59,7 +59,7 @@ public class InjectionPointBean extends AbstractStandardBean<InjectionPoint>
 
    public InjectionPoint create(CreationalContext<InjectionPoint> creationalContext)
    {
-      return getManager().getInjectionPoint();
+      return getManager().getCurrentInjectionPoint();
    }
    
    public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) 

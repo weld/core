@@ -28,9 +28,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.decorator.Decorates;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.introspector.ForwardingWBMethod;
@@ -65,6 +67,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
 
    private final Bean<?> declaringBean;
    private final WBMethod<T> method;
+   private final boolean delegate;
 
    public static <T> MethodInjectionPoint<T> of(Bean<?> declaringBean, WBMethod<T> method)
    {
@@ -75,6 +78,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
    {
       this.declaringBean = declaringBean;
       this.method = method;
+      this.delegate = isAnnotationPresent(Decorates.class) && declaringBean instanceof Decorator<?>;
    }
 
    @Override
@@ -271,8 +275,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
 
    public boolean isDelegate()
    {
-      // TODO Auto-generated method stub
-      return false;
+      return delegate;
    }
 
    public boolean isTransient()

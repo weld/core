@@ -28,9 +28,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.decorator.Decorates;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.introspector.ForwardingWBConstructor;
@@ -65,6 +67,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
 
    private final Bean<?> declaringBean;
    private final WBConstructor<T> constructor;
+   private final boolean delegate;
 
    public static <T> ConstructorInjectionPoint<T> of(Bean<?> declaringBean, WBConstructor<T> constructor)
    {
@@ -75,6 +78,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
    {
       this.declaringBean = declaringBean;
       this.constructor = constructor;
+      this.delegate = isAnnotationPresent(Decorates.class) && declaringBean instanceof Decorator<?>;
    }
 
    @Override
@@ -189,8 +193,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
 
    public boolean isDelegate()
    {
-      // TODO Auto-generated method stub
-      return false;
+      return delegate;
    }
 
    public boolean isTransient()

@@ -27,6 +27,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -49,6 +50,7 @@ import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.util.Names;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * Represents a simple bean
@@ -112,15 +114,42 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    public T create(CreationalContext<T> creationalContext)
    {
-      T instance = null;
-      instance = constructor.newInstance(manager, creationalContext);
-      instance = applyDecorators(instance, creationalContext);
-      creationalContext.push(instance);
+      InjectionPoint originalInjectionPoint = null;
+      if (hasDecorators())
+      {
+         originalInjectionPoint = attachCorrectInjectionPoint();
+      }
+      T instance = constructor.newInstance(manager, creationalContext);
+      if (!hasDecorators())
+      {
+         // This should be safe, but needs verification PLM
+         // Without this, the chaining of decorators will fail as the incomplete instance will be resolved
+         creationalContext.push(instance);
+      }
       injectEjbAndCommonFields(instance);
       injectBoundFields(instance, creationalContext);
       callInitializers(instance, creationalContext);
       callPostConstruct(instance);
+      if (hasDecorators())
+      {
+         instance = applyDecorators(instance, creationalContext, originalInjectionPoint);
+      }
       return instance;
+   }
+   
+   protected InjectionPoint attachCorrectInjectionPoint()
+   {
+      Decorator<?> decorator = getDecorators().get(getDecorators().size() - 1);
+      if (decorator instanceof DecoratorBean<?>)
+      {
+         DecoratorBean<?> decoratorBean = (DecoratorBean<?>) decorator;
+         InjectionPoint outerDelegateInjectionPoint = decoratorBean.getDelegateInjectionPoint();
+         return getManager().replaceOrPushCurrentInjectionPoint(outerDelegateInjectionPoint);
+      }
+      else
+      {
+         throw new IllegalStateException("Cannot operate on user defined decorator");
+      }
    }
 
    /**
@@ -293,19 +322,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    }
 
    /**
-    * Initializes the injection points
-    */
-   @Override
-   protected void initInjectionPoints()
-   {
-      super.initInjectionPoints();
-      for (WBParameter<?> parameter : constructor.getParameters())
-      {
-         injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
-      }
-   }
-
-   /**
     * Validates the type
     */
    protected void checkType()
@@ -319,7 +335,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          throw new DefinitionException("Simple bean " + type + " cannot be a parameterized type");
       }
       boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).isPassivating();
-      if (passivating && !_serializable)
+      if (passivating && !Reflections.isSerializable(getBeanClass()))
       {
          throw new DefinitionException("Simple bean declaring a passivating scope must have a serializable implementation class " + toString());
       }
@@ -331,7 +347,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
          for (Decorator<?> decorator : getDecorators())
          {
-            if (decorator instanceof DecoratorBean)
+            if (decorator instanceof DecoratorBean<?>)
             {
                DecoratorBean<?> decoratorBean = (DecoratorBean<?>) decorator;
                for (WBMethod<?> decoratorMethod : decoratorBean.getAnnotatedItem().getMethods())
@@ -426,18 +442,25 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          this.constructor = ConstructorInjectionPoint.of(this, initializerAnnotatedConstructors.iterator().next());
          log.trace("Exactly one constructor (" + constructor + ") annotated with @Initializer defined, using it as the bean constructor for " + getType());
-         return;
       }
-
-      if (getAnnotatedItem().getNoArgsConstructor() != null)
+      else if (getAnnotatedItem().getNoArgsConstructor() != null)
       {
 
          this.constructor = ConstructorInjectionPoint.of(this, getAnnotatedItem().getNoArgsConstructor());
          log.trace("Exactly one constructor (" + constructor + ") defined, using it as the bean constructor for " + getType());
-         return;
       }
-
-      throw new DefinitionException("Cannot determine constructor to use for " + getType());
+      
+      if (this.constructor == null)
+      {
+         throw new DefinitionException("Cannot determine constructor to use for " + getType());
+      }
+      else
+      {
+         for (WBParameter<?> parameter : constructor.getParameters())
+         {
+            addInjectionPoint(ParameterInjectionPoint.of(this, parameter));
+         }
+      }
    }
 
    /**

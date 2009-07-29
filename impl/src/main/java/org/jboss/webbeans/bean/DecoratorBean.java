@@ -32,7 +32,6 @@ import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.WBInjectionPoint;
-import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.introspector.WBClass;
 
 public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
@@ -77,7 +76,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
       return new DecoratorBean<T>(clazz, manager);
    }
 
-   private WBAnnotated<?, ?> decorates;
+   private WBInjectionPoint<?, ?> delegateInjectionPoint;
    private Set<Annotation> delegateBindings;
    private Type delegateType;
    private Set<Type> delegateTypes;
@@ -94,7 +93,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
       if (!isInitialized())
       {
          super.initialize(environment);
-         initDelegate();
+         initDelegateInjectionPoint();
          initDecoratedTypes();
          initDelegateBindings();
          initDelegateType();
@@ -109,40 +108,40 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
       this.decoratedTypes.remove(Serializable.class);
    }
 
-   protected void initDelegate()
+   protected void initDelegateInjectionPoint()
    {
-      this.decorates = getDecoratesInjectionPoint().iterator().next();
+      this.delegateInjectionPoint = getDelegateInjectionPoints().iterator().next();
    }
 
    @Override
-   protected void checkDecorates()
+   protected void checkDelegateInjectionPoints()
    {
-      for (WBInjectionPoint<?, ?> injectionPoint : getDecoratesInjectionPoint())
+      for (WBInjectionPoint<?, ?> injectionPoint : getDelegateInjectionPoints())
       {
-         if (injectionPoint instanceof MethodInjectionPoint && !injectionPoint.isAnnotationPresent(Initializer.class))
+         if (injectionPoint instanceof MethodInjectionPoint<?> && !injectionPoint.isAnnotationPresent(Initializer.class))
          {
             throw new DefinitionException("Method with @Decorates parameter must be an initializer method " + injectionPoint);
          }
       }
-      if (getDecoratesInjectionPoint().size() == 0)
+      if (getDelegateInjectionPoints().size() == 0)
       {
-         throw new DefinitionException("No @Decorates injection point defined " + this);
+         throw new DefinitionException("No delegate injection points defined " + this);
       }
-      else if (getDecoratesInjectionPoint().size() > 1)
+      else if (getDelegateInjectionPoints().size() > 1)
       {
-         throw new DefinitionException("Too many @Decorates injection point defined " + this);
+         throw new DefinitionException("Too many delegate injection point defined " + this);
       }
    }
 
    protected void initDelegateBindings()
    {
       this.delegateBindings = new HashSet<Annotation>(); 
-      this.delegateBindings.addAll(this.decorates.getBindings());
+      this.delegateBindings.addAll(this.delegateInjectionPoint.getBindings());
    }
 
    protected void initDelegateType()
    {
-      this.delegateType = this.decorates.getBaseType();
+      this.delegateType = this.delegateInjectionPoint.getBaseType();
       this.delegateTypes = new HashSet<Type>();
       delegateTypes.add(delegateType);
    }
@@ -153,7 +152,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
       {
          if (decoratedType instanceof Class)
          {
-            if (!((Class<?>) decoratedType).isAssignableFrom(decorates.getJavaClass()))
+            if (!((Class<?>) decoratedType).isAssignableFrom(delegateInjectionPoint.getJavaClass()))
             {
                throw new DefinitionException("The delegate type must extend or implement every decorated type. Decorated type " + decoratedType + "." + this );
             }
@@ -161,13 +160,13 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
          else if (decoratedType instanceof ParameterizedType)
          {
             ParameterizedType parameterizedType = (ParameterizedType) decoratedType;
-            if (!decorates.isParameterizedType())
+            if (!delegateInjectionPoint.isParameterizedType())
             {
                throw new DefinitionException("The decorated type is parameterized, but the delegate type isn't. Delegate type " + delegateType + "." + this);
             }
-            if (!Arrays.equals(decorates.getActualTypeArguments(), parameterizedType.getActualTypeArguments()));
+            if (!Arrays.equals(delegateInjectionPoint.getActualTypeArguments(), parameterizedType.getActualTypeArguments()));
             Type rawType = ((ParameterizedType) decoratedType).getRawType();
-            if (rawType instanceof Class && !((Class<?>) rawType).isAssignableFrom(decorates.getJavaClass()))
+            if (rawType instanceof Class && !((Class<?>) rawType).isAssignableFrom(delegateInjectionPoint.getJavaClass()))
             {
                throw new DefinitionException("The delegate type must extend or implement every decorated type. Decorated type " + decoratedType + "." + this );
             }
@@ -193,6 +192,11 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    public Set<Type> getDecoratedTypes()
    {
       return decoratedTypes;
+   }
+   
+   public WBInjectionPoint<?, ?> getDelegateInjectionPoint()
+   {
+      return delegateInjectionPoint;
    }
 
    /**

@@ -277,7 +277,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       List<Class<?>> defaultEnabledDecoratorClasses = new ArrayList<Class<?>>();
       
       ListMultimap<Class<? extends Annotation>, Context> contexts = Multimaps.newListMultimap(new ConcurrentHashMap<Class<? extends Annotation>, Collection<Context>>(), new Supplier<List<Context>>() 
-            {
+      {
          
          public List<Context> get()
          {
@@ -883,22 +883,29 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return getReference(bean, creationalContext);
    }
 
-   @SuppressWarnings("unchecked")
-   public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
+   
+   /**
+    * Get a reference, registering the injection point used.
+    * 
+    * @param injectionPoint the injection point to register
+    * @param resolvedBean the bean to get a reference to 
+    * @param creationalContext the creationalContext
+    * @return
+    */
+   public Object getReference(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext)
    {
-      boolean registerInjectionPoint = !injectionPoint.getType().equals(InjectionPoint.class);
+      boolean registerInjectionPoint = (injectionPoint != null && !injectionPoint.getType().equals(InjectionPoint.class));
       try
       {
          if (registerInjectionPoint)
          {
             currentInjectionPoint.get().push(injectionPoint);
          }
-         WBAnnotated<?, ?> element = ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this);
-         Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
          if (getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
          {
             throw new UnproxyableResolutionException("Attempting to inject an unproxyable normal scoped bean " + resolvedBean + " into " + injectionPoint);
          }
+         // TODO Can we move this logic to getReference?
          if (creationalContext instanceof CreationalContextImpl)
          {
             CreationalContextImpl<?> creationalContextImpl = (CreationalContextImpl<?>) creationalContext;
@@ -923,6 +930,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             currentInjectionPoint.get().pop();
          }
       }
+   }
+  
+   
+   public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
+   {
+      WBAnnotated<?, ?> element = ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this);
+      Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
+      return getReference(injectionPoint, resolvedBean, creationalContext);
    }
 
    /**
@@ -1080,12 +1095,11 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    }
 
    /**
-    * Accesses the factory used to create each instance of InjectionPoint that
-    * is injected into web beans.
+    * The injection point being operated on for this thread
     * 
-    * @return the factory
+    * @return the current injection point
     */
-   public InjectionPoint getInjectionPoint()
+   public InjectionPoint getCurrentInjectionPoint()
    {
       if (!currentInjectionPoint.get().empty())
       {
@@ -1095,6 +1109,29 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       {
          return null;
       }
+   }
+   
+   /**
+    * Replaces (or adds) the current injection point. If a current injection 
+    * point exists, it will be replaced. If no current injection point exists, 
+    * one will be added.
+    * 
+    * @param injectionPoint the injection point to use
+    * @return the injection point added, or null if non previous existed
+    */
+   public InjectionPoint replaceOrPushCurrentInjectionPoint(InjectionPoint injectionPoint)
+   {
+      InjectionPoint originalInjectionPoint = null;
+      if (!currentInjectionPoint.get().empty())
+      {
+         originalInjectionPoint = currentInjectionPoint.get().pop();
+      }
+      else
+      {
+         log.trace("No current injection point to replace #0", injectionPoint);
+      }
+      currentInjectionPoint.get().push(injectionPoint);
+      return originalInjectionPoint;
    }
 
    /**

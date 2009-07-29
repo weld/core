@@ -33,7 +33,6 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
-import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.introspector.WBMethod;
 
 public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
@@ -55,7 +54,7 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
-      // TODO Auto-generated method stub
+      addInjectionPoint(disposalMethodInjectionPoint);
       super.initialize(environment);
       checkDisposalMethod();
    }
@@ -75,11 +74,6 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
    public static <T> DisposalMethodBean<T> of(BeanManagerImpl manager, WBMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
    {
       return new DisposalMethodBean<T>(manager, disposalMethod, declaringBean);
-   }
-
-   protected void initInjectionPoints()
-   {
-      injectionPoints.add(disposalMethodInjectionPoint);
    }
 
    @Override
@@ -102,12 +96,6 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
       types.addAll(disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getTypeClosure());
       types.add(Object.class);
       super.types = types;
-   }
-
-   @Override
-   public Set<WBInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
-   {
-      return injectionPoints;
    }
 
    @Override

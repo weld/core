@@ -24,9 +24,11 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import javax.decorator.Decorates;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.introspector.ForwardingWBField;
@@ -39,6 +41,7 @@ public class FieldInjectionPoint<T> extends ForwardingWBField<T> implements WBIn
 
    private final Bean<?> declaringBean;
    private final WBField<T> field;
+   private final boolean delegate;
 
    public static <T> FieldInjectionPoint<T> of(Bean<?> declaringBean, WBField<T> field)
    {
@@ -49,6 +52,7 @@ public class FieldInjectionPoint<T> extends ForwardingWBField<T> implements WBIn
    {
       this.declaringBean = declaringBean;
       this.field = field;
+      this.delegate = isAnnotationPresent(Decorates.class) && declaringBean instanceof Decorator<?>;
    }
 
    @Override
@@ -106,8 +110,7 @@ public class FieldInjectionPoint<T> extends ForwardingWBField<T> implements WBIn
 
    public boolean isDelegate()
    {
-      // TODO Auto-generated method stub
-      return false;
+      return delegate;
    }
 
    public Type getType()
