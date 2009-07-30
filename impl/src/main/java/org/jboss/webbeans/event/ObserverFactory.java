@@ -66,6 +66,6 @@ public class ObserverFactory
    public static TransactionPhase getTransactionalPhase(WBMethod<?> observer)
    {
       WBParameter<?> parameter = observer.getAnnotatedParameters(Observes.class).iterator().next();
-      return parameter.getAnnotationStore().getAnnotation(Observes.class).during();
+      return parameter.getAnnotation(Observes.class).during();
    }
 }

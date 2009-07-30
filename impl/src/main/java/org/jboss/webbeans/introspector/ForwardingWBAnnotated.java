@@ -110,11 +110,6 @@ public abstract class ForwardingWBAnnotated<T, S> extends ForwardingAnnotated<T,
 
    protected abstract WBAnnotated<T, S> delegate();
 
-   public AnnotationStore getAnnotationStore()
-   {
-      return delegate().getAnnotationStore();
-   }
-
    public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType)
    {
       return delegate().isDeclaredAnnotationPresent(annotationType);

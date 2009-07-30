@@ -68,7 +68,7 @@ public class FieldInjectionPoint<T> extends ForwardingWBField<T> implements WBIn
 
    public Set<Annotation> getBindings()
    {
-      return delegate().getAnnotationStore().getBindings();
+      return delegate().getBindings();
    }
 
    public void inject(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext)

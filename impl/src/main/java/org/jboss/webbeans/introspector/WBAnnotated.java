@@ -185,8 +185,6 @@ public interface WBAnnotated<T, S> extends Annotated
     */
    public String getName();
 
-   public AnnotationStore getAnnotationStore();
-
    public boolean isParameterizedType();
 
 }
