@@ -74,7 +74,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
     * context lookup
     * 
     * @param self the proxy instance.
-    * @param thisMethod the overridden method declared in the super class or
+    * @param proxiedMethod the overridden method declared in the super class or
     *           interface.
     * @param proceed the forwarder method for invoking the overridden method. It
     *           is null if the overridden mehtod is abstract or declared in the
@@ -100,6 +100,10 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
          // instantiation needed, to avoid the annoying side effect of an object
          // getting lazy created
          return null;
+      }
+      if (proxiedMethod.getName().equals("equals")  && proxiedMethod.getParameterTypes().length == 1 && proxiedMethod.getParameterTypes()[0] == Object.class && args[0] == self)
+      {
+         return true;
       }
       try
       {
