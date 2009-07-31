@@ -14,11 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans;
+package org.jboss.webbeans.bean.standard;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -26,6 +30,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.resolution.ResolvableWBClass;
 
 /**
@@ -35,10 +40,13 @@ import org.jboss.webbeans.resolution.ResolvableWBClass;
  * 
  * @param <T>
  */
-public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>, Serializable
+public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements Instance<T>, Serializable
 {
 
    private static final long serialVersionUID = -376721889693284887L;
+   private static final Annotation[] EMPTY_BINDINGS = new Annotation[0];
+   
+   private final Set<Bean<?>> beans;
 
    public static <I> Instance<I> of(Type type, BeanManagerImpl manager, Set<Annotation> annotations)
    {
@@ -48,9 +56,10 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>, Seria
    private InstanceImpl(Type type, BeanManagerImpl manager, Set<Annotation> bindings)
    {
       super(type, manager, bindings);
+      this.beans = getManager().getBeans(getType(), bindings.toArray(EMPTY_BINDINGS));
    }
 
-   public T get(Annotation... bindings) 
+   public T get(Annotation... bindings)
    {
       Annotation[] annotations = mergeInBindings(bindings);
       Bean<T> bean = getManager().getBean(ResolvableWBClass.<T>of(getType(), annotations, getManager()), annotations);
@@ -71,49 +80,57 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>, Seria
       return "Obtainable instance for type " + getType() + " and binding types " + getBindings();
    }
 
+   private Collection<T> getReferences()
+   {
+      Collection<T> instances = new ArrayList<T>();
+      for (Bean<?> bean : beans)
+      {
+         Object object = getManager().getReference(bean, getType(), getManager().createCreationalContext(bean));
+         
+         @SuppressWarnings("unchecked")
+         T instance = (T) object;
+         
+         instances.add(instance);
+      }
+      return instances;
+   }
+   
    public Iterator<T> iterator()
    {
-      throw new UnsupportedOperationException("Not yet implemented");
+      return getReferences().iterator();
    }
 
-   /* (non-Javadoc)
-    * @see javax.enterprise.inject.Instance#isAmbiguous()
-    */
    public boolean isAmbiguous()
    {
-      throw new UnsupportedOperationException();
+      return beans.size() > 1;
    }
 
-   /* (non-Javadoc)
-    * @see javax.enterprise.inject.Instance#isUnsatisfied()
-    */
    public boolean isUnsatisfied()
    {
-      throw new UnsupportedOperationException();
+      return beans.size() == 0;
    }
 
-   /* (non-Javadoc)
-    * @see javax.enterprise.inject.Instance#select(java.lang.annotation.Annotation[])
-    */
    public Instance<T> select(Annotation... bindings)
    {
-      throw new UnsupportedOperationException();
+      return selectInstance(this.getType(), bindings);
    }
 
-   /* (non-Javadoc)
-    * @see javax.enterprise.inject.Instance#select(java.lang.Class, java.lang.annotation.Annotation[])
-    */
    public <U extends T> Instance<U> select(Class<U> subtype, Annotation... bindings)
    {
-      throw new UnsupportedOperationException();
+      return selectInstance(subtype, bindings);
    }
 
-   /* (non-Javadoc)
-    * @see javax.enterprise.inject.Instance#select(javax.enterprise.inject.TypeLiteral, java.lang.annotation.Annotation[])
-    */
    public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... bindings)
    {
-      throw new UnsupportedOperationException();
+      return selectInstance(subtype.getType(), bindings);
    }
+   
+   private <U extends T> Instance<U> selectInstance(Type subtype, Annotation[] bindings)
+   {
+      return new InstanceImpl<U>(
+            subtype, 
+            this.getManager(), 
+            new HashSet<Annotation>(Arrays.asList(mergeInBindings(bindings))));
+   } 
 
 }

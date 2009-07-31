@@ -682,7 +682,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          {
             throw new IllegalArgumentException("Cannot resolve a type parameterized with a wildcard " + element);
          }
-         if (type instanceof TypeVariable)
+         if (type instanceof TypeVariable<?>)
          {
             throw new IllegalArgumentException("Cannot resolve a type parameterized with a type parameter " + element);
          }

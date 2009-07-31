@@ -27,7 +27,6 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.InstanceImpl;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.resolution.ResolvableTransformer;
 

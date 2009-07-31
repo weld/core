@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans;
+package org.jboss.webbeans.bean.standard;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 
 /**
@@ -32,7 +33,7 @@ import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
  * 
  * @param <T>
  */
-public abstract class FacadeImpl<T> implements Serializable
+public abstract class AbstractFacade<T, X> implements Serializable
 {
    
    private static final long serialVersionUID = 8710258788495459128L;
@@ -52,7 +53,7 @@ public abstract class FacadeImpl<T> implements Serializable
     * @param manager The Web Beans manager
     * @param bindings The binding types
     */
-   protected FacadeImpl(Type type, BeanManagerImpl manager, Set<? extends Annotation> bindings)
+   protected AbstractFacade(Type type, BeanManagerImpl manager, Set<? extends Annotation> bindings)
    {
       this.manager = manager;
       this.type = type;
