@@ -24,8 +24,6 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
-import org.jboss.webbeans.bean.proxy.Marker;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.util.Names;
@@ -86,20 +84,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
    @Override
    protected T produceInstance(CreationalContext<T> creationalContext)
    {
-      Object receiver = getReceiver(creationalContext);
-      if (getDeclaringBean() instanceof EnterpriseBean<?> && receiver instanceof EnterpriseBeanInstance)
-      {
-         EnterpriseBeanInstance declaringInstance = (EnterpriseBeanInstance) receiver;
-         Object object = declaringInstance.getSessionObjectReference(Marker.INSTANCE).getFieldValue(field.getDeclaringType().getJavaClass(), field.getName());
-         
-         @SuppressWarnings("unchecked")
-         T instance = (T) object;
-         return instance;
-      }
-      else
-      {
-         return field.get(receiver);
-      }
+      return field.get(getReceiver(creationalContext));
    }
    
 

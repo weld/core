@@ -51,25 +51,4 @@ public interface SessionObjectReference extends Serializable
     */
    public void remove();
 
-   /**
-    * Retrieve the value of a field. The field may have any visibility modifier.
-    * 
-    * Used for retrieving producer field value.
-    * 
-    * If invoked on an SLSB, Web Beans places no requirements on which bean
-    * instance is returned.
-    * 
-    * @param declaringClass the class declaring the field
-    * @param fieldName the name of the field
-    * @return the current field value
-    * @throws IllegalArgumentException if the declaringClass is null
-    * @throws IllegalArgumentException if the fieldName is null
-    * @throws IllegalArgumentException if the declaring class is not part of the
-    *            inheritance hierarchy of this session object reference's bean
-    *            class
-    * @throws IllegalArgumentException if the declaringClass represents an
-    *            interface
-    */
-   public Object getFieldValue(Class<?> declaringClass, String fieldName);
-
 }
