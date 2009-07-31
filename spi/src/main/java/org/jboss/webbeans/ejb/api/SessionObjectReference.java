@@ -18,6 +18,8 @@ package org.jboss.webbeans.ejb.api;
 
 import java.io.Serializable;
 
+import javax.ejb.NoSuchEJBException;
+
 /**
  * A serializable reference to a session object in the EJB container
  * 
@@ -25,33 +27,46 @@ import java.io.Serializable;
  */
 public interface SessionObjectReference extends Serializable
 {
-   
+
    /**
-    * Get the reference from the EJB container to the session object for the 
+    * Get the reference from the EJB container to the session object for the
     * given business interface
     * 
-    * @param <S>
-    *           the type of the business interface
-    * @param businessInterfaceType
-    *           the type of the business interface
+    * @param <S> the type of the business interface
+    * @param businessInterfaceType the type of the business interface
     * @return a reference
     * 
-    * @throws IllegalStateException
-    *           if the business interface is not a local business interface of 
-    *           the session bean
-    * @throws NoSuchEJBException
-    *           if the session object has already been removed
+    * @throws IllegalStateException if the business interface is not a local
+    *            business interface of the session bean
+    * @throws NoSuchEJBException if the session object has already been removed
     */
    public <S> S getBusinessObject(Class<S> businessInterfaceType);
-   
+
    /**
     * Request the EJB container remove the stateful session object
     * 
-    * @throws UnsupportedOperationException
-    *            if the reference is not backed by a stateful session object
-    * @throws NoSuchEJBException
-    *            if the session object has already been removed           
+    * @throws UnsupportedOperationException if the reference is not backed by a
+    *            stateful session object
+    * @throws NoSuchEJBException if the session object has already been removed
     */
    public void remove();
-   
+
+   /**
+    * Retrieve the value of a field. The field may have any visibility modifier.
+    * 
+    * Used for retrieving producer field value.
+    * 
+    * @param declaringClass the class declaring the field
+    * @param fieldName the name of the field
+    * @return the current field value
+    * @throws IllegalArgumentException if the declaringClass is null
+    * @throws IllegalArgumentException if the fieldName is null
+    * @throws IllegalArgumentException if the declaring class is not part of the
+    *            inheritance hierarchy of this session object reference's bean
+    *            class
+    * @throws IllegalArgumentException if the declaringClass represents an
+    *            interface
+    */
+   public Object getFieldValue(Class<?> declaringClass, String fieldName);
+
 }
