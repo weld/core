@@ -19,6 +19,7 @@ package org.jboss.webbeans.bean.proxy;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.ejb.api.SessionObjectReference;
 
 /**
  * Interface implemented by all enterprise bean proxies to query/control the proxy
@@ -39,5 +40,7 @@ public interface EnterpriseBeanInstance
    public void setDestroyed(Marker marker, boolean destroyed);
    
    public void destroy(Marker marker, EnterpriseBean<?> enterpriseBean, CreationalContext<?> creationalContext);
+   
+   public SessionObjectReference getSessionObjectReference(Marker marker);
    
 }
