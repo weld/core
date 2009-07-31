@@ -56,6 +56,9 @@ public interface SessionObjectReference extends Serializable
     * 
     * Used for retrieving producer field value.
     * 
+    * If invoked on an SLSB, Web Beans places no requirements on which bean
+    * instance is returned.
+    * 
     * @param declaringClass the class declaring the field
     * @param fieldName the name of the field
     * @return the current field value
