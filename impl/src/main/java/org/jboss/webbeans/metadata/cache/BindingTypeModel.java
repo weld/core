@@ -16,7 +16,13 @@
  */
 package org.jboss.webbeans.metadata.cache;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
@@ -25,8 +31,11 @@ import javax.enterprise.inject.NonBinding;
 
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.introspector.WBMethod;
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.collections.Arrays2;
 
 /**
  * 
@@ -37,8 +46,11 @@ import org.jboss.webbeans.util.Reflections;
  */
 public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
 {
+   private static final Log log = Logging.getLog(BindingTypeModel.class);
+   
    // The non-binding types
    private Set<WBMethod<?>> nonBindingTypes;
+   
 
    /**
     * Constructor
@@ -59,6 +71,22 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
       super.init();
       initNonBindingTypes();
       checkArrayAndAnnotationValuedMembers();
+   }
+   
+   @Override
+   protected void initValid()
+   {
+      super.initValid();
+      if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
+      {
+         this.valid = false;
+         log.debug("#0 is missing @Target annotation.", getAnnotatedAnnotation());
+      }
+      else if (!Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, PARAMETER, TYPE))
+      {
+         this.valid = false;
+         log.debug("#0 is has incorrect @Target annotation. Should be @Target(METHOD, FIELD, TYPE, PARAMETER).", getAnnotatedAnnotation());
+      }
    }
 
    /**

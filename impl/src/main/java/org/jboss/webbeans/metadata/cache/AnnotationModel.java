@@ -17,9 +17,13 @@
 package org.jboss.webbeans.metadata.cache;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.introspector.WBAnnotation;
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.ClassTransformer;
 
 /**
@@ -29,10 +33,12 @@ import org.jboss.webbeans.resources.ClassTransformer;
  */
 public abstract class AnnotationModel<T extends Annotation>
 {
+   private static final Log log = Logging.getLog(AnnotationModel.class);
+   
    // The underlying annotation
    private WBAnnotation<T> annotatedAnnotation;
    // Is the data valid?
-   private boolean valid;
+   protected boolean valid;
 
    /**
     * Constructor
@@ -70,7 +76,17 @@ public abstract class AnnotationModel<T extends Annotation>
     */
    protected void initValid()
    {
-      this.valid = annotatedAnnotation.isAnnotationPresent(getMetaAnnotation());
+      this.valid = true;
+      if (!annotatedAnnotation.isAnnotationPresent(getMetaAnnotation()))
+      {
+         this.valid = false;
+      }
+      if (annotatedAnnotation.isAnnotationPresent(Retention.class) && !annotatedAnnotation.getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))
+      {
+         this.valid = false;
+         log.debug("#0 is missing @Retention(RUNTIME)", annotatedAnnotation);
+      }
+            
    }
 
    /**

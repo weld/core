@@ -16,7 +16,12 @@
  */
 package org.jboss.webbeans.metadata.cache;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Target;
 import java.util.Set;
 
 import javax.enterprise.context.ScopeType;
@@ -27,7 +32,10 @@ import javax.enterprise.inject.stereotype.Stereotype;
 import javax.interceptor.InterceptorBindingType;
 
 import org.jboss.webbeans.DefinitionException;
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.ClassTransformer;
+import org.jboss.webbeans.util.collections.Arrays2;
 
 /**
  * A meta model for a stereotype, allows us to cache a stereotype and to
@@ -38,6 +46,8 @@ import org.jboss.webbeans.resources.ClassTransformer;
  */
 public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
 {
+   private static final Log log = Logging.getLog(StereotypeModel.class);
+   
    // Is the stereotype a policy
    private boolean policy;
    // The default scope type
@@ -121,6 +131,28 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       if (getAnnotatedAnnotation().isAnnotationPresent(Policy.class))
       {
          this.policy = true;
+      }
+   }
+   
+   @Override
+   protected void initValid()
+   {
+      super.initValid();
+      if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
+      {
+         this.valid = false;
+         log.debug("#0 is missing @Target annotation.", getAnnotatedAnnotation());
+      }
+      else if (!(
+            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, TYPE) ||
+            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), TYPE) ||
+            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD) ||
+            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), FIELD) ||
+            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, TYPE)
+         ))
+      {
+         this.valid = false;
+         log.debug("#0 is has incorrect @Target annotation. Should be @Target(METHOD, FIELD, TYPE, PARAMETER), @Target(METHOD, TYPE), @Target(METHOD), @Target(TYPE) or @Target(FIELD).", getAnnotatedAnnotation());
       }
    }
 

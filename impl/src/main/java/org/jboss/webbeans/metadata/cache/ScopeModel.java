@@ -16,11 +16,19 @@
  */
 package org.jboss.webbeans.metadata.cache;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Target;
 
 import javax.enterprise.context.ScopeType;
 
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.ClassTransformer;
+import org.jboss.webbeans.util.collections.Arrays2;
 
 /**
  * 
@@ -31,6 +39,8 @@ import org.jboss.webbeans.resources.ClassTransformer;
  */
 public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
 {
+   private static final Log log = Logging.getLog(ScopeModel.class);
+   
    /**
     * Constrctor
     * 
@@ -39,6 +49,22 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
    public ScopeModel(Class<T> scope, ClassTransformer classTransformer)
    {
       super(scope, classTransformer);
+   }
+   
+   @Override
+   protected void initValid()
+   {
+      super.initValid();
+      if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
+      {
+         this.valid = false;
+         log.debug("#0 is missing @Target annotation.", getAnnotatedAnnotation());
+      }
+      else if (!Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, TYPE))
+      {
+         this.valid = false;
+         log.debug("#0 is has incorrect @Target annotation. Should be @Target(METHOD, FIELD, TYPE).", getAnnotatedAnnotation());
+      }
    }
 
    /**

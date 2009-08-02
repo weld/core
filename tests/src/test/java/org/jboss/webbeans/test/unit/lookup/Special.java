@@ -1,6 +1,10 @@
 package org.jboss.webbeans.test.unit.lookup;
 
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -9,7 +13,7 @@ import javax.enterprise.inject.BindingType;
 
 @BindingType
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE})
+@Target({FIELD, METHOD, TYPE, PARAMETER})
 public @interface Special
 {
 
