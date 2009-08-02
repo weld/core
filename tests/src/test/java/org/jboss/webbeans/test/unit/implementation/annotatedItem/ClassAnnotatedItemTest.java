@@ -4,8 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.enterprise.inject.deployment.DeploymentType;
-import javax.enterprise.inject.deployment.Production;
+import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.stereotype.Stereotype;
 
 import org.jboss.testharness.impl.packaging.Artifact;
@@ -27,7 +26,7 @@ public class ClassAnnotatedItemTest extends AbstractWebBeansTest
    {
       WBClass<Order> annotatedElement = WBClassImpl.of(Order.class, transformer);
       assert annotatedElement.getAnnotations().size() == 1;
-      assert annotatedElement.getAnnotation(Production.class) != null;
+      assert annotatedElement.getAnnotation(Random.class) != null;
       assert annotatedElement.getJavaClass().equals(Order.class);
    }
    
@@ -35,11 +34,11 @@ public class ClassAnnotatedItemTest extends AbstractWebBeansTest
    public void testMetaAnnotations()
    {
       WBClass<Order> annotatedElement = WBClassImpl.of(Order.class, transformer);
-      Set<Annotation> annotations = annotatedElement.getMetaAnnotations(DeploymentType.class);
+      Set<Annotation> annotations = annotatedElement.getMetaAnnotations(BindingType.class);
       assert annotations.size() == 1;
       Iterator<Annotation> it = annotations.iterator();
       Annotation production = it.next();
-      assert Production.class.equals(production.annotationType());
+      assert Random.class.equals(production.annotationType());
    }
    
    @Test

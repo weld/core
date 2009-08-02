@@ -15,8 +15,6 @@ import java.util.Set;
 
 import javax.el.ELContext;
 import javax.enterprise.inject.TypeLiteral;
-import javax.enterprise.inject.deployment.Production;
-import javax.enterprise.inject.deployment.Standard;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.AbstractTest;
@@ -69,17 +67,6 @@ public abstract class AbstractWebBeansTest extends AbstractTest
          }
       }
       return annotationTypeList.size() == 0;
-   }
-
-   protected List<Class<? extends Annotation>> getEnabledDeploymentTypes()
-   {
-      return getDefaultDeploymentTypes();
-   }
-
-   @SuppressWarnings("unchecked")
-   protected final List<Class<? extends Annotation>> getDefaultDeploymentTypes()
-   {
-      return Arrays.asList(Standard.class, Production.class);
    }
 
    protected Iterable<URL> getResources(String name)

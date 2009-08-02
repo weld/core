@@ -233,11 +233,6 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
       return id;
    }
 
-   public boolean isPolicy()
-   {
-      return false;
-   }
-
    @Override
    public AbstractBean<?, ?> getSpecializedBean()
    {
@@ -249,24 +244,6 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
    protected void initScopeType()
    {
       // Disposal methods aren't scoped
-   }
-
-   @Override
-   public Class<? extends Annotation> getDeploymentType()
-   {
-      return getDeclaringBean().getDeploymentType();
-   }
-
-   @Override
-   protected void initDeploymentType()
-   {
-      // Not used
-   }
-   
-   @Override
-   protected void checkDeploymentType()
-   {
-      // TODO sort out ordering of init, then we can use initDeploymentType and hence checkDeploymentType
    }
 
    public Set<Class<? extends Annotation>> getStereotypes()

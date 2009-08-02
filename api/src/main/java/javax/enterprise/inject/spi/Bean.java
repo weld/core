@@ -48,14 +48,6 @@ public interface Bean<T> extends Contextual<T>
    public Class<? extends Annotation> getScopeType();
 
    /**
-    * The deployment type of a bean
-    * @deprecated
-    * 
-    * @return the deployment type
-    */
-   public Class<? extends Annotation> getDeploymentType();
-
-   /**
     * The name of a bean
     * 
     * @return the name

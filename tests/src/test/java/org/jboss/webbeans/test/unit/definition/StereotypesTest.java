@@ -22,7 +22,7 @@ public class StereotypesTest extends AbstractWebBeansTest
       assert animalStereotype.getDefaultScopeType().annotationType().equals(RequestScoped.class);
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert !animalStereotype.isBeanNameDefaulted();
-      assert animalStereotype.getDefaultDeploymentType() == null;
+      assert !animalStereotype.isPolicy();
    }
    
    @Test
@@ -32,7 +32,7 @@ public class StereotypesTest extends AbstractWebBeansTest
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert !animalStereotype.isBeanNameDefaulted();
-      assert animalStereotype.getDefaultDeploymentType() == null;
+      assert !animalStereotype.isPolicy();
    }
    
    @Test
@@ -42,7 +42,7 @@ public class StereotypesTest extends AbstractWebBeansTest
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert !animalStereotype.isBeanNameDefaulted();
-      assert animalStereotype.getDefaultDeploymentType() == null;
+      assert !animalStereotype.isPolicy();
    }
       
 }

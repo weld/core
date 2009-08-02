@@ -17,9 +17,7 @@
 package org.jboss.webbeans.metadata.cache;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -31,12 +29,12 @@ import org.jboss.webbeans.BeanManagerImpl;
  */
 public class MergedStereotypes<T, E>
 {
-   // The possible deployment types
-   private final Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes;
    // The possible scope types
    private final Set<Annotation> possibleScopeTypes;
    // Is the bean name defaulted?
    private boolean beanNameDefaulted;
+   // Are any of the sterotypes policies
+   private boolean policy;
    
    private final BeanManagerImpl manager;
    
@@ -47,7 +45,6 @@ public class MergedStereotypes<T, E>
     */
    public MergedStereotypes(Set<Annotation> stereotypeAnnotations, BeanManagerImpl manager)
    {
-      this.possibleDeploymentTypes = new HashMap<Class<? extends Annotation>, Annotation>();
       this.possibleScopeTypes = new HashSet<Annotation>();
       this.manager = manager;
       merge(stereotypeAnnotations);
@@ -68,9 +65,9 @@ public class MergedStereotypes<T, E>
          {
             throw new IllegalStateException("Stereotype " + stereotypeAnnotation + " not registered with container");
          }
-         if (stereotype.getDefaultDeploymentType() != null)
+         if (stereotype.isPolicy())
          {
-            possibleDeploymentTypes.put(stereotype.getDefaultDeploymentType().annotationType(), stereotype.getDefaultDeploymentType());
+            policy = true;
          }
          if (stereotype.getDefaultScopeType() != null)
          {
@@ -83,14 +80,9 @@ public class MergedStereotypes<T, E>
       }
    }
 
-   /**
-    * Returns the possible deployment typess
-    * 
-    * @return The deployment types
-    */
-   public Map<Class<? extends Annotation>, Annotation> getPossibleDeploymentTypes()
+   public boolean isPolicy()
    {
-      return possibleDeploymentTypes;
+      return policy;
    }
 
    /**
@@ -131,8 +123,8 @@ public class MergedStereotypes<T, E>
    @Override
    public String toString()
    {
-     return "Merged stereotype model with possible deployment types " + 
-        possibleDeploymentTypes + " and possible scopes " + possibleScopeTypes; 
+     return "Merged stereotype model; Any of the sterotypes is a policy: " + 
+        policy + "; possible scopes " + possibleScopeTypes; 
    }
    
 }

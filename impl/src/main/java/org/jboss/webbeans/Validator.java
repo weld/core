@@ -31,6 +31,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
+import javax.enterprise.inject.Policy;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
@@ -157,7 +158,7 @@ public class Validator implements Service
       checkFacadeInjectionPoint(ij, Event.class);
       Annotation[] bindings = ij.getBindings().toArray(new Annotation[0]);
       WBAnnotated<?, ?> annotatedItem = ResolvableWBClass.of(ij.getType(), bindings, beanManager);
-      Set<?> resolvedBeans = beanManager.getInjectableBeans(ij);
+      Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getInjectableBeans(ij));
       if (resolvedBeans.isEmpty())
       {
          throw new DeploymentException("The injection point " + ij + " with binding types "  + Names.annotationsToString(ij.getBindings()) + " in " + ij.getBean() + " has unsatisfied dependencies with binding types ");
@@ -200,6 +201,7 @@ public class Validator implements Service
          }
       }
       validateEnabledDecoratorClasses(manager);
+      validateEnabledPolicies(manager);
       validateDisposalMethods(environment);
       
    }
@@ -218,6 +220,35 @@ public class Validator implements Service
          {
             throw new DeploymentException("Enabled decorator class " + clazz + " is not the bean class of at least one decorator bean (detected decorator beans " + decoratorBeanClasses + ")");
          }
+      }
+   }
+   
+   private void validateEnabledPolicies(BeanManagerImpl beanManager)
+   {
+      List<Class<?>> seenPolicies = new ArrayList<Class<?>>();
+      for (Class<? extends Annotation> stereotype : beanManager.getEnabledPolicyStereotypes())
+      {
+         if (!stereotype.isAnnotationPresent(Policy.class))
+         {
+            throw new DeploymentException("Enabled policy sterotype " + stereotype + " is not annotated @Policy");
+         }
+         if (seenPolicies.contains(stereotype))
+         {
+            throw new DeploymentException("Cannot enable the same policy sterotype " + stereotype + " in beans.xml");
+         }
+         seenPolicies.add(stereotype);
+      }
+      for (Class<?> clazz : beanManager.getEnabledPolicyClasses())
+      {
+         if (!clazz.isAnnotationPresent(Policy.class))
+         {
+            throw new DeploymentException("Enabled policy bean class " + clazz + " is not annotated @Policy");
+         }
+         if (seenPolicies.contains(clazz))
+         {
+            throw new DeploymentException("Cannot enable the same policy bean class " + clazz + " in beans.xml");
+         }
+         seenPolicies.add(clazz);
       }
    }
    

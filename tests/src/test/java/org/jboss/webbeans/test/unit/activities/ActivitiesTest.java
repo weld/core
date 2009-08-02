@@ -14,7 +14,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observer;
 import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
-import javax.enterprise.inject.deployment.Production;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -56,11 +55,6 @@ public class ActivitiesTest extends AbstractWebBeansTest
          public Set<Annotation> getBindings()
          {
             return bindings;
-         }
-
-         public Class<? extends Annotation> getDeploymentType()
-         {
-            return Production.class;
          }
 
          public Set<InjectionPoint> getInjectionPoints()

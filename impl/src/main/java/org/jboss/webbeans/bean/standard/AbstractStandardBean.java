@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.deployment.Standard;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
@@ -56,11 +55,6 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
    public Set<Annotation> getBindings()
    {
       return DEFAULT_BINDING;
-   }
-   
-   public Class<? extends Annotation> getDeploymentType()
-   {
-      return Standard.class;
    }
    
    public Class<? extends Annotation> getScopeType()
@@ -109,7 +103,6 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
    
    public boolean isPolicy()
    {
-      //TODO Implement the isPolicy() method based on the annotations of this bean
       return false;
    }
 

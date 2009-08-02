@@ -28,7 +28,6 @@ import javax.enterprise.context.ScopeType;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observer;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 
@@ -300,14 +299,6 @@ public interface BeanManager
     */
    @Deprecated
    public void addBean(Bean<?> bean);
-
-   /**
-    * Exposes the list of enabled deployment types, in order of lower to higher
-    * precedence, This method may be used by portable extensions to discover
-    * information about the deployment.
-    */
-   @Deprecated
-   public List<Class<? extends Annotation>> getEnabledDeploymentTypes();
 
    /**
     * Associate a custom Context with a scope.

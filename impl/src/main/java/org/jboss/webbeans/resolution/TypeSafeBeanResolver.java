@@ -67,7 +67,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
    @Override
    protected Set<T> filterResult(Set<T> matched)
    {
-      return Beans.retainHighestPrecedenceBeans(matched, manager.getEnabledDeploymentTypes());
+      return Beans.retainEnabledPolicies(matched, manager.getEnabledPolicyClasses(), manager.getEnabledPolicyStereotypes());
    }
 
    @Override
@@ -81,5 +81,45 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
    {
       return matched;
    }
+   
+   public <X> Set<Bean<? extends X>> resolve(Set<Bean<? extends X>> beans)
+   {
+      if (beans.size() <= 1)
+      {
+         return beans;
+      }
+      
+      boolean removePolicies = false;
+      
+      // TODO CACHE!!!!!
+      
+      for (Bean<? extends X> bean : beans)
+      {
+         if (bean.isPolicy())
+         {
+            removePolicies = true;
+         }
+      }
+
+      // TODO Specialization!
+      if (removePolicies)
+      {
+         Set<Bean<? extends X>> policies = new HashSet<Bean<? extends X>>();
+         for (Bean<? extends X> bean : beans)
+         {
+            if (bean.isPolicy())
+            {
+               policies.add(bean);
+            }
+         }
+
+         return policies;
+      }
+      else
+      {
+         return beans;
+      }
+   }
+
 
 }

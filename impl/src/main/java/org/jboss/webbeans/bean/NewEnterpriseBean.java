@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.deployment.Standard;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
@@ -72,15 +71,10 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
       return Dependent.class;
    }
 
-   /**
-    * Gets the deployment type
-    * 
-    * @return The standard deployment type
-    */
    @Override
-   public Class<? extends Annotation> getDeploymentType()
+   public boolean isPolicy()
    {
-      return Standard.class;
+      return false;
    }
 
    /**

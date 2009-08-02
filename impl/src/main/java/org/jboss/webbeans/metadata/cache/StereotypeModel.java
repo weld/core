@@ -22,7 +22,7 @@ import java.util.Set;
 import javax.enterprise.context.ScopeType;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Named;
-import javax.enterprise.inject.deployment.DeploymentType;
+import javax.enterprise.inject.Policy;
 import javax.enterprise.inject.stereotype.Stereotype;
 import javax.interceptor.InterceptorBindingType;
 
@@ -38,8 +38,8 @@ import org.jboss.webbeans.resources.ClassTransformer;
  */
 public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
 {
-   // The default deployment type
-   private Annotation defaultDeploymentType;
+   // Is the stereotype a policy
+   private boolean policy;
    // The default scope type
    private Annotation defaultScopeType;
    // Is the bean name defaulted
@@ -55,7 +55,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    public StereotypeModel(Class<T> sterotype, ClassTransformer transformer)
    {
       super(sterotype, transformer);
-      initDefaultDeploymentType();
+      initPolicy();
       initDefaultScopeType();
       initBeanNameDefaulted();
       initInterceptorBindings();
@@ -116,28 +116,15 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    /**
     * Initializes the default deployment type
     */
-   private void initDefaultDeploymentType()
+   private void initPolicy()
    {
-      Set<Annotation> deploymentTypes = getAnnotatedAnnotation().getMetaAnnotations(DeploymentType.class);
-      if (deploymentTypes.size() > 1)
+      if (getAnnotatedAnnotation().isAnnotationPresent(Policy.class))
       {
-         throw new DefinitionException("At most one deployment type may be specified on " + getAnnotatedAnnotation());
-      }
-      else if (deploymentTypes.size() == 1)
-      {
-         this.defaultDeploymentType = deploymentTypes.iterator().next();
+         this.policy = true;
       }
    }
 
-   /**
-    * Get the default deployment type the stereotype specifies
-    * 
-    * @return The default deployment type, or null if none is specified
-    */
-   public Annotation getDefaultDeploymentType()
-   {
-      return defaultDeploymentType;
-   }
+   
 
    /**
     * Get the default scope type the stereotype specifies
@@ -178,6 +165,14 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    protected Class<? extends Annotation> getMetaAnnotation()
    {
       return Stereotype.class;
+   }
+
+   /**
+    * @return
+    */
+   public boolean isPolicy()
+   {
+      return policy;
    }
 
 }

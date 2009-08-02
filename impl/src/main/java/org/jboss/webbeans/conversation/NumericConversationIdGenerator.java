@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.SessionScoped;
 
-import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -32,7 +31,7 @@ import org.jboss.webbeans.log.Logging;
  *
  */
 @SessionScoped
-@WebBean
+
 public class NumericConversationIdGenerator implements ConversationIdGenerator, Serializable
 {
    private static final long serialVersionUID = -587408626962044442L;

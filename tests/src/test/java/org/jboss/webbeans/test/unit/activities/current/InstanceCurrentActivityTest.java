@@ -12,7 +12,6 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observer;
 import javax.enterprise.inject.AnnotationLiteral;
-import javax.enterprise.inject.deployment.Production;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -106,11 +105,6 @@ public class InstanceCurrentActivityTest extends AbstractWebBeansTest
       public Set<Annotation> getBindings()
       {
          return BINDING_TYPES;
-      }
-
-      public Class<? extends Annotation> getDeploymentType()
-      {
-         return Production.class;
       }
 
       public Set<InjectionPoint> getInjectionPoints()

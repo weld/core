@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.deployment.Production;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -47,11 +46,6 @@ public class ManagerTest extends AbstractWebBeansTest
       public Set<Annotation> getBindings()
       {
          return DEFAULT_BINDINGS;
-      }
-
-      public Class<? extends Annotation> getDeploymentType()
-      {
-         return Production.class;
       }
 
       public Set<InjectionPoint> getInjectionPoints()

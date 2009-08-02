@@ -30,7 +30,6 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -43,7 +42,6 @@ import org.jboss.webbeans.servlet.ConversationBeanStore;
  * 
  */
 @SessionScoped
-@WebBean
 public class ServletConversationManager extends AbstractConversationManager implements Serializable
 {
    private static final long serialVersionUID = 1647848566880659085L;
@@ -64,7 +62,6 @@ public class ServletConversationManager extends AbstractConversationManager impl
    
    @Produces
    @ConversationInactivityTimeout
-   @WebBean
    public static long getConversationTimeoutInMilliseconds()
    {
       log.trace("Produced conversation timeout " + CONVERSATION_TIMEOUT_IN_MS);
@@ -73,7 +70,6 @@ public class ServletConversationManager extends AbstractConversationManager impl
 
    @Produces
    @ConversationConcurrentAccessTimeout
-   @WebBean
    public static long getConversationConcurrentAccessTimeout()
    {
       log.trace("Produced conversation concurrent access timeout " + CONVERSATION_CONCURRENT_ACCESS_TIMEOUT_IN_MS);
@@ -82,7 +78,6 @@ public class ServletConversationManager extends AbstractConversationManager impl
 
    @Produces
    @ConversationIdName
-   @WebBean
    public static String getConversationIdName()
    {
       log.trace("Produced conversation id name " + CONVERSATION_ID_NAME);

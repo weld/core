@@ -36,8 +36,6 @@ import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.deployment.DeploymentType;
-import javax.enterprise.inject.deployment.Production;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -326,40 +324,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       }
    }
 
-   @Override
-   protected void initDeploymentType()
-   {
-      for (WBClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getSuperclass())
-      {
-         Set<Annotation> deploymentTypes = clazz.getDeclaredMetaAnnotations(DeploymentType.class);
-         if (deploymentTypes.size() == 1)
-         {
-            if (getAnnotatedItem().isAnnotationPresent(deploymentTypes.iterator().next().annotationType()))
-            {
-               this.deploymentType = deploymentTypes.iterator().next().annotationType();
-               log.trace("Deployment type " + deploymentType + " specified by annotation");
-            }
-            break;
-         }
-         else if (deploymentTypes.size() > 1)
-         {
-            throw new DefinitionException("At most one deployment type may be specified");
-         }
-      }
-
-      if (this.deploymentType == null)
-      {
-         initDeploymentTypeFromStereotype();
-      }
-
-      if (this.deploymentType == null)
-      {
-         this.deploymentType = getDefaultDeploymentType();
-         log.trace("Using default @Production deployment type");
-         return;
-      }
-   }
-
    /**
     * Validates the bean implementation
     */
@@ -424,11 +388,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    public String toString()
    {
       return "AbstractClassBean " + getName();
-   }
-
-   protected Class<? extends Annotation> getDefaultDeploymentType()
-   {
-      return Production.class;
    }
    
    @Override

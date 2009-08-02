@@ -257,8 +257,6 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          
          DeploymentVisitor deploymentVisitor = new DeploymentVisitor(getServices().get(Deployment.class)).visit();
          
-         parseBeansXml(deploymentVisitor.getBeansXmlUrls());
-         
          beginApplication(getApplicationContext());
          BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
          beginDeploy(requestBeanStore);
@@ -275,6 +273,9 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(manager);
          extensionBeanDeployer.addExtensions(ServiceLoader.load(Extension.class));
          extensionBeanDeployer.createBeans().deploy();
+         
+         // Parse beans.xml before main bean deployment
+         parseBeansXml(deploymentVisitor.getBeansXmlUrls());
          
          BeanDeployer beanDeployer = new BeanDeployer(manager, ejbDescriptors);
          
@@ -293,9 +294,13 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       BeansXmlParser parser = new BeansXmlParser(getServices().get(ResourceLoader.class), urls);
       parser.parse();
       
-      if (parser.getEnabledDeploymentTypes() != null)
+      if (parser.getEnabledPolicyClasses() != null)
       {
-         manager.setEnabledDeploymentTypes(parser.getEnabledDeploymentTypes());
+         manager.setEnabledPolicyClasses(parser.getEnabledPolicyClasses());
+      }
+      if (parser.getEnabledPolicyStereotypes() != null)
+      {
+         manager.setEnabledPolicyStereotypes(parser.getEnabledPolicyStereotypes());
       }
       if (parser.getEnabledDecoratorClasses() != null)
       {
@@ -305,7 +310,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       {
          manager.setEnabledInterceptorClasses(parser.getEnabledInterceptorClasses());
       }
-      log.debug("Enabled deployment types: " + manager.getEnabledDeploymentTypes());
+      log.debug("Enabled policies: " + manager.getEnabledPolicyClasses() + " " + manager.getEnabledPolicyStereotypes());
       log.debug("Enabled decorator types: " + manager.getEnabledDecoratorClasses());
       log.debug("Enabled interceptor types: " + manager.getEnabledInterceptorClasses());
    }

@@ -18,11 +18,9 @@ package org.jboss.webbeans.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.decorator.Decorates;
 import javax.enterprise.inject.BindingType;
@@ -39,7 +37,6 @@ import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.metadata.cache.BindingTypeModel;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
-import org.jboss.webbeans.util.collections.ListComparator;
 
 /**
  * Helper class for bean inspection
@@ -180,34 +177,40 @@ public class Beans
     * @param enabledDeploymentTypes The enabled deployment types
     * @return The filtered beans
     */
-   public static <T extends Bean<?>> Set<T> retainHighestPrecedenceBeans(Set<T> beans, List<Class<? extends Annotation>> enabledDeployentTypes)
+   public static <T extends Bean<?>> Set<T> retainEnabledPolicies(Set<T> beans, Collection<Class<?>> enabledPolicyClasses, Collection<Class<? extends Annotation>> enabledPolicySterotypes)
    {
-      if (beans.size() > 0)
+      if (beans.size() == 0)
       {
-         SortedSet<Class<? extends Annotation>> possibleDeploymentTypes = new TreeSet<Class<? extends Annotation>>(new ListComparator<Class<? extends Annotation>>(enabledDeployentTypes));
-         for (Bean<?> bean : beans)
-         {
-            possibleDeploymentTypes.add(bean.getDeploymentType());
-         }
-         possibleDeploymentTypes.retainAll(enabledDeployentTypes);
-         Set<T> trimmed = new HashSet<T>();
-         if (possibleDeploymentTypes.size() > 0)
-         {
-            Class<? extends Annotation> highestPrecedencePossibleDeploymentType = possibleDeploymentTypes.last();
-
-            for (T bean : beans)
-            {
-               if (bean.getDeploymentType().equals(highestPrecedencePossibleDeploymentType))
-               {
-                  trimmed.add(bean);
-               }
-            }
-         }
-         return trimmed;
+         return beans;
       }
       else
       {
-         return beans;
+         Set<T> enabledBeans = new HashSet<T>();
+         for (T bean : beans)
+         {
+            if (bean.isPolicy())
+            {
+               if (enabledPolicyClasses.contains(bean.getBeanClass()))
+               {
+                  enabledBeans.add(bean);
+               }
+               else
+               {
+                  for (Class<? extends Annotation> stereotype : bean.getStereotypes())
+                  {
+                     if (enabledPolicySterotypes.contains(stereotype))
+                     {
+                        enabledBeans.add(bean);
+                     }
+                  }
+               }
+            }
+            else
+            {
+               enabledBeans.add(bean);
+            }
+         }
+         return enabledBeans;
       }
    }
    

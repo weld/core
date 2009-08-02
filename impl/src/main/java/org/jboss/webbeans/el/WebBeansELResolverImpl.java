@@ -132,7 +132,6 @@ public class WebBeansELResolverImpl extends ELResolver
          Object value = null;
          try
          {
-            
             Bean<?> bean = manager.resolve(manager.getBeans(name));
             CreationalContext<?> creationalContext = manager.createCreationalContext(bean);
             if (bean != null)

@@ -83,17 +83,10 @@ public class NameBasedResolver
                   matchedBeans.add(bean);
                }
             }
-            matchedBeans = Beans.retainHighestPrecedenceBeans(matchedBeans, manager.getEnabledDeploymentTypes());
-            return sortBeans(matchedBeans);
+            return Beans.retainEnabledPolicies(matchedBeans, manager.getEnabledPolicyClasses(), manager.getEnabledPolicyStereotypes());
          }
 
       });
-   }
-   
-
-   protected Set<Bean<?>> sortBeans(Set<Bean<?>> matchedBeans)
-   {
-      return matchedBeans;
    }
 
    /**

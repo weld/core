@@ -20,10 +20,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.webbeans.WebBean;
-
 @RequestScoped
-@WebBean
 public class HttpSessionManager
 {
    private HttpSession session;

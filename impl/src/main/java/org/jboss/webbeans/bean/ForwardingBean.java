@@ -87,16 +87,6 @@ public abstract class ForwardingBean<T> implements Bean<T>
       return delegate().getBindings();
    }
 
-   /**
-    * Gets the deployment types of the delegate
-    * 
-    * @return The deployment types
-    */
-   public Class<? extends Annotation> getDeploymentType()
-   {
-      return delegate().getDeploymentType();
-   }
-
    public Set<InjectionPoint> getInjectionPoints()
    {
       return delegate().getInjectionPoints();

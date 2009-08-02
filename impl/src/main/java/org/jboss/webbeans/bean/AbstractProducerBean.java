@@ -34,7 +34,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.deployment.DeploymentType;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -79,11 +78,6 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
    public Class<?> getBeanClass()
    {
       return getDeclaringBean().getBeanClass();
-   }
-
-   protected Class<? extends Annotation> getDefaultDeploymentType()
-   {
-      return getDeclaringBean().getDeploymentType();
    }
 
    /**
@@ -255,31 +249,6 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
          log.trace("Using default @Dependent scope");
       }
    }
-
-   @Override
-   protected void initDeploymentType()
-   {
-      Set<Annotation> deploymentTypes = getAnnotatedItem().getMetaAnnotations(DeploymentType.class);
-      if (deploymentTypes.size() > 1)
-      {
-         throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().toString());
-      }
-      else if (deploymentTypes.size() == 1)
-      {
-         this.deploymentType = deploymentTypes.iterator().next().annotationType();
-         log.trace("Deployment type " + deploymentType + " specified by annotation");
-         return;
-      }
-
-      initDeploymentTypeFromStereotype();
-
-      if (this.deploymentType == null)
-      {
-         this.deploymentType = getDefaultDeploymentType();
-         log.trace("Using default " + this.deploymentType + " deployment type");
-         return;
-      }
-   }
    
    @Override
    protected void initSerializable()
@@ -316,11 +285,6 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
    }
 
    protected abstract T produceInstance(CreationalContext<T> creationalContext);
-
-   public boolean isPolicy()
-   {
-      return false;
-   }
 
    /**
     * Gets a string representation

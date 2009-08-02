@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.SessionScoped;
 
-import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -35,7 +34,6 @@ import org.jboss.webbeans.log.Logging;
  * @see org.jboss.webbeans.conversation.ConversationTerminator
  */
 @SessionScoped
-@WebBean
 public class JavaSEConversationTerminator implements ConversationTerminator, Serializable
 {
    private static final long serialVersionUID = 7258623232951724618L;

@@ -29,8 +29,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Named;
+import javax.enterprise.inject.Policy;
 import javax.enterprise.inject.Specializes;
-import javax.enterprise.inject.deployment.Standard;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.stereotype.Stereotype;
 
@@ -98,8 +98,8 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    protected Class<? extends Annotation> scopeType;
    // The merged stereotypes
    private MergedStereotypes<T, E> mergedStereotypes;
-   // The deployment type
-   protected Class<? extends Annotation> deploymentType;
+   // Is it a policy, either defined by stereotypes or directly?
+   private boolean policy;
    // The type
    protected Class<T> type;
    // The API types
@@ -153,8 +153,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       initPrimitive();
       log.trace("Building Web Bean bean metadata for #0", getType());
       initName();
-      initDeploymentType();
-      checkDeploymentType();
+      initPolicy();
       initScopeType();
       initSerializable();
       initProxyable();
@@ -220,19 +219,15 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       this.bindings.add(ANY_LITERAL);
    }
 
-   /**
-    * Initializes the deployment types
-    */
-   protected abstract void initDeploymentType();
-
-   protected void initDeploymentTypeFromStereotype()
+   protected void initPolicy()
    {
-      Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes = getMergedStereotypes().getPossibleDeploymentTypes();
-      if (possibleDeploymentTypes.size() > 0)
+      if (getAnnotatedItem().isAnnotationPresent(Policy.class))
       {
-         this.deploymentType = getDeploymentType(manager.getEnabledDeploymentTypes(), possibleDeploymentTypes);
-         log.trace("Deployment type #0 specified by stereotype", deploymentType);
-         return;
+         this.policy = true;
+      }
+      else
+      {
+         this.policy = getMergedStereotypes().isPolicy();
       }
    }
 
@@ -322,21 +317,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       }
    }
 
-   /**
-    * Validates the deployment type
-    */
-   protected void checkDeploymentType()
-   {
-      if (deploymentType == null)
-      {
-         throw new DefinitionException("type: " + getType() + " must specify a deployment type");
-      }
-      else if (deploymentType.equals(Standard.class) && !STANDARD_WEB_BEAN_CLASSES.contains(getAnnotatedItem().getJavaClass()))
-      {
-         throw new DefinitionException(getAnnotatedItem().getName() + " cannot have deployment type @Standard");
-      }
-   }
-
    protected void postSpecialize()
    {
       if (getAnnotatedItem().isAnnotationPresent(Named.class) && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
@@ -390,18 +370,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 
    @Override
    public abstract AbstractBean<?, ?> getSpecializedBean();
-
-   /**
-    * Gets the deployment type of the bean
-    * 
-    * @return The deployment type
-    * 
-    * @see org.jboss.webbeans.bean.BaseBean#getDeploymentType()
-    */
-   public Class<? extends Annotation> getDeploymentType()
-   {
-      return deploymentType;
-   }
 
    @Override
    public Set<WBInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
@@ -534,6 +502,11 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    public boolean isDependent()
    {
       return Dependent.class.equals(getScopeType());
+   }
+   
+   public boolean isPolicy()
+   {
+      return policy;
    }
 
    @Override

@@ -19,6 +19,7 @@ package org.jboss.webbeans.bean;
 import java.lang.reflect.Member;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Policy;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
@@ -36,6 +37,7 @@ public abstract class AbstractReceiverBean<T, S extends Member> extends Abstract
    private static final LogProvider log = Logging.getLogProvider(AbstractReceiverBean.class);
    
    private AbstractClassBean<?> declaringBean;
+   private boolean policy;
 
    public AbstractReceiverBean(AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
@@ -87,6 +89,32 @@ public abstract class AbstractReceiverBean<T, S extends Member> extends Abstract
    public AbstractClassBean<?> getDeclaringBean()
    {
       return declaringBean;
+   }
+   
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.bean.AbstractBean#isPolicy()
+    */
+   @Override
+   public boolean isPolicy()
+   {
+      return policy;
+   }
+   
+   @Override
+   protected void initPolicy()
+   {
+      if (getDeclaringBean().isPolicy())
+      {
+         this.policy = true;
+      }
+      else if (getAnnotatedItem().isAnnotationPresent(Policy.class))
+      {
+         this.policy = true;
+      }
+      else if (getMergedStereotypes().isPolicy())
+      {
+         this.policy = true;
+      }
    }
 
 }

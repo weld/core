@@ -26,16 +26,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.Stack;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -52,11 +49,8 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.BindingType;
-import javax.enterprise.inject.InjectionException;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
-import javax.enterprise.inject.deployment.Production;
-import javax.enterprise.inject.deployment.Standard;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
@@ -207,7 +201,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * archive accessibility, and the configuration for this bean deployment
     * archive
     */
-   private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
+   private transient Collection<Class<?>> enabledPolicyClasses;
+   private transient Collection<Class<? extends Annotation>> enabledPolicyStereotypes;
    private transient List<Class<?>> enabledDecoratorClasses;
    private transient List<Class<?>> enabledInterceptorClasses;
    private transient final Set<CurrentActivity> currentActivities;   
@@ -221,7 +216,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * structures that are transitive accessible from other bean deployment 
     * archives
     */
-   private transient final TypeSafeResolver<Bean<?>> beanResolver;
+   private transient final TypeSafeBeanResolver<Bean<?>> beanResolver;
    private transient final TypeSafeResolver<DecoratorBean<?>> decoratorResolver;
    private transient final TypeSafeResolver<ObserverMethod<?,?>> observerResolver;
    private transient final NameBasedResolver nameBasedResolver;
@@ -269,13 +264,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * @return
     */
    public static BeanManagerImpl newRootManager(ServiceRegistry serviceRegistry)
-   {
-      List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      defaultEnabledDeploymentTypes.add(0, Standard.class);
-      defaultEnabledDeploymentTypes.add(1, Production.class);
-      
-      List<Class<?>> defaultEnabledDecoratorClasses = new ArrayList<Class<?>>();
-      
+   {  
       ListMultimap<Class<? extends Annotation>, Context> contexts = Multimaps.newListMultimap(new ConcurrentHashMap<Class<? extends Annotation>, Collection<Context>>(), new Supplier<List<Context>>() 
       {
          
@@ -297,7 +286,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new ClientProxyProvider(),
             contexts, 
             new CopyOnWriteArraySet<CurrentActivity>(), 
-            new HashMap<Contextual<?>, Contextual<?>>(), defaultEnabledDeploymentTypes, defaultEnabledDecoratorClasses, 
+            new HashMap<Contextual<?>, Contextual<?>>(), 
+            new ArrayList<Class<?>>(),
+            new ArrayList<Class<? extends Annotation>>(),
+            new ArrayList<Class<?>>(),
             new AtomicInteger());
    }
 
@@ -328,8 +320,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             parentManager.getClientProxyProvider(), 
             parentManager.getContexts(), 
             parentManager.getCurrentActivities(), 
-            parentManager.getSpecializedBeans(), 
-            parentManager.getEnabledDeploymentTypes(), 
+            parentManager.getSpecializedBeans(),
+            parentManager.getEnabledPolicyClasses(),
+            parentManager.getEnabledPolicyStereotypes(),
             parentManager.getEnabledDecoratorClasses(), 
             parentManager.getIds());
    }
@@ -352,7 +345,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          ListMultimap<Class<? extends Annotation>, Context> contexts, 
          Set<CurrentActivity> currentActivities, 
          Map<Contextual<?>, Contextual<?>> specializedBeans, 
-         List<Class<? extends Annotation>> enabledDeploymentTypes, 
+         Collection<Class<?>> enabledPolicyClasses,
+         Collection<Class<? extends Annotation>> enabledPolicyStereotypes,
          List<Class<?>> enabledDecoratorClasses, 
          AtomicInteger ids)
    {
@@ -366,7 +360,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.currentActivities = currentActivities;
       this.specializedBeans = specializedBeans;
       this.observers = observers;
-      setEnabledDeploymentTypes(enabledDeploymentTypes);
+      this.enabledPolicyClasses = enabledPolicyClasses;
+      this.enabledPolicyStereotypes = enabledPolicyStereotypes;
       setEnabledDecoratorClasses(enabledDecoratorClasses);
       this.namespaces = namespaces;
       this.ids = ids;
@@ -498,29 +493,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return accessibleManagers;
    }
 
-   /**
-    * Set up the enabled deployment types, if none are specified by the user,
-    * the default @Production and @Standard are used. For internal use.
-    * 
-    * @param enabledDeploymentTypes The enabled deployment types from
-    *           web-beans.xml
-    */
-   protected void checkEnabledDeploymentTypes()
-   {
-      if (!this.enabledDeploymentTypes.get(0).equals(Standard.class))
-      {
-         throw new InjectionException("@Standard must be the lowest precedence deployment type");
-      }
-   }
-
-   protected void addWebBeansDeploymentTypes()
-   {
-      if (!this.enabledDeploymentTypes.contains(WebBean.class))
-      {
-         this.enabledDeploymentTypes.add(1, WebBean.class);
-      }
-   }
-
    public void addBean(Bean<?> bean)
    {
       if (beans.contains(bean))
@@ -615,13 +587,20 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    }
 
    /**
-    * A strongly ordered, unmodifiable list of enabled deployment types
+    * A collection of enabled policy classes
     * 
-    * @return The ordered enabled deployment types known to the manager
     */
-   public List<Class<? extends Annotation>> getEnabledDeploymentTypes()
+   public Collection<Class<?>> getEnabledPolicyClasses()
    {
-      return Collections.unmodifiableList(enabledDeploymentTypes);
+      return Collections.unmodifiableCollection(enabledPolicyClasses);
+   }
+   
+   /**
+    * @return the enabledPolicySterotypes
+    */
+   public Collection<Class<? extends Annotation>> getEnabledPolicyStereotypes()
+   {
+      return Collections.unmodifiableCollection(enabledPolicyStereotypes);
    }
 
    /**
@@ -640,16 +619,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return Collections.unmodifiableList(enabledInterceptorClasses);
    }
 
-   /**
-    * Set the enabled deployment types
-    * 
-    * @param enabledDeploymentTypes
-    */
-   public void setEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
+   public void setEnabledPolicyClasses(Collection<Class<?>> enabledPolicyClasses)
    {
-      this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>(enabledDeploymentTypes);
-      checkEnabledDeploymentTypes();
-      addWebBeansDeploymentTypes();
+      this.enabledPolicyClasses = enabledPolicyClasses;
+   }
+   
+   public void setEnabledPolicyStereotypes(Collection<Class<? extends Annotation>> enabledPolicySterotypes)
+   {
+      this.enabledPolicyStereotypes = enabledPolicySterotypes;
    }
    
    public void setEnabledDecoratorClasses(List<Class<?>> enabledDecoratorClasses)
@@ -962,16 +939,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public <T> Bean<T> getBean(WBAnnotated<T, ?> element, Annotation... bindings)
    {
-      Set<Bean<?>> beans = getBeans(element, bindings);
-      if (beans.size() == 0)
+      Bean<T> bean = (Bean<T>) resolve(getBeans(element, bindings));
+      if (bean == null)
       {
          throw new UnsatisfiedResolutionException(element + "Unable to resolve any Web Beans");
       }
-      else if (beans.size() > 1)
-      {
-         throw new AmbiguousResolutionException(element + "Resolved multiple Web Beans");
-      }
-      Bean<T> bean = (Bean<T>) beans.iterator().next();
+      
       boolean normalScoped = getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScopeType()).isNormal();
       if (normalScoped && !Beans.isBeanProxyable(bean))
       {
@@ -1028,7 +1001,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * 
     * @return The resolver
     */
-   public TypeSafeResolver getBeanResolver()
+   public TypeSafeBeanResolver<Bean<?>> getBeanResolver()
    {
       return beanResolver;
    }
@@ -1043,7 +1016,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Manager\n");
-      buffer.append("Enabled deployment types: " + getEnabledDeploymentTypes() + "\n");
+      buffer.append("Enabled policies: " + getEnabledPolicyClasses() + " " + getEnabledPolicyStereotypes() + "\n");
       buffer.append("Registered contexts: " + contexts.keySet() + "\n");
       buffer.append("Registered beans: " + getBeans().size() + "\n");
       buffer.append("Specialized beans: " + specializedBeans.size() + "\n");
@@ -1340,34 +1313,19 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans)
    {
-      if (beans.size() == 1)
-      {
-         return beans.iterator().next();
-      }
-      else if (beans.isEmpty())
+      Set<Bean<? extends X>> resolvedBeans = beanResolver.resolve(beans);
+      if (resolvedBeans.size() == 0)
       {
          return null;
       }
-
-      // make a copy so that the sort is stable with respect to new deployment types added through the SPI
-      // TODO This code needs to be in Resolver
-      // TODO This needs caching
-      final List<Class<? extends Annotation>> enabledDeploymentTypes = getEnabledDeploymentTypes();
-
-      SortedSet<Bean<? extends X>> sortedBeans = new TreeSet<Bean<? extends X>>(new Comparator<Bean<? extends X>>()
+      if (resolvedBeans.size() == 1)
       {
-         public int compare(Bean<? extends X> o1, Bean<? extends X> o2)
-         {
-            int diff = enabledDeploymentTypes.indexOf(o1) - enabledDeploymentTypes.indexOf(o2);
-            if (diff == 0)
-            {
-               throw new AmbiguousResolutionException();
-            }
-            return diff;
-         }
-            });
-      sortedBeans.addAll(beans);
-      return sortedBeans.last();
+         return resolvedBeans.iterator().next();
+      }
+      else
+      {
+         throw new AmbiguousResolutionException("Cannot resolve an ambiguous dependency between " + beans);
+      }
    }
 
 }

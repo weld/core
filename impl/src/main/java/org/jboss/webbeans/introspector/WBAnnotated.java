@@ -24,7 +24,6 @@ import java.util.Set;
 
 import javax.enterprise.context.ScopeType;
 import javax.enterprise.inject.BindingType;
-import javax.enterprise.inject.deployment.DeploymentType;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.stereotype.Stereotype;
 
@@ -40,7 +39,7 @@ public interface WBAnnotated<T, S> extends Annotated
 
    // The set of meta-annotations to map
    @SuppressWarnings("unchecked")
-   public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(BindingType.class, DeploymentType.class, Stereotype.class, ScopeType.class));
+   public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(BindingType.class, Stereotype.class, ScopeType.class));
 
    /**
     * Gets all annotations which are annotated with the given meta annotation
