@@ -49,6 +49,7 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.BindingType;
+import javax.enterprise.inject.InjectionException;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -1247,7 +1248,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public void validate(InjectionPoint ij)
    {
-      getServices().get(Validator.class).validateInjectionPoint(ij, this);
+      try
+      {
+         getServices().get(Validator.class).validateInjectionPoint(ij, this);
+      }
+      catch (DeploymentException e) 
+      {
+         throw new InjectionException(e.getMessage(), e.getCause());
+      }
    }
 
    public Set<Annotation> getInterceptorBindingTypeDefinition(Class<? extends Annotation> bindingType)
