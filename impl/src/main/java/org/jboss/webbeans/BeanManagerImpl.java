@@ -1316,12 +1316,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
-   @Deprecated
-   public <X> Bean<? extends X> getHighestPrecedenceBean(Set<Bean<? extends X>> beans)
-   {
-      return resolve(beans);
-   }
-   
    public ELResolver getELResolver()
    {
       return webbeansELResolver;
