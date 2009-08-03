@@ -529,21 +529,11 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    @SuppressWarnings("unchecked")
    public <T> Set<ObserverMethod<?, T>> resolveObserverMethods(T event, Annotation... bindings)
    {
+      checkBindingTypes(Arrays.asList(bindings));
       Class<?> clazz = event.getClass();
-      for (Annotation annotation : bindings)
-      {
-         if (!getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotation.annotationType()).isValid())
-         {
-            throw new IllegalArgumentException("Not a binding type " + annotation);
-         }
-      }
-      HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(Arrays.asList(bindings));
-      if (bindingAnnotations.size() < bindings.length)
-      {
-         throw new IllegalArgumentException("Duplicate binding types: " + bindings);
-      }
       
       // Manually hack in the default annotations here. We need to redo all the annotation defaulting throughout. PLM
+      HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(Arrays.asList(bindings));
       if (bindingAnnotations.size() == 0)
       {
          bindingAnnotations.add(new CurrentLiteral());
@@ -559,6 +549,23 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return observers;
    }
    
+   private void checkBindingTypes(Collection<Annotation> bindings)
+   {
+      HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(bindings);
+      for (Annotation annotation : bindings)
+      {
+         if (!getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotation.annotationType()).isValid())
+         {
+            throw new IllegalArgumentException("Not a binding type " + annotation);
+         }
+      }
+      if (bindingAnnotations.size() < bindings.size())
+      {
+         throw new IllegalArgumentException("Duplicate binding types: " + bindings);
+      }
+
+   }
+
    private void checkEventType(Type eventType)
    {
       Type[] types;
@@ -971,14 +978,25 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... bindings)
    {
+      checkResolveDecoratorsArguments(types, Arrays.asList(bindings));
       // TODO Fix this cast and make the resolver return a list
-      return new ArrayList(decoratorResolver.resolve(ResolvableFactory.of(types, bindings)));
+      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(ResolvableFactory.of(types, bindings)));
    }
    
    public List<Decorator<?>> resolveDecorators(Set<Type> types, Set<Annotation> bindings)
    {
+      checkResolveDecoratorsArguments(types, bindings);
       // TODO Fix this cast and make the resolver return a list
-      return new ArrayList(decoratorResolver.resolve(ResolvableFactory.of(types, bindings)));
+      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(ResolvableFactory.of(types, bindings)));
+   }
+
+   private void checkResolveDecoratorsArguments(Set<Type> types, Collection<Annotation> bindings)
+   {
+      if (types.isEmpty())
+      {
+         throw new IllegalArgumentException("No decorator types were specified in the set");
+      }
+      checkBindingTypes(bindings);
    }
 
    /**
