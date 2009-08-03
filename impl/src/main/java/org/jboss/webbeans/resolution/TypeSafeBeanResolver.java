@@ -18,6 +18,7 @@ package org.jboss.webbeans.resolution;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.Bean;
 
@@ -26,6 +27,7 @@ import org.jboss.webbeans.bean.standard.EventBean;
 import org.jboss.webbeans.bean.standard.InstanceBean;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.collections.ConcurrentCache;
 
 /**
  * @author pmuir
@@ -34,8 +36,10 @@ import org.jboss.webbeans.util.Reflections;
 public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
 {
 
-   private final BeanManagerImpl manager;
    public static final Set<ResolvableTransformer> TRANSFORMERS;
+   
+   private final BeanManagerImpl manager;
+   private final ConcurrentCache<Set<?>, Set<Bean<?>>> disambiguatedBeans; 
    
    static
    {
@@ -48,6 +52,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
    {
       super(beans);
       this.manager = manager;
+      this.disambiguatedBeans = new ConcurrentCache<Set<?>, Set<Bean<?>>>();
    }
 
    @Override
@@ -82,43 +87,33 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
       return matched;
    }
    
-   public <X> Set<Bean<? extends X>> resolve(Set<Bean<? extends X>> beans)
+   public <X> Set<Bean<? extends X>> resolve(final Set<Bean<? extends X>> beans)
    {
-      if (beans.size() <= 1)
+      return disambiguatedBeans.<Set<Bean<? extends X>>>putIfAbsent(beans, new Callable<Set<Bean<? extends X>>>()
       {
-         return beans;
-      }
-      
-      boolean removePolicies = false;
-      
-      // TODO CACHE!!!!!
-      
-      for (Bean<? extends X> bean : beans)
-      {
-         if (bean.isPolicy())
-         {
-            removePolicies = true;
-         }
-      }
 
-      // TODO Specialization!
-      if (removePolicies)
-      {
-         Set<Bean<? extends X>> policies = new HashSet<Bean<? extends X>>();
-         for (Bean<? extends X> bean : beans)
+         public Set<Bean<? extends X>> call() throws Exception
          {
-            if (bean.isPolicy())
+            Set<Bean<? extends X>> disambiguatedBeans = beans;
+            if (disambiguatedBeans.size() > 1)
             {
-               policies.add(bean);
+               boolean policyPresent = Beans.isPolicyPresent(disambiguatedBeans);
+               disambiguatedBeans = new HashSet<Bean<? extends X>>();
+               
+               for (Bean<? extends X> bean : beans)
+               {
+                  if (policyPresent ? bean.isPolicy() : true && !Beans.isSpecialized(bean, beans, manager.getSpecializedBeans()))
+                  {
+                     disambiguatedBeans.add(bean);
+                  }
+               }
+               
             }
+            return disambiguatedBeans;
          }
-
-         return policies;
-      }
-      else
-      {
-         return beans;
-      }
+         
+      });
+      
    }
 
 

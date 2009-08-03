@@ -20,9 +20,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.decorator.Decorates;
+import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
@@ -226,4 +228,43 @@ public class Beans
       }
       return false;
    }
+   
+   /**
+    * Check if any of the beans is a policy
+    * 
+    * @param beans
+    * @return
+    */
+   public static <X> boolean isPolicyPresent(Set<Bean<? extends X>> beans)
+   {
+      for (Bean<?> bean : beans)
+      {
+         if (bean.isPolicy())
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   /**
+    * Check if bean is specialized by any of beans
+    * 
+    * @param bean
+    * @param beans
+    * @param specializedBeans
+    * @return
+    */
+   public static <X> boolean isSpecialized(Bean<? extends X> bean, Set<Bean<? extends X>> beans, Map<Contextual<?>, Contextual<?>> specializedBeans)
+   {
+      if (specializedBeans.containsKey(bean))
+      {
+         if (beans.contains(specializedBeans.get(bean)))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
 }
