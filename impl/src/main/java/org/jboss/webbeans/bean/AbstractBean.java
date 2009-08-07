@@ -18,15 +18,11 @@ package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.decorator.Decorates;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Named;
 import javax.enterprise.inject.Policy;
@@ -37,7 +33,6 @@ import javax.enterprise.inject.stereotype.Stereotype;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.introspector.WBField;
@@ -64,29 +59,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    private static final Annotation ANY_LITERAL = new AnyLiteral();
    private static final Annotation CURRENT_LITERAL = new CurrentLiteral();
 
-   @SuppressWarnings("unchecked")
-   private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, BeanManagerImpl.class, ConversationImpl.class));
-
    private boolean proxyable;
-
-   /**
-    * Helper method for getting the highest precedence enabled deployment type
-    * 
-    * @param enabledDeploymentTypes The currently enabled deployment types
-    * @param possibleDeploymentTypes The possible deployment types
-    * @return The deployment type
-    */
-   public static Class<? extends Annotation> getDeploymentType(List<Class<? extends Annotation>> enabledDeploymentTypes, Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes)
-   {
-      for (int i = (enabledDeploymentTypes.size() - 1); i > 0; i--)
-      {
-         if (possibleDeploymentTypes.containsKey((enabledDeploymentTypes.get(i))))
-         {
-            return enabledDeploymentTypes.get(i);
-         }
-      }
-      return null;
-   }
 
    // Logger
    private final Log log = Logging.getLog(AbstractBean.class);
@@ -283,7 +256,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
          Bean<?> resolvedBean = manager.getBeans(injectionPoint.getJavaClass(), bindings).iterator().next();
          if (passivating)
          {
-            if (Dependent.class.equals(resolvedBean.getScopeType()) && !Reflections.isSerializable(resolvedBean.getBeanClass()) && (((injectionPoint instanceof WBField) && !((WBField<?>) injectionPoint).isTransient()) || (injectionPoint instanceof WBParameter)))
+            if (Dependent.class.equals(resolvedBean.getScopeType()) && !Reflections.isSerializable(resolvedBean.getBeanClass()) && (((injectionPoint instanceof WBField<?>) && !((WBField<?>) injectionPoint).isTransient()) || (injectionPoint instanceof WBParameter<?>)))
             {
                return false;
             }

@@ -114,7 +114,7 @@ public class WBClassImpl<T> extends AbstractWBType<T> implements WBClass<T>
       AnnotationStore annotationStore = AnnotationStore.of(clazz.getAnnotations(), clazz.getDeclaredAnnotations(), classTransformer.getTypeStore());
       return new WBClassImpl<T>(clazz, clazz, annotationStore, classTransformer);
    }
-   
+
    public static <T> WBClass<T> of(AnnotatedType<T> annotatedType, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(annotatedType.getAnnotations(), annotatedType.getAnnotations(), classTransformer.getTypeStore());

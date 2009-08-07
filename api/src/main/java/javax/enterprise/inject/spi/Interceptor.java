@@ -22,7 +22,15 @@ import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
-
+/**
+ * Main interface for all Bean objects representing an interceptor.
+ * 
+ * @author Gavin King
+ * @author Pete Muir
+ * @author David Allen
+ *
+ * @param <T>
+ */
 public interface Interceptor<T> extends Bean<T>
 {
 
@@ -33,7 +41,23 @@ public interface Interceptor<T> extends Bean<T>
     */
    public Set<Annotation> getInterceptorBindingTypes();
    
+   /**
+    * Tests if this intercepts callbacks or business methods of the given type
+    * 
+    * @param type The type of interception
+    * @return true if this intercepts the given type of methods
+    */
    public boolean intercepts(InterceptionType type); 
+   
+   /**
+    * Invokes the specified kind of lifecycle callback or business method upon the 
+    * given instance
+    * 
+    * @param type the interception type
+    * @param instance the instance to invoke
+    * @param ctx the context for the invocation
+    * @return the return value from the invocation
+    */
    public Object intercept(InterceptionType type, T instance, InvocationContext ctx); 
 
 
