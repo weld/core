@@ -61,9 +61,9 @@ public class DependentContext extends AbstractContext implements Service
       if (creationalContext != null)
       {
          T instance = contextual.create(creationalContext);
-         if (creationalContext instanceof CreationalContextImpl<?>)
+         if (creationalContext instanceof WBCreationalContext<?>)
          {
-            CreationalContextImpl<T> creationalContextImpl = (CreationalContextImpl<T>) creationalContext;
+            WBCreationalContext<T> creationalContextImpl = (WBCreationalContext<T>) creationalContext;
             ContexutalInstance<T> beanInstance = new BeanInstanceImpl<T>(contextual, instance, creationalContext);
             creationalContextImpl.getParentDependentInstancesStore().addDependentInstance(beanInstance);
          }

@@ -1,6 +1,7 @@
 package org.jboss.webbeans.ejb.spi.helpers;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
@@ -21,12 +22,12 @@ public abstract class ForwardingEjbDescriptor<T> implements EjbDescriptor<T>
    
    protected abstract EjbDescriptor<T> delegate();
       
-   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces()
+   public Collection<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces()
    {
       return delegate().getLocalBusinessInterfaces();
    }
    
-   public Iterable<Method> getRemoveMethods()
+   public Collection<Method> getRemoveMethods()
    {
       return delegate().getRemoveMethods();
    }

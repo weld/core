@@ -18,10 +18,11 @@ package org.jboss.webbeans.mock;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceLoadingException;
-import org.jboss.webbeans.util.collections.EnumerationIterable;
+import org.jboss.webbeans.util.collections.EnumerationList;
 
 public class MockResourceLoader implements ResourceLoader
 {
@@ -43,11 +44,11 @@ public class MockResourceLoader implements ResourceLoader
       return Thread.currentThread().getContextClassLoader().getResource(name);
    }
    
-   public Iterable<URL> getResources(String name)
+   public Collection<URL> getResources(String name)
    {
       try
       {
-         return new EnumerationIterable<URL>(Thread.currentThread().getContextClassLoader().getResources(name));
+         return new EnumerationList<URL>(Thread.currentThread().getContextClassLoader().getResources(name));
       }
       catch (IOException e)
       {

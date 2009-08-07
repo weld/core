@@ -26,7 +26,7 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.context.CreationalContextImpl;
+import org.jboss.webbeans.context.WBCreationalContext;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
@@ -53,7 +53,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
 
    private final BeanManagerImpl manager;
 
-   private static final ThreadLocal<CreationalContextImpl<?>> currentCreationalContext = new ThreadLocal<CreationalContextImpl<?>>();
+   private static final ThreadLocal<WBCreationalContext<?>> currentCreationalContext = new ThreadLocal<WBCreationalContext<?>>();
 
    /**
     * Constructor
@@ -119,7 +119,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
 
    private <T> T getProxiedInstance(Bean<T> bean)
    {
-      CreationalContextImpl<T> creationalContext;
+      WBCreationalContext<T> creationalContext;
       boolean outer;
       if (currentCreationalContext.get() == null)
       {

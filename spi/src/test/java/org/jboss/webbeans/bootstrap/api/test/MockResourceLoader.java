@@ -1,6 +1,7 @@
 package org.jboss.webbeans.bootstrap.api.test;
 
 import java.net.URL;
+import java.util.Collection;
 
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 
@@ -17,7 +18,7 @@ public class MockResourceLoader implements ResourceLoader
       return null;
    }
    
-   public Iterable<URL> getResources(String name)
+   public Collection<URL> getResources(String name)
    {
       return null;
    }

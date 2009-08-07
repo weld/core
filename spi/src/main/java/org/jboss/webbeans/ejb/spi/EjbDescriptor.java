@@ -18,6 +18,7 @@
 package org.jboss.webbeans.ejb.spi;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 
 /**
@@ -42,14 +43,14 @@ public interface EjbDescriptor<T>
     * 
     * @return An iterator over the local business interfaces
     */
-   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces();
+   public Collection<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces();
    
    /**
     * Get the remove methods of the EJB
     * 
     * @return An iterator over the remove methods
     */
-   public Iterable<Method> getRemoveMethods();
+   public Collection<Method> getRemoveMethods();
 
    /**
     * Indicates if the bean is a stateless session bean 

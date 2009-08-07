@@ -17,6 +17,8 @@
 
 package org.jboss.webbeans.context.api;
 
+import java.util.Collection;
+
 import javax.enterprise.context.spi.Contextual;
 
 
@@ -42,11 +44,11 @@ public interface BeanStore
    public abstract void clear();
 
    /**
-    * Returns an iteration over the current contextual instances in the store
+    * Returns the current contextual instances in the store
     * 
-    * @return the iteration
+    * @return the instances
     */
-   public abstract Iterable<Contextual<?>> getContextuals();
+   public abstract Collection<Contextual<?>> getContextuals();
 
    /**
     * Adds a bean instance to the storage

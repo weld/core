@@ -18,6 +18,7 @@
 package org.jboss.webbeans.resources.spi;
 
 import java.net.URL;
+import java.util.Collection;
 
 import org.jboss.webbeans.bootstrap.api.Service;
 
@@ -54,8 +55,8 @@ public interface ResourceLoader extends Service
     * Gets resources as URLs by name
     * 
     * @param name The name of the resource
-    * @return An iterable reference to the URLS
+    * @return references to the URLS
     */
-   public Iterable<URL> getResources(String name);
+   public Collection<URL> getResources(String name);
    
 }

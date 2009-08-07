@@ -14,27 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.webbeans.el;
 
-package javax.decorator;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import javax.el.ELContextEvent;
+import javax.el.ELContextListener;
 
 /**
- * Specifies that an injected field, initializer method parameter or bean
- * constructor parameter of a decorator class is the delegate attribute.
+ * Responsible for pushing the CreationalContext stack into the ELContext which
+ * is later populated by our expression wrappers
  * 
- * @author Gavin King
- * @author Pete Muir
+ * @author pmuir
+ *
  */
-@Target({FIELD, PARAMETER})
-@Retention(RUNTIME)
-@Documented
-public @interface Decorates
+public class WebBeansELContextListener implements ELContextListener
 {
+
+   public void contextCreated(ELContextEvent contextEvent)
+   {
+      ELCreationalContextStack.addToContext(contextEvent.getELContext());
+   }
+
 }

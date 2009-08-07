@@ -18,6 +18,7 @@ package org.jboss.webbeans.mock;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -105,7 +106,7 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       return ejbName;
    }
 
-   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces()
+   public Collection<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces()
    {
       return localInterfaces;
    }
@@ -115,7 +116,7 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       return Collections.emptyList();
    }
 
-   public Iterable<Method> getRemoveMethods()
+   public Collection<Method> getRemoveMethods()
    {
 
       return removeMethods;

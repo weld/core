@@ -17,6 +17,7 @@
 package org.jboss.webbeans.context.beanstore;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -29,7 +30,7 @@ import org.jboss.webbeans.context.api.ContexutalInstance;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Names;
-import org.jboss.webbeans.util.collections.EnumerationIterable;
+import org.jboss.webbeans.util.collections.EnumerationList;
 
 /**
  * Provides common BeanStore operations
@@ -91,7 +92,7 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
     * 
     * @return The beans
     */
-   public Iterable<Contextual<? extends Object>> getContextuals()
+   public Collection<Contextual<? extends Object>> getContextuals()
    {
       List<Contextual<?>> contextuals = new ArrayList<Contextual<?>>();
       BeanStoreNamingScheme namingScheme = getNamingScheme();
@@ -113,7 +114,7 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
    {
       List<String> attributeNames = new ArrayList<String>();
       BeanStoreNamingScheme namingScheme = getNamingScheme();
-      for (String attributeName : new EnumerationIterable<String>(getAttributeNames()))
+      for (String attributeName : new EnumerationList<String>(getAttributeNames()))
       {
          if (namingScheme.acceptKey(attributeName))
          {

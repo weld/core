@@ -14,6 +14,7 @@ import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
  * @author Pete Muir
  *
  */
+@Deprecated
 public abstract class ForwardingWebBeanDiscovery implements WebBeanDiscovery
 {
    

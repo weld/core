@@ -18,6 +18,7 @@ package org.jboss.webbeans.mock;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -39,23 +40,27 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
 {
    
 
-   private Iterable<Class<?>> beanClasses = new HashSet<Class<?>>();
+   private Set<Class<?>> beanClasses = new HashSet<Class<?>>();
 
-   private Iterable<URL> webBeansXmlFiles = new HashSet<URL>();
+   private Collection<URL> webBeansXmlFiles = new HashSet<URL>();
 
-   public Iterable<Class<?>> getBeanClasses()
+   public Collection<Class<?>> getBeanClasses()
    {
       return beanClasses;
    }
 
-   public Iterable<URL> getBeansXml()
+   public Collection<URL> getBeansXml()
    {
       return webBeansXmlFiles;
    }
    
    public void setWebBeansXmlFiles(Iterable<URL> webBeansXmlFiles)
    {
-      this.webBeansXmlFiles = webBeansXmlFiles;
+      this.webBeansXmlFiles.clear();
+      for (URL url : webBeansXmlFiles)
+      {
+         this.webBeansXmlFiles.add(url);
+      }
    }
 
    public List<BeanDeploymentArchive> getBeanDeploymentArchives()
@@ -67,7 +72,11 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
 
    public void setBeanClasses(Iterable<Class<?>> beanClasses)
    {
-      this.beanClasses = beanClasses;
+      this.beanClasses.clear();
+      for (Class<?> clazz : beanClasses)
+      {
+         this.beanClasses.add(clazz);
+      }
       ejbs = new ArrayList<EjbDescriptor<?>>();
       for (Class<?> ejbClass : discoverEjbs(getBeanClasses()))
       {
@@ -75,7 +84,7 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
       }
    }
    
-   public Iterable<EjbDescriptor<?>> getEjbs()
+   public Collection<EjbDescriptor<?>> getEjbs()
    {
       return ejbs;
    }

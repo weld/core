@@ -1,9 +1,11 @@
 package org.jboss.webbeans.context.api.helpers;
 
+import java.util.Collection;
+
 import javax.enterprise.context.spi.Contextual;
 
-import org.jboss.webbeans.context.api.ContexutalInstance;
 import org.jboss.webbeans.context.api.BeanStore;
+import org.jboss.webbeans.context.api.ContexutalInstance;
 
 public abstract class ForwardingBeanStore implements BeanStore
 {
@@ -20,7 +22,7 @@ public abstract class ForwardingBeanStore implements BeanStore
       return delegate().get(bean);
    }
    
-   public Iterable<Contextual<? extends Object>> getContextuals()
+   public Collection<Contextual<? extends Object>> getContextuals()
    {
       return delegate().getContextuals();
    }

@@ -18,19 +18,17 @@ package org.jboss.webbeans.util.collections;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 
-import com.google.common.collect.Iterables;
+import com.google.common.collect.ForwardingList;
 
 
 /**
- * An Enumeration -> Iteratble adaptor
+ * An Enumeration -> List adaptor
  *  
  * @author Pete Muir
- * @see org.jboss.webbeans.util.collections.EnumerationIterator
  */
-public class EnumerationIterable<T> implements Iterable<T>
+public class EnumerationList<T> extends ForwardingList<T>
 {
    // The enumeration as a list
    private final List<T> list = new ArrayList<T>();
@@ -40,22 +38,17 @@ public class EnumerationIterable<T> implements Iterable<T>
     * 
     * @param enumeration The enumeration
     */
-   public EnumerationIterable(Enumeration<T> enumeration)
+   public EnumerationList(Enumeration<T> enumeration)
    {
       while (enumeration.hasMoreElements())
       {
          list.add(enumeration.nextElement());
       }
    }
-   
-   /**
-    * Gets an iterator
-    * 
-    * @return The iterator
-    */
-   public Iterator<T> iterator()
+
+   @Override
+   protected List<T> delegate()
    {
-      return Iterables.unmodifiableIterable(list).iterator();
+      return list;
    }
-   
 }

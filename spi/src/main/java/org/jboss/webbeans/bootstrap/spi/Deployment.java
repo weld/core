@@ -16,7 +16,7 @@
  */
 package org.jboss.webbeans.bootstrap.spi;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.jboss.webbeans.bootstrap.api.Service;
 
@@ -119,18 +119,15 @@ public interface Deployment extends Service
     * Get the bean deployment archives which are accessible by this deployment
     * and adjacent to it in the deployment archive graph.
     * 
-    * The bean deployment archives will be processed in using the natural order
-    * of the list.
-    * 
     * Cycles in the accessible BeanDeploymentArchive graph are allowed. If a 
     * cycle is detected by Web Beans, it will be automatically removed by Web
     * Beans. This means any implementor of this interface don't need to worry
     * about circularities.
     * 
-    * @return the ordered accessible bean deployment archives
+    * @return the accessible bean deployment archives
     * 
     */
-   public List<BeanDeploymentArchive> getBeanDeploymentArchives();
+   public Collection<BeanDeploymentArchive> getBeanDeploymentArchives();
 
    /**
     * Load the {@link BeanDeploymentArchive} containing the given class.

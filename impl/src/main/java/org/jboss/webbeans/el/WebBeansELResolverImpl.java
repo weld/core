@@ -18,13 +18,16 @@ package org.jboss.webbeans.el;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
+import java.util.concurrent.Callable;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
+import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.CurrentManager;
 
 /**
  * An EL-resolver against the named beans
@@ -34,22 +37,17 @@ import org.jboss.webbeans.BeanManagerImpl;
 public class WebBeansELResolverImpl extends ELResolver
 {
    
-   private static final class ValueHolder<T>
+   private static final Contextual<?> CONTEXTUAL = new Contextual<Object>()
    {
-      
-      private T value;
-      
-      public T getValue()
+
+      public Object create(CreationalContext<Object> creationalContext)
       {
-         return value;
+         return null;
       }
+
+      public void destroy(Object instance, CreationalContext<Object> creationalContext) {}
       
-      public void setValue(T value)
-      {
-         this.value = value;
-      }
-      
-   }
+   };
    
    private final BeanManagerImpl manager;
       
@@ -58,36 +56,24 @@ public class WebBeansELResolverImpl extends ELResolver
       this.manager = manager;
    }
 
-   /**
-    * @see javax.el.ELResolver#getCommonPropertyType(ELContext, Object)
-    */
    @Override
    public Class<?> getCommonPropertyType(ELContext context, Object base)
    {
       return null;
    }
 
-   /**
-    * @see javax.el.ELResolver#getFeatureDescriptors(ELContext, Object)
-    */
    @Override
    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
    {
       return null;
    }
 
-   /**
-    * @see javax.el.ELResolver#getType(ELContext, Object, Object)
-    */
    @Override
    public Class<?> getType(ELContext context, Object base, Object property)
    {
       return null;
    }
 
-   /**
-    * @see javax.el.ELResolver#getValue(ELContext, Object, Object)
-    */
    @Override
    public Object getValue(ELContext context, Object base, Object property)
    {
@@ -132,13 +118,20 @@ public class WebBeansELResolverImpl extends ELResolver
          Object value = null;
          try
          {
-            Bean<?> bean = manager.resolve(manager.getBeans(name));
-            CreationalContext<?> creationalContext = manager.createCreationalContext(bean);
+            final Bean<?> bean = manager.resolve(manager.getBeans(name));
+            final ELCreationalContext<?> creationalContext = getCreationalContextStore(context).peek();
             if (bean != null)
             {
-               value = manager.getReference(bean, creationalContext);
+               value = creationalContext.putIfAbsent(bean, new Callable<Object>()
+               {
+                  
+                  public Object call() throws Exception
+                  {
+                     return manager.getReference(bean, creationalContext);
+                  }
+                  
+               });
             }
-            creationalContext.release();
          }
          catch (Exception e)
          {
@@ -153,21 +146,30 @@ public class WebBeansELResolverImpl extends ELResolver
       return null;
    }
 
-   /**
-    * @see javax.el.ELResolver#isReadOnly(ELContext, Object, Object)
-    */
    @Override
    public boolean isReadOnly(ELContext context, Object base, Object property)
    {
       return false;
    }
 
-   /**
-    * @see javax.el.ELResolver#setValue(ELContext, Object, Object, Object)
-    */
    @Override
    public void setValue(ELContext context, Object base, Object property, Object value)
    {
+   }
+   
+   private static ELCreationalContextStack getCreationalContextStore(ELContext context)
+   {
+      Object o = context.getContext(ELCreationalContextStack.class);
+      
+      if (!(o instanceof ELCreationalContextStack))
+      {
+         ELCreationalContextStack store = ELCreationalContextStack.addToContext(context);
+         // TODO need to use correct manager for module
+         ELCreationalContext<?> creationalContext = ELCreationalContext.of(CurrentManager.rootManager().createCreationalContext(CONTEXTUAL));
+         store.push(creationalContext);
+         o = store;
+      }
+      return (ELCreationalContextStack) o;
    }
 
 }

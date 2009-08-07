@@ -22,12 +22,14 @@
  */
 package org.jboss.webbeans.servlet;
 
+import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.ContextLifecycle;
+import org.jboss.webbeans.jsp.JspInitialization;
 import org.jboss.webbeans.servlet.api.helpers.AbstractServletListener;
 
 /**
@@ -53,6 +55,12 @@ public class WebBeansListener extends AbstractServletListener
       }
       return lifecycle;
    }
+   
+   @Override
+   public void contextInitialized(ServletContextEvent sce)
+   {
+      new JspInitialization().init(sce.getServletContext());
+   }  
 
    /**
     * Called when the session is created

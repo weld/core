@@ -1,6 +1,7 @@
 package org.jboss.webbeans.resources.spi.helpers;
 
 import java.net.URL;
+import java.util.Collection;
 
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 
@@ -29,7 +30,7 @@ public abstract class ForwardingResourceLoader implements ResourceLoader
       return delegate().getResource(name);
    }
    
-   public Iterable<URL> getResources(String name)
+   public Collection<URL> getResources(String name)
    {
       return delegate().getResources(name);
    }

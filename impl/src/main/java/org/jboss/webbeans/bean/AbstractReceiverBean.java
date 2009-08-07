@@ -23,7 +23,7 @@ import javax.enterprise.inject.Policy;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.context.CreationalContextImpl;
+import org.jboss.webbeans.context.WBCreationalContext;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -67,9 +67,9 @@ public abstract class AbstractReceiverBean<T, S extends Member> extends Abstract
       }
       else
       {
-         if (creationalContext instanceof CreationalContextImpl<?>)
+         if (creationalContext instanceof WBCreationalContext<?>)
          {
-            CreationalContextImpl<?> creationalContextImpl = (CreationalContextImpl<?>) creationalContext;
+            WBCreationalContext<?> creationalContextImpl = (WBCreationalContext<?>) creationalContext;
             if (creationalContextImpl.containsIncompleteInstance(getDeclaringBean()))
             {
                log.warn("Executing producer field or method " + getAnnotatedItem() + " on incomplete declaring bean " + getDeclaringBean() + " due to circular injection");

@@ -14,27 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.webbeans.jsf;
 
-package javax.decorator;
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 
 /**
- * Specifies that an injected field, initializer method parameter or bean
- * constructor parameter of a decorator class is the delegate attribute.
- * 
- * @author Gavin King
- * @author Pete Muir
+ * @author pmuir
+ *
  */
-@Target({FIELD, PARAMETER})
-@Retention(RUNTIME)
-@Documented
-public @interface Decorates
+public class WebBeansApplicationFactory extends ForwardingApplicationFactory
 {
+
+   private final ApplicationFactory applicationFactory;
+   
+   public WebBeansApplicationFactory(ApplicationFactory applicationFactory)
+   {
+      this.applicationFactory = applicationFactory;
+   }
+   
+   @Override
+   protected ApplicationFactory delegate()
+   {
+      return applicationFactory;
+   }
+   
+   @Override
+   public Application getApplication()
+   {
+      return new WebBeansApplication(delegate().getApplication());
+   }
+
 }

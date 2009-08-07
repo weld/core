@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.el;
+package org.jboss.webbeans.util.el;
 
 import java.util.Locale;
 

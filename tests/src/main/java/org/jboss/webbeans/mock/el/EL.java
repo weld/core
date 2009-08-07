@@ -20,6 +20,8 @@ import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
 import javax.el.CompositeELResolver;
 import javax.el.ELContext;
+import javax.el.ELContextEvent;
+import javax.el.ELContextListener;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.FunctionMapper;
@@ -28,7 +30,9 @@ import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
 import javax.el.VariableMapper;
 
+import org.jboss.webbeans.el.WebBeansELContextListener;
 import org.jboss.webbeans.el.WebBeansELResolver;
+import org.jboss.webbeans.el.WebBeansExpressionFactory;
 
 import com.sun.el.ExpressionFactoryImpl;
 import com.sun.el.lang.FunctionMapperImpl;
@@ -44,7 +48,9 @@ public class EL
 {
    public static final ELResolver EL_RESOLVER = createELResolver();
    
-   public static final ExpressionFactory EXPRESSION_FACTORY = new ExpressionFactoryImpl();
+   public static final ExpressionFactory EXPRESSION_FACTORY = new WebBeansExpressionFactory(new ExpressionFactoryImpl());
+   
+   public static final ELContextListener[] EL_CONTEXT_LISTENERS = { new WebBeansELContextListener() };
    
    private static ELResolver createELResolver()
    {
@@ -64,7 +70,7 @@ public class EL
    
    public static ELContext createELContext(final ELResolver resolver, final FunctionMapper functionMapper)
    {
-      return new ELContext()
+      ELContext context = new ELContext()
       {
          final VariableMapperImpl variableMapper = new VariableMapperImpl();
 
@@ -87,6 +93,17 @@ public class EL
          }
          
       };
+      callELContextListeners(context);
+      return context;
+   }
+   
+   public static void callELContextListeners(ELContext context)
+   {
+      ELContextEvent event = new ELContextEvent(context);
+      for (ELContextListener listener : EL_CONTEXT_LISTENERS)
+      {
+         listener.contextCreated(event);
+      }
    }
    
 }

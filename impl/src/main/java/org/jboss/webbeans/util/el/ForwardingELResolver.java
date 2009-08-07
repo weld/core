@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.el;
+package org.jboss.webbeans.util.el;
 
 import java.util.Iterator;
 
@@ -60,6 +60,24 @@ public abstract class ForwardingELResolver extends ELResolver
    public void setValue(ELContext context, Object base, Object property, Object value)
    {
       delegate().setValue(context, base, property, value);
+   }
+   
+   @Override
+   public boolean equals(Object obj)
+   {
+      return delegate().equals(obj);
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return delegate().hashCode();
+   }
+   
+   @Override
+   public String toString()
+   {
+      return delegate().toString();
    }
 
 }

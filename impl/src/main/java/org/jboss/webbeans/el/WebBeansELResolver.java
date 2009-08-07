@@ -19,6 +19,7 @@ package org.jboss.webbeans.el;
 import javax.el.ELResolver;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.util.el.ForwardingELResolver;
 
 public class WebBeansELResolver extends ForwardingELResolver
 {

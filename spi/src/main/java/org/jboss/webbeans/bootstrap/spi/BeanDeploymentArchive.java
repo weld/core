@@ -17,7 +17,7 @@
 package org.jboss.webbeans.bootstrap.spi;
 
 import java.net.URL;
-import java.util.List;
+import java.util.Collection;
 
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
@@ -48,23 +48,24 @@ public interface BeanDeploymentArchive
 {
 
    /**
-    * Get the ordered bean deployment archives which are accessible to this bean
+    * Get the bean deployment archives which are accessible to this bean
     * deployment archive and adjacent to it in the deployment archive graph.
     * 
-    * The bean deployment archives will be processed in the order specified.
+    * Cycles in the accessible BeanDeploymentArchive graph are allowed. If a 
+    * cycle is detected by Web Beans, it will be automatically removed by Web
+    * Beans. This means any implementor of this interface don't need to worry
+    * about circularities.
     * 
-    * Circular dependencies will be detected and ignored by the container
-    * 
-    * @return the ordered accessible bean deployment archives
+    * @return the accessible bean deployment archives
     */
-   public List<BeanDeploymentArchive> getBeanDeploymentArchives();
+   public Collection<BeanDeploymentArchive> getBeanDeploymentArchives();
 
    /**
     * Gets all classes in the bean deployment archive
     * 
-    * @return an iteration over the classes, empty if no classes are present
+    * @return the classes, empty if no classes are present
     */
-   public Iterable<Class<?>> getBeanClasses();
+   public Collection<Class<?>> getBeanClasses();
 
    /**
     * Get any deployment descriptors in the bean deployment archive.
@@ -74,17 +75,17 @@ public interface BeanDeploymentArchive
     * however it is permitted to return other deployment descriptors defined
     * using other methods.
     * 
-    * @return an iteration over the URLs pointing to the deployment descriptor,
+    * @return the URLs pointing to the deployment descriptor,
     *         or an empty set if none are present
     */
-   public Iterable<URL> getBeansXml();
+   public Collection<URL> getBeansXml();
 
    /**
     * Get all the EJBs in the deployment archive
     * 
-    * @return an iteration of the EJBs, or empty if no EJBs are present or if
+    * @return the EJBs, or empty if no EJBs are present or if
     *         this is not an EJB archive
     */
-   public Iterable<EjbDescriptor<?>> getEjbs();
+   public Collection<EjbDescriptor<?>> getEjbs();
 
 }

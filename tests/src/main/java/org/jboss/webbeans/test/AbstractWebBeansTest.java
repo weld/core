@@ -21,7 +21,7 @@ import org.jboss.testharness.AbstractTest;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.mock.el.EL;
-import org.jboss.webbeans.util.collections.EnumerationIterable;
+import org.jboss.webbeans.util.collections.EnumerationList;
 import org.testng.ITestContext;
 import org.testng.annotations.BeforeSuite;
 
@@ -81,7 +81,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       }
       try
       {
-         return new EnumerationIterable<URL>(getClass().getClassLoader().getResources(name));
+         return new EnumerationList<URL>(getClass().getClassLoader().getResources(name));
       }
       catch (IOException e)
       {

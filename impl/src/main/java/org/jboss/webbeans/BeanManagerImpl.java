@@ -69,6 +69,7 @@ import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.CreationalContextImpl;
+import org.jboss.webbeans.context.WBCreationalContext;
 import org.jboss.webbeans.el.Namespace;
 import org.jboss.webbeans.el.WebBeansELResolverImpl;
 import org.jboss.webbeans.introspector.WBAnnotated;
@@ -837,9 +838,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext)
    {
       bean = getMostSpecializedBean(bean);
-      if (creationalContext instanceof CreationalContextImpl)
+      if (creationalContext instanceof WBCreationalContext<?>)
       {
-         creationalContext = ((CreationalContextImpl<?>) creationalContext).getCreationalContext(bean);
+         creationalContext = ((WBCreationalContext<?>) creationalContext).getCreationalContext(bean);
       }
       if (getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScopeType()).isNormal())
       {
@@ -891,16 +892,16 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             throw new UnproxyableResolutionException("Attempting to inject an unproxyable normal scoped bean " + resolvedBean + " into " + injectionPoint);
          }
          // TODO Can we move this logic to getReference?
-         if (creationalContext instanceof CreationalContextImpl)
+         if (creationalContext instanceof WBCreationalContext<?>)
          {
-            CreationalContextImpl<?> creationalContextImpl = (CreationalContextImpl<?>) creationalContext;
-            if (creationalContextImpl.containsIncompleteInstance(resolvedBean))
+            WBCreationalContext<?> wbCreationalContext = (WBCreationalContext<?>) creationalContext;
+            if (wbCreationalContext.containsIncompleteInstance(resolvedBean))
             {
-               return creationalContextImpl.getIncompleteInstance(resolvedBean);
+               return wbCreationalContext.getIncompleteInstance(resolvedBean);
             }
             else
             {
-               return getReference(resolvedBean, creationalContextImpl);
+               return getReference(resolvedBean, wbCreationalContext);
             }
          }
          else
@@ -1321,7 +1322,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return webbeansELResolver;
    }
    
-   public <T> CreationalContextImpl<T> createCreationalContext(Contextual<T> contextual)
+   public <T> WBCreationalContext<T> createCreationalContext(Contextual<T> contextual)
    {
       return new CreationalContextImpl<T>(contextual);
    }

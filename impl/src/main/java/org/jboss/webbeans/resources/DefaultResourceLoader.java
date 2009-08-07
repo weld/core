@@ -18,10 +18,11 @@ package org.jboss.webbeans.resources;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceLoadingException;
-import org.jboss.webbeans.util.collections.EnumerationIterable;
+import org.jboss.webbeans.util.collections.EnumerationList;
 
 /**
  * A simple resource loader.
@@ -71,17 +72,17 @@ public class DefaultResourceLoader implements ResourceLoader
       }
    }
    
-   public Iterable<URL> getResources(String name)
+   public Collection<URL> getResources(String name)
    {
       try
       {
          if (Thread.currentThread().getContextClassLoader() != null)
          {
-            return new EnumerationIterable<URL>(Thread.currentThread().getContextClassLoader().getResources(name));
+            return new EnumerationList<URL>(Thread.currentThread().getContextClassLoader().getResources(name));
          }
          else
          {
-            return new EnumerationIterable<URL>(getClass().getClassLoader().getResources(name));
+            return new EnumerationList<URL>(getClass().getClassLoader().getResources(name));
          }
       }
       catch (IOException e)

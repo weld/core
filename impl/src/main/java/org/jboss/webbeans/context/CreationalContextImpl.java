@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-public class CreationalContextImpl<T> implements CreationalContext<T>
+public class CreationalContextImpl<T> implements CreationalContext<T>, WBCreationalContext<T>
 {
 
    private final Map<Contextual<?>, Object> incompleteInstances;
@@ -50,7 +50,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>
       incompleteInstances.put(contextual, incompleteInstance);
    }
    
-   public <S> CreationalContextImpl<S> getCreationalContext(Contextual<S> Contextual)
+   public <S> WBCreationalContext<S> getCreationalContext(Contextual<S> Contextual)
    {
       return new CreationalContextImpl<S>(Contextual, new HashMap<Contextual<?>, Object>(incompleteInstances), dependentInstancesStore);
    }
@@ -73,6 +73,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>
    public void release()
    {
       dependentInstancesStore.destroyDependentInstances();
+      incompleteInstances.clear();
    }
    
 }

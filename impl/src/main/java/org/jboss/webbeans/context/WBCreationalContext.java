@@ -14,27 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.webbeans.context;
 
-package javax.decorator;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
 
 /**
- * Specifies that an injected field, initializer method parameter or bean
- * constructor parameter of a decorator class is the delegate attribute.
- * 
- * @author Gavin King
- * @author Pete Muir
+ * @author pmuir
+ *
+ * @param <T>
  */
-@Target({FIELD, PARAMETER})
-@Retention(RUNTIME)
-@Documented
-public @interface Decorates
+public interface WBCreationalContext<T> extends CreationalContext<T>
 {
+
+   public abstract void push(T incompleteInstance);
+
+   public abstract <S> WBCreationalContext<S> getCreationalContext(Contextual<S> Contextual);
+
+   public abstract <S> S getIncompleteInstance(Contextual<S> bean);
+
+   public abstract boolean containsIncompleteInstance(Contextual<?> bean);
+
+   public abstract DependentInstancesStore getParentDependentInstancesStore();
+
+   public abstract void release();
+
 }
