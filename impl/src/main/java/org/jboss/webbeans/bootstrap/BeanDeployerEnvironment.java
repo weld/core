@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -49,8 +48,8 @@ public class BeanDeployerEnvironment
 {
 
    private final Map<WBClass<?>, AbstractClassBean<?>> classBeanMap;
-   private final Map<WBMethod<?>, ProducerMethodBean<?>> producerMethodBeanMap;
-   private final Map<WBMethod<?>, DisposalMethodBean<?>> disposalMethodBeanMap;
+   private final Map<WBMethod<?, ?>, ProducerMethodBean<?>> producerMethodBeanMap;
+   private final Map<WBMethod<?, ?>, DisposalMethodBean<?>> disposalMethodBeanMap;
    private final Set<RIBean<?>> beans;
    private final Set<ObserverMethod<?, ?>> observers;
    private final List<DisposalMethodBean<?>> allDisposalBeans;
@@ -62,8 +61,8 @@ public class BeanDeployerEnvironment
    public BeanDeployerEnvironment(EjbDescriptorCache ejbDescriptors, BeanManagerImpl manager)
    {
       this.classBeanMap = new HashMap<WBClass<?>, AbstractClassBean<?>>();
-      this.producerMethodBeanMap = new HashMap<WBMethod<?>, ProducerMethodBean<?>>();
-      this.disposalMethodBeanMap = new HashMap<WBMethod<?>, DisposalMethodBean<?>>();
+      this.producerMethodBeanMap = new HashMap<WBMethod<?, ?>, ProducerMethodBean<?>>();
+      this.disposalMethodBeanMap = new HashMap<WBMethod<?, ?>, DisposalMethodBean<?>>();
       this.allDisposalBeans = new ArrayList<DisposalMethodBean<?>>();
       this.resolvedDisposalBeans = new HashSet<DisposalMethodBean<?>>();
       this.beans = new HashSet<RIBean<?>>();
@@ -73,7 +72,7 @@ public class BeanDeployerEnvironment
       this.disposalMethodResolver = new TypeSafeBeanResolver<DisposalMethodBean<?>>(manager, allDisposalBeans);
    }
 
-   public ProducerMethodBean<?> getProducerMethod(WBMethod<?> method)
+   public ProducerMethodBean<?> getProducerMethod(WBMethod<?, ?> method)
    {
       if (!producerMethodBeanMap.containsKey(method))
       {
@@ -88,7 +87,7 @@ public class BeanDeployerEnvironment
    }
 
    
-   public DisposalMethodBean<?> getDisposalMethod(WBMethod<?> method)
+   public DisposalMethodBean<?> getDisposalMethod(WBMethod<?, ?> method)
    {
       if (!producerMethodBeanMap.containsKey(method))
       {
@@ -204,12 +203,9 @@ public class BeanDeployerEnvironment
       // Correct?
       Set<DisposalMethodBean<?>> beans = disposalMethodResolver.resolve(ResolvableFactory.of(annotatedItem));
       Set<DisposalMethodBean<T>> disposalBeans = new HashSet<DisposalMethodBean<T>>();
-      for (Bean<?> bean : beans)
+      for (DisposalMethodBean<?> bean : beans)
       {
-         if (bean instanceof DisposalMethodBean<?>)
-         {
-            disposalBeans.add((DisposalMethodBean<T>) bean);
-         }
+         disposalBeans.add((DisposalMethodBean<T>) bean);
       }
       resolvedDisposalBeans.addAll(disposalBeans);
       return Collections.unmodifiableSet(disposalBeans);

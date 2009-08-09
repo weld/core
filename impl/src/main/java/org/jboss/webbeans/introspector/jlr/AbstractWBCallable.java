@@ -14,32 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.introspector;
+package org.jboss.webbeans.introspector.jlr;
+
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
+
+import org.jboss.webbeans.introspector.AnnotationStore;
+import org.jboss.webbeans.introspector.WBCallable;
+import org.jboss.webbeans.introspector.WBClass;
 
 /**
- * AnnotatedType provides a uniform access to a type defined either in Java or
- * XML
- * 
- * @author Pete Muir
- * @param <T>
+ * @author pmuir
+ *
  */
-public interface WBType<T> extends WBAnnotated<T, Class<T>>
+public abstract class AbstractWBCallable<T, X, S extends Member> extends AbstractWBMember<T, X, S> implements WBCallable<T, X, S>
 {
 
-   /**
-    * Gets the superclass of the type
-    * 
-    * @return The abstracted superclass
-    */
-   public WBType<?> getSuperclass();
-
-   /**
-    * Check if this is equivalent to a java class
-    * @param clazz The Java class
-    * @return true if equivalent
-    */
-   public boolean isEquivalent(Class<?> clazz);
-
-   public String getSimpleName();
+   
+   
+   protected AbstractWBCallable(AnnotationStore annotatedItemHelper, Member member, Class<T> rawType, Type type, WBClass<X> declaringType)
+   {
+      super(annotatedItemHelper, member, rawType, type, declaringType);
+   }
 
 }

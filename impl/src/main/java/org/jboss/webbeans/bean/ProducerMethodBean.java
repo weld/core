@@ -46,7 +46,7 @@ import org.jboss.webbeans.util.Names;
 public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 {
    // The underlying method
-   private MethodInjectionPoint<T> method;
+   private MethodInjectionPoint<T, ?> method;
 
    private DisposalMethodBean<?> disposalMethodBean;
 
@@ -62,12 +62,12 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     * @param manager the current manager
     * @return A producer Web Bean
     */
-   public static <T> ProducerMethodBean<T> of(WBMethod<T> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public static <T> ProducerMethodBean<T> of(WBMethod<T, ?> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
       return new ProducerMethodBean<T>(method, declaringBean, manager);
    }
 
-   protected ProducerMethodBean(WBMethod<T> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   protected ProducerMethodBean(WBMethod<T, ?> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
       super(declaringBean, manager);
       this.method = MethodInjectionPoint.of(this, method);
@@ -77,7 +77,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       this.id = createId("ProducerMethod-" + declaringBean.getType().getName() + "-" + method.getSignature().toString());
    }
 
-   protected T produceInstance(CreationalContext<T> creationalContext)
+   public T produce(CreationalContext<T> creationalContext)
    {
       Object receiver = getReceiver(creationalContext);
       if (receiver != null)
@@ -110,7 +110,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     */
    protected void initProducerMethodInjectableParameters()
    {
-      for (WBParameter<?> parameter : method.getParameters())
+      for (WBParameter<?, ?> parameter : method.getWBParameters())
       {
          addInjectionPoint(ParameterInjectionPoint.of(this, parameter));
       }
@@ -121,11 +121,11 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     */
    protected void checkProducerMethod()
    {
-      if (getAnnotatedItem().getAnnotatedParameters(Observes.class).size() > 0)
+      if (getAnnotatedItem().getAnnotatedWBParameters(Observes.class).size() > 0)
       {
          throw new DefinitionException("Producer method cannot have parameter annotated @Observes");
       }
-      else if (getAnnotatedItem().getAnnotatedParameters(Disposes.class).size() > 0)
+      else if (getAnnotatedItem().getAnnotatedWBParameters(Disposes.class).size() > 0)
       {
          throw new DefinitionException("Producer method cannot have parameter annotated @Disposes");
       }
@@ -170,7 +170,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       else if (disposalBeans.size() > 1)
       {
          // TODO List out found disposal methods
-         throw new DefinitionException("Cannot declare multiple disposal methods for this producer method");
+         throw new DefinitionException("Cannot declare multiple disposal methods for this producer method. Producer method: " + this + ". Disposal methods: " + disposalBeans);
       }
    }
 
@@ -178,10 +178,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       try
       {
-         if (disposalMethodBean != null)
-         {
-            disposalMethodBean.invokeDisposeMethod(instance, creationalContext);
-         }
+         dispose(instance);
       }
       finally
       {
@@ -191,6 +188,14 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          }
       }
    }
+   
+   public void dispose(T instance) 
+   {
+      if (disposalMethodBean != null)
+      {
+         disposalMethodBean.invokeDisposeMethod(instance);
+      }
+   }
 
    /**
     * Gets the annotated item representing the method
@@ -198,7 +203,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     * @return The annotated item
     */
    @Override
-   public WBMethod<T> getAnnotatedItem()
+   public WBMethod<T, ?> getAnnotatedItem()
    {
       return method;
    }
@@ -255,7 +260,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    @Override
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
-      if (getDeclaringBean().getAnnotatedItem().getSuperclass().getDeclaredMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
+      if (getDeclaringBean().getAnnotatedItem().getWBSuperclass().getDeclaredWBMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
       {
          throw new DefinitionException("Specialized producer method does not override a method on the direct superclass");
       }
@@ -264,7 +269,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      WBMethod<?> superClassMethod = getDeclaringBean().getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod());
+      WBMethod<?, ?> superClassMethod = getDeclaringBean().getAnnotatedItem().getWBSuperclass().getWBMethod(getAnnotatedItem().getAnnotatedMethod());
       if (environment.getProducerMethod(superClassMethod) == null)
       {
          throw new IllegalStateException(toString() + " does not specialize a bean");

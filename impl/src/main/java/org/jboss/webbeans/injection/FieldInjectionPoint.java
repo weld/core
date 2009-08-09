@@ -34,21 +34,21 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.introspector.ForwardingWBField;
 import org.jboss.webbeans.introspector.WBField;
 
-public class FieldInjectionPoint<T> extends ForwardingWBField<T> implements WBInjectionPoint<T, Field>
+public class FieldInjectionPoint<T, X> extends ForwardingWBField<T, X> implements WBInjectionPoint<T, Field>
 {
 
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
    private final Bean<?> declaringBean;
-   private final WBField<T> field;
+   private final WBField<T, X> field;
    private final boolean delegate;
 
-   public static <T> FieldInjectionPoint<T> of(Bean<?> declaringBean, WBField<T> field)
+   public static <T, X> FieldInjectionPoint<T, X> of(Bean<?> declaringBean, WBField<T, X> field)
    {
-      return new FieldInjectionPoint<T>(declaringBean, field);
+      return new FieldInjectionPoint<T, X>(declaringBean, field);
    }
 
-   protected FieldInjectionPoint(Bean<?> declaringBean, WBField<T> field)
+   protected FieldInjectionPoint(Bean<?> declaringBean, WBField<T, X> field)
    {
       this.declaringBean = declaringBean;
       this.field = field;
@@ -56,7 +56,7 @@ public class FieldInjectionPoint<T> extends ForwardingWBField<T> implements WBIn
    }
 
    @Override
-   protected WBField<T> delegate()
+   protected WBField<T, X> delegate()
    {
       return field;
    }

@@ -35,6 +35,7 @@ import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -55,7 +56,7 @@ import org.jboss.webbeans.util.Reflections;
  * @param <T>
  * @param <S>
  */
-public abstract class AbstractProducerBean<T, S extends Member> extends AbstractReceiverBean<T, S>
+public abstract class AbstractProducerBean<T, S extends Member> extends AbstractReceiverBean<T, S> implements Producer<T>
 {
    private static final LogProvider log = Logging.getLogProvider(AbstractProducerBean.class);
 
@@ -71,7 +72,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
    }
 
    @Override
-   protected abstract WBMember<T, S> getAnnotatedItem();
+   protected abstract WBMember<T, ?, S> getAnnotatedItem();
 
    @Override
    // Overriden to provide the class of the bean that declares the producer method/field
@@ -271,7 +272,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
    {
       try
       {
-         T instance = produceInstance(creationalContext);
+         T instance = produce(creationalContext);
          checkReturnValue(instance);
          return instance;
       }
@@ -283,8 +284,6 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
          }
       }
    }
-
-   protected abstract T produceInstance(CreationalContext<T> creationalContext);
 
    /**
     * Gets a string representation

@@ -86,6 +86,7 @@ import org.jboss.webbeans.resolution.TypeSafeBeanResolver;
 import org.jboss.webbeans.resolution.TypeSafeDecoratorResolver;
 import org.jboss.webbeans.resolution.TypeSafeObserverResolver;
 import org.jboss.webbeans.resolution.TypeSafeResolver;
+import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
@@ -743,6 +744,11 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       return Collections.unmodifiableList(decorators);
    }
+   
+   public Iterable<Bean<?>> getAccessibleBeans()
+   {
+      return createDynamicAccessibleIterable(Transform.BEAN);
+   }
 
    /**
     * Get all the spec defined beans, including interceptor beans and decorator
@@ -1241,14 +1247,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return rootNamespace;
    }
 
-   public <T> InjectionTarget<T> createInjectionTarget(Class<T> type)
-   {
-      throw new UnsupportedOperationException("Not yet implemented");
-   }
-
    public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type)
    {
-      throw new UnsupportedOperationException("Not yet implemented");
+      // TODO Cache on our side?
+      return new SimpleInjectionTarget<T>(getServices().get(ClassTransformer.class).loadClass(type), this);
    }
 
    public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean)
@@ -1329,7 +1331,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public <T> AnnotatedType<T> createAnnotatedType(Class<T> type)
    {
-      throw new UnsupportedOperationException();
+      return getServices().get(ClassTransformer.class).loadClass(type);
    }
 
    public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans)

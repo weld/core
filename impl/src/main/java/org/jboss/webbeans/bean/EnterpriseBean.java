@@ -194,7 +194,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
       super.preSpecialize(environment);
-      if (!environment.getEjbDescriptors().containsKey(getAnnotatedItem().getSuperclass().getJavaClass()))
+      if (!environment.getEjbDescriptors().containsKey(getAnnotatedItem().getWBSuperclass().getJavaClass()))
       {
          throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
       }
@@ -203,11 +203,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      if (environment.getClassBean(getAnnotatedItem().getSuperclass()) == null)
+      if (environment.getClassBean(getAnnotatedItem().getWBSuperclass()) == null)
       {
          throw new IllegalStateException(toString() + " does not specialize a bean");
       }
-      AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getSuperclass());
+      AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getWBSuperclass());
       if (!(specializedBean instanceof EnterpriseBean))
       {
          throw new IllegalStateException(toString() + " doesn't have a session bean as a superclass " + specializedBean);
@@ -225,16 +225,37 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     */
    public T create(final CreationalContext<T> creationalContext)
    {
+      T instance = produce(creationalContext);
+      if (hasDecorators())
+      {
+         instance = applyDecorators(instance, creationalContext, null);
+      }
+      return instance;
+   }
+   
+   public void inject(T instance, CreationalContext<T> ctx)
+   {
+      throw new UnsupportedOperationException("Unable to perform injection on a session bean");
+   }
+
+   public void postConstruct(T instance)
+   {
+      throw new UnsupportedOperationException("Unable to call postConstruct() on a session bean");
+   }
+
+   public void preDestroy(T instance)
+   {
+      throw new UnsupportedOperationException("Unable to call preDestroy() on a session bean");
+   }
+
+   public T produce(CreationalContext<T> ctx)
+   {
       try
       {
          T instance = proxyClass.newInstance();
-         creationalContext.push(instance);
-         ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler<T>(this, creationalContext));
+         ctx.push(instance);
+         ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler<T>(this, ctx));
          log.trace("Enterprise bean instance created for bean {0}", this);
-         if (hasDecorators())
-         {
-            instance = applyDecorators(instance, creationalContext, null);
-         }
          return instance;
       }
       catch (InstantiationException e)
@@ -354,7 +375,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     */
    protected void checkObserverMethods()
    {
-      for (WBMethod<?> method : this.annotatedItem.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
+      for (WBMethod<?, ?> method : this.annotatedItem.getWBDeclaredMethodsWithAnnotatedParameters(Observes.class))
       {
          if (!method.isStatic())
          {
@@ -367,7 +388,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    }
    
    // TODO must be a nicer way to do this!
-   public boolean isMethodExistsOnTypes(WBMethod<?> method)
+   public boolean isMethodExistsOnTypes(WBMethod<?, ?> method)
    {
       for (Type type : getTypes())
       {

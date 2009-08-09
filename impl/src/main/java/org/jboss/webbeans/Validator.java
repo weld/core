@@ -22,6 +22,8 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +55,10 @@ import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
+
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * Checks a list of beans for DeploymentExceptions and their subclasses
@@ -203,7 +209,35 @@ public class Validator implements Service
       validateEnabledDecoratorClasses(manager);
       validateEnabledPolicies(manager);
       validateDisposalMethods(environment);
-      
+      validateBeanNames(manager);
+   }
+   
+   public void validateBeanNames(BeanManagerImpl beanManager)
+   {
+      Multimap<String, Bean<?>> namedAccessibleBeans = Multimaps.newSetMultimap(new HashMap<String, Collection<Bean<?>>>(), new Supplier<Set<Bean<?>>>()
+      {
+         
+         public Set<Bean<?>> get()
+         {
+            return new HashSet<Bean<?>>();
+         }
+         
+      });
+      for (Bean<?> bean : beanManager.getAccessibleBeans())
+      {
+         if (bean.getName() != null)
+         {
+            namedAccessibleBeans.put(bean.getName(), bean);
+         }
+      }
+      for (String name : namedAccessibleBeans.keySet())
+      {
+         Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(namedAccessibleBeans.get(name));
+         if (resolvedBeans.size() > 1)
+         {
+            throw new DeploymentException("An unresolvable ambiguous EL name exists for " + name + "; found " + resolvedBeans );
+         }
+      }
    }
    
    private void validateEnabledDecoratorClasses(BeanManagerImpl beanManager)

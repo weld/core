@@ -21,10 +21,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.decorator.Decorates;
+import javax.enterprise.inject.spi.AnnotatedConstructor;
 
 /**
  * Represents a Class Constructor
@@ -32,29 +32,11 @@ import javax.decorator.Decorates;
  * @author Pete Muir
  * 
  */
-public interface WBConstructor<T> extends WBMember<T, Constructor<T>>
+public interface WBConstructor<T> extends WBCallable<T, T, Constructor<T>>, AnnotatedConstructor<T>
 {
 
    @SuppressWarnings("unchecked")
    public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Decorates.class));
-
-   /**
-    * Gets all parameters to the constructor
-    * 
-    * @return A set of abstracted parameters. Returns an empty set if there are
-    *         no parameters
-    */
-   public List<? extends WBParameter<?>> getParameters();
-
-   /**
-    * Gets all parameters to the constructor which are annotated with
-    * annotationType
-    * 
-    * @param annotationType A annotation to match
-    * @return A list of abstracted parameters with the given annotation type.
-    *         Returns an empty set if there are no matches.
-    */
-   public List<WBParameter<?>> getAnnotatedParameters(Class<? extends Annotation> annotationType);
 
    /**
     * Creates a new instance of the class, using this constructor
@@ -62,13 +44,6 @@ public interface WBConstructor<T> extends WBMember<T, Constructor<T>>
     * @return The created instance
     */
    public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
-
-   /**
-    * Gets the declaring class of the annotation
-    * 
-    * @return An abstraction of the declaring class
-    */
-   public WBType<T> getDeclaringType();
 
    public ConstructorSignature getSignature();
 

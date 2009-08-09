@@ -31,13 +31,10 @@ import javassist.util.proxy.ProxyObject;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.ScopeType;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.CreationException;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Initializer;
-import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -45,10 +42,7 @@ import org.jboss.webbeans.bean.proxy.DecoratorProxyMethodHandler;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
-import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.WBClass;
-import org.jboss.webbeans.introspector.WBMethod;
-import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Beans;
@@ -63,16 +57,16 @@ import org.jboss.webbeans.util.Strings;
  * @param <T>
  * @param <E>
  */
-public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
+public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> implements InjectionTarget<T>
 {
    // Logger
    private static final LogProvider log = Logging.getLogProvider(AbstractClassBean.class);
    // The item representation
    protected WBClass<T> annotatedItem;
    // The injectable fields
-   private Set<FieldInjectionPoint<?>> injectableFields;
+   private Set<FieldInjectionPoint<?, ?>> injectableFields;
    // The initializer methods
-   private Set<MethodInjectionPoint<?>> initializerMethods;
+   private Set<MethodInjectionPoint<?, ?>> initializerMethods;
    private Set<String> dependencies;
    
    private List<Decorator<?>> decorators;
@@ -212,7 +206,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void injectBoundFields(T instance, CreationalContext<T> creationalContext)
    {
-      for (FieldInjectionPoint<?> injectableField : injectableFields)
+      for (FieldInjectionPoint<?, ?> injectableField : injectableFields)
       {
          injectableField.inject(instance, manager, creationalContext);
       }
@@ -225,11 +219,17 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void callInitializers(T instance, CreationalContext<T> creationalContext)
    {
-      for (MethodInjectionPoint<?> initializer : getInitializerMethods())
+      for (MethodInjectionPoint<?, ?> initializer : getInitializerMethods())
       {
          initializer.invoke(instance, manager, creationalContext, CreationException.class);
       }
    }
+   
+   public void dispose(T instance) 
+   {
+      // No-op for class beans
+   }
+   
 
    /**
     * Initializes the bean type
@@ -250,7 +250,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initInjectableFields()
    {
-      injectableFields = new HashSet<FieldInjectionPoint<?>>(Beans.getFieldInjectionPoints(annotatedItem, this));
+      injectableFields = new HashSet<FieldInjectionPoint<?, ?>>(Beans.getFieldInjectionPoints(this, annotatedItem));
       addInjectionPoints(injectableFields);
    }
 
@@ -259,41 +259,14 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initInitializerMethods()
    {
-      initializerMethods = new HashSet<MethodInjectionPoint<?>>();
-      for (WBMethod<?> method : annotatedItem.getAnnotatedMethods(Initializer.class))
-      {
-         if (method.isStatic())
-         {
-            throw new DefinitionException("Initializer method " + method.toString() + " cannot be static on " + getAnnotatedItem());
-         }
-         else if (method.getAnnotation(Produces.class) != null)
-         {
-            throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Produces on " + getAnnotatedItem());
-         }
-         else if (method.getAnnotatedParameters(Disposes.class).size() > 0)
-         {
-            throw new DefinitionException("Initializer method " + method.toString() + " cannot have parameters annotated @Disposes on " + getAnnotatedItem());
-         }
-         else if (method.getAnnotatedParameters(Observes.class).size() > 0)
-         {
-            throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Observes on " + getAnnotatedItem());
-         }
-         else
-         {
-            MethodInjectionPoint<?> initializerMethod = MethodInjectionPoint.of(this, method); 
-            initializerMethods.add(initializerMethod);
-            for (WBParameter<?> parameter : initializerMethod.getParameters())
-            {
-               addInjectionPoint(ParameterInjectionPoint.of(this, parameter));
-            }
-         }
-      }
+      initializerMethods = Beans.getInitializerMethods(this, getAnnotatedItem());
+      addInjectionPoints(Beans.getParameterInjectionPoints(this, initializerMethods));
    }
 
    @Override
    protected void initScopeType()
    {
-      for (WBClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getSuperclass())
+      for (WBClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getWBSuperclass())
       {
          Set<Annotation> scopeTypes = clazz.getDeclaredMetaAnnotations(ScopeType.class);
          scopeTypes = clazz.getDeclaredMetaAnnotations(ScopeType.class);
@@ -333,7 +306,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
       super.preSpecialize(environment);
-      if (getAnnotatedItem().getSuperclass() == null || getAnnotatedItem().getSuperclass().getJavaClass().equals(Object.class))
+      if (getAnnotatedItem().getWBSuperclass() == null || getAnnotatedItem().getWBSuperclass().getJavaClass().equals(Object.class))
       {
          throw new DefinitionException("Specializing bean must extend another bean " + toString());
       }
@@ -368,7 +341,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * 
     * @return The set of annotated methods
     */
-   public Set<? extends MethodInjectionPoint<?>> getInitializerMethods()
+   public Set<? extends MethodInjectionPoint<?, ?>> getInitializerMethods()
    {
       return initializerMethods;
    }

@@ -38,7 +38,7 @@ class TransactionalObserverMethodImpl<X, T> extends ObserverMethodImpl<X, T>
     * @param observerBean The bean declaring the observer method
     * @param manager The JCDI manager in use
     */
-   protected TransactionalObserverMethodImpl(WBMethod<?> observer, RIBean<?> observerBean, TransactionPhase transactionPhase, BeanManagerImpl manager)
+   protected TransactionalObserverMethodImpl(WBMethod<?, ?> observer, RIBean<?> observerBean, TransactionPhase transactionPhase, BeanManagerImpl manager)
    {
       super(observer, observerBean, manager);
       this.transactionPhase = transactionPhase;

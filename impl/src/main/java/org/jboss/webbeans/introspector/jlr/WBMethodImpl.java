@@ -28,12 +28,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.MethodSignature;
+import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.WBParameter;
-import org.jboss.webbeans.introspector.WBType;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
@@ -51,32 +54,29 @@ import com.google.common.collect.Multimaps;
  * 
  * @param <T>
  */
-public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMethod<T>
+public class WBMethodImpl<T, X> extends AbstractWBCallable<T, X, Method> implements WBMethod<T, X>
 {
 
    // The underlying method
    private final Method method;
 
    // The abstracted parameters
-   private final List<WBParameter<?>> parameters;
+   private final List<WBParameter<?, ?>> parameters;
    // A mapping from annotation type to parameter abstraction with that
    // annotation present
-   private final ListMultimap<Class<? extends Annotation>, WBParameter<?>> annotatedParameters;
+   private final ListMultimap<Class<? extends Annotation>, WBParameter<?, ?>> annotatedParameters;
 
    // The property name
    private final String propertyName;
-
-   // The abstracted declaring class
-   private final WBType<?> declaringClass;
 
    // Cached string representation
    private String toString;
 
    private final MethodSignature signature;
 
-   public static <T> WBMethodImpl<T> of(Method method, WBType<?> declaringClass, ClassTransformer classTransformer)
+   public static <T, X> WBMethodImpl<T, X> of(Method method, WBClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      return new WBMethodImpl<T>(ensureAccessible(method), declaringClass, classTransformer);
+      return new WBMethodImpl<T, X>(ensureAccessible(method), declaringClass, classTransformer);
    }
 
    /**
@@ -89,18 +89,17 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
     * @param declaringClass The declaring class abstraction
     */
    @SuppressWarnings("unchecked")
-   private WBMethodImpl(Method method, WBType<?> declaringClass, ClassTransformer classTransformer)
+   private WBMethodImpl(Method method, WBClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(method, classTransformer.getTypeStore()), method, (Class<T>) method.getReturnType(), method.getGenericReturnType());
+      super(AnnotationStore.of(method, classTransformer.getTypeStore()), method, (Class<T>) method.getReturnType(), method.getGenericReturnType(), declaringClass);
       this.method = method;
-      this.declaringClass = declaringClass;
-      this.parameters = new ArrayList<WBParameter<?>>();
-      this.annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WBParameter<?>>>(), new Supplier< List<WBParameter<?>>>()
+      this.parameters = new ArrayList<WBParameter<?, ?>>();
+      this.annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WBParameter<?, ?>>>(), new Supplier< List<WBParameter<?, ?>>>()
       {
          
-         public List<WBParameter<?>> get()
+         public List<WBParameter<?, ?>> get()
          {
-            return new ArrayList<WBParameter<?>>();
+            return new ArrayList<WBParameter<?, ?>>();
          }
         
       });
@@ -111,7 +110,7 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
          {
             Class<? extends Object> clazz = method.getParameterTypes()[i];
             Type type = method.getGenericParameterTypes()[i];
-            WBParameter<?> parameter = WBParameterImpl.of(method.getParameterAnnotations()[i], (Class<Object>) clazz, type, this, classTransformer);
+            WBParameter<?, ?> parameter = WBParameterImpl.of(method.getParameterAnnotations()[i], (Class<Object>) clazz, type, this, i, classTransformer);
             this.parameters.add(parameter);
             for (Annotation annotation : parameter.getAnnotations())
             {
@@ -125,7 +124,7 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
          {
             Class<? extends Object> clazz = method.getParameterTypes()[i];
             Type type = method.getGenericParameterTypes()[i];
-            WBParameter<?> parameter = WBParameterImpl.of(new Annotation[0], (Class<Object>) clazz, type, this, classTransformer);
+            WBParameter<?, ?> parameter = WBParameterImpl.of(new Annotation[0], (Class<Object>) clazz, type, this, i, classTransformer);
             this.parameters.add(parameter);
          }  
       }
@@ -152,7 +151,7 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
       return method;
    }
 
-   public List<WBParameter<?>> getParameters()
+   public List<WBParameter<?, ?>> getWBParameters()
    {
       return Collections.unmodifiableList(parameters);
    }
@@ -162,7 +161,7 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
       return method.getParameterTypes();
    }
 
-   public List<WBParameter<?>> getAnnotatedParameters(Class<? extends Annotation> annotationType)
+   public List<WBParameter<?, ?>> getAnnotatedWBParameters(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableList(annotatedParameters.get(annotationType));
    }
@@ -172,8 +171,8 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
    {
       if (other instanceof WBMethod)
       {
-         WBMethod<?> that = (WBMethod<?>) other;
-         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getName().equals(that.getName()) && this.getParameters().equals(that.getParameters());
+         WBMethod<?, ?> that = (WBMethod<?, ?>) other;
+         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getName().equals(that.getName()) && this.getWBParameters().equals(that.getWBParameters());
       }
       else
       {
@@ -212,11 +211,6 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
       return propertyName;
    }
 
-   public WBType<?> getDeclaringType()
-   {
-      return declaringClass;
-   }
-
    @Override
    public String toString()
    {
@@ -231,6 +225,11 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
    public MethodSignature getSignature()
    {
       return signature;
+   }
+
+   public List<AnnotatedParameter<X>> getParameters()
+   {
+      return new ArrayList<AnnotatedParameter<X>>((Set) parameters);
    }
 
 }

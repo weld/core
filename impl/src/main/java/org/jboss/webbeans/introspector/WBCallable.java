@@ -17,22 +17,33 @@
 package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
-import java.util.Set;
+import java.lang.reflect.Member;
+import java.util.List;
 
-public abstract class ForwardingWBAnnotation<T extends Annotation> extends ForwardingWBClass<T> implements WBAnnotation<T>
+import javax.enterprise.inject.spi.AnnotatedCallable;
+
+/**
+ * @author pmuir
+ *
+ */
+public interface WBCallable<T, X, S extends Member> extends WBMember<T, X, S>, AnnotatedCallable<X>
 {
    
-   @Override
-   protected abstract WBAnnotation<T> delegate();
-   
-   public Set<WBMethod<?, ?>> getAnnotatedMembers(Class<? extends Annotation> annotationType)
-   {
-      return delegate().getAnnotatedMembers(annotationType);
-   }
-   
-   public Set<WBMethod<?, ?>> getMembers()
-   {
-      return delegate().getMembers();
-   }
-   
+   /**
+    * Gets the abstracted parameters of the method
+    * 
+    * @return A list of parameters. Returns an empty list if no parameters are
+    *         present.
+    */
+   public List<? extends WBParameter<?, ?>> getWBParameters();
+
+   /**
+    * Gets the list of annotated parameters for a given annotation
+    * 
+    * @param metaAnnotationType The annotation to match
+    * @return A set of matching parameter abstractions. Returns an empty list if
+    *         there are no matches.
+    */
+   public List<WBParameter<?, ?>> getAnnotatedWBParameters(Class<? extends Annotation> metaAnnotationType);
+
 }

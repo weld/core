@@ -21,25 +21,22 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-public abstract class ForwardingWBMethod<T> extends ForwardingWBMember<T, Method> implements WBMethod<T>
+import javax.enterprise.inject.spi.AnnotatedParameter;
+
+public abstract class ForwardingWBMethod<T, X> extends ForwardingWBMember<T,X, Method> implements WBMethod<T, X>
 {
 
    @Override
-   protected abstract WBMethod<T> delegate();
+   protected abstract WBMethod<T, X> delegate();
 
    public Method getAnnotatedMethod()
    {
       return delegate().getAnnotatedMethod();
    }
 
-   public List<WBParameter<?>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType)
+   public List<WBParameter<?, ?>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType)
    {
-      return delegate().getAnnotatedParameters(metaAnnotationType);
-   }
-
-   public WBType<?> getDeclaringType()
-   {
-      return delegate().getDeclaringType();
+      return delegate().getAnnotatedWBParameters(metaAnnotationType);
    }
 
    public Class<?>[] getParameterTypesAsArray()
@@ -47,10 +44,10 @@ public abstract class ForwardingWBMethod<T> extends ForwardingWBMember<T, Method
       return delegate().getParameterTypesAsArray();
    }
 
-   public List<? extends WBParameter<?>> getParameters()
-         {
-      return delegate().getParameters();
-         }
+   public List<? extends WBParameter<?, ?>> getWBParameters()
+   {
+      return delegate().getWBParameters();
+   }
 
    public String getPropertyName()
    {
@@ -75,6 +72,16 @@ public abstract class ForwardingWBMethod<T> extends ForwardingWBMember<T, Method
    public MethodSignature getSignature()
    {
       return delegate().getSignature();
+   }
+
+   public List<WBParameter<?, ?>> getAnnotatedWBParameters(Class<? extends Annotation> metaAnnotationType)
+   {
+      return delegate().getAnnotatedWBParameters(metaAnnotationType);
+   }
+
+   public List<AnnotatedParameter<X>> getParameters()
+   {
+      return delegate().getParameters();
    }
 
 }

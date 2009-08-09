@@ -42,15 +42,15 @@ import org.jboss.webbeans.introspector.WBParameter;
 public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> implements WBInjectionPoint<T, Constructor<T>>
 {
 
-   private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?>>
+   private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?, ?>>
    {
 
-      protected abstract List<? extends WBParameter<?>> delegate();
+      protected abstract List<? extends WBParameter<?, ?>> delegate();
 
       protected abstract Bean<?> declaringBean();;
 
       @Override
-      public ParameterInjectionPoint<?> get(int index)
+      public ParameterInjectionPoint<?, ?> get(int index)
       {
          return ParameterInjectionPoint.of(declaringBean, delegate().get(index));
       }
@@ -101,7 +101,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
    {
       try
       {
-         return delegate().newInstance(getParameterValues(getParameters(), null, null, manager, creationalContext));
+         return delegate().newInstance(getParameterValues(getWBParameters(), null, null, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -123,9 +123,9 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
    }
 
    @Override
-   public List<ParameterInjectionPoint<?>> getParameters()
+   public List<ParameterInjectionPoint<?, ?>> getWBParameters()
    {
-      final List<? extends WBParameter<?>> delegate = super.getParameters();
+      final List<? extends WBParameter<?, ?>> delegate = super.getWBParameters();
       return new ForwardingParameterInjectionPointList()
       {
 
@@ -136,10 +136,10 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
          }
 
          @Override
-         protected List<? extends WBParameter<?>> delegate()
-               {
+         protected List<? extends WBParameter<?, ?>> delegate()
+         {
             return delegate;
-               }
+         }
 
       };
    }
@@ -157,13 +157,13 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
     * @param manager The Web Beans manager
     * @return The object array of looked up values
     */
-   protected Object[] getParameterValues(List<ParameterInjectionPoint<?>> parameters, Object specialVal, Class<? extends Annotation> specialParam, BeanManagerImpl manager, CreationalContext<?> creationalContext)
+   protected Object[] getParameterValues(List<ParameterInjectionPoint<?, ?>> parameters, Object specialVal, Class<? extends Annotation> specialParam, BeanManagerImpl manager, CreationalContext<?> creationalContext)
    {
       Object[] parameterValues = new Object[parameters.size()];
-      Iterator<ParameterInjectionPoint<?>> iterator = parameters.iterator();
+      Iterator<ParameterInjectionPoint<?, ?>> iterator = parameters.iterator();
       for (int i = 0; i < parameterValues.length; i++)
       {
-         ParameterInjectionPoint<?> param = iterator.next();
+         ParameterInjectionPoint<?, ?> param = iterator.next();
          if (specialParam != null && param.isAnnotationPresent(specialParam))
          {
             parameterValues[i] = specialVal;

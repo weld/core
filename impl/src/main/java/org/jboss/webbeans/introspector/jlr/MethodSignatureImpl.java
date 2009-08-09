@@ -30,13 +30,13 @@ public class MethodSignatureImpl implements MethodSignature
    private final String methodName;
    private final String[] parameterTypes;
    
-   public MethodSignatureImpl(WBMethod<?> method)
+   public MethodSignatureImpl(WBMethod<?, ?> method)
    {
       this.methodName = method.getName();
-      this.parameterTypes = new String[method.getParameters().size()];
-      for (int i = 0; i < method.getParameters().size(); i++)
+      this.parameterTypes = new String[method.getWBParameters().size()];
+      for (int i = 0; i < method.getWBParameters().size(); i++)
       {
-         parameterTypes[i] = method.getParameters().get(i).getJavaClass().getName();
+         parameterTypes[i] = method.getWBParameters().get(i).getJavaClass().getName();
       }
    }
    

@@ -21,8 +21,8 @@ import static org.jboss.webbeans.util.Reflections.ensureAccessible;
 import java.lang.reflect.Field;
 
 import org.jboss.webbeans.introspector.AnnotationStore;
+import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBField;
-import org.jboss.webbeans.introspector.WBType;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
@@ -36,20 +36,18 @@ import org.jboss.webbeans.util.Reflections;
  * 
  * @param <T>
  */
-public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBField<T>
+public class WBFieldImpl<T, X> extends AbstractWBMember<T, X, Field> implements WBField<T, X>
 {
 
    // The underlying field
    private final Field field;
-   // The abstraction of the declaring class
-   private final WBType<?> declaringClass;
 
    // Cached string representation
    private String toString;
 
-   public static <T> WBFieldImpl<T> of(Field field, WBType<?> declaringClass, ClassTransformer classTransformer)
+   public static <T, X> WBFieldImpl<T, X> of(Field field, WBClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      return new WBFieldImpl<T>(ensureAccessible(field), declaringClass, classTransformer);
+      return new WBFieldImpl<T, X>(ensureAccessible(field), declaringClass, classTransformer);
    }
    
    /**
@@ -61,11 +59,10 @@ public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBFiel
     * @param field The actual field
     * @param declaringClass The abstraction of the declaring class
     */
-   private WBFieldImpl(Field field, WBType<?> declaringClass, ClassTransformer classTransformer)
+   private WBFieldImpl(Field field, WBClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(field, classTransformer.getTypeStore()), field, (Class<T>) field.getType(), field.getGenericType());
+      super(AnnotationStore.of(field, classTransformer.getTypeStore()), field, (Class<T>) field.getType(), field.getGenericType(), declaringClass);
       this.field = field;
-      this.declaringClass = declaringClass;
    }
 
    /**
@@ -112,18 +109,6 @@ public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBFiel
    }
 
    /**
-    * Gets the abstracted declaring class
-    * 
-    * @return The declaring class
-    * 
-    * @see org.jboss.webbeans.introspector.WBField#getDeclaringType()
-    */
-   public WBType<?> getDeclaringType()
-   {
-      return declaringClass;
-   }
-
-   /**
     * Gets a string representation of the field
     * 
     * @return A string representation
@@ -142,9 +127,9 @@ public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBFiel
    @Override
    public boolean equals(Object other)
    {
-      if (other instanceof WBField)
+      if (other instanceof WBField<?, ?>)
       {
-         WBField<?> that = (WBField<?>) other;
+         WBField<?, ?> that = (WBField<?, ?>) other;
          return this.getDeclaringType().equals(that.getDeclaringType()) && this.getName().equals(that.getName());
       }
       else

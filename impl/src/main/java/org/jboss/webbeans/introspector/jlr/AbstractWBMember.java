@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.ForwardingWBMember;
+import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMember;
 import org.jboss.webbeans.util.Reflections;
 
@@ -35,10 +36,10 @@ import org.jboss.webbeans.util.Reflections;
  * @param <T>
  * @param <S>
  */
-public abstract class AbstractWBMember<T, S extends Member> extends AbstractWBAnnotated<T, S> implements WBMember<T, S>
+public abstract class AbstractWBMember<T, X, S extends Member> extends AbstractWBAnnotated<T, S> implements WBMember<T, X, S>
 {
    
-   static abstract class WrappableForwardingAnnotatedMember<T, S extends Member> extends ForwardingWBMember<T, S> implements WrappableAnnotatedItem<T, S>
+   static abstract class WrappableForwardingAnnotatedMember<T, X, S extends Member> extends ForwardingWBMember<T, X, S> implements WrappableAnnotatedItem<T, S>
    {
       
    }
@@ -48,22 +49,22 @@ public abstract class AbstractWBMember<T, S extends Member> extends AbstractWBAn
 
    // Cached string representation
    private String toString;
-   
    private final boolean _public;
-   
    private final boolean _private;
+   private final WBClass<X> declaringType;
 
    /**
     * Constructor
     * 
     * @param annotationMap The annotation map
     */
-   protected AbstractWBMember(AnnotationStore annotatedItemHelper, Member member, Class<T> rawType, Type type)
+   protected AbstractWBMember(AnnotationStore annotatedItemHelper, Member member, Class<T> rawType, Type type, WBClass<X> declaringType)
    {
       super(annotatedItemHelper, rawType, type);
       name = member.getName();
       _public = Modifier.isPublic(member.getModifiers());
       _private = Modifier.isPrivate(member.getModifiers());
+      this.declaringType = declaringType;
    }
 
    /**
@@ -147,6 +148,11 @@ public abstract class AbstractWBMember<T, S extends Member> extends AbstractWBAn
    public S getJavaMember()
    {
       return getDelegate();
+   }
+   
+   public WBClass<X> getDeclaringType()
+   {
+      return declaringType;
    }
 
 }

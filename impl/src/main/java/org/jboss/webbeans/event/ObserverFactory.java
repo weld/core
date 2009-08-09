@@ -41,7 +41,7 @@ public class ObserverFactory
     * @param manager The Web Beans manager
     * @return An observer implementation built from the method abstraction
     */
-   public static <X, T> ObserverMethodImpl<X, T> create(WBMethod<?> method, RIBean<?> declaringBean, BeanManagerImpl manager)
+   public static <X, T> ObserverMethodImpl<X, T> create(WBMethod<?, ?> method, RIBean<?> declaringBean, BeanManagerImpl manager)
    {
       ObserverMethodImpl<X, T> result = null;
       TransactionPhase transactionPhase = getTransactionalPhase(method);
@@ -63,9 +63,9 @@ public class ObserverFactory
     * @param observer The observer method
     * @return true if the observer method is annotated as transactional
     */
-   public static TransactionPhase getTransactionalPhase(WBMethod<?> observer)
+   public static TransactionPhase getTransactionalPhase(WBMethod<?, ?> observer)
    {
-      WBParameter<?> parameter = observer.getAnnotatedParameters(Observes.class).iterator().next();
+      WBParameter<?, ?> parameter = observer.getAnnotatedWBParameters(Observes.class).iterator().next();
       return parameter.getAnnotation(Observes.class).during();
    }
 }

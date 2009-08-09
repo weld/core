@@ -18,18 +18,18 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.reflect.Field;
 
-public abstract class ForwardingWBField<T> extends ForwardingWBMember<T, Field> implements WBField<T>
+public abstract class ForwardingWBField<T, X> extends ForwardingWBMember<T, X, Field> implements WBField<T, X>
 {
 
    @Override
-   protected abstract WBField<T> delegate();
+   protected abstract WBField<T, X> delegate();
 
    public T get(Object instance)
    {
       return delegate().get(instance);
    }
 
-   public WBType<?> getDeclaringType()
+   public WBClass<X> getDeclaringType()
    {
       return delegate().getDeclaringType();
    }
@@ -47,6 +47,6 @@ public abstract class ForwardingWBField<T> extends ForwardingWBMember<T, Field> 
    public boolean isTransient()
    {
       return delegate().isTransient();
-   }  
+   }
 
 }

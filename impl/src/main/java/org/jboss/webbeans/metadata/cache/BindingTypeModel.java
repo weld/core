@@ -49,7 +49,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
    private static final Log log = Logging.getLog(BindingTypeModel.class);
    
    // The non-binding types
-   private Set<WBMethod<?>> nonBindingTypes;
+   private Set<WBMethod<?, ?>> nonBindingTypes;
    
 
    /**
@@ -94,7 +94,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     */
    private void checkArrayAndAnnotationValuedMembers()
    {
-      for (WBMethod<?> annotatedMethod : getAnnotatedAnnotation().getMembers())
+      for (WBMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers())
       {
          if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingTypes.contains(annotatedMethod))
          {
@@ -131,7 +131,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     * @return A set of non-binding types, or an empty set if there are none
     *         present
     */
-   public Set<WBMethod<?>> getNonBindingTypes()
+   public Set<WBMethod<?, ?>> getNonBindingTypes()
    {
       return nonBindingTypes;
    }
@@ -155,7 +155,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
    {
       if (instance.annotationType().equals(getRawType()) && other.annotationType().equals(getRawType()))
       {
-         for (WBMethod<?> annotatedMethod : getAnnotatedAnnotation().getMembers())
+         for (WBMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers())
          {
             if (!nonBindingTypes.contains(annotatedMethod))
             {

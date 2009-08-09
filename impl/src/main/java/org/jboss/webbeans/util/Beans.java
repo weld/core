@@ -23,9 +23,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.decorator.Decorates;
 import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.BindingType;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
 
@@ -34,9 +39,17 @@ import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.AbstractProducerBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
+import org.jboss.webbeans.injection.MethodInjectionPoint;
+import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.WBClass;
+import org.jboss.webbeans.introspector.WBConstructor;
 import org.jboss.webbeans.introspector.WBField;
+import org.jboss.webbeans.introspector.WBMethod;
+import org.jboss.webbeans.introspector.WBParameter;
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.cache.BindingTypeModel;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 
@@ -49,6 +62,9 @@ import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
  */
 public class Beans
 {
+   
+   private static final Log log = Logging.getLog(Beans.class);
+   
    /**
     * Indicates if a bean's scope type is passivating
     * 
@@ -108,21 +124,116 @@ public class Beans
       }
    }
 
-   public static Set<FieldInjectionPoint<?>> getFieldInjectionPoints(WBClass<?> annotatedItem, Bean<?> declaringBean)
+   public static Set<FieldInjectionPoint<?, ?>> getFieldInjectionPoints(Bean<?> declaringBean, WBClass<?> annotatedItem)
    {
-      Set<FieldInjectionPoint<?>> injectableFields = new HashSet<FieldInjectionPoint<?>>();
-      for (WBField<?> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
+      Set<FieldInjectionPoint<?, ?>> injectableFields = new HashSet<FieldInjectionPoint<?, ?>>();
+      for (WBField<?, ?> annotatedField : annotatedItem.getMetaAnnotatedWBFields(BindingType.class))
       {
          addFieldInjectionPoint(annotatedField, injectableFields, declaringBean);
       }
-      for (WBField<?> annotatedField : annotatedItem.getAnnotatedFields(Decorates.class))
+      for (WBField<?, ?> annotatedField : annotatedItem.getAnnotatedWBFields(Decorates.class))
       {
          addFieldInjectionPoint(annotatedField, injectableFields, declaringBean);
       }
       return injectableFields;
    }
    
-   private static void addFieldInjectionPoint(WBField<?> annotatedField, Set<FieldInjectionPoint<?>> injectableFields, Bean<?> declaringBean)
+   public static WBMethod<?, ?> getPostConstruct(WBClass<?> type)
+   {
+      Set<WBMethod<?, ?>> postConstructMethods = type.getAnnotatedWBMethods(PostConstruct.class);
+      log.trace("Found " + postConstructMethods + " constructors annotated with @Initializer for " + type);
+      if (postConstructMethods.size() > 1)
+      {
+         throw new DefinitionException("Cannot have more than one post construct method annotated with @PostConstruct for " + type);
+      }
+      else if (postConstructMethods.size() == 1)
+      {
+         WBMethod<?, ?> postConstruct = postConstructMethods.iterator().next();
+         log.trace("Exactly one post construct method (" + postConstruct + ") for " + type);
+         return postConstruct;
+      }
+      else
+      {
+         return null;
+      }
+   }
+   
+   public static WBMethod<?, ?> getPreDestroy(WBClass<?> type)
+   {
+      Set<WBMethod<?, ?>> preDestroyMethods = type.getAnnotatedWBMethods(PreDestroy.class);
+      log.trace("Found " + preDestroyMethods + " constructors annotated with @Initializer for " + type);
+      if (preDestroyMethods.size() > 1)
+      {
+         // TODO actually this is wrong, in EJB you can have @PreDestroy methods
+         // on the superclass, though the Web Beans spec is silent on the issue
+         throw new DefinitionException("Cannot have more than one pre destroy method annotated with @PreDestroy for " + type);
+      }
+      else if (preDestroyMethods.size() == 1)
+      {
+         WBMethod<?, ?> preDestroy = preDestroyMethods.iterator().next();
+         log.trace("Exactly one post construct method (" + preDestroy + ") for " + type);
+         return preDestroy;
+      }
+      else
+      {
+         return null;
+      }
+   }
+   
+   public static Set<MethodInjectionPoint<?, ?>> getInitializerMethods(Bean<?> declaringBean, WBClass<?> type)
+   {
+      Set<MethodInjectionPoint<?, ?>> initializerMethods = new HashSet<MethodInjectionPoint<?, ?>>();
+      for (WBMethod<?, ?> method : type.getAnnotatedWBMethods(Initializer.class))
+      {
+         if (method.isStatic())
+         {
+            throw new DefinitionException("Initializer method " + method.toString() + " cannot be static on " + type);
+         }
+         else if (method.getAnnotation(Produces.class) != null)
+         {
+            throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Produces on " + type);
+         }
+         else if (method.getAnnotatedWBParameters(Disposes.class).size() > 0)
+         {
+            throw new DefinitionException("Initializer method " + method.toString() + " cannot have parameters annotated @Disposes on " + type);
+         }
+         else if (method.getAnnotatedWBParameters(Observes.class).size() > 0)
+         {
+            throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Observes on " + type);
+         }
+         else
+         {
+            MethodInjectionPoint<?, ?> initializerMethod = MethodInjectionPoint.of(declaringBean, method); 
+            initializerMethods.add(initializerMethod);
+         }
+      }
+      return initializerMethods;
+   }
+   
+   public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, WBConstructor<?> constructor)
+   {
+      Set<ParameterInjectionPoint<?,?>> injectionPoints = new HashSet<ParameterInjectionPoint<?,?>>();
+      for (WBParameter<?, ?> parameter : constructor.getWBParameters())
+      {
+         injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
+      }
+      return injectionPoints;
+   }
+   
+   public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, Set<MethodInjectionPoint<?, ?>> methodInjectionPoints)
+   {
+      Set<ParameterInjectionPoint<?, ?>> injectionPoints = new HashSet<ParameterInjectionPoint<?,?>>();
+      for (MethodInjectionPoint<?, ?> method : methodInjectionPoints)
+      {
+         for (WBParameter<?, ?> parameter : method.getWBParameters())
+         {
+            injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
+         }
+      }
+      return injectionPoints;
+   }
+   
+   private static void addFieldInjectionPoint(WBField<?, ?> annotatedField, Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean)
    {
       if (!annotatedField.isAnnotationPresent(Produces.class))
       {
@@ -134,7 +245,7 @@ public class Beans
          {
             throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
          }
-         FieldInjectionPoint<?> fieldInjectionPoint = FieldInjectionPoint.of(declaringBean, annotatedField);
+         FieldInjectionPoint<?, ?> fieldInjectionPoint = FieldInjectionPoint.of(declaringBean, annotatedField);
          injectableFields.add(fieldInjectionPoint);
       }
    }
@@ -265,6 +376,40 @@ public class Beans
          }
       }
       return false;
+   }
+   
+   public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<?> declaringBean, WBClass<T> type)
+   {
+      ConstructorInjectionPoint<T> constructor = null;
+      Set<WBConstructor<T>> initializerAnnotatedConstructors = type.getAnnotatedWBConstructors(Initializer.class);
+      log.trace("Found " + initializerAnnotatedConstructors + " constructors annotated with @Initializer for " + type);
+      if (initializerAnnotatedConstructors.size() > 1)
+      {
+         if (initializerAnnotatedConstructors.size() > 1)
+         {
+            throw new DefinitionException("Cannot have more than one constructor annotated with @Initializer for " + type);
+         }
+      }
+      else if (initializerAnnotatedConstructors.size() == 1)
+      {
+         constructor = ConstructorInjectionPoint.of(declaringBean, initializerAnnotatedConstructors.iterator().next());
+         log.trace("Exactly one constructor (" + constructor + ") annotated with @Initializer defined, using it as the bean constructor for " + type);
+      }
+      else if (type.getNoArgsWBConstructor() != null)
+      {
+
+         constructor = ConstructorInjectionPoint.of(declaringBean, type.getNoArgsWBConstructor());
+         log.trace("Exactly one constructor (" + constructor + ") defined, using it as the bean constructor for " + type);
+      }
+      
+      if (constructor == null)
+      {
+         throw new DefinitionException("Cannot determine constructor to use for " + type);
+      }
+      else
+      {
+         return constructor;
+      }
    }
    
 }

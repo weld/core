@@ -113,7 +113,7 @@ public class AbstractBeanDeployer
    
    protected void createProducerMethods(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
    {
-      for (WBMethod<?> method : annotatedClass.getDeclaredAnnotatedMethods(Produces.class))
+      for (WBMethod<?, ?> method : annotatedClass.getDeclaredWBAnnotatedMethods(Produces.class))
       {
          createProducerMethod(declaringBean, method);         
       }
@@ -121,7 +121,7 @@ public class AbstractBeanDeployer
    
    protected void createDisposalMethods(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
    {
-      for (WBMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Disposes.class))
+      for (WBMethod<?, ?> method : annotatedClass.getWBDeclaredMethodsWithAnnotatedParameters(Disposes.class))
       {
          DisposalMethodBean<?> disposalBean = DisposalMethodBean.of(manager, method, declaringBean);
          disposalBean.initialize(getEnvironment());
@@ -129,13 +129,13 @@ public class AbstractBeanDeployer
       }
    }
    
-   protected <T> void createProducerMethod(AbstractClassBean<?> declaringBean, WBMethod<T> annotatedMethod)
+   protected <T> void createProducerMethod(AbstractClassBean<?> declaringBean, WBMethod<T, ?> annotatedMethod)
    {
       ProducerMethodBean<T> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
       getEnvironment().addBean(bean);
    }
    
-   protected <T> void createProducerField(AbstractClassBean<?> declaringBean, WBField<T> field)
+   protected <T> void createProducerField(AbstractClassBean<?> declaringBean, WBField<T, ?> field)
    {
       ProducerFieldBean<T> bean = ProducerFieldBean.of(field, declaringBean, manager);
       getEnvironment().addBean(bean);
@@ -143,7 +143,7 @@ public class AbstractBeanDeployer
    
    protected void createProducerFields(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
    {
-      for (WBField<?> field : annotatedClass.getDeclaredAnnotatedFields(Produces.class))
+      for (WBField<?, ?> field : annotatedClass.getDeclaredAnnotatedWBFields(Produces.class))
       {
          createProducerField(declaringBean, field);
       }
@@ -151,13 +151,13 @@ public class AbstractBeanDeployer
    
    protected void createObserverMethods(RIBean<?> declaringBean, WBClass<?> annotatedClass)
    {
-      for (WBMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
+      for (WBMethod<?, ?> method : annotatedClass.getWBDeclaredMethodsWithAnnotatedParameters(Observes.class))
       {
          createObserverMethod(declaringBean, method);
       }
    }
    
-   protected void createObserverMethod(RIBean<?> declaringBean, WBMethod<?> method)
+   protected void createObserverMethod(RIBean<?> declaringBean, WBMethod<?, ?> method)
    {
       ObserverMethodImpl<?, ?> observer = ObserverFactory.create(method, declaringBean, manager);
       getEnvironment().addObserver(observer);
@@ -213,7 +213,7 @@ public class AbstractBeanDeployer
    
    private static boolean hasSimpleWebBeanConstructor(WBClass<?> type)
    {
-      return type.getNoArgsConstructor() != null || type.getAnnotatedConstructors(Initializer.class).size() > 0;
+      return type.getNoArgsWBConstructor() != null || type.getAnnotatedWBConstructors(Initializer.class).size() > 0;
    }
       
    public BeanDeployerEnvironment getEnvironment()

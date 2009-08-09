@@ -39,18 +39,18 @@ import org.jboss.webbeans.introspector.ForwardingWBMethod;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.WBParameter;
 
-public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WBInjectionPoint<T, Method>
+public class MethodInjectionPoint<T, X> extends ForwardingWBMethod<T, X> implements WBInjectionPoint<T, Method>
 {
 
-   private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?>>
+   private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?, ?>>
    {
 
-      protected abstract List<? extends WBParameter<?>> delegate();
+      protected abstract List<? extends WBParameter<?, ?>> delegate();
 
       protected abstract Bean<?> declaringBean();;
 
       @Override
-      public ParameterInjectionPoint<?> get(int index)
+      public ParameterInjectionPoint<?, ?> get(int index)
       {
          return ParameterInjectionPoint.of(declaringBean, delegate().get(index));
       }
@@ -66,15 +66,15 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
    private final Bean<?> declaringBean;
-   private final WBMethod<T> method;
+   private final WBMethod<T, X> method;
    private final boolean delegate;
 
-   public static <T> MethodInjectionPoint<T> of(Bean<?> declaringBean, WBMethod<T> method)
+   public static <T, X> MethodInjectionPoint<T, X> of(Bean<?> declaringBean, WBMethod<T, X> method)
    {
-      return new MethodInjectionPoint<T>(declaringBean, method);
+      return new MethodInjectionPoint<T, X>(declaringBean, method);
    }
 
-   protected MethodInjectionPoint(Bean<?> declaringBean, WBMethod<T> method)
+   protected MethodInjectionPoint(Bean<?> declaringBean, WBMethod<T, X> method)
    {
       this.declaringBean = declaringBean;
       this.method = method;
@@ -82,7 +82,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
    }
 
    @Override
-   protected WBMethod<T> delegate()
+   protected WBMethod<T, X> delegate()
    {
       return method;
    }
@@ -101,7 +101,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
    {
       try
       {
-         return delegate().invoke(declaringInstance, getParameterValues(getParameters(), null, null, manager, creationalContext));
+         return delegate().invoke(declaringInstance, getParameterValues(getWBParameters(), null, null, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -123,7 +123,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
    {
       try
       {
-         return invoke(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext));
+         return invoke(declaringInstance, getParameterValues(getWBParameters(), annotatedParameter, parameter, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -144,7 +144,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
    {
       try
       {
-         return delegate().invokeOnInstance(declaringInstance, getParameterValues(getParameters(), null, null, manager, creationalContext));
+         return delegate().invokeOnInstance(declaringInstance, getParameterValues(getWBParameters(), null, null, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -174,7 +174,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
    {
       try
       {
-         return invokeOnInstance(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext));
+         return invokeOnInstance(declaringInstance, getParameterValues(getWBParameters(), annotatedParameter, parameter, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -200,9 +200,9 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
    }
 
    @Override
-   public List<ParameterInjectionPoint<?>> getParameters()
+   public List<ParameterInjectionPoint<?, ?>> getWBParameters()
    {
-      final List<? extends WBParameter<?>> delegate = super.getParameters();
+      final List<? extends WBParameter<?, ?>> delegate = super.getWBParameters();
       return new ForwardingParameterInjectionPointList()
       {
 
@@ -213,10 +213,10 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
          }
 
          @Override
-         protected List<? extends WBParameter<?>> delegate()
-               {
+         protected List<? extends WBParameter<?, ?>> delegate()
+         {
             return delegate;
-               }
+         }
 
       };
    }
@@ -249,13 +249,13 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
     * @param manager The Web Beans manager
     * @return The object array of looked up values
     */
-   protected Object[] getParameterValues(List<ParameterInjectionPoint<?>> parameters, Class<? extends Annotation> specialParam, Object specialVal, BeanManagerImpl manager, CreationalContext<?> creationalContext)
+   protected Object[] getParameterValues(List<ParameterInjectionPoint<?, ?>> parameters, Class<? extends Annotation> specialParam, Object specialVal, BeanManagerImpl manager, CreationalContext<?> creationalContext)
    {
       Object[] parameterValues = new Object[parameters.size()];
-      Iterator<ParameterInjectionPoint<?>> iterator = parameters.iterator();
+      Iterator<ParameterInjectionPoint<?, ?>> iterator = parameters.iterator();
       for (int i = 0; i < parameterValues.length; i++)
       {
-         ParameterInjectionPoint<?> param = iterator.next();
+         ParameterInjectionPoint<?, ?> param = iterator.next();
          if (specialParam != null && param.isAnnotationPresent(specialParam))
          {
             parameterValues[i] = specialVal;

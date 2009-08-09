@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.resolution;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -114,6 +115,11 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
          
       });
       
+   }
+   
+   public <X> Set<Bean<? extends X>> resolve(final Collection<Bean<? extends X>> beans)
+   {
+      return resolve(new HashSet<Bean<? extends X>>(beans));
    }
 
 

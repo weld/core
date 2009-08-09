@@ -18,6 +18,8 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.reflect.Field;
 
+import javax.enterprise.inject.spi.AnnotatedField;
+
 /**
  * AnnotatedField provides a uniform access to the annotations on an annotated
  * field 
@@ -25,7 +27,7 @@ import java.lang.reflect.Field;
  * @author Pete Muir
  *
  */
-public interface WBField<T> extends WBMember<T, Field>
+public interface WBField<T, X> extends WBMember<T, X, Field>, AnnotatedField<X>
 {
 
    /**

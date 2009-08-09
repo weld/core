@@ -20,12 +20,9 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -36,19 +33,18 @@ import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
-import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBConstructor;
 import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.introspector.WBMethod;
-import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.ResourceServices;
+import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -67,9 +63,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    // The constructor
    private ConstructorInjectionPoint<T> constructor;
    // The post-construct method
-   private WBMethod<?> postConstruct;
+   private WBMethod<?, ?> postConstruct;
    // The pre-destroy method
-   private WBMethod<?> preDestroy;
+   private WBMethod<?, ?> preDestroy;
 
    private Set<WBInjectionPoint<?, ?>> ejbInjectionPoints;
    private Set<WBInjectionPoint<?, ?>> persistenceContextInjectionPoints;
@@ -119,23 +115,69 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          originalInjectionPoint = attachCorrectInjectionPoint();
       }
-      T instance = constructor.newInstance(manager, creationalContext);
-      if (!hasDecorators())
-      {
-         // This should be safe, but needs verification PLM
-         // Without this, the chaining of decorators will fail as the incomplete instance will be resolved
-         creationalContext.push(instance);
-      }
-      injectEjbAndCommonFields(instance);
-      injectBoundFields(instance, creationalContext);
-      callInitializers(instance, creationalContext);
-      callPostConstruct(instance);
+      T instance = produce(creationalContext);
+      inject(instance, creationalContext);
+      postConstruct(instance);
       if (hasDecorators())
       {
          instance = applyDecorators(instance, creationalContext, originalInjectionPoint);
       }
       return instance;
    }
+   
+   public T produce(CreationalContext<T> ctx)
+   {
+      T instance = constructor.newInstance(manager, ctx);
+      if (!hasDecorators())
+      {
+         // This should be safe, but needs verification PLM
+         // Without this, the chaining of decorators will fail as the incomplete instance will be resolved
+         ctx.push(instance);
+      }
+      return instance;
+   }
+   
+   public void inject(T instance, CreationalContext<T> ctx)
+   {
+      injectEjbAndCommonFields(instance);
+      injectBoundFields(instance, ctx);
+      callInitializers(instance, ctx);
+   }
+
+   public void postConstruct(T instance)
+   {
+      WBMethod<?, ?> postConstruct = getPostConstruct();
+      if (postConstruct != null)
+      {
+         try
+         {
+            postConstruct.invoke(instance);
+         }
+         catch (Exception e)
+         {
+            throw new RuntimeException("Unable to invoke " + postConstruct + " on " + instance, e);
+         }
+      }
+   }
+
+   public void preDestroy(T instance)
+   {
+      WBMethod<?, ?> preDestroy = getPreDestroy();
+      if (preDestroy != null)
+      {
+         try
+         {
+            // note: RI supports injection into @PreDestroy
+            preDestroy.invoke(instance);
+         }
+         catch (Exception e)
+         {
+            throw new RuntimeException("Unable to invoke " + preDestroy + " on " + instance, e);
+         }
+      }
+   }
+
+   
    
    protected InjectionPoint attachCorrectInjectionPoint()
    {
@@ -161,7 +203,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       try
       {
-         callPreDestroy(instance);
+         preDestroy(instance);
          creationalContext.release();
       }
       catch (Exception e)
@@ -170,54 +212,11 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       }
    }
 
-   /**
-    * Calls the pre-destroy method, if any
-    * 
-    * @param instance The instance to invoke the method on
-    */
-   protected void callPreDestroy(T instance)
-   {
-      WBMethod<?> preDestroy = getPreDestroy();
-      if (preDestroy != null)
-      {
-         try
-         {
-            // note: RI supports injection into @PreDestroy
-            preDestroy.invoke(instance);
-         }
-         catch (Exception e)
-         {
-            throw new RuntimeException("Unable to invoke " + preDestroy + " on " + instance, e);
-         }
-      }
-   }
-
-   /**
-    * Calls the post-construct method, if any
-    * 
-    * @param instance The instance to invoke the method on
-    */
-   protected void callPostConstruct(T instance)
-   {
-      WBMethod<?> postConstruct = getPostConstruct();
-      if (postConstruct != null)
-      {
-         try
-         {
-            postConstruct.invoke(instance);
-         }
-         catch (Exception e)
-         {
-            throw new RuntimeException("Unable to invoke " + postConstruct + " on " + instance, e);
-         }
-      }
-   }
-
    protected void initEjbInjectionPoints()
    {
       Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
       this.ejbInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
-      for (WBField<?> field : annotatedItem.getAnnotatedFields(ejbAnnotationType))
+      for (WBField<?, ?> field : annotatedItem.getAnnotatedWBFields(ejbAnnotationType))
       {
          this.ejbInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
@@ -229,13 +228,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       this.persistenceUnitInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
       
       Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-      for (WBField<?> field : annotatedItem.getAnnotatedFields(persistenceContextAnnotationType))
+      for (WBField<?, ?> field : annotatedItem.getAnnotatedWBFields(persistenceContextAnnotationType))
       {
          this.persistenceContextInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
       
       Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
-      for (WBField<?> field : annotatedItem.getAnnotatedFields(persistenceUnitAnnotationType))
+      for (WBField<?, ?> field : annotatedItem.getAnnotatedWBFields(persistenceUnitAnnotationType))
       {
          this.persistenceUnitInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
@@ -245,7 +244,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
       this.resourceInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
-      for (WBField<?> field : annotatedItem.getAnnotatedFields(resourceAnnotationType))
+      for (WBField<?, ?> field : annotatedItem.getAnnotatedWBFields(resourceAnnotationType))
       {
          this.resourceInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
@@ -350,9 +349,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
             if (decorator instanceof DecoratorBean<?>)
             {
                DecoratorBean<?> decoratorBean = (DecoratorBean<?>) decorator;
-               for (WBMethod<?> decoratorMethod : decoratorBean.getAnnotatedItem().getMethods())
+               for (WBMethod<?, ?> decoratorMethod : decoratorBean.getAnnotatedItem().getWBMethods())
                {
-                  WBMethod<?> method = getAnnotatedItem().getMethod(decoratorMethod.getSignature());  
+                  WBMethod<?, ?> method = getAnnotatedItem().getWBMethod(decoratorMethod.getSignature());  
                   if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal())
                   {
                      throw new DefinitionException("Decorated bean method " + method + " (decorated by "+ decoratorMethod + ") cannot be declarted final");
@@ -373,7 +372,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       super.checkBeanImplementation();
       if (!isDependent())
       {
-         for (WBField<?> field : getAnnotatedItem().getFields())
+         for (WBField<?, ?> field : getAnnotatedItem().getWBFields())
          {
             if (field.isPublic() && !field.isStatic())
             {
@@ -385,11 +384,11 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    
    protected void checkConstructor()
    {
-      if (!constructor.getAnnotatedParameters(Disposes.class).isEmpty())
+      if (!constructor.getAnnotatedWBParameters(Disposes.class).isEmpty())
       {
          throw new DefinitionException("Managed bean constructor must not have a parameter annotated @Disposes " + constructor);
       }
-      if (!constructor.getAnnotatedParameters(Observes.class).isEmpty())
+      if (!constructor.getAnnotatedWBParameters(Observes.class).isEmpty())
       {
          throw new DefinitionException("Managed bean constructor must not have a parameter annotated @Observes " + constructor);
       }
@@ -399,7 +398,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
       super.preSpecialize(environment);
-      if (environment.getEjbDescriptors().containsKey(getAnnotatedItem().getSuperclass().getJavaClass()))
+      if (environment.getEjbDescriptors().containsKey(getAnnotatedItem().getWBSuperclass().getJavaClass()))
       {
          throw new DefinitionException("Simple bean must specialize a simple bean");
       }
@@ -408,11 +407,11 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      if (environment.getClassBean(getAnnotatedItem().getSuperclass()) == null)
+      if (environment.getClassBean(getAnnotatedItem().getWBSuperclass()) == null)
       {
          throw new DefinitionException(toString() + " does not specialize a bean");
       }
-      AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getSuperclass());
+      AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getWBSuperclass());
       if (!(specializedBean instanceof SimpleBean))
       {
          throw new DefinitionException(toString() + " doesn't have a simple bean as a superclass " + specializedBean);
@@ -429,38 +428,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void initConstructor()
    {
-      Set<WBConstructor<T>> initializerAnnotatedConstructors = getAnnotatedItem().getAnnotatedConstructors(Initializer.class);
-      log.trace("Found " + initializerAnnotatedConstructors + " constructors annotated with @Initializer for " + getType());
-      if (initializerAnnotatedConstructors.size() > 1)
-      {
-         if (initializerAnnotatedConstructors.size() > 1)
-         {
-            throw new DefinitionException("Cannot have more than one constructor annotated with @Initializer for " + getType());
-         }
-      }
-      else if (initializerAnnotatedConstructors.size() == 1)
-      {
-         this.constructor = ConstructorInjectionPoint.of(this, initializerAnnotatedConstructors.iterator().next());
-         log.trace("Exactly one constructor (" + constructor + ") annotated with @Initializer defined, using it as the bean constructor for " + getType());
-      }
-      else if (getAnnotatedItem().getNoArgsConstructor() != null)
-      {
-
-         this.constructor = ConstructorInjectionPoint.of(this, getAnnotatedItem().getNoArgsConstructor());
-         log.trace("Exactly one constructor (" + constructor + ") defined, using it as the bean constructor for " + getType());
-      }
-      
-      if (this.constructor == null)
-      {
-         throw new DefinitionException("Cannot determine constructor to use for " + getType());
-      }
-      else
-      {
-         for (WBParameter<?> parameter : constructor.getParameters())
-         {
-            addInjectionPoint(ParameterInjectionPoint.of(this, parameter));
-         }
-      }
+      this.constructor = Beans.getBeanConstructor(this, getAnnotatedItem());
+      // TODO We loop unecessarily many times here, I want to probably introduce some callback mechanism. PLM.
+      addInjectionPoints(Beans.getParameterInjectionPoints(this, constructor));
    }
 
    /**
@@ -468,21 +438,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void initPostConstruct()
    {
-      Set<WBMethod<?>> postConstructMethods = getAnnotatedItem().getAnnotatedMethods(PostConstruct.class);
-      log.trace("Found " + postConstructMethods + " constructors annotated with @Initializer for " + getType());
-      if (postConstructMethods.size() > 1)
-      {
-         // TODO actually this is wrong, in EJB you can have @PostConstruct
-         // methods on the superclass, though the Web Beans spec is silent on
-         // the issue
-         throw new DefinitionException("Cannot have more than one post construct method annotated with @PostConstruct for " + getType());
-      }
-      else if (postConstructMethods.size() == 1)
-      {
-         this.postConstruct = postConstructMethods.iterator().next();
-         log.trace("Exactly one post construct method (" + postConstruct + ") for " + getType());
-         return;
-      }
+      this.postConstruct = Beans.getPostConstruct(getAnnotatedItem());
    }
 
    /**
@@ -490,20 +446,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void initPreDestroy()
    {
-      Set<WBMethod<?>> preDestroyMethods = getAnnotatedItem().getAnnotatedMethods(PreDestroy.class);
-      log.trace("Found " + preDestroyMethods + " constructors annotated with @Initializer for " + getType());
-      if (preDestroyMethods.size() > 1)
-      {
-         // TODO actually this is wrong, in EJB you can have @PreDestroy methods
-         // on the superclass, though the Web Beans spec is silent on the issue
-         throw new DefinitionException("Cannot have more than one pre destroy method annotated with @PreDestroy for " + getType());
-      }
-      else if (preDestroyMethods.size() == 1)
-      {
-         this.preDestroy = preDestroyMethods.iterator().next();
-         log.trace("Exactly one post construct method (" + preDestroy + ") for " + getType());
-         return;
-      }
+      this.preDestroy = Beans.getPreDestroy(getAnnotatedItem());
    }
 
    /**
@@ -521,7 +464,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * 
     * @return The post-construct method
     */
-   public WBMethod<?> getPostConstruct()
+   public WBMethod<?, ?> getPostConstruct()
    {
       return postConstruct;
    }
@@ -531,7 +474,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * 
     * @return The pre-destroy method
     */
-   public WBMethod<?> getPreDestroy()
+   public WBMethod<?, ?> getPreDestroy()
    {
       return preDestroy;
    }

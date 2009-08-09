@@ -79,7 +79,7 @@ public class DecoratorProxyMethodHandler implements MethodHandler, Serializable
       MethodSignature methodSignature = new MethodSignatureImpl(method);
       for (SerializableBeanInstance<DecoratorBean<Object>, Object> beanInstance : decoratorInstances)
       {
-         WBMethod<?> decoratorMethod = beanInstance.getBean().getAnnotatedItem().getMethod(methodSignature);
+         WBMethod<?, ?> decoratorMethod = beanInstance.getBean().getAnnotatedItem().getWBMethod(methodSignature);
          if (decoratorMethod != null)
          {
             return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);

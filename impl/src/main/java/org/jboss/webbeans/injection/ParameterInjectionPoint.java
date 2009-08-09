@@ -31,21 +31,21 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.introspector.ForwardingWBParameter;
 import org.jboss.webbeans.introspector.WBParameter;
 
-public class ParameterInjectionPoint<T> extends ForwardingWBParameter<T> implements WBInjectionPoint<T, Object>
+public class ParameterInjectionPoint<T, X> extends ForwardingWBParameter<T, X> implements WBInjectionPoint<T, Object>
 {
 
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
-   public static <T> ParameterInjectionPoint<T> of(Bean<?> declaringBean, WBParameter<T> parameter)
+   public static <T, X> ParameterInjectionPoint<T, X> of(Bean<?> declaringBean, WBParameter<T, X> parameter)
    {
-      return new ParameterInjectionPoint<T>(declaringBean, parameter);
+      return new ParameterInjectionPoint<T, X>(declaringBean, parameter);
    }
 
    private final Bean<?> declaringBean;
-   private final WBParameter<T> parameter;
+   private final WBParameter<T, X> parameter;
    private final boolean delegate;
 
-   private ParameterInjectionPoint(Bean<?> declaringBean, WBParameter<T> parameter)
+   private ParameterInjectionPoint(Bean<?> declaringBean, WBParameter<T, X> parameter)
    {
       this.declaringBean = declaringBean;
       this.parameter = parameter;
@@ -53,7 +53,7 @@ public class ParameterInjectionPoint<T> extends ForwardingWBParameter<T> impleme
    }
 
    @Override
-   protected WBParameter<T> delegate()
+   protected WBParameter<T, X> delegate()
    {
       return parameter;
    }
@@ -70,7 +70,7 @@ public class ParameterInjectionPoint<T> extends ForwardingWBParameter<T> impleme
 
    public Member getJavaMember()
    {
-      return delegate().getDeclaringMember().getJavaMember();
+      return delegate().getDeclaringCallable().getJavaMember();
    }
 
    public void inject(Object declaringInstance, Object value)

@@ -21,11 +21,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 
 /**
  * AnnotatedType provides a uniform access to the annotations on an annotated
@@ -34,33 +34,16 @@ import javax.enterprise.inject.Disposes;
  * @author Pete Muir
  * 
  */
-public interface WBMethod<T> extends WBMember<T, Method>
+public interface WBMethod<T, X> extends WBCallable<T, X, Method>, AnnotatedMethod<X>
 {
    @SuppressWarnings("unchecked")
    public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, Disposes.class));
 
    /**
-    * Gets the abstracted parameters of the method
-    * 
-    * @return A list of parameters. Returns an empty list if no parameters are
-    *         present.
-    */
-   public List<? extends WBParameter<?>> getParameters();
-
-   /**
-    * Gets the list of annotated parameters for a given annotation
-    * 
-    * @param metaAnnotationType The annotation to match
-    * @return A set of matching parameter abstractions. Returns an empty list if
-    *         there are no matches.
-    */
-   public List<WBParameter<?>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType);
-
-   /**
     * Get the parameter types as an array
     */
    public Class<?>[] getParameterTypesAsArray();
-
+   
    /**
     * Invokes the method
     * 
@@ -79,13 +62,6 @@ public interface WBMethod<T> extends WBMember<T, Method>
     * @return A reference to the instance
     */
    public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
-
-   /**
-    * Gets the declaring class
-    * 
-    * @return An abstraction of the declaring class
-    */
-   public WBType<?> getDeclaringType();
 
    /**
     * Gets the property name

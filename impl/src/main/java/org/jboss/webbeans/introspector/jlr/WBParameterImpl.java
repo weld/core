@@ -18,10 +18,11 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Set;
+
+import javax.enterprise.inject.spi.AnnotatedCallable;
 
 import org.jboss.webbeans.introspector.AnnotationStore;
-import org.jboss.webbeans.introspector.WBMember;
+import org.jboss.webbeans.introspector.WBCallable;
 import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.resources.ClassTransformer;
 
@@ -34,7 +35,7 @@ import org.jboss.webbeans.resources.ClassTransformer;
  * 
  * @param <T>
  */
-public class WBParameterImpl<T> extends AbstractWBAnnotated<T, Object> implements WBParameter<T>
+public class WBParameterImpl<T, X> extends AbstractWBAnnotated<T, Object> implements WBParameter<T, X>
 {
    
    // The final state
@@ -43,14 +44,15 @@ public class WBParameterImpl<T> extends AbstractWBAnnotated<T, Object> implement
    private final boolean _static = false;
    private final boolean _public = false;
    private final boolean _private = false;
-   private final WBMember<?, ?> declaringMember;
+   private final int position;
+   private final WBCallable<?, X, ?> declaringMember;
 
    // Cached string representation
    private String toString;
    
-   public static <T> WBParameter<T> of(Annotation[] annotations, Class<T> rawType, Type type, WBMember<?, ?> declaringMember, ClassTransformer classTransformer)
+   public static <T, X> WBParameter<T, X> of(Annotation[] annotations, Class<T> rawType, Type type, WBCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
    {
-      return new WBParameterImpl<T>(annotations, rawType, type, declaringMember, classTransformer);
+      return new WBParameterImpl<T, X>(annotations, rawType, type, declaringMember, position, classTransformer);
    }
 
    /**
@@ -59,22 +61,11 @@ public class WBParameterImpl<T> extends AbstractWBAnnotated<T, Object> implement
     * @param annotations The annotations array
     * @param type The type of the parameter
     */
-   protected WBParameterImpl(Annotation[] annotations, Class<T> rawType, Type type, WBMember<?, ?> declaringMember, ClassTransformer classTransformer)
+   protected WBParameterImpl(Annotation[] annotations, Class<T> rawType, Type type, WBCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
    {
       super(AnnotationStore.of(annotations, annotations, classTransformer.getTypeStore()), rawType, type);
       this.declaringMember = declaringMember;
-   }
-
-   /**
-    * Gets the delegate
-    * 
-    * @return The delegate (null)
-    * 
-    * @see org.jboss.webbeans.introspector.WBAnnotated#getDelegate()
-    */
-   public Object getDelegate()
-   {
-      return null;
+      this.position = position;
    }
 
    /**
@@ -112,19 +103,6 @@ public class WBParameterImpl<T> extends AbstractWBAnnotated<T, Object> implement
    }
 
    /**
-    * Gets the current value
-    * 
-    * @param beanManager The Web Beans manager
-    * @return the value
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedParameter
-    *
-   public T getValue(BeanManager beanManager)
-   {
-      return beanManager.getInstanceByType(getRawType(), getMetaAnnotationsAsArray(BindingType.class));
-   }*/
-
-   /**
     * Gets the name of the parameter
     * 
     * @throws IllegalArgumentException (not supported)
@@ -154,20 +132,26 @@ public class WBParameterImpl<T> extends AbstractWBAnnotated<T, Object> implement
             buffer.append("final ");
          buffer.append(getJavaClass().getName());
          buffer.append(" for operation ");
-         buffer.append(getDeclaringMember().toString());
+         buffer.append(getDeclaringCallable().toString());
          toString = buffer.toString();
       }
       return toString;
    }
 
-   public WBMember<?, ?> getDeclaringMember()
+   public AnnotatedCallable<X> getDeclaringCallable()
    {
       return declaringMember;
    }
-   
-   public WBParameter<T> wrap(Set<Annotation> annotations)
+
+   public int getPosition()
    {
-      throw new UnsupportedOperationException();
+      return position;
+   }
+   
+   @Override
+   public Object getDelegate()
+   {
+      return null;
    }
    
 }

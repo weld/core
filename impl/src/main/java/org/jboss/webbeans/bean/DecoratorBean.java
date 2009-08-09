@@ -118,7 +118,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    {
       for (WBInjectionPoint<?, ?> injectionPoint : getDelegateInjectionPoints())
       {
-         if (injectionPoint instanceof MethodInjectionPoint<?> && !injectionPoint.isAnnotationPresent(Initializer.class))
+         if (injectionPoint instanceof MethodInjectionPoint<?, ?> && !injectionPoint.isAnnotationPresent(Initializer.class))
          {
             throw new DefinitionException("Method with @Decorates parameter must be an initializer method " + injectionPoint);
          }

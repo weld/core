@@ -21,25 +21,27 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public abstract class ForwardingWBConstructor<T> extends ForwardingWBMember<T, Constructor<T>> implements WBConstructor<T>
+import javax.enterprise.inject.spi.AnnotatedParameter;
+
+public abstract class ForwardingWBConstructor<T> extends ForwardingWBMember<T, T, Constructor<T>> implements WBConstructor<T>
 {
 
    @Override
    protected abstract WBConstructor<T> delegate();
 
-   public List<WBParameter<?>> getAnnotatedParameters(Class<? extends Annotation> annotationType)
+   public List<WBParameter<?, ?>> getAnnotatedWBParameters(Class<? extends Annotation> annotationType)
    {
-      return delegate().getAnnotatedParameters(annotationType);
+      return delegate().getAnnotatedWBParameters(annotationType);
    }
 
-   public WBType<T> getDeclaringType()
+   public WBClass<T> getDeclaringType()
    {
       return delegate().getDeclaringType();
    }
 
-   public List<? extends WBParameter<?>> getParameters()
+   public List<? extends WBParameter<?, ?>> getWBParameters()
    {
-      return delegate().getParameters();
+      return delegate().getWBParameters();
    }
 
    public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
@@ -52,5 +54,9 @@ public abstract class ForwardingWBConstructor<T> extends ForwardingWBMember<T, C
       return delegate().getSignature();
    }
    
+   public List<AnnotatedParameter<T>> getParameters()
+   {
+      return delegate().getParameters();
+   }
    
 }

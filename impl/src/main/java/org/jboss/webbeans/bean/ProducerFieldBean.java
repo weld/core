@@ -38,7 +38,7 @@ import org.jboss.webbeans.util.Names;
 public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
 {
    // The underlying field
-   private WBField<T> field;
+   private WBField<T, ?> field;
    private final String id;
    
    /**
@@ -49,7 +49,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
     * @param manager the current manager
     * @return A producer Web Bean
     */
-   public static <T> ProducerFieldBean<T> of(WBField<T> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public static <T> ProducerFieldBean<T> of(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
       return new ProducerFieldBean<T>(field, declaringBean, manager);
    }
@@ -61,7 +61,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
     * @param declaringBean The declaring bean
     * @param manager The Web Beans manager
     */
-   protected ProducerFieldBean(WBField<T> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   protected ProducerFieldBean(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
       super(declaringBean, manager);
       this.field = field;
@@ -80,17 +80,19 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       }
    }
 
-
-   @Override
-   protected T produceInstance(CreationalContext<T> creationalContext)
-   {
-      return field.get(getReceiver(creationalContext));
-   }
-   
-
    public void destroy(T instance, CreationalContext<T> creationalContext)
    {
-      
+      dispose(instance);
+   }
+
+   public void dispose(T instance)
+   {
+      // No clean up required
+   }
+
+   public T produce(CreationalContext<T> ctx)
+   {
+      return field.get(getReceiver(ctx));
    }
 
 
@@ -100,7 +102,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
     * @return The annotated item
     */
    @Override
-   protected WBField<T> getAnnotatedItem()
+   protected WBField<T, ?> getAnnotatedItem()
    {
       return field;
    }

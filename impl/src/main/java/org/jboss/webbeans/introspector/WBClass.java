@@ -20,13 +20,15 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedType;
+
 /**
  * Represents a Class
  * 
  * @author Pete Muir
  * 
  */
-public interface WBClass<T> extends WBType<T>
+public interface WBClass<T> extends WBAnnotated<T, Class<T>>, AnnotatedType<T> 
 {
 
    /**
@@ -34,14 +36,14 @@ public interface WBClass<T> extends WBType<T>
     * 
     * @return A set of abstracted fields
     */
-   public Set<WBField<?>> getFields();
+   public Set<WBField<?, ?>> getWBFields();
    
    /**
     * Gets all fields on the type
     * 
     * @return A set of abstracted fields
     */
-   public Set<WBMethod<?>> getMethods();
+   public Set<WBMethod<?, ?>> getWBMethods();
 
    /**
     * Get a field by name
@@ -51,7 +53,7 @@ public interface WBClass<T> extends WBType<T>
     * @param expectedType the expected type of the field
     * @return the field
     */
-   public <F> WBField<F> getDeclaredField(String fieldName, WBClass<F> expectedType);
+   public <F> WBField<F, ?> getDeclaredWBField(String fieldName, WBClass<F> expectedType);
 
    /**
     * Gets all fields which are annotated with the given annotation type on this
@@ -61,7 +63,7 @@ public interface WBClass<T> extends WBType<T>
     * @return A set of abstracted fields with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBField<?>> getAnnotatedFields(Class<? extends Annotation> annotationType);
+   public Set<WBField<?, ?>> getAnnotatedWBFields(Class<? extends Annotation> annotationType);
 
    /**
     * Gets all fields which are annotated with the given annotation type on this
@@ -71,7 +73,7 @@ public interface WBClass<T> extends WBType<T>
     * @return A set of abstracted fields with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBField<?>> getDeclaredAnnotatedFields(Class<? extends Annotation> annotationType);
+   public Set<WBField<?, ?>> getDeclaredAnnotatedWBFields(Class<? extends Annotation> annotationType);
 
    /**
     * Gets all fields which are meta-annotated with metaAnnotationType
@@ -80,7 +82,7 @@ public interface WBClass<T> extends WBType<T>
     * @return A set of abstracted fields with the given meta-annotation. Returns
     *         an empty set if there are no matches
     */
-   public Set<WBField<?>> getMetaAnnotatedFields(Class<? extends Annotation> metaAnnotationType);
+   public Set<WBField<?, ?>> getMetaAnnotatedWBFields(Class<? extends Annotation> metaAnnotationType);
 
    /**
     * Gets all constructors which are annotated with annotationType
@@ -89,21 +91,21 @@ public interface WBClass<T> extends WBType<T>
     * @return A set of abstracted fields with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBConstructor<T>> getAnnotatedConstructors(Class<? extends Annotation> annotationType);
+   public Set<WBConstructor<T>> getAnnotatedWBConstructors(Class<? extends Annotation> annotationType);
 
    /**
     * Gets all constructors
     * 
     * @return A set of abstracted constructors
     */
-   public Set<WBConstructor<T>> getConstructors();
+   public Set<WBConstructor<T>> getWBConstructors();
 
    /**
     * Gets the no-args constructor
     * 
     * @return The no-args constructor, or null if not defined
     */
-   public WBConstructor<T> getNoArgsConstructor();
+   public WBConstructor<T> getNoArgsWBConstructor();
 
    /**
     * Get the constructor which matches the argument list provided
@@ -111,7 +113,7 @@ public interface WBClass<T> extends WBType<T>
     * @param parameterTypes the parameters of the constructor
     * @return the matching constructor, or null if not defined
     */
-   public WBConstructor<T> getDeclaredConstructor(ConstructorSignature signature);
+   public WBConstructor<T> getDeclaredWBConstructor(ConstructorSignature signature);
 
    /**
     * Gets all methods annotated with annotationType
@@ -120,7 +122,7 @@ public interface WBClass<T> extends WBType<T>
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBMethod<?>> getAnnotatedMethods(Class<? extends Annotation> annotationType);
+   public Set<WBMethod<?, ?>> getAnnotatedWBMethods(Class<? extends Annotation> annotationType);
 
    /**
     * Gets all methods annotated with annotationType
@@ -129,7 +131,7 @@ public interface WBClass<T> extends WBType<T>
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBMethod<?>> getDeclaredAnnotatedMethods(Class<? extends Annotation> annotationType);
+   public Set<WBMethod<?, ?>> getDeclaredWBAnnotatedMethods(Class<? extends Annotation> annotationType);
 
    /**
     * Find the annotated method for a given methodDescriptor
@@ -137,10 +139,8 @@ public interface WBClass<T> extends WBType<T>
     * @param methodDescriptor
     * @return
     * 
-    * TODO Replace with AnnotatedMethod variant
     */
-   @Deprecated
-   public WBMethod<?> getMethod(Method method);
+   public WBMethod<?, ?> getWBMethod(Method method);
 
    /**
     * Get a method by name
@@ -150,7 +150,7 @@ public interface WBClass<T> extends WBType<T>
     * @param expectedReturnType the expected return type
     * @return the method, or null if it doesn't exist
     */
-   public <M> WBMethod<M> getDeclaredMethod(MethodSignature signature, WBClass<M> expectedReturnType);
+   public <M> WBMethod<M, ?> getDeclaredWBMethod(MethodSignature signature, WBClass<M> expectedReturnType);
    
    /**
     * Get a method by name
@@ -159,11 +159,11 @@ public interface WBClass<T> extends WBType<T>
     * @param signature the name of the method
     * @return the method, or null if it doesn't exist
     */
-   public <M> WBMethod<M> getMethod(MethodSignature signature);
+   public <M> WBMethod<M, ?> getWBMethod(MethodSignature signature);
 
    // TODO Replace with AnnotatedMethod variant
    @Deprecated
-   public WBMethod<?> getDeclaredMethod(Method method);
+   public WBMethod<?, ?> getDeclaredWBMethod(Method method);
 
    /**
     * Gets all with parameters annotated with annotationType
@@ -172,7 +172,7 @@ public interface WBClass<T> extends WBType<T>
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+   public Set<WBMethod<?, ?>> getWBMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
 
    /**
     * Gets all with constructors annotated with annotationType
@@ -181,7 +181,7 @@ public interface WBClass<T> extends WBType<T>
     * @return A set of abstracted constructors with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBConstructor<?>> getConstructorsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+   public Set<WBConstructor<?>> getWBConstructorsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
 
    /**
     * Gets all with parameters annotated with annotationType
@@ -190,14 +190,14 @@ public interface WBClass<T> extends WBType<T>
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBMethod<?>> getDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+   public Set<WBMethod<?, ?>> getWBDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
 
    /**
     * Gets the superclass.
     * 
     * @return The abstracted superclass, null if there is no superclass
     */
-   public WBClass<?> getSuperclass();
+   public WBClass<?> getWBSuperclass();
 
    /**
     * Determine if this is a non-static member class
@@ -214,6 +214,15 @@ public interface WBClass<T> extends WBType<T>
 
    public <S> S cast(Object object);
 
-   public <U> WBClass<? extends U> asSubclass(WBClass<U> clazz);
+   public <U> WBClass<? extends U> asWBSubclass(WBClass<U> clazz);
+
+   /**
+    * Check if this is equivalent to a java class
+    * @param clazz The Java class
+    * @return true if equivalent
+    */
+   public boolean isEquivalent(Class<?> clazz);
+
+   public String getSimpleName();
 
 }

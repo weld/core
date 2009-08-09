@@ -44,17 +44,17 @@ import com.google.common.collect.SetMultimap;
  * 
  * @param <T>
  */
-public class WBAnnotationImpl<T extends Annotation> extends AbstractWBType<T> implements WBAnnotation<T>
+public class WBAnnotationImpl<T extends Annotation> extends WBClassImpl<T> implements WBAnnotation<T>
 {
 
    // The annotated members map (annotation -> member with annotation)
-   private final SetMultimap<Class<? extends Annotation>, WBMethod<?>> annotatedMembers;
+   private final SetMultimap<Class<? extends Annotation>, WBMethod<?, ?>> annotatedMembers;
    // The implementation class of the annotation
    private final Class<T> clazz;
    // The set of abstracted members
-   private final Set<WBMethod<?>> members;
+   private final Set<WBMethod<?, ?>> members;
    
-   private final Map<String, WBMethod<?>> namedMembers;
+   private final Map<String, WBMethod<?, ?>> namedMembers;
 
    // Cached string representation
    private String toString;
@@ -73,22 +73,22 @@ public class WBAnnotationImpl<T extends Annotation> extends AbstractWBType<T> im
     */
    protected WBAnnotationImpl(Class<T> annotationType, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(annotationType, classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore()), annotationType, annotationType, classTransformer);
+      super(annotationType, annotationType, AnnotationStore.of(annotationType, classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore()), classTransformer);
       this.clazz = annotationType;
-      members = new HashSet<WBMethod<?>>();
-      annotatedMembers = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WBMethod<?>>>(), new Supplier<Set<WBMethod<?>>>()
+      members = new HashSet<WBMethod<?, ?>>();
+      annotatedMembers = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WBMethod<?, ?>>>(), new Supplier<Set<WBMethod<?, ?>>>()
       {
    
-          public Set<WBMethod<?>> get()
+          public Set<WBMethod<?, ?>> get()
           {
-             return new HashSet<WBMethod<?>>();
+             return new HashSet<WBMethod<?, ?>>();
           }
          
       });
-      this.namedMembers = new HashMap<String, WBMethod<?>>();
+      this.namedMembers = new HashMap<String, WBMethod<?, ?>>();
       for (Method member : clazz.getDeclaredMethods())
       {
-         WBMethod<?> annotatedMethod = WBMethodImpl.of(member, this, classTransformer);
+         WBMethod<?, ?> annotatedMethod = WBMethodImpl.of(member, this, classTransformer);
          members.add(annotatedMethod);
          for (Annotation annotation : annotatedMethod.getAnnotations())
          {
@@ -107,7 +107,7 @@ public class WBAnnotationImpl<T extends Annotation> extends AbstractWBType<T> im
     * 
     * @see org.jboss.webbeans.introspector.WBAnnotation#getMembers()
     */
-   public Set<WBMethod<?>> getMembers()
+   public Set<WBMethod<?, ?>> getMembers()
    {
       return Collections.unmodifiableSet(members);
    }
@@ -123,14 +123,14 @@ public class WBAnnotationImpl<T extends Annotation> extends AbstractWBType<T> im
     * 
     * @see org.jboss.webbeans.introspector.WBAnnotation#getAnnotatedMembers(Class)
     */
-   public Set<WBMethod<?>> getAnnotatedMembers(Class<? extends Annotation> annotationType)
+   public Set<WBMethod<?, ?>> getAnnotatedMembers(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(annotatedMembers.get(annotationType));
    }
    
-   public <A> WBMethod<A> getMember(String memberName, WBClass<A> expectedType)
+   public <A> WBMethod<A, ?> getMember(String memberName, WBClass<A> expectedType)
    {
-      return (WBMethod<A>) namedMembers.get(memberName);
+      return (WBMethod<A, ?>) namedMembers.get(memberName);
    }
    
    /**
@@ -151,10 +151,5 @@ public class WBAnnotationImpl<T extends Annotation> extends AbstractWBType<T> im
    public Class<T> getDelegate()
    {
       return clazz;
-   }
-
-   public WBAnnotation<T> wrap(Set<Annotation> annotations)
-   {
-      throw new UnsupportedOperationException();
    }
 }

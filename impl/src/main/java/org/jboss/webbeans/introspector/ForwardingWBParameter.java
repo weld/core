@@ -16,17 +16,23 @@
  */
 package org.jboss.webbeans.introspector;
 
+import javax.enterprise.inject.spi.AnnotatedCallable;
 
-public abstract class ForwardingWBParameter<T> extends ForwardingWBAnnotated<T, Object> implements WBParameter<T>
+
+public abstract class ForwardingWBParameter<T, X> extends ForwardingWBAnnotated<T, Object> implements WBParameter<T, X>
 {
 
    @Override
-   protected abstract WBParameter<T> delegate();
+   protected abstract WBParameter<T, X> delegate();
 
-   public WBMember<?, ?> getDeclaringMember()
+   public AnnotatedCallable<X> getDeclaringCallable()
    {
-      return delegate().getDeclaringMember();
+      return delegate().getDeclaringCallable();
    }
 
+   public int getPosition()
+   {
+      return delegate().getPosition();
+   }
    
 }

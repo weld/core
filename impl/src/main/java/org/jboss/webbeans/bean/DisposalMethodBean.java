@@ -38,10 +38,10 @@ import org.jboss.webbeans.introspector.WBMethod;
 public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
 {
 
-   protected MethodInjectionPoint<T> disposalMethodInjectionPoint;
+   protected MethodInjectionPoint<T, ?> disposalMethodInjectionPoint;
    private final String id;
 
-   protected DisposalMethodBean(BeanManagerImpl manager, WBMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
+   protected DisposalMethodBean(BeanManagerImpl manager, WBMethod<T, ?> disposalMethod, AbstractClassBean<?> declaringBean)
    {
       super(declaringBean, manager);
       this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
@@ -66,12 +66,12 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
    }
 
    @Override
-   public WBMethod<T> getAnnotatedItem()
+   public WBMethod<T, ?> getAnnotatedItem()
    {
       return disposalMethodInjectionPoint;
    }
 
-   public static <T> DisposalMethodBean<T> of(BeanManagerImpl manager, WBMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
+   public static <T> DisposalMethodBean<T> of(BeanManagerImpl manager, WBMethod<T, ?> disposalMethod, AbstractClassBean<?> declaringBean)
    {
       return new DisposalMethodBean<T>(manager, disposalMethod, declaringBean);
    }
@@ -81,7 +81,7 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
    {
       // At least 1 parameter exists, already checked in constructor
       this.bindings = new HashSet<Annotation>();
-      this.bindings.addAll(disposalMethodInjectionPoint.getParameters().get(0).getBindings());
+      this.bindings.addAll(disposalMethodInjectionPoint.getWBParameters().get(0).getBindings());
       initDefaultBindings();
    }
 
@@ -148,8 +148,9 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
       return null;
    }
 
-   public void invokeDisposeMethod(Object instance, CreationalContext<?> creationalContext)
+   public void invokeDisposeMethod(Object instance)
    {
+      CreationalContext<T> creationalContext = manager.createCreationalContext(this);
       Object receiverInstance = getReceiver(creationalContext);
       if (receiverInstance == null)
       {
@@ -159,11 +160,12 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
       {
          disposalMethodInjectionPoint.invokeOnInstanceWithSpecialValue(receiverInstance, Disposes.class, instance, manager, creationalContext, IllegalArgumentException.class);
       }
+      creationalContext.release();
    }
 
    private void checkDisposalMethod()
    {
-      if (!disposalMethodInjectionPoint.getParameters().get(0).isAnnotationPresent(Disposes.class))
+      if (!disposalMethodInjectionPoint.getWBParameters().get(0).isAnnotationPresent(Disposes.class))
       {
          throw new DefinitionException(disposalMethodInjectionPoint.toString() + " doesn't have @Dispose as first parameter");
       }

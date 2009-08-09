@@ -17,13 +17,15 @@
 package org.jboss.webbeans.introspector;
 
 import java.lang.reflect.Member;
+
+import javax.enterprise.inject.spi.AnnotatedMember;
 /**
  * AnnotedMember provides enhanced access to an annotated member 
  * 
  * @author Pete Muir
  *
  */
-public interface WBMember<T, S extends Member> extends WBAnnotated<T, S>
+public interface WBMember<T, X, S extends Member> extends WBAnnotated<T, S>, AnnotatedMember<X>
 {
 
    public S getJavaMember();
@@ -33,6 +35,6 @@ public interface WBMember<T, S extends Member> extends WBAnnotated<T, S>
     * 
     * @return The declaring class
     */
-   public WBType<?> getDeclaringType();
+   public WBClass<X> getDeclaringType();
 
 }

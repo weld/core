@@ -18,15 +18,20 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.reflect.Member;
 
-public abstract class ForwardingWBMember<T, S extends Member> extends ForwardingWBAnnotated<T, S> implements WBMember<T, S>
+public abstract class ForwardingWBMember<T, X, S extends Member> extends ForwardingWBAnnotated<T, S> implements WBMember<T, X, S>
 {
    
    @Override
-   protected abstract WBMember<T, S> delegate();
+   protected abstract WBMember<T, X, S> delegate();
    
    public S getJavaMember()
    {
       return delegate().getJavaMember();
+   }
+
+   public WBClass<X> getDeclaringType()
+   {
+      return delegate().getDeclaringType();
    }
    
 }

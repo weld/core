@@ -27,13 +27,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.ConstructorSignature;
+import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBConstructor;
 import org.jboss.webbeans.introspector.WBParameter;
-import org.jboss.webbeans.introspector.WBType;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Names;
 
@@ -50,26 +53,23 @@ import com.google.common.collect.Multimaps;
  * 
  * @param <T>
  */
-public class WBConstructorImpl<T> extends AbstractWBMember<T, Constructor<T>> implements WBConstructor<T>
+public class WBConstructorImpl<T> extends AbstractWBCallable<T, T, Constructor<T>> implements WBConstructor<T>
 {
    
    // The underlying constructor
    private final Constructor<T> constructor;
 
    // The list of parameter abstractions
-   private final List<WBParameter<?>> parameters;
+   private final List<WBParameter<?, ?>> parameters;
    // The mapping of annotation -> parameter abstraction
-   private final ListMultimap<Class<? extends Annotation>, WBParameter<?>> annotatedParameters;
-
-   // The declaring class abstraction
-   private final WBType<T> declaringClass;
+   private final ListMultimap<Class<? extends Annotation>, WBParameter<?, ?>> annotatedParameters;
    
    private final ConstructorSignature signature;
 
    // Cached string representation
    private String toString;
    
-   public static <T> WBConstructor<T> of(Constructor<T> constructor, WBType<T> declaringClass, ClassTransformer classTransformer)
+   public static <T> WBConstructor<T> of(Constructor<T> constructor, WBClass<T> declaringClass, ClassTransformer classTransformer)
    {
       return new WBConstructorImpl<T>(ensureAccessible(constructor), declaringClass, classTransformer);
    }
@@ -82,19 +82,18 @@ public class WBConstructorImpl<T> extends AbstractWBMember<T, Constructor<T>> im
     * @param constructor The constructor method
     * @param declaringClass The declaring class
     */
-   private WBConstructorImpl(Constructor<T> constructor, WBType<T> declaringClass, ClassTransformer classTransformer)
+   private WBConstructorImpl(Constructor<T> constructor, WBClass<T> declaringClass, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(constructor, classTransformer.getTypeStore()), constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass());
+      super(AnnotationStore.of(constructor, classTransformer.getTypeStore()), constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass(), declaringClass);
       this.constructor = constructor;
-      this.declaringClass = declaringClass;
 
-      this.parameters = new ArrayList<WBParameter<?>>();
-      annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WBParameter<?>>>(), new Supplier< List<WBParameter<?>>>()
+      this.parameters = new ArrayList<WBParameter<?, ?>>();
+      annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WBParameter<?, ?>>>(), new Supplier< List<WBParameter<?, ?>>>()
       {
          
-         public List<WBParameter<?>> get()
+         public List<WBParameter<?, ?>> get()
          {
-            return new ArrayList<WBParameter<?>>();
+            return new ArrayList<WBParameter<?, ?>>();
          }
         
       });
@@ -105,7 +104,7 @@ public class WBConstructorImpl<T> extends AbstractWBMember<T, Constructor<T>> im
          {
             Class<?> clazz = constructor.getParameterTypes()[i];
             Type type = constructor.getGenericParameterTypes()[i];
-            WBParameter<?> parameter = WBParameterImpl.of(constructor.getParameterAnnotations()[i], clazz, type, this, classTransformer);
+            WBParameter<?, ?> parameter = WBParameterImpl.of(constructor.getParameterAnnotations()[i], clazz, type, this, i, classTransformer);
             parameters.add(parameter);
 
             for (Annotation annotation : parameter.getAnnotations())
@@ -125,7 +124,7 @@ public class WBConstructorImpl<T> extends AbstractWBMember<T, Constructor<T>> im
             {
                type = clazz;
             }
-            WBParameter<?> parameter = WBParameterImpl.of(new Annotation[0], clazz, type, this, classTransformer);
+            WBParameter<?, ?> parameter = WBParameterImpl.of(new Annotation[0], clazz, type, this, i, classTransformer);
             parameters.add(parameter);
 
             for (Annotation annotation : parameter.getAnnotations())
@@ -165,9 +164,9 @@ public Constructor<T> getDelegate()
     * 
     * @return A list of annotated parameter abstractions
     * 
-    * @see org.jboss.webbeans.introspector.WBConstructor#getParameters()
+    * @see org.jboss.webbeans.introspector.WBConstructor#getWBParameters()
     */
-   public List<WBParameter<?>> getParameters()
+   public List<WBParameter<?, ?>> getWBParameters()
    {
       return Collections.unmodifiableList(parameters);
    }
@@ -181,9 +180,9 @@ public Constructor<T> getDelegate()
     * @return A list of matching parameter abstractions. An empty list is
     *         returned if there are no matches.
     * 
-    * @see org.jboss.webbeans.introspector.WBConstructor#getAnnotatedParameters(Class)
+    * @see org.jboss.webbeans.introspector.WBConstructor#getAnnotatedWBParameters(Class)
     */
-   public List<WBParameter<?>> getAnnotatedParameters(Class<? extends Annotation> annotationType)
+   public List<WBParameter<?, ?>> getAnnotatedWBParameters(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableList(annotatedParameters.get(annotationType));
    }
@@ -218,7 +217,7 @@ public Constructor<T> getDelegate()
       if (super.equals(other) && other instanceof WBConstructor)
       {
          WBConstructor<?> that = (WBConstructor<?>) other;
-         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getParameters().equals(that.getParameters());
+         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getWBParameters().equals(that.getWBParameters());
       }
       return false;
    }
@@ -234,16 +233,6 @@ public Constructor<T> getDelegate()
    public int hashCode()
    {
       return getDelegate().hashCode();
-   }
-
-   /**
-    * Gets the declaring class
-    * 
-    * @return The declaring class
-    */
-   public WBType<T> getDeclaringType()
-   {
-      return declaringClass;
    }
 
    /**
@@ -265,6 +254,11 @@ public Constructor<T> getDelegate()
    public ConstructorSignature getSignature()
    {
       return signature;
+   }
+   
+   public List<AnnotatedParameter<T>> getParameters()
+   {
+      return new ArrayList<AnnotatedParameter<T>>((Set) parameters);
    }
 
 }
