@@ -230,12 +230,23 @@ public class Validator implements Service
             namedAccessibleBeans.put(bean.getName(), bean);
          }
       }
+      
+      List<String> accessibleNamespaces = new ArrayList<String>();
+      for (String namespace : beanManager.getAccessibleNamespaces())
+      {
+         accessibleNamespaces.add(namespace);
+      }
+      
       for (String name : namedAccessibleBeans.keySet())
       {
          Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(namedAccessibleBeans.get(name));
          if (resolvedBeans.size() > 1)
          {
             throw new DeploymentException("An unresolvable ambiguous EL name exists for " + name + "; found " + resolvedBeans );
+         }
+         if (accessibleNamespaces.contains(name))
+         {
+            throw new DeploymentException("The bean name " + name + " is used as a prefix for another bean");
          }
       }
    }

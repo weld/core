@@ -1217,6 +1217,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return namespaces;
    }
    
+   public Iterable<String> getAccessibleNamespaces()
+   {
+      // TODO Cache this
+      return createDynamicAccessibleIterable(Transform.NAMESPACE);
+   }
+   
    protected AtomicInteger getIds()
    {
       return ids;
