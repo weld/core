@@ -12,11 +12,6 @@ import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
-/**
- * 
- * Spec version: 20090519
- *
- */
 @Artifact
 public class NonNormalScopeTest extends AbstractWebBeansTest
 {
