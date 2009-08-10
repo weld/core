@@ -32,7 +32,7 @@ public class JspInitialization
    public void init(ServletContext context)
    {
       // JSP 2.1 specific check
-      if (JspFactory.getDefaultFactory().getJspApplicationContext(context) == null)
+      if (JspFactory.getDefaultFactory() == null || JspFactory.getDefaultFactory().getJspApplicationContext(context) == null)
       {
          return;
       }
