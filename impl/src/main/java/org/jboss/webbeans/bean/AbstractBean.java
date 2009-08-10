@@ -300,7 +300,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       if (isSpecializing() && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
       {
          this.name = getSpecializedBean().getName();
-         return;
       }
       manager.getSpecializedBeans().put(getSpecializedBean(), this);
    }
