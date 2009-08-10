@@ -47,54 +47,6 @@ public abstract class AbstractBootstrap implements Bootstrap
    {
       this.simpleServiceRegistry = new SimpleServiceRegistry();
    }
-
-   @Deprecated
-   public void setEjbServices(EjbServices ejbServices)
-   {
-      getServices().add(EjbServices.class, ejbServices);
-   }
-
-   @Deprecated
-   public void setResourceLoader(ResourceLoader resourceLoader)
-   {
-      getServices().add(ResourceLoader.class, resourceLoader);
-   }
-
-   @Deprecated
-   public void setWebBeanDiscovery(WebBeanDiscovery webBeanDiscovery)
-   {
-      getServices().add(WebBeanDiscovery.class, webBeanDiscovery);
-   }
-   
-   @Deprecated
-   public void setTransactionServices(TransactionServices transactionServices)
-   {
-      getServices().add(TransactionServices.class, transactionServices);
-   }
-
-   @Deprecated
-   public WebBeanDiscovery getWebBeanDiscovery()
-   {
-      return getServices().get(WebBeanDiscovery.class);
-   }
-
-   @Deprecated
-   public ResourceLoader getResourceLoader()
-   {
-      return getServices().get(ResourceLoader.class);
-   }
-
-   @Deprecated
-   public EjbServices getEjbServices()
-   {
-      return getServices().get(EjbServices.class);
-   }
-   
-   @Deprecated
-   public TransactionServices getTransactionServices()
-   {
-      return getServices().get(TransactionServices.class);
-   }
    
    public BeanStore getApplicationContext()
    {
