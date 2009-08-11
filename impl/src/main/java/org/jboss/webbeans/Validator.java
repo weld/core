@@ -91,7 +91,7 @@ public class Validator implements Service
     * @param beanManager the current manager
     * @param specializedBeans the existing specialized beans
     */
-   private void validateRIBean(RIBean<?> bean, BeanManagerImpl beanManager, List<RIBean<?>> specializedBeans)
+   private void validateRIBean(RIBean<?> bean, BeanManagerImpl beanManager, Collection<RIBean<?>> specializedBeans)
    {
       validateBean(bean, beanManager);
       if (!(bean instanceof NewSimpleBean<?>) && !(bean instanceof NewEnterpriseBean<?>))
@@ -116,12 +116,16 @@ public class Validator implements Service
                   {
                      throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scope but has non-serializable decorator: " + decorator);
                   }
+                  for (InjectionPoint ij : decorator.getInjectionPoints())
+                  {
+                     Bean<?> resolvedBean = beanManager.resolve(beanManager.getInjectableBeans(ij));
+                     validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+                  }
                }
             }
             
          }
       }
-
    }
    
    /**
@@ -184,6 +188,14 @@ public class Validator implements Service
       }
       if (Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean))
       {
+         validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+      }
+   }
+   
+   public void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager)
+   {
+      if (!ij.isTransient() && !Beans.isPassivationCapableBean(resolvedBean))
+      {
          if (resolvedBean.getScopeType().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?,?>)
          {
             throw new IllegalProductException("The bean " + ij.getBean() + " declares a passivating scope but the producer returned a non-serializable bean for injection: " + resolvedBean);
@@ -194,8 +206,17 @@ public class Validator implements Service
    
    public void validateDeployment(BeanManagerImpl manager, BeanDeployerEnvironment environment)
    {
-      List<RIBean<?>> specializedBeans = new ArrayList<RIBean<?>>();
-      for (Bean<?> bean : manager.getBeans())
+      validateBeans(manager.getDecorators(), new ArrayList<RIBean<?>>(), manager);
+      validateBeans(manager.getBeans(), new ArrayList<RIBean<?>>(), manager);
+      validateEnabledDecoratorClasses(manager);
+      validateEnabledPolicies(manager);
+      validateDisposalMethods(environment);
+      validateBeanNames(manager);
+   }
+   
+   public void validateBeans(Collection<? extends Bean<?>> beans, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager)
+   {
+      for (Bean<?> bean : beans)
       {
          if (bean instanceof RIBean<?>)
          {
@@ -206,10 +227,6 @@ public class Validator implements Service
             validateBean(bean, manager);
          }
       }
-      validateEnabledDecoratorClasses(manager);
-      validateEnabledPolicies(manager);
-      validateDisposalMethods(environment);
-      validateBeanNames(manager);
    }
    
    public void validateBeanNames(BeanManagerImpl beanManager)
