@@ -278,6 +278,10 @@ public class Validator implements Service
       }
       for (Class<?> clazz : beanManager.getEnabledDecoratorClasses())
       {
+         if (beanManager.getEnabledDecoratorClasses().indexOf(clazz) < beanManager.getEnabledDecoratorClasses().lastIndexOf(clazz))
+         {
+            throw new DeploymentException("Enabled decorator class" + clazz + " specified twice");
+         }
          if (!decoratorBeanClasses.contains(clazz))
          {
             throw new DeploymentException("Enabled decorator class " + clazz + " is not the bean class of at least one decorator bean (detected decorator beans " + decoratorBeanClasses + ")");
