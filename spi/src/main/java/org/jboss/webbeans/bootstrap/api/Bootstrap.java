@@ -16,18 +16,37 @@
  */
 package org.jboss.webbeans.bootstrap.api;
 
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.BeforeShutdown;
+import javax.enterprise.inject.spi.Extension;
+
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 
 /**
- * Bootstrap API for Web Beans.
+ * Application container initialization API for Web Beans.
+ * 
+ * To initialize the container you must call, in this order:
+ * 
+ * <ol>
+ * <li>{@link #startContainer()}</li>
+ * <li>{@link #startInitialization()}</li>
+ * <li>{@link #deployBeans()}</li>
+ * <li>{@link #validateBeans()}</li>
+ * <li>{@link #endInitialization()}</li>
+ * </ol>
+ * 
+ * To stop the container and clean up, you must call {@link #shutdown()}
  * 
  * @author Pete Muir
  * 
  */
 public interface Bootstrap
 {
-   
+
    /**
     * Set the bean store to use as backing for the application context
     * 
@@ -41,49 +60,87 @@ public interface Bootstrap
     * @param environment the environment to use
     */
    public void setEnvironment(Environment environment);
-   
+
    /**
-    * Initialize the bootstrap:
+    * Creates the application container:
     * <ul>
-    * <li>Create the manager and bind it to JNDI</li>
+    * <li>Checks that the services required by the environment have been
+    * provided</li>
+    * <li>Adds container provided services</li>
+    * <li>Creates and initializes the built in contexts</li>
+    * <li>Creates the manager</li>
     * </ul>
     * 
-    * @throws IllegalStateException
-    *            if not all the services required for the given environment are
-    *            available
+    * This method name is a workaround for weird JBoss MC behavior, calling
+    * 
+    * 
+    * @throws IllegalStateException if not all the services required for the
+    *            given environment are available
     */
-   public void initialize();
-   
+   public Bootstrap startContainer();
+
    /**
-    * Get the manager used for this application.
+    * Starts the application container initialization process:
     * 
-    * @return the manager. Unless {@link #initialize()} has been called, this
-    *         method will return null.
+    * <ul>
+    * <li>Reads metadata from beans.xml and the {@link Deployment} service</li>
+    * <li>Starts the application context</li>
+    * <li>Starts the request context which lasts until
+    * {@link #endInitialization()} is called</li>
+    * <li>Discovers and creates {@link Extension} service providers</li>
+    * </ul>
+    * 
+    * Finally, the {@link BeforeBeanDiscovery} event is fired.
+    * 
     */
-   public WebBeansManager getManager();
-   
+   public Bootstrap startInitialization();
+
    /**
-    * Starts the boot process.
+    * Creates and deploys the application's beans:
     * 
-    * Discovers the beans and registers them with the getManager(). Also
-    * resolves the injection points. Before running {@link #boot()} 
-    * {@link #initialize()} must have been called and the contexts should be 
-    * available
+    * <ul>
+    * <li>Creates and deploys the discovered beans</li>
+    * <li>Creates and deploys the built-in beans defined by the CDI
+    * specification</li>
+    * </ul>
+    * 
+    * Finally the {@link AfterBeanDiscovery} is event is fired
+    */
+   public Bootstrap deployBeans();
+
+   /**
+    * Validates the deployment.
+    * 
+    * After validation, the {@link AfterDeploymentValidation} event is fired
+    */
+   public Bootstrap validateBeans();
+
+   /**
+    * Cleans up after the initialization
     * 
     */
-   public void boot();
-   
+   public Bootstrap endInitialization();
+
    /**
     * Causes the container to clean up and shutdown
     * 
+    * Before the contain is shutdown the {@link BeforeShutdown} event is fired
     */
    public void shutdown();
-   
+
    /**
     * Get the services available to this bootstrap
     * 
     * @return the services available
     */
    public ServiceRegistry getServices();
-   
+
+   /**
+    * Get the manager used for this application.
+    * 
+    * @return the manager. Unless {@link #startContainer()} has been called, this method
+    *         will return null.
+    */
+   public WebBeansManager getManager();
+
 }

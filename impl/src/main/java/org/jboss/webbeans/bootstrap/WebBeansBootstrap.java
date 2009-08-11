@@ -156,6 +156,9 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
 
    // The Web Beans manager
    private BeanManagerImpl manager;
+   private BeanDeployer beanDeployer;
+   private DeploymentVisitor deploymentVisitor;
+   private BeanStore requestBeanStore;
    
    public WebBeansBootstrap()
    {
@@ -163,38 +166,43 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       getServices().add(ResourceLoader.class, new DefaultResourceLoader());
    }
 
-   public void initialize()
+   public Bootstrap startContainer()
    {
-      verify();
-      if (!getServices().contains(TransactionServices.class))
+      synchronized (this)
       {
-         log.info("Transactional services not available.  Transactional observers will be invoked synchronously.");
+         verify();
+         if (!getServices().contains(TransactionServices.class))
+         {
+            log.info("Transactional services not available.  Transactional observers will be invoked synchronously.");
+         }
+         if (!getServices().contains(EjbServices.class))
+         {
+            log.info("EJB services not available. Session beans will be simple beans, CDI-style injection into non-contextual EJBs, injection of remote EJBs and injection of @EJB in simple beans will not be available");
+         }
+         if (!getServices().contains(JmsServices.class))
+         {
+            log.info("JMS services not available. JMS resources will not be available.");
+         }
+         if (!getServices().contains(JpaServices.class))
+         {
+            log.info("JPA services not available. Injection of @PersistenceContext will not occur. Entity beans will be discovered as simple beans.");
+         }
+         if (!getServices().contains(ResourceServices.class))
+         {
+            log.info("@Resource injection not available.");
+         }
+         if (!getServices().contains(WebServices.class))
+         {
+            log.info("WebService reference injection not available.");
+         }
+         addImplementationServices();
+         createContexts();
+         this.manager = BeanManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
+         CurrentManager.setRootManager(manager);
+         initializeContexts();
+         this.deploymentVisitor = new DeploymentVisitor(getServices().get(Deployment.class));
+         return this;
       }
-      if (!getServices().contains(EjbServices.class))
-      {
-         log.info("EJB services not available. Session beans will be simple beans, CDI-style injection into non-contextual EJBs, injection of remote EJBs and injection of @EJB in simple beans will not be available");
-      }
-      if (!getServices().contains(JmsServices.class))
-      {
-         log.info("JMS services not available. JMS resources will not be available.");
-      }
-      if (!getServices().contains(JpaServices.class))
-      {
-         log.info("JPA services not available. Injection of @PersistenceContext will not occur. Entity beans will be discovered as simple beans.");
-      }
-      if (!getServices().contains(ResourceServices.class))
-      {
-         log.info("@Resource injection not available.");
-      }
-      if (!getServices().contains(WebServices.class))
-      {
-         log.info("WebService reference injection not available.");
-      }
-      addImplementationServices();
-      createContexts();
-      this.manager = BeanManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
-      CurrentManager.setRootManager(manager);
-      initializeContexts();
    }
    
    private void addImplementationServices()
@@ -217,32 +225,8 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    {
       return manager;
    }
-
-   /**
-    * Register the bean with the getManager(), including any standard (built in)
-    * beans
-    * 
-    * @param classes The classes to register as Web Beans
-    */
-   protected void registerBeans(Iterable<Class<?>> classes, BeanDeployer beanDeployer)
-   {
-      beanDeployer.addClasses(classes);
-      beanDeployer.getEnvironment().addBean(ManagerBean.of(manager));
-      beanDeployer.getEnvironment().addBean(InjectionPointBean.of(manager));
-      beanDeployer.getEnvironment().addBean(EventBean.of(manager));
-      beanDeployer.getEnvironment().addBean(InstanceBean.of(manager));
-      if (!getEnvironment().equals(Environments.SE))
-      {
-         beanDeployer.addClass(ConversationImpl.class);
-         beanDeployer.addClass(ServletConversationManager.class);
-         beanDeployer.addClass(JavaSEConversationTerminator.class);
-         beanDeployer.addClass(NumericConversationIdGenerator.class);
-         beanDeployer.addClass(HttpSessionManager.class);
-      }
-      beanDeployer.createBeans().deploy();
-   }
    
-   public void boot()
+   public Bootstrap startInitialization()
    {
       synchronized (this)
       {
@@ -255,10 +239,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
             throw new IllegalStateException("No application context BeanStore set");
          }
          
-         DeploymentVisitor deploymentVisitor = new DeploymentVisitor(getServices().get(Deployment.class)).visit();
+         deploymentVisitor.visit();
          
          beginApplication(getApplicationContext());
-         BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
+         requestBeanStore = new ConcurrentHashMapBeanStore();
          beginDeploy(requestBeanStore);
          
          EjbDescriptorCache ejbDescriptors = new EjbDescriptorCache();
@@ -277,16 +261,54 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          // Parse beans.xml before main bean deployment
          parseBeansXml(deploymentVisitor.getBeansXmlUrls());
          
-         BeanDeployer beanDeployer = new BeanDeployer(manager, ejbDescriptors);
+         beanDeployer = new BeanDeployer(manager, ejbDescriptors);
          
          fireBeforeBeanDiscoveryEvent(beanDeployer);
-         registerBeans(deploymentVisitor.getBeanClasses(), beanDeployer);
+      }
+      return this;
+   }
+   
+   public Bootstrap deployBeans()
+   {
+      synchronized (this)
+      {
+         beanDeployer.addClasses(deploymentVisitor.getBeanClasses());
+         beanDeployer.getEnvironment().addBean(ManagerBean.of(manager));
+         beanDeployer.getEnvironment().addBean(InjectionPointBean.of(manager));
+         beanDeployer.getEnvironment().addBean(EventBean.of(manager));
+         beanDeployer.getEnvironment().addBean(InstanceBean.of(manager));
+         if (!getEnvironment().equals(Environments.SE))
+         {
+            beanDeployer.addClass(ConversationImpl.class);
+            beanDeployer.addClass(ServletConversationManager.class);
+            beanDeployer.addClass(JavaSEConversationTerminator.class);
+            beanDeployer.addClass(NumericConversationIdGenerator.class);
+            beanDeployer.addClass(HttpSessionManager.class);
+         }
+         beanDeployer.createBeans().deploy();
          fireAfterBeanDiscoveryEvent();
          log.debug("Web Beans initialized. Validating beans.");
+      }
+      return this;
+   }
+   
+   public Bootstrap validateBeans()
+   {
+      synchronized (this)
+      {
          getServices().get(Validator.class).validateDeployment(manager, beanDeployer.getEnvironment());
          fireAfterDeploymentValidationEvent();
+      }
+      return this;
+   }
+
+   public Bootstrap endInitialization()
+   {
+      synchronized (this)
+      {
          endDeploy(requestBeanStore);
       }
+      return this;
    }
    
    private void parseBeansXml(Iterable<URL> urls)

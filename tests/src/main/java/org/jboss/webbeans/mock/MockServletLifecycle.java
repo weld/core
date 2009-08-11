@@ -34,7 +34,7 @@ public class MockServletLifecycle extends ContextLifecycle
    
    public void initialize()
    {
-      bootstrap.initialize();
+      bootstrap.startContainer();
    }
    
    public MockDeployment getDeployment()
@@ -49,7 +49,7 @@ public class MockServletLifecycle extends ContextLifecycle
    
    public void beginApplication()
    {
-      bootstrap.boot();
+      bootstrap.startInitialization().deployBeans().validateBeans().endInitialization();
    }
    
    public void endApplication()

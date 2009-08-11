@@ -23,7 +23,7 @@ public class BootstrapTest
       bootstrap.setEnvironment(Environments.SE);
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
-      bootstrap.initialize();
+      bootstrap.startContainer();
    }
    
    @Test(expectedExceptions=IllegalStateException.class)
@@ -39,7 +39,7 @@ public class BootstrapTest
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.getServices().add(WebServices.class, new MockWebServices());
       bootstrap.getServices().add(JmsServices.class, new MockJmsServices());
-      bootstrap.initialize();
+      bootstrap.startContainer();
    }
    
    @Test(expectedExceptions=IllegalStateException.class)
@@ -55,7 +55,7 @@ public class BootstrapTest
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.getServices().add(WebServices.class, new MockWebServices());
       bootstrap.getServices().add(JmsServices.class, new MockJmsServices());
-      bootstrap.initialize();
+      bootstrap.startContainer();
    }
    
    @Test(expectedExceptions=IllegalStateException.class)
@@ -71,7 +71,7 @@ public class BootstrapTest
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(JmsServices.class, new MockJmsServices());
-      bootstrap.initialize();
+      bootstrap.startContainer();
    }
    
    @Test(expectedExceptions=IllegalStateException.class)
@@ -87,7 +87,7 @@ public class BootstrapTest
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(WebServices.class, new MockWebServices());
-      bootstrap.initialize();
+      bootstrap.startContainer();
    }
    
    
@@ -105,7 +105,7 @@ public class BootstrapTest
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.getServices().add(WebServices.class, new MockWebServices());
       bootstrap.getServices().add(JmsServices.class, new MockJmsServices());
-      bootstrap.initialize();
+      bootstrap.startContainer();
    }
    
    @Test
@@ -120,7 +120,7 @@ public class BootstrapTest
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
-      bootstrap.initialize();
+      bootstrap.startContainer();
    }
    
    @Test(expectedExceptions=IllegalStateException.class)
@@ -134,7 +134,7 @@ public class BootstrapTest
       bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
-      bootstrap.initialize();
+      bootstrap.startContainer();
    }
    
    @Test(expectedExceptions=IllegalStateException.class)
@@ -148,7 +148,7 @@ public class BootstrapTest
       bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
-      bootstrap.initialize();
+      bootstrap.startContainer();
    }
    
    @Test
@@ -159,7 +159,7 @@ public class BootstrapTest
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
       bootstrap.getServices().add(Deployment.class, new MockDeployment());      
-      bootstrap.initialize();
+      bootstrap.startContainer();
    }
    
    @Test
@@ -170,7 +170,7 @@ public class BootstrapTest
       bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
       bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
       bootstrap.getServices().add(Deployment.class, new MockDeployment());      
-      bootstrap.initialize();
+      bootstrap.startContainer();
    }
    
 }

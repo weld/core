@@ -17,6 +17,8 @@
 package org.jboss.webbeans.bootstrap.api.helpers;
 
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
+import org.jboss.webbeans.bootstrap.api.Environment;
+import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 
@@ -30,20 +32,11 @@ public abstract class ForwardingBootstrap implements Bootstrap
    
    protected abstract Bootstrap delegate();
    
-   public void boot()
-   {
-      delegate().boot();
-   }
-   
    public WebBeansManager getManager()
    {
       return delegate().getManager();
    }
-   
-   public void initialize()
-   {
-      delegate().initialize();
-   }
+
    
    public void setApplicationContext(BeanStore beanStore)
    {
@@ -71,6 +64,36 @@ public abstract class ForwardingBootstrap implements Bootstrap
    public boolean equals(Object obj)
    {
       return delegate().equals(obj);
+   }
+
+   public Bootstrap deployBeans()
+   {
+      return delegate().deployBeans();
+   }
+
+   public Bootstrap endInitialization()
+   {
+      return delegate().endInitialization();
+   }
+
+   public ServiceRegistry getServices()
+   {
+      return delegate().getServices();
+   }
+
+   public void setEnvironment(Environment environment)
+   {
+      delegate().setEnvironment(environment);
+   }
+
+   public Bootstrap startInitialization()
+   {
+      return delegate().startInitialization();
+   }
+
+   public Bootstrap validateBeans()
+   {
+      return delegate().validateBeans();
    }
    
 }
