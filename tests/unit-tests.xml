@@ -52,6 +52,7 @@
          <package name="org.jboss.webbeans.test.unit.lookup.circular" />
          <package name="org.jboss.webbeans.test.unit.lookup.wbri279" />
          <package name="org.jboss.webbeans.test.unit.manager" />
+         <package name="org.jboss.webbeans.test.unit.noncontextual" />
          <package name="org.jboss.webbeans.test.unit.security" />
       </packages>
    </test>

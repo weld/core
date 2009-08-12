@@ -78,6 +78,9 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
 
    public void postConstruct(T instance)
    {
+      if (postConstruct == null)
+         return;
+      
       try
       {
          postConstruct.invoke(instance);
@@ -90,6 +93,9 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
 
    public void preDestroy(T instance)
    {
+      if (preDestroy == null)
+         return;
+      
       try
       {
          preDestroy.invoke(instance);
