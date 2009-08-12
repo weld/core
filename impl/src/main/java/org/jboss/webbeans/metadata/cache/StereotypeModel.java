@@ -56,6 +56,8 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    private boolean beanNameDefaulted;
    // The interceptor bindings
    private Set<Annotation> interceptorBindings;
+   
+   private Set<Annotation> inheritedSterotypes;
 
    /**
     * Constructor
@@ -69,6 +71,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       initDefaultScopeType();
       initBeanNameDefaulted();
       initInterceptorBindings();
+      initInheritedStereotypes();
       checkBindings();
    }
 
@@ -90,6 +93,11 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    private void initInterceptorBindings()
    {
       interceptorBindings = getAnnotatedAnnotation().getMetaAnnotations(InterceptorBindingType.class);
+   }
+   
+   private void initInheritedStereotypes()
+   {
+      this.inheritedSterotypes = getAnnotatedAnnotation().getMetaAnnotations(Stereotype.class);
    }
 
    /**
@@ -205,6 +213,11 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    public boolean isPolicy()
    {
       return policy;
+   }
+   
+   public Set<Annotation> getInheritedSterotypes()
+   {
+      return inheritedSterotypes;
    }
 
 }

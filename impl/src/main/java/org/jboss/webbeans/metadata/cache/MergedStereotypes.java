@@ -77,6 +77,8 @@ public class MergedStereotypes<T, E>
          {
             beanNameDefaulted = true;
          }
+         // Merge in inherited stereotypes
+         merge(stereotype.getInheritedSterotypes());
       }
    }
 
