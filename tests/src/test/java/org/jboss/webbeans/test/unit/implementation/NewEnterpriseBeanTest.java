@@ -19,7 +19,15 @@ import org.testng.annotations.Test;
 public class NewEnterpriseBeanTest extends AbstractWebBeansTest
 {
    
-   private static final New NEW_LITERAL = new NewLiteral();
+   private static final New NEW_LITERAL = new NewLiteral()
+   {
+      
+      public java.lang.Class<?> value() 
+      {
+         return WrappedEnterpriseBean.class;
+      }
+      
+   };
    
    private EnterpriseBean<WrappedEnterpriseBeanLocal> wrappedEnterpriseBean;
    private NewEnterpriseBean<WrappedEnterpriseBeanLocal> newEnterpriseBean;
@@ -40,7 +48,7 @@ public class NewEnterpriseBeanTest extends AbstractWebBeansTest
    public void testNewBeanHasImplementationClassOfInjectionPointType()
    {
       initNewBean();
-      assert newEnterpriseBean.getType().equals(WrappedEnterpriseBeanLocal.class);
+      assert newEnterpriseBean.getType().equals(WrappedEnterpriseBean.class);
    }
 
    @Test(groups = { "new" })

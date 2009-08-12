@@ -24,4 +24,12 @@ import javax.enterprise.inject.New;
  * 
  * @author Pete Muir
  */
-public class NewLiteral extends AnnotationLiteral<New> implements New {}
+public class NewLiteral extends AnnotationLiteral<New> implements New 
+{
+
+   public Class<?> value()
+   {
+      return New.class;
+   }
+
+}

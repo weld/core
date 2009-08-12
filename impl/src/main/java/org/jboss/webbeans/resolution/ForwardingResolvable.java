@@ -44,5 +44,33 @@ public abstract class ForwardingResolvable implements Resolvable
    {
       return delegate().isAssignableTo(clazz);
    }
+   
+   public <A extends Annotation> A getAnnotation(Class<A> annotationType)
+   {
+      return delegate().getAnnotation(annotationType);
+   }
+   
+   public Class<?> getJavaClass()
+   {
+      return delegate().getJavaClass();
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      return delegate().equals(obj);
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return delegate().hashCode();
+   }
+
+   @Override
+   public String toString()
+   {
+      return delegate().toString();
+   }
 
 }

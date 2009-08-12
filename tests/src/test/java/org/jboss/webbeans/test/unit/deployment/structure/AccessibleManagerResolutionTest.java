@@ -1,7 +1,11 @@
 package org.jboss.webbeans.test.unit.deployment.structure;
 
-import org.jboss.webbeans.ContextualIdStore;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.ContextualIdStore;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
@@ -41,7 +45,7 @@ public class AccessibleManagerResolutionTest
    }
    
    @Test
-   public void testAccessibleSingleLevel()
+   public void testAccessibleDynamicallySingleLevel()
    {
       BeanManagerImpl root = BeanManagerImpl.newRootManager(services);
       BeanManagerImpl child = BeanManagerImpl.newRootManager(services);
@@ -49,6 +53,7 @@ public class AccessibleManagerResolutionTest
       assert root.getBeans(Cow.class).size() == 1;
       assert child.getBeans(Cow.class).size() == 0;
       child.addAccessibleBeanManager(root);
+      Set<Bean<?>> beans = child.getBeans(Cow.class);
       assert child.getBeans(Cow.class).size() == 1;
       addBean(child, Chicken.class);
       assert child.getBeans(Chicken.class).size() == 1;

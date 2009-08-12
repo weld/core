@@ -40,4 +40,7 @@ import java.lang.annotation.Target;
 @BindingType
 public @interface New
 {
+   
+   Class<?> value() default New.class;
+   
 }

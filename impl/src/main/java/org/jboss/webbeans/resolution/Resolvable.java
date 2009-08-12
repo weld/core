@@ -21,20 +21,62 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 /**
- * Something that is resovable by the resolver
+ * Something that is resovable by the resolver. A resolvable is defined by it's
+ * bindings and type closure
  * 
  * @author pmuir
- *
+ * 
  */
 public interface Resolvable
 {
-   
+
+   /**
+    * Get the bindings to use for resolution. @Current will be returned if no
+    * bindings were specified
+    * 
+    * @return the bindings
+    */
    public Set<Annotation> getBindings();
-   
+
+   /**
+    * Check if an annotation is present
+    * 
+    * @param annotationType the annotation type to look for
+    * @return true if it is present
+    */
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
    
+   /**
+    * Get the instance of the Annotation
+    * 
+    * @param <A> the type of the annotation
+    * @param annotationType the type of the annotation
+    * @return the annotation instance
+    */
+   public <A extends Annotation> A getAnnotation(Class<A> annotationType); 
+
+   /**
+    * Check if this resolvable's type closure includes the clazz passed as an
+    * argument
+    * 
+    * @param clazz the class to check for
+    * @return true if clazz is present
+    */
    public boolean isAssignableTo(Class<?> clazz);
-   
+
+   /**
+    * The type closure of this resolvable
+    * 
+    * @return
+    */
    public Set<Type> getTypeClosure();
+
+   /**
+    * Get the underlying java class used to generate this resolvable, or null
+    * if no java class was used
+    * 
+    * @return the java class
+    */
+   public Class<?> getJavaClass();
 
 }

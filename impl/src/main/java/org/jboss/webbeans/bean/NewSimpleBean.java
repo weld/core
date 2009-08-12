@@ -17,7 +17,6 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,7 +33,6 @@ import org.jboss.webbeans.literal.NewLiteral;
  */
 public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
 {
-   private static Set<Annotation> NEW_BINDING_SET = new HashSet<Annotation>(Arrays.asList(new NewLiteral()));
 
    /**
     * Creates an instance of a NewSimpleBean from an annotated class
@@ -47,6 +45,8 @@ public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
    {
       return new NewSimpleBean<T>(clazz, manager);
    }
+   
+   private Set<Annotation> bindings;
 
    /**
     * Protected constructor
@@ -54,9 +54,19 @@ public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
     * @param type An annotated class
     * @param manager The Web Beans manager
     */
-   protected NewSimpleBean(WBClass<T> type, BeanManagerImpl manager)
+   protected NewSimpleBean(final WBClass<T> type, BeanManagerImpl manager)
    {
       super(type, manager);
+      this.bindings = new HashSet<Annotation>();
+      this.bindings.add(new NewLiteral()
+      {
+         
+         public Class<?> value()
+         {
+            return type.getJavaClass();
+         }
+         
+      });
    }
 
    /**
@@ -95,7 +105,7 @@ public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
    @Override
    public Set<Annotation> getBindings()
    {
-      return NEW_BINDING_SET;
+      return bindings;
    }
 
    @Override

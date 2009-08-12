@@ -19,7 +19,9 @@ package org.jboss.webbeans.resolution;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.webbeans.introspector.WBAnnotated;
@@ -59,7 +61,7 @@ public class ResolvableFactory
    {
 
       private final Set<Annotation> bindings;
-      private final Set<Class<? extends Annotation>> annotationTypes;
+      private final Map<Class<? extends Annotation>, Annotation> annotations;
       private final Set<Type> typeClosure;
 
       public ResolvableImpl(Set<Annotation> bindings, Set<Type> typeClosure)
@@ -69,11 +71,11 @@ public class ResolvableFactory
          {
             this.bindings.add(new CurrentLiteral());
          }
-         this.annotationTypes = new HashSet<Class<? extends Annotation>>();
+         this.annotations = new HashMap<Class<? extends Annotation>, Annotation>();
          this.typeClosure = typeClosure;
          for (Annotation annotation : bindings)
          {
-            annotationTypes.add(annotation.annotationType());
+            annotations.put(annotation.annotationType(), annotation);
          }
       }
 
@@ -84,7 +86,7 @@ public class ResolvableFactory
 
       public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
       {
-         return annotationTypes.contains(annotationType);
+         return annotations.containsKey(annotationType);
       }
 
       public Set<Type> getTypeClosure()
@@ -95,6 +97,17 @@ public class ResolvableFactory
       public boolean isAssignableTo(Class<?> clazz)
       {
          return Reflections.isAssignableFrom(clazz, typeClosure);
+      }
+      
+      public <A extends Annotation> A getAnnotation(Class<A> annotationType)
+      {
+         return (A) annotations.get(annotationType);
+      }
+      
+      public Class<?> getJavaClass()
+      {
+         // No underlying java class
+         return null;
       }
 
       @Override

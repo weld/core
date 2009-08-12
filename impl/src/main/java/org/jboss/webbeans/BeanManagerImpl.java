@@ -489,6 +489,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public void addAccessibleBeanManager(BeanManagerImpl accessibleBeanManager)
    {
       accessibleManagers.add(accessibleBeanManager);
+      beanResolver.clear();
    }
    
    protected Set<BeanManagerImpl> getAccessibleManagers()

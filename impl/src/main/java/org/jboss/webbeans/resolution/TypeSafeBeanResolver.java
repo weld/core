@@ -47,6 +47,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
       TRANSFORMERS = new HashSet<ResolvableTransformer>();
       TRANSFORMERS.add(EventBean.TRANSFORMER);
       TRANSFORMERS.add(InstanceBean.TRANSFORMER);
+      TRANSFORMERS.add(new NewResolvableTransformer());
    }
 
    public TypeSafeBeanResolver(BeanManagerImpl manager, Iterable<T> beans)
