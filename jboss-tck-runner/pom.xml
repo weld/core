@@ -76,8 +76,8 @@
                            <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                         </artifactItem>
                         <artifactItem>
-                           <groupId>javax.el</groupId>
-                           <artifactId>el-ri</artifactId>
+                           <groupId>org.glassfish.web</groupId>
+                           <artifactId>el-impl</artifactId>
                            <overWrite>true</overWrite>
                            <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                         </artifactItem>

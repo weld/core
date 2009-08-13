@@ -31,30 +31,26 @@ public abstract class ForwardingExpressionFactory extends ExpressionFactory
    protected abstract ExpressionFactory delegate();
    
    
-   @SuppressWarnings("unchecked")
    @Override
-   public Object coerceToType(Object obj, Class targetType)
+   public Object coerceToType(Object obj, Class<?> targetType)
    {
       return delegate().coerceToType(obj, targetType);
    }
 
-   @SuppressWarnings("unchecked")
    @Override
-   public MethodExpression createMethodExpression(ELContext context, String expression, Class expectedReturnType, Class[] expectedParamTypes)
+   public MethodExpression createMethodExpression(ELContext context, String expression, Class<?> expectedReturnType, Class<?>[] expectedParamTypes)
    {
       return delegate().createMethodExpression(context, expression, expectedReturnType, expectedParamTypes);
    }
 
-   @SuppressWarnings("unchecked")
    @Override
-   public ValueExpression createValueExpression(Object instance, Class expectedType)
+   public ValueExpression createValueExpression(Object instance, Class<?> expectedType)
    {
       return delegate().createValueExpression(instance, expectedType);
    }
 
-   @SuppressWarnings("unchecked")
    @Override
-   public ValueExpression createValueExpression(ELContext context, String expression, Class expectedType)
+   public ValueExpression createValueExpression(ELContext context, String expression, Class<?> expectedType)
    {
       return delegate().createValueExpression(context, expression, expectedType);
    }

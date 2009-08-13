@@ -20,13 +20,6 @@ import org.testng.annotations.Test;
 public class ELResolverTest extends AbstractWebBeansTest
 {
    
-   @Test(groups="incontainer-broken")
-   public void testNonBeanDoesntResolveToNamespace()
-   {
-      ELContext elContext = EL.createELContext();
-      assert EL.EXPRESSION_FACTORY.createValueExpression(elContext, "#{foo.bar}", Object.class).getValue(elContext) == null;
-   }
-   
    /**
     * Test that the WebBeansELResolver only works to resolve the base of an EL
     * expression, in this case a named bean. Once the base is resolved, the

@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.util.el;
 
+import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
 import javax.el.ELContext;
@@ -33,7 +34,7 @@ public abstract class ForwardingELResolver extends ELResolver
    }
 
    @Override
-   public Iterator<?> getFeatureDescriptors(ELContext context, Object base)
+   public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
    {
       return delegate().getFeatureDescriptors(context, base);
    }
