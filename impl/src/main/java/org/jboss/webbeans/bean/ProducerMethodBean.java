@@ -75,6 +75,8 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       initTypes();
       initBindings();
       this.id = createId("ProducerMethod-" + declaringBean.getType().getName() + "-" + method.getSignature().toString());
+      initStereotypes();
+      initPolicy();
    }
 
    public T produce(CreationalContext<T> creationalContext)

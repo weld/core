@@ -106,7 +106,10 @@ public class AbstractBeanDeployer
    {
       createProducerMethods(bean, bean.getAnnotatedItem());
       createProducerFields(bean, bean.getAnnotatedItem());
-      createObserverMethods(bean, bean.getAnnotatedItem());
+      if (manager.isBeanEnabled(bean))
+      {
+         createObserverMethods(bean, bean.getAnnotatedItem());
+      }
       createDisposalMethods(bean, bean.getAnnotatedItem());
       
    }

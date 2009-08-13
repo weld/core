@@ -49,6 +49,8 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
       initBindings();
       initType();
       initTypes();
+      initStereotypes();
+      initPolicy();
    }
    
    @Override

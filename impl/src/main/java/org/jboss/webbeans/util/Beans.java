@@ -301,30 +301,39 @@ public class Beans
          Set<T> enabledBeans = new HashSet<T>();
          for (T bean : beans)
          {
-            if (bean.isPolicy())
-            {
-               if (enabledPolicyClasses.contains(bean.getBeanClass()))
-               {
-                  enabledBeans.add(bean);
-               }
-               else
-               {
-                  for (Class<? extends Annotation> stereotype : bean.getStereotypes())
-                  {
-                     if (enabledPolicySterotypes.contains(stereotype))
-                     {
-                        enabledBeans.add(bean);
-                     }
-                  }
-               }
-            }
-            else
+            if (isBeanEnabled(bean, enabledPolicyClasses, enabledPolicySterotypes))
             {
                enabledBeans.add(bean);
             }
          }
          return enabledBeans;
       }
+   }
+   
+   public static boolean isBeanEnabled(Bean<?> bean, Collection<Class<?>> enabledPolicyClasses, Collection<Class<? extends Annotation>> enabledPolicySterotypes)
+   {
+      if (bean.isPolicy())
+      {
+         if (enabledPolicyClasses.contains(bean.getBeanClass()))
+         {
+            return true;
+         }
+         else
+         {
+            for (Class<? extends Annotation> stereotype : bean.getStereotypes())
+            {
+               if (enabledPolicySterotypes.contains(stereotype))
+               {
+                  return true;
+               }
+            }
+         }
+      }
+      else
+      {
+         return true;
+      }
+      return false;
    }
    
    public static boolean isTypePresent(Bean<?> bean, Type type)

@@ -115,7 +115,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
-      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager);
       if (isSpecializing())
       {
          preSpecialize(environment);
@@ -126,11 +125,15 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       initPrimitive();
       log.trace("Building Web Bean bean metadata for #0", getType());
       initName();
-      initPolicy();
       initScopeType();
       initSerializable();
       initProxyable();
       checkDelegateInjectionPoints();
+   }
+   
+   protected void initStereotypes()
+   {
+      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager);
    }
 
    protected void checkDelegateInjectionPoints()

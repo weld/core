@@ -97,6 +97,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
          }
          
       };
+      initStereotypes();
+      initPolicy();
    }
 
    /**

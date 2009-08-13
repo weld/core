@@ -69,6 +69,8 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       initTypes();
       initBindings();
       this.id = createId("ProducerField-" + declaringBean.getType().getName() + "-"+ field.getName());
+      initStereotypes();
+      initPolicy();
    }
    
    @Override

@@ -613,6 +613,11 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       return Collections.unmodifiableCollection(enabledPolicyStereotypes);
    }
+   
+   public boolean isBeanEnabled(Bean<?> bean)
+   {
+      return Beans.isBeanEnabled(bean, getEnabledPolicyClasses(), getEnabledPolicyStereotypes());   
+   }
 
    /**
     * @return the enabledDecoratorClasses
