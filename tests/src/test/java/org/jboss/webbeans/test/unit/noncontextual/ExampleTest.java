@@ -3,8 +3,10 @@ package org.jboss.webbeans.test.unit.noncontextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
+import org.jboss.metadata.validation.ValidationException;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.Assert;
@@ -26,6 +28,25 @@ public class ExampleTest extends AbstractWebBeansTest
       // preDestroy doesn't cause any dis-injection
       Assert.assertNotNull(external.bean);      
    }
+   
+   @Test
+   public void validateNonContextual() throws Exception
+   {
+      NonContextual<External> nonContextual = new NonContextual<External>(getCurrentManager(), External.class);
+
+      for (InjectionPoint point : nonContextual.it.getInjectionPoints())
+      {
+         try
+         {
+            getCurrentManager().validate(point);
+         }
+         catch(ValidationException e)
+         {
+            Assert.fail("Should have been valid");
+         }
+      }
+   }
+   
    
    public class NonContextual<T> {
 

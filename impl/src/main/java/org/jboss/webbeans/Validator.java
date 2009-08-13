@@ -141,7 +141,11 @@ public class Validator implements Service
       {
          throw new DefinitionException("The injection point " + ij + " is annotated with @New which cannot be combined with other binding types");
       }
-      if (!Dependent.class.equals(ij.getBean().getScopeType()) && ij.getType().equals(InjectionPoint.class))
+      if (ij.getType().equals(InjectionPoint.class) && ij.getBean() == null)
+      {
+         throw new DefinitionException("Cannot inject an Injection point into a class which isn't a bean " + ij);
+      }
+      if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(ij.getBean().getScopeType()))
       {
          throw new DefinitionException("Cannot inject an InjectionPoint into a non @Dependent scoped bean " + ij); 
       }
@@ -186,7 +190,7 @@ public class Validator implements Service
       {
          throw new NullableDependencyException("The injection point " + ij + " has nullable dependencies");
       }
-      if (Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean))
+      if (ij.getBean() != null && Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean))
       {
          validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
       }
