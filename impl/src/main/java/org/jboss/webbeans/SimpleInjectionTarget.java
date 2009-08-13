@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
@@ -73,6 +74,10 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       for (FieldInjectionPoint<?, ?> injectionPoint : injectableFields)
       {
          injectionPoint.inject(instance, beanManager, ctx);
+      }
+      for (MethodInjectionPoint<?, ?> injectionPoint : initializerMethods)
+      {
+         injectionPoint.invoke(instance, beanManager, ctx, CreationException.class);
       }
    }
 
