@@ -56,19 +56,4 @@ public interface EjbServices extends Service
     */
    public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor);
    
-   /**
-    * Resolve a remote EJB reference. At least one of the parameters will not be
-    * null.
-    * 
-    * @param jndiName the JNDI name
-    * @param mappedName the mapped name
-    * @param ejbLink the EJB link name
-    * @return the remote EJB reference
-    * @throws IllegalStateException
-    *            if no EJBs can be resolved for injection
-    * @throws IllegalArgumentException
-    *            if jndiName, mappedName and ejbLink are null
-    */
-   public Object resolveRemoteEjb(String jndiName, String mappedName, String ejbLink);
-   
 }
