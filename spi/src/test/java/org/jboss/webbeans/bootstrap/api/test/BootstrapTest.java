@@ -5,19 +5,17 @@ import org.jboss.webbeans.bootstrap.api.helpers.AbstractBootstrap;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.messaging.spi.JmsServices;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
-import org.jboss.webbeans.ws.spi.WebServices;
 import org.testng.annotations.Test;
 
 public class BootstrapTest
 {
    
    @Test(expectedExceptions=IllegalStateException.class)
-   public void testMissingWBDiscovery()
+   public void testMissingDeployment()
    {
       AbstractBootstrap bootstrap = new MockBootstrap();
       bootstrap.setEnvironment(Environments.SE);
@@ -37,8 +35,6 @@ public class BootstrapTest
       bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
-      bootstrap.getServices().add(WebServices.class, new MockWebServices());
-      bootstrap.getServices().add(JmsServices.class, new MockJmsServices());
       bootstrap.startContainer();
    }
    
@@ -53,43 +49,8 @@ public class BootstrapTest
       bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
-      bootstrap.getServices().add(WebServices.class, new MockWebServices());
-      bootstrap.getServices().add(JmsServices.class, new MockJmsServices());
       bootstrap.startContainer();
    }
-   
-   @Test(expectedExceptions=IllegalStateException.class)
-   public void testMissingWebServices()
-   {
-      AbstractBootstrap bootstrap = new MockBootstrap();
-      bootstrap.setEnvironment(Environments.EE);
-      bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
-      bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
-      bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
-      bootstrap.getServices().add(Deployment.class, new MockDeployment());
-      bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
-      bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
-      bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
-      bootstrap.getServices().add(JmsServices.class, new MockJmsServices());
-      bootstrap.startContainer();
-   }
-   
-   @Test(expectedExceptions=IllegalStateException.class)
-   public void testMissingJmsServices()
-   {
-      AbstractBootstrap bootstrap = new MockBootstrap();
-      bootstrap.setEnvironment(Environments.EE);
-      bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
-      bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
-      bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
-      bootstrap.getServices().add(Deployment.class, new MockDeployment());
-      bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
-      bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
-      bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
-      bootstrap.getServices().add(WebServices.class, new MockWebServices());
-      bootstrap.startContainer();
-   }
-   
    
    @Test
    public void testEEEnv()
@@ -103,8 +64,6 @@ public class BootstrapTest
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
-      bootstrap.getServices().add(WebServices.class, new MockWebServices());
-      bootstrap.getServices().add(JmsServices.class, new MockJmsServices());
       bootstrap.startContainer();
    }
    

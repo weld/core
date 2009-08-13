@@ -58,7 +58,6 @@ import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.messaging.spi.JmsServices;
 import org.jboss.webbeans.metadata.TypeStore;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
@@ -71,7 +70,6 @@ import org.jboss.webbeans.servlet.HttpSessionManager;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.jboss.webbeans.util.serviceProvider.ServiceLoader;
-import org.jboss.webbeans.ws.spi.WebServices;
 import org.jboss.webbeans.xml.BeansXmlParser;
 
 /**
@@ -179,10 +177,6 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          {
             log.info("EJB services not available. Session beans will be simple beans, CDI-style injection into non-contextual EJBs, injection of remote EJBs and injection of @EJB in simple beans will not be available");
          }
-         if (!getServices().contains(JmsServices.class))
-         {
-            log.info("JMS services not available. JMS resources will not be available.");
-         }
          if (!getServices().contains(JpaServices.class))
          {
             log.info("JPA services not available. Injection of @PersistenceContext will not occur. Entity beans will be discovered as simple beans.");
@@ -190,10 +184,6 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          if (!getServices().contains(ResourceServices.class))
          {
             log.info("@Resource injection not available.");
-         }
-         if (!getServices().contains(WebServices.class))
-         {
-            log.info("WebService reference injection not available.");
          }
          addImplementationServices();
          createContexts();

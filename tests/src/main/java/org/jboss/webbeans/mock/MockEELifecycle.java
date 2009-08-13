@@ -18,11 +18,9 @@ package org.jboss.webbeans.mock;
 
 import org.jboss.webbeans.bootstrap.api.Environments;
 import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.messaging.spi.JmsServices;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
-import org.jboss.webbeans.ws.spi.WebServices;
 
 public class MockEELifecycle extends MockServletLifecycle
 {
@@ -36,8 +34,6 @@ public class MockEELifecycle extends MockServletLifecycle
       getBootstrap().getServices().add(EjbServices.class, new MockEjBServices());
       getBootstrap().getServices().add(JpaServices.class, new MockJpaServices(getDeployment()));
       getBootstrap().getServices().add(ResourceServices.class, new MockResourceServices());
-      getBootstrap().getServices().add(WebServices.class, new MockWebServices());
-      getBootstrap().getServices().add(JmsServices.class, new MockJmsServices());
       getBootstrap().setEnvironment(Environments.EE);
    }
    
