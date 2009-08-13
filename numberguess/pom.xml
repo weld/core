@@ -61,8 +61,8 @@
       </dependency>-->
       
       <dependency>
-         <groupId>javax.el</groupId>
-         <artifactId>el-ri</artifactId>
+         <groupId>org.glassfish.web</groupId>
+         <artifactId>el-impl</artifactId>
          <exclusions>
             <exclusion>
                <groupId>javax.el</groupId>
