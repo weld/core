@@ -20,6 +20,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import org.jboss.webbeans.bean.AbstractClassBean;
+
 /**
  * Something that is resovable by the resolver. A resolvable is defined by it's
  * bindings and type closure
@@ -78,5 +80,11 @@ public interface Resolvable
     * @return the java class
     */
    public Class<?> getJavaClass();
+   
+   /**
+    * Get the declaring the injection point, or null if there is none
+    * @return
+    */
+   public AbstractClassBean<?> getDeclaringBean();
 
 }

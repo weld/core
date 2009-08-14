@@ -20,6 +20,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import org.jboss.webbeans.bean.AbstractClassBean;
+
 public abstract class ForwardingResolvable implements Resolvable
 {
    
@@ -53,6 +55,11 @@ public abstract class ForwardingResolvable implements Resolvable
    public Class<?> getJavaClass()
    {
       return delegate().getJavaClass();
+   }
+   
+   public AbstractClassBean<?> getDeclaringBean()
+   {
+      return delegate().getDeclaringBean();
    }
 
    @Override

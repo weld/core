@@ -31,6 +31,7 @@ import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.WBAnnotated;
@@ -195,6 +196,11 @@ public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> imple
    public Set<Type> getTypeClosure()
    {
       return typeClosure;
+   }
+   
+   public AbstractClassBean<?> getDeclaringBean()
+   {
+      return null;
    }
 
    @Override

@@ -19,7 +19,6 @@ package org.jboss.webbeans.event;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -112,10 +111,10 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
                {
                   throw new DefinitionException("Cannot use a type variable " + type + " in an parameterized type " + toString());
                }
-               else if (type instanceof WildcardType)
-               {
-                  throw new DefinitionException("Cannot use a wildcard variable " + type + " in an parameterized type " + toString());
-               }
+//               else if (type instanceof WildcardType)
+//               {
+//                  throw new DefinitionException("Cannot use a wildcard variable " + type + " in an parameterized type " + toString());
+//               }
             }
          }
       }

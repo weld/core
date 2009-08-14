@@ -163,7 +163,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     */
    protected void initDisposalMethod(BeanDeployerEnvironment environment)
    {
-      Set<DisposalMethodBean<T>> disposalBeans = environment.resolveDisposalBeans(getAnnotatedItem());
+      Set<DisposalMethodBean<?>> disposalBeans = environment.resolveDisposalBeans(getTypes(), getBindings(), getDeclaringBean());
 
       if (disposalBeans.size() == 1)
       {

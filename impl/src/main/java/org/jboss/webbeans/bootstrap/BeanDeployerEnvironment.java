@@ -16,6 +16,8 @@
  */
 package org.jboss.webbeans.bootstrap;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,39 +39,35 @@ import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.standard.AbstractStandardBean;
 import org.jboss.webbeans.bean.standard.ExtensionBean;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
-import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.resolution.ResolvableFactory;
-import org.jboss.webbeans.resolution.TypeSafeBeanResolver;
-import org.jboss.webbeans.resolution.TypeSafeResolver;
+import org.jboss.webbeans.resolution.TypeSafeDisposerResolver;
 
 public class BeanDeployerEnvironment
 {
 
    private final Map<WBClass<?>, AbstractClassBean<?>> classBeanMap;
    private final Map<WBMethod<?, ?>, ProducerMethodBean<?>> producerMethodBeanMap;
-   private final Map<WBMethod<?, ?>, DisposalMethodBean<?>> disposalMethodBeanMap;
    private final Set<RIBean<?>> beans;
    private final Set<ObserverMethod<?, ?>> observers;
    private final List<DisposalMethodBean<?>> allDisposalBeans;
    private final Set<DisposalMethodBean<?>> resolvedDisposalBeans;
    private final Set<DecoratorBean<?>> decorators;
    private final EjbDescriptorCache ejbDescriptors;
-   private final TypeSafeResolver<DisposalMethodBean<?>> disposalMethodResolver;
+   private final TypeSafeDisposerResolver disposalMethodResolver;
 
    public BeanDeployerEnvironment(EjbDescriptorCache ejbDescriptors, BeanManagerImpl manager)
    {
       this.classBeanMap = new HashMap<WBClass<?>, AbstractClassBean<?>>();
       this.producerMethodBeanMap = new HashMap<WBMethod<?, ?>, ProducerMethodBean<?>>();
-      this.disposalMethodBeanMap = new HashMap<WBMethod<?, ?>, DisposalMethodBean<?>>();
       this.allDisposalBeans = new ArrayList<DisposalMethodBean<?>>();
       this.resolvedDisposalBeans = new HashSet<DisposalMethodBean<?>>();
       this.beans = new HashSet<RIBean<?>>();
       this.decorators = new HashSet<DecoratorBean<?>>();
       this.observers = new HashSet<ObserverMethod<?, ?>>();
       this.ejbDescriptors = ejbDescriptors;
-      this.disposalMethodResolver = new TypeSafeBeanResolver<DisposalMethodBean<?>>(manager, allDisposalBeans);
+      this.disposalMethodResolver = new TypeSafeDisposerResolver(manager, allDisposalBeans);
    }
 
    public ProducerMethodBean<?> getProducerMethod(WBMethod<?, ?> method)
@@ -81,21 +79,6 @@ public class BeanDeployerEnvironment
       else
       {
          ProducerMethodBean<?> bean = producerMethodBeanMap.get(method);
-         bean.initialize(this);
-         return bean;
-      }
-   }
-
-   
-   public DisposalMethodBean<?> getDisposalMethod(WBMethod<?, ?> method)
-   {
-      if (!producerMethodBeanMap.containsKey(method))
-      {
-         return null;
-      }
-      else
-      {
-         DisposalMethodBean<?> bean = disposalMethodBeanMap.get(method);
          bean.initialize(this);
          return bean;
       }
@@ -153,7 +136,6 @@ public class BeanDeployerEnvironment
    public void addBean(DisposalMethodBean<?> bean)
    {
       allDisposalBeans.add(bean);
-      disposalMethodBeanMap.put(bean.getAnnotatedItem(), bean);
    }
    
    public void addObserver(ObserverMethod<?, ?> observer)
@@ -198,17 +180,11 @@ public class BeanDeployerEnvironment
     * @param bindings The binding types to match
     * @return The set of matching disposal methods
     */
-   public <T> Set<DisposalMethodBean<T>> resolveDisposalBeans(WBAnnotated<T, ?> annotatedItem)
+   public Set<DisposalMethodBean<?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> bindings, AbstractClassBean<?> declaringBean)
    {
-      // Correct?
-      Set<DisposalMethodBean<?>> beans = disposalMethodResolver.resolve(ResolvableFactory.of(annotatedItem));
-      Set<DisposalMethodBean<T>> disposalBeans = new HashSet<DisposalMethodBean<T>>();
-      for (DisposalMethodBean<?> bean : beans)
-      {
-         disposalBeans.add((DisposalMethodBean<T>) bean);
-      }
-      resolvedDisposalBeans.addAll(disposalBeans);
-      return Collections.unmodifiableSet(disposalBeans);
+      Set<DisposalMethodBean<?>> beans = disposalMethodResolver.resolve(ResolvableFactory.of(types, bindings, declaringBean));
+      resolvedDisposalBeans.addAll(beans);
+      return Collections.unmodifiableSet(beans);
    }
 
 }

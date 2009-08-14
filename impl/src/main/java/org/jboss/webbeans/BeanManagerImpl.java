@@ -544,7 +544,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       bindingAnnotations.add(new AnyLiteral());
       checkEventType(clazz);
       Set<ObserverMethod<?, T>> observers = new HashSet<ObserverMethod<?, T>>();
-      Set<ObserverMethod<?,?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(clazz).getFlattenedTypes(),  bindingAnnotations));
+      Set<ObserverMethod<?,?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(clazz).getFlattenedTypes(),  bindingAnnotations, null));
       for (ObserverMethod<?,?> observer : eventObservers)
       {
          observers.add((ObserverMethod<?, T>) observer);
@@ -785,7 +785,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 =    */
    public void addObserver(ObserverMethod<?, ?> observer)
    {
-      checkEventType(observer.getObservedType());
+      //checkEventType(observer.getObservedType());
       observers.add(observer);
       log.trace("Added observer " + observer);
       for (BeanManagerImpl childActivity : childActivities)
@@ -993,14 +993,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       checkResolveDecoratorsArguments(types, Arrays.asList(bindings));
       // TODO Fix this cast and make the resolver return a list
-      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(ResolvableFactory.of(types, bindings)));
+      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(ResolvableFactory.of(types, null, bindings)));
    }
    
    public List<Decorator<?>> resolveDecorators(Set<Type> types, Set<Annotation> bindings)
    {
       checkResolveDecoratorsArguments(types, bindings);
       // TODO Fix this cast and make the resolver return a list
-      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(ResolvableFactory.of(types, bindings)));
+      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(ResolvableFactory.of(types, bindings, null)));
    }
 
    private void checkResolveDecoratorsArguments(Set<Type> types, Collection<Annotation> bindings)

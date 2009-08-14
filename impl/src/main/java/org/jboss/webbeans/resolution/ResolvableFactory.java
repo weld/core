@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.util.Reflections;
@@ -41,18 +42,18 @@ public class ResolvableFactory
       {
          Set<Type> types = new HashSet<Type>();
          types.add(element.getBaseType());
-         return new ResolvableImpl(element.getBindings(), types);
+         return new ResolvableImpl(element.getBindings(), types, null);
       }
    }
 
-   public static Resolvable of(Set<Type> typeClosure, Set<Annotation> bindings)
+   public static Resolvable of(Set<Type> typeClosure, Set<Annotation> bindings, AbstractClassBean<?> declaringBean)
    {
-      return new ResolvableImpl(bindings, typeClosure);
+      return new ResolvableImpl(bindings, typeClosure, declaringBean);
    }
 
-   public static Resolvable of(Set<Type> typeClosure, Annotation... bindings)
+   public static Resolvable of(Set<Type> typeClosure, AbstractClassBean<?> declaringBean, Annotation... bindings)
    {
-      return new ResolvableImpl(new HashSet<Annotation>(Arrays.asList(bindings)), typeClosure);
+      return new ResolvableImpl(new HashSet<Annotation>(Arrays.asList(bindings)), typeClosure, declaringBean);
    }
 
    private ResolvableFactory() {}
@@ -63,8 +64,9 @@ public class ResolvableFactory
       private final Set<Annotation> bindings;
       private final Map<Class<? extends Annotation>, Annotation> annotations;
       private final Set<Type> typeClosure;
+      private final AbstractClassBean<?> declaringBean;
 
-      public ResolvableImpl(Set<Annotation> bindings, Set<Type> typeClosure)
+      public ResolvableImpl(Set<Annotation> bindings, Set<Type> typeClosure, AbstractClassBean<?> declaringBean)
       {
          this.bindings = bindings;
          if (bindings.size() == 0)
@@ -77,6 +79,7 @@ public class ResolvableFactory
          {
             annotations.put(annotation.annotationType(), annotation);
          }
+         this.declaringBean = declaringBean;
       }
 
       public Set<Annotation> getBindings()
@@ -108,6 +111,11 @@ public class ResolvableFactory
       {
          // No underlying java class
          return null;
+      }
+      
+      public AbstractClassBean<?> getDeclaringBean()
+      {
+         return declaringBean;
       }
 
       @Override
