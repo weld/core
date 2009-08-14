@@ -10,9 +10,9 @@ public class ListInstance
    @Any
    Instance<List> instance;
    
-   public List get()
+   public Instance<List> get()
    {
-      return instance.get();
+      return instance;
    }
 
 }

@@ -16,12 +16,6 @@ public class ParameterizedProducer
    }
 
    @Produces
-   public List createList()
-   {
-      return Arrays.asList(1, 2, 3);
-   }
-
-   @Produces
    public ArrayList<Integer> createIntegerList()
    {
       List<Integer> list = Arrays.asList(1, 2, 3, 4);

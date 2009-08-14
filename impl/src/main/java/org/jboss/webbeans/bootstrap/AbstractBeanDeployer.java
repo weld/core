@@ -198,19 +198,19 @@ public class AbstractBeanDeployer
     */
    protected boolean isTypeManagedBeanOrDecorator(WBClass<?> clazz)
    {
-      Class<?> rawType = clazz.getJavaClass();
+      Class<?> javaClass = clazz.getJavaClass();
       EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
       JsfApiAbstraction jsfApiAbstraction = manager.getServices().get(JsfApiAbstraction.class);
       ServletApiAbstraction servletApiAbstraction = manager.getServices().get(ServletApiAbstraction.class);
       return !clazz.isNonStaticMemberClass() &&
-             !Reflections.isParameterizedType(rawType) && 
-             !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(rawType) && 
-             !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(rawType) && 
-             !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(rawType) && 
-             !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(rawType) && 
-             !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(rawType) && 
-             !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(rawType) && 
-             !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(rawType) && 
+             !Reflections.isParamerterizedTypeWithWildcard(javaClass) && 
+             !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(javaClass) && 
+             !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(javaClass) && 
+             !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(javaClass) && 
+             !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(javaClass) && 
+             !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(javaClass) && 
+             !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(javaClass) && 
+             !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(javaClass) && 
              hasSimpleWebBeanConstructor(clazz);
    }
    

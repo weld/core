@@ -36,17 +36,6 @@ public class ParameterizedProducerTest extends AbstractWebBeansTest
       assert item.getSetterInjection().size() == 2;
 
    }
-
-   @Test
-   public void testNoParameterizedCollectionInjection()
-   {
-
-      NoParameterizedCollectionInjection item = getCurrentManager().getInstanceByType(NoParameterizedCollectionInjection.class);
-      assert item.getFieldInjection().size() == 3;
-      assert item.getValue().size() == 3;
-      assert item.getSetterInjection().size() == 3;
-
-   }
    
    @Test
    public void testIntegerCollectionInjection()
@@ -65,7 +54,7 @@ public class ParameterizedProducerTest extends AbstractWebBeansTest
    public void testInstanceList()
    {
         ListInstance listInstance = getCurrentManager().getInstanceByType(ListInstance.class);
-        assert listInstance.get().size() == 3;
+        assert listInstance.get().isAmbiguous();
    }
    
    @Test

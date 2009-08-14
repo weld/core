@@ -30,6 +30,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,6 +47,8 @@ import org.jboss.webbeans.util.reflection.ParameterizedTypeImpl;
  */
 public class Reflections
 {
+   
+   private static final Type[] EMPTY_TYPES = {};
    
    public static class HierarchyDiscovery
    {
@@ -82,19 +85,33 @@ public class Reflections
       private void discoverTypes(Type type)
       {
          if (type != null)
-         {
-            add(type);
+         {            
             if (type instanceof Class)
             {
-               discoverFromClass((Class<?>) type);
-            }
-            else if (type instanceof ParameterizedType)
-            {
-               Type rawType = ((ParameterizedType) type).getRawType();
-               if (rawType instanceof Class)
+               Class<?> clazz = (Class<?>) type;
+               if (clazz.getTypeParameters().length > 0)
                {
-                  discoverFromClass((Class<?>) rawType);
+                  TypeVariable[] actualTypeParameters = clazz.getTypeParameters();
+                  ParameterizedType parameterizedType = new ParameterizedTypeImpl(clazz, actualTypeParameters, clazz.getDeclaringClass());
+                  add(parameterizedType);
                }
+               else
+               {
+                  add(clazz);
+               }
+               discoverFromClass(clazz);
+            }
+            else 
+            {
+               if (type instanceof ParameterizedType)
+               {
+                  Type rawType = ((ParameterizedType) type).getRawType();
+                  if (rawType instanceof Class)
+                  {
+                     discoverFromClass((Class<?>) rawType);
+                  }
+               }
+               add(type);
             }
          }
       }
@@ -390,6 +407,30 @@ public class Reflections
    {
       return type.getTypeParameters().length > 0;
    }
+   
+   public static boolean isParamerterizedTypeWithWildcard(Class<?> type)
+   {
+      if (isParameterizedType(type))
+      {
+         return containsWildcards(type.getTypeParameters());
+      }
+      else
+      {
+         return false;
+      }
+   }
+   
+   public static boolean containsWildcards(Type[] types)
+   {
+      for (Type type : types)
+      {
+         if (type instanceof WildcardType)
+         {
+            return true;
+         }
+      }
+      return false;
+   }
 
    /**
     * Invokes a method and wraps exceptions
@@ -579,10 +620,40 @@ public class Reflections
     */
    public static boolean isAssignableFrom(Class<?> rawType1, Type[] actualTypeArguments1, Class<?> rawType2, Type[] actualTypeArguments2)
    {
-      return Types.boxedClass(rawType1).isAssignableFrom(Types.boxedClass(rawType2)) && Arrays.equals(actualTypeArguments1, actualTypeArguments2);
+      return Types.boxedClass(rawType1).isAssignableFrom(Types.boxedClass(rawType2)) && isAssignableFrom(actualTypeArguments1, actualTypeArguments2);
+   }
+   
+   public static boolean isAssignableFrom(Type[] actualTypeArguments1, Type[] actualTypeArguments2)
+   {
+      for (int i = 0; i < actualTypeArguments1.length; i++)
+      {
+         Type type1 = actualTypeArguments1[i];
+         Type type2 = Object.class;
+         if (actualTypeArguments2.length > i)
+         {
+            type2 = actualTypeArguments2[i];
+         }
+         if (!isAssignableFrom(type1, type2))
+         {
+            return false;
+         }
+      }
+      return true;
    }
    
    public static boolean isAssignableFrom(Type type1, Set<? extends Type> types2)
+   {
+      for (Type type2 : types2)
+      {
+         if (isAssignableFrom(type1, type2))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   public static boolean isAssignableFrom(Type type1, Type[] types2)
    {
       for (Type type2 : types2)
       {
@@ -604,31 +675,74 @@ public class Reflections
             return true;
          }
       }
-      else if (type1 instanceof ParameterizedType)
+      if (type1 instanceof ParameterizedType)
       {
-         ParameterizedType parameterizedType = (ParameterizedType) type1;
-         if (parameterizedType.getRawType() instanceof Class)
+         ParameterizedType parameterizedType1 = (ParameterizedType) type1;
+         if (parameterizedType1.getRawType() instanceof Class)
          {
-            if (isAssignableFrom((Class<?>) parameterizedType.getRawType(), parameterizedType.getActualTypeArguments(), type2))
+            if (isAssignableFrom((Class<?>) parameterizedType1.getRawType(), parameterizedType1.getActualTypeArguments(), type2))
             {
                return true;
             }
          }
       }
-      return false;
-   }
-   
-   public static boolean isAssignableFrom(Class<?> rawType1, Type[] actualTypeArguments1, Type type2)
-   {
-      if (type2 instanceof Class)
+      if (type1 instanceof WildcardType)
       {
-         Class<?> clazz = (Class<?>) type2;
-         if (isAssignableFrom(rawType1, actualTypeArguments1, clazz, new Type[0]))
+         WildcardType wildcardType = (WildcardType) type1;
+         if (isTypeBounded(type2, wildcardType.getLowerBounds(), wildcardType.getUpperBounds()))
          {
             return true;
          }
       }
-      else if (type2 instanceof ParameterizedType)
+      if (type2 instanceof WildcardType)
+      {
+         WildcardType wildcardType = (WildcardType) type2;
+         if (isTypeBounded(type1, wildcardType.getUpperBounds(), wildcardType.getLowerBounds()))
+         {
+            return true;
+         }
+      }
+      if (type1 instanceof TypeVariable<?>)
+      {
+         TypeVariable<?> typeVariable = (TypeVariable<?>) type1;
+         if (isTypeBounded(type2, EMPTY_TYPES, typeVariable.getBounds()))
+         {
+            return true;
+         }
+      }
+      if (type2 instanceof TypeVariable<?>)
+      {
+         TypeVariable<?> typeVariable = (TypeVariable<?>) type2;
+         if (isTypeBounded(type1, typeVariable.getBounds(), EMPTY_TYPES))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   public static boolean isTypeBounded(Type type, Type[] lowerBounds, Type[] upperBounds)
+   {
+      if (lowerBounds.length > 0)
+      {
+         if (!isAssignableFrom(type, lowerBounds))
+         {
+            return false;
+         }
+      }
+      if (upperBounds.length > 0)
+      {
+         if (!isAssignableFrom(upperBounds, type))
+         {
+            return false;
+         }
+      }
+      return true;
+   }
+   
+   public static boolean isAssignableFrom(Class<?> rawType1, Type[] actualTypeArguments1, Type type2)
+   {
+      if (type2 instanceof ParameterizedType)
       {
          ParameterizedType parameterizedType = (ParameterizedType) type2;
          if (parameterizedType.getRawType() instanceof Class)
@@ -637,6 +751,14 @@ public class Reflections
             {
                return true;
             }
+         }
+      }
+      else if (type2 instanceof Class)
+      {
+         Class<?> clazz = (Class<?>) type2;
+         if (isAssignableFrom(rawType1, actualTypeArguments1, clazz, new Type[0]))
+         {
+            return true;
          }
       }
       return false;
@@ -671,6 +793,18 @@ public class Reflections
     * @return
     */
    public static boolean isAssignableFrom(Set<Type> types1, Type type2)
+   {
+      for (Type type : types1)
+      {
+         if (isAssignableFrom(type, type2))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   public static boolean isAssignableFrom(Type[] types1, Type type2)
    {
       for (Type type : types1)
       {

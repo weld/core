@@ -669,17 +669,17 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             throw new IllegalArgumentException("Not a binding type " + annotation);
          }
       }
-      for (Type type : element.getActualTypeArguments())
-      {
-         if (type instanceof WildcardType)
-         {
-            throw new IllegalArgumentException("Cannot resolve a type parameterized with a wildcard " + element);
-         }
-         if (type instanceof TypeVariable<?>)
-         {
-            throw new IllegalArgumentException("Cannot resolve a type parameterized with a type parameter " + element);
-         }
-      }
+//      for (Type type : element.getActualTypeArguments())
+//      {
+//         if (type instanceof WildcardType)
+//         {
+//            throw new IllegalArgumentException("Cannot resolve a type parameterized with a wildcard " + element);
+//         }
+//         if (type instanceof TypeVariable<?>)
+//         {
+//            throw new IllegalArgumentException("Cannot resolve a type parameterized with a type parameter " + element);
+//         }
+//      }
       if (bindings != null && bindings.length > element.getMetaAnnotations(BindingType.class).size())
       {
          throw new IllegalArgumentException("Duplicate bindings (" + Arrays.asList(bindings) + ") type passed " + element.toString());

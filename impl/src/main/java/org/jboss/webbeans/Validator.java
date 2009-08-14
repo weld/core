@@ -158,14 +158,14 @@ public class Validator implements Service
          ParameterizedType parameterizedType = (ParameterizedType) ij.getType();
          for (Type type : parameterizedType.getActualTypeArguments())
          {
-            if (type instanceof TypeVariable<?>)
-            {
-               throw new DefinitionException("Injection point cannot have a type variable type parameter " + ij);
-            }
-            if (type instanceof WildcardType)
-            {
-               throw new DefinitionException("Injection point cannot have a wildcard type parameter " + ij);
-            }
+//            if (type instanceof TypeVariable<?>)
+//            {
+//               throw new DefinitionException("Injection point cannot have a type variable type parameter " + ij);
+//            }
+//            if (type instanceof WildcardType)
+//            {
+//               throw new DefinitionException("Injection point cannot have a wildcard type parameter " + ij);
+//            }
          }
       }
       checkFacadeInjectionPoint(ij, Instance.class);
@@ -179,7 +179,7 @@ public class Validator implements Service
       }
       if (resolvedBeans.size() > 1)
       {
-         throw new DeploymentException("The injection point " + ij + " with binding types " + Names.annotationsToString(ij.getBindings()) + " in " + ij.getBean() + " has ambiguous dependencies");
+         throw new DeploymentException("The injection point " + ij + " with binding types " + Names.annotationsToString(ij.getBindings()) + " in " + ij.getBean() + " has ambiguous dependencies " + resolvedBeans);
       }
       Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
       if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(ij.getType()))
