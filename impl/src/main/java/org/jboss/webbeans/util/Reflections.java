@@ -79,7 +79,12 @@ public class Reflections
       
       public Type getResolvedType()
       {
-         return resolveType(type, type);
+         if (type instanceof Class)
+         {
+            Class<?> clazz = (Class<?>) type;
+            return resolveType(clazz);
+         }
+         return type;
       }
       
       private void discoverTypes(Type type)
@@ -89,16 +94,7 @@ public class Reflections
             if (type instanceof Class)
             {
                Class<?> clazz = (Class<?>) type;
-               if (clazz.getTypeParameters().length > 0)
-               {
-                  TypeVariable[] actualTypeParameters = clazz.getTypeParameters();
-                  ParameterizedType parameterizedType = new ParameterizedTypeImpl(clazz, actualTypeParameters, clazz.getDeclaringClass());
-                  add(parameterizedType);
-               }
-               else
-               {
-                  add(clazz);
-               }
+               add(resolveType(clazz));
                discoverFromClass(clazz);
             }
             else 
@@ -113,6 +109,20 @@ public class Reflections
                }
                add(type);
             }
+         }
+      }
+      
+      private Type resolveType(Class<?> clazz)
+      {
+         if (clazz.getTypeParameters().length > 0)
+         {
+            TypeVariable<?>[] actualTypeParameters = clazz.getTypeParameters();
+            ParameterizedType parameterizedType = new ParameterizedTypeImpl(clazz, actualTypeParameters, clazz.getDeclaringClass());
+            return parameterizedType;
+         }
+         else
+         {
+            return clazz;
          }
       }
       
@@ -376,13 +386,14 @@ public class Reflections
     */
    public static Type[] getActualTypeArguments(Class<?> clazz)
    {
-      if (clazz.getGenericSuperclass() instanceof ParameterizedType)
+      Type type = new HierarchyDiscovery(clazz).getResolvedType();
+      if (type instanceof ParameterizedType)
       {
-         return ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments();
+         return ((ParameterizedType) type).getActualTypeArguments();
       }
       else
       {
-         return new Type[0];
+         return EMPTY_TYPES;
       }
    }
 
@@ -670,7 +681,7 @@ public class Reflections
       if (type1 instanceof Class)
       {
          Class<?> clazz = (Class<?>) type1;
-         if (isAssignableFrom(clazz, new Type[0], type2))
+         if (isAssignableFrom(clazz, EMPTY_TYPES, type2))
          {
             return true;
          }
@@ -756,7 +767,7 @@ public class Reflections
       else if (type2 instanceof Class)
       {
          Class<?> clazz = (Class<?>) type2;
-         if (isAssignableFrom(rawType1, actualTypeArguments1, clazz, new Type[0]))
+         if (isAssignableFrom(rawType1, actualTypeArguments1, clazz, EMPTY_TYPES))
          {
             return true;
          }

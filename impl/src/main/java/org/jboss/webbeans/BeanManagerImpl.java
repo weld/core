@@ -572,27 +572,28 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private void checkEventType(Type eventType)
    {
       Type[] types;
-      if (eventType instanceof Class)
+      Type resolvedType = new Reflections.HierarchyDiscovery(eventType).getResolvedType();
+      if (resolvedType instanceof Class)
       {
-         types = Reflections.getActualTypeArguments((Class<?>) eventType);
+         types = new Type[0];
       }
-      else if (eventType instanceof ParameterizedType)
+      else if (resolvedType instanceof ParameterizedType)
       {
-         types = ((ParameterizedType) eventType).getActualTypeArguments();
+         types = ((ParameterizedType) resolvedType).getActualTypeArguments();
       }
       else
       {
-         throw new IllegalArgumentException("Event type " + eventType + " isn't a concrete type");
+         throw new IllegalArgumentException("Event type " + resolvedType + " is not allowed");
       }
       for (Type type : types)
       {
          if (type instanceof WildcardType)
          {
-            throw new IllegalArgumentException("Cannot provide an event type parameterized with a wildcard " + eventType);
+            throw new IllegalArgumentException("Cannot provide an event type parameterized with a wildcard " + resolvedType);
          }
          if (type instanceof TypeVariable)
          {
-            throw new IllegalArgumentException("Cannot provide an event type parameterized with a type parameter " + eventType);
+            throw new IllegalArgumentException("Cannot provide an event type parameterized with a type parameter " + resolvedType);
          }
       }
    }
