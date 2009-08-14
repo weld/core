@@ -20,7 +20,8 @@ limitations under the License.
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
    elementFormDefault="qualified"
    targetNamespace="http://seamframework.org/ns/CDI"
-   xmlns:cdi="http://seamframework.org/ns/CDI">
+   xmlns:cdi="http://seamframework.org/ns/CDI"
+   version="1.0">
 
    <xs:element name="beans">
       <xs:complexType>
