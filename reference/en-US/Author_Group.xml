@@ -6,7 +6,7 @@
 		<surname>King</surname>
 		<affiliation>
 			<jobtitle>JSR-299 specification lead</jobtitle>
-			<orgname>Red Hat Middleware LLC</orgname>
+			<orgname>Red Hat Inc.</orgname>
 		</affiliation>
 	</author>
 	<author>
@@ -15,7 +15,7 @@
 		<affiliation>
 			<jobtitle>Web Beans (JSR-299 Reference Implementation) lead
 			</jobtitle>
-			<orgname>Red Hat Middleware LLC</orgname>
+			<orgname>Red Hat Inc.</orgname>
 		</affiliation>
 	</author>
    <author>
@@ -32,7 +32,7 @@
       <surname>Guerrero</surname>
       <contrib>Spanish Translation</contrib>
       <affiliation>
-         <orgname>Red Hat Middleware LLC</orgname>
+         <orgname>Red Hat Inc.</orgname>
       </affiliation>
    </othercredit>
    <othercredit>
@@ -40,7 +40,7 @@
       <surname>Ki,</surname>
       <contrib>Korean Translation</contrib>
       <affiliation>
-         <orgname>Red Hat Middleware LLC</orgname>
+         <orgname>Red Hat Inc.</orgname>
       </affiliation>
    </othercredit>
    <othercredit>
@@ -48,7 +48,7 @@
       <surname>Chuang</surname>
       <contrib>Traditional Chinese Translation</contrib>
       <affiliation>
-         <orgname>Red Hat Middleware LLC</orgname>
+         <orgname>Red Hat Inc.</orgname>
       </affiliation>
    </othercredit>
    <othercredit>
