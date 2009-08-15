@@ -24,15 +24,6 @@ import org.jboss.webbeans.bootstrap.api.Service;
 public interface TransactionServices extends Service
 {
    /**
-    * Possible status conditions for a transaction. This can be used by SPI
-    * providers to keep track for which status an observer is used.
-    */
-   public static enum Status
-   {
-      ALL, SUCCESS, FAILURE
-   }
-
-   /**
     * Registers a synchronization object with the currently executing
     * transaction.
     * 

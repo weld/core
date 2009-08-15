@@ -74,21 +74,21 @@ class TransactionalObserverMethodImpl<X, T> extends ObserverMethodImpl<X, T>
       DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, this);;
 
       Synchronization synchronization = null;
-      if (transactionPhase.equals(transactionPhase.BEFORE_COMPLETION))
+      if (transactionPhase.equals(TransactionPhase.BEFORE_COMPLETION))
       {
          synchronization = new TransactionSynchronizedRunnable(deferredEvent, true);
       }
-      else if (transactionPhase.equals(transactionPhase.AFTER_COMPLETION))
+      else if (transactionPhase.equals(TransactionPhase.AFTER_COMPLETION))
       {
          synchronization = new TransactionSynchronizedRunnable(deferredEvent, false);
       }
-      else if (transactionPhase.equals(transactionPhase.AFTER_SUCCESS))
+      else if (transactionPhase.equals(TransactionPhase.AFTER_SUCCESS))
       {
-         synchronization = new TransactionSynchronizedRunnable(deferredEvent, TransactionServices.Status.SUCCESS);
+         synchronization = new TransactionSynchronizedRunnable(deferredEvent, Status.SUCCESS);
       }
-      else if (transactionPhase.equals(transactionPhase.AFTER_FAILURE))
+      else if (transactionPhase.equals(TransactionPhase.AFTER_FAILURE))
       {
-         synchronization = new TransactionSynchronizedRunnable(deferredEvent, TransactionServices.Status.FAILURE);
+         synchronization = new TransactionSynchronizedRunnable(deferredEvent, Status.FAILURE);
       }
       manager.getServices().get(TransactionServices.class).registerSynchronization(synchronization);
    }
