@@ -1314,7 +1314,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public boolean isBindingType(Class<? extends Annotation> annotationType)
    {
-      throw new UnsupportedOperationException("Not yet implemented");
+      return getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotationType).isValid();
    }
 
    public boolean isInterceptorBindingType(Class<? extends Annotation> annotationType)
@@ -1324,12 +1324,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public boolean isScopeType(Class<? extends Annotation> annotationType)
    {
-      throw new UnsupportedOperationException("Not yet implemented");
+      return getServices().get(MetaAnnotationStore.class).getScopeModel(annotationType).isValid();
    }
 
    public boolean isStereotype(Class<? extends Annotation> annotationType)
    {
-      throw new UnsupportedOperationException("Not yet implemented");
+      return getServices().get(MetaAnnotationStore.class).getStereotype(annotationType).isValid();
    }
 
    public ELResolver getELResolver()
