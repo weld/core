@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bean.standard;
+package org.jboss.webbeans.bean.builtin;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -32,7 +32,7 @@ import org.jboss.webbeans.BeanManagerImpl;
  * @author David Allen
  * 
  */
-public class InjectionPointBean extends AbstractStandardBean<InjectionPoint>
+public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint>
 {
    
    private static final Set<Type> TYPES = new HashSet<Type>(Arrays.asList(new Type[] { InjectionPoint.class }));

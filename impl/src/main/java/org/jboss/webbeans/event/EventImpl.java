@@ -26,7 +26,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.bean.standard.AbstractFacade;
+import org.jboss.webbeans.bean.builtin.AbstractFacade;
 import org.jboss.webbeans.util.Strings;
 
 /**

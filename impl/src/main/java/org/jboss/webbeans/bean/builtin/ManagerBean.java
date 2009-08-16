@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bean.standard;
+package org.jboss.webbeans.bean.builtin;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.webbeans.BeanManagerImpl;
 
-public class ManagerBean extends AbstractStandardBean<BeanManagerImpl>
+public class ManagerBean extends AbstractBuiltInBean<BeanManagerImpl>
 {
    
    private static final Set<Type> TYPES = new HashSet<Type>(Arrays.asList(BeanManagerImpl.class, BeanManager.class));

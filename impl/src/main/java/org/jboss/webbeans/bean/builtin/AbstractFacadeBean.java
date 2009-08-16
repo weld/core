@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bean.standard;
+package org.jboss.webbeans.bean.builtin;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -28,7 +28,7 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 
-public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
+public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
 {
    
    private static final Log log = Logging.getLog(AbstractFacadeBean.class);

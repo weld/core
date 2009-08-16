@@ -34,8 +34,8 @@ import org.jboss.webbeans.bean.NewBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.bean.standard.AbstractStandardBean;
-import org.jboss.webbeans.bean.standard.ExtensionBean;
+import org.jboss.webbeans.bean.builtin.AbstractBuiltInBean;
+import org.jboss.webbeans.bean.builtin.ExtensionBean;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.ObserverMethodImpl;
 import org.jboss.webbeans.introspector.WBClass;
@@ -113,7 +113,7 @@ public class BeanDeployerEnvironment
       beans.add(bean);
    }
    
-   public void addBean(AbstractStandardBean<?> bean)
+   public void addBean(AbstractBuiltInBean<?> bean)
    {
       beans.add(bean);
    }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bean.standard;
+package org.jboss.webbeans.bean.builtin;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -31,7 +31,7 @@ import org.jboss.webbeans.introspector.WBClass;
  * @author pmuir
  *
  */
-public class ExtensionBean extends AbstractStandardBean<Extension>
+public class ExtensionBean extends AbstractBuiltInBean<Extension>
 {
    
    private final WBClass<Extension> clazz;

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bean.standard;
+package org.jboss.webbeans.bean.builtin;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -31,7 +31,7 @@ import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.literal.CurrentLiteral;
 
-public abstract class AbstractStandardBean<T> extends RIBean<T>
+public abstract class AbstractBuiltInBean<T> extends RIBean<T>
 {
    
    private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral(), new AnyLiteral() };
@@ -39,7 +39,7 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
    
    private final String id;
    
-   protected AbstractStandardBean(BeanManagerImpl manager)
+   protected AbstractBuiltInBean(BeanManagerImpl manager)
    {
       super(manager);
       this.id = getClass().getSimpleName();

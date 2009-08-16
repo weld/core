@@ -22,7 +22,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.bean.standard.ExtensionBean;
+import org.jboss.webbeans.bean.builtin.ExtensionBean;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.resources.ClassTransformer;
