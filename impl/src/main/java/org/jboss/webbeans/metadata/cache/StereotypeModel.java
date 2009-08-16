@@ -58,6 +58,8 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    private Set<Annotation> interceptorBindings;
    
    private Set<Annotation> inheritedSterotypes;
+   
+   private Set<Annotation> metaAnnotations;
 
    /**
     * Constructor
@@ -73,6 +75,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       initInterceptorBindings();
       initInheritedStereotypes();
       checkBindings();
+      this.metaAnnotations = getAnnotatedAnnotation().getAnnotations();
    }
 
    /**
@@ -202,7 +205,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
     * @return The Stereotype class
     */
    @Override
-   protected Class<? extends Annotation> getMetaAnnotation()
+   protected Class<? extends Annotation> getMetaAnnotationType()
    {
       return Stereotype.class;
    }
@@ -218,6 +221,14 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    public Set<Annotation> getInheritedSterotypes()
    {
       return inheritedSterotypes;
+   }
+   
+   /**
+    * @return the metaAnnotations
+    */
+   public Set<Annotation> getMetaAnnotations()
+   {
+      return metaAnnotations;
    }
 
 }

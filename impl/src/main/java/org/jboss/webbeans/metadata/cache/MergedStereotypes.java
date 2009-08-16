@@ -36,6 +36,8 @@ public class MergedStereotypes<T, E>
    // Are any of the sterotypes policies
    private boolean policy;
    
+   private Set<Class<? extends Annotation>> stereotypes;
+   
    private final BeanManagerImpl manager;
    
    /**
@@ -46,6 +48,7 @@ public class MergedStereotypes<T, E>
    public MergedStereotypes(Set<Annotation> stereotypeAnnotations, BeanManagerImpl manager)
    {
       this.possibleScopeTypes = new HashSet<Annotation>();
+      this.stereotypes = new HashSet<Class<? extends Annotation>>();
       this.manager = manager;
       merge(stereotypeAnnotations);
    }
@@ -77,6 +80,7 @@ public class MergedStereotypes<T, E>
          {
             beanNameDefaulted = true;
          }
+         this.stereotypes.add(stereotypeAnnotation.annotationType());
          // Merge in inherited stereotypes
          merge(stereotype.getInheritedSterotypes());
       }
@@ -106,15 +110,13 @@ public class MergedStereotypes<T, E>
    {
       return beanNameDefaulted;
    }
-
+   
    /**
-    * Indicates if the bean was declared in XML
-    * 
-    * @return True if declared in XML, else false
+    * @return the stereotypes
     */
-   public boolean isDeclaredInXml()
+   public Set<Class<? extends Annotation>> getStereotypes()
    {
-      return false;
+      return stereotypes;
    }
 
    /**

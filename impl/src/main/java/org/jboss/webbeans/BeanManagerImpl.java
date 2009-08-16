@@ -1304,12 +1304,26 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public ScopeType getScopeDefinition(Class<? extends Annotation> scopeType)
    {
-      throw new UnsupportedOperationException("Not yet implemented");
+      if (isScopeType(scopeType))
+      {
+         return getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).getMetaAnnnotation();
+      }
+      else
+      {
+         throw new IllegalArgumentException("Not a scope type " + scopeType);
+      }
    }
 
    public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype)
    {
-      throw new UnsupportedOperationException("Not yet implemented");
+      if (getServices().get(MetaAnnotationStore.class).getStereotype(stereotype).isValid())
+      {
+         return getServices().get(MetaAnnotationStore.class).getStereotype(stereotype).getMetaAnnotations();
+      }
+      else
+      {
+         throw new IllegalArgumentException("Not a stereotype " + stereotype);
+      }
    }
 
    public boolean isBindingType(Class<? extends Annotation> annotationType)

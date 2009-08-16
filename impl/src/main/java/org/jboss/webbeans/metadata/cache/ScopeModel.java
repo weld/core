@@ -25,6 +25,7 @@ import java.lang.annotation.Target;
 
 import javax.enterprise.context.ScopeType;
 
+import org.jboss.webbeans.literal.ScopeTypeLiteral;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.ClassTransformer;
@@ -41,6 +42,10 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
 {
    private static final Log log = Logging.getLog(ScopeModel.class);
    
+   private final ScopeType metaAnnotation;
+   private final boolean normal;
+   private final boolean passivating;
+   
    /**
     * Constrctor
     * 
@@ -49,6 +54,18 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
    public ScopeModel(Class<T> scope, ClassTransformer classTransformer)
    {
       super(scope, classTransformer);
+      if (isValid())
+      {
+         this.normal = getAnnotatedAnnotation().getAnnotation(ScopeType.class).normal();
+         this.passivating = getAnnotatedAnnotation().getAnnotation(ScopeType.class).passivating();
+         this.metaAnnotation = new ScopeTypeLiteral(normal, passivating);
+      }
+      else
+      {
+         this.normal = false;
+         this.passivating = false;
+         this.metaAnnotation = null;
+      }
    }
    
    @Override
@@ -74,7 +91,7 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
     */
    public boolean isNormal()
    {
-      return getAnnotatedAnnotation().getAnnotation(ScopeType.class).normal();
+      return normal;
    }
 
    /**
@@ -84,7 +101,7 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
     */
    public boolean isPassivating()
    {
-      return getAnnotatedAnnotation().getAnnotation(ScopeType.class).passivating();
+      return passivating;
    }
 
    /**
@@ -93,9 +110,14 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
     * @return The ScopeType class
     */
    @Override
-   protected Class<? extends Annotation> getMetaAnnotation()
+   protected Class<? extends Annotation> getMetaAnnotationType()
    {
       return ScopeType.class;
+   }
+   
+   public ScopeType getMetaAnnnotation()
+   {
+      return metaAnnotation;
    }
 
    /**

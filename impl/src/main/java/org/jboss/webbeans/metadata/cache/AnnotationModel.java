@@ -67,7 +67,7 @@ public abstract class AnnotationModel<T extends Annotation>
    {
       if (!Annotation.class.isAssignableFrom(getRawType()))
       {
-         throw new DefinitionException(getMetaAnnotation().toString() + " can only be applied to an annotation, it was applied to " + getRawType());
+         throw new DefinitionException(getMetaAnnotationType().toString() + " can only be applied to an annotation, it was applied to " + getRawType());
       }
    }
 
@@ -77,7 +77,7 @@ public abstract class AnnotationModel<T extends Annotation>
    protected void initValid()
    {
       this.valid = true;
-      if (!annotatedAnnotation.isAnnotationPresent(getMetaAnnotation()))
+      if (!annotatedAnnotation.isAnnotationPresent(getMetaAnnotationType()))
       {
          this.valid = false;
       }
@@ -104,7 +104,7 @@ public abstract class AnnotationModel<T extends Annotation>
     * 
     * @return
     */
-   protected abstract Class<? extends Annotation> getMetaAnnotation();
+   protected abstract Class<? extends Annotation> getMetaAnnotationType();
 
    /**
     * Indicates if the annotation is valid

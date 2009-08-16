@@ -110,7 +110,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     * @return The BindingType class
     */
    @Override
-   protected Class<? extends Annotation> getMetaAnnotation()
+   protected Class<? extends Annotation> getMetaAnnotationType()
    {
       return BindingType.class;
    }
