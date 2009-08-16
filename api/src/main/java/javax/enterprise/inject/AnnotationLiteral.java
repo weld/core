@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 
 /**
@@ -124,7 +125,14 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
             {
                Object thisValue = invoke(member, this);
                Object thatValue = invoke(member, that);
-               if (!thisValue.equals(thatValue))
+               if (thisValue.getClass().isArray() && thatValue.getClass().isArray())
+               {
+                  if (!Arrays.equals(Object[].class.cast(thisValue), Object[].class.cast(thatValue)))
+                  {
+                     return false;
+                  }
+               }
+               else if (!thisValue.equals(thatValue))
                {
                   return false;
                }
@@ -142,7 +150,8 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
       for (Method member : members)
       {
          int memberNameHashCode = 127 * member.getName().hashCode();
-         int memberValueHashCode = invoke(member, this).hashCode();
+         Object value = invoke(member, this);
+         int memberValueHashCode = value.getClass().isArray() ? Arrays.hashCode(Object[].class.cast(value)) : value.hashCode();
          hashCode += memberNameHashCode ^ memberValueHashCode;
       }       
       return hashCode;
