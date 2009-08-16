@@ -164,10 +164,14 @@ public class WebBeansELResolverImpl extends ELResolver
       if (!(o instanceof ELCreationalContextStack))
       {
          ELCreationalContextStack store = ELCreationalContextStack.addToContext(context);
+         o = store;
+      }
+      ELCreationalContextStack store = (ELCreationalContextStack) o;
+      if (store.isEmpty()) 
+      {
          // TODO need to use correct manager for module
          ELCreationalContext<?> creationalContext = ELCreationalContext.of(CurrentManager.rootManager().createCreationalContext(CONTEXTUAL));
          store.push(creationalContext);
-         o = store;
       }
       return (ELCreationalContextStack) o;
    }
