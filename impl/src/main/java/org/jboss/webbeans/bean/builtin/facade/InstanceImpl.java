@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bean.builtin;
+package org.jboss.webbeans.bean.builtin.facade;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;

@@ -24,8 +24,8 @@ import java.util.concurrent.Callable;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.bean.builtin.EventBean;
-import org.jboss.webbeans.bean.builtin.InstanceBean;
+import org.jboss.webbeans.bean.builtin.facade.EventBean;
+import org.jboss.webbeans.bean.builtin.facade.InstanceBean;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.collections.ConcurrentCache;

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bean.builtin;
+package org.jboss.webbeans.bean.builtin.facade;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -22,36 +22,36 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.resolution.ResolvableTransformer;
 
-public class InstanceBean extends AbstractFacadeBean<Instance<?>>
+public class EventBean extends AbstractFacadeBean<Event<?>>
 {
 
-   private static final Class<Instance<?>> TYPE = new TypeLiteral<Instance<?>>() {}.getRawType();
-   private static final Set<Type> DEFAULT_TYPES = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
-   private static final Any ANY = new AnyLiteral();
-   private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(ANY));
-   public static final ResolvableTransformer TRANSFORMER = new FacadeBeanResolvableTransformer(TYPE);
+   private static final Class<Event<?>>                  TYPE                      = new TypeLiteral<Event<?>>(){}.getRawType();
+   private static final Set<Type>                        DEFAULT_TYPES             = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
+   private static final Annotation                       ANY                       = new AnyLiteral();
+   private static final Set<Annotation>                  DEFAULT_BINDINGS          = new HashSet<Annotation>(Arrays.asList(ANY));
+   public static final ResolvableTransformer          TRANSFORMER               = new FacadeBeanResolvableTransformer(TYPE);
    
    
-   public static AbstractFacadeBean<Instance<?>> of(BeanManagerImpl manager)
+   public static AbstractFacadeBean<Event<?>> of(BeanManagerImpl manager)
    {
-      return new InstanceBean(manager);
+      return new EventBean(manager);
    }
    
-   protected InstanceBean(BeanManagerImpl manager)
+   protected EventBean(BeanManagerImpl manager)
    {
       super(manager);
    }
 
    @Override
-   public Class<Instance<?>> getType()
+   public Class<Event<?>> getType()
    {
       return TYPE;
    }
@@ -59,7 +59,7 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    @Override
    public Class<?> getBeanClass()
    {
-      return InstanceImpl.class;
+      return EventImpl.class;
    }
 
    public Set<Type> getTypes()
@@ -74,15 +74,15 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    }
 
    @Override
-   protected Instance<?> newInstance(Type type, Set<Annotation> annotations)
+   protected Event<?> newInstance(Type type, Set<Annotation> annotations)
    {
-      return InstanceImpl.of(type, getManager(), annotations);
+      return EventImpl.of(type, getManager(), annotations);
    }
    
    @Override
    public String toString()
    {
-      return "Built-in implicit javax.inject.Instance bean";
+      return "Built-in implicit javax.event.Event bean";
    }
    
 }
