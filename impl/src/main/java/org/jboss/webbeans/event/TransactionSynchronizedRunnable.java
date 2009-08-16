@@ -50,15 +50,17 @@ public class TransactionSynchronizedRunnable implements Synchronization
    }
 
    /*
-   * (non-Javadoc)
-   *
-   * @see javax.transaction.Synchronization#afterCompletion(int)
-   */
+    * (non-Javadoc)
+    * @see javax.transaction.Synchronization#afterCompletion(int)
+    */
    public void afterCompletion(int status)
    {
-      if ((desiredStatus == Status.SUCCESS && status == STATUS_COMMITTED) || (desiredStatus == Status.FAILURE && status != STATUS_COMMITTED) || (desiredStatus == Status.ALL))
+      if (!before)
       {
-         task.run();
+         if ((desiredStatus == Status.SUCCESS && status == STATUS_COMMITTED) || (desiredStatus == Status.FAILURE && status != STATUS_COMMITTED) || (desiredStatus == Status.ALL))
+         {
+            task.run();
+         }
       }
    }
 
