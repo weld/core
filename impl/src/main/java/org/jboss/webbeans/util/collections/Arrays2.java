@@ -17,6 +17,8 @@
 package org.jboss.webbeans.util.collections;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author pmuir
@@ -35,6 +37,16 @@ public class Arrays2
    public static final boolean unorderedEquals(Object[] array, Object... values)
    {
       return containsAll(array, values) && array.length == values.length;
+   }
+
+   public static <T> Set<T> asSet(T... types)
+   {
+      Set<T> result = new HashSet<T>();
+      for (T type : types)
+      {
+         result.add(type);
+      }
+      return result;
    }
 
 }
