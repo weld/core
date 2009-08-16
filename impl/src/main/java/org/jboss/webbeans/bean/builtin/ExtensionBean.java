@@ -37,12 +37,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
    private final WBClass<Extension> clazz;
    private final Extension instance;
    
-   public static ExtensionBean of(BeanManagerImpl manager, WBClass<Extension> clazz, Extension instance)
-   {
-      return new ExtensionBean(manager, clazz, instance);
-   }
-   
-   protected ExtensionBean(BeanManagerImpl manager, WBClass<Extension> clazz, Extension instance)
+   public ExtensionBean(BeanManagerImpl manager, WBClass<Extension> clazz, Extension instance)
    {
       super(manager);
       this.clazz = clazz;

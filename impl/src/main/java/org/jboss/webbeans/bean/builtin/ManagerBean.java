@@ -17,26 +17,20 @@
 package org.jboss.webbeans.bean.builtin;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.util.collections.Arrays2;
 
 public class ManagerBean extends AbstractBuiltInBean<BeanManagerImpl>
 {
    
-   private static final Set<Type> TYPES = new HashSet<Type>(Arrays.asList(BeanManagerImpl.class, BeanManager.class));
+   private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, BeanManagerImpl.class, BeanManager.class);
    
-   public static final ManagerBean of(BeanManagerImpl manager)
-   {
-      return new ManagerBean(manager);
-   }
-   
-   protected ManagerBean(BeanManagerImpl manager)
+   public ManagerBean(BeanManagerImpl manager)
    {
       super(manager);
    }

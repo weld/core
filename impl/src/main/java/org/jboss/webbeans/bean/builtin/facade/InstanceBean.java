@@ -29,23 +29,18 @@ import javax.enterprise.inject.TypeLiteral;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.resolution.ResolvableTransformer;
+import org.jboss.webbeans.util.collections.Arrays2;
 
 public class InstanceBean extends AbstractFacadeBean<Instance<?>>
 {
 
    private static final Class<Instance<?>> TYPE = new TypeLiteral<Instance<?>>() {}.getRawType();
-   private static final Set<Type> DEFAULT_TYPES = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
+   private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(TYPE, Object.class);
    private static final Any ANY = new AnyLiteral();
    private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(ANY));
    public static final ResolvableTransformer TRANSFORMER = new FacadeBeanResolvableTransformer(TYPE);
    
-   
-   public static AbstractFacadeBean<Instance<?>> of(BeanManagerImpl manager)
-   {
-      return new InstanceBean(manager);
-   }
-   
-   protected InstanceBean(BeanManagerImpl manager)
+   public InstanceBean(BeanManagerImpl manager)
    {
       super(manager);
    }

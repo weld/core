@@ -29,23 +29,18 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.resolution.ResolvableTransformer;
+import org.jboss.webbeans.util.collections.Arrays2;
 
 public class EventBean extends AbstractFacadeBean<Event<?>>
 {
 
-   private static final Class<Event<?>>                  TYPE                      = new TypeLiteral<Event<?>>(){}.getRawType();
-   private static final Set<Type>                        DEFAULT_TYPES             = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
-   private static final Annotation                       ANY                       = new AnyLiteral();
-   private static final Set<Annotation>                  DEFAULT_BINDINGS          = new HashSet<Annotation>(Arrays.asList(ANY));
-   public static final ResolvableTransformer          TRANSFORMER               = new FacadeBeanResolvableTransformer(TYPE);
+   private static final Class<Event<?>> TYPE = new TypeLiteral<Event<?>>() {}.getRawType();
+   private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(TYPE, Object.class);
+   private static final Annotation ANY = new AnyLiteral();
+   private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(ANY));
+   public static final ResolvableTransformer TRANSFORMER = new FacadeBeanResolvableTransformer(TYPE);
    
-   
-   public static AbstractFacadeBean<Event<?>> of(BeanManagerImpl manager)
-   {
-      return new EventBean(manager);
-   }
-   
-   protected EventBean(BeanManagerImpl manager)
+   public EventBean(BeanManagerImpl manager)
    {
       super(manager);
    }

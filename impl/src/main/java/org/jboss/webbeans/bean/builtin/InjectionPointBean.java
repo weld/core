@@ -17,14 +17,13 @@
 package org.jboss.webbeans.bean.builtin;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.util.collections.Arrays2;
 
 /**
  * Bean for InjectionPoint metadata
@@ -35,7 +34,7 @@ import org.jboss.webbeans.BeanManagerImpl;
 public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint>
 {
    
-   private static final Set<Type> TYPES = new HashSet<Type>(Arrays.asList(new Type[] { InjectionPoint.class }));
+   private static final Set<Type> TYPES = Arrays2.<Type>asSet(InjectionPoint.class, Object.class);
 
    /**
     * Creates an InjectionPoint Web Bean for the injection of the containing bean owning
@@ -45,14 +44,8 @@ public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint>
     * @param <S>
     * @param field The annotated member field/parameter for the injection
     * @param manager The RI manager implementation
-    * @return a new bean for this injection point
     */
-   public static InjectionPointBean of(BeanManagerImpl manager)
-   {
-      return new InjectionPointBean(manager);
-   }
-
-   protected InjectionPointBean(BeanManagerImpl manager)
+   public InjectionPointBean(BeanManagerImpl manager)
    {
       super(manager);
    }
