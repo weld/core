@@ -61,7 +61,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    private final Type eventType;
    protected BeanManagerImpl manager;
    private final Notify notifyType;
-   protected final RIBean<?> observerBean;
+   protected final RIBean<?> declaringBean;
    protected final MethodInjectionPoint<?, ?> observerMethod;
    protected TransactionPhase transactionPhase;
 
@@ -70,14 +70,14 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
     * (8.5).
     * 
     * @param observer The observer
-    * @param observerBean The observer bean
+    * @param declaringBean The observer bean
     * @param manager The Web Beans manager
     */
-   protected ObserverMethodImpl(final WBMethod<?, ?> observer, final RIBean<?> observerBean, final BeanManagerImpl manager)
+   protected ObserverMethodImpl(final WBMethod<?, ?> observer, final RIBean<?> declaringBean, final BeanManagerImpl manager)
    {
       this.manager = manager;
-      this.observerBean = observerBean;
-      this.observerMethod = MethodInjectionPoint.of(observerBean, observer);
+      this.declaringBean = declaringBean;
+      this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
       this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
 
       this.bindings = new HashSet<Annotation>(Arrays.asList(observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray()));
@@ -94,6 +94,10 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    {
       // Make sure exactly one and only one parameter is annotated with Observes
       List<WBParameter<?, ?>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
+      if (this.notifyType.equals(Notify.IF_EXISTS) && declaringBean.getScopeType().equals(Dependent.class))
+      {
+         throw new DefinitionException(this + " is invalid because it is a conditional observer method, and is declared by a @Dependent scoped bean");
+      }
       if (eventObjects.size() > 1)
       {
          throw new DefinitionException(this + " is invalid because it contains more than event parameter annotated @Observes");
@@ -140,7 +144,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    @SuppressWarnings("unchecked")
    public Bean<X> getBean()
    {
-      return (Bean<X>) observerBean;
+      return (Bean<X>) declaringBean;
    }
 
    public Annotation[] getBindingsAsArray()
@@ -201,9 +205,9 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
          // Get the most specialized instance of the component
          if (notifyType.equals(Notify.ALWAYS))
          {
-            creationalContext = manager.createCreationalContext(observerBean);
+            creationalContext = manager.createCreationalContext(declaringBean);
          }
-         instance = manager.getReference(observerBean, creationalContext);
+         instance = manager.getReference(declaringBean, creationalContext);
          if (instance == null)
          {
             return;
@@ -213,7 +217,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
       }
       finally
       {
-         if (creationalContext != null && Dependent.class.equals(observerBean.getScopeType()))
+         if (creationalContext != null && Dependent.class.equals(declaringBean.getScopeType()))
          {
             creationalContext.release();
          }
@@ -235,7 +239,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    {
       StringBuilder builder = new StringBuilder();
       builder.append("Observer Implementation: \n");
-      builder.append("  Observer (Declaring) class: " + observerBean.getBeanClass());
+      builder.append("  Observer (Declaring) class: " + declaringBean.getBeanClass());
       builder.append("  Observer method: " + observerMethod);
       return builder.toString();
    }

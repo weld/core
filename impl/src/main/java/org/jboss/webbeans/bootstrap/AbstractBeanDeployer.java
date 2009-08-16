@@ -24,7 +24,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
@@ -86,9 +85,10 @@ public class AbstractBeanDeployer
          manager.addBean(bean);
          log.debug("Bean: " + bean);
       }
-      for (ObserverMethod<?, ?> observer : getEnvironment().getObservers())
+      for (ObserverMethodImpl<?, ?> observer : getEnvironment().getObservers())
       {
          log.debug("Observer : " + observer);
+         observer.initialize();
          manager.addObserver(observer);
       }
       

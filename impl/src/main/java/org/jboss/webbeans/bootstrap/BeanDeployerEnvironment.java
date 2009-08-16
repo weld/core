@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.ObserverMethod;
-
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.DecoratorBean;
@@ -39,6 +37,7 @@ import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.standard.AbstractStandardBean;
 import org.jboss.webbeans.bean.standard.ExtensionBean;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
+import org.jboss.webbeans.event.ObserverMethodImpl;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.resolution.ResolvableFactory;
@@ -50,7 +49,7 @@ public class BeanDeployerEnvironment
    private final Map<WBClass<?>, AbstractClassBean<?>> classBeanMap;
    private final Map<WBMethod<?, ?>, ProducerMethodBean<?>> producerMethodBeanMap;
    private final Set<RIBean<?>> beans;
-   private final Set<ObserverMethod<?, ?>> observers;
+   private final Set<ObserverMethodImpl<?, ?>> observers;
    private final List<DisposalMethodBean<?>> allDisposalBeans;
    private final Set<DisposalMethodBean<?>> resolvedDisposalBeans;
    private final Set<DecoratorBean<?>> decorators;
@@ -65,7 +64,7 @@ public class BeanDeployerEnvironment
       this.resolvedDisposalBeans = new HashSet<DisposalMethodBean<?>>();
       this.beans = new HashSet<RIBean<?>>();
       this.decorators = new HashSet<DecoratorBean<?>>();
-      this.observers = new HashSet<ObserverMethod<?, ?>>();
+      this.observers = new HashSet<ObserverMethodImpl<?, ?>>();
       this.ejbDescriptors = ejbDescriptors;
       this.disposalMethodResolver = new TypeSafeDisposerResolver(manager, allDisposalBeans);
    }
@@ -138,7 +137,7 @@ public class BeanDeployerEnvironment
       allDisposalBeans.add(bean);
    }
    
-   public void addObserver(ObserverMethod<?, ?> observer)
+   public void addObserver(ObserverMethodImpl<?, ?> observer)
    {
       this.observers.add(observer);
    }
@@ -153,7 +152,7 @@ public class BeanDeployerEnvironment
       return Collections.unmodifiableSet(decorators);
    }
 
-   public Set<ObserverMethod<?, ?>> getObservers()
+   public Set<ObserverMethodImpl<?, ?>> getObservers()
    {
       return Collections.unmodifiableSet(observers);
    }
