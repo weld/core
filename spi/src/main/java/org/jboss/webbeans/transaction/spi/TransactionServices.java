@@ -1,6 +1,7 @@
 package org.jboss.webbeans.transaction.spi;
 
 import javax.transaction.Synchronization;
+import javax.transaction.UserTransaction;
 
 import org.jboss.webbeans.bootstrap.api.Service;
 
@@ -11,12 +12,14 @@ import org.jboss.webbeans.bootstrap.api.Service;
  * </p>
  * 
  * <p>
- * The event framework specified by JSR-299 includes the ability to create
- * observer methods which are activated based on the phase and status of a
- * currently active transaction. In order to use these abilities, the container
- * must provide these intermediary services which in turn may interact with an
+ * The event framework specified by CDI includes the ability to create observer 
+ * methods which are activated based on the phase and status of a currently 
+ * active transaction. In order to use these abilities, the container must 
+ * provide these intermediary services which in turn may interact with an 
  * application server and JTA.
  * </p>
+ * 
+ * <p>Required in a Java EE environment</p>
  * 
  * @author David Allen
  * 
@@ -39,4 +42,11 @@ public interface TransactionServices extends Service
     * @return true if a transaction is active
     */
    public boolean isTransactionActive();
+   
+   /**
+    * Obtain a reference to the JTA UserTransaction
+    * 
+    * @return a reference to the JTA UserTransaction
+    */
+   public UserTransaction getUserTransaction();
 }

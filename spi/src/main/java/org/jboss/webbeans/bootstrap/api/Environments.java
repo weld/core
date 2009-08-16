@@ -25,10 +25,12 @@ import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceServices;
+import org.jboss.webbeans.security.spi.SecurityServices;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
+import org.jboss.webbeans.validation.spi.ValidationServices;
 
 /**
- * Various well known environments.
+ * Requirements for various well known environments.
  * 
  * @author Pete Muir
  *
@@ -39,12 +41,12 @@ public enum Environments implements Environment
    /**
     * Java EE5 or Java EE6
     */
-   EE(Deployment.class, EjbServices.class, JpaServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class),
+   EE(Deployment.class, EjbServices.class, JpaServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class, SecurityServices.class, ValidationServices.class),
    
    /**
     * Java EE6 Web Profile
     */
-   EE_WEB_PROFILE(Deployment.class, EjbServices.class, JpaServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class),
+   EE_WEB_PROFILE(Deployment.class, EjbServices.class, JpaServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class, SecurityServices.class, ValidationServices.class),
    
    /**
     * Servlet container such as Tomcat

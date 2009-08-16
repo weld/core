@@ -8,7 +8,9 @@ import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceServices;
+import org.jboss.webbeans.security.spi.SecurityServices;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
+import org.jboss.webbeans.validation.spi.ValidationServices;
 import org.testng.annotations.Test;
 
 public class BootstrapTest
@@ -35,6 +37,8 @@ public class BootstrapTest
       bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
+      bootstrap.getServices().add(SecurityServices.class, new MockSecurityServices());
+      bootstrap.getServices().add(ValidationServices.class, new MockValidationServices());
       bootstrap.startContainer();
    }
    
@@ -49,6 +53,40 @@ public class BootstrapTest
       bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
+      bootstrap.getServices().add(SecurityServices.class, new MockSecurityServices());
+      bootstrap.getServices().add(ValidationServices.class, new MockValidationServices());
+      bootstrap.startContainer();
+   }
+   
+   @Test(expectedExceptions=IllegalStateException.class)
+   public void testMissingSecurityServices()
+   {
+      AbstractBootstrap bootstrap = new MockBootstrap();
+      bootstrap.setEnvironment(Environments.EE);
+      bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
+      bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
+      bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
+      bootstrap.getServices().add(Deployment.class, new MockDeployment());
+      bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
+      bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
+      bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
+      bootstrap.getServices().add(ValidationServices.class, new MockValidationServices());
+      bootstrap.startContainer();
+   }
+   
+   @Test(expectedExceptions=IllegalStateException.class)
+   public void testMissingValidationServices()
+   {
+      AbstractBootstrap bootstrap = new MockBootstrap();
+      bootstrap.setEnvironment(Environments.EE);
+      bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
+      bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
+      bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
+      bootstrap.getServices().add(Deployment.class, new MockDeployment());
+      bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
+      bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
+      bootstrap.getServices().add(SecurityServices.class, new MockSecurityServices());
+      bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.startContainer();
    }
    
@@ -64,6 +102,8 @@ public class BootstrapTest
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
+      bootstrap.getServices().add(SecurityServices.class, new MockSecurityServices());
+      bootstrap.getServices().add(ValidationServices.class, new MockValidationServices());
       bootstrap.startContainer();
    }
    
@@ -79,6 +119,8 @@ public class BootstrapTest
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
+      bootstrap.getServices().add(SecurityServices.class, new MockSecurityServices());
+      bootstrap.getServices().add(ValidationServices.class, new MockValidationServices());
       bootstrap.startContainer();
    }
    
@@ -93,6 +135,8 @@ public class BootstrapTest
       bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
+      bootstrap.getServices().add(SecurityServices.class, new MockSecurityServices());
+      bootstrap.getServices().add(ValidationServices.class, new MockValidationServices());
       bootstrap.startContainer();
    }
    
@@ -107,6 +151,8 @@ public class BootstrapTest
       bootstrap.getServices().add(Deployment.class, new MockDeployment());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
       bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
+      bootstrap.getServices().add(SecurityServices.class, new MockSecurityServices());
+      bootstrap.getServices().add(ValidationServices.class, new MockValidationServices());
       bootstrap.startContainer();
    }
    

@@ -14,37 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.webbeans.security.spi;
 
-package org.jboss.webbeans.mock;
+import java.security.Principal;
 
-import javax.transaction.Synchronization;
-import javax.transaction.UserTransaction;
-
-import org.jboss.webbeans.transaction.spi.TransactionServices;
+import org.jboss.webbeans.bootstrap.api.Service;
 
 /**
- * A mock version of TransactionServices for RI unit tests.  Since
- * no JTA transaction can be active for these unit tests, all
- * methods here are empty.
+ * Responsible for accessing security related functionality the environment can 
+ * provide.
  * 
- * @author David Allen
+ * Required in a Java EE environment.
+ * 
+ * @author pmuir
  *
  */
-public class MockTransactionServices implements TransactionServices
+public interface SecurityServices extends Service
 {
-
-   public boolean isTransactionActive()
-   {
-      return false;
-   }
-
-   public void registerSynchronization(Synchronization synchronizedObserver)
-   {
-   }
    
-   public UserTransaction getUserTransaction()
-   {
-      return null;
-   }
+   /**
+    * Obtain the Principal representing the current caller identity
+    * 
+    * @return the Principal representing the current caller identity
+    */
+   public Principal getPrincipal();
 
 }

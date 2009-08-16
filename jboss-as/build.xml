@@ -13,7 +13,7 @@
 		<delete dir="target" failonerror="false" />
 	</target>
 
-	<target name="update" depends="install-webbeans.deployer, install-javassist-update" description="Update JBoss 5.x or 6.x for Web Beans" />
+	<target name="update" depends="install-webbeans.deployer, install-javassist-update, install-validation-update" description="Update JBoss 5.x or 6.x for Web Beans" />
 
 	<target name="install-webbeans.deployer">
 		<echo message="Installing Web Beans ${webbeans.version} to ${jboss.home}" />
@@ -85,6 +85,32 @@
 			</fileset>
 		</copy>
 	</target>
+	
+   <target name="install-validation-update">
+      <echo message="Upgrading Bean Validation API to ${validation.version} for ${jboss.home}" />
+      <fail unless="jboss.home" message="Please pass in -Djboss.home=..." />
+   
+      <artifact:dependencies filesetId="validation.fileset" versionsId="validation.versions">
+         <dependency groupId="javax.validation" artifactId="validation-api" version="${validation.version}" />
+         <remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
+         <remoteRepository id="snapshots.jboss.org" url="http://snapshots.jboss.org/maven2" />
+      </artifact:dependencies>
+   
+      <mkdir dir="target/dependency/lib" />
+      <copy todir="target/dependency/lib">
+         <fileset refid="validation.fileset" />
+         <chainedmapper>
+            <flattenmapper />
+            <mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${validation.versions}" to="flatten" />
+         </chainedmapper>
+      </copy>
+   
+      <copy todir="${jboss.home}/common/lib">
+         <fileset dir="target/dependency/lib">
+            <include name="validation-api.jar" />
+         </fileset>
+      </copy>
+   </target>
 
 	<target name="install-jboss-ejb3-update">
 

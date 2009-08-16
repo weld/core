@@ -14,35 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.mock;
 
-import javax.transaction.Synchronization;
-import javax.transaction.UserTransaction;
+import javax.validation.ValidatorFactory;
 
-import org.jboss.webbeans.transaction.spi.TransactionServices;
+import org.jboss.webbeans.validation.spi.ValidationServices;
 
 /**
- * A mock version of TransactionServices for RI unit tests.  Since
- * no JTA transaction can be active for these unit tests, all
- * methods here are empty.
- * 
- * @author David Allen
+ * @author pmuir
  *
  */
-public class MockTransactionServices implements TransactionServices
+public class MockValidationServices implements ValidationServices
 {
 
-   public boolean isTransactionActive()
-   {
-      return false;
-   }
-
-   public void registerSynchronization(Synchronization synchronizedObserver)
-   {
-   }
-   
-   public UserTransaction getUserTransaction()
+   public ValidatorFactory getDefaultValidatorFactory()
    {
       return null;
    }
