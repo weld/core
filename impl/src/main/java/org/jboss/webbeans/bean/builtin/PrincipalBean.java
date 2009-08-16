@@ -17,33 +17,33 @@
 package org.jboss.webbeans.bean.builtin;
 
 import java.lang.reflect.Type;
+import java.security.Principal;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.transaction.UserTransaction;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.transaction.spi.TransactionServices;
+import org.jboss.webbeans.security.spi.SecurityServices;
 import org.jboss.webbeans.util.collections.Arrays2;
 
 /**
  * @author pmuir
  *
  */
-public class UserTransactionBean extends AbstractBuiltInBean<UserTransaction>
+public class PrincipalBean extends AbstractBuiltInBean<Principal>
 {
 
-   private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, UserTransaction.class);
+   private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, Principal.class);
    
-   public UserTransactionBean(BeanManagerImpl manager)
+   public PrincipalBean(BeanManagerImpl manager)
    {
       super(manager);
    }
 
    @Override
-   public Class<UserTransaction> getType()
+   public Class<Principal> getType()
    {
-      return UserTransaction.class;
+      return Principal.class;
    }
 
    public Set<Type> getTypes()
@@ -51,19 +51,19 @@ public class UserTransactionBean extends AbstractBuiltInBean<UserTransaction>
       return TYPES;
    }
 
-   public UserTransaction create(CreationalContext<UserTransaction> creationalContext)
+   public Principal create(CreationalContext<Principal> creationalContext)
    {
-      if (getManager().getServices().contains(TransactionServices.class))
+      if (getManager().getServices().contains(SecurityServices.class))
       {
-         return getManager().getServices().get(TransactionServices.class).getUserTransaction();
+         return getManager().getServices().get(SecurityServices.class).getPrincipal();
       }
       else
       {
-         throw new IllegalStateException("TransactionServices not available");
+         throw new IllegalStateException("SecurityServices not available");
       }
    }
 
-   public void destroy(UserTransaction instance, CreationalContext<UserTransaction> creationalContext)
+   public void destroy(Principal instance, CreationalContext<Principal> creationalContext)
    {
       // No-op      
    }

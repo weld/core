@@ -20,30 +20,30 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.transaction.UserTransaction;
+import javax.validation.Validator;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.jboss.webbeans.util.collections.Arrays2;
+import org.jboss.webbeans.validation.spi.ValidationServices;
 
 /**
  * @author pmuir
  *
  */
-public class UserTransactionBean extends AbstractBuiltInBean<UserTransaction>
+public class DefaultValidatorBean extends AbstractBuiltInBean<Validator>
 {
 
-   private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, UserTransaction.class);
+   private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, Validator.class);
    
-   public UserTransactionBean(BeanManagerImpl manager)
+   public DefaultValidatorBean(BeanManagerImpl manager)
    {
       super(manager);
    }
 
    @Override
-   public Class<UserTransaction> getType()
+   public Class<Validator> getType()
    {
-      return UserTransaction.class;
+      return Validator.class;
    }
 
    public Set<Type> getTypes()
@@ -51,19 +51,19 @@ public class UserTransactionBean extends AbstractBuiltInBean<UserTransaction>
       return TYPES;
    }
 
-   public UserTransaction create(CreationalContext<UserTransaction> creationalContext)
+   public Validator create(CreationalContext<Validator> creationalContext)
    {
-      if (getManager().getServices().contains(TransactionServices.class))
+      if (getManager().getServices().contains(ValidationServices.class))
       {
-         return getManager().getServices().get(TransactionServices.class).getUserTransaction();
+         return getManager().getServices().get(ValidationServices.class).getDefaultValidatorFactory().getValidator();
       }
       else
       {
-         throw new IllegalStateException("TransactionServices not available");
+         throw new IllegalStateException("ValidationServices not available");
       }
    }
 
-   public void destroy(UserTransaction instance, CreationalContext<UserTransaction> creationalContext)
+   public void destroy(Validator instance, CreationalContext<Validator> creationalContext)
    {
       // No-op      
    }

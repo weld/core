@@ -20,30 +20,30 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.transaction.UserTransaction;
+import javax.validation.ValidatorFactory;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.jboss.webbeans.util.collections.Arrays2;
+import org.jboss.webbeans.validation.spi.ValidationServices;
 
 /**
  * @author pmuir
  *
  */
-public class UserTransactionBean extends AbstractBuiltInBean<UserTransaction>
+public class DefaultValidatorFactoryBean extends AbstractBuiltInBean<ValidatorFactory>
 {
 
-   private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, UserTransaction.class);
+   private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, ValidatorFactory.class);
    
-   public UserTransactionBean(BeanManagerImpl manager)
+   public DefaultValidatorFactoryBean(BeanManagerImpl manager)
    {
       super(manager);
    }
 
    @Override
-   public Class<UserTransaction> getType()
+   public Class<ValidatorFactory> getType()
    {
-      return UserTransaction.class;
+      return ValidatorFactory.class;
    }
 
    public Set<Type> getTypes()
@@ -51,19 +51,19 @@ public class UserTransactionBean extends AbstractBuiltInBean<UserTransaction>
       return TYPES;
    }
 
-   public UserTransaction create(CreationalContext<UserTransaction> creationalContext)
+   public ValidatorFactory create(CreationalContext<ValidatorFactory> creationalContext)
    {
-      if (getManager().getServices().contains(TransactionServices.class))
+      if (getManager().getServices().contains(ValidationServices.class))
       {
-         return getManager().getServices().get(TransactionServices.class).getUserTransaction();
+         return getManager().getServices().get(ValidationServices.class).getDefaultValidatorFactory();
       }
       else
       {
-         throw new IllegalStateException("TransactionServices not available");
+         throw new IllegalStateException("ValidationServices not available");
       }
    }
 
-   public void destroy(UserTransaction instance, CreationalContext<UserTransaction> creationalContext)
+   public void destroy(ValidatorFactory instance, CreationalContext<ValidatorFactory> creationalContext)
    {
       // No-op      
    }

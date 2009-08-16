@@ -29,8 +29,11 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.DeploymentException;
 import org.jboss.webbeans.Validator;
+import org.jboss.webbeans.bean.builtin.DefaultValidatorBean;
+import org.jboss.webbeans.bean.builtin.DefaultValidatorFactoryBean;
 import org.jboss.webbeans.bean.builtin.InjectionPointBean;
 import org.jboss.webbeans.bean.builtin.ManagerBean;
+import org.jboss.webbeans.bean.builtin.PrincipalBean;
 import org.jboss.webbeans.bean.builtin.UserTransactionBean;
 import org.jboss.webbeans.bean.builtin.facade.EventBean;
 import org.jboss.webbeans.bean.builtin.facade.InstanceBean;
@@ -67,10 +70,12 @@ import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.resources.DefaultResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceServices;
+import org.jboss.webbeans.security.spi.SecurityServices;
 import org.jboss.webbeans.servlet.HttpSessionManager;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.jboss.webbeans.util.serviceProvider.ServiceLoader;
+import org.jboss.webbeans.validation.spi.ValidationServices;
 import org.jboss.webbeans.xml.BeansXmlParser;
 
 /**
@@ -279,6 +284,15 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          if (getServices().contains(TransactionServices.class))
          {
             beanDeployer.getEnvironment().addBean(new UserTransactionBean(manager));
+         }
+         if (getServices().contains(SecurityServices.class))
+         {
+            beanDeployer.getEnvironment().addBean(new PrincipalBean(manager));
+         }
+         if (getServices().contains(ValidationServices.class))
+         {
+            beanDeployer.getEnvironment().addBean(new DefaultValidatorBean(manager));
+            beanDeployer.getEnvironment().addBean(new DefaultValidatorFactoryBean(manager));
          }
          beanDeployer.createBeans().deploy();
          fireAfterBeanDiscoveryEvent();
