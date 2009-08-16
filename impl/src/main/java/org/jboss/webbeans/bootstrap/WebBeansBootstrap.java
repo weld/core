@@ -31,6 +31,7 @@ import org.jboss.webbeans.DeploymentException;
 import org.jboss.webbeans.Validator;
 import org.jboss.webbeans.bean.builtin.InjectionPointBean;
 import org.jboss.webbeans.bean.builtin.ManagerBean;
+import org.jboss.webbeans.bean.builtin.UserTransactionBean;
 import org.jboss.webbeans.bean.builtin.facade.EventBean;
 import org.jboss.webbeans.bean.builtin.facade.InstanceBean;
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
@@ -171,7 +172,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          verify();
          if (!getServices().contains(TransactionServices.class))
          {
-            log.info("Transactional services not available.  Transactional observers will be invoked synchronously.");
+            log.info("Transactional services not available. Injection of @Current UserTransaction not available. Transactional observers will be invoked synchronously.");
          }
          if (!getServices().contains(EjbServices.class))
          {
@@ -263,10 +264,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       synchronized (this)
       {
          beanDeployer.addClasses(deploymentVisitor.getBeanClasses());
-         beanDeployer.getEnvironment().addBean(ManagerBean.of(manager));
-         beanDeployer.getEnvironment().addBean(InjectionPointBean.of(manager));
-         beanDeployer.getEnvironment().addBean(EventBean.of(manager));
-         beanDeployer.getEnvironment().addBean(InstanceBean.of(manager));
+         beanDeployer.getEnvironment().addBean(new ManagerBean(manager));
+         beanDeployer.getEnvironment().addBean(new InjectionPointBean(manager));
+         beanDeployer.getEnvironment().addBean(new EventBean(manager));
+         beanDeployer.getEnvironment().addBean(new InstanceBean(manager));
          if (!getEnvironment().equals(Environments.SE))
          {
             beanDeployer.addClass(ConversationImpl.class);
@@ -274,6 +275,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
             beanDeployer.addClass(JavaSEConversationTerminator.class);
             beanDeployer.addClass(NumericConversationIdGenerator.class);
             beanDeployer.addClass(HttpSessionManager.class);
+         }
+         if (getServices().contains(TransactionServices.class))
+         {
+            beanDeployer.getEnvironment().addBean(new UserTransactionBean(manager));
          }
          beanDeployer.createBeans().deploy();
          fireAfterBeanDiscoveryEvent();

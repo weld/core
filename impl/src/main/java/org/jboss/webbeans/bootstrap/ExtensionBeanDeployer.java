@@ -50,7 +50,7 @@ public class ExtensionBeanDeployer extends AbstractBeanDeployer
          @SuppressWarnings("unchecked")
          WBClass<Extension> clazz = (WBClass<Extension>) classTransformer.loadClass(extension.getClass());
          
-         ExtensionBean bean = ExtensionBean.of(getManager(), clazz, extension);
+         ExtensionBean bean = new ExtensionBean(getManager(), clazz, extension);
          getEnvironment().addBean(bean);
          createObserverMethods(bean, clazz);
       }
