@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
@@ -229,7 +228,7 @@ public class WBMethodImpl<T, X> extends AbstractWBCallable<T, X, Method> impleme
 
    public List<AnnotatedParameter<X>> getParameters()
    {
-      return new ArrayList<AnnotatedParameter<X>>((Set) parameters);
+      return Collections.unmodifiableList((List) parameters);
    }
 
 }

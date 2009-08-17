@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
@@ -258,7 +257,7 @@ public Constructor<T> getDelegate()
    
    public List<AnnotatedParameter<T>> getParameters()
    {
-      return new ArrayList<AnnotatedParameter<T>>((Set) parameters);
+      return Collections.unmodifiableList((List) parameters);
    }
 
 }
