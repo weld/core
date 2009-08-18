@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
 public class DeclaringTypeTest extends AbstractWebBeansTest
 {
 
-   @Test(groups="broken")
+   @Test
    public void testInheritance()
    {
       AnnotatedType<Child> type = getCurrentManager().createAnnotatedType(Child.class);

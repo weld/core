@@ -19,6 +19,7 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -201,7 +202,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
             {
                field.setAccessible(true);
             }
-            WBField<?, ?> annotatedField = WBFieldImpl.of(field, this, classTransformer);
+            WBField<?, ?> annotatedField = WBFieldImpl.of(field, getDeclaringWBClass(field, classTransformer), classTransformer);
             this.fields.add(annotatedField);
             if (c == rawType)
             {
@@ -249,11 +250,10 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
         
       });
       this.declaredConstructorsBySignature = new HashMap<ConstructorSignature, WBConstructor<?>>();
-      for (Constructor<?> constructor : rawType.getDeclaredConstructors())
+      for (Constructor<Object> constructor : rawType.getDeclaredConstructors())
       {
-         @SuppressWarnings("unchecked")
-         Constructor<T> c = (Constructor<T>) constructor;
-         WBConstructor<T> annotatedConstructor = WBConstructorImpl.of(c, this, classTransformer);
+         // TODO Fix this cast
+         WBConstructor<T> annotatedConstructor = (WBConstructor<T>) WBConstructorImpl.of(constructor, getDeclaringWBClass(constructor, classTransformer), classTransformer);
          if (!constructor.isAccessible())
          {
             constructor.setAccessible(true);
@@ -330,7 +330,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
                method.setAccessible(true);
             }
 
-            WBMethod<?, ?> annotatedMethod = WBMethodImpl.of(method, this, classTransformer);
+            WBMethod<?, ?> annotatedMethod = WBMethodImpl.of(method, getDeclaringWBClass(method, classTransformer), classTransformer);
             this.methods.add(annotatedMethod);
             this.methodsBySignature.put(annotatedMethod.getSignature(), annotatedMethod);
             if (c == rawType)
@@ -358,6 +358,20 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
                }
             }
          }
+      }
+   }
+   
+   @SuppressWarnings("unchecked")
+   private <X> WBClass<X> getDeclaringWBClass(Member member, ClassTransformer transformer)
+   {
+      if (member.getDeclaringClass().equals(getJavaClass()))
+      {
+         return (WBClass<X>) this;
+      }
+      else
+      {
+         WBClass<X> loadClass = transformer.loadClass(member.getDeclaringClass());
+         return loadClass;
       }
    }
 
