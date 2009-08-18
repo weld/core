@@ -250,10 +250,11 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
         
       });
       this.declaredConstructorsBySignature = new HashMap<ConstructorSignature, WBConstructor<?>>();
-      for (Constructor<Object> constructor : rawType.getDeclaredConstructors())
+      for (Constructor<?> constructor : rawType.getDeclaredConstructors())
       {
          // TODO Fix this cast
-         WBConstructor<T> annotatedConstructor = (WBConstructor<T>) WBConstructorImpl.of(constructor, getDeclaringWBClass(constructor, classTransformer), classTransformer);
+         Constructor<T> c = (Constructor<T>) constructor;
+         WBConstructor<T> annotatedConstructor = WBConstructorImpl.of(c, this.<T>getDeclaringWBClass(c, classTransformer), classTransformer);
          if (!constructor.isAccessible())
          {
             constructor.setAccessible(true);
@@ -370,8 +371,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
       }
       else
       {
-         WBClass<X> loadClass = transformer.loadClass(member.getDeclaringClass());
-         return loadClass;
+         return transformer.loadClass((Class<X>) member.getDeclaringClass());
       }
    }
 
