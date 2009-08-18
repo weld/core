@@ -27,7 +27,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -70,7 +72,14 @@ public class WBConstructorImpl<T> extends AbstractWBCallable<T, T, Constructor<T
    
    public static <T> WBConstructor<T> of(Constructor<T> constructor, WBClass<T> declaringClass, ClassTransformer classTransformer)
    {
-      return new WBConstructorImpl<T>(ensureAccessible(constructor), declaringClass, classTransformer);
+      AnnotationStore annotationStore = AnnotationStore.of(constructor, classTransformer.getTypeStore());
+      return new WBConstructorImpl<T>(ensureAccessible(constructor), null, annotationStore, declaringClass, classTransformer);
+   }
+   
+   public static <T> WBConstructor<T> of(AnnotatedConstructor<T> annotatedConstructor,  WBClass<T> declaringClass, ClassTransformer classTransformer)
+   {
+      AnnotationStore annotationStore = AnnotationStore.of(annotatedConstructor.getAnnotations(), annotatedConstructor.getAnnotations(), classTransformer.getTypeStore());
+      return new WBConstructorImpl<T>(ensureAccessible(annotatedConstructor.getJavaMember()), annotatedConstructor, annotationStore, declaringClass, classTransformer);
    }
 
    /**
@@ -81,9 +90,9 @@ public class WBConstructorImpl<T> extends AbstractWBCallable<T, T, Constructor<T
     * @param constructor The constructor method
     * @param declaringClass The declaring class
     */
-   private WBConstructorImpl(Constructor<T> constructor, WBClass<T> declaringClass, ClassTransformer classTransformer)
+   private WBConstructorImpl(Constructor<T> constructor, AnnotatedConstructor<T> annotatedConstructor, AnnotationStore annotationStore, WBClass<T> declaringClass, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(constructor, classTransformer.getTypeStore()), constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass(), declaringClass);
+      super(annotationStore, constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass(), declaringClass);
       this.constructor = constructor;
 
       this.parameters = new ArrayList<WBParameter<?, ?>>();
@@ -97,13 +106,33 @@ public class WBConstructorImpl<T> extends AbstractWBCallable<T, T, Constructor<T
         
       });
       
+      Map<Integer, AnnotatedParameter<?>> annotatedTypeParameters = new HashMap<Integer, AnnotatedParameter<?>>();
+      
+      if (annotatedConstructor != null)
+      {
+         for (AnnotatedParameter<?> annotated : annotatedConstructor.getParameters())
+         {
+            annotatedTypeParameters.put(annotated.getPosition(), annotated);
+         }
+      }
+      
       for (int i = 0; i < constructor.getParameterTypes().length; i++)
       {
          if (constructor.getParameterAnnotations()[i].length > 0)
          {
             Class<?> clazz = constructor.getParameterTypes()[i];
             Type type = constructor.getGenericParameterTypes()[i];
-            WBParameter<?, ?> parameter = WBParameterImpl.of(constructor.getParameterAnnotations()[i], clazz, type, this, i, classTransformer);
+            WBParameter<?, ?> parameter = null;
+            if (annotatedTypeParameters.containsKey(i))
+            {
+               AnnotatedParameter<?> annotatedParameter = annotatedTypeParameters.get(i);
+               parameter = WBParameterImpl.of(annotatedParameter.getAnnotations(), clazz, type, this, i, classTransformer);            
+            }
+            else
+            {
+               parameter = WBParameterImpl.of(constructor.getParameterAnnotations()[i], clazz, type, this, i, classTransformer);
+            }
+            
             parameters.add(parameter);
 
             for (Annotation annotation : parameter.getAnnotations())

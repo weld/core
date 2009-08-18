@@ -73,7 +73,7 @@ public class WBAnnotationImpl<T extends Annotation> extends WBClassImpl<T> imple
     */
    protected WBAnnotationImpl(Class<T> annotationType, ClassTransformer classTransformer)
    {
-      super(annotationType, annotationType, AnnotationStore.of(annotationType, classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore()), classTransformer);
+      super(annotationType, annotationType, null, AnnotationStore.of(annotationType, classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore()), classTransformer);
       this.clazz = annotationType;
       members = new HashSet<WBMethod<?, ?>>();
       annotatedMembers = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WBMethod<?, ?>>>(), new Supplier<Set<WBMethod<?, ?>>>()

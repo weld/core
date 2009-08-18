@@ -28,7 +28,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.webbeans.introspector.AnnotationStore;
@@ -75,7 +77,14 @@ public class WBMethodImpl<T, X> extends AbstractWBCallable<T, X, Method> impleme
 
    public static <T, X> WBMethodImpl<T, X> of(Method method, WBClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      return new WBMethodImpl<T, X>(ensureAccessible(method), declaringClass, classTransformer);
+      AnnotationStore annotationStore = AnnotationStore.of(method, classTransformer.getTypeStore());
+      return new WBMethodImpl<T, X>(ensureAccessible(method), null, annotationStore, declaringClass, classTransformer);
+   }
+   
+   public static <T, X> WBMethodImpl<T, X> of(AnnotatedMethod<T> method, WBClass<X> declaringClass, ClassTransformer classTransformer)
+   {
+      AnnotationStore annotationStore = AnnotationStore.of(method.getAnnotations(), method.getAnnotations(), classTransformer.getTypeStore());
+      return new WBMethodImpl<T, X>(ensureAccessible(method.getJavaMember()), method, annotationStore, declaringClass, classTransformer);
    }
 
    /**
@@ -88,9 +97,9 @@ public class WBMethodImpl<T, X> extends AbstractWBCallable<T, X, Method> impleme
     * @param declaringClass The declaring class abstraction
     */
    @SuppressWarnings("unchecked")
-   private WBMethodImpl(Method method, WBClass<X> declaringClass, ClassTransformer classTransformer)
+   private WBMethodImpl(Method method, AnnotatedMethod<T> annotatedMethod, AnnotationStore annotationStore, WBClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(method, classTransformer.getTypeStore()), method, (Class<T>) method.getReturnType(), method.getGenericReturnType(), declaringClass);
+      super(annotationStore, method, (Class<T>) method.getReturnType(), method.getGenericReturnType(), declaringClass);
       this.method = method;
       this.parameters = new ArrayList<WBParameter<?, ?>>();
       this.annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WBParameter<?, ?>>>(), new Supplier< List<WBParameter<?, ?>>>()
@@ -102,6 +111,16 @@ public class WBMethodImpl<T, X> extends AbstractWBCallable<T, X, Method> impleme
          }
         
       });
+      
+      Map<Integer, AnnotatedParameter<?>> annotatedTypeParameters = new HashMap<Integer, AnnotatedParameter<?>>();
+      
+      if (annotatedMethod != null)
+      {
+         for (AnnotatedParameter<?> annotated : annotatedMethod.getParameters())
+         {
+            annotatedTypeParameters.put(annotated.getPosition(), annotated);
+         }
+      }
 
       for (int i = 0; i < method.getParameterTypes().length; i++)
       {
@@ -109,7 +128,16 @@ public class WBMethodImpl<T, X> extends AbstractWBCallable<T, X, Method> impleme
          {
             Class<? extends Object> clazz = method.getParameterTypes()[i];
             Type type = method.getGenericParameterTypes()[i];
-            WBParameter<?, ?> parameter = WBParameterImpl.of(method.getParameterAnnotations()[i], (Class<Object>) clazz, type, this, i, classTransformer);
+            WBParameter<?, ?> parameter = null;
+            if (annotatedTypeParameters.containsKey(i))
+            {
+               AnnotatedParameter<?> annotatedParameter = annotatedTypeParameters.get(i);
+               parameter = WBParameterImpl.of(annotatedParameter.getAnnotations(), clazz, type, this, i, classTransformer);            
+            }
+            else
+            {
+               parameter = WBParameterImpl.of(method.getParameterAnnotations()[i], clazz, type, this, i, classTransformer);
+            }
             this.parameters.add(parameter);
             for (Annotation annotation : parameter.getAnnotations())
             {

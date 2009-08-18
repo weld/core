@@ -24,6 +24,7 @@
          <package name="org.jboss.webbeans.test.unit.activities.current" />
          <package name="org.jboss.webbeans.test.unit.activities.child" />
          <package name="org.jboss.webbeans.test.unit.annotated" />
+         <package name="org.jboss.webbeans.test.unit.annotated.decoration" />
          <package name="org.jboss.webbeans.test.unit.bootstrap" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments.multipleEnterprise" />

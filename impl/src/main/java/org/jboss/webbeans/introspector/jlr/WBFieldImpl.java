@@ -20,6 +20,8 @@ import static org.jboss.webbeans.util.Reflections.ensureAccessible;
 
 import java.lang.reflect.Field;
 
+import javax.enterprise.inject.spi.AnnotatedField;
+
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBField;
@@ -47,7 +49,14 @@ public class WBFieldImpl<T, X> extends AbstractWBMember<T, X, Field> implements 
 
    public static <T, X> WBFieldImpl<T, X> of(Field field, WBClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      return new WBFieldImpl<T, X>(ensureAccessible(field), declaringClass, classTransformer);
+      AnnotationStore annotationStore = AnnotationStore.of(field, classTransformer.getTypeStore());
+      return new WBFieldImpl<T, X>(ensureAccessible(field), annotationStore, declaringClass, classTransformer);
+   }
+   
+   public static <T, X> WBFieldImpl<T, X> of(AnnotatedField<? super X> annotatedField, WBClass<X> declaringClass, ClassTransformer classTransformer)
+   {
+      AnnotationStore annotationStore = AnnotationStore.of(annotatedField.getAnnotations(), annotatedField.getAnnotations(), classTransformer.getTypeStore());
+      return new WBFieldImpl<T, X>(ensureAccessible(annotatedField.getJavaMember()), annotationStore, declaringClass, classTransformer);
    }
    
    /**
@@ -59,9 +68,9 @@ public class WBFieldImpl<T, X> extends AbstractWBMember<T, X, Field> implements 
     * @param field The actual field
     * @param declaringClass The abstraction of the declaring class
     */
-   private WBFieldImpl(Field field, WBClass<X> declaringClass, ClassTransformer classTransformer)
+   private WBFieldImpl(Field field, AnnotationStore annotationStore, WBClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(field, classTransformer.getTypeStore()), field, (Class<T>) field.getType(), field.getGenericType(), declaringClass);
+      super(annotationStore, field, (Class<T>) field.getType(), field.getGenericType(), declaringClass);
       this.field = field;
    }
 

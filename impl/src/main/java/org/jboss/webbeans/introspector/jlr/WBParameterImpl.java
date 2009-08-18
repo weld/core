@@ -18,6 +18,7 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedCallable;
 
@@ -38,6 +39,8 @@ import org.jboss.webbeans.resources.ClassTransformer;
 public class WBParameterImpl<T, X> extends AbstractWBAnnotated<T, Object> implements WBParameter<T, X>
 {
    
+   private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
+   
    // The final state
    private final boolean _final = false;
    // The static state
@@ -53,6 +56,11 @@ public class WBParameterImpl<T, X> extends AbstractWBAnnotated<T, Object> implem
    public static <T, X> WBParameter<T, X> of(Annotation[] annotations, Class<T> rawType, Type type, WBCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
    {
       return new WBParameterImpl<T, X>(annotations, rawType, type, declaringMember, position, classTransformer);
+   }
+   
+   public static <T, X> WBParameter<T, X> of(Set<Annotation> annotations, Class<T> rawType, Type type, WBCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
+   {
+      return new WBParameterImpl<T, X>(annotations.toArray(EMPTY_ANNOTATION_ARRAY), rawType, type, declaringMember, position, classTransformer);
    }
 
    /**

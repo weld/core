@@ -127,16 +127,16 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
    public static <T> WBClass<T> of(Class<T> clazz, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(clazz.getAnnotations(), clazz.getDeclaredAnnotations(), classTransformer.getTypeStore());
-      return new WBClassImpl<T>(clazz, clazz, annotationStore, classTransformer);
+      return new WBClassImpl<T>(clazz, clazz, null, annotationStore, classTransformer);
    }
 
    public static <T> WBClass<T> of(AnnotatedType<T> annotatedType, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(annotatedType.getAnnotations(), annotatedType.getAnnotations(), classTransformer.getTypeStore());
-      return new WBClassImpl<T>(annotatedType.getJavaClass(), annotatedType.getBaseType(), annotationStore, classTransformer);
+      return new WBClassImpl<T>(annotatedType.getJavaClass(), annotatedType.getBaseType(), annotatedType, annotationStore, classTransformer);
    }
 
-   protected WBClassImpl(Class<T> rawType, Type type, AnnotationStore annotationStore, ClassTransformer classTransformer)
+   protected WBClassImpl(Class<T> rawType, Type type, AnnotatedType<T> annotatedType, AnnotationStore annotationStore, ClassTransformer classTransformer)
    {
       super(annotationStore, rawType, type);
       this.name = rawType.getName();
@@ -194,6 +194,17 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
       this._nonStaticMemberClass = Reflections.isNonStaticInnerClass(rawType);
       this._abstract = Reflections.isAbstract(rawType);
       this._enum = rawType.isEnum();
+
+      
+      Map<Field, AnnotatedField<? super T>> annotatedTypeFields = new HashMap<Field, AnnotatedField<? super T>>();
+      if (annotatedType != null)
+      {
+         for (AnnotatedField<? super T> annotatedField : annotatedType.getFields())
+         {
+            annotatedTypeFields.put(annotatedField.getJavaMember(), annotatedField);
+         }
+      }
+      
       for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
       {
          for (Field field : c.getDeclaredFields())
@@ -202,7 +213,16 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
             {
                field.setAccessible(true);
             }
-            WBField<?, ?> annotatedField = WBFieldImpl.of(field, getDeclaringWBClass(field, classTransformer), classTransformer);
+            WBField<?, ?> annotatedField = null;
+            if (annotatedTypeFields.containsKey(field))
+            {
+               annotatedField = WBFieldImpl.of(annotatedTypeFields.get(field), this.<T>getDeclaringWBClass(field, classTransformer), classTransformer);
+            }
+            else
+            {
+               annotatedField = WBFieldImpl.of(field, getDeclaringWBClass(field, classTransformer), classTransformer);
+            }
+            
             this.fields.add(annotatedField);
             if (c == rawType)
             {
@@ -249,12 +269,32 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
          }
         
       });
+      
+      Map<Constructor<? super T>, AnnotatedConstructor<T>> annotatedTypeConstructors = new HashMap<Constructor<? super T>, AnnotatedConstructor<T>>();
+      if (annotatedType != null)
+      {
+         for (AnnotatedConstructor<T> annotated : annotatedType.getConstructors())
+         {
+            annotatedTypeConstructors.put(annotated.getJavaMember(), annotated);
+         }
+      }
+      
       this.declaredConstructorsBySignature = new HashMap<ConstructorSignature, WBConstructor<?>>();
       for (Constructor<?> constructor : rawType.getDeclaredConstructors())
       {
-         // TODO Fix this cast
-         Constructor<T> c = (Constructor<T>) constructor;
-         WBConstructor<T> annotatedConstructor = WBConstructorImpl.of(c, this.<T>getDeclaringWBClass(c, classTransformer), classTransformer);
+         WBConstructor<T> annotatedConstructor = null;
+         if (annotatedTypeConstructors.containsKey(constructor))
+         {
+            WBClass<T> declaringClass = this.getDeclaringWBClass(constructor, classTransformer);
+            annotatedConstructor = WBConstructorImpl.of(annotatedTypeConstructors.get(constructor), declaringClass, classTransformer);
+         }
+         else
+         {
+            // TODO Fix this cast
+            Constructor<T> c = (Constructor<T>) constructor;
+            annotatedConstructor = WBConstructorImpl.of(c, this.<T>getDeclaringWBClass(c, classTransformer), classTransformer);
+         }
+         
          if (!constructor.isAccessible())
          {
             constructor.setAccessible(true);
@@ -322,6 +362,16 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
       });
       this.declaredMethodsBySignature = new HashMap<MethodSignature, WBMethod<?, ?>>();
       this.methodsBySignature = new HashMap<MethodSignature, WBMethod<?, ?>>();
+      
+      Map<Method, AnnotatedMethod<?>> annotatedTypeMethods = new HashMap<Method, AnnotatedMethod<?>>();
+      if (annotatedType != null)
+      {
+         for (AnnotatedMethod<?> annotated : annotatedType.getMethods())
+         {
+            annotatedTypeMethods.put(annotated.getJavaMember(), annotated);
+         }
+      }
+      
       for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
       {
          for (Method method : c.getDeclaredMethods())
@@ -331,7 +381,15 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
                method.setAccessible(true);
             }
 
-            WBMethod<?, ?> annotatedMethod = WBMethodImpl.of(method, getDeclaringWBClass(method, classTransformer), classTransformer);
+            WBMethod<?, ?> annotatedMethod = null;
+            if (annotatedTypeMethods.containsKey(method))
+            {
+               annotatedMethod = WBMethodImpl.of(annotatedTypeMethods.get(method), this, classTransformer);
+            }
+            else
+            {
+               annotatedMethod = WBMethodImpl.of(method, getDeclaringWBClass(method, classTransformer), classTransformer);
+            }
             this.methods.add(annotatedMethod);
             this.methodsBySignature.put(annotatedMethod.getSignature(), annotatedMethod);
             if (c == rawType)
