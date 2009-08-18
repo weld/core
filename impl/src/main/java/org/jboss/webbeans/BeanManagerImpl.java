@@ -21,7 +21,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -587,10 +586,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       }
       for (Type type : types)
       {
-         if (type instanceof WildcardType)
-         {
-            throw new IllegalArgumentException("Cannot provide an event type parameterized with a wildcard " + resolvedType);
-         }
          if (type instanceof TypeVariable)
          {
             throw new IllegalArgumentException("Cannot provide an event type parameterized with a type parameter " + resolvedType);
