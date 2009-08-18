@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.implementation.annotatedItem;
+package org.jboss.webbeans.test.unit.annotated;
 public class Parent
 {
    int parent;
