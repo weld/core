@@ -19,9 +19,7 @@ package org.jboss.webbeans.bootstrap;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
@@ -271,7 +269,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    {
       synchronized (this)
       {
-         beanDeployer.addClasses(fireProcessAnnotatedTypeEvents(deploymentVisitor.getBeanClasses()));
+         beanDeployer.addClasses(deploymentVisitor.getBeanClasses());
          beanDeployer.getEnvironment().addBean(new ManagerBean(manager));
          beanDeployer.getEnvironment().addBean(new InjectionPointBean(manager));
          beanDeployer.getEnvironment().addBean(new EventBean(manager));
@@ -412,32 +410,6 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          // FIXME communicate all the captured deployment problems in this exception
          throw new DeploymentException(event.getDeploymentProblems().get(0));
       }
-   }
-   
-   private Collection<WBClass<?>> fireProcessAnnotatedTypeEvents(Iterable<Class<?>> classes)
-   {
-      ClassTransformer classTransformer = getManager().getServices().get(ClassTransformer.class);
-      HashSet<WBClass<?>> finalClassSet = new HashSet<WBClass<?>>();
-      for (Class<?> clazz : classes)
-      {
-         WBClass<?> annotatedType = classTransformer.loadClass(clazz);
-         ProcessAnnotatedTypeImpl<?> event = createProcessAnnotatedTypeEvent(annotatedType);
-         getManager().fireEvent(event);
-         if (!event.isVeto())
-         {
-            if (event.isAnnotatedTypeReplaced())
-            {
-               //TODO Create another WBClass<?> that uses this annotated type
-            }
-            finalClassSet.add(annotatedType);
-         }
-      }
-      return finalClassSet;
-   }
-
-   private <X> ProcessAnnotatedTypeImpl<X> createProcessAnnotatedTypeEvent(AnnotatedType<X> annotatedType)
-   {
-      return new ProcessAnnotatedTypeImpl<X>(annotatedType);
    }
 
    /**

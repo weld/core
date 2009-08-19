@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.bootstrap;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,18 +52,34 @@ public class BeanDeployer extends AbstractBeanDeployer
       ClassTransformer classTransformer = getManager().getServices().get(ClassTransformer.class);
       if (!clazz.isAnnotation() && !clazz.isEnum())
       {
-         classes.add(classTransformer.loadClass(clazz));
+         ProcessAnnotatedTypeImpl<?> event = createProcessAnnotatedTypeEvent(clazz, classTransformer);
+         getManager().fireEvent(event);
+         if (!event.isVeto())
+         {
+            if (event.getAnnotatedType() instanceof WBClass<?>)
+            {
+               classes.add((WBClass<?>) event.getAnnotatedType());
+            }
+            else
+            {
+               classes.add(classTransformer.loadClass(event.getAnnotatedType()));
+            }
+         }
       }
       return this;
    }
    
+   private <X> ProcessAnnotatedTypeImpl<X> createProcessAnnotatedTypeEvent(Class<X> clazz, ClassTransformer classTransformer)
+   {
+      WBClass<X> annotatedType = classTransformer.loadClass(clazz);
+      return new ProcessAnnotatedTypeImpl<X>(annotatedType) {};
+   }
+   
+   // TODO Do we need to fire PAT for annotated types added via BBD? Probably not PLM.
    public AbstractBeanDeployer addClass(AnnotatedType<?> clazz)
    {
       ClassTransformer classTransformer = getManager().getServices().get(ClassTransformer.class);
-      if (!clazz.getJavaClass().isAnnotation() && !clazz.getJavaClass().isEnum())
-      {
-         classes.add(classTransformer.loadClass(clazz));
-      }
+      classes.add(classTransformer.loadClass(clazz));
       return this;
    }
 
@@ -74,12 +89,6 @@ public class BeanDeployer extends AbstractBeanDeployer
       {
          addClass(clazz);
       }
-      return this;
-   }
-
-   public AbstractBeanDeployer addClasses(Collection<WBClass<?>> classes)
-   {
-      this.classes.addAll(classes);
       return this;
    }
 
