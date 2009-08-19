@@ -24,6 +24,11 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.ProcessObserverMethod;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
@@ -88,7 +93,10 @@ public class AbstractBeanDeployer
       for (ObserverMethodImpl<?, ?> observer : getEnvironment().getObservers())
       {
          log.debug("Observer : " + observer);
-         observer.initialize();
+         if (observer instanceof ObserverMethodImpl<?, ?>)
+         {
+            observer.initialize();
+         }
          manager.addObserver(observer);
       }
       
@@ -163,9 +171,15 @@ public class AbstractBeanDeployer
    protected void createObserverMethod(RIBean<?> declaringBean, WBMethod<?, ?> method)
    {
       ObserverMethodImpl<?, ?> observer = ObserverFactory.create(method, declaringBean, manager);
+      //ProcessObserverMethod<?, ?> event = createProcessObserverMethodEvent(observer, method);
       getEnvironment().addObserver(observer);
    }
    
+   private <X, T> ProcessObserverMethod<X, T> createProcessObserverMethodEvent(ObserverMethod<X, T> observer, AnnotatedMethod<X> method)
+   {
+      return new ProcessObserverMethodImpl<X, T>(method, observer, definitionErrors) {};
+   }
+
    protected <T> void createSimpleBean(WBClass<T> annotatedClass)
    {
       SimpleBean<T> bean = SimpleBean.of(annotatedClass, manager);
