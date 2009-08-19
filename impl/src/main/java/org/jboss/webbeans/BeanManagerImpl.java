@@ -584,13 +584,13 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       {
          throw new IllegalArgumentException("Event type " + resolvedType + " is not allowed");
       }
-      for (Type type : types)
-      {
-         if (type instanceof TypeVariable)
-         {
-            throw new IllegalArgumentException("Cannot provide an event type parameterized with a type parameter " + resolvedType);
-         }
-      }
+//      for (Type type : types)
+//      {
+//         if (type instanceof TypeVariable)
+//         {
+//            throw new IllegalArgumentException("Cannot provide an event type parameterized with a type parameter " + resolvedType);
+//         }
+//      }
    }
 
    /**

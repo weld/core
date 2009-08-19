@@ -19,7 +19,9 @@ package org.jboss.webbeans.bootstrap;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
@@ -59,6 +61,7 @@ import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
+import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
@@ -268,7 +271,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    {
       synchronized (this)
       {
-         beanDeployer.addClasses(deploymentVisitor.getBeanClasses());
+         beanDeployer.addClasses(fireProcessAnnotatedTypeEvents(deploymentVisitor.getBeanClasses()));
          beanDeployer.getEnvironment().addBean(new ManagerBean(manager));
          beanDeployer.getEnvironment().addBean(new InjectionPointBean(manager));
          beanDeployer.getEnvironment().addBean(new EventBean(manager));
@@ -411,6 +414,32 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       }
    }
    
+   private Collection<WBClass<?>> fireProcessAnnotatedTypeEvents(Iterable<Class<?>> classes)
+   {
+      ClassTransformer classTransformer = getManager().getServices().get(ClassTransformer.class);
+      HashSet<WBClass<?>> finalClassSet = new HashSet<WBClass<?>>();
+      for (Class<?> clazz : classes)
+      {
+         WBClass<?> annotatedType = classTransformer.loadClass(clazz);
+         ProcessAnnotatedTypeImpl<?> event = createProcessAnnotatedTypeEvent(annotatedType);
+         getManager().fireEvent(event);
+         if (!event.isVeto())
+         {
+            if (event.isAnnotatedTypeReplaced())
+            {
+               //TODO Create another WBClass<?> that uses this annotated type
+            }
+            finalClassSet.add(annotatedType);
+         }
+      }
+      return finalClassSet;
+   }
+
+   private <X> ProcessAnnotatedTypeImpl<X> createProcessAnnotatedTypeEvent(AnnotatedType<X> annotatedType)
+   {
+      return new ProcessAnnotatedTypeImpl<X>(annotatedType);
+   }
+
    /**
     * Gets version information
     * 

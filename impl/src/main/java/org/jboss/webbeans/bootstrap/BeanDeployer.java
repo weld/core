@@ -79,7 +79,7 @@ public class BeanDeployer extends AbstractBeanDeployer
 
    public AbstractBeanDeployer addClasses(Collection<WBClass<?>> classes)
    {
-      classes.addAll(classes);
+      this.classes.addAll(classes);
       return this;
    }
 

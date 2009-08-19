@@ -20,7 +20,11 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 /**
+ * Container lifecycle event for each Java class or interface discovered by
+ * the container.
+ * 
  * @author pmuir
+ * @author David Allen
  *
  */
 public class ProcessAnnotatedTypeImpl<X> implements ProcessAnnotatedType<X>
@@ -28,6 +32,7 @@ public class ProcessAnnotatedTypeImpl<X> implements ProcessAnnotatedType<X>
    
    private AnnotatedType<X> annotatedType;
    private boolean veto;
+   private boolean annotatedTypeReplaced = false;
 
    public ProcessAnnotatedTypeImpl(AnnotatedType<X> annotatedType)
    {
@@ -46,6 +51,7 @@ public class ProcessAnnotatedTypeImpl<X> implements ProcessAnnotatedType<X>
          throw new IllegalArgumentException("Cannot set the type to null (if you want to stop the type being used, call veto()) " + this);
       }
       this.annotatedType = type;
+      this.annotatedTypeReplaced = true;
    }
 
    public void veto()
@@ -56,6 +62,11 @@ public class ProcessAnnotatedTypeImpl<X> implements ProcessAnnotatedType<X>
    public boolean isVeto()
    {
       return veto;
+   }
+   
+   public boolean isAnnotatedTypeReplaced()
+   {
+      return annotatedTypeReplaced;
    }
 
 }
