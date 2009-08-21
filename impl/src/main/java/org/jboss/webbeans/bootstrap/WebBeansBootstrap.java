@@ -187,9 +187,16 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       getServices().add(ContextualIdStore.class, new ContextualIdStore());
    }
    
-   public BeanManagerImpl getManager()
+   public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive)
    {
-      return deploymentManager;
+      if (beanDeployments.containsKey(beanDeploymentArchive))
+      {
+         return beanDeployments.get(beanDeploymentArchive).getBeanManager();
+      }
+      else
+      {
+         return null;
+      }
    }
    
    public Bootstrap startInitialization()
@@ -266,7 +273,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       BeforeBeanDiscovery event = new BeforeBeanDiscoveryImpl(deploymentManager, beanDeployments);
       try
       {
-         getManager().fireEvent(event);
+         deploymentManager.fireEvent(event);
       }
       catch (Exception e)
       {
@@ -279,7 +286,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       BeforeShutdown event = new BeforeShutdownImpl();
       try
       {
-         getManager().fireEvent(event);
+         deploymentManager.fireEvent(event);
       }
       catch (Exception e)
       {

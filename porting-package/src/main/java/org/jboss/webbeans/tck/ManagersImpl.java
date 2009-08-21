@@ -5,6 +5,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
 
 import org.jboss.jsr299.tck.spi.Managers;
+import org.jboss.testharness.impl.runner.servlet.ServletTestRunner;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.DeploymentException;
 import org.jboss.webbeans.mock.MockServletContext;
@@ -13,11 +14,26 @@ import org.jboss.webbeans.servlet.ServletHelper;
 public class ManagersImpl implements Managers
 {
    
-   public static ServletContext SERVLET_CONTEXT = new MockServletContext("");
+   public static ThreadLocal<ServletContext> SERVLET_CONTEXT = new ThreadLocal<ServletContext>()
+   {
+      
+      protected ServletContext initialValue() 
+      {
+         return new MockServletContext("");
+      }
+      
+   };
 
    public BeanManager getManager()
    {
-      return ServletHelper.getModuleBeanManager(SERVLET_CONTEXT);
+      if (ServletTestRunner.getCurrentServletContext() != null)
+      {
+         return ServletHelper.getModuleBeanManager(ServletTestRunner.getCurrentServletContext());
+      }
+      else
+      {
+         return ServletHelper.getModuleBeanManager(SERVLET_CONTEXT.get());
+      }
    }
 
    public boolean isDefinitionError(org.jboss.testharness.api.DeploymentException deploymentException)

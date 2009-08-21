@@ -19,22 +19,21 @@ import javax.enterprise.inject.spi.Bean;
 import javax.servlet.ServletContext;
 
 import org.jboss.testharness.AbstractTest;
+import org.jboss.testharness.impl.runner.servlet.ServletTestRunner;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.mock.MockServletContext;
 import org.jboss.webbeans.mock.el.EL;
 import org.jboss.webbeans.servlet.ServletHelper;
 import org.jboss.webbeans.util.collections.EnumerationList;
 import org.testng.ITestContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
 
 public abstract class AbstractWebBeansTest extends AbstractTest
 {
-
-   public static ServletContext SERVLET_CONTEXT = new MockServletContext("");
    
-   protected static final int BUILT_IN_BEANS = 3;
-
-   public static boolean visited = false;
+   private ServletContext servletContext;
 
    @Override
    @BeforeSuite
@@ -47,6 +46,30 @@ public abstract class AbstractWebBeansTest extends AbstractTest
          getCurrentConfiguration().getExtraPackages().add(MockServletContext.class.getPackage().getName());
       }
       super.beforeSuite(context);
+   }
+   
+   @Override
+   @BeforeClass
+   public void beforeClass() throws Throwable
+   {
+      super.beforeClass();
+      if (isInContainer())
+      {
+         servletContext = ServletTestRunner.getCurrentServletContext();
+      }
+      else
+      {
+         servletContext = new MockServletContext("");
+      }
+      
+   }
+   
+   @Override
+   @AfterClass
+   public void afterClass() throws Exception
+   {
+      servletContext = null;
+      super.afterClass();
    }
 
    /**
@@ -110,7 +133,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
 
    protected BeanManagerImpl getCurrentManager()
    {
-      return ServletHelper.getModuleBeanManager(SERVLET_CONTEXT);
+      return ServletHelper.getModuleBeanManager(servletContext);
    }
 
    public boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException )

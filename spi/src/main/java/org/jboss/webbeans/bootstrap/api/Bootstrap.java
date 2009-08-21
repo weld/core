@@ -22,6 +22,7 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.manager.api.WebBeansManager;
@@ -136,11 +137,19 @@ public interface Bootstrap
    public ServiceRegistry getServices();
 
    /**
-    * Get the manager used for this application.
+    * Get the manager used for this beanDeploymentArchive.
     * 
-    * @return the manager. Unless {@link #startContainer()} has been called, this method
-    *         will return null.
+    * If {@link #startContainer()} has not been called, this method will return
+    * null.
+    * 
+    * If the beanDeploymentArchive is not known to Web Beans (for example, it
+    * was not passed to the Web Beans as part of the {@link Deployment}, or has
+    * not yet been requested by
+    * {@link Deployment#loadBeanDeploymentArchive(Class)}), null will be
+    * returned.
+    * 
+    * @return the manager or null if not yet available or not found.
     */
-   public WebBeansManager getManager();
+   public WebBeansManager getManager(BeanDeploymentArchive beanDeploymentArchive);
 
 }

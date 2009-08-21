@@ -2,12 +2,13 @@ package org.jboss.webbeans.bootstrap.api.test;
 
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.api.helpers.AbstractBootstrap;
+import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 
 public class MockBootstrap extends AbstractBootstrap
 {
    
-   public WebBeansManager getManager()
+   public WebBeansManager getManager(BeanDeploymentArchive beanDeploymentArchive)
    {
       return null;
    }

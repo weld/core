@@ -19,6 +19,7 @@ package org.jboss.webbeans.bootstrap.api.helpers;
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.api.Environment;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
+import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 
@@ -32,9 +33,9 @@ public abstract class ForwardingBootstrap implements Bootstrap
    
    protected abstract Bootstrap delegate();
    
-   public WebBeansManager getManager()
+   public WebBeansManager getManager(BeanDeploymentArchive beanDeploymentArchive)
    {
-      return delegate().getManager();
+      return delegate().getManager(beanDeploymentArchive);
    }
 
    
