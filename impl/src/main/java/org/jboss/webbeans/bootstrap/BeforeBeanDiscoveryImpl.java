@@ -17,11 +17,14 @@
 package org.jboss.webbeans.bootstrap;
 
 import java.lang.annotation.Annotation;
+import java.util.Map;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.literal.BindingTypeLiteral;
 import org.jboss.webbeans.literal.InterceptorBindingTypeLiteral;
 import org.jboss.webbeans.literal.ScopeTypeLiteral;
@@ -31,12 +34,16 @@ public class BeforeBeanDiscoveryImpl implements BeforeBeanDiscovery
 {
    
    private final TypeStore typeStore;
-   private final BeanDeployer beanDeployer;
+   private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
+   private final BeanManagerImpl deploymentManager;
+   private final Deployment deployment;
    
-   public BeforeBeanDiscoveryImpl(BeanManagerImpl manager, BeanDeployer beanDeployer)
+   public BeforeBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      this.typeStore = manager.getServices().get(TypeStore.class);
-      this.beanDeployer = beanDeployer;
+      this.typeStore = deploymentManager.getServices().get(TypeStore.class);
+      this.beanDeployments = beanDeployments;
+      this.deployment = deploymentManager.getServices().get(Deployment.class);
+      this.deploymentManager = deploymentManager;
    }
 
    public void addBindingType(Class<? extends Annotation> bindingType)
@@ -63,7 +70,25 @@ public class BeforeBeanDiscoveryImpl implements BeforeBeanDiscovery
    
    public void addAnnotatedType(AnnotatedType<?> type)
    {
-      beanDeployer.addClass(type);
+      BeanDeploymentArchive beanDeploymentArchive = deployment.loadBeanDeploymentArchive(type.getJavaClass());
+      if (beanDeploymentArchive == null)
+      {
+         throw new IllegalStateException("Unable to find Bean Deployment Archive for " + type);
+      }
+      else
+      {
+         if (beanDeployments.containsKey(beanDeploymentArchive))
+         {
+            beanDeployments.get(beanDeploymentArchive).getBeanDeployer().addClass(type);
+         }
+         else
+         {
+            BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager);
+            beanDeployments.put(beanDeploymentArchive, beanDeployment);
+         }
+      }
    }
+   
+   
 
 }

@@ -2,10 +2,16 @@ package org.jboss.webbeans.tck;
 
 import javax.el.ELContext;
 
+import org.jboss.jsr299.tck.api.JSR299Configuration;
+import org.jboss.testharness.api.Configurable;
+import org.jboss.testharness.api.Configuration;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.mock.el.EL;
 
-public class ELImpl implements org.jboss.jsr299.tck.spi.EL
+public class ELImpl implements org.jboss.jsr299.tck.spi.EL, Configurable
 {
+   
+   private JSR299Configuration configuration;
    
    
    @SuppressWarnings("unchecked")
@@ -24,6 +30,26 @@ public class ELImpl implements org.jboss.jsr299.tck.spi.EL
    
    public ELContext createELContext()
    {
-      return EL.createELContext();
+      if (configuration.getManagers().getManager() instanceof BeanManagerImpl)
+      {
+         return EL.createELContext((BeanManagerImpl) configuration.getManagers().getManager());
+      }
+      else
+      {
+         throw new IllegalStateException("Wrong manager");
+      }
    }
+
+   public void setConfiguration(Configuration configuration)
+   {
+      if (configuration instanceof JSR299Configuration)
+      {
+         this.configuration = (JSR299Configuration) configuration; 
+      }
+      else
+      {
+         throw new IllegalArgumentException("Can only use ELImpl in the CDI TCK");
+      }
+   }
+   
 }

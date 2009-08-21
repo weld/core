@@ -59,7 +59,11 @@ public class WebBeansListener extends AbstractServletListener
    @Override
    public void contextInitialized(ServletContextEvent sce)
    {
-      new JspInitialization().init(sce.getServletContext());
+      // JBoss AS will still start the deployment even if WB fails
+      if (CurrentManager.isAvailable())
+      {
+         new JspInitialization().init(sce.getServletContext());
+      }
    }  
 
    /**
@@ -70,7 +74,11 @@ public class WebBeansListener extends AbstractServletListener
    @Override
    public void sessionCreated(HttpSessionEvent event) 
    {
-      getLifecycle().beginSession(event.getSession());
+      // JBoss AS will still start the deployment even if WB fails
+      if (CurrentManager.isAvailable())
+      {
+         getLifecycle().beginSession(event.getSession());
+      }
    }
 
    /**
@@ -81,7 +89,11 @@ public class WebBeansListener extends AbstractServletListener
    @Override
    public void sessionDestroyed(HttpSessionEvent event) 
    {
-      getLifecycle().endSession(event.getSession());
+      // JBoss AS will still start the deployment even if WB fails
+      if (CurrentManager.isAvailable())
+      {
+         getLifecycle().endSession(event.getSession());
+      }
    }
 
    /**
@@ -92,13 +104,17 @@ public class WebBeansListener extends AbstractServletListener
    @Override
    public void requestDestroyed(ServletRequestEvent event)
    {
-      if (event.getServletRequest() instanceof HttpServletRequest)
+      // JBoss AS will still start the deployment even if WB fails
+      if (CurrentManager.isAvailable())
       {
-         getLifecycle().endRequest((HttpServletRequest) event.getServletRequest());
-      }
-      else
-      {
-         throw new IllegalStateException("Non HTTP-Servlet lifecycle not defined");
+         if (event.getServletRequest() instanceof HttpServletRequest)
+         {
+            getLifecycle().endRequest((HttpServletRequest) event.getServletRequest());
+         }
+         else
+         {
+            throw new IllegalStateException("Non HTTP-Servlet lifecycle not defined");
+         }
       }
    }
 
@@ -110,13 +126,17 @@ public class WebBeansListener extends AbstractServletListener
    @Override
    public void requestInitialized(ServletRequestEvent event)
    {
-      if (event.getServletRequest() instanceof HttpServletRequest)
+      // JBoss AS will still start the deployment even if WB fails
+      if (CurrentManager.isAvailable())
       {
-         getLifecycle().beginRequest((HttpServletRequest) event.getServletRequest());
-      }
-      else
-      {
-         throw new IllegalStateException("Non HTTP-Servlet lifecycle not defined");
+         if (event.getServletRequest() instanceof HttpServletRequest)
+         {
+            getLifecycle().beginRequest((HttpServletRequest) event.getServletRequest());
+         }
+         else
+         {
+            throw new IllegalStateException("Non HTTP-Servlet lifecycle not defined");
+         }
       }
    }
 

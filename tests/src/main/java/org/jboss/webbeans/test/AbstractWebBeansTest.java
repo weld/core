@@ -16,11 +16,13 @@ import java.util.Set;
 import javax.el.ELContext;
 import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.spi.Bean;
+import javax.servlet.ServletContext;
 
 import org.jboss.testharness.AbstractTest;
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.mock.MockServletContext;
 import org.jboss.webbeans.mock.el.EL;
+import org.jboss.webbeans.servlet.ServletHelper;
 import org.jboss.webbeans.util.collections.EnumerationList;
 import org.testng.ITestContext;
 import org.testng.annotations.BeforeSuite;
@@ -28,6 +30,8 @@ import org.testng.annotations.BeforeSuite;
 public abstract class AbstractWebBeansTest extends AbstractTest
 {
 
+   public static ServletContext SERVLET_CONTEXT = new MockServletContext("");
+   
    protected static final int BUILT_IN_BEANS = 3;
 
    public static boolean visited = false;
@@ -40,6 +44,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       {
          getCurrentConfiguration().getExtraPackages().add(AbstractWebBeansTest.class.getPackage().getName());
          getCurrentConfiguration().getExtraPackages().add(EL.class.getPackage().getName());
+         getCurrentConfiguration().getExtraPackages().add(MockServletContext.class.getPackage().getName());
       }
       super.beforeSuite(context);
    }
@@ -105,7 +110,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
 
    protected BeanManagerImpl getCurrentManager()
    {
-      return CurrentManager.rootManager();
+      return ServletHelper.getModuleBeanManager(SERVLET_CONTEXT);
    }
 
    public boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException )
@@ -164,7 +169,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
    @SuppressWarnings("unchecked")
    public <T> T evaluateValueExpression(String expression, Class<T> expectedType)
    {
-      ELContext elContext = EL.createELContext();
+      ELContext elContext = EL.createELContext(getCurrentManager().getCurrent());
       return (T) EL.EXPRESSION_FACTORY.createValueExpression(elContext, expression, expectedType).getValue(elContext);
    }
 

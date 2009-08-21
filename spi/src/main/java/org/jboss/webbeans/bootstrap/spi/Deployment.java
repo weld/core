@@ -116,8 +116,9 @@ public interface Deployment extends Service
 {
 
    /**
-    * Get the bean deployment archives which are accessible by this deployment
-    * and adjacent to it in the deployment archive graph.
+    * Get the bean deployment archives which are part of this deployment
+    * and adjacent to it in the deployment archive graph. This should include
+    * all Java EE modules such as WARs, EJB jars and RARs.
     * 
     * Cycles in the accessible BeanDeploymentArchive graph are allowed. If a 
     * cycle is detected by Web Beans, it will be automatically removed by Web

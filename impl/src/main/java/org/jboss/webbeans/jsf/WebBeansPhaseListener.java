@@ -22,12 +22,17 @@
  */
 package org.jboss.webbeans.jsf;
 
+import static org.jboss.webbeans.jsf.JsfHelper.getConversationId;
+import static org.jboss.webbeans.jsf.JsfHelper.getModuleBeanManager;
+import static org.jboss.webbeans.jsf.JsfHelper.getHttpSession;
+
+import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.conversation.ConversationImpl;
@@ -73,7 +78,7 @@ public class WebBeansPhaseListener implements PhaseListener
    {
       if (phaseEvent.getPhaseId().equals(PhaseId.RESTORE_VIEW))
       {
-         beforeRestoreView();
+         beforeRestoreView(phaseEvent.getFacesContext());
       }
    }
 
@@ -89,35 +94,36 @@ public class WebBeansPhaseListener implements PhaseListener
    {
       if (phaseEvent.getPhaseId().equals(PhaseId.RENDER_RESPONSE))
       {
-         afterRenderResponse();
+         afterRenderResponse(phaseEvent.getFacesContext());
       }
       // be careful with this else as it assumes only one if condition right now
       else if (phaseEvent.getFacesContext().getResponseComplete())
       {
-         afterResponseComplete(phaseEvent.getPhaseId());
+         afterResponseComplete(phaseEvent.getFacesContext(), phaseEvent.getPhaseId());
       }
    }
 
    /**
     * Execute before the Restore View phase.
     */
-   private void beforeRestoreView()
+   private void beforeRestoreView(FacesContext facesContext)
    {
       log.trace("Initiating the session and conversation before the Restore View phase");
-      initiateSessionAndConversation();
+      initiateSessionAndConversation(facesContext);
    }
    
    /**
     * Execute after the Render Response phase.
     */
-   private void afterRenderResponse()
+   private void afterRenderResponse(FacesContext facesContext)
    {
-      SessionContext sessionContext = CurrentManager.rootManager().getServices().get(SessionContext.class);
-      ConversationContext conversationContext = CurrentManager.rootManager().getServices().get(ConversationContext.class);
+      BeanManagerImpl moduleBeanManager = getModuleBeanManager(facesContext);
+      SessionContext sessionContext = moduleBeanManager.getServices().get(SessionContext.class);
+      ConversationContext conversationContext = moduleBeanManager.getServices().get(ConversationContext.class);
       if (sessionContext.isActive())
       {
          log.trace("Cleaning up the conversation after the Render Response phase");
-         CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
+         moduleBeanManager.getInstanceByType(ConversationManager.class).cleanupConversation();
          conversationContext.setActive(false);
       }
       else
@@ -129,13 +135,14 @@ public class WebBeansPhaseListener implements PhaseListener
    /**
     * Execute after any phase that marks the response as complete.
     */
-   private void afterResponseComplete(PhaseId phaseId)
+   private void afterResponseComplete(FacesContext facesContext, PhaseId phaseId)
    {
-      SessionContext sessionContext = CurrentManager.rootManager().getServices().get(SessionContext.class);
+      BeanManagerImpl moduleBeanManager = getModuleBeanManager(facesContext);
+      SessionContext sessionContext = moduleBeanManager.getServices().get(SessionContext.class);
       if (sessionContext.isActive())
       {
          log.trace("Cleaning up the conversation after the " + phaseId + " phase as the response has been marked complete");
-         CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
+         moduleBeanManager.getInstanceByType(ConversationManager.class).cleanupConversation();
       }
       else
       {
@@ -149,14 +156,15 @@ public class WebBeansPhaseListener implements PhaseListener
     * conversation id token is present in the request and, in either case,
     * activate the conversation context (long-running or transient).
     */
-   private void initiateSessionAndConversation()
+   private void initiateSessionAndConversation(FacesContext facesContext)
    {
-      HttpSession session = PhaseHelper.getHttpSession();
-      CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
-      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).beginOrRestoreConversation(PhaseHelper.getConversationId());
-      String cid = CurrentManager.rootManager().getInstanceByType(ConversationImpl.class).getUnderlyingId();
+      HttpSession session = getHttpSession(facesContext);
+      BeanManagerImpl moduleBeanManager = getModuleBeanManager(facesContext);
+      moduleBeanManager.getInstanceByType(HttpSessionManager.class).setSession(session);
+      moduleBeanManager.getInstanceByType(ConversationManager.class).beginOrRestoreConversation(getConversationId(facesContext));
+      String cid = moduleBeanManager.getInstanceByType(ConversationImpl.class).getUnderlyingId();
       
-      ConversationContext conversationContext = CurrentManager.rootManager().getServices().get(ConversationContext.class);
+      ConversationContext conversationContext = moduleBeanManager.getServices().get(ConversationContext.class);
       conversationContext.setBeanStore(new ConversationBeanStore(session, cid));
       conversationContext.setActive(true);
    }

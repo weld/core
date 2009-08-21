@@ -42,7 +42,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
    protected AbstractBuiltInBean(BeanManagerImpl manager)
    {
       super(manager);
-      this.id = getClass().getSimpleName();
+      this.id = createId(getClass().getSimpleName());
    }
    
    @Override

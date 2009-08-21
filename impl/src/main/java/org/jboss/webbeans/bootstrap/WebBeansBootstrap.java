@@ -16,10 +16,13 @@
  */
 package org.jboss.webbeans.bootstrap;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
@@ -29,16 +32,8 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.DeploymentException;
 import org.jboss.webbeans.Validator;
-import org.jboss.webbeans.bean.builtin.DefaultValidatorBean;
-import org.jboss.webbeans.bean.builtin.DefaultValidatorFactoryBean;
-import org.jboss.webbeans.bean.builtin.InjectionPointBean;
 import org.jboss.webbeans.bean.builtin.ManagerBean;
-import org.jboss.webbeans.bean.builtin.PrincipalBean;
-import org.jboss.webbeans.bean.builtin.UserTransactionBean;
-import org.jboss.webbeans.bean.builtin.facade.EventBean;
-import org.jboss.webbeans.bean.builtin.facade.InstanceBean;
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
-import org.jboss.webbeans.bootstrap.api.Environments;
 import org.jboss.webbeans.bootstrap.api.helpers.AbstractBootstrap;
 import org.jboss.webbeans.bootstrap.api.helpers.ServiceRegistries;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
@@ -51,15 +46,8 @@ import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
-import org.jboss.webbeans.conversation.ConversationImpl;
-import org.jboss.webbeans.conversation.JavaSEConversationTerminator;
-import org.jboss.webbeans.conversation.NumericConversationIdGenerator;
-import org.jboss.webbeans.conversation.ServletConversationManager;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
-import org.jboss.webbeans.ejb.EjbDescriptorCache;
-import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
@@ -71,13 +59,9 @@ import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.resources.DefaultResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceServices;
-import org.jboss.webbeans.security.spi.SecurityServices;
-import org.jboss.webbeans.servlet.HttpSessionManager;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.jboss.webbeans.util.serviceProvider.ServiceLoader;
-import org.jboss.webbeans.validation.spi.ValidationServices;
-import org.jboss.webbeans.xml.BeansXmlParser;
 
 /**
  * Common bootstrapping functionality that is run at application startup and
@@ -88,65 +72,50 @@ import org.jboss.webbeans.xml.BeansXmlParser;
 public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
 {
    
-   // Temporary workaround for reading from a Deployment
+   /**
+    * 
+    * A Deployment visitor which can find the transitive closure of Bean 
+    * Deployment Archives
+    * 
+    * @author pmuir
+    *
+    */
    private static class DeploymentVisitor
    {
       
-      private final Collection<Class<?>> beanClasses;
-      private final Collection<URL> beansXmlUrls;
-      private final Collection<EjbDescriptor<?>> ejbDescriptors;
-      private final Deployment deployment;
+      private final BeanManagerImpl deploymentManager;
       
-      public DeploymentVisitor(Deployment deployment)
+      public DeploymentVisitor(BeanManagerImpl deploymentManager)
       {
-         this.deployment = deployment;
-         this.beanClasses = new ArrayList<Class<?>>();
-         this.beansXmlUrls = new ArrayList<URL>();
-         this.ejbDescriptors = new ArrayList<EjbDescriptor<?>>();
+         this.deploymentManager = deploymentManager;
       }
       
-      public DeploymentVisitor visit()
+      public Map<BeanDeploymentArchive, BeanDeployment> visit()
       {
-         for (BeanDeploymentArchive archvive : deployment.getBeanDeploymentArchives())
+         Set<BeanDeploymentArchive> seenBeanDeploymentArchives = new HashSet<BeanDeploymentArchive>();
+         Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives = new HashMap<BeanDeploymentArchive, BeanDeployment>();
+         for (BeanDeploymentArchive archvive : deploymentManager.getServices().get(Deployment.class).getBeanDeploymentArchives())
          {
-            visit(archvive);
+            visit(archvive, managerAwareBeanDeploymentArchives, seenBeanDeploymentArchives);
          }
-         return this;
+         return managerAwareBeanDeploymentArchives;
       }
       
-      private void visit(BeanDeploymentArchive beanDeploymentArchive)
+      private BeanDeployment visit(BeanDeploymentArchive beanDeploymentArchive, Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives, Set<BeanDeploymentArchive> seenBeanDeploymentArchives)
       {
-         for (Class<?> clazz : beanDeploymentArchive.getBeanClasses())
-         {
-            beanClasses.add(clazz);
-         }
-         for (URL url : beanDeploymentArchive.getBeansXml())
-         {
-            beansXmlUrls.add(url);
-         }
-         for (EjbDescriptor<?> ejbDescriptor : beanDeploymentArchive.getEjbs())
-         {
-            ejbDescriptors.add(ejbDescriptor);
-         }
+         BeanDeployment parent = new BeanDeployment(beanDeploymentArchive, deploymentManager);
+         managerAwareBeanDeploymentArchives.put(beanDeploymentArchive, parent);
+         seenBeanDeploymentArchives.add(beanDeploymentArchive);
          for (BeanDeploymentArchive archive : beanDeploymentArchive.getBeanDeploymentArchives())
          {
-            visit(archive);
+            // Cut any circularties
+            if (!seenBeanDeploymentArchives.contains(archive))
+            {
+               BeanDeployment child = visit(archive, managerAwareBeanDeploymentArchives, seenBeanDeploymentArchives);
+               parent.getBeanManager().addAccessibleBeanManager(child.getBeanManager());
+            }
          }
-      }
-      
-      public Iterable<Class<?>> getBeanClasses()
-      {
-         return beanClasses;
-      }
-      
-      public Iterable<URL> getBeansXmlUrls()
-      {
-         return beansXmlUrls;
-      }
-      
-      public Iterable<EjbDescriptor<?>> getEjbDescriptors()
-      {
-         return ejbDescriptors;
+         return parent;
       }
       
    }
@@ -160,8 +129,8 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    }
 
    // The Web Beans manager
-   private BeanManagerImpl manager;
-   private BeanDeployer beanDeployer;
+   private BeanManagerImpl deploymentManager;
+   private Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
    private DeploymentVisitor deploymentVisitor;
    private BeanStore requestBeanStore;
    
@@ -194,10 +163,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          }
          addImplementationServices();
          createContexts();
-         this.manager = BeanManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
-         CurrentManager.setRootManager(manager);
+         this.deploymentManager = BeanManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
+         CurrentManager.setRootManager(deploymentManager);
          initializeContexts();
-         this.deploymentVisitor = new DeploymentVisitor(getServices().get(Deployment.class));
+         this.deploymentVisitor = new DeploymentVisitor(deploymentManager);
          return this;
       }
    }
@@ -220,14 +189,14 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    
    public BeanManagerImpl getManager()
    {
-      return manager;
+      return deploymentManager;
    }
    
    public Bootstrap startInitialization()
    {
       synchronized (this)
       {
-         if (manager == null)
+         if (deploymentManager == null)
          {
             throw new IllegalStateException("Manager has not been initialized");
          }
@@ -236,31 +205,21 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
             throw new IllegalStateException("No application context BeanStore set");
          }
          
-         deploymentVisitor.visit();
-         
+         // Set up the contexts before we start creating bean deployers
+         // This allows us to throw errors in the parser
          beginApplication(getApplicationContext());
          requestBeanStore = new ConcurrentHashMapBeanStore();
-         beginDeploy(requestBeanStore);
          
-         EjbDescriptorCache ejbDescriptors = new EjbDescriptorCache();
-         if (getServices().contains(EjbServices.class))
-         {
-            // Must populate EJB cache first, as we need it to detect whether a
-            // bean is an EJB!
-            ejbDescriptors.addAll(deploymentVisitor.getEjbDescriptors());
-         }
+         beanDeployments = deploymentVisitor.visit();
          
-         // TODO Should use a separate event manager for sending bootstrap events
-         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(manager);
+         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager);
          extensionBeanDeployer.addExtensions(ServiceLoader.load(Extension.class));
          extensionBeanDeployer.createBeans().deploy();
          
-         // Parse beans.xml before main bean deployment
-         parseBeansXml(deploymentVisitor.getBeansXmlUrls());
+         // Add the Deployment BeanManager Bean to the Deployment BeanManager
+         deploymentManager.addBean(new ManagerBean(deploymentManager));
          
-         beanDeployer = new BeanDeployer(manager, ejbDescriptors);
-         
-         fireBeforeBeanDiscoveryEvent(beanDeployer);
+         fireBeforeBeanDiscoveryEvent();
       }
       return this;
    }
@@ -269,33 +228,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    {
       synchronized (this)
       {
-         beanDeployer.addClasses(deploymentVisitor.getBeanClasses());
-         beanDeployer.getEnvironment().addBean(new ManagerBean(manager));
-         beanDeployer.getEnvironment().addBean(new InjectionPointBean(manager));
-         beanDeployer.getEnvironment().addBean(new EventBean(manager));
-         beanDeployer.getEnvironment().addBean(new InstanceBean(manager));
-         if (!getEnvironment().equals(Environments.SE))
+         for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
          {
-            beanDeployer.addClass(ConversationImpl.class);
-            beanDeployer.addClass(ServletConversationManager.class);
-            beanDeployer.addClass(JavaSEConversationTerminator.class);
-            beanDeployer.addClass(NumericConversationIdGenerator.class);
-            beanDeployer.addClass(HttpSessionManager.class);
+            entry.getValue().deployBeans(getEnvironment());
          }
-         if (getServices().contains(TransactionServices.class))
-         {
-            beanDeployer.getEnvironment().addBean(new UserTransactionBean(manager));
-         }
-         if (getServices().contains(SecurityServices.class))
-         {
-            beanDeployer.getEnvironment().addBean(new PrincipalBean(manager));
-         }
-         if (getServices().contains(ValidationServices.class))
-         {
-            beanDeployer.getEnvironment().addBean(new DefaultValidatorBean(manager));
-            beanDeployer.getEnvironment().addBean(new DefaultValidatorFactoryBean(manager));
-         }
-         beanDeployer.createBeans().deploy();
          fireAfterBeanDiscoveryEvent();
          log.debug("Web Beans initialized. Validating beans.");
       }
@@ -306,7 +242,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    {
       synchronized (this)
       {
-         getServices().get(Validator.class).validateDeployment(manager, beanDeployer.getEnvironment());
+         for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
+         {
+            getServices().get(Validator.class).validateDeployment(entry.getValue().getBeanManager(), entry.getValue().getBeanDeployer().getEnvironment());
+         }
          fireAfterDeploymentValidationEvent();
       }
       return this;
@@ -316,40 +255,15 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    {
       synchronized (this)
       {
-         endDeploy(requestBeanStore);
+         // Register the managers so external requests can handle them
+         CurrentManager.setBeanDeploymentArchives(beanDeployments);
       }
       return this;
    }
-   
-   private void parseBeansXml(Iterable<URL> urls)
-   {
-      BeansXmlParser parser = new BeansXmlParser(getServices().get(ResourceLoader.class), urls);
-      parser.parse();
-      
-      if (parser.getEnabledPolicyClasses() != null)
-      {
-         manager.setEnabledPolicyClasses(parser.getEnabledPolicyClasses());
-      }
-      if (parser.getEnabledPolicyStereotypes() != null)
-      {
-         manager.setEnabledPolicyStereotypes(parser.getEnabledPolicyStereotypes());
-      }
-      if (parser.getEnabledDecoratorClasses() != null)
-      {
-         manager.setEnabledDecoratorClasses(parser.getEnabledDecoratorClasses());
-      }
-      if (parser.getEnabledInterceptorClasses() != null)
-      {
-         manager.setEnabledInterceptorClasses(parser.getEnabledInterceptorClasses());
-      }
-      log.debug("Enabled policies: " + manager.getEnabledPolicyClasses() + " " + manager.getEnabledPolicyStereotypes());
-      log.debug("Enabled decorator types: " + manager.getEnabledDecoratorClasses());
-      log.debug("Enabled interceptor types: " + manager.getEnabledInterceptorClasses());
-   }
 
-   private void fireBeforeBeanDiscoveryEvent(BeanDeployer beanDeployer)
+   private void fireBeforeBeanDiscoveryEvent()
    {
-      BeforeBeanDiscoveryImpl event = new BeforeBeanDiscoveryImpl(getManager(), beanDeployer);
+      BeforeBeanDiscovery event = new BeforeBeanDiscoveryImpl(deploymentManager, beanDeployments);
       try
       {
          getManager().fireEvent(event);
@@ -375,10 +289,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    
    private void fireAfterBeanDiscoveryEvent()
    {
-      AfterBeanDiscoveryImpl event = new AfterBeanDiscoveryImpl(getManager());
+      AfterBeanDiscoveryImpl event = new AfterBeanDiscoveryImpl(deploymentManager, beanDeployments);
       try
       {
-         manager.fireEvent(event);
+         deploymentManager.fireEvent(event);
       }
       catch (Exception e)
       {
@@ -398,7 +312,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       
       try
       {
-         manager.fireEvent(event);
+         deploymentManager.fireEvent(event);
       }
       catch (Exception e)
       {
@@ -425,11 +339,11 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    
    protected void initializeContexts()
    {
-      manager.addContext(getServices().get(DependentContext.class));
-      manager.addContext(getServices().get(RequestContext.class));
-      manager.addContext(getServices().get(ConversationContext.class));
-      manager.addContext(getServices().get(SessionContext.class));
-      manager.addContext(getServices().get(ApplicationContext.class));
+      deploymentManager.addContext(getServices().get(DependentContext.class));
+      deploymentManager.addContext(getServices().get(RequestContext.class));
+      deploymentManager.addContext(getServices().get(ConversationContext.class));
+      deploymentManager.addContext(getServices().get(SessionContext.class));
+      deploymentManager.addContext(getServices().get(ApplicationContext.class));
    }
    
    protected void createContexts()
@@ -445,24 +359,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    protected void beginApplication(BeanStore applicationBeanStore)
    {
       log.trace("Starting application");
-      ApplicationContext applicationContext = manager.getServices().get(ApplicationContext.class);
+      ApplicationContext applicationContext = deploymentManager.getServices().get(ApplicationContext.class);
       applicationContext.setBeanStore(applicationBeanStore);
       applicationContext.setActive(true);
 
-   }
-
-   protected void beginDeploy(BeanStore requestBeanStore)
-   {
-      RequestContext requestContext = CurrentManager.rootManager().getServices().get(RequestContext.class);
-      requestContext.setBeanStore(requestBeanStore);
-      requestContext.setActive(true);
-   }
-
-   protected void endDeploy(BeanStore requestBeanStore)
-   {
-      RequestContext requestContext = CurrentManager.rootManager().getServices().get(RequestContext.class);
-      requestContext.setBeanStore(null);
-      requestContext.setActive(false);
    }
    
    public void shutdown()
@@ -473,7 +373,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       }
       finally
       {
-         manager.shutdown();
+         deploymentManager.shutdown();
       }
    }
 

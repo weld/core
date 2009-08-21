@@ -49,7 +49,8 @@ public abstract class RIBean<T> implements Bean<T>
    
    protected static String createId(String prefix)
    {
-      AtomicInteger i = ids.putIfAbsent(prefix, new AtomicInteger());
+      ids.putIfAbsent(prefix, new AtomicInteger());
+      int i = ids.get(prefix).getAndIncrement();
       return prefix + "-" + i;
    }
 

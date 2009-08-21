@@ -29,8 +29,15 @@ public class ManagerObjectFactory implements ObjectFactory
    
    public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception
    {
-      // TODO This should return the bean deployment archive manager
-      return CurrentManager.rootManager().getCurrent();
+      // Temp hack for JBoss Flat Deployment
+      if (CurrentManager.getBeanDeploymentArchives().size() == 1)
+      {
+         return CurrentManager.getBeanDeploymentArchives().entrySet().iterator().next().getValue().getCurrent();
+      }
+      else
+      {
+         throw new UnsupportedOperationException("Unable to determine which manager to return");
+      }
    }
    
 }

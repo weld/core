@@ -31,7 +31,7 @@ public class ELResolverTest extends AbstractWebBeansTest
    @Test
    public void testResolveBeanPropertyOfNamedBean()
    {
-      ELContext elContext = EL.createELContext();
+      ELContext elContext = EL.createELContext(getCurrentManager());
       ExpressionFactory exprFactory = EL.EXPRESSION_FACTORY;
       
       assertEquals(exprFactory.createValueExpression(elContext, "#{beer.style}", String.class).getValue(elContext), "Belgium Strong Dark Ale");
@@ -48,7 +48,7 @@ public class ELResolverTest extends AbstractWebBeansTest
    @Test
    public void testResolveBeanPropertyOfProducerBean()
    {
-      ELContext elContext = EL.createELContext();
+      ELContext elContext = EL.createELContext(getCurrentManager());
       ExpressionFactory exprFactory = EL.EXPRESSION_FACTORY;
       
       assertEquals(exprFactory.createValueExpression(elContext, "#{beerOnTap.style}", String.class).getValue(elContext), "IPA");

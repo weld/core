@@ -95,6 +95,16 @@
          <artifactId>persistence-api</artifactId>
       </dependency>
       
+      <dependency>
+         <groupId>javax.validation</groupId>
+         <artifactId>validation-api</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>javax.faces</groupId>
+         <artifactId>jsf-api</artifactId>
+      </dependency>
+      
    </dependencies>
 
    <build>

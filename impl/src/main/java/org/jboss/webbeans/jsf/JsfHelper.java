@@ -17,13 +17,17 @@
 package org.jboss.webbeans.jsf;
 
 import javax.enterprise.inject.AnnotationLiteral;
+import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.conversation.ConversationIdName;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.persistence.spi.helpers.JSFServices;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -32,20 +36,10 @@ import org.jboss.webbeans.util.Reflections;
  * @author Nicklas Karlsson
  * @author Dan Allen
  */
-public class PhaseHelper
+public class JsfHelper
 {
-   private static LogProvider log = Logging.getLogProvider(PhaseHelper.class);
-
-   /**
-    * Gets a FacesContext instance
-    * 
-    * @return The current instance
-    */
-   private static FacesContext context()
-   {
-      return FacesContext.getCurrentInstance();
-   }
-
+   private static LogProvider log = Logging.getLogProvider(JsfHelper.class);
+   
    /**
     * Checks if the current request is a JSF postback. The JsfApiAbstraction is
     * consulted to determine if the JSF version is compatible with JSF 2.0. If
@@ -55,15 +49,15 @@ public class PhaseHelper
     * 
     * @return true if this request is a JSF postback, false otherwise
     */
-   public static boolean isPostback()
+   public static boolean isPostback(FacesContext facesContext)
    {
       if (CurrentManager.rootManager().getServices().get(JsfApiAbstraction.class).isApiVersionCompatibleWith(2.0))
       {
-         return (Boolean) Reflections.invokeAndWrap("isPostback", context());
+         return (Boolean) Reflections.invokeAndWrap("isPostback", facesContext);
       }
       else
       {
-         return context().getRenderKit().getResponseStateManager().isPostback(context());
+         return facesContext.getRenderKit().getResponseStateManager().isPostback(facesContext);
       }
    }
 
@@ -72,10 +66,11 @@ public class PhaseHelper
     * 
     * @return The conversation id (or null if not found)
     */
-   public static String getConversationIdFromRequest()
+   public static String getConversationIdFromRequest(FacesContext facesContext)
    {
-      String cidName = CurrentManager.rootManager().getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>(){});
-      String cid = context().getExternalContext().getRequestParameterMap().get(cidName);
+      BeanManagerImpl moduleBeanManager = JsfHelper.getModuleBeanManager(facesContext);
+      String cidName = moduleBeanManager.getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>(){});
+      String cid = facesContext.getExternalContext().getRequestParameterMap().get(cidName);
       log.trace("Found conversation id " + cid + " in request parameter");
       return cid;
    }
@@ -85,9 +80,9 @@ public class PhaseHelper
     * 
     * @return The conversation id (or null if not found)
     */
-   public static String getConversationId()
+   public static String getConversationId(FacesContext facesContext)
    {
-      String cid = getConversationIdFromRequest();
+      String cid = getConversationIdFromRequest(facesContext);
       log.debug("Resuming conversation with id " + cid);
       return cid;
    }
@@ -97,9 +92,32 @@ public class PhaseHelper
     * 
     * @return The session
     */
-   public static HttpSession getHttpSession()
+   public static HttpSession getHttpSession(FacesContext facesContext)
    {
-      return (HttpSession) context().getExternalContext().getSession(true);
+      Object session = facesContext.getExternalContext().getSession(true);
+      if (session instanceof HttpSession)
+      {
+         return (HttpSession) session;
+      }
+      else
+      {
+         return null;
+      }
+   }
+   
+   public static BeanManagerImpl getModuleBeanManager(FacesContext facesContext)
+   {
+      return getModuleBeanManager(facesContext.getApplication());
+   }
+   
+   public static BeanManagerImpl getModuleBeanManager(Application application)
+   {
+      if (application == null)
+      {
+         throw new IllegalArgumentException("Must provide the JSF Application");
+      }
+      BeanDeploymentArchive beanDeploymentArchive = CurrentManager.rootManager().getServices().get(JSFServices.class).getBeanDeploymentArchive(application);
+      return CurrentManager.getBeanDeploymentArchives().get(beanDeploymentArchive).getCurrent();
    }
 
 }

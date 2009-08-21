@@ -23,8 +23,12 @@ import javax.el.ELContextListener;
 import javax.el.ExpressionFactory;
 import javax.faces.application.Application;
 
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.el.WebBeansELContextListener;
+import org.jboss.webbeans.el.WebBeansELResolverImpl;
 import org.jboss.webbeans.el.WebBeansExpressionFactory;
+import org.jboss.webbeans.persistence.spi.helpers.JSFServices;
 
 /**
  * @author pmuir
@@ -43,6 +47,8 @@ public class WebBeansApplication extends ForwardingApplication
       this.application = application;
       this.elContextListeners = new ArrayList<ELContextListener>();
       this.elContextListeners.add(new WebBeansELContextListener());
+      BeanDeploymentArchive beanDeploymentArchive = CurrentManager.rootManager().getServices().get(JSFServices.class).getBeanDeploymentArchive(application);
+      application.addELResolver(new WebBeansELResolverImpl(CurrentManager.getBeanDeploymentArchives().get(beanDeploymentArchive).getCurrent()));
    }
 
    @Override

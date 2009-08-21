@@ -23,12 +23,15 @@
 package org.jboss.webbeans;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.inject.TypeLiteral;
 
+import org.jboss.webbeans.bootstrap.BeanDeployment;
 import org.jboss.webbeans.bootstrap.api.Singleton;
 import org.jboss.webbeans.bootstrap.api.SingletonProvider;
+import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 
 
 /**
@@ -43,16 +46,26 @@ public class CurrentManager
 
    private static class IntegerMangerImplMap extends TypeLiteral<Map<Integer, BeanManagerImpl>> {}
    
+   private static class BeanDeploymentArchiveManagerImplMap extends TypeLiteral<Map<BeanDeploymentArchive, BeanManagerImpl>> {}
+   
    // The root manager instance
    private static Singleton<BeanManagerImpl> rootManager = SingletonProvider.instance().create(BeanManagerImpl.class);
+   // A map of managers keyed by ID, used for activities
+   private final static Singleton<Map<Integer, BeanManagerImpl>> keyedManagers = SingletonProvider.instance().create(new IntegerMangerImplMap().getRawType());
    
-   private final static Singleton<Map<Integer, BeanManagerImpl>> managers = SingletonProvider.instance().create(new IntegerMangerImplMap().getRawType());
+   private final static Singleton<Map<BeanDeploymentArchive, BeanManagerImpl>> beanDeploymentArchives = SingletonProvider.instance().create(new BeanDeploymentArchiveManagerImplMap().getRawType());
 
    public static void clear()
    {
-      managers.get().clear();
+      keyedManagers.get().clear();
       rootManager.clear();
-      managers.clear();
+      keyedManagers.clear();
+      beanDeploymentArchives.clear();
+   }
+   
+   public static boolean isAvailable()
+   {
+      return rootManager.isSet();
    }
    
    /**
@@ -73,22 +86,37 @@ public class CurrentManager
    public static void setRootManager(BeanManagerImpl managerImpl) 
    {
       rootManager.set(managerImpl);
-      if (!managers.isSet()) 
+      if (!keyedManagers.isSet()) 
       {
-          managers.set(new ConcurrentHashMap<Integer, BeanManagerImpl>());
+          keyedManagers.set(new ConcurrentHashMap<Integer, BeanManagerImpl>());
       }
-      managers.get().put(managerImpl.getId(), managerImpl);
+      keyedManagers.get().put(managerImpl.getId(), managerImpl);
+   }
+   
+   public static void setBeanDeploymentArchives(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
+   {
+      beanDeploymentArchives.set(new ConcurrentHashMap<BeanDeploymentArchive, BeanManagerImpl>());
+      for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())   
+      {
+         beanDeploymentArchives.get().put(entry.getKey(), entry.getValue().getBeanManager());
+         add(entry.getValue().getBeanManager());
+      }
+   }
+   
+   public static Map<BeanDeploymentArchive, BeanManagerImpl> getBeanDeploymentArchives()
+   {
+      return beanDeploymentArchives.get();
    }
    
    public static BeanManagerImpl get(Integer key)
    {
-      return managers.get().get(key);
+      return keyedManagers.get().get(key);
    }
    
    public static Integer add(BeanManagerImpl manager)
    {
       Integer id = manager.getId();
-      managers.get().put(id, manager);
+      keyedManagers.get().put(id, manager);
       return id;
    }
    

@@ -16,10 +16,11 @@
  */
 package org.jboss.webbeans.jsf;
 
+import static org.jboss.webbeans.jsf.JsfHelper.getModuleBeanManager;
+
 import javax.enterprise.inject.AnnotationLiteral;
 import javax.faces.context.FacesContext;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.conversation.ConversationIdName;
 
 /**
@@ -39,16 +40,17 @@ public class FacesUrlTransformer
    private static final String PARAMETER_ASSIGNMENT_OPERATOR = "=";
    
    private String url;
-   private FacesContext context;
+   private final FacesContext context;
    
-   public FacesUrlTransformer(String url)
+   public FacesUrlTransformer(String url, FacesContext facesContext)
    {
       this.url = url;
+      this.context = facesContext;
    }
 
    public FacesUrlTransformer appendConversationIdIfNecessary(String cid)
    {
-      String cidParamName = CurrentManager.rootManager().getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>(){});
+      String cidParamName = getModuleBeanManager(context).getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>(){});
       int queryStringIndex = url.indexOf(QUERY_STRING_DELIMITER);
       // if there is no query string or there is a query string but the cid param is absent, then append it
       if (queryStringIndex < 0 || url.indexOf(cidParamName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0)
@@ -68,7 +70,7 @@ public class FacesUrlTransformer
    {
       if (isUrlAbsolute())
       {
-         String requestPath = context().getExternalContext().getRequestContextPath();
+         String requestPath = context.getExternalContext().getRequestContextPath();
          url = url.substring(url.indexOf(requestPath) + requestPath.length());
       } 
       else 
@@ -84,23 +86,13 @@ public class FacesUrlTransformer
 
    public FacesUrlTransformer toActionUrl()
    {
-      url = context().getApplication().getViewHandler().getActionURL(context(), url);
+      url = context.getApplication().getViewHandler().getActionURL(context, url);
       return this;
    }
 
    public String encode()
    {
-      return context().getExternalContext().encodeActionURL(url);
-   }
-   
-   private FacesContext context()
-   {
-      if (context == null)
-      {
-         context = FacesContext.getCurrentInstance();
-      }
-      
-      return context;
+      return context.getExternalContext().encodeActionURL(url);
    }
    
    private boolean isUrlAbsolute()

@@ -294,6 +294,32 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new ArrayList<Class<?>>(),
             new AtomicInteger());
    }
+   
+   /**
+    * Create a new, root, manager
+    * 
+    * @param serviceRegistry
+    * @return
+    */
+   public static BeanManagerImpl newManager(BeanManagerImpl rootManager)
+   {  
+      return new BeanManagerImpl(
+            rootManager.getServices(), 
+            new CopyOnWriteArrayList<Bean<?>>(),
+            new CopyOnWriteArrayList<DecoratorBean<?>>(),
+            new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
+            new CopyOnWriteArrayList<String>(),
+            rootManager.getNewEnterpriseBeanMap(),
+            new ConcurrentHashMap<String, RIBean<?>>(),
+            rootManager.getClientProxyProvider(),
+            rootManager.getContexts(), 
+            new CopyOnWriteArraySet<CurrentActivity>(), 
+            new HashMap<Contextual<?>, Contextual<?>>(), 
+            new ArrayList<Class<?>>(),
+            new ArrayList<Class<? extends Annotation>>(),
+            new ArrayList<Class<?>>(),
+            rootManager.getIds());
+   }
 
    /**
     * Create a new child manager
@@ -301,7 +327,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * @param parentManager
     * @return
     */
-   public static BeanManagerImpl newChildManager(BeanManagerImpl parentManager)
+   public static BeanManagerImpl newChildActivityManager(BeanManagerImpl parentManager)
    {
       List<Bean<?>> beans = new CopyOnWriteArrayList<Bean<?>>();
       beans.addAll(parentManager.getBeans());
@@ -942,6 +968,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * @return An instance of the bean
     * 
     */
+   @Deprecated
    public <T> T getInstanceByType(Class<T> beanType, Annotation... bindings)
    {
       Set<Bean<?>> beans = getBeans(beanType, bindings);
@@ -1053,7 +1080,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public BeanManagerImpl createActivity()
    {
-      BeanManagerImpl childActivity = newChildManager(this);
+      BeanManagerImpl childActivity = newChildActivityManager(this);
       childActivities.add(childActivity);
       CurrentManager.add(childActivity);
       return childActivity;
@@ -1081,7 +1108,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       }
       if (activeCurrentActivities.size() == 0)
       {
-         return CurrentManager.rootManager();
+         return this;
       }
       else if (activeCurrentActivities.size() == 1)
       {

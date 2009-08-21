@@ -29,6 +29,8 @@ public class WebBeansApplicationFactory extends ForwardingApplicationFactory
 
    private final ApplicationFactory applicationFactory;
    
+   private Application application;
+   
    public WebBeansApplicationFactory(ApplicationFactory applicationFactory)
    {
       this.applicationFactory = applicationFactory;
@@ -43,7 +45,11 @@ public class WebBeansApplicationFactory extends ForwardingApplicationFactory
    @Override
    public Application getApplication()
    {
-      return new WebBeansApplication(delegate().getApplication());
+      if (application == null)
+      {
+         application = new WebBeansApplication(delegate().getApplication());
+      }
+      return application;
    }
 
 }

@@ -16,18 +16,24 @@
  */
 package org.jboss.webbeans.servlet;
 
+import static org.jboss.webbeans.servlet.ServletHelper.getModuleBeanManager;
+
 import java.io.IOException;
 
+import javax.enterprise.inject.AnnotationLiteral;
+import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.conversation.ConversationIdName;
 import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.jsf.FacesUrlTransformer;
@@ -45,32 +51,40 @@ import org.jboss.webbeans.jsf.FacesUrlTransformer;
  */
 public class ConversationPropagationFilter implements Filter
 {
+   
+   private ServletContext ctx;
+   
    public void init(FilterConfig config) throws ServletException
    {
+      ctx = config.getServletContext();
    }
 
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
    {
-      
-      chain.doFilter(request, wrapResponse((HttpServletResponse) response));
+      if (request instanceof HttpServletRequest && response instanceof HttpServletResponse)
+      {
+         response = wrapResponse((HttpServletResponse) response, ((HttpServletRequest) request).getContextPath());
+      }
+      chain.doFilter(request, response);
    }
    
    public void destroy()
    {
    }
 
-   private ServletResponse wrapResponse(HttpServletResponse response)
+   private ServletResponse wrapResponse(HttpServletResponse response, final String requestPath)
    {
       return new HttpServletResponseWrapper(response)
       {
          @Override
          public void sendRedirect(String path) throws IOException
          {
-            ConversationImpl conversation = CurrentManager.rootManager().getInstanceByType(ConversationImpl.class);
+            ConversationImpl conversation = getModuleBeanManager(ctx) .getInstanceByType(ConversationImpl.class);
             if (conversation.isLongRunning())
             {
-               path = new FacesUrlTransformer(path).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversation.getUnderlyingId()).encode();
-               CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
+               String cidParamName = getModuleBeanManager(ctx).getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>(){});
+               path = new FacesUrlTransformer(path, FacesContext.getCurrentInstance()).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversation.getUnderlyingId()).encode();
+               getModuleBeanManager(ctx).getInstanceByType(ConversationManager.class).cleanupConversation();
             }
             super.sendRedirect(path);
          }

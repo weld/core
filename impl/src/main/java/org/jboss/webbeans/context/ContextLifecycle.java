@@ -49,12 +49,11 @@ public class ContextLifecycle implements Lifecycle
       sessionContext.setActive(true);
    }
 
-   public void endSession(String id, BeanStore sessionBeanStore)
+   public void endSession(String id, BeanStore sessionBeanStore, ConversationManager conversationManager)
    {
       log.trace("Ending session " + id);
       SessionContext sessionContext = CurrentManager.rootManager().getServices().get(SessionContext.class);
       sessionContext.setActive(true);
-      ConversationManager conversationManager = CurrentManager.rootManager().getInstanceByType(ConversationManager.class);
       conversationManager.destroyAllConversations();
       sessionContext.destroy();
       sessionContext.setBeanStore(null);

@@ -54,13 +54,15 @@
       </dependency>
       
       <dependency>
-      	<groupId>javax.jms</groupId>
-      	<artifactId>jms</artifactId>
-    	</dependency>
-      
-      <dependency>
          <groupId>javax.validation</groupId>
          <artifactId>validation-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+      
+      <dependency>
+         <groupId>javax.faces</groupId>
+         <artifactId>jsf-api</artifactId>
+         <optional>true</optional>
       </dependency>
 
    </dependencies>

@@ -300,14 +300,4 @@ public interface BeanManager
    @Deprecated
    public void addBean(Bean<?> bean);
 
-   /**
-    * Associate a custom Context with a scope.
-    * 
-    * This method may be called at any time in the applications lifecycle.
-    * 
-    * @param context the context to register
-    */
-   @Deprecated
-   public void addContext(Context context);
-
 }

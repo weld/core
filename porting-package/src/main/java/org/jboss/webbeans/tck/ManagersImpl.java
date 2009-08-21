@@ -2,18 +2,22 @@ package org.jboss.webbeans.tck;
 
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.servlet.ServletContext;
 
 import org.jboss.jsr299.tck.spi.Managers;
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.DeploymentException;
+import org.jboss.webbeans.mock.MockServletContext;
+import org.jboss.webbeans.servlet.ServletHelper;
 
 public class ManagersImpl implements Managers
 {
+   
+   public static ServletContext SERVLET_CONTEXT = new MockServletContext("");
 
    public BeanManager getManager()
    {
-      return CurrentManager.rootManager();
+      return ServletHelper.getModuleBeanManager(SERVLET_CONTEXT);
    }
 
    public boolean isDefinitionError(org.jboss.testharness.api.DeploymentException deploymentException)

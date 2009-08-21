@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -28,6 +29,7 @@ import java.util.Set;
 
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * This class handles looking up service providers on the class path. It
@@ -118,6 +120,7 @@ public class ServiceLoader<S> implements Iterable<S>
    }
    
    private final String serviceFile;
+   private Class<S> expectedType;
    private final ClassLoader loader;
    
    private Set<S> providers;
@@ -126,6 +129,7 @@ public class ServiceLoader<S> implements Iterable<S>
    {
       this.loader = loader;
       this.serviceFile = SERVICES + service.getName();
+      this.expectedType = service;
    }
    
    /**
@@ -181,9 +185,18 @@ public class ServiceLoader<S> implements Iterable<S>
                      {
                         try
                         {
-                           @SuppressWarnings("unchecked")
-                           Class<? extends S> clazz = (Class<? extends S>) loader.loadClass(line);
-                           S instance = clazz.newInstance();
+                           Class<?> clazz = loader.loadClass(line);
+                           Class<? extends S> serviceClass;
+                           try
+                           {
+                              serviceClass = clazz.asSubclass(expectedType);
+                           }
+                           catch (ClassCastException e)
+                           {
+                              throw new IllegalStateException("Extension " + line + " does not implement Extension");
+                           }
+                           Constructor<? extends S> constructor = Reflections.ensureAccessible(serviceClass.getConstructor());
+                           S instance = constructor.newInstance();
                            providers.add(instance);
                         }
                         catch (NoClassDefFoundError e)

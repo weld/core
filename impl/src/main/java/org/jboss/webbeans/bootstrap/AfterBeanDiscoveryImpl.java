@@ -19,6 +19,7 @@ package org.jboss.webbeans.bootstrap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -26,16 +27,22 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 
 public class AfterBeanDiscoveryImpl implements AfterBeanDiscovery
 {
    
    private final List<Throwable> definitionErrors = new ArrayList<Throwable>();
-   private final BeanManagerImpl beanManager;
+   private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
+   private final BeanManagerImpl deploymentManager;
+   private final Deployment deployment;
    
-   public AfterBeanDiscoveryImpl(BeanManagerImpl beanManager)
+   public AfterBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      this.beanManager = beanManager;
+      this.beanDeployments = beanDeployments;
+      this.deploymentManager = deploymentManager;
+      this.deployment = deploymentManager.getServices().get(Deployment.class);
    }
 
    public void addDefinitionError(Throwable t)
@@ -50,17 +57,40 @@ public class AfterBeanDiscoveryImpl implements AfterBeanDiscovery
    
    public void addBean(Bean<?> bean)
    {
-      beanManager.addBean(bean);
+      getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager().addBean(bean);
    }
 
    public void addContext(Context context)
    {
-      beanManager.addContext(context);
+      deploymentManager.addContext(context);
    }
 
    public void addObserverMethod(ObserverMethod<?, ?> observerMethod)
    {
-      beanManager.addObserver(observerMethod);
+      getOrCreateBeanDeployment(observerMethod.getBean().getBeanClass()).getBeanManager().addObserver(observerMethod);
+   }
+   
+   private BeanDeployment getOrCreateBeanDeployment(Class<?> clazz)
+   {
+      BeanDeploymentArchive beanDeploymentArchive = deployment.loadBeanDeploymentArchive(clazz);
+      if (beanDeploymentArchive == null)
+      {
+         throw new IllegalStateException("Unable to find Bean Deployment Archive for " + clazz);
+      }
+      else
+      {
+         if (beanDeployments.containsKey(beanDeploymentArchive))
+         {
+            return beanDeployments.get(beanDeploymentArchive);
+         }
+         else
+         {
+            BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager);
+            beanDeployments.put(beanDeploymentArchive, beanDeployment);
+            return beanDeployment;
+         }
+      }
+      
    }
 
 }

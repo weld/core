@@ -20,7 +20,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
-import org.jboss.webbeans.el.WebBeansELResolver;
+import org.jboss.webbeans.el.WebBeansELResolverImpl;
+import org.jboss.webbeans.servlet.ServletHelper;
 
 /**
  * @author pmuir
@@ -41,7 +42,7 @@ public class JspInitialization
       JspApplicationContext jspAppContext = JspFactory.getDefaultFactory().getJspApplicationContext(context);
 
       // register compositeELResolver with JSP
-      jspAppContext.addELResolver(new WebBeansELResolver());
+      jspAppContext.addELResolver(new WebBeansELResolverImpl(ServletHelper.getModuleBeanManager(context)));
 
       // DOesn't really achieve much :-(
       //jspAppContext.addELContextListener(new WebBeansELContextListener());

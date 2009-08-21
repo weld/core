@@ -34,6 +34,8 @@ import org.jboss.webbeans.resources.ClassTransformer;
  */
 public class BeanDeployer extends AbstractBeanDeployer
 {
+   
+   private final BeanManagerImpl deploymentManager;
 
    private final Set<WBClass<?>> classes;
 
@@ -41,10 +43,11 @@ public class BeanDeployer extends AbstractBeanDeployer
     * @param manager
     * @param ejbDescriptors
     */
-   public BeanDeployer(BeanManagerImpl manager, EjbDescriptorCache ejbDescriptors)
+   public BeanDeployer(BeanManagerImpl manager, BeanManagerImpl deploymentManager, EjbDescriptorCache ejbDescriptors)
    {
       super(manager, new BeanDeployerEnvironment(ejbDescriptors, manager));
       this.classes = new HashSet<WBClass<?>>();
+      this.deploymentManager = deploymentManager;
    }
 
    public AbstractBeanDeployer addClass(Class<?> clazz)
@@ -53,7 +56,7 @@ public class BeanDeployer extends AbstractBeanDeployer
       if (!clazz.isAnnotation() && !clazz.isEnum())
       {
          ProcessAnnotatedTypeImpl<?> event = createProcessAnnotatedTypeEvent(clazz, classTransformer);
-         getManager().fireEvent(event);
+         deploymentManager.fireEvent(event);
          if (!event.isVeto())
          {
             if (event.getAnnotatedType() instanceof WBClass<?>)

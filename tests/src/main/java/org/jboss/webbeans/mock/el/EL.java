@@ -30,8 +30,8 @@ import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
 import javax.el.VariableMapper;
 
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.el.WebBeansELContextListener;
-import org.jboss.webbeans.el.WebBeansELResolver;
 import org.jboss.webbeans.el.WebBeansExpressionFactory;
 
 import com.sun.el.ExpressionFactoryImpl;
@@ -46,16 +46,15 @@ import com.sun.el.lang.VariableMapperImpl;
  */
 public class EL
 {
-   public static final ELResolver EL_RESOLVER = createELResolver();
    
    public static final ExpressionFactory EXPRESSION_FACTORY = new WebBeansExpressionFactory(new ExpressionFactoryImpl());
    
    public static final ELContextListener[] EL_CONTEXT_LISTENERS = { new WebBeansELContextListener() };
    
-   private static ELResolver createELResolver()
+   private static ELResolver createELResolver(BeanManagerImpl beanManagerImpl)
    {
       CompositeELResolver resolver = new CompositeELResolver();
-      resolver.add( new WebBeansELResolver() );
+      resolver.add( beanManagerImpl.getELResolver() );
       resolver.add( new MapELResolver() );
       resolver.add( new ListELResolver() );
       resolver.add( new ArrayELResolver() );
@@ -64,8 +63,8 @@ public class EL
       return resolver;
    }
 
-   public static ELContext createELContext() {
-       return createELContext( EL_RESOLVER, new FunctionMapperImpl() );
+   public static ELContext createELContext(BeanManagerImpl beanManagerImpl) {
+       return createELContext(createELResolver(beanManagerImpl), new FunctionMapperImpl() );
    }
    
    public static ELContext createELContext(final ELResolver resolver, final FunctionMapper functionMapper)
