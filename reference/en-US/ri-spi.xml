@@ -3,202 +3,286 @@
 <appendix id="ri-spi">
    <title>Integrating Web Beans into other environments</title>
 
-    <para>
-      Currently Web Beans only runs in JBoss AS 5; integrating the RI 
-      into other EE environments (for example another application server like
-      Glassfish), into a servlet container (like Tomcat), or with an
-      Embedded EJB3.1 implementation is fairly easy. In this Appendix we will
-      briefly discuss the steps needed. 
-    </para>
+   <para>
+      If you want to use Web Beans in another environment, you will need to
+      provide certain information to Web Beans via the integration SPI. In this 
+      Appendix we will briefly discuss the steps needed. 
+   </para>
+   
+   <tip>
+      <title>Enterprise Services</title>
+      <para>
+         If you just want to use managed beans, and not take advantage of 
+         enterprise services (EE resource injection, CDI injection into EE
+         component classes, transactional events, support for CDI services in 
+         EJBs) and non-flat deployments, then the generic servlet support 
+         provided by the "Web Beans: Servlets" extension will be sufficient,
+         and will work in any container supporting the Servlet API.
+      </para>
+   </tip>
     
-    <section>
+   <para>
+      All SPIs and APIs described have extensive JavaDoc, which spell out the
+      detailed contract between the container and Web Beans.
+   </para>
+    
+   <section>
       <title>The Web Beans SPI</title>
       
       <para>
          The Web Beans SPI is located in the <literal>webbeans-spi</literal>
          module, and packaged as <literal>webbeans-spi.jar</literal>. Some
-         SPIs are optional, if you need to override the default behavior, 
-         others are required.
+         SPIs are optional, and should only be implemented if you need to 
+         override the default behavior; others are required.
       </para>
        
-       <para>
+      <para>
          All interfaces in the SPI support the decorator pattern and provide a
          <literal>Forwarding</literal> class located in the 
          <literal>helpers</literal> sub package. Additional, commonly used,
          utility classes, and standard implementations are also located in the
          <literal>helpers</literal> sub package.
-       </para>
+      </para>
+       
+                
+      <para>
+         Web Beans supports multiple environments. An environment is defined by 
+         an implementation of the <literal>Environment</literal> interface. A 
+         number of standard environments are built in, and described by the 
+         <literal>Environments</literal> enumeration. Different environments 
+         require different services to be present (for example a Servlet 
+         container doesn't require transaction, EJB or JPA services). By default 
+         an EE environment is assumed, but you can adjust the environment by 
+         calling <literal>bootstrap.setEnvironment()</literal>.
+      </para>
+         
+      <para>
+         Web Beans uses a generic-typed service registry to allow services to be
+         registered. All services implement the <literal>Service</literal>
+         interface. The service registry allows services to be added and 
+         retrieved.
+      </para>
       
       <section>
-         <title>Web Bean Discovery</title>
+         <title>Deployment structure</title>
       
-         <programlisting role="JAVA"><![CDATA[/**
-    * Gets list of all classes in classpath archives with META-INF/beans.xml (or
-    * for WARs WEB-INF/beans.xml) files
-    * 
-    * @return An iterable over the classes 
-    */
-   public Iterable<Class<?>> discoverWebBeanClasses();
-   
-   /**
-    * Gets a list of all deployment descriptors in the app classpath
-    * 
-    * @return An iterable over the beans.xml files 
-    */
-   public Iterable<URL> discoverWebBeansXml();]]></programlisting>
-
          <para>
-            The discovery of Web Bean classes and <literal>beans.xml</literal> 
-            files is self-explanatory (the algorithm is described in Section 11.1 
-            of the JSR-299 specification, and isn't repeated here).
+            An application is often comprised of a number of modules. For 
+            example, a Java EE deployment may contain a number of EJB modules 
+            (containing business logic) and WAR modules (containing the user 
+            interface). A container may enforce certain 
+            <emphasis>accessibility</emphasis> rules which limit the visibility 
+            of classes between modules. Web Beans allows these same rules to 
+            apply to bean and observer method resolution. As the accessibility 
+            rules vary between containers, Web Beans requires the container to 
+            <emphasis>describe</emphasis> the deployment structure, via the 
+            <literal>Deployment</literal> SPI.
          </para>
          
-      </section>
-       
-       <section>
-         <title>EJB services</title>
+         <para>
+            The CDI specification discusses 
+            <emphasis>Bean Deployment Archives</emphasis> (BDAs) &mdash; archives which
+            are marked as containing beans which should be deployed to the CDI
+            container, and made available for injection and resolution. Web 
+            Beans reuses this description of 
+            <emphasis>Bean Deployment Archives</emphasis> in its deployment
+            structure SPI. Each deployment exposes the BDAs which it contains; 
+            each BDA may also reference other which it can access. Together, the 
+            transitive closure of this graph forms the beans which are deployed
+            in the application.
+         </para>
+         
+         <para>
+            To describe the deployment structure to Web Beans, the container 
+            should provide an implementation of <literal>Deployment</literal>.
+            <literal>Deployment.getBeanDeploymentArchives()</literal> allows Web
+            Beans to discover the modules which make up the application. The CDI
+            specification also allows beans to be specified programmatically as
+            part of the bean deployment. These beans may, or may not, be in an
+            existing BDA. For this reason, Web Beans will call
+            <literal>Deployment.loadBeanDeploymentArchive(Class clazz)</literal>
+            for each programmatically described bean.
+         </para>
+         
+         <para>
+            As programmatically described beans may result in additional BDAs
+            being added to the graph, Web Beans will discover the BDA structure
+            every time an unknown BDA is returned by 
+            <literal>Deployment.loadBeanDeploymentArchive</literal>.
+         </para>
          
          <note>
-         	<para>
-         		Web Beans will run without an EJB container; in this case you 
-         		don't need to implement the EJB SPI.
-         	</para>
+            <title>Virtual BDAs</title>
+            <para>
+               In a strict container, each BDA might have to explicitly specify
+               which other BDAs it can access. However many containers will 
+               allow an easy mechanism to make BDAs bi-directionally accessible
+               (such as a library directory). In this case, it is allowable (and
+               reasonable) to describe all such archives as a single, 'virtual'
+               <literal>BeanDeploymentArchive</literal>.  
+            </para>
+            
+            <para>
+               A container, might, for example, use a flat accessibility 
+               structure for the application. In this case, a single 
+               <literal>BeanDeploymentArchive</literal> would be attached to the
+               <literal>Deployment</literal>.
+            </para>
          </note>
-         
+
          <para>
-            Web Beans also delegates EJB3 bean discovery to the container
-            so that it doesn't have to scan for EJB3 annotations or parse
-            <literal>ejb-jar.xml</literal>. For each EJB in the application an
-            EJBDescriptor should be discovered:
-         </para>
-         
-         <programlisting role="JAVA"><![CDATA[public interface EjbDescriptor<T>
-{
-   
-   /**
-    * Gets the EJB type
-    * 
-    * @return The EJB Bean class
-    */
-   public Class<T> getType();
-
-   /**
-    * Gets the local business interfaces of the EJB
-    * 
-    * @return An iterator over the local business interfaces
-    */
-   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces();
-   
-   /**
-    * Gets the remote business interfaces of the EJB
-    * 
-    * @return An iterator over the remote business interfaces
-    */
-   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces();
-   
-   /**
-    * Get the remove methods of the EJB
-    * 
-    * @return An iterator over the remove methods
-    */
-   public Iterable<Method> getRemoveMethods();
-
-   /**
-    * Indicates if the bean is stateless
-    * 
-    * @return True if stateless, false otherwise
-    */
-   public boolean isStateless();
-
-   /**
-    * Indicates if the bean is a EJB 3.1 Singleton
-    * 
-    * @return True if the bean is a singleton, false otherwise
-    */
-   public boolean isSingleton();
-
-   /**
-    * Indicates if the EJB is stateful
-    * 
-    * @return True if the bean is stateful, false otherwise
-    */
-   public boolean isStateful();
-
-   /**
-    * Indicates if the EJB is and MDB
-    * 
-    * @return True if the bean is an MDB, false otherwise
-    */
-   public boolean isMessageDriven();
-
-   /**
-    * Gets the EJB name
-    * 
-    * @return The name
-    */
-   public String getEjbName();]]></programlisting>
-      
-          <para>
-             The <literal>EjbDescriptor</literal> is fairly self-explanatory,
-             and should return the relevant metadata as defined in the EJB 
-             specification. In addition to these two interfaces, there is 
-             <literal>BusinessInterfaceDescriptor</literal> which represents a 
-             local business interface (encapsulating the interface class and 
-             jndi name used to look up an instance of the EJB).
-          </para>
-         
-         <para>
-            The resolution of <literal>@EJB</literal> (for injection into simple
-            beans), the resolution of local EJBs (for backing session beans) and
-            remote EJBs (for injection as a Java EE resource) is delegated to 
-            the container. You must provide an implementation of 
-            <literal>org.jboss.webbeans.ejb.spi.EjbServices</literal> which 
-            provides these operations. For resolving the <literal>@EJB</literal>
-            injection point, Web Beans will provide the 
-            <literal>InjectionPoint</literal>; for resolving local EJBs, the
-            <literal>EjbDescriptor</literal> will be provided, and for remote
-            EJBs the <literal>jndiName</literal>, <literal>mappedName</literal>,
-            or <literal>ejbLink</literal> will be provided.
+            <literal>BeanDeploymentArchive</literal> provides three methods 
+            which allow it's contents to be discovered by Web Beans &mdash;
+            <literal>BeanDeploymentArchive.getBeanClasses()</literal> must 
+            return all the classes in the BDA, 
+            <literal>BeanDeploymentArchive.getBeansXml()</literal> must return
+            all the deployment descriptors in the archive, and
+            <literal>BeanDeploymentArchive.getEjbs()</literal> must provide an
+            EJB descriptor for every EJB in the BDA, or an empty list if it is
+            not an EJB archive. 
          </para>
          
          <para>
-	        When resolving local EJBs (used to back session beans) a wrapper
-	        (<literal>SessionObjectReference</literal>) around the EJB reference
-	        is returned. This wrapper allows Web Beans to request a reference 
-	        that implements the given business interface, and, in the case of 
-	        SFSBs, request the removal of the EJB from the container.
+            BDA X may also reference another BDA Y whose beans can be resolved 
+            by, and injected into, any bean in BDA X. These are the accessible
+            BDAs, and every BDA that is directly accessible by BDA X should be
+            returned.  A BDA will also have BDAs which are accessible 
+            transtivively, and the transitive closure of the sub-graph of BDA X 
+            describes all the beans resolvable by BDA X.
+         </para>
+         
+         <para>
+            To specify the directly accessible BDAs, the container should 
+            provide an implementation of 
+            <literal>BeanDeploymentArchive.getBeanDeploymentArchives()</literal>.
+         </para>
+         
+         <tip>
+            <para>
+               Web Beans allows the container to describe a circular graph, and
+               will convert a graph to a tree as part of the deployment 
+               process.
+            </para>
+         </tip>
+         
+         <para>
+            Certain services are provided for the whole deployment, whilst some
+            are provided per-BDA. BDA services are provided using
+            <literal>BeanDeploymentArchive.getServices()</literal> and only
+            apply to the BDA on which they are provided.
          </para>
          
       </section>
        
       <section>
+         <title>EJB descriptors</title>
+         
+         <para>
+            Web Beans delegates EJB3 bean discovery to the container so that it
+            doesn't duplicate the work done by the EJB container, and respects
+            any vendor-extensions to EJB definition,.
+         </para>
+               
+         <para>
+            The <literal>EjbDescriptor</literal> should return the relevant
+            metadata as defined in the EJB specification. Each business 
+            interface of a session bean should be described using a
+            <literal>BusinessInterfaceDescriptor</literal>.
+         </para>
+         
+       </section>
+       
+       <section>
+         <title>EE resource injection and resolution services</title>
+         
+         <para>
+            All the EE resource services are per-BDA services, and may be 
+            provided using one of two methods. Which method to use is at the
+            discretion of the integrator.
+         </para>
+         
+         <para>
+            The integrator may choose to provide all EE resource injection 
+            services themselves, using another library or framework. In this 
+            case the integrator should use the <literal>EE</literal> 
+            environment, and implement the <xref linkend="injection.services" />
+            SPI.
+         </para>
+         
+         <para>
+            Alternatively, the integrator may choose to use Web Beans to provide
+            EE resource injection. In this case, the 
+            <literal>EE_INJECT</literal> environment should be used, and the
+            integrator should implement the <xref linkend="ejb.services.resolution"/>,
+            <xref linkend="resource.services"/> and 
+            <xref linkend="jpa.services"/>.
+         </para>
+         
+         <important>
+            <para>
+               Web Beans only provides annotation-based EE resource injection;
+               if you wish to provide deployment descriptor 
+               (e.g. <literal>ejb-jar.xml</literal>) injection, you must use 
+               <xref linkend="injection.services"/>.
+            </para>
+         </important>
+          
+         <tip>
+            <para>
+               If you use a non-EE environment then you may implement any of the
+               EE service SPIs, and Web Beans will provide the associated
+               functionality. There is no need to implement those services you
+               don't need!
+            </para>
+         </tip>
+         
+      </section>
+         
+      <section id="ejb.services">
+         <title>EJB services</title>
+         
+         <para>
+            EJB services are split between two interfaces which are both 
+            per-BDA.
+         </para>
+         
+         <para>
+           <literal>EJBServices</literal> is used to resolve local EJBs
+           used to back session beans, and must always be provided in an EE
+           environment. 
+           <literal>EJBServices.resolveEjb(EjbDescriptor ejbDescriptor)</literal> 
+           returns a wrapper &mdash; <literal>SessionObjectReference</literal> &mdash;
+           around the EJB reference. This wrapper allows Web Beans to request a
+           reference that implements the given business interface, and, in the 
+           case of SFSBs, request the removal of the EJB from the container.
+         </para>
+         
+         <para id="ejb.services.resolution">
+            <literal>EJBResolutionServices.resolveEjb(InjectionPoint ij)</literal>
+            allows the resolution of <literal>@EJB</literal> (for injection into
+            managed beans). This service is not required if the implementation of 
+            <xref linkend="injection.services"/> takes care of 
+            <literal>@EJB</literal> injection.
+         </para>
+         
+      </section>
+       
+      <section id="jpa.services">
          <title>JPA services</title>
          
          <para>
             Just as EJB resolution is delegated to the container, resolution of
-            <literal>@PersistenceContext</literal> for injection into simple 
-            beans (with the <literal>InjectionPoint</literal> provided),
-            and resolution of persistence contexts and persistence units (with 
-            the <literal>unitName</literal> provided) for injection as a Java EE
-            resource is delegated to the container.
+            <literal>@PersistenceContext</literal> for injection into managed 
+            beans (with the <literal>InjectionPoint</literal> provided), is 
+            delegated to the container.
          </para>
          
          <para>
             To allow JPA integration, the <literal>JpaServices</literal> 
-            interface should be implemented.
+            interface should be implemented. This service is not required if the
+            implementation of <xref linkend="injection.services"/> takes care of 
+            <literal>@PersistenceContext</literal> injection.
          </para>
-         
-         <para>
-            Web Beans also needs to know what entities are in a deployment (so
-            that they aren't managed by Web Beans). An implementation that 
-            detects entities through <literal>@Entity</literal> and
-            <literal>orm.xml</literal> is provided by default. If you want to
-            provide support for a entities defined by a JPA provider (such as
-            Hibernate's <literal>.hbm.xml</literal> you can wrap or replace the
-            default implementation.
-         </para>
-         
-         <programlisting><![CDATA[EntityDiscovery delegate = bootstrap.getServices().get(EntityDiscovery.class);]]></programlisting>
          
       </section>
        
@@ -206,46 +290,9 @@
          <title>Transaction Services</title>
          
          <para>
-            Web Beans must delegate JTA activities to the container. The SPI 
+            Web Beans delegates JTA activities to the container. The SPI 
             provides a couple hooks to easily achieve this with the 
             <literal>TransactionServices</literal> interface.
-         </para>
-         
-         <programlisting role="JAVA"><![CDATA[public interface TransactionServices
-{
-   /**
-    * Possible status conditions for a transaction. This can be used by SPI
-    * providers to keep track for which status an observer is used.
-    */
-   public static enum Status
-   {
-      ALL, SUCCESS, FAILURE
-   }
-
-   /**
-    * Registers a synchronization object with the currently executing
-    * transaction.
-    * 
-    * @see javax.transaction.Synchronization
-    * @param synchronizedObserver
-    */
-   public void registerSynchronization(Synchronization synchronizedObserver);
-
-   /**
-    * Queries the status of the current execution to see if a transaction is
-    * currently active.
-    * 
-    * @return true if a transaction is active
-    */
-   public boolean isTransactionActive();
-}]]></programlisting>
-         
-         <para>
-            The enumeration <literal>Status</literal> is a convenience for 
-            implementors to be able to keep track of whether a synchronization 
-            is supposed to notify an observer only when the transaction is 
-            successful, or after a failure, or regardless of the status of the 
-            transaction.
          </para>
       
          <para>
@@ -265,46 +312,90 @@
          </para>
       </section>
       
-      <section>
-         <title>JMS services</title>
-         
-         <para>
-            A number of JMS operations are not container specific, and so should
-            be provided via the SPI <literal>JmsServices</literal>.
-            JMS does not specify how to obtain a 
-            <literal>ConnectionFactory</literal> so the SPI provides a method
-            which should be used to look up a factory. Web Beans also delegates
-            <literal>Destination</literal> lookup to the container via the SPI.
-         </para>
-      </section>
-      
-      <section>
+      <section id="resource.services">
          <title>Resource Services</title>
            
          <para>
-            The resolution of <literal>@Resource</literal> (for injection into simple
-            beans) and the resolution of resources (for injection as a Java EE 
-            resource) is delegated to the container. You must provide an 
+            The resolution of <literal>@Resource</literal> (for injection into managed
+            beans) is delegated to the container. You must provide an 
             implementation of <literal>ResourceServices</literal> which 
-            provides these operations. For resolving the 
-            <literal>@Resource</literal> injection, Web Beans will provide the 
-            <literal>InjectionPoint</literal>; and for Java EE resources, the 
-            <literal>jndiName</literal> or <literal>mappedName</literal> will be
-            provided.
+            provides these operations.  This service is not required if the
+            implementation of <xref linkend="injection.services"/> takes care of 
+            <literal>@Resource</literal> injection.
          </para>
       </section>
       
-      <section>
-         <title>Web Services</title>
-           
+      <section id="injection.services">
+         <title>Injection Services</title>
+         
          <para>
-            The resolution of web service references (for injection as a Java EE 
-            resource) is delegated to the container. You must provide an 
-            implementation of <literal>WebServices</literal> whichprovides this 
-            operation. For resolving the Java EE resource, the 
-            <literal>jndiName</literal> or <literal>mappedName</literal> will be
-            provided.
+            An integrator may wish to use <literal>InjectionServices</literal> 
+            to provide additional field or method injection over-and-above that
+            provided by Web Beans. An integration into a Java EE environment may
+            use <literal>InjectionServices</literal> to provide EE resource
+            injection for managed beans.
          </para>
+         
+         <para>
+            <literal>InjectionServices</literal> provides a very simple
+            contract, the 
+            <literal>InjectionServices.preInject(Object instance);</literal>
+            and
+            <literal>InjectionServices.postInject(Object instance);</literal>
+            callbacks will be called for every instance that Web Beans injects,
+            whether it is a contextual instance, or a non-contexutal instance
+            injected by <literal>InjectionTarget.inject()</literal>.
+         </para>
+         
+      </section>
+      
+      <section>
+         <title>Identifying the BDA being addressed</title>
+         
+         <para>
+            When a client makes a request to an application which uses Web 
+            Beans, the request may be addressed at any of the BDAs in the
+            application deployment. To allow the Web Beans to correctly service
+            the request, it needs to know which BDA the request is addressed at.
+            Where possible, Web Beans will provide some context, but use of 
+            these by the integrator is optional.
+         </para>
+         
+         <tip>
+            <para>
+               Most Servlet contains use a classloader-per-WAR, this may provide
+               a good way to identify the BDA in use for web requests.
+            </para>
+         </tip>
+         
+         <para>
+            When Web Beans need to identify the BDA, it will use one of these
+            services, depending on what is servicing the request:
+         </para>
+         
+         <variablelist>
+            <varlistentry>
+               <term><literal>ServletServices.getBeanDeploymentArchive(ServletContext ctx)</literal></term>
+               <listitem>
+                  <para>
+                     Identify the WAR in use. The 
+                     <literal>ServletContext</literal> is provided for 
+                     additional context.
+                  </para>
+               </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term><literal>JSFServices.getBeanDeploymentArchive(Application application)</literal></term>
+               <listitem>
+                  <para>
+                     Identify the WAR in use. The 
+                     <literal>Application</literal> is provided for 
+                     additional context.
+                  </para>
+               </listitem>
+            </varlistentry>
+         </variablelist>
+         
       </section>
       
       <section>
@@ -332,87 +423,63 @@
       </section>
        
       <section>
-         <title>Bootstrap and shutdown</title>
+         <title>Initialization and shutdown</title>
          <para>
             The <literal>org.jboss.webbeans.bootstrap.api.Bootstrap</literal>
-            interface defines the bootstrap for Web Beans. To boot Web Beans, 
-            you must obtain an instance of 
+            interface defines the initialization for Web Beans, bean deployment
+            and bean validation. To boot Web Beans, you must create an instance 
+            of 
             <literal>org.jboss.webbeans.bootstrap.WebBeansBootstrap</literal>
             (which implements <literal>Boostrap</literal>), tell it about the
-            SPIs in use, and then request the container start.
+            services in use, and then request the container start.
          </para>
          
          <para>
-            The bootstrap is split into phases, bootstrap initialization and 
-            boot and shutdown. Initialization will create a manager, and add the 
-            standard (specification defined) contexts. Bootstrap will discover
-            EJBs, classes and XML; add beans defined using annotations; add
-            beans defined using XML; and validate all beans.
+            The bootstrap is split into phases, container initialization, bean 
+            deployment, bean validation and shutdown. Initialization will create
+            a manager, and add the built-in contexts, and examine the deployment
+            structure. Bean deployment will deploy any beans (defined using
+            annotations, programtically, or built in). Bean validation will
+            validate all beans.
          </para>
          
          <para>
-            The bootstrap supports multiple environments. An environment is 
-            defined by an implementation of the <literal>Environment</literal>
-            interface. A number of standard envrionments are built in as the
-            enumeration <literal>Environments</literal>. Different environments 
-            require different services to be present (for example servlet 
-            doesn't require transaction, EJB or JPA services). By default an
-            EE environment is assumed, but you can adjust the environment by 
-            calling <literal>bootstrap.setEnvironment()</literal>.
-         </para>
-         
-         <para>
-            Web Beans uses a generic-typed service registry to allow services to
-            be registered. All services implement the <literal>Service</literal>
-            interface. The service registry allows services to be added and
-            retrieved.
-         </para>
-         
-         <para>
-            To initialize the bootstrap you call 
-            <literal>Bootstrap.initialize()</literal>. Before calling 
-            <literal>initialize()</literal>, you must register any services
-            required by your environment. You can do this by calling
+            To initialize the container, you call 
+            <literal>Bootstrap.startInitialization()</literal>. Before calling 
+            <literal>startInitialization()</literal>, you must register 
+            any services required by the environment. You can do this by 
+            calling, for example,
             <literal>bootstrap.getServices().add(JpaServices.class, new MyJpaServices())</literal>.
             You must also provide the application context bean store.
          </para>
          
          <para>
-            Having called <literal>initialize()</literal>, the 
-            <literal>Manager</literal> can be obtained by calling 
-            <literal>Bootstrap.getManager()</literal>.
+            Having called <literal>startInitialization()</literal>, the 
+            <literal>Manager</literal> for each BDA can be obtained by calling 
+            <literal>Bootstrap.getManager(BeanDeploymentArchive bda)</literal>.
          </para>
          
          <para>
-            To boot the container you call <literal>Bootstrap.boot()</literal>.
+            To deploy the discovered beans, call 
+            <literal>Bootstrap.deployBeans()</literal>.
+         </para>
+         
+         <para>
+            To validate the deployed beans, call 
+            <literal>Bootstrap.validateBeans()</literal>.
+         </para>
+         
+         <para>
+            To place the container into a state where it can service requests,
+            call <literal>Bootstrap.endInitialization()</literal>
          </para>
          
          <para>
             To shutdown the container you call 
-            <literal>Bootstrap.shutdown()</literal> or
-            <literal>webBeansManager.shutdown()</literal>. This allows the 
+            <literal>Bootstrap.shutdown()</literal>. This allows the 
             container to perform any cleanup operations needed.
          </para>
          
-       </section>
-       
-       <section>
-         <title>JNDI</title>
-         
-         <para>
-            Web Beans delegates all JNDI operations to the container through the
-            SPI.
-         </para>
-         
-         <note>
-            <para>
-               A number of the SPI interface require JNDI lookup, and the class
-               <literal>AbstractResourceServices</literal> provides JNDI/Java EE
-               spec compliant lookup methods. 
-            </para>
-         </note>
-         
-
        </section>
        
        <section>
@@ -424,62 +491,9 @@
             ClassLoader if available, if not the same classloader that was used 
             to load Web Beans, however this may not be correct for some 
             environments. If this is case, you can implement
-            <literal>org.jboss.webbeans.spi.ResourceLoader</literal>:
+            <literal>org.jboss.webbeans.spi.ResourceLoader</literal>.
          </para>
-         
-         <programlisting role="JAVA"><![CDATA[
-         public interface ResourceLoader {
-    
-   /**
-    * Creates a class from a given FQCN
-    * 
-    * @param name The name of the clsas
-    * @return The class
-    */
-   public Class<?> classForName(String name);
-   
-   /**
-    * Gets a resource as a URL by name
-    * 
-    * @param name The name of the resource
-    * @return An URL to the resource
-    */
-   public URL getResource(String name);
-   
-   /**
-    * Gets resources as URLs by name
-    * 
-    * @param name The name of the resource
-    * @return An iterable reference to the URLS
-    */
-   public Iterable<URL> getResources(String name);
-   
-}
-         ]]></programlisting>
 
-       </section>
-       
-       <section>
-         <title>Servlet injection</title>
-         
-         <para>
-            Java EE / Servlet does not provide any hooks which can be used to 
-            provide injection into Servlets, so Web Beans provides an API to 
-            allow the container to request JSR-299 injection for a Servlet.
-         </para>
-         
-         <para>
-            To be compliant with JSR-299, the container should request servlet
-            injection for each newly instantiated servlet after the constructor
-            returns and before the servlet is placed into service.
-         </para>
-         
-         <para>
-            To perform injection on a servlet call 
-            <literal>WebBeansManager.injectServlet()</literal>. The manager
-            can be obtained from <literal>Bootstrap.getManager()</literal>.
-         </para>
-         
        </section>
    
     </section>
@@ -584,11 +598,23 @@
             </term>
             <listitem>
                <para>
-                  If you are integrating the Web Beans into an environment that
-                  supports deployment of applications, you must insert the
-                  <literal>webbeans-core.jar</literal> into the applications
-                  isolated classloader. It cannot be loaded from a shared 
-                  classloader.
+                  Web Beans can reside on an isolated classloader, or on a
+                  shared classloader. If you choose to use an isolated 
+                  classloader, the default <literal>SingletonProvider</literal>,
+                  <literal>IsolatedStaticSingletonProvider</literal>, can be 
+                  used. If you choose to use a shared classloader, then you will
+                  need to choose another strategy. 
+               </para>   
+               <para>
+                  You can provide your own implementation of 
+                  <literal>Singleton</literal> and 
+                  <literal>SingletonProvider</literal> and register it for use
+                  using <literal>SingletonProvider.initialize(SingletonProvider provider)</literal>.
+               </para>
+               <para>
+                  Web Beans also provides an implementation of Thread Context
+                  Classloader per application strategy, via the 
+                  <literal>TCCLSingletonProvider</literal>.
                </para>
             </listitem>
          </varlistentry>
@@ -604,6 +630,52 @@
                   <literal>javax.inject.manager.Manager</literal> and the 
                   factory class is 
                   <literal>org.jboss.webbeans.resources.ManagerObjectFactory</literal>
+               </para>
+            </listitem>
+         </varlistentry>
+         <varlistentry>
+            <term>
+               Performing CDI injection on Java EE component classes
+            </term>
+            <listitem>
+               <para>
+                  The CDI specification requires the container to provide 
+                  injection into non-contextual resources for all Java EE
+                  component classes. Web Beans delegates this responsibility to
+                  the container. This can be achieved using the CDI defined
+                  <literal>InjectionTarget</literal> SPI:
+               </para>
+               
+               <programlisting><![CDATA[
+
+// Create the injection target, once per class
+InjectionTarget it = deploymentBeanManager.createInjectionTarget(clazz);
+
+// Per instance required, create the creational context
+CreationalContext<?> cc = deploymentBeanManager.createCreationalContext(null);
+
+// Produce the instance, performing any constructor injection required
+Object instance = it.produce();
+
+// Perform injection and call initializer
+it.inject(instance, cc);
+
+// Call the post-construct callback
+it.postConstruct(instance);
+
+// Call the pre-destroy callback
+it.preDestroy(instance);
+
+// Clean up the instance
+it.dispose();
+cc.release();
+
+]]></programlisting>
+               <para>
+                  The container may intersperse other operations between these
+                  calls. Further, the integrator may choose to implement any of
+                  these calls in another manner, assuming the contract is
+                  fulfilled.
                </para>
             </listitem>
          </varlistentry>
