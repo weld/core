@@ -22,12 +22,23 @@ import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 
 /**
+ * Allows the container to identify BDA in use for a request. This method will
+ * be called, in the same thread as the request, every time Web Beans needs to
+ * identify a request.
+ * 
  * @author pmuir
  *
  */
 public interface ServletServices extends Service
 {
    
+   /**
+    * Get the BDA for the current request. The ServletContext is provided for
+    * context.
+    * 
+    * @param ctx
+    * @return
+    */
    public BeanDeploymentArchive getBeanDeploymentArchive(ServletContext ctx);
 
 }

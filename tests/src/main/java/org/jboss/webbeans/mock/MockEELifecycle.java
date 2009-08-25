@@ -18,8 +18,8 @@ package org.jboss.webbeans.mock;
 
 import org.jboss.webbeans.bootstrap.api.Environments;
 import org.jboss.webbeans.ejb.spi.EjbServices;
+import org.jboss.webbeans.jsf.spi.JSFServices;
 import org.jboss.webbeans.persistence.spi.JpaServices;
-import org.jboss.webbeans.persistence.spi.helpers.JSFServices;
 import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.security.spi.SecurityServices;
 import org.jboss.webbeans.transaction.spi.TransactionServices;

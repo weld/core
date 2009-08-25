@@ -19,7 +19,7 @@ package org.jboss.webbeans.bootstrap.api.test;
 import javax.faces.application.Application;
 
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.webbeans.persistence.spi.helpers.JSFServices;
+import org.jboss.webbeans.jsf.spi.JSFServices;
 
 /**
  * @author pmuir

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.persistence.spi.helpers;
+package org.jboss.webbeans.jsf.spi;
 
 import javax.faces.application.Application;
 
@@ -22,12 +22,22 @@ import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 
 /**
+ * Allows the container to identify BDA in use for a JSF request. This method will
+ * be called, in the same thread as the request, every time Web Beans needs to
+ * identify a JSF request.
+ * 
  * @author pmuir
  *
  */
 public interface JSFServices extends Service
 {
    
+   /**
+    * Get the BDA for the current JSF request. The Application is provided for
+    * context.
+    * 
+    * @return
+    */
    public BeanDeploymentArchive getBeanDeploymentArchive(Application application);
 
 }

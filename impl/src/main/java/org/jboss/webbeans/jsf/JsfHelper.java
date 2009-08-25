@@ -25,9 +25,9 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.conversation.ConversationIdName;
+import org.jboss.webbeans.jsf.spi.JSFServices;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.persistence.spi.helpers.JSFServices;
 import org.jboss.webbeans.util.Reflections;
 
 /**

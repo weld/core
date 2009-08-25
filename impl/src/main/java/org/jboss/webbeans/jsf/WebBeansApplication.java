@@ -28,7 +28,7 @@ import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.el.WebBeansELContextListener;
 import org.jboss.webbeans.el.WebBeansELResolverImpl;
 import org.jboss.webbeans.el.WebBeansExpressionFactory;
-import org.jboss.webbeans.persistence.spi.helpers.JSFServices;
+import org.jboss.webbeans.jsf.spi.JSFServices;
 
 /**
  * @author pmuir
