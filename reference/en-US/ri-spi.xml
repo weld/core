@@ -546,11 +546,14 @@
                   If you are integrating the Web Beans into a JSF 
                   environment you must register 
                   <literal>org.jboss.webbeans.jsf.WebBeansPhaseListener</literal>
-                  as a phase listener, and
-                  <literal>org.jboss.webbeans.el.WebBeansELREsolver</literal> as
-                  an EL resolver, either automatically, or through user
-                  configuration, for each Web Beans application which uses 
-                  JSF.
+                  as a phase listener.
+               </para>
+               
+               <para>
+                  If you are integrating the Web Beans into a JSF 
+                  environment you must register 
+                  <literal>org.jboss.webbeans.jsf.WebBeansApplicationFactory</literal>
+                  as an (wrapping) factory for the <literal>Application</literal>.
                </para>
                
                <para>
