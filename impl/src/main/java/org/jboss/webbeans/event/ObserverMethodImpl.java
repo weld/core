@@ -176,6 +176,14 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    {
       return transactionPhase;
    }
+   
+   /**
+    * @return the observerMethod
+    */
+   public MethodInjectionPoint<?, ?> getMethod()
+   {
+      return observerMethod;
+   }
 
    /**
     * Completes initialization of the observer and allows derived types to

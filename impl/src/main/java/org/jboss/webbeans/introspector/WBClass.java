@@ -190,7 +190,7 @@ public interface WBClass<T> extends WBAnnotated<T, Class<T>>, AnnotatedType<T>
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBMethod<?, ?>> getWBDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+   public Set<WBMethod<?, T>> getWBDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
 
    /**
     * Gets the superclass.

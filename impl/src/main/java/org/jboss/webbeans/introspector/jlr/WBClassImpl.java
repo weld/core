@@ -105,7 +105,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
    // The map from annotation type to abstracted method with annotation
    private final SetMultimap<Class<? extends Annotation>, WBMethod<?, ?>> declaredAnnotatedMethods;
    // The map from annotation type to method with a parameter with annotation
-   private final SetMultimap<Class<? extends Annotation>, WBMethod<?, ?>> declaredMethodsByAnnotatedParameters;
+   private final SetMultimap<Class<? extends Annotation>, WBMethod<?, T>> declaredMethodsByAnnotatedParameters;
 
    // The set of abstracted constructors
    private final Set<WBConstructor<T>> constructors;
@@ -351,12 +351,12 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
          }
         
       });
-      this.declaredMethodsByAnnotatedParameters = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WBMethod<?, ?>>>(), new Supplier< Set<WBMethod<?, ?>>>()
+      this.declaredMethodsByAnnotatedParameters = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WBMethod<?, T>>>(), new Supplier< Set<WBMethod<?, T>>>()
       {
          
-         public Set<WBMethod<?, ?>> get()
+         public Set<WBMethod<?, T>> get()
          {
-            return new HashSet<WBMethod<?, ?>>();
+            return new HashSet<WBMethod<?, T>>();
          }
         
       });
@@ -381,14 +381,14 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
                method.setAccessible(true);
             }
 
-            WBMethod<?, ?> annotatedMethod = null;
+            WBMethod<?, T> annotatedMethod = null;
             if (annotatedTypeMethods.containsKey(method))
             {
                annotatedMethod = WBMethodImpl.of(annotatedTypeMethods.get(method), this, classTransformer);
             }
             else
             {
-               annotatedMethod = WBMethodImpl.of(method, getDeclaringWBClass(method, classTransformer), classTransformer);
+               annotatedMethod = WBMethodImpl.of(method, this.<T>getDeclaringWBClass(method, classTransformer), classTransformer);
             }
             this.methods.add(annotatedMethod);
             this.methodsBySignature.put(annotatedMethod.getSignature(), annotatedMethod);
@@ -594,7 +594,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
       return Collections.unmodifiableSet(constructorsByAnnotatedParameters.get(annotationType));
    }
 
-   public Set<WBMethod<?, ?>> getWBDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
+   public Set<WBMethod<?, T>> getWBDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(declaredMethodsByAnnotatedParameters.get(annotationType));
    }

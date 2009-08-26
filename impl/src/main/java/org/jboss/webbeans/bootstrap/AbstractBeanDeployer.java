@@ -25,8 +25,6 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
 
@@ -160,18 +158,19 @@ public class AbstractBeanDeployer
       }
    }
    
-   protected void createObserverMethods(RIBean<?> declaringBean, WBClass<?> annotatedClass)
+   protected <X> void createObserverMethods(RIBean<X> declaringBean, WBClass<X> annotatedClass)
    {
-      for (WBMethod<?, ?> method : annotatedClass.getWBDeclaredMethodsWithAnnotatedParameters(Observes.class))
+      for (WBMethod<?, X> method : annotatedClass.getWBDeclaredMethodsWithAnnotatedParameters(Observes.class))
       {
          createObserverMethod(declaringBean, method);
       }
    }
    
-   protected void createObserverMethod(RIBean<?> declaringBean, WBMethod<?, ?> method)
+   protected <X, T> void createObserverMethod(RIBean<X> declaringBean, WBMethod<T, X> method)
    {
-      ObserverMethodImpl<?, ?> observer = ObserverFactory.create(method, declaringBean, manager);
-      //ProcessObserverMethod<?, ?> event = createProcessObserverMethodEvent(observer, method);
+      ObserverMethodImpl<X, T> observer = ObserverFactory.create(method, declaringBean, manager);
+      ProcessObserverMethod<?, ?> event = createProcessObserverMethodEvent(observer, method);
+      manager.fireEvent(event);
       getEnvironment().addObserver(observer);
    }
    
