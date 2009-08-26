@@ -301,10 +301,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * @param serviceRegistry
     * @return
     */
-   public static BeanManagerImpl newManager(BeanManagerImpl rootManager)
+   public static BeanManagerImpl newManager(BeanManagerImpl rootManager, ServiceRegistry services)
    {  
       return new BeanManagerImpl(
-            rootManager.getServices(), 
+            services, 
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<DecoratorBean<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?,?>>(),

@@ -18,8 +18,8 @@ package org.jboss.webbeans.bootstrap.api.helpers;
 
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.api.Environment;
-import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 
@@ -37,11 +37,10 @@ public abstract class ForwardingBootstrap implements Bootstrap
    {
       return delegate().getManager(beanDeploymentArchive);
    }
-
    
-   public void setApplicationContext(BeanStore beanStore)
+   public Bootstrap startContainer(Environment environment, Deployment deployment, BeanStore beanStore)
    {
-      delegate().setApplicationContext(beanStore);
+      return delegate().startContainer(environment, deployment, beanStore);
    }
    
    public void shutdown()
@@ -75,16 +74,6 @@ public abstract class ForwardingBootstrap implements Bootstrap
    public Bootstrap endInitialization()
    {
       return delegate().endInitialization();
-   }
-
-   public ServiceRegistry getServices()
-   {
-      return delegate().getServices();
-   }
-
-   public void setEnvironment(Environment environment)
-   {
-      delegate().setEnvironment(environment);
    }
 
    public Bootstrap startInitialization()

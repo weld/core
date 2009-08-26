@@ -19,6 +19,7 @@ package org.jboss.webbeans.bootstrap.spi;
 import java.net.URL;
 import java.util.Collection;
 
+import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
 /**
@@ -87,5 +88,12 @@ public interface BeanDeploymentArchive
     *         this is not an EJB archive
     */
    public Collection<EjbDescriptor<?>> getEjbs();
+   
+   /**
+    * Get the Bean Deployment Archive scoped services
+    * 
+    * @return
+    */
+   public ServiceRegistry getServices();
 
 }

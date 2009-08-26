@@ -49,20 +49,6 @@ public interface Bootstrap
 {
 
    /**
-    * Set the bean store to use as backing for the application context
-    * 
-    * @param beanStore the bean store to use
-    */
-   public void setApplicationContext(BeanStore beanStore);
-
-   /**
-    * Set the environment in use, by default {@link Environments.EE}
-    * 
-    * @param environment the environment to use
-    */
-   public void setEnvironment(Environment environment);
-
-   /**
     * Creates the application container:
     * <ul>
     * <li>Checks that the services required by the environment have been
@@ -72,13 +58,16 @@ public interface Bootstrap
     * <li>Creates the manager</li>
     * </ul>
     * 
-    * This method name is a workaround for weird JBoss MC behavior, calling
-    * 
-    * 
+    * @param beanStore the bean store to use as backing for the application
+    *           context
+    * @param environment the environment in use, by default
+    *           {@link Environments.EE}
+    * @param deployment the Deployment to be booted
     * @throws IllegalStateException if not all the services required for the
     *            given environment are available
+    * 
     */
-   public Bootstrap startContainer();
+   public Bootstrap startContainer(Environment environment, Deployment deployment, BeanStore beanStore);
 
    /**
     * Starts the application container initialization process:
@@ -128,13 +117,6 @@ public interface Bootstrap
     * Before the contain is shutdown the {@link BeforeShutdown} event is fired
     */
    public void shutdown();
-
-   /**
-    * Get the services available to this bootstrap
-    * 
-    * @return the services available
-    */
-   public ServiceRegistry getServices();
 
    /**
     * Get the manager used for this beanDeploymentArchive.

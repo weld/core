@@ -16,9 +16,11 @@
  */
 package org.jboss.webbeans.bootstrap.api.helpers;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.jboss.webbeans.bootstrap.api.Service;
@@ -42,14 +44,25 @@ public class SimpleServiceRegistry implements ServiceRegistry
    
    public <S extends Service> void add(java.lang.Class<S> type, S service) 
    {
-      if (service == null)
-      {
-         services.remove(type);
-      }
-      else
-      {
-         services.put(type, service);
-      }
+      services.put(type, service);
+   }
+   
+   public void addAll(Collection<Entry<Class<? extends Service>, Service>> services) 
+   {
+     for (Entry<Class<? extends Service >, Service> entry : services)
+     {
+        this.services.put(entry.getKey(), entry.getValue());
+     }
+   }
+   
+   public Set<Entry<Class<? extends Service>, Service>> entrySet()
+   {
+      return services.entrySet();
+   }
+   
+   protected Map<Class<? extends Service>, Service> get()
+   {
+      return services;
    }
    
    @SuppressWarnings("unchecked")

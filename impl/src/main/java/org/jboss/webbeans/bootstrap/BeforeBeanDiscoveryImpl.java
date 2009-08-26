@@ -28,38 +28,29 @@ import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.literal.BindingTypeLiteral;
 import org.jboss.webbeans.literal.InterceptorBindingTypeLiteral;
 import org.jboss.webbeans.literal.ScopeTypeLiteral;
-import org.jboss.webbeans.metadata.TypeStore;
 
-public class BeforeBeanDiscoveryImpl implements BeforeBeanDiscovery
+public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery
 {
    
-   private final TypeStore typeStore;
-   private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
-   private final BeanManagerImpl deploymentManager;
-   private final Deployment deployment;
-   
-   public BeforeBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
+   public BeforeBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      this.typeStore = deploymentManager.getServices().get(TypeStore.class);
-      this.beanDeployments = beanDeployments;
-      this.deployment = deploymentManager.getServices().get(Deployment.class);
-      this.deploymentManager = deploymentManager;
+      super(beanDeployments, deploymentManager, deployment);
    }
 
    public void addBindingType(Class<? extends Annotation> bindingType)
    {
-      typeStore.add(bindingType, new BindingTypeLiteral());
+      getTypeStore().add(bindingType, new BindingTypeLiteral());
    }
 
    public void addInterceptorBindingType(Class<? extends Annotation> bindingType)
    {
-      typeStore.add(bindingType, new InterceptorBindingTypeLiteral());
+      getTypeStore().add(bindingType, new InterceptorBindingTypeLiteral());
    }
 
    public void addScopeType(Class<? extends Annotation> scopeType,
          boolean normal, boolean passivating)
    {
-      typeStore.add(scopeType, new ScopeTypeLiteral(normal, passivating));
+      getTypeStore().add(scopeType, new ScopeTypeLiteral(normal, passivating));
    }
 
    public void addStereotype(Class<? extends Annotation> stereotype,
@@ -70,23 +61,7 @@ public class BeforeBeanDiscoveryImpl implements BeforeBeanDiscovery
    
    public void addAnnotatedType(AnnotatedType<?> type)
    {
-      BeanDeploymentArchive beanDeploymentArchive = deployment.loadBeanDeploymentArchive(type.getJavaClass());
-      if (beanDeploymentArchive == null)
-      {
-         throw new IllegalStateException("Unable to find Bean Deployment Archive for " + type);
-      }
-      else
-      {
-         if (beanDeployments.containsKey(beanDeploymentArchive))
-         {
-            beanDeployments.get(beanDeploymentArchive).getBeanDeployer().addClass(type);
-         }
-         else
-         {
-            BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager);
-            beanDeployments.put(beanDeploymentArchive, beanDeployment);
-         }
-      }
+      getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer().addClass(type);
    }
    
    

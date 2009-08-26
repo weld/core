@@ -5,7 +5,6 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.jsr299.tck.spi.Beans;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
-import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.util.Proxies;
 
 /**
@@ -70,13 +69,7 @@ public class BeansImpl implements Beans
 
    public <T> T getEnterpriseBean(Class<? extends T> beanType, Class<T> localInterface)
    {
-      // Get the EJB Descriptor and resolve it
-      if (CurrentManager.rootManager().getNewEnterpriseBeanMap().containsKey(beanType))
-      {  
-         EjbDescriptor<?> ejbDescriptor = CurrentManager.rootManager().getNewEnterpriseBeanMap().get(beanType).getEjbDescriptor().delegate();
-         return CurrentManager.rootManager().getServices().get(EjbServices.class).resolveEjb(ejbDescriptor).getBusinessObject(localInterface);
-      }   
-      throw new NullPointerException("No EJB found for " + localInterface.getName() + " on bean " + beanType.getName());
+      throw new UnsupportedOperationException();
    }
 
    public <T> T createBeanInstance(Bean<T> bean)

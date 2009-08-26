@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.bootstrap;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,29 +29,22 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
 
-public class AfterBeanDiscoveryImpl implements AfterBeanDiscovery
+public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery
 {
-   
-   private final List<Throwable> definitionErrors = new ArrayList<Throwable>();
-   private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
-   private final BeanManagerImpl deploymentManager;
-   private final Deployment deployment;
-   
-   public AfterBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
+
+   public AfterBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      this.beanDeployments = beanDeployments;
-      this.deploymentManager = deploymentManager;
-      this.deployment = deploymentManager.getServices().get(Deployment.class);
+      super(beanDeployments, deploymentManager, deployment);
    }
 
    public void addDefinitionError(Throwable t)
    {
-      definitionErrors.add(t);
+      getErrors().add(t);
    }
    
    public List<Throwable> getDefinitionErrors()
    {
-      return Collections.unmodifiableList(definitionErrors);
+      return Collections.unmodifiableList(getErrors());
    }
    
    public void addBean(Bean<?> bean)
@@ -62,35 +54,12 @@ public class AfterBeanDiscoveryImpl implements AfterBeanDiscovery
 
    public void addContext(Context context)
    {
-      deploymentManager.addContext(context);
+      getDeploymentManager().addContext(context);
    }
 
    public void addObserverMethod(ObserverMethod<?, ?> observerMethod)
    {
       getOrCreateBeanDeployment(observerMethod.getBean().getBeanClass()).getBeanManager().addObserver(observerMethod);
-   }
-   
-   private BeanDeployment getOrCreateBeanDeployment(Class<?> clazz)
-   {
-      BeanDeploymentArchive beanDeploymentArchive = deployment.loadBeanDeploymentArchive(clazz);
-      if (beanDeploymentArchive == null)
-      {
-         throw new IllegalStateException("Unable to find Bean Deployment Archive for " + clazz);
-      }
-      else
-      {
-         if (beanDeployments.containsKey(beanDeploymentArchive))
-         {
-            return beanDeployments.get(beanDeploymentArchive);
-         }
-         else
-         {
-            BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager);
-            beanDeployments.put(beanDeploymentArchive, beanDeployment);
-            return beanDeployment;
-         }
-      }
-      
    }
 
 }

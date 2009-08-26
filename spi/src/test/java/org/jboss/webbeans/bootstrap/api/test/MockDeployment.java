@@ -16,10 +16,15 @@
  */
 package org.jboss.webbeans.bootstrap.api.test;
 
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
 /**
  * @author pmuir
@@ -27,15 +32,66 @@ import org.jboss.webbeans.bootstrap.spi.Deployment;
  */
 public class MockDeployment implements Deployment
 {
+   
+   static class MockBeanDeploymentArchive implements BeanDeploymentArchive
+   {
+
+      private final ServiceRegistry services; 
+      
+      public MockBeanDeploymentArchive(ServiceRegistry services)
+      {
+         this.services = services;
+      }
+
+      public Collection<Class<?>> getBeanClasses()
+      {
+         return Collections.emptySet();
+      }
+
+      public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
+      {
+         return Collections.emptySet();
+      }
+
+      public Collection<URL> getBeansXml()
+      {
+         return Collections.emptySet();
+      }
+
+      public Collection<EjbDescriptor<?>> getEjbs()
+      {
+         return Collections.emptySet();
+      }
+
+      public ServiceRegistry getServices()
+      {
+         return services;
+      }
+      
+   }
+   
+   private final ServiceRegistry services;
+   private final BeanDeploymentArchive beanDeploymentArchive;
+
+   public MockDeployment(ServiceRegistry services, MockBeanDeploymentArchive beanDeploymentArchive)
+   {
+      this.services = services;
+      this.beanDeploymentArchive = beanDeploymentArchive;
+   }
 
    public List<BeanDeploymentArchive> getBeanDeploymentArchives()
    {
-      return null;
+      return Collections.singletonList(beanDeploymentArchive);
    }
 
    public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
    {
       return null;
+   }
+
+   public ServiceRegistry getServices()
+   {
+      return services;
    }
 
 }

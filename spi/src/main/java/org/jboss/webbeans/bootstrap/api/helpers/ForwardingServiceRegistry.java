@@ -1,6 +1,9 @@
 package org.jboss.webbeans.bootstrap.api.helpers;
 
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
@@ -28,6 +31,16 @@ public abstract class ForwardingServiceRegistry implements ServiceRegistry
    public Iterator<Service> iterator()
    {
       return delegate().iterator();
+   }
+
+   public void addAll(Collection<Entry<Class<? extends Service>, Service>> services)
+   {
+      delegate().addAll(services);
+   }
+
+   public Set<Entry<Class<? extends Service>, Service>> entrySet()
+   {
+      return delegate().entrySet();
    }
    
 }

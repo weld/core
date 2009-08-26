@@ -16,22 +16,21 @@
  */
 package org.jboss.webbeans.bootstrap;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 
-public class AfterDeploymentValidationImpl implements AfterDeploymentValidation
+public class AfterDeploymentValidationImpl extends AbstractContainerEvent implements AfterDeploymentValidation
 {
-   private List<Throwable> deploymentProblems = new ArrayList<Throwable>();
    
    public void addDeploymentProblem(Throwable t)
    {
-      deploymentProblems.add(t);
+      getErrors().add(t);
    }
 
    public List<Throwable> getDeploymentProblems()
    {
-      return deploymentProblems;
+      return Collections.unmodifiableList(getErrors());
    }
 }

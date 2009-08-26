@@ -16,11 +16,9 @@
  */
 package org.jboss.webbeans.bootstrap.api;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.jsf.spi.JSFServices;
 import org.jboss.webbeans.persistence.spi.JpaServices;
@@ -43,33 +41,87 @@ public enum Environments implements Environment
    /**
     * Java EE5 or Java EE6
     */
-   EE(Deployment.class, EjbServices.class, JpaServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class, SecurityServices.class, ValidationServices.class, ServletServices.class, JSFServices.class),
-   
-   /**
-    * Java EE6 Web Profile
-    */
-   EE_WEB_PROFILE(Deployment.class, EjbServices.class, JpaServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class, SecurityServices.class, ValidationServices.class, ServletServices.class, JSFServices.class),
+   EE(new EnvironmentBuilder()
+         .addRequiredDeploymentService(TransactionServices.class)
+         .addRequiredDeploymentService(ResourceLoader.class)
+         .addRequiredDeploymentService(SecurityServices.class)
+         .addRequiredDeploymentService(ValidationServices.class)
+         .addRequiredDeploymentService(ServletServices.class)
+         .addRequiredDeploymentService(JSFServices.class)
+         .addRequiredBeanDeploymentArchiveService(JpaServices.class)
+         .addRequiredBeanDeploymentArchiveService(ResourceServices.class)
+         .addRequiredBeanDeploymentArchiveService(EjbServices.class)
+   ),
    
    /**
     * Servlet container such as Tomcat
     */
-   SERVLET(Deployment.class, ResourceLoader.class, ServletServices.class),
+   SERVLET(new EnvironmentBuilder()
+         .addRequiredDeploymentService(ResourceLoader.class)
+         .addRequiredDeploymentService(ServletServices.class)
+   ),
    
    /**
     * Java SE
     */
-   SE(Deployment.class, ResourceLoader.class);
+   SE(new EnvironmentBuilder()
+   );
    
-   private final Set<Class<? extends Service>> requiredServices;
+   private final Set<Class<? extends Service>> requiredDeploymentServices;
    
-   private Environments(Class<? extends Service>... requiredServices)
+   private final Set<Class<? extends Service>> requiredBeanDeploymentArchiveServices;
+   
+   private Environments(EnvironmentBuilder builder)
    {
-      this.requiredServices = new HashSet<Class<? extends Service>>(Arrays.asList(requiredServices));
+      this.requiredDeploymentServices = builder.getRequiredDeploymentServices();
+      this.requiredBeanDeploymentArchiveServices = builder.getRequiredBeanDeploymentArchiveServices();
    }
 
-   public Set<Class<? extends Service>> getRequiredServices()
+   public Set<Class<? extends Service>> getRequiredDeploymentServices()
    {
-      return requiredServices;
+      return requiredDeploymentServices;
+   }
+   
+   public Set<Class<? extends Service>> getRequiredBeanDeploymentArchiveServices()
+   {
+      return requiredBeanDeploymentArchiveServices;
+   }
+   
+   private static class EnvironmentBuilder
+   {
+      
+      private final Set<Class<? extends Service>> requiredDeploymentServices;
+      
+      private final Set<Class<? extends Service>> requiredBeanDeploymentArchiveServices;
+      
+      public EnvironmentBuilder()
+      {
+         this.requiredBeanDeploymentArchiveServices = new HashSet<Class<? extends Service>>();
+         this.requiredDeploymentServices = new HashSet<Class<? extends Service>>();
+      }
+      
+      public Set<Class<? extends Service>> getRequiredBeanDeploymentArchiveServices()
+      {
+         return requiredBeanDeploymentArchiveServices;
+      }
+      
+      public Set<Class<? extends Service>> getRequiredDeploymentServices()
+      {
+         return requiredDeploymentServices;
+      }
+      
+      public EnvironmentBuilder addRequiredDeploymentService(Class<? extends Service> service)
+      {
+         this.requiredDeploymentServices.add(service);
+         return this;
+      }
+      
+      public EnvironmentBuilder addRequiredBeanDeploymentArchiveService(Class<? extends Service> service)
+      {
+         this.requiredBeanDeploymentArchiveServices.add(service);
+         return this;
+      }
+      
    }
    
 }

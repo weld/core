@@ -29,6 +29,8 @@ import javax.ejb.Singleton;
 import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 
+import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
+import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
@@ -40,13 +42,35 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
 {
    
 
-   private Set<Class<?>> beanClasses = new HashSet<Class<?>>();
-
-   private Collection<URL> webBeansXmlFiles = new HashSet<URL>();
+   private Set<Class<?>> beanClasses;
+   private Collection<URL> webBeansXmlFiles;
+   private List<EjbDescriptor<?>> ejbs;
+   private final ServiceRegistry services;
+   
+   public MockBeanDeploymentArchive()
+   {
+      this.services = new SimpleServiceRegistry();
+      this.beanClasses = new HashSet<Class<?>>();
+      this.webBeansXmlFiles = new HashSet<URL>();
+   }
 
    public Collection<Class<?>> getBeanClasses()
    {
       return beanClasses;
+   }
+   
+   public void setBeanClasses(Iterable<Class<?>> beanClasses)
+   {
+      this.beanClasses.clear();
+      for (Class<?> clazz : beanClasses)
+      {
+         this.beanClasses.add(clazz);
+      }
+      ejbs = new ArrayList<EjbDescriptor<?>>();
+      for (Class<?> ejbClass : discoverEjbs(getBeanClasses()))
+      {
+         ejbs.add(MockEjbDescriptor.of(ejbClass));
+      }
    }
 
    public Collection<URL> getBeansXml()
@@ -68,22 +92,6 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
       return Collections.emptyList();
    }
    
-   private List<EjbDescriptor<?>> ejbs;
-
-   public void setBeanClasses(Iterable<Class<?>> beanClasses)
-   {
-      this.beanClasses.clear();
-      for (Class<?> clazz : beanClasses)
-      {
-         this.beanClasses.add(clazz);
-      }
-      ejbs = new ArrayList<EjbDescriptor<?>>();
-      for (Class<?> ejbClass : discoverEjbs(getBeanClasses()))
-      {
-         ejbs.add(MockEjbDescriptor.of(ejbClass));
-      }
-   }
-   
    public Collection<EjbDescriptor<?>> getEjbs()
    {
       return ejbs;
@@ -100,6 +108,11 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
          }
       }
       return ejbs;
+   }
+   
+   public ServiceRegistry getServices()
+   {
+      return services;
    }
 
 }

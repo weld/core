@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.mock;
 
+import org.jboss.webbeans.bootstrap.api.Environment;
 import org.jboss.webbeans.bootstrap.api.Environments;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.jsf.spi.JSFServices;
@@ -33,16 +34,18 @@ public class MockEELifecycle extends MockServletLifecycle
    public MockEELifecycle()
    {
       super();
-      getBootstrap().getServices().add(TransactionServices.class, MOCK_TRANSACTION_SERVICES);
-      getBootstrap().getServices().add(EjbServices.class, new MockEjBServices());
-      getBootstrap().getServices().add(JpaServices.class, new MockJpaServices(getDeployment()));
-      getBootstrap().getServices().add(ResourceServices.class, new MockResourceServices());
-      getBootstrap().getServices().add(SecurityServices.class, new MockSecurityServices());
-      getBootstrap().getServices().add(ValidationServices.class, new MockValidationServices());
-      getBootstrap().getServices().add(JSFServices.class, new MockJSFServices());
-      getBootstrap().setEnvironment(Environments.EE);
+      getDeployment().getServices().add(TransactionServices.class, MOCK_TRANSACTION_SERVICES);
+      getDeployment().getServices().add(SecurityServices.class, new MockSecurityServices());
+      getDeployment().getServices().add(ValidationServices.class, new MockValidationServices());
+      getDeployment().getServices().add(JSFServices.class, new MockJSFServices());
+      getDeployment().getArchive().getServices().add(EjbServices.class, new MockEjBServices());
+      getDeployment().getArchive().getServices().add(JpaServices.class, new MockJpaServices(getDeployment()));
+      getDeployment().getArchive().getServices().add(ResourceServices.class, new MockResourceServices());
    }
    
-  
+   public Environment getEnvironment()
+   {
+      return Environments.EE;
+   }
    
 }

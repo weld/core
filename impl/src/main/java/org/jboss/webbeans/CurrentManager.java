@@ -65,7 +65,7 @@ public class CurrentManager
    
    public static boolean isAvailable()
    {
-      return rootManager.isSet();
+      return rootManager.isSet() && beanDeploymentArchives.isSet();
    }
    
    /**

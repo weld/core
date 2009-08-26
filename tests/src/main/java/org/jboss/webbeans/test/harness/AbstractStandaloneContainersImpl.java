@@ -17,7 +17,7 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
    public boolean deploy(Iterable<Class<?>> classes, Iterable<URL> beansXml)
    {
       this.lifecycle = newLifecycle();
-      lifecycle.initialize();
+      
       try
       {
          MockBeanDeploymentArchive archive = lifecycle.getDeployment().getArchive();
@@ -26,6 +26,7 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
          {
             archive.setWebBeansXmlFiles(beansXml);
          }
+         lifecycle.initialize();
          lifecycle.beginApplication();
       }
       catch (Exception e) 

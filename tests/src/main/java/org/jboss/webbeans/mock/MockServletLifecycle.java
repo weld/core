@@ -1,8 +1,8 @@
 package org.jboss.webbeans.mock;
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
+import org.jboss.webbeans.bootstrap.api.Environment;
 import org.jboss.webbeans.bootstrap.api.Environments;
-import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
@@ -27,16 +27,13 @@ public class MockServletLifecycle extends ContextLifecycle
          throw new IllegalStateException("No WebBeanDiscovery is available");
       }
       bootstrap = new WebBeansBootstrap();
-      bootstrap.setEnvironment(Environments.SERVLET);
-      bootstrap.getServices().add(ResourceLoader.class, MOCK_RESOURCE_LOADER);
-      bootstrap.getServices().add(Deployment.class, deployment);
-      bootstrap.getServices().add(ServletServices.class, new MockServletServices(deployment.getArchive()));
-      bootstrap.setApplicationContext(applicationBeanStore);
+      deployment.getServices().add(ResourceLoader.class, MOCK_RESOURCE_LOADER);
+      deployment.getServices().add(ServletServices.class, new MockServletServices(deployment.getArchive()));
    }
    
    public void initialize()
    {
-      bootstrap.startContainer();
+      bootstrap.startContainer(getEnvironment(), getDeployment(), getApplicationBeanStore());
    }
    
    public MockDeployment getDeployment()
@@ -57,6 +54,11 @@ public class MockServletLifecycle extends ContextLifecycle
    public void endApplication()
    {
       bootstrap.shutdown();
+   }
+   
+   public BeanStore getApplicationBeanStore()
+   {
+      return applicationBeanStore;
    }
    
    public void resetContexts()
@@ -83,5 +85,10 @@ public class MockServletLifecycle extends ContextLifecycle
    {
       // TODO Conversation handling breaks this :-(
       //super.endSession("Mock", sessionBeanStore);
+   }
+   
+   public Environment getEnvironment()
+   {
+      return Environments.SERVLET;
    }
 }

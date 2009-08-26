@@ -19,8 +19,8 @@ package org.jboss.webbeans.bootstrap.api;
 import java.util.Set;
 
 /**
- * Represents an environment. Used to control which services Web Beans will require
- * in order to boot
+ * Represents an environment. Specifies the services Web Beans requires
+ * 
  * @author Pete Muir
  *
  */
@@ -28,10 +28,12 @@ public interface Environment
 {
    
    /**
-    * The services to require for this environment
+    * The deployment scoped services required for this environment
     * 
     * @return the services to require
     */
-   public Set<Class<? extends Service>> getRequiredServices();
+   public Set<Class<? extends Service>> getRequiredDeploymentServices();
+   
+   public Set<Class<? extends Service>> getRequiredBeanDeploymentArchiveServices();
  
 }

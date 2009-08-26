@@ -17,7 +17,6 @@
 package org.jboss.webbeans.bootstrap;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.builtin.DefaultValidatorBean;
 import org.jboss.webbeans.bean.builtin.DefaultValidatorFactoryBean;
 import org.jboss.webbeans.bean.builtin.InjectionPointBean;
@@ -28,6 +27,8 @@ import org.jboss.webbeans.bean.builtin.facade.EventBean;
 import org.jboss.webbeans.bean.builtin.facade.InstanceBean;
 import org.jboss.webbeans.bootstrap.api.Environment;
 import org.jboss.webbeans.bootstrap.api.Environments;
+import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
+import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.conversation.JavaSEConversationTerminator;
@@ -60,9 +61,12 @@ public class BeanDeployment
    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager)
    {
       this.beanDeploymentArchive = beanDeploymentArchive;
-      this.beanManager = BeanManagerImpl.newManager(CurrentManager.rootManager());
+      ServiceRegistry services = new SimpleServiceRegistry();
+      services.addAll(deploymentManager.getServices().entrySet());
+      services.addAll(beanDeploymentArchive.getServices().entrySet());
+      this.beanManager = BeanManagerImpl.newManager(deploymentManager, services);
       EjbDescriptorCache ejbDescriptors = new EjbDescriptorCache();
-      if (deploymentManager.getServices().contains(EjbServices.class))
+      if (beanManager.getServices().contains(EjbServices.class))
       {
          // Must populate EJB cache first, as we need it to detect whether a
          // bean is an EJB!

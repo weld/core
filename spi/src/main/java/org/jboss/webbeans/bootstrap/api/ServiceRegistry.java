@@ -1,5 +1,9 @@
 package org.jboss.webbeans.bootstrap.api;
 
+import java.util.Collection;
+import java.util.Set;
+import java.util.Map.Entry;
+
 /**
  * A service registry
  * 
@@ -10,7 +14,7 @@ public interface ServiceRegistry extends Iterable<Service>
 {
    
    /**
-    * Add a service to bootstrap
+    * Add a service
     * 
     * @see Service
     * 
@@ -19,6 +23,15 @@ public interface ServiceRegistry extends Iterable<Service>
     * @param service the service implementation
     */
    public <S extends Service> void add(Class<S> type, S service);
+   
+   /**
+    * Add services
+    * 
+    * @param services
+    */
+   public void addAll(Collection<Entry<Class<? extends Service>, Service>> services);
+   
+   public Set<Entry<Class<? extends Service>, Service>> entrySet();
    
    /**
     * Retrieve a service implementation
@@ -37,5 +50,7 @@ public interface ServiceRegistry extends Iterable<Service>
     * @return true if a service is registered, otherwise false
     */
    public <S extends Service> boolean contains(Class<S> type);
+   
+   
    
 }

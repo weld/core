@@ -19,19 +19,22 @@ package org.jboss.webbeans.mock;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
+import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
 
 public class MockDeployment implements Deployment
 {
    
-   private MockBeanDeploymentArchive archive;
-   
-   private List<BeanDeploymentArchive> beanDeploymentArchives;
+   private final MockBeanDeploymentArchive archive;
+   private final List<BeanDeploymentArchive> beanDeploymentArchives;
+   private final ServiceRegistry services;
    
    public MockDeployment()
    {
       this.archive = new MockBeanDeploymentArchive();
+      this.services = new SimpleServiceRegistry();
       this.beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>();
       this.beanDeploymentArchives.add(archive);
    }
@@ -49,6 +52,11 @@ public class MockDeployment implements Deployment
    public MockBeanDeploymentArchive getArchive()
    {
       return archive;
+   }
+
+   public ServiceRegistry getServices()
+   {
+      return services;
    }
 
 }

@@ -34,7 +34,9 @@ import org.jboss.webbeans.DeploymentException;
 import org.jboss.webbeans.Validator;
 import org.jboss.webbeans.bean.builtin.ManagerBean;
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
-import org.jboss.webbeans.bootstrap.api.helpers.AbstractBootstrap;
+import org.jboss.webbeans.bootstrap.api.Environment;
+import org.jboss.webbeans.bootstrap.api.Service;
+import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.api.helpers.ServiceRegistries;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
@@ -45,7 +47,6 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
@@ -69,7 +70,7 @@ import org.jboss.webbeans.util.serviceProvider.ServiceLoader;
  * 
  * @author Pete Muir
  */
-public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
+public class WebBeansBootstrap implements Bootstrap
 {
    
    /**
@@ -84,17 +85,21 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    {
       
       private final BeanManagerImpl deploymentManager;
+      private final Environment environment;
+      private final Deployment deployment;
       
-      public DeploymentVisitor(BeanManagerImpl deploymentManager)
+      public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, Deployment deployment)
       {
          this.deploymentManager = deploymentManager;
+         this.environment = environment;
+         this.deployment = deployment;
       }
       
       public Map<BeanDeploymentArchive, BeanDeployment> visit()
       {
          Set<BeanDeploymentArchive> seenBeanDeploymentArchives = new HashSet<BeanDeploymentArchive>();
          Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives = new HashMap<BeanDeploymentArchive, BeanDeployment>();
-         for (BeanDeploymentArchive archvive : deploymentManager.getServices().get(Deployment.class).getBeanDeploymentArchives())
+         for (BeanDeploymentArchive archvive : deployment.getBeanDeploymentArchives())
          {
             visit(archvive, managerAwareBeanDeploymentArchives, seenBeanDeploymentArchives);
          }
@@ -103,6 +108,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       
       private BeanDeployment visit(BeanDeploymentArchive beanDeploymentArchive, Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives, Set<BeanDeploymentArchive> seenBeanDeploymentArchives)
       {
+         // Check that the required services are specified
+         verifyServices(beanDeploymentArchive.getServices(), environment.getRequiredBeanDeploymentArchiveServices());
+         
+         // Create the BeanDeployment and attach
          BeanDeployment parent = new BeanDeployment(beanDeploymentArchive, deploymentManager);
          managerAwareBeanDeploymentArchives.put(beanDeploymentArchive, parent);
          seenBeanDeploymentArchives.add(beanDeploymentArchive);
@@ -131,60 +140,79 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    // The Web Beans manager
    private BeanManagerImpl deploymentManager;
    private Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
-   private DeploymentVisitor deploymentVisitor;
-   private BeanStore requestBeanStore;
+   private Environment environment;
+   private Deployment deployment;
    
-   public WebBeansBootstrap()
-   {
-      // initialize default services
-      getServices().add(ResourceLoader.class, new DefaultResourceLoader());
-   }
-
-   public Bootstrap startContainer()
+   public Bootstrap startContainer(Environment environment, Deployment deployment, BeanStore applicationBeanStore)
    {
       synchronized (this)
       {
-         verify();
-         if (!getServices().contains(TransactionServices.class))
+         if (deployment == null)
+         {
+            throw new IllegalArgumentException("Must start the container with a deployment");
+         }
+         if (!deployment.getServices().contains(ResourceLoader.class))
+         {
+            deployment.getServices().add(ResourceLoader.class, new DefaultResourceLoader());
+         }
+         
+         verifyServices(deployment.getServices(), environment.getRequiredDeploymentServices());
+         
+         if (!deployment.getServices().contains(TransactionServices.class))
          {
             log.info("Transactional services not available. Injection of @Current UserTransaction not available. Transactional observers will be invoked synchronously.");
          }
-         if (!getServices().contains(EjbServices.class))
+         if (!deployment.getServices().contains(EjbServices.class))
          {
             log.info("EJB services not available. Session beans will be simple beans, CDI-style injection into non-contextual EJBs, injection of remote EJBs and injection of @EJB in simple beans will not be available");
          }
-         if (!getServices().contains(JpaServices.class))
+         if (!deployment.getServices().contains(JpaServices.class))
          {
             log.info("JPA services not available. Injection of @PersistenceContext will not occur. Entity beans will be discovered as simple beans.");
          }
-         if (!getServices().contains(ResourceServices.class))
+         if (!deployment.getServices().contains(ResourceServices.class))
          {
             log.info("@Resource injection not available.");
          }
-         addImplementationServices();
-         createContexts();
-         this.deploymentManager = BeanManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
+         if (applicationBeanStore == null)
+         {
+            throw new IllegalStateException("No application context BeanStore set");
+         }
+         
+         this.deployment = deployment;
+         addImplementationServices(deployment.getServices());
+         
+         
+         this.environment = environment;
+         this.deploymentManager = BeanManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
          CurrentManager.setRootManager(deploymentManager);
+         
+         createContexts();
          initializeContexts();
-         this.deploymentVisitor = new DeploymentVisitor(deploymentManager);
+         // Start the application context
+         beginApplication(applicationBeanStore);
+         
+         DeploymentVisitor deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment);
+         beanDeployments = deploymentVisitor.visit();
+         
          return this;
       }
    }
    
-   private void addImplementationServices()
+   private void addImplementationServices(ServiceRegistry services)
    {
-      ResourceLoader resourceLoader = getServices().get(ResourceLoader.class);
-      getServices().add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
-      getServices().add(JsfApiAbstraction.class, new JsfApiAbstraction(resourceLoader));
-      getServices().add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
-      getServices().add(ServletApiAbstraction.class, new ServletApiAbstraction(resourceLoader));
+      ResourceLoader resourceLoader = services.get(ResourceLoader.class);
+      services.add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
+      services.add(JsfApiAbstraction.class, new JsfApiAbstraction(resourceLoader));
+      services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
+      services.add(ServletApiAbstraction.class, new ServletApiAbstraction(resourceLoader));
       // Temporary workaround to provide context for building annotated class
       // TODO expose AnnotatedClass on SPI and allow container to provide impl of this via ResourceLoader
-      getServices().add(Validator.class, new Validator());
-      getServices().add(TypeStore.class, new TypeStore());
-      getServices().add(ClassTransformer.class, new ClassTransformer(getServices().get(TypeStore.class)));
-      getServices().add(MetaAnnotationStore.class, new MetaAnnotationStore(getServices().get(ClassTransformer.class)));
-      getServices().add(ContextualIdStore.class, new ContextualIdStore());
+      services.add(Validator.class, new Validator());
+      services.add(TypeStore.class, new TypeStore());
+      services.add(ClassTransformer.class, new ClassTransformer(services.get(TypeStore.class)));
+      services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
+      services.add(ContextualIdStore.class, new ContextualIdStore());
    }
    
    public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive)
@@ -207,17 +235,6 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          {
             throw new IllegalStateException("Manager has not been initialized");
          }
-         if (getApplicationContext() == null)
-         {
-            throw new IllegalStateException("No application context BeanStore set");
-         }
-         
-         // Set up the contexts before we start creating bean deployers
-         // This allows us to throw errors in the parser
-         beginApplication(getApplicationContext());
-         requestBeanStore = new ConcurrentHashMapBeanStore();
-         
-         beanDeployments = deploymentVisitor.visit();
          
          ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager);
          extensionBeanDeployer.addExtensions(ServiceLoader.load(Extension.class));
@@ -237,7 +254,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       {
          for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
          {
-            entry.getValue().deployBeans(getEnvironment());
+            entry.getValue().deployBeans(environment);
          }
          fireAfterBeanDiscoveryEvent();
          log.debug("Web Beans initialized. Validating beans.");
@@ -251,7 +268,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       {
          for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
          {
-            getServices().get(Validator.class).validateDeployment(entry.getValue().getBeanManager(), entry.getValue().getBeanDeployer().getEnvironment());
+            deploymentManager.getServices().get(Validator.class).validateDeployment(entry.getValue().getBeanManager(), entry.getValue().getBeanDeployer().getEnvironment());
          }
          fireAfterDeploymentValidationEvent();
       }
@@ -270,7 +287,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
 
    private void fireBeforeBeanDiscoveryEvent()
    {
-      BeforeBeanDiscovery event = new BeforeBeanDiscoveryImpl(deploymentManager, beanDeployments);
+      BeforeBeanDiscovery event = new BeforeBeanDiscoveryImpl(deploymentManager, deployment, beanDeployments);
       try
       {
          deploymentManager.fireEvent(event);
@@ -296,7 +313,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    
    private void fireAfterBeanDiscoveryEvent()
    {
-      AfterBeanDiscoveryImpl event = new AfterBeanDiscoveryImpl(deploymentManager, beanDeployments);
+      AfterBeanDiscoveryImpl event = new AfterBeanDiscoveryImpl(deploymentManager, deployment, beanDeployments);
       try
       {
          deploymentManager.fireEvent(event);
@@ -346,21 +363,21 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    
    protected void initializeContexts()
    {
-      deploymentManager.addContext(getServices().get(DependentContext.class));
-      deploymentManager.addContext(getServices().get(RequestContext.class));
-      deploymentManager.addContext(getServices().get(ConversationContext.class));
-      deploymentManager.addContext(getServices().get(SessionContext.class));
-      deploymentManager.addContext(getServices().get(ApplicationContext.class));
+      deploymentManager.addContext(deploymentManager.getServices().get(DependentContext.class));
+      deploymentManager.addContext(deploymentManager.getServices().get(RequestContext.class));
+      deploymentManager.addContext(deploymentManager.getServices().get(ConversationContext.class));
+      deploymentManager.addContext(deploymentManager.getServices().get(SessionContext.class));
+      deploymentManager.addContext(deploymentManager.getServices().get(ApplicationContext.class));
    }
    
    protected void createContexts()
    {
-      getServices().add(ContextLifecycle.class, new ContextLifecycle());
-      getServices().add(DependentContext.class, new DependentContext());
-      getServices().add(RequestContext.class, new RequestContext());
-      getServices().add(ConversationContext.class, new ConversationContext());
-      getServices().add(SessionContext.class, new SessionContext());
-      getServices().add(ApplicationContext.class, new ApplicationContext());
+      deployment.getServices().add(ContextLifecycle.class, new ContextLifecycle());
+      deployment.getServices().add(DependentContext.class, new DependentContext());
+      deployment.getServices().add(RequestContext.class, new RequestContext());
+      deployment.getServices().add(ConversationContext.class, new ConversationContext());
+      deployment.getServices().add(SessionContext.class, new SessionContext());
+      deployment.getServices().add(ApplicationContext.class, new ApplicationContext());
    }
 
    protected void beginApplication(BeanStore applicationBeanStore)
@@ -381,6 +398,17 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       finally
       {
          deploymentManager.shutdown();
+      }
+   }
+   
+   protected static void verifyServices(ServiceRegistry services, Set<Class<? extends Service>> requiredServices) 
+   {
+      for (Class<? extends Service> serviceType : requiredServices)
+      {
+         if (!services.contains(serviceType))
+         {
+            throw new IllegalStateException("Required service " + serviceType.getName() + " has not been specified");
+         }
       }
    }
 

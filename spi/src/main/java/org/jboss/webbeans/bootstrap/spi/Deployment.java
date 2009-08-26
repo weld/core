@@ -18,7 +18,7 @@ package org.jboss.webbeans.bootstrap.spi;
 
 import java.util.Collection;
 
-import org.jboss.webbeans.bootstrap.api.Service;
+import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 
 /**
  * Represents a deployment of a CDI application.
@@ -112,7 +112,7 @@ import org.jboss.webbeans.bootstrap.api.Service;
  * @author Pete Muir
  * 
  */
-public interface Deployment extends Service
+public interface Deployment
 {
 
    /**
@@ -142,5 +142,13 @@ public interface Deployment extends Service
     * @return the {@link BeanDeploymentArchive} containing the bean class
     */
    public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass);
+  
+
+   /**
+    * Get the services available to this deployment
+    * 
+    * @return the services available
+    */
+   public ServiceRegistry getServices();
 
 }
