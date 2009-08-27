@@ -13,7 +13,7 @@
 		<delete dir="target" failonerror="false" />
 	</target>
 
-	<target name="update" depends="install-webbeans.deployer, install-javassist-update, install-validation-update" description="Update JBoss 5.x or 6.x for Web Beans" />
+	<target name="update" depends="install-webbeans.deployer, install-javassist-update" description="Update JBoss 5.x or 6.x for Web Beans" />
 
 	<target name="install-webbeans.deployer">
 		<echo message="Installing Web Beans ${webbeans.version} to ${jboss.home}" />
