@@ -45,6 +45,11 @@ public interface EjbDescriptor<T>
     */
    public Collection<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces();
    
+   /**
+    * Get the EJB name
+    * 
+    * @return
+    */
    public String getEjbName();
    
    /**

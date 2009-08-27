@@ -73,8 +73,23 @@ public interface WebBeansManager extends BeanManager, Serializable
     */
    public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor);
    
+   /**
+    * Get the Bean object for the given EJB, or null if Web Beans was not given
+    * this descriptor in the deployment.
+    * 
+    * @param <T>
+    * @param descriptor
+    * @return
+    */
    public <T> Bean<T> getBean(EjbDescriptor<T> descriptor);
    
-   public <T> EjbDescriptor<T> getEjbDescriptor(String beanName);
+   /**
+    * Get the EjbDescriptor for the given ejb name
+    * 
+    * @param <T>
+    * @param ejbName
+    * @return
+    */
+   public <T> EjbDescriptor<T> getEjbDescriptor(String ejbName);
 
 }
