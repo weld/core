@@ -34,7 +34,7 @@ import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.conversation.JavaSEConversationTerminator;
 import org.jboss.webbeans.conversation.NumericConversationIdGenerator;
 import org.jboss.webbeans.conversation.ServletConversationManager;
-import org.jboss.webbeans.ejb.EjbDescriptorCache;
+import org.jboss.webbeans.ejb.EjbDescriptors;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
@@ -61,11 +61,12 @@ public class BeanDeployment
    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager)
    {
       this.beanDeploymentArchive = beanDeploymentArchive;
+      EjbDescriptors ejbDescriptors = new EjbDescriptors();
+      beanDeploymentArchive.getServices().add(EjbDescriptors.class, ejbDescriptors);
       ServiceRegistry services = new SimpleServiceRegistry();
       services.addAll(deploymentManager.getServices().entrySet());
       services.addAll(beanDeploymentArchive.getServices().entrySet());
       this.beanManager = BeanManagerImpl.newManager(deploymentManager, services);
-      EjbDescriptorCache ejbDescriptors = new EjbDescriptorCache();
       if (beanManager.getServices().contains(EjbServices.class))
       {
          // Must populate EJB cache first, as we need it to detect whether a

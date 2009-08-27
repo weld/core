@@ -45,6 +45,8 @@ public interface EjbDescriptor<T>
     */
    public Collection<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces();
    
+   public String getEjbName();
+   
    /**
     * Get the remove methods of the EJB
     * 

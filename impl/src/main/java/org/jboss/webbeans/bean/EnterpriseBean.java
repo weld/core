@@ -46,10 +46,12 @@ import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
+import org.jboss.webbeans.injection.InjectionContextImpl;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Proxies;
 
@@ -79,9 +81,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param manager the current manager
     * @return An Enterprise Web Bean
     */
-   public static <T> EnterpriseBean<T> of(WBClass<T> clazz, BeanManagerImpl manager, BeanDeployerEnvironment environment)
+   public static <T> EnterpriseBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
-      return new EnterpriseBean<T>(clazz, manager, environment);
+      WBClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
+      return new EnterpriseBean<T>(type, ejbDescriptor, manager);
    }
 
    /**
@@ -90,26 +93,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   protected EnterpriseBean(WBClass<T> type, BeanManagerImpl manager, BeanDeployerEnvironment environment)
+   protected EnterpriseBean(WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
       super(type, manager);
       initType();
-      Iterable<InternalEjbDescriptor<T>> ejbDescriptors = environment.getEjbDescriptors().get(getType());
-      if (ejbDescriptors == null)
-      {
-         throw new DefinitionException("Not an EJB " + toString());
-      }
-      for (InternalEjbDescriptor<T> ejbDescriptor : ejbDescriptors)
-      {
-         if (this.ejbDescriptor == null)
-         {
-            this.ejbDescriptor = ejbDescriptor;
-         }
-         else
-         {
-            throw new RuntimeException("TODO Multiple EJBs have the same bean class! " + getType());
-         }
-      }
+      this.ejbDescriptor = ejbDescriptor;
       initTypes();
       initBindings();
    }
@@ -195,7 +183,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
       super.preSpecialize(environment);
-      if (!environment.getEjbDescriptors().containsKey(getAnnotatedItem().getWBSuperclass().getJavaClass()))
+      // We appear to check this twice?
+      if (!environment.getEjbDescriptors().contains(getAnnotatedItem().getWBSuperclass().getJavaClass()))
       {
          throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
       }
@@ -209,7 +198,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          throw new IllegalStateException(toString() + " does not specialize a bean");
       }
       AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getWBSuperclass());
-      if (!(specializedBean instanceof EnterpriseBean))
+      if (!(specializedBean instanceof EnterpriseBean<?>))
       {
          throw new IllegalStateException(toString() + " doesn't have a session bean as a superclass " + specializedBean);
       }
@@ -234,19 +223,19 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       return instance;
    }
    
-   public void inject(T instance, CreationalContext<T> ctx)
+   public void inject(final T instance, final CreationalContext<T> ctx)
    {
-      throw new UnsupportedOperationException("Unable to perform injection on a session bean");
-   }
-
-   public void postConstruct(T instance)
-   {
-      throw new UnsupportedOperationException("Unable to call postConstruct() on a session bean");
-   }
-
-   public void preDestroy(T instance)
-   {
-      throw new UnsupportedOperationException("Unable to call preDestroy() on a session bean");
+      new InjectionContextImpl<T>(getManager(), this, instance)
+      {
+         
+         public void proceed()
+         {
+            Beans.injectBoundFields(instance, ctx, getManager(), getInjectableFields());
+            Beans.callInitializers(instance, ctx, getManager(), getInitializerMethods());
+         }
+         
+      }.run();
+      
    }
 
    public T produce(CreationalContext<T> ctx)
@@ -284,15 +273,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          throw new IllegalArgumentException("Cannot destroy session bean instance not created by the container");
       }
       EnterpriseBeanInstance enterpiseBeanInstance = (EnterpriseBeanInstance) instance;
-      
-      if (enterpiseBeanInstance.isDestroyed(Marker.INSTANCE))
-      {
-         return;
-      }
-      else
-      {
-         enterpiseBeanInstance.destroy(Marker.INSTANCE, this, creationalContext);
-      }
+      enterpiseBeanInstance.destroy(Marker.INSTANCE, this, creationalContext);
       creationalContext.release();
    }
 

@@ -62,13 +62,14 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.WBCreationalContext;
+import org.jboss.webbeans.ejb.EjbDescriptors;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.el.Namespace;
 import org.jboss.webbeans.el.WebBeansELResolver;
 import org.jboss.webbeans.introspector.WBAnnotated;
@@ -189,7 +190,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final Map<String, RIBean<?>> riBeans;
    
    // TODO review this structure
-   private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans;
+   private transient final Map<EjbDescriptor<?>, EnterpriseBean<?>> enterpriseBeans;
    
    // TODO This isn't right, specialization should follow accessibility rules, but I think we can enforce these in resolve()
    private transient final Map<Contextual<?>, Contextual<?>> specializedBeans;
@@ -283,7 +284,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new CopyOnWriteArrayList<DecoratorBean<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
             new CopyOnWriteArrayList<String>(),
-            new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>(),
+            new ConcurrentHashMap<EjbDescriptor<?>, EnterpriseBean<?>>(),
             new ConcurrentHashMap<String, RIBean<?>>(),
             new ClientProxyProvider(),
             contexts, 
@@ -309,7 +310,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new CopyOnWriteArrayList<DecoratorBean<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
             new CopyOnWriteArrayList<String>(),
-            rootManager.getNewEnterpriseBeanMap(),
+            rootManager.getEnterpriseBeans(),
             new ConcurrentHashMap<String, RIBean<?>>(),
             rootManager.getClientProxyProvider(),
             rootManager.getContexts(), 
@@ -343,7 +344,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             parentManager.getDecorators(), 
             registeredObservers, 
             namespaces, 
-            parentManager.getNewEnterpriseBeanMap(), 
+            parentManager.getEnterpriseBeans(), 
             parentManager.getRiBeans(), 
             parentManager.getClientProxyProvider(), 
             parentManager.getContexts(), 
@@ -367,7 +368,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          List<DecoratorBean<?>> decorators, 
          List<ObserverMethod<?,?>> observers, 
          List<String> namespaces,
-         Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, 
+         Map<EjbDescriptor<?>, EnterpriseBean<?>> enterpriseBeans, 
          Map<String, RIBean<?>> riBeans, 
          ClientProxyProvider clientProxyProvider, 
          ListMultimap<Class<? extends Annotation>, Context> contexts, 
@@ -381,7 +382,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.services = serviceRegistry;
       this.beans = beans;
       this.decorators = decorators;
-      this.newEnterpriseBeans = newEnterpriseBeans;
+      this.enterpriseBeans = enterpriseBeans;
       this.riBeans = riBeans;
       this.clientProxyProvider = clientProxyProvider;
       this.contexts = contexts;
@@ -528,12 +529,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       {
          return;
       }
-      if (bean instanceof NewEnterpriseBean)
+      if (bean.getClass().equals(EnterpriseBean.class))
       {
-         NewEnterpriseBean<?> newEnterpriseBean = (NewEnterpriseBean<?>) bean;
-         newEnterpriseBeans.put(newEnterpriseBean.getType(), newEnterpriseBean);
+         EnterpriseBean<?> enterpriseBean = (EnterpriseBean<?>) bean;
+         enterpriseBeans.put(enterpriseBean.getEjbDescriptor(), enterpriseBean);
       }
-      if (bean instanceof RIBean)
+      if (bean instanceof RIBean<?>)
       {
          RIBean<?> riBean = (RIBean<?>) bean;
          riBeans.put(riBean.getId(), riBean);
@@ -752,9 +753,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * 
     * @return The bean map
     */
-   public Map<Class<?>, EnterpriseBean<?>> getNewEnterpriseBeanMap()
+   public Map<EjbDescriptor<?>, EnterpriseBean<?>> getEnterpriseBeans()
    {
-      return newEnterpriseBeans;
+      return enterpriseBeans;
    }
 
    /**
@@ -1284,8 +1285,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type)
    {
-      // TODO Cache on our side?
       return new SimpleInjectionTarget<T>(getServices().get(ClassTransformer.class).loadClass(type), this);
+   }
+   
+   public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor)
+   {
+      return getBean(descriptor);
    }
 
    public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean)
@@ -1398,6 +1403,16 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       {
          throw new AmbiguousResolutionException("Cannot resolve an ambiguous dependency between " + beans);
       }
+   }
+
+   public <T> EjbDescriptor<T> getEjbDescriptor(String beanName)
+   {
+      return getServices().get(EjbDescriptors.class).get(beanName);
+   }
+   
+   public <T> EnterpriseBean<T> getBean(EjbDescriptor<T> descriptor)
+   {
+      return (EnterpriseBean<T>) getEnterpriseBeans().get(descriptor);
    }
 
 }

@@ -46,42 +46,11 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
 
    // The log provider
    static final transient Log log = Logging.getLog(EnterpriseBeanProxyMethodHandler.class);
-   
-   private static final ThreadLocal<EnterpriseBean<?>> enterpriseBean;
-   
-   private static final ThreadLocal<CreationalContext<?>> enterpriseBeanCreationalContext;
-   
-   static
-   {
-      enterpriseBean = new ThreadLocal<EnterpriseBean<?>>();
-      enterpriseBeanCreationalContext = new ThreadLocal<CreationalContext<?>>();
-   }
-   
-   public static EnterpriseBean<?> getEnterpriseBean()
-   {
-      return enterpriseBean.get();
-   }
-   
-   /**
-    * @return the enterpriseBeanCreationalContext
-    */
-   public static CreationalContext<?> getEnterpriseBeanCreationalContext()
-   {
-      return enterpriseBeanCreationalContext.get();
-   }
-   
-   private static <T> void setEnterpriseBean(EnterpriseBean<T> bean, CreationalContext<T> creationalContext)
-   {
-      enterpriseBean.set(bean);
-      enterpriseBeanCreationalContext.set(creationalContext);
-   }
 
    private final SessionObjectReference reference; 
    private final Class<?> objectInterface;
    private final Collection<MethodSignature> removeMethodSignatures;
    private final boolean clientCanCallRemoveMethods;
-   
-   private boolean destroyed;
 
    /**
     * Constructor
@@ -92,19 +61,10 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
     */
    public EnterpriseBeanProxyMethodHandler(EnterpriseBean<T> bean, CreationalContext<T> creationalContext)
    {
-      this.destroyed = false;
       this.objectInterface = bean.getEjbDescriptor().getObjectInterface();
       this.removeMethodSignatures = bean.getEjbDescriptor().getRemoveMethodSignatures();
       this.clientCanCallRemoveMethods = bean.isClientCanCallRemoveMethods();
-      try
-      {
-         setEnterpriseBean(bean, creationalContext);
-         this.reference = bean.createReference();
-      }
-      finally
-      {
-         setEnterpriseBean(null, null);
-      }
+      this.reference = bean.createReference();
       log.trace("Created enterprise bean proxy method handler for " + bean);
    }
    
@@ -127,29 +87,10 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
     */
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
-      // EnterpriseBeanInstance methods
-      if ("isDestroyed".equals(method.getName()) && Marker.isMarker(0, method, args))
-      {
-         return destroyed;
-      }
-      else if ("setDestroyed".equals(method.getName()) && Marker.isMarker(0, method, args))
-      {
-         if (args.length != 2)
-         {
-            throw new IllegalArgumentException("enterpriseBeanInstance.setDestroyed() called with >2 argument");
-         }
-         if (!(args[1].getClass().equals(boolean.class) || args[1].getClass().equals(Boolean.class)))
-         {
-            throw new IllegalArgumentException("enterpriseBeanInstance.setDestroyed() called with non-boolean argument");
-         }
-         destroyed = ((Boolean) args[1]).booleanValue();
-      }
-      
-      if (destroyed)
+      if (reference.isRemoved())
       {
          return null;
       }
-      
       if ("destroy".equals(method.getName()) && Marker.isMarker(0, method, args))
       {
          reference.remove();
@@ -165,22 +106,25 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
             throw new UnsupportedOperationException("Cannot call EJB remove method directly on non-dependent scoped bean " + method );
          }
       }
-      
-      Class<?> businessInterface = method.getDeclaringClass();
-      if (businessInterface.equals(Object.class))
-      {
-         businessInterface = objectInterface;
-      }
+      Class<?> businessInterface = getBusinessInterface(method);
       Object proxiedInstance = reference.getBusinessObject(businessInterface);
-      if (proxiedInstance == null)
-      {
-         throw new IllegalStateException("No EJB can be found in the EJB container for " + reference + ". Make sure you are running an EJB container.");
-      }
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
       Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxiedInstance, args);
       log.trace("Executed " + method + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
       return returnValue;
-      
+   }
+   
+   private Class<?> getBusinessInterface(Method method)
+   {
+      Class<?> businessInterface = method.getDeclaringClass();
+      if (businessInterface.equals(Object.class))
+      {
+         return objectInterface;
+      }
+      else
+      {
+         return businessInterface;
+      }
    }
    
 }

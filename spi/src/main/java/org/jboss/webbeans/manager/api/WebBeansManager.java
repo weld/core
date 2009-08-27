@@ -21,7 +21,11 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionTarget;
+
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
 /**
  * Functionality provided by the Web Beans Manager over and above the JSR-299
@@ -58,5 +62,19 @@ public interface WebBeansManager extends BeanManager, Serializable
     *            if the given scope is not a normal scope
     */
    public WebBeansManager setCurrent(Class<? extends Annotation> scopeType);
+   
+   /**
+    * The injection target for the given EJB, or null if Web Beans was not
+    * given this descriptor in the deployment.
+    * 
+    * @param <T>
+    * @param descriptor
+    * @return
+    */
+   public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor);
+   
+   public <T> Bean<T> getBean(EjbDescriptor<T> descriptor);
+   
+   public <T> EjbDescriptor<T> getEjbDescriptor(String beanName);
 
 }

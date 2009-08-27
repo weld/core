@@ -36,7 +36,7 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.builtin.AbstractBuiltInBean;
 import org.jboss.webbeans.bean.builtin.ExtensionBean;
-import org.jboss.webbeans.ejb.EjbDescriptorCache;
+import org.jboss.webbeans.ejb.EjbDescriptors;
 import org.jboss.webbeans.event.ObserverMethodImpl;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
@@ -53,10 +53,10 @@ public class BeanDeployerEnvironment
    private final List<DisposalMethodBean<?>> allDisposalBeans;
    private final Set<DisposalMethodBean<?>> resolvedDisposalBeans;
    private final Set<DecoratorBean<?>> decorators;
-   private final EjbDescriptorCache ejbDescriptors;
+   private final EjbDescriptors ejbDescriptors;
    private final TypeSafeDisposerResolver disposalMethodResolver;
 
-   public BeanDeployerEnvironment(EjbDescriptorCache ejbDescriptors, BeanManagerImpl manager)
+   public BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager)
    {
       this.classBeanMap = new HashMap<WBClass<?>, AbstractClassBean<?>>();
       this.producerMethodBeanMap = new HashMap<WBMethod<?, ?>, ProducerMethodBean<?>>();
@@ -165,7 +165,7 @@ public class BeanDeployerEnvironment
       return Collections.unmodifiableSet(beans);
    }
 
-   public EjbDescriptorCache getEjbDescriptors()
+   public EjbDescriptors getEjbDescriptors()
    {
       return ejbDescriptors;
    }

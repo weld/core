@@ -1,10 +1,6 @@
 package org.jboss.webbeans.tck;
 
-import javax.enterprise.inject.spi.Bean;
-
 import org.jboss.jsr299.tck.spi.Beans;
-import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.util.Proxies;
 
 /**
@@ -18,63 +14,9 @@ import org.jboss.webbeans.util.Proxies;
 public class BeansImpl implements Beans
 {
 
-   public boolean isEnterpriseBean(Class<?> clazz)
-   {
-      return CurrentManager.rootManager().getNewEnterpriseBeanMap().containsKey(clazz);
-   }
-
-   public boolean isEntityBean(Class<?> clazz)
-   {
-      if (CurrentManager.rootManager().getNewEnterpriseBeanMap().containsKey(clazz))
-      {
-         EjbDescriptor<?> ejbDescriptor = CurrentManager.rootManager().getNewEnterpriseBeanMap().get(clazz).getEjbDescriptor();
-         if (!ejbDescriptor.isMessageDriven() && !ejbDescriptor.isSingleton() && !ejbDescriptor.isStateful() && !ejbDescriptor.isStateless())
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   public boolean isStatefulBean(Class<?> clazz)
-   {
-      if (CurrentManager.rootManager().getNewEnterpriseBeanMap().containsKey(clazz))
-      {
-         EjbDescriptor<?> ejbDescriptor = CurrentManager.rootManager().getNewEnterpriseBeanMap().get(clazz).getEjbDescriptor();
-         if (ejbDescriptor.isStateful())
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   public boolean isStatelessBean(Class<?> clazz)
-   {
-      if (CurrentManager.rootManager().getNewEnterpriseBeanMap().containsKey(clazz))
-      {
-         EjbDescriptor<?> ejbDescriptor = CurrentManager.rootManager().getNewEnterpriseBeanMap().get(clazz).getEjbDescriptor();
-         if (ejbDescriptor.isStateless())
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-   
    public boolean isProxy(Object instance)
    {
       return Proxies.isProxy(instance);
-   }
-
-   public <T> T getEnterpriseBean(Class<? extends T> beanType, Class<T> localInterface)
-   {
-      throw new UnsupportedOperationException();
-   }
-
-   public <T> T createBeanInstance(Bean<T> bean)
-   {
-      return (T) CurrentManager.rootManager().getCurrent().getReference(bean, Object.class, CurrentManager.rootManager().getCurrent().createCreationalContext(bean));
    }
 
 }

@@ -11,7 +11,7 @@ import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
-import org.jboss.webbeans.ejb.EjbDescriptorCache;
+import org.jboss.webbeans.ejb.EjbDescriptors;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.jlr.WBClassImpl;
 import org.jboss.webbeans.metadata.TypeStore;
@@ -40,7 +40,7 @@ public class AccessibleManagerResolutionTest
       WBClass<?> clazz = WBClassImpl.of(c, classTransformer);
       RIBean<?> bean = SimpleBean.of(clazz, manager);
       manager.addBean(bean);
-      BeanDeployerEnvironment environment = new BeanDeployerEnvironment(new EjbDescriptorCache(), manager);
+      BeanDeployerEnvironment environment = new BeanDeployerEnvironment(new EjbDescriptors(), manager);
       bean.initialize(environment);
    }
    

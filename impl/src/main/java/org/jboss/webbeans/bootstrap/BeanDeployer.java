@@ -24,7 +24,8 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.interceptor.Interceptor;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.ejb.EjbDescriptorCache;
+import org.jboss.webbeans.ejb.EjbDescriptors;
+import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.resources.ClassTransformer;
 
@@ -43,7 +44,7 @@ public class BeanDeployer extends AbstractBeanDeployer
     * @param manager
     * @param ejbDescriptors
     */
-   public BeanDeployer(BeanManagerImpl manager, BeanManagerImpl deploymentManager, EjbDescriptorCache ejbDescriptors)
+   public BeanDeployer(BeanManagerImpl manager, BeanManagerImpl deploymentManager, EjbDescriptors ejbDescriptors)
    {
       super(manager, new BeanDeployerEnvironment(ejbDescriptors, manager));
       this.classes = new HashSet<WBClass<?>>();
@@ -99,26 +100,23 @@ public class BeanDeployer extends AbstractBeanDeployer
    {
       for (WBClass<?> clazz : classes)
       {
-         if (getEnvironment().getEjbDescriptors().containsKey(clazz.getJavaClass()))
+         boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(clazz.getJavaClass()) && isTypeManagedBeanOrDecorator(clazz);
+         if (managedBeanOrDecorator && clazz.isAnnotationPresent(Decorator.class))
          {
-            createEnterpriseBean(clazz);
+            createDecorator(clazz);
          }
-         else
+         else if (managedBeanOrDecorator && clazz.isAnnotationPresent(Interceptor.class))
          {
-            boolean managedBeanOrDecorator = isTypeManagedBeanOrDecorator(clazz);
-            if (managedBeanOrDecorator && clazz.isAnnotationPresent(Decorator.class))
-            {
-               createDecorator(clazz);
-            }
-            else if (managedBeanOrDecorator && clazz.isAnnotationPresent(Interceptor.class))
-            {
-               //createInterceptor(clazz);
-            }
-            else if (managedBeanOrDecorator && !clazz.isAbstract())
-            {
-               createSimpleBean(clazz);
-            }
+            //createInterceptor(clazz);
          }
+         else if (managedBeanOrDecorator && !clazz.isAbstract())
+         {
+            createSimpleBean(clazz);
+         }
+      }
+      for (InternalEjbDescriptor<?> ejbDescriptor : getEnvironment().getEjbDescriptors())
+      {
+         createEnterpriseBean(ejbDescriptor);
       }
       return this;
    }

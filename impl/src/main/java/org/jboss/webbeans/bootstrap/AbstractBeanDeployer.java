@@ -40,6 +40,7 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
+import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.event.ObserverFactory;
 import org.jboss.webbeans.event.ObserverMethodImpl;
 import org.jboss.webbeans.introspector.WBClass;
@@ -193,13 +194,13 @@ public class AbstractBeanDeployer
       getEnvironment().addBean(bean);
    }
    
-   protected <T> void createEnterpriseBean(WBClass<T> annotatedClass)
+   protected <T> void createEnterpriseBean(InternalEjbDescriptor<T> ejbDescriptor)
    {
       // TODO Don't create enterprise bean if it has no local interfaces!
-      EnterpriseBean<T> bean = EnterpriseBean.of(annotatedClass, manager, getEnvironment());
+      EnterpriseBean<T> bean = EnterpriseBean.of(ejbDescriptor, manager);
       getEnvironment().addBean(bean);
       createSubBeans(bean);
-      getEnvironment().addBean(NewEnterpriseBean.of(annotatedClass, manager, getEnvironment()));
+      getEnvironment().addBean(NewEnterpriseBean.of(ejbDescriptor, manager));
    }
    
    /**

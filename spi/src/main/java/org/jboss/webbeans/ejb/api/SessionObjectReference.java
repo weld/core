@@ -50,5 +50,12 @@ public interface SessionObjectReference extends Serializable
     * @throws NoSuchEJBException if the session object has already been removed
     */
    public void remove();
+   
+   /**
+    * Determine whether the session object has been removed
+    * 
+    * @return true if the session object has been removed
+    */
+   public boolean isRemoved();
 
 }

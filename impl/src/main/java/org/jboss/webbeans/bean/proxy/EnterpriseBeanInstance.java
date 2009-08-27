@@ -19,7 +19,6 @@ package org.jboss.webbeans.bean.proxy;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.ejb.api.SessionObjectReference;
 
 /**
  * Interface implemented by all enterprise bean proxies to query/control the proxy
@@ -30,17 +29,6 @@ import org.jboss.webbeans.ejb.api.SessionObjectReference;
 public interface EnterpriseBeanInstance
 {
    
-   /**
-    * Indicated if a remove method has been invoked by the application
-    * 
-    * @return True if invoked, false otherwise
-    */
-   public boolean isDestroyed(Marker marker);
-   
-   public void setDestroyed(Marker marker, boolean destroyed);
-   
    public void destroy(Marker marker, EnterpriseBean<?> enterpriseBean, CreationalContext<?> creationalContext);
-   
-   public SessionObjectReference getSessionObjectReference(Marker marker);
    
 }

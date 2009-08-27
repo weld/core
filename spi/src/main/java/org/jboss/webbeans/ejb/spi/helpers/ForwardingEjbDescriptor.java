@@ -37,6 +37,11 @@ public abstract class ForwardingEjbDescriptor<T> implements EjbDescriptor<T>
       return delegate().getBeanClass();
    }
    
+   public String getEjbName()
+   {
+      return delegate().getEjbName();
+   }
+   
    public boolean isMessageDriven()
    {
       return delegate().isMessageDriven();

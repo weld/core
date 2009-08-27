@@ -16,11 +16,13 @@
  */
 package org.jboss.webbeans.ejb;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
 /**
@@ -29,17 +31,20 @@ import org.jboss.webbeans.ejb.spi.EjbDescriptor;
  * @author Pete Muir
  * 
  */
-public class EjbDescriptorCache
+public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?>>
 {
-   // EJB implementation class -> EJB descriptors map
-   private Map<Class<?>, Set<InternalEjbDescriptor<?>>> ejbsByBeanClass;
+   // EJB name -> EJB descriptors map
+   private final Map<String, InternalEjbDescriptor<?>> ejbs;
+   
+   private final Collection<Class<?>> ejbClasses;
 
    /**
     * Constructor
     */
-   public EjbDescriptorCache()
+   public EjbDescriptors()
    {
-      this.ejbsByBeanClass = new HashMap<Class<?>, Set<InternalEjbDescriptor<?>>>();
+      this.ejbs = new HashMap<String, InternalEjbDescriptor<?>>();
+      this.ejbClasses = new HashSet<Class<?>>();
    }
 
    /**
@@ -49,9 +54,9 @@ public class EjbDescriptorCache
     * @return An iterator
     */
    @SuppressWarnings("unchecked")
-   public <T> Iterable<InternalEjbDescriptor<T>> get(Class<T> beanClass)
+   public <T> InternalEjbDescriptor<T> get(String beanName)
    {
-      return (Iterable) ejbsByBeanClass.get(beanClass);
+      return (InternalEjbDescriptor<T>) ejbs.get(beanName);
    }
 
    /**
@@ -62,11 +67,8 @@ public class EjbDescriptorCache
    public <T> void add(EjbDescriptor<T> ejbDescriptor)
    {
       InternalEjbDescriptor<T> internalEjbDescriptor = new InternalEjbDescriptor<T>(ejbDescriptor);
-      if (!ejbsByBeanClass.containsKey(ejbDescriptor.getBeanClass()))
-      {
-         ejbsByBeanClass.put(ejbDescriptor.getBeanClass(), new CopyOnWriteArraySet<InternalEjbDescriptor<?>>());  
-      }
-      ejbsByBeanClass.get(ejbDescriptor.getBeanClass()).add(internalEjbDescriptor);
+      ejbs.put(ejbDescriptor.getEjbName(), internalEjbDescriptor);
+      ejbClasses.add(ejbDescriptor.getBeanClass());
    }
 
    /**
@@ -76,9 +78,21 @@ public class EjbDescriptorCache
     * @param beanClass The class to match
     * @return True if present, otherwise false
     */
-   public boolean containsKey(Class<?> beanClass)
+   public boolean contains(String beanName)
    {
-      return ejbsByBeanClass.containsKey(beanClass);
+      return ejbs.containsKey(beanName);
+   }
+   
+   /**
+    * Indicates if there are EJB descriptors available for an EJB implementation
+    * class
+    * 
+    * @param beanClass The class to match
+    * @return True if present, otherwise false
+    */
+   public boolean contains(Class<?> beanClass)
+   {
+      return ejbClasses.contains(beanClass);
    }
 
    /**
@@ -99,13 +113,12 @@ public class EjbDescriptorCache
     */
    public void clear()
    {
-      ejbsByBeanClass.clear();
+      ejbs.clear();
    }
 
-   @Override
-   public String toString()
+   public Iterator<InternalEjbDescriptor<?>> iterator()
    {
-      return "EJB Descriptor cache has indexed " + ejbsByBeanClass.size() + " EJBs by class";
+      return ejbs.values().iterator();
    }
 
 }

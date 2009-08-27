@@ -23,9 +23,10 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
+import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.literal.NewLiteral;
+import org.jboss.webbeans.resources.ClassTransformer;
 
 /**
  * Represents a @New enterprise bean
@@ -42,9 +43,10 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
     * @param manager The Web Beans manager
     * @return a new NewEnterpriseBean instance
     */
-   public static <T> NewEnterpriseBean<T> of(WBClass<T> clazz, BeanManagerImpl manager, BeanDeployerEnvironment environment)
+   public static <T> NewEnterpriseBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
-      return new NewEnterpriseBean<T>(clazz, manager, environment);
+      WBClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
+      return new NewEnterpriseBean<T>(type, ejbDescriptor, manager);
    }
    
    private Set<Annotation> bindings;
@@ -55,9 +57,9 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
     * @param type An annotated class
     * @param manager The Web Beans manager
     */
-   protected NewEnterpriseBean(final WBClass<T> type, BeanManagerImpl manager, BeanDeployerEnvironment environment)
+   protected NewEnterpriseBean(final WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
-      super(type, manager, environment);
+      super(type, ejbDescriptor, manager);
       this.bindings = new HashSet<Annotation>();
       this.bindings.add(new NewLiteral()
       {

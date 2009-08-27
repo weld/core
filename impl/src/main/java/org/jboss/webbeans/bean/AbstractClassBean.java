@@ -42,6 +42,7 @@ import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.WBClass;
+import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Beans;
@@ -74,6 +75,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    private Class<T> proxyClassForDecorators;
    
    private final ThreadLocal<Integer> decoratorStackPosition;
+   private WBMethod<?, ?> postConstruct;
+   private WBMethod<?, ?> preDestroy;
 
    /**
     * Constructor
@@ -350,6 +353,75 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    public String getId()
    {
       return id;
+   }
+
+   public void postConstruct(T instance)
+   {
+      WBMethod<?, ?> postConstruct = getPostConstruct();
+      if (postConstruct != null)
+      {
+         try
+         {
+            postConstruct.invoke(instance);
+         }
+         catch (Exception e)
+         {
+            throw new RuntimeException("Unable to invoke " + postConstruct + " on " + instance, e);
+         }
+      }
+   }
+
+   public void preDestroy(T instance)
+   {
+      WBMethod<?, ?> preDestroy = getPreDestroy();
+      if (preDestroy != null)
+      {
+         try
+         {
+            // note: RI supports injection into @PreDestroy
+            preDestroy.invoke(instance);
+         }
+         catch (Exception e)
+         {
+            throw new RuntimeException("Unable to invoke " + preDestroy + " on " + instance, e);
+         }
+      }
+   }
+
+   /**
+    * Initializes the post-construct method
+    */
+   protected void initPostConstruct()
+   {
+      this.postConstruct = Beans.getPostConstruct(getAnnotatedItem());
+   }
+
+   /**
+    * Initializes the pre-destroy method
+    */
+   protected void initPreDestroy()
+   {
+      this.preDestroy = Beans.getPreDestroy(getAnnotatedItem());
+   }
+
+   /**
+    * Returns the post-construct method
+    * 
+    * @return The post-construct method
+    */
+   public WBMethod<?, ?> getPostConstruct()
+   {
+      return postConstruct;
+   }
+
+   /**
+    * Returns the pre-destroy method
+    * 
+    * @return The pre-destroy method
+    */
+   public WBMethod<?, ?> getPreDestroy()
+   {
+      return preDestroy;
    }
    
 

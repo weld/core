@@ -23,7 +23,7 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.builtin.ExtensionBean;
-import org.jboss.webbeans.ejb.EjbDescriptorCache;
+import org.jboss.webbeans.ejb.EjbDescriptors;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.resources.ClassTransformer;
 
@@ -38,7 +38,7 @@ public class ExtensionBeanDeployer extends AbstractBeanDeployer
    
    public ExtensionBeanDeployer(BeanManagerImpl manager)
    {
-      super(manager, new BeanDeployerEnvironment(new EjbDescriptorCache(), manager));
+      super(manager, new BeanDeployerEnvironment(new EjbDescriptors(), manager));
       this.extensions = new HashSet<Extension>();
    }
    

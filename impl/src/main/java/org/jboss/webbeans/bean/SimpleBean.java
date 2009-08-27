@@ -55,11 +55,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 
    // The constructor
    private ConstructorInjectionPoint<T> constructor;
-   // The post-construct method
-   private WBMethod<?, ?> postConstruct;
-   // The pre-destroy method
-   private WBMethod<?, ?> preDestroy;
-
    private Set<WBInjectionPoint<?, ?>> ejbInjectionPoints;
    private Set<WBInjectionPoint<?, ?>> persistenceContextInjectionPoints;
    private Set<WBInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
@@ -146,41 +141,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       
    }
 
-   public void postConstruct(T instance)
-   {
-      WBMethod<?, ?> postConstruct = getPostConstruct();
-      if (postConstruct != null)
-      {
-         try
-         {
-            postConstruct.invoke(instance);
-         }
-         catch (Exception e)
-         {
-            throw new RuntimeException("Unable to invoke " + postConstruct + " on " + instance, e);
-         }
-      }
-   }
-
-   public void preDestroy(T instance)
-   {
-      WBMethod<?, ?> preDestroy = getPreDestroy();
-      if (preDestroy != null)
-      {
-         try
-         {
-            // note: RI supports injection into @PreDestroy
-            preDestroy.invoke(instance);
-         }
-         catch (Exception e)
-         {
-            throw new RuntimeException("Unable to invoke " + preDestroy + " on " + instance, e);
-         }
-      }
-   }
-
-   
-   
    protected InjectionPoint attachCorrectInjectionPoint()
    {
       Decorator<?> decorator = getDecorators().get(getDecorators().size() - 1);
@@ -313,7 +273,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
       super.preSpecialize(environment);
-      if (environment.getEjbDescriptors().containsKey(getAnnotatedItem().getWBSuperclass().getJavaClass()))
+      if (environment.getEjbDescriptors().contains(getAnnotatedItem().getWBSuperclass().getJavaClass()))
       {
          throw new DefinitionException("Simple bean must specialize a simple bean");
       }
@@ -349,22 +309,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    }
 
    /**
-    * Initializes the post-construct method
-    */
-   protected void initPostConstruct()
-   {
-      this.postConstruct = Beans.getPostConstruct(getAnnotatedItem());
-   }
-
-   /**
-    * Initializes the pre-destroy method
-    */
-   protected void initPreDestroy()
-   {
-      this.preDestroy = Beans.getPreDestroy(getAnnotatedItem());
-   }
-
-   /**
     * Returns the constructor
     * 
     * @return The constructor
@@ -372,26 +316,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    public WBConstructor<T> getConstructor()
    {
       return constructor;
-   }
-
-   /**
-    * Returns the post-construct method
-    * 
-    * @return The post-construct method
-    */
-   public WBMethod<?, ?> getPostConstruct()
-   {
-      return postConstruct;
-   }
-
-   /**
-    * Returns the pre-destroy method
-    * 
-    * @return The pre-destroy method
-    */
-   public WBMethod<?, ?> getPreDestroy()
-   {
-      return preDestroy;
    }
 
    /**

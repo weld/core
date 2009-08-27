@@ -48,9 +48,6 @@ import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
-import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.injection.spi.JpaInjectionServices;
-import org.jboss.webbeans.injection.spi.ResourceInjectionServices;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
@@ -162,18 +159,19 @@ public class WebBeansBootstrap implements Bootstrap
          {
             log.info("Transactional services not available. Injection of @Current UserTransaction not available. Transactional observers will be invoked synchronously.");
          }
-         if (!deployment.getServices().contains(EjbServices.class))
-         {
-            log.info("EJB services not available. Session beans will be simple beans, CDI-style injection into non-contextual EJBs, injection of remote EJBs and injection of @EJB in simple beans will not be available");
-         }
-         if (!deployment.getServices().contains(JpaInjectionServices.class))
-         {
-            log.info("JPA services not available. Injection of @PersistenceContext will not occur. Entity beans will be discovered as simple beans.");
-         }
-         if (!deployment.getServices().contains(ResourceInjectionServices.class))
-         {
-            log.info("@Resource injection not available.");
-         }
+         // TODO Reinstate if we can find a good way to detect.
+//         if (!deployment.getServices().contains(EjbServices.class))
+//         {
+//            log.info("EJB services not available. Session beans will be simple beans, CDI-style injection into non-contextual EJBs, injection of remote EJBs and injection of @EJB in simple beans will not be available");
+//         }
+//         if (!deployment.getServices().contains(JpaInjectionServices.class))
+//         {
+//            log.info("JPA services not available. Injection of @PersistenceContext will not occur. Entity beans will be discovered as simple beans.");
+//         }
+//         if (!deployment.getServices().contains(ResourceInjectionServices.class))
+//         {
+//            log.info("@Resource injection not available.");
+//         }
          if (applicationBeanStore == null)
          {
             throw new IllegalStateException("No application context BeanStore set");

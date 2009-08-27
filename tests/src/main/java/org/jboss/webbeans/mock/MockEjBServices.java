@@ -3,8 +3,6 @@
  */
 package org.jboss.webbeans.mock;
 
-import javax.enterprise.inject.spi.InjectionPoint;
-
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
@@ -19,6 +17,8 @@ public class MockEjBServices implements EjbServices
       return new SessionObjectReference()
       {
 
+         private static final long serialVersionUID = 1L;
+
          public <S> S getBusinessObject(Class<S> businessInterfaceType)
          {
             // TODO Auto-generated method stub
@@ -31,10 +31,10 @@ public class MockEjBServices implements EjbServices
             
          }
          
-         public Object getFieldValue(Class<?> declaringClass, String fieldName)
+         public boolean isRemoved()
          {
             // TODO Auto-generated method stub
-            return null;
+            return false;
          }
          
       };
