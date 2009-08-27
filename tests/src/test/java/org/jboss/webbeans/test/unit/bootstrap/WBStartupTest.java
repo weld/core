@@ -47,6 +47,7 @@ public class WBStartupTest
       Foo foo = (Foo) manager.getReference(bean, Foo.class, manager.createCreationalContext(bean));
       
       assert foo != null;
+      assert foo.getBar() != null;
       
       
       lifecycle.endRequest();
