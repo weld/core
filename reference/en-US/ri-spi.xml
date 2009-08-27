@@ -384,16 +384,6 @@
                   </para>
                </listitem>
             </varlistentry>
-            <varlistentry>
-               <term><literal>JSFServices.getBeanDeploymentArchive(Application application)</literal></term>
-               <listitem>
-                  <para>
-                     Identify the WAR in use. The 
-                     <literal>Application</literal> is provided for 
-                     additional context.
-                  </para>
-               </listitem>
-            </varlistentry>
          </variablelist>
          
       </section>
