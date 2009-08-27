@@ -18,13 +18,13 @@ package org.jboss.webbeans.mock;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.webbeans.resources.spi.ResourceServices;
+import org.jboss.webbeans.injection.spi.ResourceInjectionServices;
 
 /**
  * @author Pete Muir
  *
  */
-public class MockResourceServices implements ResourceServices
+public class MockResourceServices implements ResourceInjectionServices
 {
 
    public Object resolveResource(InjectionPoint injectionPoint)

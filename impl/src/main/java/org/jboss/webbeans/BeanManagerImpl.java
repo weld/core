@@ -70,7 +70,7 @@ import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.WBCreationalContext;
 import org.jboss.webbeans.el.Namespace;
-import org.jboss.webbeans.el.WebBeansELResolverImpl;
+import org.jboss.webbeans.el.WebBeansELResolver;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.literal.CurrentLiteral;
@@ -405,7 +405,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicAccessibleIterable(Transform.DECORATOR_BEAN));
       this.observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(Transform.EVENT_OBSERVER));
       this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(Transform.BEAN));
-      this.webbeansELResolver = new WebBeansELResolverImpl(this);
+      this.webbeansELResolver = new WebBeansELResolver(this);
       this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
       
       this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()

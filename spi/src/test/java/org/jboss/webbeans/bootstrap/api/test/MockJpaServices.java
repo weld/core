@@ -6,9 +6,9 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.jboss.webbeans.persistence.spi.JpaServices;
+import org.jboss.webbeans.injection.spi.JpaInjectionServices;
 
-public class MockJpaServices implements JpaServices
+public class MockJpaServices implements JpaInjectionServices
 {
    
    public Collection<Class<?>> discoverEntities()

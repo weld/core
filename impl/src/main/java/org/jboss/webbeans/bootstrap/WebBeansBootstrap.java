@@ -49,17 +49,17 @@ import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.spi.EjbServices;
+import org.jboss.webbeans.injection.spi.JpaInjectionServices;
+import org.jboss.webbeans.injection.spi.ResourceInjectionServices;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.TypeStore;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
-import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.resources.DefaultResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
-import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.jboss.webbeans.util.serviceProvider.ServiceLoader;
@@ -166,11 +166,11 @@ public class WebBeansBootstrap implements Bootstrap
          {
             log.info("EJB services not available. Session beans will be simple beans, CDI-style injection into non-contextual EJBs, injection of remote EJBs and injection of @EJB in simple beans will not be available");
          }
-         if (!deployment.getServices().contains(JpaServices.class))
+         if (!deployment.getServices().contains(JpaInjectionServices.class))
          {
             log.info("JPA services not available. Injection of @PersistenceContext will not occur. Entity beans will be discovered as simple beans.");
          }
-         if (!deployment.getServices().contains(ResourceServices.class))
+         if (!deployment.getServices().contains(ResourceInjectionServices.class))
          {
             log.info("@Resource injection not available.");
          }

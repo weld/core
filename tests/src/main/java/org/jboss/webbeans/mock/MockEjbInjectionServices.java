@@ -14,21 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bootstrap.api.test;
+package org.jboss.webbeans.mock;
 
-import javax.faces.application.Application;
+import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.webbeans.jsf.spi.JSFServices;
+import org.jboss.webbeans.injection.spi.EjbInjectionServices;
 
 /**
  * @author pmuir
  *
  */
-public class MockJSFServices implements JSFServices
+public class MockEjbInjectionServices implements EjbInjectionServices
 {
 
-   public BeanDeploymentArchive getBeanDeploymentArchive(Application application)
+   public Object resolveEjb(InjectionPoint injectionPoint)
    {
       return null;
    }

@@ -14,9 +14,9 @@ import javax.persistence.EntityManagerFactory;
 
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
-import org.jboss.webbeans.persistence.spi.JpaServices;
+import org.jboss.webbeans.injection.spi.JpaInjectionServices;
 
-public class MockJpaServices implements JpaServices
+public class MockJpaServices implements JpaInjectionServices
 {
    
    private final Deployment deployment;

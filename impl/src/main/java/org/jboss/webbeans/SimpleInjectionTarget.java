@@ -20,13 +20,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
+import org.jboss.webbeans.injection.InjectionContextImpl;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
+import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.util.Beans;
@@ -46,6 +47,10 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
    private final WBMethod<?, ?> postConstruct;
    private final WBMethod<?, ?> preDestroy;
    private final Set<InjectionPoint> injectionPoints;
+   private final Set<WBInjectionPoint<?, ?>> ejbInjectionPoints;
+   private final Set<WBInjectionPoint<?, ?>> persistenceContextInjectionPoints;
+   private final Set<WBInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
+   private final Set<WBInjectionPoint<?, ?>> resourceInjectionPoints;
 
    public SimpleInjectionTarget(WBClass<T> type, BeanManagerImpl beanManager)
    {
@@ -62,6 +67,10 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       this.injectionPoints.addAll(Beans.getParameterInjectionPoints(null, initializerMethods));
       this.postConstruct = Beans.getPostConstruct(type);
       this.preDestroy = Beans.getPreDestroy(type);
+      this.ejbInjectionPoints = Beans.getEjbInjectionPoints(null, type, beanManager);
+      this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(null, type, beanManager);
+      this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(null, type, beanManager);
+      this.resourceInjectionPoints = Beans.getResourceInjectionPoints(null, type, beanManager);
    }
 
    public T produce(CreationalContext<T> ctx)
@@ -69,16 +78,20 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       return constructor.newInstance(beanManager, ctx);
    }
    
-   public void inject(T instance, CreationalContext<T> ctx)
+   public void inject(final T instance, final CreationalContext<T> ctx)
    {
-      for (FieldInjectionPoint<?, ?> injectionPoint : injectableFields)
+      new InjectionContextImpl<T>(beanManager, this, instance)
       {
-         injectionPoint.inject(instance, beanManager, ctx);
-      }
-      for (MethodInjectionPoint<?, ?> injectionPoint : initializerMethods)
-      {
-         injectionPoint.invoke(instance, beanManager, ctx, CreationException.class);
-      }
+         
+         public void proceed()
+         {
+            Beans.injectEEFields(instance, beanManager, ejbInjectionPoints, persistenceContextInjectionPoints, persistenceUnitInjectionPoints, resourceInjectionPoints);
+            Beans.injectBoundFields(instance, ctx, beanManager, injectableFields);
+            Beans.callInitializers(instance, ctx, beanManager, initializerMethods);
+         }
+         
+      }.run();
+
    }
 
    public void postConstruct(T instance)

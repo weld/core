@@ -50,6 +50,7 @@ import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Proxies;
 
 /**
@@ -332,8 +333,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    public void postConstruct(T instance, CreationalContext<T> creationalContext)
    {
-      injectBoundFields(instance, creationalContext);
-      callInitializers(instance, creationalContext);
+      Beans.injectBoundFields(instance, creationalContext, getManager(), getInjectableFields());
+      Beans.callInitializers(instance, creationalContext, getManager(), getInitializerMethods());
    }
 
    public void preDestroy(CreationalContext<T> creationalContext)

@@ -15,29 +15,34 @@
  * limitations under the License.
  */ 
 
-package org.jboss.webbeans.ejb.spi;
+package org.jboss.webbeans.injection.spi;
+
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.bootstrap.api.Service;
-import org.jboss.webbeans.ejb.api.SessionObjectReference;
 
 /**
  * A container should implement this interface to allow Web Beans to
- * resolve EJB and discover EJBs
+ * resolve EJB
  * 
  * @author Pete Muir
  * 
  */
-public interface EjbServices extends Service
+public interface EjbInjectionServices extends Service
 {
    
    /**
-    * Request a reference to an EJB session object from the container. If the
-    * EJB being resolved is a stateful session bean, the container should ensure
-    * the session bean is created before this method returns.
+    * Resolve the value for the given @EJB injection point
     * 
-    * @param ejbDescriptor the ejb to resolve
-    * @return a reference to the session object
+    * @param injectionPoint
+    *           the injection point metadata
+    * @return an instance of the EJB
+    * @throws IllegalArgumentException
+    *            if the injection point is not annotated with @EJB, or, if the
+    *            injection point is a method that doesn't follow JavaBean
+    *            conventions
+   
     */
-   public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor);
+   public Object resolveEjb(InjectionPoint injectionPoint);
    
 }

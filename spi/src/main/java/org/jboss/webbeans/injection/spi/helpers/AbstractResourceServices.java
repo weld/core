@@ -1,4 +1,4 @@
-package org.jboss.webbeans.resources.spi.helpers;
+package org.jboss.webbeans.injection.spi.helpers;
 
 import java.beans.Introspector;
 import java.lang.reflect.Field;

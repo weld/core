@@ -31,7 +31,6 @@ import javassist.util.proxy.ProxyObject;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.ScopeType;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
@@ -200,32 +199,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    {
       return Collections.unmodifiableList(decorators);
    }
-
-   /**
-    * Injects bound fields
-    * 
-    * @param instance The instance to inject into
-    */
-   protected void injectBoundFields(T instance, CreationalContext<T> creationalContext)
-   {
-      for (FieldInjectionPoint<?, ?> injectableField : injectableFields)
-      {
-         injectableField.inject(instance, manager, creationalContext);
-      }
-   }
-   
-   /**
-    * Calls all initializers of the bean
-    * 
-    * @param instance The bean instance
-    */
-   protected void callInitializers(T instance, CreationalContext<T> creationalContext)
-   {
-      for (MethodInjectionPoint<?, ?> initializer : getInitializerMethods())
-      {
-         initializer.invoke(instance, manager, creationalContext, CreationException.class);
-      }
-   }
    
    public void dispose(T instance) 
    {
@@ -345,7 +318,15 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
     */
    public Set<? extends MethodInjectionPoint<?, ?>> getInitializerMethods()
    {
-      return initializerMethods;
+      return Collections.unmodifiableSet(initializerMethods);
+   }
+   
+   /**
+    * @return the injectableFields
+    */
+   public Set<FieldInjectionPoint<?, ?>> getInjectableFields()
+   {
+      return Collections.unmodifiableSet(injectableFields);
    }
    
    // TODO maybe a better way to expose this?

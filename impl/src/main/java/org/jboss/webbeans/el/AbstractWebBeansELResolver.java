@@ -34,7 +34,7 @@ import org.jboss.webbeans.CurrentManager;
  *  
  * @author Pete Muir
  */
-public class WebBeansELResolverImpl extends ELResolver
+public abstract class AbstractWebBeansELResolver extends ELResolver
 {
    
    private static final Contextual<?> CONTEXTUAL = new Contextual<Object>()
@@ -49,12 +49,7 @@ public class WebBeansELResolverImpl extends ELResolver
       
    };
    
-   private final BeanManagerImpl manager;
-      
-   public WebBeansELResolverImpl(BeanManagerImpl manager)
-   {
-      this.manager = manager;
-   }
+   protected abstract BeanManagerImpl getManager(ELContext context);
 
    @Override
    public Class<?> getCommonPropertyType(ELContext context, Object base)
@@ -75,7 +70,7 @@ public class WebBeansELResolverImpl extends ELResolver
    }
 
    @Override
-   public Object getValue(ELContext context, Object base, Object property)
+   public Object getValue(final ELContext context, Object base, Object property)
    {
       if (property != null)
       {
@@ -83,10 +78,10 @@ public class WebBeansELResolverImpl extends ELResolver
          Namespace namespace = null;
          if (base == null) 
          {
-            if (manager.getRootNamespace().contains(propertyString))
+            if (getManager(context).getRootNamespace().contains(propertyString))
             {
                context.setPropertyResolved(true);
-               return manager.getRootNamespace().get(propertyString);
+               return getManager(context).getRootNamespace().get(propertyString);
             }
          }
          else if (base instanceof Namespace)
@@ -118,7 +113,7 @@ public class WebBeansELResolverImpl extends ELResolver
          Object value = null;
          try
          {
-            final Bean<?> bean = manager.resolve(manager.getBeans(name));
+            final Bean<?> bean = getManager(context).resolve(getManager(context).getBeans(name));
             final ELCreationalContext<?> creationalContext = getCreationalContextStore(context).peek();
             if (bean != null)
             {
@@ -127,7 +122,7 @@ public class WebBeansELResolverImpl extends ELResolver
                   
                   public Object call() throws Exception
                   {
-                     return manager.getReference(bean, creationalContext);
+                     return getManager(context).getReference(bean, creationalContext);
                   }
                   
                });

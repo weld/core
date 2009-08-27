@@ -19,9 +19,9 @@ package org.jboss.webbeans.mock;
 import org.jboss.webbeans.bootstrap.api.Environment;
 import org.jboss.webbeans.bootstrap.api.Environments;
 import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.jsf.spi.JSFServices;
-import org.jboss.webbeans.persistence.spi.JpaServices;
-import org.jboss.webbeans.resources.spi.ResourceServices;
+import org.jboss.webbeans.injection.spi.EjbInjectionServices;
+import org.jboss.webbeans.injection.spi.JpaInjectionServices;
+import org.jboss.webbeans.injection.spi.ResourceInjectionServices;
 import org.jboss.webbeans.security.spi.SecurityServices;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.jboss.webbeans.validation.spi.ValidationServices;
@@ -37,15 +37,15 @@ public class MockEELifecycle extends MockServletLifecycle
       getDeployment().getServices().add(TransactionServices.class, MOCK_TRANSACTION_SERVICES);
       getDeployment().getServices().add(SecurityServices.class, new MockSecurityServices());
       getDeployment().getServices().add(ValidationServices.class, new MockValidationServices());
-      getDeployment().getServices().add(JSFServices.class, new MockJSFServices());
-      getDeployment().getArchive().getServices().add(EjbServices.class, new MockEjBServices());
-      getDeployment().getArchive().getServices().add(JpaServices.class, new MockJpaServices(getDeployment()));
-      getDeployment().getArchive().getServices().add(ResourceServices.class, new MockResourceServices());
+      getDeployment().getServices().add(EjbServices.class, new MockEjBServices());
+      getDeployment().getArchive().getServices().add(EjbInjectionServices.class, new MockEjbInjectionServices());
+      getDeployment().getArchive().getServices().add(JpaInjectionServices.class, new MockJpaServices(getDeployment()));
+      getDeployment().getArchive().getServices().add(ResourceInjectionServices.class, new MockResourceServices());
    }
    
    public Environment getEnvironment()
    {
-      return Environments.EE;
+      return Environments.EE_INJECT;
    }
    
 }

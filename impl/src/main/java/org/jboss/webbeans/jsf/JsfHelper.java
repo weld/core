@@ -17,17 +17,16 @@
 package org.jboss.webbeans.jsf;
 
 import javax.enterprise.inject.AnnotationLiteral;
-import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.conversation.ConversationIdName;
-import org.jboss.webbeans.jsf.spi.JSFServices;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.servlet.ServletHelper;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -107,17 +106,14 @@ public class JsfHelper
    
    public static BeanManagerImpl getModuleBeanManager(FacesContext facesContext)
    {
-      return getModuleBeanManager(facesContext.getApplication());
-   }
-   
-   public static BeanManagerImpl getModuleBeanManager(Application application)
-   {
-      if (application == null)
+      if (facesContext.getExternalContext().getContext() instanceof ServletContext)
       {
-         throw new IllegalArgumentException("Must provide the JSF Application");
+         return ServletHelper.getModuleBeanManager((ServletContext) facesContext.getExternalContext().getContext());
       }
-      BeanDeploymentArchive beanDeploymentArchive = CurrentManager.rootManager().getServices().get(JSFServices.class).getBeanDeploymentArchive(application);
-      return CurrentManager.getBeanDeploymentArchives().get(beanDeploymentArchive).getCurrent();
+      else
+      {
+         throw new IllegalStateException("Web Beans doesn not support using JSF in an non-servlet environment");
+      }
    }
 
 }

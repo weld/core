@@ -1,13 +1,13 @@
-package org.jboss.webbeans.resources.spi.helpers;
+package org.jboss.webbeans.injection.spi.helpers;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.webbeans.resources.spi.ResourceServices;
+import org.jboss.webbeans.injection.spi.ResourceInjectionServices;
 
-public abstract class ForwardingResourceServices implements ResourceServices
+public abstract class ForwardingResourceInjectionServices implements ResourceInjectionServices
 {
    
-   protected abstract ResourceServices delegate();
+   protected abstract ResourceInjectionServices delegate();
 
    public Object resolveResource(InjectionPoint injectionPoint)
    {

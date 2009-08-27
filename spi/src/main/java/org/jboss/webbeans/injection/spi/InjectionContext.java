@@ -14,30 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.jsf.spi;
+package org.jboss.webbeans.injection.spi;
 
-import javax.faces.application.Application;
-
-import org.jboss.webbeans.bootstrap.api.Service;
-import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
+import javax.enterprise.inject.spi.InjectionTarget;
 
 /**
- * Allows the container to identify BDA in use for a JSF request. This method will
- * be called, in the same thread as the request, every time Web Beans needs to
- * identify a JSF request.
- * 
  * @author pmuir
  *
  */
-public interface JSFServices extends Service
+public interface InjectionContext<T>
 {
    
-   /**
-    * Get the BDA for the current JSF request. The Application is provided for
-    * context.
-    * 
-    * @return
-    */
-   public BeanDeploymentArchive getBeanDeploymentArchive(Application application);
+   public void proceed();
+   
+   public T getTarget();
+   
+   public InjectionTarget<T> getInjectionTarget();
 
 }

@@ -16,8 +16,6 @@
  */
 package org.jboss.webbeans.ejb.spi.helpers;
 
-import javax.enterprise.inject.spi.InjectionPoint;
-
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
@@ -36,11 +34,6 @@ public abstract class ForwardingEjbServices implements EjbServices
 {
    
    public abstract EjbServices delegate();
-   
-   public Object resolveEjb(InjectionPoint injectionPoint)
-   {
-      return delegate().resolveEjb(injectionPoint);
-   }
    
    public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor)
    {

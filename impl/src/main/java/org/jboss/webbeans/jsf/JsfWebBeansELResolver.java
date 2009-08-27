@@ -13,31 +13,33 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
+package org.jboss.webbeans.jsf;
 
-package org.jboss.webbeans.ejb.spi;
+import javax.el.ELContext;
+import javax.faces.context.FacesContext;
 
-import org.jboss.webbeans.bootstrap.api.Service;
-import org.jboss.webbeans.ejb.api.SessionObjectReference;
+import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.el.AbstractWebBeansELResolver;
 
 /**
- * A container should implement this interface to allow Web Beans to
- * resolve EJB and discover EJBs
- * 
- * @author Pete Muir
- * 
+ * @author pmuir
+ *
  */
-public interface EjbServices extends Service
+public class JsfWebBeansELResolver extends AbstractWebBeansELResolver
 {
-   
-   /**
-    * Request a reference to an EJB session object from the container. If the
-    * EJB being resolved is a stateful session bean, the container should ensure
-    * the session bean is created before this method returns.
-    * 
-    * @param ejbDescriptor the ejb to resolve
-    * @return a reference to the session object
-    */
-   public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor);
-   
+
+   @Override
+   protected BeanManagerImpl getManager(ELContext context)
+   {
+      if (context.getContext(FacesContext.class) == null)
+      {
+         throw new IllegalStateException("Cannot use " + getClass().getSimpleName() + " outside JSF");
+      }
+      else
+      {
+         return JsfHelper.getModuleBeanManager((FacesContext) context.getContext(FacesContext.class));
+      }
+   }
+
 }

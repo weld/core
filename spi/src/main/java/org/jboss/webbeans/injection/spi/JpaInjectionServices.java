@@ -14,48 +14,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.resources.spi;
+package org.jboss.webbeans.injection.spi;
 
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.jboss.webbeans.bootstrap.api.Service;
 
 /**
  * A container should implement this interface to allow the Web Beans RI to
- * resolve Resources
+ * resolve JPA persistence units and discover entities
  * 
  * @author Pete Muir
  * 
  */
-public interface ResourceServices extends Service
+public interface JpaInjectionServices extends Service
 {
-   
+	
    /**
-    * Resolve the value for the given @Resource injection point
+    * Resolve the value for the given @PersistenceContext injection point
     * 
     * @param injectionPoint
     *           the injection point metadata
-    * @return an instance of the resource
+    * @return an instance of the entity manager
     * @throws IllegalArgumentException
-    *            if the injection point is not annotated with @Resource, or, if
-    *            the injection point is a method that doesn't follow JavaBean
-    *            conventions
+    *            if the injection point is not annotated with 
+    *            @PersistenceContext, or, if the injection point is a method 
+    *            that doesn't follow JavaBean conventions
     * @throws IllegalStateException
-    *            if no resource can be resolved for injection
+    *            if no suitable persistence units can be resolved for injection
     */
-   public Object resolveResource(InjectionPoint injectionPoint);
+   public EntityManager resolvePersistenceContext(InjectionPoint injectionPoint);
    
    /**
-    * Resolve the value for the given JNDI name and mapped name
+    * Resolve the value for the given @PersistenceUnit injection point
     * 
     * @param injectionPoint
     *           the injection point metadata
-    * @return an instance of the resource
-    * @throws IllegalStateException
-    *            if no resource can be resolved for injection
+    * @return an instance of the entity manager
     * @throws IllegalArgumentException
-    *            if both jndiName and mappedName are null
+    *            if the injection point is not annotated with 
+    *            @PersistenceUnit, or, if the injection point is a method 
+    *            that doesn't follow JavaBean conventions
+    * @throws IllegalStateException
+    *            if no suitable persistence units can be resolved for injection
     */
-   public Object resolveResource(String jndiName, String mappedName);
+   public EntityManagerFactory resolvePersistenceUnit(InjectionPoint injectionPoint);
    
 }

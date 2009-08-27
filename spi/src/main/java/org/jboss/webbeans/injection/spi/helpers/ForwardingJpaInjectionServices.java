@@ -14,28 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.persistence.spi.helpers;
+package org.jboss.webbeans.injection.spi.helpers;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.jboss.webbeans.persistence.spi.JpaServices;
+import org.jboss.webbeans.injection.spi.JpaInjectionServices;
 
 /**
- * An implementation of {@link JpaServices} which forwards all its method calls
- * to another {@link JpaServices}}. Subclasses should override one or more 
- * methods to modify the behavior of the backing {@link JpaServices} as desired
+ * An implementation of {@link JpaInjectionServices} which forwards all its method calls
+ * to another {@link JpaInjectionServices}}. Subclasses should override one or more 
+ * methods to modify the behavior of the backing {@link JpaInjectionServices} as desired
  * per the <a
  * href="http://en.wikipedia.org/wiki/Decorator_pattern">decorator pattern</a>.
  * 
  * @author Pete Muir
  *
  */
-public abstract class ForwardingJpaServices implements JpaServices
+public abstract class ForwardingJpaInjectionServices implements JpaInjectionServices
 {
    
-   protected abstract JpaServices delegate();
+   protected abstract JpaInjectionServices delegate();
    
    public EntityManager resolvePersistenceContext(InjectionPoint injectionPoint)
    {

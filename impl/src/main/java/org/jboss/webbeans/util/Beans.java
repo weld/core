@@ -18,6 +18,7 @@ package org.jboss.webbeans.util;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -26,8 +27,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.decorator.Decorates;
 import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.BindingType;
+import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
@@ -38,10 +41,15 @@ import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.AbstractProducerBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
+import org.jboss.webbeans.injection.WBInjectionPoint;
+import org.jboss.webbeans.injection.spi.EjbInjectionServices;
+import org.jboss.webbeans.injection.spi.JpaInjectionServices;
+import org.jboss.webbeans.injection.spi.ResourceInjectionServices;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBConstructor;
 import org.jboss.webbeans.introspector.WBField;
@@ -51,6 +59,7 @@ import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.cache.BindingTypeModel;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
+import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
 
 /**
  * Helper class for bean inspection
@@ -176,6 +185,79 @@ public class Beans
       else
       {
          return null;
+      }
+   }
+   
+
+   public static Set<WBInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, WBClass<?> type, BeanManagerImpl manager)
+   {
+      if (manager.getServices().contains(EjbInjectionServices.class))
+      {
+         Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
+         Set<WBInjectionPoint<?, ?>> ejbInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
+         for (WBField<?, ?> field : type.getAnnotatedWBFields(ejbAnnotationType))
+         {
+            ejbInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
+         }
+         return ejbInjectionPoints;
+      }
+      else
+      {
+         return Collections.emptySet();
+      }
+   }
+
+   public static Set<WBInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, WBClass<?> type, BeanManagerImpl manager)
+   {
+      if (manager.getServices().contains(JpaInjectionServices.class))
+      {
+         Set<WBInjectionPoint<?, ?>> jpaInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
+         Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
+         for (WBField<?, ?> field : type.getAnnotatedWBFields(persistenceContextAnnotationType))
+         {
+            jpaInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
+         }
+         return jpaInjectionPoints;
+      }
+      else
+      {
+         return Collections.emptySet();
+      }
+   }
+   
+   public static Set<WBInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, WBClass<?> type, BeanManagerImpl manager)
+   {
+      if (manager.getServices().contains(JpaInjectionServices.class))
+      {
+         Set<WBInjectionPoint<?, ?>> jpaInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
+         Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
+         for (WBField<?, ?> field : type.getAnnotatedWBFields(persistenceUnitAnnotationType))
+         {
+            jpaInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
+         }
+         return jpaInjectionPoints;
+      }
+      else
+      {
+         return Collections.emptySet();
+      }
+   }
+
+   public static Set<WBInjectionPoint<?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, WBClass<?> type, BeanManagerImpl manager)
+   {
+      if (manager.getServices().contains(ResourceInjectionServices.class))
+      {
+         Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
+         Set<WBInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
+         for (WBField<?, ?> field : type.getAnnotatedWBFields(resourceAnnotationType))
+         {
+            resourceInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
+         }
+         return resourceInjectionPoints;
+      }
+      else
+      {
+         return Collections.emptySet();
       }
    }
    
@@ -404,6 +486,75 @@ public class Beans
       else
       {
          return constructor;
+      }
+   }
+   
+   /**
+    * Injects EJBs and common fields
+    */
+   public static <T> void injectEEFields(T beanInstance, BeanManagerImpl manager, Iterable<WBInjectionPoint<?, ?>> ejbInjectionPoints, Iterable<WBInjectionPoint<?, ?>> persistenceContextInjectionPoints, Iterable<WBInjectionPoint<?, ?>> persistenceUnitInjectionPoints, Iterable<WBInjectionPoint<?, ?>> resourceInjectionPoints)
+   {
+      EjbInjectionServices ejbServices = manager.getServices().get(EjbInjectionServices.class);
+      JpaInjectionServices jpaServices = manager.getServices().get(JpaInjectionServices.class);
+      ResourceInjectionServices resourceServices = manager.getServices().get(ResourceInjectionServices.class);
+      
+      if (ejbServices != null)
+      {
+         for (WBInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
+         {
+            Object ejbInstance = ejbServices.resolveEjb(injectionPoint);
+            injectionPoint.inject(beanInstance, ejbInstance);
+         }
+      }
+
+      if (jpaServices != null)
+      {
+         for (WBInjectionPoint<?, ?> injectionPoint : persistenceContextInjectionPoints)
+         {
+            Object pcInstance = jpaServices.resolvePersistenceContext(injectionPoint);
+            injectionPoint.inject(beanInstance, pcInstance);
+         }
+         for (WBInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
+         {
+            Object puInstance = jpaServices.resolvePersistenceUnit(injectionPoint);
+            injectionPoint.inject(beanInstance, puInstance);
+         }
+      }
+
+      if (resourceServices != null)
+      {
+         for (WBInjectionPoint<?, ?> injectionPoint : resourceInjectionPoints)
+         {
+            Object resourceInstance = resourceServices.resolveResource(injectionPoint);
+            injectionPoint.inject(beanInstance, resourceInstance);
+         }
+      }
+   }
+   
+
+   /**
+    * Injects bound fields
+    * 
+    * @param instance The instance to inject into
+    */
+   public static <T> void injectBoundFields(T instance, CreationalContext<T> creationalContext, BeanManagerImpl manager, Iterable<FieldInjectionPoint<?, ?>> injectableFields)
+   {
+      for (FieldInjectionPoint<?, ?> injectableField : injectableFields)
+      {
+         injectableField.inject(instance, manager, creationalContext);
+      }
+   }
+   
+   /**
+    * Calls all initializers of the bean
+    * 
+    * @param instance The bean instance
+    */
+   public static <T> void callInitializers(T instance, CreationalContext<T> creationalContext, BeanManagerImpl manager, Iterable<? extends MethodInjectionPoint<?, ?>> initializerMethods)
+   {
+      for (MethodInjectionPoint<?, ?> initializer : initializerMethods)
+      {
+         initializer.invoke(instance, manager, creationalContext, CreationException.class);
       }
    }
    

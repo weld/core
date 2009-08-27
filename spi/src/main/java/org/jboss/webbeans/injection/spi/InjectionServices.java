@@ -14,23 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.mock;
+package org.jboss.webbeans.injection.spi;
 
-import javax.faces.application.Application;
-
-import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.webbeans.jsf.spi.JSFServices;
+import org.jboss.webbeans.bootstrap.api.Service;
 
 /**
+ * Provides callbacks to the container when Web Beans performs injection on an
+ * InjectionTarget, managed bean or session bean
+ * 
+ * This service may be used to provide EE-style injection.
+ * 
  * @author pmuir
  *
  */
-public class MockJSFServices implements JSFServices
+public interface InjectionServices extends Service
 {
-
-   public BeanDeploymentArchive getBeanDeploymentArchive(Application application)
-   {
-      return null;
-   }
+   
+   /**
+    * Callback for injection.
+    * 
+    * Call {@link InjectionContext#proceed()} to cause CDI-style injection to
+    * occur.
+    * 
+    * @param injectionContext
+    */
+   public <T> void aroundInject(InjectionContext<T> injectionContext);
 
 }
