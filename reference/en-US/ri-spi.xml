@@ -151,6 +151,19 @@
             describes all the beans resolvable by BDA X.
          </para>
          
+         <tip>
+            <title>Matching the classloader structure for the deployment</title>
+            
+            <para>
+               In practice, you can regard the deployment structure represented
+               by <literal>Deployment</literal>, and the virtual
+               BDA graph as a mirror of the classloader structure for a 
+               deployment. If a class can from BDA X can be loaded by another in
+               BDA Y, it is accessible, and therefore BDA Y's accessible BDAs
+               should include BDA X. 
+            </para>
+         </tip>
+         
          <para>
             To specify the directly accessible BDAs, the container should 
             provide an implementation of 
@@ -254,7 +267,8 @@
            returns a wrapper &mdash; <literal>SessionObjectReference</literal> &mdash;
            around the EJB reference. This wrapper allows Web Beans to request a
            reference that implements the given business interface, and, in the 
-           case of SFSBs, request the removal of the EJB from the container.
+           case of SFSBs, both request the removal of the EJB from the container
+           and query whether the EJB has been previously removed.
          </para>
          
          <para id="ejb.services.resolution">
@@ -339,14 +353,40 @@
          <para>
             <literal>InjectionServices</literal> provides a very simple
             contract, the 
-            <literal>InjectionServices.preInject(Object instance);</literal>
-            and
-            <literal>InjectionServices.postInject(Object instance);</literal>
-            callbacks will be called for every instance that Web Beans injects,
+            <literal>InjectionServices.aroundInject(InjectionContext ic);</literal>
+            intercepter will be called for every instance that Web Beans injects,
             whether it is a contextual instance, or a non-contexutal instance
             injected by <literal>InjectionTarget.inject()</literal>.
          </para>
          
+         <para>
+            The <literal>InjectionContext</literal> can be used to discover 
+            additional information about the injection being performed, 
+            including the <literal>target</literal> being injected. 
+            <literal>ic.proceed()</literal> should be called to perform 
+            CDI-style injection, and call initializer methods.
+         </para>
+         
+      </section>
+      
+      <section>
+         <title>Security Services</title>
+         
+         <para>
+            In order to obtain the <literal>Principal</literal> representing the
+            current caller identity, the container should provide an 
+            implementation of <literal>SecurityServices</literal>.
+         </para>
+      </section>
+      
+      <section>
+         <title>Bean Validation Services</title>
+         
+         <para>
+            In order to obtain the default <literal>ValidatorFactory</literal>
+            for the application deployment, the container should provide an 
+            implementation of <literal>ValidationServices</literal>.
+         </para>
       </section>
       
       <section>
@@ -576,7 +616,6 @@
                   automatically, or through user configuration, for each Web 
                   Beans application which uses enterprise beans.
                </para>
-               
                <important>
                   <para>
                      You must register the <literal>SessionBeanInterceptor</literal>
@@ -617,12 +656,13 @@
             </term>
             <listitem>
                <para>
-                  You should bind a <literal>Reference</literal> to the Manager 
-                  <literal>ObjectFactory</literal> into JNDI at 
-                  <literal>java:app/Manager</literal>. The type should be
-                  <literal>javax.inject.manager.Manager</literal> and the 
-                  factory class is 
-                  <literal>org.jboss.webbeans.resources.ManagerObjectFactory</literal>
+                  You should bind the bean manager for the bean deployment 
+                  archive into JNDI at <literal>java:comp/Manager</literal>. The
+                  type should be 
+                  <literal>javax.enterprise.inject.spi.BeanManager</literal>. To
+                  obtain the correct bean manager for the bean deployment 
+                  archive, you may call 
+                  <literal>bootstrap.getBeanManager(beanDeploymentArchive)</literal>  
                </para>
             </listitem>
          </varlistentry>
@@ -636,21 +676,24 @@
                   injection into non-contextual resources for all Java EE
                   component classes. Web Beans delegates this responsibility to
                   the container. This can be achieved using the CDI defined
-                  <literal>InjectionTarget</literal> SPI:
+                  <literal>InjectionTarget</literal> SPI. Furthermore,
+                  you must perform this operation on the correct bean manager 
+                  for the bean deployment archive containing the EE component
+                  class.
                </para>
                
                <programlisting><![CDATA[
 
 // Create the injection target, once per class
-InjectionTarget it = deploymentBeanManager.createInjectionTarget(clazz);
+InjectionTarget it = beanManager.createInjectionTarget(clazz);
 
 // Per instance required, create the creational context
-CreationalContext<?> cc = deploymentBeanManager.createCreationalContext(null);
+CreationalContext<?> cc = beanManager.createCreationalContext(null);
 
 // Produce the instance, performing any constructor injection required
 Object instance = it.produce();
 
-// Perform injection and call initializer
+// Perform injection and call initializers
 it.inject(instance, cc);
 
 // Call the post-construct callback
@@ -661,15 +704,47 @@ it.preDestroy(instance);
 
 // Clean up the instance
 it.dispose();
-cc.release();
-
-]]></programlisting>
+cc.release();]]></programlisting>
                <para>
                   The container may intersperse other operations between these
                   calls. Further, the integrator may choose to implement any of
                   these calls in another manner, assuming the contract is
                   fulfilled.
                </para>
+               <para>
+                  When performing injections on EJBs you must use the Web Beans
+                  defined SPI, <literal>WebBeansManager</literal>. Furthermore,
+                  you must perform this operation on the correct bean manager 
+                  for the bean deployment archive containing the EJB.
+               </para>
+               <programlisting><![CDATA[// Obtain the EjbDescriptor for the EJB
+// You may choose to use this utility method to get the descriptor
+EjbDescriptor<?> ejbDescriptor = beanManager.getEjbDescriptor(ejbName);
+
+// Get an the Bean object
+Bean<?> bean = beanManager.getBean(ejbDescriptor);
+
+// Create the injection target
+InjectionTarget it = deploymentBeanManager.createInjectionTarget(ejbDescriptor);
+
+// Per instance required, create the creational context
+CreationalContext<?> cc = deploymentBeanManager.createCreationalContext(bean);
+
+// Perform injection and call initializers
+it.inject(instance, cc);
+
+// You may choose to have Web Beans call the post construct and pre destroy
+// lifecycle callbacks
+
+// Call the post-construct callback
+it.postConstruct(instance);
+
+// Call the pre-destroy callback
+it.preDestroy(instance);
+
+// Clean up the instance
+it.dispose();
+cc.release();]]></programlisting>
             </listitem>
          </varlistentry>
       </variablelist>
