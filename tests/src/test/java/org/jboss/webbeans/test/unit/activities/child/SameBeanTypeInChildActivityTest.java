@@ -15,7 +15,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.webbeans.literal.CurrentLiteral;
+import org.jboss.webbeans.literal.DefaultLiteral;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
@@ -32,7 +32,7 @@ public class SameBeanTypeInChildActivityTest extends AbstractWebBeansTest
 
    static
    {
-      DEFAULT_BINDINGS.add(new CurrentLiteral());
+      DEFAULT_BINDINGS.add(new DefaultLiteral());
    }
 
    private Bean<?> createDummyBean(BeanManager beanManager)
@@ -45,7 +45,7 @@ public class SameBeanTypeInChildActivityTest extends AbstractWebBeansTest
       final Bean<?> bean = new Bean<MyBean>()
       {
 
-         public Set<Annotation> getBindings()
+         public Set<Annotation> getQualifiers()
          {
             return bindings;
          }
@@ -60,7 +60,7 @@ public class SameBeanTypeInChildActivityTest extends AbstractWebBeansTest
             return null;
          }
 
-         public Class<? extends Annotation> getScopeType()
+         public Class<? extends Annotation> getScope()
          {
             return Dependent.class;
          }
@@ -90,7 +90,7 @@ public class SameBeanTypeInChildActivityTest extends AbstractWebBeansTest
             return MyBean.class;
          }
 
-         public boolean isPolicy()
+         public boolean isAlternative()
          {
             return false;
          }

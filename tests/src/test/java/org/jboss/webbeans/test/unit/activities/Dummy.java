@@ -13,11 +13,11 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.enterprise.context.ScopeType;
+import javax.inject.Scope;
 
 @Target( { TYPE, METHOD, FIELD })
 @Retention(RUNTIME)
 @Documented
-@ScopeType
+@Scope
 @Inherited
 @interface Dummy {}

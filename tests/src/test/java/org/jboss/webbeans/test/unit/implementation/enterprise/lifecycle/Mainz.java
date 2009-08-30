@@ -2,13 +2,12 @@ package org.jboss.webbeans.test.unit.implementation.enterprise.lifecycle;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.enterprise.inject.Current;
-import javax.enterprise.inject.Initializer;
+import javax.inject.Inject;
 
 @Stateless
 public class Mainz implements AlteStadt
 {
-   @Current
+   @Inject
    private RoemerPassage placeOfInterest;
    
    private GutenbergMuseum anotherPlaceOfInterest;
@@ -27,8 +26,8 @@ public class Mainz implements AlteStadt
          name = placeOfInterest.getName();
    }
    
-   @Initializer
-   public void initializeBean(@Current GutenbergMuseum pointOfInterest)
+   @Inject
+   public void initializeBean(GutenbergMuseum pointOfInterest)
    {
       this.anotherPlaceOfInterest = pointOfInterest;
    }

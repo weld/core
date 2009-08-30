@@ -31,10 +31,10 @@ import javax.enterprise.event.ObserverException;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.inject.Inject;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -94,7 +94,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    {
       // Make sure exactly one and only one parameter is annotated with Observes
       List<WBParameter<?, ?>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
-      if (this.notifyType.equals(Notify.IF_EXISTS) && declaringBean.getScopeType().equals(Dependent.class))
+      if (this.notifyType.equals(Notify.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class))
       {
          throw new DefinitionException(this + " is invalid because it is a conditional observer method, and is declared by a @Dependent scoped bean");
       }
@@ -134,7 +134,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
       {
          throw new DefinitionException(this + " cannot be annotated with @Produces");
       }
-      if (this.observerMethod.isAnnotationPresent(Initializer.class))
+      if (this.observerMethod.isAnnotationPresent(Inject.class))
       {
          throw new DefinitionException(this + " cannot be annotated with @Initializer");
       }
@@ -162,7 +162,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
       return notifyType;
    }
 
-   public Set<Annotation> getObservedBindings()
+   public Set<Annotation> getObservedQualifiers()
    {
       return bindings;
    }
@@ -225,7 +225,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
       }
       finally
       {
-         if (creationalContext != null && Dependent.class.equals(declaringBean.getScopeType()))
+         if (creationalContext != null && Dependent.class.equals(declaringBean.getScope()))
          {
             creationalContext.release();
          }

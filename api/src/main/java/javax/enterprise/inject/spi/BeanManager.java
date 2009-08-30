@@ -24,7 +24,6 @@ import java.util.Set;
 
 import javax.el.ELResolver;
 import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.ScopeType;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
@@ -209,12 +208,16 @@ public interface BeanManager
    /**
     * Determine if the given annotationType is a scope type
     */
-   public boolean isScopeType(Class<? extends Annotation> annotationType);
+   public boolean isScope(Class<? extends Annotation> annotationType);
+   
+   public boolean isNormalScope(Class<? extends Annotation> annotationType);
+   
+   public boolean isPassivatingScope(Class<? extends Annotation> annotationType);
 
    /**
     * Determine if the given annotationType is a binding type
     */
-   public boolean isBindingType(Class<? extends Annotation> annotationType);
+   public boolean isQualifier(Class<? extends Annotation> annotationType);
 
    /**
     * Determine if the given annotationType is an interceptor binding type
@@ -225,12 +228,6 @@ public interface BeanManager
     * Determine if the given annotationType is a stereotype
     */
    public boolean isStereotype(Class<? extends Annotation> annotationType);
-
-   /**
-    * Return a ScopeType definition type for a given annotation representing a
-    * scope type
-    */
-   public ScopeType getScopeDefinition(Class<? extends Annotation> scopeType);
 
    /**
     * Obtain the set of interceptor binding types meta-annotatinos for the given

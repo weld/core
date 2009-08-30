@@ -2,12 +2,12 @@ package org.jboss.webbeans.test.unit.activities.current;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Initializer;
+import javax.inject.Inject;
 
 class Dusk
 {
    
-   @Initializer
+   @Inject
    public Dusk(@Any Event<NightTime> event)
    {
       event.fire(new NightTime());

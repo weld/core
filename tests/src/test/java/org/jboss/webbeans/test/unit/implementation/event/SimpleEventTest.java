@@ -4,7 +4,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Current;
+import javax.inject.Inject;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.BeanManagerImpl;
@@ -88,16 +88,16 @@ public class SimpleEventTest extends AbstractWebBeansTest
 
    public static class App
    {
-      @Any
+      @Inject @Any
       Event<String> event1;
       
-      @Updated
+      @Inject @Updated
       Event<String> event2;
 
-      @Any
+      @Inject @Any
       Event<String> event3;
       
-      @Current
+      @Inject
       Event<String> event4;
 
       public void fireEventByAnnotationLiteral()

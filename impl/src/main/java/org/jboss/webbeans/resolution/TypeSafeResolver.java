@@ -55,7 +55,7 @@ public abstract class TypeSafeResolver<T>
          if (obj instanceof Resolvable)
          {
             Resolvable that = (Resolvable) obj;
-            return this.getTypeClosure().equals(that.getTypeClosure()) && this.getBindings().equals(that.getBindings());
+            return this.getTypeClosure().equals(that.getTypeClosure()) && this.getQualifiers().equals(that.getQualifiers());
          }
          else
          {

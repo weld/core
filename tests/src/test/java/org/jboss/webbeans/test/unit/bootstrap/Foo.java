@@ -16,7 +16,7 @@
  */
 package org.jboss.webbeans.test.unit.bootstrap;
 
-import javax.enterprise.inject.Current;
+import javax.inject.Inject;
 
 /**
  * @author pmuir
@@ -25,7 +25,7 @@ import javax.enterprise.inject.Current;
 public class Foo
 {
    
-   @Current
+   @Inject
    private Bar bar;
    
    public String message;

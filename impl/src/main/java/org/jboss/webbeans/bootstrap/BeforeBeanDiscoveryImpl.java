@@ -27,7 +27,8 @@ import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.literal.BindingTypeLiteral;
 import org.jboss.webbeans.literal.InterceptorBindingTypeLiteral;
-import org.jboss.webbeans.literal.ScopeTypeLiteral;
+import org.jboss.webbeans.literal.NormalScopeLiteral;
+import org.jboss.webbeans.literal.ScopeLiteral;
 
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery
 {
@@ -37,7 +38,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
       super(beanDeployments, deploymentManager, deployment);
    }
 
-   public void addBindingType(Class<? extends Annotation> bindingType)
+   public void addQualifier(Class<? extends Annotation> bindingType)
    {
       getTypeStore().add(bindingType, new BindingTypeLiteral());
    }
@@ -47,10 +48,17 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
       getTypeStore().add(bindingType, new InterceptorBindingTypeLiteral());
    }
 
-   public void addScopeType(Class<? extends Annotation> scopeType,
+   public void addScope(Class<? extends Annotation> scopeType,
          boolean normal, boolean passivating)
    {
-      getTypeStore().add(scopeType, new ScopeTypeLiteral(normal, passivating));
+      if (normal)
+      {
+         getTypeStore().add(scopeType, new NormalScopeLiteral(passivating));
+      }
+      else
+      {
+         getTypeStore().add(scopeType, new ScopeLiteral());
+      }
    }
 
    public void addStereotype(Class<? extends Annotation> stereotype,

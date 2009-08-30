@@ -2,26 +2,25 @@ package org.jboss.webbeans.test.unit.implementation.producer.field;
 
 import java.util.List;
 
-import javax.enterprise.inject.Current;
-import javax.enterprise.inject.Initializer;
+import javax.inject.Inject;
 
 public class ParameterizedListInjection
 {
 
    private List<String> value;
 
-   @Current
+   @Inject
    private List<String> fieldInjection;
 
    private List<String> setterInjection;
 
-   @Initializer
+   @Inject
    public void init(List<String> setterInjection)
    {
       this.setterInjection = setterInjection;
    }
 
-   @Initializer
+   @Inject
    public ParameterizedListInjection(List<String> com)
    {
       this.value = com;

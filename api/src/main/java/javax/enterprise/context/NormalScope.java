@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 
-package javax.enterprise.inject;
+package javax.enterprise.context;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
@@ -27,31 +25,22 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies the name of a bean.
+ * Specifies that an annotation type is a scope type.
  * 
  * @author Gavin King
  * @author Pete Muir
  */
 
-@Target( { TYPE, METHOD, FIELD })
+@Target(ANNOTATION_TYPE)
 @Retention(RUNTIME)
 @Documented
-public @interface Named
+public @interface NormalScope
 {
-
+   
    /**
-    * If no name is explicitly specified, the default name is used.
-    * 
-    * For simple beans and session beans the default name is the unqualified 
-    * class name of the bean class, after converting the first character to 
-    * lower case. 
-    * 
-    * For producer methods the default name is the method name, unless the 
-    * method follows the JavaBeans property getter naming convention, in which 
-    * case the default name is the JavaBeans property name. 
-    * 
-    * @return the bean name
+    * @return true if this is a passivating scope (beans with this scope
+    *         type must be serializable)
     */
-   public String value() default "";
+   boolean passivating() default false;
 
 }

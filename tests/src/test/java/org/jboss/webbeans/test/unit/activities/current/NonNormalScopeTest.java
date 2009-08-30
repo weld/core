@@ -39,7 +39,7 @@ public class NonNormalScopeTest extends AbstractWebBeansTest
          return null;
       }
 
-      public Class<? extends Annotation> getScopeType()
+      public Class<? extends Annotation> getScope()
       {
          return Dummy.class;
       }
@@ -60,7 +60,7 @@ public class NonNormalScopeTest extends AbstractWebBeansTest
    {
 
       @Override
-      public Class<? extends Annotation> getScopeType()
+      public Class<? extends Annotation> getScope()
       {
          return NonNormalScope.class;
       }
@@ -73,6 +73,6 @@ public class NonNormalScopeTest extends AbstractWebBeansTest
       Context dummyContext = new NonNormalContext();
       getCurrentManager().addContext(dummyContext);
       WebBeansManager childActivity = getCurrentManager().createActivity();
-      childActivity.setCurrent(dummyContext.getScopeType());
+      childActivity.setCurrent(dummyContext.getScope());
    }
 }

@@ -4,10 +4,11 @@ import java.util.List;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 public class ListStringInstance
 {
-   @Any Instance<List<String>> instance;
+   @Inject @Any Instance<List<String>> instance;
 
    public List<String> get()
    {

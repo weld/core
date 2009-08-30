@@ -19,9 +19,16 @@
 			<groupId>javax.el</groupId>
 			<artifactId>el-api</artifactId>
 		</dependency>
+      
 		<dependency>
          <groupId>javax.ejb</groupId>
          <artifactId>ejb-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+      
+      <dependency>
+         <groupId>javax.inject</groupId>
+         <artifactId>inject-api</artifactId>
       </dependency>
 	</dependencies>
 </project>

@@ -25,9 +25,9 @@ package org.jboss.webbeans.conversation;
 import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Current;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.context.api.BeanStore;
@@ -52,7 +52,7 @@ public class ServletConversationManager extends AbstractConversationManager impl
    private static final long CONVERSATION_CONCURRENT_ACCESS_TIMEOUT_IN_MS = 1 * 1000;
    private static final String CONVERSATION_ID_NAME = "cid";
    
-   @Current Instance<HttpSession> httpSession;
+   @Inject Instance<HttpSession> httpSession;
 
    @Override
    public BeanStore getBeanStore(String cid)

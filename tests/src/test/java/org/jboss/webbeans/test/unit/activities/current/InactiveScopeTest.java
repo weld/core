@@ -45,7 +45,7 @@ public class InactiveScopeTest extends AbstractWebBeansTest
          return null;
       }
 
-      public Class<? extends Annotation> getScopeType()
+      public Class<? extends Annotation> getScope()
       {
          return Dummy.class;
       }
@@ -69,7 +69,7 @@ public class InactiveScopeTest extends AbstractWebBeansTest
       dummyContext.setActive(false);
       getCurrentManager().addContext(dummyContext);
       WebBeansManager childActivity = getCurrentManager().createActivity();
-      childActivity.setCurrent(dummyContext.getScopeType());
+      childActivity.setCurrent(dummyContext.getScope());
    }
 
 }

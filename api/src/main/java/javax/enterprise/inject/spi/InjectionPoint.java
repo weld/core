@@ -55,7 +55,7 @@ public interface InjectionPoint
     * 
     * @return the declared binding types of the injection point
     */
-   public Set<Annotation> getBindings();
+   public Set<Annotation> getQualifiers();
    
    /**
     * Get the Bean object representing the Web Bean that defines the injection

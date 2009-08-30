@@ -63,9 +63,9 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWBParameter<T, X> i
       return declaringBean;
    }
 
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
-      return delegate().getBindings();
+      return delegate().getQualifiers();
    }
 
    public Member getJavaMember()

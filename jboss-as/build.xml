@@ -43,11 +43,16 @@
 		<copy todir="target/webbeans.deployer/lib-int/" overwrite="true">
 			<fileset dir="target/dependency/lib">
 				<include name="webbeans-core.jar" />
-				<include name="webbeans-api.jar" />
-				<include name="jsr299-api.jar" />
-				<include name="webbeans-logger.jar" />
 			</fileset>
 		</copy>
+
+                <copy todir="target/webbeans.deployer/" overwrite="true">
+                        <fileset dir="target/dependency/lib">
+                                <include name="webbeans-api.jar" />
+                                <include name="jsr299-api.jar" />
+                                <include name="webbeans-logger.jar" />
+                        </fileset>
+                </copy>
 
 		<delete dir="target/dependency" />
 

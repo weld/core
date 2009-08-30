@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.unit.lookup.circular;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Current;
+import javax.inject.Inject;
 
 @ApplicationScoped
 class Bar
@@ -10,7 +10,7 @@ class Bar
    
    public static boolean success;
    
-   @Current Foo foo;
+   @Inject Foo foo;
    
    public Bar()
    {

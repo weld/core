@@ -29,13 +29,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.ScopeType;
+import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.IllegalProductException;
-import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
+import javax.inject.Inject;
+import javax.inject.Scope;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -188,7 +189,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       }
       else if (instance != null)
       {
-         boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScopeType()).isPassivating();
+         boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
          if (passivating && !Reflections.isSerializable(instance.getClass()))
          {
             throw new IllegalProductException("Producers cannot declare passivating scope and return a non-serializable class");
@@ -210,7 +211,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
             else if (injectionPoint.getMember() instanceof Method)
             {
                Method method = (Method) injectionPoint.getMember();
-               if (method.isAnnotationPresent(Initializer.class))
+               if (method.isAnnotationPresent(Inject.class))
                {
                   throw new IllegalProductException("Producers cannot produce non-serializable instances for injection into parameters of intializers of beans declaring passivating scope. Bean " + toString() + " being injected into " + injectionPoint.toString());
                }
@@ -230,7 +231,9 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
    @Override
    protected void initScopeType()
    {
-      Set<Annotation> scopeAnnotations = getAnnotatedItem().getMetaAnnotations(ScopeType.class);
+      Set<Annotation> scopeAnnotations = new HashSet<Annotation>();
+      scopeAnnotations.addAll(getAnnotatedItem().getMetaAnnotations(Scope.class));
+      scopeAnnotations.addAll(getAnnotatedItem().getMetaAnnotations(NormalScope.class));
       if (scopeAnnotations.size() > 1)
       {
          throw new DefinitionException("At most one scope may be specified");
@@ -294,7 +297,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
    public String toString()
    {
       StringBuilder buffer = new StringBuilder();
-      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()));
+      buffer.append("Annotated " + Names.scopeTypeToString(getScope()));
       if (getName() == null)
       {
          buffer.append("unnamed producer bean");
@@ -303,7 +306,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       {
          buffer.append("simple producer bean '" + getName() + "'");
       }
-      buffer.append(" [" + getBeanClass().getName() + "] for class type [" + getType().getName() + "] API types " + getTypes() + ", binding types " + getBindings());
+      buffer.append(" [" + getBeanClass().getName() + "] for class type [" + getType().getName() + "] API types " + getTypes() + ", binding types " + getQualifiers());
       return buffer.toString();
    }
 

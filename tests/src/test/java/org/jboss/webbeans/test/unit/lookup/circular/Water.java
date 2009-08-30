@@ -1,10 +1,10 @@
 package org.jboss.webbeans.test.unit.lookup.circular;
 
-import javax.enterprise.inject.Initializer;
+import javax.inject.Inject;
 
 class Water
 {
-   @Initializer
+   @Inject
    public Water(Fish fish)
    {
    }

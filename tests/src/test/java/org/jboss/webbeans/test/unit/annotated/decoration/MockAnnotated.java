@@ -26,10 +26,10 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.inject.Current;
 import javax.enterprise.inject.spi.Annotated;
+import javax.inject.Inject;
 
-import org.jboss.webbeans.literal.CurrentLiteral;
+import org.jboss.webbeans.literal.InjectLiteral;
 
 /**
  * 
@@ -38,8 +38,7 @@ import org.jboss.webbeans.literal.CurrentLiteral;
  */
 public class MockAnnotated implements Annotated
 {
-   private final static Current CURRENT = new CurrentLiteral();
-   
+   private final static Inject INJECT = new InjectLiteral();
    private Annotated delegate;
    
    public MockAnnotated(Annotated delegate)
@@ -64,20 +63,20 @@ public class MockAnnotated implements Annotated
 
    public <T extends Annotation> T getAnnotation(Class<T> annotationType)
    {
-      if (annotationType == Current.class)
+      if (annotationType == Inject.class)
       {
-         return (T)CURRENT;
+         return (T)INJECT;
       }
       return null;
    }
 
    public Set<Annotation> getAnnotations()
    {
-      return Collections.singleton((Annotation)CURRENT);
+      return Collections.singleton((Annotation)INJECT);
    }
 
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
    {
-      return annotationType == Current.class;
+      return annotationType == Inject.class;
    }
 }

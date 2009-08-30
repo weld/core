@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.unit.definition;
 
-import javax.enterprise.inject.Named;
+import javax.inject.Named;
 
 public
 @Named

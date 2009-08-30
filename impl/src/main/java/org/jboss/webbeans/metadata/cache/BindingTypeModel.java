@@ -16,18 +16,12 @@
  */
 package org.jboss.webbeans.metadata.cache;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
-import javax.enterprise.inject.BindingType;
-import javax.enterprise.inject.NonBinding;
+import javax.enterprise.inject.Nonbinding;
+import javax.inject.Qualifier;
 
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.introspector.WBMethod;
@@ -46,6 +40,9 @@ import org.jboss.webbeans.util.collections.Arrays2;
  */
 public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
 {
+   
+   
+   private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(Qualifier.class);
    private static final Log log = Logging.getLog(BindingTypeModel.class);
    
    // The non-binding types
@@ -72,22 +69,6 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
       initNonBindingTypes();
       checkArrayAndAnnotationValuedMembers();
    }
-   
-   @Override
-   protected void initValid()
-   {
-      super.initValid();
-      if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
-      {
-         this.valid = false;
-         log.debug("#0 is missing @Target annotation.", getAnnotatedAnnotation());
-      }
-      else if (!Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, PARAMETER, TYPE))
-      {
-         this.valid = false;
-         log.debug("#0 is has incorrect @Target annotation. Should be @Target(METHOD, FIELD, TYPE, PARAMETER).", getAnnotatedAnnotation());
-      }
-   }
 
    /**
     * Validates the members
@@ -110,9 +91,9 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     * @return The BindingType class
     */
    @Override
-   protected Class<? extends Annotation> getMetaAnnotationType()
+   protected Set<Class<? extends Annotation>> getMetaAnnotationTypes() 
    {
-      return BindingType.class;
+      return META_ANNOTATIONS;
    }
 
    /**
@@ -141,7 +122,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     */
    protected void initNonBindingTypes()
    {
-      nonBindingTypes = getAnnotatedAnnotation().getAnnotatedMembers(NonBinding.class);
+      nonBindingTypes = getAnnotatedAnnotation().getAnnotatedMembers(Nonbinding.class);
    }
 
    /**

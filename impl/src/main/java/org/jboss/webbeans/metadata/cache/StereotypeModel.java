@@ -22,14 +22,16 @@ import static java.lang.annotation.ElementType.TYPE;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Target;
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.ScopeType;
-import javax.enterprise.inject.BindingType;
-import javax.enterprise.inject.Named;
-import javax.enterprise.inject.Policy;
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.stereotype.Stereotype;
-import javax.interceptor.InterceptorBindingType;
+import javax.inject.Named;
+import javax.inject.Qualifier;
+import javax.inject.Scope;
+import javax.interceptor.InterceptorBinding;
 
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.log.Log;
@@ -46,6 +48,7 @@ import org.jboss.webbeans.util.collections.Arrays2;
  */
 public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
 {
+   private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(Stereotype.class);
    private static final Log log = Logging.getLog(StereotypeModel.class);
    
    // Is the stereotype a policy
@@ -83,10 +86,16 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
     */
    private void checkBindings()
    {
-      Set<Annotation> bindings = getAnnotatedAnnotation().getMetaAnnotations(BindingType.class);
+      Set<Annotation> bindings = getAnnotatedAnnotation().getMetaAnnotations(Qualifier.class);
       if (bindings.size() > 0)
       {
-         throw new DefinitionException("Cannot declare binding types on a stereotype " + getAnnotatedAnnotation());
+         for (Annotation annotation : bindings)
+         {
+            if (!annotation.annotationType().equals(Named.class))
+            {
+               throw new DefinitionException("Cannot declare binding types on a stereotype " + getAnnotatedAnnotation());
+            }
+         }
       }
    }
 
@@ -95,7 +104,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
     */
    private void initInterceptorBindings()
    {
-      interceptorBindings = getAnnotatedAnnotation().getMetaAnnotations(InterceptorBindingType.class);
+      interceptorBindings = getAnnotatedAnnotation().getMetaAnnotations(InterceptorBinding.class);
    }
    
    private void initInheritedStereotypes()
@@ -123,7 +132,9 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
     */
    private void initDefaultScopeType()
    {
-      Set<Annotation> scopeTypes = getAnnotatedAnnotation().getMetaAnnotations(ScopeType.class);
+      Set<Annotation> scopeTypes = new HashSet<Annotation>();
+      scopeTypes.addAll(getAnnotatedAnnotation().getMetaAnnotations(Scope.class));
+      scopeTypes.addAll(getAnnotatedAnnotation().getMetaAnnotations(NormalScope.class));
       if (scopeTypes.size() > 1)
       {
          throw new DefinitionException("At most one scope type may be specified for " + getAnnotatedAnnotation());
@@ -139,7 +150,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
     */
    private void initPolicy()
    {
-      if (getAnnotatedAnnotation().isAnnotationPresent(Policy.class))
+      if (getAnnotatedAnnotation().isAnnotationPresent(Alternative.class))
       {
          this.policy = true;
       }
@@ -204,10 +215,9 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
     * 
     * @return The Stereotype class
     */
-   @Override
-   protected Class<? extends Annotation> getMetaAnnotationType()
+   protected Set<Class<? extends Annotation>> getMetaAnnotationTypes() 
    {
-      return Stereotype.class;
+      return META_ANNOTATIONS;
    }
 
    /**

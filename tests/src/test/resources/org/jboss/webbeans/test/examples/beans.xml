@@ -1,5 +1,5 @@
 <beans> 
-   <policies>
+   <alternatives>
       <class>org.jboss.webbeans.test.examples.MockSentenceTranslator</class>
-   </policies>
+   </alternatives>
 </beans>

@@ -19,6 +19,8 @@ package javax.enterprise.inject;
 
 import java.lang.annotation.Annotation;
 
+import javax.inject.Provider;
+
 
 /**
  * An interface for looking up beans of a particular type.
@@ -29,7 +31,7 @@ import java.lang.annotation.Annotation;
  *           the type of the event object
  */
 
-public interface Instance<T> extends Iterable<T>
+public interface Instance<T> extends Iterable<T>, Provider<T>
 {
    /**
     * Get an instance of a bean of the specified type.

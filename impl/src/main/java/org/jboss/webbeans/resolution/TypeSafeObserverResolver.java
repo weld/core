@@ -43,7 +43,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<ObserverMethod<?,
    @Override
    protected boolean matches(Resolvable resolvable, ObserverMethod<?,?> observer)
    {
-      return Reflections.isAssignableFrom(observer.getObservedType(), resolvable.getTypeClosure()) && Beans.containsAllBindings(observer.getObservedBindings(), resolvable.getBindings(), manager);
+      return Reflections.isAssignableFrom(observer.getObservedType(), resolvable.getTypeClosure()) && Beans.containsAllBindings(observer.getObservedQualifiers(), resolvable.getQualifiers(), manager);
    }
    
    /**

@@ -1,14 +1,14 @@
 package org.jboss.webbeans.test.unit.implementation.producer.method;
 
-import javax.enterprise.inject.Current;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
 
 class ManagerProducer
 {
    
-   @Current BeanManager beanManager;
+   @Inject BeanManager beanManager;
    
    private static boolean injectionPointInjected;
    

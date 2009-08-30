@@ -9,11 +9,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.enterprise.inject.BindingType;
+import javax.inject.Qualifier;
 
 @Retention(RUNTIME)
 @Target({TYPE, METHOD, FIELD, PARAMETER})
-@BindingType
+@Qualifier
 @interface SpecialBindingType
 {
 

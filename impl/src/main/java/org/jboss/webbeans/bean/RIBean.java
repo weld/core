@@ -72,7 +72,7 @@ public abstract class RIBean<T> implements Bean<T>
 
    public boolean isDependent()
    {
-      return getScopeType().equals(Dependent.class);
+      return getScope().equals(Dependent.class);
    }
 
    public abstract boolean isProxyable();

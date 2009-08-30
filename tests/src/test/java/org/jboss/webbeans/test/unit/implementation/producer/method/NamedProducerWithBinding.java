@@ -2,8 +2,8 @@ package org.jboss.webbeans.test.unit.implementation.producer.method;
 
 import java.util.Date;
 
-import javax.enterprise.inject.Named;
 import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 
 /**
  * @author Dan Allen

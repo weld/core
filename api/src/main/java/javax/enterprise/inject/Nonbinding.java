@@ -17,25 +17,21 @@
 
 package javax.enterprise.inject;
 
-import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that a method of a bean is a bean initializer method, or that a
- * constructor is the bean constructor.
+ * Specifies that a member of a binding type or interceptor binding type is to
+ * be ignored for the purposes of resolution.
  * 
  * @author Gavin King
- * @author Pete Muir
+ * 
  */
-
-@Target( { METHOD, CONSTRUCTOR })
 @Retention(RUNTIME)
-@Documented
-public @interface Initializer
+@Target(METHOD)
+public @interface Nonbinding
 {
 }

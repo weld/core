@@ -21,7 +21,7 @@
 */ 
 package org.jboss.webbeans.test.unit.noncontextual;
 
-import javax.enterprise.inject.Current;
+import javax.inject.Inject;
 
 /**
  * 
@@ -36,5 +36,5 @@ public class External
       // TODO Auto-generated constructor stub
    }
    
-   @Current WebBean bean;
+   @Inject WebBean bean;
 }

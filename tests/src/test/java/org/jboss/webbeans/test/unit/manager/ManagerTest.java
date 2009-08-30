@@ -14,7 +14,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.literal.CurrentLiteral;
+import org.jboss.webbeans.literal.DefaultLiteral;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
@@ -27,7 +27,7 @@ public class ManagerTest extends AbstractWebBeansTest
    
    static
    {
-      DEFAULT_BINDINGS.add(new CurrentLiteral());
+      DEFAULT_BINDINGS.add(new DefaultLiteral());
    }
    
    private static interface Dummy {}
@@ -43,7 +43,7 @@ public class ManagerTest extends AbstractWebBeansTest
          TYPES.add(Object.class);
       }
 
-      public Set<Annotation> getBindings()
+      public Set<Annotation> getQualifiers()
       {
          return DEFAULT_BINDINGS;
       }
@@ -58,7 +58,7 @@ public class ManagerTest extends AbstractWebBeansTest
          return null;
       }
 
-      public Class<? extends Annotation> getScopeType()
+      public Class<? extends Annotation> getScope()
       {
          return Dependent.class;
       }
@@ -88,7 +88,7 @@ public class ManagerTest extends AbstractWebBeansTest
          return Dummy.class;
       }
 
-      public boolean isPolicy()
+      public boolean isAlternative()
       {
          return false;
       }

@@ -134,7 +134,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       }
       try
       {
-         Context context = manager.getContext(bean.getScopeType());
+         Context context = manager.getContext(bean.getScope());
          return context.get(bean, creationalContext);
       }
       finally

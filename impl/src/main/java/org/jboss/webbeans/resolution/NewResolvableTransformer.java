@@ -38,7 +38,7 @@ public class NewResolvableTransformer implements ResolvableTransformer
          New originalNewAnnotation = element.getAnnotation(New.class);
          if (originalNewAnnotation.value().equals(New.class))
          {
-            final Set<Annotation> bindings = new HashSet<Annotation>(element.getBindings());
+            final Set<Annotation> bindings = new HashSet<Annotation>(element.getQualifiers());
             final New newNewAnnotation = new NewLiteral()
             {
                
@@ -61,7 +61,7 @@ public class NewResolvableTransformer implements ResolvableTransformer
                }
                
                @Override
-               public Set<Annotation> getBindings()
+               public Set<Annotation> getQualifiers()
                {
                   return bindings;
                }

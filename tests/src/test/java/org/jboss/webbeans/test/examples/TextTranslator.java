@@ -1,12 +1,12 @@
 package org.jboss.webbeans.test.examples;
 
-import javax.enterprise.inject.Initializer;
+import javax.inject.Inject;
 
 public class TextTranslator { 
    private SentenceParser sentenceParser; 
    private Translator sentenceTranslator; 
    
-   @Initializer
+   @Inject
    TextTranslator(SentenceParser sentenceParser, Translator sentenceTranslator) { 
       this.sentenceParser = sentenceParser; 
       this.sentenceTranslator = sentenceTranslator; 

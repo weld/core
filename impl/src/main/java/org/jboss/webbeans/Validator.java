@@ -33,7 +33,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
-import javax.enterprise.inject.Policy;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
@@ -75,7 +75,7 @@ public class Validator implements Service
       {
          validateInjectionPoint(ij, beanManager);
       }
-      boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScopeType()).isNormal();
+      boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
       if (normalScoped && !Beans.isBeanProxyable(bean))
       {
          throw new UnproxyableResolutionException("Normal scoped bean " + bean + " is not proxyable");
@@ -137,7 +137,7 @@ public class Validator implements Service
     */
    public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager)
    {
-      if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getBindings().size() > 1)
+      if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getQualifiers().size() > 1)
       {
          throw new DefinitionException("The injection point " + ij + " is annotated with @New which cannot be combined with other binding types");
       }
@@ -145,7 +145,7 @@ public class Validator implements Service
       {
          throw new DefinitionException("Cannot inject an Injection point into a class which isn't a bean " + ij);
       }
-      if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(ij.getBean().getScopeType()))
+      if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(ij.getBean().getScope()))
       {
          throw new DefinitionException("Cannot inject an InjectionPoint into a non @Dependent scoped bean " + ij); 
       }
@@ -170,19 +170,19 @@ public class Validator implements Service
       }
       checkFacadeInjectionPoint(ij, Instance.class);
       checkFacadeInjectionPoint(ij, Event.class);
-      Annotation[] bindings = ij.getBindings().toArray(new Annotation[0]);
+      Annotation[] bindings = ij.getQualifiers().toArray(new Annotation[0]);
       WBAnnotated<?, ?> annotatedItem = ResolvableWBClass.of(ij.getType(), bindings, beanManager);
       Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getInjectableBeans(ij));
       if (resolvedBeans.isEmpty())
       {
-         throw new DeploymentException("The injection point " + ij + " with binding types "  + Names.annotationsToString(ij.getBindings()) + " in " + ij.getBean() + " has unsatisfied dependencies with binding types ");
+         throw new DeploymentException("The injection point " + ij + " with binding types "  + Names.annotationsToString(ij.getQualifiers()) + " in " + ij.getBean() + " has unsatisfied dependencies with binding types ");
       }
       if (resolvedBeans.size() > 1)
       {
-         throw new DeploymentException("The injection point " + ij + " with binding types " + Names.annotationsToString(ij.getBindings()) + " in " + ij.getBean() + " has ambiguous dependencies " + resolvedBeans);
+         throw new DeploymentException("The injection point " + ij + " with binding types " + Names.annotationsToString(ij.getQualifiers()) + " in " + ij.getBean() + " has ambiguous dependencies " + resolvedBeans);
       }
       Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
-      if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(ij.getType()))
+      if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(ij.getType()))
       {
          throw new UnproxyableResolutionException("The injection point " + ij + " has non-proxyable dependencies");
       }
@@ -200,7 +200,7 @@ public class Validator implements Service
    {
       if (!ij.isTransient() && !Beans.isPassivationCapableBean(resolvedBean))
       {
-         if (resolvedBean.getScopeType().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?,?>)
+         if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?,?>)
          {
             throw new IllegalProductException("The bean " + ij.getBean() + " declares a passivating scope but the producer returned a non-serializable bean for injection: " + resolvedBean);
          }
@@ -298,7 +298,7 @@ public class Validator implements Service
       List<Class<?>> seenPolicies = new ArrayList<Class<?>>();
       for (Class<? extends Annotation> stereotype : beanManager.getEnabledPolicyStereotypes())
       {
-         if (!stereotype.isAnnotationPresent(Policy.class))
+         if (!stereotype.isAnnotationPresent(Alternative.class))
          {
             throw new DeploymentException("Enabled policy sterotype " + stereotype + " is not annotated @Policy");
          }
@@ -310,7 +310,7 @@ public class Validator implements Service
       }
       for (Class<?> clazz : beanManager.getEnabledPolicyClasses())
       {
-         if (!clazz.isAnnotationPresent(Policy.class))
+         if (!clazz.isAnnotationPresent(Alternative.class))
          {
             throw new DeploymentException("Enabled policy bean class " + clazz + " is not annotated @Policy");
          }

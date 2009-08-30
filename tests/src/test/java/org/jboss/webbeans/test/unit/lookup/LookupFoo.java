@@ -1,13 +1,13 @@
 package org.jboss.webbeans.test.unit.lookup;
 
-import javax.enterprise.inject.Current;
+import javax.inject.Inject;
 
 public class LookupFoo
 {
 
-   @Current Foo foo;
+   @Inject Foo foo;
    
-   @Special FooBase<Baz> foobaz;
+   @Inject @Special FooBase<Baz> foobaz;
    
    public Foo getFoo()
    {

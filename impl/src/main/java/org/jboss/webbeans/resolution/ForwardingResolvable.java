@@ -27,9 +27,9 @@ public abstract class ForwardingResolvable implements Resolvable
    
    protected abstract Resolvable delegate();
 
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
-      return delegate().getBindings();
+      return delegate().getQualifiers();
    }
    
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)

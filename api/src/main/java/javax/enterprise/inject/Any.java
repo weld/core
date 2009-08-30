@@ -27,6 +27,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.inject.Qualifier;
+
 /**
  * A built-in binding type that is implicitly applied to all beans which do not
  * have the {@link New} built-in binding type.
@@ -35,7 +37,7 @@ import java.lang.annotation.Target;
  * @author David Allen
  */
 
-@BindingType
+@Qualifier
 @Retention(RUNTIME)
 @Target( { TYPE, METHOD, FIELD, PARAMETER })
 @Documented

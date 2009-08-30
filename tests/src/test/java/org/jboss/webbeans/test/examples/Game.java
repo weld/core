@@ -1,12 +1,12 @@
 package org.jboss.webbeans.test.examples;
 
-import javax.enterprise.inject.Initializer;
+import javax.inject.Inject;
 
 public class Game
 {
    private final int number;
    
-   @Initializer
+   @Inject
    Game(@Random int number)
    {
       this.number = number;

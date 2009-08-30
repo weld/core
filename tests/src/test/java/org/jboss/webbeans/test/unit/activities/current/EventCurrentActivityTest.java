@@ -44,7 +44,7 @@ public class EventCurrentActivityTest extends AbstractWebBeansTest
          return null;
       }
 
-      public Class<? extends Annotation> getScopeType()
+      public Class<? extends Annotation> getScope()
       {
          return Dummy.class;
       }

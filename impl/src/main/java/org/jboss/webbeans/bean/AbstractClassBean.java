@@ -29,11 +29,12 @@ import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.ScopeType;
+import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.inject.Scope;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -125,7 +126,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    
    protected void initDecorators()
    {
-      this.decorators = getManager().resolveDecorators(getTypes(), getBindings());
+      this.decorators = getManager().resolveDecorators(getTypes(), getQualifiers());
    }
    
    public boolean hasDecorators()
@@ -246,8 +247,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    {
       for (WBClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getWBSuperclass())
       {
-         Set<Annotation> scopeTypes = clazz.getDeclaredMetaAnnotations(ScopeType.class);
-         scopeTypes = clazz.getDeclaredMetaAnnotations(ScopeType.class);
+         Set<Annotation> scopeTypes = new HashSet<Annotation>();
+         scopeTypes.addAll(clazz.getDeclaredMetaAnnotations(Scope.class));
+         scopeTypes.addAll(clazz.getDeclaredMetaAnnotations(NormalScope.class));
          if (scopeTypes.size() == 1)
          {
             if (getAnnotatedItem().isAnnotationPresent(scopeTypes.iterator().next().annotationType()))

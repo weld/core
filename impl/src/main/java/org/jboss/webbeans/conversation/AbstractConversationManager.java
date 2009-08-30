@@ -30,7 +30,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
 import javax.enterprise.context.Conversation;
-import javax.enterprise.inject.Current;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.ConversationContext;
@@ -49,11 +50,11 @@ public abstract class AbstractConversationManager implements ConversationManager
    private static LogProvider log = Logging.getLogProvider(AbstractConversationManager.class);
 
    // The conversation terminator
-   @Current
+   @Inject
    private ConversationTerminator conversationTerminator;
 
    // The current conversation
-   @Current
+   @Inject @Any
    private ConversationImpl currentConversation;
 
    // The conversation timeout in milliseconds waiting for access to a blocked

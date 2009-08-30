@@ -68,6 +68,11 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
       T instance = (T) getManager().getReference(bean, getType(), getManager().createCreationalContext(bean));
       return instance;
    }
+   
+   public T get()
+   {
+      return get(EMPTY_BINDINGS);
+   }
 
    /**
     * Gets a string representation

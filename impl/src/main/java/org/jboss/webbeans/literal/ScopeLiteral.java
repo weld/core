@@ -14,38 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.webbeans.literal;
 
-package javax.enterprise.context;
+import javax.enterprise.inject.AnnotationLiteral;
+import javax.inject.Scope;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-/**
- * Specifies that an annotation type is a scope type.
- * 
- * @author Gavin King
- * @author Pete Muir
- */
-
-@Target(ANNOTATION_TYPE)
-@Retention(RUNTIME)
-@Documented
-public @interface ScopeType
-{
-
-   /**
-    * @return true if this is a normal scope
-    */
-   boolean normal() default true;
-
-   /**
-    * @return true if this is a passivating scope (beans with this scope
-    *         type must be serializable)
-    */
-   boolean passivating() default false;
-
-}
+public class ScopeLiteral extends AnnotationLiteral<Scope> implements Scope {}

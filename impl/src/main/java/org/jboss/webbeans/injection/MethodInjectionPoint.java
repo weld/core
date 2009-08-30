@@ -92,9 +92,9 @@ public class MethodInjectionPoint<T, X> extends ForwardingWBMethod<T, X> impleme
       return declaringBean;
    }
 
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
-      return delegate().getBindings();
+      return delegate().getQualifiers();
    }
 
    public T invoke(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow)

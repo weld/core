@@ -1,14 +1,14 @@
 package org.jboss.webbeans.test.unit.lookup.circular;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Current;
+import javax.inject.Inject;
 
 class Foo
 {
    
    public static boolean success;
    
-   @Current Bar bar;
+   @Inject Bar bar;
    
    public Foo()
    {

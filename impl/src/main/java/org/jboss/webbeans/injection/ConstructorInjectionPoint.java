@@ -92,9 +92,9 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
       return declaringBean;
    }
 
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
-      return delegate().getBindings();
+      return delegate().getQualifiers();
    }
 
    public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext)

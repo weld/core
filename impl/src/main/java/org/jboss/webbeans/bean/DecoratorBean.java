@@ -24,8 +24,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.spi.Decorator;
+import javax.inject.Inject;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -43,9 +43,9 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
       {
 
          @Override
-         public Set<Annotation> getBindings()
+         public Set<Annotation> getQualifiers()
          {
-            return delegate().getDelegateBindings();
+            return delegate().getDelegateQualifiers();
          }
 
          @Override
@@ -118,7 +118,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    {
       for (WBInjectionPoint<?, ?> injectionPoint : getDelegateInjectionPoints())
       {
-         if (injectionPoint instanceof MethodInjectionPoint<?, ?> && !injectionPoint.isAnnotationPresent(Initializer.class))
+         if (injectionPoint instanceof MethodInjectionPoint<?, ?> && !injectionPoint.isAnnotationPresent(Inject.class))
          {
             throw new DefinitionException("Method with @Decorates parameter must be an initializer method " + injectionPoint);
          }
@@ -136,7 +136,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    protected void initDelegateBindings()
    {
       this.delegateBindings = new HashSet<Annotation>(); 
-      this.delegateBindings.addAll(this.delegateInjectionPoint.getBindings());
+      this.delegateBindings.addAll(this.delegateInjectionPoint.getQualifiers());
    }
 
    protected void initDelegateType()
@@ -179,7 +179,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
       }
    }
 
-   public Set<Annotation> getDelegateBindings()
+   public Set<Annotation> getDelegateQualifiers()
    {
       return delegateBindings;
    }

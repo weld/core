@@ -75,13 +75,13 @@ public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
     * @return @Dependent
     */
    @Override
-   public Class<? extends Annotation> getScopeType()
+   public Class<? extends Annotation> getScope()
    {
       return Dependent.class;
    }
 
    @Override
-   public boolean isPolicy()
+   public boolean isAlternative()
    {
       return false;
    }
@@ -103,7 +103,7 @@ public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
     * @returns @New
     */
    @Override
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
       return bindings;
    }

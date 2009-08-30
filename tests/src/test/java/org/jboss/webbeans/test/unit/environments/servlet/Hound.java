@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.unit.environments.servlet;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.enterprise.inject.Named;
+import javax.inject.Named;
 
 @Stateful
 @Tame

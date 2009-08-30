@@ -13,7 +13,7 @@ public interface ObserverMethod<X, T>
 
    public Type getObservedType();
 
-   public Set<Annotation> getObservedBindings();
+   public Set<Annotation> getObservedQualifiers();
 
    public Notify getNotify();
 

@@ -21,7 +21,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.bean.ForwardingBean;
-import org.jboss.webbeans.literal.CurrentLiteral;
+import org.jboss.webbeans.literal.DefaultLiteral;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
@@ -39,7 +39,7 @@ public class ActivitiesTest extends AbstractWebBeansTest
 
    static
    {
-      DEFAULT_BINDINGS.add(new CurrentLiteral());
+      DEFAULT_BINDINGS.add(new DefaultLiteral());
    }
 
    private Bean<?> createDummyBean(BeanManager beanManager, final Type injectionPointType)
@@ -52,7 +52,7 @@ public class ActivitiesTest extends AbstractWebBeansTest
       final Bean<?> bean = new Bean<Object>()
       {
 
-         public Set<Annotation> getBindings()
+         public Set<Annotation> getQualifiers()
          {
             return bindings;
          }
@@ -67,7 +67,7 @@ public class ActivitiesTest extends AbstractWebBeansTest
             return null;
          }
 
-         public Class<? extends Annotation> getScopeType()
+         public Class<? extends Annotation> getScope()
          {
             return Dependent.class;
          }
@@ -97,7 +97,7 @@ public class ActivitiesTest extends AbstractWebBeansTest
             return Object.class;
          }
 
-         public boolean isPolicy()
+         public boolean isAlternative()
          {
             return false;
          }
@@ -116,7 +116,7 @@ public class ActivitiesTest extends AbstractWebBeansTest
             return bean;
          }
 
-         public Set<Annotation> getBindings()
+         public Set<Annotation> getQualifiers()
          {
             return DEFAULT_BINDINGS;
          }
@@ -164,7 +164,7 @@ public class ActivitiesTest extends AbstractWebBeansTest
          return null;
       }
 
-      public Class<? extends Annotation> getScopeType()
+      public Class<? extends Annotation> getScope()
       {
          return Dummy.class;
       }
@@ -264,7 +264,7 @@ public class ActivitiesTest extends AbstractWebBeansTest
          }
 
          @Override
-         public Set<Annotation> getBindings()
+         public Set<Annotation> getQualifiers()
          {
             return bindingTypes;
          }

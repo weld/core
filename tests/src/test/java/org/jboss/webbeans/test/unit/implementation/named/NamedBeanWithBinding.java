@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.implementation.named;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Named;
+import javax.inject.Named;
 
 /**
  * @author Dan Allen

@@ -26,7 +26,7 @@ import java.util.Set;
 
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.introspector.WBAnnotated;
-import org.jboss.webbeans.literal.CurrentLiteral;
+import org.jboss.webbeans.literal.DefaultLiteral;
 import org.jboss.webbeans.util.Reflections;
 
 public class ResolvableFactory
@@ -42,7 +42,7 @@ public class ResolvableFactory
       {
          Set<Type> types = new HashSet<Type>();
          types.add(element.getBaseType());
-         return new ResolvableImpl(element.getBindings(), types, null);
+         return new ResolvableImpl(element.getQualifiers(), types, null);
       }
    }
 
@@ -71,7 +71,7 @@ public class ResolvableFactory
          this.bindings = bindings;
          if (bindings.size() == 0)
          {
-            this.bindings.add(new CurrentLiteral());
+            this.bindings.add(new DefaultLiteral());
          }
          this.annotations = new HashMap<Class<? extends Annotation>, Annotation>();
          this.typeClosure = typeClosure;
@@ -82,7 +82,7 @@ public class ResolvableFactory
          this.declaringBean = declaringBean;
       }
 
-      public Set<Annotation> getBindings()
+      public Set<Annotation> getQualifiers()
       {
          return bindings;
       }
@@ -121,7 +121,7 @@ public class ResolvableFactory
       @Override
       public String toString()
       {
-         return "Types: " + getTypeClosure() + "; Bindings: " + getBindings();
+         return "Types: " + getTypeClosure() + "; Bindings: " + getQualifiers();
       }
 
    }

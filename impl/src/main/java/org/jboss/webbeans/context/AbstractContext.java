@@ -57,9 +57,9 @@ public abstract class AbstractContext implements Context
     * 
     * @return The scope type
     * 
-    * @see javax.enterprise.context.spi.Context#getScopeType()
+    * @see javax.enterprise.context.spi.Context#getScope()
     */
-   public Class<? extends Annotation> getScopeType()
+   public Class<? extends Annotation> getScope()
    {
       return scopeType;
    }

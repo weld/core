@@ -168,11 +168,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       if (ejbDescriptor.isStateless() && !isDependent())
       {
-         throw new DefinitionException("Scope " + getScopeType() + " is not allowed on stateless enterpise beans for " + getType() + ". Only @Dependent is allowed on stateless enterprise beans");
+         throw new DefinitionException("Scope " + getScope() + " is not allowed on stateless enterpise beans for " + getType() + ". Only @Dependent is allowed on stateless enterprise beans");
       }
-      if (ejbDescriptor.isSingleton() && !(isDependent() || getScopeType().equals(ApplicationScoped.class)))
+      if (ejbDescriptor.isSingleton() && !(isDependent() || getScope().equals(ApplicationScoped.class)))
       {
-         throw new DefinitionException("Scope " + getScopeType() + " is not allowed on singleton enterpise beans for " + getType() + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise beans");
+         throw new DefinitionException("Scope " + getScope() + " is not allowed on singleton enterpise beans for " + getType() + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise beans");
       }
    }
 
@@ -308,7 +308,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          buffer.append(" enterprise bean '" + getName() + "'");
       }
       buffer.append(" [" + getType().getName() + "] ");
-      buffer.append("API types " + getTypes() + ", binding types " + getBindings());
+      buffer.append("API types " + getTypes() + ", binding types " + getQualifiers());
       return buffer.toString();
    }
 

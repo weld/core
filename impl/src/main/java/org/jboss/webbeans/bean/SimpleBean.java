@@ -332,7 +332,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected String toString(String beanType)
    {
       StringBuilder buffer = new StringBuilder();
-      buffer.append(Names.scopeTypeToString(getScopeType()));
+      buffer.append(Names.scopeTypeToString(getScope()));
       if (getName() == null)
       {
          buffer.append("unnamed ").append(beanType);
@@ -342,7 +342,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          buffer.append(beanType).append(" '" + getName() + "'");
       }
       buffer.append(" ").append(getType().getName()).append(", ");
-      buffer.append(" API types = ").append(Names.typesToString(getTypes())).append(", binding types = " + Names.annotationsToString(getBindings()));
+      buffer.append(" API types = ").append(Names.typesToString(getTypes())).append(", binding types = " + Names.annotationsToString(getQualifiers()));
       return buffer.toString();
    }
 

@@ -5,13 +5,12 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Current;
-import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.inject.Inject;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
@@ -95,12 +94,12 @@ public class AnnotatedTypeDecoratorTest extends AbstractWebBeansTest
          if (annotated instanceof MockAnnotatedCallable)
          {
             assertEquals(1, annotated.getAnnotations().size());
-            assertTrue(annotated.isAnnotationPresent(Initializer.class));
+            assertTrue(annotated.isAnnotationPresent(Inject.class));
          }
          else if (annotated instanceof MockAnnotatedField<?>)
          {
             assertEquals(1, annotated.getAnnotations().size());
-            assertTrue(annotated.isAnnotationPresent(Current.class));
+            assertTrue(annotated.isAnnotationPresent(Inject.class));
          }
       }
    }

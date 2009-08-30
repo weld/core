@@ -63,7 +63,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    }
    
    @Override
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
       return DEFAULT_BINDINGS;
    }

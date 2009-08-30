@@ -33,9 +33,9 @@ public abstract class ForwardingDecorator<T> extends ForwardingBean<T> implement
       return delegate().getDecoratedTypes();
    }
 
-   public Set<Annotation> getDelegateBindings()
+   public Set<Annotation> getDelegateQualifiers()
    {
-      return delegate().getDelegateBindings();
+      return delegate().getDelegateQualifiers();
    }
 
    public Type getDelegateType()

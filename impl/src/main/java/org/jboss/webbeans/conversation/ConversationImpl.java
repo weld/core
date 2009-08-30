@@ -20,8 +20,9 @@ import java.io.Serializable;
 
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Initializer;
-import javax.enterprise.inject.Named;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -34,6 +35,7 @@ import org.jboss.webbeans.log.Logging;
  */
 @RequestScoped
 @Named("javax.enterprise.context.conversation")
+@Default
 public class ConversationImpl implements Conversation, Serializable
 {
 
@@ -78,7 +80,7 @@ public class ConversationImpl implements Conversation, Serializable
     * @param conversationIdGenerator The conversation ID generator
     * @param timeout The conversation inactivity timeout
     */
-   @Initializer
+   @Inject
    public void init(ConversationIdGenerator conversationIdGenerator, @ConversationInactivityTimeout long timeout)
    {
       this.id = conversationIdGenerator.nextId();

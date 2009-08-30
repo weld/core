@@ -60,7 +60,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
    @Override
    protected boolean matches(Resolvable resolvable, T bean)
    {
-      return Reflections.isAssignableFrom(resolvable.getTypeClosure(), bean.getTypes()) && Beans.containsAllBindings(resolvable.getBindings(), bean.getBindings(), manager);
+      return Reflections.isAssignableFrom(resolvable.getTypeClosure(), bean.getTypes()) && Beans.containsAllBindings(resolvable.getQualifiers(), bean.getQualifiers(), manager);
    }
    
    /**
@@ -104,7 +104,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
                
                for (Bean<? extends X> bean : beans)
                {
-                  if (policyPresent ? bean.isPolicy() : true && !Beans.isSpecialized(bean, beans, manager.getSpecializedBeans()))
+                  if (policyPresent ? bean.isAlternative() : true && !Beans.isSpecialized(bean, beans, manager.getSpecializedBeans()))
                   {
                      disambiguatedBeans.add(bean);
                   }

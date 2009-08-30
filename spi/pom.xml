@@ -64,6 +64,12 @@
          <artifactId>jsf-api</artifactId>
          <optional>true</optional>
       </dependency>
+      
+      <dependency>
+         <groupId>javax.ejb</groupId>
+         <artifactId>ejb-api</artifactId>
+         <optional>true</optional>
+      </dependency>
 
    </dependencies>
 

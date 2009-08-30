@@ -70,7 +70,7 @@ public class FacadeBeanResolvableTransformer implements ResolvableTransformer
             }
 
             @Override
-            public Set<Annotation> getBindings()
+            public Set<Annotation> getQualifiers()
             {
                return Collections.unmodifiableSet(bindings);
             }

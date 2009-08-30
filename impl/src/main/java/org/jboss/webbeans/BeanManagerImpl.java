@@ -42,12 +42,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.el.ELResolver;
 import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.ScopeType;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.AmbiguousResolutionException;
-import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.InjectionException;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
@@ -59,6 +57,7 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.inject.Qualifier;
 
 import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
@@ -74,11 +73,12 @@ import org.jboss.webbeans.el.Namespace;
 import org.jboss.webbeans.el.WebBeansELResolver;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.literal.AnyLiteral;
-import org.jboss.webbeans.literal.CurrentLiteral;
+import org.jboss.webbeans.literal.DefaultLiteral;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
+import org.jboss.webbeans.metadata.cache.ScopeModel;
 import org.jboss.webbeans.resolution.NameBasedResolver;
 import org.jboss.webbeans.resolution.ResolvableFactory;
 import org.jboss.webbeans.resolution.ResolvableWBClass;
@@ -565,7 +565,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(Arrays.asList(bindings));
       if (bindingAnnotations.size() == 0)
       {
-         bindingAnnotations.add(new CurrentLiteral());
+         bindingAnnotations.add(new DefaultLiteral());
       }
       bindingAnnotations.add(new AnyLiteral());
       checkEventType(clazz);
@@ -703,7 +703,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 //            throw new IllegalArgumentException("Cannot resolve a type parameterized with a type parameter " + element);
 //         }
 //      }
-      if (bindings != null && bindings.length > element.getMetaAnnotations(BindingType.class).size())
+      if (bindings != null && bindings.length > element.getMetaAnnotations(Qualifier.class).size())
       {
          throw new IllegalArgumentException("Duplicate bindings (" + Arrays.asList(bindings) + ") type passed " + element.toString());
       }
@@ -720,7 +720,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             currentInjectionPoint.get().push(injectionPoint);
          }
          // TODO Do this properly
-         Set<Bean<?>> beans = getBeans(ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this));
+         Set<Bean<?>> beans = getBeans(ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this));
          Set<Bean<?>> injectableBeans = new HashSet<Bean<?>>();
          for (Bean<?> bean : beans)
          {
@@ -798,7 +798,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public void addContext(Context context)
    {
-      contexts.put(context.getScopeType(), context);
+      contexts.put(context.getScope(), context);
    }
 
    /**
@@ -877,9 +877,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       {
          creationalContext = ((WBCreationalContext<?>) creationalContext).getCreationalContext(bean);
       }
-      if (getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScopeType()).isNormal())
+      if (getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal())
       {
-         if (creationalContext != null || (creationalContext == null && getContext(bean.getScopeType()).get(bean) != null))
+         if (creationalContext != null || (creationalContext == null && getContext(bean.getScope()).get(bean) != null))
          {
             return clientProxyProvider.getClientProxy(this, bean);
          }
@@ -890,7 +890,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       }
       else
       {
-         return getContext(bean.getScopeType()).get((Contextual) bean, creationalContext);
+         return getContext(bean.getScope()).get((Contextual) bean, creationalContext);
       }
    }
 
@@ -922,7 +922,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          {
             currentInjectionPoint.get().push(injectionPoint);
          }
-         if (getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
+         if (getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
          {
             throw new UnproxyableResolutionException("Attempting to inject an unproxyable normal scoped bean " + resolvedBean + " into " + injectionPoint);
          }
@@ -956,7 +956,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    
    public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
    {
-      WBAnnotated<?, ?> element = ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this);
+      WBAnnotated<?, ?> element = ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this);
       Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
       return getReference(injectionPoint, resolvedBean, creationalContext);
    }
@@ -990,7 +990,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          throw new UnsatisfiedResolutionException(element + "Unable to resolve any Web Beans");
       }
       
-      boolean normalScoped = getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScopeType()).isNormal();
+      boolean normalScoped = getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
       if (normalScoped && !Beans.isBeanProxyable(bean))
       {
          throw new UnproxyableResolutionException("Normal scoped bean " + bean + " is not proxyable");
@@ -1329,18 +1329,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
-   public ScopeType getScopeDefinition(Class<? extends Annotation> scopeType)
-   {
-      if (isScopeType(scopeType))
-      {
-         return getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).getMetaAnnnotation();
-      }
-      else
-      {
-         throw new IllegalArgumentException("Not a scope type " + scopeType);
-      }
-   }
-
    public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype)
    {
       if (getServices().get(MetaAnnotationStore.class).getStereotype(stereotype).isValid())
@@ -1353,7 +1341,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       }
    }
 
-   public boolean isBindingType(Class<? extends Annotation> annotationType)
+   public boolean isQualifier(Class<? extends Annotation> annotationType)
    {
       return getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotationType).isValid();
    }
@@ -1363,7 +1351,19 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
-   public boolean isScopeType(Class<? extends Annotation> annotationType)
+   public boolean isNormalScope(Class<? extends Annotation> annotationType)
+   {
+      ScopeModel<?> scope = getServices().get(MetaAnnotationStore.class).getScopeModel(annotationType);
+      return scope.isValid() && scope.isNormal(); 
+   }
+   
+   public boolean isPassivatingScope(Class<? extends Annotation> annotationType)
+   {
+      ScopeModel<?> scope = getServices().get(MetaAnnotationStore.class).getScopeModel(annotationType);
+      return scope.isValid() && scope.isPassivating();
+   }
+   
+   public boolean isScope(Class<? extends Annotation> annotationType)
    {
       return getServices().get(MetaAnnotationStore.class).getScopeModel(annotationType).isValid();
    }

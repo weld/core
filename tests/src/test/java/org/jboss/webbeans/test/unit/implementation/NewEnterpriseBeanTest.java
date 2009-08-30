@@ -3,6 +3,7 @@ package org.jboss.webbeans.test.unit.implementation;
 import java.util.Set;
 
 import javax.enterprise.inject.New;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
@@ -32,8 +33,9 @@ public class NewEnterpriseBeanTest extends AbstractWebBeansTest
    private EnterpriseBean<WrappedEnterpriseBeanLocal> wrappedEnterpriseBean;
    private NewEnterpriseBean<WrappedEnterpriseBeanLocal> newEnterpriseBean;
    
-   public void initNewBean() {
-      
+   public void initNewBean() 
+   {
+      Set<Bean<?>> beans = getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class);
       assert getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class).size() == 1;
       assert getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class).iterator().next() instanceof EnterpriseBean;
       wrappedEnterpriseBean = (EnterpriseBean<WrappedEnterpriseBeanLocal>) getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class).iterator().next();

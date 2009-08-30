@@ -4,13 +4,13 @@ import javax.annotation.PreDestroy;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Current;
+import javax.inject.Inject;
 
 @Stateful
 @Dependent
 public class LandgraffenSchloss implements Schloss
 {
-   @Current
+   @Inject
    private GrossStadt biggerCity;
 
    @PreDestroy

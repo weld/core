@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.BindingType;
+import javax.inject.Qualifier;
 
 import org.jboss.webbeans.util.reflection.ParameterizedTypeImpl;
 
@@ -610,7 +610,7 @@ public class Reflections
    public static boolean isBindings(Annotation binding)
    {
       boolean isBindingAnnotation = false;
-      if (binding.annotationType().isAnnotationPresent(BindingType.class) &&
+      if (binding.annotationType().isAnnotationPresent(Qualifier.class) &&
          binding.annotationType().isAnnotationPresent(Retention.class) &&
          binding.annotationType().getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))
       {

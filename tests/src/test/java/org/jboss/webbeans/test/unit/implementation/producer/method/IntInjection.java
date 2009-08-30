@@ -1,13 +1,13 @@
 package org.jboss.webbeans.test.unit.implementation.producer.method;
 
-import javax.enterprise.inject.Initializer;
+import javax.inject.Inject;
 
 public class IntInjection
 {
    
    int value;
    
-   @Initializer public IntInjection(Integer integer)
+   @Inject public IntInjection(Integer integer)
    {
       this.value = integer;
    }

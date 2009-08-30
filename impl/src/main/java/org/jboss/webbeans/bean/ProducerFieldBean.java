@@ -129,7 +129,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
    public String toString()
    {
       StringBuilder buffer = new StringBuilder();
-      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()));
+      buffer.append("Annotated " + Names.scopeTypeToString(getScope()));
       if (getName() == null)
       {
          buffer.append("unnamed producer field bean");
@@ -138,7 +138,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       {
          buffer.append("simple producer field bean '" + getName() + "'");
       }
-      buffer.append(" [" + getBeanClass().getName() + "] for class type [" + getType().getName() + "] API types " + getTypes() + ", binding types " + getBindings());
+      buffer.append(" [" + getBeanClass().getName() + "] for class type [" + getType().getName() + "] API types " + getTypes() + ", binding types " + getQualifiers());
       return buffer.toString();
    }
    

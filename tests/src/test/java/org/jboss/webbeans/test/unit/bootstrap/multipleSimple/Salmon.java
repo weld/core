@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.unit.bootstrap.multipleSimple;
 
-import javax.enterprise.inject.Named;
+import javax.inject.Named;
 
 @Named
 class Salmon implements ScottishFish

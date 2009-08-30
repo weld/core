@@ -19,6 +19,7 @@ package org.jboss.webbeans.metadata.cache;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Set;
 
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.introspector.WBAnnotation;
@@ -67,7 +68,7 @@ public abstract class AnnotationModel<T extends Annotation>
    {
       if (!Annotation.class.isAssignableFrom(getRawType()))
       {
-         throw new DefinitionException(getMetaAnnotationType().toString() + " can only be applied to an annotation, it was applied to " + getRawType());
+         throw new DefinitionException(getMetaAnnotationTypes().toString() + " can only be applied to an annotation, it was applied to " + getRawType());
       }
    }
 
@@ -76,10 +77,13 @@ public abstract class AnnotationModel<T extends Annotation>
     */
    protected void initValid()
    {
-      this.valid = true;
-      if (!annotatedAnnotation.isAnnotationPresent(getMetaAnnotationType()))
+      this.valid = false;
+      for (Class<? extends Annotation> annotationType : getMetaAnnotationTypes())
       {
-         this.valid = false;
+         if (annotatedAnnotation.isAnnotationPresent(annotationType))
+         {
+            this.valid = true;
+         }
       }
       if (annotatedAnnotation.isAnnotationPresent(Retention.class) && !annotatedAnnotation.getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))
       {
@@ -104,7 +108,7 @@ public abstract class AnnotationModel<T extends Annotation>
     * 
     * @return
     */
-   protected abstract Class<? extends Annotation> getMetaAnnotationType();
+   protected abstract Set<Class<? extends Annotation>> getMetaAnnotationTypes();
 
    /**
     * Indicates if the annotation is valid

@@ -17,9 +17,9 @@
 package org.jboss.webbeans.literal;
 
 import javax.enterprise.inject.AnnotationLiteral;
-import javax.interceptor.InterceptorBindingType;
+import javax.interceptor.InterceptorBinding;
 
-public class InterceptorBindingTypeLiteral extends AnnotationLiteral<InterceptorBindingType> implements InterceptorBindingType
+public class InterceptorBindingTypeLiteral extends AnnotationLiteral<InterceptorBinding> implements InterceptorBinding
 {
    
 }

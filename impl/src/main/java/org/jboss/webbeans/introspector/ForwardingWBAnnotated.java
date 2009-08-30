@@ -47,9 +47,9 @@ public abstract class ForwardingWBAnnotated<T, S> extends ForwardingAnnotated<T,
    }
 
    @Deprecated
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
-      return delegate().getBindings();
+      return delegate().getQualifiers();
    }
 
    @Deprecated

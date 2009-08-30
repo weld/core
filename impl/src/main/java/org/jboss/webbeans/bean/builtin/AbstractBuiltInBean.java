@@ -29,12 +29,12 @@ import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.literal.AnyLiteral;
-import org.jboss.webbeans.literal.CurrentLiteral;
+import org.jboss.webbeans.literal.DefaultLiteral;
 
 public abstract class AbstractBuiltInBean<T> extends RIBean<T>
 {
    
-   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral(), new AnyLiteral() };
+   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new DefaultLiteral(), new AnyLiteral() };
    private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
    
    private final String id;
@@ -52,12 +52,12 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
    }
 
    
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
       return DEFAULT_BINDING;
    }
    
-   public Class<? extends Annotation> getScopeType()
+   public Class<? extends Annotation> getScope()
    {
       return Dependent.class;
    }
@@ -101,7 +101,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
       return false;
    }
    
-   public boolean isPolicy()
+   public boolean isAlternative()
    {
       return false;
    }

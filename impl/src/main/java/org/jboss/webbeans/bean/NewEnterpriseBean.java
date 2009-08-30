@@ -78,13 +78,13 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
     * @return @Dependent
     */
    @Override
-   public Class<? extends Annotation> getScopeType()
+   public Class<? extends Annotation> getScope()
    {
       return Dependent.class;
    }
 
    @Override
-   public boolean isPolicy()
+   public boolean isAlternative()
    {
       return false;
    }
@@ -106,7 +106,7 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
     * @returns @New
     */
    @Override
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
       return bindings;
    }

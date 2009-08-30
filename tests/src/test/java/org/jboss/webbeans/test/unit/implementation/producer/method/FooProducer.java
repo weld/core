@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.test.unit.implementation.producer.method;
 
-import javax.enterprise.inject.Current;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 
@@ -39,7 +38,7 @@ public class FooProducer
       disposed = false;
    }
    
-   public void disposeFoo(@Disposes @Current Foo foo)
+   public void disposeFoo(@Disposes Foo foo)
    {
       disposed = true;
    }

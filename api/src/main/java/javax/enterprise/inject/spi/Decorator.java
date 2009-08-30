@@ -43,7 +43,7 @@ public interface Decorator<T> extends Bean<T>
     * 
     * @return
     */
-   public Set<Annotation> getDelegateBindings();
+   public Set<Annotation> getDelegateQualifiers();
    
    /**
     * Obtains the decorated types

@@ -63,7 +63,7 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    }
    
    @Override
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
       return DEFAULT_BINDINGS;
    }

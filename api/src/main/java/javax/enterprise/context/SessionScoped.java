@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
 @Target( { TYPE, METHOD, FIELD })
 @Retention(RUNTIME)
 @Documented
-@ScopeType(passivating = true)
+@NormalScope(passivating = true)
 @Inherited
 public @interface SessionScoped
 {

@@ -37,7 +37,7 @@ public interface Context
     * 
     * @return the scope
     */
-   public Class<? extends Annotation> getScopeType();
+   public Class<? extends Annotation> getScope();
 
    /**
     * Return an existing instance of a contextual type or create a new instance

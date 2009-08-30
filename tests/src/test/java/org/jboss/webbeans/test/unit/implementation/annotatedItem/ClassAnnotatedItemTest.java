@@ -4,8 +4,8 @@ import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.stereotype.Stereotype;
+import javax.inject.Qualifier;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.introspector.WBClass;
@@ -34,7 +34,7 @@ public class ClassAnnotatedItemTest extends AbstractWebBeansTest
    public void testMetaAnnotations()
    {
       WBClass<Order> annotatedElement = WBClassImpl.of(Order.class, transformer);
-      Set<Annotation> annotations = annotatedElement.getMetaAnnotations(BindingType.class);
+      Set<Annotation> annotations = annotatedElement.getMetaAnnotations(Qualifier.class);
       assert annotations.size() == 1;
       Iterator<Annotation> it = annotations.iterator();
       Annotation production = it.next();

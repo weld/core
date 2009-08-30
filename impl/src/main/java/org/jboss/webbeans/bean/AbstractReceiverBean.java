@@ -19,7 +19,7 @@ package org.jboss.webbeans.bean;
 import java.lang.reflect.Member;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Policy;
+import javax.enterprise.inject.Alternative;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
@@ -95,7 +95,7 @@ public abstract class AbstractReceiverBean<T, S extends Member> extends Abstract
     * @see org.jboss.webbeans.bean.AbstractBean#isPolicy()
     */
    @Override
-   public boolean isPolicy()
+   public boolean isAlternative()
    {
       return policy;
    }
@@ -103,11 +103,11 @@ public abstract class AbstractReceiverBean<T, S extends Member> extends Abstract
    @Override
    protected void initPolicy()
    {
-      if (getDeclaringBean().isPolicy())
+      if (getDeclaringBean().isAlternative())
       {
          this.policy = true;
       }
-      else if (getAnnotatedItem().isAnnotationPresent(Policy.class))
+      else if (getAnnotatedItem().isAnnotationPresent(Alternative.class))
       {
          this.policy = true;
       }

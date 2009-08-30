@@ -53,7 +53,7 @@ public class ELCurrentActivityTest extends AbstractWebBeansTest
          return null;
       }
 
-      public Class<? extends Annotation> getScopeType()
+      public Class<? extends Annotation> getScope()
       {
          return Dummy.class;
       }
@@ -89,7 +89,7 @@ public class ELCurrentActivityTest extends AbstractWebBeansTest
       {
       }
 
-      public Set<Annotation> getBindings()
+      public Set<Annotation> getQualifiers()
       {
          return BINDING_TYPES;
       }
@@ -104,7 +104,7 @@ public class ELCurrentActivityTest extends AbstractWebBeansTest
          return "daisy";
       }
 
-      public Class<? extends Annotation> getScopeType()
+      public Class<? extends Annotation> getScope()
       {
          return Dependent.class;
       }
@@ -140,7 +140,7 @@ public class ELCurrentActivityTest extends AbstractWebBeansTest
          return Cow.class;
       }
 
-      public boolean isPolicy()
+      public boolean isAlternative()
       {
          return false;
       }
@@ -160,7 +160,7 @@ public class ELCurrentActivityTest extends AbstractWebBeansTest
       assert getBeans(Cow.class).size() == 1;
       WebBeansManager childActivity = getCurrentManager().createActivity();
       childActivity.addBean(new Daisy(childActivity));
-      childActivity.setCurrent(dummyContext.getScopeType());
+      childActivity.setCurrent(dummyContext.getScope());
       assert evaluateValueExpression("#{daisy}", Cow.class) != null;
    }
 

@@ -17,9 +17,9 @@
 package org.jboss.webbeans.literal;
 
 import javax.enterprise.inject.AnnotationLiteral;
-import javax.enterprise.inject.BindingType;
+import javax.inject.Qualifier;
 
-public class BindingTypeLiteral extends AnnotationLiteral<BindingType> implements BindingType
+public class BindingTypeLiteral extends AnnotationLiteral<Qualifier> implements Qualifier
 {
    
 }

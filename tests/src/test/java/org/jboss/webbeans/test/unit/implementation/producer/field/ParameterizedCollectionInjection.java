@@ -2,26 +2,25 @@ package org.jboss.webbeans.test.unit.implementation.producer.field;
 
 import java.util.Collection;
 
-import javax.enterprise.inject.Current;
-import javax.enterprise.inject.Initializer;
+import javax.inject.Inject;
 
 public class ParameterizedCollectionInjection
 {
 
    private Collection<String> value;
 
-   @Current
+   @Inject
    private Collection<String> fieldInjection;
 
    private Collection<String> setterInjection;
 
-   @Initializer
+   @Inject
    public void init(Collection<String> setterInjection)
    {
       this.setterInjection = setterInjection;
    }
 
-   @Initializer
+   @Inject
    public ParameterizedCollectionInjection(Collection<String> com)
    {
       this.value = com;

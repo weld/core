@@ -28,9 +28,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.BindingType;
+import javax.inject.Qualifier;
 
-import org.jboss.webbeans.literal.CurrentLiteral;
+import org.jboss.webbeans.literal.DefaultLiteral;
 import org.jboss.webbeans.metadata.TypeStore;
 
 import com.google.common.base.Supplier;
@@ -41,7 +41,7 @@ public class AnnotationStore
 {
 
    // The array of default binding types
-   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral() };
+   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new DefaultLiteral() };
    // The set of default binding types
    private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
    
@@ -244,9 +244,9 @@ public class AnnotationStore
    @Deprecated
    public Set<Annotation> getBindings()
    {
-      if (getMetaAnnotations(BindingType.class).size() > 0)
+      if (getMetaAnnotations(Qualifier.class).size() > 0)
       {
-         return Collections.unmodifiableSet(getMetaAnnotations(BindingType.class));
+         return Collections.unmodifiableSet(getMetaAnnotations(Qualifier.class));
       }
       else
       {

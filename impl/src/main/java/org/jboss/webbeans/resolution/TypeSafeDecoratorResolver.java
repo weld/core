@@ -41,7 +41,7 @@ public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<DecoratorBea
    @Override
    protected boolean matches(Resolvable resolvable, DecoratorBean<?> bean)
    {
-      return Reflections.isAssignableFrom(bean.getDelegateTypes(), resolvable.getTypeClosure()) && Beans.containsAllBindings(bean.getDelegateBindings(), resolvable.getBindings(), getManager()) && getManager().getEnabledDecoratorClasses().contains(bean.getType());
+      return Reflections.isAssignableFrom(bean.getDelegateTypes(), resolvable.getTypeClosure()) && Beans.containsAllBindings(bean.getDelegateQualifiers(), resolvable.getQualifiers(), getManager()) && getManager().getEnabledDecoratorClasses().contains(bean.getType());
    }
    
    @Override

@@ -36,7 +36,7 @@ abstract class ELCreationalContext<T> extends ForwardingWBCreationalContext<T>
    
    public Object putIfAbsent(Bean<?> bean, Callable<Object> value) throws Exception
    {
-      if (bean.getScopeType().equals(Dependent.class))
+      if (bean.getScope().equals(Dependent.class))
       {
          if (dependentInstances.containsKey(bean.getName()))
          {

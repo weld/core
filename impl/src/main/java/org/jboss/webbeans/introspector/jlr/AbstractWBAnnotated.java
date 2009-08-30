@@ -219,7 +219,7 @@ public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
    }
 
    @Deprecated
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
       return getAnnotationStore().getBindings();
    }

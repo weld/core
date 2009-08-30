@@ -27,6 +27,8 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.inject.Scope;
+
 /**
  * Specifies that a bean is dependent scoped.
  * 
@@ -37,7 +39,7 @@ import java.lang.annotation.Target;
 @Target( { METHOD, TYPE, FIELD })
 @Retention(RUNTIME)
 @Documented
-@ScopeType(normal = false)
+@Scope
 @Inherited
 public @interface Dependent
 {

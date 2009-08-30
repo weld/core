@@ -22,11 +22,11 @@ import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
+import javax.inject.Inject;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
@@ -230,7 +230,7 @@ public class AbstractBeanDeployer
    
    private static boolean hasSimpleWebBeanConstructor(WBClass<?> type)
    {
-      return type.getNoArgsWBConstructor() != null || type.getAnnotatedWBConstructors(Initializer.class).size() > 0;
+      return type.getNoArgsWBConstructor() != null || type.getAnnotatedWBConstructors(Inject.class).size() > 0;
    }
       
    public BeanDeployerEnvironment getEnvironment()

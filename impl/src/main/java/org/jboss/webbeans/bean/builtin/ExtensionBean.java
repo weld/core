@@ -72,7 +72,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
    }
    
    @Override
-   public Class<? extends Annotation> getScopeType()
+   public Class<? extends Annotation> getScope()
    {
       return ApplicationScoped.class;
    }

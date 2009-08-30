@@ -2,13 +2,13 @@ package org.jboss.webbeans.test.unit.context;
 
 import java.util.List;
 
-import javax.enterprise.inject.Current;
+import javax.inject.Inject;
 
 
 public class StringHolder
 {
 
-   @Current 
+   @Inject 
    private List<String> strings;
    
    public List<String> getStrings()

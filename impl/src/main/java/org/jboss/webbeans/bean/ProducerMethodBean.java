@@ -163,7 +163,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     */
    protected void initDisposalMethod(BeanDeployerEnvironment environment)
    {
-      Set<DisposalMethodBean<?>> disposalBeans = environment.resolveDisposalBeans(getTypes(), getBindings(), getDeclaringBean());
+      Set<DisposalMethodBean<?>> disposalBeans = environment.resolveDisposalBeans(getTypes(), getQualifiers(), getDeclaringBean());
 
       if (disposalBeans.size() == 1)
       {
@@ -240,7 +240,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    public String toString()
    {
       StringBuilder buffer = new StringBuilder();
-      buffer.append(Names.scopeTypeToString(getScopeType()));
+      buffer.append(Names.scopeTypeToString(getScope()));
       if (getName() == null)
       {
          buffer.append("unnamed producer method bean");
@@ -249,7 +249,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       {
          buffer.append("simple producer method bean '" + getName() + "'");
       }
-      buffer.append(" [" + getBeanClass().getName() + "] for class type [" + getType().getName() + "] API types " + getTypes() + ", binding types " + getBindings());
+      buffer.append(" [" + getBeanClass().getName() + "] for class type [" + getType().getName() + "] API types " + getTypes() + ", binding types " + getQualifiers());
       return buffer.toString();
    }
 

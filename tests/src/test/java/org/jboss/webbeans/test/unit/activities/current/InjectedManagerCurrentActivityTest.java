@@ -43,7 +43,7 @@ public class InjectedManagerCurrentActivityTest extends AbstractWebBeansTest
          return null;
       }
 
-      public Class<? extends Annotation> getScopeType()
+      public Class<? extends Annotation> getScope()
       {
          return Dummy.class;
       }
@@ -67,7 +67,7 @@ public class InjectedManagerCurrentActivityTest extends AbstractWebBeansTest
       getCurrentManager().addContext(dummyContext);
       assert getBeans(Cow.class).size() == 1;
       WebBeansManager childActivity = getCurrentManager().createActivity();
-      childActivity.setCurrent(dummyContext.getScopeType());
+      childActivity.setCurrent(dummyContext.getScope());
       assert createContextualInstance(Horse.class).getManager().equals(childActivity);
    }
 

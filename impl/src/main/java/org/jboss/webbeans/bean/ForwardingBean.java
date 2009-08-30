@@ -82,9 +82,9 @@ public abstract class ForwardingBean<T> implements Bean<T>
     * 
     * @return The binding types
     */
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
-      return delegate().getBindings();
+      return delegate().getQualifiers();
    }
 
    public Set<InjectionPoint> getInjectionPoints()
@@ -117,9 +117,9 @@ public abstract class ForwardingBean<T> implements Bean<T>
     * 
     * @return The scope type
     */
-   public Class<? extends Annotation> getScopeType()
+   public Class<? extends Annotation> getScope()
    {
-      return delegate().getScopeType();
+      return delegate().getScope();
    }
 
    /**
@@ -153,9 +153,9 @@ public abstract class ForwardingBean<T> implements Bean<T>
       return delegate().isNullable();
    }
 
-   public boolean isPolicy()
+   public boolean isAlternative()
    {
-      return delegate().isPolicy();
+      return delegate().isAlternative();
    }
 
    /**

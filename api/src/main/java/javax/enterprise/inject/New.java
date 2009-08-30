@@ -27,6 +27,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.inject.Qualifier;
+
 /**
  * The special binding type.
  * 
@@ -37,7 +39,7 @@ import java.lang.annotation.Target;
 @Target( { FIELD, PARAMETER, METHOD, TYPE })
 @Retention(RUNTIME)
 @Documented
-@BindingType
+@Qualifier
 public @interface New
 {
    

@@ -1,11 +1,12 @@
 package org.jboss.webbeans.test.unit.activities;
 
 import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 class Field
 {
    
-   @Tame Instance<Cow> instance;
+   @Inject @Tame Instance<Cow> instance;
    
    public Cow get()
    {

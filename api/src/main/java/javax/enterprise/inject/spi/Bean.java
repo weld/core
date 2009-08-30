@@ -38,14 +38,14 @@ public interface Bean<T> extends Contextual<T>
     * 
     * @return the bindings
     */
-   public Set<Annotation> getBindings();
+   public Set<Annotation> getQualifiers();
 
    /**
     * The scope of a bean
     * 
     * @return the scope
     */
-   public Class<? extends Annotation> getScopeType();
+   public Class<? extends Annotation> getScope();
 
    /**
     * The name of a bean
@@ -74,7 +74,7 @@ public interface Bean<T> extends Contextual<T>
     * 
     * @return true if the bean is a policy
     */
-   public boolean isPolicy();
+   public boolean isAlternative();
 
    /**
     * The nullability of a bean

@@ -48,7 +48,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
          if (genericType instanceof ParameterizedType )
          {
             Type type = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-            return newInstance(type, injectionPoint.getBindings());
+            return newInstance(type, injectionPoint.getQualifiers());
          }
          else
          {

@@ -29,12 +29,11 @@ import javax.decorator.Decorates;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
+import javax.inject.Inject;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -87,7 +86,7 @@ public class Beans
       }
       else
       {
-         return manager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScopeType()).isPassivating();
+         return manager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isPassivating();
       }
    }
 
@@ -135,7 +134,7 @@ public class Beans
    public static Set<FieldInjectionPoint<?, ?>> getFieldInjectionPoints(Bean<?> declaringBean, WBClass<?> annotatedItem)
    {
       Set<FieldInjectionPoint<?, ?>> injectableFields = new HashSet<FieldInjectionPoint<?, ?>>();
-      for (WBField<?, ?> annotatedField : annotatedItem.getMetaAnnotatedWBFields(BindingType.class))
+      for (WBField<?, ?> annotatedField : annotatedItem.getAnnotatedWBFields(Inject.class))
       {
          addFieldInjectionPoint(annotatedField, injectableFields, declaringBean);
       }
@@ -264,7 +263,7 @@ public class Beans
    public static Set<MethodInjectionPoint<?, ?>> getInitializerMethods(Bean<?> declaringBean, WBClass<?> type)
    {
       Set<MethodInjectionPoint<?, ?>> initializerMethods = new HashSet<MethodInjectionPoint<?, ?>>();
-      for (WBMethod<?, ?> method : type.getAnnotatedWBMethods(Initializer.class))
+      for (WBMethod<?, ?> method : type.getAnnotatedWBMethods(Inject.class))
       {
          if (method.isStatic())
          {
@@ -393,7 +392,7 @@ public class Beans
    
    public static boolean isBeanEnabled(Bean<?> bean, Collection<Class<?>> enabledPolicyClasses, Collection<Class<? extends Annotation>> enabledPolicySterotypes)
    {
-      if (bean.isPolicy())
+      if (bean.isAlternative())
       {
          if (enabledPolicyClasses.contains(bean.getBeanClass()))
          {
@@ -427,7 +426,7 @@ public class Beans
    {
       for (Bean<?> bean : beans)
       {
-         if (bean.isPolicy())
+         if (bean.isAlternative())
          {
             return true;
          }
@@ -458,7 +457,7 @@ public class Beans
    public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<?> declaringBean, WBClass<T> type)
    {
       ConstructorInjectionPoint<T> constructor = null;
-      Set<WBConstructor<T>> initializerAnnotatedConstructors = type.getAnnotatedWBConstructors(Initializer.class);
+      Set<WBConstructor<T>> initializerAnnotatedConstructors = type.getAnnotatedWBConstructors(Inject.class);
       log.trace("Found " + initializerAnnotatedConstructors + " constructors annotated with @Initializer for " + type);
       if (initializerAnnotatedConstructors.size() > 1)
       {

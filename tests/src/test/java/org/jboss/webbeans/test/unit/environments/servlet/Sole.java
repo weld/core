@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.environments.servlet;
 
 import javax.ejb.EJB;
-import javax.enterprise.inject.Named;
+import javax.inject.Named;
 
 @Whitefish
 @Named("whitefish")

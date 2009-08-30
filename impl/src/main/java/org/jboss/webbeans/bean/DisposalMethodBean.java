@@ -26,8 +26,8 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -83,7 +83,7 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
    {
       // At least 1 parameter exists, already checked in constructor
       this.bindings = new HashSet<Annotation>();
-      this.bindings.addAll(disposalMethodInjectionPoint.getWBParameters().get(0).getBindings());
+      this.bindings.addAll(disposalMethodInjectionPoint.getWBParameters().get(0).getQualifiers());
       initDefaultBindings();
    }
 
@@ -107,7 +107,7 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
    }
 
    @Override
-   public Class<? extends Annotation> getScopeType()
+   public Class<? extends Annotation> getScope()
    {
       return null;
    }
@@ -179,7 +179,7 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
       {
          throw new DefinitionException("@Observes is not allowed on disposal method, see " + disposalMethodInjectionPoint.toString());
       }
-      if (disposalMethodInjectionPoint.getAnnotation(Initializer.class) != null)
+      if (disposalMethodInjectionPoint.getAnnotation(Inject.class) != null)
       {
          throw new DefinitionException("@Intitializer is not allowed on a disposal method, see " + disposalMethodInjectionPoint.toString());
       }

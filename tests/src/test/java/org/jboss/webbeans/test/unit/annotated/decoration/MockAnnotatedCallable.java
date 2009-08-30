@@ -27,10 +27,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.inject.Inject;
 
 import org.jboss.annotation.factory.AnnotationCreator;
 
@@ -41,12 +41,12 @@ import org.jboss.annotation.factory.AnnotationCreator;
  */
 public abstract class MockAnnotatedCallable<X> extends MockAnnotatedMember<X> implements AnnotatedCallable<X>
 {
-   private final static Initializer INITIALIZER;
+   private final static Inject INITIALIZER;
    static
    {
       try
       {
-         INITIALIZER = (Initializer)AnnotationCreator.createAnnotation("@" + Initializer.class.getName(), Initializer.class);
+         INITIALIZER = (Inject)AnnotationCreator.createAnnotation("@" + Inject.class.getName(), Inject.class);
       }
       catch(Exception e)
       {
@@ -90,7 +90,7 @@ public abstract class MockAnnotatedCallable<X> extends MockAnnotatedMember<X> im
    @Override
    public <T extends Annotation> T getAnnotation(Class<T> annotationType)
    {
-      if (annotationType == Initializer.class)
+      if (annotationType == Inject.class)
       {
          return (T)INITIALIZER;
       }
@@ -106,6 +106,6 @@ public abstract class MockAnnotatedCallable<X> extends MockAnnotatedMember<X> im
    @Override
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
    {
-      return annotationType == Initializer.class;
+      return annotationType == Inject.class;
    }
 }

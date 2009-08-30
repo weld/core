@@ -14,24 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.webbeans.literal;
 
-package javax.enterprise.inject;
-
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.inject.Default;
 
 /**
- * Specifies that a member of a binding type or interceptor binding type is to
- * be ignored for the purposes of resolution.
+ * Annotation literal for @Current
  * 
- * @author Gavin King
- * 
+ * @author Pete Muir
  */
-@Retention(RUNTIME)
-@Target(METHOD)
-public @interface NonBinding
-{
-}
+public class DefaultLiteral extends AnnotationLiteral<Default> implements Default {}

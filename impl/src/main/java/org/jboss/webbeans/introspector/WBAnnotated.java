@@ -22,10 +22,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.ScopeType;
-import javax.enterprise.inject.BindingType;
+import javax.enterprise.context.NormalScope;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.stereotype.Stereotype;
+import javax.inject.Qualifier;
+import javax.inject.Scope;
 
 /**
  * AnnotatedItem provides a uniform access to the annotations on an annotated
@@ -39,7 +40,7 @@ public interface WBAnnotated<T, S> extends Annotated
 
    // The set of meta-annotations to map
    @SuppressWarnings("unchecked")
-   public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(BindingType.class, Stereotype.class, ScopeType.class));
+   public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Qualifier.class, Stereotype.class, Scope.class, NormalScope.class));
 
    /**
     * Gets all annotations which are annotated with the given meta annotation
@@ -52,8 +53,8 @@ public interface WBAnnotated<T, S> extends Annotated
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
 
    /**
-    * Gets all annotations which are declared on this annotated item 
-    * with the given meta annotation type
+    * Gets all annotations which are declared on this annotated item with the
+    * given meta annotation type
     * 
     * @param The meta annotation to match
     * @return A set of matching meta-annotations. Returns an empty set if there
@@ -76,17 +77,19 @@ public interface WBAnnotated<T, S> extends Annotated
     * 
     * @returns A set of binding types present on the type. Returns an empty set
     *          if there are no matches.
-    * @deprecated This reflection type should not know about JSR-299 binding types
+    * @deprecated This reflection type should not know about JSR-299 binding
+    *             types
     */
    @Deprecated
-   public Set<Annotation> getBindings();
+   public Set<Annotation> getQualifiers();
 
    /**
     * Gets the binding types for this element
     * 
     * @returns An array of binding types present on the type. Returns an empty
     *          array if there are no matches.
-    * @deprecated This reflection type should not know about JSR-299 binding types
+    * @deprecated This reflection type should not know about JSR-299 binding
+    *             types
     */
    @Deprecated
    public Annotation[] getBindingsAsArray();
@@ -153,7 +156,8 @@ public interface WBAnnotated<T, S> extends Annotated
    public boolean isStatic();
 
    /**
-    * Indicates if this AnnotatedItem represents a final element    
+    * Indicates if this AnnotatedItem represents a final element
+    * 
     * @return True if final, false otherwise
     */
    public boolean isFinal();
@@ -171,7 +175,7 @@ public interface WBAnnotated<T, S> extends Annotated
     * @return if public, returns true
     */
    public boolean isPublic();
-   
+
    public boolean isPrivate();
 
    /**

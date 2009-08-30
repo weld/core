@@ -3,16 +3,16 @@ package org.jboss.webbeans.test.unit.implementation.producer.field;
 import java.util.Collection;
 import java.util.List;
 
-import javax.enterprise.inject.Current;
+import javax.inject.Inject;
 
 public class Target
 {
    
-   @Current private Collection<String> strings;
+   @Inject private Collection<String> strings;
    
-   @Current private Collection<Integer> integers;
+   @Inject private Collection<Integer> integers;
    
-   @Current private List<String> stringList;
+   @Inject private List<String> stringList;
    
    public Collection<String> getStrings()
    {

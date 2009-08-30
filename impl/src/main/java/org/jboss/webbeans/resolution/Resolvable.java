@@ -38,7 +38,7 @@ public interface Resolvable
     * 
     * @return the bindings
     */
-   public Set<Annotation> getBindings();
+   public Set<Annotation> getQualifiers();
 
    /**
     * Check if an annotation is present

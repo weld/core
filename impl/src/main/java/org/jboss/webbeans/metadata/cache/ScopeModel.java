@@ -22,10 +22,11 @@ import static java.lang.annotation.ElementType.TYPE;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Target;
+import java.util.Set;
 
-import javax.enterprise.context.ScopeType;
+import javax.enterprise.context.NormalScope;
+import javax.inject.Scope;
 
-import org.jboss.webbeans.literal.ScopeTypeLiteral;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.ClassTransformer;
@@ -40,9 +41,11 @@ import org.jboss.webbeans.util.collections.Arrays2;
  */
 public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
 {
-   private static final Log log = Logging.getLog(ScopeModel.class);
    
-   private final ScopeType metaAnnotation;
+   private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.asSet(Scope.class, NormalScope.class);
+   
+   private static final Log log = Logging.getLog(ScopeModel.class);
+
    private final boolean normal;
    private final boolean passivating;
    
@@ -56,15 +59,21 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
       super(scope, classTransformer);
       if (isValid())
       {
-         this.normal = getAnnotatedAnnotation().getAnnotation(ScopeType.class).normal();
-         this.passivating = getAnnotatedAnnotation().getAnnotation(ScopeType.class).passivating();
-         this.metaAnnotation = new ScopeTypeLiteral(normal, passivating);
+         if (getAnnotatedAnnotation().isAnnotationPresent(NormalScope.class))
+         {
+            this.passivating = getAnnotatedAnnotation().getAnnotation(NormalScope.class).passivating();
+            this.normal = true;
+         }
+         else
+         {
+            this.normal = false;
+            this.passivating = false;
+         }
       }
       else
       {
          this.normal = false;
          this.passivating = false;
-         this.metaAnnotation = null;
       }
    }
    
@@ -109,15 +118,9 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
     * 
     * @return The ScopeType class
     */
-   @Override
-   protected Class<? extends Annotation> getMetaAnnotationType()
+   protected Set<Class<? extends Annotation>> getMetaAnnotationTypes() 
    {
-      return ScopeType.class;
-   }
-   
-   public ScopeType getMetaAnnnotation()
-   {
-      return metaAnnotation;
+      return META_ANNOTATIONS;
    }
 
    /**

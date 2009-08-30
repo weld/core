@@ -15,12 +15,9 @@
 * limitations under the License.
 */
 
-package javax.enterprise.inject;
+package javax.interceptor;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
@@ -28,15 +25,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * The default binding type.
+ * Specifies that an annotation type is an interceptor binding.
  * 
+ * @author Gavin King 
  * @author Pete Muir
  */
 
-@Target( { TYPE, METHOD, PARAMETER, FIELD })
+@Target(ANNOTATION_TYPE)
 @Retention(RUNTIME)
 @Documented
-@BindingType
-public @interface Current
-{
-}
+public @interface InterceptorBinding {}

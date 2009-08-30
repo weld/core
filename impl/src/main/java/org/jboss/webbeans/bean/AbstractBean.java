@@ -23,12 +23,12 @@ import java.util.Set;
 
 import javax.decorator.Decorates;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.BindingType;
-import javax.enterprise.inject.Named;
-import javax.enterprise.inject.Policy;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.stereotype.Stereotype;
+import javax.inject.Named;
+import javax.inject.Qualifier;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -38,7 +38,7 @@ import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.literal.AnyLiteral;
-import org.jboss.webbeans.literal.CurrentLiteral;
+import org.jboss.webbeans.literal.DefaultLiteral;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.cache.MergedStereotypes;
@@ -57,7 +57,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 {
 
    private static final Annotation ANY_LITERAL = new AnyLiteral();
-   private static final Annotation CURRENT_LITERAL = new CurrentLiteral();
+   private static final Annotation CURRENT_LITERAL = new DefaultLiteral();
 
    private boolean proxyable;
 
@@ -180,7 +180,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    protected void initBindings()
    {
       this.bindings = new HashSet<Annotation>();
-      this.bindings.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
+      this.bindings.addAll(getAnnotatedItem().getMetaAnnotations(Qualifier.class));
       initDefaultBindings();
       log.trace("Using binding types " + bindings + " specified by annotations");
    }
@@ -197,7 +197,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 
    protected void initPolicy()
    {
-      if (getAnnotatedItem().isAnnotationPresent(Policy.class))
+      if (getAnnotatedItem().isAnnotationPresent(Alternative.class))
       {
          this.policy = true;
       }
@@ -252,14 +252,14 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 
    private boolean checkInjectionPointsAreSerializable()
    {
-      boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(this.getScopeType()).isPassivating();
+      boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(this.getScope()).isPassivating();
       for (WBInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
       {
-         Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
+         Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(Qualifier.class);
          Bean<?> resolvedBean = manager.getBeans(injectionPoint.getJavaClass(), bindings).iterator().next();
          if (passivating)
          {
-            if (Dependent.class.equals(resolvedBean.getScopeType()) && !Reflections.isSerializable(resolvedBean.getBeanClass()) && (((injectionPoint instanceof WBField<?, ?>) && !((WBField<?, ?>) injectionPoint).isTransient()) || (injectionPoint instanceof WBParameter<?, ?>)))
+            if (Dependent.class.equals(resolvedBean.getScope()) && !Reflections.isSerializable(resolvedBean.getBeanClass()) && (((injectionPoint instanceof WBField<?, ?>) && !((WBField<?, ?>) injectionPoint).isTransient()) || (injectionPoint instanceof WBParameter<?, ?>)))
             {
                return false;
             }
@@ -299,7 +299,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       {
          throw new DefinitionException("Cannot put name on specializing and specialized class " + getAnnotatedItem());
       }
-      this.bindings.addAll(getSpecializedBean().getBindings());
+      this.bindings.addAll(getSpecializedBean().getQualifiers());
       if (isSpecializing() && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
       {
          this.name = getSpecializedBean().getName();
@@ -329,9 +329,9 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The set of binding types
     * 
-    * @see org.jboss.webbeans.bean.BaseBean#getBindings()
+    * @see org.jboss.webbeans.bean.BaseBean#getQualifiers()
     */
-   public Set<Annotation> getBindings()
+   public Set<Annotation> getQualifiers()
    {
       return bindings;
    }
@@ -379,9 +379,9 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The scope type
     * 
-    * @see org.jboss.webbeans.bean.BaseBean#getScopeType()
+    * @see org.jboss.webbeans.bean.BaseBean#getScope()
     */
-   public Class<? extends Annotation> getScopeType()
+   public Class<? extends Annotation> getScope()
    {
       return scopeType;
    }
@@ -476,10 +476,10 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    @Override
    public boolean isDependent()
    {
-      return Dependent.class.equals(getScopeType());
+      return Dependent.class.equals(getScope());
    }
    
-   public boolean isPolicy()
+   public boolean isAlternative()
    {
       return policy;
    }
