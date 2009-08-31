@@ -43,13 +43,16 @@ public class JsfApiAbstraction extends ApiAbstraction implements Service
       this.UICOMPONENT_CLASS = classForName("javax.faces.component.UIComponent");
       this.FACES_CONTEXT = classForName("javax.faces.context.FacesContext");
       double version = 2.0;
-      try
+      if (this.FACES_CONTEXT != null)
       {
-         this.FACES_CONTEXT.getMethod("isPostback", new Class[] {});
-      }
-      catch (NoSuchMethodException e)
-      {
-         version = 1.2;
+         try
+         {
+            this.FACES_CONTEXT.getMethod("isPostback", new Class[] {});
+         }
+         catch (NoSuchMethodException e)
+         {
+            version = 1.2;
+         }
       }
       MINIMUM_API_VERSION = version;
    }
