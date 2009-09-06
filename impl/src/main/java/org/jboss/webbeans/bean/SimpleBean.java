@@ -208,6 +208,10 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          throw new DefinitionException("Simple bean " + type + " cannot be a non-static inner class");
       }
+      if (!isDependent() && getAnnotatedItem().isParameterizedType())
+      {
+         throw new DefinitionException("Managed bean " + type + " must be @Dependent");
+      }
       boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).isPassivating();
       if (passivating && !Reflections.isSerializable(getBeanClass()))
       {
