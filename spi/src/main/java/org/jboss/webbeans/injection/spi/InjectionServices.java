@@ -24,6 +24,8 @@ import org.jboss.webbeans.bootstrap.api.Service;
  * 
  * This service may be used to provide EE-style injection.
  * 
+ * {@link InjectionServices} is a per-BeanDeploymentArchive service.
+ * 
  * @author pmuir
  *
  */

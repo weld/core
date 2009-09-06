@@ -26,6 +26,8 @@ import org.jboss.webbeans.bootstrap.api.Service;
  * A container should implement this interface to allow the Web Beans RI to
  * resolve JPA persistence units and discover entities
  * 
+ * {@link JpaInjectionServices} is a per-module service.
+ * 
  * @author Pete Muir
  * 
  */

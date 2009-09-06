@@ -23,7 +23,9 @@ import org.jboss.webbeans.bootstrap.api.Service;
 
 /**
  * A container should implement this interface to allow Web Beans to
- * resolve EJB
+ * resolve EJB.
+ * 
+ * {@link EjbInjectionServices} is a per-module service.
  * 
  * @author Pete Muir
  * 

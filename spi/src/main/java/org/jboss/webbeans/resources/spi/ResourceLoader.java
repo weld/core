@@ -25,7 +25,9 @@ import org.jboss.webbeans.bootstrap.api.Service;
 /**
  * Resource loading/class creation services for Web Beans. By default an
  * implementation which uses the Thread Context ClassLoader if available, 
- * otherwise the classloading of the implementation is used 
+ * otherwise the classloading of the implementation is used.
+ * 
+ * The {@link ResourceLoader} is a per-deployment service.
  * 
  * @author Pete Muir
  *

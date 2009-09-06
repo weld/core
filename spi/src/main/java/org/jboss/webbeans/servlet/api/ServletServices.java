@@ -26,6 +26,8 @@ import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
  * be called, in the same thread as the request, every time Web Beans needs to
  * identify a request.
  * 
+ * {@link ServletServices} is a per-deployment service.
+ * 
  * @author pmuir
  *
  */

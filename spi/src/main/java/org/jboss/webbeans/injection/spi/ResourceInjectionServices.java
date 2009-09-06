@@ -24,6 +24,8 @@ import org.jboss.webbeans.bootstrap.api.Service;
  * A container should implement this interface to allow the Web Beans RI to
  * resolve Resources
  * 
+ * {@link ResourceInjectionServices} is per-module service.
+ * 
  * @author Pete Muir
  * 
  */

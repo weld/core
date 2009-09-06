@@ -24,6 +24,8 @@ import org.jboss.webbeans.ejb.api.SessionObjectReference;
  * A container should implement this interface to allow Web Beans to
  * resolve EJB and discover EJBs
  * 
+ * {@link EjbServices} is a per-deployment service.
+ * 
  * @author Pete Muir
  * 
  */

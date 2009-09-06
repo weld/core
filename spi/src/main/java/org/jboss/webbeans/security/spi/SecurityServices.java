@@ -26,6 +26,8 @@ import org.jboss.webbeans.bootstrap.api.Service;
  * 
  * Required in a Java EE environment.
  * 
+ * {@link SecurityServices} is a per-deployment service.
+ * 
  * @author pmuir
  *
  */

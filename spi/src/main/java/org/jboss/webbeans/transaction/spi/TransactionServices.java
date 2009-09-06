@@ -21,6 +21,8 @@ import org.jboss.webbeans.bootstrap.api.Service;
  * 
  * <p>Required in a Java EE environment</p>
  * 
+ * <p> {@link TransactionServices} is a per-deployment service.</p>
+ * 
  * @author David Allen
  * 
  */
