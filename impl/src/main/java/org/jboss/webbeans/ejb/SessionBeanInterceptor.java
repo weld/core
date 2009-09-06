@@ -18,8 +18,21 @@ package org.jboss.webbeans.ejb;
 
 import java.io.Serializable;
 
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.InvocationContext;
+
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.context.ContextLifecycle;
+import org.jboss.webbeans.context.api.BeanStore;
+import org.jboss.webbeans.context.beanstore.HashMapBeanStore;
+
 /**
- * Interceptor for handling EJB post-construct tasks
+ * Interceptor for ensuring the request context is active during requests to EJBs.
+ * 
+ * Normally, a servlet will start the request context, however in non-servlet 
+ * requests (e.g. MDB, async, timeout) the contexts may need starting.
+ * 
+ * The Application context is active for duration of the deployment
  * 
  * @author Pete Muir
  */
@@ -27,6 +40,30 @@ public class SessionBeanInterceptor implements Serializable
 {
    private static final long serialVersionUID = 7327757031821596782L;
 
+   @AroundInvoke
+   public Object aroundInvoke(InvocationContext invocation) throws Exception
+   {
+      if (CurrentManager.rootManager().getServices().get(ContextLifecycle.class).isRequestActive())
+      {
+         return invocation.proceed();
+      }
+      else
+      {
+         ContextLifecycle lifecycle = CurrentManager.rootManager().getServices().get(ContextLifecycle.class);
+         BeanStore beanStore = new HashMapBeanStore();
+         String id = invocation.getTarget().getClass().getName() + "." + invocation.getMethod().getName() + "()";
+         lifecycle.beginRequest(id, beanStore);
+         try
+         {
+            return invocation.proceed();
+         }
+         finally
+         {
+            lifecycle.endRequest(id, beanStore);
+         }
+      }
+   }
+   
 }
 
    

@@ -80,5 +80,12 @@ public class ContextLifecycle implements Lifecycle
       requestContext.destroy();
       requestContext.setActive(false);
    }
+   
+   public boolean isRequestActive()
+   {
+      RequestContext requestContext = CurrentManager.rootManager().getServices().get(RequestContext.class);
+      DependentContext dependentContext = CurrentManager.rootManager().getServices().get(DependentContext.class);
+      return requestContext.isActive() && dependentContext.isActive();
+   }
 
 }
