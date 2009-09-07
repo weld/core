@@ -27,7 +27,7 @@ import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
 
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.jsp.JspInitialization;
 import org.jboss.webbeans.servlet.api.helpers.AbstractServletListener;
@@ -51,7 +51,7 @@ public class WebBeansListener extends AbstractServletListener
    {
       if (lifecycle == null)
       {
-         this.lifecycle = new ServletLifecycle(CurrentManager.rootManager().getServices().get(ContextLifecycle.class));
+         this.lifecycle = new ServletLifecycle(Container.instance().deploymentServices().get(ContextLifecycle.class));
       }
       return lifecycle;
    }
@@ -60,7 +60,7 @@ public class WebBeansListener extends AbstractServletListener
    public void contextInitialized(ServletContextEvent sce)
    {
       // JBoss AS will still start the deployment even if WB fails
-      if (CurrentManager.isAvailable())
+      if (Container.instance() != null && Container.instance().isInitialized())
       {
          new JspInitialization().init(sce.getServletContext());
       }
@@ -75,7 +75,7 @@ public class WebBeansListener extends AbstractServletListener
    public void sessionCreated(HttpSessionEvent event) 
    {
       // JBoss AS will still start the deployment even if WB fails
-      if (CurrentManager.isAvailable())
+      if (Container.instance() != null && Container.instance().isInitialized())
       {
          getLifecycle().beginSession(event.getSession());
       }
@@ -90,7 +90,7 @@ public class WebBeansListener extends AbstractServletListener
    public void sessionDestroyed(HttpSessionEvent event) 
    {
       // JBoss AS will still start the deployment even if WB fails
-      if (CurrentManager.isAvailable())
+      if (Container.instance() != null && Container.instance().isInitialized())
       {
          getLifecycle().endSession(event.getSession());
       }
@@ -105,7 +105,7 @@ public class WebBeansListener extends AbstractServletListener
    public void requestDestroyed(ServletRequestEvent event)
    {
       // JBoss AS will still start the deployment even if WB fails
-      if (CurrentManager.isAvailable())
+      if (Container.instance() != null && Container.instance().isInitialized())
       {
          if (event.getServletRequest() instanceof HttpServletRequest)
          {
@@ -127,7 +127,7 @@ public class WebBeansListener extends AbstractServletListener
    public void requestInitialized(ServletRequestEvent event)
    {
       // JBoss AS will still start the deployment even if WB fails
-      if (CurrentManager.isAvailable())
+      if (Container.instance() != null && Container.instance().isInitialized())
       {
          if (event.getServletRequest() instanceof HttpServletRequest)
          {

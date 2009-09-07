@@ -9,7 +9,9 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-public abstract class AbstractResourceServices
+import org.jboss.webbeans.bootstrap.api.Service;
+
+public abstract class AbstractResourceServices implements Service
 {
    
    private static final String RESOURCE_LOOKUP_PREFIX = "java:/comp/env";
@@ -119,6 +121,11 @@ public abstract class AbstractResourceServices
          return null;
       }
 
+   }
+   
+   public void cleanup()
+   {  
+      
    }
    
 }

@@ -14,20 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bootstrap.api;
+package org.jboss.webbeans.bootstrap.api.test;
+
+import org.jboss.webbeans.bootstrap.api.Service;
 
 /**
- * Marks a Service which is used by Web Beans to interact with it's environment
- * @author Pete Muir
+ * @author pmuir
  *
  */
-public interface Service
+public abstract class MockService implements Service
 {
-   
-   /**
-    * Called by Web beans when it is shutting down, allowing the service to
-    * perform any cleanup needed.
-    */
-   public void cleanup();
-   
+
+   public void cleanup()
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
 }

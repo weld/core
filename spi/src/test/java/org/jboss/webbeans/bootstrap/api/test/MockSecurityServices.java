@@ -24,7 +24,7 @@ import org.jboss.webbeans.security.spi.SecurityServices;
  * @author pmuir
  *
  */
-public class MockSecurityServices implements SecurityServices
+public class MockSecurityServices extends MockService implements SecurityServices
 {
 
    /* (non-Javadoc)

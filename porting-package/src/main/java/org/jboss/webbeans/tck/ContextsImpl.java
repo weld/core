@@ -1,10 +1,10 @@
 package org.jboss.webbeans.tck;
 
 import org.jboss.jsr299.tck.spi.Contexts;
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.context.AbstractContext;
 import org.jboss.webbeans.context.AbstractMapContext;
-import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.RequestContext;
 
 public class ContextsImpl implements Contexts<AbstractContext>
@@ -12,7 +12,7 @@ public class ContextsImpl implements Contexts<AbstractContext>
 
    public RequestContext getRequestContext()
    {
-      return CurrentManager.rootManager().getServices().get(RequestContext.class);
+      return Container.instance().deploymentServices().get(ContextLifecycle.class).getRequestContext();
    }
 
    public void setActive(AbstractContext context)
@@ -27,7 +27,7 @@ public class ContextsImpl implements Contexts<AbstractContext>
 
    public AbstractContext getDependentContext()
    {
-      return CurrentManager.rootManager().getServices().get(DependentContext.class);
+      return Container.instance().deploymentServices().get(ContextLifecycle.class).getDependentContext();
    }
    
    public void destroyContext(AbstractContext context)

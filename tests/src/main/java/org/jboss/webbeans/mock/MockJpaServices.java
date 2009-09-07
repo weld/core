@@ -60,5 +60,7 @@ public class MockJpaServices implements JpaInjectionServices
          discoverEntities(child, classes);
       }
    }
+   
+   public void cleanup() {}
 
 }

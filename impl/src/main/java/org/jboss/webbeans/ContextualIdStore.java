@@ -69,4 +69,9 @@ public class ContextualIdStore implements Service
          return id;
       }
    }
+
+   public void cleanup()
+   {
+      contextuals.clear();
+   }
 }

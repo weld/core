@@ -24,7 +24,6 @@ package org.jboss.webbeans.context;
 
 import javax.enterprise.context.SessionScoped;
 
-import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -34,7 +33,7 @@ import org.jboss.webbeans.log.Logging;
  * 
  * @author Nicklas Karlsson
  */
-public class SessionContext extends AbstractThreadLocalMapContext implements Service
+public class SessionContext extends AbstractThreadLocalMapContext
 {
    private static LogProvider log = Logging.getLogProvider(SessionContext.class);
 

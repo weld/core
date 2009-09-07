@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.bean.builtin.ExtensionBean;
 import org.jboss.webbeans.ejb.EjbDescriptors;
 import org.jboss.webbeans.introspector.WBClass;
@@ -44,7 +45,7 @@ public class ExtensionBeanDeployer extends AbstractBeanDeployer
    
    public AbstractBeanDeployer createBeans()
    {
-      ClassTransformer classTransformer = getManager().getServices().get(ClassTransformer.class);
+      ClassTransformer classTransformer = Container.instance().deploymentServices().get(ClassTransformer.class);
       for (Extension extension : extensions)
       {
          @SuppressWarnings("unchecked")

@@ -22,7 +22,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.conversation.ConversationIdName;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -50,7 +50,7 @@ public class JsfHelper
     */
    public static boolean isPostback(FacesContext facesContext)
    {
-      if (CurrentManager.rootManager().getServices().get(JsfApiAbstraction.class).isApiVersionCompatibleWith(2.0))
+      if (Container.instance().deploymentServices().get(JsfApiAbstraction.class).isApiVersionCompatibleWith(2.0))
       {
          return (Boolean) Reflections.invokeAndWrap("isPostback", facesContext);
       }

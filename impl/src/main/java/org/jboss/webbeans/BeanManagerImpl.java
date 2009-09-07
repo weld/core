@@ -35,9 +35,6 @@ import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.el.ELResolver;
@@ -64,7 +61,6 @@ import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
-import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.WBCreationalContext;
 import org.jboss.webbeans.ejb.EjbDescriptors;
@@ -169,7 +165,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * Application scoped services 
     * ***************************
     */
-   private transient final ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
    private transient final ServiceRegistry services;
 
    /*
@@ -1083,7 +1078,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       BeanManagerImpl childActivity = newChildActivityManager(this);
       childActivities.add(childActivity);
-      CurrentManager.add(childActivity);
+      Container.instance().addActivity(childActivity);
       return childActivity;
    }
 
@@ -1177,56 +1172,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    protected Object readResolve()
    {
-      return CurrentManager.get(id);
-   }
-
-   /**
-    * Provides access to the executor service used for asynchronous tasks.
-    * 
-    * @return the ExecutorService for this manager
-    */
-   public ExecutorService getTaskExecutor()
-   {
-      return taskExecutor;
-   }
-
-   public void shutdown()
-   {
-      log.trace("Ending application");
-      shutdownExecutors();
-      ApplicationContext applicationContext = getServices().get(ApplicationContext.class);
-      applicationContext.destroy();
-      applicationContext.setActive(false);
-      applicationContext.setBeanStore(null);
-      CurrentManager.clear();
-   }
-
-   /**
-    * Shuts down any executor services in the manager.
-    */
-   protected void shutdownExecutors()
-   {
-      taskExecutor.shutdown();
-      try
-      {
-         // Wait a while for existing tasks to terminate
-         if (!taskExecutor.awaitTermination(60, TimeUnit.SECONDS))
-         {
-            taskExecutor.shutdownNow(); // Cancel currently executing tasks
-            // Wait a while for tasks to respond to being cancelled
-            if (!taskExecutor.awaitTermination(60, TimeUnit.SECONDS))
-            {
-               // Log the error here
-            }
-         }
-      }
-      catch (InterruptedException ie)
-      {
-         // (Re-)Cancel if current thread also interrupted
-         taskExecutor.shutdownNow();
-         // Preserve interrupt status
-         Thread.currentThread().interrupt();
-      }
+      return Container.instance().activityManager(id);
    }
    
    protected ClientProxyProvider getClientProxyProvider()
@@ -1413,6 +1359,11 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public <T> EnterpriseBean<T> getBean(EjbDescriptor<T> descriptor)
    {
       return (EnterpriseBean<T>) getEnterpriseBeans().get(descriptor);
+   }
+   
+   public void cleanup()
+   {
+      services.cleanup();
    }
 
 }

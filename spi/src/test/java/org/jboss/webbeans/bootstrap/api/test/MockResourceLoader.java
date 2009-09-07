@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 
-public class MockResourceLoader implements ResourceLoader
+public class MockResourceLoader extends MockService implements ResourceLoader
 {
    
    public Class<?> classForName(String name)

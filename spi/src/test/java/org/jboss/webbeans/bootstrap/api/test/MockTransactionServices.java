@@ -5,7 +5,7 @@ import javax.transaction.UserTransaction;
 
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 
-public class MockTransactionServices implements TransactionServices
+public class MockTransactionServices extends MockService implements TransactionServices
 {
    
    public boolean isTransactionActive()

@@ -6,7 +6,7 @@ import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 
-public class MockEjbServices implements EjbServices
+public class MockEjbServices extends MockService implements EjbServices
 {
    
    public Iterable<EjbDescriptor<?>> discoverEjbs()

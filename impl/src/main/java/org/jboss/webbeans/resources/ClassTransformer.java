@@ -91,5 +91,12 @@ public class ClassTransformer implements Service
    {
       return typeStore;
    }
+   
+   public void cleanup() 
+   {
+      annotatedTypes.clear();
+      annotations.clear();
+      classes.clear();
+   }
 
 }

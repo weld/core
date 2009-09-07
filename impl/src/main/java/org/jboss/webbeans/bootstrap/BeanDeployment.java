@@ -58,13 +58,13 @@ public class BeanDeployment
    private final BeanManagerImpl beanManager;
    private final BeanDeployer beanDeployer;
    
-   public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager)
+   public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices)
    {
       this.beanDeploymentArchive = beanDeploymentArchive;
       EjbDescriptors ejbDescriptors = new EjbDescriptors();
       beanDeploymentArchive.getServices().add(EjbDescriptors.class, ejbDescriptors);
       ServiceRegistry services = new SimpleServiceRegistry();
-      services.addAll(deploymentManager.getServices().entrySet());
+      services.addAll(deploymentServices.entrySet());
       services.addAll(beanDeploymentArchive.getServices().entrySet());
       this.beanManager = BeanManagerImpl.newManager(deploymentManager, services);
       if (beanManager.getServices().contains(EjbServices.class))

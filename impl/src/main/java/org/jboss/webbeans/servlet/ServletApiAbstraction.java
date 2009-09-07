@@ -49,5 +49,7 @@ public class ServletApiAbstraction extends ApiAbstraction implements Service
       SERVLET_REQUEST_LISTENER_CLASS = classForName("javax.servlet.ServletRequestListener");
    }
    
+   public void cleanup() {}
+   
    
 }

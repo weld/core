@@ -51,6 +51,12 @@ public interface ServiceRegistry extends Iterable<Service>
     */
    public <S extends Service> boolean contains(Class<S> type);
    
+   /**
+    * Clear up the services registered, by calling {@link Service#cleanup()} on
+    * each registered service
+    */
+   public void cleanup();
+   
    
    
 }

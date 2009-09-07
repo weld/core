@@ -19,7 +19,7 @@ package org.jboss.webbeans.servlet;
 import javax.servlet.ServletContext;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.servlet.api.ServletServices;
 
@@ -36,8 +36,8 @@ public class ServletHelper
       {
          throw new IllegalArgumentException("Must provide the Servlet Context");
       }
-      BeanDeploymentArchive beanDeploymentArchive = CurrentManager.rootManager().getServices().get(ServletServices.class).getBeanDeploymentArchive(ctx);
-      return CurrentManager.getBeanDeploymentArchives().get(beanDeploymentArchive).getCurrent();
+      BeanDeploymentArchive beanDeploymentArchive = Container.instance().deploymentServices().get(ServletServices.class).getBeanDeploymentArchive(ctx);
+      return Container.instance().beanDeploymentArchives().get(beanDeploymentArchive).getCurrent();
    }
 
 }

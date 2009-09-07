@@ -23,8 +23,8 @@
 package org.jboss.webbeans.jsf;
 
 import static org.jboss.webbeans.jsf.JsfHelper.getConversationId;
-import static org.jboss.webbeans.jsf.JsfHelper.getModuleBeanManager;
 import static org.jboss.webbeans.jsf.JsfHelper.getHttpSession;
+import static org.jboss.webbeans.jsf.JsfHelper.getModuleBeanManager;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
@@ -33,6 +33,8 @@ import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.Container;
+import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.conversation.ConversationImpl;
@@ -118,8 +120,8 @@ public class WebBeansPhaseListener implements PhaseListener
    private void afterRenderResponse(FacesContext facesContext)
    {
       BeanManagerImpl moduleBeanManager = getModuleBeanManager(facesContext);
-      SessionContext sessionContext = moduleBeanManager.getServices().get(SessionContext.class);
-      ConversationContext conversationContext = moduleBeanManager.getServices().get(ConversationContext.class);
+      SessionContext sessionContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getSessionContext();
+      ConversationContext conversationContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getConversationContext();
       if (sessionContext.isActive())
       {
          log.trace("Cleaning up the conversation after the Render Response phase");
@@ -138,7 +140,7 @@ public class WebBeansPhaseListener implements PhaseListener
    private void afterResponseComplete(FacesContext facesContext, PhaseId phaseId)
    {
       BeanManagerImpl moduleBeanManager = getModuleBeanManager(facesContext);
-      SessionContext sessionContext = moduleBeanManager.getServices().get(SessionContext.class);
+      SessionContext sessionContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getSessionContext();
       if (sessionContext.isActive())
       {
          log.trace("Cleaning up the conversation after the " + phaseId + " phase as the response has been marked complete");
@@ -164,7 +166,7 @@ public class WebBeansPhaseListener implements PhaseListener
       moduleBeanManager.getInstanceByType(ConversationManager.class).beginOrRestoreConversation(getConversationId(facesContext));
       String cid = moduleBeanManager.getInstanceByType(ConversationImpl.class).getUnderlyingId();
       
-      ConversationContext conversationContext = moduleBeanManager.getServices().get(ConversationContext.class);
+      ConversationContext conversationContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getConversationContext();
       conversationContext.setBeanStore(new ConversationBeanStore(session, cid));
       conversationContext.setActive(true);
    }

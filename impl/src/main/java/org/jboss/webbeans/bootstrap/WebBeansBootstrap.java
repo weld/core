@@ -27,17 +27,19 @@ import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.ContextualIdStore;
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.DeploymentException;
 import org.jboss.webbeans.Validator;
 import org.jboss.webbeans.bean.builtin.ManagerBean;
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.api.Environment;
+import org.jboss.webbeans.bootstrap.api.Lifecycle;
 import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.api.helpers.ServiceRegistries;
+import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.context.ApplicationContext;
@@ -109,7 +111,7 @@ public class WebBeansBootstrap implements Bootstrap
          verifyServices(beanDeploymentArchive.getServices(), environment.getRequiredBeanDeploymentArchiveServices());
          
          // Create the BeanDeployment and attach
-         BeanDeployment parent = new BeanDeployment(beanDeploymentArchive, deploymentManager);
+         BeanDeployment parent = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices());
          managerAwareBeanDeploymentArchives.put(beanDeploymentArchive, parent);
          seenBeanDeploymentArchives.add(beanDeploymentArchive);
          for (BeanDeploymentArchive archive : beanDeploymentArchive.getBeanDeploymentArchives())
@@ -178,17 +180,24 @@ public class WebBeansBootstrap implements Bootstrap
          }
          
          this.deployment = deployment;
-         addImplementationServices(deployment.getServices());
+         ServiceRegistry implementationServices = getImplementationServices(deployment.getServices().get(ResourceLoader.class));
          
+         deployment.getServices().addAll(implementationServices.entrySet());
+         
+         ServiceRegistry deploymentServices = new SimpleServiceRegistry();
+         deploymentServices.add(ClassTransformer.class, implementationServices.get(ClassTransformer.class));
+         deploymentServices.add(MetaAnnotationStore.class, implementationServices.get(MetaAnnotationStore.class));
+         deploymentServices.add(TypeStore.class, implementationServices.get(TypeStore.class));
          
          this.environment = environment;
-         this.deploymentManager = BeanManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
-         CurrentManager.setRootManager(deploymentManager);
+         this.deploymentManager = BeanManagerImpl.newRootManager(deploymentServices);
+         
+         Container.initialize(deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
          
          createContexts();
          initializeContexts();
          // Start the application context
-         beginApplication(applicationBeanStore);
+         Container.instance().deploymentServices().get(ContextLifecycle.class).beginApplication(applicationBeanStore);
          
          DeploymentVisitor deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment);
          beanDeployments = deploymentVisitor.visit();
@@ -197,9 +206,9 @@ public class WebBeansBootstrap implements Bootstrap
       }
    }
    
-   private void addImplementationServices(ServiceRegistry services)
+   private ServiceRegistry getImplementationServices(ResourceLoader resourceLoader)
    {
-      ResourceLoader resourceLoader = services.get(ResourceLoader.class);
+      ServiceRegistry services = new SimpleServiceRegistry();
       services.add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
       services.add(JsfApiAbstraction.class, new JsfApiAbstraction(resourceLoader));
       services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
@@ -211,6 +220,7 @@ public class WebBeansBootstrap implements Bootstrap
       services.add(ClassTransformer.class, new ClassTransformer(services.get(TypeStore.class)));
       services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
       services.add(ContextualIdStore.class, new ContextualIdStore());
+      return services;
    }
    
    public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive)
@@ -266,7 +276,7 @@ public class WebBeansBootstrap implements Bootstrap
       {
          for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
          {
-            deploymentManager.getServices().get(Validator.class).validateDeployment(entry.getValue().getBeanManager(), entry.getValue().getBeanDeployer().getEnvironment());
+            deployment.getServices().get(Validator.class).validateDeployment(entry.getValue().getBeanManager(), entry.getValue().getBeanDeployer().getEnvironment());
          }
          fireAfterDeploymentValidationEvent();
       }
@@ -278,7 +288,8 @@ public class WebBeansBootstrap implements Bootstrap
       synchronized (this)
       {
          // Register the managers so external requests can handle them
-         CurrentManager.setBeanDeploymentArchives(beanDeployments);
+         Container.instance().putBeanDeployments(beanDeployments);
+         Container.instance().setInitialized(true);
       }
       return this;
    }
@@ -361,30 +372,23 @@ public class WebBeansBootstrap implements Bootstrap
    
    protected void initializeContexts()
    {
-      deploymentManager.addContext(deploymentManager.getServices().get(DependentContext.class));
-      deploymentManager.addContext(deploymentManager.getServices().get(RequestContext.class));
-      deploymentManager.addContext(deploymentManager.getServices().get(ConversationContext.class));
-      deploymentManager.addContext(deploymentManager.getServices().get(SessionContext.class));
-      deploymentManager.addContext(deploymentManager.getServices().get(ApplicationContext.class));
+      Lifecycle lifecycle = deployment.getServices().get(ContextLifecycle.class);
+      deploymentManager.addContext(lifecycle.getDependentContext());
+      deploymentManager.addContext(lifecycle.getRequestContext());
+      deploymentManager.addContext(lifecycle.getConversationContext());
+      deploymentManager.addContext(lifecycle.getSessionContext());
+      deploymentManager.addContext(lifecycle.getApplicationContext());
    }
    
    protected void createContexts()
    {
-      deployment.getServices().add(ContextLifecycle.class, new ContextLifecycle());
-      deployment.getServices().add(DependentContext.class, new DependentContext());
-      deployment.getServices().add(RequestContext.class, new RequestContext());
-      deployment.getServices().add(ConversationContext.class, new ConversationContext());
-      deployment.getServices().add(SessionContext.class, new SessionContext());
-      deployment.getServices().add(ApplicationContext.class, new ApplicationContext());
-   }
-
-   protected void beginApplication(BeanStore applicationBeanStore)
-   {
-      log.trace("Starting application");
-      ApplicationContext applicationContext = deploymentManager.getServices().get(ApplicationContext.class);
-      applicationContext.setBeanStore(applicationBeanStore);
-      applicationContext.setActive(true);
-
+      ApplicationContext applicationContext = new ApplicationContext();
+      SessionContext sessionContext = new SessionContext();
+      ConversationContext conversationContext = new ConversationContext();
+      RequestContext requestContext = new RequestContext();
+      DependentContext dependentContext = new DependentContext();
+      
+      deployment.getServices().add(ContextLifecycle.class, new ContextLifecycle(applicationContext, sessionContext, conversationContext, requestContext, dependentContext));
    }
    
    public void shutdown()
@@ -395,7 +399,7 @@ public class WebBeansBootstrap implements Bootstrap
       }
       finally
       {
-         deploymentManager.shutdown();
+         Container.instance().deploymentServices().get(ContextLifecycle.class).endApplication();
       }
    }
    

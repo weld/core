@@ -55,4 +55,6 @@ public class PersistenceApiAbstraction extends ApiAbstraction implements Service
       EMBEDDABLE_CLASS = annotationTypeForName("javax.persistence.Embeddable");
    }
    
+   public void cleanup() {}
+   
 }

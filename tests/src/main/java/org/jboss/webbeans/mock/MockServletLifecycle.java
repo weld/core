@@ -3,13 +3,15 @@ package org.jboss.webbeans.mock;
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.api.Environment;
 import org.jboss.webbeans.bootstrap.api.Environments;
+import org.jboss.webbeans.bootstrap.api.Lifecycle;
+import org.jboss.webbeans.bootstrap.api.helpers.ForwardingLifecycle;
 import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.api.ServletServices;
 
-public class MockServletLifecycle extends ContextLifecycle
+public class MockServletLifecycle extends ForwardingLifecycle
 {
    private static final ResourceLoader MOCK_RESOURCE_LOADER = new MockResourceLoader();
    
@@ -18,6 +20,8 @@ public class MockServletLifecycle extends ContextLifecycle
    private final BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
    private final BeanStore sessionBeanStore = new ConcurrentHashMapBeanStore();
    private final BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
+   
+   private Lifecycle lifecycle;
    
    public MockServletLifecycle()
    {
@@ -33,7 +37,20 @@ public class MockServletLifecycle extends ContextLifecycle
    
    public void initialize()
    {
-      bootstrap.startContainer(getEnvironment(), getDeployment(), getApplicationBeanStore());
+      try
+      {
+         bootstrap.startContainer(getEnvironment(), getDeployment(), getApplicationBeanStore());
+      }
+      finally  
+      {
+         lifecycle = deployment.getServices().get(ContextLifecycle.class);
+      }
+   }
+   
+   @Override
+   protected Lifecycle delegate()
+   {
+      return lifecycle;
    }
    
    public MockDeployment getDeployment()

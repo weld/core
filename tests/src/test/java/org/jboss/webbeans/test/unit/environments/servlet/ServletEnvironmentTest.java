@@ -9,7 +9,7 @@ import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.mock.MockBeanDeploymentArchive;
@@ -33,7 +33,7 @@ public class ServletEnvironmentTest
       lifecycle.beginApplication();
       lifecycle.beginSession();
       lifecycle.beginRequest();
-      manager = CurrentManager.rootManager();
+      manager = Container.instance().deploymentManager();
    }
    
    @AfterClass(alwaysRun=true)

@@ -23,8 +23,8 @@ import java.util.List;
 
 import javax.enterprise.context.spi.Contextual;
 
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.ContextualIdStore;
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.ContexutalInstance;
 import org.jboss.webbeans.log.LogProvider;
@@ -52,7 +52,7 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
    @SuppressWarnings("unchecked")
    public <T> ContexutalInstance<T> get(Contextual<? extends T> contextual)
    {
-      Integer contextualId = CurrentManager.rootManager().getServices().get(ContextualIdStore.class).getId(contextual);
+      Integer contextualId = Container.instance().deploymentServices().get(ContextualIdStore.class).getId(contextual);
       String key = getNamingScheme().getKeyFromId(contextualId);
       ContexutalInstance<T> instance = (ContexutalInstance<T>) getAttribute(key);
       log.trace("Looked for " + key + " and got " + instance);
@@ -67,7 +67,7 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
     */
    public <T> T remove(Contextual<? extends T> contextual)
    {
-      Integer contextualId = CurrentManager.rootManager().getServices().get(ContextualIdStore.class).getId(contextual);
+      Integer contextualId = Container.instance().deploymentServices().get(ContextualIdStore.class).getId(contextual);
       T instance = get(contextual).getInstance();
       String key = getNamingScheme().getKeyFromId(contextualId);
       removeAttribute(key);
@@ -99,7 +99,7 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
       for (String attributeName : getFilteredAttributeNames())
       {
          Integer id = namingScheme.getIdFromKey(attributeName);
-         Contextual<?> contextual = CurrentManager.rootManager().getServices().get(ContextualIdStore.class).getContextual(id);
+         Contextual<?> contextual = Container.instance().deploymentServices().get(ContextualIdStore.class).getContextual(id);
          contextuals.add(contextual);
       }
       return contextuals;
@@ -133,7 +133,7 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
     */
    public <T> void put(ContexutalInstance<T> beanInstance)
    {
-      Integer contextualId = CurrentManager.rootManager().getServices().get(ContextualIdStore.class).getId(beanInstance.getContextual());
+      Integer contextualId = Container.instance().deploymentServices().get(ContextualIdStore.class).getId(beanInstance.getContextual());
       String key = getNamingScheme().getKeyFromId(contextualId);
       setAttribute(key, beanInstance);
       log.trace("Added Contextual type " + beanInstance.getContextual() + " under key " + key);

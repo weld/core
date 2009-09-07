@@ -61,5 +61,7 @@ public class JsfApiAbstraction extends ApiAbstraction implements Service
    {
       return MINIMUM_API_VERSION >= version;
    }
+   
+   public void cleanup() {}
 
 }

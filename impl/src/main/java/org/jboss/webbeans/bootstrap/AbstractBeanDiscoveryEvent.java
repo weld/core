@@ -85,7 +85,7 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractContainerEvent
          }
          else
          {
-            BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, getDeploymentManager());
+            BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, getDeploymentManager(), deployment.getServices());
             getBeanDeployments().put(beanDeploymentArchive, beanDeployment);
             return beanDeployment;
          }

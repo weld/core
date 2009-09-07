@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.context.api.BeanStore;
 
 /**
@@ -36,7 +35,7 @@ import org.jboss.webbeans.context.api.BeanStore;
  * 
  * @see org.jboss.webbeans.context.ApplicationContext
  */
-public class ApplicationContext extends AbstractMapContext implements Service
+public class ApplicationContext extends AbstractMapContext
 {
 
    // The beans

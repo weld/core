@@ -85,5 +85,7 @@ public abstract class AbstractContext implements Context
    {
       this.active.set(Boolean.valueOf(active));
    }
+   
+   public abstract void cleanup();
 
 }

@@ -126,5 +126,12 @@ public class MetaAnnotationStore implements Service
       buffer.append("Registered stereotype models: " + stereotypes.size() + "\n");
       return buffer.toString();
    }
+   
+   public void cleanup() 
+   {
+      bindingTypes.clear();
+      scopes.clear();
+      stereotypes.clear();
+   }
 
 }

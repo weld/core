@@ -27,7 +27,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.Container;
 
 /**
  * An EL-resolver against the named beans
@@ -165,7 +165,7 @@ public abstract class AbstractWebBeansELResolver extends ELResolver
       if (store.isEmpty()) 
       {
          // TODO need to use correct manager for module
-         ELCreationalContext<?> creationalContext = ELCreationalContext.of(CurrentManager.rootManager().createCreationalContext(CONTEXTUAL));
+         ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
          store.push(creationalContext);
       }
       return (ELCreationalContextStack) o;

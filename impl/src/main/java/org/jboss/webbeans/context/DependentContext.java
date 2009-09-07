@@ -27,7 +27,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.context.api.ContexutalInstance;
 
 /**
@@ -35,7 +34,7 @@ import org.jboss.webbeans.context.api.ContexutalInstance;
  * 
  * @author Nicklas Karlsson
  */
-public class DependentContext extends AbstractContext implements Service
+public class DependentContext extends AbstractContext
 {
 
    /**
@@ -91,5 +90,7 @@ public class DependentContext extends AbstractContext implements Service
    {
       return true;
    }
+
+   public void cleanup() {}
 
 }

@@ -16,7 +16,8 @@
  */
 package org.jboss.webbeans.event;
 
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.Container;
+import org.jboss.webbeans.bootstrap.api.Lifecycle;
 import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
@@ -51,7 +52,7 @@ public class DeferredEventNotification<T> implements Runnable
 
    public void run()
    {
-      ContextLifecycle lifecycle = CurrentManager.rootManager().getServices().get(ContextLifecycle.class);
+      Lifecycle lifecycle = Container.instance().deploymentServices().get(ContextLifecycle.class);
       BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
       lifecycle.beginRequest("async invocation", requestBeanStore);
       try

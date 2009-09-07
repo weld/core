@@ -43,4 +43,9 @@ public abstract class ForwardingServiceRegistry implements ServiceRegistry
       return delegate().entrySet();
    }
    
+   public void cleanup()
+   {
+      delegate().cleanup();
+   }
+   
 }

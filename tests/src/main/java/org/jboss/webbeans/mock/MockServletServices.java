@@ -46,5 +46,7 @@ public class MockServletServices implements ServletServices
          return null;
       }
    }
+   
+   public void cleanup() {}
 
 }

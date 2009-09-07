@@ -37,4 +37,6 @@ public class MockResourceServices implements ResourceInjectionServices
       return null;
    }
    
+   public void cleanup() {}
+   
 }

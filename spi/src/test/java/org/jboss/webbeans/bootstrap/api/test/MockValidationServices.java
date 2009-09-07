@@ -24,7 +24,7 @@ import org.jboss.webbeans.validation.spi.ValidationServices;
  * @author pmuir
  *
  */
-public class MockValidationServices implements ValidationServices
+public class MockValidationServices extends MockService implements ValidationServices
 {
 
    public ValidatorFactory getDefaultValidatorFactory()

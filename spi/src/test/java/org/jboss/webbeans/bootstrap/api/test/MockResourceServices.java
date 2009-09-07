@@ -4,7 +4,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.injection.spi.ResourceInjectionServices;
 
-public class MockResourceServices implements ResourceInjectionServices
+public class MockResourceServices extends MockService implements ResourceInjectionServices
 {
    
    public Object resolveResource(InjectionPoint injectionPoint)

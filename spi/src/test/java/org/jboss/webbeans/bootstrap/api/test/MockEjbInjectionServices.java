@@ -24,7 +24,7 @@ import org.jboss.webbeans.injection.spi.EjbInjectionServices;
  * @author pmuir
  *
  */
-public class MockEjbInjectionServices implements EjbInjectionServices
+public class MockEjbInjectionServices extends MockService implements EjbInjectionServices
 {
 
    public Object resolveEjb(InjectionPoint injectionPoint)

@@ -37,8 +37,6 @@ import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 public interface WebBeansManager extends BeanManager, Serializable
 {
 
-   public void shutdown();
-
    /**
     * Create a new child activity. A child activity inherits all beans,
     * interceptors, decorators, observers, and contexts defined by its direct

@@ -22,7 +22,7 @@ import javax.el.MethodInfo;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.util.el.ForwardingMethodExpression;
 
 /**
@@ -63,7 +63,7 @@ public class WebBeansMethodExpression extends ForwardingMethodExpression
    public Object invoke(ELContext context, Object[] params)
    {
       // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CurrentManager.rootManager().createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
       try
       {
          getCreationalContextStore(context).push(creationalContext);
@@ -80,7 +80,7 @@ public class WebBeansMethodExpression extends ForwardingMethodExpression
    public MethodInfo getMethodInfo(ELContext context)
    {
       // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CurrentManager.rootManager().createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
       try
       {
          getCreationalContextStore(context).push(creationalContext);

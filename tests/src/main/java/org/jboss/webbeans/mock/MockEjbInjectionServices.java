@@ -31,5 +31,7 @@ public class MockEjbInjectionServices implements EjbInjectionServices
    {
       return null;
    }
+   
+   public void cleanup() {}
 
 }

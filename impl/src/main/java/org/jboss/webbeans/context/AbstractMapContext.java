@@ -23,8 +23,8 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.webbeans.context.api.ContexutalInstance;
 import org.jboss.webbeans.context.api.BeanStore;
+import org.jboss.webbeans.context.api.ContexutalInstance;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -163,4 +163,14 @@ public abstract class AbstractMapContext extends AbstractContext
     */
    protected abstract boolean isCreationLockRequired();
 
+   
+   @Override
+   public void cleanup()
+   {
+      if (getBeanStore() != null)
+      {
+         getBeanStore().clear();
+      }
+   }
+   
 }

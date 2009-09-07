@@ -76,6 +76,14 @@ public class SimpleServiceRegistry implements ServiceRegistry
       return services.containsKey(type);
    }
    
+   public void cleanup()
+   {
+      for (Service service : services.values())
+      {
+         service.cleanup();
+      }
+   }
+   
    @Override
    public String toString()
    {

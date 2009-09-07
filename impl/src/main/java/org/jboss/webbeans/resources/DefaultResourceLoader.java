@@ -91,4 +91,6 @@ public class DefaultResourceLoader implements ResourceLoader
       }
    }
    
+   public void cleanup() {}
+   
 }

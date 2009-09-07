@@ -21,7 +21,8 @@ import java.io.Serializable;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.Container;
+import org.jboss.webbeans.bootstrap.api.Lifecycle;
 import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.beanstore.HashMapBeanStore;
@@ -43,13 +44,13 @@ public class SessionBeanInterceptor implements Serializable
    @AroundInvoke
    public Object aroundInvoke(InvocationContext invocation) throws Exception
    {
-      if (CurrentManager.rootManager().getServices().get(ContextLifecycle.class).isRequestActive())
+      if (Container.instance().deploymentServices().get(ContextLifecycle.class).isRequestActive())
       {
          return invocation.proceed();
       }
       else
       {
-         ContextLifecycle lifecycle = CurrentManager.rootManager().getServices().get(ContextLifecycle.class);
+         Lifecycle lifecycle = Container.instance().deploymentServices().get(ContextLifecycle.class);
          BeanStore beanStore = new HashMapBeanStore();
          String id = invocation.getTarget().getClass().getName() + "." + invocation.getMethod().getName() + "()";
          lifecycle.beginRequest(id, beanStore);

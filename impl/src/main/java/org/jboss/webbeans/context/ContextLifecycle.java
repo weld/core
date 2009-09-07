@@ -22,10 +22,10 @@
  */
 package org.jboss.webbeans.context;
 
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.bootstrap.api.Lifecycle;
+import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -36,25 +36,37 @@ import org.jboss.webbeans.log.Logging;
  * @author Pete Muir
  * 
  */
-public class ContextLifecycle implements Lifecycle
+public class ContextLifecycle implements Lifecycle, Service
 {
+   
+   public static LogProvider log = Logging.getLogProvider(ContextLifecycle.class);
 
-   private static LogProvider log = Logging.getLogProvider(ContextLifecycle.class);
+   public final ApplicationContext applicationContext;
+   public final SessionContext sessionContext;
+   public final ConversationContext conversationContext;
+   public final RequestContext requestContext;
+   public final DependentContext dependentContext;
+   
+   public ContextLifecycle(ApplicationContext applicationContext, SessionContext sessionContext, ConversationContext conversationContext, RequestContext requestContext, DependentContext dependentContext)
+   {
+      this.applicationContext = applicationContext;
+      this.sessionContext = sessionContext;
+      this.conversationContext = conversationContext;
+      this.requestContext = requestContext;
+      this.dependentContext = dependentContext;
+   }
 
    public void restoreSession(String id, BeanStore sessionBeanStore)
    {
       log.trace("Restoring session " + id);
-      SessionContext sessionContext = CurrentManager.rootManager().getServices().get(SessionContext.class);
       sessionContext.setBeanStore(sessionBeanStore);
       sessionContext.setActive(true);
    }
 
-   public void endSession(String id, BeanStore sessionBeanStore, ConversationManager conversationManager)
+   public void endSession(String id, BeanStore sessionBeanStore)
    {
       log.trace("Ending session " + id);
-      SessionContext sessionContext = CurrentManager.rootManager().getServices().get(SessionContext.class);
       sessionContext.setActive(true);
-      conversationManager.destroyAllConversations();
       sessionContext.destroy();
       sessionContext.setBeanStore(null);
       sessionContext.setActive(false);
@@ -63,8 +75,6 @@ public class ContextLifecycle implements Lifecycle
    public void beginRequest(String id, BeanStore requestBeanStore)
    {
       log.trace("Starting request " + id);
-      RequestContext requestContext = CurrentManager.rootManager().getServices().get(RequestContext.class);
-      DependentContext dependentContext = CurrentManager.rootManager().getServices().get(DependentContext.class);
       requestContext.setBeanStore(requestBeanStore);
       requestContext.setActive(true);
       dependentContext.setActive(true);
@@ -73,19 +83,69 @@ public class ContextLifecycle implements Lifecycle
    public void endRequest(String id, BeanStore requestBeanStore)
    {
       log.trace("Ending request " + id);
-      RequestContext requestContext = CurrentManager.rootManager().getServices().get(RequestContext.class);
-      DependentContext dependentContext = CurrentManager.rootManager().getServices().get(DependentContext.class);
       requestContext.setBeanStore(requestBeanStore);
       dependentContext.setActive(false);
       requestContext.destroy();
       requestContext.setActive(false);
+      requestContext.setBeanStore(null);
    }
    
    public boolean isRequestActive()
    {
-      RequestContext requestContext = CurrentManager.rootManager().getServices().get(RequestContext.class);
-      DependentContext dependentContext = CurrentManager.rootManager().getServices().get(DependentContext.class);
       return requestContext.isActive() && dependentContext.isActive();
+   }
+   
+
+   public void beginApplication(BeanStore applicationBeanStore)
+   {
+      log.trace("Starting application");
+      applicationContext.setBeanStore(applicationBeanStore);
+      applicationContext.setActive(true);
+
+   }
+   
+   public void endApplication()
+   {
+      log.trace("Ending application");
+      applicationContext.destroy();
+      applicationContext.setActive(false);
+      applicationContext.setBeanStore(null);
+      
+      Container.instance().cleanup();
+   }
+   
+   public void cleanup() 
+   {
+      applicationContext.cleanup();
+      sessionContext.cleanup();
+      conversationContext.cleanup();
+      requestContext.cleanup();
+      dependentContext.cleanup();
+   }
+   
+   public ApplicationContext getApplicationContext()
+   {
+      return applicationContext;
+   }
+   
+   public SessionContext getSessionContext()
+   {
+      return sessionContext;
+   }
+   
+   public ConversationContext getConversationContext()
+   {
+      return conversationContext;
+   }
+   
+   public RequestContext getRequestContext()
+   {
+      return requestContext;
+   }
+   
+   public DependentContext getDependentContext()
+   {
+      return dependentContext;
    }
 
 }

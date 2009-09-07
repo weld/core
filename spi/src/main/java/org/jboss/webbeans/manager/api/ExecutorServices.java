@@ -14,20 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bootstrap.api;
+package org.jboss.webbeans.manager.api;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.jboss.webbeans.bootstrap.api.Service;
 
 /**
- * Marks a Service which is used by Web Beans to interact with it's environment
- * @author Pete Muir
+ * Allows a custom TaskExecutor to be provided by the container. By default,
+ * {@link Executors#newSingleThreadExecutor()} is used.
+ * 
+ * This is a per-deployment service.
+ * 
+ * @author pmuir
  *
  */
-public interface Service
+public interface ExecutorServices extends Service
 {
    
-   /**
-    * Called by Web beans when it is shutting down, allowing the service to
-    * perform any cleanup needed.
-    */
-   public void cleanup();
-   
+   public ExecutorService getTaskExecutor();
+
 }

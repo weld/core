@@ -79,4 +79,6 @@ public class CheckableInjectionServices implements InjectionServices
       return injectionTargetCorrect;
    }
 
+   public void cleanup() {}
+
 }

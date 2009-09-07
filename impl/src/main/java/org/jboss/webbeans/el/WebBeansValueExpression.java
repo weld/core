@@ -21,7 +21,7 @@ import javax.el.ValueExpression;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.util.el.ForwardingValueExpression;
 
 /**
@@ -62,7 +62,7 @@ public class WebBeansValueExpression extends ForwardingValueExpression
    public Object getValue(final ELContext context)
    {
       // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CurrentManager.rootManager().createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
       try
       {
          getCreationalContextStore(context).push(creationalContext);
@@ -79,7 +79,7 @@ public class WebBeansValueExpression extends ForwardingValueExpression
    public void setValue(ELContext context, Object value)
    {
       // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CurrentManager.rootManager().createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
       try
       {
          getCreationalContextStore(context).push(creationalContext);
@@ -97,7 +97,7 @@ public class WebBeansValueExpression extends ForwardingValueExpression
    public Class getType(ELContext context)
    {
    // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CurrentManager.rootManager().createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
       try
       {
          getCreationalContextStore(context).push(creationalContext);

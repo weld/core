@@ -43,4 +43,6 @@ public class EJBApiAbstraction extends ApiAbstraction implements Service
    public final Class<? extends Annotation> EJB_ANNOTATION_CLASS;
    public final Class<? extends Annotation> RESOURCE_ANNOTATION_CLASS;
    
+   public void cleanup() {}
+   
 }

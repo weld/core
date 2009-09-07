@@ -37,11 +37,13 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.WBParameter;
+import org.jboss.webbeans.manager.api.ExecutorServices;
 
 /**
  * <p>
@@ -239,7 +241,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    protected void sendEventAsynchronously(final T event)
    {
       DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, this);
-      manager.getTaskExecutor().execute(deferredEvent);
+      Container.instance().deploymentServices().get(ExecutorServices.class).getTaskExecutor().execute(deferredEvent);
    }
 
    @Override

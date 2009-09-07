@@ -120,5 +120,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
    {
       return ejbs.values().iterator();
    }
+   
+   public void cleanup() {}
 
 }

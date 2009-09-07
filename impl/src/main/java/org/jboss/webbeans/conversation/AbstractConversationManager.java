@@ -33,7 +33,8 @@ import javax.enterprise.context.Conversation;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.Container;
+import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
@@ -163,7 +164,7 @@ public abstract class AbstractConversationManager implements ConversationManager
             longRunningConversation.cancelTermination();
             longRunningConversation.unlock();
          }
-         ConversationContext conversationContext = CurrentManager.rootManager().getServices().get(ConversationContext.class);
+         ConversationContext conversationContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getConversationContext();
          conversationContext.destroy();
       }
       // If the conversation has been switched from one long

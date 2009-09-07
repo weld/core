@@ -25,7 +25,7 @@ import org.jboss.webbeans.servlet.api.ServletServices;
  * @author pmuir
  *
  */
-public class MockServletServices implements ServletServices
+public class MockServletServices extends MockService implements ServletServices
 {
 
    public BeanDeploymentArchive getBeanDeploymentArchive(ServletContext ctx)

@@ -24,14 +24,12 @@ package org.jboss.webbeans.context;
 
 import javax.enterprise.context.RequestScoped;
 
-import org.jboss.webbeans.bootstrap.api.Service;
-
 /**
  * The request context
  * 
  * @author Nicklas Karlsson
  */
-public class RequestContext extends AbstractThreadLocalMapContext implements Service
+public class RequestContext extends AbstractThreadLocalMapContext
 {
 
    /**

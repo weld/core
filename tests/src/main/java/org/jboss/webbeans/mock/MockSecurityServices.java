@@ -35,5 +35,7 @@ public class MockSecurityServices implements SecurityServices
       // TODO Auto-generated method stub
       return null;
    }
+   
+   public void cleanup() {}
 
 }

@@ -39,4 +39,7 @@ public class MockEjBServices implements EjbServices
          
       };
    }
+   
+   public void cleanup() {}
+   
 }

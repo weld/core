@@ -27,10 +27,7 @@ import static org.jboss.webbeans.servlet.ServletHelper.getModuleBeanManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.ContextLifecycle;
-import org.jboss.webbeans.context.RequestContext;
-import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.conversation.ConversationManager;
@@ -78,24 +75,28 @@ public class ServletLifecycle
     */
    public void endSession(HttpSession session)
    {
-      SessionContext sessionContext = CurrentManager.rootManager().getServices().get(SessionContext.class);
-      RequestContext requestContext = CurrentManager.rootManager().getServices().get(RequestContext.class);
       ConversationManager conversationManager = getModuleBeanManager(session.getServletContext()).getInstanceByType(ConversationManager.class);
-      if (sessionContext.isActive())
+      if (lifecycle.getSessionContext().isActive())
       {
-         lifecycle.endSession(session.getId(), sessionContext.getBeanStore(), conversationManager);
+         conversationManager.destroyAllConversations();
+         lifecycle.endSession(session.getId(), lifecycle.getSessionContext().getBeanStore());
       }
-      else if (requestContext.isActive())
+      else if (lifecycle.getRequestContext().isActive())
       {
-         lifecycle.endSession(session.getId(), restoreSessionContext(session), conversationManager);
+         conversationManager.destroyAllConversations();
+         lifecycle.endSession(session.getId(), restoreSessionContext(session));
       }
       else
       {
          BeanStore mockRequest = new ConcurrentHashMapBeanStore();
+         
          lifecycle.beginRequest("endSession-" + session.getId(), mockRequest);
-         lifecycle.endSession(session.getId(), restoreSessionContext(session), conversationManager);
+         BeanStore sessionBeanStore = restoreSessionContext(session);
+         conversationManager.destroyAllConversations();
+         lifecycle.endSession(session.getId(), sessionBeanStore);
          lifecycle.endRequest("endSession-" + session.getId(), mockRequest);
       }
+      
    }
 
    /**
@@ -159,9 +160,8 @@ public class ServletLifecycle
          }
          lifecycle.endRequest(request.getRequestURI(), beanStore);
          request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
-         SessionContext sessionContext = CurrentManager.rootManager().getServices().get(SessionContext.class);
-         sessionContext.setActive(false);
-         sessionContext.setBeanStore(null);
+         lifecycle.getSessionContext().setActive(false);
+         lifecycle.getSessionContext().setBeanStore(null);
       }
    }
 

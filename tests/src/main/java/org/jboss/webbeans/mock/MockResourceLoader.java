@@ -56,4 +56,6 @@ public class MockResourceLoader implements ResourceLoader
       }
    }
    
+   public void cleanup() {}
+   
 }
