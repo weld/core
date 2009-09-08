@@ -3,11 +3,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection "
-"VERSION\n"
+"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-04-19 20:36+0000\n"
-"PO-Revision-Date: 2009-04-10 12:50-0300\n"
+"PO-Revision-Date: 2009-06-13 11:28-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -23,11 +22,8 @@ msgstr "Extensões da JSR-299 disponíveis como parte da Web Beans"
 #. Tag: para
 #: extensions.xml:7
 #, no-c-format
-msgid ""
-"These modules are usable on any JSR-299 implementation, not just Web Beans!"
-msgstr ""
-"Estes módulos são utilizáveis em qualquer implementação da JSR-299, e não "
-"apenas na Web Beans!"
+msgid "These modules are usable on any JSR-299 implementation, not just Web Beans!"
+msgstr "Estes módulos são utilizáveis em qualquer implementação da JSR-299, e não apenas na Web Beans!"
 
 #. Tag: title
 #: extensions.xml:15
@@ -38,12 +34,8 @@ msgstr "Web Beans Logger"
 #. Tag: para
 #: extensions.xml:17
 #, no-c-format
-msgid ""
-"Adding logging to your application is now even easier with simple injection "
-"of a logger object into any JSR-299 bean. Simply annotate a org.jboss."
-"webbeans.log.Log type member with <emphasis>@Logger</emphasis> and an "
-"appropriate logger object will be injected into any instance of the bean."
-msgstr ""
+msgid "Adding logging to your application is now even easier with simple injection of a logger object into any JSR-299 bean. Simply annotate a org.jboss.webbeans.log.Log type member with <emphasis>@Logger</emphasis> and an appropriate logger object will be injected into any instance of the bean."
+msgstr "Adicionar logging na sua aplicação é agora ainda mais fácil com a simples injeção de um objeto logger em qualquer bean JSR-299. Basta anotar um membro tipo org.jboss.webbeans.log.Log com <emphasis>@Logger</emphasis> e um adequado objeto logger será injetado em qualquer instância do bean."
 
 #. Tag: programlisting
 #: extensions.xml:25
@@ -64,46 +56,41 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class Checkout {\n"
+"    import org.jboss.webbeans.annotation.Logger;\n"
+"    import org.jboss.webbeans.log.Log;\n"
+"    \n"
+"    @Logger\n"
+"    private Log log;\n"
+"\n"
+"    void invoiceItems() {\n"
+"        ShoppingCart cart;\n"
+"        . . .\n"
+"        log.debug(\"Items invoiced for {0}\", cart);\n"
+"    }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: extensions.xml:27
 #, no-c-format
-msgid ""
-"The example shows how objects can be interpolated into a message. This "
-"interpolation is done using <emphasis>java.text.MessageFormat</emphasis>, so "
-"see the JavaDoc for that class for more details. In this case, the "
-"ShoppingCart should have implemented the <emphasis>toString()</emphasis> "
-"method to produce a human readable value that is meaningful in messages. "
-"Normally, this call would have involved evaluating cart.toString() with "
-"String concatenation to produce a single String argument. Thus it was "
-"necessary to surround the call with an if-statement using the condition "
-"<emphasis>log.isDebugEnabled()</emphasis> to avoid the expensive String "
-"concatenation if the message was not actually going to be used. However, "
-"when using @Logger injected logging, the conditional test can be left out "
-"since the object arguments are not evaluated unless the message is going to "
-"be logged."
+msgid "The example shows how objects can be interpolated into a message. This interpolation is done using <emphasis>java.text.MessageFormat</emphasis>, so see the JavaDoc for that class for more details. In this case, the ShoppingCart should have implemented the <emphasis>toString()</emphasis> method to produce a human readable value that is meaningful in messages. Normally, this call would have involved evaluating cart.toString() with String concatenation to produce a single String argument. Thus it was necessary to surround the call with an if-statement using the condition <emphasis>log.isDebugEnabled()</emphasis> to avoid the expensive String concatenation if the message was not actually going to be used. However, when using @Logger injected logging, the conditional test can be left out since the object arguments are not evaluated unless the message is going to be logged."
 msgstr ""
 
 #. Tag: para
 #: extensions.xml:44
 #, no-c-format
-msgid ""
-"You can add the Web Beans Logger to your project by including webbeans-"
-"logger.jar and webbeans-logging.jar to your project. Alternatively, express "
-"a dependency on the <literal>org.jboss.webbeans:webbeans-logger</literal> "
-"Maven artifact."
-msgstr ""
+msgid "You can add the Web Beans Logger to your project by including webbeans-logger.jar and webbeans-logging.jar to your project. Alternatively, express a dependency on the <literal>org.jboss.webbeans:webbeans-logger</literal> Maven artifact."
+msgstr "Você pode adicionar o Web Beans Logger no seu projeto através da inclusão de webbeans-logger.jar e webbeans-logging.jar no seu projeto. Alternativamente, expressar uma dependência do artefato Maven <literal>org.jboss.webbeans:webbeans-logger</literal> ."
 
 #. Tag: para
 #: extensions.xml:51
 #, no-c-format
-msgid ""
-"If you are using Web Beans as your JSR-299 implementation, there is no need "
-"to include <literal>webbeans-logging.jar</literal> as it's already included."
-msgstr ""
+msgid "If you are using Web Beans as your JSR-299 implementation, there is no need to include <literal>webbeans-logging.jar</literal> as it's already included."
+msgstr "Se você estiver utilizando a Web Beans como sua implementação da JSR-299, não há necessidade de incluir <literal>webbeans-logging.jar</literal> pois ele já está incluído."
 
 #~ msgid "TODO"
 #~ msgstr "TODO"
-
 #~ msgid "XSD Generator for JSR-299 XML deployment descriptors"
 #~ msgstr "Gerador XSD para descritores de implantação XML da JSR-299   "
+

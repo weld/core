@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-04-06 08:34-0300\n"
+"PO-Revision-Date: 2009-07-25 16:31-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -45,7 +45,7 @@ msgstr ""
 #: specialization.xml:13
 #, no-c-format
 msgid "But in our staging environment, we override that implementation of <literal>PaymentProcessor</literal> with a different Web Bean:"
-msgstr ""
+msgstr "Mas, no nosso ambiente simulado, nos sobrepomos a implementação de <literal>PaymentProcessor</literal> com um Web Bean diferente:"
 
 #. Tag: programlisting
 #: specialization.xml:16
@@ -91,25 +91,25 @@ msgstr "Infelizmente, existem várias armadilhas que facilmente podemos cair:"
 #: specialization.xml:32
 #, no-c-format
 msgid "the higher-priority Web Bean may not implement all the API types of the Web Bean that it attempts to override,"
-msgstr ""
+msgstr "o Web Bean de maior prioridade não pode implementar todos os tipos da API do Web Bean que tenta sobrepor,"
 
 #. Tag: para
 #: specialization.xml:36
 #, no-c-format
 msgid "the higher-priority Web Bean may not declare all the binding types of the Web Bean that it attempts to override,"
-msgstr ""
+msgstr "o Web Bean de maior prioridade não pode declarar todos os tipos de binding do Web Bean que tenta sobrepor,"
 
 #. Tag: para
 #: specialization.xml:40
 #, no-c-format
 msgid "the higher-priority Web Bean might not have the same name as the Web Bean that it attempts to override, or"
-msgstr ""
+msgstr "o Web Bean de maior prioridade talvez não tenha o mesmo nome que o Web Bean que tenta sobrepor, ou"
 
 #. Tag: para
 #: specialization.xml:44
 #, no-c-format
 msgid "the Web Bean that it attempts to override might declare a producer method, disposal method or observer method."
-msgstr ""
+msgstr "o Web Bean que tenta sobrepor poderia declarar um método produtor, método de eliminação ou método observador."
 
 #. Tag: para
 #: specialization.xml:49
@@ -133,7 +133,7 @@ msgstr "Utilizando a especialização"
 #: specialization.xml:60
 #, no-c-format
 msgid "Specialization is a feature that is specific to simple and enterprise Web Beans. To make use of specialization, the higher-priority Web Bean must:"
-msgstr ""
+msgstr "Especialização é uma característica que é específica de Web Beans simples e enterprise. Para fazer uso da especialização, o Web Bean de maior prioridade deve:"
 
 #. Tag: para
 #: specialization.xml:65
@@ -145,7 +145,7 @@ msgstr "ser uma subclasse direta do Web Bean que sobrescreve, e"
 #: specialization.xml:68
 #, no-c-format
 msgid "be a simple Web Bean if the Web Bean it overrides is a simple Web Bean or an enterprise Web Bean if the Web Bean it overrides is an enterprise Web Bean, and"
-msgstr ""
+msgstr "ser um simples Web se o Web Bean que sobrepuser for um Web Bean simples ou um Web Bean enterprise se o Web Bean que sobrepuser for um Web Bean enterprise, e"
 
 #. Tag: para
 #: specialization.xml:73
