@@ -239,6 +239,12 @@
                <xref linkend="injection.services"/>.
             </para>
          </important>
+         
+         <para>
+            If the container performs EE resource injection, the injected 
+            resources must be serializable. If EE resource injection is provided
+            by Web Beans, the resolved resource must be serializable.
+         </para>
           
          <tip>
             <para>
