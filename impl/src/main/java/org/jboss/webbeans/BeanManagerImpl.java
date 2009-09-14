@@ -38,6 +38,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.el.ELResolver;
+import javax.el.ExpressionFactory;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
@@ -57,8 +58,8 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Qualifier;
 
 import org.jboss.webbeans.bean.DecoratorImpl;
-import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.CreationalContextImpl;
@@ -67,6 +68,7 @@ import org.jboss.webbeans.ejb.EjbDescriptors;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.el.Namespace;
 import org.jboss.webbeans.el.WebBeansELResolver;
+import org.jboss.webbeans.el.WebBeansExpressionFactory;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.literal.DefaultLiteral;
@@ -1322,6 +1324,11 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public ELResolver getELResolver()
    {
       return webbeansELResolver;
+   }
+   
+   public ExpressionFactory wrapExpressionFactory(ExpressionFactory expressionFactory)
+   {
+      return new WebBeansExpressionFactory(expressionFactory);
    }
    
    public <T> WBCreationalContext<T> createCreationalContext(Contextual<T> contextual)

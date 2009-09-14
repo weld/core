@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.el.ELResolver;
+import javax.el.ExpressionFactory;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
@@ -259,6 +260,14 @@ public interface BeanManager
     * if the name for resolution resolves to exactly one bean
     */
    public ELResolver getELResolver();
+   
+   /**
+    * Returns an ExpressionFactory 
+    * 
+    * @param expressionFactory
+    * @return
+    */
+   public ExpressionFactory wrapExpressionFactory(ExpressionFactory expressionFactory);
    
    /**
     * Get an {@link AnnotatedType} for the given class
