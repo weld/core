@@ -30,15 +30,15 @@ import javax.inject.Inject;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
-import org.jboss.webbeans.bean.DecoratorBean;
-import org.jboss.webbeans.bean.DisposalMethodBean;
-import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.bean.NewEnterpriseBean;
-import org.jboss.webbeans.bean.NewSimpleBean;
-import org.jboss.webbeans.bean.ProducerFieldBean;
-import org.jboss.webbeans.bean.ProducerMethodBean;
+import org.jboss.webbeans.bean.DecoratorImpl;
+import org.jboss.webbeans.bean.DisposalMethod;
+import org.jboss.webbeans.bean.SessionBean;
+import org.jboss.webbeans.bean.NewSessionBean;
+import org.jboss.webbeans.bean.NewManagedBean;
+import org.jboss.webbeans.bean.ProducerField;
+import org.jboss.webbeans.bean.ProducerMethod;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.bean.ManagedBean;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.event.ObserverFactory;
@@ -77,7 +77,7 @@ public class AbstractBeanDeployer
       Set<RIBean<?>> beans = getEnvironment().getBeans();
       // ensure that all decorators are initialized before initializing 
       // the rest of the beans
-      for (DecoratorBean<?> bean : getEnvironment().getDecorators())
+      for (DecoratorImpl<?> bean : getEnvironment().getDecorators())
       {
          bean.initialize(getEnvironment());
          manager.addDecorator(bean);
@@ -133,7 +133,7 @@ public class AbstractBeanDeployer
    {
       for (WBMethod<?, ?> method : annotatedClass.getWBDeclaredMethodsWithAnnotatedParameters(Disposes.class))
       {
-         DisposalMethodBean<?> disposalBean = DisposalMethodBean.of(manager, method, declaringBean);
+         DisposalMethod<?> disposalBean = DisposalMethod.of(manager, method, declaringBean);
          disposalBean.initialize(getEnvironment());
          getEnvironment().addBean(disposalBean);
       }
@@ -141,13 +141,13 @@ public class AbstractBeanDeployer
    
    protected <T> void createProducerMethod(AbstractClassBean<?> declaringBean, WBMethod<T, ?> annotatedMethod)
    {
-      ProducerMethodBean<T> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
+      ProducerMethod<T> bean = ProducerMethod.of(annotatedMethod, declaringBean, manager);
       getEnvironment().addBean(bean);
    }
    
    protected <T> void createProducerField(AbstractClassBean<?> declaringBean, WBField<T, ?> field)
    {
-      ProducerFieldBean<T> bean = ProducerFieldBean.of(field, declaringBean, manager);
+      ProducerField<T> bean = ProducerField.of(field, declaringBean, manager);
       getEnvironment().addBean(bean);
    }
    
@@ -182,25 +182,25 @@ public class AbstractBeanDeployer
 
    protected <T> void createSimpleBean(WBClass<T> annotatedClass)
    {
-      SimpleBean<T> bean = SimpleBean.of(annotatedClass, manager);
+      ManagedBean<T> bean = ManagedBean.of(annotatedClass, manager);
       getEnvironment().addBean(bean);
       createSubBeans(bean);
-      getEnvironment().addBean(NewSimpleBean.of(annotatedClass, manager));
+      getEnvironment().addBean(NewManagedBean.of(annotatedClass, manager));
    }
    
    protected <T> void createDecorator(WBClass<T> annotatedClass)
    {
-      DecoratorBean<T> bean = DecoratorBean.of(annotatedClass, manager);
+      DecoratorImpl<T> bean = DecoratorImpl.of(annotatedClass, manager);
       getEnvironment().addBean(bean);
    }
    
    protected <T> void createEnterpriseBean(InternalEjbDescriptor<T> ejbDescriptor)
    {
       // TODO Don't create enterprise bean if it has no local interfaces!
-      EnterpriseBean<T> bean = EnterpriseBean.of(ejbDescriptor, manager);
+      SessionBean<T> bean = SessionBean.of(ejbDescriptor, manager);
       getEnvironment().addBean(bean);
       createSubBeans(bean);
-      getEnvironment().addBean(NewEnterpriseBean.of(ejbDescriptor, manager));
+      getEnvironment().addBean(NewSessionBean.of(ejbDescriptor, manager));
    }
    
    /**

@@ -24,7 +24,7 @@ import javassist.util.proxy.MethodHandler;
 
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.introspector.jlr.MethodSignatureImpl;
@@ -59,7 +59,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
     * 
     * @param proxy The generic proxy
     */
-   public EnterpriseBeanProxyMethodHandler(EnterpriseBean<T> bean, CreationalContext<T> creationalContext)
+   public EnterpriseBeanProxyMethodHandler(SessionBean<T> bean, CreationalContext<T> creationalContext)
    {
       this.objectInterface = bean.getEjbDescriptor().getObjectInterface();
       this.removeMethodSignatures = bean.getEjbDescriptor().getRemoveMethodSignatures();

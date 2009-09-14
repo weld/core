@@ -35,7 +35,7 @@ import org.jboss.webbeans.util.Names;
  * 
  * @param <T>
  */
-public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
+public class ProducerField<T> extends AbstractProducerBean<T, Field>
 {
    // The underlying field
    private WBField<T, ?> field;
@@ -49,9 +49,9 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
     * @param manager the current manager
     * @return A producer Web Bean
     */
-   public static <T> ProducerFieldBean<T> of(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public static <T> ProducerField<T> of(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
-      return new ProducerFieldBean<T>(field, declaringBean, manager);
+      return new ProducerField<T>(field, declaringBean, manager);
    }
 
    /**
@@ -61,7 +61,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
     * @param declaringBean The declaring bean
     * @param manager The Web Beans manager
     */
-   protected ProducerFieldBean(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   protected ProducerField(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
       super(declaringBean, manager);
       this.field = field;

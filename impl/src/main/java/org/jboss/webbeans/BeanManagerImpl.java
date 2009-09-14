@@ -56,8 +56,8 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Qualifier;
 
-import org.jboss.webbeans.bean.DecoratorBean;
-import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.DecoratorImpl;
+import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
@@ -185,7 +185,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final Map<String, RIBean<?>> riBeans;
    
    // TODO review this structure
-   private transient final Map<EjbDescriptor<?>, EnterpriseBean<?>> enterpriseBeans;
+   private transient final Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans;
    
    // TODO This isn't right, specialization should follow accessibility rules, but I think we can enforce these in resolve()
    private transient final Map<Contextual<?>, Contextual<?>> specializedBeans;
@@ -215,7 +215,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * archives
     */
    private transient final TypeSafeBeanResolver<Bean<?>> beanResolver;
-   private transient final TypeSafeResolver<DecoratorBean<?>> decoratorResolver;
+   private transient final TypeSafeResolver<DecoratorImpl<?>> decoratorResolver;
    private transient final TypeSafeResolver<ObserverMethod<?,?>> observerResolver;
    private transient final NameBasedResolver nameBasedResolver;
    private transient final ELResolver webbeansELResolver;
@@ -231,7 +231,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * observers deployed in this bean deployment archive activity
     */
    private transient final List<Bean<?>> beans;
-   private transient final List<DecoratorBean<?>> decorators;
+   private transient final List<DecoratorImpl<?>> decorators;
    private transient final List<String> namespaces;
    private transient final List<ObserverMethod<?,?>> observers;
    
@@ -276,10 +276,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return new BeanManagerImpl(
             serviceRegistry, 
             new CopyOnWriteArrayList<Bean<?>>(),
-            new CopyOnWriteArrayList<DecoratorBean<?>>(),
+            new CopyOnWriteArrayList<DecoratorImpl<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
             new CopyOnWriteArrayList<String>(),
-            new ConcurrentHashMap<EjbDescriptor<?>, EnterpriseBean<?>>(),
+            new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
             new ConcurrentHashMap<String, RIBean<?>>(),
             new ClientProxyProvider(),
             contexts, 
@@ -302,7 +302,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return new BeanManagerImpl(
             services, 
             new CopyOnWriteArrayList<Bean<?>>(),
-            new CopyOnWriteArrayList<DecoratorBean<?>>(),
+            new CopyOnWriteArrayList<DecoratorImpl<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
             new CopyOnWriteArrayList<String>(),
             rootManager.getEnterpriseBeans(),
@@ -360,10 +360,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private BeanManagerImpl(
          ServiceRegistry serviceRegistry, 
          List<Bean<?>> beans, 
-         List<DecoratorBean<?>> decorators, 
+         List<DecoratorImpl<?>> decorators, 
          List<ObserverMethod<?,?>> observers, 
          List<String> namespaces,
-         Map<EjbDescriptor<?>, EnterpriseBean<?>> enterpriseBeans, 
+         Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans, 
          Map<String, RIBean<?>> riBeans, 
          ClientProxyProvider clientProxyProvider, 
          ListMultimap<Class<? extends Annotation>, Context> contexts, 
@@ -473,10 +473,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          
       };
       
-      public static Transform<DecoratorBean<?>> DECORATOR_BEAN = new Transform<DecoratorBean<?>>()
+      public static Transform<DecoratorImpl<?>> DECORATOR_BEAN = new Transform<DecoratorImpl<?>>()
       {
 
-         public Iterable<DecoratorBean<?>> transform(BeanManagerImpl beanManager)
+         public Iterable<DecoratorImpl<?>> transform(BeanManagerImpl beanManager)
          {
             return beanManager.getDecorators();
          }
@@ -524,9 +524,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       {
          return;
       }
-      if (bean.getClass().equals(EnterpriseBean.class))
+      if (bean.getClass().equals(SessionBean.class))
       {
-         EnterpriseBean<?> enterpriseBean = (EnterpriseBean<?>) bean;
+         SessionBean<?> enterpriseBean = (SessionBean<?>) bean;
          enterpriseBeans.put(enterpriseBean.getEjbDescriptor(), enterpriseBean);
       }
       if (bean instanceof RIBean<?>)
@@ -543,7 +543,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       beanResolver.clear();
    }
    
-   public void addDecorator(DecoratorBean<?> bean)
+   public void addDecorator(DecoratorImpl<?> bean)
    {
       decorators.add(bean);
       riBeans.put(bean.getId(), bean);
@@ -748,7 +748,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * 
     * @return The bean map
     */
-   public Map<EjbDescriptor<?>, EnterpriseBean<?>> getEnterpriseBeans()
+   public Map<EjbDescriptor<?>, SessionBean<?>> getEnterpriseBeans()
    {
       return enterpriseBeans;
    }
@@ -764,7 +764,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return Collections.unmodifiableList(beans);
    }
    
-   public List<DecoratorBean<?>> getDecorators()
+   public List<DecoratorImpl<?>> getDecorators()
    {
       return Collections.unmodifiableList(decorators);
    }
@@ -1356,9 +1356,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return getServices().get(EjbDescriptors.class).get(beanName);
    }
    
-   public <T> EnterpriseBean<T> getBean(EjbDescriptor<T> descriptor)
+   public <T> SessionBean<T> getBean(EjbDescriptor<T> descriptor)
    {
-      return (EnterpriseBean<T>) getEnterpriseBeans().get(descriptor);
+      return (SessionBean<T>) getEnterpriseBeans().get(descriptor);
    }
    
    public void cleanup()

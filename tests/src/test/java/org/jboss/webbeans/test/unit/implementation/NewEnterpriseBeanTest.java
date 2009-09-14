@@ -8,8 +8,8 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
-import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.bean.NewEnterpriseBean;
+import org.jboss.webbeans.bean.SessionBean;
+import org.jboss.webbeans.bean.NewSessionBean;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.literal.NewLiteral;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
@@ -30,19 +30,19 @@ public class NewEnterpriseBeanTest extends AbstractWebBeansTest
       
    };
    
-   private EnterpriseBean<WrappedEnterpriseBeanLocal> wrappedEnterpriseBean;
-   private NewEnterpriseBean<WrappedEnterpriseBeanLocal> newEnterpriseBean;
+   private SessionBean<WrappedEnterpriseBeanLocal> wrappedEnterpriseBean;
+   private NewSessionBean<WrappedEnterpriseBeanLocal> newEnterpriseBean;
    
    public void initNewBean() 
    {
       Set<Bean<?>> beans = getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class);
       assert getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class).size() == 1;
-      assert getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class).iterator().next() instanceof EnterpriseBean;
-      wrappedEnterpriseBean = (EnterpriseBean<WrappedEnterpriseBeanLocal>) getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class).iterator().next();
+      assert getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class).iterator().next() instanceof SessionBean;
+      wrappedEnterpriseBean = (SessionBean<WrappedEnterpriseBeanLocal>) getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class).iterator().next();
       
       assert getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).size() == 1;
-      assert getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next() instanceof NewEnterpriseBean;
-      newEnterpriseBean = (NewEnterpriseBean<WrappedEnterpriseBeanLocal>) getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next();
+      assert getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next() instanceof NewSessionBean;
+      newEnterpriseBean = (NewSessionBean<WrappedEnterpriseBeanLocal>) getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next();
       
    }
    

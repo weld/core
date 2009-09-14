@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.bean.DecoratorBean;
+import org.jboss.webbeans.bean.DecoratorImpl;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 
@@ -30,31 +30,31 @@ import org.jboss.webbeans.util.Reflections;
  * @author pmuir
  *
  */
-public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<DecoratorBean<?>>
+public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<DecoratorImpl<?>>
 {
 
-   public TypeSafeDecoratorResolver(BeanManagerImpl manager, Iterable<DecoratorBean<?>> decorators)
+   public TypeSafeDecoratorResolver(BeanManagerImpl manager, Iterable<DecoratorImpl<?>> decorators)
    {
       super(manager, decorators);
    }
 
    @Override
-   protected boolean matches(Resolvable resolvable, DecoratorBean<?> bean)
+   protected boolean matches(Resolvable resolvable, DecoratorImpl<?> bean)
    {
       return Reflections.isAssignableFrom(bean.getDelegateTypes(), resolvable.getTypeClosure()) && Beans.containsAllBindings(bean.getDelegateQualifiers(), resolvable.getQualifiers(), getManager()) && getManager().getEnabledDecoratorClasses().contains(bean.getType());
    }
    
    @Override
-   protected Set<DecoratorBean<?>> sortResult(Set<DecoratorBean<?>> matchedDecorators)
+   protected Set<DecoratorImpl<?>> sortResult(Set<DecoratorImpl<?>> matchedDecorators)
    {
-      Set<DecoratorBean<?>> sortedBeans = new TreeSet<DecoratorBean<?>>(new Comparator<DecoratorBean<?>>()
+      Set<DecoratorImpl<?>> sortedBeans = new TreeSet<DecoratorImpl<?>>(new Comparator<DecoratorImpl<?>>()
       {
          
-         public int compare(DecoratorBean<?> o1, DecoratorBean<?> o2)
+         public int compare(DecoratorImpl<?> o1, DecoratorImpl<?> o2)
          {
             List<Class<?>> enabledDecorators = getManager().getEnabledDecoratorClasses();
-            int p1 = enabledDecorators.indexOf(((DecoratorBean<?>) o1).getType());
-            int p2 = enabledDecorators.indexOf(((DecoratorBean<?>) o2).getType());
+            int p1 = enabledDecorators.indexOf(((DecoratorImpl<?>) o1).getType());
+            int p2 = enabledDecorators.indexOf(((DecoratorImpl<?>) o2).getType());
             return p1 - p2;
          }
    

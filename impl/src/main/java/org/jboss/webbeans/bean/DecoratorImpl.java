@@ -34,7 +34,7 @@ import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.introspector.WBClass;
 
-public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
+public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
 {
 
    public static <T> Decorator<T> wrapForResolver(final Decorator<T> decorator)
@@ -71,9 +71,9 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
     * @param manager the current manager
     * @return a Bean
     */
-   public static <T> DecoratorBean<T> of(WBClass<T> clazz, BeanManagerImpl manager)
+   public static <T> DecoratorImpl<T> of(WBClass<T> clazz, BeanManagerImpl manager)
    {
-      return new DecoratorBean<T>(clazz, manager);
+      return new DecoratorImpl<T>(clazz, manager);
    }
 
    private WBInjectionPoint<?, ?> delegateInjectionPoint;
@@ -82,7 +82,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    private Set<Type> delegateTypes;
    private Set<Type> decoratedTypes;
 
-   protected DecoratorBean(WBClass<T> type, BeanManagerImpl manager)
+   protected DecoratorImpl(WBClass<T> type, BeanManagerImpl manager)
    {
       super(type, manager);
    }

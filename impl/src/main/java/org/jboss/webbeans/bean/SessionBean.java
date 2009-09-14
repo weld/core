@@ -62,16 +62,16 @@ import org.jboss.webbeans.util.Proxies;
  * 
  * @param <T> The type (class) of the bean
  */
-public class EnterpriseBean<T> extends AbstractClassBean<T>
+public class SessionBean<T> extends AbstractClassBean<T>
 {
-   private final Log log = Logging.getLog(EnterpriseBean.class);
+   private final Log log = Logging.getLog(SessionBean.class);
 
    // The EJB descriptor
    private InternalEjbDescriptor<T> ejbDescriptor;
 
    private Class<T> proxyClass;
 
-   private EnterpriseBean<?> specializedBean;
+   private SessionBean<?> specializedBean;
 
    /**
     * Creates a simple, annotation defined Enterprise Web Bean
@@ -81,10 +81,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param manager the current manager
     * @return An Enterprise Web Bean
     */
-   public static <T> EnterpriseBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
+   public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
       WBClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-      return new EnterpriseBean<T>(type, ejbDescriptor, manager);
+      return new SessionBean<T>(type, ejbDescriptor, manager);
    }
 
    /**
@@ -93,7 +93,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   protected EnterpriseBean(WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
+   protected SessionBean(WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
       super(type, manager);
       initType();
@@ -198,13 +198,13 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          throw new IllegalStateException(toString() + " does not specialize a bean");
       }
       AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getWBSuperclass());
-      if (!(specializedBean instanceof EnterpriseBean<?>))
+      if (!(specializedBean instanceof SessionBean<?>))
       {
          throw new IllegalStateException(toString() + " doesn't have a session bean as a superclass " + specializedBean);
       }
       else
       {
-         this.specializedBean = (EnterpriseBean<?>) specializedBean; 
+         this.specializedBean = (SessionBean<?>) specializedBean; 
       }
    }
 

@@ -41,10 +41,10 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.AbstractProducerBean;
-import org.jboss.webbeans.bean.DecoratorBean;
-import org.jboss.webbeans.bean.DisposalMethodBean;
-import org.jboss.webbeans.bean.NewEnterpriseBean;
-import org.jboss.webbeans.bean.NewSimpleBean;
+import org.jboss.webbeans.bean.DecoratorImpl;
+import org.jboss.webbeans.bean.DisposalMethod;
+import org.jboss.webbeans.bean.NewSessionBean;
+import org.jboss.webbeans.bean.NewManagedBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.api.Service;
@@ -94,7 +94,7 @@ public class Validator implements Service
    private void validateRIBean(RIBean<?> bean, BeanManagerImpl beanManager, Collection<RIBean<?>> specializedBeans)
    {
       validateBean(bean, beanManager);
-      if (!(bean instanceof NewSimpleBean<?>) && !(bean instanceof NewEnterpriseBean<?>))
+      if (!(bean instanceof NewManagedBean<?>) && !(bean instanceof NewSessionBean<?>))
       {
          RIBean<?> abstractBean = bean;
          if (abstractBean.isSpecializing())
@@ -276,7 +276,7 @@ public class Validator implements Service
    {
       // TODO Move building this list to the boot or sth
       Set<Class<?>> decoratorBeanClasses = new HashSet<Class<?>>();
-      for (DecoratorBean<?> bean : beanManager.getDecorators())
+      for (DecoratorImpl<?> bean : beanManager.getDecorators())
       {
          decoratorBeanClasses.add(bean.getType());
       }
@@ -324,7 +324,7 @@ public class Validator implements Service
    
    private void validateDisposalMethods(BeanDeployerEnvironment environment)
    {
-      Set<DisposalMethodBean<?>> beans = environment.getUnresolvedDisposalBeans();
+      Set<DisposalMethod<?>> beans = environment.getUnresolvedDisposalBeans();
       if (!beans.isEmpty())
       {
          throw new DefinitionException("The following Disposal methods where not declared but not resolved to a producer method" + beans);

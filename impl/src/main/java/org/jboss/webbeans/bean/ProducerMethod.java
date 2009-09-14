@@ -43,14 +43,14 @@ import org.jboss.webbeans.util.Names;
  * 
  * @param <T>
  */
-public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
+public class ProducerMethod<T> extends AbstractProducerBean<T, Method>
 {
    // The underlying method
    private MethodInjectionPoint<T, ?> method;
 
-   private DisposalMethodBean<?> disposalMethodBean;
+   private DisposalMethod<?> disposalMethodBean;
 
-   private ProducerMethodBean<?> specializedBean;
+   private ProducerMethod<?> specializedBean;
 
    private final String id;
 
@@ -62,12 +62,12 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     * @param manager the current manager
     * @return A producer Web Bean
     */
-   public static <T> ProducerMethodBean<T> of(WBMethod<T, ?> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public static <T> ProducerMethod<T> of(WBMethod<T, ?> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
-      return new ProducerMethodBean<T>(method, declaringBean, manager);
+      return new ProducerMethod<T>(method, declaringBean, manager);
    }
 
-   protected ProducerMethodBean(WBMethod<T, ?> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   protected ProducerMethod(WBMethod<T, ?> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
       super(declaringBean, manager);
       this.method = MethodInjectionPoint.of(this, method);
@@ -131,7 +131,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       {
          throw new DefinitionException("Producer method cannot have parameter annotated @Disposes");
       }
-      else if (getDeclaringBean() instanceof EnterpriseBean<?>)
+      else if (getDeclaringBean() instanceof SessionBean<?>)
       {
          boolean methodDeclaredOnTypes = false;
          // TODO use annotated item?
@@ -163,7 +163,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     */
    protected void initDisposalMethod(BeanDeployerEnvironment environment)
    {
-      Set<DisposalMethodBean<?>> disposalBeans = environment.resolveDisposalBeans(getTypes(), getQualifiers(), getDeclaringBean());
+      Set<DisposalMethod<?>> disposalBeans = environment.resolveDisposalBeans(getTypes(), getQualifiers(), getDeclaringBean());
 
       if (disposalBeans.size() == 1)
       {
@@ -226,7 +226,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     * 
     * @return The method representation
     */
-   public DisposalMethodBean<?> getDisposalMethod()
+   public DisposalMethod<?> getDisposalMethod()
    {
       return disposalMethodBean;
    }

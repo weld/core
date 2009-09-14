@@ -22,7 +22,7 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
-import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
@@ -44,11 +44,11 @@ public class EjbDescriptorLookupTest extends AbstractWebBeansTest
       assert descriptor.getClass().equals(InternalEjbDescriptor.class);
       Bean<CatLocal> bean = getCurrentManager().getBean(descriptor);
       assert bean != null;
-      assert bean instanceof EnterpriseBean;
+      assert bean instanceof SessionBean;
       assert bean.getBeanClass().equals(Cat.class);
       InjectionTarget<CatLocal> it = getCurrentManager().createInjectionTarget(descriptor);
       assert it != null;
-      assert it instanceof EnterpriseBean;
+      assert it instanceof SessionBean;
       assert it == bean;
    }
 

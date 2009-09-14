@@ -33,7 +33,7 @@ import org.jboss.webbeans.resources.ClassTransformer;
  * 
  * @author Nicklas Karlsson
  */
-public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
+public class NewSessionBean<T> extends SessionBean<T> implements NewBean
 {
 
    /**
@@ -43,10 +43,10 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
     * @param manager The Web Beans manager
     * @return a new NewEnterpriseBean instance
     */
-   public static <T> NewEnterpriseBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
+   public static <T> NewSessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
       WBClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-      return new NewEnterpriseBean<T>(type, ejbDescriptor, manager);
+      return new NewSessionBean<T>(type, ejbDescriptor, manager);
    }
    
    private Set<Annotation> bindings;
@@ -57,7 +57,7 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
     * @param type An annotated class
     * @param manager The Web Beans manager
     */
-   protected NewEnterpriseBean(final WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
+   protected NewSessionBean(final WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
       super(type, ejbDescriptor, manager);
       this.bindings = new HashSet<Annotation>();

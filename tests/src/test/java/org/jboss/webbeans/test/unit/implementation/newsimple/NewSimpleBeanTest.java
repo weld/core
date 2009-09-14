@@ -5,8 +5,8 @@ import java.util.Set;
 import javax.enterprise.inject.New;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.webbeans.bean.NewSimpleBean;
-import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.bean.NewManagedBean;
+import org.jboss.webbeans.bean.ManagedBean;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.literal.NewLiteral;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
@@ -15,20 +15,20 @@ import org.testng.annotations.Test;
 @Artifact
 public class NewSimpleBeanTest extends AbstractWebBeansTest
 {
-   private SimpleBean<WrappedSimpleBean> wrappedSimpleBean;
-   private NewSimpleBean<WrappedSimpleBean> newSimpleBean;
+   private ManagedBean<WrappedSimpleBean> wrappedSimpleBean;
+   private NewManagedBean<WrappedSimpleBean> newSimpleBean;
    
    private static final New NEW_LITERAL = new NewLiteral();
    
    public void initNewBean() {
       
       assert getCurrentManager().getBeans(WrappedSimpleBean.class).size() == 1;
-      assert getCurrentManager().getBeans(WrappedSimpleBean.class).iterator().next() instanceof SimpleBean;
-      wrappedSimpleBean = (SimpleBean<WrappedSimpleBean>) getCurrentManager().getBeans(WrappedSimpleBean.class).iterator().next();
+      assert getCurrentManager().getBeans(WrappedSimpleBean.class).iterator().next() instanceof ManagedBean;
+      wrappedSimpleBean = (ManagedBean<WrappedSimpleBean>) getCurrentManager().getBeans(WrappedSimpleBean.class).iterator().next();
       
       assert getCurrentManager().getBeans(WrappedSimpleBean.class, NEW_LITERAL).size() == 1;
-      assert getCurrentManager().getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next() instanceof NewSimpleBean;
-      newSimpleBean = (NewSimpleBean<WrappedSimpleBean>) getCurrentManager().getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next();
+      assert getCurrentManager().getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next() instanceof NewManagedBean;
+      newSimpleBean = (NewManagedBean<WrappedSimpleBean>) getCurrentManager().getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next();
    }
 
    @Test(groups = { "new" })

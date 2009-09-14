@@ -31,7 +31,7 @@ import org.jboss.webbeans.literal.NewLiteral;
  * 
  * @author Nicklas Karlsson 
  */
-public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
+public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
 {
 
    /**
@@ -41,9 +41,9 @@ public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
     * @param manager The Web Beans manager
     * @return a new NewSimpleBean instance
     */
-   public static <T> NewSimpleBean<T> of(WBClass<T> clazz, BeanManagerImpl manager)
+   public static <T> NewManagedBean<T> of(WBClass<T> clazz, BeanManagerImpl manager)
    {
-      return new NewSimpleBean<T>(clazz, manager);
+      return new NewManagedBean<T>(clazz, manager);
    }
    
    private Set<Annotation> bindings;
@@ -54,7 +54,7 @@ public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
     * @param type An annotated class
     * @param manager The Web Beans manager
     */
-   protected NewSimpleBean(final WBClass<T> type, BeanManagerImpl manager)
+   protected NewManagedBean(final WBClass<T> type, BeanManagerImpl manager)
    {
       super(type, manager);
       this.bindings = new HashSet<Annotation>();

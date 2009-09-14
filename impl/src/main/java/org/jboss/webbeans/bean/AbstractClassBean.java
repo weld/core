@@ -150,7 +150,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    
    protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint)
    {
-      List<SerializableBeanInstance<DecoratorBean<Object>, Object>> decoratorInstances = new ArrayList<SerializableBeanInstance<DecoratorBean<Object>,Object>>();
+      List<SerializableBeanInstance<DecoratorImpl<Object>, Object>> decoratorInstances = new ArrayList<SerializableBeanInstance<DecoratorImpl<Object>,Object>>();
       InjectionPoint ip = originalInjectionPoint;
       boolean outside = decoratorStackPosition.get().intValue() == 0;
       try
@@ -159,15 +159,15 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
          while (i < decorators.size())
          {
             Decorator<?> decorator = decorators.get(i);
-            if (decorator instanceof DecoratorBean<?>)
+            if (decorator instanceof DecoratorImpl<?>)
             {
                decoratorStackPosition.set(++i);
                
                @SuppressWarnings("unchecked")
-               DecoratorBean<Object> decoratorBean = (DecoratorBean<Object>) decorator;
+               DecoratorImpl<Object> decoratorBean = (DecoratorImpl<Object>) decorator;
                
                Object decoratorInstance = getManager().getReference(ip, decorator, creationalContext);
-               decoratorInstances.add(new SerializableBeanInstance<DecoratorBean<Object>, Object>(decoratorBean, decoratorInstance));
+               decoratorInstances.add(new SerializableBeanInstance<DecoratorImpl<Object>, Object>(decoratorBean, decoratorInstance));
                ip = decoratorBean.getDelegateInjectionPoint();
             }
             else

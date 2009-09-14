@@ -9,9 +9,9 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
-import org.jboss.webbeans.bean.ProducerMethodBean;
+import org.jboss.webbeans.bean.ProducerMethod;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.bean.ManagedBean;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
@@ -36,8 +36,8 @@ public class BootstrapTest extends AbstractWebBeansTest
       assert classes.containsKey(TarantulaProducer.class);
       assert classes.containsKey(Tarantula.class);
       
-      assert classes.get(TarantulaProducer.class) instanceof SimpleBean;
-      assert classes.get(Tarantula.class) instanceof ProducerMethodBean;
+      assert classes.get(TarantulaProducer.class) instanceof ManagedBean;
+      assert classes.get(Tarantula.class) instanceof ProducerMethod;
    }
    
 }

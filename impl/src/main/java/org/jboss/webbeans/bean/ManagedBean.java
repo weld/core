@@ -48,10 +48,10 @@ import org.jboss.webbeans.util.Reflections;
  * 
  * @param <T> The type (class) of the bean
  */
-public class SimpleBean<T> extends AbstractClassBean<T>
+public class ManagedBean<T> extends AbstractClassBean<T>
 {
    // Logger
-   private static LogProvider log = Logging.getLogProvider(SimpleBean.class);
+   private static LogProvider log = Logging.getLogProvider(ManagedBean.class);
 
    // The constructor
    private ConstructorInjectionPoint<T> constructor;
@@ -60,7 +60,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    private Set<WBInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
    private Set<WBInjectionPoint<?, ?>> resourceInjectionPoints;
 
-   private SimpleBean<?> specializedBean;
+   private ManagedBean<?> specializedBean;
 
    
 
@@ -72,9 +72,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * @param manager the current manager
     * @return A Web Bean
     */
-   public static <T> SimpleBean<T> of(WBClass<T> clazz, BeanManagerImpl manager)
+   public static <T> ManagedBean<T> of(WBClass<T> clazz, BeanManagerImpl manager)
    {
-      return new SimpleBean<T>(clazz, manager);
+      return new ManagedBean<T>(clazz, manager);
    }
 
    /**
@@ -83,7 +83,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   protected SimpleBean(WBClass<T> type, BeanManagerImpl manager)
+   protected ManagedBean(WBClass<T> type, BeanManagerImpl manager)
    {
       super(type, manager);
       initType();
@@ -144,9 +144,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected InjectionPoint attachCorrectInjectionPoint()
    {
       Decorator<?> decorator = getDecorators().get(getDecorators().size() - 1);
-      if (decorator instanceof DecoratorBean<?>)
+      if (decorator instanceof DecoratorImpl<?>)
       {
-         DecoratorBean<?> decoratorBean = (DecoratorBean<?>) decorator;
+         DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
          InjectionPoint outerDelegateInjectionPoint = decoratorBean.getDelegateInjectionPoint();
          return getManager().replaceOrPushCurrentInjectionPoint(outerDelegateInjectionPoint);
       }
@@ -225,9 +225,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
          for (Decorator<?> decorator : getDecorators())
          {
-            if (decorator instanceof DecoratorBean<?>)
+            if (decorator instanceof DecoratorImpl<?>)
             {
-               DecoratorBean<?> decoratorBean = (DecoratorBean<?>) decorator;
+               DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
                for (WBMethod<?, ?> decoratorMethod : decoratorBean.getAnnotatedItem().getWBMethods())
                {
                   WBMethod<?, ?> method = getAnnotatedItem().getWBMethod(decoratorMethod.getSignature());  
@@ -291,13 +291,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          throw new DefinitionException(toString() + " does not specialize a bean");
       }
       AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getWBSuperclass());
-      if (!(specializedBean instanceof SimpleBean))
+      if (!(specializedBean instanceof ManagedBean))
       {
          throw new DefinitionException(toString() + " doesn't have a simple bean as a superclass " + specializedBean);
       }
       else
       {
-         this.specializedBean = (SimpleBean<?>) specializedBean;
+         this.specializedBean = (ManagedBean<?>) specializedBean;
       }
    }
 
@@ -351,7 +351,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    }
 
    @Override
-   public SimpleBean<?> getSpecializedBean()
+   public ManagedBean<?> getSpecializedBean()
    {
       return specializedBean;
    }

@@ -9,9 +9,9 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
-import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.bean.ManagedBean;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
@@ -41,14 +41,14 @@ public class BootstrapTest extends AbstractWebBeansTest
       assert classes.containsKey(SeaBass.class);
       assert classes.containsKey(Sole.class);
       
-      assert classes.get(Hound.class) instanceof EnterpriseBean;
-      assert classes.get(Elephant.class) instanceof EnterpriseBean;
-      assert classes.get(Panther.class) instanceof EnterpriseBean;
-      assert classes.get(Tiger.class) instanceof EnterpriseBean;
-      assert classes.get(Tuna.class) instanceof SimpleBean;
-      assert classes.get(Salmon.class) instanceof SimpleBean;
-      assert classes.get(SeaBass.class) instanceof SimpleBean;
-      assert classes.get(Sole.class) instanceof SimpleBean;
+      assert classes.get(Hound.class) instanceof SessionBean;
+      assert classes.get(Elephant.class) instanceof SessionBean;
+      assert classes.get(Panther.class) instanceof SessionBean;
+      assert classes.get(Tiger.class) instanceof SessionBean;
+      assert classes.get(Tuna.class) instanceof ManagedBean;
+      assert classes.get(Salmon.class) instanceof ManagedBean;
+      assert classes.get(SeaBass.class) instanceof ManagedBean;
+      assert classes.get(Sole.class) instanceof ManagedBean;
    }
    
 }

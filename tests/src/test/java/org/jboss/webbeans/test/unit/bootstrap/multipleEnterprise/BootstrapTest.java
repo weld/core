@@ -9,7 +9,7 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
-import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
@@ -36,10 +36,10 @@ public class BootstrapTest extends AbstractWebBeansTest
       assert classes.containsKey(Panther.class);
       assert classes.containsKey(Tiger.class);
       
-      assert classes.get(Hound.class) instanceof EnterpriseBean;
-      assert classes.get(Elephant.class) instanceof EnterpriseBean;
-      assert classes.get(Panther.class) instanceof EnterpriseBean;
-      assert classes.get(Tiger.class) instanceof EnterpriseBean;
+      assert classes.get(Hound.class) instanceof SessionBean;
+      assert classes.get(Elephant.class) instanceof SessionBean;
+      assert classes.get(Panther.class) instanceof SessionBean;
+      assert classes.get(Tiger.class) instanceof SessionBean;
    }
    
 }

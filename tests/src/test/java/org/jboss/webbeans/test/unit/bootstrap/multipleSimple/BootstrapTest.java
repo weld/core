@@ -8,7 +8,7 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.bean.ManagedBean;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
@@ -33,10 +33,10 @@ public class BootstrapTest extends AbstractWebBeansTest
       assert classes.containsKey(SeaBass.class);
       assert classes.containsKey(Sole.class);
       
-      assert classes.get(Tuna.class) instanceof SimpleBean;
-      assert classes.get(Salmon.class) instanceof SimpleBean;
-      assert classes.get(SeaBass.class) instanceof SimpleBean;
-      assert classes.get(Sole.class) instanceof SimpleBean;
+      assert classes.get(Tuna.class) instanceof ManagedBean;
+      assert classes.get(Salmon.class) instanceof ManagedBean;
+      assert classes.get(SeaBass.class) instanceof ManagedBean;
+      assert classes.get(Sole.class) instanceof ManagedBean;
    }
    
 }

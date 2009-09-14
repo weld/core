@@ -11,7 +11,7 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.Container;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.bean.ManagedBean;
 import org.jboss.webbeans.mock.MockBeanDeploymentArchive;
 import org.jboss.webbeans.mock.MockServletLifecycle;
 import org.testng.annotations.AfterClass;
@@ -60,10 +60,10 @@ public class ServletEnvironmentTest
       assert beans.containsKey(SeaBass.class);
       assert beans.containsKey(Sole.class);
       
-      assert beans.get(Tuna.class) instanceof SimpleBean;
-      assert beans.get(Salmon.class) instanceof SimpleBean;
-      assert beans.get(SeaBass.class) instanceof SimpleBean;
-      assert beans.get(Sole.class) instanceof SimpleBean;
+      assert beans.get(Tuna.class) instanceof ManagedBean;
+      assert beans.get(Salmon.class) instanceof ManagedBean;
+      assert beans.get(SeaBass.class) instanceof ManagedBean;
+      assert beans.get(Sole.class) instanceof ManagedBean;
       manager.getInstanceByType(Sole.class, new AnnotationLiteral<Whitefish>() {}).ping();
    }
    
@@ -82,7 +82,7 @@ public class ServletEnvironmentTest
       
       Bean<?> bean = beans.get(TarantulaProducer.class);
       
-      assert beans.get(TarantulaProducer.class) instanceof SimpleBean;
+      assert beans.get(TarantulaProducer.class) instanceof ManagedBean;
       manager.getInstanceByType(Tarantula.class, new AnnotationLiteral<Tame>() {}).ping();
    }
    
@@ -98,7 +98,7 @@ public class ServletEnvironmentTest
          }
       }
       assert classes.containsKey(Hound.class);
-      assert classes.get(Hound.class) instanceof SimpleBean;
+      assert classes.get(Hound.class) instanceof ManagedBean;
       manager.getInstanceByType(HoundLocal.class, new AnnotationLiteral<Tame>() {}).ping();
    }
    

@@ -38,7 +38,7 @@ import javax.inject.Inject;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.AbstractProducerBean;
-import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
@@ -80,9 +80,9 @@ public class Beans
     */
    public static boolean isPassivatingScope(Bean<?> bean, BeanManagerImpl manager)
    {
-      if (bean instanceof EnterpriseBean<?>)
+      if (bean instanceof SessionBean<?>)
       {
-         return ((EnterpriseBean<?>) bean).getEjbDescriptor().isStateful();
+         return ((SessionBean<?>) bean).getEjbDescriptor().isStateful();
       }
       else
       {
@@ -99,9 +99,9 @@ public class Beans
     */
    public static boolean isPassivationCapableBean(Bean<?> bean)
    {
-      if (bean instanceof EnterpriseBean<?>)
+      if (bean instanceof SessionBean<?>)
       {
-         return ((EnterpriseBean<?>) bean).getEjbDescriptor().isStateful();
+         return ((SessionBean<?>) bean).getEjbDescriptor().isStateful();
       }
       else if (bean instanceof AbstractProducerBean<?, ?>)
       {

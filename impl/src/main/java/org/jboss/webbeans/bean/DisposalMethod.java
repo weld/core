@@ -35,13 +35,13 @@ import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.WBMethod;
 
-public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
+public class DisposalMethod<T> extends AbstractReceiverBean<T, Method>
 {
 
    protected MethodInjectionPoint<T, ?> disposalMethodInjectionPoint;
    private final String id;
 
-   protected DisposalMethodBean(BeanManagerImpl manager, WBMethod<T, ?> disposalMethod, AbstractClassBean<?> declaringBean)
+   protected DisposalMethod(BeanManagerImpl manager, WBMethod<T, ?> disposalMethod, AbstractClassBean<?> declaringBean)
    {
       super(declaringBean, manager);
       this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
@@ -73,9 +73,9 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
       return disposalMethodInjectionPoint;
    }
 
-   public static <T> DisposalMethodBean<T> of(BeanManagerImpl manager, WBMethod<T, ?> disposalMethod, AbstractClassBean<?> declaringBean)
+   public static <T> DisposalMethod<T> of(BeanManagerImpl manager, WBMethod<T, ?> disposalMethod, AbstractClassBean<?> declaringBean)
    {
-      return new DisposalMethodBean<T>(manager, disposalMethod, declaringBean);
+      return new DisposalMethod<T>(manager, disposalMethod, declaringBean);
    }
 
    @Override
@@ -187,7 +187,7 @@ public class DisposalMethodBean<T> extends AbstractReceiverBean<T, Method>
       {
          throw new DefinitionException("@Produces is not allowed on a disposal method, see " + disposalMethodInjectionPoint.toString());
       }
-      if (getDeclaringBean() instanceof EnterpriseBean<?>)
+      if (getDeclaringBean() instanceof SessionBean<?>)
       {
          boolean methodDeclaredOnTypes = false;
          // TODO use annotated item?

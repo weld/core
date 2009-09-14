@@ -7,7 +7,7 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.ContextualIdStore;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.bean.ManagedBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
@@ -38,7 +38,7 @@ public class AccessibleManagerResolutionTest
    private void addBean(BeanManagerImpl manager, Class<?> c)
    {
       WBClass<?> clazz = WBClassImpl.of(c, classTransformer);
-      RIBean<?> bean = SimpleBean.of(clazz, manager);
+      RIBean<?> bean = ManagedBean.of(clazz, manager);
       manager.addBean(bean);
       BeanDeployerEnvironment environment = new BeanDeployerEnvironment(new EjbDescriptors(), manager);
       bean.initialize(environment);
