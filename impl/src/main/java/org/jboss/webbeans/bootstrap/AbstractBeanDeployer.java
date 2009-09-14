@@ -32,13 +32,15 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.DecoratorImpl;
 import org.jboss.webbeans.bean.DisposalMethod;
-import org.jboss.webbeans.bean.SessionBean;
-import org.jboss.webbeans.bean.NewSessionBean;
+import org.jboss.webbeans.bean.ManagedBean;
 import org.jboss.webbeans.bean.NewManagedBean;
+import org.jboss.webbeans.bean.NewSessionBean;
 import org.jboss.webbeans.bean.ProducerField;
 import org.jboss.webbeans.bean.ProducerMethod;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.bean.ManagedBean;
+import org.jboss.webbeans.bean.SessionBean;
+import org.jboss.webbeans.bean.ee.EEResourceProducerField;
+import org.jboss.webbeans.bean.ee.PersistenceContextProducerField;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.event.ObserverFactory;
@@ -49,8 +51,10 @@ import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.ws.WSApiAbstraction;
 
 public class AbstractBeanDeployer
 {
@@ -147,7 +151,19 @@ public class AbstractBeanDeployer
    
    protected <T> void createProducerField(AbstractClassBean<?> declaringBean, WBField<T, ?> field)
    {
-      ProducerField<T> bean = ProducerField.of(field, declaringBean, manager);
+      ProducerField<T> bean;
+      if (isPersistenceContextProducerField(field))
+      {
+         bean = PersistenceContextProducerField.of(field, declaringBean, manager);
+      }
+      else if (isEEResourceProducerField(field))
+      {
+         bean = EEResourceProducerField.of(field, declaringBean, manager);
+      }
+      else
+      {
+         bean = ProducerField.of(field, declaringBean, manager);
+      }
       getEnvironment().addBean(bean);
    }
    
@@ -226,6 +242,20 @@ public class AbstractBeanDeployer
              !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(javaClass) && 
              !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(javaClass) && 
              hasSimpleWebBeanConstructor(clazz);
+   }
+   
+   protected boolean isEEResourceProducerField(WBField<?, ?> field)
+   {
+      EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
+      PersistenceApiAbstraction persistenceApiAbstraction = manager.getServices().get(PersistenceApiAbstraction.class);
+      WSApiAbstraction wsApiAbstraction = manager.getServices().get(WSApiAbstraction.class);
+      return field.isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS) || field.isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || field.isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS); 
+   }
+   
+   protected boolean isPersistenceContextProducerField(WBField<?, ?> field)
+   {
+      PersistenceApiAbstraction persistenceApiAbstraction = manager.getServices().get(PersistenceApiAbstraction.class);
+      return field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS); 
    }
    
    private static boolean hasSimpleWebBeanConstructor(WBClass<?> type)

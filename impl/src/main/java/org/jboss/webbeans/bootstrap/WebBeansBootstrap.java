@@ -62,6 +62,7 @@ import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.jboss.webbeans.util.serviceProvider.ServiceLoader;
+import org.jboss.webbeans.ws.WSApiAbstraction;
 
 /**
  * Common bootstrapping functionality that is run at application startup and
@@ -212,6 +213,7 @@ public class WebBeansBootstrap implements Bootstrap
       services.add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
       services.add(JsfApiAbstraction.class, new JsfApiAbstraction(resourceLoader));
       services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
+      services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
       services.add(ServletApiAbstraction.class, new ServletApiAbstraction(resourceLoader));
       // Temporary workaround to provide context for building annotated class
       // TODO expose AnnotatedClass on SPI and allow container to provide impl of this via ResourceLoader

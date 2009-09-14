@@ -29,7 +29,7 @@ import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.util.Names;
 
 /**
- * Represents a producer field bean
+ * Represents a producer field
  * 
  * @author Pete Muir
  * 
@@ -42,12 +42,12 @@ public class ProducerField<T> extends AbstractProducerBean<T, Field>
    private final String id;
    
    /**
-    * Creates a producer field Web Bean
+    * Creates a producer field
     * 
     * @param field The underlying method abstraction
     * @param declaringBean The declaring bean abstraction
     * @param manager the current manager
-    * @return A producer Web Bean
+    * @return A producer field
     */
    public static <T> ProducerField<T> of(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
