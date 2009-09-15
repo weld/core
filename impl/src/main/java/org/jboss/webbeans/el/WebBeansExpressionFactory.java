@@ -34,6 +34,10 @@ public class WebBeansExpressionFactory extends ForwardingExpressionFactory
    
    public WebBeansExpressionFactory(ExpressionFactory expressionFactory)
    {
+      if (expressionFactory == null)
+      {
+         throw new IllegalArgumentException("Cannot pass null expressionFactory");
+      }
       this.delegate = expressionFactory;
    }
    
