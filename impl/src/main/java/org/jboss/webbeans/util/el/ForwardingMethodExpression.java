@@ -55,11 +55,10 @@ public abstract class ForwardingMethodExpression extends MethodExpression
       return delegate().isLiteralText();
    }
    
-   
    @Override
    public boolean equals(Object obj)
    {
-      return delegate().equals(obj);
+      return this == obj || delegate().equals(obj);
    }
    
    @Override

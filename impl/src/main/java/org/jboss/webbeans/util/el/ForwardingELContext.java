@@ -55,7 +55,7 @@ public abstract class ForwardingELContext extends ELContext
    @Override
    public boolean equals(Object obj)
    {
-      return delgate().equals(obj);
+      return this == obj || delgate().equals(obj);
    }
    
    @SuppressWarnings("unchecked")

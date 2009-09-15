@@ -65,7 +65,7 @@ public abstract class ForwardingResolvable implements Resolvable
    @Override
    public boolean equals(Object obj)
    {
-      return delegate().equals(obj);
+      return this == obj || delegate().equals(obj);
    }
 
    @Override

@@ -66,7 +66,7 @@ public abstract class ForwardingELResolver extends ELResolver
    @Override
    public boolean equals(Object obj)
    {
-      return delegate().equals(obj);
+      return this == obj || delegate().equals(obj);
    }
    
    @Override

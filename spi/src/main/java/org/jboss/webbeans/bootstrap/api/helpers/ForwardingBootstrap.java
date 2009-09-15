@@ -63,7 +63,7 @@ public abstract class ForwardingBootstrap implements Bootstrap
    @Override
    public boolean equals(Object obj)
    {
-      return delegate().equals(obj);
+      return this == obj  ||delegate().equals(obj);
    }
 
    public Bootstrap deployBeans()

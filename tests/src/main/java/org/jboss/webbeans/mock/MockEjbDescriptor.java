@@ -178,24 +178,24 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       return builder.toString(); 
    }
    
-   @Override
-   public boolean equals(Object other)
-   {
-      if (other instanceof EjbDescriptor)
-      {
-         EjbDescriptor<T> that = (EjbDescriptor<T>) other;
-         return this.getBeanClass().equals(that.getBeanClass());
-      }
-      else
-      {
-         return false;
-      }
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return getEjbName().hashCode();
-   }
+//   @Override
+//   public boolean equals(Object other)
+//   {
+//      if (other instanceof EjbDescriptor)
+//      {
+//         EjbDescriptor<T> that = (EjbDescriptor<T>) other;
+//         return this.getBeanClass().equals(that.getBeanClass());
+//      }
+//      else
+//      {
+//         return false;
+//      }
+//   }
+//   
+//   @Override
+//   public int hashCode()
+//   {
+//      return getEjbName().hashCode();
+//   }
 
 }

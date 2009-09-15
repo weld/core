@@ -60,7 +60,7 @@ public abstract class ForwardingBeanDeploymentArchive implements BeanDeploymentA
    @Override
    public boolean equals(Object obj)
    {
-      return delegate().equals(obj);
+      return this == obj || delegate().equals(obj);
    }
    
    @Override
