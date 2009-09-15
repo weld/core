@@ -579,7 +579,7 @@
             <listitem>
             
                <para>
-                  If you are integrating the Web Beans into a JSF 
+                  If you are integrating the Web Beans into a JSF
                   environment you must register 
                   <literal>org.jboss.webbeans.jsf.WebBeansPhaseListener</literal>
                   as a phase listener.
@@ -588,9 +588,38 @@
                <para>
                   If you are integrating the Web Beans into a JSF 
                   environment you must register 
-                  <literal>org.jboss.webbeans.jsf.WebBeansApplicationFactory</literal>
-                  as an (wrapping) factory for the <literal>Application</literal>.
+                  <literal>org.jboss.webbeans.el.WebBeansELContextListener</literal>
+                  as as an EL Context listener.
                </para>
+               
+               <para>
+                  If you are integrating the Web Beans into a JSF environment 
+                  you must obtain the bean manager for the module and then call 
+                  <literal>BeanManager.wrapExpressionFactory()</literal>,
+                  passing <literal>Application.getExpressionFactory()</literal> 
+                  as the argument. The wrapped expression factory must be used
+                  in all EL expression evaluations performed by JSF in this web
+                  application. 
+               </para>
+                       
+               <para>
+                  If you are integrating the Web Beans into a JSF environment 
+                  you must obtain the bean manager for the module and then call 
+                  <literal>BeanManager.getELResolver()</literal>,
+                  The returned EL resolver should be registered with JSF for 
+                  this web application. 
+               </para>
+               
+               <tip>
+                  <para>
+                     There are a number of ways you can obtain the bean manager
+                     for the module. You could call 
+                     <literal>Bootstrap.getManager()</literal>, passing in the 
+                     BDA for this module. Alternatively, you could use the
+                     injection into Java EE component classes, or look up the
+                     bean manager in JNDI. 
+                  </para>
+               </tip>
                
                <para>
                   If you are integrating the Web Beans into a JSF environment 
@@ -607,6 +636,49 @@
                      Web Beans only supports JSF 1.2 and above.
                   </para>
                </note>
+            </listitem>
+         </varlistentry>
+         <varlistentry>
+            <term>
+               JSP
+            </term>
+            <listitem>
+               
+               <para>
+                  If you are integrating the Web Beans into a JSP
+                  environment you must register 
+                  <literal>org.jboss.webbeans.el.WebBeansELContextListener</literal>
+                  as as an EL Context listener.
+               </para>
+               
+               <para>
+                  If you are integrating the Web Beans into a JSP environment 
+                  you must obtain the bean manager for the module and then call
+                  <literal>BeanManager.wrapExpressionFactory()</literal>,
+                  passing <literal>Application.getExpressionFactory()</literal> 
+                  as the argument. The wrapped expression factory must be used
+                  in all EL expression evaluations performed by JSP. 
+               </para>
+               
+               <para>
+                  If you are integrating the Web Beans into a JSP environment 
+                  you must obtain the bean manager for the module and then call 
+                  <literal>BeanManager.getELResolver()</literal>,
+                  The returned EL resolver should be registered with JSP for 
+                  this web application. 
+               </para>
+               
+               <tip>
+                  <para>
+                     There are a number of ways you can obtain the bean manager
+                     for the module. You could call 
+                     <literal>Bootstrap.getManager()</literal>, passing in the 
+                     BDA for this module. Alternatively, you could use the
+                     injection into Java EE component classes, or look up the
+                     bean manager in JNDI. 
+                  </para>
+               </tip>
+               
             </listitem>
          </varlistentry>
          <varlistentry>
