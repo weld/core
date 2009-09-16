@@ -339,6 +339,12 @@
          
          <dependency>
             <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-embedded</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
             <artifactId>jboss-test-harness-tomcat</artifactId>
             <version>${jboss.test.harness.version}</version>
          </dependency>

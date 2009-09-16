@@ -1,0 +1,131 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>webbeans-parent</artifactId>
+      <groupId>org.jboss.webbeans</groupId>
+      <version>1.0.0-SNAPSHOT</version>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.webbeans</groupId>
+   <artifactId>webbeans-embedded-tck-runner</artifactId>
+   <name>CDI TCK runner for JBoss Emebedded</name>
+   <description>Aggregates dependencies and run's the CDI TCK on JBoss Embedded</description>
+   
+   <dependencies>
+
+      <dependency>
+         <groupId>org.jboss.webbeans</groupId>
+         <artifactId>jsr299-api</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.webbeans</groupId>
+         <artifactId>webbeans-core</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.webbeans</groupId>
+         <artifactId>webbeans-porting-package</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.testng</groupId>
+         <artifactId>testng</artifactId>
+         <classifier>jdk15</classifier>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.test-harness</groupId>
+         <artifactId>jboss-test-harness-jboss-embedded</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.jsr299.tck</groupId>
+         <artifactId>jsr299-tck-impl</artifactId>
+      </dependency>
+         
+      
+   </dependencies>
+   
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>copy</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                     <goal>copy</goal>
+                  </goals>
+                  <configuration>
+                     <stripVersion>true</stripVersion>
+                     <artifactItems>
+                        <artifactItem>
+                           <groupId>org.jboss.jsr299.tck</groupId>
+                           <artifactId>jsr299-tck-impl</artifactId>
+                           <type>xml</type>
+                           <classifier>suite</classifier>
+                           <overWrite>true</overWrite>
+                        </artifactItem>
+                     </artifactItems>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <suiteXmlFiles>
+                  <suiteXmlFile>${project.build.directory}/dependency/jsr299-tck-impl-suite.xml</suiteXmlFile>
+               </suiteXmlFiles>
+               <argLine>-Xmx256m</argLine>
+               <forkMode>once</forkMode>
+               <systemProperties>
+                  <property>
+                     <name>org.jboss.testharness.standalone</name>
+                     <value>false</value>
+                  </property>
+                  <property>
+                     <name>org.jboss.testharness.container.extraConfigurationDir</name>
+                     <value>../jboss-as</value>
+                  </property>
+                  <property>
+                     <name>org.jboss.testharness.container.forceRestart</name>
+                     <value>true</value>
+                  </property>
+                  <property>
+                     <name>org.jboss.testharness.runIntegrationTests</name>
+                     <value>true</value>
+                  </property>
+                  <property>
+                     <name>org.jboss.testharness.outputDirectory</name>
+                     <value>target</value>
+                  </property>
+               </systemProperties>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>generate-test-report</id>
+                  <phase>test</phase>
+                  <goals>
+                     <goal>report-only</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>
+               <outputName>test-report</outputName>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+   
+   
+
+</project>
