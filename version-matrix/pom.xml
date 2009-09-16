@@ -49,7 +49,7 @@
    <properties>
       <jsr299.tck.version>1.0.0-SNAPSHOT</jsr299.tck.version>
       <webbeans.version>1.0.0-SNAPSHOT</webbeans.version>
-      <webbeans.servlet.version>1.0.0.CR1</webbeans.servlet.version>
+      <webbeans.servlet.version>1.0.0-SNAPSHOT</webbeans.servlet.version>
       <webbeans.se.version>1.0.0-SNAPSHOT</webbeans.se.version>
       <jboss.test.harness.version>1.0.0-SNAPSHOT</jboss.test.harness.version>
    </properties>
@@ -352,7 +352,7 @@
          <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>catalina</artifactId>
-            <version>6.0.18</version>
+            <version>6.0.20</version>
          </dependency>
          
          <dependency>

@@ -24,6 +24,7 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.mock.MockServletContext;
 import org.jboss.webbeans.mock.el.EL;
 import org.jboss.webbeans.servlet.ServletHelper;
+import org.jboss.webbeans.test.harness.AbstractStandaloneContainersImpl;
 import org.jboss.webbeans.util.collections.EnumerationList;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
@@ -43,7 +44,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       {
          getCurrentConfiguration().getExtraPackages().add(AbstractWebBeansTest.class.getPackage().getName());
          getCurrentConfiguration().getExtraPackages().add(EL.class.getPackage().getName());
-         getCurrentConfiguration().getExtraPackages().add(MockServletContext.class.getPackage().getName());
+         //getCurrentConfiguration().getExtraPackages().add(MockServletContext.class.getPackage().getName());
       }
       super.beforeSuite(context);
    }
