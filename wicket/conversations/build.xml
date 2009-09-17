@@ -1,7 +1,0 @@
-<project basedir="." name="Wicket Conversations Example Build" default="restart">
-	
-	<property name="example.name" value="webbeans-conversations-wicket" />
-
-	<import file="../../build.xml" />
-	
-</project>
