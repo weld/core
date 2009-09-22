@@ -8,7 +8,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.webbeans.examples</groupId>
-    <artifactId>hello-world-se</artifactId>
+    <artifactId>webbeans-se-hello-world</artifactId>
     <packaging>jar</packaging>
     <name>Hello World SE</name>
     

@@ -8,7 +8,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.webbeans.examples</groupId>
-    <artifactId>webbeans-numberguess-se</artifactId>
+    <artifactId>webbeans-se-numberguess</artifactId>
     <packaging>jar</packaging>
     <name>Number Guess SE</name>
 
