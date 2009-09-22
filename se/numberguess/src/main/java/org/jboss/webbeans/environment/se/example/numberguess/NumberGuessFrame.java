@@ -24,168 +24,176 @@ import javax.inject.Inject;
 
 /**
  * Swing-based number guess example, main application frame.
+ * 
  * @author Peter Royle
  */
 public class NumberGuessFrame extends javax.swing.JFrame
 {
-    @Inject
-    private Game game;
-    
-    @Inject
-    private MessageGenerator msgGenerator;
+   @Inject
+   private Game game;
 
-    public void start( @Observes AfterDeploymentValidation event )
-    {
-        java.awt.EventQueue.invokeLater( new Runnable()
-            {
-                public void run()
-                {
-                    initComponents();
-                    setVisible( true );
-                }
-            } );
-    }
+   @Inject
+   private MessageGenerator msgGenerator;
 
-    /** This method is called to initialize the form.
-     */
-    @SuppressWarnings( "unchecked" )
-    private void initComponents() {
+   public void start(@Observes AfterDeploymentValidation event)
+   {
+      java.awt.EventQueue.invokeLater(new Runnable()
+      {
+         public void run()
+         {
+            initComponents();
+            setVisible(true);
+         }
+      });
+   }
 
-        borderPanel = new javax.swing.JPanel();
-        gamePanel = new javax.swing.JPanel();
-        inputsPanel = new javax.swing.JPanel();
-        buttonPanel = new javax.swing.JPanel();
-        guessButton = new javax.swing.JButton();
-        replayBtn = new javax.swing.JButton();
-        guessText = new javax.swing.JTextField();
-        remainingGuessesPanel = new javax.swing.JPanel();
-        guessremainLabel = new javax.swing.JLabel();
-        guessesLeftBar = new javax.swing.JProgressBar();
-        mainMsgPanel = new javax.swing.JPanel();
-        mainLabel = new javax.swing.JLabel();
-        messageLabel = new javax.swing.JLabel();
+   /**
+    * This method is called to initialize the form.
+    */
+   @SuppressWarnings("unchecked")
+   private void initComponents()
+   {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.CardLayout());
+      borderPanel = new javax.swing.JPanel();
+      gamePanel = new javax.swing.JPanel();
+      inputsPanel = new javax.swing.JPanel();
+      buttonPanel = new javax.swing.JPanel();
+      guessButton = new javax.swing.JButton();
+      replayBtn = new javax.swing.JButton();
+      guessText = new javax.swing.JTextField();
+      remainingGuessesPanel = new javax.swing.JPanel();
+      guessremainLabel = new javax.swing.JLabel();
+      guessesLeftBar = new javax.swing.JProgressBar();
+      mainMsgPanel = new javax.swing.JPanel();
+      mainLabel = new javax.swing.JLabel();
+      messageLabel = new javax.swing.JLabel();
 
-        borderPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        borderPanel.setLayout(new java.awt.CardLayout());
+      setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+      getContentPane().setLayout(new java.awt.CardLayout());
 
-        gamePanel.setLayout(new java.awt.BorderLayout(6, 6));
+      borderPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+      borderPanel.setLayout(new java.awt.CardLayout());
 
-        inputsPanel.setLayout(new java.awt.BorderLayout(8, 8));
+      gamePanel.setLayout(new java.awt.BorderLayout(6, 6));
 
-        buttonPanel.setLayout(new java.awt.CardLayout());
+      inputsPanel.setLayout(new java.awt.BorderLayout(8, 8));
 
-        guessButton.setText("Guess");
-        guessButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                guessButtonActionPerformed(evt);
-            }
-        });
-        buttonPanel.add(guessButton, "card2");
+      buttonPanel.setLayout(new java.awt.CardLayout());
 
-        replayBtn.setText("Replay!");
-        replayBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                replayBtnActionPerformed(evt);
-            }
-        });
-        buttonPanel.add(replayBtn, "card3");
+      guessButton.setText("Guess");
+      guessButton.addActionListener(new java.awt.event.ActionListener()
+      {
+         public void actionPerformed(java.awt.event.ActionEvent evt)
+         {
+            guessButtonActionPerformed(evt);
+         }
+      });
+      buttonPanel.add(guessButton, "card2");
 
-        inputsPanel.add(buttonPanel, java.awt.BorderLayout.LINE_END);
-        inputsPanel.add(guessText, java.awt.BorderLayout.CENTER);
+      replayBtn.setText("Replay!");
+      replayBtn.addActionListener(new java.awt.event.ActionListener()
+      {
+         public void actionPerformed(java.awt.event.ActionEvent evt)
+         {
+            replayBtnActionPerformed(evt);
+         }
+      });
+      buttonPanel.add(replayBtn, "card3");
 
-        gamePanel.add(inputsPanel, java.awt.BorderLayout.CENTER);
+      inputsPanel.add(buttonPanel, java.awt.BorderLayout.LINE_END);
+      inputsPanel.add(guessText, java.awt.BorderLayout.CENTER);
 
-        remainingGuessesPanel.setLayout(new java.awt.BorderLayout(8, 8));
+      gamePanel.add(inputsPanel, java.awt.BorderLayout.CENTER);
 
-        guessremainLabel.setText("Guesses remaining:  ");
-        remainingGuessesPanel.add(guessremainLabel, java.awt.BorderLayout.LINE_START);
+      remainingGuessesPanel.setLayout(new java.awt.BorderLayout(8, 8));
 
-        guessesLeftBar.setMaximum(Game.MAX_NUM_GUESSES);
-        guessesLeftBar.setValue(Game.MAX_NUM_GUESSES);
-        guessesLeftBar.setPreferredSize(new java.awt.Dimension(10, 14));
-        remainingGuessesPanel.add(guessesLeftBar, java.awt.BorderLayout.CENTER);
+      guessremainLabel.setText("Guesses remaining:  ");
+      remainingGuessesPanel.add(guessremainLabel, java.awt.BorderLayout.LINE_START);
 
-        gamePanel.add(remainingGuessesPanel, java.awt.BorderLayout.PAGE_END);
+      guessesLeftBar.setMaximum(Game.MAX_NUM_GUESSES);
+      guessesLeftBar.setValue(Game.MAX_NUM_GUESSES);
+      guessesLeftBar.setPreferredSize(new java.awt.Dimension(10, 14));
+      remainingGuessesPanel.add(guessesLeftBar, java.awt.BorderLayout.CENTER);
 
-        mainMsgPanel.setLayout(new java.awt.GridLayout(2, 1, 6, 6));
+      gamePanel.add(remainingGuessesPanel, java.awt.BorderLayout.PAGE_END);
 
-        mainLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        mainLabel.setText(msgGenerator.getChallengeMessage());
-        mainMsgPanel.add(mainLabel);
+      mainMsgPanel.setLayout(new java.awt.GridLayout(2, 1, 6, 6));
 
-        messageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        messageLabel.setText(msgGenerator.getResultMessage());
-        mainMsgPanel.add(messageLabel);
+      mainLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+      mainLabel.setText(msgGenerator.getChallengeMessage());
+      mainMsgPanel.add(mainLabel);
 
-        gamePanel.add(mainMsgPanel, java.awt.BorderLayout.PAGE_START);
+      messageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+      messageLabel.setText(msgGenerator.getResultMessage());
+      mainMsgPanel.add(messageLabel);
 
-        borderPanel.add(gamePanel, "card2");
+      gamePanel.add(mainMsgPanel, java.awt.BorderLayout.PAGE_START);
 
-        getContentPane().add(borderPanel, "card2");
+      borderPanel.add(gamePanel, "card2");
 
-        pack();
-    }
+      getContentPane().add(borderPanel, "card2");
 
-    private void guessButtonActionPerformed( java.awt.event.ActionEvent evt )
-    {
-        int guess = -1;
+      pack();
+   }
 
-        try
-        {
-           guess = Integer.parseInt(guessText.getText());
-        } catch (NumberFormatException nfe)
-        {
-           //noop
-        }
+   private void guessButtonActionPerformed(java.awt.event.ActionEvent evt)
+   {
+      int guess = -1;
 
-        game.setGuess( guess );
-        game.check();
-        refreshUI();
+      try
+      {
+         guess = Integer.parseInt(guessText.getText());
+      }
+      catch (NumberFormatException nfe)
+      {
+         // noop
+      }
 
-        if ( game.isGameWon() || game.isGameLost() )
-        {
-            switchButtons();
-        }
-    }
+      game.setGuess(guess);
+      game.check();
+      refreshUI();
 
-    private void replayBtnActionPerformed( java.awt.event.ActionEvent evt )
-    {
-       game.reset();
-       refreshUI();
-       switchButtons();
-    }
+      if (game.isGameWon() || game.isGameLost())
+      {
+         switchButtons();
+      }
+   }
 
-    private void switchButtons()
-    {
-        CardLayout buttonLyt = (CardLayout) buttonPanel.getLayout();
-        buttonLyt.next( buttonPanel );
-    }
+   private void replayBtnActionPerformed(java.awt.event.ActionEvent evt)
+   {
+      game.reset();
+      refreshUI();
+      switchButtons();
+   }
 
-    private void refreshUI()
-    {
-        mainLabel.setText( msgGenerator.getChallengeMessage() );
-        messageLabel.setText( msgGenerator.getResultMessage() );
-        guessText.setText( "" );
-        guessesLeftBar.setValue( game.getRemainingGuesses() );
-        guessText.requestFocus();
-    }
+   private void switchButtons()
+   {
+      CardLayout buttonLyt = (CardLayout) buttonPanel.getLayout();
+      buttonLyt.next(buttonPanel);
+   }
 
-    // swing components
-    private javax.swing.JPanel borderPanel;
-    private javax.swing.JPanel buttonPanel;
-    private javax.swing.JPanel gamePanel;
-    private javax.swing.JButton guessButton;
-    private javax.swing.JTextField guessText;
-    private javax.swing.JProgressBar guessesLeftBar;
-    private javax.swing.JLabel guessremainLabel;
-    private javax.swing.JPanel inputsPanel;
-    private javax.swing.JLabel mainLabel;
-    private javax.swing.JPanel mainMsgPanel;
-    private javax.swing.JLabel messageLabel;
-    private javax.swing.JPanel remainingGuessesPanel;
-    private javax.swing.JButton replayBtn;
+   private void refreshUI()
+   {
+      mainLabel.setText(msgGenerator.getChallengeMessage());
+      messageLabel.setText(msgGenerator.getResultMessage());
+      guessText.setText("");
+      guessesLeftBar.setValue(game.getRemainingGuesses());
+      guessText.requestFocus();
+   }
+
+   // swing components
+   private javax.swing.JPanel borderPanel;
+   private javax.swing.JPanel buttonPanel;
+   private javax.swing.JPanel gamePanel;
+   private javax.swing.JButton guessButton;
+   private javax.swing.JTextField guessText;
+   private javax.swing.JProgressBar guessesLeftBar;
+   private javax.swing.JLabel guessremainLabel;
+   private javax.swing.JPanel inputsPanel;
+   private javax.swing.JLabel mainLabel;
+   private javax.swing.JPanel mainMsgPanel;
+   private javax.swing.JLabel messageLabel;
+   private javax.swing.JPanel remainingGuessesPanel;
+   private javax.swing.JButton replayBtn;
 
 }

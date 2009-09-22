@@ -26,22 +26,23 @@ import javax.inject.Inject;
 public class HelloWorld
 {
 
-    @Inject
-    CommandLineArgsValidator argsVlidator;
+   @Inject
+   CommandLineArgsValidator argsVlidator;
 
-    /**
-     * Prints a hello message using the first name.
-     * @param firstName The first name.
-     */
-    public void printHello( @Observes
-            AfterDeploymentValidation after )
-    {
-        if (!argsVlidator.hasErrors())
-        {
-            System.out.println( "Hello " + argsVlidator.getValidParameters().get( 0 ) );
-        } else
-        {
-            System.out.println( "Please provide just one argument: your first name" );
-        }
-    }
+   /**
+    * Prints a hello message using the first name.
+    * 
+    * @param firstName The first name.
+    */
+   public void printHello(@Observes AfterDeploymentValidation after)
+   {
+      if (!argsVlidator.hasErrors())
+      {
+         System.out.println("Hello " + argsVlidator.getValidParameters().get(0));
+      }
+      else
+      {
+         System.out.println("Please provide just one argument: your first name");
+      }
+   }
 }

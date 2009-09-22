@@ -23,121 +23,122 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 /**
- * This class contains the pure logic of the Number Guess game.
- * On initialization a random number will be selected. Multiple "guesses"
- * as to what that number might be can be made using the 'check' method. The
- * user wins if they can guess the selected number in the alloted amount of
- * tries.
+ * This class contains the pure logic of the Number Guess game. On
+ * initialization a random number will be selected. Multiple "guesses" as to
+ * what that number might be can be made using the 'check' method. The user wins
+ * if they can guess the selected number in the alloted amount of tries.
  * 
  * @author Peter Royle
  */
 @ApplicationScoped
 public class Game implements Serializable
 {
-    public static final int MAX_NUM_GUESSES = 10;
-    
-    private Integer number;
-    private int guess = 0;
-    private int smallest = 0;
-    
-    @Inject @MaxNumber 
-    private int maxNumber;
-    
-    private int biggest;
-    private int remainingGuesses = MAX_NUM_GUESSES;
-    private boolean validNumberRange = true;
+   public static final int MAX_NUM_GUESSES = 10;
 
-    @Inject Generator rndGenerator;
+   private Integer number;
+   private int guess = 0;
+   private int smallest = 0;
 
-    public Game()
-    {
-    }
+   @Inject
+   @MaxNumber
+   private int maxNumber;
 
-    public int getNumber()
-    {
-        return number;
-    }
+   private int biggest;
+   private int remainingGuesses = MAX_NUM_GUESSES;
+   private boolean validNumberRange = true;
 
-    public int getGuess()
-    {
-        return guess;
-    }
+   @Inject
+   Generator rndGenerator;
 
-    public void setGuess( int guess )
-    {
-        this.guess = guess;
-    }
+   public Game()
+   {
+   }
 
-    public int getSmallest()
-    {
-        return smallest;
-    }
+   public int getNumber()
+   {
+      return number;
+   }
 
-    public int getBiggest()
-    {
-        return biggest;
-    }
+   public int getGuess()
+   {
+      return guess;
+   }
 
-    public int getRemainingGuesses()
-    {
-        return remainingGuesses;
-    }
+   public void setGuess(int guess)
+   {
+      this.guess = guess;
+   }
 
-    public boolean isValidNumberRange()
-    {
-        return validNumberRange;
-    }
+   public int getSmallest()
+   {
+      return smallest;
+   }
 
-    public boolean isGameWon()
-    {
-        return guess == number;
-    }
+   public int getBiggest()
+   {
+      return biggest;
+   }
 
-    public boolean isGameLost()
-    {
-        return guess != number && remainingGuesses <= 0;
-    }
+   public int getRemainingGuesses()
+   {
+      return remainingGuesses;
+   }
 
-    public boolean check()
-    {
-        boolean result = false;
+   public boolean isValidNumberRange()
+   {
+      return validNumberRange;
+   }
 
-        if ( checkNewNumberRangeIsValid() )
-        {
-            if ( guess > number )
-            {
-                biggest = guess - 1;
-            }
+   public boolean isGameWon()
+   {
+      return guess == number;
+   }
 
-            if ( guess < number )
-            {
-                smallest = guess + 1;
-            }
+   public boolean isGameLost()
+   {
+      return guess != number && remainingGuesses <= 0;
+   }
 
-            if ( guess == number )
-            {
-                result = true;
-            }
+   public boolean check()
+   {
+      boolean result = false;
 
-            remainingGuesses--;
-        }
+      if (checkNewNumberRangeIsValid())
+      {
+         if (guess > number)
+         {
+            biggest = guess - 1;
+         }
 
-        return result;
-    }
+         if (guess < number)
+         {
+            smallest = guess + 1;
+         }
 
-    private boolean checkNewNumberRangeIsValid()
-    {
-        return validNumberRange = ( ( guess >= smallest ) && ( guess <= biggest ) );
-    }
+         if (guess == number)
+         {
+            result = true;
+         }
 
-    @PostConstruct
-    public void reset()
-    {
-        this.smallest = 0;
-        this.guess = 0;
-        this.remainingGuesses = 10;
-        this.biggest = maxNumber;
-        this.number = rndGenerator.next();
-        System.out.println( "psst! the number is " + this.number );
-    }
+         remainingGuesses--;
+      }
+
+      return result;
+   }
+
+   private boolean checkNewNumberRangeIsValid()
+   {
+      return validNumberRange = ((guess >= smallest) && (guess <= biggest));
+   }
+
+   @PostConstruct
+   public void reset()
+   {
+      this.smallest = 0;
+      this.guess = 0;
+      this.remainingGuesses = 10;
+      this.biggest = maxNumber;
+      this.number = rndGenerator.next();
+      System.out.println("psst! the number is " + this.number);
+   }
 }
