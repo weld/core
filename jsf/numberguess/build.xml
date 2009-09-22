@@ -1,7 +1,6 @@
 <project basedir="." name="Numberguess Example Build" default="restart">
 	
 	<property name="example.name" value="webbeans-numberguess" />
-	<property name="pom.file" value="pom-jboss5.xml" />
 
 	<import file="../../build.xml" />
 	

@@ -44,23 +44,6 @@
       </dependency>
       
       <dependency>
-        <groupId>com.sun.facelets</groupId>
-        <artifactId>jsf-facelets</artifactId>
-        <scope>runtime</scope>
-      </dependency>
-      
-      <!-- <dependency>
-         <groupId>org.jboss.el</groupId>
-         <artifactId>jboss-el</artifactId>
-         <exclusions>
-            <exclusion>
-               <groupId>javax.el</groupId>
-               <artifactId>el-api</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>-->
-      
-      <dependency>
          <groupId>org.glassfish.web</groupId>
          <artifactId>el-impl</artifactId>
          <exclusions>
@@ -70,6 +53,7 @@
             </exclusion>
          </exclusions>
       </dependency>
+      
       <dependency>
       	<groupId>javax.annotation</groupId>
       	<artifactId>jsr250-api</artifactId>
