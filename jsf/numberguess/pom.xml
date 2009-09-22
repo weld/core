@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   
+   <parent>
+      <groupId>org.jboss.webbeans.examples</groupId>
+      <artifactId>webbeans-examples-parent</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+   </parent>
+   
+   <groupId>org.jboss.webbeans.examples.jsf</groupId>
+   <artifactId>webbeans-jsf-numberguess</artifactId>
+   <packaging>war</packaging>
+   <name>Web Beans Examples: Numberguess for JBoss AS 5.x</name>
+   
+   <pluginRepositories>
+        <pluginRepository>
+            <id>codehaus snapshot repository</id>
+            <url>http://snapshots.repository.codehaus.org/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+   
+   <dependencies>
+      <dependency>
+         <groupId>org.testng</groupId>
+         <artifactId>testng</artifactId>
+         <scope>test</scope>
+         <classifier>jdk15</classifier>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.webbeans</groupId>
+         <artifactId>jsr299-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      
+      <dependency>
+         <groupId>javax.faces</groupId>
+         <artifactId>jsf-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>com.sun.facelets</groupId>
+        <artifactId>jsf-facelets</artifactId>
+        <scope>runtime</scope>
+      </dependency>
+      
+      <!-- <dependency>
+         <groupId>org.jboss.el</groupId>
+         <artifactId>jboss-el</artifactId>
+         <exclusions>
+            <exclusion>
+               <groupId>javax.el</groupId>
+               <artifactId>el-api</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>-->
+      
+      <dependency>
+         <groupId>org.glassfish.web</groupId>
+         <artifactId>el-impl</artifactId>
+         <exclusions>
+            <exclusion>
+               <groupId>javax.el</groupId>
+               <artifactId>el-api</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+      	<groupId>javax.annotation</groupId>
+      	<artifactId>jsr250-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      
+   </dependencies>
+   
+   <build>
+      <finalName>webbeans-numberguess</finalName>
+   </build>
+   
+</project>
+
