@@ -32,7 +32,7 @@
 	<property name="artifact.dir" value="${artifact.target.dir}/${example.name}" />
 
 	<target name="package">
-		<maven target="package" basedir="${basedir}">
+		<maven target="install" basedir="${basedir}">
 			<arg line="-f ${pom.file}" />
 		</maven>
 	</target>

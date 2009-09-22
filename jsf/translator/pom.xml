@@ -24,19 +24,19 @@
    <dependencyManagement>
       <dependencies>
          <dependency>
-            <groupId>org.jboss.webbeans.examples.translator</groupId>
-            <artifactId>webbeans-translator-war</artifactId>
+            <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
+            <artifactId>webbeans-jsf-translator-war</artifactId>
             <version>${project.version}</version>
             <type>war</type>
          </dependency>
          <dependency>
-            <groupId>org.jboss.webbeans.examples.translator</groupId>
-            <artifactId>webbeans-translator-ear</artifactId>
+            <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
+            <artifactId>webbeans-jsf-translator-ear</artifactId>
             <version>${project.version}</version>
          </dependency>
          <dependency>
-            <groupId>org.jboss.webbeans.examples.translator</groupId>
-            <artifactId>webbeans-translator-ejb</artifactId>
+            <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
+            <artifactId>webbeans-jsf-translator-ejb</artifactId>
             <version>${project.version}</version>
             <type>ejb</type>
          </dependency>

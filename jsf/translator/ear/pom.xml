@@ -26,14 +26,14 @@
    <dependencies>
    
       <dependency>
-         <groupId>org.jboss.webbeans.examples.translator</groupId>
-         <artifactId>webbeans-translator-ejb</artifactId>
+         <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
+         <artifactId>webbeans-jsf-translator-ejb</artifactId>
          <type>ejb</type>
       </dependency>
       
       <dependency>
-         <groupId>org.jboss.webbeans.examples.translator</groupId>
-         <artifactId>webbeans-translator-war</artifactId>
+         <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
+         <artifactId>webbeans-jsf-translator-war</artifactId>
          <type>war</type>
       </dependency>
    
@@ -66,8 +66,8 @@
             <configuration>
                <modules>
                   <webModule>
-                     <groupId>org.jboss.webbeans.examples.translator</groupId>
-                     <artifactId>webbeans-translator-war</artifactId>
+                     <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
+                     <artifactId>webbeans-jsf-translator-war</artifactId>
                      <contextRoot>/webbeans-translator</contextRoot>
                   </webModule>
                </modules>
