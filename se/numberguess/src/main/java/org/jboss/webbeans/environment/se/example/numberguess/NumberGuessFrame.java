@@ -19,23 +19,20 @@ package org.jboss.webbeans.environment.se.example.numberguess;
 import java.awt.CardLayout;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Current;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.inject.Inject;
 
 /**
  * Swing-based number guess example, main application frame.
  * @author Peter Royle
  */
-public class NumberGuessFrame
-    extends javax.swing.JFrame
+public class NumberGuessFrame extends javax.swing.JFrame
 {
-    private @Current Game game;
-    private @Current MessageGenerator msgGenerator;
-
-    /** Creates new form NumberGuessFrame */
-    public NumberGuessFrame()
-    {
-    }
+    @Inject
+    private Game game;
+    
+    @Inject
+    private MessageGenerator msgGenerator;
 
     public void start( @Observes AfterDeploymentValidation event )
     {

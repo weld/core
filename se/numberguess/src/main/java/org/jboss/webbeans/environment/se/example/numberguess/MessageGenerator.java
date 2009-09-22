@@ -16,7 +16,7 @@
  */
 package org.jboss.webbeans.environment.se.example.numberguess;
 
-import javax.enterprise.inject.Current;
+import javax.inject.Inject;
 
 /**
  * This class generates on demand appropriate messages depending on the current
@@ -25,7 +25,7 @@ import javax.enterprise.inject.Current;
  */
 public class MessageGenerator
 {
-    @Current Game game;
+    @Inject Game game;
 
     public String getChallengeMessage()
     {

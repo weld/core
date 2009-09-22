@@ -22,8 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
 @ApplicationScoped
-public class Generator
-    implements Serializable
+public class Generator implements Serializable
 {
     private static final long serialVersionUID = -7213673465118041882L;
     private java.util.Random random = new java.util.Random( System.currentTimeMillis() );

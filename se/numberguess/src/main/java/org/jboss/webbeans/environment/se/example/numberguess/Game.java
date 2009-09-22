@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Current;
+import javax.inject.Inject;
 
 /**
  * This class contains the pure logic of the Number Guess game.
@@ -32,20 +32,22 @@ import javax.enterprise.inject.Current;
  * @author Peter Royle
  */
 @ApplicationScoped
-public class Game
-    implements Serializable
+public class Game implements Serializable
 {
     public static final int MAX_NUM_GUESSES = 10;
     
     private Integer number;
     private int guess = 0;
     private int smallest = 0;
-    @MaxNumber private int maxNumber;
+    
+    @Inject @MaxNumber 
+    private int maxNumber;
+    
     private int biggest;
     private int remainingGuesses = MAX_NUM_GUESSES;
     private boolean validNumberRange = true;
 
-    @Current Generator rndGenerator;
+    @Inject Generator rndGenerator;
 
     public Game()
     {
