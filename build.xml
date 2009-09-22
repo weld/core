@@ -11,6 +11,8 @@
 	
 	<property name="final.url" value="http://localhost:8080/${example.name}" />
 	
+	<property name="pom.file" value="pom.xml" />
+	
 	<property name="type" value="war" />
 	
 	<condition property="war">
@@ -30,7 +32,9 @@
 	<property name="artifact.dir" value="${artifact.target.dir}/${example.name}" />
 	
 	<target name="package">
-		 <maven target="package" basedir="${basedir}"/>
+		<maven target="package" basedir="${basedir}">
+		   <arg line="-f ${pom.file}" />
+		</maven>
 	</target>
 	
 	<target name="explode" depends="package">
@@ -58,7 +62,9 @@
    </target>
 	
 	<target name="clean">
-		<maven target="clean" basedir="${basedir}"/>
+		<maven target="clean" basedir="${basedir}">
+			<arg line="-f ${pom.file}" />
+	   </maven>
 	</target>
 	
 	<target name="restart.war" depends="explode" if="war">
