@@ -3,8 +3,8 @@ package org.jboss.webbeans.examples.translator;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Current;
-import javax.enterprise.inject.Named;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Stateful
 @RequestScoped
@@ -12,7 +12,8 @@ import javax.enterprise.inject.Named;
 public class TranslatorControllerBean implements TranslatorController
 {
    
-   @Current TextTranslator translator;
+   @Inject
+   private TextTranslator translator;
    
    private String inputText;
    

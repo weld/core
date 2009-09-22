@@ -25,7 +25,7 @@
 	<condition property="artifact.target.dir" value="${basedir}/target">
 		<equals arg1="${type}" arg2="war" />
 	</condition>
-	<condition property="artifact.target.dir" value="${basedir}/${example.name}-ear/target">
+	<condition property="artifact.target.dir" value="${basedir}/ear/target">
 		<equals arg1="${type}" arg2="ear" />
 	</condition>
 

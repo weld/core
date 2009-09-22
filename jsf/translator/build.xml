@@ -3,6 +3,6 @@
 	<property name="example.name" value="webbeans-translator" />
 	<property name="type" value="ear" />
 
-	<import file="../build.xml" />
+	<import file="../../build.xml" />
 	
 </project>
