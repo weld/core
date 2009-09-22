@@ -37,6 +37,12 @@
 		</maven>
 	</target>
 
+   <target name="clean">
+      <maven target="clean" basedir="${basedir}">
+         <arg line="-f ${pom.file}" />
+      </maven>
+   </target>
+
 	<target name="explode" depends="package">
 		<mkdir dir="${jboss.home}/server/default/deploy/${example.name}.${type}" />
 		<copy todir="${jboss.home}/server/default/deploy/${example.name}.${type}">
@@ -59,12 +65,6 @@
 	<target name="tomcat.deploy" depends="package">
 		<copy todir="${tomcat.home}/webapps/" file="${artifact.target.dir}/${example.name}.${type}" />
 		<echo message="The app can be accessed at ${final.url}" />
-	</target>
-
-	<target name="clean">
-		<maven target="clean" basedir="${basedir}">
-			<arg line="-f ${pom.file}" />
-		</maven>
 	</target>
 
 	<target name="restart.war" depends="explode" if="war">
