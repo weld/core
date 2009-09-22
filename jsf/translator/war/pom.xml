@@ -3,13 +3,13 @@
    <modelVersion>4.0.0</modelVersion>
    
    <parent>
-      <groupId>org.jboss.webbeans.examples.translator</groupId>
-      <artifactId>parent</artifactId>
+      <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
+      <artifactId>webbeans-jsf-translator-parent</artifactId>
       <version>1.0.0-SNAPSHOT</version>
    </parent>
    
-   <groupId>org.jboss.webbeans.examples.translator</groupId>
-   <artifactId>webbeans-translator-war</artifactId>
+   <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
+   <artifactId>webbeans-jsf-translator-war</artifactId>
    <packaging>war</packaging>
    <name>Web Beans Examples: Translator (war)</name>
    

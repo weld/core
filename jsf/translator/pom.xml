@@ -6,8 +6,8 @@
       <artifactId>webbeans-examples-parent</artifactId>
       <version>1.0.0-SNAPSHOT</version>
    </parent>
-   <groupId>org.jboss.webbeans.examples.translator</groupId>
-   <artifactId>parent</artifactId>
+   <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
+   <artifactId>webbeans-jsf-translator-parent</artifactId>
    <packaging>pom</packaging>
    <name>Web Beans Examples: Translator (parent)</name>
 
@@ -16,9 +16,9 @@
    </description>
 
    <modules>
-      <module>webbeans-translator-war</module>
-      <module>webbeans-translator-ejb</module>
-      <module>webbeans-translator-ear</module>
+      <module>war</module>
+      <module>ejb</module>
+      <module>ear</module>
    </modules>
 
    <dependencyManagement>

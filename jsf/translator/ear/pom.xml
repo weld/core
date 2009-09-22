@@ -3,13 +3,13 @@
    <modelVersion>4.0.0</modelVersion>
    
    <parent>
-      <groupId>org.jboss.webbeans.examples.translator</groupId>
-      <artifactId>parent</artifactId>
+      <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
+      <artifactId>webbeans-jsf-translator-parent</artifactId>
       <version>1.0.0-SNAPSHOT</version>
    </parent>
    
-   <groupId>org.jboss.webbeans.examples</groupId>
-   <artifactId>webbeans-translator-ear</artifactId>
+   <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
+   <artifactId>webbeans-jsf-translator-ear</artifactId>
    <packaging>ear</packaging>
    <name>Web Beans Examples: Translator (ear)</name>
    
