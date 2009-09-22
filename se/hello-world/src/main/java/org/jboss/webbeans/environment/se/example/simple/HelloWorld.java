@@ -17,8 +17,8 @@
 package org.jboss.webbeans.environment.se.example.simple;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Current;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.inject.Inject;
 
 /**
  * @author Peter Royle
@@ -26,7 +26,7 @@ import javax.enterprise.inject.spi.AfterDeploymentValidation;
 public class HelloWorld
 {
 
-    @Current
+    @Inject
     CommandLineArgsValidator argsVlidator;
 
     /**

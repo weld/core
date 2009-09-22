@@ -19,8 +19,10 @@ package org.jboss.webbeans.environment.se.example.simple;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Initializer;
+import javax.inject.Inject;
+
 import org.jboss.webbeans.environment.se.bindings.Parameters;
 
 /**
@@ -31,10 +33,11 @@ import org.jboss.webbeans.environment.se.bindings.Parameters;
 public class CommandLineArgsValidator
 {
 
-    private @Parameters List<String> validParams;
+    @Inject @Parameters
+    private List<String> validParams;
     private List<String> errors = new ArrayList<String>();
 
-    @Initializer
+    @Inject
     public void checkParameters()
     {
         if (validParams.size() != 1)
