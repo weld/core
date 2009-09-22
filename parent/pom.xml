@@ -140,6 +140,15 @@
                </executions>
             </plugin>
             <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-eclipse-plugin</artifactId>
+               <configuration>
+                  <classpathContainers>
+                     <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+                  </classpathContainers>
+               </configuration>
+            </plugin>
+            <plugin>
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>buildnumber-maven-plugin</artifactId>
                <executions>
