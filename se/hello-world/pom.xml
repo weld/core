@@ -7,7 +7,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jboss.webbeans.examples</groupId>
+    <groupId>org.jboss.webbeans.examples.se</groupId>
     <artifactId>webbeans-se-hello-world</artifactId>
     <packaging>jar</packaging>
     <name>Hello World SE</name>
