@@ -8,9 +8,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.enterprise.inject.BindingType;
+import javax.inject.Qualifier;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({TYPE, METHOD, FIELD})
-@BindingType
+@Qualifier
 public @interface LoggedIn {}

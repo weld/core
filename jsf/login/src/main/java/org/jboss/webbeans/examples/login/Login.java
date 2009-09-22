@@ -5,16 +5,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Current;
-import javax.enterprise.inject.Named;
 import javax.enterprise.inject.Produces;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @SessionScoped @Named
 public class Login implements Serializable {
 
-    @Current Credentials credentials;
+    @Inject Credentials credentials;
     //@PersistenceContext EntityManager userDatabase;
 
     private User user;
@@ -47,7 +47,8 @@ public class Login implements Serializable {
        return user!=null;
     }
     
-    @Produces @LoggedIn User getCurrentUser() {
+    @Produces @LoggedIn 
+    public User getCurrentUser() {
         return user;
     }
 

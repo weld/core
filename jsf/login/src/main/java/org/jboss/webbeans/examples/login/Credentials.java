@@ -3,9 +3,10 @@ package org.jboss.webbeans.examples.login;
 import java.io.Serializable;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Named;
+import javax.enterprise.inject.Default;
+import javax.inject.Named;
 
-@RequestScoped @Named
+@RequestScoped @Named @Default
 public class Credentials implements Serializable {
 	
     private String username;
