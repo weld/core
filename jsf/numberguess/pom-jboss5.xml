@@ -11,7 +11,7 @@
    <groupId>org.jboss.webbeans.examples</groupId>
    <artifactId>webbeans-numberguess</artifactId>
    <packaging>war</packaging>
-   <name>Web Beans Examples: Numberguess</name>
+   <name>Web Beans Examples: Numberguess for JBoss AS 5.x</name>
    
    <pluginRepositories>
         <pluginRepository>

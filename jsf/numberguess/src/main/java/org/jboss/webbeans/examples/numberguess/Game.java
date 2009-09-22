@@ -5,11 +5,12 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Named;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Named
 @SessionScoped
@@ -20,13 +21,13 @@ public class Game implements Serializable
    private int guess;
    private int smallest;
    
-   @MaxNumber
+   @Inject @MaxNumber
    private int maxNumber;
    
    private int biggest;
    private int remainingGuesses;
    
-   @Random Instance<Integer> randomNumber;
+   @Inject @Random Instance<Integer> randomNumber;
    
    public Game()
    {
