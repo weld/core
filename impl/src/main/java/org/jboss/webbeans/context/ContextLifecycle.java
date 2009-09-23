@@ -116,11 +116,11 @@ public class ContextLifecycle implements Lifecycle, Service
    
    public void cleanup() 
    {
-      applicationContext.cleanup();
-      sessionContext.cleanup();
-      conversationContext.cleanup();
-      requestContext.cleanup();
       dependentContext.cleanup();
+      requestContext.cleanup();
+      conversationContext.cleanup();
+      sessionContext.cleanup();
+      applicationContext.cleanup();
    }
    
    public ApplicationContext getApplicationContext()
