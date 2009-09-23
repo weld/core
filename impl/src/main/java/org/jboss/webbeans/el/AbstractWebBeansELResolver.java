@@ -16,18 +16,17 @@
  */
 package org.jboss.webbeans.el;
 
+import static org.jboss.webbeans.el.ELCreationalContextStack.getCreationalContextStore;
+
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.Container;
 
 /**
  * An EL-resolver against the named beans
@@ -36,18 +35,6 @@ import org.jboss.webbeans.Container;
  */
 public abstract class AbstractWebBeansELResolver extends ELResolver
 {
-   
-   private static final Contextual<?> CONTEXTUAL = new Contextual<Object>()
-   {
-
-      public Object create(CreationalContext<Object> creationalContext)
-      {
-         return null;
-      }
-
-      public void destroy(Object instance, CreationalContext<Object> creationalContext) {}
-      
-   };
    
    protected abstract BeanManagerImpl getManager(ELContext context);
 
@@ -150,25 +137,6 @@ public abstract class AbstractWebBeansELResolver extends ELResolver
    @Override
    public void setValue(ELContext context, Object base, Object property, Object value)
    {
-   }
-   
-   private static ELCreationalContextStack getCreationalContextStore(ELContext context)
-   {
-      Object o = context.getContext(ELCreationalContextStack.class);
-      
-      if (!(o instanceof ELCreationalContextStack))
-      {
-         ELCreationalContextStack store = ELCreationalContextStack.addToContext(context);
-         o = store;
-      }
-      ELCreationalContextStack store = (ELCreationalContextStack) o;
-      if (store.isEmpty()) 
-      {
-         // TODO need to use correct manager for module
-         ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
-         store.push(creationalContext);
-      }
-      return (ELCreationalContextStack) o;
    }
 
 }

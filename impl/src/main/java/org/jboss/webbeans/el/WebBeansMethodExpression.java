@@ -16,6 +16,8 @@
  */
 package org.jboss.webbeans.el;
 
+import static org.jboss.webbeans.el.ELCreationalContextStack.getCreationalContextStore;
+
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
@@ -91,16 +93,6 @@ public class WebBeansMethodExpression extends ForwardingMethodExpression
          getCreationalContextStore(context).pop();
          creationalContext.release();
       }
-   }
-   
-   private ELCreationalContextStack getCreationalContextStore(ELContext context)
-   {
-      Object o = context.getContext(ELCreationalContextStack.class);
-      if (!(o instanceof ELCreationalContextStack))
-      {
-         throw new IllegalStateException("Something went wrong with the ELContext, expecting a CreationalContextStore to be present, but instead got " + o);
-      }
-      return (ELCreationalContextStack) o;
    }
 
 }
