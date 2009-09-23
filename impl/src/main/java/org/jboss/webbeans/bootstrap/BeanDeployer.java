@@ -74,7 +74,7 @@ public class BeanDeployer extends AbstractBeanDeployer
       return this;
    }
    
-   private <X> ProcessAnnotatedTypeImpl<X> createProcessAnnotatedTypeEvent(Class<X> clazz, ClassTransformer classTransformer)
+   private static <X> ProcessAnnotatedTypeImpl<X> createProcessAnnotatedTypeEvent(Class<X> clazz, ClassTransformer classTransformer)
    {
       WBClass<X> annotatedType = classTransformer.loadClass(clazz);
       return new ProcessAnnotatedTypeImpl<X>(annotatedType) {};

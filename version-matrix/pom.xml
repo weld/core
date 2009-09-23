@@ -202,13 +202,13 @@
          <dependency>
             <groupId>javax.faces</groupId>
             <artifactId>jsf-api</artifactId>
-            <version>1.2_12</version>
+            <version>1.2_13</version>
          </dependency>
          
          <dependency>
             <groupId>javax.faces</groupId>
             <artifactId>jsf-impl</artifactId>
-            <version>1.2_12</version>
+            <version>1.2_13</version>
          </dependency>
          
          <dependency>

@@ -31,12 +31,15 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.security.AccessControlException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Qualifier;
 
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.reflection.ParameterizedTypeImpl;
 
 /**
@@ -47,6 +50,8 @@ import org.jboss.webbeans.util.reflection.ParameterizedTypeImpl;
  */
 public class Reflections
 {
+   
+   private static final Log log = Logging.getLog(Reflections.class);
    
    private static final Type[] EMPTY_TYPES = {};
    
@@ -129,10 +134,18 @@ public class Reflections
       @SuppressWarnings("unchecked")
       private void discoverFromClass(Class<?> clazz)
       {
-         discoverTypes(resolveType(type, clazz.getGenericSuperclass()));
-         for (Type c : clazz.getGenericInterfaces())
+         try
          {
-            discoverTypes(resolveType(type, c));
+            discoverTypes(resolveType(type, clazz.getGenericSuperclass()));
+            for (Type c : clazz.getGenericInterfaces())
+            {
+               discoverTypes(resolveType(type, c));
+            }
+         }
+         catch (AccessControlException e)
+         {
+            // TODO Hmm, is this a hack?
+            log.trace("Security exception scanning " + clazz.getName(), e);
          }
       }
       
