@@ -1,18 +1,26 @@
-Web Beans Numberguess Example (Servlet Container)
-=================================================
+Web Beans Numberguess Example
+==============================
 
 This example demonstrates the use of Web Beans in a Servlet container
-environment (Tomcat 6 / Jetty 6) and in JBoss AS. No alterations are 
-expected to be made to the Servlet container. All services are 
+(Tomcat 6 / Jetty 6) and in as a non-EJB application JBoss AS. No alterations 
+are expeccted to be made to the container. All services are 
 self-contained within the deployment.
 
-This example uses a Maven 2 build. Execute the following command to build the
-WAR. The WAR will will be located in the target directory after completion of
-the build.
+This example uses a Maven 2 build, and an ant script to deploy to JBoss AS. 
+Execute the following command to build the WAR. The WAR will will be located 
+in the target directory after completion of the build.
 
  mvn
 
 Now you're ready to deploy.
+
+== Deploying to JBoss AS
+
+Make sure you have set the path to JBoss AS in ../../local.build.properties, using
+jboss.home as the key.
+
+Now, type ant restart to deploy the application to JBoss AS. You can access it
+at http://localhost:8080/webbeans-numberguess
 
 == Deploying with an embedded servlet container
 
