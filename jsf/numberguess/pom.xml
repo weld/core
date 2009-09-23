@@ -195,6 +195,96 @@
       </profile>
       
       <profile>
+         <id>gae</id>
+         <dependencies>
+
+            <dependency>
+               <groupId>javax.faces</groupId>
+               <artifactId>jsf-api</artifactId>
+               <version>1.2_12</version>
+            </dependency>
+            
+            <dependency>
+               <groupId>javax.faces</groupId>
+               <artifactId>jsf-impl</artifactId>
+               <scope>runtime</scope>
+               <version>1.2_12</version>
+            </dependency>
+            
+            <dependency>
+               <groupId>org.jboss.webbeans.servlet</groupId>
+               <artifactId>webbeans-servlet</artifactId>
+               <scope>runtime</scope>
+            </dependency>
+            
+            <dependency>
+               <groupId>com.sun.facelets</groupId>
+               <artifactId>jsf-facelets</artifactId>
+            </dependency>
+            
+            <dependency>
+               <groupId>javax.el</groupId>
+               <artifactId>el-api</artifactId>
+            </dependency>
+            
+         </dependencies>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-war-plugin</artifactId>
+                  <configuration>
+                     <webResources>
+                        <resource>
+                           <directory>src/main/webapp-gae</directory>
+                           <filtering>false</filtering>
+                        </resource>
+                     </webResources>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <groupId>com.pyx4j</groupId>
+                  <artifactId>maven-junction-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                           <goal>link</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-eclipse-plugin</artifactId>
+                  <configuration>
+                     <classpathContainers>
+                        <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+                        <classpathContainer>com.google.appengine.eclipse.core.GAE_CONTAINER</classpathContainer>
+                     </classpathContainers>
+                     <additionalBuildcommands>
+                        <buildcommand>com.google.appengine.eclipse.core.projectValidator</buildcommand>
+                     </additionalBuildcommands>
+                     <additionalProjectnatures>
+                        <projectnature>com.google.appengine.eclipse.core.gaeNature</projectnature>
+                     </additionalProjectnatures>
+                     <additionalConfig>
+                        <file>
+                           <name>.settings/com.google.appengine.eclipse.core.prefs</name>
+                           <content>
+<![CDATA[#Wed Sep 23 16:29:55 BST 2009
+eclipse.preferences.version=1
+filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.jar|datanucleus-appengine-1.0.3.jar|datanucleus-core-1.1.5.jar|datanucleus-jpa-1.1.5.jar|geronimo-jpa_3.0_spec-1.1.1.jar|geronimo-jta_1.1_spec-1.1.1.jar|jdo2-api-2.3-eb.jar]]>
+                           </content>
+                        </file>
+                     </additionalConfig>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      
+      <profile>
          <id>jetty-ide</id>
          <dependencies>
          
@@ -276,7 +366,28 @@
                <warSourceExcludes>WEB-INF/classes/**,WEB-INF/lib/**</warSourceExcludes>
             </configuration>
          </plugin>
-         
+         <plugin>
+            <groupId>com.pyx4j</groupId>
+            <artifactId>maven-junction-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>unlink</id>
+                  <phase>clean</phase>
+                  <goals>
+                     <goal>unlink</goal>
+                  </goals>
+              </execution>
+          </executions>
+          <configuration>
+              <links>
+                  <!-- link src/main/webapp -> war/ for GAE Eclipse plugin -->
+                  <link>
+                      <dst>${basedir}/war</dst>
+                      <src>${basedir}/src/main/webapp</src>
+                  </link>
+               </links>
+            </configuration>
+         </plugin>
          <plugin>
             <artifactId>maven-clean-plugin</artifactId>
             <configuration>
