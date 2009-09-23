@@ -119,6 +119,12 @@
             </dependency>
             
             <dependency>
+               <groupId>javax.servlet</groupId>
+               <artifactId>jstl</artifactId>
+               <scope>runtime</scope>
+            </dependency>
+            
+            <dependency>
                <groupId>org.jboss.webbeans.servlet</groupId>
                <artifactId>webbeans-servlet</artifactId>
                <scope>runtime</scope>
@@ -206,7 +212,7 @@
                <filesets>
                   <fileset>
                      <!-- clean up files from war:inplace -->
-                     <directory>WebContent</directory>
+                     <directory>src/main/webapp</directory>
                      <includes>
                         <include>WEB-INF/classes/**</include>
                         <include>WEB-INF/lib/**</include>

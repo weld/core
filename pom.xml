@@ -76,9 +76,25 @@
       <module>jsf/login</module>
       <module>se/numberguess</module>
       <module>se/hello-world</module>
-      <module>jsf/servlet-numberguess</module>
       <module>wicket/numberguess</module>
    </modules>
+   
+   <dependencyManagement>
+      <dependencies>
+      
+         <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+            <version>2.0.0-RC</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+            <version>2.0.0-RC</version>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
 
    <build>
       <plugins>
