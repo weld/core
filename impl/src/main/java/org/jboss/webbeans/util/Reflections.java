@@ -847,7 +847,7 @@ public class Reflections
    
    public static Field ensureAccessible(Field field)
    {
-      if (!field.isAccessible() && !field.getDeclaringClass().getPackage().getName().startsWith("java.util"))
+      if (!field.isAccessible() && !isIgnorePackage(field.getDeclaringClass().getPackage()))
       {
          field.setAccessible(true);
       }
@@ -856,7 +856,7 @@ public class Reflections
    
    public static Method ensureAccessible(Method method)
    {
-      if (!method.isAccessible() && !method.getDeclaringClass().getPackage().getName().startsWith("java.util"))
+      if (!method.isAccessible() && !isIgnorePackage(method.getDeclaringClass().getPackage()))
       {
          method.setAccessible(true);
       }
@@ -865,11 +865,25 @@ public class Reflections
    
    public static <T> Constructor<T> ensureAccessible(Constructor<T> constructor)
    {
-      if (!constructor.isAccessible() && !constructor.getDeclaringClass().getPackage().getName().startsWith("java.util"))
+      Class<?> c = constructor.getDeclaringClass();
+      Package p = c.getPackage();
+      if (!constructor.isAccessible() && !isIgnorePackage(p))
       {
          constructor.setAccessible(true);
       }
       return constructor;
+   }
+   
+   private static boolean isIgnorePackage(Package pkg)
+   {
+      if (pkg != null)
+      {
+         return pkg.getName().startsWith("java.lang");
+      }
+      else
+      {
+         return false;
+      }
    }
 
 }
