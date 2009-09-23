@@ -51,11 +51,32 @@
       <webbeans.version>1.0.0-SNAPSHOT</webbeans.version>
       <webbeans.servlet.version>1.0.0-SNAPSHOT</webbeans.servlet.version>
       <webbeans.se.version>1.0.0-SNAPSHOT</webbeans.se.version>
+      <webbeans.wicket.version>1.0.0-SNAPSHOT</webbeans.wicket.version>
       <jboss.test.harness.version>1.0.0-SNAPSHOT</jboss.test.harness.version>
+      <jetty.version>6.1.21</jetty.version>
+      <wicket.version>1.3.5.jboss1</wicket.version>
    </properties>
    
    <dependencyManagement>
       <dependencies>
+      
+         <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket</artifactId>
+            <version>${wicket.version}</version>
+         </dependency>
+      
+         <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>${jetty.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-plus</artifactId>
+            <version>${jetty.version}</version>
+         </dependency>
 
          <dependency>
             <groupId>org.testng</groupId>
@@ -146,6 +167,12 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.4.2</version>
          </dependency>
 
          <dependency>
@@ -293,13 +320,6 @@
             <artifactId>webbeans-se</artifactId>
             <version>${webbeans.se.version}</version>
          </dependency>
-
-         <!-- Deprecated -->
-         <dependency>
-            <groupId>org.jboss.webbeans</groupId>
-            <artifactId>se-module</artifactId>
-            <version>${webbeans.se.version}</version>
-         </dependency>
          
          <dependency>
             <groupId>org.jboss.webbeans.servlet</groupId>
@@ -311,6 +331,12 @@
             <groupId>org.jboss.webbeans.servlet</groupId>
             <artifactId>webbeans-servlet</artifactId>
             <version>${webbeans.servlet.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.webbeans</groupId>
+            <artifactId>webbeans-wicket</artifactId>
+            <version>${webbeans.wicket.version}</version>
          </dependency>
 
          <dependency>
@@ -505,7 +531,7 @@
             <plugin>
                <groupId>org.mortbay.jetty</groupId>
                <artifactId>maven-jetty-plugin</artifactId>
-               <version>6.1.16</version>
+               <version>${jetty.version}</version>
             </plugin>
             <plugin>
                <groupId>org.twdata.maven</groupId>
