@@ -48,18 +48,6 @@
          <groupId>javax.faces</groupId>
          <artifactId>jsf-api</artifactId>
       </dependency>
-      
-      <dependency>
-         <groupId>org.glassfish.web</groupId>
-         <artifactId>el-impl</artifactId>
-         <scope>runtime</scope>
-         <exclusions>
-            <exclusion>
-               <groupId>javax.el</groupId>
-               <artifactId>el-api</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
             
    </dependencies>
    
@@ -78,6 +66,19 @@
                <groupId>javax.faces</groupId>
                <artifactId>jsf-api</artifactId>
                <scope>provided</scope>
+            </dependency>
+            
+                  
+            <dependency>
+               <groupId>org.glassfish.web</groupId>
+               <artifactId>el-impl</artifactId>
+               <scope>runtime</scope>
+               <exclusions>
+                  <exclusion>
+                     <groupId>javax.el</groupId>
+                     <artifactId>el-api</artifactId>
+                  </exclusion>
+               </exclusions>
             </dependency>
             
          </dependencies>
@@ -130,6 +131,18 @@
                <scope>runtime</scope>
             </dependency>
             
+            <dependency>
+               <groupId>org.glassfish.web</groupId>
+               <artifactId>el-impl</artifactId>
+               <scope>runtime</scope>
+               <exclusions>
+                  <exclusion>
+                     <groupId>javax.el</groupId>
+                     <artifactId>el-api</artifactId>
+                  </exclusion>
+               </exclusions>
+            </dependency>
+            
          </dependencies>
          <build>
             <plugins>
@@ -175,6 +188,18 @@
                <scope>runtime</scope>
             </dependency>
             
+            <dependency>
+               <groupId>org.glassfish.web</groupId>
+               <artifactId>el-impl</artifactId>
+               <scope>runtime</scope>
+               <exclusions>
+                  <exclusion>
+                     <groupId>javax.el</groupId>
+                     <artifactId>el-api</artifactId>
+                  </exclusion>
+               </exclusions>
+            </dependency>
+            
          </dependencies>
          <build>
             <plugins>
@@ -201,14 +226,14 @@
             <dependency>
                <groupId>javax.faces</groupId>
                <artifactId>jsf-api</artifactId>
-               <version>1.2_12</version>
+               <version>1.2_13</version>
             </dependency>
             
             <dependency>
                <groupId>javax.faces</groupId>
                <artifactId>jsf-impl</artifactId>
                <scope>runtime</scope>
-               <version>1.2_12</version>
+               <version>1.2_13</version>
             </dependency>
             
             <dependency>
@@ -225,6 +250,13 @@
             <dependency>
                <groupId>javax.el</groupId>
                <artifactId>el-api</artifactId>
+               <version>1.2</version>
+            </dependency>
+            
+            <dependency>
+               <groupId>javax.el</groupId>
+               <artifactId>el-ri</artifactId>
+               <version>1.2</version>
             </dependency>
             
          </dependencies>
@@ -308,6 +340,18 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
                <groupId>org.jboss.webbeans.servlet</groupId>
                <artifactId>webbeans-servlet</artifactId>
                <scope>runtime</scope>
+            </dependency>
+            
+            <dependency>
+               <groupId>org.glassfish.web</groupId>
+               <artifactId>el-impl</artifactId>
+               <scope>runtime</scope>
+               <exclusions>
+                  <exclusion>
+                     <groupId>javax.el</groupId>
+                     <artifactId>el-api</artifactId>
+                  </exclusion>
+               </exclusions>
             </dependency>
             
             <!--  JETTY DEPENDENCIES FOR IN IDE TESTING  -->
