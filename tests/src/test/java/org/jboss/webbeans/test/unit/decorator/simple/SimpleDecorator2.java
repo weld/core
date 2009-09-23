@@ -47,12 +47,12 @@ public class SimpleDecorator2
    public int echo2(int i)
    {
       echo2 = true;
-      return delegate.echo1(i);
+      return delegate.echo2(i);
    }
 
    public int echo3(int i)
    {
       echo3 = true;
-      return delegate.echo1(i);
+      return delegate.echo3(i);
    }
 }

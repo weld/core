@@ -53,6 +53,6 @@ public class SimpleDecorator1
    public int echo3(int i)
    {
       echo3 = true;
-      return delegate.echo1(i);
+      return delegate.echo3(i);
    }
 }
