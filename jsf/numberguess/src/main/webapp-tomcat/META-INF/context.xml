@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
    <Manager pathname=""/> <!-- disables storage of sessions across restarts -->
-   <Resource name="app/Manager"
+   <Resource name="BeanManager"
       auth="Container"
-      type="javax.inject.manager.Manager"
+      type="javax.enterprise.inject.spi.BeanManager"
       factory="org.jboss.webbeans.resources.ManagerObjectFactory"/>
    <!-- Uncomment to enable injection into Servlet -->
    <!-- <Listener className="org.jboss.webbeans.environment.tomcat.WebBeansLifecycleListener"/> -->
