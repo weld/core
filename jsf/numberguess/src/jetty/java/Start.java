@@ -17,7 +17,6 @@ public class Start {
 		bb.setServer(server);
 		bb.setContextPath("/");
 		bb.setWar("src/main/webapp");
-		bb.setDescriptor("src/main/webapp-jetty/WEB-INF/web.xml");
 		
 		// Disable for now
 //		Resource jettyEnv = Resource.newResource("src/main/webapp-jetty/WEB-INF/jetty-env.xml");
