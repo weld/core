@@ -16,33 +16,39 @@
  */
 package org.jboss.webbeans.environment.se.example.simple;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.inject.Inject;
+import org.jboss.webbeans.environment.se.events.ContainerInitialized;
 import javax.inject.Inject;
 
 /**
  * @author Peter Royle
  */
+@ApplicationScoped
 public class HelloWorld
 {
 
-   @Inject
-   CommandLineArgsValidator argsVlidator;
+    @Inject
+    CommandLineArgsValidator argsValidator;
 
-   /**
-    * Prints a hello message using the first name.
-    * 
-    * @param firstName The first name.
-    */
-   public void printHello(@Observes AfterDeploymentValidation after)
-   {
-      if (!argsVlidator.hasErrors())
-      {
-         System.out.println("Hello " + argsVlidator.getValidParameters().get(0));
-      }
-      else
-      {
-         System.out.println("Please provide just one argument: your first name");
-      }
-   }
+    public HelloWorld()
+    {
+    }
+
+    /**
+     * Prints a hello message using the first name.
+     * @param firstName The first name.
+     */
+    public void printHello( @Observes ContainerInitialized init )
+    {
+        if (!argsValidator.hasErrors())
+        {
+            System.out.println( "Hello " + argsValidator.getValidParameters().get( 0 ) );
+        } else
+        {
+            System.out.println( "Please provide just one argument: your first name" );
+        }
+    }
+
 }

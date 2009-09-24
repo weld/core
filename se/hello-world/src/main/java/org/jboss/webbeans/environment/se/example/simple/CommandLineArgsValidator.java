@@ -22,7 +22,6 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
 import org.jboss.webbeans.environment.se.bindings.Parameters;
 
 /**
@@ -34,20 +33,23 @@ import org.jboss.webbeans.environment.se.bindings.Parameters;
 public class CommandLineArgsValidator
 {
 
-   @Inject
-   @Parameters
-   private List<String> validParams;
-   private List<String> errors = new ArrayList<String>();
+    @Inject
+    private @Parameters List<String> validParams;
+    private List<String> errors = new ArrayList<String>();
 
-   @Inject
-   public void checkParameters()
-   {
-      if (validParams.size() != 1)
-      {
-         errors.add("Please supply just one parameter: your first name");
-         validParams = Collections.EMPTY_LIST;
-      }
-   }
+    public CommandLineArgsValidator()
+    {
+    }
+
+    @Inject
+    public void checkParameters()
+    {
+        if (validParams.size() != 1)
+        {
+            errors.add( "Please supply just one parameter: your first name" );
+            validParams = Collections.EMPTY_LIST;
+        }
+    }
 
    public boolean hasErrors()
    {
