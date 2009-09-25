@@ -84,6 +84,21 @@ public abstract class ForwardingLifecycle implements Lifecycle
    {
       return delegate().isRequestActive();
    }
+   
+   public boolean isApplicationActive()
+   {
+      return delegate().isApplicationActive();
+   }
+   
+   public boolean isConversationActive()
+   {
+      return delegate().isConversationActive();
+   }
+   
+   public boolean isSessionActive()
+   {
+      return delegate().isSessionActive();
+   }
 
    public void restoreSession(String id, BeanStore sessionBeanStore)
    {

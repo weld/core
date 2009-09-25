@@ -24,6 +24,12 @@ public interface Lifecycle
    public void endRequest(String id, BeanStore requestBeanStore);
 
    public boolean isRequestActive();
+   
+   public boolean isSessionActive();
+   
+   public boolean isApplicationActive();
+   
+   public boolean isConversationActive();
 
    public void beginApplication(BeanStore applicationBeanStore);
 

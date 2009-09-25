@@ -41,11 +41,11 @@ public class ContextLifecycle implements Lifecycle, Service
    
    public static LogProvider log = Logging.getLogProvider(ContextLifecycle.class);
 
-   public final ApplicationContext applicationContext;
-   public final SessionContext sessionContext;
-   public final ConversationContext conversationContext;
-   public final RequestContext requestContext;
-   public final DependentContext dependentContext;
+   private final ApplicationContext applicationContext;
+   private final SessionContext sessionContext;
+   private final ConversationContext conversationContext;
+   private final RequestContext requestContext;
+   private final DependentContext dependentContext;
    
    public ContextLifecycle(ApplicationContext applicationContext, SessionContext sessionContext, ConversationContext conversationContext, RequestContext requestContext, DependentContext dependentContext)
    {
@@ -92,7 +92,22 @@ public class ContextLifecycle implements Lifecycle, Service
    
    public boolean isRequestActive()
    {
-      return requestContext.isActive() && dependentContext.isActive();
+      return applicationContext.isActive() && requestContext.isActive() && dependentContext.isActive();
+   }
+   
+   public boolean isApplicationActive()
+   {
+      return applicationContext.isActive() && dependentContext.isActive();
+   }
+   
+   public boolean isConversationActive()
+   {
+      return applicationContext.isActive() && sessionContext.isActive() && conversationContext.isActive() && dependentContext.isActive();
+   }
+   
+   public boolean isSessionActive() 
+   {
+      return applicationContext.isActive() && sessionContext.isActive() && dependentContext.isActive();
    }
    
 
