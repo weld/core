@@ -22,6 +22,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.webbeans.mock.MockEELifecycle;
+import org.jboss.webbeans.mock.TestContainer;
 import org.testng.annotations.Test;
 
 /**
@@ -34,14 +35,11 @@ public class WBStartupTest
    @Test
    public void test()
    {
-      MockEELifecycle lifecycle = new MockEELifecycle();
-      lifecycle.getDeployment().getArchive().setBeanClasses(Arrays.asList(Foo.class, Bar.class));
-      lifecycle.initialize();
-      lifecycle.beginApplication();
-      lifecycle.beginSession();
-      lifecycle.beginRequest();
+      TestContainer container = new TestContainer(new MockEELifecycle(), Arrays.asList(Foo.class, Bar.class), null);
+      container.startContainer();
+      container.ensureRequestActive();
       
-      BeanManager manager = lifecycle.getBootstrap().getManager(lifecycle.getDeployment().getArchive());
+      BeanManager manager = container.getBeanManager();
       
       Bean<? extends Object> bean = manager.resolve(manager.getBeans(Foo.class));
       Foo foo = (Foo) manager.getReference(bean, Foo.class, manager.createCreationalContext(bean));
@@ -49,10 +47,7 @@ public class WBStartupTest
       assert foo != null;
       assert foo.getBar() != null;
       
-      
-      lifecycle.endRequest();
-      lifecycle.endSession();
-      lifecycle.endApplication();
+      container.stopContainer();
    }
    
 }

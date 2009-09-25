@@ -7,24 +7,22 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.webbeans.injection.spi.InjectionServices;
 import org.jboss.webbeans.mock.MockEELifecycle;
+import org.jboss.webbeans.mock.TestContainer;
 import org.testng.annotations.Test;
 
 public class InjectionServicesTest
 {
    
    @Test
-   public void testDiscoverFails()
+   public void testInjectionOfTarget()
    {
-      MockEELifecycle lifecycle = new MockEELifecycle();
-      lifecycle.getDeployment().getArchive().setBeanClasses(Arrays.asList(Foo.class, Bar.class));
+      TestContainer container = new TestContainer(new MockEELifecycle(), Arrays.asList(Foo.class, Bar.class), null);
       CheckableInjectionServices ijs = new CheckableInjectionServices();
-      lifecycle.getDeployment().getArchive().getServices().add(InjectionServices.class, ijs);
-      lifecycle.initialize();
-      lifecycle.beginApplication();
-      lifecycle.beginSession();
-      lifecycle.beginRequest();
+      container.getDeployment().getArchive().getServices().add(InjectionServices.class, ijs);
+      container.startContainer();
+      container.ensureRequestActive();
       
-      BeanManager manager = lifecycle.getBootstrap().getManager(lifecycle.getDeployment().getArchive());
+      BeanManager manager = container.getBeanManager();
       
       Bean<? extends Object> bean = manager.resolve(manager.getBeans(Foo.class));
       ijs.reset();
@@ -39,9 +37,7 @@ public class InjectionServicesTest
       assert foo.getMessage().equals("hi!");
       
       
-      lifecycle.endRequest();
-      lifecycle.endSession();
-      lifecycle.endApplication();
+      container.stopContainer();
    }
    
 }

@@ -4,39 +4,33 @@ import java.net.URL;
 
 import org.jboss.testharness.api.DeploymentException;
 import org.jboss.testharness.spi.StandaloneContainers;
-import org.jboss.webbeans.mock.MockBeanDeploymentArchive;
 import org.jboss.webbeans.mock.MockServletLifecycle;
+import org.jboss.webbeans.mock.TestContainer;
+import org.jboss.webbeans.mock.TestContainer.Status;
 
 public abstract class AbstractStandaloneContainersImpl implements StandaloneContainers
 {
 
    private DeploymentException deploymentException;
-
-   private MockServletLifecycle lifecycle;
+   
+   private TestContainer testContainer;
 
    public boolean deploy(Iterable<Class<?>> classes, Iterable<URL> beansXml)
    {
-      this.lifecycle = newLifecycle();
+      this.testContainer = new TestContainer(newLifecycle(), classes, beansXml);
       
-      try
+      Status status = testContainer.startContainerAndReturnStatus();
+      if (!status.isSuccess())
       {
-         MockBeanDeploymentArchive archive = lifecycle.getDeployment().getArchive();
-         archive.setBeanClasses(classes);
-         if (beansXml != null)
-         {
-            archive.setWebBeansXmlFiles(beansXml);
-         }
-         lifecycle.initialize();
-         lifecycle.beginApplication();
-      }
-      catch (Exception e) 
-      {
-         this.deploymentException = new DeploymentException("Error deploying beans", e);
+         this.deploymentException = new DeploymentException("Error deploying beans", status.getDeploymentException());
          return false;
       }
-      lifecycle.beginSession();
-      lifecycle.beginRequest();
-      return true;
+      else
+      {
+         testContainer.getLifecycle().beginSession();
+         testContainer.getLifecycle().beginRequest();
+         return true;
+      }
    }
 
    protected abstract MockServletLifecycle newLifecycle();
@@ -64,10 +58,8 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
 
    public void undeploy()
    {
-      lifecycle.endRequest();
-      lifecycle.endSession();
-      lifecycle.endApplication();
-      lifecycle = null;
+      testContainer.stopContainer();
+      testContainer = null;
       deploymentException = null;
    }
 

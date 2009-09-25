@@ -9,42 +9,38 @@ import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.Container;
-import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.ManagedBean;
-import org.jboss.webbeans.mock.MockBeanDeploymentArchive;
+import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.mock.MockServletLifecycle;
+import org.jboss.webbeans.mock.TestContainer;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 public class ServletEnvironmentTest
 {
    
-   private MockServletLifecycle lifecycle;
+   private TestContainer container;
    private BeanManagerImpl manager;
    
    @BeforeClass
    public void beforeClass() throws Throwable
    {
-      lifecycle = new MockServletLifecycle(); 
-      lifecycle.initialize();
-      MockBeanDeploymentArchive archive = lifecycle.getDeployment().getArchive();
-      archive.setBeanClasses(Arrays.asList(Animal.class, DeadlyAnimal.class, DeadlySpider.class, DeadlyAnimal.class, Hound.class, HoundLocal.class, Salmon.class, ScottishFish.class, SeaBass.class, Sole.class, Spider.class, Tarantula.class, TarantulaProducer.class, Tuna.class));
-      lifecycle.beginApplication();
-      lifecycle.beginSession();
-      lifecycle.beginRequest();
-      manager = Container.instance().deploymentManager();
+      container = new TestContainer(new MockServletLifecycle(), Arrays.asList(Animal.class, DeadlyAnimal.class, DeadlySpider.class, DeadlyAnimal.class, Hound.class, HoundLocal.class, Salmon.class, ScottishFish.class, SeaBass.class, Sole.class, Spider.class, Tarantula.class, TarantulaProducer.class, Tuna.class), null);
+      container.startContainer();
+      container.ensureRequestActive();
+      manager = container.getBeanManager();
    }
    
    @AfterClass(alwaysRun=true)
    public void afterClass() throws Exception
    {
-      lifecycle.endRequest();
-      lifecycle.endSession();
-      lifecycle.endApplication();
-      lifecycle = null;
+      container.stopContainer();
+      container = null;
+      manager = null;
    }
    
+   @Test
    public void testSimpleBeans()
    {
       Map<Class<?>, Bean<?>> beans = new HashMap<Class<?>, Bean<?>>();
@@ -67,6 +63,7 @@ public class ServletEnvironmentTest
       manager.getInstanceByType(Sole.class, new AnnotationLiteral<Whitefish>() {}).ping();
    }
    
+   @Test
    public void testProducerMethodBean()
    {
       Map<Class<?>, Bean<?>> beans = new HashMap<Class<?>, Bean<?>>();

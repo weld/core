@@ -11,7 +11,7 @@ import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.api.ServletServices;
 
-public class MockServletLifecycle extends ForwardingLifecycle
+public class MockServletLifecycle extends ForwardingLifecycle implements MockLifecycle
 {
    private static final ResourceLoader MOCK_RESOURCE_LOADER = new MockResourceLoader();
    
@@ -35,6 +35,9 @@ public class MockServletLifecycle extends ForwardingLifecycle
       deployment.getServices().add(ServletServices.class, new MockServletServices(deployment.getArchive()));
    }
    
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.mock.MockLifecycle#initialize()
+    */
    public void initialize()
    {
       try
@@ -53,21 +56,28 @@ public class MockServletLifecycle extends ForwardingLifecycle
       return lifecycle;
    }
    
-   public MockDeployment getDeployment()
+   protected MockDeployment getDeployment()
    {
       return deployment;
    }
    
-   public WebBeansBootstrap getBootstrap()
+   protected WebBeansBootstrap getBootstrap()
    {
       return bootstrap;
    }
    
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.mock.MockLifecycle#beginApplication()
+    */
    public void beginApplication()
    {
       bootstrap.startInitialization().deployBeans().validateBeans().endInitialization();
    }
    
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.mock.MockLifecycle#endApplication()
+    */
+   @Override
    public void endApplication()
    {
       bootstrap.shutdown();
@@ -78,33 +88,48 @@ public class MockServletLifecycle extends ForwardingLifecycle
       return applicationBeanStore;
    }
    
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.mock.MockLifecycle#resetContexts()
+    */
    public void resetContexts()
    {
       
    }
    
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.mock.MockLifecycle#beginRequest()
+    */
    public void beginRequest()
    {
       super.beginRequest("Mock", requestBeanStore);
    }
    
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.mock.MockLifecycle#endRequest()
+    */
    public void endRequest()
    {
       super.endRequest("Mock", requestBeanStore);
    }
    
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.mock.MockLifecycle#beginSession()
+    */
    public void beginSession()
    {
       super.restoreSession("Mock", sessionBeanStore);
    }
    
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.mock.MockLifecycle#endSession()
+    */
    public void endSession()
    {
       // TODO Conversation handling breaks this :-(
       //super.endSession("Mock", sessionBeanStore);
    }
    
-   public Environment getEnvironment()
+   protected Environment getEnvironment()
    {
       return Environments.SERVLET;
    }
