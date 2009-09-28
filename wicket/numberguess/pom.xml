@@ -21,6 +21,11 @@
          <artifactId>jsr299-api</artifactId>
          <scope>provided</scope>
       </dependency>
+
+		 <dependency>
+				<groupId>javax.annotation</groupId>
+				<artifactId>jsr250-api</artifactId>
+		 </dependency>
       
 	  <dependency>
 	  	  <groupId>org.jboss.webbeans</groupId>
@@ -36,6 +41,11 @@
          <groupId>javax.annotation</groupId>
          <artifactId>jsr250-api</artifactId>
       </dependency>
+		<dependency>
+			 <groupId>org.jboss.webbeans.servlet</groupId>
+			 <artifactId>webbeans-servlet</artifactId>
+			 <scope>runtime</scope>
+		</dependency>
 
 		<!--  JETTY DEPENDENCIES FOR IN IDE TESTING  -->
 

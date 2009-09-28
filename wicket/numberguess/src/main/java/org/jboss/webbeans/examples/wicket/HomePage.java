@@ -1,6 +1,8 @@
 package org.jboss.webbeans.examples.wicket;
 
-import javax.enterprise.inject.Current;
+import java.io.Serializable;
+
+import javax.inject.Inject;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -16,7 +18,8 @@ public class HomePage extends WebPage {
 
 	private static final long serialVersionUID = 1L;
 
-	@Current Game game;
+	@Inject
+   Game game;
 
     public HomePage() {
 
@@ -27,7 +30,8 @@ public class HomePage extends WebPage {
         
         final Component prompt = new Label("prompt", new Model() { 
         	@Override
-        	public Object getObject() {
+        	public Serializable getObject()
+         {
         		return "I'm thinking of a number between " + game.getSmallest() + " and " + game.getBiggest() + 
         		".  You have " + game.getRemainingGuesses() + " guesses.";
         	}
@@ -37,7 +41,8 @@ public class HomePage extends WebPage {
         final Component guessLabel = new Label("guessLabel","Your Guess:");
         form.add(guessLabel);
         final Component inputGuess = new TextField("inputGuess",new Model() { 
-        	public Object getObject() {
+        	public Serializable getObject()
+         {
         		return game.getGuess();
         	}
         	public void setObject(Object object) {
@@ -52,6 +57,12 @@ public class HomePage extends WebPage {
         			info("Correct!");
         			setVisible(false);
         			prompt.setVisible(false);
+        			guessLabel.setVisible(false);
+        			inputGuess.setVisible(false);
+        		}
+        		else if (game.getRemainingGuesses() == 0) { 
+        			info("Sorry, the answer was " + game.getNumber());
+        			setVisible(false);
         			guessLabel.setVisible(false);
         			inputGuess.setVisible(false);
         		}

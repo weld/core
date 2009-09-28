@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
 
+
 @ApplicationScoped
 public class Generator implements Serializable 
 {

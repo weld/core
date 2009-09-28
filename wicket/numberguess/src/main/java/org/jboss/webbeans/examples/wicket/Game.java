@@ -6,11 +6,9 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Named;
-import javax.inject.Obtains;
+import javax.inject.Inject;
 import javax.naming.NamingException;
 
-@Named
 @SessionScoped
 public class Game implements Serializable
 {
@@ -19,13 +17,16 @@ public class Game implements Serializable
    private int guess;
    private int smallest;
    
+   @Inject
    @MaxNumber
    private int maxNumber;
    
    private int biggest;
    private int remainingGuesses;
    
-   @Obtains @Random Instance<Integer> randomNumber;
+   @Inject
+   @Random
+   Instance<Integer> randomNumber;
    
    public Game() throws NamingException {}
 
@@ -73,6 +74,9 @@ public class Game implements Serializable
       return (guess == number);
    }
 
+   
+   @Inject
+   Generator generator;
    
    @PostConstruct
    public void reset()
