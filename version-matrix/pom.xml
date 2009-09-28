@@ -54,7 +54,7 @@
       <webbeans.wicket.version>1.0.0-SNAPSHOT</webbeans.wicket.version>
       <jboss.test.harness.version>1.0.0-SNAPSHOT</jboss.test.harness.version>
       <jetty.version>6.1.21</jetty.version>
-      <wicket.version>1.3.5.jboss1</wicket.version>
+      <wicket.version>1.4.1</wicket.version>
    </properties>
    
    <dependencyManagement>
