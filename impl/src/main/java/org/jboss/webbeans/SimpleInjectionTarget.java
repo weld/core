@@ -57,8 +57,18 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       this.beanManager = beanManager;
       this.type = type;
       this.injectionPoints = new HashSet<InjectionPoint>();
-      this.constructor = Beans.getBeanConstructor(null, type);
-      this.injectionPoints.addAll(Beans.getParameterInjectionPoints(null, constructor));
+      ConstructorInjectionPoint<T> constructor = null;
+      try
+      {
+         constructor = Beans.getBeanConstructor(null, type);
+         this.injectionPoints.addAll(Beans.getParameterInjectionPoints(null, constructor));
+      }
+      catch (Exception e)
+      {
+         // this means the bean of a type that cannot be produce()d, but that is non-fatal
+         // unless someone calls produce()
+      }
+      this.constructor = constructor;
       this.injectableFields = new HashSet<FieldInjectionPoint<?,?>>();
       this.injectableFields.addAll(Beans.getFieldInjectionPoints(null, type));
       this.injectionPoints.addAll(injectableFields);
@@ -75,6 +85,16 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
 
    public T produce(CreationalContext<T> ctx)
    {
+      if (constructor == null)
+      {
+         // this means we couldn't find a constructor on instantiation, which
+         // means there isn't one that's spec-compliant
+         // try again so the correct DefinitionException is thrown
+         Beans.getBeanConstructor(null, type);
+         // should not be reached
+         throw new IllegalStateException(
+               "We were not previously able to find the bean constructor, but now are?");
+      }
       return constructor.newInstance(beanManager, ctx);
    }
    
