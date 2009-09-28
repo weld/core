@@ -21,7 +21,7 @@
    <parent>
       <artifactId>webbeans-parent</artifactId>
       <groupId>org.jboss.webbeans</groupId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0.PREVIEW4.SP1</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
 
@@ -60,8 +60,8 @@
 
                         <Embed-Dependency>*; scope=compile; inline=true</Embed-Dependency>
                         <_exportcontents>javax.event; javax.context; javax.webbeans; javax.decorator; javax.inject; javax.enterprise.*; version=${osgi.version},
-                                         org.jboss.webbeans.ejb; org.jboss.webbeans.bean.proxy; org.jboss.webbeans.*.api.*; org.jboss.webbeans.*.spi.*; org.jboss.webbeans.conversation; org.jboss.webbeans; org.jboss.webbeans.bootstrap; org.jboss.webbeans.introspector; org.jboss.webbeans.servlet; version=${osgi.version},
-                                         org.jboss.webbeans.el; include:="WebBeansELResolver"; version=${osgi.version},
+                                         org.jboss.webbeans.context; org.jboss.webbeans.ejb; org.jboss.webbeans.bean; org.jboss.webbeans.bean.proxy; org.jboss.webbeans.*.api.*; org.jboss.webbeans.*.spi.*; org.jboss.webbeans.conversation; org.jboss.webbeans; org.jboss.webbeans.bootstrap; org.jboss.webbeans.introspector; org.jboss.webbeans.servlet; version=${osgi.version},
+                                         org.jboss.webbeans.el; version=${osgi.version},
                                          org.jboss.webbeans.jsf; include:="WebBeansPhaseListener"; version=${osgi.version},
                                          javassist.util.proxy;version="3.8.1.GA"
                         </_exportcontents>
@@ -129,6 +129,12 @@
        <groupId>com.google.collections</groupId>
        <artifactId>google-collections</artifactId>
      </dependency>
+         <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>inject-api</artifactId>
+            <version>1.0.0-PRD</version>
+         </dependency>
+
 
    </dependencies>
 </project>
