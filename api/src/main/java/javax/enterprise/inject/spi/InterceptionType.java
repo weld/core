@@ -29,7 +29,12 @@ public enum InterceptionType
    /**
     * Intercepts method invocation
     */
-   AROUND_INVOKE, 
+   AROUND_INVOKE,
+   
+   /**
+    * Intercepts a timeout
+    */
+   AROUND_TIMEOUT,
    
    /**
     * Intercepts bean construction
