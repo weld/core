@@ -16,14 +16,14 @@
  */
 package org.jboss.webbeans.servlet;
 
+import java.util.Collection;
 import java.util.Enumeration;
 
 import javax.servlet.ServletContext;
 
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.beanstore.AbstractAttributeBackedBeanStore;
-import org.jboss.webbeans.context.beanstore.BeanStoreNamingScheme;
-import org.jboss.webbeans.context.beanstore.PrefixBeanStoreNamingScheme;
+import org.jboss.webbeans.context.beanstore.NamingScheme;
 
 /**
  * A BeanStore that uses a servlet context as backing storage
@@ -34,6 +34,9 @@ import org.jboss.webbeans.context.beanstore.PrefixBeanStoreNamingScheme;
  */
 public class ApplicationBeanStore extends AbstractAttributeBackedBeanStore
 {
+   
+   private static final NamingScheme NAMING_SCHEME = new NamingScheme(ApplicationContext.class.getName(), "#");
+   
    // The servlet context to use as backing map
    private ServletContext context;
 
@@ -86,9 +89,20 @@ public class ApplicationBeanStore extends AbstractAttributeBackedBeanStore
    }
 
    @Override
-   protected BeanStoreNamingScheme getNamingScheme()
+   protected NamingScheme getNamingScheme()
    {
-      return new PrefixBeanStoreNamingScheme(ApplicationContext.class.getName(), "#");
+      return NAMING_SCHEME;
+   }
+
+   @Override
+   public Collection<String> getContextualIds()
+   {
+      return null;
+   }
+
+   @Override
+   public void clear()
+   {
    }
 
 }

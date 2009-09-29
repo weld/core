@@ -37,7 +37,7 @@ public class UserTransactionBean extends AbstractBuiltInBean<UserTransaction>
    
    public UserTransactionBean(BeanManagerImpl manager)
    {
-      super(manager);
+      super(UserTransaction.class.getSimpleName(), manager);
    }
 
    @Override

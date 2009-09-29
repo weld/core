@@ -32,7 +32,7 @@ public class ManagerBean extends AbstractBuiltInBean<BeanManagerImpl>
    
    public ManagerBean(BeanManagerImpl manager)
    {
-      super(manager);
+      super(BeanManager.class.getSimpleName(), manager);
    }
 
    public BeanManagerImpl create(CreationalContext<BeanManagerImpl> creationalContext)

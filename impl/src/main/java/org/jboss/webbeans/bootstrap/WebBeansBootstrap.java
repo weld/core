@@ -28,7 +28,7 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.Container;
-import org.jboss.webbeans.ContextualIdStore;
+import org.jboss.webbeans.ContextualStore;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.DeploymentException;
 import org.jboss.webbeans.Validator;
@@ -191,7 +191,7 @@ public class WebBeansBootstrap implements Bootstrap
          deploymentServices.add(TypeStore.class, implementationServices.get(TypeStore.class));
          
          this.environment = environment;
-         this.deploymentManager = BeanManagerImpl.newRootManager(deploymentServices);
+         this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices);
          
          Container.initialize(deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
          
@@ -221,7 +221,7 @@ public class WebBeansBootstrap implements Bootstrap
       services.add(TypeStore.class, new TypeStore());
       services.add(ClassTransformer.class, new ClassTransformer(services.get(TypeStore.class)));
       services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
-      services.add(ContextualIdStore.class, new ContextualIdStore());
+      services.add(ContextualStore.class, new ContextualStore());
       return services;
    }
    

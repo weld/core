@@ -16,40 +16,44 @@
  */
 package org.jboss.webbeans.context;
 
+import java.io.Serializable;
+
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.webbeans.context.api.ContextualInstance;
 
-public class BeanInstanceImpl<T> implements ContextualInstance<T>
+public class SerializableContextualInstance<C extends Contextual<I>, I> implements ContextualInstance<I>, Serializable
 {
 
-   private final Contextual<T> contextual;
-   private final T instance; 
-   private final CreationalContext<T> creationalContext;
-   
-   public BeanInstanceImpl(Contextual<T> contextual, T instance, CreationalContext<T> creationalContext)
+   private static final long serialVersionUID = -6366271037267396256L;
+
+   private final SerializableContextual<C, I> contextual;
+   private final I instance;
+   private final CreationalContext<I> creationalContext;
+
+   public SerializableContextualInstance(C contextual, I instance, CreationalContext<I> creationalContext)
    {
-      this.contextual = contextual;
+      this.contextual = new SerializableContextual<C, I>(contextual);
       this.instance = instance;
       this.creationalContext = creationalContext;
    }
 
-   public Contextual<T> getContextual()
+   public SerializableContextual<C, I> getContextual()
    {
       return contextual;
    }
 
-   public T getInstance()
+   public I getInstance()
    {
       return instance;
    }
 
-   public CreationalContext<T> getCreationalContext()
+   public CreationalContext<I> getCreationalContext()
    {
       return creationalContext;
    }
-   
+
    @Override
    public String toString()
    {

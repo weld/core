@@ -37,14 +37,14 @@ public class HashMapBeanStore extends AbstractMapBackedBeanStore implements Seri
    private static final long serialVersionUID = 4770689245633688471L;
    
    // The backing map
-   protected Map<Contextual<? extends Object>, ContextualInstance<? extends Object>> delegate;
+   protected Map<String, ContextualInstance<? extends Object>> delegate;
 
    /**
     * Constructor
     */
    public HashMapBeanStore()
    {
-      delegate = new HashMap<Contextual<? extends Object>, ContextualInstance<? extends Object>>();
+      delegate = new HashMap<String, ContextualInstance<? extends Object>>();
    }
 
    /**
@@ -53,7 +53,7 @@ public class HashMapBeanStore extends AbstractMapBackedBeanStore implements Seri
     * @return The delegate
     */
    @Override
-   public Map<Contextual<? extends Object>, ContextualInstance<? extends Object>> delegate()
+   public Map<String, ContextualInstance<? extends Object>> delegate()
    {
       return delegate;
    }

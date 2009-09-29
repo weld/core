@@ -22,7 +22,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
       getCurrentManager().getInstanceByType(DependentSelfConsumingDependentProducer.class).ping();
    }
    
-   @Test(groups="broken", timeOut=1000)
+   @Test
    public void testDependentSelfConsumingProducer() throws Exception
    {
       getCurrentManager().getInstanceByType(Violation.class).ping();

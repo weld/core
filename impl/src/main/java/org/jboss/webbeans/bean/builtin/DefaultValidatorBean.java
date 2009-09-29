@@ -37,7 +37,7 @@ public class DefaultValidatorBean extends AbstractBuiltInBean<Validator>
    
    public DefaultValidatorBean(BeanManagerImpl manager)
    {
-      super(manager);
+      super(Validator.class.getSimpleName(), manager);
    }
 
    @Override

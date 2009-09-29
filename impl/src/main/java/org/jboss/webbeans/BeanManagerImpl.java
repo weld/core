@@ -55,10 +55,10 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.PassivationCapable;
 import javax.inject.Qualifier;
 
 import org.jboss.webbeans.bean.DecoratorImpl;
-import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
@@ -180,11 +180,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    // Client proxies can be used application wide
    private transient final ClientProxyProvider clientProxyProvider;
    
-   // We want to generate unique id's across the whole deployment
-   private transient final AtomicInteger ids;
-   
    // TODO review this structure
-   private transient final Map<String, RIBean<?>> riBeans;
+   private transient final Map<String, Bean<?>> passivationCapableBeans;
    
    // TODO review this structure
    private transient final Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans;
@@ -249,7 +246,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    private transient final Set<BeanManagerImpl> childActivities;
    
-   private final Integer id;
+   private final AtomicInteger childIds;
+   private final String id;
    
    /*
     * Runtime data transfer
@@ -263,7 +261,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * @param serviceRegistry
     * @return
     */
-   public static BeanManagerImpl newRootManager(ServiceRegistry serviceRegistry)
+   public static BeanManagerImpl newRootManager(String id, ServiceRegistry serviceRegistry)
    {  
       ListMultimap<Class<? extends Annotation>, Context> contexts = Multimaps.newListMultimap(new ConcurrentHashMap<Class<? extends Annotation>, Collection<Context>>(), new Supplier<List<Context>>() 
       {
@@ -282,7 +280,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
             new CopyOnWriteArrayList<String>(),
             new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
-            new ConcurrentHashMap<String, RIBean<?>>(),
+            new ConcurrentHashMap<String, Bean<?>>(),
             new ClientProxyProvider(),
             contexts, 
             new CopyOnWriteArraySet<CurrentActivity>(), 
@@ -290,6 +288,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new ArrayList<Class<?>>(),
             new ArrayList<Class<? extends Annotation>>(),
             new ArrayList<Class<?>>(),
+            id,
             new AtomicInteger());
    }
    
@@ -299,7 +298,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * @param serviceRegistry
     * @return
     */
-   public static BeanManagerImpl newManager(BeanManagerImpl rootManager, ServiceRegistry services)
+   public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services)
    {  
       return new BeanManagerImpl(
             services, 
@@ -308,7 +307,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
             new CopyOnWriteArrayList<String>(),
             rootManager.getEnterpriseBeans(),
-            new ConcurrentHashMap<String, RIBean<?>>(),
+            new ConcurrentHashMap<String, Bean<?>>(),
             rootManager.getClientProxyProvider(),
             rootManager.getContexts(), 
             new CopyOnWriteArraySet<CurrentActivity>(), 
@@ -316,7 +315,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new ArrayList<Class<?>>(),
             new ArrayList<Class<? extends Annotation>>(),
             new ArrayList<Class<?>>(),
-            rootManager.getIds());
+            id,
+            new AtomicInteger());
    }
 
    /**
@@ -342,15 +342,16 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             registeredObservers, 
             namespaces, 
             parentManager.getEnterpriseBeans(), 
-            parentManager.getRiBeans(), 
+            parentManager.getPassivationCapableBeans(), 
             parentManager.getClientProxyProvider(), 
             parentManager.getContexts(), 
             parentManager.getCurrentActivities(), 
             parentManager.getSpecializedBeans(),
             parentManager.getEnabledPolicyClasses(),
             parentManager.getEnabledPolicyStereotypes(),
-            parentManager.getEnabledDecoratorClasses(), 
-            parentManager.getIds());
+            parentManager.getEnabledDecoratorClasses(),
+            new StringBuilder().append(parentManager.getChildIds().incrementAndGet()).toString(),
+            parentManager.getChildIds());
    }
 
    /**
@@ -366,7 +367,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          List<ObserverMethod<?,?>> observers, 
          List<String> namespaces,
          Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans, 
-         Map<String, RIBean<?>> riBeans, 
+         Map<String, Bean<?>> riBeans, 
          ClientProxyProvider clientProxyProvider, 
          ListMultimap<Class<? extends Annotation>, Context> contexts, 
          Set<CurrentActivity> currentActivities, 
@@ -374,13 +375,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          Collection<Class<?>> enabledPolicyClasses,
          Collection<Class<? extends Annotation>> enabledPolicyStereotypes,
          List<Class<?>> enabledDecoratorClasses, 
-         AtomicInteger ids)
+         String id,
+         AtomicInteger childIds)
    {
       this.services = serviceRegistry;
       this.beans = beans;
       this.decorators = decorators;
       this.enterpriseBeans = enterpriseBeans;
-      this.riBeans = riBeans;
+      this.passivationCapableBeans = riBeans;
       this.clientProxyProvider = clientProxyProvider;
       this.contexts = contexts;
       this.currentActivities = currentActivities;
@@ -390,8 +392,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.enabledPolicyStereotypes = enabledPolicyStereotypes;
       setEnabledDecoratorClasses(enabledDecoratorClasses);
       this.namespaces = namespaces;
-      this.ids = ids;
-      this.id = ids.incrementAndGet();
+      this.id = id;
+      this.childIds = new AtomicInteger();
       
       // Set up the structure to store accessible managers in
       this.accessibleManagers = new HashSet<BeanManagerImpl>();
@@ -531,10 +533,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          SessionBean<?> enterpriseBean = (SessionBean<?>) bean;
          enterpriseBeans.put(enterpriseBean.getEjbDescriptor(), enterpriseBean);
       }
-      if (bean instanceof RIBean<?>)
+      if (bean instanceof PassivationCapable)
       {
-         RIBean<?> riBean = (RIBean<?>) bean;
-         riBeans.put(riBean.getId(), riBean);
+         passivationCapableBeans.put(((PassivationCapable) bean).getId(), bean);
       }
       registerBeanNamespace(bean);
       for (BeanManagerImpl childActivity : childActivities)
@@ -548,7 +549,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public void addDecorator(DecoratorImpl<?> bean)
    {
       decorators.add(bean);
-      riBeans.put(bean.getId(), bean);
+      passivationCapableBeans.put(bean.getId(), bean);
       decoratorResolver.clear();
    }
 
@@ -788,9 +789,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * 
     * @return
     */
-   public Map<String, RIBean<?>> getRiBeans()
+   public Map<String, Bean<?>> getPassivationCapableBeans()
    {
-      return Collections.unmodifiableMap(riBeans);
+      return Collections.unmodifiableMap(passivationCapableBeans);
    }
 
    public void addContext(Context context)
@@ -1201,19 +1202,19 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return createDynamicAccessibleIterable(Transform.NAMESPACE);
    }
    
-   protected AtomicInteger getIds()
-   {
-      return ids;
-   }
-   
    private Set<CurrentActivity> getCurrentActivities()
    {
       return currentActivities;
    }
    
-   public Integer getId()
+   public String getId()
    {
       return id;
+   }
+   
+   public AtomicInteger getChildIds()
+   {
+      return childIds;
    }
    
    public List<ObserverMethod<?,?>> getObservers()

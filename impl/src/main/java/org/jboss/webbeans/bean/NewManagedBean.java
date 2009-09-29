@@ -43,7 +43,7 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
     */
    public static <T> NewManagedBean<T> of(WBClass<T> clazz, BeanManagerImpl manager)
    {
-      return new NewManagedBean<T>(clazz, manager);
+      return new NewManagedBean<T>(clazz, new StringBuilder().append(NewManagedBean.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
    }
    
    private Set<Annotation> bindings;
@@ -54,13 +54,14 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
     * @param type An annotated class
     * @param manager The Web Beans manager
     */
-   protected NewManagedBean(final WBClass<T> type, BeanManagerImpl manager)
+   protected NewManagedBean(final WBClass<T> type, String idSuffix, BeanManagerImpl manager)
    {
-      super(type, manager);
+      super(type, idSuffix, manager);
       this.bindings = new HashSet<Annotation>();
       this.bindings.add(new NewLiteral()
       {
          
+         @Override
          public Class<?> value()
          {
             return type.getJavaClass();

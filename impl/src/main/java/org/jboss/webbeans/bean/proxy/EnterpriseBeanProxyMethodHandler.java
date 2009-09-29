@@ -51,6 +51,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
    private final Class<?> objectInterface;
    private final Collection<MethodSignature> removeMethodSignatures;
    private final boolean clientCanCallRemoveMethods;
+   private final boolean stateful;
 
    /**
     * Constructor
@@ -65,6 +66,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
       this.removeMethodSignatures = bean.getEjbDescriptor().getRemoveMethodSignatures();
       this.clientCanCallRemoveMethods = bean.isClientCanCallRemoveMethods();
       this.reference = bean.createReference();
+      this.stateful = bean.getEjbDescriptor().isStateful();
       log.trace("Created enterprise bean proxy method handler for " + bean);
    }
    
@@ -93,7 +95,10 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
       }
       if ("destroy".equals(method.getName()) && Marker.isMarker(0, method, args))
       {
-         reference.remove();
+         if (stateful)
+         {
+            reference.remove();
+         }
          return null;
       }
       

@@ -23,6 +23,8 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.webbeans.Container;
+import org.jboss.webbeans.ContextualStore;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.ContextualInstance;
 import org.jboss.webbeans.log.LogProvider;
@@ -75,7 +77,12 @@ public abstract class AbstractMapContext extends AbstractContext
       {
          throw new IllegalStateException("No bean store available for " + toString());
       }
-      ContextualInstance<T> beanInstance = getBeanStore().get(contextual);
+      if (contextual == null)
+      {
+         throw new IllegalArgumentException("Must provide a contextual to get");
+      }
+      String id = getId(contextual);
+      ContextualInstance<T> beanInstance = getBeanStore().get(id);
       if (beanInstance != null)
       {
          return beanInstance.getInstance();
@@ -88,7 +95,7 @@ public abstract class AbstractMapContext extends AbstractContext
             if(needCreationLock)
             {
                creationLock.lock();
-               beanInstance = getBeanStore().get(contextual);
+               beanInstance = getBeanStore().get(id);
                if (beanInstance != null)
                {
                   return beanInstance.getInstance();
@@ -97,8 +104,8 @@ public abstract class AbstractMapContext extends AbstractContext
             T instance = contextual.create(creationalContext);
             if (instance != null)
             {
-               beanInstance = new BeanInstanceImpl<T>(contextual, instance, creationalContext);
-               getBeanStore().put(beanInstance);
+               beanInstance = new SerializableContextualInstance<Contextual<T>, T>(contextual, instance, creationalContext);
+               getBeanStore().put(id, beanInstance);
             }
             return instance;
          }
@@ -121,15 +128,15 @@ public abstract class AbstractMapContext extends AbstractContext
       return get(contextual, null);
    }
    
-   private <T> void destroy(Contextual<T> contextual)
+   private <T> void destroy(String id)
    {
-      log.trace("Destroying " + contextual);
+      log.trace("Destroying " + id);
       if (getBeanStore() == null)
       {
          throw new IllegalStateException("No bean store available for " + toString());
       }
-      ContextualInstance<T> beanInstance = getBeanStore().get(contextual);
-      contextual.destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
+      ContextualInstance<T> beanInstance = getBeanStore().get(id);
+      beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
    }
    
 
@@ -143,9 +150,9 @@ public abstract class AbstractMapContext extends AbstractContext
       {
          throw new IllegalStateException("No bean store available for " + toString());
       }
-      for (Contextual<? extends Object> bean : getBeanStore().getContextuals())
+      for (String id : getBeanStore().getContextualIds())
       {
-         destroy(bean);
+         destroy(id);
       }
       getBeanStore().clear();
    }
@@ -171,6 +178,16 @@ public abstract class AbstractMapContext extends AbstractContext
       {
          getBeanStore().clear();
       }
+   }
+   
+   protected static <T> Contextual<T> getContextual(String id)
+   {
+      return Container.instance().deploymentServices().get(ContextualStore.class).<Contextual<T>, T>getContextual(id);
+   }
+   
+   protected static String getId(Contextual<?> contextual)
+   {
+      return Container.instance().deploymentServices().get(ContextualStore.class).putIfAbsent(contextual);
    }
    
 }

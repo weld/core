@@ -114,5 +114,10 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
    {
       return services;
    }
+   
+   public String getId()
+   {
+      return "test";
+   }
 
 }

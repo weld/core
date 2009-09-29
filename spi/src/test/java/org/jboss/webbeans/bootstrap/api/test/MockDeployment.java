@@ -68,6 +68,11 @@ public class MockDeployment implements Deployment
          return services;
       }
       
+      public String getId()
+      {
+         return "test";
+      }
+      
    }
    
    private final ServiceRegistry services;

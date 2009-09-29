@@ -24,6 +24,7 @@ import javax.enterprise.inject.Alternative;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.WBCreationalContext;
+import org.jboss.webbeans.introspector.WBMember;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -39,9 +40,9 @@ public abstract class AbstractReceiverBean<T, S extends Member> extends Abstract
    private AbstractClassBean<?> declaringBean;
    private boolean policy;
 
-   public AbstractReceiverBean(AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public AbstractReceiverBean(String idSuffix, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
-      super(manager);
+      super(idSuffix, manager);
       this.declaringBean = declaringBean;
    }
    
@@ -116,5 +117,8 @@ public abstract class AbstractReceiverBean<T, S extends Member> extends Abstract
          this.policy = true;
       }
    }
+   
+   @Override
+   protected abstract WBMember<T, ?, S> getAnnotatedItem();
 
 }

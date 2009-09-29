@@ -5,8 +5,8 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.Contextual;
 
-import org.jboss.webbeans.context.api.ContextualInstance;
 import org.jboss.webbeans.context.api.BeanStore;
+import org.jboss.webbeans.context.api.ContextualInstance;
 
 public abstract class AbstractMapBackedBeanStore implements BeanStore
 {
@@ -16,7 +16,7 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore
       super();
    }
 
-   public abstract Map<Contextual<? extends Object>, ContextualInstance<? extends Object>> delegate();
+   protected abstract Map<String, ContextualInstance<? extends Object>> delegate();
 
    /**
     * Gets an instance from the store
@@ -26,10 +26,10 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore
     * 
     * @see org.jboss.webbeans.context.api.BeanStore#get(BaseBean)
     */
-   public <T extends Object> ContextualInstance<T> get(Contextual<? extends T> bean)
+   public <T extends Object> ContextualInstance<T> get(String id)
    {
       @SuppressWarnings("unchecked")
-      ContextualInstance<T> instance = (ContextualInstance<T>) delegate().get(bean);
+      ContextualInstance<T> instance = (ContextualInstance<T>) delegate().get(id);
       return instance;
    }
 
@@ -50,7 +50,7 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore
     * 
     * @see org.jboss.webbeans.context.api.BeanStore#getContextuals()
     */
-   public Set<Contextual<? extends Object>> getContextuals()
+   public Set<String> getContextualIds()
    {
       return delegate().keySet();
    }
@@ -63,9 +63,9 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore
     * 
     * @see org.jboss.webbeans.context.api.BeanStore#put(Contextual, Object)
     */
-   public <T> void put(ContextualInstance<T> beanInstance)
+   public <T> void put(String id, ContextualInstance<T> beanInstance)
    {
-      delegate().put(beanInstance.getContextual(), beanInstance);
+      delegate().put(id, beanInstance);
    }
 
    @Override

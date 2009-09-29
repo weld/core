@@ -74,7 +74,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     */
    public static <T> ManagedBean<T> of(WBClass<T> clazz, BeanManagerImpl manager)
    {
-      return new ManagedBean<T>(clazz, manager);
+      return new ManagedBean<T>(clazz, new StringBuilder().append(ManagedBean.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
    }
 
    /**
@@ -83,9 +83,9 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   protected ManagedBean(WBClass<T> type, BeanManagerImpl manager)
+   protected ManagedBean(WBClass<T> type, String idSuffix, BeanManagerImpl manager)
    {
-      super(type, manager);
+      super(type, idSuffix, manager);
       initType();
       initTypes();
       initBindings();
@@ -202,6 +202,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    /**
     * Validates the type
     */
+   @Override
    protected void checkType()
    {
       if (getAnnotatedItem().isNonStaticMemberClass())
@@ -328,12 +329,12 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     * @return The string representation
     */
    @Override
-   public String toString()
+   public String getDescription()
    {
-      return toString("simple bean");
+      return getDescription("simple bean");
    }
    
-   protected String toString(String beanType)
+   protected String getDescription(String beanType)
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append(Names.scopeTypeToString(getScope()));

@@ -114,5 +114,10 @@ public abstract class SingletonProvider
          }
       }
    }
+   
+   public static void reset()
+   {
+      INSTANCE = null;
+   }
 
 }

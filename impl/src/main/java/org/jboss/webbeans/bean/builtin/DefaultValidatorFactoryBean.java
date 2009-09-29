@@ -37,7 +37,7 @@ public class DefaultValidatorFactoryBean extends AbstractBuiltInBean<ValidatorFa
    
    public DefaultValidatorFactoryBean(BeanManagerImpl manager)
    {
-      super(manager);
+      super(ValidatorFactory.class.getSimpleName(), manager);
    }
 
    @Override

@@ -63,12 +63,12 @@ public class ProducerField<T> extends AbstractProducerBean<T, Field>
     */
    protected ProducerField(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
-      super(declaringBean, manager);
+      super(new StringBuilder().append(ProducerField.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(field.getName()).toString(), declaringBean, manager);
       this.field = field;
       initType();
       initTypes();
       initBindings();
-      this.id = createId("ProducerField-" + declaringBean.getType().getName() + "-"+ field.getName());
+      this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(getClass().getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(getAnnotatedItem().getName()).toString();
       initStereotypes();
       initPolicy();
    }
@@ -126,7 +126,7 @@ public class ProducerField<T> extends AbstractProducerBean<T, Field>
     * @return The string representation
     */
    @Override
-   public String toString()
+   public String getDescription()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Annotated " + Names.scopeTypeToString(getScope()));
@@ -160,6 +160,7 @@ public class ProducerField<T> extends AbstractProducerBean<T, Field>
       return id;
    }
 
+   @Override
    public Set<Class<? extends Annotation>> getStereotypes()
    {
       return Collections.emptySet();

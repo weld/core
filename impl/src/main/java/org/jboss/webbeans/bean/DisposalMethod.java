@@ -39,13 +39,11 @@ public class DisposalMethod<T> extends AbstractReceiverBean<T, Method>
 {
 
    protected MethodInjectionPoint<T, ?> disposalMethodInjectionPoint;
-   private final String id;
 
    protected DisposalMethod(BeanManagerImpl manager, WBMethod<T, ?> disposalMethod, AbstractClassBean<?> declaringBean)
    {
-      super(declaringBean, manager);
+      super(new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, manager);
       this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
-      this.id = createId("DisposalMethod-" + declaringBean.getName() + "-" + disposalMethod.getSignature().toString());
       initBindings();
       initType();
       initTypes();
@@ -119,7 +117,7 @@ public class DisposalMethod<T> extends AbstractReceiverBean<T, Method>
    }
 
    @Override
-   public String toString()
+   public String getDescription()
    {
       return disposalMethodInjectionPoint.toString();
    }
@@ -232,12 +230,6 @@ public class DisposalMethod<T> extends AbstractReceiverBean<T, Method>
    }
 
    @Override
-   public String getId()
-   {
-      return id;
-   }
-
-   @Override
    public AbstractBean<?, ?> getSpecializedBean()
    {
       // Doesn't support specialization
@@ -250,6 +242,7 @@ public class DisposalMethod<T> extends AbstractReceiverBean<T, Method>
       // Disposal methods aren't scoped
    }
 
+   @Override
    public Set<Class<? extends Annotation>> getStereotypes()
    {
       return Collections.emptySet();

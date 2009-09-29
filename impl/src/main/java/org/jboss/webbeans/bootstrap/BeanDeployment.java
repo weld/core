@@ -66,7 +66,7 @@ public class BeanDeployment
       ServiceRegistry services = new SimpleServiceRegistry();
       services.addAll(deploymentServices.entrySet());
       services.addAll(beanDeploymentArchive.getServices().entrySet());
-      this.beanManager = BeanManagerImpl.newManager(deploymentManager, services);
+      this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
       if (beanManager.getServices().contains(EjbServices.class))
       {
          // Must populate EJB cache first, as we need it to detect whether a

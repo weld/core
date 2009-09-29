@@ -34,12 +34,14 @@ import org.jboss.webbeans.introspector.WBClass;
 public class ExtensionBean extends AbstractBuiltInBean<Extension>
 {
    
+   private static final String ID_PREFIX = "Extension";
+   
    private final WBClass<Extension> clazz;
    private final Extension instance;
    
    public ExtensionBean(BeanManagerImpl manager, WBClass<Extension> clazz, Extension instance)
    {
-      super(manager);
+      super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
       this.clazz = clazz;
       this.instance = instance;
    }

@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.context;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,8 +30,10 @@ import org.jboss.webbeans.log.Logging;
  * 
  * @author Nicklas Karlsson
  */
-public class DependentInstancesStore
+public class DependentInstancesStore implements Serializable
 {
+   private static final long serialVersionUID = -2349574791148336833L;
+
    private static Log log = Logging.getLog(DependentInstancesStore.class);
    
    // A object -> List of contextual instances mapping

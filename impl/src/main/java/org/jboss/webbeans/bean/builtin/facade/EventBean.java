@@ -42,7 +42,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    
    public EventBean(BeanManagerImpl manager)
    {
-      super(manager);
+      super(Event.class.getSimpleName(), manager);
    }
 
    @Override

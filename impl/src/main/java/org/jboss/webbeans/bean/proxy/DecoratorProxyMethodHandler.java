@@ -25,7 +25,7 @@ import java.util.List;
 import javassist.util.proxy.MethodHandler;
 
 import org.jboss.webbeans.bean.DecoratorImpl;
-import org.jboss.webbeans.bean.SerializableBeanInstance;
+import org.jboss.webbeans.context.SerializableContextualInstance;
 import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.jlr.MethodSignatureImpl;
@@ -40,7 +40,7 @@ public class DecoratorProxyMethodHandler implements MethodHandler, Serializable
 {
    private static final long serialVersionUID = 4577632640130385060L;
 
-   private final List<SerializableBeanInstance<DecoratorImpl<Object>, Object>> decoratorInstances;
+   private final List<SerializableContextualInstance<DecoratorImpl<Object>, Object>> decoratorInstances;
    
    private final Object instance;
 
@@ -51,7 +51,7 @@ public class DecoratorProxyMethodHandler implements MethodHandler, Serializable
     * 
     * @param proxy The generic proxy
     */
-   public DecoratorProxyMethodHandler(List<SerializableBeanInstance<DecoratorImpl<Object>, Object>> decoratorInstances, Object instance)
+   public DecoratorProxyMethodHandler(List<SerializableContextualInstance<DecoratorImpl<Object>, Object>> decoratorInstances, Object instance)
    {
       this.decoratorInstances = decoratorInstances;
       this.instance = instance;
@@ -77,9 +77,9 @@ public class DecoratorProxyMethodHandler implements MethodHandler, Serializable
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
       MethodSignature methodSignature = new MethodSignatureImpl(method);
-      for (SerializableBeanInstance<DecoratorImpl<Object>, Object> beanInstance : decoratorInstances)
+      for (SerializableContextualInstance<DecoratorImpl<Object>, Object> beanInstance : decoratorInstances)
       {
-         WBMethod<?, ?> decoratorMethod = beanInstance.getBean().getAnnotatedItem().getWBMethod(methodSignature);
+         WBMethod<?, ?> decoratorMethod = beanInstance.getContextual().get().getAnnotatedItem().getWBMethod(methodSignature);
          if (decoratorMethod != null)
          {
             return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);

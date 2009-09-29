@@ -17,35 +17,39 @@
 package org.jboss.webbeans.context.beanstore;
 
 
+
 /**
- * Interface against a BeanStore to handle different naming schemes
+ * Simple prefix-based implementation of a BeanStore naming scheme
  * 
  * @author Nicklas Karlsson
- *
  */
-public interface BeanStoreNamingScheme
+public class NamingScheme
 {
-   /**
-    * Checks if a key is handled by the bean store
-    * 
-    * @param key The key to match
-    * @return True if match, false otherwise
-    */
-   public abstract boolean acceptKey(String key);
-   
-   /**
-    * Gets a bean store key for a contextual
-    * 
-    * @param contextual The contextual to make the key for
-    * @return A map key
-    */
-   public abstract String getKeyFromId(Integer id);
-   
-   /**
-    * Gets a contextual id from a key
-    * 
-    * @param key The key to parse
-    * @return The contextual id
-    */
-   public abstract Integer getIdFromKey(String key);
+   public String prefix;
+   public String delimeter;
+
+   public NamingScheme(String prefix, String delimeter)
+   {
+      if (prefix.indexOf(delimeter) >= 0)
+      {
+         throw new IllegalArgumentException("The delimiter '" + delimeter + "' shouldn't be in the prefix '" + prefix + "'");
+      }
+      this.prefix = prefix;
+      this.delimeter = delimeter;
+   }
+
+   public boolean acceptKey(String key)
+   {
+      return key.startsWith(prefix);
+   }
+
+   public String getId(String key)
+   {
+      return new StringBuilder().append(key.substring(prefix.length() + delimeter.length())).toString();
+   }
+
+   public String getKey(String id)
+   {
+      return new StringBuilder().append(prefix).append(delimeter).append(id).toString();
+   }
 }

@@ -47,7 +47,7 @@ public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint>
     */
    public InjectionPointBean(BeanManagerImpl manager)
    {
-      super(manager);
+      super(InjectionPoint.class.getSimpleName(), manager);
    }
 
    public InjectionPoint create(CreationalContext<InjectionPoint> creationalContext)

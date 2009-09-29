@@ -42,7 +42,7 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    
    public InstanceBean(BeanManagerImpl manager)
    {
-      super(manager);
+      super(Instance.class.getSimpleName(), manager);
    }
 
    @Override

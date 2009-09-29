@@ -63,13 +63,12 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
 
    /**
     * Constructor
-    * 
     * @param declaringBean The declaring bean
     * @param manager The Web Beans manager
     */
-   public AbstractProducerBean(AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public AbstractProducerBean(String idSuffix, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
-      super(declaringBean, manager);
+      super(idSuffix, declaringBean, manager);
    }
 
    @Override
@@ -294,7 +293,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
     * @return The string representation
     */
    @Override
-   public String toString()
+   public String getDescription()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Annotated " + Names.scopeTypeToString(getScope()));

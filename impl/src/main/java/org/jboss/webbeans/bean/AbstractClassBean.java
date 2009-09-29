@@ -40,6 +40,7 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.proxy.DecoratorProxyMethodHandler;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
+import org.jboss.webbeans.context.SerializableContextualInstance;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.WBClass;
@@ -72,7 +73,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    
    private List<Decorator<?>> decorators;
    
-   private final String id;
    private Class<T> proxyClassForDecorators;
    
    private final ThreadLocal<Integer> decoratorStackPosition;
@@ -85,11 +85,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
     * @param type The type
     * @param manager The Web Beans manager
     */
-   protected AbstractClassBean(WBClass<T> type, BeanManagerImpl manager)
+   protected AbstractClassBean(WBClass<T> type, String idSuffix, BeanManagerImpl manager)
    {
-      super(manager);
+      super(idSuffix, manager);
       this.annotatedItem = type;
-      this.id = createId(getClass().getSimpleName() + "-" + type.getName());
       this.decoratorStackPosition = new ThreadLocal<Integer>()
       {
          
@@ -150,7 +149,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    
    protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint)
    {
-      List<SerializableBeanInstance<DecoratorImpl<Object>, Object>> decoratorInstances = new ArrayList<SerializableBeanInstance<DecoratorImpl<Object>,Object>>();
+      List<SerializableContextualInstance<DecoratorImpl<Object>, Object>> decoratorInstances = new ArrayList<SerializableContextualInstance<DecoratorImpl<Object>,Object>>();
       InjectionPoint ip = originalInjectionPoint;
       boolean outside = decoratorStackPosition.get().intValue() == 0;
       try
@@ -167,7 +166,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
                DecoratorImpl<Object> decoratorBean = (DecoratorImpl<Object>) decorator;
                
                Object decoratorInstance = getManager().getReference(ip, decorator, creationalContext);
-               decoratorInstances.add(new SerializableBeanInstance<DecoratorImpl<Object>, Object>(decoratorBean, decoratorInstance));
+               decoratorInstances.add(new SerializableContextualInstance<DecoratorImpl<Object>, Object>(decoratorBean, decoratorInstance, null));
                ip = decoratorBean.getDelegateInjectionPoint();
             }
             else
@@ -338,23 +337,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    public Set<String> getSuperclasses()
    {
       return dependencies;
-   }
-
-   /**
-    * Gets a string representation
-    * 
-    * @return The string representation
-    */
-   @Override
-   public String toString()
-   {
-      return "AbstractClassBean " + getName();
-   }
-   
-   @Override
-   public String getId()
-   {
-      return id;
    }
 
    public void postConstruct(T instance)

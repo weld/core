@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Web Beans RI" verbose="1"  >
+<suite name="Web Beans RI" verbose="3"  >
 
    <test name="Web Beans RI">
       <method-selectors>
@@ -27,16 +27,18 @@
          <package name="org.jboss.webbeans.test.unit.annotated.decoration" />
          <package name="org.jboss.webbeans.test.unit.bootstrap" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.environments.multipleEnterprise" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.environments.multipleEnterpriseAndSimple" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.environments.multipleSimple" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.environments.singleEnterprise" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.environments.singleProducerMethod" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.environments.singleSimple" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.multipleEnterprise" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.multipleEnterpriseAndSimple" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.multipleSimple" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.singleEnterprise" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.singleProducerMethod" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.singleSimple" />
+         <package name="org.jboss.webbeans.test.unit.cluster" />
          <package name="org.jboss.webbeans.test.unit.context" />
+         <package name="org.jboss.webbeans.test.unit.decorator.simple" />
          <package name="org.jboss.webbeans.test.unit.definition" />
          <package name="org.jboss.webbeans.test.unit.deployment.structure" />
-         <package name="org.jboss.webbeans.test.unit.event" />
+         <package name="org.jboss.webbeans.test.unit.evironments.servlet" />
          <package name="org.jboss.webbeans.test.unit.implementation" />
          <package name="org.jboss.webbeans.test.unit.implementation.annotatedItem" />
          <package name="org.jboss.webbeans.test.unit.implementation.enterpise" />
@@ -53,10 +55,10 @@
          <package name="org.jboss.webbeans.test.unit.lookup" />
          <package name="org.jboss.webbeans.test.unit.lookup.circular" />
          <package name="org.jboss.webbeans.test.unit.lookup.wbri279" />
+         <package name="org.jboss.webbeans.test.unit.lookup.wbri293" />
          <package name="org.jboss.webbeans.test.unit.manager" />
          <package name="org.jboss.webbeans.test.unit.noncontextual" />
          <package name="org.jboss.webbeans.test.unit.security" />
-         <package name="org.jboss.webbeans.test.unit.decorator.simple" />
       </packages>
    </test>
    

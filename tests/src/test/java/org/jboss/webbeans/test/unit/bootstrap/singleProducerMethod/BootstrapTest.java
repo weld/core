@@ -9,9 +9,9 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
+import org.jboss.webbeans.bean.ManagedBean;
 import org.jboss.webbeans.bean.ProducerMethod;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.bean.ManagedBean;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
@@ -28,7 +28,7 @@ public class BootstrapTest extends AbstractWebBeansTest
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (bean instanceof RIBean)
+         if (bean instanceof RIBean<?>)
          {
             classes.put(((RIBean<?>) bean).getType(), bean);
          }
@@ -36,8 +36,8 @@ public class BootstrapTest extends AbstractWebBeansTest
       assert classes.containsKey(TarantulaProducer.class);
       assert classes.containsKey(Tarantula.class);
       
-      assert classes.get(TarantulaProducer.class) instanceof ManagedBean;
-      assert classes.get(Tarantula.class) instanceof ProducerMethod;
+      assert classes.get(TarantulaProducer.class) instanceof ManagedBean<?>;
+      assert classes.get(Tarantula.class) instanceof ProducerMethod<?>;
    }
    
 }

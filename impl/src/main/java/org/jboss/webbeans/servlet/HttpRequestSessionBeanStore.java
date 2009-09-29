@@ -14,8 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.beanstore.AbstractAttributeBackedBeanStore;
-import org.jboss.webbeans.context.beanstore.BeanStoreNamingScheme;
-import org.jboss.webbeans.context.beanstore.PrefixBeanStoreNamingScheme;
+import org.jboss.webbeans.context.beanstore.NamingScheme;
 
 /**
  * Abstracts the servlet API specific session context
@@ -27,6 +26,7 @@ public class HttpRequestSessionBeanStore extends AbstractAttributeBackedBeanStor
 {
    // The HTTP session context to use as backing map
    private final HttpServletRequest request;
+   private static final NamingScheme NAMING_SCHEME = new NamingScheme(SessionContext.class.getName(), "#");
 
    /**
     * Constructor
@@ -91,9 +91,9 @@ public class HttpRequestSessionBeanStore extends AbstractAttributeBackedBeanStor
    }
 
    @Override
-   protected BeanStoreNamingScheme getNamingScheme()
+   protected NamingScheme getNamingScheme()
    {
-      return new PrefixBeanStoreNamingScheme(SessionContext.class.getName(), "#");
+      return NAMING_SCHEME;
    }
 
 }

@@ -19,8 +19,7 @@ package org.jboss.webbeans.servlet;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.context.ConversationContext;
-import org.jboss.webbeans.context.beanstore.BeanStoreNamingScheme;
-import org.jboss.webbeans.context.beanstore.PrefixBeanStoreNamingScheme;
+import org.jboss.webbeans.context.beanstore.NamingScheme;
 
 /**
  * A HTTP session backed bean store for the conversational scope
@@ -29,18 +28,21 @@ import org.jboss.webbeans.context.beanstore.PrefixBeanStoreNamingScheme;
  */
 public class ConversationBeanStore extends HttpSessionBeanStore
 {
-   private String cid;
+   
+   private final String cid;
+   private final NamingScheme namingScheme;
 
    public ConversationBeanStore(HttpSession session, String cid)
    {
       super(session);
       this.cid = cid;
+      this.namingScheme = new NamingScheme(ConversationContext.class.getName() + "[" + cid + "]", "#");
    }
 
    @Override
-   protected BeanStoreNamingScheme getNamingScheme()
+   protected NamingScheme getNamingScheme()
    {
-      return new PrefixBeanStoreNamingScheme(ConversationContext.class.getName() + "[" + cid + "]", "#");
+      return namingScheme;
    }
 
 }

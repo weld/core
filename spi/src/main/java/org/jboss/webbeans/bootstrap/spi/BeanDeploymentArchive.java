@@ -95,5 +95,14 @@ public interface BeanDeploymentArchive
     * @return
     */
    public ServiceRegistry getServices();
+   
+   /**
+    * Get a string which uniquely identifies the {@link BeanDeploymentArchive} within
+    * the {@link Deployment}. The identifier must be consistent between multiple
+    * occurrences of this deployment.
+    * 
+    * @return
+    */
+   public String getId();
 
 }

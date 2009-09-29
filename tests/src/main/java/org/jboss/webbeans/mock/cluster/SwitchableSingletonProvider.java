@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.cluster;
+package org.jboss.webbeans.mock.cluster;
 
 import java.util.Hashtable;
 import java.util.Map;

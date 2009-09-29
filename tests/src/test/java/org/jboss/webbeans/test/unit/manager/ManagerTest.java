@@ -103,7 +103,7 @@ public class ManagerTest extends AbstractWebBeansTest
    @Test
    public void testRootManagerSerializability() throws Exception
    {
-      Integer rootManagerId = getCurrentManager().getId();
+      String rootManagerId = getCurrentManager().getId();
       BeanManagerImpl deserializedRootManager = (BeanManagerImpl) deserialize(serialize(getCurrentManager()));
       assert deserializedRootManager.getId().equals(rootManagerId);
       assert getCurrentManager().getBeans(Foo.class).size() == 1;
@@ -117,7 +117,7 @@ public class ManagerTest extends AbstractWebBeansTest
       BeanManagerImpl childManager = getCurrentManager().createActivity();
       Bean<?> dummyBean = new DummyBean();
       childManager.addBean(dummyBean);
-      Integer childManagerId = childManager.getId();
+      String childManagerId = childManager.getId();
       BeanManagerImpl deserializedChildManager = (BeanManagerImpl) deserialize(serialize(childManager));
       assert deserializedChildManager.getId().equals(childManagerId);
       assert childManager.getBeans(Dummy.class).size() == 1;

@@ -21,10 +21,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.enterprise.context.spi.Contextual;
-
-import org.jboss.webbeans.Container;
-import org.jboss.webbeans.ContextualIdStore;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.ContextualInstance;
 import org.jboss.webbeans.log.LogProvider;
@@ -50,28 +46,11 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
     * @return The instance
     */
    @SuppressWarnings("unchecked")
-   public <T> ContextualInstance<T> get(Contextual<? extends T> contextual)
+   public <T> ContextualInstance<T> get(String id)
    {
-      Integer contextualId = Container.instance().deploymentServices().get(ContextualIdStore.class).getId(contextual);
-      String key = getNamingScheme().getKeyFromId(contextualId);
+      String key = getNamingScheme().getKey(id);
       ContextualInstance<T> instance = (ContextualInstance<T>) getAttribute(key);
       log.trace("Looked for " + key + " and got " + instance);
-      return instance;
-   }
-
-   /**
-    * Removes an instance from the store
-    * 
-    * @param contextual The bean of the instance to remove
-    * @return The removed instance
-    */
-   public <T> T remove(Contextual<? extends T> contextual)
-   {
-      Integer contextualId = Container.instance().deploymentServices().get(ContextualIdStore.class).getId(contextual);
-      T instance = get(contextual).getInstance();
-      String key = getNamingScheme().getKeyFromId(contextualId);
-      removeAttribute(key);
-      log.trace("Removed bean under key " + key);
       return instance;
    }
 
@@ -92,15 +71,14 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
     * 
     * @return The beans
     */
-   public Collection<Contextual<? extends Object>> getContextuals()
+   public Collection<String> getContextualIds()
    {
-      List<Contextual<?>> contextuals = new ArrayList<Contextual<?>>();
-      BeanStoreNamingScheme namingScheme = getNamingScheme();
+      List<String> contextuals = new ArrayList<String>();
+      NamingScheme namingScheme = getNamingScheme();
       for (String attributeName : getFilteredAttributeNames())
       {
-         Integer id = namingScheme.getIdFromKey(attributeName);
-         Contextual<?> contextual = Container.instance().deploymentServices().get(ContextualIdStore.class).getContextual(id);
-         contextuals.add(contextual);
+         String id = namingScheme.getId(attributeName);
+         contextuals.add(id);
       }
       return contextuals;
    }
@@ -113,7 +91,7 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
    private List<String> getFilteredAttributeNames()
    {
       List<String> attributeNames = new ArrayList<String>();
-      BeanStoreNamingScheme namingScheme = getNamingScheme();
+      NamingScheme namingScheme = getNamingScheme();
       for (String attributeName : new EnumerationList<String>(getAttributeNames()))
       {
          if (namingScheme.acceptKey(attributeName))
@@ -131,10 +109,9 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
     * @param instance The instance
     * @return The instance added
     */
-   public <T> void put(ContextualInstance<T> beanInstance)
+   public <T> void put(String id, ContextualInstance<T> beanInstance)
    {
-      Integer contextualId = Container.instance().deploymentServices().get(ContextualIdStore.class).getId(beanInstance.getContextual());
-      String key = getNamingScheme().getKeyFromId(contextualId);
+      String key = getNamingScheme().getKey(id);
       setAttribute(key, beanInstance);
       log.trace("Added Contextual type " + beanInstance.getContextual() + " under key " + key);
    }
@@ -175,12 +152,12 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
     * 
     * @return The naming scheme
     */
-   protected abstract BeanStoreNamingScheme getNamingScheme();
+   protected abstract NamingScheme getNamingScheme();
 
 
    @Override
    public String toString()
    {
-      return "holding " + Names.count(getContextuals()) + " instances";
+      return "holding " + Names.count(getContextualIds()) + " instances";
    }
 }

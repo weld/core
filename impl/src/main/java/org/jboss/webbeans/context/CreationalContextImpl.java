@@ -16,17 +16,21 @@
  */
 package org.jboss.webbeans.context;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-public class CreationalContextImpl<T> implements CreationalContext<T>, WBCreationalContext<T>
+public class CreationalContextImpl<T> implements CreationalContext<T>, WBCreationalContext<T>, Serializable
 {
 
-   private final Map<Contextual<?>, Object> incompleteInstances;
-   private final Contextual<T> contextual;
+   private static final long serialVersionUID = 7375854583908262422L;
+   
+   // Only needed for creation, by the time it's serialized we don't need it
+   private final transient Map<Contextual<?>, Object> incompleteInstances;
+   private final transient Contextual<T> contextual;
    
    private final DependentInstancesStore dependentInstancesStore;
    

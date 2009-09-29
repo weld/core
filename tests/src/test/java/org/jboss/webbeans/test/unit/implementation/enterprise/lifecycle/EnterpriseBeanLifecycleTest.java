@@ -87,5 +87,15 @@ public class EnterpriseBeanLifecycleTest extends AbstractWebBeansTest
       assert kassel == null : "SFSB bean should not exist after being destroyed";
       //frankfurt.dispose();
    }
+   
+   @Test
+   public void testDestroyDoesntTryToRemoveSLSB()
+   {
+      Bean<BeanLocal> bean = getBean(BeanLocal.class);
+      assert bean != null : "Expected a bean for stateless session bean BeanLocal";
+      CreationalContext<BeanLocal> creationalContext = getCurrentManager().createCreationalContext(bean);
+      BeanLocal instance = bean.create(creationalContext);
+      bean.destroy(instance, creationalContext);
+   }
  
 }

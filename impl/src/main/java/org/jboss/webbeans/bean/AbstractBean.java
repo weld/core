@@ -101,9 +101,9 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @param manager The Web Beans manager
     */
-   public AbstractBean(BeanManagerImpl manager)
+   public AbstractBean(String idSuffix, BeanManagerImpl manager)
    {
-      super(manager);
+      super(idSuffix, manager);
       this.manager = manager;
       this.injectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
       this.delegateInjectionPoints = new HashSet<WBInjectionPoint<?,?>>();
@@ -454,17 +454,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    protected void initSerializable()
    {
       _serializable = Reflections.isSerializable(type);
-   }
-
-   /**
-    * Gets a string representation
-    * 
-    * @return The string representation
-    */
-   @Override
-   public String toString()
-   {
-      return "AbstractBean " + getName();
    }
 
    @Override

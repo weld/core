@@ -17,13 +17,11 @@
 package org.jboss.webbeans.bean;
 
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
@@ -34,24 +32,21 @@ import org.jboss.webbeans.injection.WBInjectionPoint;
  *  
  * @author Pete Muir
  */
-public abstract class RIBean<T> implements Bean<T> 
+public abstract class RIBean<T> implements Bean<T>, PassivationCapable 
 {
    
-   private static final ConcurrentMap<String, AtomicInteger> ids = new ConcurrentHashMap<String, AtomicInteger>();
+   public static final String BEAN_ID_PREFIX = RIBean.class.getPackage().getName();
+   
+   public static final String BEAN_ID_SEPARATOR = "-";
    
    private final BeanManagerImpl manager;
+   
+   private final String id;
 
-   protected RIBean(BeanManagerImpl manager)
+   protected RIBean(String idSuffix, BeanManagerImpl manager)
    {
       this.manager = manager;
-      // TODO better ID strategy (human readable)
-   }
-   
-   protected static String createId(String prefix)
-   {
-      ids.putIfAbsent(prefix, new AtomicInteger());
-      int i = ids.get(prefix).getAndIncrement();
-      return prefix + "-" + i;
+      this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(BEAN_ID_SEPARATOR).append(manager.getId()).append(BEAN_ID_SEPARATOR).append(idSuffix).toString();
    }
 
    protected BeanManagerImpl getManager()
@@ -88,12 +83,10 @@ public abstract class RIBean<T> implements Bean<T>
 
    public abstract RIBean<?> getSpecializedBean();
    
-   public abstract String getId();
-   
    @Override
    public boolean equals(Object obj)
    {
-      if (obj instanceof RIBean)
+      if (obj instanceof RIBean<?>)
       {
          RIBean<?> that = (RIBean<?>) obj;
          return this.getId().equals(that.getId());
@@ -109,5 +102,19 @@ public abstract class RIBean<T> implements Bean<T>
    {
       return getId().hashCode();
    }
+   
+   public String getId()
+   {
+      return id;
+   }
+   
+   @Override
+   public String toString()
+   {
+      return id;
+   }
+   
+   public abstract String getDescription();
+   
 
 }

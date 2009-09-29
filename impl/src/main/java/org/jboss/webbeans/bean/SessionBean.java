@@ -84,7 +84,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
    public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
       WBClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-      return new SessionBean<T>(type, ejbDescriptor, manager);
+      return new SessionBean<T>(type, ejbDescriptor, new StringBuilder().append(SessionBean.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).toString(), manager);
    }
 
    /**
@@ -93,9 +93,9 @@ public class SessionBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   protected SessionBean(WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
+   protected SessionBean(WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager)
    {
-      super(type, manager);
+      super(type, idSuffix, manager);
       initType();
       this.ejbDescriptor = ejbDescriptor;
       initTypes();
@@ -294,7 +294,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
     * @return The string representation
     */
    @Override
-   public String toString()
+   public String getDescription()
    {
       StringBuilder buffer = new StringBuilder();
       // buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()) +
@@ -393,6 +393,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
       return manager.getServices().get(EjbServices.class).resolveEjb(getEjbDescriptor().delegate());
    }
 
+   @Override
    public Set<Class<? extends Annotation>> getStereotypes()
    {
       return Collections.emptySet();

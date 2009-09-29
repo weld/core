@@ -63,7 +63,7 @@ public class DependentContext extends AbstractContext
          if (creationalContext instanceof WBCreationalContext<?>)
          {
             WBCreationalContext<T> creationalContextImpl = (WBCreationalContext<T>) creationalContext;
-            ContextualInstance<T> beanInstance = new BeanInstanceImpl<T>(contextual, instance, creationalContext);
+            ContextualInstance<T> beanInstance = new SerializableContextualInstance<Contextual<T>, T>(contextual, instance, creationalContext);
             creationalContextImpl.getParentDependentInstancesStore().addDependentInstance(beanInstance);
          }
          return instance;
@@ -91,6 +91,7 @@ public class DependentContext extends AbstractContext
       return true;
    }
 
+   @Override
    public void cleanup() {}
 
 }

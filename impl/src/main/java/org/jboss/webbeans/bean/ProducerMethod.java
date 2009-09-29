@@ -69,12 +69,12 @@ public class ProducerMethod<T> extends AbstractProducerBean<T, Method>
 
    protected ProducerMethod(WBMethod<T, ?> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
-      super(declaringBean, manager);
+      super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(method.getSignature().toString()).toString(), declaringBean, manager);
       this.method = MethodInjectionPoint.of(this, method);
       initType();
       initTypes();
       initBindings();
-      this.id = createId("ProducerMethod-" + declaringBean.getType().getName() + "-" + method.getSignature().toString());
+      this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(getClass().getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(getAnnotatedItem().getSignature().toString()).toString();
       initStereotypes();
       initPolicy();
    }
@@ -237,7 +237,7 @@ public class ProducerMethod<T> extends AbstractProducerBean<T, Method>
     * @return The string representation
     */
    @Override
-   public String toString()
+   public String getDescription()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append(Names.scopeTypeToString(getScope()));
@@ -285,6 +285,7 @@ public class ProducerMethod<T> extends AbstractProducerBean<T, Method>
       return id;
    }
 
+   @Override
    public Set<Class<? extends Annotation>> getStereotypes()
    {
       return Collections.emptySet();

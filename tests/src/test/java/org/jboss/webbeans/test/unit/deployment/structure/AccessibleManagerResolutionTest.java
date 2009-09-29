@@ -5,9 +5,9 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.ContextualIdStore;
-import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.ContextualStore;
 import org.jboss.webbeans.bean.ManagedBean;
+import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
@@ -32,7 +32,7 @@ public class AccessibleManagerResolutionTest
       this.classTransformer = new ClassTransformer(new TypeStore());
       this.services = new SimpleServiceRegistry();
       this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
-      this.services.add(ContextualIdStore.class, new ContextualIdStore());
+      this.services.add(ContextualStore.class, new ContextualStore());
    }
    
    private void addBean(BeanManagerImpl manager, Class<?> c)
@@ -47,8 +47,8 @@ public class AccessibleManagerResolutionTest
    @Test
    public void testAccessibleDynamicallySingleLevel()
    {
-      BeanManagerImpl root = BeanManagerImpl.newRootManager(services);
-      BeanManagerImpl child = BeanManagerImpl.newRootManager(services);
+      BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
+      BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
       addBean(root, Cow.class);
       assert root.getBeans(Cow.class).size() == 1;
       assert child.getBeans(Cow.class).size() == 0;
@@ -63,11 +63,11 @@ public class AccessibleManagerResolutionTest
    @Test
    public void testAccessibleThreeLevelsWithMultiple()
    {
-      BeanManagerImpl root = BeanManagerImpl.newRootManager(services);
-      BeanManagerImpl child = BeanManagerImpl.newRootManager(services);
-      BeanManagerImpl child1 = BeanManagerImpl.newRootManager(services);
-      BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(services);
-      BeanManagerImpl greatGrandchild = BeanManagerImpl.newRootManager(services);
+      BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
+      BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
+      BeanManagerImpl child1 = BeanManagerImpl.newRootManager("child1", services);
+      BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services);
+      BeanManagerImpl greatGrandchild = BeanManagerImpl.newRootManager("greatGrandchild", services);
       child.addAccessibleBeanManager(root);
       grandchild.addAccessibleBeanManager(child1);
       grandchild.addAccessibleBeanManager(child);
@@ -104,9 +104,9 @@ public class AccessibleManagerResolutionTest
    @Test
    public void testSameManagerAddedTwice()
    {
-      BeanManagerImpl root = BeanManagerImpl.newRootManager(services);
-      BeanManagerImpl child = BeanManagerImpl.newRootManager(services);
-      BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(services);
+      BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
+      BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
+      BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services);
       grandchild.addAccessibleBeanManager(child);
       child.addAccessibleBeanManager(root);
       grandchild.addAccessibleBeanManager(root);
@@ -127,9 +127,9 @@ public class AccessibleManagerResolutionTest
    @Test
    public void testCircular()
    {
-      BeanManagerImpl root = BeanManagerImpl.newRootManager(services);
-      BeanManagerImpl child = BeanManagerImpl.newRootManager(services);
-      BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(services);
+      BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
+      BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
+      BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services);
       grandchild.addAccessibleBeanManager(child);
       child.addAccessibleBeanManager(root);
       grandchild.addAccessibleBeanManager(root);

@@ -37,7 +37,7 @@ public class PrincipalBean extends AbstractBuiltInBean<Principal>
    
    public PrincipalBean(BeanManagerImpl manager)
    {
-      super(manager);
+      super(Principal.class.getSimpleName(), manager);
    }
 
    @Override

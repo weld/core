@@ -19,8 +19,6 @@ package org.jboss.webbeans.context.api;
 
 import java.util.Collection;
 
-import javax.enterprise.context.spi.Contextual;
-
 
 /**
  * Interface for different implementations of Contextual instance storage.
@@ -33,10 +31,10 @@ public interface BeanStore
    /**
     * Gets an instance of a contextual from the store
     * 
-    * @param contextual The contextual whose instance is to be return
+    * @param contextual The id of the contextual to return
     * @return The instance. Null if not found
     */
-   public abstract <T> ContextualInstance<T> get(Contextual<? extends T> contextual);
+   public abstract <T> ContextualInstance<T> get(String id);
 
    /**
     * Clears the store of contextual instances
@@ -48,13 +46,13 @@ public interface BeanStore
     * 
     * @return the instances
     */
-   public abstract Collection<Contextual<?>> getContextuals();
+   public abstract Collection<String> getContextualIds();
 
    /**
     * Adds a bean instance to the storage
     * 
     * @param contextualInstance the contextual instance
-    * @return The instance added
+    * @return the id for the instance
     */
-   public abstract <T> void put(ContextualInstance<T> contextualInstance);
+   public abstract <T> void put(String id, ContextualInstance<T> contextualInstance);
 }

@@ -34,9 +34,9 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
    
    private static final Log log = Logging.getLog(AbstractFacadeBean.class);
 
-   protected AbstractFacadeBean(BeanManagerImpl manager)
+   protected AbstractFacadeBean(String idSuffix, BeanManagerImpl manager)
    {
-      super(manager);
+      super(idSuffix, manager);
    }
 
    public T create(CreationalContext<T> creationalContext)

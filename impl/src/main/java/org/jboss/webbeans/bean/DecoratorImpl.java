@@ -84,7 +84,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
 
    protected DecoratorImpl(WBClass<T> type, BeanManagerImpl manager)
    {
-      super(type, manager);
+      super(type, new StringBuilder().append(Decorator.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), manager);
    }
 
    @Override
@@ -215,14 +215,11 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
       // No-op, decorators can't have decorators
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.bean.SimpleBean#toString()
-    */
    @Override
-   public String toString()
+   public String getDescription()
    {
       // TODO Auto-generated method stub
-      return super.toString("decorator");
+      return super.getDescription("decorator");
    }
 
 }

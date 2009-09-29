@@ -10,7 +10,7 @@ import org.jboss.webbeans.BeanManagerImpl;
  * @author pmuir
  *
  */
-public class TestContainer
+public class TestContainer<L extends MockServletLifecycle>
 {
    
    public static class Status
@@ -35,7 +35,7 @@ public class TestContainer
       
    }
    
-   private final MockServletLifecycle lifecycle;
+   private final L lifecycle;
    private final Iterable<Class<?>> classes;
    private final Iterable<URL> beansXml;
 
@@ -46,7 +46,7 @@ public class TestContainer
     * @param classes
     * @param beansXml
     */
-   public TestContainer(MockServletLifecycle lifecycle, Iterable<Class<?>> classes, Iterable<URL> beansXml)
+   public TestContainer(L lifecycle, Iterable<Class<?>> classes, Iterable<URL> beansXml)
    {
       this.lifecycle = lifecycle;
       this.classes = classes;
@@ -88,7 +88,7 @@ public class TestContainer
     * 
     * @return
     */
-   public MockLifecycle getLifecycle()
+   public L getLifecycle()
    {
       return lifecycle;
    }

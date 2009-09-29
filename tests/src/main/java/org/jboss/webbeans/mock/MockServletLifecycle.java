@@ -17,9 +17,9 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
    
    private final WebBeansBootstrap bootstrap;
    private final MockDeployment deployment;
-   private final BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
-   private final BeanStore sessionBeanStore = new ConcurrentHashMapBeanStore();
-   private final BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
+   private final BeanStore applicationBeanStore;
+   private final BeanStore sessionBeanStore;
+   private final BeanStore requestBeanStore;
    
    private Lifecycle lifecycle;
    
@@ -30,9 +30,27 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
       {
          throw new IllegalStateException("No WebBeanDiscovery is available");
       }
-      bootstrap = new WebBeansBootstrap();
-      deployment.getServices().add(ResourceLoader.class, MOCK_RESOURCE_LOADER);
-      deployment.getServices().add(ServletServices.class, new MockServletServices(deployment.getArchive()));
+      this.bootstrap = new WebBeansBootstrap();
+      this.deployment.getServices().add(ResourceLoader.class, MOCK_RESOURCE_LOADER);
+      this.deployment.getServices().add(ServletServices.class, new MockServletServices(deployment.getArchive()));
+      this.applicationBeanStore = new ConcurrentHashMapBeanStore();
+      this.sessionBeanStore = new ConcurrentHashMapBeanStore();
+      this.requestBeanStore = new ConcurrentHashMapBeanStore();
+   }
+   
+   protected BeanStore getSessionBeanStore()
+   {
+      return sessionBeanStore;
+   }
+   
+   protected BeanStore getRequestBeanStore()
+   {
+      return requestBeanStore;
+   }
+   
+   protected BeanStore getApplicationBeanStore()
+   {
+      return applicationBeanStore;
    }
    
    /* (non-Javadoc)
@@ -83,11 +101,6 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
       bootstrap.shutdown();
    }
    
-   public BeanStore getApplicationBeanStore()
-   {
-      return applicationBeanStore;
-   }
-   
    /* (non-Javadoc)
     * @see org.jboss.webbeans.mock.MockLifecycle#resetContexts()
     */
@@ -101,7 +114,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
     */
    public void beginRequest()
    {
-      super.beginRequest("Mock", requestBeanStore);
+      super.beginRequest("Mock", getRequestBeanStore());
    }
    
    /* (non-Javadoc)
@@ -109,7 +122,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
     */
    public void endRequest()
    {
-      super.endRequest("Mock", requestBeanStore);
+      super.endRequest("Mock", getRequestBeanStore());
    }
    
    /* (non-Javadoc)
@@ -117,7 +130,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
     */
    public void beginSession()
    {
-      super.restoreSession("Mock", sessionBeanStore);
+      super.restoreSession("Mock", getSessionBeanStore());
    }
    
    /* (non-Javadoc)

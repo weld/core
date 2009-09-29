@@ -34,15 +34,14 @@ import org.jboss.webbeans.literal.DefaultLiteral;
 public abstract class AbstractBuiltInBean<T> extends RIBean<T>
 {
    
+   private static final String ID_PREFIX = "Built-in";
+   
    private static final Annotation[] DEFAULT_BINDING_ARRAY = { new DefaultLiteral(), new AnyLiteral() };
    private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
    
-   private final String id;
-   
-   protected AbstractBuiltInBean(BeanManagerImpl manager)
+   protected AbstractBuiltInBean(String idSuffix, BeanManagerImpl manager)
    {
-      super(manager);
-      this.id = createId(getClass().getSimpleName());
+      super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(idSuffix).toString(), manager);
    }
    
    @Override
@@ -113,9 +112,9 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
    }
    
    @Override
-   public String getId()
+   public String getDescription()
    {
-      return id;
+      return "Built-in bean " + getClass().getSimpleName();
    }
    
 }

@@ -68,8 +68,8 @@ public class Container
    // The deployment bean manager
    private final BeanManagerImpl deploymentManager;
    
-   // A map of managers keyed by ID, used for activities
-   private final Map<Integer, BeanManagerImpl> activities;
+   // A map of managers keyed by ID, used for activities and serialization
+   private final Map<String, BeanManagerImpl> managers;
    
    // A map of BDA -> bean managers
    private final Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchives;
@@ -81,8 +81,8 @@ public class Container
    public Container(BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices)
    {
       this.deploymentManager = deploymentManager;
-      this.activities = new ConcurrentHashMap<Integer, BeanManagerImpl>();
-      this.activities.put(deploymentManager.getId(), deploymentManager);
+      this.managers = new ConcurrentHashMap<String, BeanManagerImpl>();
+      this.managers.put(deploymentManager.getId(), deploymentManager);
       this.beanDeploymentArchives = new ConcurrentHashMap<BeanDeploymentArchive, BeanManagerImpl>();
       this.deploymentServices = deploymentServices;
    }
@@ -94,7 +94,7 @@ public class Container
    public void cleanup()
    {
       // TODO We should probably cleanup the bean managers for activities?
-      activities.clear();
+      managers.clear();
       
       for (BeanManagerImpl beanManager : beanDeploymentArchives.values())
       {
@@ -125,9 +125,9 @@ public class Container
     * @param key
     * @return
     */
-   public BeanManagerImpl activityManager(Integer key)
+   public BeanManagerImpl activityManager(String key)
    {
-      return activities.get(key);
+      return managers.get(key);
    }
    
    /**
@@ -136,10 +136,10 @@ public class Container
     * @param manager
     * @return
     */
-   public Integer addActivity(BeanManagerImpl manager)
+   public String addActivity(BeanManagerImpl manager)
    {
-      Integer id = manager.getId();
-      activities.put(id, manager);
+      String id = manager.getId();
+      managers.put(id, manager);
       return id;
    }
    

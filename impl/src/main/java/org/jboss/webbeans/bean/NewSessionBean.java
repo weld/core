@@ -46,7 +46,7 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
    public static <T> NewSessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
       WBClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-      return new NewSessionBean<T>(type, ejbDescriptor, manager);
+      return new NewSessionBean<T>(type, ejbDescriptor, new StringBuilder().append(NewSessionBean.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).toString(), manager);
    }
    
    private Set<Annotation> bindings;
@@ -57,13 +57,14 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
     * @param type An annotated class
     * @param manager The Web Beans manager
     */
-   protected NewSessionBean(final WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
+   protected NewSessionBean(final WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager)
    {
-      super(type, ejbDescriptor, manager);
+      super(type, ejbDescriptor, idSuffix, manager);
       this.bindings = new HashSet<Annotation>();
       this.bindings.add(new NewLiteral()
       {
          
+         @Override
          public Class<?> value()
          {
             return type.getJavaClass();
