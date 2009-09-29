@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.spi.Contextual;
 
-import org.jboss.webbeans.context.api.ContexutalInstance;
+import org.jboss.webbeans.context.api.ContextualInstance;
 
 /**
  * A BeanStore that uses a HashMap as backing storage
@@ -36,14 +36,14 @@ public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore imple
    private static final long serialVersionUID = 4770689245633688471L;
    
    // The backing map
-   protected Map<Contextual<? extends Object>, ContexutalInstance<? extends Object>> delegate;
+   protected Map<Contextual<? extends Object>, ContextualInstance<? extends Object>> delegate;
 
    /**
     * Constructor
     */
    public ConcurrentHashMapBeanStore()
    {
-      delegate = new ConcurrentHashMap<Contextual<? extends Object>, ContexutalInstance<? extends Object>>();
+      delegate = new ConcurrentHashMap<Contextual<? extends Object>, ContextualInstance<? extends Object>>();
    }
 
    /**
@@ -52,7 +52,7 @@ public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore imple
     * @return The delegate
     */
    @Override
-   public Map<Contextual<? extends Object>, ContexutalInstance<? extends Object>> delegate()
+   public Map<Contextual<? extends Object>, ContextualInstance<? extends Object>> delegate()
    {
       return delegate;
    }

@@ -27,7 +27,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.webbeans.context.api.ContexutalInstance;
+import org.jboss.webbeans.context.api.ContextualInstance;
 
 /**
  * The dependent context
@@ -63,7 +63,7 @@ public class DependentContext extends AbstractContext
          if (creationalContext instanceof WBCreationalContext<?>)
          {
             WBCreationalContext<T> creationalContextImpl = (WBCreationalContext<T>) creationalContext;
-            ContexutalInstance<T> beanInstance = new BeanInstanceImpl<T>(contextual, instance, creationalContext);
+            ContextualInstance<T> beanInstance = new BeanInstanceImpl<T>(contextual, instance, creationalContext);
             creationalContextImpl.getParentDependentInstancesStore().addDependentInstance(beanInstance);
          }
          return instance;

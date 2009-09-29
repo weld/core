@@ -26,7 +26,7 @@ import javax.enterprise.context.spi.Contextual;
 import org.jboss.webbeans.Container;
 import org.jboss.webbeans.ContextualIdStore;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.context.api.ContexutalInstance;
+import org.jboss.webbeans.context.api.ContextualInstance;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Names;
@@ -50,11 +50,11 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
     * @return The instance
     */
    @SuppressWarnings("unchecked")
-   public <T> ContexutalInstance<T> get(Contextual<? extends T> contextual)
+   public <T> ContextualInstance<T> get(Contextual<? extends T> contextual)
    {
       Integer contextualId = Container.instance().deploymentServices().get(ContextualIdStore.class).getId(contextual);
       String key = getNamingScheme().getKeyFromId(contextualId);
-      ContexutalInstance<T> instance = (ContexutalInstance<T>) getAttribute(key);
+      ContextualInstance<T> instance = (ContextualInstance<T>) getAttribute(key);
       log.trace("Looked for " + key + " and got " + instance);
       return instance;
    }
@@ -131,7 +131,7 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
     * @param instance The instance
     * @return The instance added
     */
-   public <T> void put(ContexutalInstance<T> beanInstance)
+   public <T> void put(ContextualInstance<T> beanInstance)
    {
       Integer contextualId = Container.instance().deploymentServices().get(ContextualIdStore.class).getId(beanInstance.getContextual());
       String key = getNamingScheme().getKeyFromId(contextualId);

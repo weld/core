@@ -24,7 +24,7 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.context.api.ContexutalInstance;
+import org.jboss.webbeans.context.api.ContextualInstance;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -75,7 +75,7 @@ public abstract class AbstractMapContext extends AbstractContext
       {
          throw new IllegalStateException("No bean store available for " + toString());
       }
-      ContexutalInstance<T> beanInstance = getBeanStore().get(contextual);
+      ContextualInstance<T> beanInstance = getBeanStore().get(contextual);
       if (beanInstance != null)
       {
          return beanInstance.getInstance();
@@ -128,7 +128,7 @@ public abstract class AbstractMapContext extends AbstractContext
       {
          throw new IllegalStateException("No bean store available for " + toString());
       }
-      ContexutalInstance<T> beanInstance = getBeanStore().get(contextual);
+      ContextualInstance<T> beanInstance = getBeanStore().get(contextual);
       contextual.destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
    }
    

@@ -36,7 +36,7 @@ public interface BeanStore
     * @param contextual The contextual whose instance is to be return
     * @return The instance. Null if not found
     */
-   public abstract <T> ContexutalInstance<T> get(Contextual<? extends T> contextual);
+   public abstract <T> ContextualInstance<T> get(Contextual<? extends T> contextual);
 
    /**
     * Clears the store of contextual instances
@@ -56,5 +56,5 @@ public interface BeanStore
     * @param contextualInstance the contextual instance
     * @return The instance added
     */
-   public abstract <T> void put(ContexutalInstance<T> contextualInstance);
+   public abstract <T> void put(ContextualInstance<T> contextualInstance);
 }
