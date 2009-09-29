@@ -31,12 +31,12 @@ public class AbstractClusterTest
       SingletonProvider.reset();
    }
 
-   protected TestContainer<MockEELifecycle> bootstrapContainer(int id, Iterable<Class<?>> classes)
+   protected TestContainer bootstrapContainer(int id, Iterable<Class<?>> classes)
    {
       // Bootstrap container
       SwitchableSingletonProvider.use(id);
       
-      TestContainer<MockEELifecycle> container = new TestContainer<MockEELifecycle>(new MockEELifecycle(), classes, null);
+      TestContainer container = new TestContainer(new MockEELifecycle(), classes, null);
       container.startContainer();
       container.ensureRequestActive();
       

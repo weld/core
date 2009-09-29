@@ -5,7 +5,6 @@ import java.util.Arrays;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.mock.MockEELifecycle;
 import org.jboss.webbeans.mock.TestContainer;
 import org.jboss.webbeans.mock.cluster.AbstractClusterTest;
 import org.testng.annotations.Test;
@@ -17,11 +16,11 @@ public class NaiveClusterTest extends AbstractClusterTest
    public void testSimpleSessionReplication() throws Exception
    {
       
-      TestContainer<MockEELifecycle> container1 = bootstrapContainer(1, Arrays.<Class<?>>asList(Foo.class));
+      TestContainer container1 = bootstrapContainer(1, Arrays.<Class<?>>asList(Foo.class));
       BeanManagerImpl beanManager1 = container1.getBeanManager();
       Bean<?> fooBean1 = beanManager1.resolve(beanManager1.getBeans(Foo.class));
       
-      TestContainer<MockEELifecycle> container2 = bootstrapContainer(2, Arrays.<Class<?>>asList(Foo.class));
+      TestContainer container2 = bootstrapContainer(2, Arrays.<Class<?>>asList(Foo.class));
       BeanManagerImpl beanManager2 = container2.getBeanManager();
       Bean<?> fooBean2 = beanManager2.resolve(beanManager2.getBeans(Foo.class));
       
@@ -41,11 +40,11 @@ public class NaiveClusterTest extends AbstractClusterTest
    public void testMultipleDependentObjectsSessionReplication() throws Exception
    {
       Iterable<Class<?>> classes = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
-      TestContainer<MockEELifecycle> container1 = bootstrapContainer(1, classes);
+      TestContainer container1 = bootstrapContainer(1, classes);
       BeanManagerImpl beanManager1 = container1.getBeanManager();
       Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));
       
-      TestContainer<MockEELifecycle> container2 = bootstrapContainer(2, classes);
+      TestContainer container2 = bootstrapContainer(2, classes);
       BeanManagerImpl beanManager2 = container2.getBeanManager();
       Bean<?> stableBean2 = beanManager2.resolve(beanManager2.getBeans(Stable.class));
       
@@ -84,11 +83,11 @@ public class NaiveClusterTest extends AbstractClusterTest
       // NB This is not a valid deployment scenario for a cluster, but it does allow us to test bean ids neatly!
       Iterable<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
       Iterable<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class, Foo.class);
-      TestContainer<MockEELifecycle> container1 = bootstrapContainer(1, classes1);
+      TestContainer container1 = bootstrapContainer(1, classes1);
       BeanManagerImpl beanManager1 = container1.getBeanManager();
       Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));
       
-      TestContainer<MockEELifecycle> container2 = bootstrapContainer(2, classes2);
+      TestContainer container2 = bootstrapContainer(2, classes2);
       BeanManagerImpl beanManager2 = container2.getBeanManager();
       Bean<?> stableBean2 = beanManager2.resolve(beanManager2.getBeans(Stable.class));
       
