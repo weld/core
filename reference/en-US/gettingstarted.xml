@@ -12,11 +12,10 @@
 
     <para>
       Web Beans comes with a two deployable example applications:
-      <literal>webbeans-numberguess</literal>, a war example, containing only
+      <literal>webbeans-numberguess</literal>, a war example which runs on 
+      JBoss AS, Tomcat, Jetty and Google App Engine, containing only
       simple beans, and <literal>webbeans-translator</literal> an ear example,
-      containing enterprise beans. There are also two variations on the 
-      numberguess example, the tomcat example (suitable for deployment to 
-      Tomcat) and the jsf2 example, which you can use if you are running JSF2.
+      containing enterprise beans.
       To run the examples you'll need the following:
    </para>
    
@@ -25,7 +24,10 @@
        <para>the latest release of Web Beans,</para>
      </listitem>
      <listitem>
-       <para>JBoss AS 5.0.1.GA, or</para>
+       <para>JBoss AS 5.2.0, or</para>
+     </listitem>
+     <listitem>
+       <para>Jetty 6.1.x, or</para>
      </listitem>
      <listitem>
        <para>Apache Tomcat 6.0.x, and</para>
@@ -39,55 +41,20 @@
       <title>Using JBoss AS 5</title>
    
       <para> 
-         You'll need to download JBoss AS 5.0.1.GA from 
+         You'll need to download JBoss AS 5.2.0 from 
          <ulink url="http://www.jboss.org/jbossas/downloads/">jboss.org</ulink>,
          and unzip it. For example:
       </para>
       
       <programlisting><![CDATA[$ cd /Applications
-$ unzip ~/jboss-5.0.1.GA.zip]]></programlisting>
+$ unzip ~/jboss-5.2.0.Beta.zip]]></programlisting>
 
-      <para>
-         Next, download Web Beans from 
-         <ulink url="http://seamframework.org/Download">seamframework.org</ulink>,
-         and unzip it. For example
-      </para>
-      
-      <programlisting><![CDATA[$ cd ~/
-$ unzip ~/webbeans-$VERSION.zip]]></programlisting>
-
-   
-      <para>
-         Next, we need to tell Web Beans where JBoss is located. Edit
-         <literal>jboss-as/build.properties</literal> and set the
-         <literal>jboss.home</literal> property. For example:
-      </para>
-      
-      <programlisting>jboss.home=/Applications/jboss-5.0.1.GA</programlisting>
-      
-      <para>
-         To install Web Beans, you'll need Ant 1.7.0 installed, and the 
-         <literal>ANT_HOME</literal> environment variable set. For example:
-      </para>
-      
       <note>
          <para>
-            JBoss 5.1.0 comes with Web Beans built in, so there is no need to
-            update the server.
+            JBoss AS 5.2.0 comes with Web Beans built in.
          </para>
       </note>
       
-         <programlisting>$ unzip apache-ant-1.7.0.zip
-$ export ANT_HOME=~/apache-ant-1.7.0</programlisting>
-
-      <para>
-         Then, you can install the update. The update script will use Maven to
-         download Web Beans automatically.
-      </para>
-      
-      <programlisting>$ cd webbeans-$VERSION/jboss-as
-$ ant update</programlisting>
-
       <para>
          Now, you're ready to deploy your first example!
       </para>
@@ -132,14 +99,14 @@ $ ant update</programlisting>
          To deploy the numberguess example:
       </para>
    
-      <programlisting>$ cd examples/numberguess
+      <programlisting>$ cd examples/jsf/numberguess
 ant deploy</programlisting>
 
       <para>
          Start JBoss AS:
       </para>
       
-      <programlisting>$ /Application/jboss-5.0.0.GA/bin/run.sh</programlisting>
+      <programlisting>$ /Application/jboss-5.2.0.Beta/bin/run.sh</programlisting>
       
       <tip>
          <para>
@@ -189,12 +156,6 @@ $ unzip ~/apache-tomcat-6.0.18.zip]]></programlisting>
       
       <programlisting><![CDATA[$ cd ~/
 $ unzip ~/webbeans-$VERSION.zip]]></programlisting>
-
-      <para>
-         Next, we need to tell Web Beans where Tomcat is located. Edit
-         <literal>jboss-as/build.properties</literal> and set the
-         <literal>tomcat.home</literal> property. For example:
-      </para>
       
       <programlisting>tomcat.home=/Applications/apache-tomcat-6.0.18</programlisting>
 
@@ -206,46 +167,35 @@ $ unzip ~/webbeans-$VERSION.zip]]></programlisting>
          <itemizedlist>
             <listitem>
                <para>
-                  <literal>ant tomcat.restart</literal> - deploy the example in exploded 
-                  format
+                  <literal>mvn war:inplace tomcat:run -Ptomcat</literal> - deploy the example in an embedded Tomcat
                </para>
             </listitem>
             <listitem>
                <para>
-                  <literal>ant tomcat.explode</literal> - update an exploded example, without
-                  restarting the deployment
+                  <literal>mvn compile war:exploded tomcat:exploded -Ptomcat</literal> - deploy the example to a running Tomcat install
                </para>
-            </listitem>
-            <listitem>
-               <para>
-                  <literal>ant tomcat.deploy</literal> - deploy the example in compressed jar format
-               </para>
-            </listitem>
-            <listitem>
-               <para>
-                  <literal>ant tomcat.undeploy</literal> - remove the example (in compressed jar format) from the server
-               </para>
-            </listitem>
-            <listitem>
-               <para>
-                  <literal>ant tomcat.unexplode</literal> - remove the example (in exploded format) from the server
-               </para>
-            </listitem>
-            <listitem>
-               <para>
-                  <literal>ant tomcat.clean</literal> - clean the example
-              </para>
             </listitem>
          </itemizedlist>
+         <para>
+            See the <code>jsf/numberguess/readme.txt</code> for more details.
+         </para>
       </tip>
       
       <para>
          To deploy the numberguess example for tomcat:
       </para>
    
-      <programlisting>$ cd examples/tomcat
+      <programlisting>$ cd examples/jsf/numberguess
 ant tomcat.deploy</programlisting>
 
+      <para>
+         Edit <code>$TOMCAT_HOME/conf/tomcat-users.xml</code> and add
+      </para>
+      
+      <programlisting><![CDATA[<user username="admin" password="" roles="manager"/>]]></programlisting>
+   
+      <para>This allows Maven to communicate with Tomcat.</para>
+   
       <para>
          Start Tomcat:
       </para>
@@ -257,6 +207,10 @@ ant tomcat.deploy</programlisting>
             If you use Windows, use the <literal>startup.bat</literal>script.
          </para>
       </tip>
+      
+      <para>Deploy the application</para>
+      
+      <programlisting>$ mvn compile war:exploded tomcat:exploded -Ptomcat</programlisting>
    
       <para>
          Wait for the application to deploy, and enjoy hours of fun at
@@ -562,38 +516,37 @@ public class Generator {
       
       <programlisting role="JAVA"><![CDATA[package org.jboss.webbeans.examples.numberguess;
 
+import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Instance;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.webbeans.AnnotationLiteral;
-import javax.webbeans.Current;
-import javax.webbeans.Initializer;
-import javax.webbeans.Named;
-import javax.webbeans.SessionScoped;
-import javax.webbeans.manager.Manager;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Named
 @SessionScoped
-public class Game
+public class Game implements Serializable
 {
    private int number;
    
    private int guess;
    private int smallest;
+   
+   @Inject @MaxNumber
+   private int maxNumber;
+   
    private int biggest;
    private int remainingGuesses;
    
-   @Current Manager manager;
+   @Inject @Random Instance<Integer> randomNumber;
    
    public Game()
    {
-   }
-   
-   @Initializer
-   Game(@MaxNumber int maxNumber)
-   {      
-      this.biggest = maxNumber;
    }
 
    public int getNumber()
@@ -650,10 +603,31 @@ public class Game
       this.smallest = 0;
       this.guess = 0;
       this.remainingGuesses = 10;
-      this.number = manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){});
+      this.biggest = maxNumber;
+      this.number = randomNumber.get();
    }
    
-}]]></programlisting>
+   public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value)
+   {
+      if (remainingGuesses <= 0)
+      {
+         FacesMessage message = new FacesMessage("No guesses left!");
+         context.addMessage(toValidate.getClientId(context), message);
+         ((UIInput)toValidate).setValid(false);
+         return;
+      }
+      int input = (Integer) value;
+
+      if (input < smallest || input > biggest) 
+      {
+         ((UIInput)toValidate).setValid(false);
+
+         FacesMessage message = new FacesMessage("Invalid guess");
+         context.addMessage(toValidate.getClientId(context), message);
+      }
+   }
+}
+]]></programlisting>
 
       <section>
          <title>The numberguess example in Tomcat</title>
