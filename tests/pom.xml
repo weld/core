@@ -104,6 +104,11 @@
          <artifactId>jsf-api</artifactId>
       </dependency>
       
+      <dependency>
+         <groupId>net.sourceforge.htmlunit</groupId>
+         <artifactId>htmlunit</artifactId>
+      </dependency>
+      
    </dependencies>
 
    <build>

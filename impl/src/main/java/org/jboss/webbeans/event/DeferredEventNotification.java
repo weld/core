@@ -34,9 +34,9 @@ public class DeferredEventNotification<T> implements Runnable
    private static Log log = Logging.getLog(DeferredEventNotification.class);
    
    // The observer
-   protected ObserverMethodImpl<?, T> observer;
+   protected final ObserverMethodImpl<?, T> observer;
    // The event object
-   protected T event;
+   protected final T event;
 
    /**
     * Creates a new deferred event notifier.
@@ -52,21 +52,24 @@ public class DeferredEventNotification<T> implements Runnable
 
    public void run()
    {
-      Lifecycle lifecycle = Container.instance().deploymentServices().get(ContextLifecycle.class);
-      BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
-      lifecycle.beginRequest("async invocation", requestBeanStore);
       try
       {
          log.debug("Sending event [" + event + "] directly to observer " + observer);
-         observer.sendEvent(event);
+         new RunInRequest()
+         {
+            
+            @Override
+            protected void execute()
+            {
+               observer.sendEvent(event);
+            }
+            
+         }.run();
+         
       }
       catch (Exception e)
       {
          log.error("Failure while notifying an observer of event [" + event + "]", e);
-      }
-      finally
-      {
-         lifecycle.endRequest("async invocation", requestBeanStore);
       }
    }
 
@@ -74,6 +77,35 @@ public class DeferredEventNotification<T> implements Runnable
    public String toString()
    {
       return "Deferred event [" + event + "] for [" + observer + "]";
+   }
+   
+   private abstract static class RunInRequest
+   {
+      
+      protected abstract void execute();
+      
+      public void run()
+      {
+         Lifecycle lifecycle = Container.instance().deploymentServices().get(ContextLifecycle.class);
+         boolean requestActive = lifecycle.isRequestActive();
+         BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
+         try
+         {
+            if (!requestActive)
+            {
+               lifecycle.beginRequest("async invocation", requestBeanStore);
+            }
+            execute();
+         }
+         finally
+         {
+            if (!requestActive)
+            {
+               lifecycle.endRequest("async invocation", requestBeanStore);
+            }
+         }
+      }
+      
    }
    
 }

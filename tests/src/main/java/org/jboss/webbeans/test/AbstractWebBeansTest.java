@@ -24,7 +24,6 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.mock.MockServletContext;
 import org.jboss.webbeans.mock.el.EL;
 import org.jboss.webbeans.servlet.ServletHelper;
-import org.jboss.webbeans.test.harness.AbstractStandaloneContainersImpl;
 import org.jboss.webbeans.util.collections.EnumerationList;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
@@ -195,6 +194,11 @@ public abstract class AbstractWebBeansTest extends AbstractTest
    {
       ELContext elContext = EL.createELContext(getCurrentManager().getCurrent());
       return (T) EL.EXPRESSION_FACTORY.createValueExpression(elContext, expression, expectedType).getValue(elContext);
+   }
+   
+   protected String getPath(String viewId)
+   {
+      return getContextPath() + viewId;
    }
 
 }

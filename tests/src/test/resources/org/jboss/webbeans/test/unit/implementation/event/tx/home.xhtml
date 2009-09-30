@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>JSF 2.0 Web Beans Example</title>
+    </h:head>
+
+    <h:body>
+       <h:form id="NumberGuessMain">
+          <h:panelGrid styleClass="title-panel">
+             <h:outputText value="Guess Number" styleClass="title-panel-text"/>
+             <h:outputText value="Powered By JavaServer Faces 2.0 and Web Beans" styleClass="title-panel-subtext"/>
+          </h:panelGrid>
+
+          <div style="color: black; font-size: 20px;">
+          Transactional Services
+          </div>
+     
+          <h:panelGrid border="1" columns="5" style="font-size: 18px;">
+             <h:commandButton id="SaveButton" value="Save" action="#{foo.save}" />
+          </h:panelGrid>
+
+          <div style="color: red; font-size: 14px;">
+             <h:messages id="messages" globalOnly="false"/>
+          </div>l
+       </h:form>
+    </h:body>
+
+</html>

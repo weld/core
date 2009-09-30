@@ -45,6 +45,7 @@
          <package name="org.jboss.webbeans.test.unit.implementation.enterpise.lifecycle" />
          <package name="org.jboss.webbeans.test.unit.implementation.enterprise.sbi" />
          <package name="org.jboss.webbeans.test.unit.implementation.event" />
+         <package name="org.jboss.webbeans.test.unit.implementation.event.tx" />
          <package name="org.jboss.webbeans.test.unit.implementation.exceptions" />
          <package name="org.jboss.webbeans.test.unit.implementation.named" />
          <package name="org.jboss.webbeans.test.unit.implementation.newsimple" />
