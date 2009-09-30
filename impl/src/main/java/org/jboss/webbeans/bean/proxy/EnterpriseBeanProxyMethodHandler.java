@@ -18,6 +18,7 @@ package org.jboss.webbeans.bean.proxy;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javassist.util.proxy.MethodHandler;
@@ -115,7 +116,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
       Object proxiedInstance = reference.getBusinessObject(businessInterface);
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
       Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxiedInstance, args);
-      log.trace("Executed " + method + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
+      log.trace("Executed " + method + " on " + proxiedInstance + " with parameters " + Arrays.toString(args) + " and got return value " + returnValue);
       return returnValue;
    }
    

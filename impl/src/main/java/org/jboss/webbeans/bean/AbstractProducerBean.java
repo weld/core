@@ -21,7 +21,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
@@ -90,7 +89,6 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       if (getType().isArray() || getType().isPrimitive())
       {
          Set<Type> types = new HashSet<Type>();
-         types = new HashSet<Type>();
          types.add(getType());
          types.add(Object.class);
          super.types = types;
@@ -119,27 +117,9 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       }
       catch (ClassCastException e)
       {
-         throw new RuntimeException(" Cannot cast producer type " + getAnnotatedItem().getJavaClass() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
+         Type type = Beans.getDeclaredBeanType(getClass());
+         throw new RuntimeException(" Cannot cast producer type " + getAnnotatedItem().getJavaClass() + " to bean type " + (type == null ? " unknown " : type), e);
       }
-   }
-
-   /**
-    * Gets the declared bean type
-    * 
-    * @return The bean type
-    */
-   protected Type getDeclaredBeanType()
-   {
-      Type type = getClass();
-      if (type instanceof ParameterizedType)
-      {
-         ParameterizedType parameterizedType = (ParameterizedType) type;
-         if (parameterizedType.getActualTypeArguments().length == 1)
-         {
-            return parameterizedType.getActualTypeArguments()[0];
-         }
-      }
-      return null;
    }
 
    /**

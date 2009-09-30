@@ -164,7 +164,10 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
             {
                throw new DefinitionException("The decorated type is parameterized, but the delegate type isn't. Delegate type " + delegateType + "." + this);
             }
-            if (!Arrays.equals(delegateInjectionPoint.getActualTypeArguments(), parameterizedType.getActualTypeArguments()));
+            if (!Arrays.equals(delegateInjectionPoint.getActualTypeArguments(), parameterizedType.getActualTypeArguments()))
+            {
+               throw new DefinitionException("The delegate type must have exactly the same type parameters as the decorated type. Decorated type " + decoratedType + "." + this );
+            }
             Type rawType = ((ParameterizedType) decoratedType).getRawType();
             if (rawType instanceof Class && !((Class<?>) rawType).isAssignableFrom(delegateInjectionPoint.getJavaClass()))
             {

@@ -92,7 +92,6 @@ public class DisposalMethod<T> extends AbstractReceiverBean<T, Method>
    protected void initTypes()
    {
       Set<Type> types = new HashSet<Type>();
-      types = new HashSet<Type>();
       types.addAll(disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getTypeClosure());
       types.add(Object.class);
       super.types = types;

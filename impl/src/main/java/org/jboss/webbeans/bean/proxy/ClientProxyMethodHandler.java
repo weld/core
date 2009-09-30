@@ -19,6 +19,7 @@ package org.jboss.webbeans.bean.proxy;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import javassist.util.proxy.MethodHandler;
 
@@ -108,7 +109,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       try
       {
          Object returnValue = Reflections.lookupMethod(proxiedMethod, proxiedInstance).invoke(proxiedInstance, args);
-         log.trace("Executed method " + proxiedMethod + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
+         log.trace("Executed method " + proxiedMethod + " on " + proxiedInstance + " with parameters " + Arrays.toString(args) + " and got return value " + returnValue);
          return returnValue;
       }
       catch (InvocationTargetException e)

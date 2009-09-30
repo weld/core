@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -122,8 +121,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
    @Override
    protected void initTypes()
    {
-      Set<Type> types = new HashSet<Type>();
-      types = new LinkedHashSet<Type>();
+      Set<Type> types = new LinkedHashSet<Type>();
       types.add(Object.class);
       for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
       {

@@ -17,6 +17,7 @@
 package org.jboss.webbeans.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -519,6 +520,25 @@ public class Beans
             Object resourceInstance = resourceServices.resolveResource(injectionPoint);
             injectionPoint.inject(beanInstance, resourceInstance);
          }
+      }
+   }
+   
+
+   /**
+    * Gets the declared bean type
+    * 
+    * @return The bean type
+    */
+   public static Type getDeclaredBeanType(Class<? extends Bean> clazz)
+   {
+      Type[] actualTypeArguments = Reflections.getActualTypeArguments(clazz);
+      if (actualTypeArguments.length == 1)
+      {
+         return actualTypeArguments[0];
+      }
+      else
+      {
+         return null;
       }
    }
    
