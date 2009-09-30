@@ -87,7 +87,7 @@
          <dependency>
             <groupId>org.atinject</groupId>
             <artifactId>inject-tck</artifactId>
-            <version>1.0.0-PRD</version>
+            <version>1.0.0-PFD-2</version>
          </dependency>
          
          
@@ -137,8 +137,8 @@
          
          <dependency>
             <groupId>javax.inject</groupId>
-            <artifactId>inject-api</artifactId>
-            <version>1.0.0-PRD</version>
+            <artifactId>javax.inject</artifactId>
+            <version>1.0-PFD-1</version>
          </dependency>
   
          <dependency>

@@ -19,6 +19,7 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -259,7 +260,7 @@ public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
 
    public Type[] getActualTypeArguments()
    {
-      return actualTypeArguments;
+      return Arrays.copyOf(actualTypeArguments, actualTypeArguments.length);
    }
 
    public Set<Type> getInterfaceOnlyFlattenedTypeHierarchy()

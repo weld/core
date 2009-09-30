@@ -19,11 +19,12 @@ package org.jboss.webbeans.introspector.jlr;
 import java.util.Arrays;
 
 import org.jboss.webbeans.introspector.ConstructorSignature;
-import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.introspector.WBConstructor;
 
 public class ConstructorSignatureImpl implements ConstructorSignature
 {
+   
+   private static final long serialVersionUID = -9111642596078876778L;
    
    private final String[] parameterTypes;
    
@@ -40,9 +41,9 @@ public class ConstructorSignatureImpl implements ConstructorSignature
    @Override
    public boolean equals(Object obj)
    {
-      if (obj instanceof ConstructorSignatureImpl)
+      if (obj instanceof ConstructorSignature)
       {
-         MethodSignature that = (MethodSignature) obj;
+         ConstructorSignature that = (ConstructorSignature) obj;
          return Arrays.equals(this.getParameterTypes(), that.getParameterTypes());
       }
       else
@@ -59,7 +60,7 @@ public class ConstructorSignatureImpl implements ConstructorSignature
    
    public String[] getParameterTypes()
    {
-      return parameterTypes;
+      return Arrays.copyOf(parameterTypes, parameterTypes.length);
    }
    
 }

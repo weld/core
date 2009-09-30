@@ -40,7 +40,7 @@ import org.jboss.webbeans.log.Logging;
 public class ContextLifecycle implements Lifecycle, Service
 {
    
-   public static LogProvider log = Logging.getLogProvider(ContextLifecycle.class);
+   public static final LogProvider log = Logging.getLogProvider(ContextLifecycle.class);
 
    private final AbstractApplicationContext applicationContext;
    private final AbstractApplicationContext singletonContext;

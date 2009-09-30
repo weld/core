@@ -40,7 +40,7 @@ public class JavaSEConversationTerminator implements ConversationTerminator, Ser
 
    private static LogProvider log = Logging.getLogProvider(JavaSEConversationTerminator.class);
 
-   private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+   private transient ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
    public Future<?> scheduleForTermination(Runnable terminationTask, long timeoutInMilliseconds)
    {

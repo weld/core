@@ -28,14 +28,14 @@ public class ParameterizedTypeImpl implements ParameterizedType
 
    public ParameterizedTypeImpl(Type rawType, Type[] actualTypeArguments, Type ownerType)
    {
-      this.actualTypeArguments = actualTypeArguments;
+      this.actualTypeArguments = Arrays.copyOf(actualTypeArguments, actualTypeArguments.length);
       this.rawType = rawType;
       this.ownerType = ownerType;
    }
 
    public Type[] getActualTypeArguments()
    {
-      return actualTypeArguments;
+      return Arrays.copyOf(actualTypeArguments, actualTypeArguments.length);
    }
 
    public Type getOwnerType()
@@ -75,6 +75,7 @@ public class ParameterizedTypeImpl implements ParameterizedType
       
    }
 
+   @Override
    public String toString()
    {
       StringBuilder sb = new StringBuilder();

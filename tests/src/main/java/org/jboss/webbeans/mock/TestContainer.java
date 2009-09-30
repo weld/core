@@ -1,6 +1,7 @@
 package org.jboss.webbeans.mock;
 
 import java.net.URL;
+import java.util.Collection;
 
 import org.jboss.webbeans.BeanManagerImpl;
 
@@ -36,8 +37,8 @@ public class TestContainer
    }
    
    private final MockServletLifecycle lifecycle;
-   private final Iterable<Class<?>> classes;
-   private final Iterable<URL> beansXml;
+   private final Collection<Class<?>> classes;
+   private final Collection<URL> beansXml;
 
    /**
     * Create a container, specifying the classes and beans.xml to deploy
@@ -46,7 +47,7 @@ public class TestContainer
     * @param classes
     * @param beansXml
     */
-   public TestContainer(MockServletLifecycle lifecycle, Iterable<Class<?>> classes, Iterable<URL> beansXml)
+   public TestContainer(MockServletLifecycle lifecycle, Collection<Class<?>> classes, Collection<URL> beansXml)
    {
       this.lifecycle = lifecycle;
       this.classes = classes;
@@ -77,7 +78,7 @@ public class TestContainer
       archive.setBeanClasses(classes);
       if (beansXml != null)
       {
-         archive.setWebBeansXmlFiles(beansXml);
+         archive.setBeansXmlFiles(beansXml);
       }
       lifecycle.initialize();
       lifecycle.beginApplication();

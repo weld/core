@@ -1,6 +1,7 @@
 package org.jboss.webbeans.test.unit.cluster;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import javax.enterprise.inject.spi.Bean;
 
@@ -39,7 +40,7 @@ public class NaiveClusterTest extends AbstractClusterTest
    @Test
    public void testMultipleDependentObjectsSessionReplication() throws Exception
    {
-      Iterable<Class<?>> classes = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
+      Collection<Class<?>> classes = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
       TestContainer container1 = bootstrapContainer(1, classes);
       BeanManagerImpl beanManager1 = container1.getBeanManager();
       Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));
@@ -81,8 +82,8 @@ public class NaiveClusterTest extends AbstractClusterTest
    public void testVariableBeanDeploymentStructure() throws Exception
    {
       // NB This is not a valid deployment scenario for a cluster, but it does allow us to test bean ids neatly!
-      Iterable<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
-      Iterable<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class, Foo.class);
+      Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
+      Collection<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class, Foo.class);
       TestContainer container1 = bootstrapContainer(1, classes1);
       BeanManagerImpl beanManager1 = container1.getBeanManager();
       Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));

@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collection;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.api.SingletonProvider;
@@ -31,7 +32,7 @@ public class AbstractClusterTest
       SingletonProvider.reset();
    }
 
-   protected TestContainer bootstrapContainer(int id, Iterable<Class<?>> classes)
+   protected TestContainer bootstrapContainer(int id, Collection<Class<?>> classes)
    {
       // Bootstrap container
       SwitchableSingletonProvider.use(id);

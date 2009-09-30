@@ -10,8 +10,8 @@ import junit.framework.Test;
 import org.atinject.tck.Tck;
 import org.atinject.tck.auto.Car;
 import org.atinject.tck.auto.Convertible;
-import org.atinject.tck.auto.DriversSeat;
 import org.atinject.tck.auto.FuelTank;
+import org.atinject.tck.auto.Seat;
 import org.atinject.tck.auto.V8Engine;
 import org.atinject.tck.auto.accessories.Cupholder;
 import org.atinject.tck.auto.accessories.SpareTire;
@@ -21,7 +21,7 @@ import org.jboss.webbeans.mock.TestContainer;
 public class AtInjectTCK
 {
    
-   private static final List<Class<?>> classes = Arrays.<Class<?>>asList(Convertible.class, DriversSeat.class, DriversSeatProducer.class, V8Engine.class, Cupholder.class, FuelTank.class, SpareTireProducer.class, SpareTire.class);
+   private static final List<Class<?>> classes = Arrays.<Class<?>>asList(Convertible.class, Seat.class, DriversSeatProducer.class, V8Engine.class, Cupholder.class, FuelTank.class, SpareTireProducer.class, SpareTire.class);
    
    public static Test suite()
    {

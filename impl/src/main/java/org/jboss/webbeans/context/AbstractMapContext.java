@@ -92,7 +92,7 @@ public abstract class AbstractMapContext extends AbstractContext
          boolean needCreationLock = isCreationLockRequired();
          try
          {
-            if(needCreationLock)
+            if (needCreationLock)
             {
                creationLock.lock();
                beanInstance = getBeanStore().get(id);

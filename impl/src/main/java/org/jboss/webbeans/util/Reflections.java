@@ -387,7 +387,7 @@ public class Reflections
       }
       catch (Exception e)
       {
-         throw new RuntimeException("Error accessing constructor (with parameters " + parameterTypes + ") of " + clazz, e);
+         throw new RuntimeException("Error accessing constructor (with parameters " + Arrays.toString(parameterTypes) + ") of " + clazz, e);
       }
    }
 

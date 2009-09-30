@@ -42,8 +42,8 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
 {
    
 
-   private Set<Class<?>> beanClasses;
-   private Collection<URL> webBeansXmlFiles;
+   private Collection<Class<?>> beanClasses;
+   private Collection<URL> beansXmlFiles;
    private List<EjbDescriptor<?>> ejbs;
    private final ServiceRegistry services;
    
@@ -51,7 +51,7 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
    {
       this.services = new SimpleServiceRegistry();
       this.beanClasses = new HashSet<Class<?>>();
-      this.webBeansXmlFiles = new HashSet<URL>();
+      this.beansXmlFiles = new HashSet<URL>();
    }
 
    public Collection<Class<?>> getBeanClasses()
@@ -59,13 +59,9 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
       return beanClasses;
    }
    
-   public void setBeanClasses(Iterable<Class<?>> beanClasses)
+   public void setBeanClasses(Collection<Class<?>> beanClasses)
    {
-      this.beanClasses.clear();
-      for (Class<?> clazz : beanClasses)
-      {
-         this.beanClasses.add(clazz);
-      }
+      this.beanClasses = beanClasses;
       ejbs = new ArrayList<EjbDescriptor<?>>();
       for (Class<?> ejbClass : discoverEjbs(getBeanClasses()))
       {
@@ -75,16 +71,12 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
 
    public Collection<URL> getBeansXml()
    {
-      return webBeansXmlFiles;
+      return beansXmlFiles;
    }
    
-   public void setWebBeansXmlFiles(Iterable<URL> webBeansXmlFiles)
+   public void setBeansXmlFiles(Collection<URL> beansXmlFiles)
    {
-      this.webBeansXmlFiles.clear();
-      for (URL url : webBeansXmlFiles)
-      {
-         this.webBeansXmlFiles.add(url);
-      }
+      this.beansXmlFiles = beansXmlFiles;
    }
 
    public List<BeanDeploymentArchive> getBeanDeploymentArchives()

@@ -81,7 +81,7 @@ public class MethodSignatureImpl implements MethodSignature
    
    public String[] getParameterTypes()
    {
-      return parameterTypes;
+      return Arrays.copyOf(parameterTypes, parameterTypes.length);
    }
    
    @Override

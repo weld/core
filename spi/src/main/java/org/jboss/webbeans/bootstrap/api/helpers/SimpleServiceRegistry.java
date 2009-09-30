@@ -99,7 +99,14 @@ public class SimpleServiceRegistry implements ServiceRegistry
    @Override
    public boolean equals(Object obj)
    {
-      return services.equals(obj);
+      if (obj instanceof Map<?, ?>)
+      {
+         return services.equals(obj);
+      }
+      else
+      {
+         return false;
+      }
    }
    
    public Iterator<Service> iterator()

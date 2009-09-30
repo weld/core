@@ -877,7 +877,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       }
       if (getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal())
       {
-         if (creationalContext != null || (creationalContext == null && getContext(bean.getScope()).get(bean) != null))
+         if (creationalContext != null || getContext(bean.getScope()).get(bean) != null)
          {
             return clientProxyProvider.getClientProxy(this, bean);
          }

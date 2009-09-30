@@ -1,6 +1,7 @@
 package org.jboss.webbeans.test.harness;
 
 import java.net.URL;
+import java.util.Collection;
 
 import org.jboss.testharness.api.DeploymentException;
 import org.jboss.testharness.spi.StandaloneContainers;
@@ -15,7 +16,7 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
    
    private TestContainer testContainer;
 
-   public boolean deploy(Iterable<Class<?>> classes, Iterable<URL> beansXml)
+   public boolean deploy(Collection<Class<?>> classes, Collection<URL> beansXml)
    {
       this.testContainer = new TestContainer(newLifecycle(), classes, beansXml);
       
@@ -35,7 +36,7 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
 
    protected abstract MockServletLifecycle newLifecycle();
 
-   public void deploy(Iterable<Class<?>> classes) throws DeploymentException
+   public void deploy(Collection<Class<?>> classes) throws DeploymentException
    {
       deploy(classes, null);
    }

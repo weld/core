@@ -96,10 +96,7 @@ public class AbstractBeanDeployer
       for (ObserverMethodImpl<?, ?> observer : getEnvironment().getObservers())
       {
          log.debug("Observer : " + observer);
-         if (observer instanceof ObserverMethodImpl<?, ?>)
-         {
-            observer.initialize();
-         }
+         observer.initialize();
          manager.addObserver(observer);
       }
       

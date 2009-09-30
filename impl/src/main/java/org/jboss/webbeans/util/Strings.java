@@ -20,6 +20,8 @@ import java.beans.Introspector;
 import java.util.Collection;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
+
 
 /**
  * String utilities
@@ -79,26 +81,26 @@ public class Strings
       StringBuilder buffer = new StringBuilder();
       if (map == null)
       {
-         buffer.append(header + "null\n");
+         buffer.append(header).append("null\n");
          return buffer.toString();
       }
-      buffer.append(header + "[" + map.size() + " entries]\n");
+      buffer.append(header).append("[").append(map.size()).append(" entries]\n");
       int i = 0;
-      for (Object key : map.keySet())
+      for (Entry<?, ?> entry: map.entrySet())
       {
-         Object value = map.get(key);
-         buffer.append("  #" + ++i + ": " + key.toString() + " -> ");
-         if (value instanceof Iterable)
+         Object value = entry.getValue();
+         buffer.append("  #").append(++i).append(": ").append(entry.getKey()).append(" -> ");
+         if (value instanceof Iterable<?>)
          {
             buffer.append("\n");
             for (Object subValue : (Iterable<?>) value)
             {
-               buffer.append("    " + subValue.toString() + "\n");
+               buffer.append("    ").append(subValue.toString()).append("\n");
             }
          }
          else
          {
-            buffer.append(value.toString() + "\n");
+            buffer.append(value.toString()).append("\n");
          }
       }
       return buffer.toString();

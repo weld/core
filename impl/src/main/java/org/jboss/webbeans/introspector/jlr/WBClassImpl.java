@@ -118,7 +118,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
    private final SetMultimap<Class<? extends Annotation>, WBConstructor<?>> constructorsByAnnotatedParameters;
 
    // Cached string representation
-   private String toString;
+   private final String toString;
 
    private final boolean _nonStaticMemberClass;
    private final boolean _abstract;
@@ -139,6 +139,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
    protected WBClassImpl(Class<T> rawType, Type type, AnnotatedType<T> annotatedType, AnnotationStore annotationStore, ClassTransformer classTransformer)
    {
       super(annotationStore, rawType, type);
+      this.toString = "class " + Names.classToString(rawType);
       this.name = rawType.getName();
       this._simpleName = rawType.getSimpleName();
       if (rawType.getSuperclass() != null)
@@ -448,6 +449,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
     * 
     * @return The class
     */
+   @Override
    public Class<T> getDelegate()
    {
       return getJavaClass();
@@ -650,11 +652,6 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
    @Override
    public String toString()
    {
-      if (toString != null)
-      {
-         return toString;
-      }
-      toString = "Annotated class " + Names.classToString(getDelegate());
       return toString;
    }
    

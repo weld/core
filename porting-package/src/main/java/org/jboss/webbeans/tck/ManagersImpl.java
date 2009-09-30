@@ -14,15 +14,7 @@ import org.jboss.webbeans.servlet.ServletHelper;
 public class ManagersImpl implements Managers
 {
    
-   public static ThreadLocal<ServletContext> SERVLET_CONTEXT = new ThreadLocal<ServletContext>()
-   {
-      
-      protected ServletContext initialValue() 
-      {
-         return new MockServletContext("");
-      }
-      
-   };
+   private static final ServletContext SERVLET_CONTEXT = new MockServletContext("");
 
    public BeanManager getManager()
    {
@@ -32,7 +24,7 @@ public class ManagersImpl implements Managers
       }
       else
       {
-         return ServletHelper.getModuleBeanManager(SERVLET_CONTEXT.get());
+         return ServletHelper.getModuleBeanManager(SERVLET_CONTEXT);
       }
    }
 

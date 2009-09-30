@@ -30,6 +30,7 @@ import org.jboss.webbeans.introspector.WBAnnotation;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.resources.ClassTransformer;
+import org.jboss.webbeans.util.Names;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
@@ -57,7 +58,7 @@ public class WBAnnotationImpl<T extends Annotation> extends WBClassImpl<T> imple
    private final Map<String, WBMethod<?, ?>> namedMembers;
 
    // Cached string representation
-   private String toString;
+   private final String toString;
    
    public static <A extends Annotation> WBAnnotation<A> of(Class<A> annotationType, ClassTransformer classTransformer)
    {
@@ -75,6 +76,7 @@ public class WBAnnotationImpl<T extends Annotation> extends WBClassImpl<T> imple
    {
       super(annotationType, annotationType, null, AnnotationStore.of(annotationType, classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore()), classTransformer);
       this.clazz = annotationType;
+      this.toString = "class " + Names.classToString(getDelegate());
       members = new HashSet<WBMethod<?, ?>>();
       annotatedMembers = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WBMethod<?, ?>>>(), new Supplier<Set<WBMethod<?, ?>>>()
       {
@@ -141,13 +143,10 @@ public class WBAnnotationImpl<T extends Annotation> extends WBClassImpl<T> imple
    @Override
    public String toString()
    {
-      if (toString != null)
-      {
-         return toString;
-      }
       return toString;
    }
 
+   @Override
    public Class<T> getDelegate()
    {
       return clazz;
