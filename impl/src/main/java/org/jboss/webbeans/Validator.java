@@ -18,10 +18,10 @@ package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,8 +43,8 @@ import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.AbstractProducerBean;
 import org.jboss.webbeans.bean.DecoratorImpl;
 import org.jboss.webbeans.bean.DisposalMethod;
-import org.jboss.webbeans.bean.NewSessionBean;
 import org.jboss.webbeans.bean.NewManagedBean;
+import org.jboss.webbeans.bean.NewSessionBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.api.Service;
@@ -52,7 +52,6 @@ import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.resolution.ResolvableWBClass;
 import org.jboss.webbeans.util.Beans;
-import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 
@@ -153,21 +152,6 @@ public class Validator implements Service
       {
          throw new DefinitionException("Cannot declare an injection point with a type variable " + ij);
       }
-      if (ij.getType() instanceof ParameterizedType)
-      {
-         ParameterizedType parameterizedType = (ParameterizedType) ij.getType();
-         for (Type type : parameterizedType.getActualTypeArguments())
-         {
-//            if (type instanceof TypeVariable<?>)
-//            {
-//               throw new DefinitionException("Injection point cannot have a type variable type parameter " + ij);
-//            }
-//            if (type instanceof WildcardType)
-//            {
-//               throw new DefinitionException("Injection point cannot have a wildcard type parameter " + ij);
-//            }
-         }
-      }
       checkFacadeInjectionPoint(ij, Instance.class);
       checkFacadeInjectionPoint(ij, Event.class);
       Annotation[] bindings = ij.getQualifiers().toArray(new Annotation[0]);
@@ -175,11 +159,11 @@ public class Validator implements Service
       Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getInjectableBeans(ij));
       if (resolvedBeans.isEmpty())
       {
-         throw new DeploymentException("The injection point " + ij + " with binding types "  + Names.annotationsToString(ij.getQualifiers()) + " in " + ij.getBean() + " has unsatisfied dependencies with binding types ");
+         throw new DeploymentException("Injection point has unstatisfied dependencies. Injection point: " + ij.toString() + "; Qualifiers: " + Arrays.toString(bindings));
       }
       if (resolvedBeans.size() > 1)
       {
-         throw new DeploymentException("The injection point " + ij + " with binding types " + Names.annotationsToString(ij.getQualifiers()) + " in " + ij.getBean() + " has ambiguous dependencies " + resolvedBeans);
+         throw new DeploymentException("Injection point has ambiguous dependencies. Injection point: " + ij.toString() + "; Qualifiers: " + Arrays.toString(bindings) +"; Possible dependencies: " + resolvedBeans);
       }
       Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
       if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(ij.getType()))

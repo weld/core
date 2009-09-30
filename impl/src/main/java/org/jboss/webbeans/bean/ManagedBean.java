@@ -250,7 +250,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    protected void checkBeanImplementation()
    {
       super.checkBeanImplementation();
-      if (!isDependent())
+      if (isNormalScoped())
       {
          for (WBField<?, ?> field : getAnnotatedItem().getWBFields())
          {

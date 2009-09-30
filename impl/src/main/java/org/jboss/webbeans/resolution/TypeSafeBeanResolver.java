@@ -46,7 +46,8 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
    {
       TRANSFORMERS = new HashSet<ResolvableTransformer>();
       TRANSFORMERS.add(EventBean.TRANSFORMER);
-      TRANSFORMERS.add(InstanceBean.TRANSFORMER);
+      TRANSFORMERS.add(InstanceBean.INSTANCE_TRANSFORMER);
+      TRANSFORMERS.add(InstanceBean.PROVIDER_TRANSFORMER);
       TRANSFORMERS.add(new NewResolvableTransformer());
    }
 

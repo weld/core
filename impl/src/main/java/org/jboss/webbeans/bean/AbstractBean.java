@@ -31,6 +31,7 @@ import javax.inject.Named;
 import javax.inject.Qualifier;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.Container;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.WBInjectionPoint;
@@ -466,6 +467,11 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    public boolean isDependent()
    {
       return Dependent.class.equals(getScope());
+   }
+   
+   public boolean isNormalScoped()
+   {
+      return Container.instance().deploymentServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
    }
    
    public boolean isAlternative()

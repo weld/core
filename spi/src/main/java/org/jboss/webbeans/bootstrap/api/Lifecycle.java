@@ -36,6 +36,8 @@ public interface Lifecycle
    public void endApplication();
 
    public Context getApplicationContext();
+   
+   public Context getSingletonContext();
 
    public Context getSessionContext();
 

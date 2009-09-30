@@ -39,7 +39,6 @@ import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBConstructor;
 import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.resources.ClassTransformer;
-import org.jboss.webbeans.util.Names;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.ListMultimap;
@@ -68,7 +67,7 @@ public class WBConstructorImpl<T> extends AbstractWBCallable<T, T, Constructor<T
    private final ConstructorSignature signature;
 
    // Cached string representation
-   private String toString;
+   private final String toString;
    
    public static <T> WBConstructor<T> of(Constructor<T> constructor, WBClass<T> declaringClass, ClassTransformer classTransformer)
    {
@@ -93,6 +92,7 @@ public class WBConstructorImpl<T> extends AbstractWBCallable<T, T, Constructor<T
    private WBConstructorImpl(Constructor<T> constructor, AnnotatedConstructor<T> annotatedConstructor, AnnotationStore annotationStore, WBClass<T> declaringClass, ClassTransformer classTransformer)
    {
       super(annotationStore, constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass(), declaringClass);
+      this.toString = new StringBuilder().append("constructor ").append(constructor.toString()).toString();
       this.constructor = constructor;
 
       this.parameters = new ArrayList<WBParameter<?, ?>>();
@@ -271,11 +271,6 @@ public Constructor<T> getDelegate()
    @Override
    public String toString()
    {
-      if (toString != null)
-      {
-         return toString;
-      }
-      toString = "Annotated constructor " + Names.constructorToString(constructor);
       return toString;
    }
    

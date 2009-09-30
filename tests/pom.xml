@@ -63,7 +63,6 @@
       <dependency>
          <groupId>org.jboss.ejb3</groupId>
          <artifactId>jboss-ejb3-api</artifactId>
-         <optional>true</optional>
          <exclusions>
             <exclusion>
                <artifactId>jboss-jaxrpc</artifactId>

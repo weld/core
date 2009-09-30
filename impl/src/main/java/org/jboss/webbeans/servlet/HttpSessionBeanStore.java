@@ -29,7 +29,7 @@ import org.jboss.webbeans.context.beanstore.NamingScheme;
  * 
  * @author Nicklas Karlsson
  * 
- * @see org.jboss.webbeans.context.ApplicationContext
+ * @see org.jboss.webbeans.context.AbstractApplicationContext
  */
 public class HttpSessionBeanStore extends AbstractAttributeBackedBeanStore
 {

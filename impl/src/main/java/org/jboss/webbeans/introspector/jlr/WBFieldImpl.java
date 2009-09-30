@@ -26,7 +26,6 @@ import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.resources.ClassTransformer;
-import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -45,7 +44,7 @@ public class WBFieldImpl<T, X> extends AbstractWBMember<T, X, Field> implements 
    private final Field field;
 
    // Cached string representation
-   private String toString;
+   private final String toString;
 
    public static <T, X> WBFieldImpl<T, X> of(Field field, WBClass<X> declaringClass, ClassTransformer classTransformer)
    {
@@ -72,6 +71,7 @@ public class WBFieldImpl<T, X> extends AbstractWBMember<T, X, Field> implements 
    {
       super(annotationStore, field, (Class<T>) field.getType(), field.getGenericType(), declaringClass);
       this.field = field;
+      this.toString = new StringBuilder().append("field ").append(declaringClass.getName()).append(".").append(field.getName()).toString();
    }
 
    /**
@@ -84,6 +84,7 @@ public class WBFieldImpl<T, X> extends AbstractWBMember<T, X, Field> implements 
       return field;
    }
 
+   @Override
    public Field getDelegate()
    {
       return field;
@@ -125,12 +126,7 @@ public class WBFieldImpl<T, X> extends AbstractWBMember<T, X, Field> implements 
    @Override
    public String toString()
    {
-      if (toString != null)
-      {
-         return toString;
-      }
-      toString = Names.fieldToString(field) + " on " + getDeclaringType();
-      return toString;
+      return this.toString;
    }
 
    @Override

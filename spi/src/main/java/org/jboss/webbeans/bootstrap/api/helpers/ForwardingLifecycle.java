@@ -79,6 +79,11 @@ public abstract class ForwardingLifecycle implements Lifecycle
    {
       return delegate().getSessionContext();
    }
+   
+   public Context getSingletonContext()
+   {
+      return delegate().getSingletonContext();
+   }
 
    public boolean isRequestActive()
    {

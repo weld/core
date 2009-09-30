@@ -58,6 +58,7 @@
             <module>impl</module>
             <module>tests</module>
             <module>porting-package</module>
+            <module>inject-tck-runner</module>
             <module>jboss-tck-runner</module>
             <module>osgi-bundle</module>
          </modules>

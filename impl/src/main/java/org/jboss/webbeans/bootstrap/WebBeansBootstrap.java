@@ -42,12 +42,14 @@ import org.jboss.webbeans.bootstrap.api.helpers.ServiceRegistries;
 import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
+import org.jboss.webbeans.context.AbstractApplicationContext;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
+import org.jboss.webbeans.context.SingletonContext;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
@@ -380,17 +382,19 @@ public class WebBeansBootstrap implements Bootstrap
       deploymentManager.addContext(lifecycle.getConversationContext());
       deploymentManager.addContext(lifecycle.getSessionContext());
       deploymentManager.addContext(lifecycle.getApplicationContext());
+      deploymentManager.addContext(lifecycle.getSingletonContext());
    }
    
    protected void createContexts()
    {
-      ApplicationContext applicationContext = new ApplicationContext();
+      AbstractApplicationContext applicationContext = new ApplicationContext();
+      AbstractApplicationContext singletonContext = new SingletonContext();
       SessionContext sessionContext = new SessionContext();
       ConversationContext conversationContext = new ConversationContext();
       RequestContext requestContext = new RequestContext();
       DependentContext dependentContext = new DependentContext();
       
-      deployment.getServices().add(ContextLifecycle.class, new ContextLifecycle(applicationContext, sessionContext, conversationContext, requestContext, dependentContext));
+      deployment.getServices().add(ContextLifecycle.class, new ContextLifecycle(applicationContext, singletonContext, sessionContext, conversationContext, requestContext, dependentContext));
    }
    
    public void shutdown()

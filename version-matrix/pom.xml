@@ -83,6 +83,14 @@
             <artifactId>jsp-2.1-jetty</artifactId>
             <version>${jetty.version}</version>
          </dependency>
+         
+         <dependency>
+            <groupId>org.atinject</groupId>
+            <artifactId>inject-tck</artifactId>
+            <version>1.0.0-PRD</version>
+         </dependency>
+         
+         
 
          <dependency>
             <groupId>org.testng</groupId>
@@ -409,7 +417,13 @@
       		<groupId>commons-httpclient</groupId>
       		<artifactId>commons-httpclient</artifactId>
       		<version>3.1</version>
-    </dependency>
+         </dependency>
+         
+    		<dependency>
+    			<groupId>junit</groupId>
+    			<artifactId>junit</artifactId>
+    			<version>4.7</version>
+    		</dependency>
          
       </dependencies>
    </dependencyManagement>

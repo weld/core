@@ -38,8 +38,8 @@ import javax.inject.Inject;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.AbstractProducerBean;
-import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
@@ -265,11 +265,7 @@ public class Beans
       Set<MethodInjectionPoint<?, ?>> initializerMethods = new HashSet<MethodInjectionPoint<?, ?>>();
       for (WBMethod<?, ?> method : type.getAnnotatedWBMethods(Inject.class))
       {
-         if (method.isStatic())
-         {
-            throw new DefinitionException("Initializer method " + method.toString() + " cannot be static on " + type);
-         }
-         else if (method.getAnnotation(Produces.class) != null)
+         if (method.getAnnotation(Produces.class) != null)
          {
             throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Produces on " + type);
          }
@@ -317,10 +313,6 @@ public class Beans
    {
       if (!annotatedField.isAnnotationPresent(Produces.class))
       {
-         if (annotatedField.isStatic())
-         {
-            throw new DefinitionException("Don't place binding annotations on static fields " + annotatedField);
-         }
          if (annotatedField.isFinal())
          {
             throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);

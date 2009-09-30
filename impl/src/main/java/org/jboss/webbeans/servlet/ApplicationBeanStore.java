@@ -21,7 +21,7 @@ import java.util.Enumeration;
 
 import javax.servlet.ServletContext;
 
-import org.jboss.webbeans.context.ApplicationContext;
+import org.jboss.webbeans.context.AbstractApplicationContext;
 import org.jboss.webbeans.context.beanstore.AbstractAttributeBackedBeanStore;
 import org.jboss.webbeans.context.beanstore.NamingScheme;
 
@@ -30,12 +30,12 @@ import org.jboss.webbeans.context.beanstore.NamingScheme;
  * 
  * @author Nicklas Karlsson
  * 
- * @see org.jboss.webbeans.context.ApplicationContext
+ * @see org.jboss.webbeans.context.AbstractApplicationContext
  */
 public class ApplicationBeanStore extends AbstractAttributeBackedBeanStore
 {
    
-   private static final NamingScheme NAMING_SCHEME = new NamingScheme(ApplicationContext.class.getName(), "#");
+   private static final NamingScheme NAMING_SCHEME = new NamingScheme(AbstractApplicationContext.class.getName(), "#");
    
    // The servlet context to use as backing map
    private ServletContext context;

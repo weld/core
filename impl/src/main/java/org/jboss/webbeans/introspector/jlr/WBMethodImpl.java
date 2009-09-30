@@ -39,7 +39,6 @@ import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.resources.ClassTransformer;
-import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
 import com.google.common.base.Supplier;
@@ -71,7 +70,7 @@ public class WBMethodImpl<T, X> extends AbstractWBCallable<T, X, Method> impleme
    private final String propertyName;
 
    // Cached string representation
-   private String toString;
+   private final String toString;
 
    private final MethodSignature signature;
 
@@ -101,6 +100,7 @@ public class WBMethodImpl<T, X> extends AbstractWBCallable<T, X, Method> impleme
    {
       super(annotationStore, method, (Class<T>) method.getReturnType(), method.getGenericReturnType(), declaringClass);
       this.method = method;
+      this.toString = new StringBuilder().append("method ").append(method.toString()).toString();
       this.parameters = new ArrayList<WBParameter<?, ?>>();
       this.annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WBParameter<?, ?>>>(), new Supplier< List<WBParameter<?, ?>>>()
       {
@@ -166,6 +166,7 @@ public class WBMethodImpl<T, X> extends AbstractWBCallable<T, X, Method> impleme
          this.propertyName = propertyName;
       }
       this.signature = new MethodSignatureImpl(this);
+      
    }
 
    public Method getAnnotatedMethod()
@@ -173,6 +174,7 @@ public class WBMethodImpl<T, X> extends AbstractWBCallable<T, X, Method> impleme
       return method;
    }
 
+   @Override
    public Method getDelegate()
    {
       return method;
@@ -241,12 +243,7 @@ public class WBMethodImpl<T, X> extends AbstractWBCallable<T, X, Method> impleme
    @Override
    public String toString()
    {
-      if (toString != null)
-      {
-         return toString;
-      }
-      toString = "Annotated method on class " + getDeclaringType().getName() + Names.methodToString(method);
-      return toString;
+      return this.toString;
    }
 
    public MethodSignature getSignature()

@@ -26,6 +26,7 @@ import org.jboss.webbeans.Container;
 import org.jboss.webbeans.bootstrap.api.Lifecycle;
 import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.context.api.BeanStore;
+import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -41,15 +42,17 @@ public class ContextLifecycle implements Lifecycle, Service
    
    public static LogProvider log = Logging.getLogProvider(ContextLifecycle.class);
 
-   private final ApplicationContext applicationContext;
+   private final AbstractApplicationContext applicationContext;
+   private final AbstractApplicationContext singletonContext;
    private final SessionContext sessionContext;
    private final ConversationContext conversationContext;
    private final RequestContext requestContext;
    private final DependentContext dependentContext;
    
-   public ContextLifecycle(ApplicationContext applicationContext, SessionContext sessionContext, ConversationContext conversationContext, RequestContext requestContext, DependentContext dependentContext)
+   public ContextLifecycle(AbstractApplicationContext applicationContext, AbstractApplicationContext singletonContext, SessionContext sessionContext, ConversationContext conversationContext, RequestContext requestContext, DependentContext dependentContext)
    {
       this.applicationContext = applicationContext;
+      this.singletonContext = singletonContext;
       this.sessionContext = sessionContext;
       this.conversationContext = conversationContext;
       this.requestContext = requestContext;
@@ -92,22 +95,22 @@ public class ContextLifecycle implements Lifecycle, Service
    
    public boolean isRequestActive()
    {
-      return applicationContext.isActive() && requestContext.isActive() && dependentContext.isActive();
+      return singletonContext.isActive() && applicationContext.isActive() && requestContext.isActive() && dependentContext.isActive();
    }
    
    public boolean isApplicationActive()
    {
-      return applicationContext.isActive() && dependentContext.isActive();
+      return singletonContext.isActive() && applicationContext.isActive() && dependentContext.isActive();
    }
    
    public boolean isConversationActive()
    {
-      return applicationContext.isActive() && sessionContext.isActive() && conversationContext.isActive() && dependentContext.isActive();
+      return singletonContext.isActive() && applicationContext.isActive() && sessionContext.isActive() && conversationContext.isActive() && dependentContext.isActive();
    }
    
    public boolean isSessionActive() 
    {
-      return applicationContext.isActive() && sessionContext.isActive() && dependentContext.isActive();
+      return singletonContext.isActive() && applicationContext.isActive() && sessionContext.isActive() && dependentContext.isActive();
    }
    
 
@@ -116,7 +119,8 @@ public class ContextLifecycle implements Lifecycle, Service
       log.trace("Starting application");
       applicationContext.setBeanStore(applicationBeanStore);
       applicationContext.setActive(true);
-
+      singletonContext.setBeanStore(new ConcurrentHashMapBeanStore());
+      singletonContext.setActive(true);
    }
    
    public void endApplication()
@@ -125,7 +129,9 @@ public class ContextLifecycle implements Lifecycle, Service
       applicationContext.destroy();
       applicationContext.setActive(false);
       applicationContext.setBeanStore(null);
-      
+      singletonContext.destroy();
+      singletonContext.setActive(false);
+      singletonContext.setBeanStore(null);
       Container.instance().cleanup();
    }
    
@@ -135,12 +141,18 @@ public class ContextLifecycle implements Lifecycle, Service
       requestContext.cleanup();
       conversationContext.cleanup();
       sessionContext.cleanup();
+      singletonContext.cleanup();
       applicationContext.cleanup();
    }
    
-   public ApplicationContext getApplicationContext()
+   public AbstractApplicationContext getApplicationContext()
    {
       return applicationContext;
+   }
+   
+   public AbstractApplicationContext getSingletonContext()
+   {
+      return singletonContext;
    }
    
    public SessionContext getSessionContext()

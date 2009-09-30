@@ -49,9 +49,8 @@ public class WBParameterImpl<T, X> extends AbstractWBAnnotated<T, Object> implem
    private final boolean _private = false;
    private final int position;
    private final WBCallable<?, X, ?> declaringMember;
-
-   // Cached string representation
-   private String toString;
+   
+   private final String toString;
    
    public static <T, X> WBParameter<T, X> of(Annotation[] annotations, Class<T> rawType, Type type, WBCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
    {
@@ -74,6 +73,7 @@ public class WBParameterImpl<T, X> extends AbstractWBAnnotated<T, Object> implem
       super(AnnotationStore.of(annotations, annotations, classTransformer.getTypeStore()), rawType, type);
       this.declaringMember = declaringMember;
       this.position = position;
+      this.toString = new StringBuilder().append("parameter ").append(position + 1).append(" of ").append(declaringMember.toString()).toString();
    }
 
    /**
@@ -130,19 +130,6 @@ public class WBParameterImpl<T, X> extends AbstractWBAnnotated<T, Object> implem
    @Override
    public String toString()
    {
-      if (toString == null)
-      {
-         StringBuilder buffer = new StringBuilder();
-         buffer.append("Annotated parameter ");
-         if (_static)
-            buffer.append("static ");
-         if (_final)
-            buffer.append("final ");
-         buffer.append(getJavaClass().getName());
-         buffer.append(" for operation ");
-         buffer.append(getDeclaringCallable().toString());
-         toString = buffer.toString();
-      }
       return toString;
    }
 
