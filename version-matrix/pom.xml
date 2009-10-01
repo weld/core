@@ -87,7 +87,7 @@
          <dependency>
             <groupId>org.atinject</groupId>
             <artifactId>inject-tck</artifactId>
-            <version>1.0.0-PFD-2</version>
+            <version>1.0.0-PFD-3-jboss-1</version>
          </dependency>
          
          

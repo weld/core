@@ -72,7 +72,8 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
    private final String _simpleName;
    private final boolean _public;
    private final boolean _private;
-
+   private final boolean _packagePrivate;
+   private final Package _package;
   
    private static List<Class<?>> NO_ARGUMENTS = Collections.emptyList();
 
@@ -151,8 +152,9 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
          this.superclass = null;
       }
       this._public = Modifier.isFinal(rawType.getModifiers());
-      _private = Modifier.isPrivate(rawType.getModifiers());
-
+      this._private = Modifier.isPrivate(rawType.getModifiers());
+      this._packagePrivate = Reflections.isPackagePrivate(rawType.getModifiers());
+      this._package = rawType.getPackage();
       this.fields = new HashSet<WBField<?, ?>>();
       this.annotatedFields = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WBField<?, ?>>>(), new Supplier< Set<WBField<?, ?>>>()
       {
@@ -561,7 +563,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
       return Collections.unmodifiableSet(annotatedMethods.get(annotationType));
    }
 
-   public Set<WBMethod<?, ?>> getDeclaredWBAnnotatedMethods(Class<? extends Annotation> annotationType)
+   public Set<WBMethod<?, ?>> getDeclaredAnnotatedWBMethods(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(declaredAnnotatedMethods.get(annotationType));
    }
@@ -630,6 +632,11 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
          }
       }
       return null;
+   }
+   
+   public Set<WBMethod<?, ?>> getDeclaredWBMethods()
+   {
+      return declaredMethods;
    }
 
    @SuppressWarnings("unchecked")
@@ -719,6 +726,16 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
    public boolean isPrivate()
    {
       return _private;
+   }
+   
+   public boolean isPackagePrivate()
+   {
+      return _packagePrivate;
+   }
+   
+   public Package getPackage()
+   {
+      return _package;
    }
 
    @SuppressWarnings("unchecked")

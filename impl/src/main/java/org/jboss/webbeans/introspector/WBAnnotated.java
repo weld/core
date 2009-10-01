@@ -177,6 +177,10 @@ public interface WBAnnotated<T, S> extends Annotated
    public boolean isPublic();
 
    public boolean isPrivate();
+   
+   public boolean isPackagePrivate();
+   
+   public Package getPackage();
 
    /**
     * Gets the name of this AnnotatedItem

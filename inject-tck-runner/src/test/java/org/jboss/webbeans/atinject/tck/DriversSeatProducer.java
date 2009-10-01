@@ -2,30 +2,25 @@ package org.jboss.webbeans.atinject.tck;
 
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Inject;
 
 import org.atinject.tck.auto.Drivers;
 import org.atinject.tck.auto.DriversSeat;
-import org.atinject.tck.auto.Seat;
 
-public class DriversSeatProducer
+public class DriversSeatProducer extends AbstractProducer<DriversSeat>
 {
-   
-   private final InjectionTarget<DriversSeat> injectionTarget;
-   private final BeanManager beanManager;
    
    @Inject
    public DriversSeatProducer(BeanManager beanManager)
    {
-      this.injectionTarget = beanManager.createInjectionTarget(beanManager.createAnnotatedType(DriversSeat.class));
-      this.beanManager = beanManager;
+      super(beanManager, DriversSeat.class);
    }
 
+   @Override
    @Produces @Drivers
-   public Seat produceDriversSeat()
+   public DriversSeat produce()
    {
-      return injectionTarget.produce(beanManager.<DriversSeat>createCreationalContext(null));
+      return super.produce();
    }
    
 }

@@ -133,8 +133,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          public void proceed()
          {
             Beans.injectEEFields(instance, getManager(), ejbInjectionPoints, persistenceContextInjectionPoints, persistenceUnitInjectionPoints, resourceInjectionPoints);
-            Beans.injectBoundFields(instance, ctx, getManager(), getInjectableFields());
-            Beans.callInitializers(instance, ctx, getManager(), getInitializerMethods());
+            Beans.injectFieldsAndInitializers(instance, ctx, getManager(), getInjectableFields(), getInitializerMethods());
          }
          
       }.run();

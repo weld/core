@@ -60,9 +60,9 @@ public abstract class ForwardingWBClass<T> extends ForwardingWBAnnotated<T, Clas
       return delegate().getDeclaredAnnotatedWBFields(annotationType);
    }
 
-   public Set<WBMethod<?, ?>> getDeclaredWBAnnotatedMethods(Class<? extends Annotation> annotationType)
+   public Set<WBMethod<?, ?>> getDeclaredAnnotatedWBMethods(Class<? extends Annotation> annotationType)
    {
-      return delegate().getDeclaredWBAnnotatedMethods(annotationType);
+      return delegate().getDeclaredAnnotatedWBMethods(annotationType);
    }
 
    public Set<WBMethod<?, T>> getWBDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)

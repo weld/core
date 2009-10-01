@@ -124,7 +124,7 @@ public class AbstractBeanDeployer
    
    protected void createProducerMethods(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
    {
-      for (WBMethod<?, ?> method : annotatedClass.getDeclaredWBAnnotatedMethods(Produces.class))
+      for (WBMethod<?, ?> method : annotatedClass.getDeclaredAnnotatedWBMethods(Produces.class))
       {
          createProducerMethod(declaringBean, method);         
       }

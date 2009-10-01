@@ -51,6 +51,8 @@ public abstract class AbstractWBMember<T, X, S extends Member> extends AbstractW
    private String toString;
    private final boolean _public;
    private final boolean _private;
+   private final boolean _packagePrivate;
+   private final Package _package;
    private final WBClass<X> declaringType;
 
    /**
@@ -62,8 +64,10 @@ public abstract class AbstractWBMember<T, X, S extends Member> extends AbstractW
    {
       super(annotatedItemHelper, rawType, type);
       name = member.getName();
-      _public = Modifier.isPublic(member.getModifiers());
-      _private = Modifier.isPrivate(member.getModifiers());
+      this._public = Modifier.isPublic(member.getModifiers());
+      this._private = Modifier.isPrivate(member.getModifiers());
+      this._packagePrivate = Reflections.isPackagePrivate(member.getModifiers());
+      this._package = member.getDeclaringClass().getPackage();
       this.declaringType = declaringType;
    }
 
@@ -104,6 +108,16 @@ public abstract class AbstractWBMember<T, X, S extends Member> extends AbstractW
    public boolean isPrivate()
    {
       return _private;
+   }
+   
+   public boolean isPackagePrivate()
+   {
+      return _packagePrivate;
+   }
+   
+   public Package getPackage()
+   {
+      return _package;
    }
 
    /**

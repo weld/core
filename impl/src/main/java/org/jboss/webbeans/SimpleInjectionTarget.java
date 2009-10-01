@@ -17,6 +17,7 @@
 package org.jboss.webbeans;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -42,8 +43,8 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
    private final BeanManagerImpl beanManager;
    private final WBClass<T> type;
    private final ConstructorInjectionPoint<T> constructor;
-   private final Set<FieldInjectionPoint<?, ?>> injectableFields;
-   private final Set<MethodInjectionPoint<?, ?>> initializerMethods;
+   private final List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
+   private final List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
    private final WBMethod<?, ?> postConstruct;
    private final WBMethod<?, ?> preDestroy;
    private final Set<InjectionPoint> injectionPoints;
@@ -69,11 +70,9 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
          // unless someone calls produce()
       }
       this.constructor = constructor;
-      this.injectableFields = new HashSet<FieldInjectionPoint<?,?>>();
-      this.injectableFields.addAll(Beans.getFieldInjectionPoints(null, type));
-      this.injectionPoints.addAll(injectableFields);
-      this.initializerMethods = new HashSet<MethodInjectionPoint<?,?>>();
-      this.initializerMethods.addAll(Beans.getInitializerMethods(null, type));
+      this.injectableFields = Beans.getFieldInjectionPoints(null, type);
+      this.injectionPoints.addAll(Beans.getFieldInjectionPoints(null, this.injectableFields));
+      this.initializerMethods = Beans.getInitializerMethods(null, type);
       this.injectionPoints.addAll(Beans.getParameterInjectionPoints(null, initializerMethods));
       this.postConstruct = Beans.getPostConstruct(type);
       this.preDestroy = Beans.getPreDestroy(type);
@@ -106,8 +105,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
          public void proceed()
          {
             Beans.injectEEFields(instance, beanManager, ejbInjectionPoints, persistenceContextInjectionPoints, persistenceUnitInjectionPoints, resourceInjectionPoints);
-            Beans.injectBoundFields(instance, ctx, beanManager, injectableFields);
-            Beans.callInitializers(instance, ctx, beanManager, initializerMethods);
+            Beans.injectFieldsAndInitializers(instance, ctx, beanManager, injectableFields, initializerMethods);
          }
          
       }.run();

@@ -317,6 +317,11 @@ public class Reflections
    {
       return type.isPrimitive();
    }
+   
+   public static boolean isPackagePrivate(int mod)
+   {
+      return !(Modifier.isPrivate(mod) || Modifier.isProtected(mod) || Modifier.isPublic(mod));
+   }
 
    /**
     * Checks if type is static

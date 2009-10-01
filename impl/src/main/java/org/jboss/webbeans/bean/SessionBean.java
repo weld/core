@@ -228,8 +228,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
          
          public void proceed()
          {
-            Beans.injectBoundFields(instance, ctx, getManager(), getInjectableFields());
-            Beans.callInitializers(instance, ctx, getManager(), getInitializerMethods());
+            Beans.injectFieldsAndInitializers(instance, ctx, getManager(), getInjectableFields(), getInitializerMethods());
          }
          
       }.run();
@@ -308,12 +307,6 @@ public class SessionBean<T> extends AbstractClassBean<T>
       buffer.append(" [" + getType().getName() + "] ");
       buffer.append("API types " + getTypes() + ", binding types " + getQualifiers());
       return buffer.toString();
-   }
-
-   public void postConstruct(T instance, CreationalContext<T> creationalContext)
-   {
-      Beans.injectBoundFields(instance, creationalContext, getManager(), getInjectableFields());
-      Beans.callInitializers(instance, creationalContext, getManager(), getInitializerMethods());
    }
 
    public void preDestroy(CreationalContext<T> creationalContext)

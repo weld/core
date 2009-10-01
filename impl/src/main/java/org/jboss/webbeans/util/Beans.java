@@ -18,9 +18,12 @@ package org.jboss.webbeans.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,6 +53,7 @@ import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.injection.spi.EjbInjectionServices;
 import org.jboss.webbeans.injection.spi.JpaInjectionServices;
 import org.jboss.webbeans.injection.spi.ResourceInjectionServices;
+import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBConstructor;
 import org.jboss.webbeans.introspector.WBField;
@@ -60,6 +64,10 @@ import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.cache.BindingTypeModel;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
+
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * Helper class for bean inspection
@@ -132,18 +140,35 @@ public class Beans
       }
    }
 
-   public static Set<FieldInjectionPoint<?, ?>> getFieldInjectionPoints(Bean<?> declaringBean, WBClass<?> annotatedItem)
+   public static List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, WBClass<?> type)
    {
-      Set<FieldInjectionPoint<?, ?>> injectableFields = new HashSet<FieldInjectionPoint<?, ?>>();
-      for (WBField<?, ?> annotatedField : annotatedItem.getAnnotatedWBFields(Inject.class))
+      List<Set<FieldInjectionPoint<?, ?>>> injectableFieldsList = new ArrayList<Set<FieldInjectionPoint<?, ?>>>();
+      WBClass<?> t = type;
+      while (!t.getJavaClass().equals(Object.class))
       {
-         addFieldInjectionPoint(annotatedField, injectableFields, declaringBean);
+         Set<FieldInjectionPoint<?, ?>> fields = new HashSet<FieldInjectionPoint<?,?>>();
+         injectableFieldsList.add(0, fields);
+         for (WBField<?, ?> annotatedField : t.getDeclaredAnnotatedWBFields(Inject.class))
+         {
+            addFieldInjectionPoint(annotatedField, fields, declaringBean);
+         }
+         for (WBField<?, ?> annotatedField : t.getAnnotatedWBFields(Decorates.class))
+         {
+            addFieldInjectionPoint(annotatedField, fields, declaringBean);
+         }
+         t = t.getWBSuperclass();
       }
-      for (WBField<?, ?> annotatedField : annotatedItem.getAnnotatedWBFields(Decorates.class))
+      return injectableFieldsList;
+   }
+   
+   public static Set<FieldInjectionPoint<?, ?>> getFieldInjectionPoints(Bean<?> declaringBean, List<? extends Set<? extends FieldInjectionPoint<?, ?>>> fieldInjectionPoints)
+   {
+      Set<FieldInjectionPoint<?, ?>> injectionPoints = new HashSet<FieldInjectionPoint<?,?>>();
+      for (Set<? extends FieldInjectionPoint<?, ?>> i : fieldInjectionPoints)
       {
-         addFieldInjectionPoint(annotatedField, injectableFields, declaringBean);
+         injectionPoints.addAll(i);
       }
-      return injectableFields;
+      return injectionPoints;
    }
    
    public static WBMethod<?, ?> getPostConstruct(WBClass<?> type)
@@ -261,30 +286,70 @@ public class Beans
       }
    }
    
-   public static Set<MethodInjectionPoint<?, ?>> getInitializerMethods(Bean<?> declaringBean, WBClass<?> type)
+   public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, WBClass<?> type)
    {
-      Set<MethodInjectionPoint<?, ?>> initializerMethods = new HashSet<MethodInjectionPoint<?, ?>>();
-      for (WBMethod<?, ?> method : type.getAnnotatedWBMethods(Inject.class))
+      List<Set<MethodInjectionPoint<?, ?>>> initializerMethodsList = new ArrayList<Set<MethodInjectionPoint<?, ?>>>();
+      // Keep track of all seen methods so we can ignore overridden methods
+      Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), new Supplier<Set<Package>>()
       {
-         if (method.getAnnotation(Produces.class) != null)
+
+         public Set<Package> get()
          {
-            throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Produces on " + type);
+            return new HashSet<Package>();
          }
-         else if (method.getAnnotatedWBParameters(Disposes.class).size() > 0)
+         
+      });
+      WBClass<?> t = type;
+      while (!t.getJavaClass().equals(Object.class))
+      {
+         Set<MethodInjectionPoint<?, ?>> initializerMethods = new HashSet<MethodInjectionPoint<?,?>>();
+         initializerMethodsList.add(0, initializerMethods);
+         for (WBMethod<?, ?> method : t.getDeclaredWBMethods())
          {
-            throw new DefinitionException("Initializer method " + method.toString() + " cannot have parameters annotated @Disposes on " + type);
+            if (method.isAnnotationPresent(Inject.class))
+            {
+               if (method.getAnnotation(Produces.class) != null)
+               {
+                  throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Produces on " + type);
+               }
+               else if (method.getAnnotatedWBParameters(Disposes.class).size() > 0)
+               {
+                  throw new DefinitionException("Initializer method " + method.toString() + " cannot have parameters annotated @Disposes on " + type);
+               }
+               else if (method.getAnnotatedWBParameters(Observes.class).size() > 0)
+               {
+                  throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Observes on " + type);
+               }
+               else
+               {
+                  if (!isOverridden(method, seenMethods))
+                  {
+                     MethodInjectionPoint<?, ?> initializerMethod = MethodInjectionPoint.of(declaringBean, method); 
+                     initializerMethods.add(initializerMethod);
+                  }
+               }
+            }
+            seenMethods.put(method.getSignature(), method.getPackage());
          }
-         else if (method.getAnnotatedWBParameters(Observes.class).size() > 0)
-         {
-            throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Observes on " + type);
-         }
-         else
-         {
-            MethodInjectionPoint<?, ?> initializerMethod = MethodInjectionPoint.of(declaringBean, method); 
-            initializerMethods.add(initializerMethod);
-         }
+         t = t.getWBSuperclass();
       }
-      return initializerMethods;
+      return initializerMethodsList;
+   }
+   
+   private static boolean isOverridden(WBMethod<?, ?> method, Multimap<MethodSignature, Package> seenMethods)
+   {
+      if (method.isPrivate())
+      {
+         return false;
+      }
+      else if (method.isPackagePrivate() && seenMethods.containsKey(method.getSignature()))
+      {
+         return seenMethods.get(method.getSignature()).contains(method.getPackage());
+      }
+      else
+      {
+         return seenMethods.containsKey(method.getSignature());
+      }
    }
    
    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, WBConstructor<?> constructor)
@@ -297,14 +362,17 @@ public class Beans
       return injectionPoints;
    }
    
-   public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, Set<MethodInjectionPoint<?, ?>> methodInjectionPoints)
+   public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints)
    {
       Set<ParameterInjectionPoint<?, ?>> injectionPoints = new HashSet<ParameterInjectionPoint<?,?>>();
-      for (MethodInjectionPoint<?, ?> method : methodInjectionPoints)
+      for (Set<MethodInjectionPoint<?, ?>> i : methodInjectionPoints)
       {
-         for (WBParameter<?, ?> parameter : method.getWBParameters())
+         for (MethodInjectionPoint<?, ?> method : i)
          {
-            injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
+            for (WBParameter<?, ?> parameter : method.getWBParameters())
+            {
+               injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
+            }
          }
       }
       return injectionPoints;
@@ -548,11 +616,24 @@ public class Beans
     * 
     * @param instance The instance to inject into
     */
-   public static <T> void injectBoundFields(T instance, CreationalContext<T> creationalContext, BeanManagerImpl manager, Iterable<FieldInjectionPoint<?, ?>> injectableFields)
+   public static <T> void injectBoundFields(T instance, CreationalContext<T> creationalContext, BeanManagerImpl manager, Iterable<? extends FieldInjectionPoint<?, ?>> injectableFields)
    {
       for (FieldInjectionPoint<?, ?> injectableField : injectableFields)
       {
          injectableField.inject(instance, manager, creationalContext);
+      }
+   }
+   
+   public static<T> void injectFieldsAndInitializers(T instance, CreationalContext<T> ctx, BeanManagerImpl beanManager, List<? extends Iterable<? extends FieldInjectionPoint<?, ?>>> injectableFields, List<? extends Iterable<? extends MethodInjectionPoint<?, ?>>>initializerMethods)
+   {
+      if (injectableFields.size() != initializerMethods.size())
+      {
+         throw new IllegalArgumentException("injectableFields and initializerMethods must have the same size. InjectableFields: " + injectableFields + "; InitializerMethods: " + initializerMethods);  
+      }
+      for (int i = 0; i < injectableFields.size(); i++)
+      {
+         injectBoundFields(instance, ctx, beanManager, injectableFields.get(i));
+         callInitializers(instance, ctx, beanManager, initializerMethods.get(i));
       }
    }
    

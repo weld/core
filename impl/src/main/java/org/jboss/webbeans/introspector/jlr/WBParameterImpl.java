@@ -47,6 +47,8 @@ public class WBParameterImpl<T, X> extends AbstractWBAnnotated<T, Object> implem
    private final boolean _static = false;
    private final boolean _public = false;
    private final boolean _private = false;
+   private final boolean _packagePrivate = false;
+   private final Package _package;
    private final int position;
    private final WBCallable<?, X, ?> declaringMember;
    
@@ -72,6 +74,7 @@ public class WBParameterImpl<T, X> extends AbstractWBAnnotated<T, Object> implem
    {
       super(AnnotationStore.of(annotations, annotations, classTransformer.getTypeStore()), rawType, type);
       this.declaringMember = declaringMember;
+      this._package = declaringMember.getPackage();
       this.position = position;
       this.toString = new StringBuilder().append("parameter ").append(position + 1).append(" of ").append(declaringMember.toString()).toString();
    }
@@ -108,6 +111,16 @@ public class WBParameterImpl<T, X> extends AbstractWBAnnotated<T, Object> implem
    public boolean isPrivate()
    {
       return _private;
+   }
+   
+   public boolean isPackagePrivate()
+   {
+      return _packagePrivate;
+   }
+   
+   public Package getPackage()
+   {
+      return _package;
    }
 
    /**

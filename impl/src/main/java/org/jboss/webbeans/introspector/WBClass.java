@@ -44,6 +44,13 @@ public interface WBClass<T> extends WBAnnotated<T, Class<T>>, AnnotatedType<T>
     * @return A set of abstracted fields
     */
    public Set<WBMethod<?, ?>> getWBMethods();
+   
+   /**
+    * Gets all fields on the type
+    * 
+    * @return A set of abstracted fields
+    */
+   public Set<WBMethod<?, ?>> getDeclaredWBMethods();
 
    /**
     * Get a field by name
@@ -131,7 +138,7 @@ public interface WBClass<T> extends WBAnnotated<T, Class<T>>, AnnotatedType<T>
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBMethod<?, ?>> getDeclaredWBAnnotatedMethods(Class<? extends Annotation> annotationType);
+   public Set<WBMethod<?, ?>> getDeclaredAnnotatedWBMethods(Class<? extends Annotation> annotationType);
 
    /**
     * Find the annotated method for a given methodDescriptor

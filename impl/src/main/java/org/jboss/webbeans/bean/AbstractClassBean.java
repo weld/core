@@ -65,10 +65,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    private static final LogProvider log = Logging.getLogProvider(AbstractClassBean.class);
    // The item representation
    protected WBClass<T> annotatedItem;
-   // The injectable fields
-   private Set<FieldInjectionPoint<?, ?>> injectableFields;
-   // The initializer methods
-   private Set<MethodInjectionPoint<?, ?>> initializerMethods;
+   // The injectable fields of each type in the type hierarchy, with the actual type at the bottom 
+   private List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
+   // The initializer methods of each type in the type hierarchy, with the actual type at the bottom
+   private List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
    private Set<String> dependencies;
    
    private List<Decorator<?>> decorators;
@@ -228,8 +228,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
     */
    protected void initInjectableFields()
    {
-      injectableFields = new HashSet<FieldInjectionPoint<?, ?>>(Beans.getFieldInjectionPoints(this, annotatedItem));
-      addInjectionPoints(injectableFields);
+      injectableFields = Beans.getFieldInjectionPoints(this, annotatedItem);
+      addInjectionPoints(Beans.getFieldInjectionPoints(this, injectableFields));
    }
 
    /**
@@ -320,17 +320,19 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
     * 
     * @return The set of annotated methods
     */
-   public Set<? extends MethodInjectionPoint<?, ?>> getInitializerMethods()
+   public List<? extends Set<? extends MethodInjectionPoint<?, ?>>> getInitializerMethods()
    {
-      return Collections.unmodifiableSet(initializerMethods);
+      // TODO Make immutable
+      return initializerMethods;
    }
    
    /**
     * @return the injectableFields
     */
-   public Set<FieldInjectionPoint<?, ?>> getInjectableFields()
+   public List<? extends Set<FieldInjectionPoint<?, ?>>> getInjectableFields()
    {
-      return Collections.unmodifiableSet(injectableFields);
+      // TODO Make immutable
+      return injectableFields;
    }
    
    // TODO maybe a better way to expose this?

@@ -107,7 +107,18 @@ public abstract class ForwardingWBAnnotated<T, S> extends ForwardingAnnotated<T,
    {
       return delegate().isPrivate();
    }
+   
+   public boolean isPackagePrivate()
+   {
+      return delegate().isPackagePrivate();
+   }
+   
+   public Package getPackage()
+   {
+      return delegate().getPackage();
+   }
 
+   @Override
    protected abstract WBAnnotated<T, S> delegate();
 
    public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType)

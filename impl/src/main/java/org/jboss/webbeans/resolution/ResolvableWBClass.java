@@ -181,6 +181,16 @@ public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> imple
    {
       throw new UnsupportedOperationException();
    }
+   
+   public boolean isPackagePrivate()
+   {
+      throw new UnsupportedOperationException();
+   }
+   
+   public Package getPackage()
+   {
+      throw new UnsupportedOperationException();
+   }
 
    public boolean isStatic()
    {
@@ -193,6 +203,7 @@ public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> imple
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public Set<Type> getTypeClosure()
    {
       return typeClosure;
