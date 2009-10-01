@@ -19,8 +19,8 @@ package org.jboss.webbeans.environment.se.example.numberguess;
 import java.awt.CardLayout;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.inject.Inject;
+import org.jboss.webbeans.environment.se.events.ContainerInitialized;
 
 /**
  * Swing-based number guess example, main application frame.
@@ -35,7 +35,7 @@ public class NumberGuessFrame extends javax.swing.JFrame
    @Inject
    private MessageGenerator msgGenerator;
 
-   public void start(@Observes AfterDeploymentValidation event)
+   public void start(@Observes ContainerInitialized event)
    {
       java.awt.EventQueue.invokeLater(new Runnable()
       {
