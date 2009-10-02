@@ -193,6 +193,14 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
          log.trace("Adding default @Current binding type");
          this.bindings.add(CURRENT_LITERAL);
       }
+      if (bindings.size() == 1)
+      {
+         if (bindings.iterator().next().annotationType().equals(Named.class))
+         {
+            log.trace("Adding default @Current binding type");
+            this.bindings.add(CURRENT_LITERAL);
+         }
+      }
       this.bindings.add(ANY_LITERAL);
    }
 
