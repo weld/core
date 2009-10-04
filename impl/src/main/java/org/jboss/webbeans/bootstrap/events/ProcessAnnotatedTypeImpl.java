@@ -61,5 +61,11 @@ public class ProcessAnnotatedTypeImpl<X> implements ProcessAnnotatedType<X>
    {
       return veto;
    }
+   
+   @Override
+   public String toString()
+   {
+      return annotatedType.toString();
+   }
 
 }
