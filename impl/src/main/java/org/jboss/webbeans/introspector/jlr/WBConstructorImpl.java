@@ -118,7 +118,7 @@ public class WBConstructorImpl<T> extends AbstractWBCallable<T, T, Constructor<T
       
       for (int i = 0; i < constructor.getParameterTypes().length; i++)
       {
-         if (constructor.getParameterAnnotations()[i].length > 0)
+         if (constructor.getParameterAnnotations()[i].length > 0 || annotatedTypeParameters.containsKey(i))
          {
             Class<?> clazz = constructor.getParameterTypes()[i];
             Type type = constructor.getGenericParameterTypes()[i];

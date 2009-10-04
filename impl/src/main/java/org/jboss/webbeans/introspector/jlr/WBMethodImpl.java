@@ -124,7 +124,7 @@ public class WBMethodImpl<T, X> extends AbstractWBCallable<T, X, Method> impleme
 
       for (int i = 0; i < method.getParameterTypes().length; i++)
       {
-         if (method.getParameterAnnotations()[i].length > 0)
+         if (method.getParameterAnnotations()[i].length > 0 || annotatedTypeParameters.containsKey(i))
          {
             Class<? extends Object> clazz = method.getParameterTypes()[i];
             Type type = method.getGenericParameterTypes()[i];

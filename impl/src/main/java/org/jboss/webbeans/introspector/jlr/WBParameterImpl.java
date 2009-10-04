@@ -76,7 +76,7 @@ public class WBParameterImpl<T, X> extends AbstractWBAnnotated<T, Object> implem
       this.declaringMember = declaringMember;
       this._package = declaringMember.getPackage();
       this.position = position;
-      this.toString = new StringBuilder().append("parameter ").append(position + 1).append(" of ").append(declaringMember.toString()).toString();
+      this.toString = new StringBuilder().append("parameter ").append(position).append(" of ").append(declaringMember.toString()).toString();
    }
 
    /**
