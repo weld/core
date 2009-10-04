@@ -15,6 +15,7 @@ import org.atinject.tck.auto.Seat;
 import org.atinject.tck.auto.Tire;
 import org.atinject.tck.auto.V8Engine;
 import org.atinject.tck.auto.accessories.Cupholder;
+import org.atinject.tck.auto.accessories.SpareTire;
 import org.jboss.webbeans.mock.MockEELifecycle;
 import org.jboss.webbeans.mock.TestContainer;
 
@@ -36,6 +37,7 @@ public class AtInjectTCK
          Cupholder.class,
          FuelTank.class,
          Tire.class,
+         SpareTire.class,
          // Two producer method which allow us to expose SpareTire and Drivers seat with qualifiers
          DriversSeatProducer.class,
          SpareTireProducer.class
@@ -58,6 +60,7 @@ public class AtInjectTCK
       // Obtain a reference to the Car and pass it to the TCK to generate the testsuite
       Bean<?> bean = beanManager.resolve(beanManager.getBeans(Car.class));
       Car instance = (Car) beanManager.getReference(bean, Car.class, beanManager.createCreationalContext(bean));
+      
       return Tck.testsFor(instance, false /* supportsStatic */, true /* supportsPrivate */);
    }
 }

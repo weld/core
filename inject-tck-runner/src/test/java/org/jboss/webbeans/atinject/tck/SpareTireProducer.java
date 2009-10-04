@@ -17,7 +17,7 @@ public class SpareTireProducer extends AbstractProducer<SpareTire>
    }
    
    @Override
-   @Produces @Named("spare")
+   @Produces @Named("spare") @Spare
    public SpareTire produce()
    {
       return super.produce();
