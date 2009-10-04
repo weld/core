@@ -18,16 +18,44 @@ import org.atinject.tck.auto.accessories.Cupholder;
 import org.jboss.webbeans.mock.MockEELifecycle;
 import org.jboss.webbeans.mock.TestContainer;
 
+/**
+ * Configure the AtInject TCK for use with the 299 RI
+ * 
+ * @author pmuir
+ *
+ */
 public class AtInjectTCK
 {
+   /**
+    * The classes that should be deployed as Managed Beans
+    */
+   public static final List<Class<?>> classes = Arrays.<Class<?>>asList(
+         Convertible.class,
+         Seat.class,
+         V8Engine.class,
+         Cupholder.class,
+         FuelTank.class,
+         Tire.class,
+         // Two producer method which allow us to expose SpareTire and Drivers seat with qualifiers
+         DriversSeatProducer.class,
+         SpareTireProducer.class
+      );
    
-   private static final List<Class<?>> classes = Arrays.<Class<?>>asList(Convertible.class, Seat.class, DriversSeatProducer.class, V8Engine.class, Cupholder.class, FuelTank.class, SpareTireProducer.class, Tire.class);
-   
+   /**
+    * Create JUnit TestSuite
+    * 
+    * @return
+    */
    public static Test suite()
    {
+      // Create and start the TestContainer, which takes care of starting the container, deploying the
+      // classes, starting the contexts etc.
       TestContainer container = new TestContainer(new MockEELifecycle(), classes, null);
       container.startContainer();
+      
       BeanManager beanManager = container.getBeanManager();
+      
+      // Obtain a reference to the Car and pass it to the TCK to generate the testsuite
       Bean<?> bean = beanManager.resolve(beanManager.getBeans(Car.class));
       Car instance = (Car) beanManager.getReference(bean, Car.class, beanManager.createCreationalContext(bean));
       return Tck.testsFor(instance, false /* supportsStatic */, true /* supportsPrivate */);
