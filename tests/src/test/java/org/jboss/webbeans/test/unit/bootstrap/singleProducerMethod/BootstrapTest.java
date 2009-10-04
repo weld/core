@@ -37,7 +37,7 @@ public class BootstrapTest extends AbstractWebBeansTest
       assert classes.containsKey(Tarantula.class);
       
       assert classes.get(TarantulaProducer.class) instanceof ManagedBean<?>;
-      assert classes.get(Tarantula.class) instanceof ProducerMethod<?>;
+      assert classes.get(Tarantula.class) instanceof ProducerMethod<?, ?>;
    }
    
 }

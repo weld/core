@@ -24,7 +24,6 @@ import javax.enterprise.inject.spi.Extension;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.Container;
 import org.jboss.webbeans.bean.builtin.ExtensionBean;
-import org.jboss.webbeans.ejb.EjbDescriptors;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.resources.ClassTransformer;
 
@@ -32,18 +31,19 @@ import org.jboss.webbeans.resources.ClassTransformer;
  * @author pmuir
  *
  */
-public class ExtensionBeanDeployer extends AbstractBeanDeployer
+public class ExtensionBeanDeployer extends AbstractBeanDeployer<ExtensionBeanDeployerEnvironment>
 {
-
+   
+   
    private final Set<Extension> extensions;
    
-   public ExtensionBeanDeployer(BeanManagerImpl manager)
+   public ExtensionBeanDeployer(BeanManagerImpl manager, ExtensionBeanDeployerEnvironment environment)
    {
-      super(manager, new BeanDeployerEnvironment(new EjbDescriptors(), manager));
+      super(manager, environment);
       this.extensions = new HashSet<Extension>();
    }
    
-   public AbstractBeanDeployer createBeans()
+   public ExtensionBeanDeployer createBeans()
    {
       ClassTransformer classTransformer = Container.instance().deploymentServices().get(ClassTransformer.class);
       for (Extension extension : extensions)
@@ -52,6 +52,7 @@ public class ExtensionBeanDeployer extends AbstractBeanDeployer
          WBClass<Extension> clazz = (WBClass<Extension>) classTransformer.loadClass(extension.getClass());
          
          ExtensionBean bean = new ExtensionBean(getManager(), clazz, extension);
+         this.
          getEnvironment().addBean(bean);
          createObserverMethods(bean, clazz);
       }

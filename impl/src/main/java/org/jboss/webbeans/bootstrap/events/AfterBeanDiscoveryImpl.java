@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bootstrap;
+package org.jboss.webbeans.bootstrap.events;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,15 +26,17 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.bootstrap.BeanDeployment;
+import org.jboss.webbeans.bootstrap.ExtensionBeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
 
 public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery
 {
 
-   public AfterBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
+   public AfterBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, ExtensionBeanDeployerEnvironment extensionDeployerEnvironment)
    {
-      super(beanDeployments, deploymentManager, deployment);
+      super(beanDeployments, deploymentManager, deployment, extensionDeployerEnvironment);
    }
 
    public void addDefinitionError(Throwable t)

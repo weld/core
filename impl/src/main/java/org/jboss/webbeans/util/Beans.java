@@ -112,9 +112,9 @@ public class Beans
       {
          return ((SessionBean<?>) bean).getEjbDescriptor().isStateful();
       }
-      else if (bean instanceof AbstractProducerBean<?, ?>)
+      else if (bean instanceof AbstractProducerBean<?, ?, ?>)
       {
-         return Reflections.isSerializable(((AbstractProducerBean<?, ?>) bean).getType());
+         return Reflections.isSerializable(((AbstractProducerBean<?, ?, ?>) bean).getType());
       }
       else
       {
@@ -150,11 +150,17 @@ public class Beans
          injectableFieldsList.add(0, fields);
          for (WBField<?, ?> annotatedField : t.getDeclaredAnnotatedWBFields(Inject.class))
          {
-            addFieldInjectionPoint(annotatedField, fields, declaringBean);
+            if (!annotatedField.isStatic())
+            {
+               addFieldInjectionPoint(annotatedField, fields, declaringBean);
+            }
          }
          for (WBField<?, ?> annotatedField : t.getAnnotatedWBFields(Decorates.class))
          {
-            addFieldInjectionPoint(annotatedField, fields, declaringBean);
+            if (!annotatedField.isStatic())
+            {
+               addFieldInjectionPoint(annotatedField, fields, declaringBean);
+            }
          }
          t = t.getWBSuperclass();
       }
@@ -306,7 +312,7 @@ public class Beans
          initializerMethodsList.add(0, initializerMethods);
          for (WBMethod<?, ?> method : t.getDeclaredWBMethods())
          {
-            if (method.isAnnotationPresent(Inject.class))
+            if (method.isAnnotationPresent(Inject.class) && !method.isStatic())
             {
                if (method.getAnnotation(Produces.class) != null)
                {

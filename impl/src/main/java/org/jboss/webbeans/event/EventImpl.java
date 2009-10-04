@@ -42,7 +42,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
    
    private static final long serialVersionUID = 656782657242515455L;
 
-   public static <E> Event<E> of(Type eventType, BeanManagerImpl manager, Set<Annotation> bindings)
+   public static <E> EventImpl<E> of(Type eventType, BeanManagerImpl manager, Set<Annotation> bindings)
    {
       return new EventImpl<E>(eventType, manager, bindings);
    }
@@ -90,7 +90,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
       return selectEvent(subtype.getType(), bindings);
    }
    
-   private <U extends T> Event<U> selectEvent(Type subtype, Annotation[] bindings)
+   public <U extends T> Event<U> selectEvent(Type subtype, Annotation[] bindings)
    {
       return new EventImpl<U>(
             subtype, 

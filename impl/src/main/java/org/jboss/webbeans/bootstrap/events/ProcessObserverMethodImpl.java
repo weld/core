@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.bootstrap;
+package org.jboss.webbeans.bootstrap.events;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -30,22 +31,20 @@ import javax.enterprise.inject.spi.ProcessObserverMethod;
  * @author David Allen
  *
  */
-public class ProcessObserverMethodImpl<X, T> implements ProcessObserverMethod<X, T>
+public class ProcessObserverMethodImpl<X, T> extends AbstractContainerEvent implements ProcessObserverMethod<X, T>
 {
    private final AnnotatedMethod<X>   beanMethod;
    private final ObserverMethod<X, T> observerMethod;
-   private final List<Throwable>      definitionErrors;
    
-   public ProcessObserverMethodImpl(AnnotatedMethod<X> beanMethod, ObserverMethod<X, T> observerMethod, List<Throwable> definitionErrors)
+   public ProcessObserverMethodImpl(AnnotatedMethod<X> beanMethod, ObserverMethod<X, T> observerMethod)
    {
       this.beanMethod = beanMethod;
       this.observerMethod = observerMethod;
-      this.definitionErrors = definitionErrors;
    }
 
    public void addDefinitionError(Throwable t)
    {
-      this.definitionErrors.add(t);
+      getErrors().add(t);
    }
 
    public AnnotatedMethod<X> getAnnotatedMethod()
@@ -56,6 +55,11 @@ public class ProcessObserverMethodImpl<X, T> implements ProcessObserverMethod<X,
    public ObserverMethod<X, T> getObserverMethod()
    {
       return observerMethod;
+   }
+   
+   public List<Throwable> getDefinitionErrors()
+   {
+      return Collections.unmodifiableList(getErrors());
    }
 
 }

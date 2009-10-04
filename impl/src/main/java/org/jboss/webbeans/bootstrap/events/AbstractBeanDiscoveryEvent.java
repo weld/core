@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bootstrap;
+package org.jboss.webbeans.bootstrap.events;
 
 import java.util.Map;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.bootstrap.BeanDeployment;
+import org.jboss.webbeans.bootstrap.ExtensionBeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.metadata.TypeStore;
@@ -32,12 +34,14 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractContainerEvent
    private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
    private final BeanManagerImpl deploymentManager;
    private final Deployment deployment;
+   private final ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment;
    
-   public AbstractBeanDiscoveryEvent(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, BeanManagerImpl deploymentManager, Deployment deployment)
+   public AbstractBeanDiscoveryEvent(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, BeanManagerImpl deploymentManager, Deployment deployment, ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment)
    {
       this.beanDeployments = beanDeployments;
       this.deploymentManager = deploymentManager;
       this.deployment = deployment;
+      this.extensionBeanDeployerEnvironment = extensionBeanDeployerEnvironment;
    }
    
    /**
@@ -85,7 +89,7 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractContainerEvent
          }
          else
          {
-            BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, getDeploymentManager(), deployment.getServices());
+            BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, getDeploymentManager(), deployment, extensionBeanDeployerEnvironment, deployment.getServices());
             getBeanDeployments().put(beanDeploymentArchive, beanDeployment);
             return beanDeployment;
          }

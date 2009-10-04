@@ -28,19 +28,19 @@ import org.jboss.webbeans.util.Reflections;
  * @author pmuir
  *
  */
-public class TypeSafeDisposerResolver extends TypeSafeResolver<DisposalMethod<?>>
+public class TypeSafeDisposerResolver extends TypeSafeResolver<DisposalMethod<?, ?>>
 {
 
    private final BeanManagerImpl manager;
 
-   public TypeSafeDisposerResolver(BeanManagerImpl manager, Iterable<DisposalMethod<?>> disposers)
+   public TypeSafeDisposerResolver(BeanManagerImpl manager, Iterable<DisposalMethod<?, ?>> disposers)
    {
       super(disposers);
       this.manager = manager;
    }
 
    @Override
-   protected boolean matches(Resolvable resolvable, DisposalMethod<?> disposer)
+   protected boolean matches(Resolvable resolvable, DisposalMethod<?, ?> disposer)
    {
          return resolvable.getDeclaringBean().equals(disposer.getDeclaringBean()) && Reflections.isAssignableFrom(disposer.getType(), resolvable.getTypeClosure()) && Beans.containsAllBindings(disposer.getQualifiers(), resolvable.getQualifiers(), manager);
    }
@@ -54,7 +54,7 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<DisposalMethod<?>
    }
 
    @Override
-   protected Set<DisposalMethod<?>> filterResult(Set<DisposalMethod<?>> matched)
+   protected Set<DisposalMethod<?, ?>> filterResult(Set<DisposalMethod<?, ?>> matched)
    {
       return matched;
    }
@@ -66,7 +66,7 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<DisposalMethod<?>
    }
 
    @Override
-   protected Set<DisposalMethod<?>> sortResult(Set<DisposalMethod<?>> matched)
+   protected Set<DisposalMethod<?, ?>> sortResult(Set<DisposalMethod<?, ?>> matched)
    {
       return matched;
    }

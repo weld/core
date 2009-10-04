@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bootstrap;
+package org.jboss.webbeans.bootstrap.events;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -23,6 +23,8 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.bootstrap.BeanDeployment;
+import org.jboss.webbeans.bootstrap.ExtensionBeanDeployerEnvironment;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.literal.BindingTypeLiteral;
@@ -33,9 +35,9 @@ import org.jboss.webbeans.literal.ScopeLiteral;
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery
 {
    
-   public BeforeBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
+   public BeforeBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment)
    {
-      super(beanDeployments, deploymentManager, deployment);
+      super(beanDeployments, deploymentManager, deployment, extensionBeanDeployerEnvironment);
    }
 
    public void addQualifier(Class<? extends Annotation> bindingType)

@@ -53,7 +53,9 @@ public class Reflections
    
    private static final Log log = Logging.getLog(Reflections.class);
    
-   private static final Type[] EMPTY_TYPES = {};
+   public static final Type[] EMPTY_TYPES = {};
+   
+   public static final Annotation[] EMPTY_ANNOTATIONS = {}; 
    
    public static class HierarchyDiscovery
    {
@@ -459,6 +461,12 @@ public class Reflections
          }
       }
       return false;
+   }
+   
+   public static Set<Type> createTypeClosure(Class<?> rawType, Type[] actualTypeArguments)
+   {
+      Type type = new ParameterizedTypeImpl(rawType, actualTypeArguments, rawType.getDeclaringClass());
+      return new HierarchyDiscovery(type).getFlattenedTypes();
    }
 
    /**

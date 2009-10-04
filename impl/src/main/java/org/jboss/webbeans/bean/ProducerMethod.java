@@ -43,14 +43,14 @@ import org.jboss.webbeans.util.Names;
  * 
  * @param <T>
  */
-public class ProducerMethod<T> extends AbstractProducerBean<T, Method>
+public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
 {
    // The underlying method
-   private MethodInjectionPoint<T, ?> method;
+   private MethodInjectionPoint<T, X> method;
 
-   private DisposalMethod<?> disposalMethodBean;
+   private DisposalMethod<X, ?> disposalMethodBean;
 
-   private ProducerMethod<?> specializedBean;
+   private ProducerMethod<?, ?> specializedBean;
 
    private final String id;
 
@@ -62,14 +62,14 @@ public class ProducerMethod<T> extends AbstractProducerBean<T, Method>
     * @param manager the current manager
     * @return A producer Web Bean
     */
-   public static <T> ProducerMethod<T> of(WBMethod<T, ?> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public static <X, T> ProducerMethod<X, T> of(WBMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
-      return new ProducerMethod<T>(method, declaringBean, manager);
+      return new ProducerMethod<X, T>(method, declaringBean, manager);
    }
 
-   protected ProducerMethod(WBMethod<T, ?> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   protected ProducerMethod(WBMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
-      super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(method.getSignature().toString()).toString(), declaringBean, manager);
+      super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, manager);
       this.method = MethodInjectionPoint.of(this, method);
       initType();
       initTypes();
@@ -163,7 +163,7 @@ public class ProducerMethod<T> extends AbstractProducerBean<T, Method>
     */
    protected void initDisposalMethod(BeanDeployerEnvironment environment)
    {
-      Set<DisposalMethod<?>> disposalBeans = environment.resolveDisposalBeans(getTypes(), getQualifiers(), getDeclaringBean());
+      Set<DisposalMethod<X, ?>> disposalBeans = environment.<X>resolveDisposalBeans(getTypes(), getQualifiers(), getDeclaringBean());
 
       if (disposalBeans.size() == 1)
       {
@@ -205,7 +205,7 @@ public class ProducerMethod<T> extends AbstractProducerBean<T, Method>
     * @return The annotated item
     */
    @Override
-   public WBMethod<T, ?> getAnnotatedItem()
+   public WBMethod<T, X> getAnnotatedItem()
    {
       return method;
    }
@@ -226,7 +226,7 @@ public class ProducerMethod<T> extends AbstractProducerBean<T, Method>
     * 
     * @return The method representation
     */
-   public DisposalMethod<?> getDisposalMethod()
+   public DisposalMethod<X, ?> getDisposalMethod()
    {
       return disposalMethodBean;
    }

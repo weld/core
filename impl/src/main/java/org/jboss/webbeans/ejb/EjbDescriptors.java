@@ -37,6 +37,35 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
    private final Map<String, InternalEjbDescriptor<?>> ejbs;
    
    private final Collection<Class<?>> ejbClasses;
+   
+   public static final EjbDescriptors EMPTY = new EjbDescriptors()
+   {
+      @Override
+      public <T> void add(EjbDescriptor<T> ejbDescriptor)
+      {
+         throw new UnsupportedOperationException();
+      }
+      
+      @Override
+      public void addAll(Iterable<EjbDescriptor<?>> ejbDescriptors)
+      {
+         throw new UnsupportedOperationException();
+      }
+      
+      @Override
+      public void cleanup()
+      {
+         throw new UnsupportedOperationException();
+      }
+      
+      @Override
+      public void clear()
+      {
+         throw new UnsupportedOperationException();
+      }
+      
+      
+   };
 
    /**
     * Constructor

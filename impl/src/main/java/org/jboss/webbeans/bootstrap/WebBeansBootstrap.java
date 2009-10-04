@@ -40,6 +40,10 @@ import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.api.helpers.ServiceRegistries;
 import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
+import org.jboss.webbeans.bootstrap.events.AfterBeanDiscoveryImpl;
+import org.jboss.webbeans.bootstrap.events.AfterDeploymentValidationImpl;
+import org.jboss.webbeans.bootstrap.events.BeforeBeanDiscoveryImpl;
+import org.jboss.webbeans.bootstrap.events.BeforeShutdownImpl;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.context.AbstractApplicationContext;
@@ -52,6 +56,7 @@ import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.SingletonContext;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
+import org.jboss.webbeans.ejb.EjbDescriptors;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
@@ -89,12 +94,14 @@ public class WebBeansBootstrap implements Bootstrap
       private final BeanManagerImpl deploymentManager;
       private final Environment environment;
       private final Deployment deployment;
+      private final ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment;
       
-      public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, Deployment deployment)
+      public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, Deployment deployment, ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment)
       {
          this.deploymentManager = deploymentManager;
          this.environment = environment;
          this.deployment = deployment;
+         this.extensionBeanDeployerEnvironment = extensionBeanDeployerEnvironment;
       }
       
       public Map<BeanDeploymentArchive, BeanDeployment> visit()
@@ -114,7 +121,7 @@ public class WebBeansBootstrap implements Bootstrap
          verifyServices(beanDeploymentArchive.getServices(), environment.getRequiredBeanDeploymentArchiveServices());
          
          // Create the BeanDeployment and attach
-         BeanDeployment parent = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices());
+         BeanDeployment parent = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment, extensionBeanDeployerEnvironment, deployment.getServices());
          managerAwareBeanDeploymentArchives.put(beanDeploymentArchive, parent);
          seenBeanDeploymentArchives.add(beanDeploymentArchive);
          for (BeanDeploymentArchive archive : beanDeploymentArchive.getBeanDeploymentArchives())
@@ -144,7 +151,8 @@ public class WebBeansBootstrap implements Bootstrap
    private Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
    private Environment environment;
    private Deployment deployment;
-   
+   private ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment;
+ 
    public Bootstrap startContainer(Environment environment, Deployment deployment, BeanStore applicationBeanStore)
    {
       synchronized (this)
@@ -202,7 +210,9 @@ public class WebBeansBootstrap implements Bootstrap
          // Start the application context
          Container.instance().deploymentServices().get(ContextLifecycle.class).beginApplication(applicationBeanStore);
          
-         DeploymentVisitor deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment);
+         this.extensionBeanDeployerEnvironment = new ExtensionBeanDeployerEnvironment(EjbDescriptors.EMPTY, deploymentManager);
+         
+         DeploymentVisitor deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, extensionBeanDeployerEnvironment);
          beanDeployments = deploymentVisitor.visit();
          
          return this;
@@ -248,7 +258,7 @@ public class WebBeansBootstrap implements Bootstrap
             throw new IllegalStateException("Manager has not been initialized");
          }
          
-         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager);
+         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, extensionBeanDeployerEnvironment);
          extensionBeanDeployer.addExtensions(ServiceLoader.load(Extension.class));
          extensionBeanDeployer.createBeans().deploy();
          
@@ -300,7 +310,7 @@ public class WebBeansBootstrap implements Bootstrap
 
    private void fireBeforeBeanDiscoveryEvent()
    {
-      BeforeBeanDiscovery event = new BeforeBeanDiscoveryImpl(deploymentManager, deployment, beanDeployments);
+      BeforeBeanDiscovery event = new BeforeBeanDiscoveryImpl(deploymentManager, deployment, beanDeployments, extensionBeanDeployerEnvironment);
       try
       {
          deploymentManager.fireEvent(event);
@@ -326,7 +336,7 @@ public class WebBeansBootstrap implements Bootstrap
    
    private void fireAfterBeanDiscoveryEvent()
    {
-      AfterBeanDiscoveryImpl event = new AfterBeanDiscoveryImpl(deploymentManager, deployment, beanDeployments);
+      AfterBeanDiscoveryImpl event = new AfterBeanDiscoveryImpl(deploymentManager, deployment, beanDeployments, extensionBeanDeployerEnvironment);
       try
       {
          deploymentManager.fireEvent(event);

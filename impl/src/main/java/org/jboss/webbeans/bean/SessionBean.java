@@ -348,7 +348,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
     */
    protected void checkObserverMethods()
    {
-      for (WBMethod<?, ?> method : this.annotatedItem.getWBDeclaredMethodsWithAnnotatedParameters(Observes.class))
+      for (WBMethod<?, ?> method : this.annotatedItem.getDeclaredWBMethodsWithAnnotatedParameters(Observes.class))
       {
          if (!method.isStatic())
          {

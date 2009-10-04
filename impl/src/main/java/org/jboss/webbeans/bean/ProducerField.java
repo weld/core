@@ -35,10 +35,10 @@ import org.jboss.webbeans.util.Names;
  * 
  * @param <T>
  */
-public class ProducerField<T> extends AbstractProducerBean<T, Field>
+public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
 {
    // The underlying field
-   private WBField<T, ?> field;
+   private WBField<T, X> field;
    private final String id;
    
    /**
@@ -49,9 +49,9 @@ public class ProducerField<T> extends AbstractProducerBean<T, Field>
     * @param manager the current manager
     * @return A producer field
     */
-   public static <T> ProducerField<T> of(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public static <X, T> ProducerField<X, T> of(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
-      return new ProducerField<T>(field, declaringBean, manager);
+      return new ProducerField<X, T>(field, declaringBean, manager);
    }
 
    /**
@@ -61,7 +61,7 @@ public class ProducerField<T> extends AbstractProducerBean<T, Field>
     * @param declaringBean The declaring bean
     * @param manager The Web Beans manager
     */
-   protected ProducerField(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   protected ProducerField(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(new StringBuilder().append(ProducerField.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(field.getName()).toString(), declaringBean, manager);
       this.field = field;
@@ -104,7 +104,7 @@ public class ProducerField<T> extends AbstractProducerBean<T, Field>
     * @return The annotated item
     */
    @Override
-   protected WBField<T, ?> getAnnotatedItem()
+   public WBField<T, X> getAnnotatedItem()
    {
       return field;
    }

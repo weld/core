@@ -35,12 +35,12 @@ import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.WBMethod;
 
-public class DisposalMethod<T> extends AbstractReceiverBean<T, Method>
+public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
 {
 
    protected MethodInjectionPoint<T, ?> disposalMethodInjectionPoint;
 
-   protected DisposalMethod(BeanManagerImpl manager, WBMethod<T, ?> disposalMethod, AbstractClassBean<?> declaringBean)
+   protected DisposalMethod(BeanManagerImpl manager, WBMethod<T, X> disposalMethod, AbstractClassBean<X> declaringBean)
    {
       super(new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, manager);
       this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
@@ -71,9 +71,9 @@ public class DisposalMethod<T> extends AbstractReceiverBean<T, Method>
       return disposalMethodInjectionPoint;
    }
 
-   public static <T> DisposalMethod<T> of(BeanManagerImpl manager, WBMethod<T, ?> disposalMethod, AbstractClassBean<?> declaringBean)
+   public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, WBMethod<T, X> disposalMethod, AbstractClassBean<X> declaringBean)
    {
-      return new DisposalMethod<T>(manager, disposalMethod, declaringBean);
+      return new DisposalMethod<X, T>(manager, disposalMethod, declaringBean);
    }
 
    @Override

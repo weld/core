@@ -80,7 +80,7 @@ public interface WBClass<T> extends WBAnnotated<T, Class<T>>, AnnotatedType<T>
     * @return A set of abstracted fields with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBField<?, ?>> getDeclaredAnnotatedWBFields(Class<? extends Annotation> annotationType);
+   public Set<WBField<?, T>> getDeclaredAnnotatedWBFields(Class<? extends Annotation> annotationType);
 
    /**
     * Gets all fields which are meta-annotated with metaAnnotationType
@@ -138,7 +138,7 @@ public interface WBClass<T> extends WBAnnotated<T, Class<T>>, AnnotatedType<T>
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBMethod<?, ?>> getDeclaredAnnotatedWBMethods(Class<? extends Annotation> annotationType);
+   public Set<WBMethod<?, T>> getDeclaredAnnotatedWBMethods(Class<? extends Annotation> annotationType);
 
    /**
     * Find the annotated method for a given methodDescriptor
@@ -197,7 +197,7 @@ public interface WBClass<T> extends WBAnnotated<T, Class<T>>, AnnotatedType<T>
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WBMethod<?, T>> getWBDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+   public Set<WBMethod<?, T>> getDeclaredWBMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
 
    /**
     * Gets the superclass.

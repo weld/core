@@ -32,15 +32,15 @@ import org.jboss.webbeans.log.Logging;
  * @author pmuir
  *
  */
-public abstract class AbstractReceiverBean<T, S extends Member> extends AbstractBean<T, S>
+public abstract class AbstractReceiverBean<X, T, S extends Member> extends AbstractBean<T, S>
 {
 
    private static final LogProvider log = Logging.getLogProvider(AbstractReceiverBean.class);
    
-   private AbstractClassBean<?> declaringBean;
+   private AbstractClassBean<X> declaringBean;
    private boolean policy;
 
-   public AbstractReceiverBean(String idSuffix, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public AbstractReceiverBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(idSuffix, manager);
       this.declaringBean = declaringBean;
@@ -87,7 +87,7 @@ public abstract class AbstractReceiverBean<T, S extends Member> extends Abstract
     * 
     * @return The bean representation
     */
-   public AbstractClassBean<?> getDeclaringBean()
+   public AbstractClassBean<X> getDeclaringBean()
    {
       return declaringBean;
    }

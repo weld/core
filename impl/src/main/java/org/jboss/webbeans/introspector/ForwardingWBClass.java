@@ -23,6 +23,7 @@ import java.util.Set;
 public abstract class ForwardingWBClass<T> extends ForwardingWBAnnotated<T, Class<T>> implements WBClass<T>
 {
 
+   @Override
    protected abstract WBClass<T> delegate();
 
    public Set<WBConstructor<T>> getAnnotatedWBConstructors(Class<? extends Annotation> annotationType)
@@ -55,19 +56,19 @@ public abstract class ForwardingWBClass<T> extends ForwardingWBAnnotated<T, Clas
       return delegate().getWBMethods();
    }
 
-   public Set<WBField<?, ?>> getDeclaredAnnotatedWBFields(Class<? extends Annotation> annotationType)
+   public Set<WBField<?, T>> getDeclaredAnnotatedWBFields(Class<? extends Annotation> annotationType)
    {
       return delegate().getDeclaredAnnotatedWBFields(annotationType);
    }
 
-   public Set<WBMethod<?, ?>> getDeclaredAnnotatedWBMethods(Class<? extends Annotation> annotationType)
+   public Set<WBMethod<?, T>> getDeclaredAnnotatedWBMethods(Class<? extends Annotation> annotationType)
    {
       return delegate().getDeclaredAnnotatedWBMethods(annotationType);
    }
 
-   public Set<WBMethod<?, T>> getWBDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
+   public Set<WBMethod<?, T>> getDeclaredWBMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
-      return delegate().getWBDeclaredMethodsWithAnnotatedParameters(annotationType);
+      return delegate().getDeclaredWBMethodsWithAnnotatedParameters(annotationType);
    }
 
    public Set<WBField<?, ?>> getWBFields()
@@ -111,6 +112,7 @@ public abstract class ForwardingWBClass<T> extends ForwardingWBAnnotated<T, Clas
       return delegate().isNonStaticMemberClass();
    }
 
+   @Override
    public boolean isParameterizedType()
    {
       return delegate().isParameterizedType();

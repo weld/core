@@ -56,7 +56,7 @@ import org.jboss.webbeans.util.Reflections;
  * @param <T>
  * @param <S>
  */
-public abstract class AbstractProducerBean<T, S extends Member> extends AbstractReceiverBean<T, S> implements Producer<T>
+public abstract class AbstractProducerBean<X, T, S extends Member> extends AbstractReceiverBean<X, T, S> implements Producer<T>
 {
    private static final LogProvider log = Logging.getLogProvider(AbstractProducerBean.class);
 
@@ -65,13 +65,13 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
     * @param declaringBean The declaring bean
     * @param manager The Web Beans manager
     */
-   public AbstractProducerBean(String idSuffix, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public AbstractProducerBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(idSuffix, declaringBean, manager);
    }
 
    @Override
-   protected abstract WBMember<T, ?, S> getAnnotatedItem();
+   public abstract WBMember<T, X, S> getAnnotatedItem();
 
    @Override
    // Overriden to provide the class of the bean that declares the producer method/field

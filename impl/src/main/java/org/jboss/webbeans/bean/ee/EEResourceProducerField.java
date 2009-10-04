@@ -29,7 +29,7 @@ import org.jboss.webbeans.ws.WSApiAbstraction;
  * @author pmuir
  *
  */
-public class EEResourceProducerField<T> extends ProducerField<T>
+public class EEResourceProducerField<X, T> extends ProducerField<X, T>
 {
    
    /**
@@ -40,12 +40,12 @@ public class EEResourceProducerField<T> extends ProducerField<T>
     * @param manager the current manager
     * @return A producer field
     */
-   public static <T> EEResourceProducerField<T> of(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public static <X, T> EEResourceProducerField<X, T> of(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
-      return new EEResourceProducerField<T>(field, declaringBean, manager);
+      return new EEResourceProducerField<X, T>(field, declaringBean, manager);
    }
 
-   protected EEResourceProducerField(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   protected EEResourceProducerField(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(field, declaringBean, manager);
    }

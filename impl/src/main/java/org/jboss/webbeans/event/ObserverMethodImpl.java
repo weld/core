@@ -63,8 +63,8 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    private final Type eventType;
    protected BeanManagerImpl manager;
    private final Notify notifyType;
-   protected final RIBean<?> declaringBean;
-   protected final MethodInjectionPoint<?, ?> observerMethod;
+   protected final RIBean<X> declaringBean;
+   protected final MethodInjectionPoint<T, X> observerMethod;
    protected TransactionPhase transactionPhase;
 
    /**
@@ -75,7 +75,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
     * @param declaringBean The observer bean
     * @param manager The Web Beans manager
     */
-   protected ObserverMethodImpl(final WBMethod<?, ?> observer, final RIBean<?> declaringBean, final BeanManagerImpl manager)
+   protected ObserverMethodImpl(final WBMethod<T, X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
    {
       this.manager = manager;
       this.declaringBean = declaringBean;
@@ -146,17 +146,12 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    @SuppressWarnings("unchecked")
    public Bean<X> getBean()
    {
-      return (Bean<X>) declaringBean;
+      return declaringBean;
    }
 
    public Annotation[] getBindingsAsArray()
    {
       return bindings.toArray(new Annotation[0]);
-   }
-
-   public Type getEventType()
-   {
-      return eventType;
    }
 
    public Notify getNotify()
@@ -182,7 +177,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    /**
     * @return the observerMethod
     */
-   public MethodInjectionPoint<?, ?> getMethod()
+   public MethodInjectionPoint<T, X> getMethod()
    {
       return observerMethod;
    }

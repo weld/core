@@ -27,7 +27,7 @@ import java.lang.reflect.Member;
  * 
  * @author Pete Muir
  * 
- * @param <X> the type of the member
+ * @param <X> the type of the declaring type
  */
 public interface AnnotatedMember<X> extends Annotated 
 {

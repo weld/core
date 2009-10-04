@@ -88,7 +88,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
    private final Set<WBField<?, ?>> declaredFields;
    private final Map<String, WBField<?, ?>> declaredFieldsByName;
    // The map from annotation type to abstracted field with annotation
-   private final SetMultimap<Class<? extends Annotation>, WBField<?, ?>> declaredAnnotatedFields;
+   private final SetMultimap<Class<? extends Annotation>, WBField<?, T>> declaredAnnotatedFields;
    // The map from annotation type to abstracted field with meta-annotation
    private final SetMultimap<Class<? extends Annotation>, WBField<?, ?>> declaredMetaAnnotatedFields;
 
@@ -104,7 +104,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
    // The set of abstracted methods
    private final Set<WBMethod<?, ?>> declaredMethods;
    // The map from annotation type to abstracted method with annotation
-   private final SetMultimap<Class<? extends Annotation>, WBMethod<?, ?>> declaredAnnotatedMethods;
+   private final SetMultimap<Class<? extends Annotation>, WBMethod<?, T>> declaredAnnotatedMethods;
    // The map from annotation type to method with a parameter with annotation
    private final SetMultimap<Class<? extends Annotation>, WBMethod<?, T>> declaredMethodsByAnnotatedParameters;
 
@@ -176,12 +176,12 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
       });
       this.declaredFields = new HashSet<WBField<?, ?>>();
       this.declaredFieldsByName = new HashMap<String, WBField<?, ?>>();
-      this.declaredAnnotatedFields = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WBField<?, ?>>>(), new Supplier< Set<WBField<?, ?>>>()
+      this.declaredAnnotatedFields = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WBField<?, T>>>(), new Supplier< Set<WBField<?, T>>>()
       {
          
-         public Set<WBField<?, ?>> get()
+         public Set<WBField<?, T>> get()
          {
-            return new HashSet<WBField<?, ?>>();
+            return new HashSet<WBField<?, T>>();
          }
         
       });
@@ -216,14 +216,14 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
             {
                field.setAccessible(true);
             }
-            WBField<?, ?> annotatedField = null;
+            WBField<?, T> annotatedField = null;
             if (annotatedTypeFields.containsKey(field))
             {
                annotatedField = WBFieldImpl.of(annotatedTypeFields.get(field), this.<T>getDeclaringWBClass(field, classTransformer), classTransformer);
             }
             else
             {
-               annotatedField = WBFieldImpl.of(field, getDeclaringWBClass(field, classTransformer), classTransformer);
+               annotatedField = WBFieldImpl.of(field, this.<T>getDeclaringWBClass(field, classTransformer), classTransformer);
             }
             
             this.fields.add(annotatedField);
@@ -345,12 +345,12 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
         
       });
       this.declaredMethods = new HashSet<WBMethod<?, ?>>();
-      this.declaredAnnotatedMethods = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WBMethod<?, ?>>>(), new Supplier< Set<WBMethod<?, ?>>>()
+      this.declaredAnnotatedMethods = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WBMethod<?, T>>>(), new Supplier< Set<WBMethod<?, T>>>()
       {
          
-         public Set<WBMethod<?, ?>> get()
+         public Set<WBMethod<?, T>> get()
          {
-            return new HashSet<WBMethod<?, ?>>();
+            return new HashSet<WBMethod<?, T>>();
          }
         
       });
@@ -479,7 +479,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
       return (WBField<F, ?>) declaredFieldsByName.get(fieldName);
    }
 
-   public Set<WBField<?, ?>> getDeclaredAnnotatedWBFields(Class<? extends Annotation> annotationType)
+   public Set<WBField<?, T>> getDeclaredAnnotatedWBFields(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(declaredAnnotatedFields.get(annotationType));
    }
@@ -563,7 +563,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
       return Collections.unmodifiableSet(annotatedMethods.get(annotationType));
    }
 
-   public Set<WBMethod<?, ?>> getDeclaredAnnotatedWBMethods(Class<? extends Annotation> annotationType)
+   public Set<WBMethod<?, T>> getDeclaredAnnotatedWBMethods(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(declaredAnnotatedMethods.get(annotationType));
    }
@@ -598,7 +598,7 @@ public class WBClassImpl<T> extends AbstractWBAnnotated<T, Class<T>> implements 
       return Collections.unmodifiableSet(constructorsByAnnotatedParameters.get(annotationType));
    }
 
-   public Set<WBMethod<?, T>> getWBDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
+   public Set<WBMethod<?, T>> getDeclaredWBMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(declaredMethodsByAnnotatedParameters.get(annotationType));
    }

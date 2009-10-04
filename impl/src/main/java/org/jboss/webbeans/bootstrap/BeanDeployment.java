@@ -19,6 +19,7 @@ package org.jboss.webbeans.bootstrap;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.builtin.DefaultValidatorBean;
 import org.jboss.webbeans.bean.builtin.DefaultValidatorFactoryBean;
+import org.jboss.webbeans.bean.builtin.ExtensionBean;
 import org.jboss.webbeans.bean.builtin.InjectionPointBean;
 import org.jboss.webbeans.bean.builtin.ManagerBean;
 import org.jboss.webbeans.bean.builtin.PrincipalBean;
@@ -30,12 +31,14 @@ import org.jboss.webbeans.bootstrap.api.Environments;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.webbeans.bootstrap.spi.Deployment;
 import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.conversation.JavaSEConversationTerminator;
 import org.jboss.webbeans.conversation.NumericConversationIdGenerator;
 import org.jboss.webbeans.conversation.ServletConversationManager;
 import org.jboss.webbeans.ejb.EjbDescriptors;
 import org.jboss.webbeans.ejb.spi.EjbServices;
+import org.jboss.webbeans.event.ObserverMethodImpl;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
@@ -56,10 +59,14 @@ public class BeanDeployment
    
    private final BeanDeploymentArchive beanDeploymentArchive;
    private final BeanManagerImpl beanManager;
+   private final ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment;
    private final BeanDeployer beanDeployer;
+   private final Deployment deployment;
    
-   public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices)
+   public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, Deployment deployment, ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment, ServiceRegistry deploymentServices)
    {
+      this.extensionBeanDeployerEnvironment = extensionBeanDeployerEnvironment;
+      this.deployment = deployment;
       this.beanDeploymentArchive = beanDeploymentArchive;
       EjbDescriptors ejbDescriptors = new EjbDescriptors();
       beanDeploymentArchive.getServices().add(EjbDescriptors.class, ejbDescriptors);
@@ -148,6 +155,20 @@ public class BeanDeployment
       {
          beanDeployer.getEnvironment().addBean(new DefaultValidatorBean(beanManager));
          beanDeployer.getEnvironment().addBean(new DefaultValidatorFactoryBean(beanManager));
+      }
+      for (ExtensionBean bean : extensionBeanDeployerEnvironment.getBeans())
+      {
+         if (deployment.loadBeanDeploymentArchive(bean.getBeanClass()).equals(beanDeploymentArchive))
+         {
+            beanDeployer.getManager().addBean(bean);
+         }
+      }
+      for (ObserverMethodImpl<?, ?> observerMethod : extensionBeanDeployerEnvironment.getObservers())
+      {
+         if (deployment.loadBeanDeploymentArchive(observerMethod.getBean().getBeanClass()).equals(beanDeploymentArchive))
+         {
+            beanDeployer.getManager().addObserver(observerMethod);
+         }
       }
       beanDeployer.createBeans().deploy();
    }

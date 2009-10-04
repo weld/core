@@ -47,11 +47,11 @@ public class BeanDeployerEnvironment
 {
 
    private final Map<WBClass<?>, AbstractClassBean<?>> classBeanMap;
-   private final Map<WBMethod<?, ?>, ProducerMethod<?>> producerMethodBeanMap;
+   private final Map<WBMethod<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap;
    private final Set<RIBean<?>> beans;
    private final Set<ObserverMethodImpl<?, ?>> observers;
-   private final List<DisposalMethod<?>> allDisposalBeans;
-   private final Set<DisposalMethod<?>> resolvedDisposalBeans;
+   private final List<DisposalMethod<?, ?>> allDisposalBeans;
+   private final Set<DisposalMethod<?, ?>> resolvedDisposalBeans;
    private final Set<DecoratorImpl<?>> decorators;
    private final EjbDescriptors ejbDescriptors;
    private final TypeSafeDisposerResolver disposalMethodResolver;
@@ -59,9 +59,9 @@ public class BeanDeployerEnvironment
    public BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager)
    {
       this.classBeanMap = new HashMap<WBClass<?>, AbstractClassBean<?>>();
-      this.producerMethodBeanMap = new HashMap<WBMethod<?, ?>, ProducerMethod<?>>();
-      this.allDisposalBeans = new ArrayList<DisposalMethod<?>>();
-      this.resolvedDisposalBeans = new HashSet<DisposalMethod<?>>();
+      this.producerMethodBeanMap = new HashMap<WBMethod<?, ?>, ProducerMethod<?, ?>>();
+      this.allDisposalBeans = new ArrayList<DisposalMethod<?, ?>>();
+      this.resolvedDisposalBeans = new HashSet<DisposalMethod<?, ?>>();
       this.beans = new HashSet<RIBean<?>>();
       this.decorators = new HashSet<DecoratorImpl<?>>();
       this.observers = new HashSet<ObserverMethodImpl<?, ?>>();
@@ -69,7 +69,7 @@ public class BeanDeployerEnvironment
       this.disposalMethodResolver = new TypeSafeDisposerResolver(manager, allDisposalBeans);
    }
 
-   public ProducerMethod<?> getProducerMethod(WBMethod<?, ?> method)
+   public <X, T> ProducerMethod<X, T> getProducerMethod(WBMethod<X, T> method)
    {
       if (!producerMethodBeanMap.containsKey(method))
       {
@@ -77,9 +77,9 @@ public class BeanDeployerEnvironment
       }
       else
       {
-         ProducerMethod<?> bean = producerMethodBeanMap.get(method);
+         ProducerMethod<?, ?> bean = producerMethodBeanMap.get(method);
          bean.initialize(this);
-         return bean;
+         return (ProducerMethod<X, T>) bean;
       }
    }
    
@@ -97,13 +97,13 @@ public class BeanDeployerEnvironment
       }
    }
 
-   public void addBean(ProducerMethod<?> bean)
+   public void addBean(ProducerMethod<?, ?> bean)
    {
       producerMethodBeanMap.put(bean.getAnnotatedItem(), bean);
       beans.add(bean);
    }
    
-   public void addBean(ProducerField<?> bean)
+   public void addBean(ProducerField<?, ?> bean)
    {
       beans.add(bean);
    }
@@ -132,7 +132,7 @@ public class BeanDeployerEnvironment
       decorators.add(bean);
    }
    
-   public void addBean(DisposalMethod<?> bean)
+   public void addBean(DisposalMethod<?, ?> bean)
    {
       allDisposalBeans.add(bean);
    }
@@ -142,7 +142,7 @@ public class BeanDeployerEnvironment
       this.observers.add(observer);
    }
 
-   public Set<RIBean<?>> getBeans()
+   public Set<? extends RIBean<?>> getBeans()
    {
       return Collections.unmodifiableSet(beans);
    }
@@ -158,9 +158,9 @@ public class BeanDeployerEnvironment
    }
 
 
-   public Set<DisposalMethod<?>> getUnresolvedDisposalBeans()
+   public Set<DisposalMethod<?, ?>> getUnresolvedDisposalBeans()
    {
-      Set<DisposalMethod<?>> beans = new HashSet<DisposalMethod<?>>(allDisposalBeans);
+      Set<DisposalMethod<?, ?>> beans = new HashSet<DisposalMethod<?, ?>>(allDisposalBeans);
       beans.removeAll(resolvedDisposalBeans);
       return Collections.unmodifiableSet(beans);
    }
@@ -179,9 +179,9 @@ public class BeanDeployerEnvironment
     * @param bindings The binding types to match
     * @return The set of matching disposal methods
     */
-   public Set<DisposalMethod<?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> bindings, AbstractClassBean<?> declaringBean)
+   public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> bindings, AbstractClassBean<X> declaringBean)
    {
-      Set<DisposalMethod<?>> beans = disposalMethodResolver.resolve(ResolvableFactory.of(types, bindings, declaringBean));
+      Set<DisposalMethod<X, ?>> beans = (Set) disposalMethodResolver.resolve(ResolvableFactory.of(types, bindings, declaringBean));
       resolvedDisposalBeans.addAll(beans);
       return Collections.unmodifiableSet(beans);
    }

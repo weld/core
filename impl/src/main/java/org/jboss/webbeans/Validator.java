@@ -184,7 +184,7 @@ public class Validator implements Service
    {
       if (!ij.isTransient() && !Beans.isPassivationCapableBean(resolvedBean))
       {
-         if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?,?>)
+         if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?, ?,?>)
          {
             throw new IllegalProductException("The bean " + ij.getBean() + " declares a passivating scope but the producer returned a non-serializable bean for injection: " + resolvedBean);
          }
@@ -308,10 +308,10 @@ public class Validator implements Service
    
    private void validateDisposalMethods(BeanDeployerEnvironment environment)
    {
-      Set<DisposalMethod<?>> beans = environment.getUnresolvedDisposalBeans();
+      Set<DisposalMethod<?, ?>> beans = environment.getUnresolvedDisposalBeans();
       if (!beans.isEmpty())
       {
-         throw new DefinitionException("The following Disposal methods where not declared but not resolved to a producer method" + beans);
+         throw new DefinitionException("The following Disposal methods were declared but did not resolved to a producer method " + beans);
       }
    }
 

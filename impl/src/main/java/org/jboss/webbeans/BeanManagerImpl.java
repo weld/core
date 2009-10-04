@@ -552,12 +552,17 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       passivationCapableBeans.put(bean.getId(), bean);
       decoratorResolver.clear();
    }
-
-   @SuppressWarnings("unchecked")
+   
    public <T> Set<ObserverMethod<?, T>> resolveObserverMethods(T event, Annotation... bindings)
    {
+      checkEventObjectType(event);
+      return resolveObserverMethods(event.getClass(), bindings);
+   }
+
+   @SuppressWarnings("unchecked")
+   private <T> Set<ObserverMethod<?, T>> resolveObserverMethods(Type eventType, Annotation... bindings)
+   {
       checkBindingTypes(Arrays.asList(bindings));
-      Class<?> clazz = event.getClass();
       
       // Manually hack in the default annotations here. We need to redo all the annotation defaulting throughout. PLM
       HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(Arrays.asList(bindings));
@@ -566,9 +571,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          bindingAnnotations.add(new DefaultLiteral());
       }
       bindingAnnotations.add(new AnyLiteral());
-      checkEventType(clazz);
       Set<ObserverMethod<?, T>> observers = new HashSet<ObserverMethod<?, T>>();
-      Set<ObserverMethod<?,?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(clazz).getFlattenedTypes(),  bindingAnnotations, null));
+      Set<ObserverMethod<?,?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(eventType).getFlattenedTypes(),  bindingAnnotations, null));
       for (ObserverMethod<?,?> observer : eventObservers)
       {
          observers.add((ObserverMethod<?, T>) observer);
@@ -593,11 +597,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    }
 
-   private void checkEventType(Type eventType)
+   private void checkEventObjectType(Object event)
    {
+      Class<?> eventType = event.getClass();
       Type[] types;
       Type resolvedType = new Reflections.HierarchyDiscovery(eventType).getResolvedType();
-      if (resolvedType instanceof Class)
+      if (resolvedType instanceof Class<?>)
       {
          types = new Type[0];
       }
@@ -824,9 +829,15 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * @see javax.enterprise.inject.spi.BeanManager#fireEvent(java.lang.Object,
     *      java.lang.annotation.Annotation[])
     */
-   public void fireEvent(Object event, Annotation... bindings)
+   public void fireEvent(Object event, Annotation... qualifiers)
    {
-      notifyObservers(event, resolveObserverMethods(event, bindings));
+      fireEvent(event.getClass(), event, qualifiers);
+   }
+   
+   public void fireEvent(Type eventType, Object event, Annotation... qualifiers)
+   {
+      checkEventObjectType(event);
+      notifyObservers(event, resolveObserverMethods(eventType, qualifiers));
    }
 
    private <T> void notifyObservers(final T event, final Set<ObserverMethod<?, T>> observers)

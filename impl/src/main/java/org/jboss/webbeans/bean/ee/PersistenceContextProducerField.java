@@ -26,7 +26,7 @@ import org.jboss.webbeans.introspector.WBField;
  * @author pmuir
  *
  */
-public class PersistenceContextProducerField<T extends EntityManager> extends EEResourceProducerField<T>
+public class PersistenceContextProducerField<X, T extends EntityManager> extends EEResourceProducerField<X, T>
 {
    
    /**
@@ -37,9 +37,9 @@ public class PersistenceContextProducerField<T extends EntityManager> extends EE
     * @param manager the current manager
     * @return A producer field
     */
-   public static <T extends EntityManager> EEResourceProducerField<T> of(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public static <X, T extends EntityManager> EEResourceProducerField<X, T> of(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
-      return new PersistenceContextProducerField<T>(field, declaringBean, manager);
+      return new PersistenceContextProducerField<X, T>(field, declaringBean, manager);
    }
 
    /**
@@ -47,11 +47,12 @@ public class PersistenceContextProducerField<T extends EntityManager> extends EE
     * @param declaringBean
     * @param manager
     */
-   protected PersistenceContextProducerField(WBField<T, ?> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   protected PersistenceContextProducerField(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(field, declaringBean, manager);
    }
    
+   @Override
    public void dispose(T instance) 
    {
       instance.close();

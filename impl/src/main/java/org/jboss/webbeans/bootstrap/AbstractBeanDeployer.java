@@ -16,20 +16,21 @@
  */
 package org.jboss.webbeans.bootstrap;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
+import javax.enterprise.inject.spi.ProcessProducer;
 import javax.inject.Inject;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.AbstractProducerBean;
 import org.jboss.webbeans.bean.DecoratorImpl;
 import org.jboss.webbeans.bean.DisposalMethod;
 import org.jboss.webbeans.bean.ManagedBean;
@@ -41,6 +42,8 @@ import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.bean.ee.EEResourceProducerField;
 import org.jboss.webbeans.bean.ee.PersistenceContextProducerField;
+import org.jboss.webbeans.bootstrap.events.ProcessObserverMethodImpl;
+import org.jboss.webbeans.bootstrap.events.ProcessProducerImpl;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.event.ObserverFactory;
@@ -54,18 +57,18 @@ import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.reflection.ParameterizedTypeImpl;
 import org.jboss.webbeans.ws.WSApiAbstraction;
 
-public class AbstractBeanDeployer
+public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
 {
    
    private static final LogProvider log = Logging.getLogProvider(AbstractBeanDeployer.class);
    
    private final BeanManagerImpl manager;
-   private final BeanDeployerEnvironment environment;
-   private final List<Throwable> definitionErrors = new ArrayList<Throwable>();
+   private final E environment;
    
-   public AbstractBeanDeployer(BeanManagerImpl manager, BeanDeployerEnvironment environment)
+   public AbstractBeanDeployer(BeanManagerImpl manager, E environment)
    {
       this.manager = manager;
       this.environment = environment;
@@ -76,9 +79,9 @@ public class AbstractBeanDeployer
       return manager;
    }
    
-   public AbstractBeanDeployer deploy()
+   public AbstractBeanDeployer<E> deploy()
    {
-      Set<RIBean<?>> beans = getEnvironment().getBeans();
+      Set<? extends RIBean<?>> beans = getEnvironment().getBeans();
       // ensure that all decorators are initialized before initializing 
       // the rest of the beans
       for (DecoratorImpl<?> bean : getEnvironment().getDecorators())
@@ -90,6 +93,11 @@ public class AbstractBeanDeployer
       for (RIBean<?> bean : beans)
       {
          bean.initialize(getEnvironment());
+         if (bean instanceof AbstractProducerBean<?, ?, ?>)
+         {
+            AbstractProducerBean<?, ?, Member> producer = (AbstractProducerBean<?, ?, Member>) bean;
+            createAndFireProcessProducerEvent(producer);
+         }
          manager.addBean(bean);
          log.debug("Bean: " + bean);
       }
@@ -97,6 +105,7 @@ public class AbstractBeanDeployer
       {
          log.debug("Observer : " + observer);
          observer.initialize();
+         createAndFireProcessObserverMethodEvent(observer);
          manager.addObserver(observer);
       }
       
@@ -122,33 +131,33 @@ public class AbstractBeanDeployer
       
    }
    
-   protected void createProducerMethods(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
+   protected <X> void createProducerMethods(AbstractClassBean<X> declaringBean, WBClass<X> annotatedClass)
    {
-      for (WBMethod<?, ?> method : annotatedClass.getDeclaredAnnotatedWBMethods(Produces.class))
+      for (WBMethod<?, X> method : annotatedClass.getDeclaredAnnotatedWBMethods(Produces.class))
       {
          createProducerMethod(declaringBean, method);         
       }
    }
    
-   protected void createDisposalMethods(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
+   protected <X> void createDisposalMethods(AbstractClassBean<X> declaringBean, WBClass<X> annotatedClass)
    {
-      for (WBMethod<?, ?> method : annotatedClass.getWBDeclaredMethodsWithAnnotatedParameters(Disposes.class))
+      for (WBMethod<?, X> method : annotatedClass.getDeclaredWBMethodsWithAnnotatedParameters(Disposes.class))
       {
-         DisposalMethod<?> disposalBean = DisposalMethod.of(manager, method, declaringBean);
+         DisposalMethod<X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean);
          disposalBean.initialize(getEnvironment());
          getEnvironment().addBean(disposalBean);
       }
    }
    
-   protected <T> void createProducerMethod(AbstractClassBean<?> declaringBean, WBMethod<T, ?> annotatedMethod)
+   protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, WBMethod<T, X> annotatedMethod)
    {
-      ProducerMethod<T> bean = ProducerMethod.of(annotatedMethod, declaringBean, manager);
+      ProducerMethod<X, T> bean = ProducerMethod.of(annotatedMethod, declaringBean, manager);
       getEnvironment().addBean(bean);
    }
    
-   protected <T> void createProducerField(AbstractClassBean<?> declaringBean, WBField<T, ?> field)
+   protected <X, T> void createProducerField(AbstractClassBean<X> declaringBean, WBField<T, X> field)
    {
-      ProducerField<T> bean;
+      ProducerField<X, T> bean;
       if (isPersistenceContextProducerField(field))
       {
          bean = PersistenceContextProducerField.of(field, declaringBean, manager);
@@ -164,9 +173,26 @@ public class AbstractBeanDeployer
       getEnvironment().addBean(bean);
    }
    
-   protected void createProducerFields(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
+   private <X, T> void createAndFireProcessProducerEvent(AbstractProducerBean<X, T, Member> producer)
    {
-      for (WBField<?, ?> field : annotatedClass.getDeclaredAnnotatedWBFields(Produces.class))
+      ProcessProducerImpl<X, T> payload = new ProcessProducerImpl<X, T>(producer.getAnnotatedItem(), producer) {};
+      fireEvent(payload, ProcessProducer.class, producer.getAnnotatedItem().getDeclaringType().getBaseType(), producer.getAnnotatedItem().getBaseType());
+      if (!payload.getDefinitionErrors().isEmpty())
+      {
+         // FIXME communicate all the captured definition errors in this exception
+         throw new DefinitionException(payload.getDefinitionErrors().get(0));
+      }
+   }
+   
+   private void fireEvent(Object payload, Type rawType, Type... actualTypeArguments)
+   {
+      Type eventType = new ParameterizedTypeImpl(rawType, actualTypeArguments, null);
+      manager.fireEvent(eventType, payload);
+   }
+   
+   protected <X> void createProducerFields(AbstractClassBean<X> declaringBean, WBClass<X> annotatedClass)
+   {
+      for (WBField<?, X> field : annotatedClass.getDeclaredAnnotatedWBFields(Produces.class))
       {
          createProducerField(declaringBean, field);
       }
@@ -174,7 +200,7 @@ public class AbstractBeanDeployer
    
    protected <X> void createObserverMethods(RIBean<X> declaringBean, WBClass<X> annotatedClass)
    {
-      for (WBMethod<?, X> method : annotatedClass.getWBDeclaredMethodsWithAnnotatedParameters(Observes.class))
+      for (WBMethod<?, X> method : annotatedClass.getDeclaredWBMethodsWithAnnotatedParameters(Observes.class))
       {
          createObserverMethod(declaringBean, method);
       }
@@ -183,14 +209,19 @@ public class AbstractBeanDeployer
    protected <X, T> void createObserverMethod(RIBean<X> declaringBean, WBMethod<T, X> method)
    {
       ObserverMethodImpl<X, T> observer = ObserverFactory.create(method, declaringBean, manager);
-      ProcessObserverMethod<?, ?> event = createProcessObserverMethodEvent(observer, method);
-      manager.fireEvent(event);
       getEnvironment().addObserver(observer);
    }
    
-   private <X, T> ProcessObserverMethod<X, T> createProcessObserverMethodEvent(ObserverMethod<X, T> observer, AnnotatedMethod<X> method)
+   private <X, T> void createAndFireProcessObserverMethodEvent(ObserverMethodImpl<X, T> observer)
    {
-      return new ProcessObserverMethodImpl<X, T>(method, observer, definitionErrors) {};
+      ProcessObserverMethodImpl<X, T> payload = new ProcessObserverMethodImpl<X, T>(observer.getMethod(), observer) {};
+      fireEvent(payload, ProcessObserverMethod.class, observer.getMethod().getDeclaringType().getBaseType(), observer.getObservedType());
+      if (!payload.getDefinitionErrors().isEmpty())
+      {
+         // FIXME communicate all the captured definition errors in this exception
+         throw new DefinitionException(payload.getDefinitionErrors().get(0));
+      }
+      return;
    }
 
    protected <T> void createSimpleBean(WBClass<T> annotatedClass)
@@ -260,7 +291,7 @@ public class AbstractBeanDeployer
       return type.getNoArgsWBConstructor() != null || type.getAnnotatedWBConstructors(Inject.class).size() > 0;
    }
       
-   public BeanDeployerEnvironment getEnvironment()
+   public E getEnvironment()
    {
       return environment;
    }

@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bootstrap;
+package org.jboss.webbeans.bootstrap.events;
 
 import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
+
 
 public class AfterDeploymentValidationImpl extends AbstractContainerEvent implements AfterDeploymentValidation
 {
