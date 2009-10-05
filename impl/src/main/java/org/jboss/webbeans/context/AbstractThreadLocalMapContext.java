@@ -62,4 +62,11 @@ public abstract class AbstractThreadLocalMapContext extends AbstractMapContext
       return true;
    }
    
+   @Override
+   public void cleanup()
+   {
+      super.cleanup();
+      beanStore.remove();
+   }
+   
 }

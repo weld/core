@@ -1429,6 +1429,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public void cleanup()
    {
       services.cleanup();
+      this.currentInjectionPoint.remove();
    }
 
    public InterceptorRegistry<Class<?>, Interceptor> getManagedBeanInterceptorRegistry()

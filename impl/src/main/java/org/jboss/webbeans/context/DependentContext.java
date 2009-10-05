@@ -91,7 +91,4 @@ public class DependentContext extends AbstractContext
       return true;
    }
 
-   @Override
-   public void cleanup() {}
-
 }

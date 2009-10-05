@@ -174,6 +174,7 @@ public abstract class AbstractMapContext extends AbstractContext
    @Override
    public void cleanup()
    {
+      super.cleanup();
       if (getBeanStore() != null)
       {
          getBeanStore().clear();
