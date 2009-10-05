@@ -18,6 +18,8 @@ package org.jboss.webbeans.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.lang.reflect.Member;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +32,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.decorator.Decorates;
+import javax.decorator.Decorator;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
@@ -37,7 +40,10 @@ import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
@@ -53,17 +59,15 @@ import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.injection.spi.EjbInjectionServices;
 import org.jboss.webbeans.injection.spi.JpaInjectionServices;
 import org.jboss.webbeans.injection.spi.ResourceInjectionServices;
-import org.jboss.webbeans.introspector.MethodSignature;
-import org.jboss.webbeans.introspector.WBClass;
-import org.jboss.webbeans.introspector.WBConstructor;
-import org.jboss.webbeans.introspector.WBField;
-import org.jboss.webbeans.introspector.WBMethod;
-import org.jboss.webbeans.introspector.WBParameter;
+import org.jboss.webbeans.introspector.*;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.cache.BindingTypeModel;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
+import org.jboss.webbeans.metadata.cache.InterceptorBindingModel;
 import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
+import org.jboss.interceptor.model.InterceptionType;
+import org.jboss.interceptor.model.InterceptionTypeRegistry;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
@@ -217,6 +221,35 @@ public class Beans
       {
          return null;
       }
+   }
+
+   public static List<WBMethod<?,?>> getInterceptableBusinessMethods(WBClass<?> type)
+   {
+      List<WBMethod<?, ?>> annotatedMethods = new ArrayList<WBMethod<?, ?>>();
+      for (WBMethod<?, ?> annotatedMethod : type.getWBMethods())
+      {
+         int modifiers = ((WBMember) annotatedMethod).getJavaMember().getModifiers();
+         boolean businessMethod = !annotatedMethod.isStatic()
+               && (Modifier.isPublic(modifiers)
+                  || Modifier.isProtected(modifiers))
+               && !annotatedMethod.isAnnotationPresent(Inject.class)
+               && !annotatedMethod.isAnnotationPresent(Produces.class)
+               && annotatedMethod.getAnnotatedWBParameters(Disposes.class).isEmpty()
+               && annotatedMethod.getAnnotatedWBParameters(Observes.class).isEmpty();
+
+         if (businessMethod)
+         {
+            for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes())
+            {
+               businessMethod = !annotatedMethod.isAnnotationPresent(InterceptionTypeRegistry.getAnnotationClass(interceptionType));
+               if (!businessMethod)
+                  break;
+            }
+            if (businessMethod)
+               annotatedMethods.add(annotatedMethod);
+         }
+      }
+      return annotatedMethods;
    }
    
 
@@ -412,6 +445,28 @@ public class Beans
          boolean matchFound = false;
          // TODO Something wrong with annotation proxy hashcode in JDK/AnnotationLiteral hashcode, so always do a full check, don't use contains
          for (Annotation otherBinding : bindings2)
+         {
+            if (bindingType.isEqual(binding, otherBinding))
+            {
+               matchFound = true;
+            }
+         }
+         if (!matchFound)
+         {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   public static boolean containsAllInterceptionBindings(Set<Annotation> expectedBindings, Set<Annotation> existingBindings, BeanManagerImpl manager)
+   {
+      for (Annotation binding : expectedBindings)
+      {
+         InterceptorBindingModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(binding.annotationType());
+         boolean matchFound = false;
+         // TODO Something wrong with annotation proxy hashcode in JDK/AnnotationLiteral hashcode, so always do a full check, don't use contains
+         for (Annotation otherBinding : existingBindings)
          {
             if (bindingType.isEqual(binding, otherBinding))
             {
@@ -654,6 +709,16 @@ public class Beans
       {
          initializer.invoke(instance, manager, creationalContext, CreationException.class);
       }
+   }
+
+   public static <T> boolean isInterceptor(WBClass<T> annotatedItem)
+   {
+      return annotatedItem.isAnnotationPresent(javax.interceptor.Interceptor.class);
+   }
+
+   public static <T> boolean isDecorator(WBClass<T> annotatedItem)
+   {
+      return annotatedItem.isAnnotationPresent(Decorator.class);
    }
    
 }

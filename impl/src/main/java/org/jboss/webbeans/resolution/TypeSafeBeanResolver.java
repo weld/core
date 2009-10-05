@@ -34,7 +34,7 @@ import org.jboss.webbeans.util.collections.ConcurrentCache;
  * @author pmuir
  *
  */
-public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<T>
+public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Resolvable, T>
 {
 
    public static final Set<ResolvableTransformer> TRANSFORMERS;

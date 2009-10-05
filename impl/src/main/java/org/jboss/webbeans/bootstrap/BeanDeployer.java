@@ -109,7 +109,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
          }
          else if (managedBeanOrDecorator && clazz.isAnnotationPresent(Interceptor.class))
          {
-            //createInterceptor(clazz);
+            createInterceptor(clazz);
          }
          else if (managedBeanOrDecorator && !clazz.isAbstract())
          {

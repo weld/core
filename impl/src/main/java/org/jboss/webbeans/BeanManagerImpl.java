@@ -60,6 +60,7 @@ import javax.inject.Qualifier;
 
 import org.jboss.webbeans.bean.DecoratorImpl;
 import org.jboss.webbeans.bean.SessionBean;
+import org.jboss.webbeans.bean.InterceptorImpl;
 import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.CreationalContextImpl;
@@ -77,17 +78,12 @@ import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.metadata.cache.ScopeModel;
-import org.jboss.webbeans.resolution.NameBasedResolver;
-import org.jboss.webbeans.resolution.ResolvableFactory;
-import org.jboss.webbeans.resolution.ResolvableWBClass;
-import org.jboss.webbeans.resolution.TypeSafeBeanResolver;
-import org.jboss.webbeans.resolution.TypeSafeDecoratorResolver;
-import org.jboss.webbeans.resolution.TypeSafeObserverResolver;
-import org.jboss.webbeans.resolution.TypeSafeResolver;
+import org.jboss.webbeans.resolution.*;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.interceptor.registry.InterceptorRegistry;
 
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
@@ -103,11 +99,12 @@ import com.google.common.collect.Multimaps;
  * Interceptors etc. as well as providing resolution
  * 
  * @author Pete Muir
- * 
+ * @author Marius Bogoevici
  */
 public class BeanManagerImpl implements WebBeansManager, Serializable
 {
-   
+
+
    private static class CurrentActivity
    {
 	
@@ -214,8 +211,9 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * archives
     */
    private transient final TypeSafeBeanResolver<Bean<?>> beanResolver;
-   private transient final TypeSafeResolver<DecoratorImpl<?>> decoratorResolver;
-   private transient final TypeSafeResolver<ObserverMethod<?,?>> observerResolver;
+   private transient final TypeSafeResolver<? extends Resolvable, DecoratorImpl<?>> decoratorResolver;
+   private transient final TypeSafeResolver<? extends Resolvable, InterceptorImpl<?>> interceptorResolver;
+   private transient final TypeSafeResolver<? extends Resolvable, ObserverMethod<?,?>> observerResolver;
    private transient final NameBasedResolver nameBasedResolver;
    private transient final ELResolver webbeansELResolver;
    private transient Namespace rootNamespace;
@@ -231,6 +229,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    private transient final List<Bean<?>> beans;
    private transient final List<DecoratorImpl<?>> decorators;
+   private transient final List<InterceptorImpl<?>> interceptors;
    private transient final List<String> namespaces;
    private transient final List<ObserverMethod<?,?>> observers;
    
@@ -256,6 +255,11 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
 
    /**
+    * Interception model
+    */
+   private transient final InterceptorRegistry<Class<?>, Interceptor> managedBeanBoundInterceptorsRegistry = new InterceptorRegistry<Class<?>, Interceptor>();
+
+   /**
     * Create a new, root, manager
     * 
     * @param serviceRegistry
@@ -277,6 +281,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             serviceRegistry, 
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<DecoratorImpl<?>>(),
+            new CopyOnWriteArrayList<InterceptorImpl<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
             new CopyOnWriteArrayList<String>(),
             new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
@@ -288,6 +293,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new ArrayList<Class<?>>(),
             new ArrayList<Class<? extends Annotation>>(),
             new ArrayList<Class<?>>(),
+            new ArrayList<Class<?>>(), 
             id,
             new AtomicInteger());
    }
@@ -304,6 +310,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             services, 
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<DecoratorImpl<?>>(),
+            new CopyOnWriteArrayList<InterceptorImpl<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
             new CopyOnWriteArrayList<String>(),
             rootManager.getEnterpriseBeans(),
@@ -314,6 +321,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             new HashMap<Contextual<?>, Contextual<?>>(), 
             new ArrayList<Class<?>>(),
             new ArrayList<Class<? extends Annotation>>(),
+            new ArrayList<Class<?>>(),
             new ArrayList<Class<?>>(),
             id,
             new AtomicInteger());
@@ -338,7 +346,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return new BeanManagerImpl(
             parentManager.getServices(), 
             beans, 
-            parentManager.getDecorators(), 
+            parentManager.getDecorators(),
+            parentManager.getInterceptors(),
             registeredObservers, 
             namespaces, 
             parentManager.getEnterpriseBeans(), 
@@ -350,6 +359,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             parentManager.getEnabledPolicyClasses(),
             parentManager.getEnabledPolicyStereotypes(),
             parentManager.getEnabledDecoratorClasses(),
+            parentManager.getEnabledInterceptorClasses(),
             new StringBuilder().append(parentManager.getChildIds().incrementAndGet()).toString(),
             parentManager.getChildIds());
    }
@@ -363,7 +373,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private BeanManagerImpl(
          ServiceRegistry serviceRegistry, 
          List<Bean<?>> beans, 
-         List<DecoratorImpl<?>> decorators, 
+         List<DecoratorImpl<?>> decorators,
+         List<InterceptorImpl<?>> interceptors,
          List<ObserverMethod<?,?>> observers, 
          List<String> namespaces,
          Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans, 
@@ -374,13 +385,15 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          Map<Contextual<?>, Contextual<?>> specializedBeans, 
          Collection<Class<?>> enabledPolicyClasses,
          Collection<Class<? extends Annotation>> enabledPolicyStereotypes,
-         List<Class<?>> enabledDecoratorClasses, 
+         List<Class<?>> enabledDecoratorClasses,
+         List<Class<?>> enabledInterceptorClasses,
          String id,
          AtomicInteger childIds)
    {
       this.services = serviceRegistry;
       this.beans = beans;
       this.decorators = decorators;
+      this.interceptors = interceptors;
       this.enterpriseBeans = enterpriseBeans;
       this.passivationCapableBeans = riBeans;
       this.clientProxyProvider = clientProxyProvider;
@@ -391,6 +404,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.enabledPolicyClasses = enabledPolicyClasses;
       this.enabledPolicyStereotypes = enabledPolicyStereotypes;
       setEnabledDecoratorClasses(enabledDecoratorClasses);
+      setEnabledInterceptorClasses(enabledInterceptorClasses);
       this.namespaces = namespaces;
       this.id = id;
       this.childIds = new AtomicInteger();
@@ -403,6 +417,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       // TODO Currently we build the accessible bean list on the fly, we need to set it in stone once bootstrap is finished...
       this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, createDynamicAccessibleIterable(Transform.BEAN));
       this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicAccessibleIterable(Transform.DECORATOR_BEAN));
+      this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicAccessibleIterable(Transform.INTERCEPTOR_BEAN));
       this.observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(Transform.EVENT_OBSERVER));
       this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(Transform.BEAN));
       this.webbeansELResolver = new WebBeansELResolver(this);
@@ -486,6 +501,16 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          }
          
       };
+
+      public static Transform<InterceptorImpl<?>> INTERCEPTOR_BEAN = new Transform<InterceptorImpl<?>>()
+      {
+
+         public Iterable<InterceptorImpl<?>> transform(BeanManagerImpl beanManager)
+         {
+            return beanManager.getInterceptors();
+         }
+
+      };
       
       public static Transform<ObserverMethod<?,?>> EVENT_OBSERVER = new Transform<ObserverMethod<?,?>>()
       {
@@ -519,6 +544,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    
    protected Set<BeanManagerImpl> getAccessibleManagers()
    {
+
       return accessibleManagers;
    }
 
@@ -558,6 +584,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       checkEventObjectType(event);
       return resolveObserverMethods(event.getClass(), bindings);
    }
+
+   public void addInterceptor(InterceptorImpl<?> bean)
+   {
+      interceptors.add(bean);
+      //TODO decide if interceptor is passivationCapable
+      interceptorResolver.clear();
+   }
+
 
    @SuppressWarnings("unchecked")
    private <T> Set<ObserverMethod<?, T>> resolveObserverMethods(Type eventType, Annotation... bindings)
@@ -775,6 +809,11 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    public List<DecoratorImpl<?>> getDecorators()
    {
       return Collections.unmodifiableList(decorators);
+   }
+
+    public List<InterceptorImpl<?>> getInterceptors()
+   {
+      return Collections.unmodifiableList(interceptors);
    }
    
    public Iterable<Bean<?>> getAccessibleBeans()
@@ -1058,7 +1097,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings)
    {
-      throw new UnsupportedOperationException();
+      return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(ResolvableFactory.of(type,interceptorBindings)));
    }
 
    /**
@@ -1281,7 +1320,14 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public Set<Annotation> getInterceptorBindingTypeDefinition(Class<? extends Annotation> bindingType)
    {
-      throw new UnsupportedOperationException("Not yet implemented");
+      if (getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingType).isValid())
+      {
+         return getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingType).getInheritedInterceptionBindingTypes();
+      }
+      else
+      {
+         throw new IllegalArgumentException("Not a interception binding :" + bindingType);
+      }
    }
 
    public Bean<?> getPassivationCapableBean(String id)
@@ -1308,7 +1354,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public boolean isInterceptorBindingType(Class<? extends Annotation> annotationType)
    {
-      throw new UnsupportedOperationException("Not yet implemented");
+      return getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotationType).isValid();
    }
 
    public boolean isNormalScope(Class<? extends Annotation> annotationType)
@@ -1385,4 +1431,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       services.cleanup();
    }
 
+   public InterceptorRegistry<Class<?>, Interceptor> getManagedBeanInterceptorRegistry()
+   {
+      return managedBeanBoundInterceptorsRegistry;
+   }
 }

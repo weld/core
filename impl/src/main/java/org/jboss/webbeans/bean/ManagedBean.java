@@ -16,16 +16,28 @@
  */
 package org.jboss.webbeans.bean;
 
-import java.util.Set;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InterceptionType;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
+import org.jboss.interceptor.model.InterceptionModelBuilder;
+import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
+import org.jboss.interceptor.proxy.InterceptionHandler;
+import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
+import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
+import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
+import org.jboss.webbeans.DeploymentException;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.InjectionContextImpl;
@@ -43,9 +55,9 @@ import org.jboss.webbeans.util.Reflections;
 
 /**
  * Represents a simple bean
- * 
+ *
  * @author Pete Muir
- * 
+ * @author Marius Bogoevici
  * @param <T> The type (class) of the bean
  */
 public class ManagedBean<T> extends AbstractClassBean<T>
@@ -62,11 +74,10 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    private ManagedBean<?> specializedBean;
 
-   
 
    /**
     * Creates a simple, annotation defined Web Bean
-    * 
+    *
     * @param <T> The type
     * @param clazz The class
     * @param manager the current manager
@@ -79,7 +90,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    /**
     * Constructor
-    * 
+    *
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
@@ -93,7 +104,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    /**
     * Creates an instance of the bean
-    * 
+    *
     * @return The instance
     */
    public T create(CreationalContext<T> creationalContext)
@@ -105,14 +116,21 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       }
       T instance = produce(creationalContext);
       inject(instance, creationalContext);
-      postConstruct(instance);
       if (hasDecorators())
       {
          instance = applyDecorators(instance, creationalContext, originalInjectionPoint);
       }
+      if (isInterceptionCandidate() && hasInterceptors())
+      {
+         instance = applyInterceptors(instance, creationalContext);
+         InterceptionUtils.executePostConstruct(instance);
+      } else
+      {
+         postConstruct(instance);
+      }
       return instance;
    }
-   
+
    public T produce(CreationalContext<T> ctx)
    {
       T instance = constructor.newInstance(manager, ctx);
@@ -124,7 +142,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       }
       return instance;
    }
-   
+
    public void inject(final T instance, final CreationalContext<T> ctx)
    {
       new InjectionContextImpl<T>(getManager(), this, instance)
@@ -135,9 +153,9 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             Beans.injectEEFields(instance, getManager(), ejbInjectionPoints, persistenceContextInjectionPoints, persistenceUnitInjectionPoints, resourceInjectionPoints);
             Beans.injectFieldsAndInitializers(instance, ctx, getManager(), getInjectableFields(), getInitializerMethods());
          }
-         
+
       }.run();
-      
+
    }
 
    protected InjectionPoint attachCorrectInjectionPoint()
@@ -148,8 +166,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
          InjectionPoint outerDelegateInjectionPoint = decoratorBean.getDelegateInjectionPoint();
          return getManager().replaceOrPushCurrentInjectionPoint(outerDelegateInjectionPoint);
-      }
-      else
+      } else
       {
          throw new IllegalStateException("Cannot operate on user defined decorator");
       }
@@ -157,14 +174,19 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    /**
     * Destroys an instance of the bean
-    * 
+    *
     * @param instance The instance
     */
    public void destroy(T instance, CreationalContext<T> creationalContext)
    {
       try
       {
-         preDestroy(instance);
+         if (!isInterceptionCandidate() || !hasInterceptors())
+            preDestroy(instance);
+         else
+         {
+            InterceptionUtils.executePredestroy(instance);
+         }
          creationalContext.release();
       }
       catch (Exception e)
@@ -187,6 +209,8 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          initPostConstruct();
          initPreDestroy();
          initEEInjectionPoints();
+         if (isInterceptionCandidate())
+            initInterceptors();
       }
    }
 
@@ -197,6 +221,42 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(this, getAnnotatedItem(), getManager());
       this.resourceInjectionPoints = Beans.getResourceInjectionPoints(this, getAnnotatedItem(), manager);
    }
+
+   private void initInterceptors()
+   {
+      InterceptionModelBuilder<Class<?>, Interceptor> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Interceptor.class);
+
+      List<Annotation> classBindingAnnotations = new ArrayList<Annotation>();
+
+      for (Annotation annotation : getType().getAnnotations())
+      {
+         if (manager.isInterceptorBindingType(annotation.annotationType()))
+         {
+            classBindingAnnotations.add(annotation);
+         }
+      }
+
+      builder.interceptPostConstruct().with(manager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotations.toArray(new Annotation[0])).toArray(new Interceptor<?>[]{}));
+      builder.interceptPreDestroy().with(manager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotations.toArray(new Annotation[0])).toArray(new Interceptor<?>[]{}));
+
+      List<WBMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
+      for (WBMethod<?, ?> method : businessMethods)
+      {
+         List<Annotation> methodBindingAnnotations = new ArrayList<Annotation>(classBindingAnnotations);
+         for (Annotation annotation : method.getAnnotations())
+         {
+            if (manager.isInterceptorBindingType(annotation.annotationType()))
+            {
+               methodBindingAnnotations.add(annotation);
+               methodBindingAnnotations.addAll(manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
+            }
+         }
+         List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
+         builder.interceptAroundInvoke(((AnnotatedMethod)method).getJavaMember()).with(methodBoundInterceptors.toArray(new Interceptor[]{}));
+      }
+      manager.getManagedBeanInterceptorRegistry().registerInterceptionModel(getType(), builder.build());
+   }
+
 
    /**
     * Validates the type
@@ -230,7 +290,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
                DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
                for (WBMethod<?, ?> decoratorMethod : decoratorBean.getAnnotatedItem().getWBMethods())
                {
-                  WBMethod<?, ?> method = getAnnotatedItem().getWBMethod(decoratorMethod.getSignature());  
+                  WBMethod<?, ?> method = getAnnotatedItem().getWBMethod(decoratorMethod.getSignature());
                   if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal())
                   {
                      throw new DefinitionException("Decorated bean method " + method + " (decorated by "+ decoratorMethod + ") cannot be declarted final");
@@ -260,7 +320,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          }
       }
    }
-   
+
    protected void checkConstructor()
    {
       if (!constructor.getAnnotatedWBParameters(Disposes.class).isEmpty())
@@ -294,8 +354,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       if (!(specializedBean instanceof ManagedBean))
       {
          throw new DefinitionException(toString() + " doesn't have a simple bean as a superclass " + specializedBean);
-      }
-      else
+      } else
       {
          this.specializedBean = (ManagedBean<?>) specializedBean;
       }
@@ -314,7 +373,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    /**
     * Returns the constructor
-    * 
+    *
     * @return The constructor
     */
    public WBConstructor<T> getConstructor()
@@ -324,7 +383,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    /**
     * Gets a string representation
-    * 
+    *
     * @return The string representation
     */
    @Override
@@ -332,7 +391,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    {
       return getDescription("simple bean");
    }
-   
+
    protected String getDescription(String beanType)
    {
       StringBuilder buffer = new StringBuilder();
@@ -354,6 +413,37 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    public ManagedBean<?> getSpecializedBean()
    {
       return specializedBean;
+   }
+
+   private boolean isInterceptionCandidate()
+   {
+      return !Beans.isInterceptor(getAnnotatedItem()) && !Beans.isDecorator(getAnnotatedItem());
+   }
+
+   private boolean hasInterceptors()
+   {
+      return manager.getManagedBeanInterceptorRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
+   }
+
+   private T applyInterceptors(T instance, final CreationalContext<T> creationalContext)
+   {
+      try
+      {
+         InterceptionHandlerFactory<Interceptor> factory = new InterceptionHandlerFactory<Interceptor>()
+         {
+            public InterceptionHandler createFor(final Interceptor interceptor)
+            {
+               final Object instance = getManager().getReference(interceptor, creationalContext);
+               return new DirectClassInterceptionHandler<Interceptor>(instance, interceptor.getBeanClass());
+            }
+         };
+         instance = new InterceptorProxyCreatorImpl<Interceptor>(manager.getManagedBeanInterceptorRegistry(), factory).createProxyFromInstance(instance, getType());
+
+      } catch (Exception e)
+      {
+         throw new DeploymentException(e);
+      }
+      return instance;
    }
 
 }

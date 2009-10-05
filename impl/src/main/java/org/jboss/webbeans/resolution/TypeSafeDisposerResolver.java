@@ -28,7 +28,7 @@ import org.jboss.webbeans.util.Reflections;
  * @author pmuir
  *
  */
-public class TypeSafeDisposerResolver extends TypeSafeResolver<DisposalMethod<?, ?>>
+public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, DisposalMethod<?, ?>>
 {
 
    private final BeanManagerImpl manager;

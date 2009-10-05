@@ -38,7 +38,9 @@ public class MetaAnnotationStore implements Service
    private ConcurrentCache<Class<? extends Annotation>, ScopeModel<?>> scopes = new ConcurrentCache<Class<? extends Annotation>, ScopeModel<?>>();
    // The binding type models
    private ConcurrentCache<Class<? extends Annotation>, BindingTypeModel<?>> bindingTypes = new ConcurrentCache<Class<? extends Annotation>, BindingTypeModel<?>>();
-   
+   // the interceptor bindings
+   private ConcurrentCache<Class<? extends Annotation>, InterceptorBindingModel<?>> interceptorBindings = new ConcurrentCache<Class<? extends Annotation>, InterceptorBindingModel<?>>();
+
    private final ClassTransformer classTransformer;
 
    public MetaAnnotationStore(ClassTransformer classTransformer)
@@ -124,6 +126,7 @@ public class MetaAnnotationStore implements Service
       buffer.append("Registered binding type models: " + bindingTypes.size() + "\n");
       buffer.append("Registered scope type models: " + scopes.size() + "\n");
       buffer.append("Registered stereotype models: " + stereotypes.size() + "\n");
+      buffer.append("Registered interceptor binding models: " + interceptorBindings.size() + "\n");
       return buffer.toString();
    }
    
@@ -134,4 +137,16 @@ public class MetaAnnotationStore implements Service
       stereotypes.clear();
    }
 
+   public <T extends Annotation> InterceptorBindingModel getInterceptorBindingModel(final Class<T> interceptorBinding)
+   {
+      return interceptorBindings.putIfAbsent(interceptorBinding, new Callable<InterceptorBindingModel<T>>()
+      {
+
+         public InterceptorBindingModel<T> call() throws Exception
+         {
+            return new InterceptorBindingModel<T>(interceptorBinding, classTransformer);
+         }
+
+      });
+   }
 }

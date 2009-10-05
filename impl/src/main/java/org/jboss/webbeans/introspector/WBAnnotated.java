@@ -27,6 +27,7 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.stereotype.Stereotype;
 import javax.inject.Qualifier;
 import javax.inject.Scope;
+import javax.interceptor.InterceptorBinding;
 
 /**
  * AnnotatedItem provides a uniform access to the annotations on an annotated
@@ -40,7 +41,7 @@ public interface WBAnnotated<T, S> extends Annotated
 
    // The set of meta-annotations to map
    @SuppressWarnings("unchecked")
-   public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Qualifier.class, Stereotype.class, Scope.class, NormalScope.class));
+   public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Qualifier.class, Stereotype.class, Scope.class, NormalScope.class, InterceptorBinding.class));
 
    /**
     * Gets all annotations which are annotated with the given meta annotation

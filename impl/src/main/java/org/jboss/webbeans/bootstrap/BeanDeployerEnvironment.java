@@ -34,6 +34,7 @@ import org.jboss.webbeans.bean.NewBean;
 import org.jboss.webbeans.bean.ProducerField;
 import org.jboss.webbeans.bean.ProducerMethod;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.bean.InterceptorImpl;
 import org.jboss.webbeans.bean.builtin.AbstractBuiltInBean;
 import org.jboss.webbeans.bean.builtin.ExtensionBean;
 import org.jboss.webbeans.ejb.EjbDescriptors;
@@ -53,6 +54,7 @@ public class BeanDeployerEnvironment
    private final List<DisposalMethod<?, ?>> allDisposalBeans;
    private final Set<DisposalMethod<?, ?>> resolvedDisposalBeans;
    private final Set<DecoratorImpl<?>> decorators;
+   private final Set<InterceptorImpl<?>> interceptors;
    private final EjbDescriptors ejbDescriptors;
    private final TypeSafeDisposerResolver disposalMethodResolver;
 
@@ -64,6 +66,7 @@ public class BeanDeployerEnvironment
       this.resolvedDisposalBeans = new HashSet<DisposalMethod<?, ?>>();
       this.beans = new HashSet<RIBean<?>>();
       this.decorators = new HashSet<DecoratorImpl<?>>();
+      this.interceptors = new HashSet<InterceptorImpl<?>>();
       this.observers = new HashSet<ObserverMethodImpl<?, ?>>();
       this.ejbDescriptors = ejbDescriptors;
       this.disposalMethodResolver = new TypeSafeDisposerResolver(manager, allDisposalBeans);
@@ -131,6 +134,11 @@ public class BeanDeployerEnvironment
    {
       decorators.add(bean);
    }
+
+   public void addBean(InterceptorImpl<?> bean)
+   {
+      interceptors.add(bean);
+   }
    
    public void addBean(DisposalMethod<?, ?> bean)
    {
@@ -150,6 +158,11 @@ public class BeanDeployerEnvironment
    public Set<DecoratorImpl<?>> getDecorators()
    {
       return Collections.unmodifiableSet(decorators);
+   }
+
+   public Set<InterceptorImpl<?>> getInterceptors()
+   {
+      return Collections.unmodifiableSet(interceptors);
    }
 
    public Set<ObserverMethodImpl<?, ?>> getObservers()

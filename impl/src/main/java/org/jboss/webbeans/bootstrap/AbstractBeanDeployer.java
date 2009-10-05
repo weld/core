@@ -16,9 +16,9 @@
  */
 package org.jboss.webbeans.bootstrap;
 
+import java.util.Set;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
-import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
@@ -40,6 +40,7 @@ import org.jboss.webbeans.bean.ProducerField;
 import org.jboss.webbeans.bean.ProducerMethod;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SessionBean;
+import org.jboss.webbeans.bean.InterceptorImpl;
 import org.jboss.webbeans.bean.ee.EEResourceProducerField;
 import org.jboss.webbeans.bean.ee.PersistenceContextProducerField;
 import org.jboss.webbeans.bootstrap.events.ProcessObserverMethodImpl;
@@ -89,6 +90,12 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
          bean.initialize(getEnvironment());
          manager.addDecorator(bean);
          log.debug("Bean: " + bean);
+      }
+      for (InterceptorImpl<?> bean: getEnvironment().getInterceptors())
+      {
+         bean.initialize(getEnvironment());
+         manager.addInterceptor(bean);
+         log.debug("Interceptor: " + bean);
       }
       for (RIBean<?> bean : beans)
       {
@@ -235,6 +242,12 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    protected <T> void createDecorator(WBClass<T> annotatedClass)
    {
       DecoratorImpl<T> bean = DecoratorImpl.of(annotatedClass, manager);
+      getEnvironment().addBean(bean);
+   }
+
+   protected <T> void createInterceptor(WBClass<T> annotatedClass)
+   {
+      InterceptorImpl<T> bean = InterceptorImpl.of(annotatedClass, manager);
       getEnvironment().addBean(bean);
    }
    

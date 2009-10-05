@@ -114,7 +114,16 @@
          <artifactId>jsf-api</artifactId>
          <optional>true</optional>
       </dependency>
-      
+
+       <dependency>
+           <groupId>org.jboss.interceptors</groupId>
+           <artifactId>interceptors</artifactId>
+       </dependency>
+
+       <dependency>
+           <groupId>junit</groupId>
+           <artifactId>junit</artifactId>
+       </dependency>
    </dependencies>
 
    <build>

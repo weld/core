@@ -23,11 +23,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collections;
 
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.literal.DefaultLiteral;
 import org.jboss.webbeans.util.Reflections;
+
+import javax.enterprise.inject.spi.InterceptionType;
 
 public class ResolvableFactory
 {
@@ -54,6 +57,11 @@ public class ResolvableFactory
    public static Resolvable of(Set<Type> typeClosure, AbstractClassBean<?> declaringBean, Annotation... bindings)
    {
       return new ResolvableImpl(new HashSet<Annotation>(Arrays.asList(bindings)), typeClosure, declaringBean);
+   }
+
+   public static Resolvable of(InterceptionType interceptionType, Annotation... bindings)
+   {
+      return new InterceptorResolvableImpl(new HashSet<Annotation>(Arrays.asList(bindings)), interceptionType );
    }
 
    private ResolvableFactory() {}
@@ -124,6 +132,22 @@ public class ResolvableFactory
          return "Types: " + getTypeClosure() + "; Bindings: " + getQualifiers();
       }
 
+   }
+
+   private static class InterceptorResolvableImpl extends ResolvableImpl implements InterceptorResolvable
+   {
+      private final InterceptionType interceptionType;
+
+      private InterceptorResolvableImpl(Set<Annotation> bindings, InterceptionType interceptionType)
+      {
+         super(bindings, Collections.singleton((Type)Object.class), null);
+         this.interceptionType = interceptionType;
+      }
+
+      public InterceptionType getInterceptionType()
+      {
+         return interceptionType;
+      }
    }
 
 }

@@ -27,8 +27,9 @@ import org.jboss.webbeans.util.collections.ConcurrentCache;
  * Implementation of type safe bean resolution
  * 
  * @author Pete Muir
+ * @author Marius Bogoevici
  */
-public abstract class TypeSafeResolver<T>
+public abstract class TypeSafeResolver<R extends Resolvable,T>
 {
    private static final long serialVersionUID = 1L;
    
@@ -140,7 +141,7 @@ public abstract class TypeSafeResolver<T>
       Set<T> result = new HashSet<T>();
       for (T bean : iterable)
       {
-         if (matches(resolvable, bean))
+         if (matches((R)resolvable.delegate(), bean))
          {
             result.add(bean);
          }
@@ -148,7 +149,7 @@ public abstract class TypeSafeResolver<T>
       return result;
    }
 
-   protected abstract boolean matches(Resolvable resolvable, T t);
+   protected abstract boolean matches(R resolvable, T t);
 
    /**
     * Gets a string representation

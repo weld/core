@@ -29,7 +29,7 @@ import org.jboss.webbeans.util.Reflections;
  * @author pmuir
  *
  */
-public class TypeSafeObserverResolver extends TypeSafeResolver<ObserverMethod<?,?>>
+public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?,?>>
 {
 
    private final BeanManagerImpl manager;
