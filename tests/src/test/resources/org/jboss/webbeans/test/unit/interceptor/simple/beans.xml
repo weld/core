@@ -1,0 +1,9 @@
+<beans>
+    <interceptors>
+        <class>org.jboss.webbeans.test.unit.interceptor.simple.SimpleInterceptor</class>
+        <class>org.jboss.webbeans.test.unit.interceptor.simple.TwoBindingsInterceptor</class>
+    </interceptors>
+    <decorators>
+        <class>org.jboss.webbeans.test.unit.interceptor.simple.SimpleDecorator</class>
+    </decorators>
+</beans>
