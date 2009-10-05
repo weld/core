@@ -274,6 +274,12 @@
             <artifactId>jboss-ejb3-api</artifactId>
             <version>3.1.0-Alpha1</version>
          </dependency>
+
+         <dependency>
+             <groupId>org.jboss.interceptors</groupId>
+             <artifactId>interceptors</artifactId>
+             <version>1.0.0-SNAPSHOT</version>
+         </dependency>
          
          <dependency>
             <groupId>com.sun.facelets</groupId>
