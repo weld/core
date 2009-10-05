@@ -25,17 +25,18 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javassist.util.proxy.ProxyFactory;
-import javassist.util.proxy.ProxyObject;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InterceptionType;
+import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Scope;
 
+import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.proxy.DecoratorProxyMethodHandler;
@@ -47,9 +48,13 @@ import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Strings;
+
+import javassist.util.proxy.ProxyFactory;
+import javassist.util.proxy.ProxyObject;
 
 /**
  * An abstract bean representation common for class-based beans
@@ -116,6 +121,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
       initDecorators();
       checkType();
       initProxyClassForDecoratedBean();
+      if (isInterceptionCandidate())
+            initInterceptors();
    }
    
    protected void checkType()
@@ -409,6 +416,54 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    {
       return preDestroy;
    }
-   
 
+    protected abstract boolean isInterceptionCandidate();
+
+   /**
+    * Extracts the complete set of interception bindings from a given set of annotations.
+    *
+    * @param manager
+    * @param annotations
+    * @return
+    */
+   protected static Set<Annotation> flattenInterceptorBindings(BeanManagerImpl manager, Set<Annotation> annotations)
+   {
+      Set<Annotation> foundInterceptionBindingTypes = new HashSet<Annotation>();
+      for (Annotation annotation: annotations)
+      {
+         if (manager.isInterceptorBindingType(annotation.annotationType()))
+         {
+            foundInterceptionBindingTypes.add(annotation);
+            foundInterceptionBindingTypes.addAll(manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
+         }
+      }
+      return foundInterceptionBindingTypes;
+   }
+
+   protected void initInterceptors()
+   {
+      if (manager.getBoundInterceptorsRegistry().getInterceptionModel(getType()) == null)
+      {
+         InterceptionModelBuilder<Class<?>, Interceptor> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Interceptor.class);
+
+         Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(manager, getAnnotatedItem().getAnnotations());
+         for (Class<? extends Annotation> annotation : getStereotypes())
+         {
+            classBindingAnnotations.addAll(flattenInterceptorBindings(manager, manager.getStereotypeDefinition(annotation)));
+         }
+
+         builder.interceptPostConstruct().with(manager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotations.toArray(new Annotation[0])).toArray(new Interceptor<?>[]{}));
+         builder.interceptPreDestroy().with(manager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotations.toArray(new Annotation[0])).toArray(new Interceptor<?>[]{}));
+
+         List<WBMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
+         for (WBMethod<?, ?> method : businessMethods)
+         {
+            List<Annotation> methodBindingAnnotations = new ArrayList<Annotation>(classBindingAnnotations);
+            methodBindingAnnotations.addAll(flattenInterceptorBindings(manager, method.getAnnotations()));
+            List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
+            builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodBoundInterceptors.toArray(new Interceptor[]{}));
+         }
+         manager.getBoundInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
+      }
+   }
 }

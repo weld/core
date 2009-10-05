@@ -389,6 +389,11 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       return Collections.emptySet();
    }
+
+   protected boolean isInterceptionCandidate()
+   {
+      return true;
+   }
    
 }
 

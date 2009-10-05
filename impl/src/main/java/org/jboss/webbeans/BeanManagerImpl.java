@@ -264,7 +264,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    /**
     * Interception model
     */
-   private transient final InterceptorRegistry<Class<?>, Interceptor> managedBeanBoundInterceptorsRegistry = new InterceptorRegistry<Class<?>, Interceptor>();
+   private transient final InterceptorRegistry<Class<?>, Interceptor> boundInterceptorsRegistry = new InterceptorRegistry<Class<?>, Interceptor>();
 
    /**
     * Create a new, root, manager
@@ -1413,8 +1413,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.currentInjectionPoint.remove();
    }
 
-   public InterceptorRegistry<Class<?>, Interceptor> getManagedBeanInterceptorRegistry()
+   public InterceptorRegistry<Class<?>, Interceptor> getBoundInterceptorsRegistry()
    {
-      return managedBeanBoundInterceptorsRegistry;
+      return boundInterceptorsRegistry;
    }
 }

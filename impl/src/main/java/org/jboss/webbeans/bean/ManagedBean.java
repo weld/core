@@ -16,21 +16,15 @@
  */
 package org.jboss.webbeans.bean;
 
+import java.util.Set;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
 
-import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
 import org.jboss.interceptor.proxy.InterceptionHandler;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
@@ -210,8 +204,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          initPostConstruct();
          initPreDestroy();
          initEEInjectionPoints();
-         if (isInterceptionCandidate())
-            initInterceptors();
       }
    }
 
@@ -221,30 +213,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(this, getAnnotatedItem(), getManager());
       this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(this, getAnnotatedItem(), getManager());
       this.resourceInjectionPoints = Beans.getResourceInjectionPoints(this, getAnnotatedItem(), manager);
-   }
-
-   private void initInterceptors()
-   {
-      InterceptionModelBuilder<Class<?>, Interceptor> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Interceptor.class);
-
-      Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(manager, annotatedItem.getAnnotations());
-       for (Class<? extends Annotation> annotation: getStereotypes())
-      {
-          classBindingAnnotations.addAll(flattenInterceptorBindings(manager, manager.getStereotypeDefinition(annotation)));
-      }
-
-      builder.interceptPostConstruct().with(manager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotations.toArray(new Annotation[0])).toArray(new Interceptor<?>[]{}));
-      builder.interceptPreDestroy().with(manager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotations.toArray(new Annotation[0])).toArray(new Interceptor<?>[]{}));
-
-      List<WBMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
-      for (WBMethod<?, ?> method : businessMethods)
-      {
-         List<Annotation> methodBindingAnnotations = new ArrayList<Annotation>(classBindingAnnotations);
-         methodBindingAnnotations.addAll(flattenInterceptorBindings(manager, method.getAnnotations()));
-         List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
-         builder.interceptAroundInvoke(((AnnotatedMethod)method).getJavaMember()).with(methodBoundInterceptors.toArray(new Interceptor[]{}));
-      }
-      manager.getManagedBeanInterceptorRegistry().registerInterceptionModel(getType(), builder.build());
    }
 
 
@@ -405,17 +373,17 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       return specializedBean;
    }
 
-   private boolean isInterceptionCandidate()
+   protected boolean isInterceptionCandidate()
    {
       return !Beans.isInterceptor(getAnnotatedItem()) && !Beans.isDecorator(getAnnotatedItem());
    }
 
    private boolean hasInterceptors()
    {
-      return manager.getManagedBeanInterceptorRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
+      return manager.getBoundInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
    }
 
-   private T applyInterceptors(T instance, final CreationalContext<T> creationalContext)
+   protected T applyInterceptors(T instance, final CreationalContext<T> creationalContext)
    {
       try
       {
@@ -427,7 +395,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
                return new DirectClassInterceptionHandler<Interceptor>(instance, interceptor.getBeanClass());
             }
          };
-         instance = new InterceptorProxyCreatorImpl<Interceptor>(manager.getManagedBeanInterceptorRegistry(), factory).createProxyFromInstance(instance, getType());
+         instance = new InterceptorProxyCreatorImpl<Interceptor>(manager.getBoundInterceptorsRegistry(), factory).createProxyFromInstance(instance, getType());
 
       } catch (Exception e)
       {
@@ -436,24 +404,4 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       return instance;
    }
 
-   /**
-    * Extracts the complete set of interception bindings from a given set of annotations.
-    * 
-    * @param manager
-    * @param annotations
-    * @return
-    */
-   protected static Set<Annotation> flattenInterceptorBindings(BeanManagerImpl manager, Set<Annotation> annotations)
-   {
-      Set<Annotation> foundInterceptionBindingTypes = new HashSet<Annotation>();
-      for (Annotation annotation: annotations)
-      {
-         if (manager.isInterceptorBindingType(annotation.annotationType()))
-         {
-            foundInterceptionBindingTypes.add(annotation);
-            foundInterceptionBindingTypes.addAll(manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
-         }
-      }
-      return foundInterceptionBindingTypes;
-   }
 }
