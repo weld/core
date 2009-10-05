@@ -10,7 +10,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observer;
 import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -29,13 +28,6 @@ import org.testng.annotations.Test;
 @Artifact
 public class InstanceCurrentActivityTest extends AbstractWebBeansTest
 {
-
-   static interface TestableObserver<T> extends Observer<T>
-   {
-
-      boolean isObserved();
-
-   }
 
    public static class TameLiteral extends AnnotationLiteral<Tame> implements Tame {}
 

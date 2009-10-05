@@ -27,6 +27,7 @@ import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.builtin.facade.AbstractFacade;
+import org.jboss.webbeans.util.Observers;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -92,6 +93,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
    
    public <U extends T> Event<U> selectEvent(Type subtype, Annotation[] bindings)
    {
+      Observers.checkEventObjectType(subtype);
       return new EventImpl<U>(
             subtype, 
             this.getManager(), 

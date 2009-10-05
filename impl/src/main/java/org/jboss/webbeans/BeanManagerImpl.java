@@ -18,9 +18,7 @@ package org.jboss.webbeans;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -58,9 +56,10 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.inject.Qualifier;
 
+import org.jboss.interceptor.registry.InterceptorRegistry;
 import org.jboss.webbeans.bean.DecoratorImpl;
-import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.bean.InterceptorImpl;
+import org.jboss.webbeans.bean.SessionBean;
 import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.CreationalContextImpl;
@@ -78,12 +77,20 @@ import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
 import org.jboss.webbeans.metadata.cache.ScopeModel;
-import org.jboss.webbeans.resolution.*;
+import org.jboss.webbeans.resolution.NameBasedResolver;
+import org.jboss.webbeans.resolution.Resolvable;
+import org.jboss.webbeans.resolution.ResolvableFactory;
+import org.jboss.webbeans.resolution.ResolvableWBClass;
+import org.jboss.webbeans.resolution.TypeSafeBeanResolver;
+import org.jboss.webbeans.resolution.TypeSafeDecoratorResolver;
+import org.jboss.webbeans.resolution.TypeSafeInterceptorResolver;
+import org.jboss.webbeans.resolution.TypeSafeObserverResolver;
+import org.jboss.webbeans.resolution.TypeSafeResolver;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Beans;
+import org.jboss.webbeans.util.Observers;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.interceptor.registry.InterceptorRegistry;
 
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
@@ -581,7 +588,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    
    public <T> Set<ObserverMethod<?, T>> resolveObserverMethods(T event, Annotation... bindings)
    {
-      checkEventObjectType(event);
+      Observers.checkEventObjectType(event);
       return resolveObserverMethods(event.getClass(), bindings);
    }
 
@@ -629,32 +636,6 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          throw new IllegalArgumentException("Duplicate binding types: " + bindings);
       }
 
-   }
-
-   private void checkEventObjectType(Object event)
-   {
-      Class<?> eventType = event.getClass();
-      Type[] types;
-      Type resolvedType = new Reflections.HierarchyDiscovery(eventType).getResolvedType();
-      if (resolvedType instanceof Class<?>)
-      {
-         types = new Type[0];
-      }
-      else if (resolvedType instanceof ParameterizedType)
-      {
-         types = ((ParameterizedType) resolvedType).getActualTypeArguments();
-      }
-      else
-      {
-         throw new IllegalArgumentException("Event type " + resolvedType + " is not allowed");
-      }
-      for (Type type : types)
-      {
-         if (type instanceof TypeVariable)
-         {
-            throw new IllegalArgumentException("Cannot provide an event type parameterized with a type parameter " + resolvedType);
-         }
-      }
    }
 
    /**
@@ -875,7 +856,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    
    public void fireEvent(Type eventType, Object event, Annotation... qualifiers)
    {
-      checkEventObjectType(event);
+      Observers.checkEventObjectType(event);
       notifyObservers(event, resolveObserverMethods(eventType, qualifiers));
    }
 

@@ -5,7 +5,6 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observer;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.IntegrationTest;
@@ -22,14 +21,6 @@ import org.testng.annotations.Test;
 @IntegrationTest
 public class JndiManagerCurrentActivityTest extends AbstractWebBeansTest
 {
-
-   static interface TestableObserver<T> extends Observer<T>
-   {
-
-      boolean isObserved();
-
-   }
-
 
    private static class DummyContext implements Context
    {

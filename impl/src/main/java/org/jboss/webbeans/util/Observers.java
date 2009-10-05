@@ -18,8 +18,7 @@ package org.jboss.webbeans.util;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-
-import javax.enterprise.event.Observer;
+import java.lang.reflect.TypeVariable;
 
 /**
  * @author pmuir
@@ -27,21 +26,35 @@ import javax.enterprise.event.Observer;
  */
 public class Observers
 {
-
-   public static Type getTypeOfObserver(Observer<?> observer)
+   
+   public static void checkEventObjectType(Type eventType)
    {
-      for (Type type : observer.getClass().getGenericInterfaces())
+      Type[] types;
+      Type resolvedType = new Reflections.HierarchyDiscovery(eventType).getResolvedType();
+      if (resolvedType instanceof Class<?>)
       {
-         if (type instanceof ParameterizedType)
+         types = new Type[0];
+      }
+      else if (resolvedType instanceof ParameterizedType)
+      {
+         types = ((ParameterizedType) resolvedType).getActualTypeArguments();
+      }
+      else
+      {
+         throw new IllegalArgumentException("Event type " + resolvedType + " is not allowed");
+      }
+      for (Type type : types)
+      {
+         if (type instanceof TypeVariable<?>)
          {
-            ParameterizedType ptype = (ParameterizedType) type;
-            if (Observer.class.isAssignableFrom((Class<?>) ptype.getRawType()))
-            {
-               return ptype.getActualTypeArguments()[0];
-            }
+            throw new IllegalArgumentException("Cannot provide an event type parameterized with a type parameter " + resolvedType);
          }
       }
-      throw new RuntimeException("Cannot find observer's event type: " + observer);
    }
    
+   public static void checkEventObjectType(Object event)
+   {
+      checkEventObjectType(event.getClass());
+      
+   }
 }
