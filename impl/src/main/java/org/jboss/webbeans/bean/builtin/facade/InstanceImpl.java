@@ -46,14 +46,14 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    private static final long serialVersionUID = -376721889693284887L;
    private static final Annotation[] EMPTY_BINDINGS = new Annotation[0];
    
-   private final Set<Bean<?>> beans;
+   private transient final Set<Bean<?>> beans;
 
    public static <I> Instance<I> of(Type type, BeanManagerImpl manager, Set<Annotation> annotations)
    {
       return new InstanceImpl<I>(type, manager, annotations);
    }
    
-   private InstanceImpl(Type type, BeanManagerImpl manager, Set<Annotation> bindings)
+   private InstanceImpl(Type type, BeanManagerImpl manager, Set<? extends Annotation> bindings)
    {
       super(type, manager, bindings);
       this.beans = getManager().getBeans(getType(), bindings.toArray(EMPTY_BINDINGS));
@@ -136,6 +136,11 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
             subtype, 
             this.getManager(), 
             new HashSet<Annotation>(Arrays.asList(mergeInBindings(bindings))));
-   } 
+   }
+   
+   protected Object readResolve()
+   {
+      return new InstanceImpl<T>(getType(), getManager(), getBindings());
+   }
 
 }
