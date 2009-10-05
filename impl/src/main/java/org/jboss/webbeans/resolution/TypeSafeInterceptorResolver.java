@@ -17,13 +17,15 @@
 
 package org.jboss.webbeans.resolution;
 
-import org.jboss.webbeans.bean.InterceptorImpl;
-import org.jboss.webbeans.bean.DecoratorImpl;
-import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.Beans;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-import java.util.*;
+import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.bean.InterceptorImpl;
+import org.jboss.webbeans.util.Beans;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
@@ -68,14 +70,16 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
       return sortedBeans;
    }
 
+   @Override
    protected Set<InterceptorImpl<?>> filterResult(Set<InterceptorImpl<?>> matched)
    {
       return matched;
    }
 
+   @Override
    protected Iterable<ResolvableTransformer> getTransformers()
    {
-      return Collections.EMPTY_SET;
+      return Collections.emptySet();
    }
 
    public BeanManagerImpl getManager()
