@@ -59,6 +59,10 @@
          <artifactId>webbeans-spi</artifactId>
       </dependency>
       
+      <dependency>
+         <groupId>org.jboss.interceptors</groupId>
+         <artifactId>interceptors</artifactId>
+      </dependency>
       
       <dependency>
          <groupId>org.jboss.ejb3</groupId>
