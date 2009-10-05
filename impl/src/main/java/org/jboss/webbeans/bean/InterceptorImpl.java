@@ -19,6 +19,7 @@ package org.jboss.webbeans.bean;
 
 import org.jboss.interceptor.model.InterceptorClassMetadata;
 import org.jboss.interceptor.registry.InterceptorClassMetadataRegistry;
+import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.metadata.cache.MetaAnnotationStore;
@@ -43,16 +44,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
    {
       super(type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), manager);
       this.interceptorClassMetadata = InterceptorClassMetadataRegistry.getRegistry().getInterceptorClassMetadata(type.getJavaClass());
-      this.interceptorBindingTypes = new HashSet<Annotation>();
-      for (Annotation annotation: getAnnotatedItem().getAnnotations())
-      {
-         if (manager.isInterceptorBindingType(annotation.annotationType()))
-         {
-            interceptorBindingTypes.add(annotation);
-            interceptorBindingTypes.addAll(getManager().getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
-         }
-      }
-      
+      this.interceptorBindingTypes = flattenInterceptorBindings(manager, getAnnotatedItem().getAnnotations());
    }
 
    public static <T> InterceptorImpl<T> of(WBClass<T> type, BeanManagerImpl manager)
@@ -69,7 +61,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
    {
       try
       {
-         return ctx.proceed();
+         return new DirectClassInterceptionHandler(instance, getType()).invoke(ctx.getTarget(), org.jboss.interceptor.model.InterceptionType.valueOf(type.name()), ctx);
       } catch (Exception e)
       {
          throw new RuntimeException(e);

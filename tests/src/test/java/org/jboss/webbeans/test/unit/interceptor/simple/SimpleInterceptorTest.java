@@ -61,6 +61,22 @@ public class SimpleInterceptorTest extends AbstractWebBeansTest
       assert !SimpleInterceptor.preDestroyCalled;
       assert TwoBindingsInterceptor.aroundInvokeCalled;
       assert SimpleBeanImpl.postConstructCalled;
+   }
+
+   @Test
+   public void testSimpleInterceptorWithStereotype()
+   {
+      Bean bean = getCurrentManager().getBeans(SimpleBeanWithStereotype.class).iterator().next();
+      CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
+      SimpleBeanWithStereotype simpleBean = (SimpleBeanWithStereotype)bean.create(creationalContext);
+      String result = simpleBean.doSomething();
+      assert "Hello!".equals(result);
+      bean.destroy(simpleBean, creationalContext);
+      assert SimpleInterceptor.aroundInvokeCalled;
+      assert SimpleInterceptor.postConstructCalled;
+      assert SimpleInterceptor.preDestroyCalled;
+      assert TwoBindingsInterceptor.aroundInvokeCalled;
+      assert SimpleBeanWithStereotype.postConstructCalled;
 
    }
 }

@@ -28,6 +28,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 
 import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
@@ -226,14 +227,10 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    {
       InterceptionModelBuilder<Class<?>, Interceptor> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Interceptor.class);
 
-      List<Annotation> classBindingAnnotations = new ArrayList<Annotation>();
-
-      for (Annotation annotation : getType().getAnnotations())
+      Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(manager, annotatedItem.getAnnotations());
+       for (Class<? extends Annotation> annotation: getStereotypes())
       {
-         if (manager.isInterceptorBindingType(annotation.annotationType()))
-         {
-            classBindingAnnotations.add(annotation);
-         }
+          classBindingAnnotations.addAll(flattenInterceptorBindings(manager, manager.getStereotypeDefinition(annotation)));
       }
 
       builder.interceptPostConstruct().with(manager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotations.toArray(new Annotation[0])).toArray(new Interceptor<?>[]{}));
@@ -243,14 +240,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       for (WBMethod<?, ?> method : businessMethods)
       {
          List<Annotation> methodBindingAnnotations = new ArrayList<Annotation>(classBindingAnnotations);
-         for (Annotation annotation : method.getAnnotations())
-         {
-            if (manager.isInterceptorBindingType(annotation.annotationType()))
-            {
-               methodBindingAnnotations.add(annotation);
-               methodBindingAnnotations.addAll(manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
-            }
-         }
+         methodBindingAnnotations.addAll(flattenInterceptorBindings(manager, method.getAnnotations()));
          List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
          builder.interceptAroundInvoke(((AnnotatedMethod)method).getJavaMember()).with(methodBoundInterceptors.toArray(new Interceptor[]{}));
       }
@@ -446,4 +436,24 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       return instance;
    }
 
+   /**
+    * Extracts the complete set of interception bindings from a given set of annotations.
+    * 
+    * @param manager
+    * @param annotations
+    * @return
+    */
+   protected static Set<Annotation> flattenInterceptorBindings(BeanManagerImpl manager, Set<Annotation> annotations)
+   {
+      Set<Annotation> foundInterceptionBindingTypes = new HashSet<Annotation>();
+      for (Annotation annotation: annotations)
+      {
+         if (manager.isInterceptorBindingType(annotation.annotationType()))
+         {
+            foundInterceptionBindingTypes.add(annotation);
+            foundInterceptionBindingTypes.addAll(manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
+         }
+      }
+      return foundInterceptionBindingTypes;
+   }
 }
