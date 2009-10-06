@@ -120,6 +120,12 @@ public class WebBeansBootstrap implements Bootstrap
          // Check that the required services are specified
          verifyServices(beanDeploymentArchive.getServices(), environment.getRequiredBeanDeploymentArchiveServices());
          
+         // Check the id is not null
+         if (beanDeploymentArchive.getId() == null)
+         {
+            throw new IllegalArgumentException("BeanDeploymentArchive must not be null " + beanDeploymentArchive);
+         }
+         
          // Create the BeanDeployment and attach
          BeanDeployment parent = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment, extensionBeanDeployerEnvironment, deployment.getServices());
          managerAwareBeanDeploymentArchives.put(beanDeploymentArchive, parent);
