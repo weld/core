@@ -139,6 +139,10 @@ public class Container
    public String addActivity(BeanManagerImpl manager)
    {
       String id = manager.getId();
+      if (manager.getId() == null)
+      {
+         throw new IllegalArgumentException("Bean manager must not be null " + manager.toString());
+      }
       managers.put(id, manager);
       return id;
    }
