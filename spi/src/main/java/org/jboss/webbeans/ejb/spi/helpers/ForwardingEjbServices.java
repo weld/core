@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -19,43 +19,49 @@ package org.jboss.webbeans.ejb.spi.helpers;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
+import org.jboss.webbeans.ejb.spi.InterceptorBindings;
 
 /**
  * An implementation of {@link EjbServices} which forwards all its method calls
- * to another {@link EjbServices}}. Subclasses should override one or more 
+ * to another {@link EjbServices}}. Subclasses should override one or more
  * methods to modify the behavior of the backing {@link EjbServices} as desired
  * per the <a
  * href="http://en.wikipedia.org/wiki/Decorator_pattern">decorator pattern</a>.
- * 
+ *
  * @author Pete Muir
  *
  */
 public abstract class ForwardingEjbServices implements EjbServices
 {
-   
+
    public abstract EjbServices delegate();
-   
+
    public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor)
    {
       return delegate().resolveEjb(ejbDescriptor);
    }
-   
+
+   public void registerInterceptors(EjbDescriptor<?> ejbDescriptor, InterceptorBindings interceptorBindings)
+   {
+      delegate().registerInterceptors(ejbDescriptor, interceptorBindings);
+   }
+
    @Override
    public boolean equals(Object obj)
    {
       return this == obj || delegate().equals(obj);
    }
-   
+
    @Override
    public String toString()
    {
       return delegate().toString();
    }
-   
+
    @Override
    public int hashCode()
    {
       return delegate().hashCode();
    }
-   
+
 }
