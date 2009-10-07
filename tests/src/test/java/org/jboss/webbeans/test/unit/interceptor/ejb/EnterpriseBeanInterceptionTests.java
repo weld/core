@@ -26,7 +26,7 @@ public class EnterpriseBeanInterceptionTests extends AbstractWebBeansTest
    public void testEnterpriseBeanInterceptionMetadataAdded() throws Exception
    {
       SessionBean<Ball> ballSessionBean = (SessionBean<Ball>)getCurrentManager().getBeans(Ball.class).iterator().next();
-      InterceptionModel<Class<?>, Interceptor> interceptionModel = getCurrentManager().getBoundInterceptorsRegistry().getInterceptionModel(ballSessionBean.getType());
+      InterceptionModel<Class<?>, Interceptor<?>> interceptionModel = getCurrentManager().getBoundInterceptorsRegistry().getInterceptionModel(ballSessionBean.getType());
       List<javax.enterprise.inject.spi.Interceptor> interceptors =
             new ArrayList<javax.enterprise.inject.spi.Interceptor>(interceptionModel.getAllInterceptors());
 

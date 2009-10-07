@@ -25,6 +25,7 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
 import javax.enterprise.inject.spi.ProcessProducer;
+import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Inject;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -47,6 +48,7 @@ import org.jboss.webbeans.bootstrap.events.ProcessObserverMethodImpl;
 import org.jboss.webbeans.bootstrap.events.ProcessProducerImpl;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
+import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.event.ObserverFactory;
 import org.jboss.webbeans.event.ObserverMethodImpl;
 import org.jboss.webbeans.introspector.WBClass;
@@ -60,6 +62,7 @@ import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.reflection.ParameterizedTypeImpl;
 import org.jboss.webbeans.ws.WSApiAbstraction;
+import org.jboss.interceptor.model.InterceptionModel;
 
 public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
 {

@@ -40,6 +40,7 @@ import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.webbeans.bean.proxy.Marker;
+import org.jboss.webbeans.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
@@ -53,6 +54,7 @@ import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Proxies;
+import org.jboss.interceptor.model.InterceptionModel;
 
 /**
  * An enterprise bean representation
@@ -115,6 +117,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
          checkConflictingRoles();
          checkObserverMethods();
          checkScopeAllowed();
+         registerInterceptors();
       }
    }
 
@@ -394,6 +397,12 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       return true;
    }
-   
+
+   private void registerInterceptors()
+   {
+      InterceptionModel<Class<?>,javax.enterprise.inject.spi.Interceptor<?>> model = manager.getBoundInterceptorsRegistry().getInterceptionModel(ejbDescriptor.getBeanClass());
+      if (model != null)
+         getManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor(), new InterceptorBindingsAdapter(model));
+   }
 }
 

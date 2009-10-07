@@ -444,7 +444,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    {
       if (manager.getBoundInterceptorsRegistry().getInterceptionModel(getType()) == null)
       {
-         InterceptionModelBuilder<Class<?>, Interceptor> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Interceptor.class);
+         InterceptionModelBuilder<Class<?>, Interceptor<?>> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Interceptor.class);
 
          Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(manager, getAnnotatedItem().getAnnotations());
          for (Class<? extends Annotation> annotation : getStereotypes())

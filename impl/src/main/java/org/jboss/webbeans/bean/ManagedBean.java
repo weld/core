@@ -17,22 +17,28 @@
 package org.jboss.webbeans.bean;
 
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.interceptor.Interceptors;
+import javax.interceptor.ExcludeClassInterceptors;
 
-import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
-import org.jboss.interceptor.proxy.InterceptionHandler;
-import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
 import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
+import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
 import org.jboss.interceptor.util.InterceptionUtils;
+import org.jboss.interceptor.model.InterceptionModelBuilder;
+import org.jboss.interceptor.registry.InterceptorRegistry;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.DefinitionException;
 import org.jboss.webbeans.DeploymentException;
+import org.jboss.webbeans.bean.interceptor.InterceptorInterceptionHandlerFactory;
+import org.jboss.webbeans.bean.interceptor.ClassInterceptionHandlerFactory;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.InjectionContextImpl;
@@ -68,7 +74,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    private Set<WBInjectionPoint<?, ?>> resourceInjectionPoints;
 
    private ManagedBean<?> specializedBean;
-
 
    /**
     * Creates a simple, annotation defined Web Bean
@@ -115,7 +120,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       {
          instance = applyDecorators(instance, creationalContext, originalInjectionPoint);
       }
-      if (isInterceptionCandidate() && hasInterceptors())
+      if (isInterceptionCandidate() && (hasBoundInterceptors() || hasDeclaredInterceptors()))
       {
          instance = applyInterceptors(instance, creationalContext);
          InterceptionUtils.executePostConstruct(instance);
@@ -176,7 +181,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    {
       try
       {
-         if (!isInterceptionCandidate() || !hasInterceptors())
+         if (!isInterceptionCandidate() || !hasBoundInterceptors())
             preDestroy(instance);
          else
          {
@@ -204,6 +209,8 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          initPostConstruct();
          initPreDestroy();
          initEEInjectionPoints();
+         if (isInterceptionCandidate())
+            initDeclaredInterceptors();
       }
    }
 
@@ -378,30 +385,86 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       return !Beans.isInterceptor(getAnnotatedItem()) && !Beans.isDecorator(getAnnotatedItem());
    }
 
-   private boolean hasInterceptors()
+   private boolean hasBoundInterceptors()
    {
-      return manager.getBoundInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
+      if (manager.getBoundInterceptorsRegistry().getInterceptionModel(getType()) != null)
+         return manager.getBoundInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
+      else
+         return false;
+   }
+
+   private boolean hasDeclaredInterceptors()
+   {
+      if (manager.getDeclaredInterceptorsRegistry().getInterceptionModel(getType()) != null)
+         return manager.getDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
+      else
+         return false;
    }
 
    protected T applyInterceptors(T instance, final CreationalContext<T> creationalContext)
    {
       try
       {
-         InterceptionHandlerFactory<Interceptor> factory = new InterceptionHandlerFactory<Interceptor>()
+         List<InterceptorRegistry<Class<?>, ?>> interceptionRegistries = new ArrayList<InterceptorRegistry<Class<?>,?>>();
+         List<InterceptionHandlerFactory<?>> interceptionHandlerFactories = new ArrayList<InterceptionHandlerFactory<?>>();
+         if (hasDeclaredInterceptors())
          {
-            public InterceptionHandler createFor(final Interceptor interceptor)
-            {
-               final Object instance = getManager().getReference(interceptor, creationalContext);
-               return new DirectClassInterceptionHandler<Interceptor>(instance, interceptor.getBeanClass());
-            }
-         };
-         instance = new InterceptorProxyCreatorImpl<Interceptor>(manager.getBoundInterceptorsRegistry(), factory).createProxyFromInstance(instance, getType());
+            interceptionRegistries.add(manager.getDeclaredInterceptorsRegistry());
+            interceptionHandlerFactories.add(new ClassInterceptionHandlerFactory(creationalContext, getManager()));
+         }
+         if (hasBoundInterceptors())
+         {
+            interceptionRegistries.add(manager.getBoundInterceptorsRegistry());
+            interceptionHandlerFactories.add(new InterceptorInterceptionHandlerFactory(creationalContext, manager));
+         }
+         if (interceptionRegistries.size() > 0)
+            instance = new InterceptorProxyCreatorImpl(interceptionRegistries, interceptionHandlerFactories).createProxyFromInstance(instance, getType());
 
       } catch (Exception e)
       {
          throw new DeploymentException(e);
       }
       return instance;
+   }
+
+   protected void initDeclaredInterceptors()
+   {
+      if (manager.getDeclaredInterceptorsRegistry().getInterceptionModel(getType()) == null)
+      {
+         InterceptionModelBuilder<Class<?>, Class<?>> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Class.class);
+
+         Class<?>[] classDeclaredInterceptors = null;
+         if (getAnnotatedItem().isAnnotationPresent(Interceptors.class))
+         {
+            classDeclaredInterceptors = getType().getAnnotation(Interceptors.class).value();
+         }
+
+         if (classDeclaredInterceptors != null)
+         {
+            builder.interceptPostConstruct().with(classDeclaredInterceptors);
+            builder.interceptPreDestroy().with(classDeclaredInterceptors);
+         }
+
+         List<WBMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
+         for (WBMethod<?, ?> method : businessMethods)
+         {
+            boolean excludeClassInterceptors = method.isAnnotationPresent(ExcludeClassInterceptors.class);
+            Class<?>[] methodDeclaredInterceptors = null;
+            if (method.isAnnotationPresent(Interceptors.class))
+            {
+               methodDeclaredInterceptors = method.getAnnotation(Interceptors.class).value();
+            }
+            if (!excludeClassInterceptors && classDeclaredInterceptors != null)
+            {
+               builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(classDeclaredInterceptors);
+            }
+            if (methodDeclaredInterceptors != null)
+            {
+               builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
+            }
+         }
+         manager.getDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
+      }
    }
 
 }
