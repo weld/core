@@ -19,6 +19,7 @@ package org.jboss.webbeans.bean;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
+import java.lang.annotation.Annotation;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
@@ -26,8 +27,6 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.interceptor.Interceptors;
-import javax.interceptor.ExcludeClassInterceptors;
 
 import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
@@ -429,16 +428,16 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    protected void initDeclaredInterceptors()
    {
-      if (manager.getDeclaredInterceptorsRegistry().getInterceptionModel(getType()) == null)
+      if (manager.getDeclaredInterceptorsRegistry().getInterceptionModel(getType()) == null && InterceptionUtils.supportsEjb3InterceptorDeclaration())
       {
          InterceptionModelBuilder<Class<?>, Class<?>> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Class.class);
 
          Class<?>[] classDeclaredInterceptors = null;
-         if (getAnnotatedItem().isAnnotationPresent(Interceptors.class))
+         if (getAnnotatedItem().isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
          {
-            classDeclaredInterceptors = getType().getAnnotation(Interceptors.class).value();
+            Annotation interceptorsAnnotation = getType().getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass());
+            classDeclaredInterceptors = Reflections.extractValues(interceptorsAnnotation);
          }
-
          if (classDeclaredInterceptors != null)
          {
             builder.interceptPostConstruct().with(classDeclaredInterceptors);
@@ -448,11 +447,11 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          List<WBMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
          for (WBMethod<?, ?> method : businessMethods)
          {
-            boolean excludeClassInterceptors = method.isAnnotationPresent(ExcludeClassInterceptors.class);
+            boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
             Class<?>[] methodDeclaredInterceptors = null;
-            if (method.isAnnotationPresent(Interceptors.class))
+            if (method.isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
             {
-               methodDeclaredInterceptors = method.getAnnotation(Interceptors.class).value();
+               methodDeclaredInterceptors = Reflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));
             }
             if (!excludeClassInterceptors && classDeclaredInterceptors != null)
             {

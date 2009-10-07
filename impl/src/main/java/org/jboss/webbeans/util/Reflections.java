@@ -41,6 +41,7 @@ import javax.inject.Qualifier;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.reflection.ParameterizedTypeImpl;
+import org.jboss.webbeans.DeploymentException;
 
 /**
  * Utility class for static reflection-type operations
@@ -55,8 +56,8 @@ public class Reflections
    
    public static final Type[] EMPTY_TYPES = {};
    
-   public static final Annotation[] EMPTY_ANNOTATIONS = {}; 
-   
+   public static final Annotation[] EMPTY_ANNOTATIONS = {};
+
    public static class HierarchyDiscovery
    {
       
@@ -898,5 +899,19 @@ public class Reflections
          return false;
       }
    }
+
+   public static Class<?>[] extractValues(Annotation annotation)
+   {
+      try
+      {
+         Class<?>[] valueClasses = (Class<?>[]) annotation.annotationType().getMethod("value").invoke(annotation);
+         return valueClasses;
+      }
+      catch (Exception e)
+      {
+         throw new DeploymentException("Cannot access values() on annotation", e);
+      }
+   }
+
 
 }

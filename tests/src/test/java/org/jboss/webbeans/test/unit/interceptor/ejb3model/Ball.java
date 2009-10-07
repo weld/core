@@ -39,10 +39,10 @@ public class Ball
    public void pass()
    {
       played = true;
-   };
+   }
 
    public void lob()
    {
       played = true;
-   };
+   }
 }
