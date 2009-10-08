@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.conversation;
+package org.jboss.weld.conversation;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * The conversation context concurrent access wait timeout on a lock
+ * The conversation context inactivity timeout
  *  
  * @author Nicklas Karlsson
  */
@@ -37,6 +37,6 @@ import javax.inject.Qualifier;
 @Retention(RUNTIME)
 @Documented
 @Qualifier
-public @interface ConversationConcurrentAccessTimeout
+public @interface ConversationInactivityTimeout
 {
 }

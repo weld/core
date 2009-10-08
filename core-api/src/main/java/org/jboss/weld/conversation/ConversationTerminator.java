@@ -14,19 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.conversation;
+package org.jboss.weld.conversation;
+
+import java.util.concurrent.Future;
 
 /**
- * Generates conversation ID:s for the conversation manager
+ * A conversation terminator for scheduling inactivity timeout destructions
  * 
  * @author Nicklas Karlsson
- * @see org.jboss.webbeans.conversation.ConversationManager#beginOrRestoreConversation(String)
+ *
  */
-public interface ConversationIdGenerator
+public interface ConversationTerminator
 {
    /**
-    * Gets the next ID for a new conversation
-    * @return The ID
+    * Schedules a termination
+    * 
+    * @param terminationTask The termination task to run
+    * @param timeoutInMilliseconds The timeout in milliseconds
+    * 
+    * @return A handle for manipulating the task later on
     */
-   public abstract String nextId();
+   public abstract Future<?> scheduleForTermination(Runnable terminationTask, long timeoutInMilliseconds);
 }

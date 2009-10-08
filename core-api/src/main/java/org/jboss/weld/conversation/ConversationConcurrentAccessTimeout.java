@@ -14,25 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.conversation;
+package org.jboss.weld.conversation;
 
-import java.util.concurrent.Future;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import javax.inject.Qualifier;
 
 /**
- * A conversation terminator for scheduling inactivity timeout destructions
- * 
+ * The conversation context concurrent access wait timeout on a lock
+ *  
  * @author Nicklas Karlsson
- *
  */
-public interface ConversationTerminator
+@Target( { TYPE, METHOD, PARAMETER, FIELD })
+@Retention(RUNTIME)
+@Documented
+@Qualifier
+public @interface ConversationConcurrentAccessTimeout
 {
-   /**
-    * Schedules a termination
-    * 
-    * @param terminationTask The termination task to run
-    * @param timeoutInMilliseconds The timeout in milliseconds
-    * 
-    * @return A handle for manipulating the task later on
-    */
-   public abstract Future<?> scheduleForTermination(Runnable terminationTask, long timeoutInMilliseconds);
 }

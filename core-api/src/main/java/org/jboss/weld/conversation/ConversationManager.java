@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.conversation;
+package org.jboss.weld.conversation;
 
 import java.util.Set;
 
@@ -24,7 +24,7 @@ import javax.enterprise.context.Conversation;
  * A conversation manager responsible for starting, resuming and ending conversations
  * 
  * @author Nicklas Karlsson
- * @see org.jboss.webbeans.conversation.ConversationManager
+ * @see org.jboss.weld.conversation.ConversationManager
  */
 public interface ConversationManager
 {

@@ -14,29 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.conversation;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import javax.inject.Qualifier;
+package org.jboss.weld.conversation;
 
 /**
- * The conversation context inactivity timeout
- *  
+ * Generates conversation ID:s for the conversation manager
+ * 
  * @author Nicklas Karlsson
+ * @see org.jboss.weld.conversation.ConversationManager#beginOrRestoreConversation(String)
  */
-@Target( { TYPE, METHOD, PARAMETER, FIELD })
-@Retention(RUNTIME)
-@Documented
-@Qualifier
-public @interface ConversationInactivityTimeout
+public interface ConversationIdGenerator
 {
+   /**
+    * Gets the next ID for a new conversation
+    * @return The ID
+    */
+   public abstract String nextId();
 }
