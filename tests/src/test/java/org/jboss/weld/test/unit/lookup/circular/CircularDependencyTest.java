@@ -1,11 +1,11 @@
 package org.jboss.weld.test.unit.lookup.circular;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class CircularDependencyTest extends AbstractWebBeansTest
+public class CircularDependencyTest extends AbstractWeldTest
 {
   
    @Test

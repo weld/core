@@ -7,12 +7,12 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.manager.api.WebBeansManager;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class NonNormalScopeTest extends AbstractWebBeansTest
+public class NonNormalScopeTest extends AbstractWeldTest
 {
 
    private static class DummyContext implements Context
@@ -63,7 +63,7 @@ public class NonNormalScopeTest extends AbstractWebBeansTest
    {
       Context dummyContext = new NonNormalContext();
       getCurrentManager().addContext(dummyContext);
-      WebBeansManager childActivity = getCurrentManager().createActivity();
+      WeldManager childActivity = getCurrentManager().createActivity();
       childActivity.setCurrent(dummyContext.getScope());
    }
 }

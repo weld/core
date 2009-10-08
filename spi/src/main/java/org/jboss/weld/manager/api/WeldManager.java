@@ -34,7 +34,7 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
  * @author Pete Muir
  *
  */
-public interface WebBeansManager extends BeanManager, Serializable
+public interface WeldManager extends BeanManager, Serializable
 {
 
    /**
@@ -46,7 +46,7 @@ public interface WebBeansManager extends BeanManager, Serializable
     * 
     * @return the child activity
     */
-   public WebBeansManager createActivity();
+   public WeldManager createActivity();
 
    /**
     * Associate an activity with the current context for a normal scope
@@ -59,7 +59,7 @@ public interface WebBeansManager extends BeanManager, Serializable
     * @throws IllegalArgumentException
     *            if the given scope is not a normal scope
     */
-   public WebBeansManager setCurrent(Class<? extends Annotation> scopeType);
+   public WeldManager setCurrent(Class<? extends Annotation> scopeType);
    
    /**
     * The injection target for the given EJB, or null if Web Beans was not

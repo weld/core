@@ -7,7 +7,7 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 /**
@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
  *
  */
 @Artifact
-public class EventCurrentActivityTest extends AbstractWebBeansTest
+public class EventCurrentActivityTest extends AbstractWeldTest
 {
 
 
@@ -57,7 +57,7 @@ public class EventCurrentActivityTest extends AbstractWebBeansTest
    {
 //      Context dummyContext = new DummyContext();
 //      getCurrentManager().addContext(dummyContext);
-//      WebBeansManager childActivity = getCurrentManager().createActivity();
+//      WeldManager childActivity = getCurrentManager().createActivity();
 //      TestableObserver<NightTime> observer = new TestableObserver<NightTime>()
 //      {
 //

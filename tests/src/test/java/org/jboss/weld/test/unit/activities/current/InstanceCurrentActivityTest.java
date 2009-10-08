@@ -16,8 +16,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.manager.api.WebBeansManager;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 /**
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  *
  */
 @Artifact
-public class InstanceCurrentActivityTest extends AbstractWebBeansTest
+public class InstanceCurrentActivityTest extends AbstractWeldTest
 {
 
    public static class TameLiteral extends AnnotationLiteral<Tame> implements Tame {}
@@ -158,7 +158,7 @@ public class InstanceCurrentActivityTest extends AbstractWebBeansTest
       Context dummyContext = new DummyContext();
       getCurrentManager().addContext(dummyContext);
       assert getBeans(Cow.class).size() == 1;
-      WebBeansManager childActivity = getCurrentManager().createActivity();
+      WeldManager childActivity = getCurrentManager().createActivity();
       childActivity.addBean(new Daisy(childActivity));
       childActivity.setCurrent(dummyContext.getScope());
       assert createContextualInstance(Field.class).get() != null;

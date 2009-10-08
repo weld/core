@@ -21,7 +21,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.bean.ForwardingBean;
 import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 
@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
  *
  */
 @Artifact
-public class ActivitiesTest extends AbstractWebBeansTest
+public class ActivitiesTest extends AbstractWeldTest
 {
 
    private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>();

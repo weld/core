@@ -7,14 +7,14 @@ import java.util.Date;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 /**
  * @author Dan Allen
  */
 @Artifact(addCurrentPackage = true)
-public class NamedProducerWithBindingTest extends AbstractWebBeansTest
+public class NamedProducerWithBindingTest extends AbstractWeldTest
 {
    @Test
    public void testGetNamedProducerWithBinding()

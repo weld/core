@@ -8,7 +8,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -18,7 +18,7 @@ import org.testng.annotations.Test;
  * @version $Revision: 1.1 $
  */
 @Artifact
-public class ExampleTest extends AbstractWebBeansTest
+public class ExampleTest extends AbstractWeldTest
 {
    @Test
    public void testAnnotatedCallableGetParameters() throws Exception 

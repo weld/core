@@ -26,12 +26,12 @@ package org.jboss.weld.bootstrap.api;
 
 /**
  * Holds a reference to an application singleton. This singleton is used 
- * internally by Web Beans to store various application scoped objects.
+ * internally by Weld to store various application scoped objects.
  * 
- * This allows Web Beans to operate as a shared library. In a shared mode, the 
- * same instance of WebBeans implementation is used by all the applications in 
+ * This allows Weld to operate as a shared library. In a shared mode, the 
+ * same instance of Weld implementation is used by all the applications in 
  * a server environment. In the exclusive  mode, each application loads a 
- * separate copy of WebBeans implementation at the application level. 
+ * separate copy of Weld implementation at the application level. 
  * 
  * Alternative implementations of Singleton can be used as required
  *

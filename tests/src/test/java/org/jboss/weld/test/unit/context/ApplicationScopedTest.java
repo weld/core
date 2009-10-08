@@ -3,11 +3,11 @@ package org.jboss.weld.test.unit.context;
 import java.util.concurrent.CountDownLatch;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class ApplicationScopedTest extends AbstractWebBeansTest
+public class ApplicationScopedTest extends AbstractWeldTest
 {
 
    @Test

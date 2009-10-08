@@ -8,11 +8,11 @@ import javax.inject.Inject;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact 
-public class SimpleEventTest extends AbstractWebBeansTest
+public class SimpleEventTest extends AbstractWeldTest
 {
    private static boolean RECEIVE_1_OBSERVED;
    private static boolean RECEIVE_2_OBSERVED;

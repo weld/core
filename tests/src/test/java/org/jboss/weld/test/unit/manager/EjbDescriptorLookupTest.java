@@ -25,7 +25,7 @@ import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 /**
@@ -34,7 +34,7 @@ import org.testng.annotations.Test;
  */
 @Artifact
 @Packaging(PackagingType.EAR)
-public class EjbDescriptorLookupTest extends AbstractWebBeansTest
+public class EjbDescriptorLookupTest extends AbstractWeldTest
 {
    
    @Test

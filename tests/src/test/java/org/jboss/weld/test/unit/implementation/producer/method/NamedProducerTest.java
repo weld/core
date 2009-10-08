@@ -3,11 +3,11 @@ package org.jboss.weld.test.unit.implementation.producer.method;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class NamedProducerTest extends AbstractWebBeansTest
+public class NamedProducerTest extends AbstractWeldTest
 {
    @Test
    public void testNamedProducer()

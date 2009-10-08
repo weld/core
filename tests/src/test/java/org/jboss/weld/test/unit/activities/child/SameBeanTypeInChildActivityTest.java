@@ -16,8 +16,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.manager.api.WebBeansManager;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 /**
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  *
  */
 @Artifact
-public class SameBeanTypeInChildActivityTest extends AbstractWebBeansTest
+public class SameBeanTypeInChildActivityTest extends AbstractWeldTest
 {
    private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>();
 
@@ -115,8 +115,8 @@ public class SameBeanTypeInChildActivityTest extends AbstractWebBeansTest
    @Test(groups = { "broken" }, expectedExceptions = { InjectionException.class })
    public void testSameBeanTypeInChildAsIndirectParentInjection()
    {
-      WebBeansManager childActivity = getCurrentManager().createActivity();
-      WebBeansManager grandChildActivity = childActivity.createActivity();
+      WeldManager childActivity = getCurrentManager().createActivity();
+      WeldManager grandChildActivity = childActivity.createActivity();
       Bean<?> anotherMyBean = createDummyBean(grandChildActivity);
       grandChildActivity.addBean(anotherMyBean);
    }

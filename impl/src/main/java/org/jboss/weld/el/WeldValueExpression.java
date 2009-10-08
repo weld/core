@@ -19,22 +19,21 @@ package org.jboss.weld.el;
 import static org.jboss.weld.el.ELCreationalContextStack.getCreationalContextStore;
 
 import javax.el.ELContext;
-import javax.el.MethodExpression;
-import javax.el.MethodInfo;
+import javax.el.ValueExpression;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.util.el.ForwardingMethodExpression;
+import org.jboss.weld.util.el.ForwardingValueExpression;
 
 /**
  * @author pmuir
  *
  */
-public class WebBeansMethodExpression extends ForwardingMethodExpression
+public class WeldValueExpression extends ForwardingValueExpression
 {
    
-   private static final long serialVersionUID = 7070020110515571744L;
+   private static final long serialVersionUID = 1122137212009930853L;
 
    private static final Contextual<?> CONTEXTUAL = new Contextual<Object>()
    {
@@ -48,28 +47,28 @@ public class WebBeansMethodExpression extends ForwardingMethodExpression
       
    };
    
-   private final MethodExpression delegate;
+   private final ValueExpression delegate;
    
-   public WebBeansMethodExpression(MethodExpression delegate)
+   public WeldValueExpression(ValueExpression delegate)
    {
       this.delegate = delegate;
    }
 
    @Override
-   protected MethodExpression delegate()
+   protected ValueExpression delegate()
    {
       return delegate;
    }
    
    @Override
-   public Object invoke(ELContext context, Object[] params)
+   public Object getValue(final ELContext context)
    {
       // TODO need to use correct manager for module
       ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
       try
       {
          getCreationalContextStore(context).push(creationalContext);
-         return super.invoke(context, params);
+         return delegate().getValue(context);
       }
       finally
       {
@@ -79,14 +78,32 @@ public class WebBeansMethodExpression extends ForwardingMethodExpression
    }
    
    @Override
-   public MethodInfo getMethodInfo(ELContext context)
+   public void setValue(ELContext context, Object value)
    {
       // TODO need to use correct manager for module
       ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
       try
       {
          getCreationalContextStore(context).push(creationalContext);
-         return super.getMethodInfo(context);
+         delegate().setValue(context, value);
+      }
+      finally
+      {
+         getCreationalContextStore(context).pop();
+         creationalContext.release();
+      }
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public Class getType(ELContext context)
+   {
+   // TODO need to use correct manager for module
+      ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
+      try
+      {
+         getCreationalContextStore(context).push(creationalContext);
+         return delegate().getType(context);
       }
       finally
       {

@@ -4,11 +4,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class ParameterizedProducerTest extends AbstractWebBeansTest
+public class ParameterizedProducerTest extends AbstractWeldTest
 {
 
    @Test

@@ -10,7 +10,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.testng.annotations.Test;
 
 @Artifact
-public class PassivatingContextTest extends org.jboss.weld.test.AbstractWebBeansTest
+public class PassivatingContextTest extends org.jboss.weld.test.AbstractWeldTest
 {
    
    /**

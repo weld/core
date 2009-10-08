@@ -30,7 +30,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
 
-public abstract class AbstractWebBeansTest extends AbstractTest
+public abstract class AbstractWeldTest extends AbstractTest
 {
    
    private ServletContext servletContext;
@@ -41,7 +41,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
    {
       if (!isInContainer())
       {
-         getCurrentConfiguration().getExtraPackages().add(AbstractWebBeansTest.class.getPackage().getName());
+         getCurrentConfiguration().getExtraPackages().add(AbstractWeldTest.class.getPackage().getName());
          getCurrentConfiguration().getExtraPackages().add(EL.class.getPackage().getName());
          //getCurrentConfiguration().getExtraPackages().add(MockServletContext.class.getPackage().getName());
       }

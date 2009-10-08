@@ -12,14 +12,14 @@ import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
 import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 
 import org.testng.annotations.Test;
 
 @Artifact
 @Packaging(PackagingType.EAR)
 @BeansXml("beans.xml")
-public class EnterpriseBeanInterceptionTests extends AbstractWebBeansTest
+public class EnterpriseBeanInterceptionTests extends AbstractWeldTest
 {
 
    @Test(groups = { "interceptors"})

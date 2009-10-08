@@ -5,12 +5,12 @@ import javassist.util.proxy.ProxyObject;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
 @Packaging(PackagingType.EAR)
-public class EnterpriseBeanProxyTest extends AbstractWebBeansTest
+public class EnterpriseBeanProxyTest extends AbstractWeldTest
 {
    
    /**

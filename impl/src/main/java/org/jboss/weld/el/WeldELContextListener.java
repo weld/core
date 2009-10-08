@@ -26,7 +26,7 @@ import javax.el.ELContextListener;
  * @author pmuir
  *
  */
-public class WebBeansELContextListener implements ELContextListener
+public class WeldELContextListener implements ELContextListener
 {
 
    public void contextCreated(ELContextEvent contextEvent)

@@ -6,11 +6,11 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class StereotypesTest extends AbstractWebBeansTest
+public class StereotypesTest extends AbstractWeldTest
 {
 	
    private final ClassTransformer transformer = new ClassTransformer(new TypeStore());

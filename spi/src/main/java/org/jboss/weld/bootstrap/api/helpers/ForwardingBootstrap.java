@@ -21,7 +21,7 @@ import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.manager.api.WebBeansManager;
+import org.jboss.weld.manager.api.WeldManager;
 
 /**
  * Implementation of {@link Bootstrap} which supports the decorator pattern
@@ -33,7 +33,7 @@ public abstract class ForwardingBootstrap implements Bootstrap
    
    protected abstract Bootstrap delegate();
    
-   public WebBeansManager getManager(BeanDeploymentArchive beanDeploymentArchive)
+   public WeldManager getManager(BeanDeploymentArchive beanDeploymentArchive)
    {
       return delegate().getManager(beanDeploymentArchive);
    }

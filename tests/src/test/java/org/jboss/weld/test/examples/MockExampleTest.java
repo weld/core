@@ -2,12 +2,12 @@ package org.jboss.weld.test.examples;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
 @BeansXml("beans.xml")
-public class MockExampleTest extends AbstractWebBeansTest
+public class MockExampleTest extends AbstractWeldTest
 {
    
    @Test

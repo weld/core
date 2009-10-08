@@ -8,8 +8,8 @@ import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.IntegrationTest;
-import org.jboss.weld.manager.api.WebBeansManager;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 /**
@@ -19,7 +19,7 @@ import org.testng.annotations.Test;
  */
 @Artifact
 @IntegrationTest
-public class JndiManagerCurrentActivityTest extends AbstractWebBeansTest
+public class JndiManagerCurrentActivityTest extends AbstractWeldTest
 {
 
    private static class DummyContext implements Context
@@ -60,7 +60,7 @@ public class JndiManagerCurrentActivityTest extends AbstractWebBeansTest
       Context dummyContext = new DummyContext();
       getCurrentManager().addContext(dummyContext);
       assert getBeans(Cow.class).size() == 1;
-      WebBeansManager childActivity = getCurrentManager().createActivity();
+      WeldManager childActivity = getCurrentManager().createActivity();
       childActivity.setCurrent(dummyContext.getScope());
       assert createContextualInstance(Donkey.class).getManager().equals(childActivity);
    }

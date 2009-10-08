@@ -3,14 +3,14 @@ package org.jboss.weld.test.unit.implementation.named;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 /**
  * @author Dan Allen
  */
 @Artifact(addCurrentPackage = true)
-public class NamedBeanWithBindingTest extends AbstractWebBeansTest
+public class NamedBeanWithBindingTest extends AbstractWeldTest
 {
    @Test
    public void testGetNamedBeanWithBinding()

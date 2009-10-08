@@ -4,11 +4,11 @@ import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.CreationException;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class ExceptionHandlingTest extends AbstractWebBeansTest
+public class ExceptionHandlingTest extends AbstractWeldTest
 {
 
    @Test(expectedExceptions=FooException.class)

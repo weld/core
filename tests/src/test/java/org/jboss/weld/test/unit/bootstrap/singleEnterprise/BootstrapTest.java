@@ -10,12 +10,12 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
 @Packaging(PackagingType.EAR)
-public class BootstrapTest extends AbstractWebBeansTest
+public class BootstrapTest extends AbstractWeldTest
 {
    
    @Test(groups="bootstrap")

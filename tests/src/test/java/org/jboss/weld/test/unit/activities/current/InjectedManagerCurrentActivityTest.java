@@ -7,8 +7,8 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.manager.api.WebBeansManager;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 /**
@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
  *
  */
 @Artifact
-public class InjectedManagerCurrentActivityTest extends AbstractWebBeansTest
+public class InjectedManagerCurrentActivityTest extends AbstractWeldTest
 {
 
    private static class DummyContext implements Context
@@ -58,7 +58,7 @@ public class InjectedManagerCurrentActivityTest extends AbstractWebBeansTest
       Context dummyContext = new DummyContext();
       getCurrentManager().addContext(dummyContext);
       assert getBeans(Cow.class).size() == 1;
-      WebBeansManager childActivity = getCurrentManager().createActivity();
+      WeldManager childActivity = getCurrentManager().createActivity();
       childActivity.setCurrent(dummyContext.getScope());
       assert createContextualInstance(Horse.class).getManager().equals(childActivity);
    }

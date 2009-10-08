@@ -7,25 +7,25 @@ import javax.el.ExpressionFactory;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.mock.el.EL;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 /**
- * Test the WebBeansELResolver and that it collaborates with the standard EL resolver chain.
+ * Test the WeldELResolver and that it collaborates with the standard EL resolver chain.
  * 
  * @author Pete Muir
  * @author Dan Allen
  */
 @Artifact
-public class ELResolverTest extends AbstractWebBeansTest
+public class ELResolverTest extends AbstractWeldTest
 {
    
    /**
-    * Test that the WebBeansELResolver only works to resolve the base of an EL
+    * Test that the WeldELResolver only works to resolve the base of an EL
     * expression, in this case a named bean. Once the base is resolved, the
     * remainder of the expression should be delegated to the standard chain of
-    * property resolvers. If the WebBeansELResolver oversteps its bounds by
-    * trying to resolve the property against the Web Beans namespace, the test
+    * property resolvers. If the WeldELResolver oversteps its bounds by
+    * trying to resolve the property against the Weld namespace, the test
     * will fail.
     */
    @Test
@@ -38,11 +38,11 @@ public class ELResolverTest extends AbstractWebBeansTest
    }
 
    /**
-    * Test that the WebBeansELResolver only works to resolve the base of an EL
+    * Test that the WeldELResolver only works to resolve the base of an EL
     * expression, in this case from a producer method. Once the base is
     * resolved, the remainder of the expression should be delegated to the
-    * standard chain of property resolvers. If the WebBeansELResolver oversteps
-    * its bounds by trying to resolve the property against the Web Beans
+    * standard chain of property resolvers. If the WeldELResolver oversteps
+    * its bounds by trying to resolve the property against the Weld
     * namespace, the test will fail.
     */
    @Test

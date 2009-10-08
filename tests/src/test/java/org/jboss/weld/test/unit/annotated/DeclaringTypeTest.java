@@ -21,7 +21,7 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
  * 
  */
 @Artifact
-public class DeclaringTypeTest extends AbstractWebBeansTest
+public class DeclaringTypeTest extends AbstractWeldTest
 {
 
    @Test

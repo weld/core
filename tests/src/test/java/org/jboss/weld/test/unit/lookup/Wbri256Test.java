@@ -1,11 +1,11 @@
 package org.jboss.weld.test.unit.lookup;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class Wbri256Test extends AbstractWebBeansTest
+public class Wbri256Test extends AbstractWeldTest
 {
 
    @Test

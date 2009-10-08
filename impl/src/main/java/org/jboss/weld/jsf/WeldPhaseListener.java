@@ -46,10 +46,10 @@ import org.jboss.weld.servlet.HttpSessionManager;
 
 /**
  * <p>
- * A JSF phase listener that initializes aspects of Web Beans in a more
+ * A JSF phase listener that initializes aspects of Weld in a more
  * fine-grained, integrated manner than what is possible with a servlet filter.
  * This phase listener works in conjunction with other hooks and callbacks
- * registered with the JSF runtime to help manage the Web Beans lifecycle.
+ * registered with the JSF runtime to help manage the Weld lifecycle.
  * </p>
  * 
  * <p>
@@ -64,9 +64,9 @@ import org.jboss.weld.servlet.HttpSessionManager;
  * @author Nicklas Karlsson
  * @author Dan Allen
  */
-public class WebBeansPhaseListener implements PhaseListener
+public class WeldPhaseListener implements PhaseListener
 {
-   private static LogProvider log = Logging.getLogProvider(WebBeansPhaseListener.class);
+   private static LogProvider log = Logging.getLogProvider(WeldPhaseListener.class);
 
    /**
     * Execute before every phase in the JSF life cycle. The order this

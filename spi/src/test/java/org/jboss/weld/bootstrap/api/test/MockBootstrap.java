@@ -9,12 +9,12 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.manager.api.WebBeansManager;
+import org.jboss.weld.manager.api.WeldManager;
 
 public class MockBootstrap implements Bootstrap
 {
    
-   public WebBeansManager getManager(BeanDeploymentArchive beanDeploymentArchive)
+   public WeldManager getManager(BeanDeploymentArchive beanDeploymentArchive)
    {
       return null;
    }

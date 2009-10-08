@@ -33,7 +33,7 @@ import org.jboss.weld.BeanManagerImpl;
  *  
  * @author Pete Muir
  */
-public abstract class AbstractWebBeansELResolver extends ELResolver
+public abstract class AbstractWeldELResolver extends ELResolver
 {
    
    protected abstract BeanManagerImpl getManager(ELContext context);

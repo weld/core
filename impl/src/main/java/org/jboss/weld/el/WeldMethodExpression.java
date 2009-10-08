@@ -19,21 +19,22 @@ package org.jboss.weld.el;
 import static org.jboss.weld.el.ELCreationalContextStack.getCreationalContextStore;
 
 import javax.el.ELContext;
-import javax.el.ValueExpression;
+import javax.el.MethodExpression;
+import javax.el.MethodInfo;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.util.el.ForwardingValueExpression;
+import org.jboss.weld.util.el.ForwardingMethodExpression;
 
 /**
  * @author pmuir
  *
  */
-public class WebBeansValueExpression extends ForwardingValueExpression
+public class WeldMethodExpression extends ForwardingMethodExpression
 {
    
-   private static final long serialVersionUID = 1122137212009930853L;
+   private static final long serialVersionUID = 7070020110515571744L;
 
    private static final Contextual<?> CONTEXTUAL = new Contextual<Object>()
    {
@@ -47,28 +48,28 @@ public class WebBeansValueExpression extends ForwardingValueExpression
       
    };
    
-   private final ValueExpression delegate;
+   private final MethodExpression delegate;
    
-   public WebBeansValueExpression(ValueExpression delegate)
+   public WeldMethodExpression(MethodExpression delegate)
    {
       this.delegate = delegate;
    }
 
    @Override
-   protected ValueExpression delegate()
+   protected MethodExpression delegate()
    {
       return delegate;
    }
    
    @Override
-   public Object getValue(final ELContext context)
+   public Object invoke(ELContext context, Object[] params)
    {
       // TODO need to use correct manager for module
       ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
       try
       {
          getCreationalContextStore(context).push(creationalContext);
-         return delegate().getValue(context);
+         return super.invoke(context, params);
       }
       finally
       {
@@ -78,32 +79,14 @@ public class WebBeansValueExpression extends ForwardingValueExpression
    }
    
    @Override
-   public void setValue(ELContext context, Object value)
+   public MethodInfo getMethodInfo(ELContext context)
    {
       // TODO need to use correct manager for module
       ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
       try
       {
          getCreationalContextStore(context).push(creationalContext);
-         delegate().setValue(context, value);
-      }
-      finally
-      {
-         getCreationalContextStore(context).pop();
-         creationalContext.release();
-      }
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public Class getType(ELContext context)
-   {
-   // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
-      try
-      {
-         getCreationalContextStore(context).push(creationalContext);
-         return delegate().getType(context);
+         return super.getMethodInfo(context);
       }
       finally
       {

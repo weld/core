@@ -1,6 +1,6 @@
 package org.jboss.weld.mock;
 
-import org.jboss.weld.bootstrap.WebBeansBootstrap;
+import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.Lifecycle;
@@ -15,7 +15,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
 {
    private static final ResourceLoader MOCK_RESOURCE_LOADER = new MockResourceLoader();
    
-   private final WebBeansBootstrap bootstrap;
+   private final WeldBootstrap bootstrap;
    private final MockDeployment deployment;
    private final BeanStore applicationBeanStore;
    private final BeanStore sessionBeanStore;
@@ -30,7 +30,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
       {
          throw new IllegalStateException("No WebBeanDiscovery is available");
       }
-      this.bootstrap = new WebBeansBootstrap();
+      this.bootstrap = new WeldBootstrap();
       this.deployment.getServices().add(ResourceLoader.class, MOCK_RESOURCE_LOADER);
       this.deployment.getServices().add(ServletServices.class, new MockServletServices(deployment.getArchive()));
       this.applicationBeanStore = new ConcurrentHashMapBeanStore();
@@ -79,7 +79,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
       return deployment;
    }
    
-   protected WebBeansBootstrap getBootstrap()
+   protected WeldBootstrap getBootstrap()
    {
       return bootstrap;
    }

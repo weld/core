@@ -17,7 +17,7 @@
 package org.jboss.weld.test.unit.lookup.wbri293;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 /**
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  *
  */
 @Artifact
-public class ContextualReferenceTest extends AbstractWebBeansTest
+public class ContextualReferenceTest extends AbstractWeldTest
 {
    @Test(groups = "broken")
    public void testReferencesEqual() {

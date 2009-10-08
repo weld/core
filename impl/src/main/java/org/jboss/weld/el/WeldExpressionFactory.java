@@ -27,12 +27,12 @@ import org.jboss.weld.util.el.ForwardingExpressionFactory;
  * @author pmuir
  *
  */
-public class WebBeansExpressionFactory extends ForwardingExpressionFactory
+public class WeldExpressionFactory extends ForwardingExpressionFactory
 {
 
    private final ExpressionFactory delegate;
    
-   public WebBeansExpressionFactory(ExpressionFactory expressionFactory)
+   public WeldExpressionFactory(ExpressionFactory expressionFactory)
    {
       if (expressionFactory == null)
       {
@@ -51,14 +51,14 @@ public class WebBeansExpressionFactory extends ForwardingExpressionFactory
    @Override
    public ValueExpression createValueExpression(ELContext context, String expression, Class expectedType)
    {
-      return new WebBeansValueExpression(super.createValueExpression(context, expression, expectedType));
+      return new WeldValueExpression(super.createValueExpression(context, expression, expectedType));
    }
    
    @SuppressWarnings("unchecked")
    @Override
    public MethodExpression createMethodExpression(ELContext context, String expression, Class expectedReturnType, Class[] expectedParamTypes)
    {
-      return new WebBeansMethodExpression(super.createMethodExpression(context, expression, expectedReturnType, expectedParamTypes));
+      return new WeldMethodExpression(super.createMethodExpression(context, expression, expectedReturnType, expectedParamTypes));
    }
 
 }

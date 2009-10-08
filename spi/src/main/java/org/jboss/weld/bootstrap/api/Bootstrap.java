@@ -25,10 +25,10 @@ import javax.enterprise.inject.spi.Extension;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.manager.api.WebBeansManager;
+import org.jboss.weld.manager.api.WeldManager;
 
 /**
- * Application container initialization API for Web Beans.
+ * Application container initialization API for Weld.
  * 
  * To initialize the container you must call, in this order:
  * 
@@ -124,14 +124,14 @@ public interface Bootstrap
     * If {@link #startContainer()} has not been called, this method will return
     * null.
     * 
-    * If the beanDeploymentArchive is not known to Web Beans (for example, it
-    * was not passed to the Web Beans as part of the {@link Deployment}, or has
+    * If the beanDeploymentArchive is not known to Weld (for example, it
+    * was not passed to the Weld as part of the {@link Deployment}, or has
     * not yet been requested by
     * {@link Deployment#loadBeanDeploymentArchive(Class)}), null will be
     * returned.
     * 
     * @return the manager or null if not yet available or not found.
     */
-   public WebBeansManager getManager(BeanDeploymentArchive beanDeploymentArchive);
+   public WeldManager getManager(BeanDeploymentArchive beanDeploymentArchive);
 
 }

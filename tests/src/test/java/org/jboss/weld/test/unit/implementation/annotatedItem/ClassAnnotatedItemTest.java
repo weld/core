@@ -12,11 +12,11 @@ import org.jboss.weld.introspector.WBClass;
 import org.jboss.weld.introspector.jlr.WBClassImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class ClassAnnotatedItemTest extends AbstractWebBeansTest
+public class ClassAnnotatedItemTest extends AbstractWeldTest
 {
 	
    private final ClassTransformer transformer = new ClassTransformer(new TypeStore());

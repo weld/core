@@ -13,7 +13,7 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Inject;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 /**
@@ -22,7 +22,7 @@ import org.testng.annotations.Test;
  * @version $Revision: 1.1 $
  */
 @Artifact
-public class AnnotatedTypeDecoratorTest extends AbstractWebBeansTest
+public class AnnotatedTypeDecoratorTest extends AbstractWeldTest
 {
    @Test
    public void testAnnotationDecorator() throws Exception 

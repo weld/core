@@ -20,7 +20,7 @@ package org.jboss.weld.test.unit.interceptor.simple;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
 import org.testng.annotations.Test;
@@ -35,7 +35,7 @@ import java.lang.annotation.Annotation;
  */
 @Artifact
 @BeansXml("beans.xml")
-public class SimpleInterceptorTest extends AbstractWebBeansTest
+public class SimpleInterceptorTest extends AbstractWeldTest
 {
 
    @Test

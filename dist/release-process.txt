@@ -1,4 +1,4 @@
-Release process for Web Beans RI
+Release process for Weld
 --------------------------------
 
 * Run the testsuite and examples
@@ -10,7 +10,7 @@ Release process for Web Beans RI
 * Check the tags
 * Build the maven artifacts using release:perform in all locations
 * Verify the checkout of the tag
-* Release the webbeans-ri-int for jbossas if necessary
+* Release the weld-ri-int for jbossas if necessary
 * Edit the checkout of the tag, and alter the versions in jboss-as/build.properties to released versions
 * Edit the checkout of the tag, and alter the versions of all poms under examples to be the released versions
 * Checkin tag changes

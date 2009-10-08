@@ -24,12 +24,12 @@ import org.jboss.weld.BeanManagerImpl;
  * @author pmuir
  *
  */
-public class WebBeansELResolver extends AbstractWebBeansELResolver
+public class WeldELResolver extends AbstractWeldELResolver
 {
    
    private final BeanManagerImpl beanManager;
 
-   public WebBeansELResolver(BeanManagerImpl beanManager)
+   public WeldELResolver(BeanManagerImpl beanManager)
    {
       this.beanManager = beanManager;
    }

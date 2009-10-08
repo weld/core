@@ -9,11 +9,11 @@ import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.introspector.WBAnnotated;
 import org.jboss.weld.literal.NewLiteral;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class NewSimpleBeanTest extends AbstractWebBeansTest
+public class NewSimpleBeanTest extends AbstractWeldTest
 {
    private ManagedBean<WrappedSimpleBean> wrappedSimpleBean;
    private NewManagedBean<WrappedSimpleBean> newSimpleBean;

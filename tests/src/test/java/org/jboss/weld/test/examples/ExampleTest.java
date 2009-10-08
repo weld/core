@@ -1,11 +1,11 @@
 package org.jboss.weld.test.examples;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class ExampleTest extends AbstractWebBeansTest
+public class ExampleTest extends AbstractWeldTest
 {
    @Test
    public void testGameGenerator() throws Exception 

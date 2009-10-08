@@ -1,6 +1,6 @@
 package org.jboss.weld.test.unit.bootstrap;
 
-import org.jboss.weld.bootstrap.WebBeansBootstrap;
+import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
@@ -12,7 +12,7 @@ public class DiscoverFailsBootstrapTest
    @Test(groups="bootstrap", expectedExceptions=IllegalArgumentException.class)
    public void testDiscoverFails()
    {
-      Bootstrap bootstrap = new WebBeansBootstrap();
+      Bootstrap bootstrap = new WeldBootstrap();
       bootstrap.startContainer(Environments.SE, null, new ConcurrentHashMapBeanStore());
    }
    

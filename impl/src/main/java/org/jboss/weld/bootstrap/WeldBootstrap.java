@@ -77,7 +77,7 @@ import org.jboss.weld.ws.WSApiAbstraction;
  * 
  * @author Pete Muir
  */
-public class WebBeansBootstrap implements Bootstrap
+public class WeldBootstrap implements Bootstrap
 {
    
    /**
@@ -145,7 +145,7 @@ public class WebBeansBootstrap implements Bootstrap
    }
   
    // The log provider
-   private static Log log = Logging.getLog(WebBeansBootstrap.class);
+   private static Log log = Logging.getLog(WeldBootstrap.class);
    
    static
    {
@@ -386,7 +386,7 @@ public class WebBeansBootstrap implements Bootstrap
     */
    public static String getVersion()
    {
-      Package pkg = WebBeansBootstrap.class.getPackage();
+      Package pkg = WeldBootstrap.class.getPackage();
       return pkg != null ? pkg.getImplementationVersion() : null;
    }
    

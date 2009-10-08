@@ -12,12 +12,12 @@ import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.introspector.WBAnnotated;
 import org.jboss.weld.literal.NewLiteral;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
 @Packaging(PackagingType.EAR)
-public class NewEnterpriseBeanTest extends AbstractWebBeansTest
+public class NewEnterpriseBeanTest extends AbstractWeldTest
 {
    
    private static final New NEW_LITERAL = new NewLiteral()

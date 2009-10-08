@@ -3,11 +3,11 @@ package org.jboss.weld.test.unit.context;
 import java.util.List;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class ParameterizedTypeScopedTest extends AbstractWebBeansTest
+public class ParameterizedTypeScopedTest extends AbstractWeldTest
 {
 
    @Test

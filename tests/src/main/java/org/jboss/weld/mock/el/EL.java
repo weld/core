@@ -31,8 +31,8 @@ import javax.el.ResourceBundleELResolver;
 import javax.el.VariableMapper;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.el.WebBeansELContextListener;
-import org.jboss.weld.el.WebBeansExpressionFactory;
+import org.jboss.weld.el.WeldELContextListener;
+import org.jboss.weld.el.WeldExpressionFactory;
 
 import com.sun.el.ExpressionFactoryImpl;
 import com.sun.el.lang.FunctionMapperImpl;
@@ -47,9 +47,9 @@ import com.sun.el.lang.VariableMapperImpl;
 public class EL
 {
    
-   public static final ExpressionFactory EXPRESSION_FACTORY = new WebBeansExpressionFactory(new ExpressionFactoryImpl());
+   public static final ExpressionFactory EXPRESSION_FACTORY = new WeldExpressionFactory(new ExpressionFactoryImpl());
    
-   public static final ELContextListener[] EL_CONTEXT_LISTENERS = { new WebBeansELContextListener() };
+   public static final ELContextListener[] EL_CONTEXT_LISTENERS = { new WeldELContextListener() };
    
    private static ELResolver createELResolver(BeanManagerImpl beanManagerImpl)
    {

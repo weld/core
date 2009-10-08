@@ -67,14 +67,14 @@ import org.jboss.weld.context.WBCreationalContext;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
-import org.jboss.weld.el.WebBeansELResolver;
-import org.jboss.weld.el.WebBeansExpressionFactory;
+import org.jboss.weld.el.WeldELResolver;
+import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.introspector.WBAnnotated;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.log.Log;
 import org.jboss.weld.log.Logging;
-import org.jboss.weld.manager.api.WebBeansManager;
+import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
 import org.jboss.weld.resolution.NameBasedResolver;
@@ -100,7 +100,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
 /**
- * Implementation of the Web Beans Manager.
+ * Implementation of the Weld Manager.
  * 
  * Essentially a singleton for registering Beans, Contexts, Observers,
  * Interceptors etc. as well as providing resolution
@@ -108,7 +108,7 @@ import com.google.common.collect.Multimaps;
  * @author Pete Muir
  * @author Marius Bogoevici
  */
-public class BeanManagerImpl implements WebBeansManager, Serializable
+public class BeanManagerImpl implements WeldManager, Serializable
 {
 
 
@@ -222,7 +222,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private transient final TypeSafeResolver<? extends Resolvable, InterceptorImpl<?>> interceptorResolver;
    private transient final TypeSafeResolver<? extends Resolvable, ObserverMethod<?,?>> observerResolver;
    private transient final NameBasedResolver nameBasedResolver;
-   private transient final ELResolver webbeansELResolver;
+   private transient final ELResolver weldELResolver;
    private transient Namespace rootNamespace;
 
    /*
@@ -428,7 +428,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicAccessibleIterable(Transform.INTERCEPTOR_BEAN));
       this.observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(Transform.EVENT_OBSERVER));
       this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(Transform.BEAN));
-      this.webbeansELResolver = new WebBeansELResolver(this);
+      this.weldELResolver = new WeldELResolver(this);
       this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
       
       this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
@@ -1363,12 +1363,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
 
    public ELResolver getELResolver()
    {
-      return webbeansELResolver;
+      return weldELResolver;
    }
    
    public ExpressionFactory wrapExpressionFactory(ExpressionFactory expressionFactory)
    {
-      return new WebBeansExpressionFactory(expressionFactory);
+      return new WeldExpressionFactory(expressionFactory);
    }
    
    public <T> WBCreationalContext<T> createCreationalContext(Contextual<T> contextual)

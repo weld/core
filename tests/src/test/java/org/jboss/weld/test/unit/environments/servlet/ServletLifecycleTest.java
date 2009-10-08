@@ -1,7 +1,7 @@
 package org.jboss.weld.test.unit.environments.servlet;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -20,7 +20,7 @@ import org.testng.annotations.Test;
  * @author Dan Allen
  */
 @Artifact
-public class ServletLifecycleTest extends AbstractWebBeansTest
+public class ServletLifecycleTest extends AbstractWeldTest
 {
 
    @Test(groups = "broken")

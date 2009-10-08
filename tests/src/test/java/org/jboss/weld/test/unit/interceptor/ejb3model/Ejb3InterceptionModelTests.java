@@ -21,7 +21,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeTest;
@@ -32,7 +32,7 @@ import org.testng.annotations.BeforeMethod;
  * @author Marius Bogoevici
  */
 @Artifact
-public class Ejb3InterceptionModelTests extends AbstractWebBeansTest
+public class Ejb3InterceptionModelTests extends AbstractWeldTest
 {
    @BeforeMethod
    public void reset()

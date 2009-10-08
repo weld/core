@@ -15,12 +15,12 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.test.AbstractWebBeansTest;
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
 @Packaging
-public class ManagerTest extends AbstractWebBeansTest
+public class ManagerTest extends AbstractWeldTest
 {
    
    private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>();

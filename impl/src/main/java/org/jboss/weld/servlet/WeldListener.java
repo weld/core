@@ -31,7 +31,7 @@ import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 
 /**
- * The Web Beans listener
+ * The Weld listener
  * 
  * Listens for context/session creation/destruction.
  * 
@@ -40,7 +40,7 @@ import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
  * @author Nicklas Karlsson
  *
  */
-public class WebBeansListener extends AbstractServletListener
+public class WeldListener extends AbstractServletListener
 {
    
    private ServletLifecycle lifecycle;
