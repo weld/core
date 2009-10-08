@@ -1,4 +1,4 @@
-package org.jboss.webbeans.tck;
+package org.jboss.weld.tck;
 
 import javax.el.ELContext;
 

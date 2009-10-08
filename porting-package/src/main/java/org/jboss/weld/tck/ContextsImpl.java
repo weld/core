@@ -1,4 +1,4 @@
-package org.jboss.webbeans.tck;
+package org.jboss.weld.tck;
 
 import org.jboss.jsr299.tck.spi.Contexts;
 import org.jboss.webbeans.Container;

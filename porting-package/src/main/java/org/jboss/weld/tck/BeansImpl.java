@@ -1,4 +1,4 @@
-package org.jboss.webbeans.tck;
+package org.jboss.weld.tck;
 
 import org.jboss.jsr299.tck.spi.Beans;
 import org.jboss.webbeans.util.Proxies;
