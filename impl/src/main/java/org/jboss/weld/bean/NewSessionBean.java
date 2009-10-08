@@ -40,7 +40,7 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
     * Creates an instance of a NewEnterpriseBean from an annotated class
     * 
     * @param clazz The annotated class
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     * @return a new NewEnterpriseBean instance
     */
    public static <T> NewSessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
@@ -55,7 +55,7 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
     * Protected constructor
     * 
     * @param type An annotated class
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     */
    protected NewSessionBean(final WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager)
    {

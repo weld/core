@@ -28,7 +28,7 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 
 /**
- * Functionality provided by the Web Beans Manager over and above the JSR-299
+ * Functionality provided by the Weld Manager over and above the JSR-299
  * Manager.
  * 
  * @author Pete Muir
@@ -62,7 +62,7 @@ public interface WeldManager extends BeanManager, Serializable
    public WeldManager setCurrent(Class<? extends Annotation> scopeType);
    
    /**
-    * The injection target for the given EJB, or null if Web Beans was not
+    * The injection target for the given EJB, or null if Weld was not
     * given this descriptor in the deployment.
     * 
     * @param <T>
@@ -72,7 +72,7 @@ public interface WeldManager extends BeanManager, Serializable
    public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor);
    
    /**
-    * Get the Bean object for the given EJB, or null if Web Beans was not given
+    * Get the Bean object for the given EJB, or null if Weld was not given
     * this descriptor in the deployment.
     * 
     * @param <T>

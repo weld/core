@@ -53,7 +53,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     * Constructor
     * 
     * @param eventType The event type
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     * @param bindings The binding types
     */
    private EventImpl(Type eventType, BeanManagerImpl manager, Set<Annotation> bindings)

@@ -31,7 +31,7 @@ import org.jboss.weld.log.LogProvider;
 import org.jboss.weld.log.Logging;
 
 /**
- * An implementation of the Web Beans lifecycle that supports restoring
+ * An implementation of the Weld lifecycle that supports restoring
  * and destroying all the built in contexts
  * 
  * @author Pete Muir

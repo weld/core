@@ -123,7 +123,7 @@ public abstract class AbstractWBMember<T, X, S extends Member> extends AbstractW
    /**
     * Gets the current value of the member
     * 
-    * @param beanManager The Web Beans manager
+    * @param beanManager The Bean manager
     * @return The current value
     *
    public T getValue(BeanManager beanManager)

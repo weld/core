@@ -17,7 +17,7 @@
 package org.jboss.weld.bootstrap.api;
 
 /**
- * Marks a Service which is used by Web Beans to interact with it's environment
+ * Marks a Service which is used by Weld to interact with it's environment
  * @author Pete Muir
  *
  */
@@ -25,7 +25,7 @@ public interface Service
 {
    
    /**
-    * Called by Web beans when it is shutting down, allowing the service to
+    * Called by Weld when it is shutting down, allowing the service to
     * perform any cleanup needed.
     */
    public void cleanup();

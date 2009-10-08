@@ -91,7 +91,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     * Constructor
     *
     * @param type The type of the bean
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     */
    protected ManagedBean(WBClass<T> type, String idSuffix, BeanManagerImpl manager)
    {

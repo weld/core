@@ -39,7 +39,7 @@ public class NameBasedResolver
    // The beans to search
    private final Iterable<? extends Bean<?>> allBeans;
    
-   // The Web Beans manager
+   // The Bean manager
    private final BeanManagerImpl manager;
 
    /**

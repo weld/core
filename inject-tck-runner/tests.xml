@@ -1,8 +1,8 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Web Beans AtInject TCK" verbose="2" >
+<suite name="Weld AtInject TCK" verbose="2" >
 
-   <test name="Web Beans RI" junit="true">
+   <test name="Weld" junit="true">
       <classes>
          <class name="org.jboss.weld.atinject.tck.AtInjectTCK"></class>
       </classes>

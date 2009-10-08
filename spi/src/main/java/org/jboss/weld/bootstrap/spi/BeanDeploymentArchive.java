@@ -53,7 +53,7 @@ public interface BeanDeploymentArchive
     * deployment archive and adjacent to it in the deployment archive graph.
     * 
     * Cycles in the accessible BeanDeploymentArchive graph are allowed. If a 
-    * cycle is detected by Web Beans, it will be automatically removed by Web
+    * cycle is detected by Weld, it will be automatically removed by Web
     * Beans. This means any implementor of this interface don't need to worry
     * about circularities.
     * 

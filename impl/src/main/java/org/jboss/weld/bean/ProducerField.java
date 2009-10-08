@@ -59,7 +59,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     * 
     * @param method The producer field abstraction
     * @param declaringBean The declaring bean
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     */
    protected ProducerField(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {

@@ -92,7 +92,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
     * Constructor
     * 
     * @param type The type of the bean
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     */
    protected SessionBean(WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager)
    {
@@ -284,7 +284,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       if (ejbDescriptor.isMessageDriven())
       {
-         throw new DefinitionException("Message Driven Beans can't be Web Beans");
+         throw new DefinitionException("Message Driven Beans can't be Managed Beans");
       }
    }
 

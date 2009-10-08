@@ -38,7 +38,7 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
     * Creates an instance of a NewSimpleBean from an annotated class
     * 
     * @param clazz The annotated class
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     * @return a new NewSimpleBean instance
     */
    public static <T> NewManagedBean<T> of(WBClass<T> clazz, BeanManagerImpl manager)
@@ -52,7 +52,7 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
     * Protected constructor
     * 
     * @param type An annotated class
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     */
    protected NewManagedBean(final WBClass<T> type, String idSuffix, BeanManagerImpl manager)
    {

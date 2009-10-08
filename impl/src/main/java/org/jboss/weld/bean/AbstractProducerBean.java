@@ -63,7 +63,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    /**
     * Constructor
     * @param declaringBean The declaring bean
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     */
    public AbstractProducerBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {

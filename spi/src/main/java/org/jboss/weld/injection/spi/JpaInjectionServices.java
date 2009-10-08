@@ -23,7 +23,7 @@ import javax.persistence.EntityManagerFactory;
 import org.jboss.weld.bootstrap.api.Service;
 
 /**
- * A container should implement this interface to allow the Web Beans RI to
+ * A container should implement this interface to allow the Weld RI to
  * resolve JPA persistence units and discover entities
  * 
  * {@link JpaInjectionServices} is a per-module service.

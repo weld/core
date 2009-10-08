@@ -58,7 +58,7 @@ public interface WBMethod<T, X> extends WBCallable<T, X, Method>, AnnotatedMetho
     * class. Useful with proxies
     * 
     * @param instance The instance to invoke
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     * @return A reference to the instance
     */
    public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;

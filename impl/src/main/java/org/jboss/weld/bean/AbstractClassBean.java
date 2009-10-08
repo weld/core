@@ -88,7 +88,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
     * Constructor
     * 
     * @param type The type
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     */
    protected AbstractClassBean(WBClass<T> type, String idSuffix, BeanManagerImpl manager)
    {

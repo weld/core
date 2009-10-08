@@ -19,7 +19,7 @@ package org.jboss.weld.bootstrap.api;
 import java.util.Set;
 
 /**
- * Represents an environment. Specifies the services Web Beans requires
+ * Represents an environment. Specifies the services Weld requires
  * 
  * @author Pete Muir
  *

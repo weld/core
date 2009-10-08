@@ -149,10 +149,10 @@ public class WeldBootstrap implements Bootstrap
    
    static
    {
-	   log.info("Web Beans " + getVersion());
+	   log.info("Weld " + getVersion());
    }
 
-   // The Web Beans manager
+   // The Bean manager
    private BeanManagerImpl deploymentManager;
    private Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
    private Environment environment;
@@ -285,7 +285,7 @@ public class WeldBootstrap implements Bootstrap
             entry.getValue().deployBeans(environment);
          }
          fireAfterBeanDiscoveryEvent();
-         log.debug("Web Beans initialized. Validating beans.");
+         log.debug("Weld initialized. Validating beans.");
       }
       return this;
    }

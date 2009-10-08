@@ -42,13 +42,13 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
  * <h3>Deployment structure representation</h3>
  * 
  * <p>
- * Web Beans will request the bean archive deployment structure during the bean
+ * Weld will request the bean archive deployment structure during the bean
  * discovery initialization step. After this step, CDI allows users to define
  * bean's programmatically, possibly with bean classes from a deployment archive
- * which is currently not a bean deployment archive. Web Beans will request the
+ * which is currently not a bean deployment archive. Weld will request the
  * {@link BeanDeploymentArchive} for each programmatically using
  * {@link #loadBeanDeploymentArchive(Class)}. If any unknown
- * {@link BeanDeploymentArchive}s are loaded, before Web Beans proceeds to
+ * {@link BeanDeploymentArchive}s are loaded, before Weld proceeds to
  * validating the deployment, the bean archive deployment structure will
  * re-requested.
  * </p>
@@ -121,7 +121,7 @@ public interface Deployment
     * all Java EE modules such as WARs, EJB jars and RARs.
     * 
     * Cycles in the accessible BeanDeploymentArchive graph are allowed. If a 
-    * cycle is detected by Web Beans, it will be automatically removed by Web
+    * cycle is detected by Weld, it will be automatically removed by Web
     * Beans. This means any implementor of this interface don't need to worry
     * about circularities.
     * 

@@ -208,7 +208,7 @@ public class Beans
       if (preDestroyMethods.size() > 1)
       {
          // TODO actually this is wrong, in EJB you can have @PreDestroy methods
-         // on the superclass, though the Web Beans spec is silent on the issue
+         // on the superclass, though the CDI spec is silent on the issue
          throw new DefinitionException("Cannot have more than one pre destroy method annotated with @PreDestroy for " + type);
       }
       else if (preDestroyMethods.size() == 1)

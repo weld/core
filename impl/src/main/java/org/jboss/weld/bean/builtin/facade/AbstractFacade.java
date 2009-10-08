@@ -42,7 +42,7 @@ public abstract class AbstractFacade<T, X> implements Serializable
    
    // The binding types the helper operates on
    private final Set<? extends Annotation> bindings;
-   // The Web Beans manager
+   // The Bean manager
    private final BeanManagerImpl manager;
    // The type of the operation
    private final Type type;
@@ -50,7 +50,7 @@ public abstract class AbstractFacade<T, X> implements Serializable
    /**
     * 
     * @param type The event type
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     * @param bindings The binding types
     */
    protected AbstractFacade(Type type, BeanManagerImpl manager, Set<? extends Annotation> bindings)

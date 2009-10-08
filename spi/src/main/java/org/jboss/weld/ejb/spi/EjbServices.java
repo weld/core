@@ -21,7 +21,7 @@ import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 
 /**
- * A container should implement this interface to allow Web Beans to
+ * A container should implement this interface to allow Weld to
  * resolve EJB and discover EJBs
  *
  * {@link EjbServices} is a per-deployment service.

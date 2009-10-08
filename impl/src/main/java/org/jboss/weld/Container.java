@@ -27,7 +27,7 @@ import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 
 /**
- * A Web Beans application container
+ * A Weld application container
  * 
  * @author pmuir
  *

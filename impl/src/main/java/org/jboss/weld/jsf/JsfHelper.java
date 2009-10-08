@@ -112,7 +112,7 @@ public class JsfHelper
       }
       else
       {
-         throw new IllegalStateException("Web Beans doesn not support using JSF in an non-servlet environment");
+         throw new IllegalStateException("Weld doesn not support using JSF in an non-servlet environment");
       }
    }
 

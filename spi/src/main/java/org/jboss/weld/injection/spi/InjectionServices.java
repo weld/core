@@ -19,7 +19,7 @@ package org.jboss.weld.injection.spi;
 import org.jboss.weld.bootstrap.api.Service;
 
 /**
- * Provides callbacks to the container when Web Beans performs injection on an
+ * Provides callbacks to the container when Weld performs injection on an
  * InjectionTarget, managed bean or session bean
  * 
  * This service may be used to provide EE-style injection.

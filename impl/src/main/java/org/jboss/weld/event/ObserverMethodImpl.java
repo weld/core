@@ -73,7 +73,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
     * 
     * @param observer The observer
     * @param declaringBean The observer bean
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     */
    protected ObserverMethodImpl(final WBMethod<T, X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
    {

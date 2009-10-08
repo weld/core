@@ -23,7 +23,7 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 
 /**
  * Allows the container to identify BDA in use for a request. This method will
- * be called, in the same thread as the request, every time Web Beans needs to
+ * be called, in the same thread as the request, every time Weld needs to
  * identify a request.
  * 
  * {@link ServletServices} is a per-deployment service.

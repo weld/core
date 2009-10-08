@@ -38,7 +38,7 @@ public class ObserverFactory
     * 
     * @param method The observer method abstraction
     * @param declaringBean The declaring bean
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     * @return An observer implementation built from the method abstraction
     */
    public static <X, T> ObserverMethodImpl<X, T> create(WBMethod<T, X> method, RIBean<X> declaringBean, BeanManagerImpl manager)

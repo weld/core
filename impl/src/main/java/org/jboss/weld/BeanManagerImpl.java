@@ -100,7 +100,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
 /**
- * Implementation of the Weld Manager.
+ * Implementation of the Bean Manager.
  * 
  * Essentially a singleton for registering Beans, Contexts, Observers,
  * Interceptors etc. as well as providing resolution
@@ -1017,7 +1017,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       Bean<T> bean = (Bean<T>) resolve(getBeans(element, bindings));
       if (bean == null)
       {
-         throw new UnsatisfiedResolutionException(element + "Unable to resolve any Web Beans");
+         throw new UnsatisfiedResolutionException(element + "Unable to resolve any Managed Beans");
       }
       
       boolean normalScoped = getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();

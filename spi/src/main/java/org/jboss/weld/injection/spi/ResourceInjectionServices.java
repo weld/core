@@ -21,7 +21,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.weld.bootstrap.api.Service;
 
 /**
- * A container should implement this interface to allow the Web Beans RI to
+ * A container should implement this interface to allow the Weld to
  * resolve Resources
  * 
  * {@link ResourceInjectionServices} is per-module service.

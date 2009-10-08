@@ -35,7 +35,7 @@ import org.jboss.weld.log.LogProvider;
 import org.jboss.weld.log.Logging;
 
 /**
- * Implementation of the Web Beans lifecycle that can react to servlet events
+ * Implementation of the Weld lifecycle that can react to servlet events
  * and drives the Session, Conversation and Request (for Servlet requests)
  * lifecycle
  * 

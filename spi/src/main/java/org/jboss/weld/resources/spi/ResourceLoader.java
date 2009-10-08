@@ -23,7 +23,7 @@ import java.util.Collection;
 import org.jboss.weld.bootstrap.api.Service;
 
 /**
- * Resource loading/class creation services for Web Beans. By default an
+ * Resource loading/class creation services for Weld. By default an
  * implementation which uses the Thread Context ClassLoader if available, 
  * otherwise the classloading of the implementation is used.
  * 

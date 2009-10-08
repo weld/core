@@ -13,7 +13,7 @@
 		<delete dir="target" failonerror="false" />
 	</target>
 
-	<target name="update" depends="install-weld.deployer, install-javassist-update" description="Update JBoss 5.x or 6.x for Web Beans" />
+	<target name="update" depends="install-weld.deployer, install-javassist-update" description="Update JBoss 5.x or 6.x for Weld" />
 
 	<target name="install-weld.deployer">
 		<echo message="Installing Weld ${weld.version} to ${jboss.home}" />

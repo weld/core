@@ -154,10 +154,12 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
     * annotated parameters.
     * 
     * @param parameters The list of annotated parameter to look up
-    * @param manager The Web Beans manager
+    * @param manager The Bean manager
     * @return The object array of looked up values
     */
-   protected Object[] getParameterValues(List<ParameterInjectionPoint<?, ?>> parameters, Object specialVal, Class<? extends Annotation> specialParam, BeanManagerImpl manager, CreationalContext<?> creationalContext)
+   protected Object[] getParameterValues(List<ParameterInjectionPoint<?, ?>> parameters, 
+         Object specialVal, Class<? extends Annotation> specialParam, 
+         BeanManagerImpl manager, CreationalContext<?> creationalContext)
    {
       Object[] parameterValues = new Object[parameters.size()];
       Iterator<ParameterInjectionPoint<?, ?>> iterator = parameters.iterator();

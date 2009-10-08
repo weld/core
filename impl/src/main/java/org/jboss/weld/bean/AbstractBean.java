@@ -83,7 +83,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    private Set<WBInjectionPoint<?, ?>> delegateInjectionPoints;
    // If the type a primitive?
    private boolean primitive;
-   // The Web Beans manager
+   // The Bean manager
    protected BeanManagerImpl manager;
 
    private boolean _serializable;
@@ -100,7 +100,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    /**
     * Constructor
     * 
-    * @param manager The Weld manager
+    * @param manager The Bean manager
     */
    public AbstractBean(String idSuffix, BeanManagerImpl manager)
    {

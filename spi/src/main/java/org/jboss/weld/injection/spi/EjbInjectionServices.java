@@ -22,7 +22,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.weld.bootstrap.api.Service;
 
 /**
- * A container should implement this interface to allow Web Beans to
+ * A container should implement this interface to allow Weld to
  * resolve EJB.
  * 
  * {@link EjbInjectionServices} is a per-module service.

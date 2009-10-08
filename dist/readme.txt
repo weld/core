@@ -1,4 +1,4 @@
-Web Beans
+Weld
 ------------
 
 Java Contexts and Dependency Injection (JSR-299) is a new Java standard for 

@@ -42,7 +42,7 @@ public enum Environments implements Environment
    /**
     * Java EE5 or Java EE6
     * 
-    * In this environment, Web Beans requires that {@link JpaInjectionServices},
+    * In this environment, Weld requires that {@link JpaInjectionServices},
     * {@link ResourceInjectionServices} and {@link EjbInjectionServices} are
     * present, and so will perform EE-style field injection on managed beans
     * itself
@@ -62,7 +62,7 @@ public enum Environments implements Environment
    /**
     * Java EE5 or Java EE6
     * 
-    * In this environment, Web Beans requires that {@link InjectionServices} are
+    * In this environment, Weld requires that {@link InjectionServices} are
     * present, and expects the container to use this callback to perform EE-style
     * injection
     * 

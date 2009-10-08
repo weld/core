@@ -54,7 +54,7 @@
     </category>
     -->
 
-    <!-- ############### Web Beans logging ################### -->
+    <!-- ############### Weld logging ################### -->
 
     <category name="org.jboss.weld">
         <priority value="WARN"/>
