@@ -1,4 +1,4 @@
-package org.jboss.webbeans.atinject.tck;
+package org.jboss.weld.atinject.tck;
 
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;

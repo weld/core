@@ -1,4 +1,4 @@
-package org.jboss.webbeans.atinject.tck;
+package org.jboss.weld.atinject.tck;
 import java.util.Arrays;
 import java.util.List;
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.atinject.tck;
+package org.jboss.weld.atinject.tck;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -33,7 +33,7 @@ import javax.inject.Qualifier;
 @Retention(RUNTIME)
 @Target( { TYPE, METHOD, FIELD, PARAMETER })
 @Documented
-public @interface Plain
+public @interface Spare
 {
 
 }

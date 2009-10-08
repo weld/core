@@ -1,4 +1,4 @@
-package org.jboss.webbeans.atinject.tck;
+package org.jboss.weld.atinject.tck;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -21,11 +21,11 @@ import javax.inject.Inject;
 
 import org.atinject.tck.auto.Convertible;
 import org.atinject.tck.auto.Tire;
-import org.jboss.webbeans.atinject.tck.util.ForwardingAnnotatedConstructor;
-import org.jboss.webbeans.atinject.tck.util.ForwardingAnnotatedField;
-import org.jboss.webbeans.atinject.tck.util.ForwardingAnnotatedMethod;
-import org.jboss.webbeans.atinject.tck.util.ForwardingAnnotatedParameter;
-import org.jboss.webbeans.atinject.tck.util.ForwardingAnnotatedType;
+import org.jboss.weld.atinject.tck.util.ForwardingAnnotatedConstructor;
+import org.jboss.weld.atinject.tck.util.ForwardingAnnotatedField;
+import org.jboss.weld.atinject.tck.util.ForwardingAnnotatedMethod;
+import org.jboss.weld.atinject.tck.util.ForwardingAnnotatedParameter;
+import org.jboss.weld.atinject.tck.util.ForwardingAnnotatedType;
 
 public class BeanDisambiguator implements Extension
 {

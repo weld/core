@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.atinject.tck;
+package org.jboss.weld.atinject.tck;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -29,11 +29,19 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
+/**
+ * A built-in binding type that is implicitly applied to all beans which do not
+ * have the {@link New} built-in binding type.
+ * 
+ * @author Gavin King
+ * @author David Allen
+ */
+
 @Qualifier
 @Retention(RUNTIME)
 @Target( { TYPE, METHOD, FIELD, PARAMETER })
 @Documented
-public @interface Spare
+public @interface Any
 {
 
 }

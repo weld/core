@@ -1,4 +1,4 @@
-package org.jboss.webbeans.atinject.tck.util;
+package org.jboss.weld.atinject.tck.util;
 
 import java.util.Set;
 

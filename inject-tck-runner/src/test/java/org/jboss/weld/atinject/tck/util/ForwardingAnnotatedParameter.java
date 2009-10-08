@@ -1,4 +1,4 @@
-package org.jboss.webbeans.atinject.tck.util;
+package org.jboss.weld.atinject.tck.util;
 
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;

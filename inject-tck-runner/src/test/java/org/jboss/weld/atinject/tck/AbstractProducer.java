@@ -1,4 +1,4 @@
-package org.jboss.webbeans.atinject.tck;
+package org.jboss.weld.atinject.tck;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanManager;
