@@ -31,7 +31,7 @@ import org.jboss.testharness.api.DeploymentExceptionTransformer;
  * 
  * @author Pete Muir
  */
-public class WebBeansProfileServiceDeploymentExceptionTransformer implements DeploymentExceptionTransformer
+public class WeldProfileServiceDeploymentExceptionTransformer implements DeploymentExceptionTransformer
 {
 
    public DeploymentException transform(DeploymentException exception)
@@ -42,7 +42,7 @@ public class WebBeansProfileServiceDeploymentExceptionTransformer implements Dep
          IncompleteDeploymentException incompleteDeploymentException = (IncompleteDeploymentException) failure;
          for (Entry<String, Throwable> entry : incompleteDeploymentException.getIncompleteDeployments().getContextsInError().entrySet())
          {
-            if (entry.getKey().endsWith(exception.getName() + "/_WebBeansBootstrapBean"))
+            if (entry.getKey().endsWith(exception.getName() + "/_WeldBootstrapBean"))
             {
                return new DeploymentException(exception, entry.getValue());
             }
