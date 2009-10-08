@@ -38,7 +38,7 @@
          <modules>
             <module>version-matrix</module>
             <module>parent</module>
-            <module>api</module>
+            <module>cdi-api</module>
             <module>spi</module>
             <module>core-api</module>
          </modules>
@@ -51,7 +51,7 @@
          <modules>
             <module>version-matrix</module>
             <module>parent</module>
-            <module>api</module>
+            <module>cdi-api</module>
             <module>spi</module>
             <module>core-api</module>
             <module>logging</module>

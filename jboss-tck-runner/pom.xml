@@ -12,10 +12,9 @@
    <description>Aggregates dependencies and run's the JSR-299 TCK on JBoss AS</description>
    
    <dependencies>
-
       <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>jsr299-api</artifactId>
+         <groupId>javax.enterprise</groupId>
+         <artifactId>cdi-api</artifactId>
       </dependency>
       
       <dependency>

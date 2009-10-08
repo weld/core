@@ -7,11 +7,11 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>org.jboss.weld</groupId>
-	<artifactId>jsr299-api</artifactId>
+	<groupId>javax.enterprise</groupId>
+	<artifactId>cdi-api</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>JSR-299 API</name>
+	<name>CDI API</name>
 	<url>http://www.seamframework.org/Weld</url>
 
 	<dependencies>
