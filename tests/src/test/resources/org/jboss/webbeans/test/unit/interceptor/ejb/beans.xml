@@ -1,6 +1,0 @@
-<beans>
-  <interceptors>
-    <class>org.jboss.webbeans.test.unit.interceptor.ejb.Goalkeeper</class>
-    <class>org.jboss.webbeans.test.unit.interceptor.ejb.Defender</class>
-  </interceptors>
-</beans>
