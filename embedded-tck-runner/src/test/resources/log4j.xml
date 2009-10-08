@@ -56,11 +56,11 @@
 
     <!-- ############### Web Beans logging ################### -->
 
-    <category name="org.jboss.webbeans">
+    <category name="org.jboss.weld">
         <priority value="WARN"/>
     </category>
     
-    <category name="org.jboss.webbeans.tck">
+    <category name="org.jboss.weld.tck">
         <priority value="INFO"/>
     </category>
     

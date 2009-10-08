@@ -28,7 +28,7 @@ public class MockSecurityServices extends MockService implements SecurityService
 {
 
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.security.spi.SecurityServices#getPrincipal()
+    * @see org.jboss.weld.security.spi.SecurityServices#getPrincipal()
     */
    public Principal getPrincipal()
    {

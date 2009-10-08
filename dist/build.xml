@@ -1,42 +1,42 @@
 <?xml version="1.0"?>
 <project name="DistributionBuilder" default="dist" basedir="." xmlns:artifact="urn:maven-artifact-ant">
 
-	<property name="wbri.dir" location="${ant.file.DistributionBuilder}/../../" />
+	<property name="weld.dir" location="${ant.file.DistributionBuilder}/../../" />
 	
-   <path id="maven-ant-tasks.classpath" path="${wbri.dir}/lib/maven-ant-tasks.jar" />
+   <path id="maven-ant-tasks.classpath" path="${weld.dir}/lib/maven-ant-tasks.jar" />
    <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpathref="maven-ant-tasks.classpath" />
 	
 	<property file="versions.properties" />
    
-   <property name="maven.dir" location="${wbri.dir}/lib/maven" />
+   <property name="maven.dir" location="${weld.dir}/lib/maven" />
 	
-	<property name="dist.dir" value="${wbri.dir}/dist/webbeans-${webbeans.version}" />
-	<property name="dist.wb.lib.dir" value="${dist.dir}/lib/webbeans" />
+	<property name="dist.dir" value="${weld.dir}/dist/weld-${weld.version}" />
+	<property name="dist.wb.lib.dir" value="${dist.dir}/lib/weld" />
 	<property name="dist.doc.dir" value="${dist.dir}/doc" />
 	<property name="dist.apidocs.dir" value="${dist.dir}/doc/apidocs" />
 	
 	<target name="dist" description="Build the distribution">
 		
-		<fail unless="webbeans.version" message="You must specify the webbeans.version as a property" />
+		<fail unless="weld.version" message="You must specify the weld.version as a property" />
 		<fail unless="jsr299.version" message="You must specify the jsr299.version as a property" />
-		<fail unless="webbeans.servlet.version" message="You must specify the webbeans.servlet.version as a property" />
-		<fail unless="webbeans.se.version" message="You must specify the webbeans.se.version as a property" />
-		<fail unless="webbeans.wicket.version" message="You must specify the webbeans.wicket.version as a property" />
-		<fail unless="webbeans.logger.version" message="You must specify the webbeans.logger.version as a property" />
+		<fail unless="weld.servlet.version" message="You must specify the weld.servlet.version as a property" />
+		<fail unless="weld.se.version" message="You must specify the weld.se.version as a property" />
+		<fail unless="weld.wicket.version" message="You must specify the weld.wicket.version as a property" />
+		<fail unless="weld.logger.version" message="You must specify the weld.logger.version as a property" />
 		<fail unless="refdoc.dir" message="You must specify the reference docs directory with -Drefdoc.dir=~/workspace/wb/reference" />
 		<fail unless="examples.dir" message="You must specify the examples directory with -Dexamples.dir=~/workspace/wb/examples" />
 		
-		<maven target="clean" basedir="${wbri.dir}" />
+		<maven target="clean" basedir="${weld.dir}" />
 		<maven target="clean" basedir="${refdoc.dir}" />
 		<maven target="clean" basedir="${examples.dir}" />
-		<delete dir="${wbri.dir}/jboss-as/target" />
-		<delete dir="${wbri.dir}/impl/test-output" />
-		<delete dir="${wbri.dir}/impl/ObjectStore" />
+		<delete dir="${weld.dir}/jboss-as/target" />
+		<delete dir="${weld.dir}/impl/test-output" />
+		<delete dir="${weld.dir}/impl/ObjectStore" />
 		<delete dir="${dist.dir}" failonerror="false"/>
 		<mkdir dir="${dist.dir}"/>
 
 		<copy todir="${dist.dir}">
-         <fileset dir="${wbri.dir}">
+         <fileset dir="${weld.dir}">
          	<include name="jboss-as/**"/>
          	<include name="lib/**"/>
          	<include name="readme.txt"/>
@@ -67,27 +67,27 @@
 		</copy>
 		<maven target="clean" basedir="${refdoc.dir}" />
 		
-		<artifact:dependencies filesetId="webbeans.fileset" versionsId="webbeans.versions" sourcesfilesetid="webbeans.sources.fileset" javadocfilesetid="webbeans.javadocs.fileset">
-			<dependency groupId="org.jboss.webbeans" artifactId="jsr299-api" version="${jsr299.version}"/>
-		   <dependency groupId="org.jboss.webbeans" artifactId="webbeans-core" version="${webbeans.version}"/>
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-spi" version="${webbeans.version}"/>
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-logger" version="${webbeans.logger.version}"/>
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-wicket" version="${webbeans.wicket.version}"/>
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-se" version="${webbeans.se.version}"/>
-			<dependency groupId="org.jboss.webbeans.servlet" artifactId="webbeans-servlet" version="${webbeans.servlet.version}"/>
-			<dependency groupId="org.jboss.webbeans.servlet" artifactId="webbeans-servlet-int" version="${webbeans.servlet.version}"/>
-			<dependency groupId="org.jboss.webbeans.servlet" artifactId="webbeans-tomcat-support" version="${webbeans.servlet.version}"/>
+		<artifact:dependencies filesetId="weld.fileset" versionsId="weld.versions" sourcesfilesetid="weld.sources.fileset" javadocfilesetid="weld.javadocs.fileset">
+			<dependency groupId="org.jboss.weld" artifactId="jsr299-api" version="${jsr299.version}"/>
+		   <dependency groupId="org.jboss.weld" artifactId="weld-core" version="${weld.version}"/>
+			<dependency groupId="org.jboss.weld" artifactId="weld-spi" version="${weld.version}"/>
+			<dependency groupId="org.jboss.weld" artifactId="weld-logger" version="${weld.logger.version}"/>
+			<dependency groupId="org.jboss.weld" artifactId="weld-wicket" version="${weld.wicket.version}"/>
+			<dependency groupId="org.jboss.weld" artifactId="weld-se" version="${weld.se.version}"/>
+			<dependency groupId="org.jboss.weld.servlet" artifactId="weld-servlet" version="${weld.servlet.version}"/>
+			<dependency groupId="org.jboss.weld.servlet" artifactId="weld-servlet-int" version="${weld.servlet.version}"/>
+			<dependency groupId="org.jboss.weld.servlet" artifactId="weld-tomcat-support" version="${weld.servlet.version}"/>
 		   <remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
 		</artifact:dependencies>
 		
 		<delete dir="target" failonerror="false"/>
 		<mkdir dir="target" />
 	   <copy todir="target">
-         <fileset refid="webbeans.fileset"/>
-	   	<fileset refid="webbeans.sources.fileset"/>
-         <fileset refid="webbeans.javadocs.fileset"/>
+         <fileset refid="weld.fileset"/>
+	   	<fileset refid="weld.sources.fileset"/>
+         <fileset refid="weld.javadocs.fileset"/>
 	   	<chainedmapper>
-            <mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${webbeans.versions}" to="flatten" />
+            <mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${weld.versions}" to="flatten" />
             <flattenmapper />
          </chainedmapper>
       </copy>
@@ -96,7 +96,7 @@
 		<unzip dest="${dist.apidocs.dir}">
 		   <fileset dir="target">
 		      <include name="jsr299-api-javadoc.jar"/>
-		   	<include name="webbeans-api-javadoc.jar"/>
+		   	<include name="weld-api-javadoc.jar"/>
 		   </fileset>
 		</unzip>
 		
@@ -104,25 +104,25 @@
 		
 	   <copy todir="${dist.wb.lib.dir}">
          <fileset dir="target">
-            <include name="webbeans-*.jar" />
+            <include name="weld-*.jar" />
          	<include name="jsr299-api*.jar" />
          </fileset>
       </copy>
 		<delete dir="target" failonerror="false"/>
 		
-		<zip destfile="webbeans-${webbeans.version}.zip">
-         <fileset dir="${wbri.dir}/dist">
-         	<include name="webbeans-${webbeans.version}/**" />
+		<zip destfile="weld-${weld.version}.zip">
+         <fileset dir="${weld.dir}/dist">
+         	<include name="weld-${weld.version}/**" />
          </fileset>
       </zip>
 	</target>
 	
 	<target name="deploy-dist" depends="dist">
-		<maven target="deploy:deploy-file" basedir="${wbri.dir}">
+		<maven target="deploy:deploy-file" basedir="${weld.dir}">
 			<arg line="-DpomFile=${basedir}/pom.xml" />
 			<arg line="-Dpackaging=zip" />
-			<arg line="-Dversion=${webbeans.version}" />
-			<arg line="-Dfile=${basedir}/webbeans-${webbeans.version}.zip" />
+			<arg line="-Dversion=${weld.version}" />
+			<arg line="-Dfile=${basedir}/weld-${weld.version}.zip" />
 			<arg line="-Durl=dav:https://snapshots.jboss.org/maven2" />
 			<arg line="-DrepositoryId=snapshots.jboss.org" />
 			<arg line="-DuniqueVersion=false" />

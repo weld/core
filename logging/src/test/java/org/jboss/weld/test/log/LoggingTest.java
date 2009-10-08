@@ -30,7 +30,7 @@ public class LoggingTest
       
       log.info(TEST_MSG);
       assert TestAppender.getLastEvent() != null : "There was no last event in Log4j";
-      assert TestAppender.getLastEvent().getLoggerName().equals("org.jboss.webbeans.test.log.LoggingTest");
+      assert TestAppender.getLastEvent().getLoggerName().equals("org.jboss.weld.test.log.LoggingTest");
       assert TestAppender.getLastEvent().getRenderedMessage().equals(TEST_MSG) : "Last event has incorrect message";
    }
 

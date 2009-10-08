@@ -38,8 +38,8 @@ import org.jboss.weld.log.Logging;
  * @author Nicklas Karlsson
  * @author Pete Muir
  * 
- * @see org.jboss.webbeans.contexts.SharedContext
- * @see org.jboss.webbeans.context.BasicContext
+ * @see org.jboss.weld.contexts.SharedContext
+ * @see org.jboss.weld.context.BasicContext
  */
 public abstract class AbstractMapContext extends AbstractContext
 {

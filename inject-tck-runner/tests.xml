@@ -4,7 +4,7 @@
 
    <test name="Web Beans RI" junit="true">
       <classes>
-         <class name="org.jboss.webbeans.atinject.tck.AtInjectTCK"></class>
+         <class name="org.jboss.weld.atinject.tck.AtInjectTCK"></class>
       </classes>
    </test>
    

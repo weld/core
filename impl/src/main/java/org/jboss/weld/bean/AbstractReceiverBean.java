@@ -93,7 +93,7 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
    }
    
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.bean.AbstractBean#isPolicy()
+    * @see org.jboss.weld.bean.AbstractBean#isPolicy()
     */
    @Override
    public boolean isAlternative()

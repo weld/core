@@ -3,14 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
-      <artifactId>webbeans-parent</artifactId>
-      <groupId>org.jboss.webbeans</groupId>
+      <artifactId>weld-parent</artifactId>
+      <groupId>org.jboss.weld</groupId>
       <version>1.0.0-SNAPSHOT</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.webbeans</groupId>
-   <artifactId>webbeans-distribution</artifactId>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-distribution</artifactId>
    <packaging>zip</packaging>
-   <name>Web Beans Distribution</name>
+   <name>Weld Distribution</name>
    
 </project>

@@ -36,7 +36,7 @@ import org.jboss.weld.util.collections.ConcurrentCache;
  * 
  * @author Nicklas Karlsson
  * 
- * @see org.jboss.webbeans.bean.proxy.ProxyMethodHandler
+ * @see org.jboss.weld.bean.proxy.ProxyMethodHandler
  */
 public class ClientProxyProvider
 {

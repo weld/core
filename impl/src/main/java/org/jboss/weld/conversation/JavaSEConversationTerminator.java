@@ -31,7 +31,7 @@ import org.jboss.weld.log.Logging;
  * A ConversationTerminator implementation using Java SE scheduling
  *   
  * @author Nicklas Karlsson
- * @see org.jboss.webbeans.conversation.ConversationTerminator
+ * @see org.jboss.weld.conversation.ConversationTerminator
  */
 @SessionScoped
 public class JavaSEConversationTerminator implements ConversationTerminator, Serializable

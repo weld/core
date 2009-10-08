@@ -100,7 +100,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    /**
     * Constructor
     * 
-    * @param manager The Web Beans manager
+    * @param manager The Weld manager
     */
    public AbstractBean(String idSuffix, BeanManagerImpl manager)
    {
@@ -124,7 +124,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       }
       initDefaultBindings();
       initPrimitive();
-      log.trace("Building Web Bean bean metadata for #0", getType());
+      log.trace("Building Weld bean metadata for #0", getType());
       initName();
       initScopeType();
       initSerializable();
@@ -338,7 +338,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The set of binding types
     * 
-    * @see org.jboss.webbeans.bean.BaseBean#getQualifiers()
+    * @see org.jboss.weld.bean.BaseBean#getQualifiers()
     */
    public Set<Annotation> getQualifiers()
    {
@@ -376,7 +376,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The name
     * 
-    * @see org.jboss.webbeans.bean.BaseBean#getName()
+    * @see org.jboss.weld.bean.BaseBean#getName()
     */
    public String getName()
    {
@@ -388,7 +388,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The scope type
     * 
-    * @see org.jboss.webbeans.bean.BaseBean#getScope()
+    * @see org.jboss.weld.bean.BaseBean#getScope()
     */
    public Class<? extends Annotation> getScope()
    {
@@ -411,7 +411,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The set of API types
     * 
-    * @see org.jboss.webbeans.bean.BaseBean#getTypeClosure()
+    * @see org.jboss.weld.bean.BaseBean#getTypeClosure()
     */
    public Set<Type> getTypes()
    {
@@ -435,7 +435,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return True if nullable, false otherwise
     * 
-    * @see org.jboss.webbeans.bean.BaseBean#isNullable()
+    * @see org.jboss.weld.bean.BaseBean#isNullable()
     */
    public boolean isNullable()
    {

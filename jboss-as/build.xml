@@ -13,51 +13,51 @@
 		<delete dir="target" failonerror="false" />
 	</target>
 
-	<target name="update" depends="install-webbeans.deployer, install-javassist-update" description="Update JBoss 5.x or 6.x for Web Beans" />
+	<target name="update" depends="install-weld.deployer, install-javassist-update" description="Update JBoss 5.x or 6.x for Web Beans" />
 
-	<target name="install-webbeans.deployer">
-		<echo message="Installing Web Beans ${webbeans.version} to ${jboss.home}" />
+	<target name="install-weld.deployer">
+		<echo message="Installing Weld ${weld.version} to ${jboss.home}" />
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..." />
 
-		<delete dir="${jboss.home}/server/default/deployers/webbeans.deployer" failonerror="false" />
+		<delete dir="${jboss.home}/server/default/deployers/weld.deployer" failonerror="false" />
 		<delete dir="target" failonerror="false" />
 
-		<artifact:dependencies filesetId="webbeans.deployer.fileset" versionsId="webbeans.deployer.versions">
-			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-jboss-int-deployer-assembly" version="${webbeans-deployer.version}" type="zip" />
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-core" version="${webbeans.version}" />
+		<artifact:dependencies filesetId="weld.deployer.fileset" versionsId="weld.deployer.versions">
+			<dependency groupId="org.jboss.weld.integration" artifactId="weld-jboss-int-deployer-assembly" version="${weld-deployer.version}" type="zip" />
+			<dependency groupId="org.jboss.weld" artifactId="weld-core" version="${weld.version}" />
 			<remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
 			<remoteRepository id="snapshots.jboss.org" url="http://snapshots.jboss.org/maven2" />
 		</artifact:dependencies>
 
 		<mkdir dir="target/dependency/lib" />
 		<copy todir="target/dependency/lib">
-			<fileset refid="webbeans.deployer.fileset" />
+			<fileset refid="weld.deployer.fileset" />
 			<chainedmapper>
 				<flattenmapper />
-				<mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${webbeans.deployer.versions}" to="flatten" />
+				<mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${weld.deployer.versions}" to="flatten" />
 			</chainedmapper>
 		</copy>
 
-		<unzip dest="target" src="target/dependency/lib/webbeans-jboss-int-deployer-assembly.zip" />
+		<unzip dest="target" src="target/dependency/lib/weld-jboss-int-deployer-assembly.zip" />
 
-		<copy todir="target/webbeans.deployer/lib-int/" overwrite="true">
+		<copy todir="target/weld.deployer/lib-int/" overwrite="true">
 			<fileset dir="target/dependency/lib">
-				<include name="webbeans-core.jar" />
+				<include name="weld-core.jar" />
 			</fileset>
 		</copy>
 
-                <copy todir="target/webbeans.deployer/" overwrite="true">
+                <copy todir="target/weld.deployer/" overwrite="true">
                         <fileset dir="target/dependency/lib">
-                                <include name="webbeans-api.jar" />
+                                <include name="weld-api.jar" />
                                 <include name="jsr299-api.jar" />
-                                <include name="webbeans-logger.jar" />
+                                <include name="weld-logger.jar" />
                         </fileset>
                 </copy>
 
 		<delete dir="target/dependency" />
 
-		<copy todir="${jboss.home}/server/default/deployers/webbeans.deployer">
-			<fileset dir="target/webbeans.deployer">
+		<copy todir="${jboss.home}/server/default/deployers/weld.deployer">
+			<fileset dir="target/weld.deployer">
 				<include name="**/*" />
 			</fileset>
 		</copy>

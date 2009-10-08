@@ -12,12 +12,11 @@ import javax.naming.NamingException;
 import org.jboss.weld.bootstrap.api.Service;
 
 public abstract class AbstractResourceServices implements Service
-{
-   
+{  
    private static final String RESOURCE_LOOKUP_PREFIX = "java:/comp/env";
    
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.resources.spi.helpers.ResourceServices#resolveResource(javax.inject.manager.InjectionPoint)
+    * @see org.jboss.weld.resources.spi.helpers.ResourceServices#resolveResource(javax.inject.manager.InjectionPoint)
     */
    public Object resolveResource(InjectionPoint injectionPoint)
    {
@@ -94,7 +93,9 @@ public abstract class AbstractResourceServices implements Service
          propertyName = getPropertyName((Method) injectionPoint.getMember());
          if (propertyName == null)
          {
-            throw new IllegalArgumentException("Injection point represents a method which doesn't follow JavaBean conventions (unable to determine property name) " + injectionPoint);
+            throw new IllegalArgumentException(
+                  "Injection point represents a method which doesn't follow " +
+                  "JavaBean conventions (unable to determine property name) " + injectionPoint);
          }
       }
       else

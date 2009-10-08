@@ -1,8 +1,8 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Web Beans RI" verbose="3"  >
+<suite name="Weld" verbose="3"  >
 
-   <test name="Web Beans RI">
+   <test name="Weld">
       <method-selectors>
          <method-selector>
             <selector-class name="org.jboss.testharness.impl.testng.DisableIntegrationTestsMethodSelector" />
@@ -18,48 +18,48 @@
          </run>
       </groups>
       <packages>
-         <package name="org.jboss.webbeans.test.examples" />
+         <package name="org.jboss.weld.test.examples" />
          
-         <package name="org.jboss.webbeans.test.unit.activities" />
-         <package name="org.jboss.webbeans.test.unit.activities.current" />
-         <package name="org.jboss.webbeans.test.unit.activities.child" />
-         <package name="org.jboss.webbeans.test.unit.annotated" />
-         <package name="org.jboss.webbeans.test.unit.annotated.decoration" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.environments" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.multipleEnterprise" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.multipleEnterpriseAndSimple" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.multipleSimple" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.singleEnterprise" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.singleProducerMethod" />
-         <package name="org.jboss.webbeans.test.unit.bootstrap.singleSimple" />
-         <package name="org.jboss.webbeans.test.unit.cluster" />
-         <package name="org.jboss.webbeans.test.unit.context" />
-         <package name="org.jboss.webbeans.test.unit.decorator.simple" />
-         <package name="org.jboss.webbeans.test.unit.definition" />
-         <package name="org.jboss.webbeans.test.unit.deployment.structure" />
-         <package name="org.jboss.webbeans.test.unit.evironments.servlet" />
-         <package name="org.jboss.webbeans.test.unit.implementation" />
-         <package name="org.jboss.webbeans.test.unit.implementation.annotatedItem" />
-         <package name="org.jboss.webbeans.test.unit.implementation.enterpise" />
-         <package name="org.jboss.webbeans.test.unit.implementation.enterpise.lifecycle" />
-         <package name="org.jboss.webbeans.test.unit.implementation.enterprise.sbi" />
-         <package name="org.jboss.webbeans.test.unit.implementation.event" />
-         <package name="org.jboss.webbeans.test.unit.implementation.event.tx" />
-         <package name="org.jboss.webbeans.test.unit.implementation.exceptions" />
-         <package name="org.jboss.webbeans.test.unit.implementation.named" />
-         <package name="org.jboss.webbeans.test.unit.implementation.newsimple" />
-         <package name="org.jboss.webbeans.test.unit.implementation.producer.field" />
-         <package name="org.jboss.webbeans.test.unit.implementation.producer.method" />
-         <package name="org.jboss.webbeans.test.unit.implementation.proxy" />
-         <package name="org.jboss.webbeans.test.unit.implementation.proxy.enterprise" />
-         <package name="org.jboss.webbeans.test.unit.lookup" />
-         <package name="org.jboss.webbeans.test.unit.lookup.circular" />
-         <package name="org.jboss.webbeans.test.unit.lookup.wbri279" />
-         <package name="org.jboss.webbeans.test.unit.lookup.wbri293" />
-         <package name="org.jboss.webbeans.test.unit.manager" />
-         <package name="org.jboss.webbeans.test.unit.noncontextual" />
-         <package name="org.jboss.webbeans.test.unit.security" />
+         <package name="org.jboss.weld.test.unit.activities" />
+         <package name="org.jboss.weld.test.unit.activities.current" />
+         <package name="org.jboss.weld.test.unit.activities.child" />
+         <package name="org.jboss.weld.test.unit.annotated" />
+         <package name="org.jboss.weld.test.unit.annotated.decoration" />
+         <package name="org.jboss.weld.test.unit.bootstrap" />
+         <package name="org.jboss.weld.test.unit.bootstrap.environments" />
+         <package name="org.jboss.weld.test.unit.bootstrap.multipleEnterprise" />
+         <package name="org.jboss.weld.test.unit.bootstrap.multipleEnterpriseAndSimple" />
+         <package name="org.jboss.weld.test.unit.bootstrap.multipleSimple" />
+         <package name="org.jboss.weld.test.unit.bootstrap.singleEnterprise" />
+         <package name="org.jboss.weld.test.unit.bootstrap.singleProducerMethod" />
+         <package name="org.jboss.weld.test.unit.bootstrap.singleSimple" />
+         <package name="org.jboss.weld.test.unit.cluster" />
+         <package name="org.jboss.weld.test.unit.context" />
+         <package name="org.jboss.weld.test.unit.decorator.simple" />
+         <package name="org.jboss.weld.test.unit.definition" />
+         <package name="org.jboss.weld.test.unit.deployment.structure" />
+         <package name="org.jboss.weld.test.unit.evironments.servlet" />
+         <package name="org.jboss.weld.test.unit.implementation" />
+         <package name="org.jboss.weld.test.unit.implementation.annotatedItem" />
+         <package name="org.jboss.weld.test.unit.implementation.enterpise" />
+         <package name="org.jboss.weld.test.unit.implementation.enterpise.lifecycle" />
+         <package name="org.jboss.weld.test.unit.implementation.enterprise.sbi" />
+         <package name="org.jboss.weld.test.unit.implementation.event" />
+         <package name="org.jboss.weld.test.unit.implementation.event.tx" />
+         <package name="org.jboss.weld.test.unit.implementation.exceptions" />
+         <package name="org.jboss.weld.test.unit.implementation.named" />
+         <package name="org.jboss.weld.test.unit.implementation.newsimple" />
+         <package name="org.jboss.weld.test.unit.implementation.producer.field" />
+         <package name="org.jboss.weld.test.unit.implementation.producer.method" />
+         <package name="org.jboss.weld.test.unit.implementation.proxy" />
+         <package name="org.jboss.weld.test.unit.implementation.proxy.enterprise" />
+         <package name="org.jboss.weld.test.unit.lookup" />
+         <package name="org.jboss.weld.test.unit.lookup.circular" />
+         <package name="org.jboss.weld.test.unit.lookup.wbri279" />
+         <package name="org.jboss.weld.test.unit.lookup.wbri293" />
+         <package name="org.jboss.weld.test.unit.manager" />
+         <package name="org.jboss.weld.test.unit.noncontextual" />
+         <package name="org.jboss.weld.test.unit.security" />
       </packages>
    </test>
    

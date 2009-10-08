@@ -54,7 +54,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
    }
    
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.mock.MockLifecycle#initialize()
+    * @see org.jboss.weld.mock.MockLifecycle#initialize()
     */
    public void initialize()
    {
@@ -85,7 +85,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
    }
    
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.mock.MockLifecycle#beginApplication()
+    * @see org.jboss.weld.mock.MockLifecycle#beginApplication()
     */
    public void beginApplication()
    {
@@ -93,7 +93,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
    }
    
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.mock.MockLifecycle#endApplication()
+    * @see org.jboss.weld.mock.MockLifecycle#endApplication()
     */
    @Override
    public void endApplication()
@@ -102,7 +102,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
    }
    
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.mock.MockLifecycle#resetContexts()
+    * @see org.jboss.weld.mock.MockLifecycle#resetContexts()
     */
    public void resetContexts()
    {
@@ -110,7 +110,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
    }
    
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.mock.MockLifecycle#beginRequest()
+    * @see org.jboss.weld.mock.MockLifecycle#beginRequest()
     */
    public void beginRequest()
    {
@@ -118,7 +118,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
    }
    
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.mock.MockLifecycle#endRequest()
+    * @see org.jboss.weld.mock.MockLifecycle#endRequest()
     */
    public void endRequest()
    {
@@ -126,7 +126,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
    }
    
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.mock.MockLifecycle#beginSession()
+    * @see org.jboss.weld.mock.MockLifecycle#beginSession()
     */
    public void beginSession()
    {
@@ -134,7 +134,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
    }
    
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.mock.MockLifecycle#endSession()
+    * @see org.jboss.weld.mock.MockLifecycle#endSession()
     */
    public void endSession()
    {
