@@ -22,19 +22,19 @@ import java.util.concurrent.Callable;
 import javax.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.introspector.WBAnnotation;
-import org.jboss.weld.introspector.WBClass;
-import org.jboss.weld.introspector.jlr.WBAnnotationImpl;
-import org.jboss.weld.introspector.jlr.WBClassImpl;
+import org.jboss.weld.introspector.WeldAnnotation;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.jlr.WeldAnnotationImpl;
+import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.util.collections.ConcurrentCache;
 
 public class ClassTransformer implements Service
 {
 
-   private final ConcurrentCache<Class<?>, WBClass<?>> classes;
-   private final ConcurrentCache<AnnotatedType<?>, WBClass<?>> annotatedTypes;
-   private final ConcurrentCache<Class<?>, WBAnnotation<?>> annotations;
+   private final ConcurrentCache<Class<?>, WeldClass<?>> classes;
+   private final ConcurrentCache<AnnotatedType<?>, WeldClass<?>> annotatedTypes;
+   private final ConcurrentCache<Class<?>, WeldAnnotation<?>> annotations;
    private final ClassTransformer transformer = this;
    private final TypeStore typeStore;
 
@@ -43,45 +43,45 @@ public class ClassTransformer implements Service
     */
    public ClassTransformer(TypeStore typeStore)
    {
-      classes = new ConcurrentCache<Class<?>, WBClass<?>>();
-      this.annotatedTypes = new ConcurrentCache<AnnotatedType<?>, WBClass<?>>();
-      annotations = new ConcurrentCache<Class<?>, WBAnnotation<?>>();
+      classes = new ConcurrentCache<Class<?>, WeldClass<?>>();
+      this.annotatedTypes = new ConcurrentCache<AnnotatedType<?>, WeldClass<?>>();
+      annotations = new ConcurrentCache<Class<?>, WeldAnnotation<?>>();
       this.typeStore = typeStore;
    }
 
-   public <T> WBClass<T> loadClass(final Class<T> clazz)
+   public <T> WeldClass<T> loadClass(final Class<T> clazz)
    {
-      return classes.putIfAbsent(clazz, new Callable<WBClass<T>>()
+      return classes.putIfAbsent(clazz, new Callable<WeldClass<T>>()
       {
 
-         public WBClass<T> call() throws Exception
+         public WeldClass<T> call() throws Exception
          {
-            return WBClassImpl.of(clazz, transformer);
+            return WeldClassImpl.of(clazz, transformer);
          }
 
       });
    }
    
-   public <T> WBClass<T> loadClass(final AnnotatedType<T> clazz)
+   public <T> WeldClass<T> loadClass(final AnnotatedType<T> clazz)
    {
-      return annotatedTypes.putIfAbsent(clazz, new Callable<WBClass<T>>()
+      return annotatedTypes.putIfAbsent(clazz, new Callable<WeldClass<T>>()
       {
 
-         public WBClass<T> call() throws Exception
+         public WeldClass<T> call() throws Exception
          {
-            return WBClassImpl.of(clazz, transformer);
+            return WeldClassImpl.of(clazz, transformer);
          }
 
       });
    }
 
-   public <T extends Annotation> WBAnnotation<T> loadAnnotation(final Class<T> clazz)
+   public <T extends Annotation> WeldAnnotation<T> loadAnnotation(final Class<T> clazz)
    {
-      return annotations.putIfAbsent(clazz, new Callable<WBAnnotation<T>>()
+      return annotations.putIfAbsent(clazz, new Callable<WeldAnnotation<T>>()
       {
-         public WBAnnotation<T> call() throws Exception
+         public WeldAnnotation<T> call() throws Exception
          {
-            return WBAnnotationImpl.of(clazz, transformer);
+            return WeldAnnotationImpl.of(clazz, transformer);
          }
 
       });

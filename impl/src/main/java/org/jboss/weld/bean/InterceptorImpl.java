@@ -21,7 +21,7 @@ import org.jboss.interceptor.model.InterceptorClassMetadata;
 import org.jboss.interceptor.registry.InterceptorClassMetadataRegistry;
 import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.introspector.WBClass;
+import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 
 import javax.enterprise.inject.spi.InterceptionType;
@@ -40,14 +40,14 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
    private final Set<Annotation> interceptorBindingTypes;
 
-   protected InterceptorImpl(WBClass<T> type, BeanManagerImpl manager)
+   protected InterceptorImpl(WeldClass<T> type, BeanManagerImpl manager)
    {
       super(type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), manager);
       this.interceptorClassMetadata = InterceptorClassMetadataRegistry.getRegistry().getInterceptorClassMetadata(type.getJavaClass());
       this.interceptorBindingTypes = flattenInterceptorBindings(manager, getAnnotatedItem().getAnnotations());
    }
 
-   public static <T> InterceptorImpl<T> of(WBClass<T> type, BeanManagerImpl manager)
+   public static <T> InterceptorImpl<T> of(WeldClass<T> type, BeanManagerImpl manager)
    {
       return new InterceptorImpl(type, manager);
    }

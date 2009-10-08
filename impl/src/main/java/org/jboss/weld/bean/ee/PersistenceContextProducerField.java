@@ -20,7 +20,7 @@ import javax.persistence.EntityManager;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.AbstractClassBean;
-import org.jboss.weld.introspector.WBField;
+import org.jboss.weld.introspector.WeldField;
 
 /**
  * @author pmuir
@@ -37,7 +37,7 @@ public class PersistenceContextProducerField<X, T extends EntityManager> extends
     * @param manager the current manager
     * @return A producer field
     */
-   public static <X, T extends EntityManager> EEResourceProducerField<X, T> of(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   public static <X, T extends EntityManager> EEResourceProducerField<X, T> of(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       return new PersistenceContextProducerField<X, T>(field, declaringBean, manager);
    }
@@ -47,7 +47,7 @@ public class PersistenceContextProducerField<X, T extends EntityManager> extends
     * @param declaringBean
     * @param manager
     */
-   protected PersistenceContextProducerField(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   protected PersistenceContextProducerField(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(field, declaringBean, manager);
    }

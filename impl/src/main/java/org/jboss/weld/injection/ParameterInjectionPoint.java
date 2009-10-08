@@ -28,24 +28,24 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.introspector.ForwardingWBParameter;
-import org.jboss.weld.introspector.WBParameter;
+import org.jboss.weld.introspector.ForwardingWeldParameter;
+import org.jboss.weld.introspector.WeldParameter;
 
-public class ParameterInjectionPoint<T, X> extends ForwardingWBParameter<T, X> implements WBInjectionPoint<T, Object>
+public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X> implements WeldInjectionPoint<T, Object>
 {
 
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
-   public static <T, X> ParameterInjectionPoint<T, X> of(Bean<?> declaringBean, WBParameter<T, X> parameter)
+   public static <T, X> ParameterInjectionPoint<T, X> of(Bean<?> declaringBean, WeldParameter<T, X> parameter)
    {
       return new ParameterInjectionPoint<T, X>(declaringBean, parameter);
    }
 
    private final Bean<?> declaringBean;
-   private final WBParameter<T, X> parameter;
+   private final WeldParameter<T, X> parameter;
    private final boolean delegate;
 
-   private ParameterInjectionPoint(Bean<?> declaringBean, WBParameter<T, X> parameter)
+   private ParameterInjectionPoint(Bean<?> declaringBean, WeldParameter<T, X> parameter)
    {
       this.declaringBean = declaringBean;
       this.parameter = parameter;
@@ -53,7 +53,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWBParameter<T, X> i
    }
 
    @Override
-   protected WBParameter<T, X> delegate()
+   protected WeldParameter<T, X> delegate()
    {
       return parameter;
    }

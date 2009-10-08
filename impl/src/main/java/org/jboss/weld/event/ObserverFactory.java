@@ -21,8 +21,8 @@ import javax.enterprise.event.TransactionPhase;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.introspector.WBMethod;
-import org.jboss.weld.introspector.WBParameter;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
 /**
@@ -41,7 +41,7 @@ public class ObserverFactory
     * @param manager The Bean manager
     * @return An observer implementation built from the method abstraction
     */
-   public static <X, T> ObserverMethodImpl<X, T> create(WBMethod<T, X> method, RIBean<X> declaringBean, BeanManagerImpl manager)
+   public static <X, T> ObserverMethodImpl<X, T> create(WeldMethod<T, X> method, RIBean<X> declaringBean, BeanManagerImpl manager)
    {
       ObserverMethodImpl<X, T> result = null;
       TransactionPhase transactionPhase = getTransactionalPhase(method);
@@ -62,9 +62,9 @@ public class ObserverFactory
     * @param observer The observer method
     * @return true if the observer method is annotated as transactional
     */
-   public static TransactionPhase getTransactionalPhase(WBMethod<?, ?> observer)
+   public static TransactionPhase getTransactionalPhase(WeldMethod<?, ?> observer)
    {
-      WBParameter<?, ?> parameter = observer.getAnnotatedWBParameters(Observes.class).iterator().next();
+      WeldParameter<?, ?> parameter = observer.getAnnotatedWBParameters(Observes.class).iterator().next();
       return parameter.getAnnotation(Observes.class).during();
    }
 }

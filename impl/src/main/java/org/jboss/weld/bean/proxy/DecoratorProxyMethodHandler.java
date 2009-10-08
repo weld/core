@@ -27,7 +27,7 @@ import javassist.util.proxy.MethodHandler;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.context.SerializableContextualInstance;
 import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.WBMethod;
+import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 
 /**
@@ -79,7 +79,7 @@ public class DecoratorProxyMethodHandler implements MethodHandler, Serializable
       MethodSignature methodSignature = new MethodSignatureImpl(method);
       for (SerializableContextualInstance<DecoratorImpl<Object>, Object> beanInstance : decoratorInstances)
       {
-         WBMethod<?, ?> decoratorMethod = beanInstance.getContextual().get().getAnnotatedItem().getWBMethod(methodSignature);
+         WeldMethod<?, ?> decoratorMethod = beanInstance.getContextual().get().getAnnotatedItem().getWBMethod(methodSignature);
          if (decoratorMethod != null)
          {
             return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);

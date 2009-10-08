@@ -8,8 +8,8 @@ import javax.enterprise.inject.stereotype.Stereotype;
 import javax.inject.Qualifier;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.introspector.WBClass;
-import org.jboss.weld.introspector.jlr.WBClassImpl;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.test.AbstractWeldTest;
@@ -24,7 +24,7 @@ public class ClassAnnotatedItemTest extends AbstractWeldTest
    @Test
    public void testDeclaredAnnotations()
    {
-      WBClass<Order> annotatedElement = WBClassImpl.of(Order.class, transformer);
+      WeldClass<Order> annotatedElement = WeldClassImpl.of(Order.class, transformer);
       assert annotatedElement.getAnnotations().size() == 1;
       assert annotatedElement.getAnnotation(Random.class) != null;
       assert annotatedElement.getJavaClass().equals(Order.class);
@@ -33,7 +33,7 @@ public class ClassAnnotatedItemTest extends AbstractWeldTest
    @Test
    public void testMetaAnnotations()
    {
-      WBClass<Order> annotatedElement = WBClassImpl.of(Order.class, transformer);
+      WeldClass<Order> annotatedElement = WeldClassImpl.of(Order.class, transformer);
       Set<Annotation> annotations = annotatedElement.getMetaAnnotations(Qualifier.class);
       assert annotations.size() == 1;
       Iterator<Annotation> it = annotations.iterator();
@@ -44,10 +44,10 @@ public class ClassAnnotatedItemTest extends AbstractWeldTest
    @Test
    public void testEmpty()
    {
-      WBClass<Order> annotatedElement = WBClassImpl.of(Order.class, transformer);
+      WeldClass<Order> annotatedElement = WeldClassImpl.of(Order.class, transformer);
       assert annotatedElement.getAnnotation(Stereotype.class) == null;
       assert annotatedElement.getMetaAnnotations(Stereotype.class).size() == 0;
-      WBClass<Antelope> classWithNoAnnotations = WBClassImpl.of(Antelope.class, transformer);
+      WeldClass<Antelope> classWithNoAnnotations = WeldClassImpl.of(Antelope.class, transformer);
       assert classWithNoAnnotations.getAnnotations().size() == 0;
    }
    

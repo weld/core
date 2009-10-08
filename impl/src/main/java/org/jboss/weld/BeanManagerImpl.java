@@ -63,13 +63,13 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.CreationalContextImpl;
-import org.jboss.weld.context.WBCreationalContext;
+import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
 import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
-import org.jboss.weld.introspector.WBAnnotated;
+import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.log.Log;
@@ -80,7 +80,7 @@ import org.jboss.weld.metadata.cache.ScopeModel;
 import org.jboss.weld.resolution.NameBasedResolver;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableFactory;
-import org.jboss.weld.resolution.ResolvableWBClass;
+import org.jboss.weld.resolution.ResolvableWeldClass;
 import org.jboss.weld.resolution.TypeSafeBeanResolver;
 import org.jboss.weld.resolution.TypeSafeDecoratorResolver;
 import org.jboss.weld.resolution.TypeSafeInterceptorResolver;
@@ -699,10 +699,10 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    public Set<Bean<?>> getBeans(Type beanType, Annotation... bindings)
    {
-      return getBeans(ResolvableWBClass.of(beanType, bindings, this), bindings);
+      return getBeans(ResolvableWeldClass.of(beanType, bindings, this), bindings);
    }
    
-   public Set<Bean<?>> getBeans(WBAnnotated<?, ?> element, Annotation... bindings)
+   public Set<Bean<?>> getBeans(WeldAnnotated<?, ?> element, Annotation... bindings)
    {
       for (Annotation annotation : element.getAnnotations())
       {
@@ -739,7 +739,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             currentInjectionPoint.get().push(injectionPoint);
          }
          // TODO Do this properly
-         Set<Bean<?>> beans = getBeans(ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this));
+         Set<Bean<?>> beans = getBeans(ResolvableWeldClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this));
          Set<Bean<?>> injectableBeans = new HashSet<Bean<?>>();
          for (Bean<?> bean : beans)
          {
@@ -903,9 +903,9 @@ public class BeanManagerImpl implements WeldManager, Serializable
    public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext)
    {
       bean = getMostSpecializedBean(bean);
-      if (creationalContext instanceof WBCreationalContext<?>)
+      if (creationalContext instanceof WeldCreationalContext<?>)
       {
-         creationalContext = ((WBCreationalContext<?>) creationalContext).getCreationalContext(bean);
+         creationalContext = ((WeldCreationalContext<?>) creationalContext).getCreationalContext(bean);
       }
       if (getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal())
       {
@@ -957,9 +957,9 @@ public class BeanManagerImpl implements WeldManager, Serializable
             throw new UnproxyableResolutionException("Attempting to inject an unproxyable normal scoped bean " + resolvedBean + " into " + injectionPoint);
          }
          // TODO Can we move this logic to getReference?
-         if (creationalContext instanceof WBCreationalContext<?>)
+         if (creationalContext instanceof WeldCreationalContext<?>)
          {
-            WBCreationalContext<?> wbCreationalContext = (WBCreationalContext<?>) creationalContext;
+            WeldCreationalContext<?> wbCreationalContext = (WeldCreationalContext<?>) creationalContext;
             if (wbCreationalContext.containsIncompleteInstance(resolvedBean))
             {
                return wbCreationalContext.getIncompleteInstance(resolvedBean);
@@ -986,7 +986,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
    {
-      WBAnnotated<?, ?> element = ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this);
+      WeldAnnotated<?, ?> element = ResolvableWeldClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this);
       Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
       return getReference(injectionPoint, resolvedBean, creationalContext);
    }
@@ -1012,7 +1012,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return instance;
    }
 
-   public <T> Bean<T> getBean(WBAnnotated<T, ?> element, Annotation... bindings)
+   public <T> Bean<T> getBean(WeldAnnotated<T, ?> element, Annotation... bindings)
    {
       Bean<T> bean = (Bean<T>) resolve(getBeans(element, bindings));
       if (bean == null)
@@ -1371,7 +1371,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return new WeldExpressionFactory(expressionFactory);
    }
    
-   public <T> WBCreationalContext<T> createCreationalContext(Contextual<T> contextual)
+   public <T> WeldCreationalContext<T> createCreationalContext(Contextual<T> contextual)
    {
       return new CreationalContextImpl<T>(contextual);
    }

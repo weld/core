@@ -51,9 +51,9 @@ import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.introspector.WBClass;
-import org.jboss.weld.introspector.WBField;
-import org.jboss.weld.introspector.WBMethod;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.log.LogProvider;
 import org.jboss.weld.log.Logging;
@@ -141,17 +141,17 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       
    }
    
-   protected <X> void createProducerMethods(AbstractClassBean<X> declaringBean, WBClass<X> annotatedClass)
+   protected <X> void createProducerMethods(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass)
    {
-      for (WBMethod<?, X> method : annotatedClass.getDeclaredAnnotatedWBMethods(Produces.class))
+      for (WeldMethod<?, X> method : annotatedClass.getDeclaredAnnotatedWeldMethods(Produces.class))
       {
          createProducerMethod(declaringBean, method);         
       }
    }
    
-   protected <X> void createDisposalMethods(AbstractClassBean<X> declaringBean, WBClass<X> annotatedClass)
+   protected <X> void createDisposalMethods(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass)
    {
-      for (WBMethod<?, X> method : annotatedClass.getDeclaredWBMethodsWithAnnotatedParameters(Disposes.class))
+      for (WeldMethod<?, X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class))
       {
          DisposalMethod<X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean);
          disposalBean.initialize(getEnvironment());
@@ -159,13 +159,13 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       }
    }
    
-   protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, WBMethod<T, X> annotatedMethod)
+   protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, WeldMethod<T, X> annotatedMethod)
    {
       ProducerMethod<X, T> bean = ProducerMethod.of(annotatedMethod, declaringBean, manager);
       getEnvironment().addBean(bean);
    }
    
-   protected <X, T> void createProducerField(AbstractClassBean<X> declaringBean, WBField<T, X> field)
+   protected <X, T> void createProducerField(AbstractClassBean<X> declaringBean, WeldField<T, X> field)
    {
       ProducerField<X, T> bean;
       if (isPersistenceContextProducerField(field))
@@ -200,23 +200,23 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       manager.fireEvent(eventType, payload);
    }
    
-   protected <X> void createProducerFields(AbstractClassBean<X> declaringBean, WBClass<X> annotatedClass)
+   protected <X> void createProducerFields(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass)
    {
-      for (WBField<?, X> field : annotatedClass.getDeclaredAnnotatedWBFields(Produces.class))
+      for (WeldField<?, X> field : annotatedClass.getDeclaredAnnotatedWeldFields(Produces.class))
       {
          createProducerField(declaringBean, field);
       }
    }
    
-   protected <X> void createObserverMethods(RIBean<X> declaringBean, WBClass<X> annotatedClass)
+   protected <X> void createObserverMethods(RIBean<X> declaringBean, WeldClass<X> annotatedClass)
    {
-      for (WBMethod<?, X> method : annotatedClass.getDeclaredWBMethodsWithAnnotatedParameters(Observes.class))
+      for (WeldMethod<?, X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class))
       {
          createObserverMethod(declaringBean, method);
       }
    }
    
-   protected <X, T> void createObserverMethod(RIBean<X> declaringBean, WBMethod<T, X> method)
+   protected <X, T> void createObserverMethod(RIBean<X> declaringBean, WeldMethod<T, X> method)
    {
       ObserverMethodImpl<X, T> observer = ObserverFactory.create(method, declaringBean, manager);
       getEnvironment().addObserver(observer);
@@ -234,7 +234,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       return;
    }
 
-   protected <T> void createSimpleBean(WBClass<T> annotatedClass)
+   protected <T> void createSimpleBean(WeldClass<T> annotatedClass)
    {
       ManagedBean<T> bean = ManagedBean.of(annotatedClass, manager);
       getEnvironment().addBean(bean);
@@ -242,13 +242,13 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       getEnvironment().addBean(NewManagedBean.of(annotatedClass, manager));
    }
    
-   protected <T> void createDecorator(WBClass<T> annotatedClass)
+   protected <T> void createDecorator(WeldClass<T> annotatedClass)
    {
       DecoratorImpl<T> bean = DecoratorImpl.of(annotatedClass, manager);
       getEnvironment().addBean(bean);
    }
 
-   protected <T> void createInterceptor(WBClass<T> annotatedClass)
+   protected <T> void createInterceptor(WeldClass<T> annotatedClass)
    {
       InterceptorImpl<T> bean = InterceptorImpl.of(annotatedClass, manager);
       getEnvironment().addBean(bean);
@@ -270,7 +270,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
     *           The type to inspect
     * @return True if simple Web Bean, false otherwise
     */
-   protected boolean isTypeManagedBeanOrDecorator(WBClass<?> clazz)
+   protected boolean isTypeManagedBeanOrDecorator(WeldClass<?> clazz)
    {
       Class<?> javaClass = clazz.getJavaClass();
       EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
@@ -288,7 +288,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
              hasSimpleWebBeanConstructor(clazz);
    }
    
-   protected boolean isEEResourceProducerField(WBField<?, ?> field)
+   protected boolean isEEResourceProducerField(WeldField<?, ?> field)
    {
       EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
       PersistenceApiAbstraction persistenceApiAbstraction = manager.getServices().get(PersistenceApiAbstraction.class);
@@ -296,15 +296,15 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       return field.isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS) || field.isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || field.isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS); 
    }
    
-   protected boolean isPersistenceContextProducerField(WBField<?, ?> field)
+   protected boolean isPersistenceContextProducerField(WeldField<?, ?> field)
    {
       PersistenceApiAbstraction persistenceApiAbstraction = manager.getServices().get(PersistenceApiAbstraction.class);
       return field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS); 
    }
    
-   private static boolean hasSimpleWebBeanConstructor(WBClass<?> type)
+   private static boolean hasSimpleWebBeanConstructor(WeldClass<?> type)
    {
-      return type.getNoArgsWBConstructor() != null || type.getAnnotatedWBConstructors(Inject.class).size() > 0;
+      return type.getNoArgsWeldConstructor() != null || type.getAnnotatedWeldConstructors(Inject.class).size() > 0;
    }
       
    public E getEnvironment()

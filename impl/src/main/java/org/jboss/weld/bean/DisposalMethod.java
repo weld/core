@@ -33,14 +33,14 @@ import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.introspector.WBMethod;
+import org.jboss.weld.introspector.WeldMethod;
 
 public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
 {
 
    protected MethodInjectionPoint<T, ?> disposalMethodInjectionPoint;
 
-   protected DisposalMethod(BeanManagerImpl manager, WBMethod<T, X> disposalMethod, AbstractClassBean<X> declaringBean)
+   protected DisposalMethod(BeanManagerImpl manager, WeldMethod<T, X> disposalMethod, AbstractClassBean<X> declaringBean)
    {
       super(new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, manager);
       this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
@@ -66,12 +66,12 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    }
 
    @Override
-   public WBMethod<T, ?> getAnnotatedItem()
+   public WeldMethod<T, ?> getAnnotatedItem()
    {
       return disposalMethodInjectionPoint;
    }
 
-   public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, WBMethod<T, X> disposalMethod, AbstractClassBean<X> declaringBean)
+   public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, WeldMethod<T, X> disposalMethod, AbstractClassBean<X> declaringBean)
    {
       return new DisposalMethod<X, T>(manager, disposalMethod, declaringBean);
    }

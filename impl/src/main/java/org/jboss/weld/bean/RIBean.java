@@ -25,7 +25,7 @@ import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.injection.WBInjectionPoint;
+import org.jboss.weld.injection.WeldInjectionPoint;
 
 /**
  * Abstract base class with functions specific to RI built-in beans
@@ -74,7 +74,7 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
 
    public abstract boolean isPrimitive();
 
-   public abstract Set<WBInjectionPoint<?, ?>> getAnnotatedInjectionPoints();
+   public abstract Set<WeldInjectionPoint<?, ?>> getAnnotatedInjectionPoints();
    
    public Set<InjectionPoint> getInjectionPoints()
    {

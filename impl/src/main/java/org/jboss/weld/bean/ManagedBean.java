@@ -41,11 +41,11 @@ import org.jboss.weld.bean.interceptor.InterceptorInterceptionHandlerFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
-import org.jboss.weld.injection.WBInjectionPoint;
-import org.jboss.weld.introspector.WBClass;
-import org.jboss.weld.introspector.WBConstructor;
-import org.jboss.weld.introspector.WBField;
-import org.jboss.weld.introspector.WBMethod;
+import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldConstructor;
+import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.log.LogProvider;
 import org.jboss.weld.log.Logging;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -67,10 +67,10 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    // The constructor
    private ConstructorInjectionPoint<T> constructor;
-   private Set<WBInjectionPoint<?, ?>> ejbInjectionPoints;
-   private Set<WBInjectionPoint<?, ?>> persistenceContextInjectionPoints;
-   private Set<WBInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
-   private Set<WBInjectionPoint<?, ?>> resourceInjectionPoints;
+   private Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
+   private Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
+   private Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
+   private Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
 
    private ManagedBean<?> specializedBean;
 
@@ -82,7 +82,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     * @param manager the current manager
     * @return A Web Bean
     */
-   public static <T> ManagedBean<T> of(WBClass<T> clazz, BeanManagerImpl manager)
+   public static <T> ManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl manager)
    {
       return new ManagedBean<T>(clazz, new StringBuilder().append(ManagedBean.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
    }
@@ -93,7 +93,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Bean manager
     */
-   protected ManagedBean(WBClass<T> type, String idSuffix, BeanManagerImpl manager)
+   protected ManagedBean(WeldClass<T> type, String idSuffix, BeanManagerImpl manager)
    {
       super(type, idSuffix, manager);
       initType();
@@ -252,9 +252,9 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             if (decorator instanceof DecoratorImpl<?>)
             {
                DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
-               for (WBMethod<?, ?> decoratorMethod : decoratorBean.getAnnotatedItem().getWBMethods())
+               for (WeldMethod<?, ?> decoratorMethod : decoratorBean.getAnnotatedItem().getWeldMethods())
                {
-                  WBMethod<?, ?> method = getAnnotatedItem().getWBMethod(decoratorMethod.getSignature());
+                  WeldMethod<?, ?> method = getAnnotatedItem().getWBMethod(decoratorMethod.getSignature());
                   if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal())
                   {
                      throw new DefinitionException("Decorated bean method " + method + " (decorated by "+ decoratorMethod + ") cannot be declarted final");
@@ -275,7 +275,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       super.checkBeanImplementation();
       if (isNormalScoped())
       {
-         for (WBField<?, ?> field : getAnnotatedItem().getWBFields())
+         for (WeldField<?, ?> field : getAnnotatedItem().getWeldFields())
          {
             if (field.isPublic() && !field.isStatic())
             {
@@ -301,7 +301,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
       super.preSpecialize(environment);
-      if (environment.getEjbDescriptors().contains(getAnnotatedItem().getWBSuperclass().getJavaClass()))
+      if (environment.getEjbDescriptors().contains(getAnnotatedItem().getWeldSuperclass().getJavaClass()))
       {
          throw new DefinitionException("Simple bean must specialize a simple bean");
       }
@@ -310,11 +310,11 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      if (environment.getClassBean(getAnnotatedItem().getWBSuperclass()) == null)
+      if (environment.getClassBean(getAnnotatedItem().getWeldSuperclass()) == null)
       {
          throw new DefinitionException(toString() + " does not specialize a bean");
       }
-      AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getWBSuperclass());
+      AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getWeldSuperclass());
       if (!(specializedBean instanceof ManagedBean))
       {
          throw new DefinitionException(toString() + " doesn't have a simple bean as a superclass " + specializedBean);
@@ -340,7 +340,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     *
     * @return The constructor
     */
-   public WBConstructor<T> getConstructor()
+   public WeldConstructor<T> getConstructor()
    {
       return constructor;
    }
@@ -444,8 +444,8 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             builder.interceptPreDestroy().with(classDeclaredInterceptors);
          }
 
-         List<WBMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
-         for (WBMethod<?, ?> method : businessMethods)
+         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
+         for (WeldMethod<?, ?> method : businessMethods)
          {
             boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
             Class<?>[] methodDeclaredInterceptors = null;

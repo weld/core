@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.introspector;
 
-import static org.jboss.weld.introspector.WBAnnotated.MAPPED_METAANNOTATIONS;
+import static org.jboss.weld.introspector.WeldAnnotated.MAPPED_METAANNOTATIONS;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;

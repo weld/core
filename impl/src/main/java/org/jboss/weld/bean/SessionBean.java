@@ -47,8 +47,8 @@ import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.InjectionContextImpl;
-import org.jboss.weld.introspector.WBClass;
-import org.jboss.weld.introspector.WBMethod;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.log.Log;
 import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.ClassTransformer;
@@ -84,7 +84,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
     */
    public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
-      WBClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
+      WeldClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
       return new SessionBean<T>(type, ejbDescriptor, new StringBuilder().append(SessionBean.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).toString(), manager);
    }
 
@@ -94,7 +94,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Bean manager
     */
-   protected SessionBean(WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager)
+   protected SessionBean(WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager)
    {
       super(type, idSuffix, manager);
       initType();
@@ -185,7 +185,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       super.preSpecialize(environment);
       // We appear to check this twice?
-      if (!environment.getEjbDescriptors().contains(getAnnotatedItem().getWBSuperclass().getJavaClass()))
+      if (!environment.getEjbDescriptors().contains(getAnnotatedItem().getWeldSuperclass().getJavaClass()))
       {
          throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
       }
@@ -194,11 +194,11 @@ public class SessionBean<T> extends AbstractClassBean<T>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      if (environment.getClassBean(getAnnotatedItem().getWBSuperclass()) == null)
+      if (environment.getClassBean(getAnnotatedItem().getWeldSuperclass()) == null)
       {
          throw new IllegalStateException(toString() + " does not specialize a bean");
       }
-      AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getWBSuperclass());
+      AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getWeldSuperclass());
       if (!(specializedBean instanceof SessionBean<?>))
       {
          throw new IllegalStateException(toString() + " doesn't have a session bean as a superclass " + specializedBean);
@@ -351,7 +351,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
     */
    protected void checkObserverMethods()
    {
-      for (WBMethod<?, ?> method : this.annotatedItem.getDeclaredWBMethodsWithAnnotatedParameters(Observes.class))
+      for (WeldMethod<?, ?> method : this.annotatedItem.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class))
       {
          if (!method.isStatic())
          {
@@ -364,7 +364,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
    }
    
    // TODO must be a nicer way to do this!
-   public boolean isMethodExistsOnTypes(WBMethod<?, ?> method)
+   public boolean isMethodExistsOnTypes(WeldMethod<?, ?> method)
    {
       for (Type type : getTypes())
       {

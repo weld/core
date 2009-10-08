@@ -28,9 +28,9 @@ import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.WBInjectionPoint;
-import org.jboss.weld.introspector.WBClass;
-import org.jboss.weld.introspector.WBMethod;
+import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.util.Beans;
 
 /**
@@ -41,19 +41,19 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
 {
  
    private final BeanManagerImpl beanManager;
-   private final WBClass<T> type;
+   private final WeldClass<T> type;
    private final ConstructorInjectionPoint<T> constructor;
    private final List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
    private final List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
-   private final WBMethod<?, ?> postConstruct;
-   private final WBMethod<?, ?> preDestroy;
+   private final WeldMethod<?, ?> postConstruct;
+   private final WeldMethod<?, ?> preDestroy;
    private final Set<InjectionPoint> injectionPoints;
-   private final Set<WBInjectionPoint<?, ?>> ejbInjectionPoints;
-   private final Set<WBInjectionPoint<?, ?>> persistenceContextInjectionPoints;
-   private final Set<WBInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
-   private final Set<WBInjectionPoint<?, ?>> resourceInjectionPoints;
+   private final Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
+   private final Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
+   private final Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
+   private final Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
 
-   public SimpleInjectionTarget(WBClass<T> type, BeanManagerImpl beanManager)
+   public SimpleInjectionTarget(WeldClass<T> type, BeanManagerImpl beanManager)
    {
       this.beanManager = beanManager;
       this.type = type;

@@ -48,9 +48,9 @@ import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.introspector.WBAnnotated;
+import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.resolution.ResolvableWBClass;
+import org.jboss.weld.resolution.ResolvableWeldClass;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Reflections;
@@ -155,7 +155,7 @@ public class Validator implements Service
       checkFacadeInjectionPoint(ij, Instance.class);
       checkFacadeInjectionPoint(ij, Event.class);
       Annotation[] bindings = ij.getQualifiers().toArray(new Annotation[0]);
-      WBAnnotated<?, ?> annotatedItem = ResolvableWBClass.of(ij.getType(), bindings, beanManager);
+      WeldAnnotated<?, ?> annotatedItem = ResolvableWeldClass.of(ij.getType(), bindings, beanManager);
       Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getInjectableBeans(ij));
       if (resolvedBeans.isEmpty())
       {

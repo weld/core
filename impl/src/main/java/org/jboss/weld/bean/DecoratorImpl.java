@@ -31,8 +31,8 @@ import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.WBInjectionPoint;
-import org.jboss.weld.introspector.WBClass;
+import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.introspector.WeldClass;
 
 public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
 {
@@ -71,18 +71,18 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
     * @param manager the current manager
     * @return a Bean
     */
-   public static <T> DecoratorImpl<T> of(WBClass<T> clazz, BeanManagerImpl manager)
+   public static <T> DecoratorImpl<T> of(WeldClass<T> clazz, BeanManagerImpl manager)
    {
       return new DecoratorImpl<T>(clazz, manager);
    }
 
-   private WBInjectionPoint<?, ?> delegateInjectionPoint;
+   private WeldInjectionPoint<?, ?> delegateInjectionPoint;
    private Set<Annotation> delegateBindings;
    private Type delegateType;
    private Set<Type> delegateTypes;
    private Set<Type> decoratedTypes;
 
-   protected DecoratorImpl(WBClass<T> type, BeanManagerImpl manager)
+   protected DecoratorImpl(WeldClass<T> type, BeanManagerImpl manager)
    {
       super(type, new StringBuilder().append(Decorator.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), manager);
    }
@@ -116,7 +116,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
    @Override
    protected void checkDelegateInjectionPoints()
    {
-      for (WBInjectionPoint<?, ?> injectionPoint : getDelegateInjectionPoints())
+      for (WeldInjectionPoint<?, ?> injectionPoint : getDelegateInjectionPoints())
       {
          if (injectionPoint instanceof MethodInjectionPoint<?, ?> && !injectionPoint.isAnnotationPresent(Inject.class))
          {
@@ -197,7 +197,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
       return decoratedTypes;
    }
    
-   public WBInjectionPoint<?, ?> getDelegateInjectionPoint()
+   public WeldInjectionPoint<?, ?> getDelegateInjectionPoint()
    {
       return delegateInjectionPoint;
    }

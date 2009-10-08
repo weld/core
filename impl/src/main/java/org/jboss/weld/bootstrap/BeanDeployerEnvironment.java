@@ -39,16 +39,16 @@ import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.introspector.WBClass;
-import org.jboss.weld.introspector.WBMethod;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resolution.ResolvableFactory;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 
 public class BeanDeployerEnvironment
 {
 
-   private final Map<WBClass<?>, AbstractClassBean<?>> classBeanMap;
-   private final Map<WBMethod<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap;
+   private final Map<WeldClass<?>, AbstractClassBean<?>> classBeanMap;
+   private final Map<WeldMethod<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap;
    private final Set<RIBean<?>> beans;
    private final Set<ObserverMethodImpl<?, ?>> observers;
    private final List<DisposalMethod<?, ?>> allDisposalBeans;
@@ -60,8 +60,8 @@ public class BeanDeployerEnvironment
 
    public BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager)
    {
-      this.classBeanMap = new HashMap<WBClass<?>, AbstractClassBean<?>>();
-      this.producerMethodBeanMap = new HashMap<WBMethod<?, ?>, ProducerMethod<?, ?>>();
+      this.classBeanMap = new HashMap<WeldClass<?>, AbstractClassBean<?>>();
+      this.producerMethodBeanMap = new HashMap<WeldMethod<?, ?>, ProducerMethod<?, ?>>();
       this.allDisposalBeans = new ArrayList<DisposalMethod<?, ?>>();
       this.resolvedDisposalBeans = new HashSet<DisposalMethod<?, ?>>();
       this.beans = new HashSet<RIBean<?>>();
@@ -72,7 +72,7 @@ public class BeanDeployerEnvironment
       this.disposalMethodResolver = new TypeSafeDisposerResolver(manager, allDisposalBeans);
    }
 
-   public <X, T> ProducerMethod<X, T> getProducerMethod(WBMethod<X, T> method)
+   public <X, T> ProducerMethod<X, T> getProducerMethod(WeldMethod<X, T> method)
    {
       if (!producerMethodBeanMap.containsKey(method))
       {
@@ -86,7 +86,7 @@ public class BeanDeployerEnvironment
       }
    }
    
-   public AbstractClassBean<?> getClassBean(WBClass<?> clazz)
+   public AbstractClassBean<?> getClassBean(WeldClass<?> clazz)
    {
       if (!classBeanMap.containsKey(clazz))
       {

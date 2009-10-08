@@ -25,7 +25,7 @@ import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.introspector.WBField;
+import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.util.Names;
 
 /**
@@ -38,7 +38,7 @@ import org.jboss.weld.util.Names;
 public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
 {
    // The underlying field
-   private WBField<T, X> field;
+   private WeldField<T, X> field;
    private final String id;
    
    /**
@@ -49,7 +49,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     * @param manager the current manager
     * @return A producer field
     */
-   public static <X, T> ProducerField<X, T> of(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   public static <X, T> ProducerField<X, T> of(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       return new ProducerField<X, T>(field, declaringBean, manager);
    }
@@ -61,7 +61,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     * @param declaringBean The declaring bean
     * @param manager The Bean manager
     */
-   protected ProducerField(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   protected ProducerField(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(new StringBuilder().append(ProducerField.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(field.getName()).toString(), declaringBean, manager);
       this.field = field;
@@ -104,7 +104,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     * @return The annotated item
     */
    @Override
-   public WBField<T, X> getAnnotatedItem()
+   public WeldField<T, X> getAnnotatedItem()
    {
       return field;
    }

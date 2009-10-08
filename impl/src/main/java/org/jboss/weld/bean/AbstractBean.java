@@ -34,10 +34,10 @@ import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.injection.WBInjectionPoint;
-import org.jboss.weld.introspector.WBAnnotated;
-import org.jboss.weld.introspector.WBField;
-import org.jboss.weld.introspector.WBParameter;
+import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.introspector.WeldAnnotated;
+import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.log.Log;
@@ -79,8 +79,8 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    // The API types
    protected Set<Type> types;
    // The injection points
-   private Set<WBInjectionPoint<?, ?>> injectionPoints;
-   private Set<WBInjectionPoint<?, ?>> delegateInjectionPoints;
+   private Set<WeldInjectionPoint<?, ?>> injectionPoints;
+   private Set<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
    // If the type a primitive?
    private boolean primitive;
    // The Bean manager
@@ -106,8 +106,8 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    {
       super(idSuffix, manager);
       this.manager = manager;
-      this.injectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
-      this.delegateInjectionPoints = new HashSet<WBInjectionPoint<?,?>>();
+      this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+      this.delegateInjectionPoints = new HashSet<WeldInjectionPoint<?,?>>();
    }
 
    /**
@@ -145,7 +145,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       }
    }
    
-   protected void addInjectionPoint(WBInjectionPoint<?, ?> injectionPoint)
+   protected void addInjectionPoint(WeldInjectionPoint<?, ?> injectionPoint)
    {
       if (injectionPoint.isAnnotationPresent(Decorates.class))
       {
@@ -154,15 +154,15 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       injectionPoints.add(injectionPoint);
    }
    
-   protected void addInjectionPoints(Iterable<? extends WBInjectionPoint<?, ?>> injectionPoints)
+   protected void addInjectionPoints(Iterable<? extends WeldInjectionPoint<?, ?>> injectionPoints)
    {
-      for (WBInjectionPoint<?, ?> injectionPoint : injectionPoints)
+      for (WeldInjectionPoint<?, ?> injectionPoint : injectionPoints)
       {
          addInjectionPoint(injectionPoint);
       }
    }
 
-   protected Set<WBInjectionPoint<?, ?>> getDelegateInjectionPoints()
+   protected Set<WeldInjectionPoint<?, ?>> getDelegateInjectionPoints()
    {
       return delegateInjectionPoints;
    }
@@ -262,13 +262,13 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    private boolean checkInjectionPointsAreSerializable()
    {
       boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(this.getScope()).isPassivating();
-      for (WBInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
+      for (WeldInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
       {
          Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(Qualifier.class);
          Bean<?> resolvedBean = manager.getBeans(injectionPoint.getJavaClass(), bindings).iterator().next();
          if (passivating)
          {
-            if (Dependent.class.equals(resolvedBean.getScope()) && !Reflections.isSerializable(resolvedBean.getBeanClass()) && (((injectionPoint instanceof WBField<?, ?>) && !((WBField<?, ?>) injectionPoint).isTransient()) || (injectionPoint instanceof WBParameter<?, ?>)))
+            if (Dependent.class.equals(resolvedBean.getScope()) && !Reflections.isSerializable(resolvedBean.getBeanClass()) && (((injectionPoint instanceof WeldField<?, ?>) && !((WeldField<?, ?>) injectionPoint).isTransient()) || (injectionPoint instanceof WeldParameter<?, ?>)))
             {
                return false;
             }
@@ -331,7 +331,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The annotated item
     */
-   protected abstract WBAnnotated<T, E> getAnnotatedItem();
+   protected abstract WeldAnnotated<T, E> getAnnotatedItem();
 
    /**
     * Gets the binding types
@@ -356,7 +356,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    public abstract AbstractBean<?, ?> getSpecializedBean();
 
    @Override
-   public Set<WBInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
+   public Set<WeldInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
    {
       return injectionPoints;
    }
@@ -425,7 +425,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * @param annotatedItem The other annotation to check
     * @return True if assignable, otherwise false
     */
-   public boolean isAssignableFrom(WBAnnotated<?, ?> annotatedItem)
+   public boolean isAssignableFrom(WeldAnnotated<?, ?> annotatedItem)
    {
       return this.getAnnotatedItem().isAssignableFrom(annotatedItem);
    }

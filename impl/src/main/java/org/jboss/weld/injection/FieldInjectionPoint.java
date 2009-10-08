@@ -31,24 +31,24 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.introspector.ForwardingWBField;
-import org.jboss.weld.introspector.WBField;
+import org.jboss.weld.introspector.ForwardingWeldField;
+import org.jboss.weld.introspector.WeldField;
 
-public class FieldInjectionPoint<T, X> extends ForwardingWBField<T, X> implements WBInjectionPoint<T, Field>
+public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> implements WeldInjectionPoint<T, Field>
 {
 
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
    private final Bean<?> declaringBean;
-   private final WBField<T, X> field;
+   private final WeldField<T, X> field;
    private final boolean delegate;
 
-   public static <T, X> FieldInjectionPoint<T, X> of(Bean<?> declaringBean, WBField<T, X> field)
+   public static <T, X> FieldInjectionPoint<T, X> of(Bean<?> declaringBean, WeldField<T, X> field)
    {
       return new FieldInjectionPoint<T, X>(declaringBean, field);
    }
 
-   protected FieldInjectionPoint(Bean<?> declaringBean, WBField<T, X> field)
+   protected FieldInjectionPoint(Bean<?> declaringBean, WeldField<T, X> field)
    {
       this.declaringBean = declaringBean;
       this.field = field;
@@ -56,7 +56,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWBField<T, X> implement
    }
 
    @Override
-   protected WBField<T, X> delegate()
+   protected WeldField<T, X> delegate()
    {
       return field;
    }

@@ -17,7 +17,7 @@
 
 package org.jboss.weld.metadata.cache;
 
-import org.jboss.weld.introspector.WBMethod;
+import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.log.Log;
 import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.ClassTransformer;
@@ -36,7 +36,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
 {
    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(InterceptorBinding.class);
    private static final Log log = Logging.getLog(BindingTypeModel.class);
-   private Set<WBMethod<?,?>> nonBindingTypes;
+   private Set<WeldMethod<?,?>> nonBindingTypes;
    private Set<Annotation> inheritedInterceptionBindingTypes;
    private Set<Annotation> metaAnnotations;
 
@@ -77,7 +77,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
    {
       if (instance.annotationType().equals(getRawType()) && other.annotationType().equals(getRawType()))
       {
-         for (WBMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers())
+         for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers())
          {
             if (!nonBindingTypes.contains(annotatedMethod))
             {

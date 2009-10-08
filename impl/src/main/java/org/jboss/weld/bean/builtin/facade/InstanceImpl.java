@@ -31,7 +31,7 @@ import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.resolution.ResolvableWBClass;
+import org.jboss.weld.resolution.ResolvableWeldClass;
 
 /**
  * Helper implementation for Instance for getting instances
@@ -62,7 +62,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    public T get(Annotation... bindings)
    {
       Annotation[] annotations = mergeInBindings(bindings);
-      Bean<T> bean = getManager().getBean(ResolvableWBClass.<T>of(getType(), annotations, getManager()), annotations);
+      Bean<T> bean = getManager().getBean(ResolvableWeldClass.<T>of(getType(), annotations, getManager()), annotations);
       
       @SuppressWarnings("unchecked")
       T instance = (T) getManager().getReference(bean, getType(), getManager().createCreationalContext(bean));

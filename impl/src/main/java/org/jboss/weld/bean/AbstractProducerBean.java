@@ -40,7 +40,7 @@ import javax.inject.Scope;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.introspector.WBMember;
+import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.log.LogProvider;
 import org.jboss.weld.log.Logging;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -71,7 +71,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    }
 
    @Override
-   public abstract WBMember<T, X, S> getAnnotatedItem();
+   public abstract WeldMember<T, X, S> getAnnotatedItem();
 
    @Override
    // Overriden to provide the class of the bean that declares the producer method/field

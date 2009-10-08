@@ -27,7 +27,7 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.context.WBCreationalContext;
+import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.log.LogProvider;
 import org.jboss.weld.log.Logging;
 import org.jboss.weld.util.Reflections;
@@ -54,7 +54,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
 
    private final BeanManagerImpl manager;
 
-   private static final ThreadLocal<WBCreationalContext<?>> currentCreationalContext = new ThreadLocal<WBCreationalContext<?>>();
+   private static final ThreadLocal<WeldCreationalContext<?>> currentCreationalContext = new ThreadLocal<WeldCreationalContext<?>>();
 
    /**
     * Constructor
@@ -120,7 +120,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
 
    private <T> T getProxiedInstance(Bean<T> bean)
    {
-      WBCreationalContext<T> creationalContext;
+      WeldCreationalContext<T> creationalContext;
       boolean outer;
       if (currentCreationalContext.get() == null)
       {

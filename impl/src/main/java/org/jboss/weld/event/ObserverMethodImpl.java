@@ -41,8 +41,8 @@ import org.jboss.weld.Container;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.introspector.WBMethod;
-import org.jboss.weld.introspector.WBParameter;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.api.ExecutorServices;
 
 /**
@@ -75,7 +75,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
     * @param declaringBean The observer bean
     * @param manager The Bean manager
     */
-   protected ObserverMethodImpl(final WBMethod<T, X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
+   protected ObserverMethodImpl(final WeldMethod<T, X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
    {
       this.manager = manager;
       this.declaringBean = declaringBean;
@@ -95,7 +95,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    private void checkObserverMethod()
    {
       // Make sure exactly one and only one parameter is annotated with Observes
-      List<WBParameter<?, ?>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
+      List<WeldParameter<?, ?>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
       if (this.notifyType.equals(Notify.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class))
       {
          throw new DefinitionException(this + " is invalid because it is a conditional observer method, and is declared by a @Dependent scoped bean");
@@ -108,7 +108,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
       // variable or wildcard
       if (eventObjects.size() > 0)
       {
-         WBParameter<?, ?> eventParam = eventObjects.iterator().next();
+         WeldParameter<?, ?> eventParam = eventObjects.iterator().next();
          if (eventParam.isParameterizedType())
          {
             for (Type type : eventParam.getActualTypeArguments())
@@ -125,7 +125,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
          }
       }
       // Check for parameters annotated with @Disposes
-      List<WBParameter<?, ?>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
+      List<WeldParameter<?, ?>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
       if (disposeParams.size() > 0)
       {
          throw new DefinitionException(this + " cannot have any parameters annotated with @Disposes");

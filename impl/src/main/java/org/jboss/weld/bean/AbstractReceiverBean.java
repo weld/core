@@ -23,8 +23,8 @@ import javax.enterprise.inject.Alternative;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.context.WBCreationalContext;
-import org.jboss.weld.introspector.WBMember;
+import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.log.LogProvider;
 import org.jboss.weld.log.Logging;
 
@@ -68,9 +68,9 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
       }
       else
       {
-         if (creationalContext instanceof WBCreationalContext<?>)
+         if (creationalContext instanceof WeldCreationalContext<?>)
          {
-            WBCreationalContext<?> creationalContextImpl = (WBCreationalContext<?>) creationalContext;
+            WeldCreationalContext<?> creationalContextImpl = (WeldCreationalContext<?>) creationalContext;
             if (creationalContextImpl.containsIncompleteInstance(getDeclaringBean()))
             {
                log.warn("Executing producer field or method " + getAnnotatedItem() + " on incomplete declaring bean " + getDeclaringBean() + " due to circular injection");
@@ -119,6 +119,6 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
    }
    
    @Override
-   protected abstract WBMember<T, ?, S> getAnnotatedItem();
+   protected abstract WeldMember<T, ?, S> getAnnotatedItem();
 
 }

@@ -25,7 +25,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.introspector.WBClass;
+import org.jboss.weld.introspector.WeldClass;
 
 /**
  * @author pmuir
@@ -36,10 +36,10 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
    
    private static final String ID_PREFIX = "Extension";
    
-   private final WBClass<Extension> clazz;
+   private final WeldClass<Extension> clazz;
    private final Extension instance;
    
-   public ExtensionBean(BeanManagerImpl manager, WBClass<Extension> clazz, Extension instance)
+   public ExtensionBean(BeanManagerImpl manager, WeldClass<Extension> clazz, Extension instance)
    {
       super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
       this.clazz = clazz;

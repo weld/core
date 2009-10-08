@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Set;
 
 import org.jboss.weld.DefinitionException;
-import org.jboss.weld.introspector.WBAnnotation;
+import org.jboss.weld.introspector.WeldAnnotation;
 import org.jboss.weld.log.Log;
 import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.ClassTransformer;
@@ -37,7 +37,7 @@ public abstract class AnnotationModel<T extends Annotation>
    private static final Log log = Logging.getLog(AnnotationModel.class);
    
    // The underlying annotation
-   private WBAnnotation<T> annotatedAnnotation;
+   private WeldAnnotation<T> annotatedAnnotation;
    // Is the data valid?
    protected boolean valid;
 
@@ -125,7 +125,7 @@ public abstract class AnnotationModel<T extends Annotation>
     * 
     * @return The annotation
     */
-   protected WBAnnotation<T> getAnnotatedAnnotation()
+   protected WeldAnnotation<T> getAnnotatedAnnotation()
    {
       return annotatedAnnotation;
    }

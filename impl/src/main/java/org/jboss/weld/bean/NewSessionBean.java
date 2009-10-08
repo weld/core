@@ -24,7 +24,7 @@ import javax.enterprise.context.Dependent;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
-import org.jboss.weld.introspector.WBClass;
+import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.resources.ClassTransformer;
 
@@ -45,7 +45,7 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
     */
    public static <T> NewSessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
-      WBClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
+      WeldClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
       return new NewSessionBean<T>(type, ejbDescriptor, new StringBuilder().append(NewSessionBean.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).toString(), manager);
    }
    
@@ -57,7 +57,7 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
     * @param type An annotated class
     * @param manager The Bean manager
     */
-   protected NewSessionBean(final WBClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager)
+   protected NewSessionBean(final WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager)
    {
       super(type, ejbDescriptor, idSuffix, manager);
       this.bindings = new HashSet<Annotation>();

@@ -32,8 +32,8 @@ import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
-import org.jboss.weld.introspector.WBMethod;
-import org.jboss.weld.introspector.WBParameter;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.util.Names;
 
 /**
@@ -62,12 +62,12 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
     * @param manager the current manager
     * @return A producer Web Bean
     */
-   public static <X, T> ProducerMethod<X, T> of(WBMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   public static <X, T> ProducerMethod<X, T> of(WeldMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       return new ProducerMethod<X, T>(method, declaringBean, manager);
    }
 
-   protected ProducerMethod(WBMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   protected ProducerMethod(WeldMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, manager);
       this.method = MethodInjectionPoint.of(this, method);
@@ -112,7 +112,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
     */
    protected void initProducerMethodInjectableParameters()
    {
-      for (WBParameter<?, ?> parameter : method.getWBParameters())
+      for (WeldParameter<?, ?> parameter : method.getWBParameters())
       {
          addInjectionPoint(ParameterInjectionPoint.of(this, parameter));
       }
@@ -205,7 +205,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
     * @return The annotated item
     */
    @Override
-   public WBMethod<T, X> getAnnotatedItem()
+   public WeldMethod<T, X> getAnnotatedItem()
    {
       return method;
    }
@@ -262,7 +262,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    @Override
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
-      if (getDeclaringBean().getAnnotatedItem().getWBSuperclass().getDeclaredWBMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
+      if (getDeclaringBean().getAnnotatedItem().getWeldSuperclass().getDeclaredWeldMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
       {
          throw new DefinitionException("Specialized producer method does not override a method on the direct superclass");
       }
@@ -271,7 +271,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      WBMethod<?, ?> superClassMethod = getDeclaringBean().getAnnotatedItem().getWBSuperclass().getWBMethod(getAnnotatedItem().getAnnotatedMethod());
+      WeldMethod<?, ?> superClassMethod = getDeclaringBean().getAnnotatedItem().getWeldSuperclass().getWeldMethod(getAnnotatedItem().getAnnotatedMethod());
       if (environment.getProducerMethod(superClassMethod) == null)
       {
          throw new IllegalStateException(toString() + " does not specialize a bean");

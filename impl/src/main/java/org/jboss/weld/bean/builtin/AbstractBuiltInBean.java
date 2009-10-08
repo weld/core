@@ -27,7 +27,7 @@ import javax.enterprise.context.Dependent;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.injection.WBInjectionPoint;
+import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 
@@ -78,7 +78,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
    }
 
    @Override
-   public Set<WBInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
+   public Set<WeldInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
    {
       return Collections.emptySet();
    }

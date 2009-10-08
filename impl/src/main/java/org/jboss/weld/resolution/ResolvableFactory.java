@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.Collections;
 
 import org.jboss.weld.bean.AbstractClassBean;
-import org.jboss.weld.introspector.WBAnnotated;
+import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.util.Reflections;
 
@@ -35,7 +35,7 @@ import javax.enterprise.inject.spi.InterceptionType;
 public class ResolvableFactory
 {
 
-   public static Resolvable of(WBAnnotated<?, ?> element)
+   public static Resolvable of(WeldAnnotated<?, ?> element)
    {
       if (element instanceof Resolvable)
       {

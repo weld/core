@@ -35,17 +35,17 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.introspector.ForwardingWBConstructor;
-import org.jboss.weld.introspector.WBConstructor;
-import org.jboss.weld.introspector.WBParameter;
+import org.jboss.weld.introspector.ForwardingWeldConstructor;
+import org.jboss.weld.introspector.WeldConstructor;
+import org.jboss.weld.introspector.WeldParameter;
 
-public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> implements WBInjectionPoint<T, Constructor<T>>
+public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> implements WeldInjectionPoint<T, Constructor<T>>
 {
 
    private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?, ?>>
    {
 
-      protected abstract List<? extends WBParameter<?, ?>> delegate();
+      protected abstract List<? extends WeldParameter<?, ?>> delegate();
 
       protected abstract Bean<?> declaringBean();;
 
@@ -66,15 +66,15 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
    private final Bean<?> declaringBean;
-   private final WBConstructor<T> constructor;
+   private final WeldConstructor<T> constructor;
    private final boolean delegate;
 
-   public static <T> ConstructorInjectionPoint<T> of(Bean<?> declaringBean, WBConstructor<T> constructor)
+   public static <T> ConstructorInjectionPoint<T> of(Bean<?> declaringBean, WeldConstructor<T> constructor)
    {
       return new ConstructorInjectionPoint<T>(declaringBean, constructor);
    }
 
-   protected ConstructorInjectionPoint(Bean<?> declaringBean, WBConstructor<T> constructor)
+   protected ConstructorInjectionPoint(Bean<?> declaringBean, WeldConstructor<T> constructor)
    {
       this.declaringBean = declaringBean;
       this.constructor = constructor;
@@ -82,7 +82,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
    }
 
    @Override
-   protected WBConstructor<T> delegate()
+   protected WeldConstructor<T> delegate()
    {
       return constructor;
    }
@@ -125,7 +125,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
    @Override
    public List<ParameterInjectionPoint<?, ?>> getWBParameters()
    {
-      final List<? extends WBParameter<?, ?>> delegate = super.getWBParameters();
+      final List<? extends WeldParameter<?, ?>> delegate = super.getWBParameters();
       return new ForwardingParameterInjectionPointList()
       {
 
@@ -136,7 +136,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
          }
 
          @Override
-         protected List<? extends WBParameter<?, ?>> delegate()
+         protected List<? extends WeldParameter<?, ?>> delegate()
          {
             return delegate;
          }

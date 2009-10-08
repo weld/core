@@ -28,7 +28,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
-import org.jboss.weld.introspector.WBClass;
+import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.resources.ClassTransformer;
 
 /**
@@ -40,7 +40,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    
    private final BeanManagerImpl deploymentManager;
 
-   private final Set<WBClass<?>> classes;
+   private final Set<WeldClass<?>> classes;
 
    /**
     * @param manager
@@ -49,7 +49,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    public BeanDeployer(BeanManagerImpl manager, BeanManagerImpl deploymentManager, EjbDescriptors ejbDescriptors)
    {
       super(manager, new BeanDeployerEnvironment(ejbDescriptors, manager));
-      this.classes = new HashSet<WBClass<?>>();
+      this.classes = new HashSet<WeldClass<?>>();
       this.deploymentManager = deploymentManager;
    }
 
@@ -62,9 +62,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
          deploymentManager.fireEvent(event);
          if (!event.isVeto())
          {
-            if (event.getAnnotatedType() instanceof WBClass<?>)
+            if (event.getAnnotatedType() instanceof WeldClass<?>)
             {
-               classes.add((WBClass<?>) event.getAnnotatedType());
+               classes.add((WeldClass<?>) event.getAnnotatedType());
             }
             else
             {
@@ -77,7 +77,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    
    private static <X> ProcessAnnotatedTypeImpl<X> createProcessAnnotatedTypeEvent(Class<X> clazz, ClassTransformer classTransformer)
    {
-      WBClass<X> annotatedType = classTransformer.loadClass(clazz);
+      WeldClass<X> annotatedType = classTransformer.loadClass(clazz);
       return new ProcessAnnotatedTypeImpl<X>(annotatedType) {};
    }
    
@@ -100,7 +100,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
 
    public BeanDeployer createBeans()
    {
-      for (WBClass<?> clazz : classes)
+      for (WeldClass<?> clazz : classes)
       {
          boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(clazz.getJavaClass()) && isTypeManagedBeanOrDecorator(clazz);
          if (managedBeanOrDecorator && clazz.isAnnotationPresent(Decorator.class))

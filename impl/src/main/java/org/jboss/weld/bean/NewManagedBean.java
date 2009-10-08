@@ -23,7 +23,7 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.introspector.WBClass;
+import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.literal.NewLiteral;
 
 /**
@@ -41,7 +41,7 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
     * @param manager The Bean manager
     * @return a new NewSimpleBean instance
     */
-   public static <T> NewManagedBean<T> of(WBClass<T> clazz, BeanManagerImpl manager)
+   public static <T> NewManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl manager)
    {
       return new NewManagedBean<T>(clazz, new StringBuilder().append(NewManagedBean.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
    }
@@ -54,7 +54,7 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
     * @param type An annotated class
     * @param manager The Bean manager
     */
-   protected NewManagedBean(final WBClass<T> type, String idSuffix, BeanManagerImpl manager)
+   protected NewManagedBean(final WeldClass<T> type, String idSuffix, BeanManagerImpl manager)
    {
       super(type, idSuffix, manager);
       this.bindings = new HashSet<Annotation>();

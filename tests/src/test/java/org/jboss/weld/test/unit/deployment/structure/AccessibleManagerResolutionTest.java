@@ -12,8 +12,8 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.ejb.EjbDescriptors;
-import org.jboss.weld.introspector.WBClass;
-import org.jboss.weld.introspector.jlr.WBClassImpl;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
@@ -37,7 +37,7 @@ public class AccessibleManagerResolutionTest
    
    private void addBean(BeanManagerImpl manager, Class<?> c)
    {
-      WBClass<?> clazz = WBClassImpl.of(c, classTransformer);
+      WeldClass<?> clazz = WeldClassImpl.of(c, classTransformer);
       RIBean<?> bean = ManagedBean.of(clazz, manager);
       manager.addBean(bean);
       BeanDeployerEnvironment environment = new BeanDeployerEnvironment(new EjbDescriptors(), manager);

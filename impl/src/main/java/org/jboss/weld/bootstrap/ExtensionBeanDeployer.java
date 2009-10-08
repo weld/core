@@ -24,7 +24,7 @@ import javax.enterprise.inject.spi.Extension;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.builtin.ExtensionBean;
-import org.jboss.weld.introspector.WBClass;
+import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.resources.ClassTransformer;
 
 /**
@@ -49,7 +49,7 @@ public class ExtensionBeanDeployer extends AbstractBeanDeployer<ExtensionBeanDep
       for (Extension extension : extensions)
       {
          @SuppressWarnings("unchecked")
-         WBClass<Extension> clazz = (WBClass<Extension>) classTransformer.loadClass(extension.getClass());
+         WeldClass<Extension> clazz = (WeldClass<Extension>) classTransformer.loadClass(extension.getClass());
          
          ExtensionBean bean = new ExtensionBean(getManager(), clazz, extension);
          this.

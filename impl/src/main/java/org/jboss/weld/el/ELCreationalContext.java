@@ -7,19 +7,19 @@ import java.util.concurrent.Callable;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.context.ForwardingWBCreationalContext;
-import org.jboss.weld.context.WBCreationalContext;
+import org.jboss.weld.context.ForwardingWeldCreationalContext;
+import org.jboss.weld.context.WeldCreationalContext;
 
-abstract class ELCreationalContext<T> extends ForwardingWBCreationalContext<T>
+abstract class ELCreationalContext<T> extends ForwardingWeldCreationalContext<T>
 {
    
-   public static <X> ELCreationalContext<X> of(final WBCreationalContext<X> creationalContext)
+   public static <X> ELCreationalContext<X> of(final WeldCreationalContext<X> creationalContext)
    {
       return new ELCreationalContext<X>()
       {
          
          @Override
-         protected WBCreationalContext<X> delegate()
+         protected WeldCreationalContext<X> delegate()
          {
             return creationalContext;
          }

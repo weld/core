@@ -19,7 +19,7 @@ package org.jboss.weld.introspector.jlr;
 import java.util.Arrays;
 
 import org.jboss.weld.introspector.ConstructorSignature;
-import org.jboss.weld.introspector.WBConstructor;
+import org.jboss.weld.introspector.WeldConstructor;
 
 public class ConstructorSignatureImpl implements ConstructorSignature
 {
@@ -28,7 +28,7 @@ public class ConstructorSignatureImpl implements ConstructorSignature
    
    private final String[] parameterTypes;
    
-   public ConstructorSignatureImpl(WBConstructor<?> method)
+   public ConstructorSignatureImpl(WeldConstructor<?> method)
    {
       this.parameterTypes = new String[method.getWBParameters().size()];
       for (int i = 0; i < method.getWBParameters().size(); i++)

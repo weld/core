@@ -23,7 +23,7 @@ import java.util.Map;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-public class CreationalContextImpl<T> implements CreationalContext<T>, WBCreationalContext<T>, Serializable
+public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreationalContext<T>, Serializable
 {
 
    private static final long serialVersionUID = 7375854583908262422L;
@@ -54,7 +54,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WBCreatio
       incompleteInstances.put(contextual, incompleteInstance);
    }
    
-   public <S> WBCreationalContext<S> getCreationalContext(Contextual<S> Contextual)
+   public <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> Contextual)
    {
       return new CreationalContextImpl<S>(Contextual, new HashMap<Contextual<?>, Object>(incompleteInstances), dependentInstancesStore);
    }

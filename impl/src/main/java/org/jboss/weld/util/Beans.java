@@ -55,7 +55,7 @@ import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
-import org.jboss.weld.injection.WBInjectionPoint;
+import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
@@ -144,29 +144,29 @@ public class Beans
       }
    }
 
-   public static List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, WBClass<?> type)
+   public static List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, WeldClass<?> type)
    {
       List<Set<FieldInjectionPoint<?, ?>>> injectableFieldsList = new ArrayList<Set<FieldInjectionPoint<?, ?>>>();
-      WBClass<?> t = type;
+      WeldClass<?> t = type;
       while (!t.getJavaClass().equals(Object.class))
       {
          Set<FieldInjectionPoint<?, ?>> fields = new HashSet<FieldInjectionPoint<?,?>>();
          injectableFieldsList.add(0, fields);
-         for (WBField<?, ?> annotatedField : t.getDeclaredAnnotatedWBFields(Inject.class))
+         for (WeldField<?, ?> annotatedField : t.getDeclaredAnnotatedWeldFields(Inject.class))
          {
             if (!annotatedField.isStatic())
             {
                addFieldInjectionPoint(annotatedField, fields, declaringBean);
             }
          }
-         for (WBField<?, ?> annotatedField : t.getAnnotatedWBFields(Decorates.class))
+         for (WeldField<?, ?> annotatedField : t.getAnnotatedWeldFields(Decorates.class))
          {
             if (!annotatedField.isStatic())
             {
                addFieldInjectionPoint(annotatedField, fields, declaringBean);
             }
          }
-         t = t.getWBSuperclass();
+         t = t.getWeldSuperclass();
       }
       return injectableFieldsList;
    }
@@ -181,9 +181,9 @@ public class Beans
       return injectionPoints;
    }
    
-   public static WBMethod<?, ?> getPostConstruct(WBClass<?> type)
+   public static WeldMethod<?, ?> getPostConstruct(WeldClass<?> type)
    {
-      Set<WBMethod<?, ?>> postConstructMethods = type.getAnnotatedWBMethods(PostConstruct.class);
+      Set<WeldMethod<?, ?>> postConstructMethods = type.getAnnotatedWeldMethods(PostConstruct.class);
       log.trace("Found " + postConstructMethods + " constructors annotated with @Initializer for " + type);
       if (postConstructMethods.size() > 1)
       {
@@ -191,7 +191,7 @@ public class Beans
       }
       else if (postConstructMethods.size() == 1)
       {
-         WBMethod<?, ?> postConstruct = postConstructMethods.iterator().next();
+         WeldMethod<?, ?> postConstruct = postConstructMethods.iterator().next();
          log.trace("Exactly one post construct method (" + postConstruct + ") for " + type);
          return postConstruct;
       }
@@ -201,9 +201,9 @@ public class Beans
       }
    }
    
-   public static WBMethod<?, ?> getPreDestroy(WBClass<?> type)
+   public static WeldMethod<?, ?> getPreDestroy(WeldClass<?> type)
    {
-      Set<WBMethod<?, ?>> preDestroyMethods = type.getAnnotatedWBMethods(PreDestroy.class);
+      Set<WeldMethod<?, ?>> preDestroyMethods = type.getAnnotatedWeldMethods(PreDestroy.class);
       log.trace("Found " + preDestroyMethods + " constructors annotated with @Initializer for " + type);
       if (preDestroyMethods.size() > 1)
       {
@@ -213,7 +213,7 @@ public class Beans
       }
       else if (preDestroyMethods.size() == 1)
       {
-         WBMethod<?, ?> preDestroy = preDestroyMethods.iterator().next();
+         WeldMethod<?, ?> preDestroy = preDestroyMethods.iterator().next();
          log.trace("Exactly one post construct method (" + preDestroy + ") for " + type);
          return preDestroy;
       }
@@ -223,12 +223,12 @@ public class Beans
       }
    }
 
-   public static List<WBMethod<?,?>> getInterceptableBusinessMethods(WBClass<?> type)
+   public static List<WeldMethod<?,?>> getInterceptableBusinessMethods(WeldClass<?> type)
    {
-      List<WBMethod<?, ?>> annotatedMethods = new ArrayList<WBMethod<?, ?>>();
-      for (WBMethod<?, ?> annotatedMethod : type.getWBMethods())
+      List<WeldMethod<?, ?>> annotatedMethods = new ArrayList<WeldMethod<?, ?>>();
+      for (WeldMethod<?, ?> annotatedMethod : type.getWeldMethods())
       {
-         int modifiers = ((WBMember) annotatedMethod).getJavaMember().getModifiers();
+         int modifiers = ((WeldMember) annotatedMethod).getJavaMember().getModifiers();
          boolean businessMethod = !annotatedMethod.isStatic()
                && (Modifier.isPublic(modifiers)
                   || Modifier.isProtected(modifiers))
@@ -253,13 +253,13 @@ public class Beans
    }
    
 
-   public static Set<WBInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, WBClass<?> type, BeanManagerImpl manager)
+   public static Set<WeldInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager)
    {
       if (manager.getServices().contains(EjbInjectionServices.class))
       {
          Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
-         Set<WBInjectionPoint<?, ?>> ejbInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
-         for (WBField<?, ?> field : type.getAnnotatedWBFields(ejbAnnotationType))
+         Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+         for (WeldField<?, ?> field : type.getAnnotatedWeldFields(ejbAnnotationType))
          {
             ejbInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
          }
@@ -271,13 +271,13 @@ public class Beans
       }
    }
 
-   public static Set<WBInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, WBClass<?> type, BeanManagerImpl manager)
+   public static Set<WeldInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager)
    {
       if (manager.getServices().contains(JpaInjectionServices.class))
       {
-         Set<WBInjectionPoint<?, ?>> jpaInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
+         Set<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
          Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-         for (WBField<?, ?> field : type.getAnnotatedWBFields(persistenceContextAnnotationType))
+         for (WeldField<?, ?> field : type.getAnnotatedWeldFields(persistenceContextAnnotationType))
          {
             jpaInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
          }
@@ -289,13 +289,13 @@ public class Beans
       }
    }
    
-   public static Set<WBInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, WBClass<?> type, BeanManagerImpl manager)
+   public static Set<WeldInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager)
    {
       if (manager.getServices().contains(JpaInjectionServices.class))
       {
-         Set<WBInjectionPoint<?, ?>> jpaInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
+         Set<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
          Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
-         for (WBField<?, ?> field : type.getAnnotatedWBFields(persistenceUnitAnnotationType))
+         for (WeldField<?, ?> field : type.getAnnotatedWeldFields(persistenceUnitAnnotationType))
          {
             jpaInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
          }
@@ -307,13 +307,13 @@ public class Beans
       }
    }
 
-   public static Set<WBInjectionPoint<?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, WBClass<?> type, BeanManagerImpl manager)
+   public static Set<WeldInjectionPoint<?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager)
    {
       if (manager.getServices().contains(ResourceInjectionServices.class))
       {
          Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
-         Set<WBInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
-         for (WBField<?, ?> field : type.getAnnotatedWBFields(resourceAnnotationType))
+         Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+         for (WeldField<?, ?> field : type.getAnnotatedWeldFields(resourceAnnotationType))
          {
             resourceInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
          }
@@ -325,7 +325,7 @@ public class Beans
       }
    }
    
-   public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, WBClass<?> type)
+   public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, WeldClass<?> type)
    {
       List<Set<MethodInjectionPoint<?, ?>>> initializerMethodsList = new ArrayList<Set<MethodInjectionPoint<?, ?>>>();
       // Keep track of all seen methods so we can ignore overridden methods
@@ -338,12 +338,12 @@ public class Beans
          }
          
       });
-      WBClass<?> t = type;
+      WeldClass<?> t = type;
       while (!t.getJavaClass().equals(Object.class))
       {
          Set<MethodInjectionPoint<?, ?>> initializerMethods = new HashSet<MethodInjectionPoint<?,?>>();
          initializerMethodsList.add(0, initializerMethods);
-         for (WBMethod<?, ?> method : t.getDeclaredWBMethods())
+         for (WeldMethod<?, ?> method : t.getDeclaredWeldMethods())
          {
             if (method.isAnnotationPresent(Inject.class) && !method.isStatic())
             {
@@ -370,12 +370,12 @@ public class Beans
             }
             seenMethods.put(method.getSignature(), method.getPackage());
          }
-         t = t.getWBSuperclass();
+         t = t.getWeldSuperclass();
       }
       return initializerMethodsList;
    }
    
-   private static boolean isOverridden(WBMethod<?, ?> method, Multimap<MethodSignature, Package> seenMethods)
+   private static boolean isOverridden(WeldMethod<?, ?> method, Multimap<MethodSignature, Package> seenMethods)
    {
       if (method.isPrivate())
       {
@@ -391,10 +391,10 @@ public class Beans
       }
    }
    
-   public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, WBConstructor<?> constructor)
+   public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, WeldConstructor<?> constructor)
    {
       Set<ParameterInjectionPoint<?,?>> injectionPoints = new HashSet<ParameterInjectionPoint<?,?>>();
-      for (WBParameter<?, ?> parameter : constructor.getWBParameters())
+      for (WeldParameter<?, ?> parameter : constructor.getWBParameters())
       {
          injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
       }
@@ -408,7 +408,7 @@ public class Beans
       {
          for (MethodInjectionPoint<?, ?> method : i)
          {
-            for (WBParameter<?, ?> parameter : method.getWBParameters())
+            for (WeldParameter<?, ?> parameter : method.getWBParameters())
             {
                injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
             }
@@ -417,7 +417,7 @@ public class Beans
       return injectionPoints;
    }
    
-   private static void addFieldInjectionPoint(WBField<?, ?> annotatedField, Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean)
+   private static void addFieldInjectionPoint(WeldField<?, ?> annotatedField, Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean)
    {
       if (!annotatedField.isAnnotationPresent(Produces.class))
       {
@@ -576,10 +576,10 @@ public class Beans
       return false;
    }
    
-   public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<?> declaringBean, WBClass<T> type)
+   public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<?> declaringBean, WeldClass<T> type)
    {
       ConstructorInjectionPoint<T> constructor = null;
-      Set<WBConstructor<T>> initializerAnnotatedConstructors = type.getAnnotatedWBConstructors(Inject.class);
+      Set<WeldConstructor<T>> initializerAnnotatedConstructors = type.getAnnotatedWeldConstructors(Inject.class);
       log.trace("Found " + initializerAnnotatedConstructors + " constructors annotated with @Initializer for " + type);
       if (initializerAnnotatedConstructors.size() > 1)
       {
@@ -593,10 +593,10 @@ public class Beans
          constructor = ConstructorInjectionPoint.of(declaringBean, initializerAnnotatedConstructors.iterator().next());
          log.trace("Exactly one constructor (" + constructor + ") annotated with @Initializer defined, using it as the bean constructor for " + type);
       }
-      else if (type.getNoArgsWBConstructor() != null)
+      else if (type.getNoArgsWeldConstructor() != null)
       {
 
-         constructor = ConstructorInjectionPoint.of(declaringBean, type.getNoArgsWBConstructor());
+         constructor = ConstructorInjectionPoint.of(declaringBean, type.getNoArgsWeldConstructor());
          log.trace("Exactly one constructor (" + constructor + ") defined, using it as the bean constructor for " + type);
       }
       
@@ -613,7 +613,7 @@ public class Beans
    /**
     * Injects EJBs and common fields
     */
-   public static <T> void injectEEFields(T beanInstance, BeanManagerImpl manager, Iterable<WBInjectionPoint<?, ?>> ejbInjectionPoints, Iterable<WBInjectionPoint<?, ?>> persistenceContextInjectionPoints, Iterable<WBInjectionPoint<?, ?>> persistenceUnitInjectionPoints, Iterable<WBInjectionPoint<?, ?>> resourceInjectionPoints)
+   public static <T> void injectEEFields(T beanInstance, BeanManagerImpl manager, Iterable<WeldInjectionPoint<?, ?>> ejbInjectionPoints, Iterable<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints, Iterable<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints, Iterable<WeldInjectionPoint<?, ?>> resourceInjectionPoints)
    {
       EjbInjectionServices ejbServices = manager.getServices().get(EjbInjectionServices.class);
       JpaInjectionServices jpaServices = manager.getServices().get(JpaInjectionServices.class);
@@ -621,7 +621,7 @@ public class Beans
       
       if (ejbServices != null)
       {
-         for (WBInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
+         for (WeldInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
          {
             Object ejbInstance = ejbServices.resolveEjb(injectionPoint);
             injectionPoint.inject(beanInstance, ejbInstance);
@@ -630,12 +630,12 @@ public class Beans
 
       if (jpaServices != null)
       {
-         for (WBInjectionPoint<?, ?> injectionPoint : persistenceContextInjectionPoints)
+         for (WeldInjectionPoint<?, ?> injectionPoint : persistenceContextInjectionPoints)
          {
             Object pcInstance = jpaServices.resolvePersistenceContext(injectionPoint);
             injectionPoint.inject(beanInstance, pcInstance);
          }
-         for (WBInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
+         for (WeldInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
          {
             Object puInstance = jpaServices.resolvePersistenceUnit(injectionPoint);
             injectionPoint.inject(beanInstance, puInstance);
@@ -644,7 +644,7 @@ public class Beans
 
       if (resourceServices != null)
       {
-         for (WBInjectionPoint<?, ?> injectionPoint : resourceInjectionPoints)
+         for (WeldInjectionPoint<?, ?> injectionPoint : resourceInjectionPoints)
          {
             Object resourceInstance = resourceServices.resolveResource(injectionPoint);
             injectionPoint.inject(beanInstance, resourceInstance);
@@ -711,12 +711,12 @@ public class Beans
       }
    }
 
-   public static <T> boolean isInterceptor(WBClass<T> annotatedItem)
+   public static <T> boolean isInterceptor(WeldClass<T> annotatedItem)
    {
       return annotatedItem.isAnnotationPresent(javax.interceptor.Interceptor.class);
    }
 
-   public static <T> boolean isDecorator(WBClass<T> annotatedItem)
+   public static <T> boolean isDecorator(WeldClass<T> annotatedItem)
    {
       return annotatedItem.isAnnotationPresent(Decorator.class);
    }

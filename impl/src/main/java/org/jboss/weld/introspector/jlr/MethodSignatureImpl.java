@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.WBMethod;
+import org.jboss.weld.introspector.WeldMethod;
 
 public class MethodSignatureImpl implements MethodSignature
 {
@@ -30,7 +30,7 @@ public class MethodSignatureImpl implements MethodSignature
    private final String methodName;
    private final String[] parameterTypes;
    
-   public MethodSignatureImpl(WBMethod<?, ?> method)
+   public MethodSignatureImpl(WeldMethod<?, ?> method)
    {
       this.methodName = method.getName();
       this.parameterTypes = new String[method.getWBParameters().size()];

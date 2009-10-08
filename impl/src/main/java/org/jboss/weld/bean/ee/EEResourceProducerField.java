@@ -21,7 +21,7 @@ import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.ejb.EJBApiAbstraction;
-import org.jboss.weld.introspector.WBField;
+import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.ws.WSApiAbstraction;
 
@@ -40,12 +40,12 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
     * @param manager the current manager
     * @return A producer field
     */
-   public static <X, T> EEResourceProducerField<X, T> of(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   public static <X, T> EEResourceProducerField<X, T> of(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       return new EEResourceProducerField<X, T>(field, declaringBean, manager);
    }
 
-   protected EEResourceProducerField(WBField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   protected EEResourceProducerField(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(field, declaringBean, manager);
    }

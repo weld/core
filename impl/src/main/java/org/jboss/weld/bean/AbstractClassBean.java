@@ -44,8 +44,8 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.SerializableContextualInstance;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.introspector.WBClass;
-import org.jboss.weld.introspector.WBMethod;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.log.LogProvider;
 import org.jboss.weld.log.Logging;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -69,7 +69,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    // Logger
    private static final LogProvider log = Logging.getLogProvider(AbstractClassBean.class);
    // The item representation
-   protected WBClass<T> annotatedItem;
+   protected WeldClass<T> annotatedItem;
    // The injectable fields of each type in the type hierarchy, with the actual type at the bottom 
    private List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
    // The initializer methods of each type in the type hierarchy, with the actual type at the bottom
@@ -81,8 +81,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    private Class<T> proxyClassForDecorators;
    
    private final ThreadLocal<Integer> decoratorStackPosition;
-   private WBMethod<?, ?> postConstruct;
-   private WBMethod<?, ?> preDestroy;
+   private WeldMethod<?, ?> postConstruct;
+   private WeldMethod<?, ?> preDestroy;
 
    /**
     * Constructor
@@ -90,7 +90,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
     * @param type The type
     * @param manager The Bean manager
     */
-   protected AbstractClassBean(WBClass<T> type, String idSuffix, BeanManagerImpl manager)
+   protected AbstractClassBean(WeldClass<T> type, String idSuffix, BeanManagerImpl manager)
    {
       super(idSuffix, manager);
       this.annotatedItem = type;
@@ -251,7 +251,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    @Override
    protected void initScopeType()
    {
-      for (WBClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getWBSuperclass())
+      for (WeldClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getWeldSuperclass())
       {
          Set<Annotation> scopeTypes = new HashSet<Annotation>();
          scopeTypes.addAll(clazz.getDeclaredMetaAnnotations(Scope.class));
@@ -292,7 +292,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
       super.preSpecialize(environment);
-      if (getAnnotatedItem().getWBSuperclass() == null || getAnnotatedItem().getWBSuperclass().getJavaClass().equals(Object.class))
+      if (getAnnotatedItem().getWeldSuperclass() == null || getAnnotatedItem().getWeldSuperclass().getJavaClass().equals(Object.class))
       {
          throw new DefinitionException("Specializing bean must extend another bean " + toString());
       }
@@ -304,7 +304,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
     * @return The annotated item
     */
    @Override
-   public WBClass<T> getAnnotatedItem()
+   public WeldClass<T> getAnnotatedItem()
    {
       return annotatedItem;
    }
@@ -350,7 +350,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
 
    public void postConstruct(T instance)
    {
-      WBMethod<?, ?> postConstruct = getPostConstruct();
+      WeldMethod<?, ?> postConstruct = getPostConstruct();
       if (postConstruct != null)
       {
          try
@@ -366,7 +366,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
 
    public void preDestroy(T instance)
    {
-      WBMethod<?, ?> preDestroy = getPreDestroy();
+      WeldMethod<?, ?> preDestroy = getPreDestroy();
       if (preDestroy != null)
       {
          try
@@ -402,7 +402,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
     * 
     * @return The post-construct method
     */
-   public WBMethod<?, ?> getPostConstruct()
+   public WeldMethod<?, ?> getPostConstruct()
    {
       return postConstruct;
    }
@@ -412,7 +412,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
     * 
     * @return The pre-destroy method
     */
-   public WBMethod<?, ?> getPreDestroy()
+   public WeldMethod<?, ?> getPreDestroy()
    {
       return preDestroy;
    }
@@ -455,8 +455,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
          builder.interceptPostConstruct().with(manager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotations.toArray(new Annotation[0])).toArray(new Interceptor<?>[]{}));
          builder.interceptPreDestroy().with(manager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotations.toArray(new Annotation[0])).toArray(new Interceptor<?>[]{}));
 
-         List<WBMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
-         for (WBMethod<?, ?> method : businessMethods)
+         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
+         for (WeldMethod<?, ?> method : businessMethods)
          {
             List<Annotation> methodBindingAnnotations = new ArrayList<Annotation>(classBindingAnnotations);
             methodBindingAnnotations.addAll(flattenInterceptorBindings(manager, method.getAnnotations()));

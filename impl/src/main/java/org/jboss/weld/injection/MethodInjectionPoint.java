@@ -35,17 +35,17 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.introspector.ForwardingWBMethod;
-import org.jboss.weld.introspector.WBMethod;
-import org.jboss.weld.introspector.WBParameter;
+import org.jboss.weld.introspector.ForwardingWeldMethod;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
 
-public class MethodInjectionPoint<T, X> extends ForwardingWBMethod<T, X> implements WBInjectionPoint<T, Method>
+public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> implements WeldInjectionPoint<T, Method>
 {
 
    private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?, ?>>
    {
 
-      protected abstract List<? extends WBParameter<?, ?>> delegate();
+      protected abstract List<? extends WeldParameter<?, ?>> delegate();
 
       protected abstract Bean<?> declaringBean();;
 
@@ -66,15 +66,15 @@ public class MethodInjectionPoint<T, X> extends ForwardingWBMethod<T, X> impleme
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
    private final Bean<?> declaringBean;
-   private final WBMethod<T, X> method;
+   private final WeldMethod<T, X> method;
    private final boolean delegate;
 
-   public static <T, X> MethodInjectionPoint<T, X> of(Bean<?> declaringBean, WBMethod<T, X> method)
+   public static <T, X> MethodInjectionPoint<T, X> of(Bean<?> declaringBean, WeldMethod<T, X> method)
    {
       return new MethodInjectionPoint<T, X>(declaringBean, method);
    }
 
-   protected MethodInjectionPoint(Bean<?> declaringBean, WBMethod<T, X> method)
+   protected MethodInjectionPoint(Bean<?> declaringBean, WeldMethod<T, X> method)
    {
       this.declaringBean = declaringBean;
       this.method = method;
@@ -82,7 +82,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWBMethod<T, X> impleme
    }
 
    @Override
-   protected WBMethod<T, X> delegate()
+   protected WeldMethod<T, X> delegate()
    {
       return method;
    }
@@ -202,7 +202,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWBMethod<T, X> impleme
    @Override
    public List<ParameterInjectionPoint<?, ?>> getWBParameters()
    {
-      final List<? extends WBParameter<?, ?>> delegate = super.getWBParameters();
+      final List<? extends WeldParameter<?, ?>> delegate = super.getWBParameters();
       return new ForwardingParameterInjectionPointList()
       {
 
@@ -213,7 +213,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWBMethod<T, X> impleme
          }
 
          @Override
-         protected List<? extends WBParameter<?, ?>> delegate()
+         protected List<? extends WeldParameter<?, ?>> delegate()
          {
             return delegate;
          }
