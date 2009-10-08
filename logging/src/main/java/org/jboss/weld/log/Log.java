@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.log;
+package org.jboss.weld.log;
 
 /**
  * <p>A <code>Log</code> object is used by RI classes to log messages.

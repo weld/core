@@ -1,8 +1,8 @@
 package org.jboss.webbeans.test.log;
 
-import org.jboss.webbeans.log.Log;
-import org.jboss.webbeans.log.LogProvider;
-import org.jboss.webbeans.log.Logging;
+import org.jboss.weld.log.Log;
+import org.jboss.weld.log.LogProvider;
+import org.jboss.weld.log.Logging;
 import org.testng.annotations.Test;
 
 /**
