@@ -1,20 +1,20 @@
 package org.jboss.webbeans.bootstrap.api.test;
 
-import org.jboss.webbeans.bootstrap.api.Bootstrap;
-import org.jboss.webbeans.bootstrap.api.Environments;
-import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
-import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.webbeans.bootstrap.api.test.MockDeployment.MockBeanDeploymentArchive;
-import org.jboss.webbeans.bootstrap.spi.Deployment;
-import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.injection.spi.EjbInjectionServices;
-import org.jboss.webbeans.injection.spi.JpaInjectionServices;
-import org.jboss.webbeans.injection.spi.ResourceInjectionServices;
-import org.jboss.webbeans.resources.spi.ResourceLoader;
-import org.jboss.webbeans.security.spi.SecurityServices;
-import org.jboss.webbeans.servlet.api.ServletServices;
-import org.jboss.webbeans.transaction.spi.TransactionServices;
-import org.jboss.webbeans.validation.spi.ValidationServices;
+import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.api.Environments;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
+import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.ejb.spi.EjbServices;
+import org.jboss.weld.injection.spi.EjbInjectionServices;
+import org.jboss.weld.injection.spi.JpaInjectionServices;
+import org.jboss.weld.injection.spi.ResourceInjectionServices;
+import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.security.spi.SecurityServices;
+import org.jboss.weld.servlet.api.ServletServices;
+import org.jboss.weld.transaction.spi.TransactionServices;
+import org.jboss.weld.validation.spi.ValidationServices;
 import org.testng.annotations.Test;
 
 public class BootstrapTest

@@ -18,7 +18,7 @@ package org.jboss.webbeans.bootstrap.api.test;
 
 import javax.validation.ValidatorFactory;
 
-import org.jboss.webbeans.validation.spi.ValidationServices;
+import org.jboss.weld.validation.spi.ValidationServices;
 
 /**
  * @author pmuir

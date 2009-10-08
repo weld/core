@@ -2,7 +2,7 @@ package org.jboss.webbeans.bootstrap.api.test;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.webbeans.injection.spi.ResourceInjectionServices;
+import org.jboss.weld.injection.spi.ResourceInjectionServices;
 
 public class MockResourceServices extends MockService implements ResourceInjectionServices
 {

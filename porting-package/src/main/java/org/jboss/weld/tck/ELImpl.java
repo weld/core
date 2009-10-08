@@ -5,8 +5,8 @@ import javax.el.ELContext;
 import org.jboss.jsr299.tck.api.JSR299Configuration;
 import org.jboss.testharness.api.Configurable;
 import org.jboss.testharness.api.Configuration;
-import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.mock.el.EL;
+import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.mock.el.EL;
 
 public class ELImpl implements org.jboss.jsr299.tck.spi.EL, Configurable
 {

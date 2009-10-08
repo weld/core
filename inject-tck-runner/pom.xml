@@ -1,26 +1,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
-      <artifactId>webbeans-parent</artifactId>
-      <groupId>org.jboss.webbeans</groupId>
+      <artifactId>weld-parent</artifactId>
+      <groupId>org.jboss.weld</groupId>
       <version>1.0.0-SNAPSHOT</version>
       <relativePath>../parent</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.webbeans</groupId>
-   <artifactId>webbeans-inject-tck-runner</artifactId>
-   <name>javax.inject TCK runner for Web Beans</name>
-   <description>Aggregates dependencies and run's the javax.inject TCK for Web Beans</description>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-inject-tck-runner</artifactId>
+   <name>javax.inject TCK runner for Weld</name>
+   <description>Aggregates dependencies and run's the javax.inject TCK for Weld</description>
    
    <dependencies>
 
       <dependency>
-         <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-core</artifactId>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core</artifactId>
       </dependency>
 
       <dependency>
-         <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-porting-package</artifactId>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-porting-package</artifactId>
       </dependency>
 
       <dependency>

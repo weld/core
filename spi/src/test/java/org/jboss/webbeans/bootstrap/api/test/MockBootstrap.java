@@ -2,14 +2,14 @@ package org.jboss.webbeans.bootstrap.api.test;
 
 import java.util.Set;
 
-import org.jboss.webbeans.bootstrap.api.Bootstrap;
-import org.jboss.webbeans.bootstrap.api.Environment;
-import org.jboss.webbeans.bootstrap.api.Service;
-import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
-import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.webbeans.bootstrap.spi.Deployment;
-import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.manager.api.WebBeansManager;
+import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.api.Environment;
+import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.context.api.BeanStore;
+import org.jboss.weld.manager.api.WebBeansManager;
 
 public class MockBootstrap implements Bootstrap
 {

@@ -6,7 +6,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.jboss.webbeans.injection.spi.JpaInjectionServices;
+import org.jboss.weld.injection.spi.JpaInjectionServices;
 
 public class MockJpaServices extends MockService implements JpaInjectionServices
 {

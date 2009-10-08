@@ -3,7 +3,7 @@ package org.jboss.webbeans.bootstrap.api.test;
 import javax.transaction.Synchronization;
 import javax.transaction.UserTransaction;
 
-import org.jboss.webbeans.transaction.spi.TransactionServices;
+import org.jboss.weld.transaction.spi.TransactionServices;
 
 public class MockTransactionServices extends MockService implements TransactionServices
 {

@@ -1,7 +1,7 @@
 package org.jboss.weld.tck;
 
 import org.jboss.jsr299.tck.spi.Beans;
-import org.jboss.webbeans.util.Proxies;
+import org.jboss.weld.util.Proxies;
 
 /**
  * Implements the Beans SPI for the TCK specifically for the JBoss RI.

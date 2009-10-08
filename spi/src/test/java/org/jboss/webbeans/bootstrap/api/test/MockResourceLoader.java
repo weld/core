@@ -3,7 +3,7 @@ package org.jboss.webbeans.bootstrap.api.test;
 import java.net.URL;
 import java.util.Collection;
 
-import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 public class MockResourceLoader extends MockService implements ResourceLoader
 {

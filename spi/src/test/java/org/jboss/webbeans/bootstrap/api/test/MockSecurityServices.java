@@ -18,7 +18,7 @@ package org.jboss.webbeans.bootstrap.api.test;
 
 import java.security.Principal;
 
-import org.jboss.webbeans.security.spi.SecurityServices;
+import org.jboss.weld.security.spi.SecurityServices;
 
 /**
  * @author pmuir

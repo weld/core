@@ -1,11 +1,11 @@
 package org.jboss.weld.tck;
 
 import org.jboss.jsr299.tck.spi.Contexts;
-import org.jboss.webbeans.Container;
-import org.jboss.webbeans.context.AbstractContext;
-import org.jboss.webbeans.context.AbstractMapContext;
-import org.jboss.webbeans.context.ContextLifecycle;
-import org.jboss.webbeans.context.RequestContext;
+import org.jboss.weld.Container;
+import org.jboss.weld.context.AbstractContext;
+import org.jboss.weld.context.AbstractMapContext;
+import org.jboss.weld.context.ContextLifecycle;
+import org.jboss.weld.context.RequestContext;
 
 public class ContextsImpl implements Contexts<AbstractContext>
 {

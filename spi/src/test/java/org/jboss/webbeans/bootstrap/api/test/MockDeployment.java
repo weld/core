@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
-import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.webbeans.bootstrap.spi.Deployment;
-import org.jboss.webbeans.ejb.spi.EjbDescriptor;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
 
 /**
  * @author pmuir

@@ -18,7 +18,7 @@ package org.jboss.webbeans.bootstrap.api.test;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.webbeans.injection.spi.EjbInjectionServices;
+import org.jboss.weld.injection.spi.EjbInjectionServices;
 
 /**
  * @author pmuir

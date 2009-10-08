@@ -16,8 +16,8 @@ import org.atinject.tck.auto.Tire;
 import org.atinject.tck.auto.V8Engine;
 import org.atinject.tck.auto.accessories.Cupholder;
 import org.atinject.tck.auto.accessories.SpareTire;
-import org.jboss.webbeans.mock.MockEELifecycle;
-import org.jboss.webbeans.mock.TestContainer;
+import org.jboss.weld.mock.MockEELifecycle;
+import org.jboss.weld.mock.TestContainer;
 
 /**
  * Configure the AtInject TCK for use with the 299 RI

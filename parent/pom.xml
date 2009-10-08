@@ -1,22 +1,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.webbeans</groupId>
-   <artifactId>webbeans-parent</artifactId>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-parent</artifactId>
    <packaging>pom</packaging>
    <version>1.0.0-SNAPSHOT</version>
    
    <parent>
-      <groupId>org.jboss.webbeans</groupId>
-      <artifactId>webbeans-version-matrix</artifactId>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-version-matrix</artifactId>
       <version>1.0.0-SNAPSHOT</version>
       <relativePath>../version-matrix</relativePath>
    </parent>
 
-   <name>Web Beans, the reference implementation of JSR-299</name>
-   <url>http://www.seamframework.org/WebBeans</url>
+   <name>Weld, the reference implementation of JSR-299</name>
+   <url>http://www.seamframework.org/Weld</url>
 
    <description>
-      The reference implementation of JSR 299: Web Beans
+      The reference implementation of JSR 299: Weld
    </description>
 
    <developers>
@@ -68,7 +68,7 @@
            <artifactId>maven-release-plugin</artifactId>
            <version>2.0-beta-8</version>
            <configuration>
-             <tagBase>https://svn.jboss.org/repos/webbeans/ri/tags</tagBase>
+             <tagBase>https://svn.jboss.org/repos/weld/ri/tags</tagBase>
              <autoVersionSubmodules>true</autoVersionSubmodules>
            </configuration>
          </plugin>
@@ -211,7 +211,7 @@
 
    <issueManagement>
       <system>JIRA</system>
-      <url>http://jira.jboss.org/browse/WBRI</url>
+      <url>http://jira.jboss.org/browse/WELD</url>
    </issueManagement>
 
    <inceptionYear>2008</inceptionYear>
@@ -228,21 +228,21 @@
    </licenses>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/trunk/parent</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/trunk/parent</developerConnection>
-      <url>http://fisheye.jboss.org/browse/WebBeans/ri</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/ri/trunk/parent</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/ri/trunk/parent</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld/ri</url>
    </scm>
 
    <distributionManagement>
       <repository>
-         <id>repository.jboss.org</id>
-         <name>JBoss Releases Repository</name>
-         <url>dav:https://svn.jboss.org/repos/repository.jboss.org/maven2</url>
+         <id>oss.sonatype.org</id>
+         <name>Sonatype Nexus Maven Repository</name>
+         <url>dav:https://oss.sonatype.org/content/repositories/jboss-releases/</url>
       </repository>
       <snapshotRepository>
-         <id>snapshots.jboss.org</id>
-         <name>JBoss Snapshot Repository</name>
-         <url>dav:https://snapshots.jboss.org/maven2</url>
+         <id>oss.sonatype.org</id>
+         <name>Sonatype Nexus Snapshot Repository</name>
+         <url>dav:https://oss.sonatype.org/content/repositories/jboss-snapshots/</url>
       </snapshotRepository>
    </distributionManagement>
 
@@ -258,7 +258,7 @@
                </formats>
                <instrumentation>
                   <ignores>
-                     <ignore>javax.webbeans.*</ignore>
+                     <ignore>javax.weld.*</ignore>
                   </ignores>
                </instrumentation>
             </configuration>

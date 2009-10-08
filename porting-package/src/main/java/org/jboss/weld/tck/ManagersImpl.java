@@ -6,10 +6,10 @@ import javax.servlet.ServletContext;
 
 import org.jboss.jsr299.tck.spi.Managers;
 import org.jboss.testharness.impl.runner.servlet.ServletTestRunner;
-import org.jboss.webbeans.DefinitionException;
-import org.jboss.webbeans.DeploymentException;
-import org.jboss.webbeans.mock.MockServletContext;
-import org.jboss.webbeans.servlet.ServletHelper;
+import org.jboss.weld.DefinitionException;
+import org.jboss.weld.DeploymentException;
+import org.jboss.weld.mock.MockServletContext;
+import org.jboss.weld.servlet.ServletHelper;
 
 public class ManagersImpl implements Managers
 {

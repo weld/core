@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.webbeans</groupId>
-   <artifactId>webbeans-version-matrix</artifactId>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-version-matrix</artifactId>
    <packaging>pom</packaging>
    <version>1.0.0-SNAPSHOT</version>
 
-   <name>Web Beans Version Matrix</name>
-   <url>http://www.seamframework.org/WebBeans</url>
+   <name>Weld Version Matrix</name>
+   <url>http://www.seamframework.org/Weld</url>
 
    <description>
-      A version matrix for a Web Beans projects
+      A version matrix for Weld projects
    </description>
 
    <repositories>
@@ -36,6 +36,17 @@
             <updatePolicy>never</updatePolicy>
          </snapshots>
       </repository>
+      <repository>
+        <id>oss.sonatype.org</id>
+        <name>Sonatype Nexus Snapshots Repository</name>
+        <url>http://oss.sonatype.org/content/repositories/jboss-snapshots/</url>
+        <releases>
+          <enabled>false</enabled>
+        </releases>
+        <snapshots>
+          <enabled>true</enabled>
+        </snapshots>
+      </repository>
    </repositories>
 
    <pluginRepositories>
@@ -48,10 +59,10 @@
    
    <properties>
       <jsr299.tck.version>1.0.0-SNAPSHOT</jsr299.tck.version>
-      <webbeans.version>1.0.0-SNAPSHOT</webbeans.version>
-      <webbeans.servlet.version>1.0.0-SNAPSHOT</webbeans.servlet.version>
-      <webbeans.se.version>1.0.0-SNAPSHOT</webbeans.se.version>
-      <webbeans.wicket.version>1.0.0-SNAPSHOT</webbeans.wicket.version>
+      <weld.version>1.0.0-SNAPSHOT</weld.version>
+      <weld.servlet.version>1.0.0-SNAPSHOT</weld.servlet.version>
+      <weld.se.version>1.0.0-SNAPSHOT</weld.se.version>
+      <weld.wicket.version>1.0.0-SNAPSHOT</weld.wicket.version>
       <jboss.test.harness.version>1.0.0-SNAPSHOT</jboss.test.harness.version>
       <jetty.version>6.1.21</jetty.version>
       <wicket.version>1.4.1</wicket.version>
@@ -294,69 +305,69 @@
          </dependency>
 
          <dependency>
-            <groupId>org.jboss.webbeans</groupId>
+            <groupId>org.jboss.weld</groupId>
             <artifactId>jsr299-api</artifactId>
-            <version>${webbeans.version}</version>
+            <version>${weld.version}</version>
          </dependency>
          
          <dependency>
-            <groupId>org.jboss.webbeans</groupId>
-            <artifactId>webbeans-api</artifactId>
-            <version>${webbeans.version}</version>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api</artifactId>
+            <version>${weld.version}</version>
          </dependency>
          
          <dependency>
-            <groupId>org.jboss.webbeans</groupId>
-            <artifactId>webbeans-core</artifactId>
-            <version>${webbeans.version}</version>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+            <version>${weld.version}</version>
          </dependency>
 
          <dependency>
-            <groupId>org.jboss.webbeans</groupId>
-            <artifactId>webbeans-spi</artifactId>
-            <version>${webbeans.version}</version>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-spi</artifactId>
+            <version>${weld.version}</version>
          </dependency>
          
          <dependency>
-            <groupId>org.jboss.webbeans</groupId>
-            <artifactId>webbeans-porting-package</artifactId>
-            <version>${webbeans.version}</version>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-porting-package</artifactId>
+            <version>${weld.version}</version>
          </dependency>
          
          <dependency>
-            <groupId>org.jboss.webbeans</groupId>
-            <artifactId>webbeans-logging</artifactId>
-            <version>${webbeans.version}</version>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-logging</artifactId>
+            <version>${weld.version}</version>
          </dependency>
          
          <dependency>
-            <groupId>org.jboss.webbeans</groupId>
-            <artifactId>webbeans-core-test</artifactId>
-            <version>${webbeans.version}</version>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-test</artifactId>
+            <version>${weld.version}</version>
          </dependency>
          
          <dependency>
-            <groupId>org.jboss.webbeans</groupId>
-            <artifactId>webbeans-se</artifactId>
-            <version>${webbeans.se.version}</version>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-se</artifactId>
+            <version>${weld.se.version}</version>
          </dependency>
          
          <dependency>
-            <groupId>org.jboss.webbeans.servlet</groupId>
-            <artifactId>webbeans-servlet-int</artifactId>
-            <version>${webbeans.servlet.version}</version>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-int</artifactId>
+            <version>${weld.servlet.version}</version>
          </dependency>
          
          <dependency>
-            <groupId>org.jboss.webbeans.servlet</groupId>
-            <artifactId>webbeans-servlet</artifactId>
-            <version>${webbeans.servlet.version}</version>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet</artifactId>
+            <version>${weld.servlet.version}</version>
          </dependency>
          
          <dependency>
-            <groupId>org.jboss.webbeans</groupId>
-            <artifactId>webbeans-wicket</artifactId>
-            <version>${webbeans.wicket.version}</version>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-wicket</artifactId>
+            <version>${weld.wicket.version}</version>
          </dependency>
 
          <dependency>
@@ -621,21 +632,21 @@
 
    <distributionManagement>
       <repository>
-         <id>repository.jboss.org</id>
-          <name>JBoss Releases Repository</name>
-         <url>dav:https://svn.jboss.org/repos/repository.jboss.org/maven2</url>
+         <id>oss.sonatype.org</id>
+          <name>Sonatype Nexus Releases Repository</name>
+         <url>dav:http://oss.sonatype.org/content/repositories/jboss-releases/</url>
       </repository>
       <snapshotRepository>
-         <id>snapshots.jboss.org</id>
-         <name>JBoss Snapshot Repository</name>
-         <url>dav:https://snapshots.jboss.org/maven2</url>
+         <id>oss.sonatype.org</id>
+         <name>Sonatype Nexus Snapshots Repository</name>
+         <url>dav:https://oss.sonatype.org/content/repositories/jboss-snapshots/</url>
       </snapshotRepository>
    </distributionManagement>
    
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/trunk/version-matrix</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/trunk/version-matrix</developerConnection>
-      <url>http://fisheye.jboss.org/browse/WebBeans/ri</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/ri/trunk/version-matrix</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/ri/trunk/version-matrix</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld/ri</url>
    </scm>
 
 </project>

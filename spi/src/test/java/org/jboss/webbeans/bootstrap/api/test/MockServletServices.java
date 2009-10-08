@@ -18,8 +18,8 @@ package org.jboss.webbeans.bootstrap.api.test;
 
 import javax.servlet.ServletContext;
 
-import org.jboss.webbeans.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.webbeans.servlet.api.ServletServices;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.servlet.api.ServletServices;
 
 /**
  * @author pmuir

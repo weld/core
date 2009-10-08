@@ -16,7 +16,7 @@
  */
 package org.jboss.webbeans.bootstrap.api.test;
 
-import org.jboss.webbeans.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.Service;
 
 /**
  * @author pmuir

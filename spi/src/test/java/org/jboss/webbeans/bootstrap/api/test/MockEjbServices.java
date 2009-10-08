@@ -2,10 +2,10 @@ package org.jboss.webbeans.bootstrap.api.test;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.webbeans.ejb.api.SessionObjectReference;
-import org.jboss.webbeans.ejb.spi.EjbDescriptor;
-import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.ejb.spi.InterceptorBindings;
+import org.jboss.weld.ejb.api.SessionObjectReference;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.ejb.spi.EjbServices;
+import org.jboss.weld.ejb.spi.InterceptorBindings;
 
 public class MockEjbServices extends MockService implements EjbServices
 {

@@ -19,16 +19,16 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
-      <artifactId>webbeans-parent</artifactId>
-      <groupId>org.jboss.webbeans</groupId>
+      <artifactId>weld-parent</artifactId>
+      <groupId>org.jboss.weld</groupId>
       <version>1.0.0-SNAPSHOT</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
 
-   <groupId>org.jboss.webbeans</groupId>
-   <artifactId>webbeans-osgi-bundle</artifactId>
-   <name>Web Beans OSGi Bundle</name>
-   <description>Web Beans implementation packaged as an OSGi bundle</description>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-osgi-bundle</artifactId>
+   <name>Weld OSGi Bundle</name>
+   <description>Weld implementation packaged as an OSGi bundle</description>
 
    <developers>
         <developer>
@@ -59,10 +59,10 @@
                         <_include>-osgi.bundle</_include>
 
                         <Embed-Dependency>*; scope=compile; inline=true</Embed-Dependency>
-                        <_exportcontents>javax.event; javax.context; javax.webbeans; javax.decorator; javax.inject; javax.enterprise.*; version=${osgi.version},
-                                         org.jboss.webbeans.context; org.jboss.webbeans.ejb; org.jboss.webbeans.bean; org.jboss.webbeans.bean.proxy; org.jboss.webbeans.*.api.*; org.jboss.webbeans.*.spi.*; org.jboss.webbeans.conversation; org.jboss.webbeans; org.jboss.webbeans.bootstrap; org.jboss.webbeans.introspector; org.jboss.webbeans.servlet; version=${osgi.version},
-                                         org.jboss.webbeans.el; version=${osgi.version},
-                                         org.jboss.webbeans.jsf; include:="WebBeansPhaseListener"; version=${osgi.version},
+                        <_exportcontents>javax.event; javax.context; javax.weld; javax.decorator; javax.inject; javax.enterprise.*; version=${osgi.version},
+                                         org.jboss.weld.context; org.jboss.weld.ejb; org.jboss.weld.bean; org.jboss.weld.bean.proxy; org.jboss.weld.*.api.*; org.jboss.weld.*.spi.*; org.jboss.weld.conversation; org.jboss.weld; org.jboss.weld.bootstrap; org.jboss.weld.introspector; org.jboss.weld.servlet; version=${osgi.version},
+                                         org.jboss.weld.el; version=${osgi.version},
+                                         org.jboss.weld.jsf; include:="WeldPhaseListener"; version=${osgi.version},
                                          javassist.util.proxy;version="3.8.1.GA"
                         </_exportcontents>
                         <Import-Package>javax.annotation, javax.interceptor, *;resolution:=optional</Import-Package>
@@ -93,31 +93,31 @@
    </build>
    <dependencies>
      <dependency>
-       <groupId>org.jboss.webbeans</groupId>
+       <groupId>org.jboss.weld</groupId>
 
        <artifactId>jsr299-api</artifactId>
        <version>${project.version}</version>
      </dependency>
      <dependency>
-       <groupId>org.jboss.webbeans</groupId>
-       <artifactId>webbeans-api</artifactId>
+       <groupId>org.jboss.weld</groupId>
+       <artifactId>weld-api</artifactId>
        <version>${project.version}</version>
 
      </dependency>
      <dependency>
-       <groupId>org.jboss.webbeans</groupId>
-       <artifactId>webbeans-spi</artifactId>
+       <groupId>org.jboss.weld</groupId>
+       <artifactId>weld-spi</artifactId>
        <version>${project.version}</version>
      </dependency>
      <dependency>
 
-       <groupId>org.jboss.webbeans</groupId>
-       <artifactId>webbeans-core</artifactId>
+       <groupId>org.jboss.weld</groupId>
+       <artifactId>weld-core</artifactId>
        <version>${project.version}</version>
      </dependency>
      <dependency>
-       <groupId>org.jboss.webbeans</groupId>
-       <artifactId>webbeans-logging</artifactId>
+       <groupId>org.jboss.weld</groupId>
+       <artifactId>weld-logging</artifactId>
 
        <version>${project.version}</version>
      </dependency>

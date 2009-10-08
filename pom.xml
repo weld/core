@@ -1,29 +1,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.webbeans</groupId>
-   <artifactId>webbeans-build-aggregator</artifactId>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-build-aggregator</artifactId>
    <packaging>pom</packaging>
    <version>1.0.0-SNAPSHOT</version>
 
-   <name>Web Beans Build Aggregator</name>
-   <url>http://www.seamframework.org/WebBeans</url>
+   <name>Weld Build Aggregator</name>
+   <url>http://www.seamframework.org/Weld</url>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/trunk</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/trunk</developerConnection>
-      <url>http://fisheye.jboss.org/browse/WebBeans</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/ri/trunk</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/ri/trunk</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld</url>
    </scm>
 
    <distributionManagement>
        <repository>
-          <id>repository.jboss.org</id>
-          <name>JBoss Releases Repository</name>
-          <url>dav:https://svn.jboss.org/repos/repository.jboss.org/maven2</url>
+          <id>oss.sonatype.org</id>
+          <name>Sonatype Nexus Maven Repository</name>
+          <url>dav:http://oss.sonatype.org/content/repositories/jboss-releases/</url>
       </repository>
       <snapshotRepository>
          <id>snapshots.jboss.org</id>
-         <name>JBoss Snapshot Repository</name>
-         <url>dav:https://snapshots.jboss.org/maven2</url>
+         <name>Sonatype Nexus Snapshot Repository</name>
+         <url>dav:http://oss.sonatype.org/content/repositories/jboss-snapshots/</url>
       </snapshotRepository>
    </distributionManagement>
 
