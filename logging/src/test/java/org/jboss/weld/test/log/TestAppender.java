@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.log;
+package org.jboss.weld.test.log;
 
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.varia.NullAppender;

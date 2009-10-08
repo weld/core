@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.log;
+package org.jboss.weld.test.log;
 
 import org.jboss.weld.log.Log;
 import org.jboss.weld.log.LogProvider;
