@@ -130,6 +130,20 @@ public class BeanDeployment
    
    public void deployBeans(Environment environment)
    {
+      for (ExtensionBean bean : extensionBeanDeployerEnvironment.getBeans())
+      {
+         if (deployment.loadBeanDeploymentArchive(bean.getBeanClass()).equals(beanDeploymentArchive))
+         {
+            beanDeployer.getManager().addBean(bean);
+         }
+      }
+      for (ObserverMethodImpl<?, ?> observerMethod : extensionBeanDeployerEnvironment.getObservers())
+      {
+         if (deployment.loadBeanDeploymentArchive(observerMethod.getBean().getBeanClass()).equals(beanDeploymentArchive))
+         {
+            beanDeployer.getManager().addObserver(observerMethod);
+         }
+      }
       beanDeployer.addClasses(beanDeploymentArchive.getBeanClasses());
       beanDeployer.getEnvironment().addBean(new ManagerBean(beanManager));
       beanDeployer.getEnvironment().addBean(new InjectionPointBean(beanManager));
@@ -155,20 +169,6 @@ public class BeanDeployment
       {
          beanDeployer.getEnvironment().addBean(new DefaultValidatorBean(beanManager));
          beanDeployer.getEnvironment().addBean(new DefaultValidatorFactoryBean(beanManager));
-      }
-      for (ExtensionBean bean : extensionBeanDeployerEnvironment.getBeans())
-      {
-         if (deployment.loadBeanDeploymentArchive(bean.getBeanClass()).equals(beanDeploymentArchive))
-         {
-            beanDeployer.getManager().addBean(bean);
-         }
-      }
-      for (ObserverMethodImpl<?, ?> observerMethod : extensionBeanDeployerEnvironment.getObservers())
-      {
-         if (deployment.loadBeanDeploymentArchive(observerMethod.getBean().getBeanClass()).equals(beanDeploymentArchive))
-         {
-            beanDeployer.getManager().addObserver(observerMethod);
-         }
       }
       beanDeployer.createBeans().deploy();
    }

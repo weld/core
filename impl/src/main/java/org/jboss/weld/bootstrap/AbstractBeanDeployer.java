@@ -23,6 +23,7 @@ import java.util.Set;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.inject.spi.ProcessManagedBean;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
@@ -47,6 +48,7 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.ee.EEResourceProducerField;
 import org.jboss.weld.bean.ee.PersistenceContextProducerField;
+import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.bootstrap.events.ProcessInjectionTargetImpl;
 import org.jboss.weld.bootstrap.events.ProcessManagedBeanImpl;
 import org.jboss.weld.bootstrap.events.ProcessObserverMethodImpl;
@@ -133,7 +135,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       {
          log.debug("Observer : " + observer);
          observer.initialize();
-         createAndFireProcessObserverMethodEvent(observer);
+         fireProcessObserverMethodEvent(observer);
          manager.addObserver(observer);
       }
       
@@ -223,6 +225,13 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       }
    }
    
+   protected <X> ProcessAnnotatedTypeImpl<X> fireProcessAnnotatedTypeEvent(WeldClass<X> clazz)
+   {
+      ProcessAnnotatedTypeImpl<X> payload = new ProcessAnnotatedTypeImpl<X>(clazz) {};
+      fireEvent(payload, ProcessAnnotatedType.class, clazz.getBaseType());
+      return payload;
+   }
+   
    private <X> void fireProcessManagedBeanEvent(ManagedBean<X> bean)
    {
       ProcessManagedBeanImpl<X> payload = new ProcessManagedBeanImpl<X>(bean) {};
@@ -245,7 +254,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       }
    }
    
-   private void fireEvent(Object payload, Type rawType, Type... actualTypeArguments)
+   protected void fireEvent(Object payload, Type rawType, Type... actualTypeArguments)
    {
       Type eventType = new ParameterizedTypeImpl(rawType, actualTypeArguments, null);
       manager.fireEvent(eventType, payload);
@@ -273,7 +282,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       getEnvironment().addObserver(observer);
    }
    
-   private <X, T> void createAndFireProcessObserverMethodEvent(ObserverMethodImpl<X, T> observer)
+   private <X, T> void fireProcessObserverMethodEvent(ObserverMethodImpl<X, T> observer)
    {
       ProcessObserverMethodImpl<X, T> payload = new ProcessObserverMethodImpl<X, T>(observer.getMethod(), observer) {};
       fireEvent(payload, ProcessObserverMethod.class, observer.getMethod().getDeclaringType().getBaseType(), observer.getObservedType());

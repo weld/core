@@ -185,9 +185,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
    private transient final ClientProxyProvider clientProxyProvider;
    
    // TODO review this structure
-   private transient final Map<String, Bean<?>> passivationCapableBeans;
-   
-   // TODO review this structure
    private transient final Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans;
    
    // TODO This isn't right, specialization should follow accessibility rules, but I think we can enforce these in resolve()
@@ -293,7 +290,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
             new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
             new CopyOnWriteArrayList<String>(),
             new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
-            new ConcurrentHashMap<String, Bean<?>>(),
             new ClientProxyProvider(),
             contexts, 
             new CopyOnWriteArraySet<CurrentActivity>(), 
@@ -322,7 +318,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
             new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
             new CopyOnWriteArrayList<String>(),
             rootManager.getEnterpriseBeans(),
-            new ConcurrentHashMap<String, Bean<?>>(),
             rootManager.getClientProxyProvider(),
             rootManager.getContexts(), 
             new CopyOnWriteArraySet<CurrentActivity>(), 
@@ -358,8 +353,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             parentManager.getInterceptors(),
             registeredObservers, 
             namespaces, 
-            parentManager.getEnterpriseBeans(), 
-            parentManager.getPassivationCapableBeans(), 
+            parentManager.getEnterpriseBeans(),  
             parentManager.getClientProxyProvider(), 
             parentManager.getContexts(), 
             parentManager.getCurrentActivities(), 
@@ -386,7 +380,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
          List<ObserverMethod<?,?>> observers, 
          List<String> namespaces,
          Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans, 
-         Map<String, Bean<?>> riBeans, 
          ClientProxyProvider clientProxyProvider, 
          ListMultimap<Class<? extends Annotation>, Context> contexts, 
          Set<CurrentActivity> currentActivities, 
@@ -403,7 +396,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
       this.decorators = decorators;
       this.interceptors = interceptors;
       this.enterpriseBeans = enterpriseBeans;
-      this.passivationCapableBeans = riBeans;
       this.clientProxyProvider = clientProxyProvider;
       this.contexts = contexts;
       this.currentActivities = currentActivities;
@@ -569,7 +561,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       if (bean instanceof PassivationCapable)
       {
-         passivationCapableBeans.put(((PassivationCapable) bean).getId(), bean);
+         Container.instance().deploymentServices().get(ContextualStore.class).putIfAbsent(bean);
       }
       registerBeanNamespace(bean);
       for (BeanManagerImpl childActivity : childActivities)
@@ -583,7 +575,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    public void addDecorator(DecoratorImpl<?> bean)
    {
       decorators.add(bean);
-      passivationCapableBeans.put(bean.getId(), bean);
+      getServices().get(ContextualStore.class).putIfAbsent(bean);
       decoratorResolver.clear();
    }
    
@@ -801,23 +793,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
    public Iterable<Bean<?>> getAccessibleBeans()
    {
       return createDynamicAccessibleIterable(Transform.BEAN);
-   }
-
-   /**
-    * Get all the spec defined beans, including interceptor beans and decorator
-    * beans. This is behavior is different to getBeans() which returns only
-    * resolvable beans.
-    * 
-    * TODO Rename method, merge into whatever we use for passivation capable or
-    * split out decorators
-    * 
-    * WARNING, method will go away!
-    * 
-    * @return
-    */
-   public Map<String, Bean<?>> getPassivationCapableBeans()
-   {
-      return Collections.unmodifiableMap(passivationCapableBeans);
    }
 
    public void addContext(Context context)
@@ -1314,7 +1289,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
    public Bean<?> getPassivationCapableBean(String id)
    {
-      throw new UnsupportedOperationException("Not yet implemented");
+      return getServices().get(ContextualStore.class).<Bean<Object>, Object>getContextual(id);
    }
 
    public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype)
