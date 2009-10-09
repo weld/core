@@ -233,19 +233,6 @@
       <url>http://fisheye.jboss.org/browse/Weld/ri</url>
    </scm>
 
-   <distributionManagement>
-      <repository>
-         <id>oss.sonatype.org</id>
-         <name>Sonatype Nexus Maven Repository</name>
-         <url>dav:https://oss.sonatype.org/content/repositories/jboss-releases/</url>
-      </repository>
-      <snapshotRepository>
-         <id>oss.sonatype.org</id>
-         <name>Sonatype Nexus Snapshot Repository</name>
-         <url>dav:https://oss.sonatype.org/content/repositories/jboss-snapshots/</url>
-      </snapshotRepository>
-   </distributionManagement>
-
    <reporting>
       <plugins>
          <plugin>

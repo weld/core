@@ -8,9 +8,7 @@
    <name>Weld Version Matrix</name>
    <url>http://www.seamframework.org/Weld</url>
 
-   <description>
-      A version matrix for Weld projects
-   </description>
+   <description>Version Matrix for Weld. JSR-299: Contexts and Dependency Injection for Java EE is an elegant set of new services for Java that draws upon ideas from JBoss Seam and Google Guice. While many of the features provided (dependency injection, contextual lifecycle, configuration, interception, event notification) are familiar, the innovative use of meta-annotations is uniquely expressive and typesafe. Weld is the Reference Implementation of CDI.</description>
 
    <repositories>
       <repository>
@@ -628,23 +626,23 @@
       </pluginManagement>
    </build>
 
-   <distributionManagement>
-      <repository>
-         <id>oss.sonatype.org</id>
-          <name>Sonatype Nexus Releases Repository</name>
-         <url>dav:http://oss.sonatype.org/content/repositories/jboss-releases/</url>
-      </repository>
-      <snapshotRepository>
-         <id>oss.sonatype.org</id>
-         <name>Sonatype Nexus Snapshots Repository</name>
-         <url>dav:https://oss.sonatype.org/content/repositories/jboss-snapshots/</url>
-      </snapshotRepository>
-   </distributionManagement>
-   
    <scm>
       <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/ri/trunk/version-matrix</connection>
       <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/ri/trunk/version-matrix</developerConnection>
       <url>http://fisheye.jboss.org/browse/Weld/ri</url>
    </scm>
+
+   <distributionManagement>
+       <repository>
+          <id>jboss-releases</id>
+          <name>Sonatype Nexus Maven Repository</name>
+          <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      </repository>
+      <snapshotRepository>
+         <id>jboss-snapshots</id>
+         <name>Sonatype Nexus Snapshot Repository</name>
+         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
+      </snapshotRepository>
+   </distributionManagement>
 
 </project>

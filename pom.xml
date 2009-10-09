@@ -16,14 +16,14 @@
 
    <distributionManagement>
        <repository>
-          <id>oss.sonatype.org</id>
+          <id>jboss-releases</id>
           <name>Sonatype Nexus Maven Repository</name>
-          <url>dav:http://oss.sonatype.org/content/repositories/jboss-releases/</url>
+          <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
       </repository>
       <snapshotRepository>
-         <id>snapshots.jboss.org</id>
+         <id>jboss-snapshots</id>
          <name>Sonatype Nexus Snapshot Repository</name>
-         <url>dav:http://oss.sonatype.org/content/repositories/jboss-snapshots/</url>
+         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
       </snapshotRepository>
    </distributionManagement>
 
