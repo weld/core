@@ -1,4 +1,4 @@
-package org.jboss.webbeans.examples.wicket;
+package org.jboss.weld.examples.wicket;
 
 
 import static java.lang.annotation.ElementType.FIELD;
@@ -18,7 +18,7 @@ import javax.inject.Qualifier;
 @Retention(RUNTIME)
 @Documented
 @Qualifier
-public @interface MaxNumber
+public @interface Random
 {
 
 }

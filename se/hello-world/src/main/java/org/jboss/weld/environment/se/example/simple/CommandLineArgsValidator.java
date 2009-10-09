@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.environment.se.example.simple;
+package org.jboss.weld.environment.se.example.simple;
 
 import java.util.ArrayList;
 import java.util.Collections;

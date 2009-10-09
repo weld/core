@@ -2,21 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <parent>
-      <groupId>org.jboss.webbeans</groupId>
-      <artifactId>webbeans-version-matrix</artifactId>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-version-matrix</artifactId>
       <version>1.0.0-SNAPSHOT</version>
    </parent>
-   <groupId>org.jboss.webbeans.examples</groupId>
-   <artifactId>webbeans-examples-parent</artifactId>
+   <groupId>org.jboss.weld.examples</groupId>
+   <artifactId>weld-examples-parent</artifactId>
    <packaging>pom</packaging>
    <version>1.0.0-SNAPSHOT</version>
-   <name>Web Beans Examples</name>
+   <name>Weld Examples</name>
 
    <description>
-      Examples for the reference implementation of JSR 299: Web Beans
+      Examples for the reference implementation of JSR 299: Weld
    </description>
    
-   <url>http://www.seamframework.org/WebBeans</url>
+   <url>http://www.seamframework.org/Weld</url>
    
    <repositories>
       <repository>
@@ -120,7 +120,7 @@
            <artifactId>maven-release-plugin</artifactId>
            <version>2.0-beta-8</version>
            <configuration>
-             <tagBase>https://svn.jboss.org/repos/webbeans/examples/tags</tagBase>
+             <tagBase>https://svn.jboss.org/repos/weld/examples/tags</tagBase>
              <autoVersionSubmodules>true</autoVersionSubmodules>
            </configuration>
          </plugin>
@@ -184,7 +184,7 @@
 
    <issueManagement>
       <system>JIRA</system>
-      <url>http://jira.jboss.org/browse/WBRI</url>
+      <url>http://jira.jboss.org/browse/WELD</url>
    </issueManagement>
 
    <inceptionYear>2008</inceptionYear>
@@ -201,8 +201,8 @@
    </licenses>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/examples</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/examples</developerConnection>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples</developerConnection>
       <url>http://fisheye.jboss.org/browse/WebBeans/ri/examples</url>
    </scm>
 
@@ -231,7 +231,7 @@
                </formats>
                <instrumentation>
                   <ignores>
-                     <ignore>javax.webbeans.*</ignore>
+                     <ignore>javax.weld.*</ignore>
                   </ignores>
                </instrumentation>
             </configuration>

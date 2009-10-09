@@ -14,36 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.environment.se.example.numberguess;
-
-import java.io.Serializable;
+package org.jboss.weld.environment.se.example.simple;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import org.jboss.webbeans.environment.se.events.ContainerInitialized;
+import javax.inject.Inject;
 
+/**
+ * @author Peter Royle
+ */
 @ApplicationScoped
-public class Generator implements Serializable
+public class HelloWorld
 {
-   private static final long serialVersionUID = -7213673465118041882L;
-   private java.util.Random random = new java.util.Random(System.currentTimeMillis());
-   private int maxNumber = 100;
 
-   java.util.Random getRandom()
-   {
-      return random;
-   }
+    @Inject
+    CommandLineArgsValidator argsValidator;
 
-   @Produces
-   @Random
-   int next()
-   {
-      return getRandom().nextInt(maxNumber);
-   }
+    public HelloWorld()
+    {
+    }
 
-   @Produces
-   @MaxNumber
-   int getMaxNumber()
-   {
-      return maxNumber;
-   }
+    /**
+     * Prints a hello message using the first name.
+     * @param firstName The first name.
+     */
+    public void printHello( @Observes ContainerInitialized init )
+    {
+        if (!argsValidator.hasErrors())
+        {
+            System.out.println( "Hello " + argsValidator.getValidParameters().get( 0 ) );
+        } else
+        {
+            System.out.println( "Please provide just one argument: your first name" );
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-package org.jboss.webbeans.examples.wicket;
+package org.jboss.weld.examples.wicket;
 
 import java.io.Serializable;
 

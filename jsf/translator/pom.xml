@@ -2,17 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <parent>
-      <groupId>org.jboss.webbeans.examples</groupId>
-      <artifactId>webbeans-examples-parent</artifactId>
+      <groupId>org.jboss.weld.examples</groupId>
+      <artifactId>weld-examples-parent</artifactId>
       <version>1.0.0-SNAPSHOT</version>
    </parent>
-   <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
-   <artifactId>webbeans-jsf-translator-parent</artifactId>
+   <groupId>org.jboss.weld.examples.jsf.translator</groupId>
+   <artifactId>weld-jsf-translator-parent</artifactId>
    <packaging>pom</packaging>
-   <name>Web Beans Examples: Translator (parent)</name>
+   <name>Weld Examples: Translator (parent)</name>
 
    <description>
-      Ear Example for the reference implementation of JSR 299: Web Beans
+      Ear Example for the reference implementation of JSR 299: Weld
    </description>
 
    <modules>
@@ -24,19 +24,19 @@
    <dependencyManagement>
       <dependencies>
          <dependency>
-            <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
-            <artifactId>webbeans-jsf-translator-war</artifactId>
+            <groupId>org.jboss.weld.examples.jsf.translator</groupId>
+            <artifactId>weld-jsf-translator-war</artifactId>
             <version>${project.version}</version>
             <type>war</type>
          </dependency>
          <dependency>
-            <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
-            <artifactId>webbeans-jsf-translator-ear</artifactId>
+            <groupId>org.jboss.weld.examples.jsf.translator</groupId>
+            <artifactId>weld-jsf-translator-ear</artifactId>
             <version>${project.version}</version>
          </dependency>
          <dependency>
-            <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
-            <artifactId>webbeans-jsf-translator-ejb</artifactId>
+            <groupId>org.jboss.weld.examples.jsf.translator</groupId>
+            <artifactId>weld-jsf-translator-ejb</artifactId>
             <version>${project.version}</version>
             <type>ejb</type>
          </dependency>

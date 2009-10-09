@@ -2,25 +2,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
-      <artifactId>webbeans-examples-parent</artifactId>
-      <groupId>org.jboss.webbeans.examples</groupId>
+      <artifactId>weld-examples-parent</artifactId>
+      <groupId>org.jboss.weld.examples</groupId>
       <version>1.0.0-SNAPSHOT</version>
       <relativePath>../../pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.webbeans.examples.se</groupId>
-   <artifactId>webbeans-se-numberguess</artifactId>
+   <groupId>org.jboss.weld.examples.se</groupId>
+   <artifactId>weld-se-numberguess</artifactId>
    <packaging>jar</packaging>
    <name>Number Guess SE</name>
 
    <dependencies>
       <dependency>
-         <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-se</artifactId>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-se</artifactId>
       </dependency>
       <dependency>
-         <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-core</artifactId>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core</artifactId>
          <scope>provided</scope>
       </dependency>
       <dependency>
@@ -37,7 +37,7 @@
             <configuration>
                <archive>
                   <manifest>
-                     <mainClass>org.jboss.webbeans.environment.se.StartMain</mainClass>
+                     <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
                   </manifest>
                </archive>
             </configuration>
@@ -68,7 +68,7 @@
                   <groupId>org.codehaus.mojo</groupId>
                   <artifactId>exec-maven-plugin</artifactId>
                   <configuration>
-                     <mainClass>org.jboss.webbeans.environment.se.StartMain</mainClass>
+                     <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
                   </configuration>
                </plugin>
             </plugins>
