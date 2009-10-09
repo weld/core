@@ -93,9 +93,9 @@
    </build>
    <dependencies>
      <dependency>
-       <groupId>org.jboss.weld</groupId>
+       <groupId>javax.enterprise</groupId>
 
-       <artifactId>jsr299-api</artifactId>
+       <artifactId>cdi-api</artifactId>
        <version>${project.version}</version>
      </dependency>
      <dependency>
