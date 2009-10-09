@@ -1271,7 +1271,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor)
    {
-      return getBean(descriptor);
+      return getBean(descriptor).getInjectionTarget();
    }
 
    public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean)

@@ -26,6 +26,8 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
@@ -79,19 +81,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
       initPolicy();
    }
 
-   public T produce(CreationalContext<T> creationalContext)
-   {
-      Object receiver = getReceiver(creationalContext);
-      if (receiver != null)
-      {
-         return method.invokeOnInstance(receiver, manager, creationalContext, CreationException.class);
-      }
-      else
-      {
-         return method.invoke(receiver, manager, creationalContext, CreationException.class);
-      }
-   }
-
    /**
     * Initializes the bean and its metadata
     */
@@ -104,6 +93,38 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
          super.initialize(environment);
          checkProducerMethod();
          initDisposalMethod(environment);
+         setProducer(new Producer<T>()
+         {
+
+            public void dispose(T instance)
+            {
+               if (disposalMethodBean != null)
+               {
+                  disposalMethodBean.invokeDisposeMethod(instance);
+               }
+            }
+
+            public Set<InjectionPoint> getInjectionPoints()
+            {
+               return (Set) getAnnotatedInjectionPoints();
+            }
+
+            public T produce(CreationalContext<T> creationalContext)
+            {
+               Object receiver = getReceiver(creationalContext);
+               if (receiver != null)
+               {
+                  return method.invokeOnInstance(receiver, manager, creationalContext, CreationException.class);
+               }
+               else
+               {
+                  return method.invoke(receiver, manager, creationalContext, CreationException.class);
+               }
+            }
+            
+            
+            
+         });
       }
    }
 
@@ -180,7 +201,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    {
       try
       {
-         dispose(instance);
+         getProducer().dispose(instance);
       }
       finally
       {
@@ -188,14 +209,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
          {
             creationalContext.release();
          }
-      }
-   }
-   
-   public void dispose(T instance) 
-   {
-      if (disposalMethodBean != null)
-      {
-         disposalMethodBean.invokeDisposeMethod(instance);
       }
    }
 

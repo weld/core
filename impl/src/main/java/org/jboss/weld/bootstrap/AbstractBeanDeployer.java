@@ -16,16 +16,18 @@
  */
 package org.jboss.weld.bootstrap;
 
-import java.util.Set;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
+import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import javax.enterprise.inject.spi.ProcessManagedBean;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
 import javax.enterprise.inject.spi.ProcessProducer;
-import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.ProcessSessionBean;
 import javax.inject.Inject;
 
 import org.jboss.weld.BeanManagerImpl;
@@ -36,6 +38,7 @@ import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.ManagedBean;
+import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.ProducerField;
@@ -44,11 +47,13 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.ee.EEResourceProducerField;
 import org.jboss.weld.bean.ee.PersistenceContextProducerField;
+import org.jboss.weld.bootstrap.events.ProcessInjectionTargetImpl;
+import org.jboss.weld.bootstrap.events.ProcessManagedBeanImpl;
 import org.jboss.weld.bootstrap.events.ProcessObserverMethodImpl;
 import org.jboss.weld.bootstrap.events.ProcessProducerImpl;
+import org.jboss.weld.bootstrap.events.ProcessSessionBeanImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
-import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.introspector.WeldClass;
@@ -62,7 +67,6 @@ import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.util.Reflections;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 import org.jboss.weld.ws.WSApiAbstraction;
-import org.jboss.interceptor.model.InterceptionModel;
 
 public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
 {
@@ -103,10 +107,24 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       for (RIBean<?> bean : beans)
       {
          bean.initialize(getEnvironment());
-         if (bean instanceof AbstractProducerBean<?, ?, ?>)
+         if (!(bean instanceof NewBean))
          {
-            AbstractProducerBean<?, ?, Member> producer = (AbstractProducerBean<?, ?, Member>) bean;
-            createAndFireProcessProducerEvent(producer);
+            if (bean instanceof AbstractProducerBean<?, ?, ?>)
+            {
+               fireProcessProducerEvent((AbstractProducerBean<?, ?, Member>) bean);
+            }
+            if (bean instanceof AbstractClassBean<?>)
+            {
+               fireProcessInjectionTargetEvent((AbstractClassBean<?>) bean);
+            }
+            if (bean instanceof ManagedBean<?>)
+            {
+               fireProcessManagedBeanEvent((ManagedBean<?>) bean);
+            }
+            if (bean instanceof SessionBean<?>)
+            {
+               fireProcessSessionBeanEvent((SessionBean<Object>) bean);
+            }
          }
          manager.addBean(bean);
          log.debug("Bean: " + bean);
@@ -183,10 +201,43 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       getEnvironment().addBean(bean);
    }
    
-   private <X, T> void createAndFireProcessProducerEvent(AbstractProducerBean<X, T, Member> producer)
+   private <X, T> void fireProcessProducerEvent(AbstractProducerBean<X, T, Member> producer)
    {
       ProcessProducerImpl<X, T> payload = new ProcessProducerImpl<X, T>(producer.getAnnotatedItem(), producer) {};
       fireEvent(payload, ProcessProducer.class, producer.getAnnotatedItem().getDeclaringType().getBaseType(), producer.getAnnotatedItem().getBaseType());
+      if (!payload.getDefinitionErrors().isEmpty())
+      {
+         // FIXME communicate all the captured definition errors in this exception
+         throw new DefinitionException(payload.getDefinitionErrors().get(0));
+      }
+   }
+   
+   private <X> void fireProcessInjectionTargetEvent(AbstractClassBean<X> classBean)
+   {
+      ProcessInjectionTargetImpl<X> payload = new ProcessInjectionTargetImpl<X>(classBean.getAnnotatedItem(), classBean) {};
+      fireEvent(payload, ProcessInjectionTarget.class, classBean.getAnnotatedItem().getBaseType());
+      if (!payload.getDefinitionErrors().isEmpty())
+      {
+         // FIXME communicate all the captured definition errors in this exception
+         throw new DefinitionException(payload.getDefinitionErrors().get(0));
+      }
+   }
+   
+   private <X> void fireProcessManagedBeanEvent(ManagedBean<X> bean)
+   {
+      ProcessManagedBeanImpl<X> payload = new ProcessManagedBeanImpl<X>(bean) {};
+      fireEvent(payload, ProcessManagedBean.class, bean.getAnnotatedItem().getBaseType());
+      if (!payload.getDefinitionErrors().isEmpty())
+      {
+         // FIXME communicate all the captured definition errors in this exception
+         throw new DefinitionException(payload.getDefinitionErrors().get(0));
+      }
+   }
+   
+   private <X> void fireProcessSessionBeanEvent(SessionBean<Object> bean)
+   {
+      ProcessSessionBeanImpl<X> payload = new ProcessSessionBeanImpl<X>(bean) {};
+      fireEvent(payload, ProcessSessionBean.class, bean.getAnnotatedItem().getBaseType());
       if (!payload.getDefinitionErrors().isEmpty())
       {
          // FIXME communicate all the captured definition errors in this exception

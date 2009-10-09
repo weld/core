@@ -53,7 +53,7 @@ public class PersistenceContextProducerField<X, T extends EntityManager> extends
    }
    
    @Override
-   public void dispose(T instance) 
+   protected void defaultDispose(T instance) 
    {
       instance.close();
    }

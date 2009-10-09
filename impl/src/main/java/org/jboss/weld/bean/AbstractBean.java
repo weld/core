@@ -331,7 +331,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The annotated item
     */
-   protected abstract WeldAnnotated<T, E> getAnnotatedItem();
+   public abstract WeldAnnotated<T, E> getAnnotatedItem();
 
    /**
     * Gets the binding types

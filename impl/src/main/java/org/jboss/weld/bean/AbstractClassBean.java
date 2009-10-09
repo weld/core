@@ -25,6 +25,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javassist.util.proxy.ProxyFactory;
+import javassist.util.proxy.ProxyObject;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
@@ -53,9 +56,6 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Strings;
 
-import javassist.util.proxy.ProxyFactory;
-import javassist.util.proxy.ProxyObject;
-
 /**
  * An abstract bean representation common for class-based beans
  * 
@@ -64,7 +64,7 @@ import javassist.util.proxy.ProxyObject;
  * @param <T>
  * @param <E>
  */
-public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> implements InjectionTarget<T>
+public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 {
    // Logger
    private static final LogProvider log = Logging.getLogProvider(AbstractClassBean.class);
@@ -83,6 +83,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    private final ThreadLocal<Integer> decoratorStackPosition;
    private WeldMethod<?, ?> postConstruct;
    private WeldMethod<?, ?> preDestroy;
+   
+   private InjectionTarget<T> injectionTarget;
 
    /**
     * Constructor
@@ -209,12 +211,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
    {
       return Collections.unmodifiableList(decorators);
    }
-   
-   public void dispose(T instance) 
-   {
-      // No-op for class beans
-   }
-   
 
    /**
     * Initializes the bean type
@@ -348,38 +344,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
       return dependencies;
    }
 
-   public void postConstruct(T instance)
-   {
-      WeldMethod<?, ?> postConstruct = getPostConstruct();
-      if (postConstruct != null)
-      {
-         try
-         {
-            postConstruct.invoke(instance);
-         }
-         catch (Exception e)
-         {
-            throw new RuntimeException("Unable to invoke " + postConstruct + " on " + instance, e);
-         }
-      }
-   }
-
-   public void preDestroy(T instance)
-   {
-      WeldMethod<?, ?> preDestroy = getPreDestroy();
-      if (preDestroy != null)
-      {
-         try
-         {
-            // note: RI supports injection into @PreDestroy
-            preDestroy.invoke(instance);
-         }
-         catch (Exception e)
-         {
-            throw new RuntimeException("Unable to invoke " + preDestroy + " on " + instance, e);
-         }
-      }
-   }
 
    /**
     * Initializes the post-construct method
@@ -466,4 +430,54 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
          manager.getBoundInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
       }
    }
+   
+   public void setInjectionTarget(InjectionTarget<T> injectionTarget)
+   {
+      this.injectionTarget = injectionTarget;
+   }
+   
+   public InjectionTarget<T> getInjectionTarget()
+   {
+      return injectionTarget;
+   }
+   
+   @Override
+   public Set<InjectionPoint> getInjectionPoints()
+   {
+      return getInjectionTarget().getInjectionPoints();
+   }
+   
+   protected void defaultPreDestroy(T instance)
+   {
+       WeldMethod<?, ?> preDestroy = getPreDestroy();
+       if (preDestroy != null)
+       {
+          try
+          {
+             // note: RI supports injection into @PreDestroy
+             preDestroy.invoke(instance);
+          }
+          catch (Exception e)
+          {
+             throw new RuntimeException("Unable to invoke " + preDestroy + " on " + instance, e);
+          }
+       }
+   }
+   
+   protected void defaultPostConstruct(T instance)
+   {
+       WeldMethod<?, ?> postConstruct = getPostConstruct();
+       if (postConstruct != null)
+       {
+          try
+          {
+             postConstruct.invoke(instance);
+          }
+          catch (Exception e)
+          {
+             throw new RuntimeException("Unable to invoke " + postConstruct + " on " + instance, e);
+          }
+       }
+   }
+   
 }

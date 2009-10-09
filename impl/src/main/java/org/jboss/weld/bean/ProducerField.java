@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
@@ -79,24 +81,37 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
       if (!isInitialized())
       {
          super.initialize(environment);
+         setProducer(new Producer<T>()
+         {
+
+            public void dispose(T instance)
+            {
+               defaultDispose(instance);
+            }
+
+            public Set<InjectionPoint> getInjectionPoints()
+            {
+               return (Set) getAnnotatedInjectionPoints();
+            }
+
+            public T produce(CreationalContext<T> creationalContext)
+            {
+               return field.get(getReceiver(creationalContext));
+            }
+            
+         });
       }
+   }
+   
+   protected void defaultDispose(T instance)
+   {
+      // No disposal by default
    }
 
    public void destroy(T instance, CreationalContext<T> creationalContext)
    {
-      dispose(instance);
+      getProducer().dispose(instance);
    }
-
-   public void dispose(T instance)
-   {
-      // No clean up required
-   }
-
-   public T produce(CreationalContext<T> ctx)
-   {
-      return field.get(getReceiver(ctx));
-   }
-
 
    /**
     * Gets the annotated item representing the field

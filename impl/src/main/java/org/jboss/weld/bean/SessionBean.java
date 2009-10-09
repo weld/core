@@ -33,8 +33,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.CreationException;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
 import javax.interceptor.Interceptor;
 
+import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
@@ -54,7 +57,6 @@ import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
-import org.jboss.interceptor.model.InterceptionModel;
 
 /**
  * An enterprise bean representation
@@ -118,6 +120,67 @@ public class SessionBean<T> extends AbstractClassBean<T>
          checkObserverMethods();
          checkScopeAllowed();
          registerInterceptors();
+         setInjectionTarget(new InjectionTarget<T>()
+         {
+
+            public void inject(final T instance, final CreationalContext<T> ctx)
+            {
+               new InjectionContextImpl<T>(getManager(), this, instance)
+               {
+                  
+                  public void proceed()
+                  {
+                     Beans.injectFieldsAndInitializers(instance, ctx, getManager(), getInjectableFields(), getInitializerMethods());
+                  }
+                  
+               }.run();
+            }
+
+            public void postConstruct(T instance)
+            {
+               defaultPostConstruct(instance);
+            }
+
+            public void preDestroy(T instance)
+            {
+               
+            }
+
+            public void dispose(T instance)
+            {
+               // No-op
+            }
+
+            public Set<InjectionPoint> getInjectionPoints()
+            {
+               return (Set) getAnnotatedInjectionPoints();
+            }
+
+            public T produce(CreationalContext<T> ctx)
+            {
+               try
+               {
+                  T instance = proxyClass.newInstance();
+                  ctx.push(instance);
+                  ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, ctx));
+                  log.trace("Enterprise bean instance created for bean {0}", this);
+                  return instance;
+               }
+               catch (InstantiationException e)
+               {
+                  throw new RuntimeException("Could not instantiate enterprise proxy for " + toString(), e);
+               }
+               catch (IllegalAccessException e)
+               {
+                  throw new RuntimeException("Could not access bean correctly when creating enterprise proxy for " + toString(), e);
+               }
+               catch (Exception e)
+               {
+                  throw new CreationException("could not find the EJB in JNDI " + proxyClass, e);
+               }
+            }
+            
+         });
       }
    }
 
@@ -216,50 +279,12 @@ public class SessionBean<T> extends AbstractClassBean<T>
     */
    public T create(final CreationalContext<T> creationalContext)
    {
-      T instance = produce(creationalContext);
+      T instance = getInjectionTarget().produce(creationalContext);
       if (hasDecorators())
       {
          instance = applyDecorators(instance, creationalContext, null);
       }
       return instance;
-   }
-   
-   public void inject(final T instance, final CreationalContext<T> ctx)
-   {
-      new InjectionContextImpl<T>(getManager(), this, instance)
-      {
-         
-         public void proceed()
-         {
-            Beans.injectFieldsAndInitializers(instance, ctx, getManager(), getInjectableFields(), getInitializerMethods());
-         }
-         
-      }.run();
-      
-   }
-
-   public T produce(CreationalContext<T> ctx)
-   {
-      try
-      {
-         T instance = proxyClass.newInstance();
-         ctx.push(instance);
-         ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler<T>(this, ctx));
-         log.trace("Enterprise bean instance created for bean {0}", this);
-         return instance;
-      }
-      catch (InstantiationException e)
-      {
-         throw new RuntimeException("Could not instantiate enterprise proxy for " + toString(), e);
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new RuntimeException("Could not access bean correctly when creating enterprise proxy for " + toString(), e);
-      }
-      catch (Exception e)
-      {
-         throw new CreationException("could not find the EJB in JNDI " + proxyClass, e);
-      }
    }
 
    public void destroy(T instance, CreationalContext<T> creationalContext)
@@ -310,11 +335,6 @@ public class SessionBean<T> extends AbstractClassBean<T>
       buffer.append(" [" + getType().getName() + "] ");
       buffer.append("API types " + getTypes() + ", binding types " + getQualifiers());
       return buffer.toString();
-   }
-
-   public void preDestroy(CreationalContext<T> creationalContext)
-   {
-      creationalContext.release();
    }
    
    @Override
@@ -393,6 +413,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
       return Collections.emptySet();
    }
 
+   @Override
    protected boolean isInterceptionCandidate()
    {
       return true;

@@ -17,19 +17,18 @@
 
 package org.jboss.weld.bean;
 
-import org.jboss.interceptor.model.InterceptorClassMetadata;
-import org.jboss.interceptor.registry.InterceptorClassMetadataRegistry;
-import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import java.lang.annotation.Annotation;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.interceptor.InvocationContext;
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.jboss.interceptor.model.InterceptorClassMetadata;
+import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
+import org.jboss.interceptor.registry.InterceptorClassMetadataRegistry;
+import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.introspector.WeldClass;
 
 /**
  * @author Marius Bogoevici
@@ -74,14 +73,15 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
    }
 
    @Override
-   public void postConstruct(T instance)
+   protected void defaultPostConstruct(T instance) 
    {
-      // do nothing on PostConstruct
+      // Lifecycle callbacks not supported
    }
-
+   
    @Override
-   public void preDestroy(T instance)
+   protected void defaultPreDestroy(T instance) 
    {
-      // do nothing on PreDestroy
+      // Lifecycle callbacks not supported
    }
+   
 }

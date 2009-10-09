@@ -16,23 +16,24 @@
  */
 package org.jboss.weld.bean;
 
-import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.InjectionTarget;
 
-import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
-import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
-import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.interceptor.model.InterceptionModelBuilder;
+import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
+import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
 import org.jboss.interceptor.registry.InterceptorRegistry;
+import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
@@ -113,8 +114,8 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       {
          originalInjectionPoint = attachCorrectInjectionPoint();
       }
-      T instance = produce(creationalContext);
-      inject(instance, creationalContext);
+      T instance = getInjectionTarget().produce(creationalContext);
+      getInjectionTarget().inject(instance, creationalContext);
       if (hasDecorators())
       {
          instance = applyDecorators(instance, creationalContext, originalInjectionPoint);
@@ -123,38 +124,12 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       {
          instance = applyInterceptors(instance, creationalContext);
          InterceptionUtils.executePostConstruct(instance);
-      } else
+      } 
+      else
       {
-         postConstruct(instance);
+         getInjectionTarget().postConstruct(instance);
       }
       return instance;
-   }
-
-   public T produce(CreationalContext<T> ctx)
-   {
-      T instance = constructor.newInstance(manager, ctx);
-      if (!hasDecorators())
-      {
-         // This should be safe, but needs verification PLM
-         // Without this, the chaining of decorators will fail as the incomplete instance will be resolved
-         ctx.push(instance);
-      }
-      return instance;
-   }
-
-   public void inject(final T instance, final CreationalContext<T> ctx)
-   {
-      new InjectionContextImpl<T>(getManager(), this, instance)
-      {
-         
-         public void proceed()
-         {
-            Beans.injectEEFields(instance, getManager(), ejbInjectionPoints, persistenceContextInjectionPoints, persistenceUnitInjectionPoints, resourceInjectionPoints);
-            Beans.injectFieldsAndInitializers(instance, ctx, getManager(), getInjectableFields(), getInitializerMethods());
-         }
-
-      }.run();
-
    }
 
    protected InjectionPoint attachCorrectInjectionPoint()
@@ -181,7 +156,9 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       try
       {
          if (!isInterceptionCandidate() || !hasBoundInterceptors())
-            preDestroy(instance);
+         {
+            getInjectionTarget().preDestroy(instance);
+         }
          else
          {
             InterceptionUtils.executePredestroy(instance);
@@ -209,7 +186,58 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          initPreDestroy();
          initEEInjectionPoints();
          if (isInterceptionCandidate())
+         {
             initDeclaredInterceptors();
+         }
+         setInjectionTarget(new InjectionTarget<T>()
+         {
+
+            public void inject(final T instance, final CreationalContext<T> ctx)
+            {
+               new InjectionContextImpl<T>(getManager(), this, instance)
+               {
+                  
+                  public void proceed()
+                  {
+                     Beans.injectEEFields(instance, getManager(), ejbInjectionPoints, persistenceContextInjectionPoints, persistenceUnitInjectionPoints, resourceInjectionPoints);
+                     Beans.injectFieldsAndInitializers(instance, ctx, getManager(), getInjectableFields(), getInitializerMethods());
+                  }
+
+               }.run();
+            }
+
+            public void postConstruct(T instance)
+            {
+               defaultPostConstruct(instance);
+            }
+
+            public void preDestroy(T instance)
+            {
+               defaultPreDestroy(instance);
+            }
+
+            public void dispose(T instance)
+            {
+               // No-op
+            }
+
+            public Set<InjectionPoint> getInjectionPoints()
+            {
+               return (Set) getAnnotatedInjectionPoints();
+            }
+
+            public T produce(CreationalContext<T> ctx)
+            {
+               T instance = constructor.newInstance(manager, ctx);
+               if (!hasDecorators())
+               {
+                  // This should be safe, but needs verification PLM
+                  // Without this, the chaining of decorators will fail as the incomplete instance will be resolved
+                  ctx.push(instance);
+               }
+               return instance;
+            }
+         });
       }
    }
 
@@ -379,6 +407,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       return specializedBean;
    }
 
+   @Override
    protected boolean isInterceptionCandidate()
    {
       return !Beans.isInterceptor(getAnnotatedItem()) && !Beans.isDecorator(getAnnotatedItem());

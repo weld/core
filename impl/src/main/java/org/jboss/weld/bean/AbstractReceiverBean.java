@@ -119,6 +119,6 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
    }
    
    @Override
-   protected abstract WeldMember<T, ?, S> getAnnotatedItem();
+   public abstract WeldMember<T, ?, S> getAnnotatedItem();
 
 }

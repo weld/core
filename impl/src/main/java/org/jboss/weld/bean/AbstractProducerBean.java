@@ -56,9 +56,11 @@ import org.jboss.weld.util.Reflections;
  * @param <T>
  * @param <S>
  */
-public abstract class AbstractProducerBean<X, T, S extends Member> extends AbstractReceiverBean<X, T, S> implements Producer<T>
+public abstract class AbstractProducerBean<X, T, S extends Member> extends AbstractReceiverBean<X, T, S>
 {
    private static final LogProvider log = Logging.getLogProvider(AbstractProducerBean.class);
+   
+   private Producer<T> producer;
 
    /**
     * Constructor
@@ -154,6 +156,12 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       super.initialize(environment);
       checkProducerReturnType();
    }
+   
+   @Override
+   public Set<InjectionPoint> getInjectionPoints()
+   {
+      return getProducer().getInjectionPoints();
+   }
 
    /**
     * Validates the return value
@@ -244,6 +252,21 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    {
       return true;
    }
+   
+   /**
+    * This operation is *not* threadsafe, and should not be called outside bootstrap
+    * 
+    * @param producer
+    */
+   public void setProducer(Producer<T> producer)
+   {
+      this.producer = producer;
+   }
+   
+   public Producer<T> getProducer()
+   {
+      return producer;
+   }
 
    /**
     * Creates an instance of the bean
@@ -254,7 +277,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    {
       try
       {
-         T instance = produce(creationalContext);
+         T instance = getProducer().produce(creationalContext);
          checkReturnValue(instance);
          return instance;
       }

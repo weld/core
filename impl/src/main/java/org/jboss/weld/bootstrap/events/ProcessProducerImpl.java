@@ -6,16 +6,18 @@ import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.ProcessProducer;
 import javax.enterprise.inject.spi.Producer;
 
+import org.jboss.weld.bean.AbstractProducerBean;
+
 
 public class ProcessProducerImpl<X, T> extends AbstractContainerEvent implements ProcessProducer<X, T>
 {
    
    private final AnnotatedMember<X> annotatedMember;
-   private Producer<T> producer;
+   private AbstractProducerBean<X, T, ?> bean;
 
-   public ProcessProducerImpl(AnnotatedMember<X> annotatedMember, Producer<T> producer)
+   public ProcessProducerImpl(AnnotatedMember<X> annotatedMember, AbstractProducerBean<X, T, ?> bean)
    {
-      this.producer = producer;
+      this.bean = bean;
       this.annotatedMember = annotatedMember;
    }
 
@@ -36,12 +38,12 @@ public class ProcessProducerImpl<X, T> extends AbstractContainerEvent implements
 
    public Producer<T> getProducer()
    {
-      return producer;
+      return bean.getProducer();
    }
 
    public void setProducer(Producer<T> producer)
    {
-      throw new UnsupportedOperationException();
+      this.bean.setProducer(producer);
    }
 
 }

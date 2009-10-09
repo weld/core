@@ -48,8 +48,8 @@ public class EjbDescriptorLookupTest extends AbstractWeldTest
       assert bean.getBeanClass().equals(Cat.class);
       InjectionTarget<CatLocal> it = getCurrentManager().createInjectionTarget(descriptor);
       assert it != null;
-      assert it instanceof SessionBean;
-      assert it == bean;
+      assert it.getInjectionPoints().equals(bean.getInjectionPoints());
+      assert it.produce(getCurrentManager().createCreationalContext(bean)) instanceof CatLocal;
    }
 
 }
