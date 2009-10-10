@@ -1,4 +1,4 @@
-package org.jboss.webbeans.examples.login;
+package org.jboss.weld.examples.login;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;

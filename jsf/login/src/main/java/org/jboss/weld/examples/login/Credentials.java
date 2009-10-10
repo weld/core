@@ -1,4 +1,4 @@
-package org.jboss.webbeans.examples.login;
+package org.jboss.weld.examples.login;
 
 import java.io.Serializable;
 
