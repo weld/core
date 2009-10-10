@@ -1,4 +1,4 @@
-package org.jboss.webbeans.examples.translator;
+package org.jboss.weld.examples.translator;
 
 import javax.ejb.Local;
 
