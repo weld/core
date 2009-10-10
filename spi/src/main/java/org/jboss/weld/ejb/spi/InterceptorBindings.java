@@ -49,6 +49,7 @@ public interface InterceptorBindings
    /**
     * Returns the interceptors that are applicable to a given {@link InterceptionType}
     * and method (bound by {@link InterceptorBinding}).
+    * 
     * This includes class and method-bound interceptors, but no interceptors
     * bound by EJB-specific mechanisms.
     *
