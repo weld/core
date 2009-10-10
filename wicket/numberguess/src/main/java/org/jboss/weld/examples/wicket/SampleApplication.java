@@ -1,8 +1,8 @@
 package org.jboss.weld.examples.wicket;
 
-import org.jboss.webbeans.wicket.WebBeansApplication;
+import org.jboss.weld.wicket.WeldApplication;
 
-public class SampleApplication extends WebBeansApplication
+public class SampleApplication extends WeldApplication
 {
 
    @Override

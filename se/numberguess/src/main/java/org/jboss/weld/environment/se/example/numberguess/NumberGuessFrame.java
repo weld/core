@@ -20,7 +20,7 @@ import java.awt.CardLayout;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import org.jboss.webbeans.environment.se.events.ContainerInitialized;
+import org.jboss.weld.environment.se.events.ContainerInitialized;
 
 /**
  * Swing-based number guess example, main application frame.

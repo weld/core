@@ -4,7 +4,7 @@
    <Resource name="BeanManager"
       auth="Container"
       type="javax.enterprise.inject.spi.BeanManager"
-      factory="org.jboss.webbeans.resources.ManagerObjectFactory"/>
+      factory="org.jboss.weld.resources.ManagerObjectFactory"/>
    <!-- Uncomment to enable injection into Servlet -->
-   <!-- <Listener className="org.jboss.webbeans.environment.tomcat.WebBeansLifecycleListener"/> -->
+   <!-- <Listener className="org.jboss.weld.environment.tomcat.WeldLifecycleListener"/> -->
 </Context>

@@ -1,6 +1,6 @@
 <project basedir="." name="Wicket Numberguess Example Build" default="restart">
 	
-	<property name="example.name" value="webbeans-numberguess-wicket" />
+	<property name="example.name" value="weld-numberguess-wicket" />
 
 	<import file="../../build.xml" />
 	

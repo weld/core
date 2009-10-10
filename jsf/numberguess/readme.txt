@@ -1,9 +1,9 @@
-Web Beans Numberguess Example
-==============================
+Weld Numberguess Example
+========================
 
-This example demonstrates the use of Web Beans in a Servlet container
+This example demonstrates the use of Weld in a Servlet container
 (Tomcat 6 / Jetty 6) and in as a non-EJB application JBoss AS. No alterations 
-are expeccted to be made to the container. All services are 
+are expected to be made to the container. All services are 
 self-contained within the deployment.
 
 This example uses a Maven 2 build, and an ant script to deploy to JBoss AS. 
@@ -20,7 +20,7 @@ Make sure you have set the path to JBoss AS in ../../local.build.properties, usi
 jboss.home as the key.
 
 Now, type ant restart to deploy the application to JBoss AS. You can access it
-at http://localhost:8080/webbeans-numberguess
+at http://localhost:8080/weld-numberguess
 
 == Deploying with an embedded servlet container
 
@@ -78,7 +78,7 @@ But likely you want to run one or more build goals first before you redeploy:
  mvn war:exploded tomcat:redeploy -Ptomcat
  mvn compile war:exploded tomcat:redeploy -Ptomcat
 
-The application is available at http://localhost:8080/webbeans-numberguess
+The application is available at http://localhost:8080/weld-numberguess
 
 == Launching Jetty embedded from Eclipse
 

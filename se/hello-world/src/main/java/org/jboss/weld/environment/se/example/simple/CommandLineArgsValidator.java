@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.jboss.webbeans.environment.se.bindings.Parameters;
+import org.jboss.weld.environment.se.bindings.Parameters;
 
 /**
  * Validates command line arguments, producing errors where applicable.

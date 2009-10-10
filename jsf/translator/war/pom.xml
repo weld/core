@@ -3,15 +3,15 @@
    <modelVersion>4.0.0</modelVersion>
    
    <parent>
-      <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
-      <artifactId>webbeans-jsf-translator-parent</artifactId>
+      <groupId>org.jboss.weld.examples.jsf.translator</groupId>
+      <artifactId>weld-jsf-translator-parent</artifactId>
       <version>1.0.0-SNAPSHOT</version>
    </parent>
    
-   <groupId>org.jboss.webbeans.examples.jsf.translator</groupId>
-   <artifactId>webbeans-jsf-translator-war</artifactId>
+   <groupId>org.jboss.weld.examples.jsf.translator</groupId>
+   <artifactId>weld-jsf-translator-war</artifactId>
    <packaging>war</packaging>
-   <name>Web Beans Examples: Translator (war)</name>
+   <name>Weld Examples: Translator (war)</name>
    
    <pluginRepositories>
         <pluginRepository>
@@ -51,7 +51,7 @@
    </dependencies>
    
    <build>
-      <finalName>webbeans-translator</finalName>
+      <finalName>weld-translator</finalName>
    </build>
    
 </project>

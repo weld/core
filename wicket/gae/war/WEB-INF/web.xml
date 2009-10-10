@@ -4,14 +4,14 @@
 	 xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	 version="2.4">
 
-	<display-name>webbeans-numberguess-wicket</display-name>
+	<display-name>weld-numberguess-wicket</display-name>
 
 	<filter>
 		<filter-name>wicket.numberguess-example</filter-name>
  		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
 		<init-param>
 			<param-name>applicationClassName</param-name>
-			<param-value>org.jboss.webbeans.examples.wicket.SampleApplication</param-value>
+			<param-value>org.jboss.weld.examples.wicket.SampleApplication</param-value>
  		</init-param>
  	</filter>
 
@@ -21,7 +21,7 @@
  </filter-mapping>
  
    <listener>
-      <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-class>
+      <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
    </listener>
 
 

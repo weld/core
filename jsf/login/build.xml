@@ -1,6 +1,6 @@
 <project basedir="." name="Login Example Build" default="restart">
 	
-	<property name="example.name" value="webbeans-login" />
+	<property name="example.name" value="weld-login" />
 
 	<import file="../../build.xml" />
 	
