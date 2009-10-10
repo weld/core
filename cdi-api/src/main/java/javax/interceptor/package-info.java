@@ -1,5 +1,0 @@
-package javax.interceptor;
-
-/**
- * 
- */

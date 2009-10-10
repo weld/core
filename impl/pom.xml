@@ -115,11 +115,18 @@
          <optional>true</optional>
       </dependency>
 
-       <dependency>
-           <groupId>org.jboss.interceptors</groupId>
-           <artifactId>interceptors</artifactId>
-           <optional>true</optional>
-       </dependency>
+     <dependency>
+       <groupId>org.jboss.interceptor</groupId>
+       <artifactId>jboss-interceptor-api</artifactId>
+       <optional>true</optional>
+     </dependency>
+
+
+     <dependency>
+       <groupId>org.jboss.interceptor</groupId>
+       <artifactId>jboss-interceptor</artifactId>
+       <optional>true</optional>
+     </dependency>
 
        <dependency>
            <groupId>junit</groupId>
