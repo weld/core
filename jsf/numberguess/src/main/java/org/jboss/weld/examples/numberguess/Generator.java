@@ -1,4 +1,4 @@
-package org.jboss.webbeans.examples.numberguess;
+package org.jboss.weld.examples.numberguess;
 
 
 import java.io.Serializable;

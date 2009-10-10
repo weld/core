@@ -1,4 +1,4 @@
-package org.jboss.webbeans.examples.numberguess;
+package org.jboss.weld.examples.numberguess;
 
 
 import static java.lang.annotation.ElementType.FIELD;
@@ -17,7 +17,7 @@ import javax.inject.Qualifier;
 @Retention(RUNTIME)
 @Documented
 @Qualifier
-public @interface Random
+public @interface MaxNumber
 {
 
 }
