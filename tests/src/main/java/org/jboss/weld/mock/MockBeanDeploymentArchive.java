@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.EnterpriseBean;
 import javax.ejb.MessageDriven;
 import javax.ejb.Singleton;
 import javax.ejb.Stateful;
@@ -94,7 +95,7 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
       Set<Class<?>> ejbs = new HashSet<Class<?>>();
       for (Class<?> clazz : webBeanClasses)
       {
-         if (clazz.isAnnotationPresent(Stateless.class) || clazz.isAnnotationPresent(Stateful.class) || clazz.isAnnotationPresent(MessageDriven.class) || clazz.isAnnotationPresent(Singleton.class)) 
+         if (clazz.isAnnotationPresent(Stateless.class) || clazz.isAnnotationPresent(Stateful.class) || clazz.isAnnotationPresent(MessageDriven.class) || clazz.isAnnotationPresent(Singleton.class) || EnterpriseBean.class.isAssignableFrom(clazz)) 
          {
             ejbs.add(clazz);
          }

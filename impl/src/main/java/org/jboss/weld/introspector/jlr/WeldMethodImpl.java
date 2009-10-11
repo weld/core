@@ -61,10 +61,10 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    private final Method method;
 
    // The abstracted parameters
-   private final List<WeldParameter<?, ?>> parameters;
+   private final List<WeldParameter<?, X>> parameters;
    // A mapping from annotation type to parameter abstraction with that
    // annotation present
-   private final ListMultimap<Class<? extends Annotation>, WeldParameter<?, ?>> annotatedParameters;
+   private final ListMultimap<Class<? extends Annotation>, WeldParameter<?, X>> annotatedParameters;
 
    // The property name
    private final String propertyName;
@@ -101,13 +101,13 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       super(annotationStore, method, (Class<T>) method.getReturnType(), method.getGenericReturnType(), declaringClass);
       this.method = method;
       this.toString = new StringBuilder().append("method ").append(method.toString()).toString();
-      this.parameters = new ArrayList<WeldParameter<?, ?>>();
-      this.annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldParameter<?, ?>>>(), new Supplier< List<WeldParameter<?, ?>>>()
+      this.parameters = new ArrayList<WeldParameter<?, X>>();
+      this.annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldParameter<?, X>>>(), new Supplier<List<WeldParameter<?, X>>>()
       {
          
-         public List<WeldParameter<?, ?>> get()
+         public List<WeldParameter<?, X>> get()
          {
-            return new ArrayList<WeldParameter<?, ?>>();
+            return new ArrayList<WeldParameter<?, X>>();
          }
         
       });
@@ -128,7 +128,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
          {
             Class<? extends Object> clazz = method.getParameterTypes()[i];
             Type type = method.getGenericParameterTypes()[i];
-            WeldParameter<?, ?> parameter = null;
+            WeldParameter<?, X> parameter = null;
             if (annotatedTypeParameters.containsKey(i))
             {
                AnnotatedParameter<?> annotatedParameter = annotatedTypeParameters.get(i);
@@ -151,7 +151,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
          {
             Class<? extends Object> clazz = method.getParameterTypes()[i];
             Type type = method.getGenericParameterTypes()[i];
-            WeldParameter<?, ?> parameter = WeldParameterImpl.of(new Annotation[0], (Class<Object>) clazz, type, this, i, classTransformer);
+            WeldParameter<?, X> parameter = WeldParameterImpl.of(new Annotation[0], (Class<Object>) clazz, type, this, i, classTransformer);
             this.parameters.add(parameter);
          }  
       }
@@ -180,7 +180,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       return method;
    }
 
-   public List<WeldParameter<?, ?>> getWBParameters()
+   public List<WeldParameter<?, X>> getWBParameters()
    {
       return Collections.unmodifiableList(parameters);
    }
@@ -190,7 +190,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       return method.getParameterTypes();
    }
 
-   public List<WeldParameter<?, ?>> getAnnotatedWBParameters(Class<? extends Annotation> annotationType)
+   public List<WeldParameter<?, X>> getAnnotatedWBParameters(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableList(annotatedParameters.get(annotationType));
    }

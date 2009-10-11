@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.jboss.weld.BeanManagerImpl;
@@ -28,18 +29,17 @@ import org.jboss.weld.metadata.TypeStore;
 /**
  * @author  pmuir
  */
-public abstract class AbstractBeanDiscoveryEvent extends AbstractContainerEvent
+public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionContainerEvent
 {
-
+   
    private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
-   private final BeanManagerImpl deploymentManager;
    private final Deployment deployment;
    private final ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment;
    
-   public AbstractBeanDiscoveryEvent(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, BeanManagerImpl deploymentManager, Deployment deployment, ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment)
+   public AbstractBeanDiscoveryEvent(BeanManagerImpl deploymentManager, Type rawType, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Deployment deployment, ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment)
    {
+      super(deploymentManager, rawType, EMPTY_TYPE_ARRAY);
       this.beanDeployments = beanDeployments;
-      this.deploymentManager = deploymentManager;
       this.deployment = deployment;
       this.extensionBeanDeployerEnvironment = extensionBeanDeployerEnvironment;
    }
@@ -58,14 +58,6 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractContainerEvent
    protected Deployment getDeployment()
    {
       return deployment;
-   }
-   
-   /**
-    * @return the deploymentManager
-    */
-   protected BeanManagerImpl getDeploymentManager()
-   {
-      return deploymentManager;
    }
    
    protected TypeStore getTypeStore()
@@ -89,7 +81,7 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractContainerEvent
          }
          else
          {
-            BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, getDeploymentManager(), deployment, extensionBeanDeployerEnvironment, deployment.getServices());
+            BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, getBeanManager(), getDeployment(), extensionBeanDeployerEnvironment, getDeployment().getServices());
             getBeanDeployments().put(beanDeploymentArchive, beanDeployment);
             return beanDeployment;
          }

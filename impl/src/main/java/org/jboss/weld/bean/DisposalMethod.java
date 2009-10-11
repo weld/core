@@ -34,11 +34,14 @@ import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
 
 public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
 {
 
-   protected MethodInjectionPoint<T, ?> disposalMethodInjectionPoint;
+   protected MethodInjectionPoint<T, X> disposalMethodInjectionPoint;
+   
+   private WeldParameter<?, X> disposesParameter;
 
    protected DisposalMethod(BeanManagerImpl manager, WeldMethod<T, X> disposalMethod, AbstractClassBean<X> declaringBean)
    {
@@ -51,12 +54,23 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
       initPolicy();
    }
    
+   private void initDisposesParameter()
+   {
+      this.disposesParameter = getAnnotatedItem().getAnnotatedWBParameters(Disposes.class).get(0);
+   }
+   
+   public WeldParameter<?, X> getDisposesParameter()
+   {
+      return disposesParameter;
+   }
+
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
       addInjectionPoint(disposalMethodInjectionPoint);
       super.initialize(environment);
       checkDisposalMethod();
+      initDisposesParameter();
    }
 
    @SuppressWarnings("unchecked")
@@ -66,7 +80,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    }
 
    @Override
-   public WeldMethod<T, ?> getAnnotatedItem()
+   public WeldMethod<T, X> getAnnotatedItem()
    {
       return disposalMethodInjectionPoint;
    }

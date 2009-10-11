@@ -52,9 +52,9 @@ import org.jboss.weld.util.Reflections;
  * @author Pete Muir
  * 
  * @param <T> the type of bean
- * @param <E> the Class<?> of the bean type
+ * @param <S> the Class<?> of the bean type
  */
-public abstract class AbstractBean<T, E> extends RIBean<T>
+public abstract class AbstractBean<T, S> extends RIBean<T>
 {
 
    private static final Annotation ANY_LITERAL = new AnyLiteral();
@@ -71,7 +71,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    // The scope type
    protected Class<? extends Annotation> scopeType;
    // The merged stereotypes
-   private MergedStereotypes<T, E> mergedStereotypes;
+   private MergedStereotypes<T, S> mergedStereotypes;
    // Is it a policy, either defined by stereotypes or directly?
    private boolean policy;
    // The type
@@ -134,7 +134,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    
    protected void initStereotypes()
    {
-      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager);
+      mergedStereotypes = new MergedStereotypes<T, S>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager);
    }
 
    protected void checkDelegateInjectionPoints()
@@ -331,7 +331,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The annotated item
     */
-   public abstract WeldAnnotated<T, E> getAnnotatedItem();
+   public abstract WeldAnnotated<T, S> getAnnotatedItem();
 
    /**
     * Gets the binding types
@@ -366,7 +366,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The set of merged stereotypes
     */
-   protected MergedStereotypes<T, E> getMergedStereotypes()
+   protected MergedStereotypes<T, S> getMergedStereotypes()
    {
       return mergedStereotypes;
    }

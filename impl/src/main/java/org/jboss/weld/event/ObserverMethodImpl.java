@@ -95,7 +95,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    private void checkObserverMethod()
    {
       // Make sure exactly one and only one parameter is annotated with Observes
-      List<WeldParameter<?, ?>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
+      List<WeldParameter<?, X>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
       if (this.notifyType.equals(Notify.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class))
       {
          throw new DefinitionException(this + " is invalid because it is a conditional observer method, and is declared by a @Dependent scoped bean");
@@ -125,7 +125,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
          }
       }
       // Check for parameters annotated with @Disposes
-      List<WeldParameter<?, ?>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
+      List<WeldParameter<?, X>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
       if (disposeParams.size() > 0)
       {
          throw new DefinitionException(this + " cannot have any parameters annotated with @Disposes");

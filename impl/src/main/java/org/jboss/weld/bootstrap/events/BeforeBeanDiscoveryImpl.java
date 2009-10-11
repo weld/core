@@ -34,10 +34,15 @@ import org.jboss.weld.literal.ScopeLiteral;
 
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery
 {
-   
-   public BeforeBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment)
+
+   public static void fire(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, ExtensionBeanDeployerEnvironment extensionDeployerEnvironment)
    {
-      super(beanDeployments, deploymentManager, deployment, extensionBeanDeployerEnvironment);
+      new BeforeBeanDiscoveryImpl(deploymentManager, deployment, beanDeployments, extensionDeployerEnvironment).fire();
+   }
+
+   protected BeforeBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment)
+   {
+      super(deploymentManager, BeforeBeanDiscovery.class, beanDeployments, deployment, extensionBeanDeployerEnvironment);
    }
 
    public void addQualifier(Class<? extends Annotation> bindingType)
@@ -50,8 +55,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
       getTypeStore().add(bindingType, new InterceptorBindingTypeLiteral());
    }
 
-   public void addScope(Class<? extends Annotation> scopeType,
-         boolean normal, boolean passivating)
+   public void addScope(Class<? extends Annotation> scopeType, boolean normal, boolean passivating)
    {
       if (normal)
       {
@@ -63,17 +67,14 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
       }
    }
 
-   public void addStereotype(Class<? extends Annotation> stereotype,
-         Annotation... stereotypeDef)
+   public void addStereotype(Class<? extends Annotation> stereotype, Annotation... stereotypeDef)
    {
       throw new UnsupportedOperationException();
    }
-   
+
    public void addAnnotatedType(AnnotatedType<?> type)
    {
       getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer().addClass(type);
    }
-   
-   
 
 }

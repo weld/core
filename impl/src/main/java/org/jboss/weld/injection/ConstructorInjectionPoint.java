@@ -42,17 +42,17 @@ import org.jboss.weld.introspector.WeldParameter;
 public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> implements WeldInjectionPoint<T, Constructor<T>>
 {
 
-   private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?, ?>>
+   private static abstract class ForwardingParameterInjectionPointList<T, X> extends AbstractList<ParameterInjectionPoint<T, X>>
    {
 
-      protected abstract List<? extends WeldParameter<?, ?>> delegate();
+      protected abstract List<? extends WeldParameter<T, X>> delegate();
 
-      protected abstract Bean<?> declaringBean();;
+      protected abstract Bean<X> declaringBean();;
 
       @Override
-      public ParameterInjectionPoint<?, ?> get(int index)
+      public ParameterInjectionPoint<T, X> get(int index)
       {
-         return ParameterInjectionPoint.of(declaringBean, delegate().get(index));
+         return ParameterInjectionPoint.of(declaringBean(), delegate().get(index));
       }
 
       @Override
@@ -65,16 +65,16 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
 
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
-   private final Bean<?> declaringBean;
+   private final Bean<T> declaringBean;
    private final WeldConstructor<T> constructor;
    private final boolean delegate;
 
-   public static <T> ConstructorInjectionPoint<T> of(Bean<?> declaringBean, WeldConstructor<T> constructor)
+   public static <T> ConstructorInjectionPoint<T> of(Bean<T> declaringBean, WeldConstructor<T> constructor)
    {
       return new ConstructorInjectionPoint<T>(declaringBean, constructor);
    }
 
-   protected ConstructorInjectionPoint(Bean<?> declaringBean, WeldConstructor<T> constructor)
+   protected ConstructorInjectionPoint(Bean<T> declaringBean, WeldConstructor<T> constructor)
    {
       this.declaringBean = declaringBean;
       this.constructor = constructor;
@@ -92,6 +92,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
       return declaringBean;
    }
 
+   @Override
    public Set<Annotation> getQualifiers()
    {
       return delegate().getQualifiers();
@@ -123,20 +124,20 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
    }
 
    @Override
-   public List<ParameterInjectionPoint<?, ?>> getWBParameters()
+   public List<ParameterInjectionPoint<?, T>> getWBParameters()
    {
-      final List<? extends WeldParameter<?, ?>> delegate = super.getWBParameters();
+      final List<? extends WeldParameter<?, T>> delegate = super.getWBParameters();
       return new ForwardingParameterInjectionPointList()
       {
 
          @Override
-         protected Bean<?> declaringBean()
+         protected Bean<T> declaringBean()
          {
             return declaringBean;
          }
 
          @Override
-         protected List<? extends WeldParameter<?, ?>> delegate()
+         protected List<? extends WeldParameter<?, T>> delegate()
          {
             return delegate;
          }
@@ -157,12 +158,12 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
     * @param manager The Bean manager
     * @return The object array of looked up values
     */
-   protected Object[] getParameterValues(List<ParameterInjectionPoint<?, ?>> parameters, 
+   protected Object[] getParameterValues(List<ParameterInjectionPoint<?, T>> parameters, 
          Object specialVal, Class<? extends Annotation> specialParam, 
          BeanManagerImpl manager, CreationalContext<?> creationalContext)
    {
       Object[] parameterValues = new Object[parameters.size()];
-      Iterator<ParameterInjectionPoint<?, ?>> iterator = parameters.iterator();
+      Iterator<ParameterInjectionPoint<?, T>> iterator = parameters.iterator();
       for (int i = 0; i < parameterValues.length; i++)
       {
          ParameterInjectionPoint<?, ?> param = iterator.next();

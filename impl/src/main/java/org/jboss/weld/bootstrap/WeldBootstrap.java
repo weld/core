@@ -22,15 +22,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContextualStore;
-import org.jboss.weld.DefinitionException;
-import org.jboss.weld.DeploymentException;
 import org.jboss.weld.Validator;
 import org.jboss.weld.bean.builtin.ManagerBean;
 import org.jboss.weld.bootstrap.api.Bootstrap;
@@ -157,7 +153,7 @@ public class WeldBootstrap implements Bootstrap
    private Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
    private Environment environment;
    private Deployment deployment;
-   private ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment;
+   private ExtensionBeanDeployerEnvironment extensionDeployerEnvironment;
  
    public Bootstrap startContainer(Environment environment, Deployment deployment, BeanStore applicationBeanStore)
    {
@@ -216,9 +212,9 @@ public class WeldBootstrap implements Bootstrap
          // Start the application context
          Container.instance().deploymentServices().get(ContextLifecycle.class).beginApplication(applicationBeanStore);
          
-         this.extensionBeanDeployerEnvironment = new ExtensionBeanDeployerEnvironment(EjbDescriptors.EMPTY, deploymentManager);
+         this.extensionDeployerEnvironment = new ExtensionBeanDeployerEnvironment(EjbDescriptors.EMPTY, deploymentManager);
          
-         DeploymentVisitor deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, extensionBeanDeployerEnvironment);
+         DeploymentVisitor deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, extensionDeployerEnvironment);
          beanDeployments = deploymentVisitor.visit();
          
          return this;
@@ -264,14 +260,14 @@ public class WeldBootstrap implements Bootstrap
             throw new IllegalStateException("Manager has not been initialized");
          }
          
-         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, extensionBeanDeployerEnvironment);
+         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, extensionDeployerEnvironment);
          extensionBeanDeployer.addExtensions(ServiceLoader.load(Extension.class));
          extensionBeanDeployer.createBeans().deploy();
          
          // Add the Deployment BeanManager Bean to the Deployment BeanManager
          deploymentManager.addBean(new ManagerBean(deploymentManager));
          
-         fireBeforeBeanDiscoveryEvent();
+         BeforeBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, extensionDeployerEnvironment);
       }
       return this;
    }
@@ -284,7 +280,7 @@ public class WeldBootstrap implements Bootstrap
          {
             entry.getValue().deployBeans(environment);
          }
-         fireAfterBeanDiscoveryEvent();
+         AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, extensionDeployerEnvironment);
          log.debug("Weld initialized. Validating beans.");
       }
       return this;
@@ -298,7 +294,7 @@ public class WeldBootstrap implements Bootstrap
          {
             deployment.getServices().get(Validator.class).validateDeployment(entry.getValue().getBeanManager(), entry.getValue().getBeanDeployer().getEnvironment());
          }
-         fireAfterDeploymentValidationEvent();
+         AfterDeploymentValidationImpl.fire(deploymentManager);
       }
       return this;
    }
@@ -312,71 +308,6 @@ public class WeldBootstrap implements Bootstrap
          Container.instance().setInitialized(true);
       }
       return this;
-   }
-
-   private void fireBeforeBeanDiscoveryEvent()
-   {
-      BeforeBeanDiscovery event = new BeforeBeanDiscoveryImpl(deploymentManager, deployment, beanDeployments, extensionBeanDeployerEnvironment);
-      try
-      {
-         deploymentManager.fireEvent(event);
-      }
-      catch (Exception e)
-      {
-         throw new DefinitionException(e);
-      }
-   }
-   
-   private void fireBeforeShutdownEvent()
-   {
-      BeforeShutdown event = new BeforeShutdownImpl();
-      try
-      {
-         deploymentManager.fireEvent(event);
-      }
-      catch (Exception e)
-      {
-         throw new DeploymentException(e);
-      }
-   }
-   
-   private void fireAfterBeanDiscoveryEvent()
-   {
-      AfterBeanDiscoveryImpl event = new AfterBeanDiscoveryImpl(deploymentManager, deployment, beanDeployments, extensionBeanDeployerEnvironment);
-      try
-      {
-         deploymentManager.fireEvent(event);
-      }
-      catch (Exception e)
-      {
-         event.addDefinitionError(e);
-      }
-      
-      if (event.getDefinitionErrors().size() > 0)
-      {
-         // FIXME communicate all the captured definition errors in this exception
-         throw new DefinitionException(event.getDefinitionErrors().get(0));
-      }
-   }
-   
-   private void fireAfterDeploymentValidationEvent()
-   {
-      AfterDeploymentValidationImpl event = new AfterDeploymentValidationImpl();
-      
-      try
-      {
-         deploymentManager.fireEvent(event);
-      }
-      catch (Exception e)
-      {
-         event.addDeploymentProblem(e);
-      }
-      
-      if (event.getDeploymentProblems().size() > 0)
-      {
-         // FIXME communicate all the captured deployment problems in this exception
-         throw new DeploymentException(event.getDeploymentProblems().get(0));
-      }
    }
 
    /**
@@ -417,7 +348,7 @@ public class WeldBootstrap implements Bootstrap
    {
       try
       {
-         fireBeforeShutdownEvent();
+         BeforeShutdownImpl.fire(deploymentManager);
       }
       finally
       {

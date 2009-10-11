@@ -35,7 +35,7 @@ public interface WeldCallable<T, X, S extends Member> extends WeldMember<T, X, S
     * @return A list of parameters. Returns an empty list if no parameters are
     *         present.
     */
-   public List<? extends WeldParameter<?, ?>> getWBParameters();
+   public List<? extends WeldParameter<?, X>> getWBParameters();
 
    /**
     * Gets the list of annotated parameters for a given annotation
@@ -44,6 +44,6 @@ public interface WeldCallable<T, X, S extends Member> extends WeldMember<T, X, S
     * @return A set of matching parameter abstractions. Returns an empty list if
     *         there are no matches.
     */
-   public List<WeldParameter<?, ?>> getAnnotatedWBParameters(Class<? extends Annotation> metaAnnotationType);
+   public List<WeldParameter<?, X>> getAnnotatedWBParameters(Class<? extends Annotation> metaAnnotationType);
 
 }

@@ -16,8 +16,13 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import java.lang.reflect.Type;
+
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+
+import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.introspector.WeldClass;
 
 /**
  * Container lifecycle event for each Java class or interface discovered by
@@ -27,14 +32,22 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
  * @author David Allen
  *
  */
-public class ProcessAnnotatedTypeImpl<X> implements ProcessAnnotatedType<X>
+public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEvent implements ProcessAnnotatedType<X>
 {
+   
+   public static <X> ProcessAnnotatedTypeImpl<X> fire(BeanManagerImpl beanManager, WeldClass<X> clazz)
+   {
+      ProcessAnnotatedTypeImpl<X> payload = new ProcessAnnotatedTypeImpl<X>(beanManager, clazz) {};
+      payload.fire();
+      return payload;
+   }
    
    private AnnotatedType<X> annotatedType;
    private boolean veto;
 
-   public ProcessAnnotatedTypeImpl(AnnotatedType<X> annotatedType)
+   public ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType)
    {
+      super(beanManager, ProcessAnnotatedType.class, new Type[] { annotatedType.getBaseType() });
       this.annotatedType = annotatedType;
    }
 

@@ -34,7 +34,7 @@ public abstract class ForwardingWeldMethod<T, X> extends ForwardingWeldMember<T,
       return delegate().getAnnotatedMethod();
    }
 
-   public List<WeldParameter<?, ?>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType)
+   public List<WeldParameter<?, X>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType)
    {
       return delegate().getAnnotatedWBParameters(metaAnnotationType);
    }
@@ -44,7 +44,7 @@ public abstract class ForwardingWeldMethod<T, X> extends ForwardingWeldMember<T,
       return delegate().getParameterTypesAsArray();
    }
 
-   public List<? extends WeldParameter<?, ?>> getWBParameters()
+   public List<? extends WeldParameter<?, X>> getWBParameters()
    {
       return delegate().getWBParameters();
    }
@@ -74,7 +74,7 @@ public abstract class ForwardingWeldMethod<T, X> extends ForwardingWeldMember<T,
       return delegate().getSignature();
    }
 
-   public List<WeldParameter<?, ?>> getAnnotatedWBParameters(Class<? extends Annotation> metaAnnotationType)
+   public List<WeldParameter<?, X>> getAnnotatedWBParameters(Class<? extends Annotation> metaAnnotationType)
    {
       return delegate().getAnnotatedWBParameters(metaAnnotationType);
    }

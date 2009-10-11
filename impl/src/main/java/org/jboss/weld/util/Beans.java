@@ -17,9 +17,8 @@
 package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,11 +39,10 @@ import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
 
+import org.jboss.interceptor.model.InterceptionType;
+import org.jboss.interceptor.model.InterceptionTypeRegistry;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bean.AbstractProducerBean;
@@ -59,15 +57,19 @@ import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
-import org.jboss.weld.introspector.*;
+import org.jboss.weld.introspector.MethodSignature;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldConstructor;
+import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.introspector.WeldMember;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.log.Log;
 import org.jboss.weld.log.Logging;
 import org.jboss.weld.metadata.cache.BindingTypeModel;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
-import org.jboss.interceptor.model.InterceptionType;
-import org.jboss.interceptor.model.InterceptionTypeRegistry;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
@@ -576,7 +578,7 @@ public class Beans
       return false;
    }
    
-   public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<?> declaringBean, WeldClass<T> type)
+   public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<T> declaringBean, WeldClass<T> type)
    {
       ConstructorInjectionPoint<T> constructor = null;
       Set<WeldConstructor<T>> initializerAnnotatedConstructors = type.getAnnotatedWeldConstructors(Inject.class);

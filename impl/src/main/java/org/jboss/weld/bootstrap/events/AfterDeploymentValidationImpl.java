@@ -16,22 +16,27 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 
+import org.jboss.weld.BeanManagerImpl;
 
-public class AfterDeploymentValidationImpl extends AbstractContainerEvent implements AfterDeploymentValidation
+
+public class AfterDeploymentValidationImpl extends AbstractDeploymentContainerEvent implements AfterDeploymentValidation
 {
+   
+   public static void fire(BeanManagerImpl deploymentManager)
+   {
+      new AfterDeploymentValidationImpl(deploymentManager).fire();
+   }
+   
+   protected AfterDeploymentValidationImpl(BeanManagerImpl beanManager)
+   {
+      super(beanManager, AfterDeploymentValidation.class, EMPTY_TYPE_ARRAY);
+   }
    
    public void addDeploymentProblem(Throwable t)
    {
       getErrors().add(t);
    }
-
-   public List<Throwable> getDeploymentProblems()
-   {
-      return Collections.unmodifiableList(getErrors());
-   }
+   
 }

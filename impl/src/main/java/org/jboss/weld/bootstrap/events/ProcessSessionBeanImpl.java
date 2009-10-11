@@ -1,17 +1,25 @@
 package org.jboss.weld.bootstrap.events;
 
+import java.lang.reflect.Type;
+
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessSessionBean;
 import javax.enterprise.inject.spi.SessionBeanType;
 
+import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.SessionBean;
 
-public class ProcessSessionBeanImpl<X> extends AbstractProcessBean<Object, SessionBean<Object>> implements ProcessSessionBean<X>
+public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, SessionBean<Object>> implements ProcessSessionBean<X>
 {
-
-   public ProcessSessionBeanImpl(SessionBean<Object> bean)
+   
+   public static <X> void fire(BeanManagerImpl beanManager, SessionBean<Object> bean)
    {
-      super(bean);
+      new ProcessSessionBeanImpl<X>(beanManager, bean) {}.fire();
+   }
+
+   public ProcessSessionBeanImpl(BeanManagerImpl beanManager, SessionBean<Object> bean)
+   {
+      super(beanManager, ProcessSessionBean.class, new Type[] { bean.getAnnotatedItem().getBaseType() }, bean);
    }
 
    public AnnotatedType<X> getAnnotatedSessionBeanClass()

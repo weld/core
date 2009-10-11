@@ -17,12 +17,16 @@
 
 package org.jboss.weld.bootstrap.events;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
+
+import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.event.ObserverMethodImpl;
 
 /**
  * Implementation of the event used to notify observers for each observer
@@ -31,13 +35,20 @@ import javax.enterprise.inject.spi.ProcessObserverMethod;
  * @author David Allen
  *
  */
-public class ProcessObserverMethodImpl<X, T> extends AbstractContainerEvent implements ProcessObserverMethod<X, T>
+public class ProcessObserverMethodImpl<X, T> extends AbstractDefinitionContainerEvent implements ProcessObserverMethod<X, T>
 {
+   
+   public static <X, T> void fire(BeanManagerImpl beanManager, ObserverMethodImpl<X, T> observer)
+   {
+      new ProcessObserverMethodImpl<X, T>(beanManager, observer.getMethod(), observer) {}.fire();
+   }
+   
    private final AnnotatedMethod<X>   beanMethod;
    private final ObserverMethod<X, T> observerMethod;
    
-   public ProcessObserverMethodImpl(AnnotatedMethod<X> beanMethod, ObserverMethod<X, T> observerMethod)
+   public ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethodImpl<X, T> observerMethod)
    {
+      super(beanManager, ProcessObserverMethod.class, new Type[] { observerMethod.getMethod().getDeclaringType().getBaseType(), observerMethod.getObservedType() });
       this.beanMethod = beanMethod;
       this.observerMethod = observerMethod;
    }

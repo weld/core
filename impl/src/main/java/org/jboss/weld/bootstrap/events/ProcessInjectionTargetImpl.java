@@ -1,23 +1,31 @@
 package org.jboss.weld.bootstrap.events;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 
+import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.AbstractClassBean;
 
 
-public class ProcessInjectionTargetImpl<T> extends AbstractContainerEvent implements ProcessInjectionTarget<T>
+public class ProcessInjectionTargetImpl<T> extends AbstractDefinitionContainerEvent implements ProcessInjectionTarget<T>
 {
+   
+   public static <X> void fire(BeanManagerImpl beanManager, AbstractClassBean<X> bean)
+   {
+      new ProcessInjectionTargetImpl<X>(beanManager, bean.getAnnotatedItem(), bean) {}.fire();
+   }
    
    private final AnnotatedType<T> annotatedType;
    private AbstractClassBean<T> classBean;
 
-   public ProcessInjectionTargetImpl(AnnotatedType<T> annotatedType, AbstractClassBean<T> classBean)
+   public ProcessInjectionTargetImpl(BeanManagerImpl beanManager, AnnotatedType<T> annotatedType, AbstractClassBean<T> bean)
    {
-      this.classBean = classBean;
+      super(beanManager, ProcessInjectionTarget.class, new Type[] { bean.getAnnotatedItem().getBaseType() });
+      this.classBean = bean;
       this.annotatedType = annotatedType;
    }
 

@@ -58,7 +58,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
       ClassTransformer classTransformer = Container.instance().deploymentServices().get(ClassTransformer.class);
       if (!clazz.isAnnotation() && !clazz.isEnum())
       {
-         ProcessAnnotatedTypeImpl<?> event = fireProcessAnnotatedTypeEvent(classTransformer.loadClass(clazz));
+         ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(deploymentManager, classTransformer.loadClass(clazz));
          if (!event.isVeto())
          {
             if (event.getAnnotatedType() instanceof WeldClass<?>)

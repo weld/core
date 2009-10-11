@@ -143,7 +143,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
 
             public void preDestroy(T instance)
             {
-               
+               defaultPreDestroy(instance);
             }
 
             public void dispose(T instance)

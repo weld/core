@@ -1,16 +1,24 @@
 package org.jboss.weld.bootstrap.events;
 
+import java.lang.reflect.Type;
+
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessManagedBean;
 
+import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.ManagedBean;
 
-public class ProcessManagedBeanImpl<X> extends AbstractProcessBean<X, ManagedBean<X>> implements ProcessManagedBean<X>
+public class ProcessManagedBeanImpl<X> extends AbstractProcessClassBean<X, ManagedBean<X>> implements ProcessManagedBean<X>
 {
 
-   public ProcessManagedBeanImpl(ManagedBean<X> bean)
+   public static <X> void fire(BeanManagerImpl beanManager, ManagedBean<X> bean)
    {
-      super(bean);
+      new ProcessManagedBeanImpl<X>(beanManager, bean) {}.fire();
+   }
+   
+   public ProcessManagedBeanImpl(BeanManagerImpl beanManager, ManagedBean<X> bean)
+   {
+      super(beanManager, ProcessManagedBean.class, new Type[] { bean.getAnnotatedItem().getBaseType() }, bean);
    }
 
    public AnnotatedType<X> getAnnotatedBeanClass()

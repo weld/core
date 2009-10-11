@@ -16,25 +16,32 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import javax.enterprise.inject.spi.BeforeShutdown;
+import java.lang.reflect.Type;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.DefinitionException;
 
 /**
  * @author pmuir
  *
  */
-public class BeforeShutdownImpl extends AbstractContainerEvent implements BeforeShutdown
+public abstract class AbstractDefinitionContainerEvent extends AbstractContainerEvent
 {
-   
-   public static void fire(BeanManagerImpl beanManager)
+
+   protected AbstractDefinitionContainerEvent(BeanManagerImpl beanManager, Type rawType, Type[] actualTypeArguments)
    {
-      new BeforeShutdownImpl(beanManager).fire();
-   }
-   
-   public BeforeShutdownImpl(BeanManagerImpl beanManager)
-   {
-      super(beanManager, BeforeShutdown.class, EMPTY_TYPE_ARRAY);
+      super(beanManager, rawType, actualTypeArguments);
    }
 
+   @Override
+   protected void fire()
+   {
+      super.fire();
+      if (!getErrors().isEmpty())
+      {
+         // FIXME communicate all the captured definition errors in this exception
+         throw new DefinitionException(getErrors().get(0));
+      }
+   }
+   
 }

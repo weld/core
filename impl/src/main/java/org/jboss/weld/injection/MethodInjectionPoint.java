@@ -42,17 +42,17 @@ import org.jboss.weld.introspector.WeldParameter;
 public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> implements WeldInjectionPoint<T, Method>
 {
 
-   private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?, ?>>
+   private static abstract class ForwardingParameterInjectionPointList<T, X> extends AbstractList<ParameterInjectionPoint<T, X>>
    {
 
-      protected abstract List<? extends WeldParameter<?, ?>> delegate();
+      protected abstract List<? extends WeldParameter<T, X>> delegate();
 
-      protected abstract Bean<?> declaringBean();;
+      protected abstract Bean<X> declaringBean();
 
       @Override
-      public ParameterInjectionPoint<?, ?> get(int index)
+      public ParameterInjectionPoint<T, X> get(int index)
       {
-         return ParameterInjectionPoint.of(declaringBean, delegate().get(index));
+         return ParameterInjectionPoint.of(declaringBean(), delegate().get(index));
       }
 
       @Override
@@ -92,6 +92,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
       return declaringBean;
    }
 
+   @Override
    public Set<Annotation> getQualifiers()
    {
       return delegate().getQualifiers();
@@ -200,9 +201,9 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    }
 
    @Override
-   public List<ParameterInjectionPoint<?, ?>> getWBParameters()
+   public List<ParameterInjectionPoint<?, X>> getWBParameters()
    {
-      final List<? extends WeldParameter<?, ?>> delegate = super.getWBParameters();
+      final List<? extends WeldParameter<?, X>> delegate = super.getWBParameters();
       return new ForwardingParameterInjectionPointList()
       {
 
@@ -213,7 +214,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
          }
 
          @Override
-         protected List<? extends WeldParameter<?, ?>> delegate()
+         protected List<? extends WeldParameter<?, X>> delegate()
          {
             return delegate;
          }
@@ -249,12 +250,12 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
     * @param manager The Bean manager
     * @return The object array of looked up values
     */
-   protected Object[] getParameterValues(List<ParameterInjectionPoint<?, ?>> parameters, 
+   protected Object[] getParameterValues(List<ParameterInjectionPoint<?, X>> parameters, 
          Class<? extends Annotation> specialParam, Object specialVal, 
          BeanManagerImpl manager, CreationalContext<?> creationalContext)
    {
       Object[] parameterValues = new Object[parameters.size()];
-      Iterator<ParameterInjectionPoint<?, ?>> iterator = parameters.iterator();
+      Iterator<ParameterInjectionPoint<?, X>> iterator = parameters.iterator();
       for (int i = 0; i < parameterValues.length; i++)
       {
          ParameterInjectionPoint<?, ?> param = iterator.next();

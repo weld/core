@@ -17,22 +17,14 @@
 package org.jboss.weld.bootstrap;
 
 import java.lang.reflect.Member;
-import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
-import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.enterprise.inject.spi.ProcessObserverMethod;
-import javax.enterprise.inject.spi.ProcessProducer;
-import javax.enterprise.inject.spi.ProcessSessionBean;
 import javax.inject.Inject;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -48,11 +40,13 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.ee.EEResourceProducerField;
 import org.jboss.weld.bean.ee.PersistenceContextProducerField;
-import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
+import org.jboss.weld.bootstrap.events.ProcessBeanImpl;
 import org.jboss.weld.bootstrap.events.ProcessInjectionTargetImpl;
 import org.jboss.weld.bootstrap.events.ProcessManagedBeanImpl;
 import org.jboss.weld.bootstrap.events.ProcessObserverMethodImpl;
+import org.jboss.weld.bootstrap.events.ProcessProducerFieldImpl;
 import org.jboss.weld.bootstrap.events.ProcessProducerImpl;
+import org.jboss.weld.bootstrap.events.ProcessProducerMethodImpl;
 import org.jboss.weld.bootstrap.events.ProcessSessionBeanImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
@@ -67,7 +61,6 @@ import org.jboss.weld.log.Logging;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.util.Reflections;
-import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 import org.jboss.weld.ws.WSApiAbstraction;
 
 public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
@@ -113,19 +106,31 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
          {
             if (bean instanceof AbstractProducerBean<?, ?, ?>)
             {
-               fireProcessProducerEvent((AbstractProducerBean<?, ?, Member>) bean);
+               ProcessProducerImpl.fire(manager, (AbstractProducerBean<?, ?, Member>) bean);
             }
-            if (bean instanceof AbstractClassBean<?>)
+            else if (bean instanceof AbstractClassBean<?>)
             {
-               fireProcessInjectionTargetEvent((AbstractClassBean<?>) bean);
+               ProcessInjectionTargetImpl.fire(manager, (AbstractClassBean<?>) bean);
             }
             if (bean instanceof ManagedBean<?>)
             {
-               fireProcessManagedBeanEvent((ManagedBean<?>) bean);
+               ProcessManagedBeanImpl.fire(manager, (ManagedBean<?>) bean);
             }
-            if (bean instanceof SessionBean<?>)
+            else if (bean instanceof SessionBean<?>)
             {
-               fireProcessSessionBeanEvent((SessionBean<Object>) bean);
+               ProcessSessionBeanImpl.fire(manager, (SessionBean<Object>) bean);
+            }
+            else if (bean instanceof ProducerField<?, ?>)
+            {
+               ProcessProducerFieldImpl.fire(manager, (ProducerField<?, ?>) bean);
+            }
+            else if (bean instanceof ProducerMethod<?, ?>)
+            {
+               ProcessProducerMethodImpl.fire(manager, (ProducerMethod<?, ?>) bean);
+            }
+            else
+            {
+               ProcessBeanImpl.fire(getManager(), bean);
             }
          }
          manager.addBean(bean);
@@ -135,7 +140,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       {
          log.debug("Observer : " + observer);
          observer.initialize();
-         fireProcessObserverMethodEvent(observer);
+         ProcessObserverMethodImpl.fire(manager, observer);
          manager.addObserver(observer);
       }
       
@@ -203,63 +208,6 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       getEnvironment().addBean(bean);
    }
    
-   private <X, T> void fireProcessProducerEvent(AbstractProducerBean<X, T, Member> producer)
-   {
-      ProcessProducerImpl<X, T> payload = new ProcessProducerImpl<X, T>(producer.getAnnotatedItem(), producer) {};
-      fireEvent(payload, ProcessProducer.class, producer.getAnnotatedItem().getDeclaringType().getBaseType(), producer.getAnnotatedItem().getBaseType());
-      if (!payload.getDefinitionErrors().isEmpty())
-      {
-         // FIXME communicate all the captured definition errors in this exception
-         throw new DefinitionException(payload.getDefinitionErrors().get(0));
-      }
-   }
-   
-   private <X> void fireProcessInjectionTargetEvent(AbstractClassBean<X> classBean)
-   {
-      ProcessInjectionTargetImpl<X> payload = new ProcessInjectionTargetImpl<X>(classBean.getAnnotatedItem(), classBean) {};
-      fireEvent(payload, ProcessInjectionTarget.class, classBean.getAnnotatedItem().getBaseType());
-      if (!payload.getDefinitionErrors().isEmpty())
-      {
-         // FIXME communicate all the captured definition errors in this exception
-         throw new DefinitionException(payload.getDefinitionErrors().get(0));
-      }
-   }
-   
-   protected <X> ProcessAnnotatedTypeImpl<X> fireProcessAnnotatedTypeEvent(WeldClass<X> clazz)
-   {
-      ProcessAnnotatedTypeImpl<X> payload = new ProcessAnnotatedTypeImpl<X>(clazz) {};
-      fireEvent(payload, ProcessAnnotatedType.class, clazz.getBaseType());
-      return payload;
-   }
-   
-   private <X> void fireProcessManagedBeanEvent(ManagedBean<X> bean)
-   {
-      ProcessManagedBeanImpl<X> payload = new ProcessManagedBeanImpl<X>(bean) {};
-      fireEvent(payload, ProcessManagedBean.class, bean.getAnnotatedItem().getBaseType());
-      if (!payload.getDefinitionErrors().isEmpty())
-      {
-         // FIXME communicate all the captured definition errors in this exception
-         throw new DefinitionException(payload.getDefinitionErrors().get(0));
-      }
-   }
-   
-   private <X> void fireProcessSessionBeanEvent(SessionBean<Object> bean)
-   {
-      ProcessSessionBeanImpl<X> payload = new ProcessSessionBeanImpl<X>(bean) {};
-      fireEvent(payload, ProcessSessionBean.class, bean.getAnnotatedItem().getBaseType());
-      if (!payload.getDefinitionErrors().isEmpty())
-      {
-         // FIXME communicate all the captured definition errors in this exception
-         throw new DefinitionException(payload.getDefinitionErrors().get(0));
-      }
-   }
-   
-   protected void fireEvent(Object payload, Type rawType, Type... actualTypeArguments)
-   {
-      Type eventType = new ParameterizedTypeImpl(rawType, actualTypeArguments, null);
-      manager.fireEvent(eventType, payload);
-   }
-   
    protected <X> void createProducerFields(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass)
    {
       for (WeldField<?, X> field : annotatedClass.getDeclaredAnnotatedWeldFields(Produces.class))
@@ -280,18 +228,6 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    {
       ObserverMethodImpl<X, T> observer = ObserverFactory.create(method, declaringBean, manager);
       getEnvironment().addObserver(observer);
-   }
-   
-   private <X, T> void fireProcessObserverMethodEvent(ObserverMethodImpl<X, T> observer)
-   {
-      ProcessObserverMethodImpl<X, T> payload = new ProcessObserverMethodImpl<X, T>(observer.getMethod(), observer) {};
-      fireEvent(payload, ProcessObserverMethod.class, observer.getMethod().getDeclaringType().getBaseType(), observer.getObservedType());
-      if (!payload.getDefinitionErrors().isEmpty())
-      {
-         // FIXME communicate all the captured definition errors in this exception
-         throw new DefinitionException(payload.getDefinitionErrors().get(0));
-      }
-      return;
    }
 
    protected <T> void createSimpleBean(WeldClass<T> annotatedClass)

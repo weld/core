@@ -33,10 +33,15 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 
 public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery
 {
-
-   public AfterBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, ExtensionBeanDeployerEnvironment extensionDeployerEnvironment)
+   
+   public static void fire(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, ExtensionBeanDeployerEnvironment extensionDeployerEnvironment)
    {
-      super(beanDeployments, deploymentManager, deployment, extensionDeployerEnvironment);
+      new AfterBeanDiscoveryImpl(deploymentManager, deployment, beanDeployments, extensionDeployerEnvironment).fire();
+   }
+   
+   protected AfterBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, ExtensionBeanDeployerEnvironment extensionDeployerEnvironment)
+   {
+      super(deploymentManager, AfterBeanDiscovery.class, beanDeployments, deployment, extensionDeployerEnvironment);
    }
 
    public void addDefinitionError(Throwable t)
@@ -51,12 +56,14 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
    
    public void addBean(Bean<?> bean)
    {
-      getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager().addBean(bean);
+      BeanManagerImpl beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
+      beanManager.addBean(bean);
+      ProcessBeanImpl.fire(beanManager, bean);
    }
 
    public void addContext(Context context)
    {
-      getDeploymentManager().addContext(context);
+      getBeanManager().addContext(context);
    }
 
    public void addObserverMethod(ObserverMethod<?, ?> observerMethod)
