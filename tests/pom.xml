@@ -1,14 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
-      <artifactId>weld-parent</artifactId>
+      <artifactId>weld-core-parent</artifactId>
       <groupId>org.jboss.weld</groupId>
       <version>1.0.0-SNAPSHOT</version>
+      <relativePath>../parent</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld</groupId>
    <artifactId>weld-core-test</artifactId>
-   <version>1.0.0-SNAPSHOT</version>
    <name>Weld Core Tests</name>
+   <description>Tests for Weld, not including the CDI and AtInject TCKs</description>
    <dependencies>
 
       <dependency>
@@ -72,21 +73,8 @@
       <dependency>
          <groupId>org.jboss.ejb3</groupId>
          <artifactId>jboss-ejb3-api</artifactId>
-         <exclusions>
-            <exclusion>
-               <artifactId>jboss-jaxrpc</artifactId>
-               <groupId>jbossws</groupId>
-            </exclusion>
-            <exclusion>
-               <artifactId>jboss-transaction-api</artifactId>
-               <groupId>org.jboss.javaee</groupId>
-            </exclusion>
-            <exclusion>
-               <artifactId>jboss-jaxrpc</artifactId>
-               <groupId>jboss.jbossws</groupId>
-            </exclusion>
-         </exclusions>
       </dependency>
+      
       <dependency>
       	<groupId>log4j</groupId>
       	<artifactId>log4j</artifactId>

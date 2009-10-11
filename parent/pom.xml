@@ -1,23 +1,50 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld</groupId>
-   <artifactId>weld-parent</artifactId>
+   <artifactId>weld-core-parent</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.0-SNAPSHOT</version>
-   
+
    <parent>
       <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-version-matrix</artifactId>
+      <artifactId>weld-core-bom</artifactId>
       <version>1.0.0-SNAPSHOT</version>
-      <relativePath>../version-matrix</relativePath>
+      <relativePath>../bom</relativePath>
    </parent>
 
-   <name>Weld, the reference implementation of JSR-299</name>
+   <name>Weld Core Parent</name>
+
+   <!-- Full metadata -->
+
    <url>http://www.seamframework.org/Weld</url>
 
    <description>
       The reference implementation of JSR 299: Weld
    </description>
+
+   <ciManagement>
+      <system>Hudson</system>
+      <url>http://hudson.jboss.org</url>
+   </ciManagement>
+
+   <issueManagement>
+      <system>JIRA</system>
+      <url>http://jira.jboss.org/browse/WELD</url>
+   </issueManagement>
+
+   <organization>
+      <name>Seam Framework</name>
+      <url>http://seamframework.org</url>
+   </organization>
+
+   <inceptionYear>2008</inceptionYear>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      </license>
+   </licenses>
 
    <developers>
       <developer>
@@ -38,12 +65,101 @@
       <developer>
          <name>David Allen</name>
       </developer>
-      
+
       <developer>
          <name>Nicklas Karlsson</name>
       </developer>
    </developers>
 
+
+   <properties>
+      <testng.version>5.9</testng.version>
+      <jboss.test.harness.version>1.0.0-SNAPSHOT</jboss.test.harness.version>
+      <apache.httpclient.version>3.1</apache.httpclient.version>
+      <junit.version>4.7</junit.version>
+      <htmlunit.version>2.4</htmlunit.version>
+      <glassfish.el.version>2.1.2-b04</glassfish.el.version>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+   </properties>
+
+
+   <!-- Specify Weld non-runtime dependencies (e.g. testing) -->
+
+   <dependencyManagement>
+      <dependencies>
+
+         <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <classifier>jdk15</classifier>
+            <exclusions>
+               <exclusion>
+                  <groupId>junit</groupId>
+                  <artifactId>junit</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-as-50</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-as-52</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-embedded</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-tomcat</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>${apache.httpclient.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>net.sourceforge.htmlunit</groupId>
+            <artifactId>htmlunit</artifactId>
+            <version>${htmlunit.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>el-impl</artifactId>
+            <version>${glassfish.el.version}</version>
+         </dependency>
+
+      </dependencies>
+   </dependencyManagement>
+
+   <!-- Configure the build -->
    <build>
       <plugins>
          <plugin>
@@ -52,7 +168,6 @@
             <executions>
                <execution>
                   <id>attach-sources</id>
-                  <phase>verify</phase>
                   <goals>
                      <goal>jar</goal>
                   </goals>
@@ -63,23 +178,111 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
          </plugin>
-         <plugin>
-           <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-release-plugin</artifactId>
-           <version>2.0-beta-8</version>
-           <configuration>
-             <tagBase>https://svn.jboss.org/repos/weld/ri/tags</tagBase>
-             <autoVersionSubmodules>true</autoVersionSubmodules>
-           </configuration>
-         </plugin>
       </plugins>
       <defaultGoal>package</defaultGoal>
 
+      <!-- Configure all plugins, including versions to use in the build -->
       <pluginManagement>
          <plugins>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-release-plugin</artifactId>
+               <version>2.0-beta-9</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-surefire-report-plugin</artifactId>
+               <version>2.4.3</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-surefire-plugin</artifactId>
+               <version>2.4.3</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-clean-plugin</artifactId>
+               <version>2.3</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-deploy-plugin</artifactId>
+               <version>2.4</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-install-plugin</artifactId>
+               <version>2.3</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-site-plugin</artifactId>
+               <version>2.0.1</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-source-plugin</artifactId>
+               <version>2.0.4</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-resources-plugin</artifactId>
+               <version>2.4.1</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-dependency-plugin</artifactId>
+               <version>2.1</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-javadoc-plugin</artifactId>
+               <version>2.4</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-gpg-plugin</artifactId>
+               <version>1.0-alpha-4</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.felix</groupId>
+               <artifactId>maven-bundle-plugin</artifactId>
+               <version>2.0.0</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-enforcer-plugin</artifactId>
+               <version>1.0-beta-1</version>
+               <executions>
+                  <execution>
+                     <id>enforce</id>
+                     <goals>
+                        <goal>enforce</goal>
+                     </goals>
+                     <configuration>
+                        <rules>
+                           <requireMavenVersion>
+                              <version>2.0.9</version>
+                           </requireMavenVersion>
+                           <requirePluginVersions>
+                              <unCheckedPlugins>
+                                 <unCheckedPlugin>org.apache.maven.plugins:maven-eclipse-plugin</unCheckedPlugin>
+                              </unCheckedPlugins>
+                           </requirePluginVersions>
+                        </rules>
+                     </configuration>
+                  </execution>
+               </executions>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-shade-plugin</artifactId>
+               <version>1.2.1</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-compiler-plugin</artifactId>
+               <version>2.0.2</version>
                <configuration>
                   <source>1.5</source>
                   <target>1.5</target>
@@ -88,6 +291,7 @@
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-jar-plugin</artifactId>
+               <version>2.2</version>
                <configuration>
                   <archive>
                      <manifest>
@@ -121,16 +325,8 @@
             </plugin>
             <plugin>
                <groupId>org.codehaus.mojo</groupId>
-               <artifactId>emma-maven-plugin</artifactId>
-               <configuration>
-                  <forkMode>once</forkMode>
-                  <metadataFile>../target/coverage.em</metadataFile>
-                  <outputDirectory>${project.build.directory}/generated-classes</outputDirectory>
-               </configuration>
-            </plugin>
-            <plugin>
-               <groupId>org.codehaus.mojo</groupId>
                <artifactId>build-helper-maven-plugin</artifactId>
+               <version>1.4</version>
                <executions>
                   <execution>
                      <phase>validate</phase>
@@ -152,6 +348,7 @@
             <plugin>
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>buildnumber-maven-plugin</artifactId>
+               <version>1.0-beta-3</version>
                <executions>
                   <execution>
                      <id>set-build-properties</id>
@@ -163,94 +360,17 @@
                </executions>
                <inherited>true</inherited>
                <configuration>
-                  <!-- If the plugin fails to get the scm revision, set it to "unavailable" -->
+                  <!--
+                     If the plugin fails to get the scm revision, set it
+                     to "unavailable"
+                  -->
                   <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
                   <revisionOnScmFailure>unavailable</revisionOnScmFailure>
                   <timestampFormat>{0, date, long} {0, time, long}</timestampFormat>
                </configuration>
-            </plugin> 
+            </plugin>
          </plugins>
       </pluginManagement>
    </build>
-   
-   <profiles>
-      <profile>
-         <id>api-coverage</id>
-         <activation>
-            <property>
-               <name>apiCoverage</name>
-            </property>
-         </activation>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-surefire-plugin</artifactId>
-                  <inherited>true</inherited>
-                  <configuration>
-                     <forkMode>once</forkMode>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-         <dependencies>
-            <dependency>
-               <groupId>emma</groupId>
-               <artifactId>emma</artifactId>
-               <version>2.0.5312</version>
-               <scope>test</scope>
-            </dependency>
-         </dependencies>
-      </profile>
-   </profiles>
-   
-   <ciManagement>
-      <system>Hudson</system>
-      <url />
-   </ciManagement>
 
-   <issueManagement>
-      <system>JIRA</system>
-      <url>http://jira.jboss.org/browse/WELD</url>
-   </issueManagement>
-
-   <inceptionYear>2008</inceptionYear>
-
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-      </license>
-      <license>
-         <name>Lesser Gnu Public License, Version 2.1</name>
-         <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
-      </license>
-   </licenses>
-
-   <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/ri/trunk/parent</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/ri/trunk/parent</developerConnection>
-      <url>http://fisheye.jboss.org/browse/Weld/ri</url>
-   </scm>
-
-   <reporting>
-      <plugins>
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-maven-plugin</artifactId>
-            <configuration>
-               <formats>
-                  <format>html</format>
-                  <format>xml</format>
-               </formats>
-               <instrumentation>
-                  <ignores>
-                     <ignore>javax.weld.*</ignore>
-                  </ignores>
-               </instrumentation>
-            </configuration>
-         </plugin>
-      </plugins>
-   </reporting>
-   
 </project>

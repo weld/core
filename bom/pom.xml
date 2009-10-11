@@ -1,0 +1,275 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-core-bom</artifactId>
+   <packaging>pom</packaging>
+   <version>1.0.0-SNAPSHOT</version>
+
+   <name>Weld Core BOM</name>
+   <url>http://www.seamframework.org/Weld</url>
+
+   <!-- Minimal project metadata, for more see parent/pom.xml -->
+   <description>Weld Core "bill of materials" which can be imported by any project using the Weld implementation of CDI. It provides dependency management for the implementation.</description>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+
+   <developers>
+      <developer>
+         <name>Weld committers</name>
+      </developer>
+   </developers>
+
+   <!-- Dependency management, including extra repositories if needed -->
+   <repositories>
+      <repository>
+         <id>repository.jboss.org</id>
+         <name>JBoss Release Repository</name>
+         <url>http://repository.jboss.org/maven2</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+      <repository>
+         <id>snapshots.jboss.org</id>
+         <name>JBoss Snapshots Repository</name>
+         <url>http://snapshots.jboss.org/maven2</url>
+         <releases>
+            <enabled>false</enabled>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </snapshots>
+      </repository>
+      <repository>
+         <id>oss.sonatype.org/jboss-snapshots</id>
+         <name>JBoss (Nexus) Snapshots Repository</name>
+         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots/</url>
+         <releases>
+            <enabled>false</enabled>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </snapshots>
+      </repository>
+   </repositories>
+
+   <properties>
+      <weld.api.version>1.0-SNAPSHOT</weld.api.version>
+      <google.collections.version>1.0-rc2</google.collections.version>
+      <javassist.version>3.11.0.GA</javassist.version>
+      <cdi.tck.version>1.0.0-SNAPSHOT</cdi.tck.version>
+      <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
+      <weld.core.version>1.0.0-SNAPSHOT</weld.core.version>
+      <weld.servlet.version>1.0.0-SNAPSHOT</weld.servlet.version>
+      <weld.se.version>1.0.0-SNAPSHOT</weld.se.version>
+      <jetty.version>6.1.21</jetty.version>
+      <tomcat.version>6.0.20</tomcat.version>
+      <jboss.interceptor.version>1.0.0-SNAPSHOT</jboss.interceptor.version>
+   </properties>
+
+   <dependencyManagement>
+      <dependencies>
+
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api-bom</artifactId>
+            <version>${weld.api.version}</version>
+            <scope>import</scope>
+            <type>pom</type>
+         </dependency>
+
+         <dependency>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>${javassist.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+            <version>${weld.core.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-porting-package</artifactId>
+            <version>${weld.core.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-logging</artifactId>
+            <version>${weld.core.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-test</artifactId>
+            <version>${weld.core.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-se</artifactId>
+            <version>${weld.se.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-int</artifactId>
+            <version>${weld.servlet.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet</artifactId>
+            <version>${weld.servlet.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.jsr299.tck</groupId>
+            <artifactId>jsr299-tck-api</artifactId>
+            <version>${cdi.tck.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.jsr299.tck</groupId>
+            <artifactId>jsr299-tck-impl</artifactId>
+            <version>${cdi.tck.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.atinject</groupId>
+            <artifactId>inject-tck</artifactId>
+            <version>${atinject.tck.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor</artifactId>
+            <version>${jboss.interceptor.version}</version>
+         </dependency>
+
+         <!-- TODO Move to examples -->
+         <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>${jetty.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-plus</artifactId>
+            <version>${jetty.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jsp-2.1-jetty</artifactId>
+            <version>${jetty.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>catalina</artifactId>
+            <version>${tomcat.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>jasper</artifactId>
+            <version>${tomcat.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+            <version>${google.collections.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.4.2</version>
+         </dependency>
+
+         <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+            <version>1.2_13</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>el-impl</artifactId>
+            <version>2.1.2-b04</version>
+         </dependency>
+
+      </dependencies>
+   </dependencyManagement>
+   
+   <!-- The release profile -->
+   <profiles>
+      <profile>
+         <id>release</id>
+         <build>
+            <pluginManagement>
+               <plugins>
+                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <executions>
+                      <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                          <goal>sign</goal>
+                        </goals>
+                      </execution>
+                    </executions>
+                  </plugin>
+               </plugins>
+            </pluginManagement>
+         </build>
+      </profile>
+   </profiles>
+
+   <!-- SCM and distribution management -->
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/bom</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/bom</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld/core</url>
+   </scm>
+
+   <distributionManagement>
+      <repository>
+         <id>oss.sonatype.org/jboss-staging</id>
+         <name>JBoss (Nexus) Release Staging Repository</name>
+         <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      </repository>
+      <snapshotRepository>
+         <id>oss.sonatype.org/jboss-snapshots</id>
+         <name>JBoss (Nexus) Snapshots Repository</name>
+         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
+      </snapshotRepository>
+   </distributionManagement>
+
+</project>
