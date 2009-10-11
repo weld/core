@@ -1,19 +1,39 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld</groupId>
-   <artifactId>weld-version-matrix</artifactId>
+   <artifactId>weld-bom</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.0-SNAPSHOT</version>
+   <version>1.0-SNAPSHOT</version>
 
-   <name>Weld Version Matrix</name>
+   <name>Weld BOM</name>
    <url>http://www.seamframework.org/Weld</url>
 
-   <description>Version Matrix for Weld. JSR-299: Contexts and Dependency Injection for Java EE is an elegant set of new services for Java that draws upon ideas from JBoss Seam and Google Guice. While many of the features provided (dependency injection, contextual lifecycle, configuration, interception, event notification) are familiar, the innovative use of meta-annotations is uniquely expressive and typesafe. Weld is the Reference Implementation of CDI.</description>
+   <description>Weld "bill of materials" which should be imported by any Weld module or sub project</description>
+   
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+
+   <developers>
+      <developer>
+         <name>Pete Muir</name>
+         <id>pmuir</id>
+         <organization>Red Hat Inc.</organization>
+         <roles>
+            <role>Project Lead</role>
+         </roles>
+         <email>pmuir@redhat.com</email>
+      </developer>
+   </developers>
 
    <repositories>
       <repository>
          <id>repository.jboss.org</id>
-         <name>JBoss Repository</name>
+         <name>JBoss Release Repository</name>
          <url>http://repository.jboss.org/maven2</url>
          <releases>
             <enabled>true</enabled>
@@ -23,26 +43,15 @@
          </snapshots>
       </repository>
       <repository>
-         <id>snapshots.jboss.org</id>
-         <name>JBoss Snapshots Repository</name>
-         <url>http://snapshots.jboss.org/maven2</url>
-         <releases>
-            <enabled>false</enabled>
-         </releases>
-         <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-         </snapshots>
-      </repository>
-      <repository>
         <id>oss.sonatype.org</id>
-        <name>Sonatype Nexus Snapshots Repository</name>
+        <name>JBoss (Nexus) Snapshots Repository</name>
         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots/</url>
         <releases>
           <enabled>false</enabled>
         </releases>
         <snapshots>
           <enabled>true</enabled>
+          <updatePolicy>never</updatePolicy>
         </snapshots>
       </repository>
    </repositories>
@@ -50,8 +59,15 @@
    <pluginRepositories>
       <pluginRepository>
          <id>repository.jboss.org</id>
-         <name>JBoss Repository</name>
+         <name>JBoss Release Repository</name>
          <url>http://repository.jboss.org/maven2</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
       </pluginRepository>
    </pluginRepositories>
    
@@ -641,12 +657,12 @@
    <distributionManagement>
        <repository>
           <id>jboss-releases</id>
-          <name>Sonatype Nexus Maven Repository</name>
+          <name>JBoss (Nexus) Release Staging Repository</name>
           <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
       </repository>
       <snapshotRepository>
          <id>jboss-snapshots</id>
-         <name>Sonatype Nexus Snapshot Repository</name>
+         <name>JBoss (Nexus) Snapshots Repository</name>
          <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
       </snapshotRepository>
    </distributionManagement>
