@@ -20,7 +20,13 @@
 
       <dependency>
          <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-porting-package</artifactId>
+         <artifactId>weld-core-test</artifactId>
+         <exclusions>
+            <exclusion>
+               <groupId>org.testng</groupId>
+               <artifactId>testng</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <dependency>
@@ -31,7 +37,7 @@
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
-    </dependency>
+      </dependency>
       
    </dependencies>
    
@@ -41,9 +47,9 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-               <suiteXmlFiles>
-                  <suiteXmlFile>tests.xml</suiteXmlFile>
-               </suiteXmlFiles>
+               <includes>
+                  <include>**/AtInjectTCK.java</include>
+               </includes>
             </configuration>
          </plugin>
       </plugins>
