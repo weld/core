@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Weld" verbose="2"  >
+<suite name="Weld" verbose="1"  >
 
    <test name="Weld">
       <method-selectors>
@@ -19,7 +19,6 @@
       </groups>
       <packages>
          <package name="org.jboss.weld.test.examples" />
-         
          <package name="org.jboss.weld.test.unit.activities" />
          <package name="org.jboss.weld.test.unit.activities.current" />
          <package name="org.jboss.weld.test.unit.activities.child" />

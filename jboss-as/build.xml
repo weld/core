@@ -49,7 +49,7 @@
                 <copy todir="target/weld.deployer/" overwrite="true">
                         <fileset dir="target/dependency/lib">
                                 <include name="weld-api.jar" />
-                                <include name="jsr299-api.jar" />
+                                <include name="cdi-api.jar" />
                                 <include name="weld-logger.jar" />
                         </fileset>
                 </copy>
