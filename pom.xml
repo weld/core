@@ -90,6 +90,10 @@
       <weld.api.version>1.0-SNAPSHOT</weld.api.version>
       <weld.core.version>1.0.0-SNAPSHOT</weld.core.version>
       <weld.extensions.version>1.0.0-SNAPSHOT</weld.extensions.version>
+      <jetty.version>6.1.21</jetty.version>
+      <uel.glassfish.version>2.1.2-b04</uel.glassfish.version>
+      <log4j.version>1.2.14</log4j.version>
+      <slf4j.version>1.4.2</slf4j.version>
       <!-- Testing deps -->
       <testng.version>5.9</testng.version>
    </properties>
@@ -178,6 +182,42 @@
             <version>${testng.version}</version>
             <classifier>jdk15</classifier>
          </dependency>
+         
+         <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>${jetty.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-plus</artifactId>
+            <version>${jetty.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jsp-2.1-jetty</artifactId>
+            <version>${jetty.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>el-impl</artifactId>
+            <version>${uel.glassfish.version}</version>
+         </dependency>
 
       </dependencies>
    </dependencyManagement>
@@ -189,7 +229,6 @@
             <artifactId>maven-release-plugin</artifactId>
             <configuration>
                <tagBase>https://svn.jboss.org/repos/weld/examples/tags</tagBase>
-               <autoVersionSubmodules>true</autoVersionSubmodules>
             </configuration>
          </plugin>
 
@@ -197,10 +236,6 @@
 
       <pluginManagement>
          <plugins>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-war-plugin</artifactId>
-            </plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-ejb-plugin</artifactId>
@@ -217,19 +252,6 @@
       <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples</developerConnection>
       <url>http://fisheye.jboss.org/browse/WebBeans/ri/examples</url>
    </scm>
-
-   <distributionManagement>
-      <repository>
-         <id>oss.sonatype.org/jboss-staging</id>
-         <name>JBoss (Nexus) Release Staging Repository</name>
-         <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-      </repository>
-      <snapshotRepository>
-         <id>oss.sonatype.org/jboss-snapshots</id>
-         <name>JBoss (Nexus) Snapshots Repository</name>
-         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
-      </snapshotRepository>
-   </distributionManagement>
 
 </project>
 
