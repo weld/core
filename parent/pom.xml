@@ -19,7 +19,7 @@
    <url>http://www.seamframework.org/Weld</url>
 
    <description>
-      The reference implementation of JSR 299: Weld
+      Parent for Weld, the reference implementation of JSR 299: Contexts and Dependency Injection for Java EE
    </description>
 
    <ciManagement>
@@ -74,11 +74,7 @@
 
    <properties>
       <glassfish.el.version>2.1.2-b04</glassfish.el.version>
-      
-      <!-- Force encoding to UTF-8 (bug on OS X) -->
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-      
+      <log4j.version>1.2.14</log4j.version>
       <!-- Testing deps -->
       <testng.version>5.9</testng.version>
       <jboss.test.harness.version>1.1.0-SNAPSHOT</jboss.test.harness.version>
@@ -158,6 +154,12 @@
             <groupId>org.glassfish.web</groupId>
             <artifactId>el-impl</artifactId>
             <version>${glassfish.el.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
          </dependency>
 
       </dependencies>
