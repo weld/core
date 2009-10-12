@@ -23,12 +23,14 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Collections;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.lang.reflect.Method;
 
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.InterceptionType;
 
 import org.jboss.weld.ejb.spi.InterceptorBindings;
+import org.jboss.weld.context.SerializableContextual;
 import org.jboss.interceptor.model.InterceptionModel;
 
 /**
@@ -37,9 +39,9 @@ import org.jboss.interceptor.model.InterceptionModel;
 public class InterceptorBindingsAdapter implements InterceptorBindings
 {
 
-   private InterceptionModel<Class<?>, Interceptor<?>> interceptionModel;
+   private InterceptionModel<Class<?>, SerializableContextual<Interceptor<?>, ?>> interceptionModel;
 
-   public InterceptorBindingsAdapter(InterceptionModel<Class<?>, Interceptor<?>> interceptionModel)
+   public InterceptorBindingsAdapter(InterceptionModel<Class<?>, SerializableContextual<Interceptor<?>, ?>> interceptionModel)
    {
       if (interceptionModel == null)
       {
@@ -50,7 +52,8 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
 
    public Collection<Interceptor<?>> getAllInterceptors()
    {
-      return interceptionModel.getAllInterceptors();
+      Collection<SerializableContextual<Interceptor<?>, ?>> contextualSet = interceptionModel.getAllInterceptors();
+      return toInterceptorList(contextualSet);
    }
 
    public List<Interceptor<?>> getMethodInterceptors(InterceptionType interceptionType, Method method)
@@ -72,7 +75,7 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
          throw new IllegalArgumentException("Interception type must not be lifecycle, but it is " + interceptionType.name());
       }
 
-      return interceptionModel.getInterceptors(internalInterceptionType, method);
+      return toInterceptorList(interceptionModel.getInterceptors(internalInterceptionType, method));
 
    }
 
@@ -90,6 +93,17 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
          throw new IllegalArgumentException("Interception type must be lifecycle, but it is " + interceptionType.name());
       }
 
-      return interceptionModel.getInterceptors(internalInterceptionType, null);
+      return toInterceptorList(interceptionModel.getInterceptors(internalInterceptionType, null));
    }
+
+   private List<Interceptor<?>> toInterceptorList(Collection<SerializableContextual<Interceptor<?>, ?>> contextualSet)
+   {
+      ArrayList<Interceptor<?>> interceptors = new ArrayList<Interceptor<?>>();
+      for (SerializableContextual<Interceptor<?>, ?> serializableContextual : contextualSet)
+      {
+         interceptors.add(serializableContextual.get());
+      }
+      return interceptors;
+   }
+
 }

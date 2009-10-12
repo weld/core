@@ -39,6 +39,13 @@ public class SerializableContextualInstance<C extends Contextual<I>, I> implemen
       this.creationalContext = creationalContext;
    }
 
+   public SerializableContextualInstance(SerializableContextual<C, I> contextual, I instance, CreationalContext<I> creationalContext)
+   {
+      this.contextual = contextual;
+      this.instance = instance;
+      this.creationalContext = creationalContext;
+   }
+
    public SerializableContextual<C, I> getContextual()
    {
       return contextual;

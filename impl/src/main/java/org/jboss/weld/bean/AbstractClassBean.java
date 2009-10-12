@@ -45,6 +45,7 @@ import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.SerializableContextualInstance;
+import org.jboss.weld.context.SerializableContextual;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
@@ -408,7 +409,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       if (manager.getBoundInterceptorsRegistry().getInterceptionModel(getType()) == null)
       {
-         InterceptionModelBuilder<Class<?>, Interceptor<?>> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Interceptor.class);
+         InterceptionModelBuilder<Class<?>, SerializableContextual<Interceptor<?>, ?>> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) SerializableContextual.class);
 
          Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(manager, getAnnotatedItem().getAnnotations());
          for (Class<? extends Annotation> annotation : getStereotypes())
@@ -416,8 +417,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             classBindingAnnotations.addAll(flattenInterceptorBindings(manager, manager.getStereotypeDefinition(annotation)));
          }
 
-         builder.interceptPostConstruct().with(manager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotations.toArray(new Annotation[0])).toArray(new Interceptor<?>[]{}));
-         builder.interceptPreDestroy().with(manager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotations.toArray(new Annotation[0])).toArray(new Interceptor<?>[]{}));
+         Annotation[] classBindingAnnotationsArray = classBindingAnnotations.toArray(new Annotation[0]);
+         builder.interceptPostConstruct().with(toSerializableContextualArray(manager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray)));
+         builder.interceptPreDestroy().with(toSerializableContextualArray(manager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotationsArray)));
+         builder.interceptPrePassivate().with(toSerializableContextualArray(manager.resolveInterceptors(InterceptionType.PRE_PASSIVATE, classBindingAnnotationsArray)));
+         builder.interceptPostActivate().with(toSerializableContextualArray(manager.resolveInterceptors(InterceptionType.POST_ACTIVATE, classBindingAnnotationsArray)));
 
          List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
          for (WeldMethod<?, ?> method : businessMethods)
@@ -425,7 +429,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             List<Annotation> methodBindingAnnotations = new ArrayList<Annotation>(classBindingAnnotations);
             methodBindingAnnotations.addAll(flattenInterceptorBindings(manager, method.getAnnotations()));
             List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
-            builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodBoundInterceptors.toArray(new Interceptor[]{}));
+            builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
          }
          manager.getBoundInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
       }
@@ -479,5 +483,15 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
           }
        }
    }
-   
+
+   private static SerializableContextual[] toSerializableContextualArray(List<Interceptor<?>> interceptors)
+   {
+      List<SerializableContextual> serializableContextuals = new ArrayList<SerializableContextual>();
+      for (Interceptor<?> interceptor: interceptors)
+      {
+         serializableContextuals.add(new SerializableContextual(interceptor));
+      }
+      return serializableContextuals.toArray(new SerializableContextual[]{});
+   }
+
 }

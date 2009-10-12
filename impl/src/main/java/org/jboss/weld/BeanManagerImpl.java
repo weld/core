@@ -64,6 +64,7 @@ import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.context.SerializableContextual;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
@@ -261,7 +262,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    /**
     * Interception model
     */
-   private transient final InterceptorRegistry<Class<?>, Interceptor<?>> boundInterceptorsRegistry = new InterceptorRegistry<Class<?>, Interceptor<?>>();
+   private transient final InterceptorRegistry<Class<?>, SerializableContextual<Interceptor<?>, ?>> boundInterceptorsRegistry = new InterceptorRegistry<Class<?>, SerializableContextual<Interceptor<?>,?>>();
    private transient final InterceptorRegistry<Class<?>, Class<?>> declaredInterceptorsRegistry = new InterceptorRegistry<Class<?>, Class<?>>();
 
    /**
@@ -1389,7 +1390,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       this.currentInjectionPoint.remove();
    }
 
-   public InterceptorRegistry<Class<?>, Interceptor<?>> getBoundInterceptorsRegistry()
+   public InterceptorRegistry<Class<?>, SerializableContextual<Interceptor<?>, ?>> getBoundInterceptorsRegistry()
    {
       return boundInterceptorsRegistry;
    }

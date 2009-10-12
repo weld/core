@@ -15,45 +15,23 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.test.unit.interceptor.ejb3model;
+package org.jboss.weld.test.unit.interceptor.passivation;
 
-import javax.interceptor.Interceptors;
-import javax.interceptor.ExcludeClassInterceptors;
-import javax.interceptor.InvocationContext;
-import javax.interceptor.AroundInvoke;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import javax.interceptor.InterceptorBinding;
 
 /**
  * @author Marius Bogoevici
  */
-@Interceptors(Goalkeeper.class)
-public class Ball
+@InterceptorBinding
+@Retention(RUNTIME)
+@Target({ElementType.TYPE})
+@Documented
+public @interface PassivationActivation
 {
-   public static boolean played = false;
-
-   public static boolean aroundInvoke = false;
-   
-   @ExcludeClassInterceptors
-   @Interceptors(Defender.class)
-   public void shoot()
-   {
-      played = true;
-   }
-
-   @Interceptors(Defender.class)
-   public void pass()
-   {
-      played = true;
-   }
-
-   public void lob()
-   {
-      played = true;
-   }
-
-   @AroundInvoke
-   public Object aroundInvoke(InvocationContext invocationContext) throws Exception
-   {
-      aroundInvoke = true;
-      return invocationContext.proceed();
-   }
 }

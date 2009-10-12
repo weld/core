@@ -15,45 +15,25 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.test.unit.interceptor.ejb3model;
+package org.jboss.weld.test.unit.interceptor.passivation;
 
-import javax.interceptor.Interceptors;
-import javax.interceptor.ExcludeClassInterceptors;
-import javax.interceptor.InvocationContext;
-import javax.interceptor.AroundInvoke;
+import java.io.Serializable;
 
 /**
- * @author Marius Bogoevici
+ * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-@Interceptors(Goalkeeper.class)
-public class Ball
-{
-   public static boolean played = false;
 
-   public static boolean aroundInvoke = false;
-   
-   @ExcludeClassInterceptors
-   @Interceptors(Defender.class)
+@PassivationActivation
+public class Ball implements Serializable
+{
+   @Shot
    public void shoot()
    {
-      played = true;
    }
 
-   @Interceptors(Defender.class)
+   @Pass
    public void pass()
    {
-      played = true;
    }
-
-   public void lob()
-   {
-      played = true;
-   }
-
-   @AroundInvoke
-   public Object aroundInvoke(InvocationContext invocationContext) throws Exception
-   {
-      aroundInvoke = true;
-      return invocationContext.proceed();
-   }
+   
 }

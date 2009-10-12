@@ -30,6 +30,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.interceptor.model.InterceptionModelBuilder;
+import org.jboss.interceptor.model.InterceptorClassMetadataImpl;
+import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
 import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
 import org.jboss.interceptor.registry.InterceptorRegistry;
@@ -38,7 +40,7 @@ import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
 import org.jboss.weld.bean.interceptor.ClassInterceptionHandlerFactory;
-import org.jboss.weld.bean.interceptor.InterceptorInterceptionHandlerFactory;
+import org.jboss.weld.bean.interceptor.CdiInterceptorHandlerFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
@@ -443,7 +445,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          if (hasBoundInterceptors())
          {
             interceptionRegistries.add(manager.getBoundInterceptorsRegistry());
-            interceptionHandlerFactories.add(new InterceptorInterceptionHandlerFactory(creationalContext, manager));
+            interceptionHandlerFactories.add(new CdiInterceptorHandlerFactory(creationalContext, manager));
          }
          if (interceptionRegistries.size() > 0)
             instance = new InterceptorProxyCreatorImpl(interceptionRegistries, interceptionHandlerFactories).createProxyFromInstance(instance, getType());
@@ -471,6 +473,8 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          {
             builder.interceptPostConstruct().with(classDeclaredInterceptors);
             builder.interceptPreDestroy().with(classDeclaredInterceptors);
+            builder.interceptPrePassivate().with(classDeclaredInterceptors);
+            builder.interceptPostActivate().with(classDeclaredInterceptors);
          }
 
          List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
@@ -491,7 +495,9 @@ public class ManagedBean<T> extends AbstractClassBean<T>
                builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
             }
          }
-         manager.getDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
+         InterceptionModel<Class<?>, Class<?>> interceptionModel = builder.build();
+         if (interceptionModel.getAllInterceptors().size() > 0 || new InterceptorClassMetadataImpl(getType()).isInterceptor())
+            manager.getDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
       }
    }
 

@@ -20,20 +20,21 @@ package org.jboss.weld.bean.interceptor;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Interceptor;
 
-import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
 import org.jboss.interceptor.proxy.InterceptionHandler;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.context.SerializableContextualInstance;
+import org.jboss.weld.context.SerializableContextual;
 
 /**
  * @author Marius Bogoevici
 */
-public class InterceptorInterceptionHandlerFactory implements InterceptionHandlerFactory<Interceptor<?>>
+public class CdiInterceptorHandlerFactory implements InterceptionHandlerFactory<SerializableContextual<Interceptor<Object>, Object>>
 {
    private final CreationalContext creationalContext;
    private BeanManagerImpl manager;
 
-   public InterceptorInterceptionHandlerFactory(CreationalContext creationalContext, BeanManagerImpl manager)
+   public CdiInterceptorHandlerFactory(CreationalContext creationalContext, BeanManagerImpl manager)
    {
       this.creationalContext = creationalContext;
       this.manager = manager;
@@ -44,10 +45,11 @@ public class InterceptorInterceptionHandlerFactory implements InterceptionHandle
       return manager;
    }
 
-   public InterceptionHandler createFor(final Interceptor interceptor)
+   public InterceptionHandler createFor(final SerializableContextual<Interceptor<Object>, Object> serializableContextual)
    {
-      Object instance = getManager().getReference(interceptor, creationalContext);
-      return new DirectClassInterceptionHandler(instance, interceptor.getBeanClass());
+      Object instance = getManager().getReference(serializableContextual.get(), creationalContext);
+      return new CdiInterceptorHandler(new SerializableContextualInstance<Interceptor<Object>, Object>(serializableContextual, instance, creationalContext),
+            serializableContextual.get().getBeanClass());
    }
 
 }

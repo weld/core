@@ -234,10 +234,7 @@ public class Beans
          boolean businessMethod = !annotatedMethod.isStatic()
                && (Modifier.isPublic(modifiers)
                   || Modifier.isProtected(modifiers))
-               && !annotatedMethod.isAnnotationPresent(Inject.class)
-               && !annotatedMethod.isAnnotationPresent(Produces.class)
-               && annotatedMethod.getAnnotatedWBParameters(Disposes.class).isEmpty()
-               && annotatedMethod.getAnnotatedWBParameters(Observes.class).isEmpty();
+               && !annotatedMethod.isAnnotationPresent(Inject.class);
 
          if (businessMethod)
          {

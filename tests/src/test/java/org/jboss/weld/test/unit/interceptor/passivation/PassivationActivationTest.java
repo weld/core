@@ -15,68 +15,50 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.test.unit.interceptor.ejb3model;
+package org.jboss.weld.test.unit.interceptor.passivation;
+
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ByteArrayInputStream;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
 import org.jboss.weld.test.AbstractWeldTest;
 
 import org.testng.annotations.Test;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.BeforeMethod;
-
 
 /**
  * @author Marius Bogoevici
  */
 @Artifact
-public class Ejb3InterceptionModelTests extends AbstractWeldTest
+@BeansXml("beans.xml")
+public class PassivationActivationTest extends AbstractWeldTest
 {
-   @BeforeMethod
-   public void reset()
-   {
-      Ball.played = false;
-      Goalkeeper.caught = false;
-      Defender.defended = false;
-   }
 
    @Test
-   public void testSimpleInterceptor()
+   public void testPassivationAndActivation() throws Exception
    {
       Bean bean = getCurrentManager().getBeans(Ball.class).iterator().next();
       CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
       Ball ball = (Ball) bean.create(creationalContext);
-      ball.shoot();
-      assert Defender.defended;
-      assert Ball.played;
-      assert !Goalkeeper.caught;
+
+      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+      new ObjectOutputStream(byteArrayOutputStream).writeObject(ball);
+
+      assert PassivationActivationInterceptor.prePassivateInvoked;
+      assert !PassivationActivationInterceptor.postActivateInvoked;
+
+      PassivationActivationInterceptor.prePassivateInvoked = false;
+      PassivationActivationInterceptor.postActivateInvoked = false;
+      
+      ball = (Ball)new ObjectInputStream(new ByteArrayInputStream(byteArrayOutputStream.toByteArray())).readObject();
+
+      assert !PassivationActivationInterceptor.prePassivateInvoked;
+      assert PassivationActivationInterceptor.postActivateInvoked;
+
    }
-
-
-   @Test
-   public void testSimpleInterceptor2()
-   {
-      Bean bean = getCurrentManager().getBeans(Ball.class).iterator().next();
-      CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
-      Ball ball = (Ball) bean.create(creationalContext);
-      ball.pass();
-      assert Defender.defended;
-      assert Ball.played;
-      assert Goalkeeper.caught;
-   }
-
-   @Test
-   public void testSimpleInterceptor3()
-   {
-      Bean bean = getCurrentManager().getBeans(Ball.class).iterator().next();
-      CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
-      Ball ball = (Ball) bean.create(creationalContext);
-      ball.lob();
-      assert !Defender.defended;
-      assert Ball.played;
-      assert Goalkeeper.caught;
-   }
-
 }
