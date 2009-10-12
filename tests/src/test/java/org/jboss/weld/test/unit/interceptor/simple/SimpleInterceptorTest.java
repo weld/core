@@ -23,10 +23,13 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
+
 import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.context.spi.CreationalContext;
+
 import java.util.Set;
 import java.lang.annotation.Annotation;
 
@@ -37,6 +40,18 @@ import java.lang.annotation.Annotation;
 @BeansXml("beans.xml")
 public class SimpleInterceptorTest extends AbstractWeldTest
 {
+
+   @BeforeMethod
+   public void resetInterceptors()
+   {
+      SimpleInterceptor.aroundInvokeCalled = false;
+      SimpleInterceptor.postConstructCalled = false;
+      SimpleInterceptor.preDestroyCalled = false;
+      TwoBindingsInterceptor.aroundInvokeCalled = false;
+      SimpleBeanImpl.postConstructCalled = false;
+      SimpleBeanImpl.businessMethodInvoked = false;
+   }
+
 
    @Test
    public void testInterceptorModel()
@@ -52,7 +67,7 @@ public class SimpleInterceptorTest extends AbstractWeldTest
    {
       Bean bean = getCurrentManager().getBeans(SimpleBeanImpl.class).iterator().next();
       CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
-      SimpleBeanImpl simpleBean = (SimpleBeanImpl)bean.create(creationalContext);
+      SimpleBeanImpl simpleBean = (SimpleBeanImpl) bean.create(creationalContext);
       String result = simpleBean.doSomething();
       assert "decorated-Hello!-decorated".equals(result);
       bean.destroy(simpleBean, creationalContext);
@@ -68,7 +83,7 @@ public class SimpleInterceptorTest extends AbstractWeldTest
    {
       Bean bean = getCurrentManager().getBeans(SimpleBeanWithStereotype.class).iterator().next();
       CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
-      SimpleBeanWithStereotype simpleBean = (SimpleBeanWithStereotype)bean.create(creationalContext);
+      SimpleBeanWithStereotype simpleBean = (SimpleBeanWithStereotype) bean.create(creationalContext);
       String result = simpleBean.doSomething();
       assert "Hello!".equals(result);
       bean.destroy(simpleBean, creationalContext);
@@ -77,6 +92,5 @@ public class SimpleInterceptorTest extends AbstractWeldTest
       assert SimpleInterceptor.preDestroyCalled;
       assert TwoBindingsInterceptor.aroundInvokeCalled;
       assert SimpleBeanWithStereotype.postConstructCalled;
-
    }
 }

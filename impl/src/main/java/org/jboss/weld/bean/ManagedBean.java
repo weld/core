@@ -111,22 +111,12 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     */
    public T create(CreationalContext<T> creationalContext)
    {
-      InjectionPoint originalInjectionPoint = null;
-      if (hasDecorators())
-      {
-         originalInjectionPoint = attachCorrectInjectionPoint();
-      }
       T instance = getInjectionTarget().produce(creationalContext);
       getInjectionTarget().inject(instance, creationalContext);
-      if (hasDecorators())
-      {
-         instance = applyDecorators(instance, creationalContext, originalInjectionPoint);
-      }
       if (isInterceptionCandidate() && (hasBoundInterceptors() || hasDeclaredInterceptors()))
       {
-         instance = applyInterceptors(instance, creationalContext);
          InterceptionUtils.executePostConstruct(instance);
-      } 
+      }
       else
       {
          getInjectionTarget().postConstruct(instance);
@@ -236,6 +226,19 @@ public class ManagedBean<T> extends AbstractClassBean<T>
                   // This should be safe, but needs verification PLM
                   // Without this, the chaining of decorators will fail as the incomplete instance will be resolved
                   ctx.push(instance);
+               }
+               InjectionPoint originalInjectionPoint = null;
+               if (hasDecorators())
+               {
+                  originalInjectionPoint = attachCorrectInjectionPoint();
+               }
+               if (hasDecorators())
+               {
+                  instance = applyDecorators(instance, ctx, originalInjectionPoint);
+               }
+               if (isInterceptionCandidate() && (hasBoundInterceptors() || hasDeclaredInterceptors()))
+               {
+                  instance = applyInterceptors(instance, ctx);
                }
                return instance;
             }
