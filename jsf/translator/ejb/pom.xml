@@ -38,8 +38,8 @@
       </dependency>
       
       <dependency>
-         <groupId>javax.ejb</groupId>
-         <artifactId>ejb-api</artifactId>
+         <groupId>org.jboss.ejb3</groupId>
+         <artifactId>jboss-ejb3-api</artifactId>
          <scope>provided</scope>
       </dependency>
       

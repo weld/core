@@ -54,6 +54,9 @@
    <profiles>
       <profile>
          <id>jboss5</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
          <dependencies>
          
             <dependency>
