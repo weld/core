@@ -73,14 +73,18 @@
 
 
    <properties>
+      <glassfish.el.version>2.1.2-b04</glassfish.el.version>
+      
+      <!-- Force encoding to UTF-8 (bug on OS X) -->
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+      
+      <!-- Testing deps -->
       <testng.version>5.9</testng.version>
-      <jboss.test.harness.version>1.0.0-SNAPSHOT</jboss.test.harness.version>
+      <jboss.test.harness.version>1.1.0-SNAPSHOT</jboss.test.harness.version>
       <apache.httpclient.version>3.1</apache.httpclient.version>
       <junit.version>4.7</junit.version>
       <htmlunit.version>2.4</htmlunit.version>
-      <glassfish.el.version>2.1.2-b04</glassfish.el.version>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
    </properties>
 
 
@@ -188,6 +192,10 @@
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-release-plugin</artifactId>
                <version>2.0-beta-9</version>
+               <configuration>
+                  <tagBase>https://svn.jboss.org/repos/weld/extensions/tags</tagBase>
+                  <autoVersionSubmodules>true</autoVersionSubmodules>
+               </configuration>
             </plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
@@ -372,5 +380,26 @@
          </plugins>
       </pluginManagement>
    </build>
+   
+   <!-- SCM and Distribution Management -->
+   
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/extensions</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/extensions</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld/extensions</url>
+   </scm>
+   
+   <distributionManagement>
+      <repository>
+         <id>oss.sonatype.org/jboss-staging</id>
+         <name>Sonatype Nexus Maven Repository</name>
+         <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      </repository>
+      <snapshotRepository>
+         <id>oss.sonatype.org/jboss-snapshots</id>
+         <name>Sonatype Nexus Snapshot Repository</name>
+         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
+      </snapshotRepository>
+   </distributionManagement>
 
 </project>

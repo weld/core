@@ -13,8 +13,8 @@
 
    <!-- SCM and distribution management -->
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/ri/trunk</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/ri/trunk</developerConnection>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk</developerConnection>
       <url>http://fisheye.jboss.org/browse/Weld</url>
    </scm>
 
@@ -73,7 +73,7 @@
                <goals>deploy</goals>
                <arguments>-Prelease</arguments>
                <autoVersionSubmodules>true</autoVersionSubmodules>
-               <tagBase>https://svn.jboss.org/repos/weld/api/tags</tagBase>
+               <tagBase>https://svn.jboss.org/repos/weld/core/tags</tagBase>
             </configuration>
          </plugin>
          <plugin>

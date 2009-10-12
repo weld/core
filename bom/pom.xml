@@ -54,7 +54,7 @@
       <repository>
          <id>oss.sonatype.org/jboss-snapshots</id>
          <name>JBoss (Nexus) Snapshots Repository</name>
-         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots/</url>
+         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
          <releases>
             <enabled>false</enabled>
          </releases>
