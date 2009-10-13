@@ -17,7 +17,7 @@
             <include>src/**</include>
             <include>pom.xml</include>
          </includes>
-         <outputDirectory>/weld-tck-runner</outputDirectory>
+         <outputDirectory>/jboss-tck-runner</outputDirectory>
       </fileSet>
       <fileSet>
          <directory>${project.basedir}/../jboss-as</directory>
