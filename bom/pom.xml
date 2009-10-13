@@ -72,13 +72,12 @@
    </repositories>
 
    <properties>
-      <weld.api.version>1.0-SNAPSHOT</weld.api.version>
-      <weld.core.version>1.0.0-SNAPSHOT</weld.core.version>
+      <weld.api.version>1.0-CR1</weld.api.version>
       <google.collections.version>1.0-rc2</google.collections.version>
       <javassist.version>3.11.0.GA</javassist.version>
       <cdi.tck.version>1.0.0-SNAPSHOT</cdi.tck.version>
       <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
-      <jboss.interceptor.version>1.0.0-SNAPSHOT</jboss.interceptor.version>
+      <jboss.interceptor.version>1.0.0-CR1</jboss.interceptor.version>
    </properties>
 
    <dependencyManagement>
@@ -101,25 +100,25 @@
          <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core</artifactId>
-            <version>${weld.core.version}</version>
+            <version>${project.version}</version>
          </dependency>
 
          <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-porting-package</artifactId>
-            <version>${weld.core.version}</version>
+            <version>${project.version}</version>
          </dependency>
 
          <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-logging</artifactId>
-            <version>${weld.core.version}</version>
+            <version>${project.version}</version>
          </dependency>
 
          <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-test</artifactId>
-            <version>${weld.core.version}</version>
+            <version>${project.version}</version>
          </dependency>
 
          <dependency>
