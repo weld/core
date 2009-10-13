@@ -62,6 +62,8 @@
             <artifactId>maven-release-plugin</artifactId>
             <configuration>
                <tagBase>https://svn.jboss.org/repos/weld/core/tags</tagBase>
+               <!-- As we need access to our own artifacts -->
+               <preparationGoals>install</preparationGoals>
             </configuration>
          </plugin>
          <plugin>
