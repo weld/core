@@ -31,11 +31,13 @@
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
          <classifier>jdk15</classifier>
+         <scope>test</scope>
       </dependency>
       
       <dependency>
          <groupId>org.jboss.test-harness</groupId>
          <artifactId>jboss-test-harness-jboss-as-52</artifactId>
+         <scope>test</scope>
       </dependency>
       
    </dependencies>
@@ -112,6 +114,24 @@
                <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>
                <outputName>test-report</outputName>
             </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+               <descriptors>
+                  <descriptor>src/main/assembly/assembly.xml</descriptor>
+               </descriptors>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>make-assembly</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>single</goal>
+                  </goals>
+               </execution>
+            </executions>
          </plugin>
       </plugins>
    </build>
