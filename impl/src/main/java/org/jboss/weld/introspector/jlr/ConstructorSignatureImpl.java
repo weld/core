@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import org.jboss.weld.introspector.ConstructorSignature;
 import org.jboss.weld.introspector.WeldConstructor;
+import org.jboss.weld.util.collections.Arrays2;
 
 public class ConstructorSignatureImpl implements ConstructorSignature
 {
@@ -60,7 +61,7 @@ public class ConstructorSignatureImpl implements ConstructorSignature
    
    public String[] getParameterTypes()
    {
-      return Arrays.copyOf(parameterTypes, parameterTypes.length);
+      return Arrays2.copyOf(parameterTypes, parameterTypes.length);
    }
    
 }

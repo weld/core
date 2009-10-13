@@ -20,6 +20,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
+import org.jboss.weld.util.collections.Arrays2;
+
 public class ParameterizedTypeImpl implements ParameterizedType
 {
    private final Type[] actualTypeArguments;
@@ -28,14 +30,14 @@ public class ParameterizedTypeImpl implements ParameterizedType
 
    public ParameterizedTypeImpl(Type rawType, Type[] actualTypeArguments, Type ownerType)
    {
-      this.actualTypeArguments = Arrays.copyOf(actualTypeArguments, actualTypeArguments.length);
+      this.actualTypeArguments = Arrays2.copyOf(actualTypeArguments, actualTypeArguments.length);
       this.rawType = rawType;
       this.ownerType = ownerType;
    }
 
    public Type[] getActualTypeArguments()
    {
-      return Arrays.copyOf(actualTypeArguments, actualTypeArguments.length);
+      return Arrays2.copyOf(actualTypeArguments, actualTypeArguments.length);
    }
 
    public Type getOwnerType()

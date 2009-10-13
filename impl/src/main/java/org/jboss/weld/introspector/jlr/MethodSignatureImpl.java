@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.util.collections.Arrays2;
 
 public class MethodSignatureImpl implements MethodSignature
 {
@@ -81,7 +82,7 @@ public class MethodSignatureImpl implements MethodSignature
    
    public String[] getParameterTypes()
    {
-      return Arrays.copyOf(parameterTypes, parameterTypes.length);
+      return Arrays2.copyOf(parameterTypes, parameterTypes.length);
    }
    
    @Override
