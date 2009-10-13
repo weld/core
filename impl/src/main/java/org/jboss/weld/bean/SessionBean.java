@@ -32,6 +32,7 @@ import javax.decorator.Decorator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.BeanTypes;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
@@ -40,12 +41,12 @@ import javax.interceptor.Interceptor;
 import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
-import org.jboss.weld.context.SerializableContextual;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.weld.bean.proxy.Marker;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.context.SerializableContextual;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
@@ -58,6 +59,7 @@ import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.collections.Arrays2;
 
 /**
  * An enterprise bean representation
@@ -188,13 +190,20 @@ public class SessionBean<T> extends AbstractClassBean<T>
    @Override
    protected void initTypes()
    {
-      Set<Type> types = new LinkedHashSet<Type>();
-      types.add(Object.class);
-      for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
+      if (getAnnotatedItem().isAnnotationPresent(BeanTypes.class))
       {
-         types.add(businessInterfaceDescriptor.getInterface());
+         types = Arrays2.<Type>asSet(getAnnotatedItem().getAnnotation(BeanTypes.class).value());
       }
-      super.types = types;
+      else
+      {
+         Set<Type> types = new LinkedHashSet<Type>();
+         types.add(Object.class);
+         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
+         {
+            types.add(businessInterfaceDescriptor.getInterface());
+         }
+         super.types = types;
+      }
    }
 
    protected void initProxyClass()

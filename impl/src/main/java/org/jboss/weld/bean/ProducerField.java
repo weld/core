@@ -41,7 +41,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
 {
    // The underlying field
    private WeldField<T, X> field;
-   private final String id;
    
    /**
     * Creates a producer field
@@ -65,12 +64,11 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     */
    protected ProducerField(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
-      super(new StringBuilder().append(ProducerField.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(field.getName()).toString(), declaringBean, manager);
+      super(new StringBuilder().append(ProducerField.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(".").append(field.getName()).toString(), declaringBean, manager);
       this.field = field;
       initType();
       initTypes();
       initBindings();
-      this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(getClass().getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(getAnnotatedItem().getName()).toString();
       initStereotypes();
       initPolicy();
    }
@@ -167,12 +165,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
    public boolean isSpecializing()
    {
       return false;
-   }
-   
-   @Override
-   public String getId()
-   {
-      return id;
    }
 
    @Override

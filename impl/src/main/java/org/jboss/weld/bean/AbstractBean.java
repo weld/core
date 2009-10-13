@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.decorator.Decorates;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.BeanTypes;
 import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.stereotype.Stereotype;
@@ -45,6 +46,7 @@ import org.jboss.weld.log.Logging;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.collections.Arrays2;
 
 /**
  * An abstract bean representation common for all beans
@@ -172,7 +174,14 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
     */
    protected void initTypes()
    {
-      types = getAnnotatedItem().getTypeClosure();
+      if (getAnnotatedItem().isAnnotationPresent(BeanTypes.class))
+      {
+         types = Arrays2.<Type>asSet(getAnnotatedItem().getAnnotation(BeanTypes.class).value());
+      }
+      else
+      {
+         types = getAnnotatedItem().getTypeClosure();
+      }
    }
 
    /**
@@ -416,18 +425,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    public Set<Type> getTypes()
    {
       return types;
-   }
-
-   /**
-    * Checks if this beans annotated item is assignable from another annotated
-    * item
-    * 
-    * @param annotatedItem The other annotation to check
-    * @return True if assignable, otherwise false
-    */
-   public boolean isAssignableFrom(WeldAnnotated<?, ?> annotatedItem)
-   {
-      return this.getAnnotatedItem().isAssignableFrom(annotatedItem);
    }
 
    /**

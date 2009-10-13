@@ -51,30 +51,30 @@ import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
  */
 public class Reflections
 {
-   
+
    private static final Log log = Logging.getLog(Reflections.class);
-   
+
    public static final Type[] EMPTY_TYPES = {};
-   
+
    public static final Annotation[] EMPTY_ANNOTATIONS = {};
 
    public static class HierarchyDiscovery
    {
-      
+
       private final Type type;
-     
+
       private Set<Type> types;
-      
+
       public HierarchyDiscovery(Type type)
       {
          this.type = type;
       }
-      
+
       protected void add(Type type)
       {
          types.add(type);
       }
-      
+
       public Set<Type> getFlattenedTypes()
       {
          if (types == null)
@@ -84,7 +84,7 @@ public class Reflections
          }
          return types;
       }
-      
+
       public Type getResolvedType()
       {
          if (type instanceof Class)
@@ -94,18 +94,18 @@ public class Reflections
          }
          return type;
       }
-      
+
       private void discoverTypes(Type type)
       {
          if (type != null)
-         {            
+         {
             if (type instanceof Class)
             {
                Class<?> clazz = (Class<?>) type;
                add(resolveType(clazz));
                discoverFromClass(clazz);
             }
-            else 
+            else
             {
                if (type instanceof ParameterizedType)
                {
@@ -119,7 +119,7 @@ public class Reflections
             }
          }
       }
-      
+
       private Type resolveType(Class<?> clazz)
       {
          if (clazz.getTypeParameters().length > 0)
@@ -133,7 +133,7 @@ public class Reflections
             return clazz;
          }
       }
-      
+
       @SuppressWarnings("unchecked")
       private void discoverFromClass(Class<?> clazz)
       {
@@ -151,7 +151,7 @@ public class Reflections
             log.trace("Security exception scanning " + clazz.getName(), e);
          }
       }
-      
+
       /**
        * Gets the actual types by resolving TypeParameters.
        * 
@@ -186,7 +186,7 @@ public class Reflections
          }
          return type;
       }
-      
+
       private Type resolveParameterizedType(ParameterizedType beanType, ParameterizedType parameterizedType)
       {
          Type rawType = parameterizedType.getRawType();
@@ -216,7 +216,7 @@ public class Reflections
                return resolveType(type, actualTypes[i]);
             }
          }
-         
+
          // step2. generic super class
          Type genericSuperType = actualType.getGenericSuperclass();
          Type type = resolveType(genericSuperType, typeVariable);
@@ -224,7 +224,7 @@ public class Reflections
          {
             return type;
          }
-         
+
          // step3. generic interfaces
          for (Type interfaceType : actualType.getGenericInterfaces())
          {
@@ -234,11 +234,11 @@ public class Reflections
                return resolvedType;
             }
          }
-         
+
          // don't resolve type variable
          return typeVariable;
       }
-      
+
    }
 
    /**
@@ -320,7 +320,7 @@ public class Reflections
    {
       return type.isPrimitive();
    }
-   
+
    public static boolean isPackagePrivate(int mod)
    {
       return !(Modifier.isPrivate(mod) || Modifier.isProtected(mod) || Modifier.isPublic(mod));
@@ -439,7 +439,7 @@ public class Reflections
    {
       return type.getTypeParameters().length > 0;
    }
-   
+
    public static boolean isParamerterizedTypeWithWildcard(Class<?> type)
    {
       if (isParameterizedType(type))
@@ -451,7 +451,7 @@ public class Reflections
          return false;
       }
    }
-   
+
    public static boolean containsWildcards(Type[] types)
    {
       for (Type type : types)
@@ -463,7 +463,7 @@ public class Reflections
       }
       return false;
    }
-   
+
    public static Set<Type> createTypeClosure(Class<?> rawType, Type[] actualTypeArguments)
    {
       Type type = new ParameterizedTypeImpl(rawType, actualTypeArguments, rawType.getDeclaringClass());
@@ -498,7 +498,7 @@ public class Reflections
          throw new RuntimeException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
    }
-   
+
    public static Object invokeAndWrap(String methodName, Object instance, Object... parameters)
    {
       Class<?>[] parameterTypes = new Class<?>[parameters.length];
@@ -542,7 +542,7 @@ public class Reflections
          throw new RuntimeException("Error getting field " + field.getName() + " on " + field.getDeclaringClass(), e);
       }
    }
-   
+
    public static Object getAndWrap(String fieldName, Object target)
    {
       try
@@ -578,7 +578,7 @@ public class Reflections
          throw new IllegalArgumentException(e);
       }
    }
-   
+
    /**
     * Looks up a method in the type hierarchy of an instance
     * 
@@ -591,7 +591,7 @@ public class Reflections
    {
       return lookupMethod(methodName, parameterTypes, instance.getClass());
    }
-   
+
    private static Method lookupMethod(String methodName, Class<?>[] parameterTypes, Class<?> c) throws NoSuchMethodException
    {
       for (Class<? extends Object> clazz = c; clazz != null; clazz = clazz.getSuperclass())
@@ -623,11 +623,11 @@ public class Reflections
       }
       throw new NoSuchMethodException("Method " + methodName + Arrays.asList(parameterTypes).toString().replace("[", "(").replace("]", ")") + " not implemented by instance " + c.getName());
    }
-   
+
    /**
     * Checks the bindingType to make sure the annotation was declared properly
-    * as a binding type (annotated with @BindingType) and that it has
-    * a runtime retention policy.
+    * as a binding type (annotated with @BindingType) and that it has a runtime
+    * retention policy.
     * 
     * @param binding The binding type to check
     * @return true only if the annotation is really a binding type
@@ -637,23 +637,23 @@ public class Reflections
    public static boolean isBindings(Annotation binding)
    {
       boolean isBindingAnnotation = false;
-      if (binding.annotationType().isAnnotationPresent(Qualifier.class) &&
-         binding.annotationType().isAnnotationPresent(Retention.class) &&
-         binding.annotationType().getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))
+      if (binding.annotationType().isAnnotationPresent(Qualifier.class) && binding.annotationType().isAnnotationPresent(Retention.class) && binding.annotationType().getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))
       {
          isBindingAnnotation = true;
       }
       return isBindingAnnotation;
    }
-   
+
    /**
     * Check the assignability of one type to another, taking into account the
     * actual type arguements
     * 
     * @param rawType1 the raw type of the class to check
-    * @param actualTypeArguments1 the actual type arguements to check, or an empty array if not a parameterized type
+    * @param actualTypeArguments1 the actual type arguements to check, or an
+    *           empty array if not a parameterized type
     * @param rawType2 the raw type of the class to check
-    * @param actualTypeArguments2 the actual type arguements to check, or an empty array if not a parameterized type
+    * @param actualTypeArguments2 the actual type arguements to check, or an
+    *           empty array if not a parameterized type
     * @return
     */
    public static boolean isAssignableFrom(Class<?> rawType1, Type[] actualTypeArguments1, Class<?> rawType2, Type[] actualTypeArguments2)
@@ -661,6 +661,11 @@ public class Reflections
       return Types.boxedClass(rawType1).isAssignableFrom(Types.boxedClass(rawType2)) && isAssignableFrom(actualTypeArguments1, actualTypeArguments2);
    }
    
+   public static boolean matches(Class<?> rawType1, Type[] actualTypeArguments1, Class<?> rawType2, Type[] actualTypeArguments2)
+   {
+      return Types.boxedClass(rawType1).equals(Types.boxedClass(rawType2)) && isAssignableFrom(actualTypeArguments1, actualTypeArguments2);
+   }
+
    public static boolean isAssignableFrom(Type[] actualTypeArguments1, Type[] actualTypeArguments2)
    {
       for (int i = 0; i < actualTypeArguments1.length; i++)
@@ -678,7 +683,7 @@ public class Reflections
       }
       return true;
    }
-   
+
    public static boolean isAssignableFrom(Type type1, Set<? extends Type> types2)
    {
       for (Type type2 : types2)
@@ -691,6 +696,18 @@ public class Reflections
       return false;
    }
    
+   public static boolean matches(Type type1, Set<? extends Type> types2)
+   {
+      for (Type type2 : types2)
+      {
+         if (matches(type1, type2))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+
    public static boolean isAssignableFrom(Type type1, Type[] types2)
    {
       for (Type type2 : types2)
@@ -702,7 +719,7 @@ public class Reflections
       }
       return false;
    }
-   
+
    public static boolean isAssignableFrom(Type type1, Type type2)
    {
       if (type1 instanceof Class)
@@ -759,6 +776,62 @@ public class Reflections
       return false;
    }
    
+   public static boolean matches(Type type1, Type type2)
+   {
+      if (type1 instanceof Class<?>)
+      {
+         Class<?> clazz = (Class<?>) type1;
+         if (matches(clazz, EMPTY_TYPES, type2))
+         {
+            return true;
+         }
+      }
+      if (type1 instanceof ParameterizedType)
+      {
+         ParameterizedType parameterizedType1 = (ParameterizedType) type1;
+         if (parameterizedType1.getRawType() instanceof Class)
+         {
+            if (matches((Class<?>) parameterizedType1.getRawType(), parameterizedType1.getActualTypeArguments(), type2))
+            {
+               return true;
+            }
+         }
+      }
+      if (type1 instanceof WildcardType)
+      {
+         WildcardType wildcardType = (WildcardType) type1;
+         if (isTypeBounded(type2, wildcardType.getLowerBounds(), wildcardType.getUpperBounds()))
+         {
+            return true;
+         }
+      }
+      if (type2 instanceof WildcardType)
+      {
+         WildcardType wildcardType = (WildcardType) type2;
+         if (isTypeBounded(type1, wildcardType.getUpperBounds(), wildcardType.getLowerBounds()))
+         {
+            return true;
+         }
+      }
+      if (type1 instanceof TypeVariable<?>)
+      {
+         TypeVariable<?> typeVariable = (TypeVariable<?>) type1;
+         if (isTypeBounded(type2, EMPTY_TYPES, typeVariable.getBounds()))
+         {
+            return true;
+         }
+      }
+      if (type2 instanceof TypeVariable<?>)
+      {
+         TypeVariable<?> typeVariable = (TypeVariable<?>) type2;
+         if (isTypeBounded(type1, typeVariable.getBounds(), EMPTY_TYPES))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+
    public static boolean isTypeBounded(Type type, Type[] lowerBounds, Type[] upperBounds)
    {
       if (lowerBounds.length > 0)
@@ -777,7 +850,7 @@ public class Reflections
       }
       return true;
    }
-   
+
    public static boolean isAssignableFrom(Class<?> rawType1, Type[] actualTypeArguments1, Type type2)
    {
       if (type2 instanceof ParameterizedType)
@@ -802,9 +875,33 @@ public class Reflections
       return false;
    }
    
+   public static boolean matches(Class<?> rawType1, Type[] actualTypeArguments1, Type type2)
+   {
+      if (type2 instanceof ParameterizedType)
+      {
+         ParameterizedType parameterizedType = (ParameterizedType) type2;
+         if (parameterizedType.getRawType() instanceof Class<?>)
+         {
+            if (matches(rawType1, actualTypeArguments1, (Class<?>) parameterizedType.getRawType(), parameterizedType.getActualTypeArguments()))
+            {
+               return true;
+            }
+         }
+      }
+      else if (type2 instanceof Class<?>)
+      {
+         Class<?> clazz = (Class<?>) type2;
+         if (matches(rawType1, actualTypeArguments1, clazz, EMPTY_TYPES))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+
    /**
-    * Check the assiginability of a set of <b>flattened</b> types. This algorithm
-    * will check whether any of the types1 matches a type in types2
+    * Check the assiginability of a set of <b>flattened</b> types. This
+    * algorithm will check whether any of the types1 matches a type in types2
     * 
     * @param types1
     * @param types2
@@ -823,8 +920,27 @@ public class Reflections
    }
    
    /**
-    * Check the assiginability of a set of <b>flattened</b> types. This algorithm
-    * will check whether any of the types1 matches a type in types2
+    * Check whether whether any of the types1 matches a type in types2
+    * 
+    * @param types1
+    * @param types2
+    * @return
+    */
+   public static boolean matches(Set<Type> types1, Set<Type> types2)
+   {
+      for (Type type : types1)
+      {
+         if (matches(type, types2))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   /**
+    * Check the assiginability of a set of <b>flattened</b> types. This
+    * algorithm will check whether any of the types1 matches a type in types2
     * 
     * @param types1
     * @param types2
@@ -841,7 +957,7 @@ public class Reflections
       }
       return false;
    }
-   
+
    public static boolean isAssignableFrom(Type[] types1, Type type2)
    {
       for (Type type : types1)
@@ -858,7 +974,7 @@ public class Reflections
    {
       return clazz.isPrimitive() || Serializable.class.isAssignableFrom(clazz);
    }
-   
+
    public static Field ensureAccessible(Field field)
    {
       if (!field.isAccessible() && !isIgnorePackage(field.getDeclaringClass().getPackage()))
@@ -867,7 +983,7 @@ public class Reflections
       }
       return field;
    }
-   
+
    public static Method ensureAccessible(Method method)
    {
       if (!method.isAccessible() && !isIgnorePackage(method.getDeclaringClass().getPackage()))
@@ -876,7 +992,7 @@ public class Reflections
       }
       return method;
    }
-   
+
    public static <T> Constructor<T> ensureAccessible(Constructor<T> constructor)
    {
       Class<?> c = constructor.getDeclaringClass();
@@ -887,7 +1003,7 @@ public class Reflections
       }
       return constructor;
    }
-   
+
    private static boolean isIgnorePackage(Package pkg)
    {
       if (pkg != null)
@@ -912,6 +1028,5 @@ public class Reflections
          throw new DeploymentException("Cannot access values() on annotation", e);
       }
    }
-
 
 }

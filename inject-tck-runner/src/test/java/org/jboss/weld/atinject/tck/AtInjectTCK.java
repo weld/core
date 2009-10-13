@@ -15,7 +15,6 @@ import org.atinject.tck.auto.Seat;
 import org.atinject.tck.auto.Tire;
 import org.atinject.tck.auto.V8Engine;
 import org.atinject.tck.auto.accessories.Cupholder;
-import org.atinject.tck.auto.accessories.SpareTire;
 import org.jboss.weld.mock.MockEELifecycle;
 import org.jboss.weld.mock.TestContainer;
 
@@ -37,10 +36,8 @@ public class AtInjectTCK
          Cupholder.class,
          FuelTank.class,
          Tire.class,
-         SpareTire.class,
-         // Two producer method which allow us to expose SpareTire and Drivers seat with qualifiers
-         DriversSeatProducer.class,
-         SpareTireProducer.class
+         // Producer Methods allowing to expose DriversSeat, SpareTire, @Named("spare") SpareTire, @Drivers Seat
+         Producers.class
       );
    
    /**

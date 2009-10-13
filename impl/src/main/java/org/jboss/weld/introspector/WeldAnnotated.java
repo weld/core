@@ -123,25 +123,6 @@ public interface WeldAnnotated<T, S> extends Annotated
    public Class<T> getJavaClass();
 
    /**
-    * Extends Java Class assignability such that actual type parameters are also
-    * considered
-    * 
-    * @param that The other item to check assignability against
-    * @return True if assignable, false otherwise.
-    */
-   public boolean isAssignableFrom(WeldAnnotated<?, ?> that);
-
-   /**
-    * Extends Java Class assignability such that actual type parameters are also
-    * considered
-    * 
-    * @param type The type to compare against
-    * @param actualTypeArguments The type arguments
-    * @return True is assignable, false otherwise
-    */
-   public boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments);
-
-   /**
     * Gets the actual type arguments for any parameterized types that this
     * AnnotatedItem represents.
     * 

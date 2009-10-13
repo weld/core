@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.BeanTypes;
 import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -47,6 +48,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.collections.Arrays2;
 
 /**
  * The implicit producer bean
@@ -88,7 +90,11 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    @Override
    protected void initTypes()
    {
-      if (getType().isArray() || getType().isPrimitive())
+      if (getAnnotatedItem().isAnnotationPresent(BeanTypes.class))
+      {
+         types = Arrays2.<Type>asSet(getAnnotatedItem().getAnnotation(BeanTypes.class).value());
+      }
+      else if (getType().isArray() || getType().isPrimitive())
       {
          Set<Type> types = new HashSet<Type>();
          types.add(getType());

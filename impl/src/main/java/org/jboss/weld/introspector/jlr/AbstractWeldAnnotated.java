@@ -19,7 +19,6 @@ package org.jboss.weld.introspector.jlr;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +27,7 @@ import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.collections.Arrays2;
 
 /**
  * Represents functionality common for all annotated items, mainly different
@@ -169,30 +169,6 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
    }
 
    /**
-    * Checks if this item is assignable from another annotated item (through
-    * type and actual type arguments)
-    * 
-    * @param that The other annotated item to check against
-    * @return True if assignable, false otherwise
-    * 
-    * @see org.jboss.weld.introspector.WeldAnnotated#isAssignableFrom(WeldAnnotated)
-    */
-   public boolean isAssignableFrom(WeldAnnotated<?, ?> that)
-   {
-      return isAssignableFrom(that.getJavaClass(), that.getActualTypeArguments());
-   }
-
-   public boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments)
-   {
-      return Reflections.isAssignableFrom(getJavaClass(), getActualTypeArguments(), type, actualTypeArguments);
-   }
-
-   public boolean isAssignableFrom(Type type)
-   {
-      return Reflections.isAssignableFrom(getBaseType(), type);
-   }
-
-   /**
     * Gets the hash code of the actual type
     * 
     * @return The hash code
@@ -260,7 +236,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
 
    public Type[] getActualTypeArguments()
    {
-      return Arrays.copyOf(actualTypeArguments, actualTypeArguments.length);
+      return Arrays2.copyOf(actualTypeArguments, actualTypeArguments.length);
    }
 
    public Set<Type> getInterfaceOnlyFlattenedTypeHierarchy()

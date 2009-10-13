@@ -73,16 +73,6 @@ public abstract class ForwardingWeldAnnotated<T, S> extends ForwardingAnnotated<
       return delegate().getJavaClass();
    }
 
-   public boolean isAssignableFrom(WeldAnnotated<?, ?> that)
-   {
-      return delegate().isAssignableFrom(that);
-   }
-
-   public boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments)
-   {
-      return delegate().isAssignableFrom(type, actualTypeArguments);
-   }
-
    public boolean isFinal()
    {
       return delegate().isFinal();
