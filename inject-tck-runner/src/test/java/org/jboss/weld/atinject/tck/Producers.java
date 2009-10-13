@@ -87,7 +87,7 @@ public class Producers
    }
    
    /**
-    * Producet method for bean with default qualifiers and type SpareTire only
+    * Producer method for bean with default qualifiers and type SpareTire only
     */
    @Produces @BeanTypes(SpareTire.class)
    public SpareTire produceSpareTire()
