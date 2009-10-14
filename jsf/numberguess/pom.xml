@@ -1,38 +1,39 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
-   
+
    <parent>
       <groupId>org.jboss.weld.examples</groupId>
       <artifactId>weld-examples-parent</artifactId>
       <version>1.0.0-SNAPSHOT</version>
    </parent>
-   
+
    <groupId>org.jboss.weld.examples.jsf</groupId>
    <artifactId>weld-jsf-numberguess</artifactId>
    <packaging>war</packaging>
    <name>Weld Examples: Numberguess</name>
-   
+
    <pluginRepositories>
-        <pluginRepository>
-            <id>codehaus repository</id>
-            <url>http://repository.codehaus.org/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
-   
+      <pluginRepository>
+         <id>codehaus repository</id>
+         <url>http://repository.codehaus.org/</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+      </pluginRepository>
+   </pluginRepositories>
+
    <!-- Common dependencies only -->
    <dependencies>
-   
+
       <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
          <scope>test</scope>
          <classifier>jdk15</classifier>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.enterprise</groupId>
          <artifactId>cdi-api</artifactId>
@@ -43,14 +44,14 @@
          <groupId>javax.annotation</groupId>
          <artifactId>jsr250-api</artifactId>
       </dependency>
-                        
+
       <dependency>
          <groupId>javax.faces</groupId>
          <artifactId>jsf-api</artifactId>
       </dependency>
-            
+
    </dependencies>
-   
+
    <profiles>
       <profile>
          <id>jboss5</id>
@@ -58,20 +59,20 @@
             <activeByDefault>true</activeByDefault>
          </activation>
          <dependencies>
-         
+
             <dependency>
                <groupId>javax.annotation</groupId>
                <artifactId>jsr250-api</artifactId>
                <scope>provided</scope>
             </dependency>
-                  
+
             <dependency>
                <groupId>javax.faces</groupId>
                <artifactId>jsf-api</artifactId>
                <scope>provided</scope>
             </dependency>
-            
-                  
+
+
             <dependency>
                <groupId>org.glassfish.web</groupId>
                <artifactId>el-impl</artifactId>
@@ -83,7 +84,7 @@
                   </exclusion>
                </exclusions>
             </dependency>
-            
+
          </dependencies>
          <build>
             <plugins>
@@ -105,35 +106,35 @@
       <profile>
          <id>tomcat</id>
          <dependencies>
-         
+
             <dependency>
                <groupId>javax.annotation</groupId>
                <artifactId>jsr250-api</artifactId>
             </dependency>
-                        
+
             <dependency>
                <groupId>javax.faces</groupId>
                <artifactId>jsf-api</artifactId>
             </dependency>
-            
+
             <dependency>
                <groupId>javax.faces</groupId>
                <artifactId>jsf-impl</artifactId>
                <scope>runtime</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>javax.servlet</groupId>
                <artifactId>jstl</artifactId>
                <scope>runtime</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>org.jboss.weld.servlet</groupId>
                <artifactId>weld-servlet</artifactId>
                <scope>runtime</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>org.glassfish.web</groupId>
                <artifactId>el-impl</artifactId>
@@ -145,7 +146,7 @@
                   </exclusion>
                </exclusions>
             </dependency>
-            
+
          </dependencies>
          <build>
             <plugins>
@@ -164,11 +165,11 @@
             </plugins>
          </build>
       </profile>
-      
+
       <profile>
          <id>jetty</id>
          <dependencies>
-         
+
             <dependency>
                <groupId>javax.annotation</groupId>
                <artifactId>jsr250-api</artifactId>
@@ -178,25 +179,25 @@
                <groupId>javax.faces</groupId>
                <artifactId>jsf-api</artifactId>
             </dependency>
-            
+
             <dependency>
                <groupId>javax.faces</groupId>
                <artifactId>jsf-impl</artifactId>
                <scope>runtime</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>javax.servlet</groupId>
                <artifactId>jstl</artifactId>
                <scope>runtime</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>org.jboss.weld.servlet</groupId>
                <artifactId>weld-servlet</artifactId>
                <scope>runtime</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>org.glassfish.web</groupId>
                <artifactId>el-impl</artifactId>
@@ -208,8 +209,9 @@
                   </exclusion>
                </exclusions>
             </dependency>
-            
+
          </dependencies>
+
          <build>
             <plugins>
                <plugin>
@@ -227,47 +229,49 @@
             </plugins>
          </build>
       </profile>
-      
       <profile>
          <id>gae</id>
          <dependencies>
+         
+            <!-- Use JSF 1.2, JSF 2 has issues on GAE still -->
 
             <dependency>
                <groupId>javax.faces</groupId>
                <artifactId>jsf-api</artifactId>
                <version>1.2_13</version>
             </dependency>
-            
+
             <dependency>
                <groupId>javax.faces</groupId>
                <artifactId>jsf-impl</artifactId>
                <scope>runtime</scope>
                <version>1.2_13</version>
             </dependency>
-            
+
             <dependency>
                <groupId>org.jboss.weld.servlet</groupId>
                <artifactId>weld-servlet</artifactId>
                <scope>runtime</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>com.sun.facelets</groupId>
                <artifactId>jsf-facelets</artifactId>
+               <version>1.1.15.B1</version>
             </dependency>
-            
+
             <dependency>
                <groupId>javax.el</groupId>
                <artifactId>el-api</artifactId>
                <version>1.2</version>
             </dependency>
-            
+
             <dependency>
                <groupId>javax.el</groupId>
                <artifactId>el-ri</artifactId>
                <version>1.2</version>
             </dependency>
-            
+
          </dependencies>
          <build>
             <plugins>
@@ -319,16 +323,19 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
                            </content>
                         </file>
                      </additionalConfig>
+                     <buildOutputDirectory>
+                        src/main/webapp/WEB-INF/classes
+                     </buildOutputDirectory>
                   </configuration>
                </plugin>
             </plugins>
          </build>
       </profile>
-      
+
       <profile>
          <id>jetty-ide</id>
          <dependencies>
-         
+
             <dependency>
                <groupId>javax.annotation</groupId>
                <artifactId>jsr250-api</artifactId>
@@ -340,25 +347,25 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
                <artifactId>jsf-api</artifactId>
                <scope>provided</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>javax.faces</groupId>
                <artifactId>jsf-impl</artifactId>
                <scope>provided</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>org.jboss.weld.servlet</groupId>
                <artifactId>weld-servlet</artifactId>
                <scope>provided</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>javax.servlet</groupId>
                <artifactId>jstl</artifactId>
                <scope>provided</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>org.glassfish.web</groupId>
                <artifactId>el-impl</artifactId>
@@ -370,7 +377,7 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
                   </exclusion>
                </exclusions>
             </dependency>
-            
+
             <!--  JETTY DEPENDENCIES FOR IN IDE TESTING  -->
 
             <dependency>
@@ -378,33 +385,31 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
                <artifactId>jetty</artifactId>
                <scope>test</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>org.mortbay.jetty</groupId>
                <artifactId>jetty-plus</artifactId>
                <scope>test</scope>
             </dependency>
-            
+
             <dependency>
                <groupId>org.mortbay.jetty</groupId>
                <artifactId>jsp-2.1-jetty</artifactId>
                <scope>test</scope>
             </dependency>
-            
-            <dependency>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-log4j12</artifactId>
-               <scope>test</scope>
-            </dependency>
-            
-            <dependency>
-               <groupId>log4j</groupId>
-               <artifactId>log4j</artifactId>
-               <scope>test</scope>
-            </dependency>
-            
+
          </dependencies>
+         
          <build>
+            
+            <resources>
+               <resource>
+                  <directory>src/jetty/resources</directory>
+               </resource>
+               <resource>
+                  <directory>src/main/webapp</directory>
+               </resource>
+            </resources>
             <plugins>
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
@@ -428,35 +433,12 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
                      </classpathContainers>
                   </configuration>
                </plugin>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>build-helper-maven-plugin</artifactId>
-                  <executions>
-                     <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                           <goal>add-source</goal>
-                           <goal>add-resource</goal>
-                        </goals>
-                        <configuration>
-                           <sources>
-                              <source>src/jetty/java</source>
-                           </sources>
-                           <resources>
-                              <resource>
-                                 <directory>src/jetty/resources</directory>
-                              </resource>
-                           </resources>
-                        </configuration>
-                     </execution>
-                  </executions>
-               </plugin>               
             </plugins>
+            
          </build>
       </profile>
    </profiles>
-   
+
    <build>
       <finalName>weld-numberguess</finalName>
       <plugins>
@@ -477,14 +459,14 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
                   <goals>
                      <goal>unlink</goal>
                   </goals>
-              </execution>
-          </executions>
-          <configuration>
-              <links>
-                  <!-- link src/main/webapp -> war/ for GAE Eclipse plugin -->
+               </execution>
+            </executions>
+            <configuration>
+               <links>
+                  <!-- link src/main/webapp -> war/ for IDEs -->
                   <link>
-                      <dst>${basedir}/war</dst>
-                      <src>${basedir}/src/main/webapp</src>
+                     <dst>${basedir}/war</dst>
+                     <src>${basedir}/src/main/webapp</src>
                   </link>
                </links>
             </configuration>
@@ -511,19 +493,27 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
                </filesets>
             </configuration>
          </plugin>
-         
+
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>tomcat-maven-plugin</artifactId>
             <configuration>
                <path>/${project.build.finalName}</path>
-               <!-- uncomment to use server configuration override; see readme.txt for details -->
+               <!--
+                  uncomment to use server configuration override; see
+                  readme.txt for details
+               -->
                <!--<server>tomcat</server>-->
                <url>http://localhost:${tomcat.http.port}/manager</url>
-               <port>${embedded-tomcat.http.port}</port> <!-- port for embedded Tomcat only (putting this configuration in the execution for the run goal doesn't work) -->
+               <port>${embedded-tomcat.http.port}</port>
+               <!--
+                  port for embedded Tomcat only (putting this
+                  configuration in the execution for the run goal
+                  doesn't work)
+               -->
                <!-- if you don't want to use war:inplace, use this path instead -->
                <!--
-               <warSourceDirectory>${project.build.directory}/${project.build.finalName}</warSourceDirectory>
+                  <warSourceDirectory>${project.build.directory}/${project.build.finalName}</warSourceDirectory>
                -->
             </configuration>
          </plugin>
@@ -533,7 +523,8 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
             <artifactId>maven-jetty-plugin</artifactId>
             <configuration>
                <connectors>
-                  <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                  <connector
+                     implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                      <port>${jetty.http.port}</port>
                      <maxIdleTime>3600000</maxIdleTime>
                   </connector>
@@ -544,26 +535,32 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
                </webAppConfig>
                <!-- if you don't want to use war:inplace, use this path instead -->
                <!--
-               <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}</webAppSourceDirectory>
+                  <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}</webAppSourceDirectory>
                -->
             </configuration>
          </plugin>
-         
+
          <plugin>
             <groupId>org.twdata.maven</groupId>
             <artifactId>maven-cli-plugin</artifactId>
             <configuration>
                <userAliases>
-                  <runjetty>compile org.apache.maven.plugins:maven-war-plugin:inplace org.mortbay.jetty:maven-jetty-plugin:run</runjetty>
-                  <runtomcat>compile org.apache.maven.plugins:maven-war-plugin:inplace org.codehaus.mojo:tomcat-maven-plugin:run</runtomcat>
-                  <explode>compile org.apache.maven.plugins:maven-war-plugin:inplace -o</explode>
+                  <runjetty>compile
+                     org.apache.maven.plugins:maven-war-plugin:inplace
+                     org.mortbay.jetty:maven-jetty-plugin:run</runjetty>
+                  <runtomcat>compile
+                     org.apache.maven.plugins:maven-war-plugin:inplace
+                     org.codehaus.mojo:tomcat-maven-plugin:run</runtomcat>
+                  <explode>compile
+                     org.apache.maven.plugins:maven-war-plugin:inplace
+                     -o</explode>
                </userAliases>
             </configuration>
          </plugin>
-         
+
       </plugins>
    </build>
-   
+
    <properties>
       <jetty.http.port>9090</jetty.http.port>
       <jetty.debug.port>9190</jetty.debug.port>
@@ -571,6 +568,6 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
       <embedded-tomcat.http.port>9090</embedded-tomcat.http.port>
       <embedded-tomcat.debug.port>9190</embedded-tomcat.debug.port>
    </properties>
-   
+
 </project>
 

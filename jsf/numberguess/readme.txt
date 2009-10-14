@@ -32,7 +32,7 @@ You can also execute the application in an embedded Tomcat 6 container:
 
  mvn war:inplace tomcat:run -Ptomcat
  
-You'll can access the app at http://localhost:9090
+You'll can access the app at http://localhost:9090/weld-numberguess
 
 In both cases, any changes to assets in src/main/webapp take affect immediately. If
 a change to a webapp configuration file is made, the application may
@@ -84,13 +84,13 @@ The application is available at http://localhost:8080/weld-numberguess
 
 First, set up the eclipse environment:
 
- mvn clean eclipse:clean eclipse:eclipse -Djetty-ide
+ mvn clean eclipse:clean eclipse:eclipse -Pjetty-ide
  
 Next, put all the needed resources into the src/main/webapp
 
- mvn war:inplace -Djetty-ide
+ mvn war:inplace -Pjetty-ide
  
-Now, you are ready to run the server in Eclipse; find the Start class in src/main/jetty, and run it's
+Now, you are ready to run the server in Eclipse; find the Start class in src/jetty/java, and run it's
 main method as a Java Application. The server will launch. You'll find the application at
 http://localhost:8080
 
@@ -99,12 +99,12 @@ http://localhost:8080
 
 First, set up the eclipse environment:
 
- mvn clean eclipse:clean eclipse:eclipse -Dgae
+ mvn clean eclipse:clean eclipse:eclipse -Pgae
  
 Make sure you have the Google App Engine Eclipse plugin installed.
 
 Next, put all the needed resources into the src/main/webapp
 
- mvn war:inplace -Dgae
+ mvn war:inplace -Pgae
 
 Now, in Eclipse, you can either run the app locally, or deploy it to Google App Engine
