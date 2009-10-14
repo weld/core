@@ -248,9 +248,8 @@
    </build>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples</developerConnection>
-      <url>http://fisheye.jboss.org/browse/WebBeans/ri/examples</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk</developerConnection>
    </scm>
 
 </project>
