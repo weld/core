@@ -74,7 +74,7 @@
       <weld.api.version>1.0-CR1</weld.api.version>
       <google.collections.version>1.0-rc2</google.collections.version>
       <javassist.version>3.11.0.GA</javassist.version>
-      <cdi.tck.version>1.0.0-Beta4</cdi.tck.version>
+      <cdi.tck.version>1.0.0-SNAPSHOT</cdi.tck.version>
       <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
       <jboss.interceptor.version>1.0.0-CR1</jboss.interceptor.version>
    </properties>
