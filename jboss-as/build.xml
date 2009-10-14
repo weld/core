@@ -22,6 +22,7 @@
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..." />
 
 		<delete dir="${jboss.home}/server/default/deployers/weld.deployer" failonerror="false" />
+		<delete dir="${jboss.home}/server/default/deployers/webbeans.deployer" failonerror="false" />
 		<delete dir="target" failonerror="false" />
 
 		<artifact:dependencies filesetId="weld.deployer.fileset" versionsId="weld.deployer.versions">
