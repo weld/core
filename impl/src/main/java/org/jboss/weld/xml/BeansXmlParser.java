@@ -270,6 +270,8 @@ public class BeansXmlParser
       return list;
    }
 
+
+   //TODO - move validation to Validator
    private static List<Class<?>> processInterceptorElement(ResourceLoader resourceLoader, XmlElement element)
    {
       List<Class<?>> list = new ArrayList<Class<?>>();
