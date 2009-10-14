@@ -67,6 +67,7 @@
                   </executions>
                   <groupId>org.codehaus.mojo</groupId>
                   <artifactId>exec-maven-plugin</artifactId>
+                  <version>1.1.1</version>
                   <configuration>
                      <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
                   </configuration>
