@@ -28,6 +28,7 @@ import javax.enterprise.inject.InjectionException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.interceptor.Interceptor;
 
 import org.jboss.weld.DeploymentException;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -203,7 +204,7 @@ public class BeansXmlParser
       else if (interceptorsElements.size() == 1)
       {
          enabledInterceptorClasses = new ArrayList<Class<?>>();
-         enabledInterceptorClasses.addAll(processElement(resourceLoader, interceptorsElements.get(0)));
+         enabledInterceptorClasses.addAll(processInterceptorElement(resourceLoader, interceptorsElements.get(0)));
       }
       
    }
@@ -259,6 +260,40 @@ public class BeansXmlParser
             try
             {
                list.add(resourceLoader.classForName(className));
+            }
+            catch (ResourceLoadingException e)
+            {
+               throw new DeploymentException("Cannot load class " + className + " defined in " + element.getFile().toString());
+            }
+         }
+      }
+      return list;
+   }
+
+   private static List<Class<?>> processInterceptorElement(ResourceLoader resourceLoader, XmlElement element)
+   {
+      List<Class<?>> list = new ArrayList<Class<?>>();
+      for (Node child : new NodeListIterable(element.getElement().getChildNodes()))
+      {
+         String className = processNode(child);
+         if (className != null)
+         {
+            try
+            {
+               Class<?> clazz = resourceLoader.classForName(className);
+               if (!clazz.isAnnotationPresent(Interceptor.class))
+               {
+                   throw new DeploymentException("Class " + clazz.getName() + " is enabled as an interceptor," +
+                        " but it does not have the appropriate annotation");
+               }
+               else if (list.contains(clazz))
+               {
+                   throw new DeploymentException("Class " + clazz.getName() + " is listed twice as an enabled interceptor");
+               }
+               else
+               {
+                  list.add(clazz);
+               }
             }
             catch (ResourceLoadingException e)
             {

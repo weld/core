@@ -19,6 +19,7 @@ package org.jboss.weld.bean;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
+import java.util.HashSet;
 
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
@@ -28,6 +29,8 @@ import org.jboss.interceptor.model.InterceptorClassMetadata;
 import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
 import org.jboss.interceptor.registry.InterceptorClassMetadataRegistry;
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.DeploymentException;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.introspector.WeldClass;
 
 /**
@@ -43,7 +46,20 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
    {
       super(type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), manager);
       this.interceptorClassMetadata = InterceptorClassMetadataRegistry.getRegistry().getInterceptorClassMetadata(type.getJavaClass());
-      this.interceptorBindingTypes = flattenInterceptorBindings(manager, getAnnotatedItem().getAnnotations());
+      this.interceptorBindingTypes = new HashSet<Annotation>();
+      interceptorBindingTypes.addAll(flattenInterceptorBindings(manager, getAnnotatedItem().getAnnotations()));
+      for (Class<? extends Annotation> annotation : getStereotypes())
+      {
+         interceptorBindingTypes.addAll(flattenInterceptorBindings(manager, manager.getStereotypeDefinition(annotation)));
+      }
+      if (this.interceptorBindingTypes.size() == 0)
+      {
+         throw new DeploymentException("An interceptor must have at least one binding, but " + type.getName() + " has none");
+      }
+      if (Beans.findInterceptorBindingConflicts(manager, interceptorBindingTypes))
+      {
+         throw new DeploymentException("Conflicting interceptor bindings found on " + getType());
+      }
    }
 
    public static <T> InterceptorImpl<T> of(WeldClass<T> type, BeanManagerImpl manager)

@@ -1055,6 +1055,17 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings)
    {
+      if (interceptorBindings.length == 0)
+         throw new IllegalArgumentException("Interceptor bindings list cannot be empty");
+      Set<Class<?>> uniqueInterceptorBindings = new HashSet<Class<?>>();
+      for (Annotation interceptorBinding: interceptorBindings)
+      {
+         if (uniqueInterceptorBindings.contains(interceptorBinding.annotationType()))
+            throw new IllegalArgumentException("Duplicate interceptor binding type: " + interceptorBinding.annotationType());
+         if (!isInterceptorBindingType(interceptorBinding.annotationType()))
+            throw new IllegalArgumentException("Trying to resolve interceptors with non-binding type: " + interceptorBinding.annotationType());
+         uniqueInterceptorBindings.add(interceptorBinding.annotationType());
+      }
       return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(ResolvableFactory.of(type,interceptorBindings)));
    }
 
@@ -1280,7 +1291,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       if (getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingType).isValid())
       {
-         return getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingType).getInheritedInterceptionBindingTypes();
+         return getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingType).getMetaAnnotations();
       }
       else
       {

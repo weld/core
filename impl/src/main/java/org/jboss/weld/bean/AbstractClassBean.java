@@ -42,6 +42,7 @@ import javax.inject.Scope;
 import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
+import org.jboss.weld.DeploymentException;
 import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.SerializableContextualInstance;
@@ -405,31 +406,40 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       return foundInterceptionBindingTypes;
    }
 
+
+
    protected void initInterceptors()
    {
       if (manager.getBoundInterceptorsRegistry().getInterceptionModel(getType()) == null)
       {
          InterceptionModelBuilder<Class<?>, SerializableContextual<Interceptor<?>, ?>> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) SerializableContextual.class);
-
          Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(manager, getAnnotatedItem().getAnnotations());
          for (Class<? extends Annotation> annotation : getStereotypes())
          {
             classBindingAnnotations.addAll(flattenInterceptorBindings(manager, manager.getStereotypeDefinition(annotation)));
          }
-
-         Annotation[] classBindingAnnotationsArray = classBindingAnnotations.toArray(new Annotation[0]);
-         builder.interceptPostConstruct().with(toSerializableContextualArray(manager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray)));
-         builder.interceptPreDestroy().with(toSerializableContextualArray(manager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotationsArray)));
-         builder.interceptPrePassivate().with(toSerializableContextualArray(manager.resolveInterceptors(InterceptionType.PRE_PASSIVATE, classBindingAnnotationsArray)));
-         builder.interceptPostActivate().with(toSerializableContextualArray(manager.resolveInterceptors(InterceptionType.POST_ACTIVATE, classBindingAnnotationsArray)));
-
+         if (classBindingAnnotations.size() > 0)
+         {
+            if (Beans.findInterceptorBindingConflicts(manager, classBindingAnnotations))
+               throw new DeploymentException("Conflicting interceptor bindings found on " + getType());
+            Annotation[] classBindingAnnotationsArray = classBindingAnnotations.toArray(new Annotation[0]);
+            builder.interceptPostConstruct().with(toSerializableContextualArray(manager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray)));
+            builder.interceptPreDestroy().with(toSerializableContextualArray(manager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotationsArray)));
+            builder.interceptPrePassivate().with(toSerializableContextualArray(manager.resolveInterceptors(InterceptionType.PRE_PASSIVATE, classBindingAnnotationsArray)));
+            builder.interceptPostActivate().with(toSerializableContextualArray(manager.resolveInterceptors(InterceptionType.POST_ACTIVATE, classBindingAnnotationsArray)));
+         }
          List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
          for (WeldMethod<?, ?> method : businessMethods)
          {
-            List<Annotation> methodBindingAnnotations = new ArrayList<Annotation>(classBindingAnnotations);
+            Set<Annotation> methodBindingAnnotations = new HashSet<Annotation>(classBindingAnnotations);
             methodBindingAnnotations.addAll(flattenInterceptorBindings(manager, method.getAnnotations()));
-            List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
-            builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+            if (methodBindingAnnotations.size() > 0)
+            {
+               if (Beans.findInterceptorBindingConflicts(manager, classBindingAnnotations))
+                  throw new DeploymentException("Conflicting interceptor bindings found on " + getType() + "." + method.getName() + "()");
+               List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
+               builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+            }
          }
          manager.getBoundInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
       }

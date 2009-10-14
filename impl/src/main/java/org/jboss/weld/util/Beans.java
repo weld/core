@@ -232,8 +232,6 @@ public class Beans
       {
          int modifiers = ((WeldMember) annotatedMethod).getJavaMember().getModifiers();
          boolean businessMethod = !annotatedMethod.isStatic()
-               && (Modifier.isPublic(modifiers)
-                  || Modifier.isProtected(modifiers))
                && !annotatedMethod.isAnnotationPresent(Inject.class);
 
          if (businessMethod)
@@ -479,6 +477,27 @@ public class Beans
       }
       return true;
    }
+
+   public static boolean findInterceptorBindingConflicts(BeanManagerImpl manager, Set<Annotation> bindings)
+   {
+      Map<Class<? extends Annotation>, Annotation> foundAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      for (Annotation binding: bindings)
+      {
+         if (foundAnnotations.containsKey(binding.annotationType()))
+         {
+            InterceptorBindingModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(binding.annotationType());
+            if (!bindingType.isEqual(binding, foundAnnotations.get(binding.annotationType()), false))
+            {
+                return true;
+            }
+         }
+         else
+         {
+            foundAnnotations.put(binding.annotationType(), binding);
+         }
+      }
+      return false;      
+   }
    
 
    /**
@@ -719,5 +738,5 @@ public class Beans
    {
       return annotatedItem.isAnnotationPresent(Decorator.class);
    }
-   
+
 }

@@ -75,11 +75,16 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
 
    public boolean isEqual(Annotation instance, Annotation other)
    {
+       return isEqual(instance, other, false);
+   }
+
+   public boolean isEqual(Annotation instance, Annotation other, boolean includeNonBindingTypes)
+   {
       if (instance.annotationType().equals(getRawType()) && other.annotationType().equals(getRawType()))
       {
          for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers())
          {
-            if (!nonBindingTypes.contains(annotatedMethod))
+            if (includeNonBindingTypes || !nonBindingTypes.contains(annotatedMethod))
             {
                try
                {

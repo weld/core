@@ -25,6 +25,7 @@ import javax.interceptor.Interceptor;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
+import org.jboss.weld.DeploymentException;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
@@ -98,10 +99,12 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
          boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(clazz.getJavaClass()) && isTypeManagedBeanOrDecorator(clazz);
          if (managedBeanOrDecorator && clazz.isAnnotationPresent(Decorator.class))
          {
+            validateDecorator(clazz);
             createDecorator(clazz);
          }
          else if (managedBeanOrDecorator && clazz.isAnnotationPresent(Interceptor.class))
          {
+            validateInterceptor(clazz);
             createInterceptor(clazz);
          }
          else if (managedBeanOrDecorator && !clazz.isAbstract())
@@ -114,6 +117,22 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
          createEnterpriseBean(ejbDescriptor);
       }
       return this;
+   }
+
+   private void validateInterceptor(WeldClass<?> clazz)
+   {
+      if (clazz.isAnnotationPresent(Decorator.class))
+      {
+         throw new DeploymentException("Class " + clazz.getName() + " has both @Interceptor and @Decorator annotations");
+      }
+   }
+
+   private void validateDecorator(WeldClass<?> clazz)
+   {
+      if (clazz.isAnnotationPresent(Interceptor.class))
+      {
+         throw new DeploymentException("Class " + clazz.getName() + " has both @Interceptor and @Decorator annotations");
+      }
    }
 
 }
