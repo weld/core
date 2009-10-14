@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <parent>
       <groupId>org.jboss.weld</groupId>
@@ -10,7 +9,7 @@
    <groupId>org.jboss.weld.examples</groupId>
    <artifactId>weld-examples-parent</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.0-SNAPSHOT</version>
+   <version>1.0.0-CR1</version>
    <name>Weld Examples</name>
 
    <description>
@@ -248,9 +247,10 @@
    </build>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk</developerConnection>
-   </scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/tags/1.0.0-CR1</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/tags/1.0.0-CR1</developerConnection>
+     <url>scm:svn:https://svn.jboss.org/repos/weld/examples/tags/1.0.0-CR1</url>
+  </scm>
 
 </project>
 
