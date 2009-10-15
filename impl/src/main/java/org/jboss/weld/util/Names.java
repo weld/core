@@ -332,5 +332,10 @@ public class Names
       buffer.append("]");
       return buffer.toString();
    }
+   
+   public static String version(String version)
+   {
+      return new StringBuilder().append(version.substring(0, version.lastIndexOf("-"))).append(" (").append(version.substring(version.lastIndexOf("-") + 1)).append(")").toString();
+   }
 
 }

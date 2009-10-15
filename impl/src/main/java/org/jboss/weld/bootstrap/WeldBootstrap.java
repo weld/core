@@ -64,6 +64,7 @@ import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.transaction.spi.TransactionServices;
+import org.jboss.weld.util.Names;
 import org.jboss.weld.util.serviceProvider.ServiceLoader;
 import org.jboss.weld.ws.WSApiAbstraction;
 
@@ -318,7 +319,7 @@ public class WeldBootstrap implements Bootstrap
    public static String getVersion()
    {
       Package pkg = WeldBootstrap.class.getPackage();
-      return pkg != null ? pkg.getImplementationVersion() : null;
+      return pkg != null ? Names.version(pkg.getImplementationVersion()) : null;
    }
    
    protected void initializeContexts()
