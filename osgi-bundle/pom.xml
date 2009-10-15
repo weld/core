@@ -57,25 +57,42 @@
                   <_include>-osgi.bundle</_include>
 
                   <Embed-Dependency>*; scope=compile; inline=true</Embed-Dependency>
-                  <_exportcontents>javax.decorator;
-                     javax.enterprise.*; version=${osgi.version},
-                     org.jboss.weld.context; org.jboss.weld.ejb;
-                     org.jboss.weld.bean; org.jboss.weld.bean.proxy;
-                     org.jboss.weld.*.api.*; org.jboss.weld.*.spi.*;
-                     org.jboss.weld.conversation; org.jboss.weld;
+
+                  <_exportcontents>
+                     javax.inject;
+                     javax.enterprise.*;
+                     version=${osgi.version},
+                     org.jboss.weld.context;
+                     org.jboss.weld.ejb;
+                     org.jboss.weld.bean;
+                     org.jboss.weld.bean.proxy;
+                     org.jboss.weld.*.api.*;
+                     org.jboss.weld.*.spi.*;
+                     org.jboss.weld.conversation;
+                     org.jboss.weld;
                      org.jboss.weld.bootstrap;
                      org.jboss.weld.introspector;
-                     org.jboss.weld.servlet; version=${osgi.version},
-                     org.jboss.weld.el; version=${osgi.version},
-                     org.jboss.weld.jsf; include:="WeldPhaseListener";
+                     org.jboss.weld.servlet;
+                     version=${osgi.version},
+                     org.jboss.weld.el;
+                     version=${osgi.version},
+                     org.jboss.weld.jsf;
+                     include:="WeldPhaseListener";
                      version=${osgi.version},
                      javassist.util.proxy;version="3.8.1.GA"
-                        </_exportcontents>
-                  <Import-Package>javax.annotation, javax.interceptor,
-                     *;resolution:=optional</Import-Package>
-                  <Private-Package>!javax.annotation.*,
-                     !javax.interceptor.*</Private-Package>
+                 </_exportcontents>
+
+                  <Import-Package>
+                     javax.interceptor.*, *;
+                     resolution:=optional
+                 </Import-Package>
+
+                  <Private-Package>
+                     !javax.interceptor.*
+                 </Private-Package>
+
                </instructions>
+
                <!--
                   Maven uses the output directory (target/classes)
                   rather than the final bundle, when compiling against
@@ -98,8 +115,8 @@
          </plugin>
       </plugins>
    </build>
+
    <dependencies>
-      
       <dependency>
          <groupId>javax.enterprise</groupId>
          <artifactId>cdi-api</artifactId>
@@ -112,12 +129,12 @@
       
       <dependency>
          <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-spi</artifactId>
+         <artifactId>weld-core</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-core</artifactId>
+         <artifactId>weld-spi</artifactId>
       </dependency>
       
       <dependency>
@@ -140,7 +157,18 @@
          <artifactId>javax.inject</artifactId>
       </dependency>
 
+      <dependency>
+         <groupId>org.jboss.interceptor</groupId>
+         <artifactId>jboss-interceptor</artifactId>
+      </dependency>
+
+      <!-- Included due to bug in jboss-interceptor -->
+      <dependency>
+         <groupId>commons-logging</groupId>
+         <artifactId>commons-logging</artifactId>
+         <version>1.1.1</version>
+      </dependency>
+      
    </dependencies>
    
 </project>
-
