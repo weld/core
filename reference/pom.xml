@@ -1,12 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
 
-   <groupId>org.jboss.webbeans.reference-guide</groupId>
-   <artifactId>webbeans-reference-guide</artifactId>
+   <groupId>org.jboss.weld.reference-guide</groupId>
+   <artifactId>weld-reference-guide</artifactId>
    <version>1.0.0-SNAPSHOT</version>
    <packaging>jdocbook</packaging>
-   <name>Web Beans Reference Guide</name>
+   <name>Weld Reference Guide</name>
+
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-parent</artifactId>
+      <version>2</version>
+   </parent>
 
    <pluginRepositories>
       <pluginRepository>
@@ -23,17 +30,12 @@
       </repository>
    </repositories>
 
-   <properties>
-      <mpjdocbook.version>2.1.1</mpjdocbook.version>
-   </properties>
-
    <build>
       <defaultGoal>process-classes</defaultGoal>
       <plugins>
          <plugin>
             <groupId>org.jboss.maven.plugins</groupId>
             <artifactId>maven-jdocbook-plugin</artifactId>
-            <version>${mpjdocbook.version}</version>
             <extensions>true</extensions>
             <dependencies>
                <dependency>
@@ -68,15 +70,6 @@
                <sourceDirectory>${pom.basedir}</sourceDirectory>
                <sourceDocumentName>master.xml</sourceDocumentName>
                <masterTranslation>en-US</masterTranslation>
-               <translations>
-                 <translation>it-IT</translation>
-                 <translation>zh-CN</translation>
-                 <translation>zh-TW</translation>
-                 <translation>es-ES</translation>
-                 <translation>ko-KR</translation>
-                 <translation>de-DE</translation>
-                 <translation>pt-BR</translation>
-               </translations>
                <imageResource>
                   <directory>${pom.basedir}/en-US</directory>
                   <includes>
@@ -89,7 +82,7 @@
                      <stylesheetResource>
                         classpath:/xslt/org/jboss/webbeans/pdf.xsl
                      </stylesheetResource>
-                     <finalName>webbeans_reference.pdf</finalName>
+                     <finalName>weld_reference.pdf</finalName>
                   </format>
                   <format>
                      <formatName>html</formatName>
@@ -109,8 +102,14 @@
                <options>
                   <xincludeSupported>true</xincludeSupported>
                   <xmlTransformerType>saxon</xmlTransformerType>
-                  <!-- needed for uri-resolvers; can be ommitted if using 'current' uri scheme -->
-                  <!--     could also locate the docbook dependency and inspect its version... -->
+                  <!--
+                     needed for uri-resolvers; can be ommitted if using
+                     'current' uri scheme
+                  -->
+                  <!--
+                     could also locate the docbook dependency and
+                     inspect its version...
+                  -->
                   <docbookVersion>1.72.0</docbookVersion>
                   <localeSeparator>-</localeSeparator>
                </options>
@@ -125,7 +124,7 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
             <configuration>
-               <arguments>-Dbuild.translations</arguments>
+               <arguments>-Ptranslations</arguments>
             </configuration>
          </plugin>
          <plugin>
@@ -135,7 +134,9 @@
                   <phase>process-classes</phase>
                   <configuration>
                      <tasks>
-                        <copy file="${basedir}/target/docbook/publish/en-US/pdf/webbeans_reference.pdf" todir="${basedir}" />
+                        <copy
+                           file="${basedir}/target/docbook/publish/en-US/pdf/weld_reference.pdf"
+                           todir="${basedir}" />
                      </tasks>
                   </configuration>
                   <goals>
@@ -148,7 +149,7 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
          </plugin>
-          <plugin>
+         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
             <configuration>
@@ -163,125 +164,31 @@
                <artifactId>maven-dependency-plugin</artifactId>
                <version>2.0</version>
             </plugin>
+            <!-- Remove for parent-3 -->
             <plugin>
                <groupId>org.jboss.maven.plugins</groupId>
                <artifactId>maven-jdocbook-plugin</artifactId>
-               <version>${mpjdocbook.version}</version>
+               <version>2.1.1</version>
             </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-jar-plugin</artifactId>
-               <configuration>
-                  <archive>
-                     <manifest>
-                        <addDefaultImplementationEntries>
-                           true
-                        </addDefaultImplementationEntries>
-                        <addDefaultSpecificationEntries>
-                           true
-                        </addDefaultSpecificationEntries>
-                     </manifest>
-                  </archive>
-               </configuration>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-surefire-report-plugin</artifactId>
-               <version>2.4.3</version>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-surefire-plugin</artifactId>
-               <version>2.4.3</version>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-clean-plugin</artifactId>
-               <version>2.2</version>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-deploy-plugin</artifactId>
-               <version>2.4</version>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-install-plugin</artifactId>
-               <version>2.2</version>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-site-plugin</artifactId>
-               <version>2.0-beta-6</version>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-source-plugin</artifactId>
-               <version>2.0.4</version>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-jar-plugin</artifactId>
-               <version>2.2</version>
-            </plugin>
+            <!-- Remove for parent-3 -->
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-antrun-plugin</artifactId>
-               <version>1.1</version>
+               <version>1.3</version>
             </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-release-plugin</artifactId>
-               <version>2.0-beta-7</version>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-enforcer-plugin</artifactId>
-               <version>1.0-alpha-4</version>
-               <executions>
-                  <execution>
-                     <id>enforce</id>
-                     <goals>
-                        <goal>enforce</goal>
-                     </goals>
-                     <configuration>
-                        <rules>
-                           <requireMavenVersion>
-                              <version>2.0.9</version>
-                           </requireMavenVersion>
-                           <requirePluginVersions>
-                              <unCheckedPlugins>
-                                 <unCheckedPlugin>org.apache.maven.plugins:maven-eclipse-plugin</unCheckedPlugin>
-                              </unCheckedPlugins>
-                           </requirePluginVersions>
-                        </rules>
-                     </configuration>
-                  </execution>
-               </executions>
-            </plugin>
+            
          </plugins>
       </pluginManagement>
-      <extensions>
-         <extension>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-webdav</artifactId>
-            <version>1.0-beta-2</version>
-         </extension>
-      </extensions>
    </build>
-   
+
    <profiles>
       <profile>
-         <activation>
-            <property>
-               <name>build.translations</name>  
-            </property>
-         </activation>
+         <id>translations</id>
          <build>
             <plugins>
                <plugin>
-               <groupId>org.jboss.maven.plugins</groupId>
-               <artifactId>maven-jdocbook-plugin</artifactId>
+                  <groupId>org.jboss.maven.plugins</groupId>
+                  <artifactId>maven-jdocbook-plugin</artifactId>
                   <executions>
                      <execution>
                         <phase>process-resources</phase>
@@ -290,13 +197,24 @@
                         </goals>
                      </execution>
                   </executions>
+                  <configuration>
+                     <translations>
+                        <translation>it-IT</translation>
+                        <translation>zh-CN</translation>
+                        <translation>zh-TW</translation>
+                        <translation>es-ES</translation>
+                        <translation>ko-KR</translation>
+                        <translation>de-DE</translation>
+                        <translation>pt-BR</translation>
+                     </translations>
+                  </configuration>
                </plugin>
             </plugins>
          </build>
       </profile>
    </profiles>
-   
-      <ciManagement>
+
+   <ciManagement>
       <system>Hudson</system>
       <url />
 
@@ -304,28 +222,18 @@
 
    <issueManagement>
       <system>JIRA</system>
-      <url>http://jira.jboss.org/browse/WBRI</url>
+      <url>http://jira.jboss.org/browse/WELD</url>
    </issueManagement>
 
    <inceptionYear>2008</inceptionYear>
+   
+   
 
    <scm>
 
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/doc</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/doc</developerConnection>
-      <url>http://fisheye.jboss.org/browse/WebBeans/doc</url>
-   </scm>   
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/doc</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/doc</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld/doc</url>
+   </scm>
    
-      <distributionManagement>
-      <repository>
-         <id>repository.jboss.org</id>
-          <name>JBoss Releases Repository</name>
-         <url>dav:https://svn.jboss.org/repos/repository.jboss.org/maven2</url>
-      </repository>
-      <snapshotRepository>
-         <id>snapshots.jboss.org</id>
-         <name>JBoss Snapshot Repository</name>
-         <url>dav:https://snapshots.jboss.org/maven2</url>
-      </snapshotRepository>
-   </distributionManagement>
 </project>
