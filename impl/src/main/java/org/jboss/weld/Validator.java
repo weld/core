@@ -118,7 +118,7 @@ public class Validator implements Service
                   for (InjectionPoint ij : decorator.getInjectionPoints())
                   {
                      Bean<?> resolvedBean = beanManager.resolve(beanManager.getInjectableBeans(ij));
-                     validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+                     Beans.validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
                   }
                }
             }
@@ -176,19 +176,7 @@ public class Validator implements Service
       }
       if (ij.getBean() != null && Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean))
       {
-         validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
-      }
-   }
-   
-   public void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager)
-   {
-      if (!ij.isTransient() && !Beans.isPassivationCapableBean(resolvedBean))
-      {
-         if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?, ?,?>)
-         {
-            throw new IllegalProductException("The bean " + ij.getBean() + " declares a passivating scope but the producer returned a non-serializable bean for injection: " + resolvedBean);
-         }
-         throw new UnserializableDependencyException("The bean " + ij.getBean() + " declares a passivating scope but has non-serializable dependency: " + resolvedBean);
+         Beans.validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
       }
    }
    

@@ -28,6 +28,7 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.interceptor.model.InterceptorClassMetadataImpl;
@@ -418,7 +419,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       return !Beans.isInterceptor(getAnnotatedItem()) && !Beans.isDecorator(getAnnotatedItem());
    }
 
-   private boolean hasBoundInterceptors()
+   public boolean hasBoundInterceptors()
    {
       if (manager.getBoundInterceptorsRegistry().getInterceptionModel(getType()) != null)
          return manager.getBoundInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
@@ -472,6 +473,10 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             Annotation interceptorsAnnotation = getType().getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass());
             classDeclaredInterceptors = Reflections.extractValues(interceptorsAnnotation);
          }
+
+         validatePassivatingInterceptors(classDeclaredInterceptors);
+
+
          if (classDeclaredInterceptors != null)
          {
             builder.interceptPostConstruct().with(classDeclaredInterceptors);
@@ -489,6 +494,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             {
                methodDeclaredInterceptors = Reflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));
             }
+            validatePassivatingInterceptors(methodDeclaredInterceptors);
             if (!excludeClassInterceptors && classDeclaredInterceptors != null)
             {
                builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(classDeclaredInterceptors);
@@ -501,6 +507,27 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          InterceptionModel<Class<?>, Class<?>> interceptionModel = builder.build();
          if (interceptionModel.getAllInterceptors().size() > 0 || new InterceptorClassMetadataImpl(getType()).isInterceptor())
             manager.getDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
+      }
+   }
+
+   private void validatePassivatingInterceptors(Class<?>[] classDeclaredInterceptors)
+   {
+      if (classDeclaredInterceptors != null && Beans.isPassivationCapableBean(this))
+      {
+         for (Class<?> interceptorClass: classDeclaredInterceptors)
+         {
+            if (!Reflections.isSerializable(interceptorClass))
+            {
+               throw new DeploymentException("The bean " + this + " declared a passivating scope, " +
+                     "but has a non-serializable interceptor class: " + interceptorClass.getName());
+            }
+            InjectionTarget<Object> injectionTarget = (InjectionTarget<Object>) manager.createInjectionTarget(manager.createAnnotatedType(interceptorClass));
+            for (InjectionPoint injectionPoint: injectionTarget.getInjectionPoints())
+            {
+               Bean<?> resolvedBean = manager.resolve(manager.getInjectableBeans(injectionPoint));
+               Beans.validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, manager);
+            }
+         }
       }
    }
 
