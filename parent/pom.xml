@@ -75,7 +75,7 @@
       <glassfish.el.version>2.1.2-b04</glassfish.el.version>
       <log4j.version>1.2.14</log4j.version>
       <!-- Testing deps -->
-      <testng.version>5.9</testng.version>
+      <testng.version>5.10</testng.version>
       <jboss.test.harness.version>1.1.0-CR1</jboss.test.harness.version>
       <apache.httpclient.version>3.1</apache.httpclient.version>
       <junit.version>4.7</junit.version>
