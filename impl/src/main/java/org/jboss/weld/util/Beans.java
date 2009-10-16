@@ -34,21 +34,17 @@ import javax.decorator.Decorates;
 import javax.decorator.Decorator;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
 import org.jboss.interceptor.model.InterceptionType;
 import org.jboss.interceptor.model.InterceptionTypeRegistry;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
-import org.jboss.weld.UnserializableDependencyException;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
@@ -129,18 +125,6 @@ public class Beans
       else
       {
          return Reflections.isSerializable(bean.getBeanClass());
-      }
-   }
-
-   public static void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager)
-   {
-      if (!ij.isTransient() && !Beans.isPassivationCapableBean(resolvedBean))
-      {
-         if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?, ?, ?>)
-         {
-            throw new IllegalProductException("The bean " + ij.getBean() + " declares a passivating scope but the producer returned a non-serializable bean for injection: " + resolvedBean);
-         }
-         throw new UnserializableDependencyException("The bean " + ij.getBean() + " declares a passivating scope but has non-serializable dependency: " + resolvedBean);
       }
    }
 

@@ -38,6 +38,8 @@ import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
@@ -46,6 +48,7 @@ import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.introspector.WeldAnnotated;
@@ -54,6 +57,8 @@ import org.jboss.weld.resolution.ResolvableWeldClass;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Reflections;
+import org.jboss.weld.context.SerializableContextual;
+import org.jboss.interceptor.model.InterceptionModel;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
@@ -109,24 +114,89 @@ public class Validator implements Service
             AbstractClassBean<?> classBean = (AbstractClassBean<?>) bean;
             if (classBean.hasDecorators())
             {
-               for (Decorator<?> decorator : classBean.getDecorators())
-               {
-                  if (!Reflections.isSerializable(decorator.getBeanClass()))
-                  {
-                     throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scope but has non-serializable decorator: " + decorator);
-                  }
-                  for (InjectionPoint ij : decorator.getInjectionPoints())
-                  {
-                     Bean<?> resolvedBean = beanManager.resolve(beanManager.getInjectableBeans(ij));
-                     Beans.validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
-                  }
-               }
+               validateDecorators(beanManager, classBean);
             }
-            
+            // validate CDI-defined interceptors
+            if (classBean.hasCdiBoundInterceptors())
+            {
+               validateCdiBoundInterceptors(beanManager, classBean);
+            }
+            // validate EJB-defined interceptors
+            if (classBean instanceof ManagedBean && ((ManagedBean)classBean).hasDirectlyDefinedInterceptors())
+            {
+               validateDirectlyDefinedInterceptorClasses(beanManager, classBean);
+            }
          }
       }
    }
-   
+
+   private void validateDirectlyDefinedInterceptorClasses(BeanManagerImpl beanManager, AbstractClassBean<?> classBean)
+   {
+      InterceptionModel<Class<?>, Class<?>> ejbInterceptorModel = beanManager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(((AbstractClassBean<?>) classBean).getType());
+      if (ejbInterceptorModel != null)
+      {
+         Class<?>[] classDeclaredInterceptors = ejbInterceptorModel.getAllInterceptors().toArray(new Class<?>[0]);
+         if (classDeclaredInterceptors != null)
+         {
+            for (Class<?> interceptorClass: classDeclaredInterceptors)
+            {
+               if (!Reflections.isSerializable(interceptorClass))
+               {
+                  throw new DeploymentException("The bean " + this + " declared a passivating scope, " +
+                        "but has a non-serializable interceptor class: " + interceptorClass.getName());
+               }
+               InjectionTarget<Object> injectionTarget = (InjectionTarget<Object>) beanManager.createInjectionTarget(beanManager.createAnnotatedType(interceptorClass));
+               for (InjectionPoint injectionPoint: injectionTarget.getInjectionPoints())
+               {
+                  Bean<?> resolvedBean = beanManager.resolve(beanManager.getInjectableBeans(injectionPoint));
+                  validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+               }
+            }
+         }
+      }
+   }
+
+   private void validateCdiBoundInterceptors(BeanManagerImpl beanManager, AbstractClassBean<?> classBean)
+   {
+      InterceptionModel<Class<?>, SerializableContextual<Interceptor<?>, ?>> cdiInterceptorModel = beanManager.getCdiInterceptorsRegistry().getInterceptionModel(((AbstractClassBean<?>) classBean).getType());
+      if (cdiInterceptorModel != null)
+            {
+               Collection<SerializableContextual<Interceptor<?>, ?>> interceptors = cdiInterceptorModel.getAllInterceptors();
+               if (interceptors.size() > 0)
+               {
+                  for (SerializableContextual<Interceptor<?>, ?> serializableContextual : interceptors)
+                  {
+                     if (!Reflections.isSerializable(serializableContextual.get().getBeanClass()))
+                     {
+                        throw new DeploymentException("The bean " + this + " declared a passivating scope " +
+                              "but has a non-serializable interceptor: "  + serializableContextual.get());
+                     }
+                     for (InjectionPoint injectionPoint: serializableContextual.get().getInjectionPoints())
+                     {
+                        Bean<?> resolvedBean = beanManager.resolve(beanManager.getInjectableBeans(injectionPoint));
+                        validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+                     }
+                  }
+               }
+            }
+   }
+
+   private void validateDecorators(BeanManagerImpl beanManager, AbstractClassBean<?> classBean)
+   {
+      for (Decorator<?> decorator : classBean.getDecorators())
+      {
+         if (!Reflections.isSerializable(decorator.getBeanClass()))
+         {
+            throw new UnserializableDependencyException("The bean " + classBean + " declares a passivating scope but has non-serializable decorator: " + decorator);
+         }
+         for (InjectionPoint ij : decorator.getInjectionPoints())
+         {
+            Bean<?> resolvedBean = beanManager.resolve(beanManager.getInjectableBeans(ij));
+            validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+         }
+      }
+   }
+
    /**
     * Validate an injection point
     * 
@@ -176,10 +246,22 @@ public class Validator implements Service
       }
       if (ij.getBean() != null && Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean))
       {
-         Beans.validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+         validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
       }
    }
    
+   public void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager)
+   {
+      if (!ij.isTransient() && !Beans.isPassivationCapableBean(resolvedBean))
+      {
+         if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?, ?,?>)
+         {
+            throw new IllegalProductException("The bean " + ij.getBean() + " declares a passivating scope but the producer returned a non-serializable bean for injection: " + resolvedBean);
+         }
+         throw new UnserializableDependencyException("The bean " + ij.getBean() + " declares a passivating scope but has non-serializable dependency: " + resolvedBean);
+      }
+   }
+
    public void validateDeployment(BeanManagerImpl manager, BeanDeployerEnvironment environment)
    {
       validateBeans(manager.getDecorators(), new ArrayList<RIBean<?>>(), manager);
@@ -264,7 +346,8 @@ public class Validator implements Service
          }
       }
    }
-   
+
+
    private void validateEnabledPolicies(BeanManagerImpl beanManager)
    {
       List<Class<?>> seenPolicies = new ArrayList<Class<?>>();
@@ -326,6 +409,7 @@ public class Validator implements Service
       }
       
    }
+
 
    public void cleanup() {}
 

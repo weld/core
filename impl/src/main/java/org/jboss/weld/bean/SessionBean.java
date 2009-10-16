@@ -431,7 +431,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
 
    private void registerInterceptors()
    {
-      InterceptionModel<Class<?>, SerializableContextual<javax.enterprise.inject.spi.Interceptor<?>, ?>> model = manager.getBoundInterceptorsRegistry().getInterceptionModel(ejbDescriptor.getBeanClass());
+      InterceptionModel<Class<?>, SerializableContextual<javax.enterprise.inject.spi.Interceptor<?>, ?>> model = manager.getCdiInterceptorsRegistry().getInterceptionModel(ejbDescriptor.getBeanClass());
       if (model != null)
          getManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor(), new InterceptorBindingsAdapter(model));
    }

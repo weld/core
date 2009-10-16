@@ -589,7 +589,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    public void addInterceptor(InterceptorImpl<?> bean)
    {
       interceptors.add(bean);
-      //TODO decide if interceptor is passivationCapable
+      getServices().get(ContextualStore.class).putIfAbsent(bean);
       interceptorResolver.clear();
    }
 
@@ -1401,12 +1401,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
       this.currentInjectionPoint.remove();
    }
 
-   public InterceptorRegistry<Class<?>, SerializableContextual<Interceptor<?>, ?>> getBoundInterceptorsRegistry()
+   public InterceptorRegistry<Class<?>, SerializableContextual<Interceptor<?>, ?>> getCdiInterceptorsRegistry()
    {
       return boundInterceptorsRegistry;
    }
 
-   public InterceptorRegistry<Class<?>, Class<?>> getDeclaredInterceptorsRegistry()
+   public InterceptorRegistry<Class<?>, Class<?>> getClassDeclaredInterceptorsRegistry()
    {
       return declaredInterceptorsRegistry;
    }

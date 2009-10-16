@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Collection;
 
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
@@ -38,7 +37,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.Bean;
 import javax.inject.Scope;
 
 import org.jboss.interceptor.model.InterceptionModelBuilder;
@@ -59,7 +57,6 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Strings;
-import org.jboss.weld.util.Reflections;
 
 /**
  * An abstract bean representation common for class-based beans
@@ -413,7 +410,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    protected void initInterceptors()
    {
-      if (manager.getBoundInterceptorsRegistry().getInterceptionModel(getType()) == null)
+      if (manager.getCdiInterceptorsRegistry().getInterceptionModel(getType()) == null)
       {
          InterceptionModelBuilder<Class<?>, SerializableContextual<Interceptor<?>, ?>> builder =
                InterceptionModelBuilder.newBuilderFor(getType(), (Class) SerializableContextual.class);
@@ -430,20 +427,15 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             Annotation[] classBindingAnnotationsArray = classBindingAnnotations.toArray(new Annotation[0]);
 
             List<Interceptor<?>> resolvedPostConstructInterceptors = manager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray);
-            validateSerializableInterceptors(resolvedPostConstructInterceptors);
             builder.interceptPostConstruct().with(toSerializableContextualArray(resolvedPostConstructInterceptors));
 
             List<Interceptor<?>> resolvedPreDestroyInterceptors = manager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotationsArray);
-            validateSerializableInterceptors(resolvedPreDestroyInterceptors);
             builder.interceptPreDestroy().with(toSerializableContextualArray(resolvedPreDestroyInterceptors));
 
-
             List<Interceptor<?>> resolvedPrePassivateInterceptors = manager.resolveInterceptors(InterceptionType.PRE_PASSIVATE, classBindingAnnotationsArray);
-            validateSerializableInterceptors(resolvedPrePassivateInterceptors);
             builder.interceptPrePassivate().with(toSerializableContextualArray(resolvedPrePassivateInterceptors));
 
             List<Interceptor<?>> resolvedPostActivateInterceptors = manager.resolveInterceptors(InterceptionType.POST_ACTIVATE, classBindingAnnotationsArray);
-            validateSerializableInterceptors(resolvedPostActivateInterceptors);
             builder.interceptPostActivate().with(toSerializableContextualArray(resolvedPostActivateInterceptors));
 
          }
@@ -457,31 +449,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
                if (Beans.findInterceptorBindingConflicts(manager, classBindingAnnotations))
                   throw new DeploymentException("Conflicting interceptor bindings found on " + getType() + "." + method.getName() + "()");
                List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
-               validateSerializableInterceptors(methodBoundInterceptors);
                builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
             }
          }
-         manager.getBoundInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
-      }
-   }
-
-   private void validateSerializableInterceptors(Collection<Interceptor<?>> interceptors)
-   {
-      if (Beans.isPassivationCapableBean(this))
-      {
-         for (Interceptor<?> interceptor: interceptors)
-         {
-            if (!Reflections.isSerializable(interceptor.getBeanClass()))
-            {
-               throw new DeploymentException("The bean " + this + " declared a passivating scope, " +
-                     "but has a non-serializable interceptor: "  + interceptor);
-            }
-            for (InjectionPoint injectionPoint: interceptor.getInjectionPoints())
-            {
-               Bean<?> resolvedBean = manager.resolve(manager.getInjectableBeans(injectionPoint));
-               Beans.validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, manager);
-            }
-         }
+         manager.getCdiInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
       }
    }
    
@@ -543,5 +514,14 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       }
       return serializableContextuals.toArray(new SerializableContextual[]{});
    }
+
+   public boolean hasCdiBoundInterceptors()
+   {
+      if (manager.getCdiInterceptorsRegistry().getInterceptionModel(getType()) != null)
+         return manager.getCdiInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
+      else
+         return false;
+   }
+
 
 }
