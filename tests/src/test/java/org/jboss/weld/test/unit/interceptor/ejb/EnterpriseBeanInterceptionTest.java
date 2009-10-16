@@ -28,7 +28,7 @@ public class EnterpriseBeanInterceptionTest extends AbstractWeldTest
    public void testEnterpriseBeanInterceptionMetadataAdded() throws Exception
    {
       SessionBean<Ball> ballSessionBean = (SessionBean<Ball>)getCurrentManager().getBeans(Ball.class).iterator().next();
-      InterceptorBindings interceptorBindings = new InterceptorBindingsAdapter(getCurrentManager().getBoundInterceptorsRegistry().getInterceptionModel(ballSessionBean.getType()));
+      InterceptorBindings interceptorBindings = new InterceptorBindingsAdapter(getCurrentManager().getCdiInterceptorsRegistry().getInterceptionModel(ballSessionBean.getType()));
       List<javax.enterprise.inject.spi.Interceptor> interceptors =
             new ArrayList<javax.enterprise.inject.spi.Interceptor>(interceptorBindings.getAllInterceptors());
 
