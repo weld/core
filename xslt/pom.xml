@@ -1,24 +1,31 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
 
-   <groupId>org.jboss.webbeans</groupId>
-   <artifactId>webbeans-docbook-xslt</artifactId>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-docbook-xslt</artifactId>
    <packaging>jar</packaging>
    <version>1.1.1-SNAPSHOT</version>
 
-   <name>Web Beans DocBook XSLT</name>
+   <name>Weld DocBook XSLT</name>
    <description>
       The main project to transform DocBook XML into XHTML and other formats for
-      SeamFramework.org Documentation.
+      Weld documentation @ SeamFramework.org.
    </description>
    <url>http://www.seamframework.org</url>
 
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-parent</artifactId>
+      <version>3</version>
+   </parent>
+
    <scm>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/doc/trunk/xslt</developerConnection>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/doc/trunk/xslt</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/doc/trunk/xslt</developerConnection>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/doc/trunk/xslt</connection>
    </scm>
-   
+
    <contributors>
       <contributor>
          <name>Pete Muir</name>
@@ -35,55 +42,5 @@
          <url>http://repository.jboss.org/maven2</url>
       </repository>
    </repositories>
-
-   <dependencies>
-      <dependency>
-         <groupId>org.jboss.seam</groupId>
-         <artifactId>seam-docbook-xslt</artifactId>
-      </dependency>
-   </dependencies>
-
-
-   <dependencyManagement>
-      <dependencies>
-         <dependency>
-            <groupId>org.jboss.seam</groupId>
-            <artifactId>seam-docbook-xslt</artifactId>
-            <version>1.1.0.GA</version>
-         </dependency>
-      </dependencies>
-   </dependencyManagement>
-
-   <build>
-      <extensions>
-         <extension>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-webdav</artifactId>
-            <version>1.0-beta-2</version>
-         </extension>
-      </extensions>
-      <pluginManagement>
-         <plugins>
-            <plugin>
-               <groupId>org.jboss.maven.plugins</groupId>
-               <artifactId>maven-jdocbook-plugin</artifactId>
-               <version>2.1.1</version>
-            </plugin>
-         </plugins>
-      </pluginManagement>
-   </build>
-
-   <distributionManagement>
-       <repository>
-          <id>repository.jboss.org</id>
-          <name>JBoss Releases Repository</name>
-          <url>dav:https://svn.jboss.org/repos/repository.jboss.org/maven2</url>
-      </repository>
-      <snapshotRepository>
-         <id>snapshots.jboss.org</id>
-         <name>JBoss Snapshot Repository</name>
-         <url>dav:https://snapshots.jboss.org/maven2</url>
-      </snapshotRepository>
-   </distributionManagement>
 
 </project>
