@@ -319,7 +319,13 @@ public class WeldBootstrap implements Bootstrap
    public static String getVersion()
    {
       Package pkg = WeldBootstrap.class.getPackage();
-      return pkg != null ? Names.version(pkg.getImplementationVersion()) : null;
+      if (pkg != null)
+      {
+         //allow for the case when pkg.getImplementationVersion() == null
+         String pkgImplementationVersion = pkg.getImplementationVersion();
+         return pkgImplementationVersion != null ? Names.version(pkgImplementationVersion) : null;
+      }
+      return null;
    }
    
    protected void initializeContexts()
