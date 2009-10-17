@@ -38,27 +38,27 @@ import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.Interceptor;
 
+import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
+import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.context.SerializableContextual;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.ResolvableWeldClass;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Reflections;
-import org.jboss.weld.context.SerializableContextual;
-import org.jboss.interceptor.model.InterceptionModel;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
@@ -256,7 +256,7 @@ public class Validator implements Service
       {
          if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?, ?,?>)
          {
-            throw new UnserializableDependencyException("The bean " + ij.getBean() + " declares a passivating scope but the producer returned a non-serializable bean for injection: " + resolvedBean);
+            throw new IllegalProductException("The bean " + ij.getBean() + " declares a passivating scope but the producer returned a non-serializable bean for injection: " + resolvedBean);
          }
          throw new UnserializableDependencyException("The bean " + ij.getBean() + " declares a passivating scope but has non-serializable dependency: " + resolvedBean);
       }
