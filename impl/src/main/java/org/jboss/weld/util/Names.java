@@ -333,9 +333,17 @@ public class Names
       return buffer.toString();
    }
    
-   public static String version(String version)
+   public static String version(Package pkg)
    {
-      return new StringBuilder().append(version.substring(0, version.lastIndexOf("-"))).append(" (").append(version.substring(version.lastIndexOf("-") + 1)).append(")").toString();
+      if (pkg != null)
+      {
+         String version = pkg.getImplementationVersion();
+         if (version != null)
+         {
+            return new StringBuilder().append(version.substring(0, version.lastIndexOf("-"))).append(" (").append(version.substring(version.lastIndexOf("-") + 1)).append(")").toString();
+         }
+      }
+      return "SNAPSHOT";
    }
 
 }

@@ -146,7 +146,7 @@ public class WeldBootstrap implements Bootstrap
    
    static
    {
-	   log.info("Weld " + getVersion());
+	   log.info("Weld " + Names.version(WeldBootstrap.class.getPackage()));
    }
 
    // The Bean manager
@@ -309,23 +309,6 @@ public class WeldBootstrap implements Bootstrap
          Container.instance().setInitialized(true);
       }
       return this;
-   }
-
-   /**
-    * Gets version information
-    * 
-    * @return The implementation version from the Bootstrap class package.
-    */
-   public static String getVersion()
-   {
-      Package pkg = WeldBootstrap.class.getPackage();
-      if (pkg != null)
-      {
-         //allow for the case when pkg.getImplementationVersion() == null
-         String pkgImplementationVersion = pkg.getImplementationVersion();
-         return pkgImplementationVersion != null ? Names.version(pkgImplementationVersion) : null;
-      }
-      return null;
    }
    
    protected void initializeContexts()
