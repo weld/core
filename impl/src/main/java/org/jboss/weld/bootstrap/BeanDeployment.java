@@ -132,7 +132,12 @@ public class BeanDeployment
    {
       for (ExtensionBean bean : extensionBeanDeployerEnvironment.getBeans())
       {
-         if (deployment.loadBeanDeploymentArchive(bean.getBeanClass()).equals(beanDeploymentArchive))
+         BeanDeploymentArchive classBeanDeploymentArchive = deployment.loadBeanDeploymentArchive(bean.getBeanClass());
+         if (classBeanDeploymentArchive == null)
+         {
+            throw new IllegalStateException("deployment.loadBeanDeploymentArchive() returned null for " + bean.getBeanClass());
+         }
+         if (classBeanDeploymentArchive.equals(beanDeploymentArchive))
          {
             beanDeployer.getManager().addBean(bean);
          }
