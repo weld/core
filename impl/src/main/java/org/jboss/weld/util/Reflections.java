@@ -33,7 +33,9 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.security.AccessControlException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Qualifier;
@@ -63,31 +65,51 @@ public class Reflections
 
       private final Type type;
 
-      private Set<Type> types;
+      private Map<Class<?>, Type> typeMap;
+      private Set<Type> typeSet;
 
       public HierarchyDiscovery(Type type)
       {
          this.type = type;
       }
 
-      protected void add(Type type)
+      protected void add(Class<?> clazz, Type type)
       {
-         types.add(type);
+         typeSet.add(type);
+         if (clazz != null)
+         {
+            typeMap.put(clazz, type);
+         }
       }
 
-      public Set<Type> getFlattenedTypes()
+      public Set<Type> getTypeClosureAsSet()
       {
-         if (types == null)
+         if (typeSet == null)
          {
-            this.types = new HashSet<Type>();
-            discoverTypes(type);
+            init();
          }
-         return types;
+         return typeSet;
+      }
+      
+      public Map<Class<?>, Type> getTypeClosureAsMap()
+      {
+         if (typeMap == null)
+         {
+            init();
+         }
+         return typeMap;
+      }
+      
+      private void init()
+      {
+         this.typeSet = new HashSet<Type>();
+         this.typeMap = new HashMap<Class<?>, Type>();
+         discoverTypes(type);
       }
 
       public Type getResolvedType()
       {
-         if (type instanceof Class)
+         if (type instanceof Class<?>)
          {
             Class<?> clazz = (Class<?>) type;
             return resolveType(clazz);
@@ -99,23 +121,25 @@ public class Reflections
       {
          if (type != null)
          {
-            if (type instanceof Class)
+            if (type instanceof Class<?>)
             {
                Class<?> clazz = (Class<?>) type;
-               add(resolveType(clazz));
+               add(clazz, resolveType(clazz));
                discoverFromClass(clazz);
             }
             else
             {
+               Class<?> clazz = null;
                if (type instanceof ParameterizedType)
                {
                   Type rawType = ((ParameterizedType) type).getRawType();
-                  if (rawType instanceof Class)
+                  if (rawType instanceof Class<?>)
                   {
                      discoverFromClass((Class<?>) rawType);
+                     clazz = (Class<?>) rawType;
                   }
                }
-               add(type);
+               add(clazz, type);
             }
          }
       }
@@ -462,12 +486,6 @@ public class Reflections
          }
       }
       return false;
-   }
-
-   public static Set<Type> createTypeClosure(Class<?> rawType, Type[] actualTypeArguments)
-   {
-      Type type = new ParameterizedTypeImpl(rawType, actualTypeArguments, rawType.getDeclaringClass());
-      return new HierarchyDiscovery(type).getFlattenedTypes();
    }
 
    /**

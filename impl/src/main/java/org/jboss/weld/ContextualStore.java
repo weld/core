@@ -120,5 +120,6 @@ public class ContextualStore implements Service
    public void cleanup()
    {
       contextuals.clear();
+      passivationCapableContextuals.clear();
    }
 }

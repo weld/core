@@ -21,12 +21,14 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.Reflections.HierarchyDiscovery;
 import org.jboss.weld.util.collections.Arrays2;
 
 /**
@@ -59,7 +61,8 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
    private final Class<T> rawType;
    private final Type[] actualTypeArguments; 
    private final Type type;
-   private final Set<Type> flattenedTypes;
+   private final Map<Class<?>, Type> typeClosureAsMap;
+   private final Set<Type> typeClosureAsSet;
    private final Set<Type> interfaceOnlyFlattenedTypes;
    private final boolean proxyable;
    private final boolean _parameterizedType;
@@ -87,13 +90,15 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
          this.actualTypeArguments = new Type[0];
       }
       this._parameterizedType = Reflections.isParameterizedType(rawType);
-      this.flattenedTypes = new Reflections.HierarchyDiscovery(type).getFlattenedTypes();
+      HierarchyDiscovery discovery = new Reflections.HierarchyDiscovery(type);
       this.interfaceOnlyFlattenedTypes = new HashSet<Type>();
       for (Type t : rawType.getGenericInterfaces())
       {
-         interfaceOnlyFlattenedTypes.addAll(new Reflections.HierarchyDiscovery(t).getFlattenedTypes());
+         interfaceOnlyFlattenedTypes.addAll(new Reflections.HierarchyDiscovery(t).getTypeClosureAsSet());
       }
-      this.proxyable = Proxies.isTypesProxyable(flattenedTypes);
+      this.typeClosureAsSet = discovery.getTypeClosureAsSet();
+      this.typeClosureAsMap = discovery.getTypeClosureAsMap();
+      this.proxyable = Proxies.isTypesProxyable(typeClosureAsSet);
    }
 
    public AbstractWeldAnnotated(AnnotationStore annotatedItemHelper)
@@ -103,7 +108,8 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
       this.type = null;
       this.actualTypeArguments = new Type[0];
       this._parameterizedType = false;
-      this.flattenedTypes = null;
+      this.typeClosureAsMap = null;
+      this.typeClosureAsSet = null;
       this.interfaceOnlyFlattenedTypes = null;
       this.proxyable = false;
    }
@@ -263,7 +269,12 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
 
    public Set<Type> getTypeClosure()
    {
-      return Collections.unmodifiableSet(flattenedTypes);
+      return typeClosureAsSet;
+   }
+   
+   public Map<Class<?>, Type> getTypeClosureAsMap()
+   {
+      return typeClosureAsMap;
    }
 
 }

@@ -132,9 +132,10 @@ public class MetaAnnotationStore implements Service
    
    public void cleanup() 
    {
-      bindingTypes.clear();
-      scopes.clear();
-      stereotypes.clear();
+      this.bindingTypes.clear();
+      this.scopes.clear();
+      this.stereotypes.clear();
+      this.interceptorBindings.clear();
    }
 
    public <T extends Annotation> InterceptorBindingModel getInterceptorBindingModel(final Class<T> interceptorBinding)

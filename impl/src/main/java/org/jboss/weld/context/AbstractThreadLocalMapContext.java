@@ -63,6 +63,13 @@ public abstract class AbstractThreadLocalMapContext extends AbstractMapContext
    }
    
    @Override
+   public void destroy()
+   {
+      super.destroy();
+      this.beanStore.remove();
+   }
+   
+   @Override
    public void cleanup()
    {
       super.cleanup();

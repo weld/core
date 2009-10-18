@@ -150,6 +150,10 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
       return ejbs.values().iterator();
    }
    
-   public void cleanup() {}
+   public void cleanup() 
+   {
+      this.ejbClasses.clear();
+      this.ejbs.clear();
+   }
 
 }

@@ -123,5 +123,10 @@ public class Namespace
    {
       return "Namespace(" + ( name==null ? "Root" : name ) + ')';
    }
+   
+   public void clear()
+   {
+      
+   }
 
 }

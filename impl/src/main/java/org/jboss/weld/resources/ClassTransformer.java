@@ -35,7 +35,6 @@ public class ClassTransformer implements Service
    private final ConcurrentCache<Class<?>, WeldClass<?>> classes;
    private final ConcurrentCache<AnnotatedType<?>, WeldClass<?>> annotatedTypes;
    private final ConcurrentCache<Class<?>, WeldAnnotation<?>> annotations;
-   private final ClassTransformer transformer = this;
    private final TypeStore typeStore;
 
    /**
@@ -51,6 +50,7 @@ public class ClassTransformer implements Service
 
    public <T> WeldClass<T> loadClass(final Class<T> clazz)
    {
+      final ClassTransformer transformer = this;
       return classes.putIfAbsent(clazz, new Callable<WeldClass<T>>()
       {
 
@@ -64,6 +64,7 @@ public class ClassTransformer implements Service
    
    public <T> WeldClass<T> loadClass(final AnnotatedType<T> clazz)
    {
+      final ClassTransformer transformer = this;
       return annotatedTypes.putIfAbsent(clazz, new Callable<WeldClass<T>>()
       {
 
@@ -77,8 +78,10 @@ public class ClassTransformer implements Service
 
    public <T extends Annotation> WeldAnnotation<T> loadAnnotation(final Class<T> clazz)
    {
+      final ClassTransformer transformer = this;
       return annotations.putIfAbsent(clazz, new Callable<WeldAnnotation<T>>()
       {
+         
          public WeldAnnotation<T> call() throws Exception
          {
             return WeldAnnotationImpl.of(clazz, transformer);
@@ -94,9 +97,9 @@ public class ClassTransformer implements Service
    
    public void cleanup() 
    {
-      annotatedTypes.clear();
-      annotations.clear();
-      classes.clear();
+      this.annotatedTypes.clear();
+      this.annotations.clear();
+      this.classes.clear();
    }
 
 }

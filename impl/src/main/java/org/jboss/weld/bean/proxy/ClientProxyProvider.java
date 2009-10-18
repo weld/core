@@ -138,5 +138,10 @@ public class ClientProxyProvider
    {
       return "Proxy pool with " + pool.size() + " proxies";
    }
+   
+   public void clear()
+   {
+      this.pool.clear();
+   }
 
 }

@@ -18,6 +18,7 @@ package org.jboss.weld.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -44,6 +45,11 @@ public abstract class ForwardingWeldAnnotated<T, S> extends ForwardingAnnotated<
    public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
    {
       return delegate().getMetaAnnotationsAsArray(metaAnnotationType);
+   }
+   
+   public Map<Class<?>, Type> getTypeClosureAsMap()
+   {
+      return delegate().getTypeClosureAsMap();
    }
 
    @Deprecated

@@ -268,6 +268,7 @@ public class WeldBootstrap implements Bootstrap
          // Add the Deployment BeanManager Bean to the Deployment BeanManager
          deploymentManager.addBean(new ManagerBean(deploymentManager));
          
+         // TODO keep a list of new bdas, add them all in, and deploy beans for them, then merge into existing
          BeforeBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, extensionDeployerEnvironment);
       }
       return this;
@@ -277,6 +278,7 @@ public class WeldBootstrap implements Bootstrap
    {
       synchronized (this)
       {
+         // TODO keep a list of new bdas, add them all in, and deploy beans for them, then merge into existing
          for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
          {
             entry.getValue().deployBeans(environment);
@@ -302,6 +304,7 @@ public class WeldBootstrap implements Bootstrap
 
    public Bootstrap endInitialization()
    {
+      // TODO rebuild the manager accessibility graph if the bdas have changed
       synchronized (this)
       {
          // Register the managers so external requests can handle them

@@ -65,6 +65,9 @@ public class TypeStore implements Service
       this.extraAnnotations.get(annotationType).addAll(annotations);
    }
    
-   public void cleanup() {}
+   public void cleanup() 
+   {
+      this.extraAnnotations.clear();
+   }
 
 }

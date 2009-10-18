@@ -128,6 +128,8 @@ public class BeanDeployment
       log.debug("Enabled interceptor types for "  + beanManager + ": " + beanManager.getEnabledInterceptorClasses());
    }
    
+   // TODO Move class stuff into startContainer phase
+   // TODO read EJB descriptors after reading classes
    public void deployBeans(Environment environment)
    {
       for (ExtensionBean bean : extensionBeanDeployerEnvironment.getBeans())

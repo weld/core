@@ -22,7 +22,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javassist.util.proxy.ProxyFactory;
@@ -32,8 +35,8 @@ import javax.decorator.Decorator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.BeanTypes;
 import javax.enterprise.inject.CreationException;
+import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.interceptor.Interceptor;
@@ -59,7 +62,6 @@ import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.collections.Arrays2;
 
 /**
  * An enterprise bean representation
@@ -190,19 +192,19 @@ public class SessionBean<T> extends AbstractClassBean<T>
    @Override
    protected void initTypes()
    {
-      if (getAnnotatedItem().isAnnotationPresent(BeanTypes.class))
+      Map<Class<?>, Type> types = new LinkedHashMap<Class<?>, Type>();
+      for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
       {
-         types = Arrays2.<Type>asSet(getAnnotatedItem().getAnnotation(BeanTypes.class).value());
+         types.put(businessInterfaceDescriptor.getInterface(), businessInterfaceDescriptor.getInterface());
+      }
+      if (getAnnotatedItem().isAnnotationPresent(Typed.class))
+      {
+         super.types = getTypedTypes(types, getAnnotatedItem().getJavaClass(), getAnnotatedItem().getAnnotation(Typed.class));
       }
       else
       {
-         Set<Type> types = new LinkedHashSet<Type>();
-         types.add(Object.class);
-         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
-         {
-            types.add(businessInterfaceDescriptor.getInterface());
-         }
-         super.types = types;
+         types.put(Object.class, Object.class);
+         super.types = new HashSet<Type>(types.values());
       }
    }
 

@@ -42,7 +42,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.ee.EEResourceProducerField;
 import org.jboss.weld.bean.ee.PersistenceContextProducerField;
 import org.jboss.weld.bootstrap.events.ProcessBeanImpl;
-import org.jboss.weld.bootstrap.events.ProcessInjectionTargetImpl;
+import org.jboss.weld.bootstrap.events.ProcessBeanInjectionTarget;
 import org.jboss.weld.bootstrap.events.ProcessManagedBeanImpl;
 import org.jboss.weld.bootstrap.events.ProcessObserverMethodImpl;
 import org.jboss.weld.bootstrap.events.ProcessProducerFieldImpl;
@@ -111,7 +111,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
             }
             else if (bean instanceof AbstractClassBean<?>)
             {
-               ProcessInjectionTargetImpl.fire(manager, (AbstractClassBean<?>) bean);
+               ProcessBeanInjectionTarget.fire(manager, (AbstractClassBean<?>) bean);
             }
             if (bean instanceof ManagedBean<?>)
             {

@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.NormalScope;
@@ -52,6 +53,8 @@ public interface WeldAnnotated<T, S> extends Annotated
     *         are no matches.
     */
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
+   
+   public Map<Class<?>, Type> getTypeClosureAsMap();
 
    /**
     * Gets all annotations which are declared on this annotated item with the

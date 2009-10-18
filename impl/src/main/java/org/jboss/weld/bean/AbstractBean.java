@@ -19,13 +19,14 @@ package org.jboss.weld.bean;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.decorator.Decorates;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.BeanTypes;
 import javax.enterprise.inject.Specializes;
+import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.stereotype.Stereotype;
 import javax.inject.Named;
@@ -46,7 +47,6 @@ import org.jboss.weld.log.Logging;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Reflections;
-import org.jboss.weld.util.collections.Arrays2;
 
 /**
  * An abstract bean representation common for all beans
@@ -174,14 +174,35 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
     */
    protected void initTypes()
    {
-      if (getAnnotatedItem().isAnnotationPresent(BeanTypes.class))
+      if (getAnnotatedItem().isAnnotationPresent(Typed.class))
       {
-         types = Arrays2.<Type>asSet(getAnnotatedItem().getAnnotation(BeanTypes.class).value());
+         this.types = getTypedTypes(getAnnotatedItem().getTypeClosureAsMap(), getAnnotatedItem().getJavaClass(), getAnnotatedItem().getAnnotation(Typed.class));
       }
       else
       {
-         types = getAnnotatedItem().getTypeClosure();
+         this.types = getAnnotatedItem().getTypeClosure();
+         if (getType().isInterface())
+         {
+            this.types.add(Object.class);
+         }
       }
+   }
+   
+   protected static Set<Type> getTypedTypes(Map<Class<?>, Type> typeClosure, Class<?> rawType, Typed typed)
+   {
+      Set<Type> types = new HashSet<Type>();
+      for (Class<?> specifiedClass : typed.value())
+      {
+         if (!typeClosure.containsKey(specifiedClass))
+         {
+            throw new DefinitionException("@Typed class " + specifiedClass.getName() + " is not present in the type hierarchy " + rawType);
+         }
+         else
+         {
+            types.add(typeClosure.get(specifiedClass));
+         }
+      }
+      return types;
    }
 
    /**

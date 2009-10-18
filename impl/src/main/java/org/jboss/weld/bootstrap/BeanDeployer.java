@@ -79,6 +79,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    public BeanDeployer addClass(AnnotatedType<?> clazz)
    {
       ClassTransformer classTransformer = Container.instance().deploymentServices().get(ClassTransformer.class);
+      // TODO Discover any @New injection points, and store as newClasses
       classes.add(classTransformer.loadClass(clazz));
       return this;
    }
@@ -112,6 +113,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
             createSimpleBean(clazz);
          }
       }
+      // TODO Iterate over newClasses and add a new bean for each
       for (InternalEjbDescriptor<?> ejbDescriptor : getEnvironment().getEjbDescriptors())
       {
          createEnterpriseBean(ejbDescriptor);

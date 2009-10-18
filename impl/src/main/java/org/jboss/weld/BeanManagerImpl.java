@@ -62,9 +62,10 @@ import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.events.AbstractProcessInjectionTarget;
 import org.jboss.weld.context.CreationalContextImpl;
-import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.context.SerializableContextual;
+import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
@@ -607,7 +608,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       bindingAnnotations.add(new AnyLiteral());
       Set<ObserverMethod<?, T>> observers = new HashSet<ObserverMethod<?, T>>();
-      Set<ObserverMethod<?,?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(eventType).getFlattenedTypes(),  bindingAnnotations, null));
+      Set<ObserverMethod<?,?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(eventType).getTypeClosureAsSet(),  bindingAnnotations, null));
       for (ObserverMethod<?,?> observer : eventObservers)
       {
          observers.add((ObserverMethod<?, T>) observer);
@@ -1399,6 +1400,27 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       services.cleanup();
       this.currentInjectionPoint.remove();
+      this.accessibleManagers.clear();
+      this.beanResolver.clear();
+      this.beans.clear();
+      this.childActivities.clear();
+      this.clientProxyProvider.clear();
+      this.contexts.clear();
+      this.currentActivities.clear();
+      this.decoratorResolver.clear();
+      this.decorators.clear();
+      this.enabledDecoratorClasses.clear();
+      this.enabledInterceptorClasses.clear();
+      this.enabledPolicyClasses.clear();
+      this.enabledPolicyStereotypes.clear();
+      this.enterpriseBeans.clear();
+      this.interceptorResolver.clear();
+      this.interceptors.clear();
+      this.nameBasedResolver.clear();
+      this.namespaces.clear();
+      this.observerResolver.clear();
+      this.observers.clear();
+      this.specializedBeans.clear();
    }
 
    public InterceptorRegistry<Class<?>, SerializableContextual<Interceptor<?>, ?>> getCdiInterceptorsRegistry()
@@ -1409,5 +1431,10 @@ public class BeanManagerImpl implements WeldManager, Serializable
    public InterceptorRegistry<Class<?>, Class<?>> getClassDeclaredInterceptorsRegistry()
    {
       return declaredInterceptorsRegistry;
+   }
+   
+   public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType)
+   {
+      return AbstractProcessInjectionTarget.fire(this, annotatedType, createInjectionTarget(annotatedType));
    }
 }

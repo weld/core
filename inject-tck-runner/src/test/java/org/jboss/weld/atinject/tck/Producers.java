@@ -10,8 +10,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.enterprise.inject.BeanTypes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -59,7 +59,7 @@ public class Producers
     * 
     * @return
     */
-   @Produces @BeanTypes(DriversSeat.class)
+   @Produces @Typed(DriversSeat.class)
    public DriversSeat produceDriversSeat()
    {
       return driversSeat.newInstance().produce().inject().get();
@@ -89,7 +89,7 @@ public class Producers
    /**
     * Producer method for bean with default qualifiers and type SpareTire only
     */
-   @Produces @BeanTypes(SpareTire.class)
+   @Produces @Typed(SpareTire.class)
    public SpareTire produceSpareTire()
    {
       return spareTire.newInstance().produce().inject().get();

@@ -75,7 +75,7 @@ public abstract class AbstractMapContext extends AbstractContext
       }
       if (getBeanStore() == null)
       {
-         throw new IllegalStateException("No bean store available for " + toString());
+         return null;
       }
       if (contextual == null)
       {
