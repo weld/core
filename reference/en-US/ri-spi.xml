@@ -760,10 +760,24 @@
                   class.
                </para>
                
-               <programlisting><![CDATA[
-
-// Create the injection target, once per class
-InjectionTarget it = beanManager.createInjectionTarget(clazz);
+               <para>
+                  The CDI specification also requires that a 
+                  <literal>ProcessInjectionTarget</literal> event is fired for
+                  every Java EE component class. Furthermore, if an observer
+                  calls <literal>ProcessInjectionTarget.setInjectionTarget()</literal>
+                  the container must use <emphasis>the specified</emphasis> injection
+                  target to perform injection.
+               </para>
+               
+               <para>
+                  To help the integrator, Weld provides
+                  <literal>WeldManager.fireProcessInjectionTarget()</literal>
+                  which returns the <literal>InjectionTarget</literal> to use.
+               </para>
+               
+               <programlisting><![CDATA[// Fire ProcessInjectionTarget, returning the InjectionTarget
+// to use
+InjectionTarget it = weldBeanManager.fireProcessInjectionTarget(clazz);
 
 // Per instance required, create the creational context
 CreationalContext<?> cc = beanManager.createCreationalContext(null);
