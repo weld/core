@@ -33,11 +33,22 @@ public class PassivationActivationInterceptor implements Serializable
    public static boolean prePassivateInvoked;
    public static boolean postActivateInvoked;
 
+   public static String initialMessage;
+
+   public PassivationActivationInterceptor()
+   {
+      this.message = initialMessage;
+   }
+
+   public static PassivationActivationInterceptor instance;
+   public String message = null;
+
    @PrePassivate
    public void prePassivate(InvocationContext invocationContext) throws Exception
    {
       prePassivateInvoked = true;
       invocationContext.proceed();
+      instance = this;
    }
 
 
@@ -46,6 +57,7 @@ public class PassivationActivationInterceptor implements Serializable
    {
       postActivateInvoked = true;
       invocationContext.proceed();
+      instance = this;
    }
 
 }

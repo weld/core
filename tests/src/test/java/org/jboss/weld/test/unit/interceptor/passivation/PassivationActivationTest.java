@@ -44,21 +44,33 @@ public class PassivationActivationTest extends AbstractWeldTest
    {
       Bean bean = getCurrentManager().getBeans(Ball.class).iterator().next();
       CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
+
+      PassivationActivationInterceptor.initialMessage = "Goal!";
+
       Ball ball = (Ball) bean.create(creationalContext);
 
       ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
       new ObjectOutputStream(byteArrayOutputStream).writeObject(ball);
 
+      PassivationActivationInterceptor oldInterceptor = PassivationActivationInterceptor.instance;
+
+      PassivationActivationInterceptor.initialMessage = "Miss!";
+
       assert PassivationActivationInterceptor.prePassivateInvoked;
       assert !PassivationActivationInterceptor.postActivateInvoked;
+      assert PassivationActivationInterceptor.instance  != null;
 
       PassivationActivationInterceptor.prePassivateInvoked = false;
       PassivationActivationInterceptor.postActivateInvoked = false;
-      
+      PassivationActivationInterceptor.instance = null;
+
       ball = (Ball)new ObjectInputStream(new ByteArrayInputStream(byteArrayOutputStream.toByteArray())).readObject();
 
       assert !PassivationActivationInterceptor.prePassivateInvoked;
       assert PassivationActivationInterceptor.postActivateInvoked;
-
+      assert PassivationActivationInterceptor.instance  != null;
+      assert PassivationActivationInterceptor.instance != oldInterceptor;
+      assert PassivationActivationInterceptor.instance.message != null;
+      assert PassivationActivationInterceptor.instance.message.equals(oldInterceptor.message);
    }
 }
