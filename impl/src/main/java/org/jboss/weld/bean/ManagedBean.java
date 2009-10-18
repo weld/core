@@ -29,9 +29,9 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
+import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.interceptor.model.InterceptorClassMetadataImpl;
-import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
 import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
 import org.jboss.interceptor.registry.InterceptorRegistry;
@@ -39,8 +39,8 @@ import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
-import org.jboss.weld.bean.interceptor.ClassInterceptionHandlerFactory;
 import org.jboss.weld.bean.interceptor.CdiInterceptorHandlerFactory;
+import org.jboss.weld.bean.interceptor.ClassInterceptionHandlerFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
@@ -70,6 +70,8 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    // The constructor
    private ConstructorInjectionPoint<T> constructor;
+   
+   // The Java EE style injection points
    private Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
    private Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
    private Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
