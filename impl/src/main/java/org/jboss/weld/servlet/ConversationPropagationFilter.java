@@ -80,7 +80,7 @@ public class ConversationPropagationFilter implements Filter
          public void sendRedirect(String path) throws IOException
          {
             ConversationImpl conversation = getModuleBeanManager(ctx) .getInstanceByType(ConversationImpl.class);
-            if (conversation.isLongRunning())
+            if (!conversation.isTransient())
             {
                String cidParamName = getModuleBeanManager(ctx).getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>(){});
                path = new FacesUrlTransformer(path, FacesContext.getCurrentInstance()).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversation.getUnderlyingId()).encode();

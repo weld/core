@@ -99,16 +99,12 @@
      <dependency>
        <groupId>org.jboss.interceptor</groupId>
        <artifactId>jboss-interceptor-api</artifactId>
-       <!-- WELD-198  -->
-<!--       <optional>true</optional>-->
      </dependency>
 
 
      <dependency>
        <groupId>org.jboss.interceptor</groupId>
        <artifactId>jboss-interceptor</artifactId>
-       <!-- WELD-198 -->
-<!--       <optional>true</optional>-->
      </dependency>
 
    </dependencies>

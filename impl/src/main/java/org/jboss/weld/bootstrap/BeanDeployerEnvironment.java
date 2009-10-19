@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.New;
+
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
@@ -214,14 +216,28 @@ public class BeanDeployerEnvironment
    {
       for (WeldInjectionPoint<?, ?> injectionPoint : newInjectionPoints)
       {
-         if (getEjbDescriptors().contains(injectionPoint.getJavaClass()))
+         New _new = injectionPoint.getAnnotation(New.class);
+         if (_new.value().equals(New.class))
          {
-            newSessionBeanDescriptors.add(getEjbDescriptors().getUnique(injectionPoint.getJavaClass()));
+            addNewBeanFromInjecitonPoint(injectionPoint.getJavaClass(), injectionPoint.getBaseType());
          }
          else
          {
-            newManagedBeanClasses.add(classTransformer.loadClass(injectionPoint.getJavaClass(), injectionPoint.getBaseType()));
+            addNewBeanFromInjecitonPoint(_new.value(), _new.value());
          }
+         
+      }
+   }
+   
+   private void addNewBeanFromInjecitonPoint(Class<?> rawType, Type baseType)
+   {
+      if (getEjbDescriptors().contains(rawType))
+      {
+         newSessionBeanDescriptors.add(getEjbDescriptors().getUnique(rawType));
+      }
+      else
+      {
+         newManagedBeanClasses.add(classTransformer.loadClass(rawType, baseType));
       }
    }
 

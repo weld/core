@@ -17,12 +17,14 @@
 package org.jboss.weld.resolution;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.New;
 
 import org.jboss.weld.literal.NewLiteral;
+import org.jboss.weld.util.Reflections;
 
 /**
  * @author pmuir
@@ -77,6 +79,33 @@ public class NewResolvableTransformer implements ResolvableTransformer
                   {
                      return delegate().getAnnotation(annotationType);
                   }
+               }
+               
+            };
+         }
+         else
+         {
+            final Class<?> javaClass = originalNewAnnotation.value();
+            final Set<Type> typeClosure = new Reflections.HierarchyDiscovery(javaClass).getTypeClosureAsSet();
+            return new ForwardingResolvable()
+            {
+               
+               @Override
+               protected Resolvable delegate()
+               {
+                  return element;
+               }
+               
+               @Override
+               public Class<?> getJavaClass()
+               {
+                  return javaClass;
+               }
+               
+               @Override
+               public Set<Type> getTypeClosure()
+               {
+                  return typeClosure;
                }
                
             };

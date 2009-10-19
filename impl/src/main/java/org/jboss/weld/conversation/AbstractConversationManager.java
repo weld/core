@@ -130,7 +130,7 @@ public abstract class AbstractConversationManager implements ConversationManager
    {
       log.trace("Cleaning up conversation for " + currentConversation);
       String cid = currentConversation.getUnderlyingId();
-      if (currentConversation.isLongRunning())
+      if (!currentConversation.isTransient())
       {
          Future<?> terminationHandle = scheduleForTermination(cid, currentConversation.getTimeout());
          // When the conversation ends, a long-running conversation needs to

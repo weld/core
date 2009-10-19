@@ -51,7 +51,7 @@ public class ConversationImpl implements Conversation, Serializable
    // The original conversation ID (if any)
    private String originalId;
    // Is the conversation long-running?
-   private boolean longRunning;
+   private boolean _transient = true;
    // The timeout in milliseconds
    private long timeout;
 
@@ -70,7 +70,7 @@ public class ConversationImpl implements Conversation, Serializable
    public ConversationImpl(ConversationImpl conversation)
    {
       this.id = conversation.getUnderlyingId();
-      this.longRunning = conversation.isLongRunning();
+      this._transient = conversation.isTransient();
       this.timeout = conversation.getTimeout();
    }
 
@@ -85,18 +85,18 @@ public class ConversationImpl implements Conversation, Serializable
    {
       this.id = conversationIdGenerator.nextId();
       this.timeout = timeout;
-      this.longRunning = false;
+      this._transient = true;
       log.debug("Created a new conversation " + this);
    }
 
    public void begin()
    {
-      if (isLongRunning())
+      if (!isTransient())
       {
          throw new IllegalStateException("Attempt to call begin() on a long-running conversation");
       }
       log.debug("Promoted conversation " + id + " to long-running");
-      longRunning = true;
+      this._transient = false;
    }
 
    public void begin(String id)
@@ -115,17 +115,17 @@ public class ConversationImpl implements Conversation, Serializable
 
    public void end()
    {
-      if (!isLongRunning())
+      if (isTransient())
       {
          throw new IllegalStateException("Attempt to call end() on a transient conversation");
       }
       log.debug("Demoted conversation " + id + " to transient");
-      this.longRunning = false;
+      this._transient = true;
    }
 
    public String getId()
    {
-      if (isLongRunning())
+      if (!isTransient())
       {
          return id;
       }
@@ -151,11 +151,6 @@ public class ConversationImpl implements Conversation, Serializable
       return timeout;
    }
 
-   public boolean isLongRunning()
-   {
-      return longRunning;
-   }
-
    public void setTimeout(long timeout)
    {
       this.timeout = timeout;
@@ -171,7 +166,7 @@ public class ConversationImpl implements Conversation, Serializable
    {
       log.debug("Switched conversation from " + this);
       id = conversation.getUnderlyingId();
-      longRunning = conversation.isLongRunning();
+      this._transient = conversation.isTransient();
       timeout = conversation.getTimeout();
       log.debug(" to " + this);
    }
@@ -179,13 +174,7 @@ public class ConversationImpl implements Conversation, Serializable
    @Override
    public String toString()
    {
-      return "ID: " + id + ", long-running: " + longRunning + ", timeout: " + timeout + "ms";
-   }
-
-   public void setLongRunning(boolean longRunning)
-   {
-      log.debug("Set conversation " + id + " to long-running: " + longRunning);
-      this.longRunning = longRunning;
+      return "ID: " + id + ", transient: " + isTransient() + ", timeout: " + timeout + "ms";
    }
 
    /**
@@ -220,6 +209,6 @@ public class ConversationImpl implements Conversation, Serializable
 
    public boolean isTransient()
    {
-      return !isLongRunning();
+      return _transient;
    }
 }

@@ -14,7 +14,7 @@
         </filter>
         <filter class="org.apache.log4j.varia.StringMatchFilter">
         	<param name="AcceptOnMatch" value="false" />
-        	<param name="StringToMatch" value="Error destroying org.jboss.weld.bean-test-ManagedBean-org.jboss.jsr299.tck.tests.implementation.simple.lifecycle.Cod" />
+        	<param name="StringToMatch" value="Error destroying org.jboss.weld.bean-test-ManagedBean-class org.jboss.jsr299.tck.tests.implementation.simple.lifecycle.Cod" />
         </filter>
     </appender>
 
