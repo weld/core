@@ -76,7 +76,7 @@
       <javassist.version>3.11.0.GA</javassist.version>
       <cdi.tck.version>1.0.0-SNAPSHOT</cdi.tck.version>
       <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
-      <jboss.interceptor.version>1.0.0-CR1</jboss.interceptor.version>
+      <jboss.interceptor.version>1.0.0-SNAPSHOT</jboss.interceptor.version>
    </properties>
 
    <dependencyManagement>
