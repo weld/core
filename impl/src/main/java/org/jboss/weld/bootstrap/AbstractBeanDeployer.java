@@ -23,7 +23,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.interceptor.Interceptor;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.AbstractClassBean;
@@ -155,7 +154,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
     *           The class bean
     * 
     */
-   protected <T> void createSubBeans(AbstractClassBean<T> bean)
+   protected <T> void createObserversProducersDisposers(AbstractClassBean<T> bean)
    {
       createProducerMethods(bean, bean.getAnnotatedItem());
       createProducerFields(bean, bean.getAnnotatedItem());
@@ -181,14 +180,14 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       {
          DisposalMethod<X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean);
          disposalBean.initialize(getEnvironment());
-         getEnvironment().addBean(disposalBean);
+         getEnvironment().addDisposesMethod(disposalBean);
       }
    }
    
    protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, WeldMethod<T, X> annotatedMethod)
    {
       ProducerMethod<X, T> bean = ProducerMethod.of(annotatedMethod, declaringBean, manager);
-      getEnvironment().addBean(bean);
+      getEnvironment().addProducerMethod(bean);
    }
    
    protected <X, T> void createProducerField(AbstractClassBean<X> declaringBean, WeldField<T, X> field)
@@ -206,7 +205,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       {
          bean = ProducerField.of(field, declaringBean, manager);
       }
-      getEnvironment().addBean(bean);
+      getEnvironment().addProducerField(bean);
    }
    
    protected <X> void createProducerFields(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass)
@@ -228,36 +227,46 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    protected <X, T> void createObserverMethod(RIBean<X> declaringBean, WeldMethod<T, X> method)
    {
       ObserverMethodImpl<X, T> observer = ObserverFactory.create(method, declaringBean, manager);
-      getEnvironment().addObserver(observer);
+      getEnvironment().addObserverMethod(observer);
    }
 
-   protected <T> void createSimpleBean(WeldClass<T> annotatedClass)
+   protected <T> ManagedBean<T> createManagedBean(WeldClass<T> annotatedClass)
    {
       ManagedBean<T> bean = ManagedBean.of(annotatedClass, manager);
-      getEnvironment().addBean(bean);
-      createSubBeans(bean);
-      getEnvironment().addBean(NewManagedBean.of(annotatedClass, manager));
+      getEnvironment().addManagedBean(bean);
+      createObserversProducersDisposers(bean);
+      return bean;
+   }
+   
+   protected <T> void createNewManagedBean(WeldClass<T> annotatedClass)
+   {
+      getEnvironment().addManagedBean(NewManagedBean.of(annotatedClass, manager));
    }
    
    protected <T> void createDecorator(WeldClass<T> annotatedClass)
    {
       DecoratorImpl<T> bean = DecoratorImpl.of(annotatedClass, manager);
-      getEnvironment().addBean(bean);
+      getEnvironment().addDecorator(bean);
    }
 
    protected <T> void createInterceptor(WeldClass<T> annotatedClass)
    {
       InterceptorImpl<T> bean = InterceptorImpl.of(annotatedClass, manager);
-      getEnvironment().addBean(bean);
+      getEnvironment().addInterceptor(bean);
    }
    
-   protected <T> void createEnterpriseBean(InternalEjbDescriptor<T> ejbDescriptor)
+   protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> ejbDescriptor)
    {
       // TODO Don't create enterprise bean if it has no local interfaces!
       SessionBean<T> bean = SessionBean.of(ejbDescriptor, manager);
-      getEnvironment().addBean(bean);
-      createSubBeans(bean);
-      getEnvironment().addBean(NewSessionBean.of(ejbDescriptor, manager));
+      getEnvironment().addSessionBean(bean);
+      createObserversProducersDisposers(bean);
+      return bean;
+   }
+   
+   protected <T> void createNewSessionBean(InternalEjbDescriptor<T> ejbDescriptor)
+   {
+      getEnvironment().addSessionBean(NewSessionBean.of(ejbDescriptor, manager));
    }
    
    /**
@@ -267,7 +276,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
     *           The type to inspect
     * @return True if simple Web Bean, false otherwise
     */
-   protected boolean isTypeManagedBeanOrDecorator(WeldClass<?> clazz)
+   protected boolean isTypeManagedBeanOrDecoratorOrInterceptor(WeldClass<?> clazz)
    {
       Class<?> javaClass = clazz.getJavaClass();
       EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);

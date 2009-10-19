@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.mock;
 
+import javax.validation.ConstraintValidatorFactory;
+import javax.validation.MessageInterpolator;
+import javax.validation.TraversableResolver;
+import javax.validation.Validator;
+import javax.validation.ValidatorContext;
 import javax.validation.ValidatorFactory;
 
 import org.jboss.weld.validation.spi.ValidationServices;
@@ -29,7 +34,45 @@ public class MockValidationServices implements ValidationServices
 
    public ValidatorFactory getDefaultValidatorFactory()
    {
-      return null;
+      return new ValidatorFactory()
+      {
+         
+         public ValidatorContext usingContext()
+         {
+            // TODO Auto-generated method stub
+            return null;
+         }
+         
+         public <T> T unwrap(Class<T> type)
+         {
+            // TODO Auto-generated method stub
+            return null;
+         }
+         
+         public Validator getValidator()
+         {
+            // TODO Auto-generated method stub
+            return null;
+         }
+         
+         public TraversableResolver getTraversableResolver()
+         {
+            // TODO Auto-generated method stub
+            return null;
+         }
+         
+         public MessageInterpolator getMessageInterpolator()
+         {
+            // TODO Auto-generated method stub
+            return null;
+         }
+         
+         public ConstraintValidatorFactory getConstraintValidatorFactory()
+         {
+            // TODO Auto-generated method stub
+            return null;
+         }
+      };
    }
    
    public void cleanup() {}

@@ -79,6 +79,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
       this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(getClass().getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(getAnnotatedItem().getSignature().toString()).toString();
       initStereotypes();
       initPolicy();
+      initProducerMethodInjectableParameters();
    }
 
    /**
@@ -89,7 +90,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    {
       if (!isInitialized())
       {
-         initProducerMethodInjectableParameters();
          super.initialize(environment);
          checkProducerMethod();
          initDisposalMethod(environment);

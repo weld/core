@@ -89,7 +89,12 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     */
    public static <T> ManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl manager)
    {
-      return new ManagedBean<T>(clazz, new StringBuilder().append(ManagedBean.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
+      return new ManagedBean<T>(clazz, createId(ManagedBean.class.getSimpleName(), clazz), manager);
+   }
+   
+   protected static String createId(String beanType, WeldClass<?> clazz)
+   {
+      return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(clazz.getBaseType()).toString();
    }
 
    /**
@@ -104,6 +109,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       initType();
       initTypes();
       initBindings();
+      initConstructor();
    }
 
    /**
@@ -173,7 +179,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    {
       if (!isInitialized())
       {
-         initConstructor();
          checkConstructor();
          super.initialize(environment);
          initPostConstruct();

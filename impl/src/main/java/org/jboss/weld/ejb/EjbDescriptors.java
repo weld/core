@@ -21,9 +21,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
+
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 
 /**
  * EJB descriptors by EJB implementation class or name
@@ -34,9 +39,9 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?>>
 {
    // EJB name -> EJB descriptors map
-   private final Map<String, InternalEjbDescriptor<?>> ejbs;
+   private final Map<String, InternalEjbDescriptor<?>> ejbByName;
    
-   private final Collection<Class<?>> ejbClasses;
+   private final SetMultimap<Class<?>, String> ejbByClass;
    
    public static final EjbDescriptors EMPTY = new EjbDescriptors()
    {
@@ -72,8 +77,16 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
     */
    public EjbDescriptors()
    {
-      this.ejbs = new HashMap<String, InternalEjbDescriptor<?>>();
-      this.ejbClasses = new HashSet<Class<?>>();
+      this.ejbByName = new HashMap<String, InternalEjbDescriptor<?>>();
+      this.ejbByClass = Multimaps.newSetMultimap(new HashMap<Class<?>, Collection<String>>(), new Supplier<Set<String>>()
+      {
+         
+         public Set<String> get()
+         {
+            return new HashSet<String>();
+         }
+         
+      });
    }
 
    /**
@@ -85,7 +98,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
    @SuppressWarnings("unchecked")
    public <T> InternalEjbDescriptor<T> get(String beanName)
    {
-      return (InternalEjbDescriptor<T>) ejbs.get(beanName);
+      return (InternalEjbDescriptor<T>) ejbByName.get(beanName);
    }
 
    /**
@@ -96,8 +109,8 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
    public <T> void add(EjbDescriptor<T> ejbDescriptor)
    {
       InternalEjbDescriptor<T> internalEjbDescriptor = new InternalEjbDescriptor<T>(ejbDescriptor);
-      ejbs.put(ejbDescriptor.getEjbName(), internalEjbDescriptor);
-      ejbClasses.add(ejbDescriptor.getBeanClass());
+      ejbByName.put(ejbDescriptor.getEjbName(), internalEjbDescriptor);
+      ejbByClass.put(ejbDescriptor.getBeanClass(), internalEjbDescriptor.getEjbName());
    }
 
    /**
@@ -109,7 +122,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
     */
    public boolean contains(String beanName)
    {
-      return ejbs.containsKey(beanName);
+      return ejbByName.containsKey(beanName);
    }
    
    /**
@@ -121,9 +134,26 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
     */
    public boolean contains(Class<?> beanClass)
    {
-      return ejbClasses.contains(beanClass);
+      return ejbByClass.containsKey(beanClass);
    }
-
+   
+   public InternalEjbDescriptor<?> getUnique(Class<?> beanClass)
+   {
+      Set<String> ejbs = ejbByClass.get(beanClass);
+      if (ejbs.size() > 0)
+      {
+         throw new IllegalStateException("Unable to determine EJB for " + beanClass + ", multiple EJBs with that class " + ejbs);
+      }
+      else if (ejbs.size() == 0)
+      {
+         return null;
+      }
+      else
+      {
+         return get(ejbs.iterator().next());
+      }
+   }
+   
    /**
     * Adds all EJB descriptors to the maps
     * 
@@ -142,18 +172,18 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
     */
    public void clear()
    {
-      ejbs.clear();
+      ejbByName.clear();
    }
 
    public Iterator<InternalEjbDescriptor<?>> iterator()
    {
-      return ejbs.values().iterator();
+      return ejbByName.values().iterator();
    }
    
    public void cleanup() 
    {
-      this.ejbClasses.clear();
-      this.ejbs.clear();
+      this.ejbByClass.clear();
+      this.ejbByName.clear();
    }
 
 }

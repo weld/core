@@ -10,10 +10,9 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.Typed;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
 
@@ -22,7 +21,6 @@ import org.atinject.tck.auto.DriversSeat;
 import org.atinject.tck.auto.Seat;
 import org.atinject.tck.auto.Tire;
 import org.atinject.tck.auto.accessories.SpareTire;
-import org.jboss.weld.atinject.tck.util.NonContextual;
 
 /**
  * Producer methods for the @Inject TCK beans we need greater control over
@@ -32,16 +30,6 @@ import org.jboss.weld.atinject.tck.util.NonContextual;
  */
 public class Producers
 {
-   
-   private final NonContextual<SpareTire> spareTire;
-   private final NonContextual<DriversSeat> driversSeat;
-   
-   @Inject
-   public Producers(BeanManager beanManager)
-   {
-      this.spareTire = new NonContextual<SpareTire>(beanManager, SpareTire.class);
-      this.driversSeat = new NonContextual<DriversSeat>(beanManager, DriversSeat.class);
-   }
 
    /**
     * Producer method for a bean with qualifier @Drivers and types Seat, Object
@@ -49,9 +37,9 @@ public class Producers
     * @return
     */
    @Produces @Drivers
-   public Seat produceAtDriversSeat()
+   public Seat produceAtDriversSeat(@New DriversSeat driversSeat)
    {
-      return driversSeat.newInstance().produce().inject().get();
+      return driversSeat;
    }
    
    /**
@@ -60,9 +48,9 @@ public class Producers
     * @return
     */
    @Produces @Typed(DriversSeat.class)
-   public DriversSeat produceDriversSeat()
+   public DriversSeat produceDriversSeat(@New DriversSeat driversSeat)
    {
-      return driversSeat.newInstance().produce().inject().get();
+      return driversSeat;
    }
    
    @Qualifier
@@ -81,18 +69,18 @@ public class Producers
     * 
     */
    @Produces @Named("spare") @Spare
-   public Tire produceAtNamedSpareTire()
+   public Tire produceAtNamedSpareTire(@New SpareTire spareTire)
    {
-      return spareTire.newInstance().produce().inject().get();
+      return spareTire;
    }
    
    /**
     * Producer method for bean with default qualifiers and type SpareTire only
     */
    @Produces @Typed(SpareTire.class)
-   public SpareTire produceSpareTire()
+   public SpareTire produceSpareTire(@New SpareTire spareTire)
    {
-      return spareTire.newInstance().produce().inject().get();
+      return spareTire;
    }
    
 }

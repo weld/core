@@ -19,6 +19,7 @@ package org.jboss.weld.introspector.jlr;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -166,10 +167,10 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
    @Override
    public boolean equals(Object other)
    {
-      if (other instanceof WeldAnnotated)
+      if (other instanceof WeldAnnotated<?, ?>)
       {
          WeldAnnotated<?, ?> that = (WeldAnnotated<?, ?>) other;
-         return this.getAnnotations().equals(that.getAnnotations()) && this.getJavaClass().equals(that.getJavaClass());
+         return this.getAnnotations().equals(that.getAnnotations()) && this.getJavaClass().equals(that.getJavaClass()) && this.getActualTypeArguments().length == that.getActualTypeArguments().length && Arrays.equals(this.getActualTypeArguments(), that.getActualTypeArguments());
       }
       return false;
    }

@@ -152,10 +152,10 @@ public class BeanDeployment
          }
       }
       beanDeployer.addClasses(beanDeploymentArchive.getBeanClasses());
-      beanDeployer.getEnvironment().addBean(new ManagerBean(beanManager));
-      beanDeployer.getEnvironment().addBean(new InjectionPointBean(beanManager));
-      beanDeployer.getEnvironment().addBean(new EventBean(beanManager));
-      beanDeployer.getEnvironment().addBean(new InstanceBean(beanManager));
+      beanDeployer.getEnvironment().addBuiltInBean(new ManagerBean(beanManager));
+      beanDeployer.getEnvironment().addBuiltInBean(new InjectionPointBean(beanManager));
+      beanDeployer.getEnvironment().addBuiltInBean(new EventBean(beanManager));
+      beanDeployer.getEnvironment().addBuiltInBean(new InstanceBean(beanManager));
       if (!environment.equals(Environments.SE))
       {
          beanDeployer.addClass(ConversationImpl.class);
@@ -166,16 +166,16 @@ public class BeanDeployment
       }
       if (beanManager.getServices().contains(TransactionServices.class))
       {
-         beanDeployer.getEnvironment().addBean(new UserTransactionBean(beanManager));
+         beanDeployer.getEnvironment().addBuiltInBean(new UserTransactionBean(beanManager));
       }
       if (beanManager.getServices().contains(SecurityServices.class))
       {
-         beanDeployer.getEnvironment().addBean(new PrincipalBean(beanManager));
+         beanDeployer.getEnvironment().addBuiltInBean(new PrincipalBean(beanManager));
       }
       if (beanManager.getServices().contains(ValidationServices.class))
       {
-         beanDeployer.getEnvironment().addBean(new DefaultValidatorBean(beanManager));
-         beanDeployer.getEnvironment().addBean(new DefaultValidatorFactoryBean(beanManager));
+         beanDeployer.getEnvironment().addBuiltInBean(new DefaultValidatorBean(beanManager));
+         beanDeployer.getEnvironment().addBuiltInBean(new DefaultValidatorFactoryBean(beanManager));
       }
       beanDeployer.createBeans().deploy();
    }

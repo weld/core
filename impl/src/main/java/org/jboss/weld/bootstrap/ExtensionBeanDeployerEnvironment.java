@@ -26,7 +26,7 @@ public class ExtensionBeanDeployerEnvironment extends BeanDeployerEnvironment
    }
    
    @Override
-   public void addBean(ExtensionBean bean)
+   public void addExtension(ExtensionBean bean)
    {
       extensionBeans.add(bean);
    }

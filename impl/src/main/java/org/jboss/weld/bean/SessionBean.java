@@ -92,9 +92,14 @@ public class SessionBean<T> extends AbstractClassBean<T>
    public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
       WeldClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-      return new SessionBean<T>(type, ejbDescriptor, new StringBuilder().append(SessionBean.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).toString(), manager);
+      return new SessionBean<T>(type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor) , manager);
    }
 
+   protected static String createId(String beanType, InternalEjbDescriptor<?> ejbDescriptor)
+   {
+      return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).toString();
+   }
+   
    /**
     * Constructor
     * 

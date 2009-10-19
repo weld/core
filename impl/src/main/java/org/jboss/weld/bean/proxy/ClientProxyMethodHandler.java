@@ -102,6 +102,11 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
          // getting lazy created
          return null;
       }
+      if (proxiedInstance == null)
+      {
+         // TODO not sure if this right PLM
+         return null;
+      }
       if (proxiedMethod.getName().equals("equals")  && proxiedMethod.getParameterTypes().length == 1 && proxiedMethod.getParameterTypes()[0] == Object.class && args[0] == self)
       {
          return true;
@@ -109,7 +114,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       try
       {
          Object returnValue = Reflections.lookupMethod(proxiedMethod, proxiedInstance).invoke(proxiedInstance, args);
-         log.trace("Executed method " + proxiedMethod + " on " + proxiedInstance + " with parameters " + Arrays.toString(args) + " and got return value " + returnValue);
+         log.trace("Executed method " + proxiedMethod + " on " + proxiedInstance + " with parameters " + Arrays.toString(args) + " and got return value " + returnValue == null ? null : returnValue);
          return returnValue;
       }
       catch (InvocationTargetException e)

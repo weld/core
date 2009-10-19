@@ -40,7 +40,6 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
 {
    
    private final BeanManagerImpl deploymentManager;
-
    private final Set<WeldClass<?>> classes;
 
    /**
@@ -97,7 +96,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    {
       for (WeldClass<?> clazz : classes)
       {
-         boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(clazz.getJavaClass()) && isTypeManagedBeanOrDecorator(clazz);
+         boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(clazz.getJavaClass()) && isTypeManagedBeanOrDecoratorOrInterceptor(clazz);
          if (managedBeanOrDecorator && clazz.isAnnotationPresent(Decorator.class))
          {
             validateDecorator(clazz);
@@ -110,14 +109,24 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
          }
          else if (managedBeanOrDecorator && !clazz.isAbstract())
          {
-            createSimpleBean(clazz);
+            createManagedBean(clazz);
          }
       }
-      // TODO Iterate over newClasses and add a new bean for each
       for (InternalEjbDescriptor<?> ejbDescriptor : getEnvironment().getEjbDescriptors())
       {
-         createEnterpriseBean(ejbDescriptor);
+         createSessionBean(ejbDescriptor);
       }
+      
+      // Now create the new beans
+      for (WeldClass<?> clazz : getEnvironment().getNewManagedBeanClasses())
+      {
+         createNewManagedBean(clazz);
+      }
+      for (InternalEjbDescriptor<?> descriptor : getEnvironment().getNewSessionBeanDescriptors())
+      {
+         createNewSessionBean(descriptor);
+      }
+      
       return this;
    }
 

@@ -31,6 +31,7 @@ import javax.enterprise.event.ObserverException;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -41,16 +42,19 @@ import org.jboss.weld.Container;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.api.ExecutorServices;
+import org.jboss.weld.util.Beans;
 
 /**
  * <p>
- * Reference implementation for the ObserverMethod interface, which represents an
- * observer method. Each observer method has an event type which is the class of
- * the event object being observed, and event binding types that are annotations
- * applied to the event parameter to narrow the event notifications delivered.
+ * Reference implementation for the ObserverMethod interface, which represents
+ * an observer method. Each observer method has an event type which is the class
+ * of the event object being observed, and event binding types that are
+ * annotations applied to the event parameter to narrow the event notifications
+ * delivered.
  * </p>
  * 
  * @author David Allen
@@ -66,6 +70,8 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    protected final RIBean<X> declaringBean;
    protected final MethodInjectionPoint<T, X> observerMethod;
    protected TransactionPhase transactionPhase;
+
+   private final Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
 
    /**
     * Creates an Observer which describes and encapsulates an observer method
@@ -86,6 +92,19 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
       Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
       this.notifyType = observesAnnotation.notifyObserver();
       transactionPhase = TransactionPhase.IN_PROGRESS;
+      this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+      for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod))
+      {
+         if (injectionPoint.isAnnotationPresent(New.class))
+         {
+            this.newInjectionPoints.add(injectionPoint);
+         }
+      }
+   }
+
+   public Set<WeldInjectionPoint<?, ?>> getNewInjectionPoints()
+   {
+      return newInjectionPoints;
    }
 
    /**
@@ -117,10 +136,12 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
                {
                   throw new DefinitionException("Cannot use a type variable " + type + " in an parameterized type " + toString());
                }
-//               else if (type instanceof WildcardType)
-//               {
-//                  throw new DefinitionException("Cannot use a wildcard variable " + type + " in an parameterized type " + toString());
-//               }
+               // else if (type instanceof WildcardType)
+               // {
+               // throw new
+               // DefinitionException("Cannot use a wildcard variable " + type +
+               // " in an parameterized type " + toString());
+               // }
             }
          }
       }
@@ -173,7 +194,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    {
       return transactionPhase;
    }
-   
+
    /**
     * @return the observerMethod
     */
@@ -217,7 +238,8 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
          {
             return;
          }
-         // As we are working with the contextual instance, we may not have the actual object, but a container proxy (e.g. EJB)
+         // As we are working with the contextual instance, we may not have the
+         // actual object, but a container proxy (e.g. EJB)
          observerMethod.invokeOnInstanceWithSpecialValue(instance, Observes.class, event, manager, creationalContext, ObserverException.class);
       }
       finally
@@ -231,6 +253,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
 
    /**
     * Queues the event for later execution
+    * 
     * @param event
     */
    protected void sendEventAsynchronously(final T event)

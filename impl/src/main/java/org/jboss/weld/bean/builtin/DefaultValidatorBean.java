@@ -23,6 +23,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.validation.Validator;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.Container;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.validation.spi.ValidationServices;
 
@@ -55,7 +56,7 @@ public class DefaultValidatorBean extends AbstractBuiltInBean<Validator>
    {
       if (getManager().getServices().contains(ValidationServices.class))
       {
-         return getManager().getServices().get(ValidationServices.class).getDefaultValidatorFactory().getValidator();
+         return Container.instance().deploymentServices().get(ValidationServices.class).getDefaultValidatorFactory().getValidator();
       }
       else
       {

@@ -17,6 +17,7 @@
 package org.jboss.weld.resources;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -32,7 +33,7 @@ import org.jboss.weld.util.collections.ConcurrentCache;
 public class ClassTransformer implements Service
 {
 
-   private final ConcurrentCache<Class<?>, WeldClass<?>> classes;
+   private final ConcurrentCache<Type, WeldClass<?>> classes;
    private final ConcurrentCache<AnnotatedType<?>, WeldClass<?>> annotatedTypes;
    private final ConcurrentCache<Class<?>, WeldAnnotation<?>> annotations;
    private final TypeStore typeStore;
@@ -42,21 +43,33 @@ public class ClassTransformer implements Service
     */
    public ClassTransformer(TypeStore typeStore)
    {
-      classes = new ConcurrentCache<Class<?>, WeldClass<?>>();
+      classes = new ConcurrentCache<Type, WeldClass<?>>();
       this.annotatedTypes = new ConcurrentCache<AnnotatedType<?>, WeldClass<?>>();
       annotations = new ConcurrentCache<Class<?>, WeldAnnotation<?>>();
       this.typeStore = typeStore;
    }
 
+   public <T> WeldClass<T> loadClass(final Class<T> rawType, final Type baseType)
+   {
+      return classes.putIfAbsent(baseType, new Callable<WeldClass<T>>()
+      {
+
+         public WeldClass<T> call() throws Exception
+         {
+            return WeldClassImpl.of(rawType, baseType, ClassTransformer.this);
+         }
+
+      });
+   }
+   
    public <T> WeldClass<T> loadClass(final Class<T> clazz)
    {
-      final ClassTransformer transformer = this;
       return classes.putIfAbsent(clazz, new Callable<WeldClass<T>>()
       {
 
          public WeldClass<T> call() throws Exception
          {
-            return WeldClassImpl.of(clazz, transformer);
+            return WeldClassImpl.of(clazz, ClassTransformer.this);
          }
 
       });
@@ -64,13 +77,12 @@ public class ClassTransformer implements Service
    
    public <T> WeldClass<T> loadClass(final AnnotatedType<T> clazz)
    {
-      final ClassTransformer transformer = this;
       return annotatedTypes.putIfAbsent(clazz, new Callable<WeldClass<T>>()
       {
 
          public WeldClass<T> call() throws Exception
          {
-            return WeldClassImpl.of(clazz, transformer);
+            return WeldClassImpl.of(clazz, ClassTransformer.this);
          }
 
       });
@@ -78,13 +90,12 @@ public class ClassTransformer implements Service
 
    public <T extends Annotation> WeldAnnotation<T> loadAnnotation(final Class<T> clazz)
    {
-      final ClassTransformer transformer = this;
       return annotations.putIfAbsent(clazz, new Callable<WeldAnnotation<T>>()
       {
          
          public WeldAnnotation<T> call() throws Exception
          {
-            return WeldAnnotationImpl.of(clazz, transformer);
+            return WeldAnnotationImpl.of(clazz, ClassTransformer.this);
          }
 
       });

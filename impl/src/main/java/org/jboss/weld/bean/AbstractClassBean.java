@@ -45,8 +45,8 @@ import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
 import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.context.SerializableContextualInstance;
 import org.jboss.weld.context.SerializableContextual;
+import org.jboss.weld.context.SerializableContextualInstance;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
@@ -76,7 +76,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    private List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
    // The initializer methods of each type in the type hierarchy, with the actual type at the bottom
    private List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
-   private Set<String> dependencies;
    
    private List<Decorator<?>> decorators;
    
@@ -110,6 +109,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       };
       initStereotypes();
       initPolicy();
+      initInitializerMethods();
+      initInjectableFields();
    }
 
    /**
@@ -118,8 +119,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
-      initInitializerMethods();
-      initInjectableFields();
       super.initialize(environment);
       checkBeanImplementation();
       initDecorators();
@@ -221,11 +220,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       log.trace("Bean type specified in Java");
       this.type = getAnnotatedItem().getJavaClass();
-      this.dependencies = new HashSet<String>();
-      for (Class<?> clazz = type.getSuperclass(); clazz != Object.class; clazz = clazz.getSuperclass())
-      {
-         dependencies.add(clazz.getName());
-      }
    }
 
    /**
@@ -338,12 +332,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       // TODO Make immutable
       return injectableFields;
-   }
-   
-   // TODO maybe a better way to expose this?
-   public Set<String> getSuperclasses()
-   {
-      return dependencies;
    }
 
 

@@ -35,6 +35,7 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.util.Beans;
 
 public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
 {
@@ -52,6 +53,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
       initTypes();
       initStereotypes();
       initPolicy();
+      addInjectionPoints(Beans.getParameterInjectionPoints(this, disposalMethodInjectionPoint));
    }
    
    private void initDisposesParameter()
@@ -67,7 +69,6 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
-      addInjectionPoint(disposalMethodInjectionPoint);
       super.initialize(environment);
       checkDisposalMethod();
       initDisposesParameter();

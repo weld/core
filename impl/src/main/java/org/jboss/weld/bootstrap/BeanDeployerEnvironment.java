@@ -27,22 +27,30 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.InterceptorImpl;
+import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.NewBean;
+import org.jboss.weld.bean.NewManagedBean;
+import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.ejb.EjbDescriptors;
+import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resolution.ResolvableFactory;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
+import org.jboss.weld.resources.ClassTransformer;
 
 public class BeanDeployerEnvironment
 {
@@ -57,6 +65,9 @@ public class BeanDeployerEnvironment
    private final Set<InterceptorImpl<?>> interceptors;
    private final EjbDescriptors ejbDescriptors;
    private final TypeSafeDisposerResolver disposalMethodResolver;
+   private final ClassTransformer classTransformer;
+   private final Set<WeldClass<?>> newManagedBeanClasses;
+   private final Set<InternalEjbDescriptor<?>> newSessionBeanDescriptors;
 
    public BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager)
    {
@@ -70,6 +81,19 @@ public class BeanDeployerEnvironment
       this.observers = new HashSet<ObserverMethodImpl<?, ?>>();
       this.ejbDescriptors = ejbDescriptors;
       this.disposalMethodResolver = new TypeSafeDisposerResolver(manager, allDisposalBeans);
+      this.classTransformer = manager.getServices().get(ClassTransformer.class);
+      this.newManagedBeanClasses = new HashSet<WeldClass<?>>();
+      this.newSessionBeanDescriptors = new HashSet<InternalEjbDescriptor<?>>();
+   }
+   
+   public Set<WeldClass<?>> getNewManagedBeanClasses()
+   {
+      return newManagedBeanClasses;
+   }
+   
+   public Set<InternalEjbDescriptor<?>> getNewSessionBeanDescriptors()
+   {
+      return newSessionBeanDescriptors;
    }
 
    public <X, T> ProducerMethod<X, T> getProducerMethod(WeldMethod<X, T> method)
@@ -100,54 +124,105 @@ public class BeanDeployerEnvironment
       }
    }
 
-   public void addBean(ProducerMethod<?, ?> bean)
+   public void addProducerMethod(ProducerMethod<?, ?> bean)
    {
       producerMethodBeanMap.put(bean.getAnnotatedItem(), bean);
-      beans.add(bean);
+      addAbstractBean(bean);
    }
    
-   public void addBean(ProducerField<?, ?> bean)
+   public void addProducerField(ProducerField<?, ?> bean)
+   {
+      addAbstractBean(bean);
+   }
+   
+   public void addExtension(ExtensionBean bean)
    {
       beans.add(bean);
    }
    
-   public void addBean(ExtensionBean bean)
+   public void addBuiltInBean(AbstractBuiltInBean<?> bean)
    {
       beans.add(bean);
    }
    
-   public void addBean(AbstractBuiltInBean<?> bean)
-   {
-      beans.add(bean);
-   }
-   
-   public void addBean(AbstractClassBean<?> bean)
+   protected void addAbstractClassBean(AbstractClassBean<?> bean)
    {
       if (!(bean instanceof NewBean))
       {
          classBeanMap.put(bean.getAnnotatedItem(), bean);
       }
+      addAbstractBean(bean);
+   }
+   
+   public void addManagedBean(ManagedBean<?> bean)
+   {
+      newManagedBeanClasses.add(bean.getAnnotatedItem());
+      addAbstractClassBean(bean);
+   }
+   
+   public void addSessionBean(SessionBean<?> bean)
+   {
+      newSessionBeanDescriptors.add(bean.getEjbDescriptor());
+      addAbstractClassBean(bean);
+   }
+   
+   public void addNewManagedBean(NewManagedBean<?> bean)
+   {
+      beans.add(bean);
+   }
+   
+   public void addNewSessionBean(NewSessionBean<?> bean)
+   {
+      beans.add(bean);
+   }
+   
+   protected void addAbstractBean(AbstractBean<?, ?> bean)
+   {
+      addNewBeansFromInjectionPoints(bean);
       beans.add(bean);
    }
 
-   public void addBean(DecoratorImpl<?> bean)
+   public void addDecorator(DecoratorImpl<?> bean)
    {
       decorators.add(bean);
    }
 
-   public void addBean(InterceptorImpl<?> bean)
+   public void addInterceptor(InterceptorImpl<?> bean)
    {
       interceptors.add(bean);
    }
    
-   public void addBean(DisposalMethod<?, ?> bean)
+   public void addDisposesMethod(DisposalMethod<?, ?> bean)
    {
       allDisposalBeans.add(bean);
+      addNewBeansFromInjectionPoints(bean);
    }
    
-   public void addObserver(ObserverMethodImpl<?, ?> observer)
+   public void addObserverMethod(ObserverMethodImpl<?, ?> observer)
    {
       this.observers.add(observer);
+      addNewBeansFromInjectionPoints(observer.getNewInjectionPoints());
+   }
+   
+   
+   private void addNewBeansFromInjectionPoints(AbstractBean<?, ?> bean)
+   {
+      addNewBeansFromInjectionPoints(bean.getNewInjectionPoints());
+   }
+   
+   private void addNewBeansFromInjectionPoints(Set<WeldInjectionPoint<?, ?>> newInjectionPoints)
+   {
+      for (WeldInjectionPoint<?, ?> injectionPoint : newInjectionPoints)
+      {
+         if (getEjbDescriptors().contains(injectionPoint.getJavaClass()))
+         {
+            newSessionBeanDescriptors.add(getEjbDescriptors().getUnique(injectionPoint.getJavaClass()));
+         }
+         else
+         {
+            newManagedBeanClasses.add(classTransformer.loadClass(injectionPoint.getJavaClass(), injectionPoint.getBaseType()));
+         }
+      }
    }
 
    public Set<? extends RIBean<?>> getBeans()

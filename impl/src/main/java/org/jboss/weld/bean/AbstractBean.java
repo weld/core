@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.decorator.Decorates;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.New;
 import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.Bean;
@@ -83,6 +84,10 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    // The injection points
    private Set<WeldInjectionPoint<?, ?>> injectionPoints;
    private Set<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
+   
+   // The @New injection points
+   private Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
+   
    // If the type a primitive?
    private boolean primitive;
    // The Bean manager
@@ -110,6 +115,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       this.manager = manager;
       this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
       this.delegateInjectionPoints = new HashSet<WeldInjectionPoint<?,?>>();
+      this.newInjectionPoints = new HashSet<WeldInjectionPoint<?,?>>();
    }
 
    /**
@@ -152,6 +158,10 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       if (injectionPoint.isAnnotationPresent(Decorates.class))
       {
          this.delegateInjectionPoints.add(injectionPoint);
+      }
+      if (injectionPoint.isAnnotationPresent(New.class))
+      {
+         this.newInjectionPoints.add(injectionPoint);
       }
       injectionPoints.add(injectionPoint);
    }
@@ -389,6 +399,11 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    public Set<WeldInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
    {
       return injectionPoints;
+   }
+   
+   public Set<WeldInjectionPoint<?, ?>> getNewInjectionPoints()
+   {
+      return newInjectionPoints;
    }
 
    /**

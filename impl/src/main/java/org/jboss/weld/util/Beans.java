@@ -17,7 +17,6 @@
 package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -392,6 +391,16 @@ public class Beans
    {
       Set<ParameterInjectionPoint<?,?>> injectionPoints = new HashSet<ParameterInjectionPoint<?,?>>();
       for (WeldParameter<?, ?> parameter : constructor.getWBParameters())
+      {
+         injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
+      }
+      return injectionPoints;
+   }
+   
+   public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, MethodInjectionPoint<?, ?> method)
+   {
+      Set<ParameterInjectionPoint<?,?>> injectionPoints = new HashSet<ParameterInjectionPoint<?,?>>();
+      for (WeldParameter<?, ?> parameter : method.getWBParameters())
       {
          injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
       }

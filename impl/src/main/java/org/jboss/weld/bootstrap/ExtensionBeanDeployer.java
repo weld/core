@@ -53,7 +53,7 @@ public class ExtensionBeanDeployer extends AbstractBeanDeployer<ExtensionBeanDep
          
          ExtensionBean bean = new ExtensionBean(getManager(), clazz, extension);
          this.
-         getEnvironment().addBean(bean);
+         getEnvironment().addExtension(bean);
          createObserverMethods(bean, clazz);
       }
       return this;

@@ -46,7 +46,7 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
    public static <T> NewSessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
    {
       WeldClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-      return new NewSessionBean<T>(type, ejbDescriptor, new StringBuilder().append(NewSessionBean.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).toString(), manager);
+      return new NewSessionBean<T>(type, ejbDescriptor, createId(NewSessionBean.class.getSimpleName(), ejbDescriptor), manager);
    }
    
    private Set<Annotation> bindings;

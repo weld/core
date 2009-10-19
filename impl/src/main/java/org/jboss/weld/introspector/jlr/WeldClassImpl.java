@@ -136,6 +136,12 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       AnnotationStore annotationStore = AnnotationStore.of(annotatedType.getAnnotations(), annotatedType.getAnnotations(), classTransformer.getTypeStore());
       return new WeldClassImpl<T>(annotatedType.getJavaClass(), annotatedType.getBaseType(), annotatedType, annotationStore, classTransformer);
    }
+   
+   public static <T> WeldClass<T> of(Class<T> rawType, Type type, ClassTransformer classTransformer)
+   {
+      AnnotationStore annotationStore = AnnotationStore.of(rawType.getAnnotations(), rawType.getDeclaredAnnotations(), classTransformer.getTypeStore());
+      return new WeldClassImpl<T>(rawType, type, null, annotationStore, classTransformer);
+   }
 
    protected WeldClassImpl(Class<T> rawType, Type type, AnnotatedType<T> annotatedType, AnnotationStore annotationStore, ClassTransformer classTransformer)
    {
