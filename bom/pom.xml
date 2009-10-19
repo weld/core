@@ -71,7 +71,7 @@
    </repositories>
 
    <properties>
-      <weld.api.version>1.0-CR1</weld.api.version>
+      <weld.api.version>1.0-SNAPSHOT</weld.api.version>
       <google.collections.version>1.0-rc2</google.collections.version>
       <javassist.version>3.11.0.GA</javassist.version>
       <cdi.tck.version>1.0.0-SNAPSHOT</cdi.tck.version>
