@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.stereotype.Stereotype;
 import javax.inject.Qualifier;
 
@@ -49,6 +50,13 @@ public class ClassAnnotatedItemTest extends AbstractWeldTest
       assert annotatedElement.getMetaAnnotations(Stereotype.class).size() == 0;
       WeldClass<Antelope> classWithNoAnnotations = WeldClassImpl.of(Antelope.class, transformer);
       assert classWithNoAnnotations.getAnnotations().size() == 0;
+   }
+   
+   @Test
+   public void testNonStaticInnerClassWithGenericTypes()
+   {
+      AnnotatedType at = WeldClassImpl.of(new Kangaroo().procreate().getClass(), transformer);
+      WeldClassImpl.of(at, transformer);
    }
    
 }
