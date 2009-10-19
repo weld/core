@@ -52,7 +52,7 @@ public class ClassAnnotatedItemTest extends AbstractWeldTest
       assert classWithNoAnnotations.getAnnotations().size() == 0;
    }
    
-   @Test
+   @Test(groups = "broken")
    public void testNonStaticInnerClassWithGenericTypes()
    {
       AnnotatedType at = WeldClassImpl.of(new Kangaroo().procreate().getClass(), transformer);
