@@ -186,7 +186,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          initEEInjectionPoints();
          if (isInterceptionCandidate())
          {
-            initClassInterceptors();
+            initDirectlyDefinedInterceptors();
          }
          setInjectionTarget(new InjectionTarget<T>()
          {
@@ -425,14 +425,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       return !Beans.isInterceptor(getAnnotatedItem()) && !Beans.isDecorator(getAnnotatedItem());
    }
 
-   public boolean hasDirectlyDefinedInterceptors()
-   {
-      if (manager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()) != null)
-         return manager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
-      else
-         return false;
-   }
-
    protected T applyInterceptors(T instance, final CreationalContext<T> creationalContext)
    {
       try
@@ -457,51 +449,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          throw new DeploymentException(e);
       }
       return instance;
-   }
-
-   protected void initClassInterceptors()
-   {
-      if (manager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()) == null && InterceptionUtils.supportsEjb3InterceptorDeclaration())
-      {
-         InterceptionModelBuilder<Class<?>, Class<?>> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Class.class);
-
-         Class<?>[] classDeclaredInterceptors = null;
-         if (getAnnotatedItem().isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
-         {
-            Annotation interceptorsAnnotation = getType().getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass());
-            classDeclaredInterceptors = Reflections.extractValues(interceptorsAnnotation);
-         }
-
-         if (classDeclaredInterceptors != null)
-         {
-            builder.interceptPostConstruct().with(classDeclaredInterceptors);
-            builder.interceptPreDestroy().with(classDeclaredInterceptors);
-            builder.interceptPrePassivate().with(classDeclaredInterceptors);
-            builder.interceptPostActivate().with(classDeclaredInterceptors);
-         }
-
-         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
-         for (WeldMethod<?, ?> method : businessMethods)
-         {
-            boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
-            Class<?>[] methodDeclaredInterceptors = null;
-            if (method.isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
-            {
-               methodDeclaredInterceptors = Reflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));
-            }
-            if (!excludeClassInterceptors && classDeclaredInterceptors != null)
-            {
-               builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(classDeclaredInterceptors);
-            }
-            if (methodDeclaredInterceptors != null)
-            {
-               builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
-            }
-         }
-         InterceptionModel<Class<?>, Class<?>> interceptionModel = builder.build();
-         if (interceptionModel.getAllInterceptors().size() > 0 || new InterceptorClassMetadataImpl(getType()).isInterceptor())
-            manager.getClassDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
-      }
    }
 
 }

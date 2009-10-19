@@ -22,10 +22,16 @@ import org.jboss.weld.log.Log;
 import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.Reflections;
+import org.jboss.weld.DefinitionException;
 
 import javax.interceptor.InterceptorBinding;
 import javax.enterprise.inject.Nonbinding;
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
@@ -43,9 +49,14 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
    public InterceptorBindingModel(Class<T> type, ClassTransformer transformer)
    {
       super(type, transformer);
-      initNonBindingTypes();
-      initInterceptionBindingTypes();
-      this.metaAnnotations = getAnnotatedAnnotation().getAnnotations();
+      if (isValid())
+      {
+         initNonBindingTypes();
+         initInterceptionBindingTypes();
+         checkArrayAndAnnotationValuedMembers();
+         checkMetaAnnotations();
+         this.metaAnnotations = getAnnotatedAnnotation().getAnnotations();
+      }
    }
 
    protected Set<Class<? extends Annotation>> getMetaAnnotationTypes()
@@ -66,6 +77,54 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
    protected void initInterceptionBindingTypes()
    {
       inheritedInterceptionBindingTypes = getAnnotatedAnnotation().getMetaAnnotations(InterceptorBinding.class);
+   }
+
+   @Override
+   protected void initValid()
+   {
+      super.initValid();
+      if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
+      {
+         this.valid = false;
+         log.debug("#0 is missing @Target", getAnnotatedAnnotation());
+      }
+      else
+      {
+         ElementType[] targetElementTypes = getAnnotatedAnnotation().getAnnotation(Target.class).value();
+         if (!Arrays2.unorderedEquals(targetElementTypes, ElementType.TYPE, ElementType.METHOD)
+               && !Arrays2.unorderedEquals(targetElementTypes, ElementType.TYPE))
+         {
+            this.valid = false;
+            log.debug("#0 is not declared @Target(TYPE, METHOD) or @Target(TYPE)");
+         }
+      }
+   }
+
+   private void checkMetaAnnotations()
+   {
+      if (Arrays2.containsAll(getAnnotatedAnnotation().getAnnotation(Target.class).value(), ElementType.METHOD))
+      {
+         for (Annotation inheritedBinding: getInheritedInterceptionBindingTypes())
+         {
+            if (!Arrays2.containsAll(inheritedBinding.annotationType().getAnnotation(Target.class).value(), ElementType.METHOD))
+            {
+               this.valid = false;
+               log.debug("#0 is declared @Target(TYPE, METHOD), but inherits #1, which is declared @Target(TYPE)", 
+                     getAnnotatedAnnotation(), inheritedBinding);
+            }
+         }
+      }
+   }
+
+   private void checkArrayAndAnnotationValuedMembers()
+   {
+      for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers())
+      {
+         if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingTypes.contains(annotatedMethod))
+         {
+            throw new DefinitionException("Member of array type or annotation type must be annotated @NonBinding " + annotatedMethod);
+         }
+      }
    }
 
    public Set<Annotation> getInheritedInterceptionBindingTypes()

@@ -40,6 +40,9 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Scope;
 
 import org.jboss.interceptor.model.InterceptionModelBuilder;
+import org.jboss.interceptor.model.InterceptionModel;
+import org.jboss.interceptor.model.InterceptorClassMetadataImpl;
+import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
@@ -57,6 +60,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Strings;
+import org.jboss.weld.util.Reflections;
 
 /**
  * An abstract bean representation common for class-based beans
@@ -125,7 +129,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       checkType();
       initProxyClassForDecoratedBean();
       if (isInterceptionCandidate())
-            initInterceptors();
+      {
+            initCdiBoundInterceptors();
+            initDirectlyDefinedInterceptors();
+      }
    }
    
    protected void checkType()
@@ -394,9 +401,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       return foundInterceptionBindingTypes;
    }
 
-
-
-   protected void initInterceptors()
+   protected void initCdiBoundInterceptors()
    {
       if (manager.getCdiInterceptorsRegistry().getInterceptionModel(getType()) == null)
       {
@@ -440,7 +445,12 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
                builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
             }
          }
-         manager.getCdiInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
+         InterceptionModel<Class<?>,SerializableContextual<Interceptor<?>,?>> serializableContextualInterceptionModel = builder.build();
+         // if there is at least one applicable interceptor, register it 
+         if (serializableContextualInterceptionModel.getAllInterceptors().size() > 0)
+         {
+            manager.getCdiInterceptorsRegistry().registerInterceptionModel(getType(), serializableContextualInterceptionModel);
+         }
       }
    }
    
@@ -509,6 +519,56 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          return manager.getCdiInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
       else
          return false;
+   }
+
+      public boolean hasDirectlyDefinedInterceptors()
+   {
+      if (manager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()) != null)
+         return manager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
+      else
+         return false;
+   }
+
+   protected void initDirectlyDefinedInterceptors()
+   {
+      if (manager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()) == null && InterceptionUtils.supportsEjb3InterceptorDeclaration())
+      {
+         InterceptionModelBuilder<Class<?>, Class<?>> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Class.class);
+
+         Class<?>[] classDeclaredInterceptors = null;
+         if (getAnnotatedItem().isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
+         {
+            Annotation interceptorsAnnotation = getType().getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass());
+            classDeclaredInterceptors = Reflections.extractValues(interceptorsAnnotation);
+         }
+
+         if (classDeclaredInterceptors != null)
+         {
+            builder.interceptAll().with(classDeclaredInterceptors);
+         }
+
+         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
+         for (WeldMethod<?, ?> method : businessMethods)
+         {
+            boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
+            Class<?>[] methodDeclaredInterceptors = null;
+            if (method.isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
+            {
+               methodDeclaredInterceptors = Reflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));
+            }
+            if (excludeClassInterceptors)
+            {
+               builder.ignoreGlobalInterceptors(((AnnotatedMethod)method).getJavaMember());
+            }
+            if (methodDeclaredInterceptors != null)
+            {
+               builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
+            }
+         }
+         InterceptionModel<Class<?>, Class<?>> interceptionModel = builder.build();
+         if (interceptionModel.getAllInterceptors().size() > 0 || new InterceptorClassMetadataImpl(getType()).isInterceptor())
+            manager.getClassDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
+      }
    }
 
 

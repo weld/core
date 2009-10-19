@@ -122,7 +122,7 @@ public class Validator implements Service
                validateCdiBoundInterceptors(beanManager, classBean);
             }
             // validate EJB-defined interceptors
-            if (classBean instanceof ManagedBean && ((ManagedBean)classBean).hasDirectlyDefinedInterceptors())
+            if (((AbstractClassBean<?>) bean).hasDirectlyDefinedInterceptors())
             {
                validateDirectlyDefinedInterceptorClasses(beanManager, classBean);
             }
