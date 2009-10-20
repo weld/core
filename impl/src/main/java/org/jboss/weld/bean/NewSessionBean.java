@@ -124,4 +124,9 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
       // No-op
    }
 
+   @Override
+   protected void registerInterceptors()
+   {
+      // No - op
+   }
 }

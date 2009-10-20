@@ -436,11 +436,11 @@ public class SessionBean<T> extends AbstractClassBean<T>
       return true;
    }
 
-   private void registerInterceptors()
+   protected void registerInterceptors()
    {
       InterceptionModel<Class<?>, SerializableContextual<javax.enterprise.inject.spi.Interceptor<?>, ?>> model = manager.getCdiInterceptorsRegistry().getInterceptionModel(ejbDescriptor.getBeanClass());
       if (model != null)
-         getManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor(), new InterceptorBindingsAdapter(model));
+         getManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor().delegate(), new InterceptorBindingsAdapter(model));
    }
 }
 
