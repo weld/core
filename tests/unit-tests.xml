@@ -58,6 +58,7 @@
          <package name="org.jboss.weld.test.unit.lookup.wbri293" />
          <package name="org.jboss.weld.test.unit.manager" />
          <package name="org.jboss.weld.test.unit.noncontextual" />
+         <package name="org.jboss.weld.test.unit.preinstantiatebeanmanager" />
          <package name="org.jboss.weld.test.unit.security" />
       </packages>
    </test>

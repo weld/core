@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.test.unit.clearresolver;
+package org.jboss.weld.test.unit.preinstantiatebeanmanager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
  * @author kkhan
  *
  */
-public class PreinstantiateBeanManager
+public class PreinstantiateBeanManagerTest
 {
 
    @Test
