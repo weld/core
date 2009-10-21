@@ -39,7 +39,7 @@ public class TestContainer
    private final MockServletLifecycle lifecycle;
    private final Collection<Class<?>> classes;
    private final Collection<URL> beansXml;
-
+   
    /**
     * Create a container, specifying the classes and beans.xml to deploy
     * 
@@ -72,7 +72,19 @@ public class TestContainer
       return new Status(null);
    }
    
+   /**
+    * Starts the container and begins the application
+    */
    public void startContainer()
+   {
+      startContainer(true);
+   }
+   
+   /**
+    * Starts the container
+    * @param beginApplication whether or not beginApplication() should be called
+    */
+   public void startContainer(boolean beginApplication)
    {
       MockBeanDeploymentArchive archive = lifecycle.getDeployment().getArchive();
       archive.setBeanClasses(classes);
@@ -81,6 +93,18 @@ public class TestContainer
          archive.setBeansXmlFiles(beansXml);
       }
       lifecycle.initialize();
+      if (beginApplication)
+      {
+         beginApplication();
+      }
+   }
+   
+   /**
+    * Deploys the application. Intended use is in conjunction with {@link #startContainer(boolean)}.
+    * {@link #startContainer()} does this step automatically 
+    */
+   public void beginApplication()
+   {
       lifecycle.beginApplication();
    }
    
