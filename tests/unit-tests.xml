@@ -52,6 +52,10 @@
          <package name="org.jboss.weld.test.unit.implementation.producer.method" />
          <package name="org.jboss.weld.test.unit.implementation.proxy" />
          <package name="org.jboss.weld.test.unit.implementation.proxy.enterprise" />
+         <package name="org.jboss.weld.test.unit.interceptor.ejb" />
+         <package name="org.jboss.weld.test.unit.interceptor.ejb3model" />
+         <package name="org.jboss.weld.test.unit.interceptor.passivation" />
+         <package name="org.jboss.weld.test.unit.interceptor.simple" />
          <package name="org.jboss.weld.test.unit.lookup" />
          <package name="org.jboss.weld.test.unit.lookup.circular" />
          <package name="org.jboss.weld.test.unit.lookup.wbri279" />

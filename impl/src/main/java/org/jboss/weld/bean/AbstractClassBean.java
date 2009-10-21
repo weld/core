@@ -46,6 +46,7 @@ import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
+import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.SerializableContextual;
@@ -432,7 +433,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             builder.interceptPostActivate().with(toSerializableContextualArray(resolvedPostActivateInterceptors));
 
          }
-         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
+         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getAnnotatedItem());
          for (WeldMethod<?, ?> method : businessMethods)
          {
             Set<Annotation> methodBindingAnnotations = new HashSet<Annotation>(classBindingAnnotations);
@@ -441,8 +442,17 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             {
                if (Beans.findInterceptorBindingConflicts(manager, classBindingAnnotations))
                   throw new DeploymentException("Conflicting interceptor bindings found on " + getType() + "." + method.getName() + "()");
-               List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
-               builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+               
+               if (method.isAnnotationPresent(manager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
+               {
+                  List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, methodBindingAnnotations.toArray(new Annotation[]{}));
+                  builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+               }
+               else
+               {
+                  List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
+                  builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+               }
             }
          }
          InterceptionModel<Class<?>,SerializableContextual<Interceptor<?>,?>> serializableContextualInterceptionModel = builder.build();
@@ -547,7 +557,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             builder.interceptAll().with(classDeclaredInterceptors);
          }
 
-         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableBusinessMethods(getAnnotatedItem());
+         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getAnnotatedItem());
          for (WeldMethod<?, ?> method : businessMethods)
          {
             boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
@@ -562,7 +572,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             }
             if (methodDeclaredInterceptors != null)
             {
-               builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
+               if (method.isAnnotationPresent(manager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
+                  builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
+               else
+                  builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
             }
          }
          InterceptionModel<Class<?>, Class<?>> interceptionModel = builder.build();

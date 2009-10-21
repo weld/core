@@ -17,28 +17,21 @@
 
 package org.jboss.weld.test.unit.interceptor.ejb;
 
-import javax.ejb.Stateless;
-import javax.ejb.Timeout;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import javax.interceptor.InterceptorBinding;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-@Stateless  @TimeBound
-public class BallImpl implements Ball
+@InterceptorBinding
+@Retention(RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Documented
+public @interface TimeBound
 {
-   @Shot
-   public void shoot()
-   {
-   }
-
-   @Pass
-   public void pass()
-   {
-   }
-
-   @Timeout
-   public void finishGame()
-   {
-
-   }
 }

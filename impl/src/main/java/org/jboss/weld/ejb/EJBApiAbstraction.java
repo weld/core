@@ -36,12 +36,14 @@ public class EJBApiAbstraction extends ApiAbstraction implements Service
       ENTERPRISE_BEAN_CLASS = classForName("javax.ejb.EnterpriseBean");
       EJB_ANNOTATION_CLASS = annotationTypeForName("javax.ejb.EJB");
       RESOURCE_ANNOTATION_CLASS = annotationTypeForName("javax.annotation.Resource");
-
+      TIMEOUT_ANNOTATION_CLASS = annotationTypeForName("javax.ejb.Timeout");
    }
 
    public final Class<?> ENTERPRISE_BEAN_CLASS;
    public final Class<? extends Annotation> EJB_ANNOTATION_CLASS;
    public final Class<? extends Annotation> RESOURCE_ANNOTATION_CLASS;
+   public final Class<? extends Annotation> TIMEOUT_ANNOTATION_CLASS;
+
    
    public void cleanup() {}
    

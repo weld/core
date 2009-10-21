@@ -224,7 +224,7 @@ public class Beans
       }
    }
 
-   public static List<WeldMethod<?,?>> getInterceptableBusinessMethods(WeldClass<?> type)
+   public static List<WeldMethod<?,?>> getInterceptableMethods(WeldClass<?> type)
    {
       List<WeldMethod<?, ?>> annotatedMethods = new ArrayList<WeldMethod<?, ?>>();
       for (WeldMethod<?, ?> annotatedMethod : type.getWeldMethods())

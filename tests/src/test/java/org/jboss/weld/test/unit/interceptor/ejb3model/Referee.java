@@ -14,46 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.test.unit.interceptor.ejb3model;
 
-import javax.interceptor.Interceptors;
-import javax.interceptor.ExcludeClassInterceptors;
+import org.jboss.weld.test.unit.interceptor.ejb.TimeBound;
+
+import javax.interceptor.Interceptor;
+import javax.interceptor.AroundTimeout;
 import javax.interceptor.InvocationContext;
-import javax.interceptor.AroundInvoke;
 
 /**
- * @author Marius Bogoevici
+ * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-@Interceptors({Goalkeeper.class, Referee.class})
-public class Ball
+@Interceptor @TimeBound
+public class Referee
 {
-   public static boolean played = false;
+   public static boolean ballCollected = false;
 
-   public static boolean aroundInvoke = false;
-   
-   @ExcludeClassInterceptors
-   @Interceptors(Defender.class)
-   public void shoot()
+   @AroundTimeout
+   public Object collectBall(InvocationContext context) throws Exception
    {
-      played = true;
-   }
-
-   @Interceptors(Defender.class)
-   public void pass()
-   {
-      played = true;
-   }
-
-   public void lob()
-   {
-      played = true;
-   }
-
-   @AroundInvoke
-   public Object aroundInvoke(InvocationContext invocationContext) throws Exception
-   {
-      aroundInvoke = true;
-      return invocationContext.proceed();
+      ballCollected = true;
+      return context.proceed();
    }
 }
