@@ -26,7 +26,7 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
-import org.jboss.weld.ContextualStore;
+import org.jboss.weld.ContextualStoreImpl;
 import org.jboss.weld.Validator;
 import org.jboss.weld.bean.builtin.ManagerBean;
 import org.jboss.weld.bootstrap.api.Bootstrap;
@@ -51,6 +51,7 @@ import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.SessionContext;
 import org.jboss.weld.context.SingletonContext;
 import org.jboss.weld.context.api.BeanStore;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.jsf.JsfApiAbstraction;
@@ -236,7 +237,7 @@ public class WeldBootstrap implements Bootstrap
       services.add(TypeStore.class, new TypeStore());
       services.add(ClassTransformer.class, new ClassTransformer(services.get(TypeStore.class)));
       services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
-      services.add(ContextualStore.class, new ContextualStore());
+      services.add(ContextualStore.class, new ContextualStoreImpl());
       return services;
    }
    

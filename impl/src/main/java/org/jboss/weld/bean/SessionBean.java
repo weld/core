@@ -49,7 +49,7 @@ import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.weld.bean.proxy.Marker;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.context.SerializableContextual;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;

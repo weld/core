@@ -5,7 +5,9 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.ContextualStore;
+
+import org.jboss.weld.ContextualStoreImpl;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
@@ -32,7 +34,7 @@ public class AccessibleManagerResolutionTest
       this.classTransformer = new ClassTransformer(new TypeStore());
       this.services = new SimpleServiceRegistry();
       this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
-      this.services.add(ContextualStore.class, new ContextualStore());
+      this.services.add(ContextualStore.class, new ContextualStoreImpl());
    }
    
    private void addBean(BeanManagerImpl manager, Class<?> c)

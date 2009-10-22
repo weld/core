@@ -24,7 +24,7 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.ContextualStore;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.log.LogProvider;
@@ -104,7 +104,7 @@ public abstract class AbstractMapContext extends AbstractContext
             T instance = contextual.create(creationalContext);
             if (instance != null)
             {
-               beanInstance = new SerializableContextualInstance<Contextual<T>, T>(contextual, instance, creationalContext);
+               beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext);
                getBeanStore().put(id, beanInstance);
             }
             return instance;

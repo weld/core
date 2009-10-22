@@ -21,35 +21,29 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.PassivationCapable;
-
-import org.jboss.weld.bootstrap.api.Service;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 
+import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
+import org.jboss.weld.context.SerializableContextualImpl;
+import org.jboss.weld.context.SerializableContextualInstanceImpl;
+
 /**
- * Application wide contextual identifier service which allows a serializable
- * reference to a contextual to be obtained, and the contextual to be returned
- * for a given id.
- * 
- * If the contextual implements PassivationCapable, the id will be obtained 
- * from it, in which case the Contextual can be activated in any container.
- * If not, the Contextual can only be activated in this container.
- * 
- * Note that this allows a Bean object to be loaded regardless
- * of the bean's accessiblity from the current module, and should not be abused
- * as a way to ignore accessibility rules enforced during resolution.
- * 
+ * Implementation of {@link org.jboss.weld.serialization.spi.ContextualStore}
+ *
  * @author Pete Muir
- * 
- * 
+ *
  */
-public class ContextualStore implements Service
+public class ContextualStoreImpl implements ContextualStore
 {
    
-   private static final String GENERATED_ID_PREFIX = ContextualStore.class.getName();
+   private static final String GENERATED_ID_PREFIX = ContextualStoreImpl.class.getName();
    
    // The map containing container-local contextuals
    private final BiMap<Contextual<?>, String> contextuals;
@@ -59,7 +53,7 @@ public class ContextualStore implements Service
    
    private final AtomicInteger idGenerator;
    
-   public ContextualStore()
+   public ContextualStoreImpl()
    {
       this.idGenerator = new AtomicInteger(0);
       BiMap<Contextual<?>, String> map = HashBiMap.create();
@@ -67,7 +61,7 @@ public class ContextualStore implements Service
       this.contextuals = Maps.synchronizedBiMap(map);
       this.passivationCapableContextuals = new ConcurrentHashMap<String, Contextual<?>>();
    }
-   
+
    /**
     * Given a particular id, return the correct contextual. For contextuals
     * which aren't passivation capable, the contextual can't be found in another
@@ -115,6 +109,16 @@ public class ContextualStore implements Service
          contextuals.put(contextual, id);
          return id;
       }
+   }
+
+   public <C extends Contextual<I>, I> SerializableContextual<C, I> getSerializableContextual(Contextual<I> contextual)
+   {
+      return new SerializableContextualImpl(contextual);
+   }
+
+   public <C extends Contextual<I>, I> SerializableContextualInstance<C, I> getSerializableContextualInstance(Contextual<I> contextual, I instance, CreationalContext<I> creationalContext)
+   {
+      return new SerializableContextualInstanceImpl(contextual, instance, creationalContext);
    }
 
    public void cleanup()

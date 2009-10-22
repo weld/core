@@ -23,8 +23,8 @@ import javax.enterprise.inject.spi.Interceptor;
 import org.jboss.interceptor.proxy.InterceptionHandler;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.context.SerializableContextualInstance;
-import org.jboss.weld.context.SerializableContextual;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.context.SerializableContextualInstanceImpl;
 
 /**
  * @author Marius Bogoevici
@@ -45,10 +45,11 @@ public class CdiInterceptorHandlerFactory implements InterceptionHandlerFactory<
       return manager;
    }
 
+   @SuppressWarnings("unchecked")
    public InterceptionHandler createFor(final SerializableContextual<Interceptor<Object>, Object> serializableContextual)
    {
       Object instance = getManager().getReference(serializableContextual.get(), creationalContext);
-      return new CdiInterceptorHandler(new SerializableContextualInstance<Interceptor<Object>, Object>(serializableContextual, instance, creationalContext),
+      return new CdiInterceptorHandler(new SerializableContextualInstanceImpl<Interceptor<Object>, Object>(serializableContextual, instance, creationalContext),
             serializableContextual.get().getBeanClass());
    }
 

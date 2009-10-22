@@ -5,7 +5,8 @@ import java.io.Serializable;
 import javax.enterprise.context.spi.Contextual;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.ContextualStore;
+import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 
 /**
  * A serializable version of contextual that knows how to restore the
@@ -14,9 +15,9 @@ import org.jboss.weld.ContextualStore;
  * @author pmuir
  * 
  */
-public class SerializableContextual<C extends Contextual<I>, I> extends ForwardingContextual<I> implements Serializable
+public class SerializableContextualImpl<C extends Contextual<I>, I> extends ForwardingContextual<I> implements SerializableContextual<C, I>
 {
-   
+
    @Override
    protected Contextual<I> delegate()
    {
@@ -34,7 +35,7 @@ public class SerializableContextual<C extends Contextual<I>, I> extends Forwardi
    // the id of a non-serializable, passivation capable contextual
    private String id;
    
-   public SerializableContextual(C contextual)
+   public SerializableContextualImpl(C contextual)
    {
       if (contextual instanceof Serializable)
       {
@@ -43,7 +44,7 @@ public class SerializableContextual<C extends Contextual<I>, I> extends Forwardi
       }
       else
       {
-         // otherwise, generate an id (may not be portable between container instances
+         // otherwise, generate an id (may not be portable between container instances)
          this.id = Container.instance().deploymentServices().get(ContextualStore.class).putIfAbsent(contextual);
       }
       // cache the contextual
@@ -75,9 +76,9 @@ public class SerializableContextual<C extends Contextual<I>, I> extends Forwardi
    public boolean equals(Object obj)
    {
       // if the arriving object is also a SerializableContextual, then unwrap it
-      if (obj instanceof SerializableContextual<?, ?>)
+      if (obj instanceof SerializableContextualImpl<?, ?>)
       {
-         return delegate().equals(((SerializableContextual<?, ?>) obj).get());
+         return delegate().equals(((SerializableContextualImpl<?, ?>) obj).get());
       }
       else
       {

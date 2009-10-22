@@ -19,10 +19,6 @@ package org.jboss.weld.bean.interceptor;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collections;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.lang.reflect.Method;
 
@@ -30,7 +26,7 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.InterceptionType;
 
 import org.jboss.weld.ejb.spi.InterceptorBindings;
-import org.jboss.weld.context.SerializableContextual;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.interceptor.model.InterceptionModel;
 
 /**

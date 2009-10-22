@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.interceptor.proxy.AbstractClassInterceptionHandler;
-import org.jboss.weld.context.SerializableContextualInstance;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 
 /**
  * @author Marius Bogoevici

@@ -46,11 +46,13 @@ import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.context.SerializableContextualInstanceImpl;
+import org.jboss.weld.context.SerializableContextualImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.context.SerializableContextual;
-import org.jboss.weld.context.SerializableContextualInstance;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
@@ -184,7 +186,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
                DecoratorImpl<Object> decoratorBean = (DecoratorImpl<Object>) decorator;
                
                Object decoratorInstance = getManager().getReference(ip, decorator, creationalContext);
-               decoratorInstances.add(new SerializableContextualInstance<DecoratorImpl<Object>, Object>(decoratorBean, decoratorInstance, null));
+               decoratorInstances.add(new SerializableContextualInstanceImpl<DecoratorImpl<Object>, Object>(decoratorBean, decoratorInstance, null));
                ip = decoratorBean.getDelegateInjectionPoint();
             }
             else
@@ -442,7 +444,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             {
                if (Beans.findInterceptorBindingConflicts(manager, classBindingAnnotations))
                   throw new DeploymentException("Conflicting interceptor bindings found on " + getType() + "." + method.getName() + "()");
-               
+
                if (method.isAnnotationPresent(manager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
                {
                   List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, methodBindingAnnotations.toArray(new Annotation[]{}));
@@ -518,7 +520,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       List<SerializableContextual> serializableContextuals = new ArrayList<SerializableContextual>();
       for (Interceptor<?> interceptor: interceptors)
       {
-         serializableContextuals.add(new SerializableContextual(interceptor));
+         serializableContextuals.add(new SerializableContextualImpl(interceptor));
       }
       return serializableContextuals.toArray(new SerializableContextual[]{});
    }

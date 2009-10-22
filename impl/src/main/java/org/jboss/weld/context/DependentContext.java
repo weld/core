@@ -63,7 +63,7 @@ public class DependentContext extends AbstractContext
          if (creationalContext instanceof WeldCreationalContext<?>)
          {
             WeldCreationalContext<T> creationalContextImpl = (WeldCreationalContext<T>) creationalContext;
-            ContextualInstance<T> beanInstance = new SerializableContextualInstance<Contextual<T>, T>(contextual, instance, creationalContext);
+            ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext);
             creationalContextImpl.getParentDependentInstancesStore().addDependentInstance(beanInstance);
          }
          return instance;

@@ -25,7 +25,7 @@ import java.util.List;
 import javassist.util.proxy.MethodHandler;
 
 import org.jboss.weld.bean.DecoratorImpl;
-import org.jboss.weld.context.SerializableContextualInstance;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;

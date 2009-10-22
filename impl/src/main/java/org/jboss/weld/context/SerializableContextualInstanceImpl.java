@@ -16,14 +16,13 @@
  */
 package org.jboss.weld.context;
 
-import java.io.Serializable;
-
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 
-public class SerializableContextualInstance<C extends Contextual<I>, I> implements ContextualInstance<I>, Serializable
+public class SerializableContextualInstanceImpl<C extends Contextual<I>, I> implements SerializableContextualInstance<C,I>
 {
 
    private static final long serialVersionUID = -6366271037267396256L;
@@ -32,14 +31,14 @@ public class SerializableContextualInstance<C extends Contextual<I>, I> implemen
    private final I instance;
    private final CreationalContext<I> creationalContext;
 
-   public SerializableContextualInstance(C contextual, I instance, CreationalContext<I> creationalContext)
+   public SerializableContextualInstanceImpl(C contextual, I instance, CreationalContext<I> creationalContext)
    {
-      this.contextual = new SerializableContextual<C, I>(contextual);
+      this.contextual = new SerializableContextualImpl<C, I>(contextual);
       this.instance = instance;
       this.creationalContext = creationalContext;
    }
 
-   public SerializableContextualInstance(SerializableContextual<C, I> contextual, I instance, CreationalContext<I> creationalContext)
+   public SerializableContextualInstanceImpl(SerializableContextual<C, I> contextual, I instance, CreationalContext<I> creationalContext)
    {
       this.contextual = contextual;
       this.instance = instance;

@@ -46,13 +46,12 @@ import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
-import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.context.SerializableContextual;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.ResolvableWeldClass;
@@ -135,7 +134,7 @@ public class Validator implements Service
       InterceptionModel<Class<?>, Class<?>> ejbInterceptorModel = beanManager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(((AbstractClassBean<?>) classBean).getType());
       if (ejbInterceptorModel != null)
       {
-         Class<?>[] classDeclaredInterceptors = ejbInterceptorModel.getAllInterceptors().toArray(new Class<?>[0]);
+         Class<?>[] classDeclaredInterceptors = ejbInterceptorModel.getAllInterceptors().toArray(new Class<?>[ejbInterceptorModel.getAllInterceptors().size()]);
          if (classDeclaredInterceptors != null)
          {
             for (Class<?> interceptorClass: classDeclaredInterceptors)
