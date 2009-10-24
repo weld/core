@@ -26,9 +26,9 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Notify;
 import javax.enterprise.event.ObserverException;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.New;
@@ -66,7 +66,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    private final Set<Annotation> bindings;
    private final Type eventType;
    protected BeanManagerImpl manager;
-   private final Notify notifyType;
+   private final Reception notifyType;
    protected final RIBean<X> declaringBean;
    protected final MethodInjectionPoint<T, X> observerMethod;
    protected TransactionPhase transactionPhase;
@@ -115,7 +115,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
    {
       // Make sure exactly one and only one parameter is annotated with Observes
       List<WeldParameter<?, X>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
-      if (this.notifyType.equals(Notify.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class))
+      if (this.notifyType.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class))
       {
          throw new DefinitionException(this + " is invalid because it is a conditional observer method, and is declared by a @Dependent scoped bean");
       }
@@ -175,7 +175,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
       return bindings.toArray(new Annotation[0]);
    }
 
-   public Notify getNotify()
+   public Reception getReception()
    {
       return notifyType;
    }
@@ -229,7 +229,7 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
       try
       {
          // Get the most specialized instance of the component
-         if (notifyType.equals(Notify.ALWAYS))
+         if (notifyType.equals(Reception.ALWAYS))
          {
             creationalContext = manager.createCreationalContext(declaringBean);
          }

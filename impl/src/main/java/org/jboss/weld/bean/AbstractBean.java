@@ -27,9 +27,9 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Specializes;
+import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.stereotype.Stereotype;
 import javax.inject.Named;
 import javax.inject.Qualifier;
 

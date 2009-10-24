@@ -27,7 +27,7 @@ import java.util.Set;
 
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.stereotype.Stereotype;
+import javax.enterprise.inject.Stereotype;
 import javax.inject.Named;
 import javax.inject.Qualifier;
 import javax.inject.Scope;

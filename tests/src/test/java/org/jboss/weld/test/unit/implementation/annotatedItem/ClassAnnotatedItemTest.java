@@ -4,8 +4,8 @@ import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.stereotype.Stereotype;
 import javax.inject.Qualifier;
 
 import org.jboss.testharness.impl.packaging.Artifact;
