@@ -50,7 +50,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
       getTypeStore().add(bindingType, new BindingTypeLiteral());
    }
 
-   public void addInterceptorBindingType(Class<? extends Annotation> bindingType)
+   public void addInterceptorBinding(Class<? extends Annotation> bindingType)
    {
       getTypeStore().add(bindingType, new InterceptorBindingTypeLiteral());
    }
