@@ -1,33 +1,33 @@
 <?xml version='1.0' encoding="iso-8859-1"?>
-
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 
 <book lang="en">
 
-	 <xi:include href="Book_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-    
-    <preface>
+   <xi:include href="Book_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+   
+   <preface>
       <title>Note</title>
       <para>
-         JSR-299 has recently changed its name from "Web Beans" to "Java
-         Contexts and Dependency Injection". The reference guide still refers
-         to JSR-299 as "Web Beans" and the JSR-299 Reference Implementation as
-         the "Web Beans RI". Other documentation, blogs, forum posts etc. may
-         use the new nomenclature, including the new name for the JSR-299
-         Reference Implementation - "Web Beans".
+         Shortly before the final draft of JSR-299 was submitted, the specification changed its name from "Web Beans" to
+         "Java Contexts and Dependency Injection for the Java EE platform", abbreviated CDI. For a brief period after
+         the renaming, the reference implementation adopted the name "Web Beans". However, this ended up causing more
+         confusion than it solved and Red Hat decided to change the name of the reference implementation to "Weld". You
+         may still find other documentation, blogs, forum posts, etc. that use the old nomenclature. Please update any
+         references you can. The naming game is over.
       </para>
-      
+     
       <para>
-         You'll also find that some of the more recent functionality to be
-         specified is missing (such as producer fields, realization, 
-         asynchronous events, XML mapping of EE resources).
+         You'll also find that some of the functionality that once existed in the specification is now missing, such as
+         defining beans in XML. These features will be available as portable extensions for CDI in the Weld project, and
+         perhaps other implementations.
       </para>
-    </preface>
-    
-    <toc/>
-    
-    <part>
-      <title>Using contextual objects</title>
+   </preface>
+   
+   <toc/>
+   
+   <part>
+      <title>Contextual components, loose-coupling and strong typing</title>
       
       <xi:include href="part1.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="intro.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -36,20 +36,20 @@
       <xi:include href="injection.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="scopescontexts.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="producermethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      
-    </part>
-    
-    <part>
+     
+   </part>
+   
+   <part>
       <title>Developing loosely-coupled code</title>
       
       <xi:include href="part2.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="interceptors.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="decorators.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="events.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      
-    </part>
-    
-    <part>
+     
+   </part>
+   
+   <part>
       <title>Making the most of strong typing</title>
       
       <xi:include href="part3.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -58,33 +58,34 @@
       <xi:include href="specialization.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="xml.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    </part>
-    
-    <part>
-      <title>Web Beans and the Java EE ecosystem</title>
+   </part>
+   
+   <part>
+      <title>CDI and the Java EE ecosystem</title>
       
       <xi:include href="part4.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       
       <xi:include href="ee.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="extend.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      
-    </part>
-    
-    <xi:include href="next.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-    
-    <part>
-      <title>Web Beans Reference</title>
+     
+   </part>
+   
+   <xi:include href="next.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+   
+   <part>
+      <title>Weld reference</title>
       
       <xi:include href="part5.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       
       <xi:include href="environments.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="extensions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="viewlayers.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      
-    </part>
+     
+   </part>
+   
+   <xi:include href="ri-spi.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    
-    <xi:include href="ri-spi.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-    
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </book>
-

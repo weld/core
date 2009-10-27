@@ -1,292 +1,616 @@
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+<chapter id="gettingstarted">
+<!-- TODO
+Explain use of war:inplace to use jetty
+Java SE numberguess example
+-->
 
-<chapter id="ri">
-   <title>Getting started with Web Beans, the Reference Implementation of JSR-299</title>
+   <title>Getting started Weld, the JSR-299 reference implementation</title>
 
    <para>
-     The Web Beans is being developed at
-     <ulink url="http://seamframework.org/WebBeans">the Seam project</ulink>.
-     You can download the latest developer release of Web Beans from the
-     <ulink url="http://seamframework.org/Download">the downloads page</ulink>.
-   </para> 
+      Weld, the JSR-299 RI (Reference Implementation), is being developed as part of the <ulink
+      url="http://seamframework.org/Weld">Seam project</ulink>. You can download the latest community release of Weld
+      from the <ulink url="http://seamframework.org/Download">download page</ulink>. Information about the Weld source
+      code repository and instructions about how to obtain and build the source can be found on the same page.
+   </para>
 
-    <para>
-      Web Beans comes with a two deployable example applications:
-      <literal>webbeans-numberguess</literal>, a war example which runs on 
-      JBoss AS, Tomcat, Jetty and Google App Engine, containing only
-      simple beans, and <literal>webbeans-translator</literal> an ear example,
-      containing enterprise beans.
-      To run the examples you'll need the following:
+   <para>
+      Weld comes with two starter example applications, in addition to more specialized examples. The first,
+      <literal>weld-numberguess</literal>, is a web (WAR) example containing only non-transactional managed beans.
+      This example can be run on a wide range of servers, including JBoss AS, GlassFish, Apache Tomcat, Jetty, Google
+      App Engine, and any compliant Java EE 6 container. The second example, <literal>weld-translator</literal>, is
+      an enterprise (EAR) example that contains session beans. This example must be run on JBoss AS 5.2 or any compliant
+      Java EE 6 container.
    </para>
    
-   <itemizedlist>
-     <listitem>
-       <para>the latest release of Web Beans,</para>
-     </listitem>
-     <listitem>
-       <para>JBoss AS 5.2.0, or</para>
-     </listitem>
-     <listitem>
-       <para>Jetty 6.1.x, or</para>
-     </listitem>
-     <listitem>
-       <para>Apache Tomcat 6.0.x, and</para>
-     </listitem>
-     <listitem>
-       <para>Ant 1.7.0.</para>
-     </listitem>
-   </itemizedlist>
-   
-   <section>
-      <title>Using JBoss AS 5</title>
-   
-      <para> 
-         You'll need to download JBoss AS 5.2.0 from 
-         <ulink url="http://www.jboss.org/jbossas/downloads/">jboss.org</ulink>,
-         and unzip it. For example:
-      </para>
-      
-      <programlisting><![CDATA[$ cd /Applications
-$ unzip ~/jboss-5.2.0.Beta.zip]]></programlisting>
+   <para>
+      Both examples use JSF 2.0 as the web framework and, as such, can be found in the examples/jsf directory of the
+      Weld distribution.
+   </para>
 
+   <section id="prerequisites">
+      <title>Prerequisites</title>
+
+      <para>
+         To run the examples with the provided build scripts, you'll need the following:
+      </para>
+   
+      <itemizedlist>
+         <listitem>
+            <para>the latest release of Weld, which contains the examples</para>
+         </listitem>
+         <listitem>
+            <para>Ant 1.7.0, to build and deploy the examples</para>
+         </listitem>
+         <listitem>
+            <para>a supported runtime environment (minimum versions shown)</para>
+            <itemizedlist>
+               <listitem>
+                  <para>JBoss AS 5.2.0 (currenly only nightly builds of JBoss AS 5.2.0.Beta1 are available), or</para>
+               </listitem>
+               <listitem>
+                  <para>GlassFish 3.0, or</para>
+               </listitem>
+               <listitem>
+                  <para>Apache Tomcat 6.0.x (WAR example only), or</para>
+               </listitem>
+               <listitem>
+                  <para>Jetty 6.1.x (WAR example only)</para>
+               </listitem>
+            </itemizedlist>
+         </listitem>
+         <listitem>
+            <para>(optionally) Maven 2.x, to run the examples in an embedded servlet container</para>
+         </listitem>
+      </itemizedlist>
+   
       <note>
          <para>
-            JBoss AS 5.2.0 comes with Web Beans built in.
+            You'll need a full install of Ant 1.7.0. Some linux distributions only supply a partial installation of Ant
+            which cause the build to fail. If you encounter problems, verify that ant-nodeps.jar is on the classpath.
          </para>
       </note>
-      
+   
       <para>
-         Now, you're ready to deploy your first example!
+         In the next few sections, you'll be using the Ant command (ant) to invoke the Ant build script in each of the two
+         examples to compile, assemble and deploy the example to JBoss AS and, for the WAR example, Apache Tomcat. You can
+         also deploy the generated artifact (WAR or EAR) to any other container that supports Java EE 6, such as GlassFish V3.
+      </para>
+   
+      <para>
+         If you have Maven installed, you can also use the Maven command (mvn) to compile and assemble the standalone
+         artifact (WAR or EAR) and, for the WAR example, run it in an embedded container.
       </para>
       
+      <para>The sections below cover the steps for deploying with both Ant and Maven in detail. Let's start with JBoss AS.</para>
+
+   </section>
+   
+   <section id="jbossas">
+      <title>Deploying to JBoss AS</title>
+
+      <para>
+         To deploy the examples to JBoss AS, you'll need <ulink src="http://jboss.org/jbossas/">JBoss AS
+         5.2.0.Beta1</ulink> or above. If a release of the JBoss AS 5.2 line isn't yet available, you can download a
+         <ulink src="http://hudson.jboss.org/hudson/view/JBoss%20AS/job/JBoss-AS-5.x-sun16/">nightly snapshot</ulink>.
+         The reason JBoss AS 5.2.0.Beta1 or above is required is because it's the first release that has both CDI and
+         Bean Validation support built-in, making it close enough to Java EE 6 to run the examples. The good news is
+         that there are no additional modifications you have to make to the server. It's ready to go!
+      </para>
+   
+      <para>
+         After you have downloaded JBoss AS, extract it. (We recommended renaming the folder to include the
+         <literal>as</literal> qualifier so it's clear that it's the application server). You can move the extracted
+         folder anywhere you like. Whereever it lays to rest, that's what we'll call the JBoss AS installation
+         directory, or <literal>JBOSS_HOME</literal>.
+      </para>
+      
+      <programlisting><![CDATA[$> unzip jboss-5.2.*.zip
+$> mv jboss-5.2.*/ jboss-as-5.2]]></programlisting>
+
+      <para>
+         In order for the build scripts to know where to deploy the example, you have to tell them where to find your
+         JBoss AS installation (i.e., <literal>JBOSS_HOME</literal>). Create a new file named local.build.properties in
+         the examples directory of the Weld distribution and assign the path of your JBoss AS installation to the property
+         key <literal>jboss.home</literal>, as follows:
+      </para>
+
+      <programlisting><![CDATA[jboss.home=/path/to/jboss-as-5.2]]></programlisting>
+
+      <para>
+         You're now ready to deploy your first example!
+      </para>
+
+      <para>
+         Switch to the examples/jsf/numberguess directory and execute the Ant deploy target:
+      </para>
+
+     <programlisting><![CDATA[$> cd examples/jsf/numberguess
+$> ant deploy]]></programlisting> 
+
+      <para>
+         If you haven't already, start JBoss AS. You can either start JBoss AS from a Linux shell:
+      </para>
+
+      <programlisting><![CDATA[$> cd /path/to/jboss-as-5.2
+$> ./bin/run.sh]]></programlisting> 
+      
+      <para>
+         a Windows command window:
+      </para>
+
+      <programlisting><![CDATA[$> cd c:\path\to\jboss-as-5.2\bin
+$> run]]></programlisting> 
+
+      <para>
+         or you can start the server using an IDE, like Eclipse.
+      </para>
+      
+      <note>
+         <para>
+            If you are using Eclipse, you should seriously consider installing the <ulink
+            src="http://www.jboss.org/tools">JBoss Tools</ulink> add-ons, which include a wide variety of tooling for
+            JSR-299 and Java EE development, as well as an enhanced JBoss AS server view.
+         </para>
+      </note>
+
+      <para>
+         Wait a few seconds for the application to deploy (or the application server to start) and see if you can
+         determine the most efficient approach to pinpoint the random number at the local URL <ulink
+         src="http://localhost:8080/weld-numberguess">http://localhost:8080/weld-numberguess</ulink>.
+      </para>
+
       <tip>
          <para>
-            The build scripts for the examples offer a number of targets for 
-            JBoss AS, these are:
+            The Ant build script includes additional targets for JBoss AS to deploy and undeploy the archive in either exploded or packaged format and to tidy things up.
          </para>
          <itemizedlist>
             <listitem>
                <para>
-                  <literal>ant restart</literal> - deploy the example in exploded 
-                  format
+                  <literal>ant restart</literal> - deploy the example in exploded format to JBoss AS
                </para>
             </listitem>
             <listitem>
                <para>
-                  <literal>ant explode</literal> - update an exploded example, without
-                  restarting the deployment
+                  <literal>ant explode</literal> - update an exploded example, without restarting the deployment
                </para>
             </listitem>
             <listitem>
                <para>
-                  <literal>ant deploy</literal> - deploy the example in compressed jar format
+                  <literal>ant deploy</literal> - deploy the example in compressed jar format to JBoss AS
                </para>
             </listitem>
             <listitem>
                <para>
-                  <literal>ant undeploy</literal> - remove the example from the server
+                  <literal>ant undeploy</literal> - remove the example from JBoss AS
                </para>
             </listitem>
             <listitem>
                <para>
                   <literal>ant clean</literal> - clean the example
-              </para>
-            </listitem>
-         </itemizedlist>
-      </tip>
-   
-      <para>
-         To deploy the numberguess example:
-      </para>
-   
-      <programlisting>$ cd examples/jsf/numberguess
-ant deploy</programlisting>
-
-      <para>
-         Start JBoss AS:
-      </para>
-      
-      <programlisting>$ /Application/jboss-5.2.0.Beta/bin/run.sh</programlisting>
-      
-      <tip>
-         <para>
-            If you use Windows, use the <literal>run.bat</literal>script.
-         </para>
-      </tip>
-   
-      <para>
-         Wait for the application to deploy, and enjoy hours of fun at
-         <ulink url="http://localhost:8080/webbeans-numberguess" />!
-      </para>
-      
-      <para>
-         Web Beans includes a second simple example that will translate your text
-         into Latin. The numberguess example is a war example, and uses only simple
-         beans; the translator example is an ear example, and includes enterprise
-         beans, packaged in an EJB module. To try it out:
-      </para>
-   
-      <programlisting>$ cd examples/translator
-ant deploy</programlisting>
-   
-      <para>
-         Wait for the application to deploy, and visit
-         <ulink url="http://localhost:8080/webbeans-translator" />!
-      </para>
-      
-   </section>
-   
-   <section>
-      <title>Using Apache Tomcat 6.0</title>
-      
-      <para> 
-         You'll need to download Tomcat 6.0.18 or later from 
-         <ulink url="http://tomcat.apache.org/download-60.cgi">tomcat.apache.org</ulink>,
-         and unzip it. For example:
-      </para>
-      
-      <programlisting><![CDATA[$ cd /Applications
-$ unzip ~/apache-tomcat-6.0.18.zip]]></programlisting>
-
-      <para>
-         Next, download Web Beans from 
-         <ulink url="http://seamframework.org/Download">seamframework.org</ulink>,
-         and unzip it. For example
-      </para>
-      
-      <programlisting><![CDATA[$ cd ~/
-$ unzip ~/webbeans-$VERSION.zip]]></programlisting>
-      
-      <programlisting>tomcat.home=/Applications/apache-tomcat-6.0.18</programlisting>
-
-      <tip>
-         <para>
-            The build scripts for the examples offer a number of targets for 
-            Tomcat, these are:
-         </para>
-         <itemizedlist>
-            <listitem>
-               <para>
-                  <literal>mvn war:inplace tomcat:run -Ptomcat</literal> - deploy the example in an embedded Tomcat
-               </para>
-            </listitem>
-            <listitem>
-               <para>
-                  <literal>mvn compile war:exploded tomcat:exploded -Ptomcat</literal> - deploy the example to a running Tomcat install
                </para>
             </listitem>
          </itemizedlist>
-         <para>
-            See the <code>jsf/numberguess/readme.txt</code> for more details.
-         </para>
       </tip>
-      
-      <para>
-         To deploy the numberguess example for tomcat:
-      </para>
-   
-      <programlisting>$ cd examples/jsf/numberguess
-ant tomcat.deploy</programlisting>
 
       <para>
-         Edit <code>$TOMCAT_HOME/conf/tomcat-users.xml</code> and add
+         The second starter example, <literal>weld-translator</literal>, will translate your text into Latin. (Well,
+         not really, but the stub is there for you to implement, at least. Good luck!) To try it out, switch to the
+         translator example directory and execute the deploy target:
       </para>
-      
-      <programlisting><![CDATA[<user username="admin" password="" roles="manager"/>]]></programlisting>
    
-      <para>This allows Maven to communicate with Tomcat.</para>
-   
-      <para>
-         Start Tomcat:
-      </para>
-      
-      <programlisting>$ /Applications/apache-tomcat-6.0.18/bin/startup.sh</programlisting>
-      
-      <tip>
+      <programlisting><![CDATA[$> cd examples/jsf/translator
+$> ant deploy]]></programlisting> 
+
+      <note>
          <para>
-            If you use Windows, use the <literal>startup.bat</literal>script.
+            The translator uses session beans, which are packaged in an EJB module within an EAR. Java EE 6 will allow
+            session beans to be deployed in WAR modules, but that's a topic for future chapter.
          </para>
-      </tip>
-      
-      <para>Deploy the application</para>
-      
-      <programlisting>$ mvn compile war:exploded tomcat:exploded -Ptomcat</programlisting>
+      </note>
+
+      <para>
+         Again, wait a few seconds for the application to deploy (if you are bored, read the log messages), and visit
+         <ulink src="http://localhost:8080/weld-translator">http://localhost:8080/weld-translator</ulink> to begin
+         pseudo-translating.
+      </para>
+
+      <para>
+         TODO Insert note about upgrading the Weld deployer that directs reader to section on the JBoss AS environment
+      </para>
+   
+   </section>
+
+   <section id="glassfish">
+      <title>Deploying to GlassFish</title>
+
+      <para>
+         Deploying to GlassFish should be easy, right? After all, it's the Java EE 6 reference implementation. Since
+         it's the Java EE 6 reference implementation, that means it also bundles the JSR-299 reference implementation,
+         Weld! So yes, it's very easy.
+      </para>
+
+      <para>
+         To deploy the examples to GlassFish, you'll need the final <ulink
+         src="https://glassfish.dev.java.net/">GlassFish V3</ulink> release (the preview release won't do). If the final
+         release isn't yet available, you can download a <ulink
+         src="http://download.java.net/glassfish/v3/promoted/">promoted build</ulink> in the meantime. Select the b69
+         preview release or above that ends in either -unix.sh or -windows.exe depending on your platform. After the
+         download is complete, execute the installer. On Linux/Unix, you'll need to first make the script executable.
+      </para>
+
+      <programlisting><![CDATA[$> chmod 755 glassfish-v3-b69-unix.sh
+$> ./glassfish-v3-b69-unix.sh]]></programlisting> 
+
+      <para>
+         On Windows you can just click on the executable. Follow the instructions in the installer. It will create a
+         single domain named <literal>domain1</literal>. You'll use that domain to deploy the example. We recommend that
+         you choose 7070 as the main HTTP port to avoid conflicts with a running instance of JBoss AS (or Apache
+         Tomcat).
+      </para>
    
       <para>
-         Wait for the application to deploy, and enjoy hours of fun at
-         <ulink url="http://localhost:8080/webbeans-numberguess" />!
+         If you've deployed either of the starter examples, <literal>weld-numberguess</literal> or
+         <literal>weld-translator</literal>, to JBoss AS, then you already have the deployable artifact you need.
+         If not, switch to either of the two directories and build it.
+      </para>
+
+      <programlisting><![CDATA[$> cd examples/jsf/numberguess (or examples/jsf/translator)
+$> ant package]]></programlisting> 
+
+      <para>
+         The deployable archive for the <literal>weld-numberguess</literal>, named weld-numberguess.war, ends up in the
+         example's target directory. The archive for the <literal>weld-translator</literal> example, named
+         weld-translator.ear, ends up in the example's ear/target directory. All you need to do now is deploy them to
+         GlassFish.
+      </para>
+
+      <para>
+         You deploy applications to GlassFish using the <ulink src="http://localhost:4848">GlassFish Admin
+         Console</ulink>. To get the Admin Console running, you need to start a GlassFish domain, in our case
+         <literal>domain1</literal>. Switch to the bin folder in the directory where you installed GlassFish and execute
+         the following command:
+      </para>
+
+      <programlisting><![CDATA[$> asadmin start-domain domain1]]></programlisting> 
+
+      <para>
+         After a few seconds you can visit the Admin Console in the browser at the URL <ulink
+         src="http://localhost:4848">http://localhost:4848</ulink>. In the tree on the left-hand
+         side of the page, click on "Applications", then click on the "Deploy..." button under
+         the heading "Applications" and select the deployable artifact for either of the two examples.
+         The deployer should recognize that you have selected a Java EE artifact and allow you to
+         start it. You can see the examples running at either <ulink
+         src="http://localhost:7070/weld-numberguess">http://localhost:7070/weld-numberguess</ulink> or <ulink
+         src="http://localhost:7070/weld-translator">http://localhost:7070/weld-translator</ulink>,
+         depending on which example you deployed.
+      </para>
+
+      <para>
+         The reason the same artifact can be deployed to both JBoss AS and GlassFish, without any modifications, is
+         because all of the features being used are part of the standard platform. And what a capable platform it has
+         become!
       </para>
 
    </section>
    
-   <section>
-      <title>Using GlassFish</title>
+   <section id="tomcat">
+      <title>Deploying to Apache Tomcat</title>
+
+      <para>
+         Technically, CDI doesn't support servlet containers. That's because the contexts and dependency injection
+         services are provided by the Java EE container, not the Servlet API. However, CDI implementations can choose to
+         support servlet containers through an extension. Weld does this.</para>
+         
+      <para>
+         Weld ships with a Servlet listener which bootstraps the CDI environment, registers the BeanManager in JNDI and
+         provides injection into servlets. Basically, it emulates the work done by the Java EE container. The only
+         limitation is that you cannot use enterprise features such as session beans and container-managed transactions.
+      </para>
+
+      <para>
+         Let's give the Weld servlet extension a spin on Apache Tomcat. First, you'll need to download Tomcat 6.0.18 or later
+         from <ulink src="http://tomcat.apache.org/download-60.cgi">tomcat.apache.org</ulink> and extract it.
+      </para>
+
+      <programlisting><![CDATA[$> unzip apache-tomcat-6.0.18.zip]]></programlisting> 
+
+      <para>
+         You have two choices for how you can deploy the application to Tomcat. You can deploy it by pushing the
+         artifact to the hot deploy directory using Ant or you can deploy to the server across HTTP using a Maven
+         plugin. The Ant approach doesn't require that you have Maven installed, so we'll start there. If you want to
+         use Maven, you can just skip ahead.
+      </para>
+
+      <section id="tomcat-ant">
+         <title>Deploying with Ant</title>
+
+         <para>
+            In order for Ant to push the artifact to the Tomcat hot deploy directory, it needs to know where the Tomcat
+            installation is located. Again, we need to setup a propery in the local.build.properties file in the
+            examples directory of the Weld distribution. If you haven't yet created this file, do so now. Then assign
+            the path of your Tomcat installation to the property key tomcat.home.
+         </para>
+   
+         <programlisting><![CDATA[tomcat.home=/path/to/apache-tomcat-6]]></programlisting> 
+   
+         <para>
+            Now you're ready to deploy the numberguess example to Tomcat!
+         </para>
+   
+         <para>
+            Change to the examples/jsf/numberguess directory again and run the Ant deploy target for Tomcat:
+         </para>
+   
+         <programlisting><![CDATA[$> cd examples/jsf/numberguess
+$> ant tomcat.deploy]]></programlisting> 
+         
+         <tip>
+            <para>
+               The Ant build script includes additional targets for Tomcat to deploy and undeploy the archive in either
+               exploded or packaged format. They are the same target names used for JBoss AS, prefixed with "tomcat.".
+            </para>
+            <itemizedlist>
+               <listitem>
+                  <para>
+                     <literal>ant tomcat.restart</literal> - deploy the example in exploded format to Tomcat
+                  </para>
+               </listitem>
+               <listitem>
+                  <para>
+                     <literal>ant tomcat.explode</literal> - update an exploded example, without restarting the deployment
+                  </para>
+               </listitem>
+               <listitem>
+                  <para>
+                     <literal>ant tomcat.deploy</literal> - deploy the example in compressed jar format to Tomcat
+                  </para>
+               </listitem>
+               <listitem>
+                  <para>
+                     <literal>ant tomcat.undeploy</literal> - remove the example from Tomcat
+                  </para>
+               </listitem>
+            </itemizedlist>
+         </tip>
+   
+         <para>
+            If you haven't already, start Tomcat. You can either start Tomcat from a Linux shell:
+         </para>
+   
+         <programlisting><![CDATA[$> cd /path/to/apache-tomcat-6
+$> ./bin/start.sh]]></programlisting> 
+   
+         <para>
+            a Windows command window:
+         </para>
+   
+         <programlisting><![CDATA[$> cd c:\path\to\apache-tomcat-6\bin
+$> start]]></programlisting> 
+   
+         <para>
+            or you can start the server using an IDE, like Eclipse.
+         </para>
+   
+         <para>
+            Wait a few seconds for the application to deploy (or the application server to start) and see if you can figure
+            out the most efficient approach to pinpoint the random number at the local URL
+            <ulink src="http://localhost:8080/weld-numberguess">http://localhost:8080/weld-numberguess</ulink>!
+         </para>
+
+      </section>
       
-      <para>TODO</para>
+      <section id="tomcat-maven">
+         <title>Deploying with Maven</title>
+
+         <para>
+            You can also deploy the application to Tomcat using Maven. This section is a bit more advanced, so skip it
+            unless you are itching to use Maven natively. Of course, you'll first need to make sure that you have Maven
+            installed on your path, similar to how you setup Ant.
+         </para>
+
+         <para>
+            The Maven plugin communicates with Tomcat over HTTP, so it doesn't care where you have installed Tomcat.
+            However, the plugin configuration assumes you are running Tomcat in its default configuration, with a hostname
+            of localhost and port 8080. The readme.txt file in the example directory has information about how to modify
+            the Maven settings to accomodate a different setup.
+         </para>
+
+         <para>
+            To allow Maven to communicate with Tomcat over HTTP, edit the conf/tomcat-users.xml file in your Tomcat
+            installation and add the following line:
+         </para>
+
+         <programlisting role="XML"><![CDATA[<user username="admin" password="" roles="manager"/>]]></programlisting> 
+
+         <para>
+            Restart Tomcat. You can now deploy the application to Tomcat with Maven using this command:
+         </para>
+
+         <programlisting><![CDATA[$> mvn compile war:exploded tomcat:exploded -Ptomcat]]></programlisting> 
+
+         <para>
+            Once the application is deployed, you can redeploy it using this command:
+         </para>
+
+         <programlisting><![CDATA[$> mvn tomcat:redeploy -Ptomcat]]></programlisting> 
+
+         <para>
+            The <literal>-Ptomcat</literal> argument activates the tomcat profile defined in the Maven POM (pom.xml).
+            Among other things, this profile activates the Tomcat plugin.
+         </para>
+
+         <para>
+            Rather than shipping the container off to a standalone Tomcat installation, you can also execute the
+            application in an embedded Tomcat 6 container:
+         </para>
+
+         <programlisting><![CDATA[$> mvn war:inplace tomcat:run -Ptomcat]]></programlisting> 
+
+         <para>
+            The advantage of using the embedded server is that changes to assets in src/main/webapp take affect
+            immediately. If a change to a webapp configuration file is made, the application may automatically redeploy
+            (depending on the plugin configuration). If you make a change to a classpath resource, you need to execute a
+            build:
+         </para>
+
+         <programlisting><![CDATA[$> mvn compile war:inplace -Ptomcat]]></programlisting> 
+
+         <para>
+            There are several other Maven goals that you can use if you are hacking on the example, which are documented in
+            the example's readme.txt file.
+         </para>
+
+      </section>
+
+   </section>
+
+   <section id="jetty">
+      <title>Deploying to Jetty</title>
+
+      <!-- subsections? -->
+
+      <para>
+         Support for Jetty in the examples is a more recent addition. Since Jetty is traditionally used with Maven,
+         there are no Ant targets. You must invoke the Maven build directly to deploy the examples to Jetty out of the
+         box. Also, only the <literal>weld-numberguess</literal> example is configured for Jetty support at the time of
+         this writing.
+      </para>
+
+      <para>
+         If you've read through the entire Tomcat section, then you're all ready to go. The Maven build parallels the
+         embedded Tomcat deployment. If not, don't worry. We'll still go over everything in this section that you need
+         to know.
+      </para>
+
+      <para>
+         The Maven POM (pom.xml) includes a profile named jetty that activates the Maven Jetty plugin, which you can use
+         to start Jetty in embedded mode and deploy the application in place. You don't need anything else installed
+         except to have the Maven command (mvn) on your path. The rest will be downloaded from the internet when the
+         build is run.
+      </para>
+
+      <para>
+         To run the <literal>weld-numberguess</literal> example on Jetty, switch to the example directory and execute
+         the inplace goal of the Maven WAR plugin followed by the run goal of the Maven Jetty plugin with the jetty
+         profile enabled, as follows:
+      </para>
+
+      <programlisting><![CDATA[$> cd examples/jsf/numberguess
+$> mvn war:inplace jetty:run -Pjetty]]></programlisting> 
+
+      <para>
+         The log output of Jetty will be shown in the console. Once Jetty reports that the application has deployed, you
+         can access it at the following local URL: <ulink
+         src="http://localhost:9090/weld-numberguess">http://localhost:9090/weld-numberguess</ulink>. The port is
+         defined in the Maven Jetty plugin configuration within the jetty profile.
+      </para>
+
+      <para>
+         Any changes to assets in src/main/webapp take affect immediately. If a change to a webapp configuration file is
+         made, the application may automatically redeploy. The redeploy behavior can be fined tuned in the plugin
+         configuration. If you make a change to a classpath resource, you need to execute a build and the inplace goal
+         of the Maven WAR plugin, again with the jetty profile enabled.
+      </para>
+
+      <programlisting><![CDATA[$> mvn compile war:inplace -Pjetty]]></programlisting> 
+
+      <para>
+         The war:inplace goal copies the compiled classes and JARs inside src/main/webapp, under WEB-INF/classes and
+         WEB-INF/lib, respectively, mixing source and compiled files. However, the build does work around these
+         temporary files by excluding them from the packaged WAR and cleaning them during the Maven clean phase. 
+      </para>
+
+      <para>
+         You have two options if you want to run the example on Jetty from the IDE. You can either install the
+         m2eclispe[link] plugin and run the goals as described above. Your other option is to start the Jetty container
+         from a Java application.
+      </para>
+
+      <para>
+         First, initialize the Eclipse project:
+      </para>
+
+      <programlisting><![CDATA[$> mvn clean eclipse:clean eclipse:eclipse -Pjetty-ide]]></programlisting> 
+
+      <para>
+         Next, assemble all the necessary resources under src/main/webapp:
+      </para>
+
+      <programlisting><![CDATA[$> mvn war:inplace -Pjetty-ide]]></programlisting> 
+
+      <para>
+         Now, you are ready to run the server in Eclipse. Import the project into your Eclipse workspace using "Import
+         Existing Project into Workspace. Then, find the start class in src/jetty/java and run its main method as a Java
+         Application. Jetty will launch. You can view the application at the following local URL: <ulink
+         src="http://localhost:8080">http://localhost:8080</ulink>.  Pay particular attention to the port in the URL and
+         the lack of a trailing context path.
+      </para>
+
+      <!-- NOTE Transition paragraph into the example explanation sections. -->
+      <para>
+         Now that you have gotten the starter applications deployed on the server of your choice, you probably want to
+         know a little bit about how they actually work. It's time to pull the covers back and dive into the internals
+         of these two examples. Let's start with the simpler of the two examples, <literal>weld-numberguess</literal>.
+      </para>
+
    </section>
    
-   <section>
-      <title>The numberguess example</title>
+   <section id="numberguess">
+      <title>The numberguess example in depth</title>
       
       <para>
-         In the numberguess application you get given 10 attempts to guess a
-         number between 1 and 100. After each attempt, you will be told whether
-         you are too high, or too low.
+         In the numberguess application you get given 10 attempts to guess a number between 1 and 100. After each
+         attempt, you will be told whether you are too high or too low.
       </para>
       
       <para>
-         The numberguess example is comprised of a number of Web Beans, 
-         configuration files, and Facelet JSF pages, packaged as a war. Let's 
-         start with the configuration files.
+         The numberguess example is comprised of a number of beans, configuration files and Facelets (JSF) views,
+         packaged as a WAR module. Let's start by examining the configuration files.
       </para>
       
       <para>
-          All the configuration files for this example are located in 
-          <literal>WEB-INF/</literal>, which is stored in
-          <literal>WebContent</literal> in the source tree. First, we have 
-          <literal>faces-config.xml</literal>, in which we tell JSF to use
-          Facelets:
+          All the configuration files for this example are located in <literal>WEB-INF/</literal>, which can be found in
+          the <literal>src/main/webapp</literal> directory of the example. First, we have the JSF 2.0 version of
+          <literal>faces-config.xml</literal>. A standardized version of Facelets is the default view handler in JSF
+          2.0, so there's really nothing that we have to configure. Thus, the configuration consists of only the root
+          element.
       </para>
       
-      <programlisting role="XML"><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
-<faces-config version="1.2"
-              xmlns="http://java.sun.com/xml/ns/javaee"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
-    
-    <application>
-        <view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
-    </application>
-
+      <programlisting role="XML"><![CDATA[<faces-config version="2.0"
+   xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://java.sun.com/xml/ns/javaee
+      http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
 </faces-config>]]></programlisting>
 
       <para>
-         There is an empty <literal>web-beans.xml</literal> file, which marks
-         this application as a Web Beans application.
+         There's also an empty <literal>beans.xml</literal> file, which tells the container to look for beans in this
+         application and to activate the CDI services.
       </para>
       
       <para>
-         Finally there is <literal>web.xml</literal>:
+         Finally, there's the familiar <literal>web.xml</literal>:
       </para>
       
       <programlistingco>
          <areaspec>
-            <area id="faces.servlet" coords="12" />
-            <area id="faces.servlet.mapping" coords="18" />
-            <area id="faces.default.suffix" coords="23" />
-            <area id="session.timeout" coords="28" />
-            <area id="webbeans.listener" coords="32" />
+            <area id="faces.servlet" coords="10" />
+            <area id="faces.servlet.mapping" coords="16" />
+            <area id="faces.default.suffix" coords="21" />
+            <area id="session.timeout" coords="26" />
          </areaspec>
-         <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-
-<web-app version="2.5"
-    xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+         <programlisting role="XML"><![CDATA[<web-app version="2.5"
+   xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://java.sun.com/xml/ns/javaee
+      http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
    
-   <display-name>Web Beans Numbergues example</display-name>
-
-   <!-- JSF -->
+   <display-name>weld-jsf-numberguess-war</display-name>
+   <description>Weld JSF numberguess example (WAR)</description>
 
    <servlet>
       <servlet-name>Faces Servlet</servlet-name>
@@ -312,18 +636,18 @@ ant tomcat.deploy</programlisting>
          <calloutlist>
             <callout arearefs="faces.servlet">
                <para>
-                  Enable and load the JSF servlet
+                  Enable and initialize the JSF servlet
                </para>
             </callout>
             <callout arearefs="faces.servlet.mapping">
                <para>
-                  Configure requests to <literal>.jsf</literal> pages to be
+                  Configure requests for URLs ending in <literal>.jsf</literal> to be
                   handled by JSF
                </para>
             </callout>
             <callout arearefs="faces.default.suffix">
                <para>
-                  Tell JSF that we will be giving our source files (facelets) an
+                  Tell JSF that we will be giving our JSF views (Facelets templates) an
                   extension of <literal>.xhtml</literal>
                </para>
             </callout>
@@ -337,76 +661,71 @@ ant tomcat.deploy</programlisting>
       
       <note>
          <para>
-            Whilst this demo is a JSF demo, you can use Web Beans with any 
-            Servlet based web framework.
+            This demo uses JSF 2 as the view framework, but you can use Weld with any Servlet-based web framework, such
+            as JSF 1.2 or Wicket.
          </para>
       </note>
       
       <para>
-         Let's take a look at the Facelet view:
+         Let's take a look at the main JSF view, src/main/webapp/home.xhtml.
       </para>
       
       <programlistingco>
          <areaspec>
             <area id="template" coords="8" />
-            <area id="messages2" coords="12" />
-            <area id="instructions" coords="19" />
-            <area id="guess" coords="25" />
-            <area id="validator" coords="30" />
-            <area id="submit" coords="33" />
+            <area id="statusMessages" coords="12" />
+            <area id="instructions" coords="20" />
+            <area id="guess" coords="27" />
+            <area id="validator" coords="29" />
+            <area id="submit" coords="30" />
          </areaspec>
-         <programlisting><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+         <programlisting role="HTML"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:s="http://jboss.com/products/seam/taglib">
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:f="http://java.sun.com/jsf/core">
 
-  <ui:composition template="template.xhtml">
-    <ui:define name="content">
-       <h1>Guess a number...</h1>
-       <h:form id="NumberGuessMain">
-          <div style="color: red">
-             <h:messages id="messages" globalOnly="false"/>
-             <h:outputText id="Higher" value="Higher!" rendered="#{game.number gt game.guess and game.guess ne 0}"/>
-             <h:outputText id="Lower" value="Lower!" rendered="#{game.number lt game.guess and game.guess ne 0}"/>
-          </div>
-   
-          <div>
-             I'm thinking of a number between #{game.smallest} and #{game.biggest}.
-             You have #{game.remainingGuesses} guesses.
-          </div>
-     
-          <div>
-             Your guess: 
-             <h:inputText id="inputGuess" 
-                          value="#{game.guess}" 
-                          required="true" 
-                          size="3" 
-                          disabled="#{game.number eq game.guess}">
-                <f:validateLongRange maximum="#{game.biggest}" 
-                                     minimum="#{game.smallest}"/>
-             </h:inputText>
-            <h:commandButton id="GuessButton"  
-                             value="Guess" 
-                             action="#{game.check}" 
-                             disabled="#{game.number eq game.guess}"/>
-          </div>
-          <div>
-            <h:commandButton id="RestartButton" value="Reset" action="#{game.reset}" immediate="true" />
-          </div>
-       </h:form>
-    </ui:define>
-  </ui:composition>
+   <ui:composition template="/template.xhtml">
+      <ui:define name="content">
+         <h1>Guess a number...</h1>
+         <h:form id="numberGuess">
+            <div style="color: red">
+               <h:messages id="messages" globalOnly="false"/>
+               <h:outputText id="Higher" value="Higher!"
+                  rendered="#{game.number gt game.guess and game.guess ne 0}"/>
+               <h:outputText id="Lower" value="Lower!"
+                  rendered="#{game.number lt game.guess and game.guess ne 0}"/>
+            </div>
+    
+            <div>
+               I'm thinking of a number between #{game.smallest} and #{game.biggest}.
+               You have #{game.remainingGuesses} guesses remaining.
+            </div>
+       
+            <div>
+               Your guess: 
+               <h:inputText id="inputGuess" value="#{game.guess}"
+                  size="3" required="true" disabled="#{game.number eq game.guess}"
+                  validator="#{game.validateNumberRange}"/>
+               <h:commandButton id="guessButton" value="Guess" 
+                  action="#{game.check}" disabled="#{game.number eq game.guess}"/>
+            </div>
+            <div>
+              <h:commandButton id="restartButton" value="Reset" action="#{game.reset}" immediate="true"/>
+            </div>
+         </h:form>
+      </ui:define>
+   </ui:composition>
 </html>]]></programlisting>
          <calloutlist>
             <callout arearefs="template">
                <para>
-                  Facelets is a templating language for JSF, here we are 
-                  wrapping our page in a template which defines the header.
+                  Facelets is the built-in templating language for JSF. Here we are 
+                  wrapping our page in a template which defines the layout.
                </para>
             </callout>
-            <callout arearefs="messages2">
+            <callout arearefs="statusMessages">
                <para>
                   There are a number of messages which can be sent to the user,
                   "Higher!", "Lower!" and "Correct!"
@@ -415,73 +734,69 @@ ant tomcat.deploy</programlisting>
             <callout arearefs="instructions">
                <para>
                   As the user guesses, the range of numbers they can guess gets
-                  smaller - this sentance changes to make sure they know what 
-                  range to guess in.
+                  smaller - this sentance changes to make sure they know the
+                  number range of a valid guess.
                </para>
             </callout>
             <callout arearefs="guess">
                <para>
-                  This input field is bound to a Web Bean, using the value
+                  This input field is bound to a bean property using a value
                   expression.
                </para>
             </callout>
             <callout arearefs="validator">
                <para>
-                  A range validator is used to make sure the user doesn't
+                  A validator binding is used to make sure the user doesn't
                   accidentally input a number outside of the range in which they
                   can guess - if the validator wasn't here, the user might use
-                  up a guess on an out of range number.
+                  up a guess on an out of bounds number.
                </para>
             </callout>
             <callout arearefs="submit">
                <para>
                   And, of course, there must be a way for the user to send their
-                  guess to the server. Here we bind to an action method on the
-                  Web Bean.
+                  guess to the server. Here we bind to an action method on the bean.
                </para>
             </callout>
          </calloutlist>
       </programlistingco>
       
       <para>
-         The example exists of 4 classes, the first two of which are binding
-         types. First, there is the <literal>@Random</literal> binding type, 
-         used for injecting a random number:
+         The example exists of 4 classes, the first two of which are qualifiers.  First, there is the
+         <literal>@Random</literal> qualifier, used for injecting a random number:
       </para>
       
       <programlisting role="JAVA"><![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RUNTIME)
 @Documented
-@BindingType
+@Qualifier
 public @interface Random {}]]></programlisting>
 
       <para>
-         There is also the <literal>@MaxNumber</literal> binding type, used for
+         There is also the <literal>@MaxNumber</literal> qualifier, used for
          injecting the maximum number that can be injected:
       </para>
       
       <programlisting role="JAVA"><![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RUNTIME)
 @Documented
-@BindingType
+@Qualifier
 public @interface MaxNumber {}
 ]]></programlisting>
 
       <para>
-         The <literal>Generator</literal> class is responsible for creating the
-         random number, via a producer method. It also exposes the maximum
-         possible number via a producer method:
+         The application-scoped <literal>Generator</literal> class is responsible for creating the random number, via a
+         producer method. It also exposes the maximum possible number via a producer method:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@ApplicationScoped
-public class Generator {
-   
-   private java.util.Random random = new java.util.Random( System.currentTimeMillis() );
+public class Generator implements Serializable {
+
+   private java.util.Random random = new java.util.Random(System.currentTimeMillis());
    
    private int maxNumber = 100;
    
-   java.util.Random getRandom()
-   {
+   java.util.Random getRandom() {
       return random;
    }
    
@@ -489,117 +804,65 @@ public class Generator {
       return getRandom().nextInt(maxNumber); 
    }
    
-   @Produces @MaxNumber int getMaxNumber()
-   {
+   @Produces @MaxNumber int getMaxNumber() {
       return maxNumber;
    }
 
 }]]></programlisting>
 
       <para>
-         You'll notice that the <literal>Generator</literal> is application
-         scoped; therefore we don't get a different random each time.
+         The <literal>Generator</literal> is application scoped, so we don't get a different random each time.
       </para>
+
+      <note>
+         <para>
+            The package declaration and imports have been excluded from these listings. The complete listing is
+            available in the example source code.
+         </para>
+      </note>
       
       <para>
-         The final Web Bean in the application is the session scoped
-         <literal>Game</literal>.
+         The final bean in the application is the session-scoped <literal>Game</literal> class. This is the primary
+         entry point of the application. It's responsible for setting up or resetting the game, capturing and validating
+         the user's guess and providing feedback to the user with a <literal>FacesMessage</literal>. We've used
+         constructor injection to initialize the game with a random number.
       </para>
-      
+
       <para>
-         You'll note that we've used the <literal>@Named</literal> 
-         annotation, so that we can use the bean through EL in the JSF page.
-         Finally, we've used constructor injection to initialize the game with
-         a random number. And of course, we need to tell the player when they've
-         won, so we give feedback with a <literal>FacesMessage</literal>.
+         You'll notice that we've also added the <literal>@Named</literal> annotation to this class. This annotation is
+         only required when you want to make the bean accessible to a JSF view via EL (i.e., #{game}).
       </para>
-      
-      <programlisting role="JAVA"><![CDATA[package org.jboss.webbeans.examples.numberguess;
-
-import java.io.Serializable;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Instance;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-@Named
+         
+      <programlisting role="JAVA"><![CDATA[@Named
 @SessionScoped
-public class Game implements Serializable
-{
+public class Game implements Serializable {
+
    private int number;
-   
    private int guess;
    private int smallest;
-   
-   @Inject @MaxNumber
-   private int maxNumber;
-   
    private int biggest;
    private int remainingGuesses;
-   
+
+   @Inject @MaxNumber private int maxNumber;
    @Inject @Random Instance<Integer> randomNumber;
    
-   public Game()
-   {
-   }
-
-   public int getNumber()
-   {
-      return number;
-   }
+   public Game() {}
    
-   public int getGuess()
-   {
-      return guess;
-   }
-   
-   public void setGuess(int guess)
-   {
-      this.guess = guess;
-   }
-   
-   public int getSmallest()
-   {
-      return smallest;
-   }
-   
-   public int getBiggest()
-   {
-      return biggest;
-   }
-   
-   public int getRemainingGuesses()
-   {
-      return remainingGuesses;
-   }
-   
-   public String check()
-   {
-      if (guess>number)
-      {
+   public void check() {
+      if (guess > number) {
          biggest = guess - 1;
       }
-      if (guess<number)
-      {
+      else if (guess < number) {
          smallest = guess + 1;
       }
-      if (guess == number)
-      {
+      else if (guess == number) {
          FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Correct!"));
       }
       remainingGuesses--;
-      return null;
    }
    
    @PostConstruct
-   public void reset()
-   {
+   public void reset() {
       this.smallest = 0;
       this.guess = 0;
       this.remainingGuesses = 10;
@@ -607,108 +870,164 @@ public class Game implements Serializable
       this.number = randomNumber.get();
    }
    
-   public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value)
-   {
-      if (remainingGuesses <= 0)
-      {
+   public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value) {
+      if (remainingGuesses <= 0) {
          FacesMessage message = new FacesMessage("No guesses left!");
          context.addMessage(toValidate.getClientId(context), message);
-         ((UIInput)toValidate).setValid(false);
+         ((UIInput) toValidate).setValid(false);
          return;
       }
       int input = (Integer) value;
 
-      if (input < smallest || input > biggest) 
-      {
-         ((UIInput)toValidate).setValid(false);
+      if (input < smallest || input > biggest) {
+         ((UIInput) toValidate).setValid(false);
 
          FacesMessage message = new FacesMessage("Invalid guess");
          context.addMessage(toValidate.getClientId(context), message);
       }
    }
-}
-]]></programlisting>
 
-      <section>
-         <title>The numberguess example in Tomcat</title>
+   public int getNumber() {
+      return number;
+   }
+   
+   public int getGuess() {
+      return guess;
+   }
+   
+   public void setGuess(int guess) {
+      this.guess = guess;
+   }
+   
+   public int getSmallest() {
+      return smallest;
+   }
+   
+   public int getBiggest() {
+      return biggest;
+   }
+   
+   public int getRemainingGuesses() {
+      return remainingGuesses;
+   }
+
+}]]></programlisting>
+
+      <section id="numberguess-servlet">
+         <title>The numberguess example in Apache Tomcat or Jetty</title>
          
          <para>
-            The numberguess for Tomcat differs in a couple of ways. Firstly, 
-            Web Beans should be deployed as a Web Application library in
-            <literal>WEB-INF/lib</literal>. For your convenience we provide a
-            single jar suitable for running Web Beans in any servlet container 
-            <literal>webbeans-servlet.jar</literal>.
+            A couple of modifications must be made to the numberguess artifact in order to deploy it to Tomcat or Jetty.
+            First, Weld must be deployed as a Web Application library under <literal>WEB-INF/lib</literal> since the
+            servlet container does not provide the CDI services. For your convenience we provide a single JAR suitable
+            for running Weld in any servlet container (including Jetty), <literal>weld-servlet.jar</literal>.
          </para>
          
          <tip>
             <para>
-               Of course, you must also include JSF and EL, as well common 
-               annotations (<literal>jsr250-api.jar</literal>) which a JEE server
-               includes by default.
+               You must also include the JARs for JSF, EL, and the common annotations
+               (<literal>jsr250-api.jar</literal>), all of which are provided by the Java EE platorm (a Java EE
+               application server). Are you starting to appreciate why a Java EE platform is worth using?
             </para>
          </tip>
          
          <para>
-            Secondly, we need to explicitly specify the servlet listener
-            (used to boot Web Beans, and control it's interaction with requests)
-            in <literal>web.xml</literal>:
+            Second, we need to explicitly specify the servlet listener in <literal>web.xml</literal>, again because the
+            container isn't doing this stuff for you. The servlet listener boots Weld and controls it's interaction with
+            requests.
          </para>
          
-         <programlisting><![CDATA[<listener>
-   <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-class>
+         <programlisting role="XML"><![CDATA[<listener>
+   <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
 </listener>]]></programlisting>
-         
+
+         <para>
+            When Weld boots, it places the <literal>javax.enterprise.inject.spi.BeanManager</literal>, the portable SPI
+            for obtaining bean instances, in the ServletContext under a variable name equal to the fully-qualified
+            interface name. You generally don't need to access this interface, but Weld makes use of it.
+         </para>
+
       </section>
       
-      <section id="numberguessWicket">
-      <title>The numberguess example for Apache Wicket</title>
+      <section id="numberguess-wicket">
+         <title>The numberguess example for Apache Wicket</title>
          <para>
-            Whilst JSR-299 specifies integration with Java ServerFaces, Web 
-            Beans allows you to inject into Wicket components, and also allows 
-            you to use a conversation context with Wicket. In this section, 
-            we'll walk you through the Wicket version of the numberguess 
-            example.  
+            Weld includes a number of portable extensions for JSR-299, including an extension for Wicket, which allows
+            you to inject beans into Wicket components and leverage the conversation context. In this section, we'll
+            walk you through the Wicket version of the numberguess example.
+         </para>
+         
+         <tip>
+            <para>   
+               You may want to review the Wicket documentation at <ulink
+               url="http://wicket.apache.org/">http://wicket.apache.org/</ulink> before reading this section, if you
+               aren't already familiar with the framework.
+            </para>
+         </tip>
+
+         <para>
+            Wicket is another environment that relies on the Weld servlet extension. The use of <ulink
+            url="http://jetty.mortbay.org">Jetty</ulink> is common in the Wicket community, and is thus chosen here as
+            the runtime container. You've seen already that Jetty is perfectly capable of running CDI applications with
+            Weld add-ons, and this environment is no different.
          </para>
          
          <note>
-            <para>   
-               You may want to review the Wicket documentation at 
-               <ulink url="http://wicket.apache.org/">http://wicket.apache.org/</ulink>.
+            <para>
+               We'll also be using the Eclipse IDE in these examples. Instructions are provided later for running the
+               example from the commandline, but since you'll likely need to do more than just deploy examples, we'll get
+               setup in this full development environment.
             </para>
          </note>
-
-         <para>
-            Like the previous example, the Wicket WebBeans examples make use of 
-            the <literal>webbeans-servlet</literal> module.   The use of the 
-            <ulink url="http://jetty.mortbay.org/">Jetty servlet container</ulink>
-            is common in the Wicket community,  and is chosen here as the 
-            runtime container in order to facilitate comparison between the 
-            standard Wicket examples and these examples, and also to show how 
-            the webbeans-servlet integration is not dependent upon Tomcat as the
-            servlet container.
-         </para>
-         
-         <para>
-            These examples make use of the Eclipse IDE; instructions are also 
-            given to deploy the application from the command line.
-         </para>
             
          <section>
             <title>Creating the Eclipse project</title>
          
             <para>
-               To generate an Eclipse project from the example:
+               To use the Wicket example in Eclipse, you have one of two choices. You can either use a Maven plugin to
+               generate a regular Eclipse Web project, or you can open the example natively using the <ulink
+               src="http://m2eclipse.sonatype.org/">m2eclipse plugin</ulink>.  Since the Weld source code relies so
+               heavily on Maven, we encourage you to bite the bullet and adopt the m2eclipse plugin. Both approaches are
+               described here for your convenience..
+            </para>
+
+            <para>
+               If you have m2eclipse installed, you can open any Maven project directly. From within Eclipse, select
+               <emphasis>File -> Import... -> Maven Projects</emphasis>. Then, browse to the location of the Wicket
+               numberguess example. You should see that Eclipse recognizes the existance of a Maven project.
+            </para>
+
+            <mediaobject>
+               <imageobject>
+                  <imagedata fileref="images/m2eclipse-wicket-numberguess-import.png" format="PNG"/> 
+               </imageobject>
+            </mediaobject>
+
+            <para>
+               This will create a project in your workspace called <literal>weld-wicket-numberguess</literal>.
+            </para>
+
+            <para>
+               You'll notice after importing, the project has a build error. That's because we need to enable a Maven
+               profile. Right-click on the project and select <emphasis>Properties</emphasis>, then select the
+               <emphasis>Maven</emphasis> tab in the window that appears. In the form field labeled "Active Maven
+               Profiles (comma separated):", type <literal>jetty</literal>. That will enable some extra dependencies
+               that allow the project to compile. You're now ready to develop!
+            </para>
+
+            <para>
+               If you are not using the m2eclipse plugin, you have to follow different steps to import the project.
+               First, switch into the Wicket numberguess example, then execute the Maven Eclipse plugin with the jetty
+               profile activated, as follows:
             </para>
          
-            <programlisting><![CDATA[cd examples/wicket/numberguess
+            <programlisting><![CDATA[$> cd examples/wicket/numberguess
 mvn -Pjetty eclipse:eclipse]]></programlisting>
          
             <para>
-               Then, from eclipse, choose <emphasis>File -> Import -> General -> Existing Projects into Workspace</emphasis>, 
-               select the root directory of the numberguess example, and click 
-               finish.  Note that if you do not intend to run the example with jetty from 
-               within eclipse, omit the "-Pjetty."  This will create a project in your 
-               workspace called <literal>webbeans-wicket-numberguess</literal>
+               Then, from Eclipse, choose <emphasis>File -> Import... -> General -> Existing Projects into
+               Workspace</emphasis>, select the root directory of the numberguess example, and click Finish. This will
+               create a project in your workspace called <literal>weld-wicket-numberguess</literal>.
             </para>
    
             <mediaobject>
@@ -716,22 +1035,23 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
                   <imagedata fileref="images/wicket-numberguess-project.png" format="PNG"/> 
                </imageobject>
             </mediaobject>
+
+            <para>
+               It's time to get the example running!
+            </para>
+
          </section>
    
          <section>
             <title>Running the example from Eclipse</title>
          
             <para>
-               This project follows the <literal>wicket-quickstart</literal> 
-               approach of creating an instance of Jetty in the
-               <literal>Start</literal> class.  So running the example is as 
-               simple as right-clicking on that Start class in 
-               <literal>src/test/java</literal> in the 
-               <emphasis>Package Explorer</emphasis> and choosing 
-               <emphasis>Run as Java Application</emphasis>.  You should
-               see console output related to Jetty starting up; then visit able 
-               <literal>http://localhost:8080</literal> to view the app.  To 
-               debug choose <emphasis>Debug as Java Application</emphasis>.
+               This project follows the <literal>wicket-quickstart</literal> approach of creating an instance of Jetty
+               in the <literal>Start</literal> class.  So running the example is as simple as right-clicking on that
+               Start class in <literal>src/test/java</literal> in the <emphasis>Package Explorer</emphasis> and choosing
+               <emphasis>Run as Java Application</emphasis>. You should see console output related to Jetty starting up;
+               then visit able <literal>http://localhost:8080</literal> to view the app. To debug choose <emphasis>Debug
+               as Java Application</emphasis> instead.
             </para>
          </section>
       
@@ -739,144 +1059,179 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
             <title>Running the example from the command line in JBoss AS or Tomcat</title>
          
             <para>
-               This example can also be deployed from the command line in a 
-               (similar to the other examples).  Assuming you have set up the
-               <literal>build.properties</literal> file in the 
-               <literal>examples</literal> directory to specify the location of 
-               JBoss AS or Tomcat, as previously described, you can run 
-               <literal>ant deploy</literal> from the 
-               <literal>examples/wicket/numberguess</literal> directory, and 
-               access the application at 
-               <literal>http://localhost:8080/webbeans-numberguess-wicket</literal>.
+               This example can also be deployed from the command line in a (similar to the other examples). Assuming
+               you have set up the <literal>local.build.properties</literal> file in the <literal>examples</literal>
+               directory to specify the location of JBoss AS or Tomcat, as previously described, you can run:
             </para>
+
+            <programlisting><![CDATA[$> ant deploy]]></programlisting> 
+
+            <para>to deploy the example to JBoss AS, and:</para>
+
+            <programlisting><![CDATA[$> ant tomcat.deploy]]></programlisting> 
+
+            <para>
+               to deploy the example to Tomcat. You can then access application at
+               <literal>http://localhost:8080/weld-numberguess-wicket</literal>.
+            </para>
+
+            <para>
+               Alternatively, you can run the application in place on an embedded Jetty container using the following
+               Maven command:
+            </para>
+
+            <programlisting><![CDATA[$> mvn jetty:run -Pjetty]]></programlisting> 
+
+            <para>
+               Enough toying with deployment, let's dive into the code.
+            </para>
+
          </section>
    
          <section>
             <title>Understanding the code</title>
          
             <para>
-               JSF uses Unified EL expressions to bind view layer components in 
-               JSP or Facelet views to beans, Wicket defines it's components in 
-               Java. The markup is plain html with a one-to-one mapping between 
-               html elements and the view components. All view logic, including 
-               binding of components to models and controlling the response of 
-               view actions, is handled in Java.  The integration of Web Beans 
-               with Wicket takes advantage of the same binding annotations used 
-               in your business layer to provide injection into your WebPage 
-               subclass (or into other custom wicket component subclasses).
+               The code in the wicket numberguess example is very similar to the JSF-based numberguess example. The
+               business layer is identical! Where things differ is in view binding. JSF uses Unified EL expressions to
+               bind XML-based view layer components in JSF views to beans. In contrast, Wicket defines its components in
+               Java. These Java-based view components have a one-to-one mapping with HTML elements in an adjacent (pure)
+               HTML file. All view logic, including binding of components to models and controlling the response of view
+               actions, is handled in Java.
+            </para>
+            
+            <para>
+               The integration of Weld with Wicket takes advantage of the same qualifier annotations used in your
+               business layer to provide injection into your <literal>WebPage</literal> subclass (or into other custom
+               Wicket component subclasses).
             </para>
 
-            <para>
-               The code in the wicket numberguess example is very similar to the 
-               JSF-based numberguess example. The business layer is identical!
-            </para>
-         
             <para>    
-               Differences are:
+               Here's where things differ from the JSF numberguess example:
             </para>
+
             <itemizedlist>
                <listitem>
                   <para>
-                     Each wicket application must have a 
-                     <literal>WebApplication</literal> subclass,  In our case, 
-                     our application class is 
-                     <literal>SampleApplication</literal>:
+                     Each wicket application must have a <literal>WeldApplication</literal> subclass. In our case, our
+                     application class is <literal>NumberGuessApplication</literal>:
                   </para>
-                  <programlisting><![CDATA[public class SampleApplication extends WebBeansApplication {
-   @Override
-   public Class getHomePage() {
+                  <programlisting role="JAVA"><![CDATA[public class NumberGuessApplication extends WeldApplication {
+   @Override public Class getHomePage() {
       return HomePage.class;
    }
 }]]></programlisting>
                   <para>
-                     This class specifies which page wicket should treat as our 
-                     home page, in our case, <literal>HomePage.class</literal>
+                     This class specifies which page Wicket should treat as our home page, in our case,
+                     <literal>HomePage.class</literal>
                   </para>
                </listitem>
                <listitem>
                   <para>
-                     In <literal>HomePage</literal> we see typical wicket code 
-                     to set up page elements.  The bit that is interesting is 
-                     the injection of the <literal>Game</literal> bean:
+                     In <literal>HomePage</literal>, we see typical Wicket code to set up page elements. The bit that is
+                     interesting is the injection of the <literal>Game</literal> bean:
                   </para>
                   
-                  <programlisting><![CDATA[ @Current Game game;]]></programlisting>
+                  <programlisting role="JAVA"><![CDATA[@Inject Game game;]]></programlisting>
                
                   <para>
-                     The <literal>Game</literal> bean is can then be used, for 
-                     example, by the code for submitting a guess:
+                     The <literal>Game</literal> bean is can then be used, for example, by the code for submitting a
+                     guess:
                   </para>
                
-                  <programlisting><![CDATA[final Component guessButton = new AjaxButton("GuessButton") { 
+                  <programlisting role="JAVA"><![CDATA[final Component guessButton = new AjaxButton("GuessButton") {
    protected void onSubmit(AjaxRequestTarget target, Form form) {
-      if (game.check()) {]]></programlisting>
+      if (game.check()) {
+         info("Correct!");
+         setVisible(false);
+         prompt.setVisible(false);
+         guessLabel.setVisible(false);
+         inputGuess.setVisible(false);
+      }
+      else if (game.getRemainingGuesses() == 0) {
+         info("Sorry, the answer was " + game.getNumber());
+         setVisible(false);
+         guessLabel.setVisible(false);
+         inputGuess.setVisible(false);
+      }
+      else if (game.getNumber() > game.getGuess()) {
+         info("Higher!");
+      }
+      else if (game.getNumber() < game.getGuess()) {
+         info("Lower");
+      }
+      target.addComponent(form);
+   } 
+};      ]]></programlisting>
       
                   <note>
                      <para>
-                        All injections may be serialized; actual storage of the 
-                        bean is managed by JSR-299.  Note that Wicket 
-                        components, like the HomePage and it subcomponents, are 
+                        All injections may be serialized; actual storage of the bean is managed by JSR-299. Note that
+                        Wicket components, like the <literal>HomePage</literal> and it subcomponents, are
                         <emphasis>not</emphasis> JSR-299 beans.
                      </para>
                      <para>
-                        Wicket components allow injection, but they 
-                        <emphasis>cannot</emphasis> use interceptors, decorators
-                        and lifecycle callbacks such as 
-                        <literal>@PostConstruct</literal> or 
-                        <literal>@Initializer</literal> methods.
+                        Wicket components allow injection, but they <emphasis>cannot</emphasis> use interceptors,
+                        decorators and lifecycle callbacks such as <literal>@PostConstruct</literal> or
+                        <literal>@Initializer</literal> methods. The components would need to delegate to actual beans
+                        to leverage these features.
                      </para>
                   </note>
                </listitem>
                <listitem>
                   <para>
-                     The example uses AJAX for processing of button events, and 
-                     dynamically hides buttons that are no longer relevant, for 
-                     example when the user has won the game.
+                     The example uses AJAX for processing of button events, and dynamically hides buttons that are no
+                     longer relevant, for example when the user has won the game.
                   </para>
                </listitem>
 
                <listitem>
                   <para>
-                     In order to activate wicket for this webapp, the Wicket 
-                     filter is added to web.xml, and our application class is 
-                     specified:
+                     In order to activate Wicket for this webapp, the Wicket filter is added to web.xml, and our
+                     application class is specified in web.xml:
                   </para>
-                  <programlisting><![CDATA[<filter>
-   <filter-name>wicket.numberguess-example</filter-name>
+
+                  <programlisting role="XML"><![CDATA[<filter>
+   <filter-name>Wicket Filter</filter-name>
    <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
    <init-param>
       <param-name>applicationClassName</param-name>
-      <param-value>org.jboss.webbeans.examples.wicket.SampleApplication</param-value>
+      <param-value>org.jboss.weld.examples.wicket.NumberGuessApplication</param-value>
    </init-param>
 </filter>
 
 <filter-mapping>
-   <filter-name>wicket.numberguess-example</filter-name>
+   <filter-name>Wicket Filter</filter-name>
    <url-pattern>/*</url-pattern>
-</filter-mapping>
- 
-<listener>
-   <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-class>
-</listener>]]></programlisting>
+</filter-mapping>]]></programlisting>
+
                   <para>
-                     Note that the servlet listener is also added, as in the 
-                     Tomcat example, in order to boostrap Web Beans when Jetty 
-                     starts, and to hook Web Beans into the Jetty servlet 
-                     request and session lifecycles.
+                     The servlet listener is still required, as in the Tomcat example, to bootstrap CDI when Jetty
+                     starts and to hook CDI into the Jetty servlet request and session life cycles. However, rather than
+                     putting it into the web.xml, it is placed into an override file,
+                     src/main/webapp/WEB-INF/jetty-additions-to-web.xml, that is passed to Jetty as extra descriptor to
+                     be appended to the web.xml configuration.
                   </para>
+
+                  <programlisting role="XML"><![CDATA[<web-app version="2.4" ...>
+   <listener>
+      <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+   </listener>
+</web-app>]]></programlisting> 
+
                </listitem>
   
             </itemizedlist>
          </section>
       </section>
       
-      <section>
+      <section id="numberguess-se">
          <title>The numberguess example for Java SE with Swing</title>
 
          <para>
             This example can be found in the 
-            <literal>examples/se/numberguess</literal> folder of the Web 
-            Beans distribution.
+            <literal>examples/se/numberguess</literal> folder of the Weld
+            distribution.
          </para>
             
             
@@ -906,7 +1261,7 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
                <para>
                   execute the following command
                </para>
-               <programlisting>mvn -Drun</programlisting>
+               <programlisting>$> mvn -Drun</programlisting>
             </listitem>
          </itemizedlist>
 
@@ -915,7 +1270,7 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
          <para>
             There is an empty <literal>beans.xml</literal> file in the root 
             package (<literal>src/main/resources/beans.xml</literal>), which 
-            marks this application as a Web Beans application.
+            marks this application as a CDI application.
          </para>
 
          <para>
@@ -933,57 +1288,46 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
                <area id="reset" coords="68" />
              </areaspec>
              <programlisting role="JAVA"><![CDATA[@ApplicationScoped
-public class Game implements Serializable
-{
+public class Game implements Serializable {
 
     private int number;
     private int guess;
     private int smallest;
-
-    @MaxNumber
-    private int maxNumber;
-
     private int biggest;
     private int remainingGuesses;
     private boolean validNumberRange = true;
 
-    @Current Generator rndGenerator;
+    @Inject @MaxNumber private int maxNumber;
+
+    @Inject Generator rndGenerator;
 
     ...
 
-    public boolean isValidNumberRange()
-    {
+    public boolean isValidNumberRange() {
         return validNumberRange;
     }
 
-    public boolean isGameWon()
-    {
+    public boolean isGameWon() {
         return guess == number;
     }
 
-    public boolean isGameLost()
-    {
+    public boolean isGameLost() {
         return guess != number && remainingGuesses <= 0;
     }
 
-    public boolean check()
-    {
+    public boolean check() {
         boolean result = false;
 
-        if ( checkNewNumberRangeIsValid() )
-        {
-            if ( guess > number )
-            {
+        if (checkNewNumberRangeIsValid()) {
+            if (guess > number) {
                 biggest = guess - 1;
             }
 
-            if ( guess < number )
-            {
+            if (guess < number) {
                 smallest = guess + 1;
             }
 
-            if ( guess == number )
-            {
+            if (guess == number) {
                 result = true;
             }
 
@@ -993,14 +1337,12 @@ public class Game implements Serializable
         return result;
     }
 
-    private boolean checkNewNumberRangeIsValid()
-    {
-        return validNumberRange = ( ( guess >= smallest ) && ( guess <= biggest ) );
+    private boolean checkNewNumberRangeIsValid() {
+        return validNumberRange = ((guess >= smallest) && (guess <= biggest));
     }
 
     @PostConstruct
-    public void reset()
-    {
+    public void reset() {
         this.smallest = 0;
         ...
         this.number = rndGenerator.next();
@@ -1084,12 +1426,10 @@ public class Game implements Serializable
             <area id="challenge" coords="5" />
             <area id="result" coords="16" />
          </areaspec>
-         <programlisting role="JAVA"><![CDATA[public class MessageGenerator
-{
-    @Current Game game;
+         <programlisting role="JAVA"><![CDATA[public class MessageGenerator {
+    @Inject Game game;
 
-    public String getChallengeMessage()
-    {
+    public String getChallengeMessage() {
         StringBuilder challengeMsg = new StringBuilder( "I'm thinking of a number between " );
         challengeMsg.append( game.getSmallest() );
         challengeMsg.append( " and " );
@@ -1099,35 +1439,33 @@ public class Game implements Serializable
         return challengeMsg.toString();
     }
 
-    public String getResultMessage()
-    {
-        if ( game.isGameWon() )
-        {
+    public String getResultMessage() {
+        if ( game.isGameWon() ) {
             return "You guess it! The number was " + game.getNumber();
-        } else if ( game.isGameLost() )
-        {
+        }
+        else if ( game.isGameLost() ) {
             return "You are fail! The number was " + game.getNumber();
-        } else if ( ! game.isValidNumberRange() )
-        {
+        }
+        else if ( ! game.isValidNumberRange() ) {
             return "Invalid number range!";
-        } else if ( game.getRemainingGuesses() == Game.MAX_NUM_GUESSES )
-        {
+        }
+        else if ( game.getRemainingGuesses() == Game.MAX_NUM_GUESSES ) {
             return "What is your first guess?";
-        } else
-        {
+        }
+        else {
             String direction = null;
 
-            if ( game.getGuess() < game.getNumber() )
-            {
+            if ( game.getGuess() < game.getNumber() ) {
                 direction = "Higher";
-            } else
-            {
+            }
+            else {
                 direction = "Lower";
             }
 
             return direction + "! You have " + game.getRemainingGuesses() + " guesses left.";
         }
     }
+
 }]]></programlisting>
                <calloutlist>
                <callout arearefs="game">
@@ -1166,13 +1504,12 @@ public class Game implements Serializable
                <area id="replay" coords="44" />
                <area id="refresh" coords="50" />
             </areaspec>
-            <programlisting role="JAVA"><![CDATA[public class NumberGuessFrame  extends javax.swing.JFrame
-{
-    private @Current Game game;
-    private @Current MessageGenerator msgGenerator;
+            <programlisting role="JAVA"><![CDATA[public class NumberGuessFrame extends javax.swing.JFrame {
 
-    public void start( @Observes @Deployed Manager manager )
-    {
+    private @Inject Game game;
+    private @Inject MessageGenerator msgGenerator;
+
+    public void start( @Observes @Deployed Manager manager ) {
         java.awt.EventQueue.invokeLater( new Runnable()
             {
                 public void run()
@@ -1199,8 +1536,7 @@ public class Game implements Serializable
         ...
     }
 
-    private void guessButtonActionPerformed( java.awt.event.ActionEvent evt )
-    {
+    private void guessButtonActionPerformed( java.awt.event.ActionEvent evt ) {
         int guess =  Integer.parseInt(guessText.getText());
 
         game.setGuess( guess );
@@ -1209,14 +1545,12 @@ public class Game implements Serializable
 
     }
 
-    private void replayBtnActionPerformed( java.awt.event.ActionEvent evt )
-    {
+    private void replayBtnActionPerformed( java.awt.event.ActionEvent evt ) {
        game.reset();
        refreshUI();
     }
 
-    private void refreshUI()
-    {
+    private void refreshUI() {
         mainLabel.setText( msgGenerator.getChallengeMessage() );
         messageLabel.setText( msgGenerator.getResultMessage() );
         guessText.setText( "" );
@@ -1243,7 +1577,7 @@ public class Game implements Serializable
                </callout>
                <callout arearefs="start">
                   <para>
-                    This application is started in the usual Web Beans SE way, 
+                    This application is started in the usual CDI SE way, 
                     by observing the <literal>@Deployed Manager</literal> event.
                   </para>
                </callout>
@@ -1309,30 +1643,29 @@ public class Game implements Serializable
       </section>
    </section>
    
-   <section>
-      <title>The translator example</title>
+   <section id="translator">
+      <title>The translator example in depth</title>
       
       <para>
-         The translator example will take any sentences you enter, and translate
-         them to Latin.
+         The translator example will take any sentences you enter, and translate them to Latin. (Well, not really, but
+         the stub is there for you to implement, at least. Good luck!)
       </para>
       
       <para>
-         The translator example is built as an ear, and contains EJBs. As a result, it's structure is more complex than
+         The translator example is built as an EAR and contains EJBs. As a result, it's structure is more complex than
          the numberguess example.
       </para>
       
       <note>
          <para>
-            EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will
-            make this structure much simpler!
+            Jave EE 6, which bundles EJB 3.1, allows you to package EJBs in a WAR, which will make this structure much
+            simpler! Still, there are other advantages of using an EAR.
          </para>
       </note>
       
       <para>
-         First, let's take a look at the ear aggregator, which is located in 
-         <literal>webbeans-translator-ear</literal> module. Maven automatically
-         generates the <literal>application.xml</literal> for us:
+         First, let's take a look at the EAR aggregator, which is located in the example's <literal>ear</literal> directory. Maven
+         automatically generates the <literal>application.xml</literal> for us from this plugin configuration:
       </para>
       
       <programlisting role="XML"><![CDATA[<plugin>
@@ -1341,62 +1674,62 @@ public class Game implements Serializable
    <configuration>
       <modules>
          <webModule>
-            <groupId>org.jboss.webbeans.examples.translator</groupId>
-            <artifactId>webbeans-translator-war</artifactId>
-            <contextRoot>/webbeans-translator</contextRoot>
+            <groupId>org.jboss.weld.examples.jsf.translator</groupId>
+            <artifactId>weld-jsf-translator-war</artifactId>
+            <contextRoot>/weld-translator</contextRoot>
          </webModule>
       </modules>
    </configuration>
 </plugin>]]></programlisting>
 
       <para>
-         Here we set the context path, which gives us a nice url 
-         (<ulink url="http://localhost:8080/webbeans-translator">http://localhost:8080/webbeans-translator</ulink>).
+         This configuration overrides the web context path, resulting in this application URL: <ulink
+         url="http://localhost:8080/weld-translator">http://localhost:8080/weld-translator</ulink>.
       </para>
       
       <tip>
          <para>
-            If you aren't using Maven to generate these files, you would need
+            If you weren't using Maven to generate these files, you would need
             <literal>META-INF/application.xml</literal>:
          </para>
          
-         <programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<application xmlns="http://java.sun.com/xml/ns/javaee" 
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
-             version="5">
-  <display-name>webbeans-translator-ear</display-name>
-  <description>Ear Example for the reference implementation of JSR 299: Web Beans</description>
+         <programlisting role="XML"><![CDATA[<application version="5"
+   xmlns="http://java.sun.com/xml/ns/javaee" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://java.sun.com/xml/ns/javaee
+      http://java.sun.com/xml/ns/javaee/application_5.xsd">
+
+  <display-name>weld-jsf-translator-ear</display-name>
+  <description>The Weld JSF translator example (EAR)</description>
   
   <module>
     <web>
-      <web-uri>webbeans-translator.war</web-uri>
-      <context-root>/webbeans-translator</context-root>
+      <web-uri>weld-translator.war</web-uri>
+      <context-root>/weld-translator</context-root>
     </web>
   </module>
   <module>
-    <ejb>webbeans-translator.jar</ejb>
+    <ejb>weld-translator.jar</ejb>
   </module>
 </application>]]></programlisting>
       </tip>
       
       <para>
-         Next, lets look at the war. Just as in the numberguess example, we have
-         a <literal>faces-config.xml</literal> (to enable Facelets) and a 
-         <literal>web.xml</literal> (to enable JSF) in 
-         <literal>WebContent/WEB-INF</literal>.
+         Next, lets look at the WAR, which is located in the example's <literal>war</literal> directory. Just as in the
+         numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.0 and a <literal>web.xml</literal>
+         (to activate JSF) under WEB-INF, both sourced from <literal>src/main/webapp/WEB-INF</literal>.
       </para>
       
       <para>
-         More intersting is the facelet used to translate text. Just as in
-         the numberguess example we have a template, which surrounds the form
-         (ommitted here for brevity):
+         More intersting is the JSF view used to translate text. Just as in the numberguess example we have a template,
+         which surrounds the form (ommitted here for brevity):
       </para>
       
-      <programlisting role="XML"><![CDATA[<h:form id="NumberGuessMain">
-            
+      <programlisting role="XML"><![CDATA[<h:form id="translator">
+
    <table>
-      <tr align="center" style="font-weight: bold" >
+      <tr align="center" style="font-weight: bold">
          <td>
             Your text
          </td>
@@ -1406,10 +1739,10 @@ public class Game implements Serializable
       </tr>
       <tr>
          <td>
-            <h:inputTextarea id="text" value="#{translator.text}" required="true" rows="5" cols="80" />
+            <h:inputTextarea id="text" value="#{translator.text}" required="true" rows="5" cols="80"/>
          </td>
          <td>
-            <h:outputText value="#{translator.translatedText}" />
+            <h:outputText value="#{translator.translatedText}"/>
          </td>
       </tr>
    </table>
@@ -1420,93 +1753,128 @@ public class Game implements Serializable
 </h:form>]]></programlisting>
 
       <para>
-         The user can enter some text in the lefthand textarea, and hit the 
-         translate button to see the result to the right.
+         The user can enter some text in the left-hand textarea, and hit the translate button to see the result to the
+         right.
       </para>
       
       <para>
-         Finally, let's look at the ejb module, 
-         <literal>webbeans-translator-ejb</literal>.
-         In <literal>src/main/resources/META-INF</literal> there is just an 
-         empty <literal>web-beans.xml</literal>, used to mark the archive as 
-         containing Web Beans.
+         Finally, let's look at the EJB module, which is located in the example's <literal>ejb</literal> directory.  In
+         <literal>src/main/resources/META-INF</literal> there is just an empty <literal>beans.xml</literal>, used to
+         mark the archive as containing beans.
       </para>
       
       <para>
-         We've saved the most interesting bit to last, the code! The project has
-         two simple beans, <literal>SentenceParser</literal> and
-         <literal>TextTranslator</literal> and two enterprise beans,
-         <literal>TranslatorControllerBean</literal> and 
-         <literal>SentenceTranslator</literal>. You should be getting quite
-         familiar with what a Web Bean looks like by now, so we'll just 
-         highlight the most interesting bits here.
+         We've saved the most interesting bit to last, the code! The project has two simple beans,
+         <literal>SentenceParser</literal> and <literal>TextTranslator</literal> and two enterprise beans,
+         <literal>TranslatorControllerBean</literal> and <literal>SentenceTranslator</literal>. You should be getting
+         quite familiar with what a bean looks like by now, so we'll just highlight the most interesting bits here.
       </para>
       
       <para>
-         Both <literal>SentenceParser</literal> and 
-         <literal>TextTranslator</literal> are dependent beans, and 
-         <literal>TextTranslator</literal> uses constructor initialization:
+         Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> are dependent beans, and
+         <literal>TextTranslator</literal> uses constructor injection:
       </para>
       
-      <programlisting role="JAVA"><![CDATA[public class TextTranslator { 
+      <programlisting role="JAVA"><![CDATA[public class TextTranslator implements Serializable { 
+
    private SentenceParser sentenceParser; 
-   private Translator sentenceTranslator; 
+
+   @EJB private Translator translator; 
    
-   @Initializer
-   TextTranslator(SentenceParser sentenceParser, Translator sentenceTranslator) 
-   { 
+   @Inject public TextTranslator(SentenceParser sentenceParser) { 
       this.sentenceParser = sentenceParser; 
-      this.sentenceTranslator = sentenceTranslator;]]></programlisting>
+   }
+   
+   public String translate(String text) { 
+      StringBuilder sb = new StringBuilder(); 
+      for (String sentence: sentenceParser.parse(text)) { 
+         sb.append(translator.translate(sentence)).append(". "); 
+      } 
+      return sb.toString().trim(); 
+   }
+
+}]]></programlisting>
       
       <para>
-         <literal>TextTranslator</literal> is a stateless bean (with a local 
-         business interface), where the magic happens - of course, we couldn't 
-         develop a full translator, but we gave it a good go!
+         <literal>TextTranslator</literal> uses the simple bean (really just a plain Java class!)
+         <literal>SentenceParser</literal> to parse the sentence and then calls on the stateless bean with the local
+         business interface <literal>Translator</literal> to perform the translation. That's where the magic happens.
+         Of course, we couldn't develop a full translator, but it's convincing enough to anyone who doesn't understand
+         Latin!
       </para>
-      
+
+      <programlisting role="JAVA"><![CDATA[@Stateless
+public class SentenceTranslator implements Translator { 
+
+   public String translate(String sentence) { 
+      return "Lorem ipsum dolor sit amet"; 
+   }
+
+}]]></programlisting> 
+
       <para>
-         Finally, there is UI orientated controller, that collects the text from
-         the user, and dispatches it to the translator. This is a request 
-         scoped, named, stateful session bean, which injects the translator.
+         Finally, there is UI orientated controller. This is a request scoped, named, stateful session bean, which
+         injects the translator. It collects the text from the user and dispatches it to the translator. The bean also
+         has getters and setters for all the fields on the page.
       </para>
       
       <programlisting role="JAVA"><![CDATA[@Stateful
 @RequestScoped
 @Named("translator")
-public class TranslatorControllerBean implements TranslatorController
-{
+public class TranslatorControllerBean implements TranslatorController {
+
+   @Inject private TextTranslator translator;
    
-   @Current TextTranslator translator;]]></programlisting>
+   private String inputText;
+   
+   private String translatedText;
+   
+   public void translate() {
+      translatedText = translator.translate(inputText);
+   }
+   
+   public String getText() {
+      return inputText;
+   }
+   
+   public void setText(String text) {
+      this.inputText = text;
+   }
+   
+   public String getTranslatedText() {
+      return translatedText;
+   }
+   
+   @Remove public void remove() {}
+
+}]]></programlisting>
    
       <para>
-         The bean also has getters and setters for all the fields on the page.
+         [CHECK is this still accurate?] Since this is a stateful session bean, we have to have a remove method.  The
+         bean manager will call the remove method for you when the bean is destroyed; in this case at the end of the
+         request.
       </para>
-      
+
       <para>
-         As this is a stateful session bean, we have to have a remove method:
+         You'll notice in this example the smooth integration between the existing <literal>@EJB</literal> resource
+         injection annotation and the new <literal>@Inject</literal> annotation for injecting any managed or session
+         bean. The tight integration with Java EE is a key value proposition of CDI (not to mention a requirement).
       </para>
-      
-      <programlisting role="JAVA"><![CDATA[   @Remove
-   public void remove()
-   {
-      
-   }]]></programlisting>
-   
-      <para>
-         The Web Beans manager will call the remove method for you when the bean
-         is destroyed; in this case at the end of the request.
-      </para>
+
    </section>
    
    <para>
-      That concludes our short tour of the Web Beans examples. For more on Web 
-      Beans , or to help out, please visit 
-      <ulink url="http://www.seamframework.org/WebBeans/Development">http://www.seamframework.org/WebBeans/Development</ulink>.
+      That concludes our short tour of the Weld starter examples. For more information on Weld, or to help out with
+      development, please visit <ulink
+      url="http://www.seamframework.org/Weld/Development">http://www.seamframework.org/Weld/Development</ulink>.
    </para>
    
    <para>
-      We need help in all areas - bug fixing, writing new features, writing
-      examples and translating this reference guide.
+      We need help in all areas - bug fixing, writing new features, writing examples and translating this reference
+      guide.
    </para>
 
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </chapter>

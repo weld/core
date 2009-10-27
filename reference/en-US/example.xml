@@ -1,16 +1,15 @@
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
-
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <chapter id="example">
-  <title>JSF web application example</title>
+   <title>JSF web application example</title>
 
-  <para>Let's illustrate these ideas with a full example. We're going 
-  to implement user login/logout for an application that uses JSF. First, 
-  we'll define a Web Bean to hold the username and password entered during 
-  login:</para>
+   <para>
+      Let's illustrate these ideas with a full example. We're going to implement a user login/logout for an application
+      that uses JSF. First, we'll define a request-scoped bean to hold the username and password entered during login:
+   </para>
 
 <programlisting role="JAVA"><![CDATA[@Named @RequestScoped
 public class Credentials {
-	
     private String username;
     private String password;
     
@@ -19,86 +18,110 @@ public class Credentials {
     
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
-    
 }]]></programlisting>
 
-  <para>This Web Bean is bound to the login prompt in the following JSF form:</para>
+   <para>This bean is bound to the login prompt in the following JSF form:</para>
 
-<programlisting role="JAVA"><![CDATA[<h:form>
-    <h:panelGrid columns="2" rendered="#{!login.loggedIn}">
-        <h:outputLabel for="username">Username:</h:outputLabel>
-        <h:inputText id="username" value="#{credentials.username}"/>
-        <h:outputLabel for="password">Password:</h:outputLabel>
-        <h:inputText id="password" value="#{credentials.password}"/>
-    </h:panelGrid>
-    <h:commandButton value="Login" action="#{login.login}" rendered="#{!login.loggedIn}"/>
-    <h:commandButton value="Logout" acion="#{login.logout}" rendered="#{login.loggedIn}"/>
+   <programlisting role="JAVA"><![CDATA[<h:form>
+   <h:panelGrid columns="2" rendered="#{!login.loggedIn}">
+      <h:outputLabel for="username">Username:</h:outputLabel>
+      <h:inputText id="username" value="#{credentials.username}"/>
+      <h:outputLabel for="password">Password:</h:outputLabel>
+      <h:inputText id="password" value="#{credentials.password}"/>
+   </h:panelGrid>
+   <h:commandButton value="Login" action="#{login.login}" rendered="#{!login.loggedIn}"/>
+   <h:commandButton value="Logout" action="#{login.logout}" rendered="#{login.loggedIn}"/>
 </h:form>]]></programlisting>
 
-  <para>The actual work is done by a session scoped Web Bean that maintains 
-  information about the currently logged-in user and exposes the <literal>User</literal>
-  entity to other Web Beans:</para>
+      <para>
+         The actual work is done by a session-scoped bean that maintains information about the currently logged-in user
+         and exposes the <literal>User</literal> entity to other beans:
+      </para>
 
-<programlisting role="JAVA"><![CDATA[@SessionScoped @Named
+      <programlisting role="JAVA"><![CDATA[@SessionScoped @Named
 public class Login {
 
-    @Current Credentials credentials;
-    @PersistenceContext EntityManager userDatabase;
+   @Inject Credentials credentials;
+   @Inject @UserDatabase EntityManager userDatabase;
 
-    private User user;
+   private User user;
     
-    public void login() {
-    	
-        List<User> results = userDatabase.createQuery(
-           "select u from User u where u.username=:username and u.password=:password")
-           .setParameter("username", credentials.getUsername())
-           .setParameter("password", credentials.getPassword())
-           .getResultList();
+   public void login() {
+      List<User> results = userDatabase.createQuery(
+         "select u from User u where u.username = :username and u.password = :password")
+         .setParameter("username", credentials.getUsername())
+         .setParameter("password", credentials.getPassword())
+         .getResultList();
         
-        if ( !results.isEmpty() ) {
-           user = results.get(0);
-        }
-        
-    }
+      if (!results.isEmpty()) {
+         user = results.get(0);
+      }
+      else {
+         // perhaps add code here to report a failed login
+      }
+   }
     
-    public void logout() {
-        user = null;
-    }
+   public void logout() {
+      user = null;
+   }
     
-    public boolean isLoggedIn() {
-       return user!=null;
-    }
+   public boolean isLoggedIn() {
+      return user != null;
+   }
     
-    @Produces @LoggedIn User getCurrentUser() {
-        return user;
-    }
+   @Produces @LoggedIn User getCurrentUser() {
+      return user;
+   }
 
 }]]></programlisting>
 
-  <para>Of course, <literal>@LoggedIn</literal> is a binding annotation:</para>
+   <para><literal>@LoggedIn</literal> and <literal>@UserDatabase</literal> are custom qualifier annotations:</para>
 
-<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
-@Target({TYPE, METHOD, FIELD})
-@BindingType
+   <programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
+@Target({TYPE, METHOD, PARAMETER, FIELD})
+@Documented
+@Qualifier
 public @interface LoggedIn {}]]></programlisting>
 
-  <para>Now, any other Web Bean can easily inject the current user:</para>
+   <programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
+@Target({METHOD, PARAMETER, FIELD})
+@Documented
+@Qualifier
+public @interface UserDatabase {}]]></programlisting>
 
-<programlisting role="JAVA"><![CDATA[public class DocumentEditor {
+   <para>
+      We need an adapter bean to expose our typesafe <literal>EntityManager</literal>:
+   </para>
 
-    @Current Document document;
-    @LoggedIn User currentUser;
-    @PersistenceContext EntityManager docDatabase;
+   <programlisting role="JAVA"><![CDATA[public class UserDatabaseProducer {
+   @Produces @UserDatabase @PersistenceContext EntityManager userDatabase;
+}]]></programlisting> 
+   
+   <para>Now, any other bean can easily inject the current user, as well as other beans:</para>
+
+   <programlisting role="JAVA"><![CDATA[public class DocumentEditor {
+   @Inject Document document;
+   @Inject @LoggedIn User currentUser;
+   @Inject @DocumentDatabase EntityManager docDatabase;
     
-    public void save() {
-        document.setCreatedBy(currentUser);
-        docDatabase.persist(document);
-    }
-    
+   public void save() {
+      document.setCreatedBy(currentUser);
+      docDatabase.persist(document);
+   }
 }]]></programlisting>
 
-  <para>Hopefully, this example gives a flavor of the Web Bean programming model.
-  In the next chapter, we'll explore Web Beans dependency injection in greater
-  depth.</para>
+   <para>Or we can reference the current user in a JSF view:</para>
 
+   <programlisting role="XML"><![CDATA[<h:panelGroup rendered="#{login.loggedIn}">
+   signed in as #{currentUser.username}
+</h:panelGroup>]]></programlisting> 
+
+   <para>
+      Hopefully, this example gives a flavor of the CDI services.  In the next chapter, we'll explore examples from the
+      CDI reference implementation, Weld, in greater depth.
+   </para>
+
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </chapter>

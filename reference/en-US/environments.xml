@@ -272,7 +272,7 @@ $ ant update</programlisting>
          </listitem>
       </itemizedlist>
 
-      <section>
+      <section id="weld-se">
           <title>Web Beans SE Module</title>
 
           <para>To make life easy for developers Web Beans provides a special module with a

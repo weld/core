@@ -1,8 +1,13 @@
-<!DOCTYPE bookinfo PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
-
+<!DOCTYPE bookinfo PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <bookinfo>
-  <title>Web Beans: Java Contexts and Dependency Injection</title>
-  <subtitle>The new standard for dependency injection and contextual state management</subtitle>
+   <title>Weld - JSR-299 Reference Implementation</title>
+   <subtitle>
+      JSR-299: The new Java standard for dependency injection and contextual life cycle management
+   </subtitle>
 
-  <xi:include href="Author_Group.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+   <xi:include href="Author_Group.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </bookinfo>

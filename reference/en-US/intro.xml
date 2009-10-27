@@ -1,538 +1,1000 @@
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 
 <chapter id="intro">
-  <title>Getting started with Web Beans</title>
+   <title>Getting started with JSR-299 (CDI)</title>
   
-  <para>So you're already keen to get started writing your first Web Bean?
-  Or perhaps you're skeptical, wondering what kinds of hoops the Web Beans
-  specification will make you jump through! The good news is that you've
-  probably already written and used hundreds, perhaps thousands of Web Beans.
-  You might not even remember the first Web Bean you wrote.</para>
+   <para>
+      So you're keen to get started writing your first bean?  Or perhaps you're skeptical, wondering what kinds of hoops
+      the CDI specification will make you jump through! The good news is that you've probably already written and used
+      hundreds, perhaps thousands of beans. CDI just helps you make use them in your web or enterprise application.
+   </para>
+
+   <section id="bean-definition">
+      <title>What is a bean?</title>
+
+      <para>
+         In this section, you'll learn that a bean is exactly what you think it is. Only now, it has a true identity in
+         Java EE.
+      </para>
+
+      <para>
+         Prior to Java EE 6, there existed no clear definition of a bean in the platform. Of course, we've been calling
+         Java classes used in web and enterprise applications beans for years. Third-party frameworks, such as Spring,
+         even have facilities for defining and creating beans; and there are a couple of bean variants in the platform
+         itself, including EJB session beans and JSF managed beans. What was missing was a common definition.
+      </para>
+
+      <para>
+         Java EE 6 finally lays down the definition of a bean in the Managed Bean specification. Managed Beans are
+         defined as container-managed objects with minimal requirements, otherwise known by their acronym, POJOs (Plain
+         Old Java Objects). They support a small set of basic services, such as resource injection, lifecycle callbacks
+         and interceptors. Companion specifications, such as EJB and CDI, build on this basic model. But, <emphasis>at
+         last</emphasis>, there is a universally accepted concept of a bean and a lightweight component model that's
+         aligned across the Java EE platform.
+      </para>
+
+      <para>
+         With certain, unique exceptions, every Java class that has a constructor with no parameters (or an alternate
+         constructor designated with the annotation <literal>@Inject</literal>) is a candidate for becoming a bean. Any
+         EJB session bean is also a candidate. They become beans, specifically CDI beans, if they reside in a Java EE
+         module that contains a special marker file (META-INF/beans.xml) and if instances of those classes are managed
+         by the Java EE container. Just know that, for simple JavaBean classes, there's no special metadata you need to
+         add to make them beans. They just are.
+      </para>
       
-  <section>
-    <title>Your first Web Bean</title>
+      <para>
+         The JavaBeans and EJBs you've been writing every day, up until now, have not been able to take advantage of the
+         new services defined by the CDI specification. But you'll be able to use every one of them with CDI --
+         allowing the container to create and destroy instances of your beans and associate them with a designed context
+         (or scope), injecting them into other beans, using them in EL expressions, specializing them with qualifier
+         annotations, even adding interceptors and decorators to them -- from this point forward without modifying
+         your code. At most, you'll have to add some annotations.
+      </para>
+
+      <para>
+         Let's see how to create your first bean.
+      </para>
+
+   </section>
+
+   <section id="first-bean">
+      <title>Your first bean (or is it?)</title>
+
+      <para>
+         Suppose that we have two existing Java classes, that we've been using for years in various applications. The
+         first class parses a string into a list of sentences:
+      </para>
     
-    <para>With certain, very special exceptions, every Java class with a 
-    constructor that accepts no parameters is a Web Bean. That includes every 
-    JavaBean. Furthermore, every EJB 3-style session bean is a Web Bean. Sure, 
-    the JavaBeans and EJBs you've been writing every day have not been able to 
-    take advantage of the new services defined by the Web Beans specification, 
-    but you'll be able to use every one of them as Web Beans &#151; injecting them 
-    into other Web Beans, configuring them via the Web Beans XML configuration 
-    facility, even adding interceptors and decorators to them &#151; without 
-    touching your existing code.</para>
-    
-    <para>Suppose that we have two existing Java classes, that we've been using
-    for years in various applications. The first class parses a string into a 
-    list of sentences:</para>
-    
-    <programlisting role="JAVA"><![CDATA[public class SentenceParser {
-    public List<String> parse(String text) { ... }
+      <programlisting role="JAVA"><![CDATA[public class SentenceParser {
+   public List<String> parse(String text) { ... }
 }]]></programlisting>
 
-    <para>The second existing class is a stateless session bean front-end for an
-    external system that is able to translate sentences from one language to 
-    another:</para>
+      <para>
+         The second existing class is a stateless session bean front-end for an external system that is able to
+         translate sentences from one language to another:
+      </para>
     
-    <programlisting role="JAVA"><![CDATA[@Stateless
+      <programlisting role="JAVA"><![CDATA[@Stateless
 public class SentenceTranslator implements Translator {
-    public String translate(String sentence) { ... }
+   public String translate(String sentence) { ... }
 }]]></programlisting>
 
-    <para>Where <literal>Translator</literal> is the local interface:</para>
+      <para>Where <literal>Translator</literal> is the EJB local interface:</para>
     
-    <programlisting role="JAVA"><![CDATA[@Local
+      <programlisting role="JAVA"><![CDATA[@Local
 public interface Translator {
-    public String translate(String sentence);
+   public String translate(String sentence);
 }]]></programlisting>
 
-    <para>Unfortunately, we don't have a preexisting class that translates whole
-    text documents. So let's write a Web Bean that does this job:</para>
+      <para>
+         Unfortunately, we don't have a class that translates whole text documents. So let's write a bean for this job:
+      </para>
     
-    <programlisting role="JAVA"><![CDATA[public class TextTranslator {
+      <programlisting role="JAVA"><![CDATA[public class TextTranslator {
+   private SentenceParser sentenceParser;
+   private Translator sentenceTranslator;
     
-    private SentenceParser sentenceParser;
-    private Translator sentenceTranslator;
+   @Inject
+   TextTranslator(SentenceParser sentenceParser, Translator sentenceTranslator) {
+      this.sentenceParser = sentenceParser;
+      this.sentenceTranslator = sentenceTranslator;
+   }
     
-    @Initializer
-    TextTranslator(SentenceParser sentenceParser, Translator sentenceTranslator) {
-        this.sentenceParser = sentenceParser;
-        this.sentenceTranslator = sentenceTranslator;
-    }
-    
-    public String translate(String text) {
-        StringBuilder sb = new StringBuilder();
-        for (String sentence: sentenceParser.parse(text)) {
-            sb.append(sentenceTranslator.translate(sentence));
-        }
-        return sb.toString();
-    }
-    
+   public String translate(String text) {
+      StringBuilder sb = new StringBuilder();
+      for (String sentence: sentenceParser.parse(text)) {
+          sb.append(sentenceTranslator.translate(sentence));
+      }
+      return sb.toString();
+   }
 }]]></programlisting>
 
-    <para>We may obtain an instance of <literal>TextTranslator</literal> by 
-    injecting it into a Web Bean, Servlet or EJB:</para>
-    
-    <programlisting role="JAVA"><![CDATA[@Initializer
-public setTextTranslator(TextTranslator textTranslator) {
-    this.textTranslator = textTranslator;
-}]]></programlisting>
-
-    <para>Alternatively, we may obtain an instance by directly calling a method 
-    of the Web Bean manager:</para>
-
-    <programlisting role="JAVA"><![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator.class);]]></programlisting>
-    
-    <para>But wait: <literal>TextTranslator</literal> does not have a constructor
-    with no parameters! Is it still a Web Bean? Well, a class that does not have a 
-    constructor with no parameters can still be a Web Bean if it has a constructor
-    annotated <literal>@Initializer</literal>.</para>
+      <para>
+         But wait! <literal>TextTranslator</literal> does not have a constructor with no parameters! Is it still a bean?
+         If you remember, a class that does not have a constructor with no parameters can still be a bean if it has a
+         constructor annotated <literal>@Inject</literal>.
+      </para>
         
-    <para>As you've guessed, the <literal>@Initializer</literal> annotation has
-    something to do with dependency injection! <literal>@Initializer</literal>
-    may be applied to a constructor or method of a Web Bean, and tells the
-    Web Bean manager to call that constructor or method when instantiating the
-    Web Bean. The Web Bean manager will inject other Web Beans to the parameters
-    of the constructor or method.</para>
+      <para>
+         As you've guessed, the <literal>@Inject</literal> annotation has something to do with dependency injection!
+         <literal>@Inject</literal> may be applied to a constructor or method of a bean, and tells the bean manager to
+         call that constructor or method when instantiating the bean. The bean manager will inject other beans it finds
+         into the parameters of the constructor or method.
+      </para>
+
+      <para>
+         We may obtain an instance of <literal>TextTranslator</literal> by injecting it into a constructor, bean
+         "setter" method, producer method, observer method or field of a JavaBean or EJB session, or a field of a
+         Servlet. The injection is based on the type of the injection point, not the name of the field, method or
+         argument.
+      </para>
+      
+      <para>
+         Let's create a UI controller bean that uses field injection to obtain an instance of the
+         <literal>TextTranslator</literal>, translating the text entered by a user:
+      </para>
     
-    <para>At system initialization time, the Web Bean manager must validate that 
-    exactly one Web Bean exists which satisfies each injection point. In our example,
-    if no implementation of <literal>Translator</literal> available &#151; if the
-    <literal>SentenceTranslator</literal> EJB was not deployed &#151; the Web Bean
-    manager would throw an <literal>UnsatisfiedDependencyException</literal>. If
-    more than one implementation of <literal>Translator</literal> was available,
-    the Web Bean manager would throw an 
-    <literal>AmbiguousDependencyException</literal>.</para>
+      <programlisting role="JAVA"><![CDATA[@Named @RequestScoped
+public class TranslateController {
+   @Inject private TextTranslator textTranslator;
+
+   private String inputText;
+   private String translation;
+
+   // action method, perhaps
+   public void translate() {
+      translation = textTranslator.translate(inputText); 
+   }
+
+   public String getInputText() {
+      return inputText;
+   }
+
+   public void setInputText(String text) {
+      this.inputText = text;
+   }
+
+   public String getTranslation() {
+      return translation;
+   }
+}]]></programlisting>
+
+      <para>
+         Notice that it isn't necessary to create a getter or setter method to inject one bean into another. CDI can
+         access the field directly (even if it's private!), which should help eliminate some wasteful code. The name of
+         the field is arbitrary. It's the field's type that determines what is injected.
+       </para>
     
-  </section>
+      <para>
+         At system initialization time, the bean manager must validate that exactly one bean exists which satisfies each
+         injection point. In our example, if no implementation of <literal>Translator</literal> is available -- if
+         the <literal>SentenceTranslator</literal> EJB was not deployed -- the bean manager would throw an
+         <literal>UnsatisfiedDependencyException</literal>. If more than one implementation of
+         <literal>Translator</literal> were available, the bean manager would throw an
+         <literal>AmbiguousDependencyException</literal>. The same for the <literal>TextTranslator</literal> injection
+         point.
+      </para>
+
+      <para>
+         Now we are starting to venture off into the details, so let's pause and examine a bean's anatomy. What aspects
+         of the bean are significant, and what gives it its identity?
+      </para>
+    
+   </section>
+
+   <!-- mention alternatives here? -->
+   <section id="bean-anatomy">
+      <title>The anatomy of a bean</title>
   
-<section>
-  <title>What is a Web Bean?</title>
+      <para>
+         A bean is an application class that contains business logic. It may be called directly from Java code, or it
+         may be invoked via Unified EL. A bean may access transactional resources. Dependencies between beans are
+         managed automatically by the bean manager. Most beans are <emphasis>stateful</emphasis> and
+         <emphasis>contextual</emphasis>. The lifecycle of a bean is always managed by the bean manager.
+      </para>
 
-  <para>So what, <emphasis>exactly</emphasis>, is a Web Bean?</para>
+      <para>
+         Let's back up a second. What does it really mean to be <emphasis>contextual</emphasis>? Since beans may be
+         stateful, it matters <emphasis>which</emphasis> bean instance I have. Unlike a stateless component model (for
+         example, stateless session beans) or a singleton component model (such as servlets, or singleton beans),
+         different clients of a bean see the bean in different states. The client-visible state depends upon which
+         instance of the bean the client has a reference to.
+      </para> 
 
-  <para>A Web Bean is an application class that contains business logic. A Web 
-  Bean may be called directly from Java code, or it may be invoked via Unified EL.
-  A Web Bean may access transactional resources. Dependencies between Web Beans 
-  are managed automatically by the Web Bean manager. Most Web Beans are 
-  <emphasis>stateful</emphasis> and <emphasis>contextual</emphasis>. The lifecycle 
-  of a Web Bean is always managed by the Web Bean manager.</para>
+      <para>
+         However, like a stateless or singleton model, but <emphasis>unlike</emphasis> stateful session beans, the
+         client does not control the lifecycle of the instance by explicitly creating and destroying it. Instead, the
+         <emphasis>scope</emphasis> of the bean determines:
+      </para>
 
-  <para>Let's back up a second. What does it really mean to be "contextual"? Since 
-  Web Beans may be stateful, it matters <emphasis>which</emphasis> bean instance I 
-  have. Unlike a stateless component model (for example, stateless session beans) 
-  or a singleton component model (such as servlets, or singleton beans), different 
-  clients of a Web Bean see the Web Bean in different states. The client-visible 
-  state depends upon which instance of the Web Bean the client has a reference to.</para> 
-
-  <para>However, like a stateless or singleton model, but <emphasis>unlike</emphasis> 
-  stateful session beans, the client does not control the lifecycle of the instance 
-  by explicitly creating and destroying it. Instead, the <emphasis>scope</emphasis> 
-  of the Web Bean determines:</para>
-
-  <itemizedlist>
-    <listitem>
-      <para>the lifecycle of each instance of the Web Bean and</para>
-    </listitem>
-    <listitem>
-      <para>which clients share a reference to a particular instance of the Web 
-      Bean.</para>
-    </listitem>
-  </itemizedlist>
+      <itemizedlist>
+         <listitem>
+            <para>the lifecycle of each instance of the bean and</para>
+         </listitem>
+         <listitem>
+            <para>which clients share a reference to a particular instance of the bean.</para>
+         </listitem>
+      </itemizedlist>
   
-  <para>For a given thread in a Web Beans application, there may be an 
-  <emphasis>active context</emphasis> associated with the scope of the Web Bean. 
-  This context may be unique to the thread (for example, if the Web Bean is request
-  scoped), or it may be shared with certain other threads (for example, if the Web
-  Bean is session scoped) or even all other threads (if it is application scoped).</para>
+      <para>
+         For a given thread in a CDI application, there may be an <emphasis>active context</emphasis> associated with
+         the scope of the bean. This context may be unique to the thread (for example, if the bean is request scoped),
+         or it may be shared with certain other threads (for example, if the bean is session scoped) or even all other
+         threads (if it is application scoped).
+      </para>
 
-  <para>Clients (for example, other Web Beans) executing in the same context will 
-  see the same instance of the Web Bean. But clients in a different context will 
-  see a different instance.</para>
+      <para>
+         Clients (for example, other beans) executing in the same context will see the same instance of the bean. But
+         clients in a different context may see a different instance (depending on the relationship between the
+         contexts).
+      </para>
 
-  <para>One great advantage of the contextual model is that it allows stateful
-  Web Beans to be treated like services! The client need not concern itself with 
-  managing the lifecycle of the Web Bean it is using, <emphasis>nor does it even 
-  need to know what that lifecyle is.</emphasis> Web Beans interact by passing 
-  messages, and the Web Bean implementations define the lifecycle of their own state. 
-  The Web Beans are loosely coupled because:</para>
+      <para>
+         One great advantage of the contextual model is that it allows stateful beans to be treated like services! The
+         client need not concern itself with managing the lifecycle of the bean it's using, <emphasis>nor does it even
+         need to know what that lifecyle is.</emphasis> Beans interact by passing messages, and the bean implementations
+         define the lifecycle of their own state. The beans are loosely coupled because:
+      </para>
 
-  <itemizedlist>
-    <listitem>
-      <para>they interact via well-defined public APIs</para>
-    </listitem>
-    <listitem>
-      <para>their lifecycles are completely decoupled</para>
-    </listitem>
-  </itemizedlist>
+      <itemizedlist>
+         <listitem>
+            <para>they interact via well-defined public APIs</para>
+         </listitem>
+         <listitem>
+            <para>their lifecycles are completely decoupled</para>
+         </listitem>
+      </itemizedlist>
 
-  <para>We can replace one Web Bean with a different Web Bean that implements the 
-  same API and has a different lifecycle (a different scope) without affecting the 
-  other Web Bean implementation. In fact, Web Beans defines a sophisticated 
-  facility for overriding Web Bean implementations at deployment time, as we will 
-  see in <xref linkend="deploymenttypes"/>.</para>
+      <para>
+         We can replace one bean with another different bean that implements the same interface and has a different lifecycle
+         (a different scope) without affecting the other bean implementation. In fact, CDI defines a simple facility for
+         overriding bean implementations at deployment time, as we will see in <xref linkend="alternatives"/> (FIXREF).
+      </para>
   
-  <para>Note that not all clients of a Web Bean are Web Beans. Other objects
-  such as Servlets or Message-Driven Beans &#151; which are by nature not injectable,
-  contextual objects &#151; may also obtain references to Web Beans by injection.</para>
+      <para>
+         Note that not all clients of a bean are beans themselves. Other objects such as Servlets or Message-Driven
+         Beans -- which are by nature not injectable, contextual objects -- may also obtain references to beans by
+         injection.
+      </para>
 
-  <para>Enough hand-waving. More formally, according to the spec:</para>
+      <para>Enough hand-waving. More formally, the anatomy of a bean, according to the spec:</para>
 
-  <blockquote>
+      <blockquote>
 
-  <para>A Web Bean comprises:</para>
+         <para>A bean comprises of the following attributes:</para>
 
-  <itemizedlist>
-    <listitem><para>A (nonempty) set of API types</para></listitem>
-    <listitem><para>A (nonempty) set of binding annotation types</para></listitem>
-    <listitem><para>A scope</para></listitem>
-    <listitem><para>A deployment type</para></listitem>
-    <listitem><para>Optionally, a Web Bean name</para></listitem>
-    <listitem><para>A set of interceptor binding types</para></listitem>
-    <listitem><para>A Web Bean implementation</para></listitem>
-  </itemizedlist>
+         <itemizedlist>
+            <listitem><para>A (nonempty) set of bean types</para></listitem>
+            <listitem><para>A (nonempty) set of qualifiers</para></listitem>
+            <listitem><para>A scope</para></listitem>
+            <listitem><para>A deployment type</para></listitem>
+            <listitem><para>Optionally, a bean EL name</para></listitem>
+            <listitem><para>A set of interceptor bindings</para></listitem>
+            <listitem><para>A bean implementation</para></listitem>
+         </itemizedlist>
 
-  </blockquote>
+      </blockquote>
 
-  <para>Let's see what some of these terms mean, to the Web Bean developer.</para>
+      <para>Let's see what some of these terms mean, to the CDI developer.</para>
 
-<section>
-  <title>API types, binding types and dependency injection</title>
+      <section>
+         <title>Bean types, qualifiers and dependency injection</title>
 
-  <para>Web Beans usually acquire references to other Web Beans via dependency 
-  injection. Any injected attribute specifies a "contract" that must be
-  satisfied by the Web Bean to be injected. The contract is:</para>
+         <para>
+            Beans usually acquire references to other beans via dependency injection. Any injected attribute specifies a
+            "contract" that must be satisfied by the bean to be injected. The contract is:
+         </para>
 
-  <itemizedlist>
-    <listitem><para>an API type, together with</para></listitem>
-    <listitem><para>a set of binding types.</para></listitem>
-  </itemizedlist>
+         <itemizedlist>
+            <listitem><para>a bean type, together with</para></listitem>
+            <listitem><para>a set of qualifiers.</para></listitem>
+         </itemizedlist>
 
-  <para>An API is a user-defined class or interface. (If the Web Bean is an
-  EJB session bean, the API type is the <literal>@Local</literal> interface or
-  bean-class local view). A binding type represents some client-visible semantic 
-  that is satisfied by some implementations of the API and not by others.</para>
+         <para>
+            A bean type is a user-defined class or interface; types that are client-visible. If the bean is an EJB
+            session bean, the bean type is the <literal>@Local</literal> interface or bean-class local view. A bean may
+            have multiple bean types. For example, the following bean has four bean types:
+         </para>
 
-  <para>Binding types are represented by user-defined annotations that are 
-  themselves annotated <literal>@BindingType</literal>. For example, the following
-  injection point has API type <literal>PaymentProcessor</literal> and binding
-  type <literal>@CreditCard</literal>:</para>
+         <programlisting role="JAVA"><![CDATA[public class BookShop extends Business implements Shop<Book> {
+   ...
+}]]></programlisting> 
 
-<programlisting role="JAVA"><![CDATA[@CreditCard PaymentProcessor paymentProcessor]]></programlisting>
+         <para>  
+            The bean types are <literal>BookShop</literal>, <literal>Business</literal> and
+            <literal>Shop&lt;Book&gt;</literal>, as well as the implicit type <literal>java.lang.Object</literal>.
+            (Notice that a parameterized type is a legal bean type). Meanwhile, this session bean has only the local
+            interfaces <literal>BookShop</literal>, <literal>Auditable</literal> and <literal>java.lang.Object</literal>
+            as bean types, since the bean class, <literal>BookShopBean</literal> is not a client-visible type.
+         </para>
 
-  <para>If no binding type is explicitly specified at an injection point, the 
-  default binding type <literal>@Current</literal> is assumed.</para>
+         <programlisting role="JAVA"><![CDATA[@Stateful
+public class BookShopBean extends Business implements BookShop, Auditable {
+       ...
+}]]></programlisting> 
 
-  <para>For each injection point, the Web Bean manager searches for a Web Bean 
-  which satisfies the contract (implements the API, and has all the binding 
-  types), and injects that Web Bean.</para>
+         <note>
+            <para>
+               Most bean types you can probably figure out. One gotcha is primitive types. All primitive types are assumed
+               to be identical to their corresponding wrapper types in <literal>java.lang</literal>.
+            </para>
+         </note>
 
-  <para>The following Web Bean has the binding type <literal>@CreditCard</literal>
-  and implements the API type <literal>PaymentProcessor</literal>. It could 
-  therefore be injected to the example injection point:</para>
+         <para>
+            Bean types may be restricted to an explicit set by annotating the bean with the <literal>@Typed</literal>
+            annotation and listing the bean types in the value of the annotation. For instance, this bean has been
+            restricted to a single bean type, <literal>Shop</literal>:
+         </para>
 
-<programlisting role="JAVA"><![CDATA[@CreditCard
+         <programlisting role="JAVA"><![CDATA[@Typed(Shop.class)
+public class BookShop extends Business implements Shop<Book> {
+   ...
+}]]></programlisting> 
+
+         <para>
+            The bean types alone often do not provide enough information for the bean manager to know which bean to
+            inject. For instance, say you have two implementations of the <literal>PaymentProcessor</literal> interface:
+            <literal>CreditCardPaymentProcessor</literal> and <literal>DebitPaymentProcessor</literal>. Injecting into a
+            field of type <literal>PaymentProcessor</literal> introduces an ambigious condition. In these cases, the
+            bean manager must rely on some client-visible semantic that is satisified by one implementation of the bean
+            type, but not by others. That semantic is called a qualifier.
+         </para>
+
+         <para>
+            Qualifiers are represented by user-defined annotations that are themselves annotated with
+            <literal>@Qualifer</literal>. These annotations extend the type system in Java to let you further qualify
+            the type without having to fall back to string-based names as many dependency injection frameworks use.
+            Here's an example of a qualifier annotation:
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })
+@Retention(RUNTIME)
+@Documented
+@Qualifier
+public @interface CreditCard {}]]></programlisting> 
+
+         <para>
+            You may not be used to seeing the definition of an annotation. In fact, this might be the first time you
+            have encountered one. With CDI, they will become very familiar artifact as you will be creating them often.
+            Pay attention to the names of the built-in annotations in CDI and EJB.
+         </para>
+         
+         <tip>
+            <para>
+               You'll notice that they are all adjectives. You are encouraged to follow this convention when creating
+               your custom annotations, since they serve to describe the behaviors and roles of the class.
+            </para>
+         </tip>
+            
+         <para>
+            Now that we have defined a qualifier annotation, we can use it. The following injection point has the bean
+            type <literal>PaymentProcessor</literal> and qualifier <literal>@CreditCard</literal>:
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@Inject @CreditCard PaymentProcessor paymentProcessor]]></programlisting>
+
+         <note>
+            <para>
+               If no qualifier is specified at an injection point, the default qualifier, <literal>@Default</literal>, is
+               assumed.
+            </para>
+         </note>
+
+         <para>
+            For each injection point, the bean manager searches for a bean which satisfies the contract, meaning it
+            matches the bean time and all the qualifiers. It then injects that instance.
+         </para>
+
+         <para>
+            We've seen how to indicate that you want to inject qualified bean. But how do you actually qualify the bean?
+            By using the annotation, of course! The following bean has the qualifier <literal>@CreditCard</literal>
+            and implements the bean type <literal>PaymentProcessor</literal>. Therefore, it satisfies our qualified
+            injection point:
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@CreditCard
 public class CreditCardPaymentProcessor 
     implements PaymentProcessor { ... }]]></programlisting>
 
-  <para>If a Web Bean does not explicitly specify a set of binding types, it has 
-  exactly one binding type: the default binding type <literal>@Current</literal>.</para>
+         <note>
+            <para>
+               If a bean does not explicitly specify a qualifier, it has exactly one qualifier, the default qualifier,
+               <literal>@Default</literal>.
+            </para>
+         </note>
 
-  <para>Web Beans defines a sophisticated but intuitive <emphasis>resolution 
-  algorithm</emphasis> that helps the container decide what to do if there is more 
-  than one Web Bean that satisfies a particular contract. We'll get into the
-  details in <xref linkend="injection"/>.</para>
+         <para>
+            CDI defines a sophisticated, yet intuitive <emphasis>resolution algorithm</emphasis> that helps the
+            container decide what to do if there is more than one bean that satisfies a particular contract. We'll get
+            into the details in <xref linkend="injection"/>.
+         </para>
 
-</section>
+      </section>
 
-<section>
-  <title>Deployment types</title>
+      <section>
+         <title>Scope</title>
+         <!-- I wonder whether the explaination of contextual above would fit better here -->
 
-  <para><emphasis>Deployment types</emphasis> let us classify our Web Beans by
-  deployment scenario. A deployment type is an annotation that represents a particular
-  deployment scenario, for example <literal>@Mock</literal>, <literal>@Staging</literal> 
-  or <literal>@AustralianTaxLaw</literal>. We apply the annotation to Web Beans which
-  should be deployed in that scenario. A deployment type allows a whole set of Web Beans 
-  to be conditionally deployed, with a just single line of configuration.</para>
+         <para>
+            The <emphasis>scope</emphasis> of a bean defines the lifecycle and visibility of instances created from it.
+            The CDI context model is extensible, accommodating arbitrary scopes. However, certain important scopes are
+            built-in to the specification, and provided by the bean manager. Each scope is represented by an annotation
+            type.
+         </para>
 
-  <para>Many Web Beans just use the default deployment type <literal>@Production</literal>, 
-  in which case no deployment type need be explicitly specified. All three Web Bean 
-  in our example have the deployment type <literal>@Production</literal>.</para>
+         <para>
+            For example, any web application may have <emphasis>session scoped</emphasis> bean:
+         </para>
 
-  <para>In a testing environment, we might want to replace the <literal>SentenceTranslator</literal>
-  Web Bean with a "mock object":</para>
-
-<programlisting role="JAVA"><![CDATA[@Mock
-public class MockSentenceTranslator implements Translator {
-    public String translate(String sentence) {
-        return "Lorem ipsum dolor sit amet";
-    }
-}]]></programlisting>
-
-
-  <para>We would enable the deployment type <literal>@Mock</literal> in our testing
-  environment, to indicate that <literal>MockSentenceTranslator</literal> and any other
-  Web Bean annotated <literal>@Mock</literal> should be used.</para>
-
-  <para>We'll talk more about this unique and powerful feature in 
-  <xref linkend="deploymenttypes"/>.</para>
-
-</section>
-
-<section>
-  <title>Scope</title>
-
-  <para>The <emphasis>scope</emphasis> defines the lifecycle and visibility 
-  of instances of the Web Bean. The Web Beans context model is extensible, 
-  accommodating arbitrary scopes. However, certain important scopes are 
-  built-in to the specification, and provided by the Web Bean manager. A
-  scope is represented by an annotation type.</para>
-
-  <para>For example, any web application may have <emphasis>session scoped</emphasis> 
-  Web Beans:</para>
-
-<programlisting role="JAVA"><![CDATA[@SessionScoped
+         <programlisting role="JAVA"><![CDATA[@SessionScoped
 public class ShoppingCart { ... }]]></programlisting>
 
-  <para>An instance of a session scoped Web Bean is bound to a user session
+         <para>An instance of a session-scoped bean is bound to a user session
   and is shared by all requests that execute in the context of that session.</para>
 
-  <para>By default, Web Beans belong to a special scope called the 
-  <emphasis>dependent pseudo-scope</emphasis>. Web Beans with this scope are
-  pure dependent objects of the object into which they are injected, and their
-  lifecycle is bound to the lifecycle of that object.</para>
+         <note>
+            <para>
+               Keep in mind that once a bean is bound to a context, it remains in that context until the context is
+               destroyed. There is no way to explicitly remove a bean from a context. If you don't the bean to live in
+               the session indefinitely, consider using another scope such as the request or conversation scope instead.
+            </para>
+         </note>
 
-  <para>We'll talk more about scopes in <xref linkend="scopescontexts"/>.</para>
+         <para>
+            If a scope is not explicitly specified, then the bean belongs to a special scope called the
+            <emphasis>dependent pseudo-scope</emphasis>. Beans with this scope live to serve the bean into which they
+            are injected, which means their life cycle is bound to the life cycle of that object.
+         </para>
 
-</section>
+         <para>We'll talk more about scopes in <xref linkend="scopescontexts"/>.</para>
 
-<section>
-  <title>Web Bean names and Unified EL</title>
+      </section>
 
-  <para>A Web Bean may have a <emphasis>name</emphasis>, allowing it to be 
-  used in Unified EL expressions. It's easy to specify the name of a Web 
-  Bean:</para>
+      <section>
+         <title>EL name</title>
 
-<programlisting role="JAVA"><![CDATA[@SessionScoped @Named("cart")
+         <para>
+            If you want to reference a bean outside of Java, such as in JSF view, you must assign the bean a
+            <emphasis>name</emphasis>. The name is used as the EL name of the bean, allowing the bean to be used
+            in a Unified EL expression.
+         </para>
+         
+         <para>
+            The name is specified using the <literal>@Named</literal> annotation, as shown here:
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@SessionScoped @Named("cart")
 public class ShoppingCart { ... }]]></programlisting>
 
-  <para>Now we can easily use the Web Bean in any JSF or JSP page:</para>
+         <para>Now we can easily use the bean in any JSF or JSP page:</para>
 
-<programlisting role="HTML"><![CDATA[<h:dataTable value="#{cart.lineItems}" var="item">
-    ....
+         <programlisting role="XML"><![CDATA[<h:dataTable value="#{cart.lineItems}" var="item">
+   ...
 </h:dataTable>]]></programlisting>
 
-  <para>It's even easier to just let the name be defaulted by the Web Bean
-  manager:</para>
+         <note>
+            <para>
+               The <literal>@Named</literal> annotation is not what makes the class a bean. Most classes in a bean
+               archive are already recognized as beans. The <literal>@Named</literal> annotation just makes it
+               possible to reference the bean from the EL, most commonly from a JSF view.
+            </para>
+         </note>
 
-<programlisting role="JAVA"><![CDATA[@SessionScoped @Named
+         <para>
+            If you want, you can let CDI select a name for you by leaving off the
+            value of the <literal>@Named</literal> annotation:
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@SessionScoped @Named
 public class ShoppingCart { ... }]]></programlisting>
 
-  <para>In this case, the name defaults to <literal>shoppingCart</literal> &#151; the
-  unqualified class name, with the first character changed to lowercase.</para>
+         <para>
+            The name defaults to the unqualified class name, decapitalized; in this case,
+            <literal>shoppingCart</literal>.
+         </para>
 
-</section>
+      </section>
 
-<section>
-  <title>Interceptor binding types</title>
-  
-  <para>Web Beans supports the interceptor functionality defined by EJB 3,
-  not only for EJB beans, but also for plain Java classes. In addition, 
-  Web Beans provides a new approach to binding interceptors to EJB beans
-  and other Web Beans.</para> 
-  
-  <para>It remains possible to directly specify the interceptor class via 
-  use of the <literal>@Interceptors</literal> annotation:</para>
-  
-<programlisting role="JAVA"><![CDATA[@SessionScoped 
-@Interceptors(TransactionInterceptor.class)
+      <section>
+         <title>Alternatives</title>
+
+         <para>
+            There are cases when you want to replace one bean implementation with another at deployment time. For
+            instance, you may want to use a mock implementation in a testing environment. An
+            <emphasis>alternative</emphasis> may be declared by annotating the bean class or producer method or field
+            with the <literal>@Alternative</literal> annotation.
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@Alternative
+public class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisting> 
+
+         <para>
+            You then enable the alternative using the CDI deployment descriptor, META-INF/beans.xml, in the classpath
+            entry in which you intent to use it. An alternative must be explicitly selected in every bean deployment
+            archive in which the alternative should be available for injection, lookup and EL resolution.
+         </para>
+
+         <para>
+            Details on how to enable alternative beans, and how you can use them to specialize (override) beans and
+            producer methods is covered in <xref linkend="specialization"/>. CDI is very flexible when it comes
+            alternatives that are selected at deployment time.
+         </para>
+         
+      </section>
+
+      <section>
+         <title>Interceptor binding types</title>
+
+         <para>
+            Since the introduction of the Managed Bean specification in Java EE 6, interceptors are available on
+            JavaBeans in additionn to EJB session beans. That's right, you no longer have to create an EJB just to
+            intercept method calls. Holler. So what does CDI have to offer? Well, a lot actually. Let's cover some
+            background.
+         </para>
+
+         <para>
+            The way that interceptors are defined in Java EE 5 is counter-intuitive. You are required to specify the
+            <emphasis>implementation</emphasis> of the interceptor directly on the <emphasis>implementation</emphasis>
+            of the EJB, either in the <literal>@Interceptors</literal> annotation or in the XML descriptor. You might as
+            well just put the interceptor code <emphasis>in</emphasis> the implementation. Second, the order in which
+            the interceptors are applied is taken from the order in which they are declared in the annotation or the XML
+            descriptor. Perhaps this isn't so bad if you're applying the interceptors to a single bean. But, if you are
+            applying them repeatly, then there is a chance that you'll inadvertly define a different order for different
+            beans. Now that is a problem.
+         </para>
+
+         <para>
+            CDI provides a new approach to binding interceptors to beans that introduces a level of abstraction (and
+            thus control). You define a special kind of annotation called an <emphasis>interceptor binding
+            type</emphasis> whose name describes the role of the interceptor, in this case to add transaction support:
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@InterceptorBinding
+@Inherited
+@Target( { TYPE, METHOD })
+@Retention(RUNTIME)
+public @interface Transactional {}]]></programlisting> 
+         
+         <para>
+            Then you apply the annotation to the class whose methods you wish to have intercepted.
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@SessionScoped @Transactional
 public class ShoppingCart { ... }]]></programlisting>
 
-  <para>However, it is more elegant, and better practice, to indirect the
-  interceptor binding through an <emphasis>interceptor binding 
-  type</emphasis>:</para>
-  
-<programlisting role="JAVA"><![CDATA[@SessionScoped @Transactional
-public class ShoppingCart { ... }]]></programlisting>
+         <para>
+            Where is the interceptor? You match the interceptor(s) to apply to the bean by also annotating the
+            interceptor class. Never do the two implementations (bean and interceptor) come in direct contact.
+            Activating and ordering of the interceptors is then controlled by the XML descriptor, one of the few times
+            XML is warranted.
+         </para>
+         
+         <para>
+            We'll discuss bean interceptors, and their cousins, decorators, in <xref linkend="interceptors"/> and <xref
+            linkend="decorators"/>.
+         </para>
 
-  <para>We'll discuss Web Beans interceptors and decorators in
-  <xref linkend="interceptors"/> and <xref linkend="decorators"/>.</para>
+      </section>
 
-</section>
+   </section>
 
-</section>
+   <section>
+      <title>What kinds of classes can be beans?</title>
+     
+      <para>
+         We've already seen that JavaBeans and EJBs can be (CDI) beans. Is that the whole story?  Let's start from what
+         we know, and go from there.
+      </para>
+     
+      <section>
+         <title>Managed beans</title>
 
-<section>
-  <title>What kinds of objects can be Web Beans?</title>
-  
-  <para>We've already seen that JavaBeans, EJBs and some other Java classes can
-  be Web Beans. But exactly what kinds of objects are Web Beans?</para>
-  
-  <section>
-    <title>Simple Web Beans</title>
-  
-    <para>The Web Beans specification says that a concrete Java class is a 
-    <emphasis>simple</emphasis> Web Bean if:</para>
-    
-    <itemizedlist>
-      <listitem>
-        <para>it is not an EE container-managed component, like an EJB, a Servlet
-        or a JPA entity,</para>
-      </listitem>
-      <listitem>
-        <para>it is not a non-static static inner class,</para>
-      </listitem>
-      <listitem>
-        <para>it is not a parameterized type, and</para>
-      </listitem>
-      <listitem>
-        <para>it has a constructor with no parameters, or a constructor annotated
-        <literal>@Initializer</literal>.</para>
-      </listitem>
-    </itemizedlist>
-    
-    <para>Thus, almost every JavaBean is a simple Web Bean.</para>
-    
-    <para>Every interface implemented directly or indirectly by a simple Web Bean
-    is an API type of the simple Web Bean. The class and its superclasses are also 
-    API types.</para>
-    
-  </section>
-  
-  <section>
-    <title>Enterprise Web Beans</title>
-  
-    <para>The specification says that all EJB 3-style session and singleton beans
-    are <emphasis>enterprise</emphasis> Web Beans. Message driven beans are not
-    Web Beans &#151; since they are not intended to be injected into other 
-    objects &#151; but they can take advantage of most of the functionality of Web 
-    Beans, including dependency injection and interceptors.</para>
+         <para>
+            A managed bean is a bean that is implemented by almost any Java class. This class is called the bean class
+            of the managed bean.  The basic lifecycle and semantics of a managed bean is defined by the Managed Beans
+            specification. If the class is not picked up as a managed bean by the container, then CDI will allow it
+            to be a bean if:
+         </para>
+
+         <itemizedlist>
+            <listitem>
+               <para>It is not a non-static inner class.</para>
+            </listitem>
+            <listitem>
+               <para>It is a concrete class, or is annotated <literal>@Decorator</literal>.</para>
+            </listitem>
+            <listitem>
+               <para>
+                  It is not annotated with an EJB component-defining annotation or declared as an EJB bean class in
+                  ejb-jar.xml.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  It has an appropriate constructor -- either:
+               </para>
+               <itemizedlist>
+                  <listitem>
+                     <para>the class has a constructor with no parameters, or</para>
+                  </listitem>
+                  <listitem>
+                     <para>the class declares a constructor annotated <literal>@Inject</literal>.</para>
+                  </listitem>
+               </itemizedlist>
+            </listitem>
+         </itemizedlist>
+
+         <para>
+            <emphasis>Unlike</emphasis> the managed bean definition, no special declaration is required to define a
+            managed bean. CDI takes advantage of the fact that the Managed Bean specification allows companion
+            specifications to relax the requirement of having to add the <literal>@ManagedBean</literal> annotation.
+         </para>
+
+         <para>
+            Some managed beans are much more. Those are the session beans. While still technically managed beans, they
+            have enough additional, enterprise features, that we consider them to be their own kind.
+         </para>
+         
+      </section>
+     
+      <section>
+         <title>Session beans</title>
+
+         <para>
+            EJB 3 session beans belong to the EJB specification. That is, the basic life cycle and semantics. Beyond
+            that, they get to participate in CDI just like any other bean. There are some restrictions about which
+            scopes can be assigned to a session bean, but other than that, they are interchangable with regular managed
+            beans. That means you can inject one session bean into another, a managed bean into a session bean, a
+            session bean into a managed bean, have a managed bean observe an event raised by a session bean, and so on.
+         </para>
+
+         <note>
+            <para>
+               Message-driven and entity beans are by nature non-contextual objects and may not be injected into other
+               objects. Message-driven beans can take advantage of some CDI functionality, such as dependency injection
+               and interceptors. In fact, CDI will perform injection into any message-driven or session bean, even those
+               which are not contextual instances.
+            </para>
+         </note>
+
+         <para>
+            The unrestricted set of bean types for a session bean contains all local interfaces of the bean and their
+            superinterfaces. If the session bean has a bean class local view, the unrestricted set of bean types
+            contains the bean class and all superclasses. In addition, <literal>java.lang.Object</literal> is a bean
+            type of every session bean. But, remote interfaces are <emphasis>not</emphasis> included in the set of bean
+            types.
+         </para>
+
+         <para>
+            Stateful session beans can define a no arguments remove method, annotated <literal>@Remove</literal>, that
+            is used by the application to indicate the instance should be destroyed. However, in a CDI environment, this
+            method can only be executed by the application if the bean is dependent-scoped. Otherwise, it's illegal for
+            the application to invoke this method.
+         </para>
+
+         <para>
+            So, when should we use a session instead of a basic managed bean? Whenever we need the advanced enterprise
+            services offered by EJB, such as:
+         </para>
+       
+         <itemizedlist>
+            <listitem>
+              <para>method-level transaction management and security,</para>
+            </listitem>
+            <listitem>
+              <para>concurrency management,</para>
+            </listitem>
+            <listitem>
+              <para>instance-level passivation for stateful session beans and 
+              instance-pooling for stateless session beans,</para>
+            </listitem>
+            <listitem>
+              <para>remote and web service invocation, and</para>
+            </listitem>
+            <listitem>
+              <para>timers and asynchronous methods,</para>
+            </listitem>
+         </itemizedlist>
+       
+         <para>When we don't need any of these things, a basic managed bean will serve just fine.</para>
+       
+         <para>
+            Many beans (including any session or application scoped bean) are available for concurrent access.
+            Therefore, the concurrency management provided by EJB 3.1 is especially useful. Most session and application
+            scoped beans should be EJBs.
+         </para>
+       
+         <para>
+            Beans which hold references to heavy-weight resources, or hold a lot of internal state benefit from the
+            advanced container-managed lifecycle defined by the EJB
+            <literal>@Stateless</literal>/<literal>@Stateful</literal>/<literal>@Singleton</literal> model, with its
+            support for passivation and instance pooling.
+         </para>
+       
+         <para>
+            Finally, it's usually obvious when method-level transaction management, method-level security, timers,
+            remote methods or asynchronous methods are needed.
+         </para>
+
+         <para>
+            The point is, you use a session bean when you need the services it provides, not just because you want to
+            use dependency injection, life cycle management, or interceptors. The Java EE programming model makes a
+            whole lot more sense now; you won't need to go off and invent your own bean container to make programming
+            in Java EE palatable.
+         </para>
+       
+         <para>
+            In fact, it's easy to start with simple managed bean, and later turn it into an EJB just by adding one of
+            the following annotations: <literal>@Stateless</literal>, <literal>@Stateful</literal> or
+            <literal>@Singleton</literal>.
+         </para>
    
-    <para>Every local interface of an enterprise Web Bean that does not have a 
-    wildcard type parameter or type variable, and every one of its superinterfaces, 
-    is an API type of the enterprise Web Bean. If the EJB bean has a bean class
-    local view, the bean class, and every one of its superclasses, is also an API 
-    type.</para>
-    
-    <para>Stateful session beans should declare a remove method with no parameters
-    or a remove method annotated <literal>@Destructor</literal>. The Web Bean
-    manager calls this method to destroy the stateful session bean instance at the
-    end of its lifecycle. This method is called the <emphasis>destructor</emphasis>
-    method of the enterprise Web Bean.</para>
-    
-<programlisting role="JAVA"><![CDATA[@Stateful @SessionScoped
-public class ShoppingCart {
+     </section>
+     
+      <section>
+         <title>Producer methods</title>
+   
+         <para>
+            Surely not everything you want to inject can be a bean class. What if you need to inject the implementation
+            of an API that varies at runtime? And how would you inject objects that are created by another mechanism,
+            such as a JPA result? Fortunately, the CDI specification recognized these and other cases and introduced the
+            concept of a producer method.
+         </para>
 
-    ...
-    
-    @Remove
-    public void destroy() {}
+         <para>
+            A <emphasis>producer method</emphasis> is a method on a bean that is used as a bean source, meaning the
+            method itself describes the bean and the bean manager invokes the method to obtain an instance of the bean
+            when no instance exists in its specified context. A producer method lets the application take full control
+            of the instantiation process, specifically when:
+         </para>
+            
+         <itemizedlist>
+            <listitem>
+               <para>
+                  the objects to be injected are not required to be instances of beans, or
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  the concrete type of the objects to be injected may vary at runtime, or
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  the objects require some custom initialization that is not performed by the bean constructor.
+               </para>
+            </listitem>
+         </itemizedlist>
 
+         <para>
+            For example:
+         </para>
+   
+   <programlisting role="JAVA"><![CDATA[@ApplicationScoped
+public class RandomNumberGenerator {
+   
+   private Random random = new Random(System.currentTimeMillis());
+       
+   @Produces @Named @Random int getRandomNumber() {
+      return random.nextInt(100);
+   }
+   
 }]]></programlisting>
 
-    <para>So when should we use an enterprise Web Bean instead of a simple Web Bean?
-    Well, whenever we need the advanced enterprise services offered by EJB, such
-    as:</para>
-    
-    
-    <itemizedlist>
-      <listitem>
-        <para>method-level transaction management and security,</para>
-      </listitem>
-      <listitem>
-        <para>concurrency management,</para>
-      </listitem>
-      <listitem>
-        <para>instance-level passivation for stateful session beans and 
-        instance-pooling for stateless session beans,</para>
-      </listitem>
-      <listitem>
-        <para>remote and web service invocation, and</para>
-      </listitem>
-      <listitem>
-        <para>timers and asynchronous methods,</para>
-      </listitem>
-    </itemizedlist>
-    
-    <para>we should use an enterprise Web Bean. When we don't need any of these things, 
-    a simple Web Bean will serve just fine.</para>
-    
-    <para>Many Web Beans (including any session or application scoped Web Bean) are
-    available for concurrent access. Therefore, the concurrency management provided
-    by EJB 3.1 is especially useful. Most session and application scoped Web Beans
-    should be EJBs.</para>
-    
-    <para>Web Beans which hold references to heavy-weight resources, or hold a lot
-    of internal state benefit from the advanced container-managed lifecycle defined
-    by the EJB <literal>@Stateless</literal>/<literal>@Stateful</literal>/<literal>@Singleton</literal>
-    model, with its support for passivation and instance pooling.</para>
-    
-    <para>Finally, it's usually obvious when method-level transaction management,
-    method-level security, timers, remote methods or asynchronous methods are needed.</para>
-    
-    <para>It's usually easy to start with simple Web Bean, and then turn it into an 
-    EJB, just by adding an annotation: <literal>@Stateless</literal>, 
-    <literal>@Stateful</literal> or <literal>@Singleton</literal>.</para>
+         <para>
+            Obviously, you cannot define a bean that is itself a random number. A producer method allows you do define
+            its result as a bean, in this case an <literal>Integer</literal> with qualifier <literal>@Random</literal>,
+            scope <literal>@Dependent</literal> (implied) and name <literal>randomNumber</literal> (derived from bean
+            property convention; otherwise it would be the same as the method name). It can be injected just like any
+            other bean:
+         </para>
+   
+         <programlisting role="JAVA"><![CDATA[@Inject @Random int randomNumber;]]></programlisting>
 
-  </section>
-  
-  <section>
-    <title>Producer methods</title>
+         <para>
+            or used in a Unified EL expression:
+         </para>
 
-    <para>A <emphasis>producer method</emphasis> is a method that is called by the 
-    Web Bean manager to obtain an instance of the Web Bean when no instance exists 
-    in the current context. A producer method lets the application take full control
-    of the instantiation process, instead of leaving instantiation to the Web Bean
-    manager. For example:</para>
+         <programlisting><![CDATA[Your raffle number is #{randomNumber}.]]></programlisting> 
+         
+         <para>
+            A producer method must be a non-abstract method of a managed bean class or session bean class. A producer
+            method may be either static or non-static. If the bean is a session bean, the producer method must be either
+            a business method of the EJB or a static method of the bean class.
+         </para>
 
-<programlisting role="JAVA"><![CDATA[@ApplicationScoped
-public class Generator {
+         <para>
+            The bean types of a producer method depend upon the method return type:
+         </para>
 
-    private Random random = new Random( System.currentTimeMillis() );
-    
-    @Produces @Random int next() {
-        return random.nextInt(100);
-    }
+         <itemizedlist>
+            <listitem>
+               <para>
+                  If the return type is an interface, the unrestricted set of bean types contains the return type, all
+                  interfaces it extends directly or indirectly and <literal>java.lang.Object</literal>.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  If a return type is primitive or is a Java array type, the unrestricted set of bean types contains
+                  exactly two types: the method return type and <literal>java.lang.Object</literal>.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  If the return type is a class, the unrestricted set of bean types contains the return type, every
+                  superclass and all interfaces it implements directly or indirectly.
+               </para>
+            </listitem>
+         </itemizedlist>
 
+         <para>
+            Some producer methods return objects that require explicit destruction:
+         </para>
+       
+         <programlisting role="JAVA"><![CDATA[@Produces @RequestScoped Connection connect(User user) {
+   return createConnection(user.getId(), user.getPassword());
 }]]></programlisting>
 
-    <para>The result of a producer method is injected just like any other Web Bean.</para>
-
-    <programlisting role="JAVA"><![CDATA[@Random int randomNumber]]></programlisting>
-    
-    <para>The method return type and all interfaces it extends/implements directly or indirectly 
-    are API types of the producer method. If the return type is a class, all superclasses are 
-    also API types.</para>
-    
-    <para>Some producer methods return objects that require explicit destruction:</para>
-    
-<programlisting role="JAVA"><![CDATA[@Produces @RequestScoped Connection connect(User user) {
-    return createConnection( user.getId(), user.getPassword() );
+         <para>
+            If the producer method has method arguments, as in this example, the container will look for matching beans
+            and pass them into the method automatically -- another form of dependency injection.
+         </para>
+   
+         <para>Producer methods may also define matching <emphasis>disposal methods</emphasis>:</para>
+       
+         <programlisting role="JAVA"><![CDATA[void close(@Disposes Connection connection) {
+   connection.close();
 }]]></programlisting>
+   
+         <para>
+            The disposal method is called automatically when the context ends (in this case, the end of the request).
+            The disposal method requires at least one parameter, the bean produced by the producer method. Any
+            additional parameters will be satisfied by the container.
+         </para>
+   
+         <para>We'll talk much more about producer and disposal methods in <xref linkend="producermethods"/>.</para>
+   
+     </section>
 
-    <para>These producer methods may define matching <emphasis>disposal methods</emphasis>:</para>
-    
-<programlisting role="JAVA"><![CDATA[void close(@Disposes Connection connection) {
-    connection.close();
-}]]></programlisting>
+      <section>
+         <title>Producer fields</title>
 
-    <para>This disposal method is called automatically by the Web Bean manager at 
-    the end of the request.</para>
+         <para>
+            A <emphasis>producer field</emphasis> is a simpler alternative to a producer method and can also marry
+            dependency injection with bean definition. A producer field may be declared by annotating a field of a
+            managed bean class or session bean class with the <literal>@Produces</literal> annotation previously used on
+            producer methods.
+         </para>
 
-    <para>We'll talk much more about producer methods in <xref linkend="producermethods"/>.</para>
+         <programlisting role="JAVA"><![CDATA[public class Shop {
+   @Produces PaymentProcessor paymentProcessor = ....;
+   @Produces List<Product> products = ....;
+}]]></programlisting> 
 
-  </section>
+         <para>
+            A producer field may also specify scope, name, stereotypes and/or qualifiers. It's a good way to expose
+            state from a bean as a top-level bean.
+         </para>
 
-  <section>
-    <title>JMS endpoints</title>
-    
-    <para>Finally, a JMS queue or topic can be a Web Bean. Web Beans relieves the
-    developer from the tedium of managing the lifecycles of all the various JMS 
-    objects required to send messages to queues and topics. We'll discuss JMS
-    endpoints in <xref linkend="jms"/>.</para>
-    
-  </section>
+         <programlisting role="JAVA"><![CDATA[public class Shop {
+   @Produces @Wishlist @Named("wishlist") List<Product> products = ....;
+}]]></programlisting> 
 
-</section>
+         <para>
+            The result can be injected or used in a Unified EL expression.
+         </para>
+         
+         <programlisting role="JAVA"><![CDATA[@Inject @Wishlist List<Product> wishlist;]]></programlisting> 
+         <programlisting role="XML"><![CDATA[<h:dataTable var="_product" value="#{wishlist}">...</h:dataTable>]]></programlisting> 
 
+         <para>
+            The rules for determining the bean types of a producer field parallel the rules for producer method.
+         </para>
+
+         <para>
+            Aside from convenience, producer fields serve a specific purpose as an adapter for Java EE resources
+            injections.
+         </para>
+
+      </section>
+
+      <section>
+         <title>Java EE resources</title>
+
+         <para>
+            Java EE 5 already introduced some support for dependency injection, in the form of resource injections.  A
+            resources is either a component defined in JNDI such as a data source or a container-provided component such
+            as a persistence unit, persistence context, EJB or web service.
+         </para>
+            
+         <para>
+            Naturally, there remained some mismatch with the new style of dependency injection in CDI. Most notably,
+            resource injections rely on string-based names to qualify ambigious types, and there is no real consistency
+            as to how a resource obtains its name (sometimes JNDI, other times from an XML descriptor or even a default
+            name). Producer fields turned out to be an elegant adapter to rein them in and get them to participate in
+            the CDI system just like any other injectable bean.
+         </para>
+
+         <para>
+            Producer fields have a duality in that they can both accept a standard Java EE resource injection and
+            produce a bean that can be injected into another bean in a typesafe way. Here are some examples of these
+            injection points. Notice that a qualifier annotation can be assigned at the injection point to adapt the
+            string-based name required by the injection point into a typesafe qualifier for injection elsewhere.
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@Produces @WebServiceRef(lookup="java:app/service/PaymentService")
+PaymentService paymentService;]]></programlisting> 
+
+         <programlisting role="JAVA"><![CDATA[@Produces @PersistenceContext(unitName="CustomerDatabase")
+@CustomerDatabase EntityManager customerDatabasePersistenceContext;]]></programlisting> 
+
+         <para>
+            These resources can then be injected in the usual way.
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@Inject PaymentService paymentService;]]></programlisting> 
+         <programlisting role="JAVA"><![CDATA[@Inject @CustomerDatabase EntityManager customerDatabaseEntityManager;]]></programlisting> 
+
+         <para>
+            The bean type and qualifiers of the resource are determined by the producer field declaration.
+         </para>
+
+         <para>
+            While you may have to introduce a couple extra managed beans to serve as typesafe adapters, it's well worth
+            the effort so that you can minimize the number of places in your code you have to repeat the old-style
+            dependency injection and string-based qualifiers.
+         </para>
+
+      </section>
+
+      <section>
+         <title>Built-in beans</title>
+
+         <para>
+            Java EE gives you some other goodies in the form of built-in beans. A Java EE (or embeddable EJB) container
+            provide the following built-in beans, all of which have qualifier <literal>@Default</literal>:
+         </para>
+
+         <itemizedlist>
+            <listitem>
+               <para>
+                  a bean with bean type <literal>javax.transaction.UserTransaction</literal>, allowing injection of a
+                  reference to the JTA <literal>UserTransaction</literal>,
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  a bean with bean type <literal>javax.security.Principal</literal>, allowing injection of a
+                  <literal>Principal</literal> representing the current caller identity.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  a bean with bean type <literal>javax.validation.ValidationFactory</literal>, allowing injection of the
+                  default <ulink src="http://jcp.org/en/jsr/detail?id=303">Bean Validation</ulink>
+                  <literal>ValidationFactory</literal>, and
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  a bean with bean type <literal>javax.validation.Validator</literal>, allowing injection of a Validator
+                  for the default Bean Validation <literal>ValidationFactory</literal>.
+               </para>
+            </listitem>
+         </itemizedlist>
+
+         <para>
+            Aren't you excited to start using this stuff? Wait no longer. In the next two chapters, we'll look at some
+            examples.
+         </para>
+
+      </section>
+   
+   </section>
+
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </chapter>

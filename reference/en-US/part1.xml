@@ -1,129 +1,176 @@
-<!DOCTYPE partintro PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
-
+<!DOCTYPE partintro PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <partintro>
-  
-  <para>The Web Beans (JSR-299) specification defines a set of services for
-  the Java EE environment that makes applications much easier to develop.
-  Web Beans layers an enhanced lifecycle and interaction model over existing 
-  Java component types including JavaBeans and Enterprise Java Beans. As a
-  complement to the traditional Java EE programming model, the Web Beans 
-  services provide:</para>
-  
-  <itemizedlist>
-    <listitem>
-      <para>an improved lifecycle for stateful components, bound to well-defined 
-      <emphasis>contexts</emphasis>,</para>
-    </listitem>
-    <listitem>
-      <para>a typesafe approach to <emphasis>dependency injection</emphasis>,</para>
-    </listitem>
-    <listitem>
-      <para>interaction via an <emphasis>event notification</emphasis> facility, 
-      and</para>
-    </listitem>
-    <listitem>
-      <para>a better approach to binding <emphasis>interceptors</emphasis> to
-      components, along with a new kind of interceptor, called a 
-      <emphasis>decorator</emphasis>, that is more appropriate for use in
-      solving business problems.</para>
-    </listitem>
-  </itemizedlist>
-  
-  <para>Dependency injection, together with contextual lifecycle management, 
-  saves the user of an unfamiliar API from having to ask and answer the following 
-  questions:</para>
 
-  <itemizedlist>
-    <listitem>
-      <para>what is the lifecycle of this object?</para>
-    </listitem>
-    <listitem>
-      <para>how many simultaneous clients can it have?</para>
-    </listitem>
-    <listitem>
-      <para>is it multithreaded?</para>
-    </listitem>
-    <listitem>
-      <para>where can I get one from?</para>
-    </listitem>
-    <listitem>
-      <para>do I need to explicitly destroy it?</para>
-    </listitem>
-    <listitem>
-      <para>where should I keep my reference to it when I'm not
-      using it directly?</para>
-    </listitem>
-    <listitem>
-      <para>how can I add an indirection layer, so that the implementation
-      of this object can vary at deployment time?</para>
-    </listitem>
-    <listitem>
-      <para>how should I go about sharing this object between other objects?</para>
-    </listitem>
-  </itemizedlist>
+   <!-- This part could probably be split into a chapter of it's own, perhaps "Overview" with subsection for Concepts
+   and History -->
+
+<!--               this specification defines an SPI that allows alternative, non-platform technologies to integrate
+with the con-
+tainer, for example, alternative web presentation technologies.
+-->
+
+   <!-- NOTE synchronize this intro with the intro on http://seamframework.org/Weld -->
+   <para>
+      The <ulink src="http://jcp.org/en/jsr/detail?id=299">JSR-299</ulink> specification (CDI) defines a set of services
+      for the Java EE environment that make applications much easier to develop. CDI layers an enhanced lifecycle and
+      interaction model over existing Java component types, including Managed Beans (JavaBeans) and Enterprise JavaBeans
+      (EJB session beans). As a complement to the traditional Java EE programming model, the services provide:
+   </para>
+
+   <itemizedlist>
+      <listitem>
+         <para>
+            an improved lifecycle for stateful components, bound to well-defined <emphasis>contexts</emphasis>,
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            a typesafe approach to <emphasis>dependency injection</emphasis>,
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            component interaction via an <emphasis>event notification facility</emphasis>,
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            a better approach to binding <emphasis>interceptors</emphasis> to components, along with a new kind of
+            interceptor, called a <emphasis>decorator</emphasis>, that is more appropriate for use in solving business problems, and
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            an <emphasis>SPI</emphasis> for developing portable extensions for the Java EE platform.
+         </para>
+      </listitem>
+   </itemizedlist>
   
-  <para>A Web Bean specifies only the type and semantics of other Web Beans
-  it depends upon. It need not be aware of the actual lifecycle, concrete 
-  implementation, threading model or other clients of any Web Bean it depends 
-  upon. Even better, the concrete implementation, lifecycle and threading model 
-  of a Web Bean it depends upon may vary according to the deployment scenario, 
-  without affecting any client.</para>
+   <para>
+      A component that receives CDI services is referred to, generally, as a bean. The CDI services are a core aspect of
+      the Java EE platform and apply to the following types of components that exist in the platform:
+   </para>
   
-  <para>Events, interceptors and decorators enhance the <emphasis>loose-coupling</emphasis> 
-  that is inherent in this model:</para>
+   <itemizedlist>
+      <listitem>
+         <para>all Managed Beans (JavaBeans), including JSF managed beans,</para>
+      </listitem>
+      <listitem>
+         <para>all Enterprise JavaBeans (EJBs), and</para>
+      </listitem>
+      <listitem>
+         <para>all Servlets.</para>
+      </listitem>
+   </itemizedlist>
+
+   <para>
+      CDI is especially useful in the context of web applications, but is applicable to a wide variety of applications.
+      It may even be used in the Java SE context, in conjunction with an embeddable EJB Lite container, as defined in
+      the EJB 3.1 specification, or through an extension (see <xref linkend="weld-se"/>).
+   </para>
   
-  <itemizedlist>
-    <listitem>
-      <para><emphasis>event notifications</emphasis> decouple event producers 
-      from event consumers,</para>
-    </listitem>
-    <listitem>
-      <para><emphasis>interceptors</emphasis> decouple technical concerns from 
-      business logic, and</para>
-    </listitem>
-    <listitem>
-      <para><emphasis>decorators</emphasis> allow business concerns to be 
-      compartmentalized.</para>
-    </listitem>
-  </itemizedlist>
+   <para>
+      The concerns handled by CDI save the user who is unfamiliar with an API from having to answer the following
+      questions:
+   </para>
+
+   <itemizedlist>
+      <listitem>
+         <para>What is the lifecycle of this object?</para>
+      </listitem>
+      <listitem>
+         <para>How many simultaneous clients can it have?</para>
+      </listitem>
+      <listitem>
+         <para>Is it multithreaded?</para>
+      </listitem>
+      <listitem>
+         <para>How do I retrieve it?</para>
+      </listitem>
+      <listitem>
+         <para>Do I need to explicitly destroy it?</para>
+      </listitem>
+      <listitem>
+         <para>
+            Where should I keep the reference to it when I'm not currently using it?
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            How can I define alternatives, so that the implementation of this object can vary at deployment time?
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            How should I go about sharing this object between other objects?
+         </para>
+      </listitem>
+   </itemizedlist>
+
+   <para>
+      The main theme of CDI, which is instrumental in removing these complexities, is <emphasis>loose-couping with
+      strong typing</emphasis>. Let's study what that phrase means.
+   </para>
   
-  <para>Most importantly, Web Beans provides all these facilities in a
-  <emphasis>typesafe</emphasis> way. Web Beans never uses string-based
-  identifiers to determine how collaborating objects fit together. And
-  XML, though it remains an option, is rarely used. Instead, Web Beans
-  uses the typing information that is already available in the Java
-  object model, together with a new pattern, called 
-  <emphasis>binding annotations</emphasis>, to wire together Web Beans,
-  their dependencies, their interceptors and decorators and their event
-  consumers.</para>
+   <para>
+      A bean specifies only the type and semantics of other beans it depends upon. It need not be aware of the actual
+      lifecycle, concrete implementation, threading model or other clients of any bean it depends upon. Even better, the
+      concrete implementation, lifecycle and threading model of a bean it depends upon may vary according to the
+      deployment scenario, without affecting any client. This loose-coupling is what makes this architecture so simple,
+      yet powerful. 
+   </para>
   
-  <para>The Web Beans services are general and apply to the following types of 
-  components that exist in the Java EE environment:</para>
+   <para>
+      Events, interceptors and decorators enhance the <emphasis>loose-coupling</emphasis> inherent in this model:
+   </para>
   
-  <itemizedlist>
-    <listitem>
-      <para>all JavaBeans,</para>
-    </listitem>
-    <listitem>
-      <para>all EJBs, and</para>
-    </listitem>
-    <listitem>
-      <para>all Servlets.</para>
-    </listitem>
-  </itemizedlist>
+   <itemizedlist>
+      <listitem>
+         <para>
+            <emphasis>event notifications</emphasis> decouple event producers from event consumers,</para>
+      </listitem>
+      <listitem>
+         <para>
+            <emphasis>interceptors</emphasis> decouple technical concerns from business logic, and</para>
+      </listitem>
+      <listitem>
+         <para>
+            <emphasis>decorators</emphasis> allow business concerns to be compartmentalized.</para>
+      </listitem>
+   </itemizedlist>
   
-  <para>Web Beans even provides the necessary integration points so that other
-  kinds of components defined by future Java EE specifications or by non-standard
-  frameworks may be cleanly integrated with Web Beans, take advantage of the Web 
-  Beans services, and interact with any other kind of Web Bean.</para>
+   <para>
+      What's even more powerful (and comforting) is that CDI provides all these facilities in a
+      <emphasis>typesafe</emphasis> way. CDI never relies on string-based identifiers to determine how collaborating
+      objects fit together. (XML is rarely used, reserved only to activate alternatives and define ordering at
+      deployment time). Instead, CDI uses the typing information that is already available in the Java object model,
+      then extends it with a new typing pattern, called <emphasis>qualifier annotations</emphasis>, to wire together
+      beans, their dependencies, their interceptors and decorators and their event consumers.
+   </para>
   
-  <para>Web Beans was influenced by a number of existing Java frameworks,
-  including Seam, Guice and Spring. However, Web Beans has its own very distinct 
-  character: more typesafe than Seam, more stateful and less XML-centric than 
-  Spring, more web and enterprise-application capable than Guice.</para>
+   <para>
+      CDI even provides the necessary integration points, through a comprehensive SPI, so that other kinds of components
+      defined by future Java EE specifications or by non-standard frameworks may be cleanly integrated with CDI, take
+      advantage of the CDI services, and interact with any other kind of platform component.
+   </para>
   
-  <para>Most importantly, Web Beans is a JCP standard that integrates
-  cleanly with Java EE, and with any Java SE environment where embeddable
-  EJB Lite is available.</para>
+   <para>
+      CDI was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, CDI has its
+      own, very distinct, character: more typesafe than Seam, more stateful and less XML-centric than Spring, more web and
+      enterprise-application capable than Guice. But it couldn't have been any of these without inspiration from the
+      frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 Expert Group
+      (EG).
+   </para>
   
+   <para>
+      Finally, JSR-299 is a <ulink src="http://jcp.org">Java Community Process</ulink> (JCP) standard that integrates
+      cleanly with the Java EE platform, and with any Java SE environment where embeddable EJB Lite is available. In
+      fact, Java EE 6 requires that all compliant application servers provide support for JSR-299 (even in the web
+      profile).
+   </para>
+  
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </partintro>
