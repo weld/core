@@ -1,6 +1,5 @@
 package org.jboss.weld.examples.wicket;
 
-
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
@@ -13,20 +12,16 @@ import javax.naming.NamingException;
 public class Game implements Serializable
 {
    private int number;
-   
    private int guess;
    private int smallest;
-   
-   @Inject
-   @MaxNumber
-   private int maxNumber;
-   
    private int biggest;
    private int remainingGuesses;
    
-   @Inject
-   @Random
-   Instance<Integer> randomNumber;
+   @Inject @MaxNumber private int maxNumber;
+   
+   @Inject Generator generator;
+
+   @Inject @Random Instance<Integer> randomNumber;
    
    public Game() throws NamingException {}
 
@@ -74,10 +69,6 @@ public class Game implements Serializable
       return (guess == number);
    }
 
-   
-   @Inject
-   Generator generator;
-   
    @PostConstruct
    public void reset()
    {
@@ -87,6 +78,4 @@ public class Game implements Serializable
       this.biggest = maxNumber;
       this.number = randomNumber.get();
    }
-   
-
 }

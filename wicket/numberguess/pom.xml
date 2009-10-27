@@ -12,7 +12,7 @@
    <groupId>org.jboss.weld.examples</groupId>
    <artifactId>weld-wicket-numberguess</artifactId>
    <packaging>war</packaging>
-   <name>Weld Examples: Numberguess with wicket</name>
+   <name>Weld Examples: Wicket Numberguess</name>
 
    <dependencies>
 
@@ -38,7 +38,6 @@
          <artifactId>jetty</artifactId>
          <scope>test</scope>
       </dependency>
-
 
    </dependencies>
 
@@ -82,6 +81,9 @@
          <plugin>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>maven-jetty-plugin</artifactId>
+            <configuration>
+               <overrideWebXml>src/main/webapp/WEB-INF/jetty-additions-to-web.xml</overrideWebXml>
+            </configuration>
          </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -126,7 +128,7 @@
             <dependency>
                <groupId>org.slf4j</groupId>
                <artifactId>slf4j-api</artifactId>
-               <version>1.4.2</version>
+               <version>1.5.8</version>
             </dependency>
 
             <!--  JETTY DEPENDENCIES FOR IN IDE TESTING  -->
@@ -140,13 +142,8 @@
             <dependency>
                <groupId>org.slf4j</groupId>
                <artifactId>slf4j-jdk14</artifactId>
-               <scope>test</scope>
+               <scope>runtime</scope>
                <version>1.5.8</version>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.servlet.jsp</groupId>
-               <artifactId>jsp-api</artifactId>
             </dependency>
 
          </dependencies>
