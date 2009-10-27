@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>org.jboss.weld.examples</groupId>
+      <artifactId>weld-examples-parent</artifactId>
+      <version>1.0.0-CR1</version>
+      <relativePath>../../pom.xml</relativePath>
+   </parent>
+
+   <groupId>org.jboss.weld.examples.jsf</groupId>
+   <artifactId>weld-jsf-permalink</artifactId>
+   <packaging>war</packaging>
+   <name>Weld Permalink Example (Servlet)</name>
+   <description>The Weld permalink example for deployment to a servlet environment</description>
+
+   <properties>
+      <jetty.http.port>9090</jetty.http.port>
+      <jetty.stop.port>9091</jetty.stop.port>
+      <jetty.debug.port>9190</jetty.debug.port>
+      <jetty.daemon>false</jetty.daemon>
+      <tomcat.http.port>8080</tomcat.http.port>
+      <embedded-tomcat.http.port>9090</embedded-tomcat.http.port>
+      <embedded-tomcat.debug.port>9190</embedded-tomcat.debug.port>
+      <webapp.directory>src/main/webapp</webapp.directory>
+   </properties>
+
+   <pluginRepositories>
+      <pluginRepository>
+         <id>codehaus repository</id>
+         <url>http://repository.codehaus.org/</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+      </pluginRepository>
+   </pluginRepositories>
+
+   <dependencies>
+
+      <dependency>
+         <groupId>org.testng</groupId>
+         <artifactId>testng</artifactId>
+         <scope>test</scope>
+         <classifier>jdk15</classifier>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.annotation</groupId>
+         <artifactId>jsr250-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.enterprise</groupId>
+         <artifactId>cdi-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.faces</groupId>
+         <artifactId>jsf-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.faces</groupId>
+         <artifactId>jsf-impl</artifactId>
+         <scope>runtime</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>jstl</artifactId>
+         <scope>runtime</scope>
+      </dependency>
+
+      <dependency>
+         <!-- needed for reference by maven-eclipse-plugin -->
+         <groupId>javax.servlet</groupId>
+         <artifactId>servlet-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.transaction</groupId>
+         <artifactId>jta</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.validation</groupId>
+         <artifactId>validation-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>log4j</groupId>
+         <artifactId>log4j</artifactId>
+         <scope>runtime</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.hibernate</groupId>
+         <artifactId>hibernate-validator</artifactId>
+         <version>4.0.0.GA</version>
+         <scope>runtime</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>javax.xml.bind</groupId>
+               <artifactId>jaxb-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>com.sun.xml.bind</groupId>
+               <artifactId>jaxb-impl</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-log4j12</artifactId>
+         <version>1.5.6</version>
+         <scope>runtime</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.weld.servlet</groupId>
+         <artifactId>weld-servlet</artifactId>
+         <scope>runtime</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.glassfish.web</groupId>
+         <artifactId>el-impl</artifactId>
+         <scope>runtime</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>javax.el</groupId>
+               <artifactId>el-api</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+   </dependencies>
+
+   <build>
+      <defaultGoal>package</defaultGoal>
+	  <!--
+      <finalName>${project.artifactId}</finalName>
+	  -->
+      <finalName>weld-permalink</finalName>
+      <plugins>
+
+         <plugin>
+            <artifactId>maven-clean-plugin</artifactId>
+            <configuration>
+               <failOnError>false</failOnError>
+               <filesets>
+                  <fileset>
+                     <!-- clean up files from war:inplace -->
+                     <directory>${webapp.directory}</directory>
+                     <includes>
+                        <include>WEB-INF/classes/**</include>
+                        <include>WEB-INF/lib/**</include>
+                     </includes>
+                     <followSymlinks>false</followSymlinks>
+                  </fileset>
+               </filesets>
+            </configuration>
+         </plugin>
+
+         <plugin>
+            <artifactId>maven-eclipse-plugin</artifactId>
+            <configuration>
+               <additionalBuildcommands>
+                  <!-- annoyingly creates a bin directory
+                  <buildCommand>
+                      <name>org.eclipse.wst.jsdt.core.javascriptValidator</name>
+                  </buildCommand>
+                  -->
+                  <buildCommand>
+                      <name>org.jboss.tools.common.verification.verifybuilder</name>
+                  </buildCommand>
+               </additionalBuildcommands>
+               <additionalConfig>
+                  <file>
+                     <name>.settings/org.maven.ide.eclipse.prefs</name>
+                     <content>activeProfiles=jdk5
+eclipse.preferences.version=1
+fullBuildGoals=process-test-resources
+includeModules=false
+resolveWorkspaceProjects=true
+resourceFilterGoals=process-resources resources\:testResources
+skipCompilerPlugin=true
+version=1</content>
+                  </file>
+               </additionalConfig>
+               <additionalProjectFacets>
+                  <jst.jsf>1.2</jst.jsf> <!-- 2.0 is not yet supported -->
+               </additionalProjectFacets>
+               <additionalProjectnatures>
+                  <projectnature>org.eclipse.wst.jsdt.core.jsNature</projectnature>
+                  <projectnature>org.jboss.tools.jsf.jsfnature</projectnature>
+               </additionalProjectnatures>
+               <workspace>${user.home}/.eclipse/workspace</workspace>
+               <wtpdefaultserver>JBoss</wtpdefaultserver>
+               <wtpversion>1.5</wtpversion>
+            </configuration>
+         </plugin>
+
+         <plugin>
+            <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+               <!-- don't stage or package files added to ${webapp.directory} by war:inplace -->
+               <warSourceExcludes>WEB-INF/classes/**,WEB-INF/lib/**</warSourceExcludes>
+            </configuration>
+         </plugin>
+
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>tomcat-maven-plugin</artifactId>
+            <configuration>
+               <path>/${project.build.finalName}</path>
+               <!-- uncomment to use server configuration override; see readme.txt for details -->
+               <!--<server>tomcatserver</server>-->
+               <url>http://localhost:${tomcat.http.port}/manager</url>
+               <port>${embedded-tomcat.http.port}</port> <!-- port for embedded Tomcat only (putting this configuration in the execution for the run goal doesn't work) -->
+               <!-- if you don't want to use war:inplace, uncomment this setting -->
+               <!--
+               <warSourceDirectory>${project.build.directory}/${project.build.finalName}</warSourceDirectory>
+               -->
+            </configuration>
+         </plugin>
+
+         <plugin>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>maven-jetty-plugin</artifactId>
+            <configuration>
+               <connectors>
+                  <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                     <port>${jetty.http.port}</port>
+                     <maxIdleTime>3600000</maxIdleTime>
+                  </connector>
+               </connectors>
+               <daemon>${jetty.daemon}</daemon>
+               <stopPort>${jetty.stop.port}</stopPort>
+               <stopKey>HASTA_LA_VISTA</stopKey>
+               <scanIntervalSeconds>10</scanIntervalSeconds>
+               <webAppConfig>
+                  <contextPath>/${project.build.finalName}</contextPath>
+               </webAppConfig>
+               <!-- if you don't want to use war:inplace, uncomment this setting -->
+               <!--
+               <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}</webAppSourceDirectory>
+               -->
+            </configuration>
+         </plugin>
+
+         <plugin>
+            <groupId>org.twdata.maven</groupId>
+            <artifactId>maven-cli-plugin</artifactId>
+            <version>0.6.3.CR3</version>
+            <configuration>
+               <prompt>${project.artifactId}</prompt>
+               <!-- userAliases are for cli:execute-phase -->
+               <userAliases>
+                  <runjetty>compile org.apache.maven.plugins:maven-war-plugin:inplace org.mortbay.jetty:maven-jetty-plugin:run</runjetty>
+                  <stopjetty>org.mortbay.jetty:maven-jetty-plugin:stop</stopjetty>
+                  <runtomcat>compile org.apache.maven.plugins:maven-war-plugin:inplace org.codehaus.mojo:tomcat-maven-plugin:run</runtomcat>
+                  <explode>compile org.apache.maven.plugins:maven-war-plugin:inplace -o</explode>
+                  <restart>org.apache.maven.plugins:maven-antrun-plugin:run -Prestart-embedded</restart>
+                  <!--<restart>validate -Prestart-embedded -o</restart>-->
+                  <profiles>org.apache.maven.plugins:maven-help-plugin:active-profiles -o</profiles>
+                  <pom>org.apache.maven.plugins:maven-help-plugin:effective-pom -o</pom>
+               </userAliases>
+               <!-- commands are for cli:execute -->
+               <commands>
+               </commands>
+            </configuration>
+         </plugin>
+
+      </plugins>
+   </build>
+
+   <profiles>
+      <profile>
+         <id>restart-embedded</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <configuration>
+                     <tasks>
+                        <touch file="${webapp.directory}/WEB-INF/web.xml"/>
+                     </tasks>
+                  </configuration>
+                  <!-- Hooking an execution to a phase is more correct, but slower -->
+                  <!--
+                  <executions>
+                     <execution>
+                        <id>touch-web-inf</id>
+                        <phase>validate</phase>
+                        <configuration>
+                           <tasks>
+                              <touch file="${webapp.directory}/WEB-INF/web.xml"/>
+                           </tasks>
+                        </configuration>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  -->
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
+
+</project>

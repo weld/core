@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+   <Manager pathname=""/> <!-- disables storage of sessions across restarts -->
+</Context>
