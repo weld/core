@@ -68,7 +68,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
    public void addObserverMethod(ObserverMethod<?, ?> observerMethod)
    {
-      getOrCreateBeanDeployment(observerMethod.getBean().getBeanClass()).getBeanManager().addObserver(observerMethod);
+      getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager().addObserver(observerMethod);
    }
 
 }

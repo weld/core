@@ -146,7 +146,7 @@ public class BeanDeployment
       }
       for (ObserverMethodImpl<?, ?> observerMethod : extensionBeanDeployerEnvironment.getObservers())
       {
-         if (deployment.loadBeanDeploymentArchive(observerMethod.getBean().getBeanClass()).equals(beanDeploymentArchive))
+         if (deployment.loadBeanDeploymentArchive(observerMethod.getBeanClass()).equals(beanDeploymentArchive))
          {
             beanDeployer.getManager().addObserver(observerMethod);
          }

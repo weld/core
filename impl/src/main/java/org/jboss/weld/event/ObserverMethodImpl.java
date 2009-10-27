@@ -33,7 +33,6 @@ import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
 
@@ -164,10 +163,9 @@ public class ObserverMethodImpl<X, T> implements ObserverMethod<X, T>
 
    }
 
-   @SuppressWarnings("unchecked")
-   public Bean<X> getBean()
+   public Class<X> getBeanClass()
    {
-      return declaringBean;
+      return declaringBean.getType();
    }
 
    public Annotation[] getBindingsAsArray()
