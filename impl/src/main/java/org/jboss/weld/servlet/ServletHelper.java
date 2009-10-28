@@ -34,10 +34,16 @@ public class ServletHelper
    {
       if (ctx == null)
       {
-         throw new IllegalArgumentException("Must provide the Servlet Context");
+         throw new IllegalArgumentException("ServletContext is null");
       }
       BeanDeploymentArchive beanDeploymentArchive = Container.instance().deploymentServices().get(ServletServices.class).getBeanDeploymentArchive(ctx);
-      return Container.instance().beanDeploymentArchives().get(beanDeploymentArchive).getCurrent();
+      BeanManagerImpl beanManagerImpl = Container.instance().beanDeploymentArchives().get(beanDeploymentArchive);
+      if (beanManagerImpl == null)
+      {
+         throw new IllegalArgumentException("Unable to find BeanManager. BeanDeploymentArchive: " + beanDeploymentArchive + "; ServletContext: " + ctx);
+      }
+      // Actually we need the manager for the current activity
+      return beanManagerImpl.getCurrent();
    }
 
 }
