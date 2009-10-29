@@ -8,6 +8,19 @@ import org.jboss.weld.BeanManagerImpl;
 /**
  * Control of the container, used for tests. Wraps up common operations.
  * 
+ * If you require more control over the container bootstrap lifecycle you should
+ * use the {@link #getLifecycle()} method. For example:
+ * 
+ * <code>TestContainer container = new TestContainer(...);
+ * container.getLifecycle().initialize();
+ * container.getLifecycle().getBootstrap().startInitialization();
+ * container.getLifecycle().getBootstrap().deployBeans();
+ * container.getLifecycle().getBootstrap().validateBeans();
+ * container.getLifecycle().getBootstrap().endInitialization();
+ * container.getLifecycle().stopContainer();</code>
+ * 
+ * Note that we can easily mix fine-grained calls to bootstrap, and coarse grained calls to {@link TestContainer}.
+ * 
  * @author pmuir
  *
  */
@@ -52,6 +65,7 @@ public class TestContainer
       this.lifecycle = lifecycle;
       this.classes = classes;
       this.beansXml = beansXml;
+      configureArchive();
    }
    
    /**
@@ -77,14 +91,14 @@ public class TestContainer
     */
    public void startContainer()
    {
-      startContainer(true);
+      getLifecycle().initialize();
+      getLifecycle().beginApplication();
    }
    
    /**
-    * Starts the container
-    * @param beginApplication whether or not beginApplication() should be called
+    * Configure's the archive with the classes and beans.xml
     */
-   public void startContainer(boolean beginApplication)
+   protected void configureArchive()
    {
       MockBeanDeploymentArchive archive = lifecycle.getDeployment().getArchive();
       archive.setBeanClasses(classes);
@@ -92,20 +106,6 @@ public class TestContainer
       {
          archive.setBeansXmlFiles(beansXml);
       }
-      lifecycle.initialize();
-      if (beginApplication)
-      {
-         beginApplication();
-      }
-   }
-   
-   /**
-    * Deploys the application. Intended use is in conjunction with {@link #startContainer(boolean)}.
-    * {@link #startContainer()} does this step automatically 
-    */
-   public void beginApplication()
-   {
-      lifecycle.beginApplication();
    }
    
    /**
@@ -120,12 +120,12 @@ public class TestContainer
    
    public BeanManagerImpl getBeanManager()
    {
-      return lifecycle.getBootstrap().getManager(getDeployment().getArchive());
+      return getLifecycle().getBootstrap().getManager(getDeployment().getArchive());
    }
    
    public MockDeployment getDeployment()
    {
-      return lifecycle.getDeployment();
+      return getLifecycle().getDeployment();
    }
    
    /**
@@ -134,13 +134,13 @@ public class TestContainer
     */
    public void ensureRequestActive()
    {
-      if (!lifecycle.isSessionActive())
+      if (!getLifecycle().isSessionActive())
       {
-         lifecycle.beginSession();
+         getLifecycle().beginSession();
       }
-      if (!lifecycle.isRequestActive())
+      if (!getLifecycle().isRequestActive())
       {
-         lifecycle.beginRequest();
+         getLifecycle().beginRequest();
       }
    }
 
@@ -150,17 +150,17 @@ public class TestContainer
     */
    public void stopContainer()
    {
-      if (lifecycle.isRequestActive())
+      if (getLifecycle().isRequestActive())
       {
-         lifecycle.endRequest();
+         getLifecycle().endRequest();
       }
-      if (lifecycle.isSessionActive())
+      if (getLifecycle().isSessionActive())
       {
-         lifecycle.endSession();
+         getLifecycle().endSession();
       }
-      if (lifecycle.isApplicationActive())
+      if (getLifecycle().isApplicationActive())
       {
-         lifecycle.endApplication();
+         getLifecycle().endApplication();
       }
    }
 

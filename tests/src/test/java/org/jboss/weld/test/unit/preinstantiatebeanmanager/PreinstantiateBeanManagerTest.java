@@ -41,7 +41,7 @@ public class PreinstantiateBeanManagerTest
       List<Class<?>> classes = new ArrayList<Class<?>>();
       classes.add(WeldBean.class);
       TestContainer container = new TestContainer(new MockEELifecycle(), classes, null);
-      container.startContainer(false);
+      container.getLifecycle().initialize();
       
       BeanManager bootstrapManager = container.getBeanManager();
       assert bootstrapManager != null;
@@ -52,7 +52,7 @@ public class PreinstantiateBeanManagerTest
       
       
       //Start the application
-      container.beginApplication();
+      container.getLifecycle().beginApplication();
       container.ensureRequestActive();
       
       //Check the manager is the same as before

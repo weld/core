@@ -79,7 +79,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
       return deployment;
    }
    
-   protected WeldBootstrap getBootstrap()
+   public WeldBootstrap getBootstrap()
    {
       return bootstrap;
    }
