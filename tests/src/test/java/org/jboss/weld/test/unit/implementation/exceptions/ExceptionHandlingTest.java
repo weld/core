@@ -1,7 +1,7 @@
 package org.jboss.weld.test.unit.implementation.exceptions;
 
-import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.CreationException;
+import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.test.AbstractWeldTest;

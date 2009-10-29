@@ -2,8 +2,8 @@ package org.jboss.weld.test.unit.implementation.event;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.Any;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 import org.jboss.testharness.impl.packaging.Artifact;

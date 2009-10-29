@@ -24,7 +24,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.TypeLiteral;
+import javax.enterprise.util.TypeLiteral;
 import javax.inject.Provider;
 
 import org.jboss.weld.BeanManagerImpl;

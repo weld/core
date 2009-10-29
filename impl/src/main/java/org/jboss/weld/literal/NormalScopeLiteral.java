@@ -17,7 +17,7 @@
 package org.jboss.weld.literal;
 
 import javax.enterprise.context.NormalScope;
-import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.util.AnnotationLiteral;
 
 public class NormalScopeLiteral extends AnnotationLiteral<NormalScope> implements NormalScope
 {

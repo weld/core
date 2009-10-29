@@ -10,10 +10,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.manager.api.WeldManager;

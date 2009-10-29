@@ -18,7 +18,7 @@ package org.jboss.weld.jsf;
 
 import static org.jboss.weld.jsf.JsfHelper.getModuleBeanManager;
 
-import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.context.FacesContext;
 
 import org.jboss.weld.conversation.ConversationIdName;

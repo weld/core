@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
-import javax.enterprise.inject.Nonbinding;
+import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
 import org.jboss.weld.DefinitionException;

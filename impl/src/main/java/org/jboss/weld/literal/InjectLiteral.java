@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.literal;
 
-import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 /**

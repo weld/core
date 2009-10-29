@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.el.ELContext;
-import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.util.TypeLiteral;
 import javax.servlet.ServletContext;
 
 import org.jboss.testharness.AbstractTest;

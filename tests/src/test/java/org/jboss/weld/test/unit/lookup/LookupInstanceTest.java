@@ -3,7 +3,7 @@ package org.jboss.weld.test.unit.lookup;
 import java.util.List;
 
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.TypeLiteral;
+import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.literal.DefaultLiteral;

@@ -20,7 +20,7 @@ import static org.jboss.weld.servlet.ServletHelper.getModuleBeanManager;
 
 import java.io.IOException;
 
-import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

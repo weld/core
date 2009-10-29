@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.inject.AnnotationLiteral;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.ManagedBean;

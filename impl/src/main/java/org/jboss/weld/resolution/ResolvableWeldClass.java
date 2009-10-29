@@ -27,8 +27,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.AbstractClassBean;

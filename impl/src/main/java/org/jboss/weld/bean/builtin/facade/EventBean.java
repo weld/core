@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.TypeLiteral;
+import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.event.EventImpl;

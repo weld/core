@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
-import javax.enterprise.inject.Nonbinding;
+import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
 import org.jboss.weld.DefinitionException;

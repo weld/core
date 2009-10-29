@@ -21,7 +21,7 @@ import static org.jboss.weld.messages.JsfMessages.RESUMING_CONVERSATION;
 import static org.jboss.weld.util.log.Categories.JSF;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
-import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
