@@ -19,6 +19,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.ForwardingBean;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.test.AbstractWeldTest;
@@ -190,7 +191,7 @@ public class ActivitiesTest extends AbstractWeldTest
    {
       assert getBeans(Cow.class).size() == 1;
       Contextual<?> bean = getBeans(Cow.class).iterator().next();
-      BeanManager childActivity = getCurrentManager().createActivity();
+      BeanManagerImpl childActivity = getCurrentManager().createActivity();
       Bean<?> dummyBean = createDummyBean(childActivity, Cow.class);
       childActivity.addBean(dummyBean);
       assert childActivity.getInjectableReference(dummyBean.getInjectionPoints().iterator().next(), childActivity.createCreationalContext(dummyBean)) != null;
@@ -237,7 +238,7 @@ public class ActivitiesTest extends AbstractWeldTest
    public void testBeanBelongingToChildActivityCannotBeInjectedIntoParentActivityBean()
    {
       assert getBeans(Cow.class).size() == 1;
-      BeanManager childActivity = getCurrentManager().createActivity();
+      BeanManagerImpl childActivity = getCurrentManager().createActivity();
       Bean<?> dummyBean = createDummyBean(childActivity, Cow.class);
       childActivity.addBean(dummyBean);
       assert getBeans(Object.class, new AnnotationLiteral<Tame>() {}).size() == 0;
@@ -250,7 +251,7 @@ public class ActivitiesTest extends AbstractWeldTest
       getCurrentManager().addContext(dummyContext);
       assert getBeans(Cow.class).size() == 1;
       final Bean<Cow> bean = getBeans(Cow.class).iterator().next();
-      BeanManager childActivity = getCurrentManager().createActivity();
+      BeanManagerImpl childActivity = getCurrentManager().createActivity();
       final Set<Annotation> bindingTypes = new HashSet<Annotation>();
       bindingTypes.add(new AnnotationLiteral<Tame>() {});
       childActivity.addBean(new ForwardingBean<Cow>()

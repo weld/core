@@ -15,8 +15,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
@@ -107,7 +107,7 @@ public class SameBeanTypeInChildActivityTest extends AbstractWeldTest
    @Test(groups = { "broken" }, expectedExceptions = { InjectionException.class })
    public void testSameBeanTypeInChildAsParentInjection()
    {
-      BeanManager childActivity = getCurrentManager().createActivity();
+      BeanManagerImpl childActivity = getCurrentManager().createActivity();
       Bean<?> anotherMyBean = createDummyBean(childActivity);
       childActivity.addBean(anotherMyBean);
    }
@@ -115,8 +115,8 @@ public class SameBeanTypeInChildActivityTest extends AbstractWeldTest
    @Test(groups = { "broken" }, expectedExceptions = { InjectionException.class })
    public void testSameBeanTypeInChildAsIndirectParentInjection()
    {
-      WeldManager childActivity = getCurrentManager().createActivity();
-      WeldManager grandChildActivity = childActivity.createActivity();
+      BeanManagerImpl childActivity = getCurrentManager().createActivity();
+      BeanManagerImpl grandChildActivity = childActivity.createActivity();
       Bean<?> anotherMyBean = createDummyBean(grandChildActivity);
       grandChildActivity.addBean(anotherMyBean);
    }

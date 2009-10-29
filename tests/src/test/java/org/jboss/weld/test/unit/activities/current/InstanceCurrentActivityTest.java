@@ -16,7 +16,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
@@ -158,7 +158,7 @@ public class InstanceCurrentActivityTest extends AbstractWeldTest
       Context dummyContext = new DummyContext();
       getCurrentManager().addContext(dummyContext);
       assert getBeans(Cow.class).size() == 1;
-      WeldManager childActivity = getCurrentManager().createActivity();
+      BeanManagerImpl childActivity = getCurrentManager().createActivity();
       childActivity.addBean(new Daisy(childActivity));
       childActivity.setCurrent(dummyContext.getScope());
       assert createContextualInstance(Field.class).get() != null;
