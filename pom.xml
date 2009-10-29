@@ -86,7 +86,7 @@
 
    <properties>
       <jsf.version>2.0.0-RC</jsf.version>
-      <weld.api.version>1.0-CR1</weld.api.version>
+      <weld.api.version>1.0-SNAPSHOT</weld.api.version>
       <weld.core.version>1.0.0-CR1</weld.core.version>
       <weld.extensions.version>1.0.0-CR1</weld.extensions.version>
       <jetty.version>6.1.21</jetty.version>
