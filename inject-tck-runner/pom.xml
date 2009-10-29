@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <artifactId>weld-core-parent</artifactId>
       <groupId>org.jboss.weld</groupId>
@@ -10,7 +11,7 @@
    <artifactId>weld-inject-tck-runner</artifactId>
    <name>AtInject TCK runner for Weld</name>
    <description>Aggregates dependencies and run's the AtInject TCK for Weld</description>
-   
+
    <dependencies>
 
       <dependency>
@@ -33,26 +34,26 @@
          <groupId>org.atinject</groupId>
          <artifactId>inject-tck</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
       </dependency>
 
       <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-          <scope>test</scope>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <scope>test</scope>
       </dependency>
 
       <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-          <scope>test</scope>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-simple</artifactId>
+         <scope>test</scope>
       </dependency>
-      
+
    </dependencies>
-   
+
    <build>
       <plugins>
          <plugin>
@@ -64,7 +65,18 @@
                </includes>
             </configuration>
          </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>test-jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
    </build>
-   
+
 </project>
