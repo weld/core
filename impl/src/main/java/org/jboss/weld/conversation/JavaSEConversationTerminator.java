@@ -24,9 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.SessionScoped;
 
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
-
 /**
  * A ConversationTerminator implementation using Java SE scheduling
  *   
@@ -38,13 +35,10 @@ public class JavaSEConversationTerminator implements ConversationTerminator, Ser
 {
    private static final long serialVersionUID = 7258623232951724618L;
 
-   private static LogProvider log = Logging.getLogProvider(JavaSEConversationTerminator.class);
-
    private transient ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
    public Future<?> scheduleForTermination(Runnable terminationTask, long timeoutInMilliseconds)
    {
-      log.trace("Recieved a termination task to be run in " + timeoutInMilliseconds + "ms");
       return executor.schedule(terminationTask, timeoutInMilliseconds, TimeUnit.MILLISECONDS);
    }
 

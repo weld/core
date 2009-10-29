@@ -27,9 +27,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.util.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLoggerFactory;
+import org.slf4j.ext.XLogger.Level;
 
 /**
  * This class handles looking up service providers on the class path. It
@@ -49,7 +52,8 @@ import org.jboss.weld.util.Reflections;
 public class ServiceLoader<S> implements Iterable<S>
 {
    
-   private Log log = Logging.getLog(ServiceLoader.class);
+   private static Logger log = LoggerFactory.getLogger(ServiceLoader.class);
+   private static XLogger xLog = XLoggerFactory.getXLogger(ServiceLoader.class);
 
    private static final String SERVICES = "META-INF/services/";
 
@@ -201,23 +205,27 @@ public class ServiceLoader<S> implements Iterable<S>
                         }
                         catch (NoClassDefFoundError e)
                         {
-                           log.warn("Error loading #0", line, e);
+                           log.warn("Error loading line", line);
+                           xLog.throwing(Level.DEBUG, e);
                            throw e;
                         }
                         catch (InstantiationException e)
                         {
-                           log.warn("Error loading #0", line, e);
+                           log.warn("Error loading line", line);
+                           xLog.throwing(Level.DEBUG, e);
                            throw e;
                         }
                         catch (IllegalAccessException e)
                         {
-                           log.warn("Error loading #0", line, e);
+                           log.warn("Error loading line", line);
+                           xLog.throwing(Level.DEBUG, e);
                            throw e;
                         }
                      }
                   }
                   catch (Exception e)
                   {
+                     // TODO Don't use exceptions for flow control!
                      // try the next line
                   }
 

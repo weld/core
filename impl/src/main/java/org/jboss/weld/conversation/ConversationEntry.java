@@ -16,14 +16,22 @@
  */
 package org.jboss.weld.conversation;
 
+import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_LOCKED;
+import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_TERMINATION_CANCELLATION_FAILED;
+import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_TERMINATION_CANCELLED;
+import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_UNAVAILBLE;
+import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_UNLOCKED;
+import static org.jboss.weld.messages.ConversationMessages.ILLEGAL_CONVERSATION_UNLOCK_ATTEMPT;
+import static org.jboss.weld.util.log.Categories.CONVERSATION;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Represents a long-running conversation entry
@@ -32,7 +40,7 @@ import org.jboss.weld.log.Logging;
  */
 public class ConversationEntry
 {
-   private static LogProvider log = Logging.getLogProvider(ConversationEntry.class);
+   private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
 
    // The conversation
    private ConversationImpl conversation;
@@ -56,7 +64,6 @@ public class ConversationEntry
       this.conversation = new ConversationImpl(conversation);
       this.terminationHandle = terminationHandle;
       this.concurrencyLock = new ReentrantLock();
-      log.trace("Created new conversation entry for conversation " + conversation);
    }
 
    /**
@@ -85,11 +92,11 @@ public class ConversationEntry
       boolean success = terminationHandle.cancel(false);
       if (success)
       {
-         log.trace("Termination of conversation " + conversation + " cancelled");
+         log.trace(CONVERSATION_TERMINATION_CANCELLED, conversation);
       }
       else
       {
-         log.warn("Failed to cancel termination of conversation " + conversation);
+         log.warn(CONVERSATION_TERMINATION_CANCELLATION_FAILED, conversation);
       }
       return success;
    }
@@ -99,7 +106,6 @@ public class ConversationEntry
     */
    public void destroy()
    {
-      log.debug("Destroying conversation " + conversation);
       if (!terminationHandle.isCancelled())
       {
          cancelTermination();
@@ -107,7 +113,6 @@ public class ConversationEntry
       ConversationContext terminationContext = new ConversationContext();
       terminationContext.setBeanStore(beanStore);
       terminationContext.destroy();
-      log.trace("Conversation " + conversation + " destroyed");
    }
 
    /**
@@ -122,11 +127,11 @@ public class ConversationEntry
       boolean success = concurrencyLock.tryLock(timeout, TimeUnit.MILLISECONDS);
       if (success)
       {
-         log.trace("Conversation " + conversation + " locked");
+         log.trace(CONVERSATION_LOCKED, conversation);
       }
       else
       {
-         log.warn("Failed to lock conversation " + conversation + " in " + timeout + "ms");
+         log.warn(CONVERSATION_UNAVAILBLE, timeout, conversation);
       }
       return success;
    }
@@ -145,11 +150,11 @@ public class ConversationEntry
       if (concurrencyLock.isHeldByCurrentThread())
       {
          concurrencyLock.unlock();
-         log.trace("Unlocked conversation " + conversation);
+         log.trace(CONVERSATION_UNLOCKED, conversation);
       }
       else
       {
-         log.warn("Unlock attempt by non-owner on conversation " + conversation);
+         log.warn(ILLEGAL_CONVERSATION_UNLOCK_ATTEMPT, conversation, "not owner");
       }
       return !concurrencyLock.isLocked();
    }
@@ -162,7 +167,6 @@ public class ConversationEntry
    public void reScheduleTermination(Future<?> terminationHandle)
    {
       this.terminationHandle = terminationHandle;
-      log.trace("Conversation " + conversation + " re-scheduled for termination");
    }
 
    public ConversationImpl getConversation()

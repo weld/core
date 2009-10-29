@@ -16,6 +16,15 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.messages.BeanMessages.CREATING_BEAN;
+import static org.jboss.weld.messages.BeanMessages.QUALIFIERS_USED;
+import static org.jboss.weld.messages.BeanMessages.USING_DEFAULT_NAME;
+import static org.jboss.weld.messages.BeanMessages.USING_DEFAULT_QUALIFIER;
+import static org.jboss.weld.messages.BeanMessages.USING_NAME;
+import static org.jboss.weld.messages.BeanMessages.USING_SCOPE_FROM_STEREOTYPE;
+import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -43,11 +52,10 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Reflections;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * An abstract bean representation common for all beans
@@ -66,7 +74,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    private boolean proxyable;
 
    // Logger
-   private final Log log = Logging.getLog(AbstractBean.class);
+   private static final LocLogger log = loggerFactory().getLogger(BEAN);
    // The binding types
    protected Set<Annotation> bindings;
    // The name
@@ -132,7 +140,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       }
       initDefaultBindings();
       initPrimitive();
-      log.trace("Building Weld bean metadata for #0", getType());
+      log.trace(CREATING_BEAN, getType());
       initName();
       initScopeType();
       initSerializable();
@@ -223,21 +231,21 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       this.bindings = new HashSet<Annotation>();
       this.bindings.addAll(getAnnotatedItem().getMetaAnnotations(Qualifier.class));
       initDefaultBindings();
-      log.trace("Using binding types " + bindings + " specified by annotations");
+      log.trace(QUALIFIERS_USED, bindings, this);
    }
 
    protected void initDefaultBindings()
    {
       if (bindings.size() == 0)
       {
-         log.trace("Adding default @Current binding type");
+         log.trace(USING_DEFAULT_QUALIFIER, this);
          this.bindings.add(CURRENT_LITERAL);
       }
       if (bindings.size() == 1)
       {
          if (bindings.iterator().next().annotationType().equals(Named.class))
          {
-            log.trace("Adding default @Current binding type");
+            log.trace(USING_DEFAULT_QUALIFIER, this);
             this.bindings.add(CURRENT_LITERAL);
          }
       }
@@ -267,13 +275,11 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
          String javaName = getAnnotatedItem().getAnnotation(Named.class).value();
          if ("".equals(javaName))
          {
-            log.trace("Using default name (specified by annotations)");
             beanNameDefaulted = true;
          }
          else
          {
-            if (log.isTraceEnabled())
-               log.trace("Using name " + javaName + " specified by annotations");
+            log.trace(USING_NAME, javaName, this);
             this.name = javaName;
             return;
          }
@@ -282,6 +288,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       if (beanNameDefaulted || getMergedStereotypes().isBeanNameDefaulted())
       {
          this.name = getDefaultName();
+         log.trace(USING_DEFAULT_NAME, name, this);
          return;
       }
    }
@@ -328,8 +335,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       if (possibleScopeTypes.size() == 1)
       {
          this.scopeType = possibleScopeTypes.iterator().next().annotationType();
-         if (log.isTraceEnabled())
-            log.trace("Scope " + scopeType + " specified by stereotype");
+         log.trace(USING_SCOPE_FROM_STEREOTYPE, scopeType, this, getMergedStereotypes());
          return true;
       }
       else if (possibleScopeTypes.size() > 1)

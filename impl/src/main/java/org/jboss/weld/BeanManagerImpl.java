@@ -75,8 +75,6 @@ import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
@@ -162,8 +160,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
          return getContext() + " -> " + getManager();
       }
    }
-   
-   private static final Log log = Logging.getLog(BeanManagerImpl.class);
 
    private static final long serialVersionUID = 3021562879133838561L;
 
@@ -812,7 +808,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       //checkEventType(observer.getObservedType());
       observers.add(observer);
-      log.trace("Added observer " + observer);
       for (BeanManagerImpl childActivity : childActivities)
       {
          childActivity.addObserver(observer);
@@ -1173,10 +1168,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
       if (!currentInjectionPoint.get().empty())
       {
          originalInjectionPoint = currentInjectionPoint.get().pop();
-      }
-      else
-      {
-         log.trace("No current injection point to replace #0", injectionPoint);
       }
       currentInjectionPoint.get().push(injectionPoint);
       return originalInjectionPoint;

@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.context;
 
+import static org.jboss.weld.messages.ContextMessages.CONTEXTUAL_INSTANCE_REMOVED;
+import static org.jboss.weld.messages.ContextMessages.CONTEXT_CLEARED;
+import static org.jboss.weld.util.log.Categories.CONTEXT;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.lang.annotation.Annotation;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -27,8 +32,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Base for the Context implementations. Delegates calls to the abstract
@@ -43,7 +47,7 @@ import org.jboss.weld.log.Logging;
  */
 public abstract class AbstractMapContext extends AbstractContext
 {
-   private static LogProvider log = Logging.getLogProvider(AbstractMapContext.class);
+   private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
    private static ReentrantLock creationLock = new ReentrantLock();
    
@@ -130,13 +134,13 @@ public abstract class AbstractMapContext extends AbstractContext
    
    private <T> void destroy(String id)
    {
-      log.trace("Destroying " + id);
       if (getBeanStore() == null)
       {
          throw new IllegalStateException("No bean store available for " + toString());
       }
       ContextualInstance<T> beanInstance = getBeanStore().get(id);
       beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
+      log.trace(CONTEXTUAL_INSTANCE_REMOVED, id, this);
    }
    
 
@@ -145,7 +149,7 @@ public abstract class AbstractMapContext extends AbstractContext
     */
    public void destroy()
    {
-      log.trace("Destroying context");
+      log.trace(CONTEXT_CLEARED, this);
       if (getBeanStore() == null)
       {
          throw new IllegalStateException("No bean store available for " + toString());

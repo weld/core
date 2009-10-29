@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.bean.builtin.facade;
 
+import static org.jboss.weld.messages.BeanMessages.DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED;
+import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -26,13 +30,12 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
+import org.slf4j.cal10n.LocLogger;
 
 public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
 {
    
-   private static final Log log = Logging.getLog(AbstractFacadeBean.class);
+   private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
    protected AbstractFacadeBean(String idSuffix, BeanManagerImpl manager)
    {
@@ -57,7 +60,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
       }
       else
       {
-         log.warn("Dynamic lookup of " + toString() + " is not supported");
+         log.warn(DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED, toString());
          return null;
       }
    }

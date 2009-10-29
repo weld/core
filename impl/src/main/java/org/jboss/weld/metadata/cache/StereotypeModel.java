@@ -19,6 +19,10 @@ package org.jboss.weld.metadata.cache;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
+import static org.jboss.weld.messages.ReflectionMessages.MISSING_TARGET;
+import static org.jboss.weld.messages.ReflectionMessages.MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD;
+import static org.jboss.weld.util.log.Categories.REFLECTION;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Target;
@@ -34,10 +38,9 @@ import javax.inject.Scope;
 import javax.interceptor.InterceptorBinding;
 
 import org.jboss.weld.DefinitionException;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.Arrays2;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * A meta model for a stereotype, allows us to cache a stereotype and to
@@ -49,7 +52,7 @@ import org.jboss.weld.util.collections.Arrays2;
 public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
 {
    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(Stereotype.class);
-   private static final Log log = Logging.getLog(StereotypeModel.class);
+   private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
    
    // Is the stereotype a policy
    private boolean policy;
@@ -163,7 +166,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
       {
          this.valid = false;
-         log.debug("#0 is missing @Target annotation.", getAnnotatedAnnotation());
+         log.debug(MISSING_TARGET, getAnnotatedAnnotation());
       }
       else if (!(
             Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, TYPE) ||
@@ -174,7 +177,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
          ))
       {
          this.valid = false;
-         log.debug("#0 is has incorrect @Target annotation. Should be @Target(METHOD, FIELD, TYPE, PARAMETER), @Target(METHOD, TYPE), @Target(METHOD), @Target(TYPE) or @Target(FIELD).", getAnnotatedAnnotation());
+         log.debug(MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD, getAnnotatedAnnotation());
       }
    }
 
@@ -215,6 +218,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
     * 
     * @return The Stereotype class
     */
+   @Override
    protected Set<Class<? extends Annotation>> getMetaAnnotationTypes() 
    {
       return META_ANNOTATIONS;

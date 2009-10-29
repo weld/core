@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.messages.BeanMessages.USING_DEFAULT_SCOPE;
+import static org.jboss.weld.messages.BeanMessages.USING_SCOPE;
+import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -41,12 +46,11 @@ import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.introspector.WeldMember;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.Reflections;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * The implicit producer bean
@@ -58,7 +62,7 @@ import org.jboss.weld.util.Reflections;
  */
 public abstract class AbstractProducerBean<X, T, S extends Member> extends AbstractReceiverBean<X, T, S>
 {
-   private static final LogProvider log = Logging.getLogProvider(AbstractProducerBean.class);
+   private static final LocLogger log = loggerFactory().getLogger(BEAN);
    
    private Producer<T> producer;
 
@@ -221,7 +225,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       if (scopeAnnotations.size() == 1)
       {
          this.scopeType = scopeAnnotations.iterator().next().annotationType();
-         log.trace("Scope " + scopeType + " specified by annotation");
+         log.trace(USING_SCOPE, scopeType, this);
          return;
       }
 
@@ -230,7 +234,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       if (this.scopeType == null)
       {
          this.scopeType = Dependent.class;
-         log.trace("Using default @Dependent scope");
+         log.trace(USING_DEFAULT_SCOPE, this);
       }
    }
    

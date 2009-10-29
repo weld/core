@@ -16,6 +16,16 @@
  */
 package org.jboss.weld.util;
 
+import static org.jboss.weld.messages.BeanMessages.FOUND_DEFAULT_CONSTRUCTOR;
+import static org.jboss.weld.messages.BeanMessages.FOUND_INJECTABLE_CONSTRUCTORS;
+import static org.jboss.weld.messages.BeanMessages.FOUND_ONE_INJECTABLE_CONSTRUCTOR;
+import static org.jboss.weld.messages.BeanMessages.FOUND_ONE_POST_CONSTRUCT_METHOD;
+import static org.jboss.weld.messages.BeanMessages.FOUND_ONE_PRE_DESTROY_METHOD;
+import static org.jboss.weld.messages.BeanMessages.FOUND_POST_CONSTRUCT_METHODS;
+import static org.jboss.weld.messages.BeanMessages.FOUND_PRE_DESTROY_METHODS;
+import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -63,12 +73,11 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.metadata.cache.BindingTypeModel;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
@@ -83,8 +92,8 @@ import com.google.common.collect.Multimaps;
  */
 public class Beans
 {
-   
-   private static final Log log = Logging.getLog(Beans.class);
+   // TODO Convert messages
+   private static final LocLogger log = loggerFactory().getLogger(BEAN);
    
    /**
     * Indicates if a bean's scope type is passivating
@@ -185,7 +194,7 @@ public class Beans
    public static WeldMethod<?, ?> getPostConstruct(WeldClass<?> type)
    {
       Set<WeldMethod<?, ?>> postConstructMethods = type.getAnnotatedWeldMethods(PostConstruct.class);
-      log.trace("Found " + postConstructMethods + " constructors annotated with @Initializer for " + type);
+      log.trace(FOUND_POST_CONSTRUCT_METHODS, postConstructMethods, type);
       if (postConstructMethods.size() > 1)
       {
          throw new DefinitionException("Cannot have more than one post construct method annotated with @PostConstruct for " + type);
@@ -193,7 +202,7 @@ public class Beans
       else if (postConstructMethods.size() == 1)
       {
          WeldMethod<?, ?> postConstruct = postConstructMethods.iterator().next();
-         log.trace("Exactly one post construct method (" + postConstruct + ") for " + type);
+         log.trace(FOUND_ONE_POST_CONSTRUCT_METHOD, postConstruct, type);
          return postConstruct;
       }
       else
@@ -205,7 +214,7 @@ public class Beans
    public static WeldMethod<?, ?> getPreDestroy(WeldClass<?> type)
    {
       Set<WeldMethod<?, ?>> preDestroyMethods = type.getAnnotatedWeldMethods(PreDestroy.class);
-      log.trace("Found " + preDestroyMethods + " constructors annotated with @Initializer for " + type);
+      log.trace(FOUND_PRE_DESTROY_METHODS, preDestroyMethods, type);
       if (preDestroyMethods.size() > 1)
       {
          // TODO actually this is wrong, in EJB you can have @PreDestroy methods
@@ -215,7 +224,7 @@ public class Beans
       else if (preDestroyMethods.size() == 1)
       {
          WeldMethod<?, ?> preDestroy = preDestroyMethods.iterator().next();
-         log.trace("Exactly one post construct method (" + preDestroy + ") for " + type);
+         log.trace(FOUND_ONE_PRE_DESTROY_METHOD, preDestroy, type);
          return preDestroy;
       }
       else
@@ -607,7 +616,7 @@ public class Beans
    {
       ConstructorInjectionPoint<T> constructor = null;
       Set<WeldConstructor<T>> initializerAnnotatedConstructors = type.getAnnotatedWeldConstructors(Inject.class);
-      log.trace("Found " + initializerAnnotatedConstructors + " constructors annotated with @Initializer for " + type);
+      log.trace(FOUND_INJECTABLE_CONSTRUCTORS, initializerAnnotatedConstructors, type);
       if (initializerAnnotatedConstructors.size() > 1)
       {
          if (initializerAnnotatedConstructors.size() > 1)
@@ -618,13 +627,13 @@ public class Beans
       else if (initializerAnnotatedConstructors.size() == 1)
       {
          constructor = ConstructorInjectionPoint.of(declaringBean, initializerAnnotatedConstructors.iterator().next());
-         log.trace("Exactly one constructor (" + constructor + ") annotated with @Initializer defined, using it as the bean constructor for " + type);
+         log.trace(FOUND_ONE_INJECTABLE_CONSTRUCTOR, constructor, type);
       }
       else if (type.getNoArgsWeldConstructor() != null)
       {
 
          constructor = ConstructorInjectionPoint.of(declaringBean, type.getNoArgsWeldConstructor());
-         log.trace("Exactly one constructor (" + constructor + ") defined, using it as the bean constructor for " + type);
+         log.trace(FOUND_DEFAULT_CONSTRUCTOR, constructor, type);
       }
       
       if (constructor == null)

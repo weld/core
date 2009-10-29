@@ -22,6 +22,19 @@
  */
 package org.jboss.weld.conversation;
 
+import static org.jboss.weld.messages.ConversationMessages.CLEANING_UP_CONVERSATION;
+import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_LOCK_UNAVAILABLE;
+import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_SWITCHED;
+import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_TERMINATION_SCHEDULED;
+import static org.jboss.weld.messages.ConversationMessages.DESTROY_ALL_LRC;
+import static org.jboss.weld.messages.ConversationMessages.DESTROY_LRC;
+import static org.jboss.weld.messages.ConversationMessages.DESTROY_TRANSIENT_COVERSATION;
+import static org.jboss.weld.messages.ConversationMessages.LRC_COUNT;
+import static org.jboss.weld.messages.ConversationMessages.NO_CONVERSATION_TO_RESTORE;
+import static org.jboss.weld.messages.ConversationMessages.UNABLE_TO_RESTORE_CONVERSATION;
+import static org.jboss.weld.util.log.Categories.CONVERSATION;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -37,8 +50,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * An abstract conversation manager
@@ -48,7 +60,7 @@ import org.jboss.weld.log.Logging;
  */
 public abstract class AbstractConversationManager implements ConversationManager
 {
-   private static LogProvider log = Logging.getLogProvider(AbstractConversationManager.class);
+   private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
 
    // The conversation terminator
    @Inject
@@ -71,7 +83,6 @@ public abstract class AbstractConversationManager implements ConversationManager
     */
    public AbstractConversationManager()
    {
-      log.trace("Created " + getClass());
       longRunningConversations = new ConcurrentHashMap<String, ConversationEntry>();
    }
 
@@ -81,7 +92,7 @@ public abstract class AbstractConversationManager implements ConversationManager
       {
          // No incoming conversation ID, nothing to do here, continue with
          // a transient conversation
-         log.trace("No conversation id to restore");
+         log.trace(NO_CONVERSATION_TO_RESTORE);
          return;
       }
       if (!longRunningConversations.containsKey(cid))
@@ -89,7 +100,7 @@ public abstract class AbstractConversationManager implements ConversationManager
          // We got an incoming conversation ID but it was not in the map of
          // known ones, nothing to do. Log and return to continue with a
          // transient conversation
-         log.warn("Could not restore long-running conversation " + cid);
+         log.warn(UNABLE_TO_RESTORE_CONVERSATION, cid, "id not known");
          return;
       }
       ConversationEntry resumedConversationEntry = longRunningConversations.get(cid);
@@ -104,7 +115,8 @@ public abstract class AbstractConversationManager implements ConversationManager
       }
       catch (InterruptedException e)
       {
-         log.debug("Interrupted while trying to acquire lock");
+         log.debug(CONVERSATION_LOCK_UNAVAILABLE);
+         Thread.currentThread().interrupt();
          return;
       }
       // If we can't cancel the termination, release the lock, return and
@@ -120,7 +132,7 @@ public abstract class AbstractConversationManager implements ConversationManager
          // match the fetched long-running one
          String oldConversation = currentConversation.toString();
          currentConversation.switchTo(resumedConversationEntry.getConversation());
-         log.trace("Conversation switched from " + oldConversation + " to " + currentConversation);
+         log.trace(CONVERSATION_SWITCHED, oldConversation, currentConversation);
       }
    }
 
@@ -128,7 +140,7 @@ public abstract class AbstractConversationManager implements ConversationManager
    // long-running conversations
    public void cleanupConversation()
    {
-      log.trace("Cleaning up conversation for " + currentConversation);
+      log.trace(CLEANING_UP_CONVERSATION, currentConversation);
       String cid = currentConversation.getUnderlyingId();
       if (!currentConversation.isTransient())
       {
@@ -150,14 +162,15 @@ public abstract class AbstractConversationManager implements ConversationManager
             ConversationEntry conversationEntry = ConversationEntry.of(getBeanStore(cid), currentConversation, terminationHandle);
             longRunningConversations.put(cid, conversationEntry);
          }
-         log.trace("Scheduled " + currentConversation + " for termination, there are now " + longRunningConversations.size() + " long-running conversations");
+         log.trace(CONVERSATION_TERMINATION_SCHEDULED, currentConversation);
+         log.trace(LRC_COUNT, longRunningConversations.size());
       }
       else
       {
          // If the conversation is not long-running it can be a transient
          // conversation that has been so from the start or it can be a
          // long-running conversation that has been demoted during the request
-         log.trace("Destroying transient conversation " + currentConversation);
+         log.trace(DESTROY_TRANSIENT_COVERSATION, currentConversation);
          ConversationEntry longRunningConversation = longRunningConversations.remove(cid);
          if (longRunningConversation != null)
          {
@@ -219,17 +232,19 @@ public abstract class AbstractConversationManager implements ConversationManager
        */
       public void run()
       {
-         log.debug("Conversation " + cid + " timed out. Destroying it");
+         log.debug(DESTROY_LRC, cid, "conversation timed out");
          longRunningConversations.remove(cid).destroy();
-         log.trace("There are now " + longRunningConversations.size() + " long-running conversations");
+         log.trace(LRC_COUNT, longRunningConversations.size());
       }
    }
 
    public void destroyAllConversations()
    {
-      log.debug("Destroying " + longRunningConversations.size() + " long-running conversations");
+      log.debug(DESTROY_ALL_LRC, "session ended");
+      log.trace(LRC_COUNT, longRunningConversations.size());
       for (ConversationEntry conversationEntry : longRunningConversations.values())
       {
+         log.debug(DESTROY_LRC, conversationEntry, "session ended");
          conversationEntry.destroy();
       }
       longRunningConversations.clear();

@@ -31,8 +31,6 @@ import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.weld.conversation.ConversationManager;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
 
 /**
  * Implementation of the Weld lifecycle that can react to servlet events
@@ -48,8 +46,6 @@ public class ServletLifecycle
    private final ContextLifecycle lifecycle;
    
    public static final String REQUEST_ATTRIBUTE_NAME = ServletLifecycle.class.getName() + ".requestBeanStore";
-
-   private static LogProvider log = Logging.getLogProvider(ServletLifecycle.class);
    
    /**
     * 

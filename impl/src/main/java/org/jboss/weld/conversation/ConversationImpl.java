@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.conversation;
 
+import static org.jboss.weld.messages.ConversationMessages.DEMOTED_LRC;
+import static org.jboss.weld.messages.ConversationMessages.PROMOTED_TRANSIENT;
+import static org.jboss.weld.messages.ConversationMessages.SWITCHED_CONVERSATION;
+import static org.jboss.weld.util.log.Categories.CONVERSATION;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.io.Serializable;
 
 import javax.enterprise.context.Conversation;
@@ -24,8 +30,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * The current conversation implementation
@@ -44,7 +49,7 @@ public class ConversationImpl implements Conversation, Serializable
     */
    private static final long serialVersionUID = 5262382965141841363L;
 
-   private static LogProvider log = Logging.getLogProvider(ConversationImpl.class);
+   private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
 
    // The conversation ID
    private String id;
@@ -86,7 +91,6 @@ public class ConversationImpl implements Conversation, Serializable
       this.id = conversationIdGenerator.nextId();
       this.timeout = timeout;
       this._transient = true;
-      log.debug("Created a new conversation " + this);
    }
 
    public void begin()
@@ -95,7 +99,7 @@ public class ConversationImpl implements Conversation, Serializable
       {
          throw new IllegalStateException("Attempt to call begin() on a long-running conversation");
       }
-      log.debug("Promoted conversation " + id + " to long-running");
+      log.debug(PROMOTED_TRANSIENT, id);
       this._transient = false;
    }
 
@@ -119,7 +123,7 @@ public class ConversationImpl implements Conversation, Serializable
       {
          throw new IllegalStateException("Attempt to call end() on a transient conversation");
       }
-      log.debug("Demoted conversation " + id + " to transient");
+      log.debug(DEMOTED_LRC, id);
       this._transient = true;
    }
 
@@ -164,11 +168,10 @@ public class ConversationImpl implements Conversation, Serializable
     */
    public void switchTo(ConversationImpl conversation)
    {
-      log.debug("Switched conversation from " + this);
+      log.debug(SWITCHED_CONVERSATION, this, conversation);
       id = conversation.getUnderlyingId();
       this._transient = conversation.isTransient();
       timeout = conversation.getTimeout();
-      log.debug(" to " + this);
    }
 
    @Override

@@ -25,8 +25,6 @@ package org.jboss.weld.context;
 import javax.enterprise.context.SessionScoped;
 
 import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
 
 /**
  * The session context
@@ -35,7 +33,6 @@ import org.jboss.weld.log.Logging;
  */
 public class SessionContext extends AbstractThreadLocalMapContext
 {
-   private static LogProvider log = Logging.getLogProvider(SessionContext.class);
 
    /**
     * Constructor
@@ -43,7 +40,6 @@ public class SessionContext extends AbstractThreadLocalMapContext
    public SessionContext()
    {
       super(SessionScoped.class);
-      log.trace("Created session context");
    }
 
    @Override

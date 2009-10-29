@@ -25,8 +25,6 @@ import javax.inject.Qualifier;
 
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Reflections;
 import org.jboss.weld.util.collections.Arrays2;
@@ -43,7 +41,6 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
    
    
    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(Qualifier.class);
-   private static final Log log = Logging.getLog(BindingTypeModel.class);
    
    // The non-binding types
    private Set<WeldMethod<?, ?>> nonBindingTypes;

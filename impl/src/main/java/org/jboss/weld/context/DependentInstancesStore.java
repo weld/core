@@ -16,14 +16,17 @@
  */
 package org.jboss.weld.context;
 
+import static org.jboss.weld.messages.ContextMessages.DEPENDENT_INSTANCE_ATTACHED;
+import static org.jboss.weld.util.log.Categories.CONTEXT;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * A store for dependent instances created under a given key
@@ -34,7 +37,7 @@ public class DependentInstancesStore implements Serializable
 {
    private static final long serialVersionUID = -2349574791148336833L;
 
-   private static Log log = Logging.getLog(DependentInstancesStore.class);
+   private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
    
    // A object -> List of contextual instances mapping
    private List<ContextualInstance<?>> dependentInstances;
@@ -55,18 +58,16 @@ public class DependentInstancesStore implements Serializable
     */
    public <T> void addDependentInstance(ContextualInstance<T> contextualInstance)
    {
-      log.trace("Registered dependent instance #0", contextualInstance);
+      log.trace(DEPENDENT_INSTANCE_ATTACHED, contextualInstance);
       dependentInstances.add(contextualInstance);
    }
 
    /**
     * Destroys all dependent objects
     * 
-    * @param key The key to remove
     */
    public void destroyDependentInstances()
    {
-      log.trace("Destroying dependent instances");
       for (ContextualInstance<?> injectedInstance : dependentInstances)
       {
          destroy(injectedInstance);

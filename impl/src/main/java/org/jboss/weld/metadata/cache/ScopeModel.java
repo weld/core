@@ -19,6 +19,10 @@ package org.jboss.weld.metadata.cache;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
+import static org.jboss.weld.messages.ReflectionMessages.MISSING_TARGET;
+import static org.jboss.weld.messages.ReflectionMessages.MISSING_TARGET_METHOD_FIELD_TYPE;
+import static org.jboss.weld.util.log.Categories.REFLECTION;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Target;
@@ -27,10 +31,9 @@ import java.util.Set;
 import javax.enterprise.context.NormalScope;
 import javax.inject.Scope;
 
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.Arrays2;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * 
@@ -44,7 +47,7 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
    
    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.asSet(Scope.class, NormalScope.class);
    
-   private static final Log log = Logging.getLog(ScopeModel.class);
+   private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
 
    private final boolean normal;
    private final boolean passivating;
@@ -84,12 +87,12 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
       if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
       {
          this.valid = false;
-         log.debug("#0 is missing @Target annotation.", getAnnotatedAnnotation());
+         log.debug(MISSING_TARGET, getAnnotatedAnnotation());
       }
       else if (!Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, TYPE))
       {
          this.valid = false;
-         log.debug("#0 is has incorrect @Target annotation. Should be @Target(METHOD, FIELD, TYPE).", getAnnotatedAnnotation());
+         log.debug(MISSING_TARGET_METHOD_FIELD_TYPE, getAnnotatedAnnotation());
       }
    }
 
@@ -118,6 +121,7 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
     * 
     * @return The ScopeType class
     */
+   @Override
    protected Set<Class<? extends Annotation>> getMetaAnnotationTypes() 
    {
       return META_ANNOTATIONS;

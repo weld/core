@@ -16,13 +16,19 @@
  */
 package org.jboss.weld.event;
 
+import static org.jboss.weld.messages.EventMessages.ASYNC_FIRE;
+import static org.jboss.weld.messages.EventMessages.ASYNC_OBSERVER_FAILURE;
+import static org.jboss.weld.util.log.Categories.EVENT;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Lifecycle;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
+import org.slf4j.cal10n.LocLogger;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLogger.Level;
 
 /**
  * A task that will notify the observer of a specific event at some future time.
@@ -31,7 +37,8 @@ import org.jboss.weld.log.Logging;
  */
 public class DeferredEventNotification<T> implements Runnable
 {
-   private static Log log = Logging.getLog(DeferredEventNotification.class);
+   private static final LocLogger log = loggerFactory().getLogger(EVENT);
+   private static final XLogger xLog = loggerFactory().getXLogger(EVENT);
    
    // The observer
    protected final ObserverMethodImpl<?, T> observer;
@@ -54,7 +61,7 @@ public class DeferredEventNotification<T> implements Runnable
    {
       try
       {
-         log.debug("Sending event [" + event + "] directly to observer " + observer);
+         log.debug(ASYNC_FIRE, event, observer);
          new RunInRequest()
          {
             
@@ -69,7 +76,8 @@ public class DeferredEventNotification<T> implements Runnable
       }
       catch (Exception e)
       {
-         log.error("Failure while notifying an observer of event [" + event + "]", e);
+         log.error(ASYNC_OBSERVER_FAILURE, event);
+         xLog.throwing(Level.DEBUG, e);
       }
    }
 

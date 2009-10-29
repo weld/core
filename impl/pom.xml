@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <artifactId>weld-core-parent</artifactId>
       <groupId>org.jboss.weld</groupId>
@@ -16,22 +17,17 @@
          <groupId>javax.enterprise</groupId>
          <artifactId>cdi-api</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>org.jboss.weld</groupId>
          <artifactId>weld-api</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>org.jboss.weld</groupId>
          <artifactId>weld-spi</artifactId>
       </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-logging</artifactId>
-      </dependency>
-      
       <dependency>
          <groupId>org.jboss.ejb3</groupId>
          <artifactId>jboss-ejb3-api</artifactId>
@@ -43,7 +39,7 @@
          <artifactId>servlet-api</artifactId>
          <optional>true</optional>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.servlet.jsp</groupId>
          <artifactId>jsp-api</artifactId>
@@ -55,19 +51,19 @@
          <artifactId>jta</artifactId>
          <optional>true</optional>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.annotation</groupId>
          <artifactId>jsr250-api</artifactId>
          <optional>true</optional>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.validation</groupId>
          <artifactId>validation-api</artifactId>
          <optional>true</optional>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.persistence</groupId>
          <artifactId>persistence-api</artifactId>
@@ -78,49 +74,89 @@
          <groupId>javassist</groupId>
          <artifactId>javassist</artifactId>
       </dependency>
- 
+
       <dependency>
          <groupId>com.google.collections</groupId>
          <artifactId>google-collections</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-api</artifactId>
          <optional>true</optional>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.faces</groupId>
          <artifactId>jsf-api</artifactId>
          <optional>true</optional>
       </dependency>
 
-     <dependency>
-       <groupId>org.jboss.interceptor</groupId>
-       <artifactId>jboss-interceptor-api</artifactId>
-     </dependency>
+      <dependency>
+         <groupId>org.jboss.interceptor</groupId>
+         <artifactId>jboss-interceptor-api</artifactId>
+      </dependency>
 
+      <dependency>
+         <groupId>org.jboss.interceptor</groupId>
+         <artifactId>jboss-interceptor</artifactId>
+      </dependency>
 
-     <dependency>
-       <groupId>org.jboss.interceptor</groupId>
-       <artifactId>jboss-interceptor</artifactId>
-     </dependency>
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-ext</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+      </dependency>
 
    </dependencies>
-   
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>ch.qos.cal10n.plugins</groupId>
+            <artifactId>maven-cal10n-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>verify-messages</id>
+                  <phase>verify</phase>
+                  <goals>
+                     <goal>verify</goal>
+                  </goals>
+                  <configuration>
+                     <enumTypes>
+                        <!-- list every enum type you would like to see checked -->
+                        <enumType>org.jboss.weld.messages.BeanMessages</enumType>
+                        <enumType>org.jboss.weld.messages.BootstrapMessages</enumType>
+                        <enumType>org.jboss.weld.messages.ContextMessages</enumType>
+                        <enumType>org.jboss.weld.messages.ConversationMessages</enumType>
+                        <enumType>org.jboss.weld.messages.EventMessages</enumType>
+                        <enumType>org.jboss.weld.messages.JsfMessages</enumType>
+                        <enumType>org.jboss.weld.messages.ReflectionMessages</enumType>
+                        <enumType>org.jboss.weld.messages.UtilMessages</enumType>
+                     </enumTypes>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+
    <profiles>
-   	<profile>
-      <id>javax.xml.ws</id>
-      <activation>
-      	<jdk>1.5</jdk>
-      </activation>
-      <dependencies>
-      	<dependency>
-      		<groupId>javax.xml.ws</groupId>
-      		<artifactId>jaxws-api</artifactId>
-    		</dependency>
-      </dependencies>
-    </profile>
+      <profile>
+         <id>javax.xml.ws</id>
+         <activation>
+            <jdk>1.5</jdk>
+         </activation>
+         <dependencies>
+            <dependency>
+               <groupId>javax.xml.ws</groupId>
+               <artifactId>jaxws-api</artifactId>
+            </dependency>
+         </dependencies>
+      </profile>
    </profiles>
 </project>

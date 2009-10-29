@@ -22,13 +22,21 @@
  */
 package org.jboss.weld.context;
 
+import static org.jboss.weld.messages.ContextMessages.APPLICATION_ENDED;
+import static org.jboss.weld.messages.ContextMessages.APPLICATION_STARTED;
+import static org.jboss.weld.messages.ContextMessages.REQUEST_ENDED;
+import static org.jboss.weld.messages.ContextMessages.REQUEST_STARTED;
+import static org.jboss.weld.messages.ContextMessages.SESSION_ENDED;
+import static org.jboss.weld.messages.ContextMessages.SESSION_RESTORED;
+import static org.jboss.weld.util.log.Categories.CONTEXT;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Lifecycle;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * An implementation of the Weld lifecycle that supports restoring
@@ -40,7 +48,7 @@ import org.jboss.weld.log.Logging;
 public class ContextLifecycle implements Lifecycle, Service
 {
    
-   public static final LogProvider log = Logging.getLogProvider(ContextLifecycle.class);
+   private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
    private final AbstractApplicationContext applicationContext;
    private final AbstractApplicationContext singletonContext;
@@ -61,14 +69,14 @@ public class ContextLifecycle implements Lifecycle, Service
 
    public void restoreSession(String id, BeanStore sessionBeanStore)
    {
-      log.trace("Restoring session " + id);
+      log.trace(SESSION_RESTORED, id);
       sessionContext.setBeanStore(sessionBeanStore);
       sessionContext.setActive(true);
    }
 
    public void endSession(String id, BeanStore sessionBeanStore)
    {
-      log.trace("Ending session " + id);
+      log.trace(SESSION_ENDED, id);
       sessionContext.setActive(true);
       sessionContext.destroy();
       sessionContext.setBeanStore(null);
@@ -77,7 +85,7 @@ public class ContextLifecycle implements Lifecycle, Service
 
    public void beginRequest(String id, BeanStore requestBeanStore)
    {
-      log.trace("Starting request " + id);
+      log.trace(REQUEST_STARTED, id);
       requestContext.setBeanStore(requestBeanStore);
       requestContext.setActive(true);
       dependentContext.setActive(true);
@@ -85,7 +93,7 @@ public class ContextLifecycle implements Lifecycle, Service
 
    public void endRequest(String id, BeanStore requestBeanStore)
    {
-      log.trace("Ending request " + id);
+      log.trace(REQUEST_ENDED, id);
       requestContext.setBeanStore(requestBeanStore);
       dependentContext.setActive(false);
       requestContext.destroy();
@@ -116,7 +124,7 @@ public class ContextLifecycle implements Lifecycle, Service
 
    public void beginApplication(BeanStore applicationBeanStore)
    {
-      log.trace("Starting application");
+      log.trace(APPLICATION_STARTED, "");
       applicationContext.setBeanStore(applicationBeanStore);
       applicationContext.setActive(true);
       singletonContext.setBeanStore(new ConcurrentHashMapBeanStore());
@@ -125,7 +133,7 @@ public class ContextLifecycle implements Lifecycle, Service
    
    public void endApplication()
    {
-      log.trace("Ending application");
+      log.trace(APPLICATION_ENDED, "");
       applicationContext.destroy();
       applicationContext.setActive(false);
       applicationContext.setBeanStore(null);

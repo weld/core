@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.util;
 
+import static org.jboss.weld.messages.UtilMessages.SECURITY_EXCEPTION_SCANNING;
+import static org.jboss.weld.util.log.Categories.UTIL;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.beans.Introspector;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -41,9 +45,10 @@ import java.util.Set;
 import javax.inject.Qualifier;
 
 import org.jboss.weld.DeploymentException;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
+import org.slf4j.cal10n.LocLogger;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLogger.Level;
 
 /**
  * Utility class for static reflection-type operations
@@ -54,7 +59,8 @@ import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 public class Reflections
 {
 
-   private static final Log log = Logging.getLog(Reflections.class);
+   private static final LocLogger log = loggerFactory().getLogger(UTIL);
+   private static final XLogger xLog = loggerFactory().getXLogger(UTIL);
 
    public static final Type[] EMPTY_TYPES = {};
 
@@ -172,7 +178,8 @@ public class Reflections
          catch (AccessControlException e)
          {
             // TODO Hmm, is this a hack?
-            log.trace("Security exception scanning " + clazz.getName(), e);
+            log.trace(SECURITY_EXCEPTION_SCANNING, clazz);
+            xLog.throwing(Level.TRACE, e);
          }
       }
 

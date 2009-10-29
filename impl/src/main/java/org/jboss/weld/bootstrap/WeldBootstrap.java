@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.messages.BootstrapMessages.JTA_UNAVAILABLE;
+import static org.jboss.weld.messages.BootstrapMessages.VALIDATING_BEANS;
+import static org.jboss.weld.messages.BootstrapMessages.VERSION;
+import static org.jboss.weld.util.log.Categories.BOOTSTRAP;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -55,8 +61,6 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.jsf.JsfApiAbstraction;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
@@ -68,6 +72,7 @@ import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.serviceProvider.ServiceLoader;
 import org.jboss.weld.ws.WSApiAbstraction;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Common bootstrapping functionality that is run at application startup and
@@ -77,6 +82,8 @@ import org.jboss.weld.ws.WSApiAbstraction;
  */
 public class WeldBootstrap implements Bootstrap
 {
+   
+   private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
    
    /**
     * 
@@ -141,13 +148,10 @@ public class WeldBootstrap implements Bootstrap
       }
       
    }
-  
-   // The log provider
-   private static Log log = Logging.getLog(WeldBootstrap.class);
    
    static
    {
-	   log.info("Weld " + Names.version(WeldBootstrap.class.getPackage()));
+	   log.info(VERSION, Names.version(WeldBootstrap.class.getPackage()));
    }
 
    // The Bean manager
@@ -174,7 +178,7 @@ public class WeldBootstrap implements Bootstrap
          
          if (!deployment.getServices().contains(TransactionServices.class))
          {
-            log.info("Transactional services not available. Injection of @Current UserTransaction not available. Transactional observers will be invoked synchronously.");
+            log.info(JTA_UNAVAILABLE);
          }
          // TODO Reinstate if we can find a good way to detect.
 //         if (!deployment.getServices().contains(EjbServices.class))
@@ -285,7 +289,7 @@ public class WeldBootstrap implements Bootstrap
             entry.getValue().deployBeans(environment);
          }
          AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, extensionDeployerEnvironment);
-         log.debug("Weld initialized. Validating beans.");
+         log.debug(VALIDATING_BEANS);
       }
       return this;
    }

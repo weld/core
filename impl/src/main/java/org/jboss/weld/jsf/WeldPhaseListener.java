@@ -25,6 +25,11 @@ package org.jboss.weld.jsf;
 import static org.jboss.weld.jsf.JsfHelper.getConversationId;
 import static org.jboss.weld.jsf.JsfHelper.getHttpSession;
 import static org.jboss.weld.jsf.JsfHelper.getModuleBeanManager;
+import static org.jboss.weld.messages.JsfMessages.CLEANING_UP_CONVERSATION;
+import static org.jboss.weld.messages.JsfMessages.INITIATING_CONVERSATION;
+import static org.jboss.weld.messages.JsfMessages.SKIPPING_CLEANING_UP_CONVERSATION;
+import static org.jboss.weld.util.log.Categories.JSF;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
@@ -39,10 +44,9 @@ import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.SessionContext;
 import org.jboss.weld.conversation.ConversationImpl;
 import org.jboss.weld.conversation.ConversationManager;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.servlet.ConversationBeanStore;
 import org.jboss.weld.servlet.HttpSessionManager;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * <p>
@@ -66,7 +70,7 @@ import org.jboss.weld.servlet.HttpSessionManager;
  */
 public class WeldPhaseListener implements PhaseListener
 {
-   private static LogProvider log = Logging.getLogProvider(WeldPhaseListener.class);
+   private static final LocLogger log = loggerFactory().getLogger(JSF);
 
    /**
     * Execute before every phase in the JSF life cycle. The order this
@@ -110,7 +114,7 @@ public class WeldPhaseListener implements PhaseListener
     */
    private void beforeRestoreView(FacesContext facesContext)
    {
-      log.trace("Initiating the session and conversation before the Restore View phase");
+      log.trace(INITIATING_CONVERSATION, "Restore View");
       initiateSessionAndConversation(facesContext);
    }
    
@@ -124,13 +128,13 @@ public class WeldPhaseListener implements PhaseListener
       ConversationContext conversationContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getConversationContext();
       if (sessionContext.isActive())
       {
-         log.trace("Cleaning up the conversation after the Render Response phase");
+         log.trace(CLEANING_UP_CONVERSATION, "Render Response", "response complete");
          moduleBeanManager.getInstanceByType(ConversationManager.class).cleanupConversation();
          conversationContext.setActive(false);
       }
       else
       {
-         log.trace("Skipping conversation cleanup after the Render Response phase because session has been terminated.");
+         log.trace(SKIPPING_CLEANING_UP_CONVERSATION, "Render Response", "session has been terminated");
       }
    }
 
@@ -143,12 +147,12 @@ public class WeldPhaseListener implements PhaseListener
       SessionContext sessionContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getSessionContext();
       if (sessionContext.isActive())
       {
-         log.trace("Cleaning up the conversation after the " + phaseId + " phase as the response has been marked complete");
+         log.trace(CLEANING_UP_CONVERSATION, phaseId, "the response has been marked complete");
          moduleBeanManager.getInstanceByType(ConversationManager.class).cleanupConversation();
       }
       else
       {
-         log.trace("Skipping conversation cleanup after the response has been marked complete because the session has been terminated.");
+         log.trace(SKIPPING_CLEANING_UP_CONVERSATION, phaseId, "session has been terminated");
       }
    }
 

@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.jsf;
 
+import static org.jboss.weld.messages.JsfMessages.FOUND_CONVERSATION_FROM_REQUEST;
+import static org.jboss.weld.messages.JsfMessages.RESUMING_CONVERSATION;
+import static org.jboss.weld.util.log.Categories.JSF;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import javax.enterprise.inject.AnnotationLiteral;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
@@ -24,10 +29,9 @@ import javax.servlet.http.HttpSession;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.conversation.ConversationIdName;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.servlet.ServletHelper;
 import org.jboss.weld.util.Reflections;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Helper class for JSF related operations
@@ -37,7 +41,7 @@ import org.jboss.weld.util.Reflections;
  */
 public class JsfHelper
 {
-   private static LogProvider log = Logging.getLogProvider(JsfHelper.class);
+   private static final LocLogger log = loggerFactory().getLogger(JSF);
    
    /**
     * Checks if the current request is a JSF postback. The JsfApiAbstraction is
@@ -70,7 +74,7 @@ public class JsfHelper
       BeanManagerImpl moduleBeanManager = JsfHelper.getModuleBeanManager(facesContext);
       String cidName = moduleBeanManager.getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>(){});
       String cid = facesContext.getExternalContext().getRequestParameterMap().get(cidName);
-      log.trace("Found conversation id " + cid + " in request parameter");
+      log.trace(FOUND_CONVERSATION_FROM_REQUEST, cid);
       return cid;
    }
 
@@ -82,7 +86,7 @@ public class JsfHelper
    public static String getConversationId(FacesContext facesContext)
    {
       String cid = getConversationIdFromRequest(facesContext);
-      log.debug("Resuming conversation with id " + cid);
+      log.debug(RESUMING_CONVERSATION, cid);
       return cid;
    }
    

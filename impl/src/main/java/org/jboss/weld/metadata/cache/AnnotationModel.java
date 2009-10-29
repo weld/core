@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.metadata.cache;
 
+import static org.jboss.weld.messages.ReflectionMessages.MISSING_RETENTION;
+import static org.jboss.weld.util.log.Categories.REFLECTION;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -23,9 +27,8 @@ import java.util.Set;
 
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.introspector.WeldAnnotation;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.ClassTransformer;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Abstract representation of an annotation model
@@ -34,7 +37,7 @@ import org.jboss.weld.resources.ClassTransformer;
  */
 public abstract class AnnotationModel<T extends Annotation>
 {
-   private static final Log log = Logging.getLog(AnnotationModel.class);
+   private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
    
    // The underlying annotation
    private WeldAnnotation<T> annotatedAnnotation;
@@ -88,7 +91,7 @@ public abstract class AnnotationModel<T extends Annotation>
       if (annotatedAnnotation.isAnnotationPresent(Retention.class) && !annotatedAnnotation.getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))
       {
          this.valid = false;
-         log.debug("#0 is missing @Retention(RUNTIME)", annotatedAnnotation);
+         log.debug(MISSING_RETENTION, annotatedAnnotation);
       }
             
    }

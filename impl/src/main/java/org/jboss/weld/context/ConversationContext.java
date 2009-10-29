@@ -24,9 +24,6 @@ package org.jboss.weld.context;
 
 import javax.enterprise.context.ConversationScoped;
 
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
-
 /**
  * The conversation context
  * 
@@ -34,7 +31,6 @@ import org.jboss.weld.log.Logging;
  */
 public class ConversationContext extends AbstractThreadLocalMapContext
 {
-   private static LogProvider log = Logging.getLogProvider(ConversationContext.class);
 
    /**
     * Constructor
@@ -42,7 +38,6 @@ public class ConversationContext extends AbstractThreadLocalMapContext
    public ConversationContext()
    {
       super(ConversationScoped.class);
-      log.trace("Created conversation context");
    }
 
    @Override

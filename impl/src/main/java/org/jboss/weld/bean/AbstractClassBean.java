@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.messages.BeanMessages.USING_DEFAULT_SCOPE;
+import static org.jboss.weld.messages.BeanMessages.USING_SCOPE;
+import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -39,8 +44,8 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Scope;
 
-import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.interceptor.model.InterceptionModel;
+import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.interceptor.model.InterceptorClassMetadataImpl;
 import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
@@ -58,13 +63,12 @@ import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Strings;
 import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.Strings;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * An abstract bean representation common for class-based beans
@@ -77,7 +81,7 @@ import org.jboss.weld.util.Reflections;
 public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 {
    // Logger
-   private static final LogProvider log = Logging.getLogProvider(AbstractClassBean.class);
+   private static final LocLogger log = loggerFactory().getLogger(BEAN);
    // The item representation
    protected WeldClass<T> annotatedItem;
    // The injectable fields of each type in the type hierarchy, with the actual type at the bottom 
@@ -230,7 +234,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initType()
    {
-      log.trace("Bean type specified in Java");
       this.type = getAnnotatedItem().getJavaClass();
    }
 
@@ -265,7 +268,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             if (getAnnotatedItem().isAnnotationPresent(scopeTypes.iterator().next().annotationType()))
             {
                this.scopeType = scopeTypes.iterator().next().annotationType();
-               log.trace("Scope " + scopeType + " specified by annotation");
+               log.trace(USING_SCOPE, scopeType, this);
             }
             break;
          }
@@ -283,7 +286,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       if (this.scopeType == null)
       {
          this.scopeType = Dependent.class;
-         log.trace("Using default @Dependent scope");
+         log.trace(USING_DEFAULT_SCOPE, this);
       }
    }
 
@@ -322,7 +325,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    protected String getDefaultName()
    {
       String name = Strings.decapitalize(getAnnotatedItem().getSimpleName());
-      log.trace("Default name of " + type + " is " + name);
       return name;
    }
 

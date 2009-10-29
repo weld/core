@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.context.beanstore;
 
+import static org.jboss.weld.messages.ContextMessages.CONTEXTUAL_INSTANCE_ADDED;
+import static org.jboss.weld.messages.ContextMessages.CONTEXTUAL_INSTANCE_FOUND;
+import static org.jboss.weld.messages.ContextMessages.CONTEXT_CLEARED;
+import static org.jboss.weld.util.log.Categories.CONTEXT;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -23,10 +29,9 @@ import java.util.List;
 
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.collections.EnumerationList;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Provides common BeanStore operations
@@ -36,8 +41,7 @@ import org.jboss.weld.util.collections.EnumerationList;
  */
 public abstract class AbstractAttributeBackedBeanStore implements BeanStore
 {
-   // The log provider
-   private static LogProvider log = Logging.getLogProvider(AbstractAttributeBackedBeanStore.class);
+   private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
    /**
     * Gets a bean from the store
@@ -50,7 +54,7 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
    {
       String key = getNamingScheme().getKey(id);
       ContextualInstance<T> instance = (ContextualInstance<T>) getAttribute(key);
-      log.trace("Looked for " + key + " and got " + instance);
+      log.trace(CONTEXTUAL_INSTANCE_FOUND, id, instance, this);
       return instance;
    }
 
@@ -63,7 +67,7 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
       {
          removeAttribute(attributeName);
       }
-      log.trace("Bean store cleared");
+      log.trace(CONTEXT_CLEARED, this);
    }
 
    /**
@@ -113,7 +117,7 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
    {
       String key = getNamingScheme().getKey(id);
       setAttribute(key, beanInstance);
-      log.trace("Added Contextual type " + beanInstance.getContextual() + " under key " + key);
+      log.trace(CONTEXTUAL_INSTANCE_ADDED, beanInstance.getContextual(), key, this);
    }
 
    /**

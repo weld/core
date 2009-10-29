@@ -57,8 +57,6 @@ import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
@@ -72,7 +70,6 @@ import org.jboss.weld.util.Proxies;
  */
 public class SessionBean<T> extends AbstractClassBean<T>
 {
-   private final Log log = Logging.getLog(SessionBean.class);
 
    // The EJB descriptor
    private InternalEjbDescriptor<T> ejbDescriptor;
@@ -173,7 +170,6 @@ public class SessionBean<T> extends AbstractClassBean<T>
                   T instance = proxyClass.newInstance();
                   ctx.push(instance);
                   ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, ctx));
-                  log.trace("Enterprise bean instance created for bean {0}", this);
                   return instance;
                }
                catch (InstantiationException e)

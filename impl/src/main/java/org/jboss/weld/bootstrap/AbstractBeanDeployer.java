@@ -16,6 +16,13 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.messages.BootstrapMessages.FOUND_BEAN;
+import static org.jboss.weld.messages.BootstrapMessages.FOUND_DECORATOR;
+import static org.jboss.weld.messages.BootstrapMessages.FOUND_INTERCEPTOR;
+import static org.jboss.weld.messages.BootstrapMessages.FOUND_OBSERVER_METHOD;
+import static org.jboss.weld.util.log.Categories.BOOTSTRAP;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.lang.reflect.Member;
 import java.util.Set;
 
@@ -56,17 +63,16 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.jsf.JsfApiAbstraction;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.util.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
+import org.slf4j.cal10n.LocLogger;
 
 public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
 {
    
-   private static final LogProvider log = Logging.getLogProvider(AbstractBeanDeployer.class);
+   private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
    
    private final BeanManagerImpl manager;
    private final E environment;
@@ -91,13 +97,13 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       {
          bean.initialize(getEnvironment());
          manager.addDecorator(bean);
-         log.debug("Bean: " + bean);
+         log.debug(FOUND_DECORATOR, bean);
       }
       for (InterceptorImpl<?> bean: getEnvironment().getInterceptors())
       {
          bean.initialize(getEnvironment());
          manager.addInterceptor(bean);
-         log.debug("Interceptor: " + bean);
+         log.debug(FOUND_INTERCEPTOR, bean);
       }
       for (RIBean<?> bean : beans)
       {
@@ -134,11 +140,11 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
             }
          }
          manager.addBean(bean);
-         log.debug("Bean: " + bean);
+         log.debug(FOUND_BEAN, bean);
       }
       for (ObserverMethodImpl<?, ?> observer : getEnvironment().getObservers())
       {
-         log.debug("Observer : " + observer);
+         log.debug(FOUND_OBSERVER_METHOD, observer);
          observer.initialize();
          ProcessObserverMethodImpl.fire(manager, observer);
          manager.addObserver(observer);

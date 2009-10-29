@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.bean;
 
-import java.lang.annotation.Annotation;
+import static org.jboss.weld.messages.BeanMessages.ERROR_DESTROYING;
+import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -24,14 +27,10 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
-import org.jboss.interceptor.model.InterceptionModel;
-import org.jboss.interceptor.model.InterceptionModelBuilder;
-import org.jboss.interceptor.model.InterceptorClassMetadataImpl;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
 import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
 import org.jboss.interceptor.registry.InterceptorRegistry;
@@ -49,12 +48,13 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.Reflections;
+import org.slf4j.cal10n.LocLogger;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLogger.Level;
 
 /**
  * Represents a simple bean
@@ -66,7 +66,8 @@ import org.jboss.weld.util.Reflections;
 public class ManagedBean<T> extends AbstractClassBean<T>
 {
    // Logger
-   private static LogProvider log = Logging.getLogProvider(ManagedBean.class);
+   private static final LocLogger log = loggerFactory().getLogger(BEAN);
+   private static final XLogger xLog = loggerFactory().getXLogger(BEAN);
 
    // The constructor
    private ConstructorInjectionPoint<T> constructor;
@@ -167,7 +168,8 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       }
       catch (Exception e)
       {
-         log.error("Error destroying " + toString(), e);
+         log.error(ERROR_DESTROYING, this, instance);
+         xLog.throwing(Level.DEBUG, e);
       }
    }
 

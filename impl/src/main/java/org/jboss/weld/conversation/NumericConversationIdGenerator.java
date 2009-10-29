@@ -21,9 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.SessionScoped;
 
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
-
 /**
  * A ConversationIdGenerator implementation using running numerical values
  *  
@@ -36,7 +33,6 @@ public class NumericConversationIdGenerator implements ConversationIdGenerator, 
 {
    private static final long serialVersionUID = -587408626962044442L;
 
-   private static LogProvider log = Logging.getLogProvider(NumericConversationIdGenerator.class);
    // The next conversation ID
    private AtomicInteger id;
 
@@ -51,7 +47,6 @@ public class NumericConversationIdGenerator implements ConversationIdGenerator, 
    public String nextId()
    {
       int nextId = id.getAndIncrement();
-      log.trace("Generated new conversation id " + nextId);
       return String.valueOf(nextId);
    }
 

@@ -33,6 +33,12 @@
       <dependency>
          <groupId>org.jboss.test-harness</groupId>
          <artifactId>jboss-test-harness-jboss-as-52</artifactId>
+         <exclusions>
+            <exclusion>
+               <groupId>org.jboss.slf4j</groupId>
+               <artifactId>slf4j-jboss-logging</artifactId>
+            </exclusion>
+         </exclusions>
          <scope>test</scope>
       </dependency>
 

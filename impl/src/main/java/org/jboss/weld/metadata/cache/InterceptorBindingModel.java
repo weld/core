@@ -17,23 +17,27 @@
 
 package org.jboss.weld.metadata.cache;
 
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
-import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.collections.Arrays2;
-import org.jboss.weld.util.Reflections;
-import org.jboss.weld.DefinitionException;
+import static org.jboss.weld.messages.ReflectionMessages.MISSING_TARGET;
+import static org.jboss.weld.messages.ReflectionMessages.MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE;
+import static org.jboss.weld.messages.ReflectionMessages.TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE;
+import static org.jboss.weld.util.log.Categories.REFLECTION;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
-import javax.interceptor.InterceptorBinding;
-import javax.enterprise.inject.Nonbinding;
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
+
+import javax.enterprise.inject.Nonbinding;
+import javax.interceptor.InterceptorBinding;
+
+import org.jboss.weld.DefinitionException;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.collections.Arrays2;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * @author Marius Bogoevici
@@ -41,7 +45,7 @@ import java.util.Set;
 public class InterceptorBindingModel<T extends Annotation> extends AnnotationModel<T>
 {
    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(InterceptorBinding.class);
-   private static final Log log = Logging.getLog(BindingTypeModel.class);
+   private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
    private Set<WeldMethod<?,?>> nonBindingTypes;
    private Set<Annotation> inheritedInterceptionBindingTypes;
    private Set<Annotation> metaAnnotations;
@@ -59,6 +63,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
       }
    }
 
+   @Override
    protected Set<Class<? extends Annotation>> getMetaAnnotationTypes()
    {
       return META_ANNOTATIONS;
@@ -86,7 +91,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
       if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
       {
          this.valid = false;
-         log.debug("#0 is missing @Target", getAnnotatedAnnotation());
+         log.debug(MISSING_TARGET, getAnnotatedAnnotation());
       }
       else
       {
@@ -95,7 +100,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
                && !Arrays2.unorderedEquals(targetElementTypes, ElementType.TYPE))
          {
             this.valid = false;
-            log.debug("#0 is not declared @Target(TYPE, METHOD) or @Target(TYPE)");
+            log.debug(MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE, getAnnotatedAnnotation());
          }
       }
    }
@@ -109,7 +114,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
             if (!Arrays2.containsAll(inheritedBinding.annotationType().getAnnotation(Target.class).value(), ElementType.METHOD))
             {
                this.valid = false;
-               log.debug("#0 is declared @Target(TYPE, METHOD), but inherits #1, which is declared @Target(TYPE)", 
+               log.debug(TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE, 
                      getAnnotatedAnnotation(), inheritedBinding);
             }
          }

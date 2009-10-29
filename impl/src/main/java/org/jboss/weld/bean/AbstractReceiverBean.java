@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.messages.BeanMessages.CIRCULAR_CALL;
+import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.lang.reflect.Member;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -25,8 +29,7 @@ import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.introspector.WeldMember;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * @author pmuir
@@ -35,7 +38,7 @@ import org.jboss.weld.log.Logging;
 public abstract class AbstractReceiverBean<X, T, S extends Member> extends AbstractBean<T, S>
 {
 
-   private static final LogProvider log = Logging.getLogProvider(AbstractReceiverBean.class);
+   private static final LocLogger log = loggerFactory().getLogger(BEAN);
    
    private AbstractClassBean<X> declaringBean;
    private boolean policy;
@@ -73,7 +76,7 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
             WeldCreationalContext<?> creationalContextImpl = (WeldCreationalContext<?>) creationalContext;
             if (creationalContextImpl.containsIncompleteInstance(getDeclaringBean()))
             {
-               log.warn("Executing producer field or method " + getAnnotatedItem() + " on incomplete declaring bean " + getDeclaringBean() + " due to circular injection");
+               log.warn(CIRCULAR_CALL, getAnnotatedItem(), getDeclaringBean());
                return creationalContextImpl.getIncompleteInstance(getDeclaringBean());
             }
          }

@@ -31,8 +31,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.servlet.ConversationBeanStore;
 
 /**
@@ -45,8 +43,6 @@ import org.jboss.weld.servlet.ConversationBeanStore;
 public class ServletConversationManager extends AbstractConversationManager implements Serializable
 {
    private static final long serialVersionUID = 1647848566880659085L;
-
-   private static LogProvider log = Logging.getLogProvider(ServletConversationManager.class);
 
    private static final long CONVERSATION_TIMEOUT_IN_MS = 10 * 60 * 1000;
    private static final long CONVERSATION_CONCURRENT_ACCESS_TIMEOUT_IN_MS = 1 * 1000;
@@ -64,7 +60,6 @@ public class ServletConversationManager extends AbstractConversationManager impl
    @ConversationInactivityTimeout
    public static long getConversationTimeoutInMilliseconds()
    {
-      log.trace("Produced conversation timeout " + CONVERSATION_TIMEOUT_IN_MS);
       return CONVERSATION_TIMEOUT_IN_MS;
    }
 
@@ -72,7 +67,6 @@ public class ServletConversationManager extends AbstractConversationManager impl
    @ConversationConcurrentAccessTimeout
    public static long getConversationConcurrentAccessTimeout()
    {
-      log.trace("Produced conversation concurrent access timeout " + CONVERSATION_CONCURRENT_ACCESS_TIMEOUT_IN_MS);
       return CONVERSATION_CONCURRENT_ACCESS_TIMEOUT_IN_MS;
    }
 
@@ -80,7 +74,6 @@ public class ServletConversationManager extends AbstractConversationManager impl
    @ConversationIdName
    public static String getConversationIdName()
    {
-      log.trace("Produced conversation id name " + CONVERSATION_ID_NAME);
       return CONVERSATION_ID_NAME;
    }
    

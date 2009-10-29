@@ -16,10 +16,13 @@
  */
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.weld.messages.BeanMessages.CALL_PROXIED_METHOD;
+import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 import javassist.util.proxy.MethodHandler;
 
@@ -28,9 +31,8 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.context.WeldCreationalContext;
-import org.jboss.weld.log.LogProvider;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.util.Reflections;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * A Javassist MethodHandler that delegates method calls to a proxied bean. If
@@ -46,7 +48,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
 
    private static final long serialVersionUID = -5391564935097267888L;
    // The log provider
-   private static transient LogProvider log = Logging.getLogProvider(ClientProxyMethodHandler.class);
+   private static final LocLogger log = loggerFactory().getLogger(BEAN);
    // The bean
    private transient Bean<?> bean;
    // The bean index in the manager
@@ -114,7 +116,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       try
       {
          Object returnValue = Reflections.lookupMethod(proxiedMethod, proxiedInstance).invoke(proxiedInstance, args);
-         log.trace("Executed method " + proxiedMethod + " on " + proxiedInstance + " with parameters " + Arrays.toString(args) + " and got return value " + returnValue == null ? null : returnValue);
+         log.trace(CALL_PROXIED_METHOD, proxiedMethod, proxiedInstance, args, returnValue == null ? null : returnValue);
          return returnValue;
       }
       catch (InvocationTargetException e)

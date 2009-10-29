@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.messages.BootstrapMessages.ENABLED_DECORATORS;
+import static org.jboss.weld.messages.BootstrapMessages.ENABLED_INTERCEPTORS;
+import static org.jboss.weld.messages.BootstrapMessages.ENABLED_POLICIES;
+import static org.jboss.weld.util.log.Categories.BOOTSTRAP;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.builtin.DefaultValidatorBean;
 import org.jboss.weld.bean.builtin.DefaultValidatorFactoryBean;
@@ -39,14 +45,13 @@ import org.jboss.weld.conversation.ServletConversationManager;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.servlet.HttpSessionManager;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.validation.spi.ValidationServices;
 import org.jboss.weld.xml.BeansXmlParser;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * @author pmuir
@@ -55,7 +60,7 @@ import org.jboss.weld.xml.BeansXmlParser;
 public class BeanDeployment
 {
 
-   private static final Log log = Logging.getLog(BeanDeployment.class);
+   private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
    
    private final BeanDeploymentArchive beanDeploymentArchive;
    private final BeanManagerImpl beanManager;
@@ -123,9 +128,9 @@ public class BeanDeployment
       {
          beanManager.setEnabledInterceptorClasses(parser.getEnabledInterceptorClasses());
       }
-      log.debug("Enabled policies for "  + this + ": " + beanManager.getEnabledPolicyClasses() + " " + beanManager.getEnabledPolicyStereotypes());
-      log.debug("Enabled decorator types for "  + beanManager + ": " + beanManager.getEnabledDecoratorClasses());
-      log.debug("Enabled interceptor types for "  + beanManager + ": " + beanManager.getEnabledInterceptorClasses());
+      log.debug(ENABLED_POLICIES, this.beanManager, beanManager.getEnabledPolicyClasses(), beanManager.getEnabledPolicyStereotypes());
+      log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabledDecoratorClasses());
+      log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabledInterceptorClasses());
    }
    
    // TODO Move class stuff into startContainer phase

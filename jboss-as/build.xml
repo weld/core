@@ -47,13 +47,19 @@
 			</fileset>
 		</copy>
 
-                <copy todir="target/weld.deployer/" overwrite="true">
+                <copy todir="${jboss.home}/client" overwrite="true">
                         <fileset dir="target/dependency/lib">
                                 <include name="weld-api.jar" />
                                 <include name="cdi-api.jar" />
-                                <include name="weld-logger.jar" />
                         </fileset>
                 </copy>
+                <copy todir="${jboss.home}/common/lib" overwrite="true">
+                        <fileset dir="target/dependency/lib">
+                                <include name="weld-api.jar" />
+                                <include name="cdi-api.jar" />
+                        </fileset>
+                </copy>
+
 
 		<delete dir="target/dependency" />
 

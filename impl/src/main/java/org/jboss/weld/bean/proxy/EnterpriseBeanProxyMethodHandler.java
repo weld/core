@@ -16,9 +16,13 @@
  */
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.weld.messages.BeanMessages.CALL_PROXIED_METHOD;
+import static org.jboss.weld.messages.BeanMessages.CREATED_SESSION_BEAN_PROXY;
+import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collection;
 
 import javassist.util.proxy.MethodHandler;
@@ -29,9 +33,8 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
-import org.jboss.weld.log.Log;
-import org.jboss.weld.log.Logging;
 import org.jboss.weld.util.Reflections;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Method handler for enterprise bean client proxies
@@ -46,7 +49,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
    private static final long serialVersionUID = 2107723373882153667L;
 
    // The log provider
-   static final transient Log log = Logging.getLog(EnterpriseBeanProxyMethodHandler.class);
+   private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
    private final SessionObjectReference reference; 
    private final Class<?> objectInterface;
@@ -68,7 +71,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
       this.clientCanCallRemoveMethods = bean.isClientCanCallRemoveMethods();
       this.reference = bean.createReference();
       this.stateful = bean.getEjbDescriptor().isStateful();
-      log.trace("Created enterprise bean proxy method handler for " + bean);
+      log.trace(CREATED_SESSION_BEAN_PROXY, bean);
    }
    
    /**
@@ -116,7 +119,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
       Object proxiedInstance = reference.getBusinessObject(businessInterface);
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
       Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxiedInstance, args);
-      log.trace("Executed " + method + " on " + proxiedInstance + " with parameters " + Arrays.toString(args) + " and got return value " + returnValue);
+      log.trace(CALL_PROXIED_METHOD, method, proxiedInstance, args, returnValue);
       return returnValue;
    }
    
