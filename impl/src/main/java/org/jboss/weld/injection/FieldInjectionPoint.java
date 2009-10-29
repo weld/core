@@ -30,6 +30,7 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 
+import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.introspector.ForwardingWeldField;
 import org.jboss.weld.introspector.WeldField;
@@ -75,7 +76,13 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
    {
       try
       {
-         delegate().set(declaringInstance, manager.getInjectableReference(this, creationalContext));
+         Object instanceToInject = declaringInstance;
+         if (!isDelegate())
+         {
+            // if declaringInstance is a proxy, unwrap it
+            instanceToInject = InterceptionUtils.getRawInstance(declaringInstance);
+         }
+         delegate().set(instanceToInject, manager.getInjectableReference(this, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
