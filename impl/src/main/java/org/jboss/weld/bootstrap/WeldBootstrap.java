@@ -57,7 +57,6 @@ import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.SessionContext;
 import org.jboss.weld.context.SingletonContext;
 import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.jsf.JsfApiAbstraction;
@@ -67,6 +66,7 @@ import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Names;
@@ -111,11 +111,10 @@ public class WeldBootstrap implements Bootstrap
       
       public Map<BeanDeploymentArchive, BeanDeployment> visit()
       {
-         Set<BeanDeploymentArchive> seenBeanDeploymentArchives = new HashSet<BeanDeploymentArchive>();
          Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives = new HashMap<BeanDeploymentArchive, BeanDeployment>();
          for (BeanDeploymentArchive archvive : deployment.getBeanDeploymentArchives())
          {
-            visit(archvive, managerAwareBeanDeploymentArchives, seenBeanDeploymentArchives);
+            visit(archvive, managerAwareBeanDeploymentArchives, new HashSet<BeanDeploymentArchive>());
          }
          return managerAwareBeanDeploymentArchives;
       }
