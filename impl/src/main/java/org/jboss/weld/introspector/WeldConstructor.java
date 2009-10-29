@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.decorator.Decorates;
+import javax.decorator.Delegate;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 
 /**
@@ -36,7 +36,7 @@ public interface WeldConstructor<T> extends WeldCallable<T, T, Constructor<T>>, 
 {
 
    @SuppressWarnings("unchecked")
-   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Decorates.class));
+   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Delegate.class));
 
    /**
     * Creates a new instance of the class, using this constructor

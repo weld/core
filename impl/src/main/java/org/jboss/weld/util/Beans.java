@@ -39,7 +39,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.decorator.Decorates;
+import javax.decorator.Delegate;
 import javax.decorator.Decorator;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
@@ -169,7 +169,7 @@ public class Beans
                addFieldInjectionPoint(annotatedField, fields, declaringBean);
             }
          }
-         for (WeldField<?, ?> annotatedField : t.getAnnotatedWeldFields(Decorates.class))
+         for (WeldField<?, ?> annotatedField : t.getAnnotatedWeldFields(Delegate.class))
          {
             if (!annotatedField.isStatic())
             {

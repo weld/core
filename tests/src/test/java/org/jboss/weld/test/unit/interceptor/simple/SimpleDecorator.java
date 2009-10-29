@@ -18,7 +18,7 @@ package org.jboss.weld.test.unit.interceptor.simple;
 
 import org.jboss.weld.test.unit.interceptor.simple.SimpleBean;
 
-import javax.decorator.Decorates;
+import javax.decorator.Delegate;
 import javax.decorator.Decorator;
 
 /**
@@ -29,7 +29,7 @@ import javax.decorator.Decorator;
 @Decorator
 public class SimpleDecorator
 {
-   @Decorates
+   @Delegate
    SimpleBean delegate;
 
    public String doSomething()

@@ -24,7 +24,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.decorator.Decorates;
+import javax.decorator.Delegate;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
@@ -53,7 +53,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
    {
       this.declaringBean = declaringBean;
       this.field = field;
-      this.delegate = isAnnotationPresent(Decorates.class) && declaringBean instanceof Decorator<?>;
+      this.delegate = isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
    }
 
    @Override

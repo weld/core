@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.decorator.Decorates;
+import javax.decorator.Delegate;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
@@ -78,7 +78,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
    {
       this.declaringBean = declaringBean;
       this.constructor = constructor;
-      this.delegate = isAnnotationPresent(Decorates.class) && declaringBean instanceof Decorator<?>;
+      this.delegate = isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
    }
 
    @Override

@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.decorator.Decorates;
+import javax.decorator.Delegate;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.New;
@@ -163,7 +163,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    
    protected void addInjectionPoint(WeldInjectionPoint<?, ?> injectionPoint)
    {
-      if (injectionPoint.isAnnotationPresent(Decorates.class))
+      if (injectionPoint.isAnnotationPresent(Delegate.class))
       {
          this.delegateInjectionPoints.add(injectionPoint);
       }
