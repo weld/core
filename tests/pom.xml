@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <artifactId>weld-core-parent</artifactId>
       <groupId>org.jboss.weld</groupId>
@@ -17,29 +18,29 @@
          <artifactId>testng</artifactId>
          <classifier>jdk15</classifier>
          <exclusions>
-         	<exclusion>
-         		<artifactId>junit</artifactId>
-         		<groupId>junit</groupId>
-         	</exclusion>
+            <exclusion>
+               <artifactId>junit</artifactId>
+               <groupId>junit</groupId>
+            </exclusion>
          </exclusions>
       </dependency>
-      
+
       <dependency>
          <groupId>org.jboss.test-harness</groupId>
          <artifactId>jboss-test-harness</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>org.jboss.test-harness</groupId>
          <artifactId>jboss-test-harness-jboss-as-52</artifactId>
          <scope>test</scope>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-api</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>org.glassfish.web</groupId>
          <artifactId>el-impl</artifactId>
@@ -49,18 +50,18 @@
          <groupId>javax.servlet</groupId>
          <artifactId>servlet-api</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>org.jboss.weld</groupId>
          <artifactId>weld-core</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>org.jboss.weld</groupId>
          <artifactId>weld-spi</artifactId>
       </dependency>
 
-     <dependency>
+      <dependency>
          <groupId>org.jboss.interceptor</groupId>
          <artifactId>jboss-interceptor-api</artifactId>
       </dependency>
@@ -69,57 +70,57 @@
          <groupId>org.jboss.interceptor</groupId>
          <artifactId>jboss-interceptor</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>org.jboss.ejb3</groupId>
          <artifactId>jboss-ejb3-api</artifactId>
       </dependency>
-      
+
       <dependency>
-      	<groupId>log4j</groupId>
-      	<artifactId>log4j</artifactId>
-      	<scope>test</scope>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-simple</artifactId>
+         <scope>test</scope>
       </dependency>
-      
+
       <dependency>
-      	<groupId>javax.transaction</groupId>
-      	<artifactId>jta</artifactId>
-    	</dependency>
-    	
+         <groupId>javax.transaction</groupId>
+         <artifactId>jta</artifactId>
+      </dependency>
+
       <dependency>
          <groupId>javax.persistence</groupId>
          <artifactId>persistence-api</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.validation</groupId>
          <artifactId>validation-api</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.faces</groupId>
          <artifactId>jsf-api</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>net.sourceforge.htmlunit</groupId>
          <artifactId>htmlunit</artifactId>
       </dependency>
-      
+
    </dependencies>
 
    <build>
-   	<defaultGoal>test</defaultGoal>
-   	<plugins>
-   	   <plugin>
-   	      <groupId>org.apache.maven.plugins</groupId>
-   	      <artifactId>maven-surefire-plugin</artifactId>
-   	      <configuration>
-   	         <suiteXmlFiles>
+      <defaultGoal>test</defaultGoal>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <suiteXmlFiles>
                   <suiteXmlFile>unit-tests.xml</suiteXmlFile>
-   	         </suiteXmlFiles>
-   	      </configuration>
-   	   </plugin>
+               </suiteXmlFiles>
+            </configuration>
+         </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-report-plugin</artifactId>
@@ -137,9 +138,9 @@
                <outputName>test-report</outputName>
             </configuration>
          </plugin>
-   	</plugins>
+      </plugins>
    </build>
-   
+
    <profiles>
       <profile>
          <id>incontainer</id>
@@ -233,9 +234,9 @@
                   <executions>
                      <execution>
                         <id>generate-test-artifacts</id>
-                        <phase>generate-test-sources</phase> 
+                        <phase>generate-test-sources</phase>
                         <goals>
-                        <goal>java</goal>
+                           <goal>java</goal>
                         </goals>
                      </execution>
                   </executions>
