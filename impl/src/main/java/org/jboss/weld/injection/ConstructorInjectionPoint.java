@@ -28,11 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.decorator.Delegate;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.introspector.ForwardingWeldConstructor;
@@ -67,7 +65,6 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
 
    private final Bean<T> declaringBean;
    private final WeldConstructor<T> constructor;
-   private final boolean delegate;
 
    public static <T> ConstructorInjectionPoint<T> of(Bean<T> declaringBean, WeldConstructor<T> constructor)
    {
@@ -78,7 +75,6 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
    {
       this.declaringBean = declaringBean;
       this.constructor = constructor;
-      this.delegate = isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
    }
 
    @Override
@@ -196,7 +192,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
 
    public boolean isDelegate()
    {
-      return delegate;
+      return false;
    }
 
    public boolean isTransient()

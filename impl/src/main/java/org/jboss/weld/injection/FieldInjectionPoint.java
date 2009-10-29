@@ -29,6 +29,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
+import javax.inject.Inject;
 
 import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.BeanManagerImpl;
@@ -53,7 +54,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
    {
       this.declaringBean = declaringBean;
       this.field = field;
-      this.delegate = isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
+      this.delegate = isAnnotationPresent(Inject.class) && isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
    }
 
    @Override
@@ -67,6 +68,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
       return declaringBean;
    }
 
+   @Override
    public Set<Annotation> getQualifiers()
    {
       return delegate().getQualifiers();

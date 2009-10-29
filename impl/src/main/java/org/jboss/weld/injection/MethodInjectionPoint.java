@@ -28,11 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.decorator.Delegate;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.introspector.ForwardingWeldMethod;
@@ -67,7 +65,6 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
 
    private final Bean<?> declaringBean;
    private final WeldMethod<T, X> method;
-   private final boolean delegate;
 
    public static <T, X> MethodInjectionPoint<T, X> of(Bean<?> declaringBean, WeldMethod<T, X> method)
    {
@@ -78,7 +75,6 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    {
       this.declaringBean = declaringBean;
       this.method = method;
-      this.delegate = isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
    }
 
    @Override
@@ -278,7 +274,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
 
    public boolean isDelegate()
    {
-      return delegate;
+      return false;
    }
 
    public boolean isTransient()

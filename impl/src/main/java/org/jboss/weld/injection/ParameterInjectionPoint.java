@@ -63,6 +63,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
       return declaringBean;
    }
 
+   @Override
    public Set<Annotation> getQualifiers()
    {
       return delegate().getQualifiers();

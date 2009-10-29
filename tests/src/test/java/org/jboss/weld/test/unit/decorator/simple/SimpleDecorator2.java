@@ -21,8 +21,9 @@
 */ 
 package org.jboss.weld.test.unit.decorator.simple;
 
-import javax.decorator.Delegate;
 import javax.decorator.Decorator;
+import javax.decorator.Delegate;
+import javax.inject.Inject;
 
 /**
  * 
@@ -32,7 +33,7 @@ import javax.decorator.Decorator;
 @Decorator
 public class SimpleDecorator2
 {
-   @Delegate
+   @Inject  @Delegate
    SimpleBean delegate;
    
    public static boolean echo2;

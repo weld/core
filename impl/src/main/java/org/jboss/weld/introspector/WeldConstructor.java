@@ -19,11 +19,9 @@ package org.jboss.weld.introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
-import javax.decorator.Delegate;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 
 /**
@@ -36,7 +34,7 @@ public interface WeldConstructor<T> extends WeldCallable<T, T, Constructor<T>>, 
 {
 
    @SuppressWarnings("unchecked")
-   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Delegate.class));
+   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = Collections.emptySet();
 
    /**
     * Creates a new instance of the class, using this constructor
