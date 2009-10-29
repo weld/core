@@ -18,17 +18,15 @@ package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.util.Reflections.ensureAccessible;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import javassist.util.proxy.MethodHandler;
-
+import org.jboss.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
 import org.jboss.weld.bean.DecoratorImpl;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 
 /**
  * Method handler for decorated beans
@@ -36,13 +34,11 @@ import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
  * @author Pete Muir
  * 
  */
-public class DecoratorProxyMethodHandler implements MethodHandler, Serializable
+public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandler
 {
    private static final long serialVersionUID = 4577632640130385060L;
 
    private final List<SerializableContextualInstance<DecoratorImpl<Object>, Object>> decoratorInstances;
-   
-   private final Object instance;
 
    /**
     * Constructor
@@ -53,8 +49,8 @@ public class DecoratorProxyMethodHandler implements MethodHandler, Serializable
     */
    public DecoratorProxyMethodHandler(List<SerializableContextualInstance<DecoratorImpl<Object>, Object>> decoratorInstances, Object instance)
    {
+      super (instance, instance.getClass());
       this.decoratorInstances = decoratorInstances;
-      this.instance = instance;
    }
    
    /**
@@ -74,7 +70,7 @@ public class DecoratorProxyMethodHandler implements MethodHandler, Serializable
     * 
     * @throws Throwable if the method invocation fails.
     */
-   public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
+   protected Object doInvoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
       MethodSignature methodSignature = new MethodSignatureImpl(method);
       for (SerializableContextualInstance<DecoratorImpl<Object>, Object> beanInstance : decoratorInstances)
@@ -86,7 +82,6 @@ public class DecoratorProxyMethodHandler implements MethodHandler, Serializable
          }
       }
       
-      return ensureAccessible(method).invoke(instance, args);
+      return ensureAccessible(method).invoke(getTargetInstance(), args);
    }
-   
 }

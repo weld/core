@@ -43,6 +43,7 @@ import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.interceptor.model.InterceptorClassMetadataImpl;
 import org.jboss.interceptor.util.InterceptionUtils;
+import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
@@ -158,6 +159,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       if (hasDecorators())
       {
          Set<Type> types = new LinkedHashSet<Type>(getTypes());
+         types.add(TargetInstanceProxy.class);
          ProxyFactory proxyFactory = Proxies.getProxyFactory(types);
    
          @SuppressWarnings("unchecked")

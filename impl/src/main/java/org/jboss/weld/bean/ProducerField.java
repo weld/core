@@ -25,6 +25,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 
+import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.introspector.WeldField;
@@ -94,7 +95,8 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
 
             public T produce(CreationalContext<T> creationalContext)
             {
-               return field.get(getReceiver(creationalContext));
+               // unwrap if we have a proxy
+               return field.get(InterceptionUtils.getRawInstance(getReceiver(creationalContext)));
             }
             
          });
