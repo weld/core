@@ -19,6 +19,7 @@ package org.jboss.weld.test.unit.interceptor.ejb;
 
 import javax.ejb.Stateless;
 import javax.ejb.Timeout;
+import javax.ejb.Timer;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
@@ -37,7 +38,7 @@ public class BallImpl implements Ball
    }
 
    @Timeout
-   public void finishGame()
+   public void finishGame(Timer timer)
    {
 
    }

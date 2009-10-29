@@ -16,10 +16,8 @@
  */
 package org.jboss.weld.test.unit.interceptor.ejb3model;
 
-import org.jboss.weld.test.unit.interceptor.ejb.TimeBound;
-
-import javax.interceptor.Interceptor;
 import javax.interceptor.AroundTimeout;
+import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 /**

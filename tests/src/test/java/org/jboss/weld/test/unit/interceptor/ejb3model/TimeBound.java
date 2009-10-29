@@ -17,20 +17,21 @@
 
 package org.jboss.weld.test.unit.interceptor.ejb3model;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import javax.interceptor.InterceptorBinding;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class Defender
+@InterceptorBinding
+@Retention(RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Documented
+public @interface TimeBound
 {
-   public static boolean defended = false;
-
-   @AroundInvoke
-   public Object defend(InvocationContext context) throws Exception
-   {
-      defended = true;
-      return context.proceed();
-   }
 }

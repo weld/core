@@ -1,10 +1,11 @@
 package org.jboss.weld.test.unit.interceptor.ejb;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
-
+import javax.ejb.Timer;
 import javax.enterprise.inject.spi.InterceptionType;
 
 import org.jboss.testharness.impl.packaging.Artifact;
@@ -13,9 +14,8 @@ import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
-import org.jboss.weld.test.AbstractWeldTest;
 import org.jboss.weld.ejb.spi.InterceptorBindings;
-
+import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -47,9 +47,10 @@ public class EnterpriseBeanInterceptionTest extends AbstractWeldTest
       assert interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getType().getMethod("pass")).size() == 1;
       assert interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getType().getMethod("pass")).get(0).getBeanClass().equals(Defender.class);
 
-      assert interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getType().getMethod("finishGame")).size() == 0;
-      assert interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_TIMEOUT, ballSessionBean.getType().getMethod("finishGame")).size() == 1;
-      assert interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_TIMEOUT, ballSessionBean.getType().getMethod("finishGame")).get(0).getBeanClass().equals(Referee.class);
+      Method finishGameMethod = ballSessionBean.getType().getMethod("finishGame", Timer.class);
+      assert interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, finishGameMethod).size() == 0;
+      assert interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_TIMEOUT, finishGameMethod).size() == 1;
+      assert interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_TIMEOUT, finishGameMethod).get(0).getBeanClass().equals(Referee.class);
 
    }
 

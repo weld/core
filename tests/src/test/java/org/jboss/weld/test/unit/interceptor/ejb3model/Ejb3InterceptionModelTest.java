@@ -17,15 +17,13 @@
 
 package org.jboss.weld.test.unit.interceptor.ejb3model;
 
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.test.AbstractWeldTest;
-
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 
 /**

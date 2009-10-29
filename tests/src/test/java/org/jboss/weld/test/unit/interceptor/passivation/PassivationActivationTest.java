@@ -17,18 +17,17 @@
 
 package org.jboss.weld.test.unit.interceptor.passivation;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
 import org.jboss.weld.test.AbstractWeldTest;
-
 import org.testng.annotations.Test;
 
 /**
@@ -39,7 +38,7 @@ import org.testng.annotations.Test;
 public class PassivationActivationTest extends AbstractWeldTest
 {
 
-   @Test
+   @Test(groups = "incontainer-broken")
    public void testPassivationAndActivation() throws Exception
    {
       Bean bean = getCurrentManager().getBeans(Ball.class).iterator().next();

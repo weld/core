@@ -5,11 +5,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 import javax.enterprise.inject.Stereotype;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.inject.Qualifier;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.Classes;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.metadata.TypeStore;
@@ -17,8 +15,7 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
-@Artifact(addCurrentPackage = false)
-@Classes({Animal.class, Antelope.class, Kangaroo.class, Order.class, Random.class})
+@Artifact
 public class ClassAnnotatedItemTest extends AbstractWeldTest
 {
 	
@@ -52,13 +49,6 @@ public class ClassAnnotatedItemTest extends AbstractWeldTest
       assert annotatedElement.getMetaAnnotations(Stereotype.class).size() == 0;
       WeldClass<Antelope> classWithNoAnnotations = WeldClassImpl.of(Antelope.class, transformer);
       assert classWithNoAnnotations.getAnnotations().size() == 0;
-   }
-   
-   @Test(groups = "broken")
-   public void testNonStaticInnerClassWithGenericTypes()
-   {
-      AnnotatedType at = WeldClassImpl.of(new Kangaroo().procreate().getClass(), transformer);
-      WeldClassImpl.of(at, transformer);
    }
 
 }

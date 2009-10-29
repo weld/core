@@ -19,12 +19,9 @@ package org.jboss.weld.test.unit.interceptor.passivation;
 
 import java.io.Serializable;
 
-import javax.interceptor.Interceptor;
 import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-
-import org.jboss.weld.test.unit.interceptor.ejb.*;
-import org.jboss.weld.test.unit.interceptor.ejb.Pass;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>

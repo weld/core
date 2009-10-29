@@ -1,4 +1,4 @@
-package org.jboss.weld.test.unit.implementation.annotatedItem;
+package org.jboss.weld.test.unit.implementation.annotatedItem.anonymous;
 
 abstract class ChoiceParent<T>
 {
