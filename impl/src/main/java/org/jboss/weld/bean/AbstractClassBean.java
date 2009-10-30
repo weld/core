@@ -399,7 +399,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       Set<Annotation> foundInterceptionBindingTypes = new HashSet<Annotation>();
       for (Annotation annotation: annotations)
       {
-         if (manager.isInterceptorBindingType(annotation.annotationType()))
+         if (manager.isInterceptorBinding(annotation.annotationType()))
          {
             foundInterceptionBindingTypes.add(annotation);
             foundInterceptionBindingTypes.addAll(manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());

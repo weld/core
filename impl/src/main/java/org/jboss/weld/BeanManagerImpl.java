@@ -1059,7 +1059,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          if (uniqueInterceptorBindings.contains(interceptorBinding.annotationType()))
             throw new IllegalArgumentException("Duplicate interceptor binding type: " + interceptorBinding.annotationType());
-         if (!isInterceptorBindingType(interceptorBinding.annotationType()))
+         if (!isInterceptorBinding(interceptorBinding.annotationType()))
             throw new IllegalArgumentException("Trying to resolve interceptors with non-binding type: " + interceptorBinding.annotationType());
          uniqueInterceptorBindings.add(interceptorBinding.annotationType());
       }
@@ -1314,7 +1314,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotationType).isValid();
    }
 
-   public boolean isInterceptorBindingType(Class<? extends Annotation> annotationType)
+   public boolean isInterceptorBinding(Class<? extends Annotation> annotationType)
    {
       return getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotationType).isValid();
    }
