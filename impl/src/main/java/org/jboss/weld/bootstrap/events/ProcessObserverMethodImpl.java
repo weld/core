@@ -44,7 +44,7 @@ public class ProcessObserverMethodImpl<X, T> extends AbstractDefinitionContainer
    }
    
    private final AnnotatedMethod<X>   beanMethod;
-   private final ObserverMethod<X, T> observerMethod;
+   private final ObserverMethod<T> observerMethod;
    
    public ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethodImpl<X, T> observerMethod)
    {
@@ -63,7 +63,7 @@ public class ProcessObserverMethodImpl<X, T> extends AbstractDefinitionContainer
       return beanMethod;
    }
 
-   public ObserverMethod<X, T> getObserverMethod()
+   public ObserverMethod<T> getObserverMethod()
    {
       return observerMethod;
    }

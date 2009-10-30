@@ -65,8 +65,6 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.AbstractProcessInjectionTarget;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.WeldCreationalContext;
-import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
@@ -88,6 +86,8 @@ import org.jboss.weld.resolution.TypeSafeInterceptorResolver;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resolution.TypeSafeResolver;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
@@ -216,7 +216,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    private transient final TypeSafeBeanResolver<Bean<?>> beanResolver;
    private transient final TypeSafeResolver<? extends Resolvable, DecoratorImpl<?>> decoratorResolver;
    private transient final TypeSafeResolver<? extends Resolvable, InterceptorImpl<?>> interceptorResolver;
-   private transient final TypeSafeResolver<? extends Resolvable, ObserverMethod<?,?>> observerResolver;
+   private transient final TypeSafeResolver<? extends Resolvable, ObserverMethod<?>> observerResolver;
    private transient final NameBasedResolver nameBasedResolver;
    private transient final ELResolver weldELResolver;
    private transient Namespace rootNamespace;
@@ -234,7 +234,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    private transient final List<DecoratorImpl<?>> decorators;
    private transient final List<InterceptorImpl<?>> interceptors;
    private transient final List<String> namespaces;
-   private transient final List<ObserverMethod<?,?>> observers;
+   private transient final List<ObserverMethod<?>> observers;
    
    /*
     * These data structures represent the managers *accessible* from this bean 
@@ -286,7 +286,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<DecoratorImpl<?>>(),
             new CopyOnWriteArrayList<InterceptorImpl<?>>(),
-            new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
+            new CopyOnWriteArrayList<ObserverMethod<?>>(),
             new CopyOnWriteArrayList<String>(),
             new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
             new ClientProxyProvider(),
@@ -314,7 +314,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<DecoratorImpl<?>>(),
             new CopyOnWriteArrayList<InterceptorImpl<?>>(),
-            new CopyOnWriteArrayList<ObserverMethod<?,?>>(),
+            new CopyOnWriteArrayList<ObserverMethod<?>>(),
             new CopyOnWriteArrayList<String>(),
             rootManager.getEnterpriseBeans(),
             rootManager.getClientProxyProvider(),
@@ -340,7 +340,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       List<Bean<?>> beans = new CopyOnWriteArrayList<Bean<?>>();
       beans.addAll(parentManager.getBeans());
       
-      List<ObserverMethod<?,?>> registeredObservers = new CopyOnWriteArrayList<ObserverMethod<?,?>>();
+      List<ObserverMethod<?>> registeredObservers = new CopyOnWriteArrayList<ObserverMethod<?>>();
       registeredObservers.addAll(parentManager.getObservers());
       List<String> namespaces = new CopyOnWriteArrayList<String>();
       namespaces.addAll(parentManager.getNamespaces());
@@ -376,7 +376,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
          List<Bean<?>> beans, 
          List<DecoratorImpl<?>> decorators,
          List<InterceptorImpl<?>> interceptors,
-         List<ObserverMethod<?,?>> observers, 
+         List<ObserverMethod<?>> observers, 
          List<String> namespaces,
          Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans, 
          ClientProxyProvider clientProxyProvider, 
@@ -511,10 +511,10 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
       };
       
-      public static Transform<ObserverMethod<?,?>> EVENT_OBSERVER = new Transform<ObserverMethod<?,?>>()
+      public static Transform<ObserverMethod<?>> EVENT_OBSERVER = new Transform<ObserverMethod<?>>()
       {
 
-         public Iterable<ObserverMethod<?,?>> transform(BeanManagerImpl beanManager)
+         public Iterable<ObserverMethod<?>> transform(BeanManagerImpl beanManager)
          {
             return beanManager.getObservers();
          }
@@ -578,7 +578,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       decoratorResolver.clear();
    }
    
-   public <T> Set<ObserverMethod<?, T>> resolveObserverMethods(T event, Annotation... bindings)
+   public <T> Set<ObserverMethod<T>> resolveObserverMethods(T event, Annotation... bindings)
    {
       Observers.checkEventObjectType(event);
       return resolveObserverMethods(event.getClass(), bindings);
@@ -593,7 +593,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
 
    @SuppressWarnings("unchecked")
-   private <T> Set<ObserverMethod<?, T>> resolveObserverMethods(Type eventType, Annotation... bindings)
+   private <T> Set<ObserverMethod<T>> resolveObserverMethods(Type eventType, Annotation... bindings)
    {
       checkBindingTypes(Arrays.asList(bindings));
       
@@ -604,11 +604,11 @@ public class BeanManagerImpl implements WeldManager, Serializable
          bindingAnnotations.add(new DefaultLiteral());
       }
       bindingAnnotations.add(new AnyLiteral());
-      Set<ObserverMethod<?, T>> observers = new HashSet<ObserverMethod<?, T>>();
-      Set<ObserverMethod<?,?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(eventType).getTypeClosureAsSet(),  bindingAnnotations, null));
-      for (ObserverMethod<?,?> observer : eventObservers)
+      Set<ObserverMethod<T>> observers = new HashSet<ObserverMethod<T>>();
+      Set<ObserverMethod<?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(eventType).getTypeClosureAsSet(),  bindingAnnotations, null));
+      for (ObserverMethod<?> observer : eventObservers)
       {
-         observers.add((ObserverMethod<?, T>) observer);
+         observers.add((ObserverMethod<T>) observer);
       }
       return observers;
    }
@@ -804,7 +804,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     * 
     * @param observer
 =    */
-   public void addObserver(ObserverMethod<?, ?> observer)
+   public void addObserver(ObserverMethod<?> observer)
    {
       //checkEventType(observer.getObservedType());
       observers.add(observer);
@@ -834,9 +834,9 @@ public class BeanManagerImpl implements WeldManager, Serializable
       notifyObservers(event, resolveObserverMethods(eventType, qualifiers));
    }
 
-   private <T> void notifyObservers(final T event, final Set<ObserverMethod<?, T>> observers)
+   private <T> void notifyObservers(final T event, final Set<ObserverMethod<T>> observers)
    {
-      for (ObserverMethod<?, T> observer : observers)
+      for (ObserverMethod<T> observer : observers)
       {
          observer.notify(event);
       }     
@@ -1229,7 +1229,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return childIds;
    }
    
-   public List<ObserverMethod<?,?>> getObservers()
+   public List<ObserverMethod<?>> getObservers()
    {
       return observers;
    }

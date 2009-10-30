@@ -29,19 +29,19 @@ import org.jboss.weld.util.Reflections;
  * @author pmuir
  *
  */
-public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?,?>>
+public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>>
 {
 
    private final BeanManagerImpl manager;
 
-   public TypeSafeObserverResolver(BeanManagerImpl manager, Iterable<ObserverMethod<?,?>> observers)
+   public TypeSafeObserverResolver(BeanManagerImpl manager, Iterable<ObserverMethod<?>> observers)
    {
       super(observers);
       this.manager = manager;
    }
 
    @Override
-   protected boolean matches(Resolvable resolvable, ObserverMethod<?,?> observer)
+   protected boolean matches(Resolvable resolvable, ObserverMethod<?> observer)
    {
       return Reflections.isAssignableFrom(observer.getObservedType(), resolvable.getTypeClosure()) && Beans.containsAllBindings(observer.getObservedQualifiers(), resolvable.getQualifiers(), manager);
    }
@@ -55,7 +55,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
    }
 
    @Override
-   protected Set<ObserverMethod<?,?>> filterResult(Set<ObserverMethod<?,?>> matched)
+   protected Set<ObserverMethod<?>> filterResult(Set<ObserverMethod<?>> matched)
    {
       return matched;
    }
@@ -67,7 +67,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
    }
 
    @Override
-   protected Set<ObserverMethod<?,?>> sortResult(Set<ObserverMethod<?,?>> matched)
+   protected Set<ObserverMethod<?>> sortResult(Set<ObserverMethod<?>> matched)
    {
       return matched;
    }
