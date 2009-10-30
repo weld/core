@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
 import org.jboss.weld.BeanManagerImpl;
@@ -288,7 +289,8 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
       JsfApiAbstraction jsfApiAbstraction = manager.getServices().get(JsfApiAbstraction.class);
       ServletApiAbstraction servletApiAbstraction = manager.getServices().get(ServletApiAbstraction.class);
-      return !clazz.isNonStaticMemberClass() &&
+      return !Extension.class.isAssignableFrom(clazz.getJavaClass()) &&
+             !clazz.isNonStaticMemberClass() &&
              !Reflections.isParamerterizedTypeWithWildcard(javaClass) && 
              !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(javaClass) && 
              !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(javaClass) && 

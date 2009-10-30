@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 public class ExtensionTest extends AbstractWeldTest
 {
    
-   @Test(description="WELD-234", groups="broken")
+   @Test(description="WELD-234")
    public void testExtensionInjectableAsBean()
    {
       assert SimpleExtension.getInstance() != null;
