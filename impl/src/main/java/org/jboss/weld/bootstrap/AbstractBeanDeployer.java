@@ -231,9 +231,9 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       }
    }
    
-   protected <X, T> void createObserverMethod(RIBean<X> declaringBean, WeldMethod<T, X> method)
+   protected <T, X> void createObserverMethod(RIBean<X> declaringBean, WeldMethod<T, X> method)
    {
-      ObserverMethodImpl<X, T> observer = ObserverFactory.create(method, declaringBean, manager);
+      ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, manager);
       getEnvironment().addObserverMethod(observer);
    }
 

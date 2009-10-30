@@ -38,7 +38,7 @@ public class AsynchronousTransactionalEventNotification<T> extends DeferredEvent
    private static final LocLogger log = loggerFactory().getLogger(EVENT);
    private static final XLogger xLog = loggerFactory().getXLogger(EVENT);
 
-   public AsynchronousTransactionalEventNotification(T event, ObserverMethodImpl<?, T> observer)
+   public AsynchronousTransactionalEventNotification(T event, ObserverMethodImpl<T, ?> observer)
    {
       super(event, observer);
    }

@@ -35,20 +35,20 @@ import org.jboss.weld.event.ObserverMethodImpl;
  * @author David Allen
  *
  */
-public class ProcessObserverMethodImpl<X, T> extends AbstractDefinitionContainerEvent implements ProcessObserverMethod<X, T>
+public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessObserverMethod<T, X>
 {
    
-   public static <X, T> void fire(BeanManagerImpl beanManager, ObserverMethodImpl<X, T> observer)
+   public static <T, X> void fire(BeanManagerImpl beanManager, ObserverMethodImpl<T, X> observer)
    {
-      new ProcessObserverMethodImpl<X, T>(beanManager, observer.getMethod(), observer) {}.fire();
+      new ProcessObserverMethodImpl<T, X>(beanManager, observer.getMethod(), observer) {}.fire();
    }
    
    private final AnnotatedMethod<X>   beanMethod;
    private final ObserverMethod<T> observerMethod;
    
-   public ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethodImpl<X, T> observerMethod)
+   public ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethodImpl<T, X> observerMethod)
    {
-      super(beanManager, ProcessObserverMethod.class, new Type[] { observerMethod.getMethod().getDeclaringType().getBaseType(), observerMethod.getObservedType() });
+      super(beanManager, ProcessObserverMethod.class, new Type[] { observerMethod.getObservedType(), observerMethod.getMethod().getDeclaringType().getBaseType() });
       this.beanMethod = beanMethod;
       this.observerMethod = observerMethod;
    }

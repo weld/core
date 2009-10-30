@@ -59,7 +59,7 @@ import org.jboss.weld.util.Beans;
  * @author David Allen
  * 
  */
-public class ObserverMethodImpl<X, T> implements ObserverMethod<T>
+public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
 {
 
    private final Set<Annotation> bindings;

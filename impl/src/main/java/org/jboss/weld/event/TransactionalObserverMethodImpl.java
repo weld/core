@@ -28,7 +28,7 @@ import org.jboss.weld.transaction.spi.TransactionServices;
  * @author David Allen
  * 
  */
-class TransactionalObserverMethodImpl<X, T> extends ObserverMethodImpl<X, T>
+class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X>
 {
 
    /**
