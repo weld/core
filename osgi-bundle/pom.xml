@@ -83,6 +83,8 @@
                  </_exportcontents>
 
                   <Import-Package>
+                     org.slf4j.cal10n; version=1.5.9.RC1,
+                     ch.qos.cal10n; version=0.7.2,
                      javax.interceptor.*, *;
                      resolution:=optional
                  </Import-Package>
