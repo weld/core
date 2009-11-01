@@ -18,7 +18,7 @@ import org.jboss.weld.util.serviceProvider.PackageServiceLoaderFactory;
 import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.testng.annotations.Test;
 
-public class ExtensionOutsideBdaTest
+public class NonBDAExtensionTest
 {
    
    @Test(description="WELD-233")
@@ -78,7 +78,7 @@ public class ExtensionOutsideBdaTest
       
       // Add custom ServiceLoader so that we can load Extension services from current package, not META-INF/services
       // We do this after startContainer() so we replace the default impl
-      deployment.getServices().add(ServiceLoaderFactory.class, new PackageServiceLoaderFactory(ExtensionOutsideBdaTest.class.getPackage(), Extension.class));
+      deployment.getServices().add(ServiceLoaderFactory.class, new PackageServiceLoaderFactory(NonBDAExtensionTest.class.getPackage(), Extension.class));
       
       // Cause the container to deploy the beans etc.
       bootstrap.startInitialization().deployBeans().validateBeans().endInitialization();
