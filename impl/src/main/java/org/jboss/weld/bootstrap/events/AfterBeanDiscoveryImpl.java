@@ -27,21 +27,20 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployment;
-import org.jboss.weld.bootstrap.ExtensionBeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 
 public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery
 {
    
-   public static void fire(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, ExtensionBeanDeployerEnvironment extensionDeployerEnvironment)
+   public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      new AfterBeanDiscoveryImpl(deploymentManager, deployment, beanDeployments, extensionDeployerEnvironment).fire();
+      new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments).fire();
    }
    
-   protected AfterBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, ExtensionBeanDeployerEnvironment extensionDeployerEnvironment)
+   protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      super(deploymentManager, AfterBeanDiscovery.class, beanDeployments, deployment, extensionDeployerEnvironment);
+      super(beanManager, AfterBeanDiscovery.class, beanDeployments, deployment);
    }
 
    public void addDefinitionError(Throwable t)

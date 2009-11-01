@@ -2,7 +2,7 @@ package org.jboss.weld.util.log;
 
 import java.util.Locale;
 
-import org.jboss.weld.util.serviceProvider.ServiceLoader;
+import org.jboss.weld.util.serviceProvider.DefaultServiceLoader;
 
 import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
@@ -21,7 +21,7 @@ public class MessageConveyerFactoryLoader
    
    private static IMessageConveyerFactory load()
    {
-      ServiceLoader<IMessageConveyerFactory> serviceLoader = ServiceLoader.load(IMessageConveyerFactory.class);
+      DefaultServiceLoader<IMessageConveyerFactory> serviceLoader = DefaultServiceLoader.load(IMessageConveyerFactory.class);
       int i = 0;
       for (IMessageConveyerFactory f : serviceLoader)
       {

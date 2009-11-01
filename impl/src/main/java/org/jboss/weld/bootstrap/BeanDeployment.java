@@ -25,7 +25,6 @@ import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.builtin.DefaultValidatorBean;
 import org.jboss.weld.bean.builtin.DefaultValidatorFactoryBean;
-import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bean.builtin.InjectionPointBean;
 import org.jboss.weld.bean.builtin.ManagerBean;
 import org.jboss.weld.bean.builtin.PrincipalBean;
@@ -37,14 +36,12 @@ import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.conversation.ConversationImpl;
 import org.jboss.weld.conversation.JavaSEConversationTerminator;
 import org.jboss.weld.conversation.NumericConversationIdGenerator;
 import org.jboss.weld.conversation.ServletConversationManager;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
-import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.servlet.HttpSessionManager;
@@ -64,14 +61,10 @@ public class BeanDeployment
    
    private final BeanDeploymentArchive beanDeploymentArchive;
    private final BeanManagerImpl beanManager;
-   private final ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment;
    private final BeanDeployer beanDeployer;
-   private final Deployment deployment;
    
-   public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, Deployment deployment, ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment, ServiceRegistry deploymentServices)
+   public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices)
    {
-      this.extensionBeanDeployerEnvironment = extensionBeanDeployerEnvironment;
-      this.deployment = deployment;
       this.beanDeploymentArchive = beanDeploymentArchive;
       EjbDescriptors ejbDescriptors = new EjbDescriptors();
       beanDeploymentArchive.getServices().add(EjbDescriptors.class, ejbDescriptors);
@@ -86,7 +79,7 @@ public class BeanDeployment
          ejbDescriptors.addAll(beanDeploymentArchive.getEjbs());
       }
       
-      beanDeployer = new BeanDeployer(beanManager, deploymentManager, ejbDescriptors);
+      beanDeployer = new BeanDeployer(beanManager, ejbDescriptors);
       
       parseBeansXml();
    }
@@ -137,25 +130,6 @@ public class BeanDeployment
    // TODO read EJB descriptors after reading classes
    public void deployBeans(Environment environment)
    {
-      for (ExtensionBean bean : extensionBeanDeployerEnvironment.getBeans())
-      {
-         BeanDeploymentArchive classBeanDeploymentArchive = deployment.loadBeanDeploymentArchive(bean.getBeanClass());
-         if (classBeanDeploymentArchive == null)
-         {
-            throw new IllegalStateException("deployment.loadBeanDeploymentArchive() returned null for " + bean.getBeanClass());
-         }
-         if (classBeanDeploymentArchive.equals(beanDeploymentArchive))
-         {
-            beanDeployer.getManager().addBean(bean);
-         }
-      }
-      for (ObserverMethodImpl<?, ?> observerMethod : extensionBeanDeployerEnvironment.getObservers())
-      {
-         if (deployment.loadBeanDeploymentArchive(observerMethod.getBeanClass()).equals(beanDeploymentArchive))
-         {
-            beanDeployer.getManager().addObserver(observerMethod);
-         }
-      }
       beanDeployer.addClasses(beanDeploymentArchive.getBeanClasses());
       beanDeployer.getEnvironment().addBuiltInBean(new ManagerBean(beanManager));
       beanDeployer.getEnvironment().addBuiltInBean(new InjectionPointBean(beanManager));

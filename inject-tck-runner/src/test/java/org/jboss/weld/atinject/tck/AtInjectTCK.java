@@ -1,7 +1,4 @@
 package org.jboss.weld.atinject.tck;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -26,19 +23,6 @@ import org.jboss.weld.mock.TestContainer;
  */
 public class AtInjectTCK
 {
-   /**
-    * The classes that should be deployed as Managed Beans
-    */
-   public static final List<Class<?>> classes = Arrays.<Class<?>>asList(
-         Convertible.class,
-         Seat.class,
-         V8Engine.class,
-         Cupholder.class,
-         FuelTank.class,
-         Tire.class,
-         // Producer Methods allowing to expose DriversSeat, SpareTire, @Named("spare") SpareTire, @Drivers Seat
-         Producers.class
-      );
    
    /**
     * Create JUnit TestSuite
@@ -49,7 +33,18 @@ public class AtInjectTCK
    {
       // Create and start the TestContainer, which takes care of starting the container, deploying the
       // classes, starting the contexts etc.
-      TestContainer container = new TestContainer(new MockEELifecycle(), classes, null);
+      TestContainer container = new TestContainer(new MockEELifecycle(),
+            
+            // The classes to deploy as beans
+            Convertible.class,
+            Seat.class,
+            V8Engine.class,
+            Cupholder.class,
+            FuelTank.class,
+            Tire.class,
+            // Producer Methods allowing to expose DriversSeat, SpareTire, @Named("spare") SpareTire, @Drivers Seat
+            Producers.class
+         );
       container.startContainer();
       
       BeanManager beanManager = container.getBeanManager();

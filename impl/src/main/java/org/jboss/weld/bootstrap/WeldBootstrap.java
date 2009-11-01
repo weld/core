@@ -70,7 +70,8 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Names;
-import org.jboss.weld.util.serviceProvider.ServiceLoader;
+import org.jboss.weld.util.serviceProvider.DefaultServiceLoaderFactory;
+import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
 
@@ -99,19 +100,18 @@ public class WeldBootstrap implements Bootstrap
       private final BeanManagerImpl deploymentManager;
       private final Environment environment;
       private final Deployment deployment;
-      private final ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment;
+      private final Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives;
       
-      public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, Deployment deployment, ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment)
+      public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, Deployment deployment)
       {
          this.deploymentManager = deploymentManager;
          this.environment = environment;
          this.deployment = deployment;
-         this.extensionBeanDeployerEnvironment = extensionBeanDeployerEnvironment;
+         this.managerAwareBeanDeploymentArchives = new HashMap<BeanDeploymentArchive, BeanDeployment>();
       }
       
       public Map<BeanDeploymentArchive, BeanDeployment> visit()
       {
-         Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives = new HashMap<BeanDeploymentArchive, BeanDeployment>();
          for (BeanDeploymentArchive archvive : deployment.getBeanDeploymentArchives())
          {
             visit(archvive, managerAwareBeanDeploymentArchives, new HashSet<BeanDeploymentArchive>());
@@ -130,9 +130,13 @@ public class WeldBootstrap implements Bootstrap
             throw new IllegalArgumentException("BeanDeploymentArchive must not be null " + beanDeploymentArchive);
          }
          
-         // Create the BeanDeployment and attach
-         BeanDeployment parent = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment, extensionBeanDeployerEnvironment, deployment.getServices());
-         managerAwareBeanDeploymentArchives.put(beanDeploymentArchive, parent);
+         BeanDeployment parent = managerAwareBeanDeploymentArchives.get(beanDeploymentArchive);
+         if (parent == null)
+         {
+            // Create the BeanDeployment and attach
+            parent = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices());
+            managerAwareBeanDeploymentArchives.put(beanDeploymentArchive, parent);
+         }
          seenBeanDeploymentArchives.add(beanDeploymentArchive);
          for (BeanDeploymentArchive archive : beanDeploymentArchive.getBeanDeploymentArchives())
          {
@@ -159,6 +163,7 @@ public class WeldBootstrap implements Bootstrap
    private Environment environment;
    private Deployment deployment;
    private ExtensionBeanDeployerEnvironment extensionDeployerEnvironment;
+   private DeploymentVisitor deploymentVisitor;
  
    public Bootstrap startContainer(Environment environment, Deployment deployment, BeanStore applicationBeanStore)
    {
@@ -216,10 +221,10 @@ public class WeldBootstrap implements Bootstrap
          initializeContexts();
          // Start the application context
          Container.instance().deploymentServices().get(ContextLifecycle.class).beginApplication(applicationBeanStore);
-         
          this.extensionDeployerEnvironment = new ExtensionBeanDeployerEnvironment(EjbDescriptors.EMPTY, deploymentManager);
+         this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment);
          
-         DeploymentVisitor deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, extensionDeployerEnvironment);
+         // Read the deployment structure, this will be the physical structure as caused by the presence of beans.xml
          beanDeployments = deploymentVisitor.visit();
          
          return this;
@@ -241,6 +246,7 @@ public class WeldBootstrap implements Bootstrap
       services.add(ClassTransformer.class, new ClassTransformer(services.get(TypeStore.class)));
       services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
       services.add(ContextualStore.class, new ContextualStoreImpl());
+      services.add(ServiceLoaderFactory.class, new DefaultServiceLoaderFactory());
       return services;
    }
    
@@ -265,15 +271,24 @@ public class WeldBootstrap implements Bootstrap
             throw new IllegalStateException("Manager has not been initialized");
          }
          
-         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, extensionDeployerEnvironment);
-         extensionBeanDeployer.addExtensions(ServiceLoader.load(Extension.class));
-         extensionBeanDeployer.createBeans().deploy();
+         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, beanDeployments);
+         extensionBeanDeployer.addExtensions(deployment.getServices().get(ServiceLoaderFactory.class).load(Extension.class));
+         extensionBeanDeployer.deployBeans();
          
          // Add the Deployment BeanManager Bean to the Deployment BeanManager
          deploymentManager.addBean(new ManagerBean(deploymentManager));
          
-         // TODO keep a list of new bdas, add them all in, and deploy beans for them, then merge into existing
-         BeforeBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, extensionDeployerEnvironment);
+         // Re-Read the deployment structure, this will be the physical structure, and will add in BDAs for any extensions outside a physical BDA
+         beanDeployments = deploymentVisitor.visit();
+         
+         for (BeanDeployment beanDeployment : beanDeployments.values())
+         {
+            BeforeBeanDiscoveryImpl.fire(beanDeployment.getBeanManager(), deployment, beanDeployments);
+         }
+         
+         // Re-Read the deployment structure, this will be the physical structure, extensions and any classes added using addAnnotatedType outside the physical BDA
+         beanDeployments = deploymentVisitor.visit();
+         
       }
       return this;
    }
@@ -287,7 +302,12 @@ public class WeldBootstrap implements Bootstrap
          {
             entry.getValue().deployBeans(environment);
          }
-         AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, extensionDeployerEnvironment);
+         for (BeanDeployment beanDeployment : beanDeployments.values())
+         {
+            AfterBeanDiscoveryImpl.fire(beanDeployment.getBeanManager(), deployment, beanDeployments);
+         }
+         // Re-read the deployment structure, this will be the physical structure, extensions, classes, and any beans added using addBean outside the physical structure
+         beanDeployments = deploymentVisitor.visit();
          log.debug(VALIDATING_BEANS);
       }
       return this;
@@ -301,7 +321,11 @@ public class WeldBootstrap implements Bootstrap
          {
             deployment.getServices().get(Validator.class).validateDeployment(entry.getValue().getBeanManager(), entry.getValue().getBeanDeployer().getEnvironment());
          }
-         AfterDeploymentValidationImpl.fire(deploymentManager);
+         for (BeanDeployment beanDeployment : beanDeployments.values())
+         {
+            AfterDeploymentValidationImpl.fire(beanDeployment.getBeanManager());
+         }
+         
       }
       return this;
    }

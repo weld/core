@@ -49,13 +49,13 @@ import org.slf4j.ext.XLogger.Level;
  * @author Pete Muir
  * @author <a href="mailto:dev@avalon.apache.org">Avalon Development Team</a>
  */
-public class ServiceLoader<S> implements Iterable<S>
+public class DefaultServiceLoader<S> implements Iterable<S>
 {
    
-   private static Logger log = LoggerFactory.getLogger(ServiceLoader.class);
-   private static XLogger xLog = XLoggerFactory.getXLogger(ServiceLoader.class);
+   private static Logger log = LoggerFactory.getLogger(DefaultServiceLoader.class);
+   private static XLogger xLog = XLoggerFactory.getXLogger(DefaultServiceLoader.class);
 
-   private static final String SERVICES = "META-INF/services/";
+   private static final String SERVICES = "META-INF/services";
 
    /**
     * Creates a new service loader for the given service type, using the current
@@ -73,10 +73,23 @@ public class ServiceLoader<S> implements Iterable<S>
     * @param service The interface or abstract class representing the service
     * @return A new service loader
     */
-   public static <S> ServiceLoader<S> load(Class<S> service)
+   public static <S> DefaultServiceLoader<S> load(Class<S> service)
    {
-      ClassLoader loader = Thread.currentThread().getContextClassLoader();
-      return load(service, loader);
+      return load(SERVICES, service, Thread.currentThread().getContextClassLoader());
+   }
+   
+   public static <S> DefaultServiceLoader<S> load(String directoryName, Class<S> service)
+   {
+      return load(directoryName, service, Thread.currentThread().getContextClassLoader());
+   }
+   
+   public static <S> DefaultServiceLoader<S> load(String directoryName, Class<S> service, ClassLoader loader)
+   {
+      if (loader == null)
+      {
+         loader = service.getClassLoader();
+      }
+      return new DefaultServiceLoader<S>(directoryName, service, loader);
    }
 
    /**
@@ -88,13 +101,9 @@ public class ServiceLoader<S> implements Iterable<S>
     *           (or, failing that, the bootstrap class loader) is to be used
     * @return A new service loader
     */
-   public static <S> ServiceLoader<S> load(Class<S> service, ClassLoader loader)
+   public static <S> DefaultServiceLoader<S> load(Class<S> service, ClassLoader loader)
    {
-      if (loader == null)
-      {
-         loader = service.getClassLoader();
-      }
-      return new ServiceLoader<S>(service, loader);
+      return load(SERVICES, service, loader);
    }
 
    /**
@@ -118,7 +127,7 @@ public class ServiceLoader<S> implements Iterable<S>
     * @param service The interface or abstract class representing the service
     * @return A new service loader
     */
-   public static <S> ServiceLoader<S> loadInstalled(Class<S> service)
+   public static <S> DefaultServiceLoader<S> loadInstalled(Class<S> service)
    {
       throw new UnsupportedOperationException();
    }
@@ -129,10 +138,10 @@ public class ServiceLoader<S> implements Iterable<S>
    
    private Set<S> providers;
 
-   private ServiceLoader(Class<S> service, ClassLoader loader)
+   private DefaultServiceLoader(String prefix, Class<S> service, ClassLoader loader)
    {
       this.loader = loader;
-      this.serviceFile = SERVICES + service.getName();
+      this.serviceFile = prefix + "/" + service.getName();
       this.expectedType = service;
    }
    

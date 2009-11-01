@@ -1,6 +1,7 @@
 package org.jboss.weld.mock;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.jboss.weld.BeanManagerImpl;
@@ -66,6 +67,16 @@ public class TestContainer
       this.classes = classes;
       this.beansXml = beansXml;
       configureArchive();
+   }
+   
+   public TestContainer(MockServletLifecycle lifecycle, Class<?>[] classes, URL[] beansXml)
+   {
+      this(lifecycle, classes == null ? null : Arrays.asList(classes), beansXml == null ? null : Arrays.asList(beansXml));
+   }
+   
+   public TestContainer(MockServletLifecycle lifecycle, Class<?>... classes)
+   {
+      this(lifecycle, classes == null ? null : Arrays.asList(classes), null);
    }
    
    /**

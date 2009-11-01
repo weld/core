@@ -39,18 +39,16 @@ import org.jboss.weld.resources.ClassTransformer;
 public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
 {
    
-   private final BeanManagerImpl deploymentManager;
    private final Set<WeldClass<?>> classes;
 
    /**
     * @param manager
     * @param ejbDescriptors
     */
-   public BeanDeployer(BeanManagerImpl manager, BeanManagerImpl deploymentManager, EjbDescriptors ejbDescriptors)
+   public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors)
    {
       super(manager, new BeanDeployerEnvironment(ejbDescriptors, manager));
       this.classes = new HashSet<WeldClass<?>>();
-      this.deploymentManager = deploymentManager;
    }
 
    public BeanDeployer addClass(Class<?> clazz)
@@ -58,7 +56,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
       ClassTransformer classTransformer = Container.instance().deploymentServices().get(ClassTransformer.class);
       if (!clazz.isAnnotation() && !clazz.isEnum())
       {
-         ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(deploymentManager, classTransformer.loadClass(clazz));
+         ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(getManager(), classTransformer.loadClass(clazz));
          if (!event.isVeto())
          {
             if (event.getAnnotatedType() instanceof WeldClass<?>)

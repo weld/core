@@ -24,7 +24,6 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployment;
-import org.jboss.weld.bootstrap.ExtensionBeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.literal.BindingTypeLiteral;
@@ -35,14 +34,14 @@ import org.jboss.weld.literal.ScopeLiteral;
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery
 {
 
-   public static void fire(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, ExtensionBeanDeployerEnvironment extensionDeployerEnvironment)
+   public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      new BeforeBeanDiscoveryImpl(deploymentManager, deployment, beanDeployments, extensionDeployerEnvironment).fire();
+      new BeforeBeanDiscoveryImpl(beanManager, deployment, beanDeployments).fire();
    }
 
-   protected BeforeBeanDiscoveryImpl(BeanManagerImpl deploymentManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment)
+   protected BeforeBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      super(deploymentManager, BeforeBeanDiscovery.class, beanDeployments, deployment, extensionBeanDeployerEnvironment);
+      super(beanManager, BeforeBeanDiscovery.class, beanDeployments, deployment);
    }
 
    public void addQualifier(Class<? extends Annotation> bindingType)

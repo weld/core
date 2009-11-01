@@ -24,9 +24,9 @@ import org.jboss.weld.BeanManagerImpl;
 public class AfterDeploymentValidationImpl extends AbstractDeploymentContainerEvent implements AfterDeploymentValidation
 {
    
-   public static void fire(BeanManagerImpl deploymentManager)
+   public static void fire(BeanManagerImpl beanManager)
    {
-      new AfterDeploymentValidationImpl(deploymentManager).fire();
+      new AfterDeploymentValidationImpl(beanManager).fire();
    }
    
    protected AfterDeploymentValidationImpl(BeanManagerImpl beanManager)

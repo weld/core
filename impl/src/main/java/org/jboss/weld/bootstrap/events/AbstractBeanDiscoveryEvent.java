@@ -25,6 +25,7 @@ import org.jboss.weld.bootstrap.ExtensionBeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.metadata.TypeStore;
+import org.jboss.weld.util.DeploymentStructures;
 
 /**
  * @author  pmuir
@@ -34,14 +35,12 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
    
    private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
    private final Deployment deployment;
-   private final ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment;
    
-   public AbstractBeanDiscoveryEvent(BeanManagerImpl deploymentManager, Type rawType, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Deployment deployment, ExtensionBeanDeployerEnvironment extensionBeanDeployerEnvironment)
+   public AbstractBeanDiscoveryEvent(BeanManagerImpl beanManager, Type rawType, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Deployment deployment)
    {
-      super(deploymentManager, rawType, EMPTY_TYPE_ARRAY);
+      super(beanManager, rawType, EMPTY_TYPE_ARRAY);
       this.beanDeployments = beanDeployments;
       this.deployment = deployment;
-      this.extensionBeanDeployerEnvironment = extensionBeanDeployerEnvironment;
    }
    
    /**
@@ -68,24 +67,7 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
 
    protected BeanDeployment getOrCreateBeanDeployment(Class<?> clazz)
    {
-      BeanDeploymentArchive beanDeploymentArchive = getDeployment().loadBeanDeploymentArchive(clazz);
-      if (beanDeploymentArchive == null)
-      {
-         throw new IllegalStateException("Unable to find Bean Deployment Archive for " + clazz);
-      }
-      else
-      {
-         if (getBeanDeployments().containsKey(beanDeploymentArchive))
-         {
-            return getBeanDeployments().get(beanDeploymentArchive);
-         }
-         else
-         {
-            BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, getBeanManager(), getDeployment(), extensionBeanDeployerEnvironment, getDeployment().getServices());
-            getBeanDeployments().put(beanDeploymentArchive, beanDeployment);
-            return beanDeployment;
-         }
-      }
+      return DeploymentStructures.getOrCreateBeanDeployment(deployment, getBeanManager(), beanDeployments, clazz);
    }
    
 }

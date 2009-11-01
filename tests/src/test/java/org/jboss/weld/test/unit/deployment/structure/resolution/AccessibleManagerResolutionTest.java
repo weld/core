@@ -1,13 +1,12 @@
-package org.jboss.weld.test.unit.deployment.structure;
+package org.jboss.weld.test.unit.deployment.structure.resolution;
 
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
-
+import org.jboss.weld.Container;
 import org.jboss.weld.ContextualStoreImpl;
-import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
@@ -19,6 +18,7 @@ import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -50,6 +50,7 @@ public class AccessibleManagerResolutionTest
    public void testAccessibleDynamicallySingleLevel()
    {
       BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
+      Container.initialize(root, services);
       BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
       addBean(root, Cow.class);
       assert root.getBeans(Cow.class).size() == 1;
@@ -66,6 +67,7 @@ public class AccessibleManagerResolutionTest
    public void testAccessibleThreeLevelsWithMultiple()
    {
       BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
+      Container.initialize(root, services);
       BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
       BeanManagerImpl child1 = BeanManagerImpl.newRootManager("child1", services);
       BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services);
@@ -107,6 +109,7 @@ public class AccessibleManagerResolutionTest
    public void testSameManagerAddedTwice()
    {
       BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
+      Container.initialize(root, services);
       BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
       BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services);
       grandchild.addAccessibleBeanManager(child);
@@ -130,6 +133,7 @@ public class AccessibleManagerResolutionTest
    public void testCircular()
    {
       BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
+      Container.initialize(root, services);
       BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
       BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services);
       grandchild.addAccessibleBeanManager(child);

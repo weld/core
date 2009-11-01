@@ -540,12 +540,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
       accessibleManagers.add(accessibleBeanManager);
       beanResolver.clear();
    }
-   
-   protected Set<BeanManagerImpl> getAccessibleManagers()
-   {
-
-      return accessibleManagers;
-   }
 
    public void addBean(Bean<?> bean)
    {
@@ -899,7 +893,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
    public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> creationalContext)
    {
-      
       if (!Reflections.isAssignableFrom(bean.getTypes(), beanType))
       {
          throw new IllegalArgumentException("The given beanType is not a type " + beanType +" of the bean " + bean );
@@ -977,6 +970,10 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       Set<Bean<?>> beans = getBeans(beanType, bindings);
       Bean<?> bean = resolve(beans);
+      if (bean == null)
+      {
+         throw new UnsatisfiedResolutionException("Unable to resolve any beans. Class: " + beanType + "; Qualifiers: " + Arrays.toString(bindings)); 
+      }
       Object reference = getReference(bean, beanType, createCreationalContext(bean));
       
       @SuppressWarnings("unchecked")
@@ -1091,6 +1088,26 @@ public class BeanManagerImpl implements WeldManager, Serializable
       buffer.append("Registered beans: " + getBeans().size() + "\n");
       buffer.append("Specialized beans: " + specializedBeans.size() + "\n");
       return buffer.toString();
+   }
+   
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof BeanManagerImpl)
+      {
+         BeanManagerImpl that = (BeanManagerImpl) obj;
+         return this.getId().equals(that.getId());
+      }
+      else
+      {
+         return false;
+      }
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return getId().hashCode();
    }
 
    public BeanManagerImpl createActivity()

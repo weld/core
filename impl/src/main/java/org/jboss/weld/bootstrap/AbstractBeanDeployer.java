@@ -150,7 +150,6 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
          ProcessObserverMethodImpl.fire(manager, observer);
          manager.addObserver(observer);
       }
-      
       return this;
    }
 

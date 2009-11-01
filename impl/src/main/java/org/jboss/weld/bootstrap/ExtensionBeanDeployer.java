@@ -17,33 +17,48 @@
 package org.jboss.weld.bootstrap;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.event.ObserverFactory;
+import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.DeploymentStructures;
 
 /**
  * @author pmuir
  *
  */
-public class ExtensionBeanDeployer extends AbstractBeanDeployer<ExtensionBeanDeployerEnvironment>
+public class ExtensionBeanDeployer
 {
    
-   
+   private final BeanManagerImpl beanManager;
+   private final Set<ObserverMethodImpl<?, ?>> observerMethods;
    private final Set<Extension> extensions;
+   private final Deployment deployment;
+   private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
    
-   public ExtensionBeanDeployer(BeanManagerImpl manager, ExtensionBeanDeployerEnvironment environment)
+   public ExtensionBeanDeployer(BeanManagerImpl manager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      super(manager, environment);
+      this.beanManager = manager;
       this.extensions = new HashSet<Extension>();
+      this.observerMethods = new HashSet<ObserverMethodImpl<?,?>>();
+      this.deployment = deployment;
+      this.beanDeployments = beanDeployments;
    }
    
-   public ExtensionBeanDeployer createBeans()
+   public ExtensionBeanDeployer deployBeans()
    {
       ClassTransformer classTransformer = Container.instance().deploymentServices().get(ClassTransformer.class);
       for (Extension extension : extensions)
@@ -51,13 +66,21 @@ public class ExtensionBeanDeployer extends AbstractBeanDeployer<ExtensionBeanDep
          @SuppressWarnings("unchecked")
          WeldClass<Extension> clazz = (WeldClass<Extension>) classTransformer.loadClass(extension.getClass());
          
-         ExtensionBean bean = new ExtensionBean(getManager(), clazz, extension);
-         this.
-         getEnvironment().addExtension(bean);
-         createObserverMethods(bean, clazz);
+         // Locate the BeanDeployment for this extension
+         BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, clazz.getJavaClass());
+         
+         ExtensionBean bean = new ExtensionBean(beanDeployment.getBeanManager(), clazz, extension);
+         createObserverMethods(bean, beanDeployment.getBeanManager(), clazz);
+         beanDeployment.getBeanManager().addBean(bean);
+         for (ObserverMethodImpl<?, ?> observerMethod : observerMethods)
+         {
+            observerMethod.initialize();
+            beanDeployment.getBeanManager().addObserver(observerMethod);
+         }
       }
       return this;
    }
+   
    
    public void addExtensions(Iterable<Extension> extensions)
    {
@@ -70,6 +93,20 @@ public class ExtensionBeanDeployer extends AbstractBeanDeployer<ExtensionBeanDep
    public void addExtension(Extension extension)
    {
       this.extensions.add(extension);
+   }
+   
+   protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldClass<X> annotatedClass)
+   {
+      for (WeldMethod<?, X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class))
+      {
+         createObserverMethod(declaringBean, beanManager, method);
+      }
+   }
+   
+   protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldMethod<T, X> method)
+   {
+      ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager);
+      this.observerMethods.add(observer);
    }
 
 }

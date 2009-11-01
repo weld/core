@@ -19,7 +19,6 @@ package org.jboss.weld.mock;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,12 +46,21 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
    private Collection<URL> beansXmlFiles;
    private List<EjbDescriptor<?>> ejbs;
    private final ServiceRegistry services;
+   private final Collection<BeanDeploymentArchive> bdas;
+   private final String id;
    
    public MockBeanDeploymentArchive()
+   {
+      this("test");
+   }
+   
+   public MockBeanDeploymentArchive(String id)
    {
       this.services = new SimpleServiceRegistry();
       this.beanClasses = new HashSet<Class<?>>();
       this.beansXmlFiles = new HashSet<URL>();
+      this.bdas = new HashSet<BeanDeploymentArchive>();
+      this.id = id;
    }
 
    public Collection<Class<?>> getBeanClasses()
@@ -80,9 +88,9 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
       this.beansXmlFiles = beansXmlFiles;
    }
 
-   public List<BeanDeploymentArchive> getBeanDeploymentArchives()
+   public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
    {
-      return Collections.emptyList();
+      return bdas;
    }
    
    public Collection<EjbDescriptor<?>> getEjbs()
@@ -110,7 +118,7 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
    
    public String getId()
    {
-      return "test";
+      return id;
    }
 
 }
