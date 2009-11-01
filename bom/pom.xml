@@ -72,7 +72,7 @@
 
    <properties>
       <weld.api.version>1.0-CR2</weld.api.version>
-      <google.collections.version>1.0-rc2</google.collections.version>
+      <google.collections.version>1.0-rc3</google.collections.version>
       <javassist.version>3.11.0.GA</javassist.version>
       <cdi.tck.version>1.0.0-CR3</cdi.tck.version>
       <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
