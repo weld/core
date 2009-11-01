@@ -8,7 +8,7 @@
    <parent>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-parent</artifactId>
-      <version>4-SNAPSHOT</version>
+      <version>4</version>
   </parent>
 
    <name>Weld Core BOM</name>
