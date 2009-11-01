@@ -16,34 +16,19 @@
  */
 package org.jboss.weld.mock;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.bootstrap.spi.Deployment;
 
-public class MockDeployment implements Deployment
+public class MockDeployment extends AbstractMockDeployment
 {
    
    private final MockBeanDeploymentArchive archive;
-   private final List<BeanDeploymentArchive> beanDeploymentArchives;
-   private final ServiceRegistry services;
    
    public MockDeployment()
    {
       this.archive = new MockBeanDeploymentArchive();
-      this.services = new SimpleServiceRegistry();
-      this.beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>();
-      this.beanDeploymentArchives.add(archive);
+      getBeanDeploymentArchives().add(archive);
    }
    
-   public List<BeanDeploymentArchive> getBeanDeploymentArchives()
-   {
-      return beanDeploymentArchives;
-   }
-
    public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
    {
       return archive;
@@ -52,11 +37,6 @@ public class MockDeployment implements Deployment
    public MockBeanDeploymentArchive getArchive()
    {
       return archive;
-   }
-
-   public ServiceRegistry getServices()
-   {
-      return services;
    }
 
 }

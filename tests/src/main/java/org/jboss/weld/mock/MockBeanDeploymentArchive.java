@@ -18,6 +18,7 @@ package org.jboss.weld.mock;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -54,10 +55,10 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
       this("test");
    }
    
-   public MockBeanDeploymentArchive(String id)
+   public MockBeanDeploymentArchive(String id, Class<?> ... classes)
    {
       this.services = new SimpleServiceRegistry();
-      this.beanClasses = new HashSet<Class<?>>();
+      this.beanClasses = Arrays.asList(classes);
       this.beansXmlFiles = new HashSet<URL>();
       this.bdas = new HashSet<BeanDeploymentArchive>();
       this.id = id;
