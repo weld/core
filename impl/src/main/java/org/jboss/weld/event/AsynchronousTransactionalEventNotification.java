@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.messages.EventMessages.ASYNC_OBSERVER_FAILURE;
-import static org.jboss.weld.messages.EventMessages.ASYNC_TX_FIRE;
-import static org.jboss.weld.util.log.Categories.EVENT;
+import static org.jboss.weld.messages.EventMessage.ASYNC_OBSERVER_FAILURE;
+import static org.jboss.weld.messages.EventMessage.ASYNC_TX_FIRE;
+import static org.jboss.weld.util.log.Category.EVENT;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import org.slf4j.cal10n.LocLogger;

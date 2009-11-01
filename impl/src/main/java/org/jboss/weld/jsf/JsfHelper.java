@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.jsf;
 
-import static org.jboss.weld.messages.JsfMessages.FOUND_CONVERSATION_FROM_REQUEST;
-import static org.jboss.weld.messages.JsfMessages.RESUMING_CONVERSATION;
-import static org.jboss.weld.util.log.Categories.JSF;
+import static org.jboss.weld.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
+import static org.jboss.weld.messages.JsfMessage.RESUMING_CONVERSATION;
+import static org.jboss.weld.util.log.Category.JSF;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import javax.enterprise.util.AnnotationLiteral;

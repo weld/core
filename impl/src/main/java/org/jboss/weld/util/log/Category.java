@@ -1,10 +1,10 @@
 package org.jboss.weld.util.log;
 
-public enum Categories
+public enum Category
 {
 
-   BOOTSTRAP("WeldBootstrap"),
-   UTIL("WeldUtilities"),
+   BOOTSTRAP("Bootstrap"),
+   UTIL("Utilities"),
    BEAN("Bean"), 
    SERVLET("Servlet"),
    REFLECTION("Reflection"),
@@ -13,11 +13,11 @@ public enum Categories
    CONVERSATION("Conversation"),
    CONTEXT("Context");
    
-   private static final String LOG_PREFIX = "org.jboss.weld.";
+   private static final String LOG_PREFIX = "Weld/";
    
    private final String name;
    
-   Categories(String name)
+   Category(String name)
    {
       this.name = createName(name);
    }

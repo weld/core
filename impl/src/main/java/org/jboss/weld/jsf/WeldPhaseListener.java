@@ -25,10 +25,10 @@ package org.jboss.weld.jsf;
 import static org.jboss.weld.jsf.JsfHelper.getConversationId;
 import static org.jboss.weld.jsf.JsfHelper.getHttpSession;
 import static org.jboss.weld.jsf.JsfHelper.getModuleBeanManager;
-import static org.jboss.weld.messages.JsfMessages.CLEANING_UP_CONVERSATION;
-import static org.jboss.weld.messages.JsfMessages.INITIATING_CONVERSATION;
-import static org.jboss.weld.messages.JsfMessages.SKIPPING_CLEANING_UP_CONVERSATION;
-import static org.jboss.weld.util.log.Categories.JSF;
+import static org.jboss.weld.messages.JsfMessage.CLEANING_UP_CONVERSATION;
+import static org.jboss.weld.messages.JsfMessage.INITIATING_CONVERSATION;
+import static org.jboss.weld.messages.JsfMessage.SKIPPING_CLEANING_UP_CONVERSATION;
+import static org.jboss.weld.util.log.Category.JSF;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import javax.faces.context.FacesContext;

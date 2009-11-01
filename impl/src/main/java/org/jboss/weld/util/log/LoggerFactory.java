@@ -20,12 +20,12 @@ public class LoggerFactory
       this.locLoggerFactory = new LocLoggerFactory(messageConveyor);
    }
    
-   public LocLogger getLogger(Categories category)
+   public LocLogger getLogger(Category category)
    {
       return locLoggerFactory.getLocLogger(category.getName());
    }
    
-   public XLogger getXLogger(Categories category)
+   public XLogger getXLogger(Category category)
    {
       return XLoggerFactory.getXLogger(category.getName());
    }

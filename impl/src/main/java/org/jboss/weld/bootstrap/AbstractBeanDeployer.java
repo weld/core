@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.messages.BootstrapMessages.FOUND_BEAN;
-import static org.jboss.weld.messages.BootstrapMessages.FOUND_DECORATOR;
-import static org.jboss.weld.messages.BootstrapMessages.FOUND_INTERCEPTOR;
-import static org.jboss.weld.messages.BootstrapMessages.FOUND_OBSERVER_METHOD;
-import static org.jboss.weld.util.log.Categories.BOOTSTRAP;
+import static org.jboss.weld.messages.BootstrapMessage.FOUND_BEAN;
+import static org.jboss.weld.messages.BootstrapMessage.FOUND_DECORATOR;
+import static org.jboss.weld.messages.BootstrapMessage.FOUND_INTERCEPTOR;
+import static org.jboss.weld.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
+import static org.jboss.weld.util.log.Category.BOOTSTRAP;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import java.lang.reflect.Member;

@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.messages.BootstrapMessages.JTA_UNAVAILABLE;
-import static org.jboss.weld.messages.BootstrapMessages.VALIDATING_BEANS;
-import static org.jboss.weld.messages.BootstrapMessages.VERSION;
-import static org.jboss.weld.util.log.Categories.BOOTSTRAP;
+import static org.jboss.weld.messages.BootstrapMessage.JTA_UNAVAILABLE;
+import static org.jboss.weld.messages.BootstrapMessage.VALIDATING_BEANS;
+import static org.jboss.weld.messages.BootstrapMessage.VERSION;
+import static org.jboss.weld.util.log.Category.BOOTSTRAP;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import java.util.HashMap;

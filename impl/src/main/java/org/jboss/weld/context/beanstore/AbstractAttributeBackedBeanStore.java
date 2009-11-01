@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.context.beanstore;
 
-import static org.jboss.weld.messages.ContextMessages.CONTEXTUAL_INSTANCE_ADDED;
-import static org.jboss.weld.messages.ContextMessages.CONTEXTUAL_INSTANCE_FOUND;
-import static org.jboss.weld.messages.ContextMessages.CONTEXT_CLEARED;
-import static org.jboss.weld.util.log.Categories.CONTEXT;
+import static org.jboss.weld.messages.ContextMessage.CONTEXTUAL_INSTANCE_ADDED;
+import static org.jboss.weld.messages.ContextMessage.CONTEXTUAL_INSTANCE_FOUND;
+import static org.jboss.weld.messages.ContextMessage.CONTEXT_CLEARED;
+import static org.jboss.weld.util.log.Category.CONTEXT;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import java.util.ArrayList;

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.messages.BeanMessages.CIRCULAR_CALL;
-import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.messages.BeanMessage.CIRCULAR_CALL;
+import static org.jboss.weld.util.log.Category.BEAN;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import java.lang.reflect.Member;

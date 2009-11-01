@@ -8,7 +8,7 @@ import ch.qos.cal10n.LocaleData;
 @LocaleData({
    @Locale("en")
 })
-public enum UtilMessages
+public enum UtilMessage
 {
 
    SERVICE_LOADER_LOADING_ERROR,

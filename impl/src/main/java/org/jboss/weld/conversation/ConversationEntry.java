@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.conversation;
 
-import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_LOCKED;
-import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_TERMINATION_CANCELLATION_FAILED;
-import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_TERMINATION_CANCELLED;
-import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_UNAVAILBLE;
-import static org.jboss.weld.messages.ConversationMessages.CONVERSATION_UNLOCKED;
-import static org.jboss.weld.messages.ConversationMessages.ILLEGAL_CONVERSATION_UNLOCK_ATTEMPT;
-import static org.jboss.weld.util.log.Categories.CONVERSATION;
+import static org.jboss.weld.messages.ConversationMessage.CONVERSATION_LOCKED;
+import static org.jboss.weld.messages.ConversationMessage.CONVERSATION_TERMINATION_CANCELLATION_FAILED;
+import static org.jboss.weld.messages.ConversationMessage.CONVERSATION_TERMINATION_CANCELLED;
+import static org.jboss.weld.messages.ConversationMessage.CONVERSATION_UNAVAILBLE;
+import static org.jboss.weld.messages.ConversationMessage.CONVERSATION_UNLOCKED;
+import static org.jboss.weld.messages.ConversationMessage.ILLEGAL_CONVERSATION_UNLOCK_ATTEMPT;
+import static org.jboss.weld.util.log.Category.CONVERSATION;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import java.util.concurrent.Future;

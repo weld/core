@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.messages.BeanMessages.CALL_PROXIED_METHOD;
-import static org.jboss.weld.messages.BeanMessages.CREATED_SESSION_BEAN_PROXY;
-import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.messages.BeanMessage.CALL_PROXIED_METHOD;
+import static org.jboss.weld.messages.BeanMessage.CREATED_SESSION_BEAN_PROXY;
+import static org.jboss.weld.util.log.Category.BEAN;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import java.io.Serializable;

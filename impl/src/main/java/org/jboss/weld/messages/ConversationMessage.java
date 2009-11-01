@@ -8,7 +8,7 @@ import ch.qos.cal10n.LocaleData;
 @LocaleData({
    @Locale("en")
 })
-public enum ConversationMessages
+public enum ConversationMessage
 {
 
    NO_CONVERSATION_TO_RESTORE,

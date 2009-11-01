@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.messages.BeanMessages.ERROR_DESTROYING;
-import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.messages.BeanMessage.ERROR_DESTROYING;
+import static org.jboss.weld.util.log.Category.BEAN;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import java.util.ArrayList;

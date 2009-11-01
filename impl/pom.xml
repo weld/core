@@ -128,14 +128,14 @@
                   <configuration>
                      <enumTypes>
                         <!-- list every enum type you would like to see checked -->
-                        <enumType>org.jboss.weld.messages.BeanMessages</enumType>
-                        <enumType>org.jboss.weld.messages.BootstrapMessages</enumType>
-                        <enumType>org.jboss.weld.messages.ContextMessages</enumType>
-                        <enumType>org.jboss.weld.messages.ConversationMessages</enumType>
-                        <enumType>org.jboss.weld.messages.EventMessages</enumType>
-                        <enumType>org.jboss.weld.messages.JsfMessages</enumType>
-                        <enumType>org.jboss.weld.messages.ReflectionMessages</enumType>
-                        <enumType>org.jboss.weld.messages.UtilMessages</enumType>
+                        <enumType>org.jboss.weld.messages.BeanMessage</enumType>
+                        <enumType>org.jboss.weld.messages.BootstrapMessage</enumType>
+                        <enumType>org.jboss.weld.messages.ContextMessage</enumType>
+                        <enumType>org.jboss.weld.messages.ConversationMessage</enumType>
+                        <enumType>org.jboss.weld.messages.EventMessage</enumType>
+                        <enumType>org.jboss.weld.messages.JsfMessage</enumType>
+                        <enumType>org.jboss.weld.messages.ReflectionMessage</enumType>
+                        <enumType>org.jboss.weld.messages.UtilMessage</enumType>
                      </enumTypes>
                   </configuration>
                </execution>

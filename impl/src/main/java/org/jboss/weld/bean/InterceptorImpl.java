@@ -67,7 +67,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
       return new InterceptorImpl(type, manager);
    }
 
-   public Set<Annotation> getInterceptorBindingTypes()
+   public Set<Annotation> getInterceptorBindings()
    {
       return interceptorBindingTypes;
    }

@@ -578,10 +578,10 @@ public class BeanManagerImpl implements WeldManager, Serializable
       decoratorResolver.clear();
    }
    
-   public <T> Set<ObserverMethod<T>> resolveObserverMethods(T event, Annotation... bindings)
+   public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings)
    {
       Observers.checkEventObjectType(event);
-      return resolveObserverMethods(event.getClass(), bindings);
+      return this.<T>resolveObserverMethods(event.getClass(), bindings);
    }
 
    public void addInterceptor(InterceptorImpl<?> bean)
@@ -593,7 +593,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
 
    @SuppressWarnings("unchecked")
-   private <T> Set<ObserverMethod<T>> resolveObserverMethods(Type eventType, Annotation... bindings)
+   private <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... bindings)
    {
       checkBindingTypes(Arrays.asList(bindings));
       
@@ -604,7 +604,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
          bindingAnnotations.add(new DefaultLiteral());
       }
       bindingAnnotations.add(new AnyLiteral());
-      Set<ObserverMethod<T>> observers = new HashSet<ObserverMethod<T>>();
+      Set<ObserverMethod<? super T>> observers = new HashSet<ObserverMethod<? super T>>();
       Set<ObserverMethod<?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(eventType).getTypeClosureAsSet(),  bindingAnnotations, null));
       for (ObserverMethod<?> observer : eventObservers)
       {
@@ -834,9 +834,9 @@ public class BeanManagerImpl implements WeldManager, Serializable
       notifyObservers(event, resolveObserverMethods(eventType, qualifiers));
    }
 
-   private <T> void notifyObservers(final T event, final Set<ObserverMethod<T>> observers)
+   private <T> void notifyObservers(final T event, final Set<ObserverMethod<? super T>> observers)
    {
-      for (ObserverMethod<T> observer : observers)
+      for (ObserverMethod<? super T> observer : observers)
       {
          observer.notify(event);
       }     

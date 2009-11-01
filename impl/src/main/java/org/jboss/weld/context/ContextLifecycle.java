@@ -22,13 +22,13 @@
  */
 package org.jboss.weld.context;
 
-import static org.jboss.weld.messages.ContextMessages.APPLICATION_ENDED;
-import static org.jboss.weld.messages.ContextMessages.APPLICATION_STARTED;
-import static org.jboss.weld.messages.ContextMessages.REQUEST_ENDED;
-import static org.jboss.weld.messages.ContextMessages.REQUEST_STARTED;
-import static org.jboss.weld.messages.ContextMessages.SESSION_ENDED;
-import static org.jboss.weld.messages.ContextMessages.SESSION_RESTORED;
-import static org.jboss.weld.util.log.Categories.CONTEXT;
+import static org.jboss.weld.messages.ContextMessage.APPLICATION_ENDED;
+import static org.jboss.weld.messages.ContextMessage.APPLICATION_STARTED;
+import static org.jboss.weld.messages.ContextMessage.REQUEST_ENDED;
+import static org.jboss.weld.messages.ContextMessage.REQUEST_STARTED;
+import static org.jboss.weld.messages.ContextMessage.SESSION_ENDED;
+import static org.jboss.weld.messages.ContextMessage.SESSION_RESTORED;
+import static org.jboss.weld.util.log.Category.CONTEXT;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import org.jboss.weld.Container;

@@ -8,7 +8,7 @@ import ch.qos.cal10n.LocaleData;
 @LocaleData({
    @Locale("en")
 })
-public enum JsfMessages
+public enum JsfMessage
 {
 
    CLEANING_UP_CONVERSATION,

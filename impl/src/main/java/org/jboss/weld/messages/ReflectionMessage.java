@@ -8,7 +8,7 @@ import ch.qos.cal10n.LocaleData;
 @LocaleData({
    @Locale("en")
 })
-public enum ReflectionMessages
+public enum ReflectionMessage
 {
 
    MISSING_RETENTION,

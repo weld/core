@@ -8,7 +8,7 @@ import ch.qos.cal10n.LocaleData;
 @LocaleData({
    @Locale("en")
 })
-public enum BeanMessages
+public enum BeanMessage
 {
 
    FOUND_INJECTABLE_CONSTRUCTORS,

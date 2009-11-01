@@ -8,7 +8,7 @@ import ch.qos.cal10n.LocaleData;
 @LocaleData({
    @Locale("en")
 })
-public enum ContextMessages
+public enum ContextMessage
 {
    
    CONTEXTUAL_INSTANCE_FOUND,

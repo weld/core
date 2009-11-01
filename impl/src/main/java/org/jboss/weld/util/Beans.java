@@ -16,14 +16,14 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.messages.BeanMessages.FOUND_DEFAULT_CONSTRUCTOR;
-import static org.jboss.weld.messages.BeanMessages.FOUND_INJECTABLE_CONSTRUCTORS;
-import static org.jboss.weld.messages.BeanMessages.FOUND_ONE_INJECTABLE_CONSTRUCTOR;
-import static org.jboss.weld.messages.BeanMessages.FOUND_ONE_POST_CONSTRUCT_METHOD;
-import static org.jboss.weld.messages.BeanMessages.FOUND_ONE_PRE_DESTROY_METHOD;
-import static org.jboss.weld.messages.BeanMessages.FOUND_POST_CONSTRUCT_METHODS;
-import static org.jboss.weld.messages.BeanMessages.FOUND_PRE_DESTROY_METHODS;
-import static org.jboss.weld.util.log.Categories.BEAN;
+import static org.jboss.weld.messages.BeanMessage.FOUND_DEFAULT_CONSTRUCTOR;
+import static org.jboss.weld.messages.BeanMessage.FOUND_INJECTABLE_CONSTRUCTORS;
+import static org.jboss.weld.messages.BeanMessage.FOUND_ONE_INJECTABLE_CONSTRUCTOR;
+import static org.jboss.weld.messages.BeanMessage.FOUND_ONE_POST_CONSTRUCT_METHOD;
+import static org.jboss.weld.messages.BeanMessage.FOUND_ONE_PRE_DESTROY_METHOD;
+import static org.jboss.weld.messages.BeanMessage.FOUND_POST_CONSTRUCT_METHODS;
+import static org.jboss.weld.messages.BeanMessage.FOUND_PRE_DESTROY_METHODS;
+import static org.jboss.weld.util.log.Category.BEAN;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
 import java.lang.annotation.Annotation;
