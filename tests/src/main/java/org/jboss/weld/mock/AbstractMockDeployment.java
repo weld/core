@@ -1,5 +1,6 @@
 package org.jboss.weld.mock;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public abstract class AbstractMockDeployment implements Deployment
    public AbstractMockDeployment(BeanDeploymentArchive... beanDeploymentArchives)
    {
       this.services = new SimpleServiceRegistry();
-      this.beanDeploymentArchives = Arrays.asList(beanDeploymentArchives);
+      this.beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>(Arrays.asList(beanDeploymentArchives));
    }
 
    public List<BeanDeploymentArchive> getBeanDeploymentArchives()

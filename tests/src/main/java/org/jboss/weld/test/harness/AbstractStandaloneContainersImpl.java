@@ -7,7 +7,6 @@ import org.jboss.testharness.api.DeploymentException;
 import org.jboss.testharness.spi.StandaloneContainers;
 import org.jboss.weld.mock.MockServletLifecycle;
 import org.jboss.weld.mock.TestContainer;
-import org.jboss.weld.mock.TestContainer.Status;
 
 public abstract class AbstractStandaloneContainersImpl implements StandaloneContainers
 {
@@ -20,18 +19,18 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
    {
       this.testContainer = new TestContainer(newLifecycle(), classes, beansXml);
       
-      Status status = testContainer.startContainerAndReturnStatus();
-      if (!status.isSuccess())
+      try
       {
-         this.deploymentException = new DeploymentException("Error deploying beans", status.getDeploymentException());
+         testContainer.startContainer();
+      }
+      catch (Exception e) 
+      {
+         this.deploymentException = new DeploymentException("Error deploying beans", e);
          return false;
       }
-      else
-      {
-         testContainer.getLifecycle().beginSession();
-         testContainer.getLifecycle().beginRequest();
-         return true;
-      }
+      testContainer.getLifecycle().beginSession();
+      testContainer.getLifecycle().beginRequest();
+      return true;
    }
 
    protected abstract MockServletLifecycle newLifecycle();

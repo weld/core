@@ -20,21 +20,16 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 
 public class MockDeployment extends AbstractMockDeployment
 {
-   
-   private final MockBeanDeploymentArchive archive;
-   
-   public MockDeployment()
+
+   private final BeanDeploymentArchive archive;
+
+   public MockDeployment(BeanDeploymentArchive beanDeploymentArchive)
    {
-      this.archive = new MockBeanDeploymentArchive();
+      this.archive = beanDeploymentArchive;
       getBeanDeploymentArchives().add(archive);
    }
-   
+
    public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
-   {
-      return archive;
-   }
-   
-   public MockBeanDeploymentArchive getArchive()
    {
       return archive;
    }

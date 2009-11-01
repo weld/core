@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.bootstrap.spi.Deployment;
 
 /**
  * Control of the container, used for tests. Wraps up common operations.
@@ -28,31 +29,7 @@ import org.jboss.weld.BeanManagerImpl;
 public class TestContainer
 {
    
-   public static class Status
-   {
-      
-      private final Exception deploymentException;
-
-      public Status(Exception deploymentException)
-      {
-         this.deploymentException = deploymentException;
-      }
-      
-      public Exception getDeploymentException()
-      {
-         return deploymentException;
-      }
-      
-      public boolean isSuccess()
-      {
-         return deploymentException == null;
-      }
-      
-   }
-   
    private final MockServletLifecycle lifecycle;
-   private final Collection<Class<?>> classes;
-   private final Collection<URL> beansXml;
    
    /**
     * Create a container, specifying the classes and beans.xml to deploy
@@ -63,10 +40,13 @@ public class TestContainer
     */
    public TestContainer(MockServletLifecycle lifecycle, Collection<Class<?>> classes, Collection<URL> beansXml)
    {
+      this(lifecycle);
+      configureArchive(classes, beansXml);
+   }
+   
+   public TestContainer(MockServletLifecycle lifecycle)
+   {
       this.lifecycle = lifecycle;
-      this.classes = classes;
-      this.beansXml = beansXml;
-      configureArchive();
    }
    
    public TestContainer(MockServletLifecycle lifecycle, Class<?>[] classes, URL[] beansXml)
@@ -80,43 +60,27 @@ public class TestContainer
    }
    
    /**
-    * Start the container, returning the container state
-    * 
-    * @return
-    */
-   public Status startContainerAndReturnStatus()
-   {
-      try
-      {
-         startContainer();
-      }
-      catch (Exception e) 
-      {
-         return new Status(e);
-      }
-      return new Status(null);
-   }
-   
-   /**
     * Starts the container and begins the application
     */
-   public void startContainer()
+   public TestContainer startContainer()
    {
       getLifecycle().initialize();
       getLifecycle().beginApplication();
+      return this;
    }
    
    /**
     * Configure's the archive with the classes and beans.xml
     */
-   protected void configureArchive()
+   protected TestContainer configureArchive(Collection<Class<?>> classes, Collection<URL> beansXml)
    {
-      MockBeanDeploymentArchive archive = lifecycle.getDeployment().getArchive();
+      MockBeanDeploymentArchive archive = lifecycle.getWar();
       archive.setBeanClasses(classes);
       if (beansXml != null)
       {
          archive.setBeansXmlFiles(beansXml);
       }
+      return this;
    }
    
    /**
@@ -131,10 +95,10 @@ public class TestContainer
    
    public BeanManagerImpl getBeanManager()
    {
-      return getLifecycle().getBootstrap().getManager(getDeployment().getArchive());
+      return getLifecycle().getBootstrap().getManager(getLifecycle().getWar());
    }
    
-   public MockDeployment getDeployment()
+   public Deployment getDeployment()
    {
       return getLifecycle().getDeployment();
    }
@@ -143,7 +107,7 @@ public class TestContainer
     * Utility method which ensures a request is active and available for use
     * 
     */
-   public void ensureRequestActive()
+   public TestContainer ensureRequestActive()
    {
       if (!getLifecycle().isSessionActive())
       {
@@ -153,13 +117,14 @@ public class TestContainer
       {
          getLifecycle().beginRequest();
       }
+      return this;
    }
 
    /**
     * Clean up the container, ending any active contexts
     * 
     */
-   public void stopContainer()
+   public TestContainer stopContainer()
    {
       if (getLifecycle().isRequestActive())
       {
@@ -173,6 +138,7 @@ public class TestContainer
       {
          getLifecycle().endApplication();
       }
+      return this;
    }
 
 }

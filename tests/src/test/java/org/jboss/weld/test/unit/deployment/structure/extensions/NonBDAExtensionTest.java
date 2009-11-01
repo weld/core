@@ -3,13 +3,12 @@ package org.jboss.weld.test.unit.deployment.structure.extensions;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.bootstrap.WeldBootstrap;
-import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.context.beanstore.HashMapBeanStore;
 import org.jboss.weld.mock.AbstractMockDeployment;
 import org.jboss.weld.mock.MockBeanDeploymentArchive;
+import org.jboss.weld.mock.MockServletLifecycle;
+import org.jboss.weld.mock.TestContainer;
 import org.jboss.weld.util.serviceProvider.PackageServiceLoaderFactory;
 import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.testng.annotations.Test;
@@ -20,10 +19,8 @@ public class NonBDAExtensionTest
    @Test(description="WELD-233")
    public void test()
    {
-      WeldBootstrap bootstrap = new WeldBootstrap(); 
-      
       // Create the BDA in which we will deploy Observer1 and Foo. This is equivalent to a war or ejb jar
-      final BeanDeploymentArchive bda1 = new MockBeanDeploymentArchive("1", Observer1.class, Foo.class);
+      final MockBeanDeploymentArchive bda1 = new MockBeanDeploymentArchive("1", Observer1.class, Foo.class);
       
       // Create the BDA to return from loadBeanDeploymentArchive for Observer2, this is probably a library, though could be another war or ejb jar
       // bda2 is accessible from bda1, but isn't added to it's accessibility graph by default. This similar to an archive which doesn't contain a beans.xml but does contain an extension 
@@ -50,20 +47,19 @@ public class NonBDAExtensionTest
 
       };
       
-      
-      // Initialize the container, we use the SE env as we aren't going to interact with the servlet lifecycle really
-      bootstrap.startContainer(Environments.SE, deployment, new HashMapBeanStore());
+      TestContainer container = new TestContainer(new MockServletLifecycle(deployment, bda1));
+      container.getLifecycle().initialize();
       
       // Add custom ServiceLoader so that we can load Extension services from current package, not META-INF/services
       // We do this after startContainer() so we replace the default impl
       deployment.getServices().add(ServiceLoaderFactory.class, new PackageServiceLoaderFactory(NonBDAExtensionTest.class.getPackage(), Extension.class));
       
       // Cause the container to deploy the beans etc.
-      bootstrap.startInitialization().deployBeans().validateBeans().endInitialization();
+      container.getLifecycle().beginApplication();
       
       // Get the bean manager for bda1 and bda2
-      BeanManagerImpl beanManager1 = bootstrap.getManager(bda1);
-      BeanManagerImpl beanManager2 = bootstrap.getManager(bda2);
+      BeanManagerImpl beanManager1 = container.getBeanManager();
+      BeanManagerImpl beanManager2 = container.getLifecycle().getBootstrap().getManager(bda2);
       
       Observer1 observer1 = beanManager1.getInstanceByType(Observer1.class);
       assert observer1.isBeforeBeanDiscoveryCalled();

@@ -36,6 +36,7 @@
          <package name="org.jboss.weld.test.unit.context" />
          <package name="org.jboss.weld.test.unit.decorator.simple" />
          <package name="org.jboss.weld.test.unit.definition" />
+         <package name="org.jboss.weld.test.unit.deployment.structure.extensions" />
          <package name="org.jboss.weld.test.unit.deployment.structure.resolution" />
          <package name="org.jboss.weld.test.unit.environments.servlet" />
          <package name="org.jboss.weld.test.unit.extensions" />

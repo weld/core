@@ -5,6 +5,7 @@ import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.Lifecycle;
 import org.jboss.weld.bootstrap.api.helpers.ForwardingLifecycle;
+import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
@@ -16,7 +17,8 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
    private static final ResourceLoader MOCK_RESOURCE_LOADER = new MockResourceLoader();
    
    private final WeldBootstrap bootstrap;
-   private final MockDeployment deployment;
+   private final Deployment deployment;
+   private final MockBeanDeploymentArchive war;
    private final BeanStore applicationBeanStore;
    private final BeanStore sessionBeanStore;
    private final BeanStore requestBeanStore;
@@ -25,14 +27,25 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
    
    public MockServletLifecycle()
    {
-      this.deployment = new MockDeployment();
+      this(new MockBeanDeploymentArchive());
+   }
+   
+   private MockServletLifecycle(MockBeanDeploymentArchive war)
+   {
+      this(new MockDeployment(war), war);
+   }
+   
+   public MockServletLifecycle(Deployment deployment, MockBeanDeploymentArchive war)
+   {
+      this.deployment = deployment;
+      this.war = war;
       if (deployment == null)
       {
          throw new IllegalStateException("No WebBeanDiscovery is available");
       }
       this.bootstrap = new WeldBootstrap();
       this.deployment.getServices().add(ResourceLoader.class, MOCK_RESOURCE_LOADER);
-      this.deployment.getServices().add(ServletServices.class, new MockServletServices(deployment.getArchive()));
+      this.deployment.getServices().add(ServletServices.class, new MockServletServices(war));
       this.applicationBeanStore = new ConcurrentHashMapBeanStore();
       this.sessionBeanStore = new ConcurrentHashMapBeanStore();
       this.requestBeanStore = new ConcurrentHashMapBeanStore();
@@ -74,7 +87,7 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
       return lifecycle;
    }
    
-   protected MockDeployment getDeployment()
+   protected Deployment getDeployment()
    {
       return deployment;
    }
@@ -145,5 +158,10 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
    protected Environment getEnvironment()
    {
       return Environments.SERVLET;
+   }
+   
+   public MockBeanDeploymentArchive getWar()
+   {
+      return war;
    }
 }

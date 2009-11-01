@@ -18,7 +18,7 @@ public class InjectionServicesTest
    {
       TestContainer container = new TestContainer(new MockEELifecycle(), Arrays.asList(Foo.class, Bar.class), null);
       CheckableInjectionServices ijs = new CheckableInjectionServices();
-      container.getDeployment().getArchive().getServices().add(InjectionServices.class, ijs);
+      container.getLifecycle().getWar().getServices().add(InjectionServices.class, ijs);
       container.startContainer();
       container.ensureRequestActive();
       

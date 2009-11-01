@@ -38,11 +38,12 @@ public class MockEELifecycle extends MockServletLifecycle
       getDeployment().getServices().add(SecurityServices.class, new MockSecurityServices());
       getDeployment().getServices().add(ValidationServices.class, new MockValidationServices());
       getDeployment().getServices().add(EjbServices.class, new MockEjBServices());
-      getDeployment().getArchive().getServices().add(EjbInjectionServices.class, new MockEjbInjectionServices());
-      getDeployment().getArchive().getServices().add(JpaInjectionServices.class, new MockJpaServices(getDeployment()));
-      getDeployment().getArchive().getServices().add(ResourceInjectionServices.class, new MockResourceServices());
+      getWar().getServices().add(EjbInjectionServices.class, new MockEjbInjectionServices());
+      getWar().getServices().add(JpaInjectionServices.class, new MockJpaServices(getDeployment()));
+      getWar().getServices().add(ResourceInjectionServices.class, new MockResourceServices());
    }
    
+   @Override
    public Environment getEnvironment()
    {
       return Environments.EE_INJECT;
