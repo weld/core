@@ -707,7 +707,7 @@ public class ShoppingCart { ... }]]></programlisting>
             Stateful session beans can define a no arguments remove method, annotated <literal>@Remove</literal>, that
             is used by the application to indicate the instance should be destroyed. However, in a CDI environment, this
             method can only be executed by the application if the bean is dependent-scoped. Otherwise, it's illegal for
-            the application to invoke this method.
+            the application to invoke this method because the container is controlling its lifecycle.
          </para>
 
          <para>

@@ -1848,9 +1848,10 @@ public class TranslatorControllerBean implements TranslatorController {
 }]]></programlisting>
    
       <para>
-         [CHECK is this still accurate?] Since this is a stateful session bean, we have to have a remove method.  The
-         bean manager will call the remove method for you when the bean is destroyed; in this case at the end of the
-         request.
+         <!-- QUESTION is this still a requirement in EJB 3.1? -->
+         Since this is a stateful session bean, we have to have a remove method. The container will call the remove
+         method for you when the bean is destroyed; in this case at the end of the request. (Keep in mind that since
+         this bean is not dependent-scoped, the application is not allowed to invoke the remove method).
       </para>
 
       <para>
