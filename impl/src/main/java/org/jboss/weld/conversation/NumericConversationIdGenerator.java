@@ -28,7 +28,6 @@ import javax.enterprise.context.SessionScoped;
  *
  */
 @SessionScoped
-
 public class NumericConversationIdGenerator implements ConversationIdGenerator, Serializable
 {
    private static final long serialVersionUID = -587408626962044442L;
