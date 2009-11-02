@@ -276,7 +276,7 @@ $> ant update</programlisting>
           bean manager in Java SE, automatically registering all simple beans found on
           the classpath. Application developers need not write any bootstrapping code.
           The entry point for application code is a simple bean which observes the special <literal>ContainerInitialized</literal>
-          event provided by this extension. The command line paramters can be
+          event provided by this extension. The command line parameters can be
           injected using either of the following:
           </para>
           <programlisting role="JAVA"><![CDATA[@Inject @Parameters List<String> params;
