@@ -3,8 +3,8 @@
 #Copyright Red Hat Inc. 2006
 
 XML_LANG	= en-US
-DOCNAME		= WebBeans_Reference_Guide
-PRODUCT		= Web_Beans
+DOCNAME		= Weld_Reference_Guide
+PRODUCT		= Weld_Beans
 BRAND		= JBoss
 
 TRANSLATIONS    = $(XML_LANG)
