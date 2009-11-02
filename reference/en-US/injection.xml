@@ -135,8 +135,8 @@
 
       <para>
         This is one of the cases where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at
-        an injection point. Other cases include observer methods (which we'll meet in <xref linkend="events"/>),
-        disposal methods and destructor methods, which all support parameter injection.
+        an injection point. Other cases include observer methods (which we'll meet in <xref linkend="events"/>) and
+        disposal methods, which also support parameter injection.
       </para>
    </section>
 
