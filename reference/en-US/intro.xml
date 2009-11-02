@@ -484,8 +484,8 @@ public class ShoppingCart { ... }]]></programlisting>
          <title>EL name</title>
 
          <para>
-            If you want to reference a bean outside of Java, such as in JSF view, you must assign the bean a
-            <emphasis>name</emphasis>. The name is used as the EL name of the bean, allowing the bean to be used
+            If you want to reference a bean outside of Java, such as in JavaServer Faces (JSF) view, you must assign the
+            bean a <emphasis>name</emphasis>. The name is used as the EL name of the bean, allowing the bean to be used
             in a Unified EL expression.
          </para>
          
@@ -643,7 +643,7 @@ public class ShoppingCart { ... }]]></programlisting>
             </listitem>
             <listitem>
                <para>
-                  It is not annotated with an EJB component-defining annotation or declared as an EJB bean class in
+                  It is neither annotated with an EJB component-defining annotation or declared as an EJB bean class in
                   ejb-jar.xml.
                </para>
             </listitem>

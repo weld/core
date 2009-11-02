@@ -54,7 +54,7 @@ tainer, for example, alternative web presentation technologies.
   
    <itemizedlist>
       <listitem>
-         <para>all Managed Beans (JavaBeans), including JSF managed beans,</para>
+         <para>all Managed Beans (JavaBeans), including JavaServer Faces (JSF) managed beans,</para>
       </listitem>
       <listitem>
          <para>all Enterprise JavaBeans (EJBs), and</para>
