@@ -47,7 +47,7 @@
          new services defined by the CDI specification. But you'll be able to use every one of them with CDI --
          allowing the container to create and destroy instances of your beans and associate them with a designed context
          (or scope), injecting them into other beans, using them in EL expressions, specializing them with qualifier
-         annotations, even adding interceptors and decorators to them -- from this point forward without modifying
+         annotations, even adding interceptors and decorators to them&#8212;from this point forward without modifying
          your code. At most, you'll have to add some annotations.
       </para>
 
@@ -134,9 +134,13 @@ public interface Translator {
          <literal>TextTranslator</literal>, translating the text entered by a user:
       </para>
     
-      <programlisting role="JAVA"><![CDATA[@Named @RequestScoped
+      <programlistingco>
+         <areaspec>
+            <area id="injection" coords="3"/>
+         </areaspec>
+         <programlisting role="JAVA"><![CDATA[@Named @RequestScoped
 public class TranslateController {
-   private @Inject TextTranslator textTranslator;
+   @Inject TextTranslator textTranslator;
 
    private String inputText;
    private String translation;
@@ -158,13 +162,30 @@ public class TranslateController {
       return translation;
    }
 }]]></programlisting>
+         <calloutlist>
+            <callout arearefs="injection">
+               <para>
+                  Field injection of <literal>TextTranslator</literal> instance
+               </para>
+            </callout>
+         </calloutlist>
+      </programlistingco>
+
+      <tip>
+         <para>
+            Notice the controller bean is request-scoped and named. Since this combination is so common in web
+            applications, there's a built-in annotation for it in CDI that we could have used as a shorthand. When the
+            (stereotype) annotation <literal>@Model</literal> is declared on a class, it creates a request-scoped and
+            named bean.
+         </para>
+      </tip>
 
       <para>
-         Alternatively, we may obtain an instance programatically from <literal>Instance</literal>
-         interface paramaterized to the bean type:
+         Alternatively, we may obtain an instance of <literal>TextTranslator</literal> programatically from an injected
+         instance of <literal>Instance</literal>, paramaterized with the bean type:
       </para>
 
-      <programlisting role="JAVA"><![CDATA[private @Inject Instance<TextTranslator> textTranslatorSource;
+      <programlisting role="JAVA"><![CDATA[@Inject Instance<TextTranslator> textTranslatorSource;
 ...
 public void translate() {
    textTranslatorSource.get().translate(inputText);
@@ -178,8 +199,8 @@ public void translate() {
     
       <para>
          At system initialization time, the container must validate that exactly one bean exists which satisfies each
-         injection point. In our example, if no implementation of <literal>Translator</literal> is available -- if the
-         <literal>SentenceTranslator</literal> EJB was not deployed -- the container would throw an
+         injection point. In our example, if no implementation of <literal>Translator</literal> is available&#8212;if the
+         <literal>SentenceTranslator</literal> EJB was not deployed&#8212;the container would throw an
          <literal>UnsatisfiedDependencyException</literal>. If more than one implementation of
          <literal>Translator</literal> were available, the container would throw an
          <literal>AmbiguousDependencyException</literal>. The same for the <literal>TextTranslator</literal> injection
@@ -263,7 +284,7 @@ public void translate() {
   
       <para>
          Note that not all clients of a bean are beans themselves. Other objects such as Servlets or Message-Driven
-         Beans -- which are by nature not injectable, contextual objects -- may also obtain references to beans by
+         Beans&#8212;which are by nature not injectable, contextual objects&#8212;may also obtain references to beans by
          injection.
       </para>
 
@@ -628,7 +649,7 @@ public class ShoppingCart { ... }]]></programlisting>
             </listitem>
             <listitem>
                <para>
-                  It has an appropriate constructor -- either:
+                  It has an appropriate constructor&#8212;either:
                </para>
                <itemizedlist>
                   <listitem>
@@ -855,7 +876,7 @@ public class RandomNumberGenerator {
 
          <para>
             If the producer method has method arguments, as in this example, the container will look for matching beans
-            and pass them into the method automatically -- another form of dependency injection.
+            and pass them into the method automatically&#8212;another form of dependency injection.
          </para>
    
          <para>Producer methods may also define matching <emphasis>disposal methods</emphasis>:</para>

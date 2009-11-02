@@ -24,9 +24,9 @@
 
       <para>
          Note that this reference guide was started while changes were still being made to the specification. We've done
-         our best to update it for accuracy. However, if there is a conflict between what is written in this guide and
-         the specification, the specification is the authority--assume it is correct. If you believe you have found an
-         error in the specification, then report it to the JSR-299 EG.
+         our best to update it for accuracy.  If you discover a conflict between what is written in this guide and the
+         specification, the specification is the authority&#8212;assume it is correct. If you believe you have found an error
+         in the specification, please report it to the JSR-299 EG.
       </para>
    </preface>
    

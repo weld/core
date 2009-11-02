@@ -157,7 +157,7 @@ public class SecondLevelCache { ... }]]></programlisting>
       </itemizedlist>
   
       <para>
-         A conversation represents a task--a unit of work from the point of view of the user. The conversation context
+         A conversation represents a task&#8212;a unit of work from the point of view of the user. The conversation context
          holds state associated with what the user is currently working on. If the user is doing multiple things at the
          same time, there are multiple conversations.
       </para>

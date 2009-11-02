@@ -408,13 +408,13 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
   
       <para>
          Clients of an injected bean do not usually hold a direct reference to a bean instance, unless the bean is
-         dependent-scoped--in that case, the instance belongs to the bean.
+         dependent-scoped&#8212;in that case, the instance belongs to the bean.
       </para> 
   
       <para>
          Imagine that a bean bound to the application scope held a direct reference to a bean bound to the request
          scope. The application-scoped bean is shared between many different requests. However, each request should see
-         a different instance of the request scoped bean--the current one!
+         a different instance of the request scoped bean&#8212;the current one!
       </para>
   
       <para>
@@ -436,7 +436,7 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
          <para>
             If you recall, Seam also boasted the ability to reference the current instance of a component. However, Seam
             went about it differently. In Seam, the references are established prior to the method call and cleared
-            afterword using an interceptor--a process known as bijection. This model was not very friendly to multiple
+            afterword using an interceptor&#8212;a process known as bijection. This model was not very friendly to multiple
             threads sharing instances and thefore the client proxy approach was adopted in CDI instead.
          </para>
       </note>
@@ -581,7 +581,7 @@ PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment
 
       <para>
          The <literal>@Named</literal> annotation, when added to a bean class, producer method or producer field,
-         gives an alternate way for that bean to be referenced--by a string-based name.
+         gives an alternate way for that bean to be referenced&#8212;by a string-based name.
       </para>
 
       <programlisting role="JAVA"><![CDATA[public @Named("cart") @SessionScoped class ShoppingCart {

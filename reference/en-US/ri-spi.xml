@@ -65,7 +65,7 @@
          </para>
          
          <para>
-            The CDI specification discusses <emphasis>Bean Deployment Archives</emphasis> (BDAs) &mdash; archives which
+            The CDI specification discusses <emphasis>Bean Deployment Archives</emphasis> (BDAs)&#8212;archives which
             are marked as containing beans which should be deployed to the CDI container, and made available for
             injection and resolution. Weld reuses this description of <emphasis>Bean Deployment Archives</emphasis> in
             its deployment structure SPI. Each deployment exposes the BDAs which it contains; each BDA may also
@@ -105,7 +105,7 @@
 
          <para>
             <literal>BeanDeploymentArchive</literal> provides three methods which allow it's contents to be discovered
-            by Weld &mdash; <literal>BeanDeploymentArchive.getBeanClasses()</literal> must return all the classes in the
+            by Weld&#8212;<literal>BeanDeploymentArchive.getBeanClasses()</literal> must return all the classes in the
             BDA, <literal>BeanDeploymentArchive.getBeansXml()</literal> must return all the deployment descriptors in
             the archive, and <literal>BeanDeploymentArchive.getEjbs()</literal> must provide an EJB descriptor for every
             EJB in the BDA, or an empty list if it is not an EJB archive. 
@@ -216,7 +216,7 @@
          <para>
             <literal>EJBServices</literal> is used to resolve local EJBs used to back session beans, and must always be
             provided in an EE environment.  <literal>EJBServices.resolveEjb(EjbDescriptor ejbDescriptor)</literal>
-            returns a wrapper &mdash; <literal>SessionObjectReference</literal> &mdash; around the EJB reference. This
+            returns a wrapper&#8212;<literal>SessionObjectReference</literal>&#8212;around the EJB reference. This
             wrapper allows Weld to request a reference that implements the given business interface, and, in the case of
             SFSBs, both request the removal of the EJB from the container and query whether the EJB has been previously
             removed.
