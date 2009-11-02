@@ -14,6 +14,7 @@ public class ApplicationScopedTest extends AbstractWeldTest
    public void testConcurrentInitilized() throws InterruptedException
    {
       final CountDownLatch latch = new CountDownLatch(10);
+      final ApplicationScopedObject applictionScopedObject = getCurrentManager().getInstanceByType(ApplicationScopedObject.class);
       for (int i = 0; i < 10; i++)
       {
          new Thread(new Runnable()
@@ -22,7 +23,7 @@ public class ApplicationScopedTest extends AbstractWeldTest
             {
                try
                {
-                  getCurrentManager().getInstanceByType(ApplictionScopedObject.class).increment();
+                  applictionScopedObject.increment();
                }
                finally
                {
@@ -32,7 +33,7 @@ public class ApplicationScopedTest extends AbstractWeldTest
          }).start();
       }
       latch.await();
-      int value = getCurrentManager().getInstanceByType(ApplictionScopedObject.class).getValue();
+      int value = applictionScopedObject.getValue();
       assert value == 10;
    }
 
