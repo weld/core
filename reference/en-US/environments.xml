@@ -224,16 +224,17 @@ $> ant update</programlisting>
    <section>
       <title>Java SE</title>
       
-      <para>
-         Apart from improved integration of the Enterprise Java stack, Weld also provides a state of the art
-         typesafe, stateful dependency injection framework. This is useful in a wide range of application types,
-         enterprise or otherwise. To facilitate this, Weld provides a simple means for executing in the Java
-         Standard Edition environment independently of any Enterprise Edition features.
+      <para>In addition to improved integration of the Enterprise Java stack,
+      the "Contexts and Dependency Injection for the Java EE platform" specification
+      also defines a state of the art typesafe, stateful dependency injection
+      framework, which can prove useful in a wide range of application types.
+      To help developers take advantage of this, Weld provides a simple means
+      for being executed in the Java Standard Edition environment independently
+      of any Java EE APIs.
       </para>
 
-      <para>
-         When executing in the SE environment the following features of Weld are available:
-      </para>
+      <para>When executing in the SE environment the following features of Weld
+      are available:</para>
 
       <itemizedlist>
          <listitem>
@@ -269,36 +270,34 @@ $> ant update</programlisting>
       </itemizedlist>
 
       <section id="weld-se">
-         <title>CDI SE Module</title>
+          <title>CDI SE Module</title>
 
-         <para>
-            To make life easy for developers, Weld provides a special module with a main method which will boot the CDI
-            bean manager, automatically registering all JavaBeans found on the classpath. This eliminates the need for
-            application developers to write any bootstrapping code. The entry point for a CDI SE applications is a bean
-            which observes the special <literal>ContainerInitialized</literal> event provided by the SE module. The
-            command line paramters can be injected using either of the following:
+          <para>Weld provides an extension which will boot a CDI
+          bean manager in Java SE, automatically registering all simple beans found on
+          the classpath. Application developers need not write any bootstrapping code.
+          The entry point for application code is a simple bean which observes the special <literal>ContainerInitialized</literal>
+          event provided by this extension. The command line paramters can be
+          injected using either of the following:
           </para>
-
-          <programlisting role="JAVA"><![CDATA[@Parameters List<String> params;
-@Parameters String[] paramsArray; // useful for compatability with existing classes]]></programlisting>
+          <programlisting role="JAVA"><![CDATA[@Inject @Parameters List<String> params;
+@Inject @Parameters String[] paramsArray; // useful for compatability with existing classes]]></programlisting>
 
           <para>
-             Here's an example of a simple CDI SE application:
+          Here's an example of a simple CDI SE application:
           </para>
 
           <programlisting role="JAVA"><![CDATA[@ApplicationScoped
-public class HelloWorld {
-   @Parameters List<String> parameters;
+public class HelloWorld
+{
+    @Inject @Parameters List<String> parameters;
 
    public void printHello(@Observes ContainerInitialized event) {
        System.out.println("Hello " + parameters.get(0));
    }
 }]]></programlisting>
 
-          <para>
-            CDI SE applications are started by running the following main method.
-          </para>
-
+          <para>CDI SE applications can be bootstrapped by running the StartMain
+          class like so:</para>
           <programlisting role="JAVA"><![CDATA[java org.jboss.weld.environments.se.StartMain <args>]]></programlisting>
 
           <para>
