@@ -1,6 +1,5 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
    "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
-
 <chapter id="intro">
    <title>Getting started with JSR-299 (CDI)</title>
   
@@ -118,9 +117,9 @@ public interface Translator {
         
       <para>
          As you've guessed, the <literal>@Inject</literal> annotation has something to do with dependency injection!
-         <literal>@Inject</literal> may be applied to a constructor or method of a bean, and tells the bean manager to
-         call that constructor or method when instantiating the bean. The bean manager will inject other beans it finds
-         into the parameters of the constructor or method.
+         <literal>@Inject</literal> may be applied to a constructor or method of a bean, and tells the container to call
+         that constructor or method when instantiating the bean. The container will inject other beans it finds into the
+         parameters of the constructor or method.
       </para>
 
       <para>
@@ -137,12 +136,12 @@ public interface Translator {
     
       <programlisting role="JAVA"><![CDATA[@Named @RequestScoped
 public class TranslateController {
-   @Inject private TextTranslator textTranslator;
+   private @Inject TextTranslator textTranslator;
 
    private String inputText;
    private String translation;
 
-   // action method, perhaps
+   // JSF action method, perhaps
    public void translate() {
       translation = textTranslator.translate(inputText); 
    }
@@ -161,17 +160,28 @@ public class TranslateController {
 }]]></programlisting>
 
       <para>
+         Alternatively, we may obtain an instance programatically from <literal>Instance</literal>
+         interface paramaterized to the bean type:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[private @Inject Instance<TextTranslator> textTranslatorSource;
+...
+public void translate() {
+   textTranslatorSource.get().translate(inputText);
+}]]></programlisting> 
+
+      <para>
          Notice that it isn't necessary to create a getter or setter method to inject one bean into another. CDI can
          access the field directly (even if it's private!), which should help eliminate some wasteful code. The name of
          the field is arbitrary. It's the field's type that determines what is injected.
-       </para>
+      </para>
     
       <para>
-         At system initialization time, the bean manager must validate that exactly one bean exists which satisfies each
-         injection point. In our example, if no implementation of <literal>Translator</literal> is available -- if
-         the <literal>SentenceTranslator</literal> EJB was not deployed -- the bean manager would throw an
+         At system initialization time, the container must validate that exactly one bean exists which satisfies each
+         injection point. In our example, if no implementation of <literal>Translator</literal> is available -- if the
+         <literal>SentenceTranslator</literal> EJB was not deployed -- the container would throw an
          <literal>UnsatisfiedDependencyException</literal>. If more than one implementation of
-         <literal>Translator</literal> were available, the bean manager would throw an
+         <literal>Translator</literal> were available, the container would throw an
          <literal>AmbiguousDependencyException</literal>. The same for the <literal>TextTranslator</literal> injection
          point.
       </para>
@@ -183,15 +193,14 @@ public class TranslateController {
     
    </section>
 
-   <!-- mention alternatives here? -->
    <section id="bean-anatomy">
       <title>The anatomy of a bean</title>
   
       <para>
          A bean is an application class that contains business logic. It may be called directly from Java code, or it
          may be invoked via Unified EL. A bean may access transactional resources. Dependencies between beans are
-         managed automatically by the bean manager. Most beans are <emphasis>stateful</emphasis> and
-         <emphasis>contextual</emphasis>. The lifecycle of a bean is always managed by the bean manager.
+         managed automatically by the container. Most beans are <emphasis>stateful</emphasis> and
+         <emphasis>contextual</emphasis>. The lifecycle of a bean is always managed by the container.
       </para>
 
       <para>
@@ -333,11 +342,11 @@ public class BookShop extends Business implements Shop<Book> {
 }]]></programlisting> 
 
          <para>
-            The bean types alone often do not provide enough information for the bean manager to know which bean to
-            inject. For instance, say you have two implementations of the <literal>PaymentProcessor</literal> interface:
+            The bean types alone often do not provide enough information for the container to know which bean to inject.
+            For instance, say you have two implementations of the <literal>PaymentProcessor</literal> interface:
             <literal>CreditCardPaymentProcessor</literal> and <literal>DebitPaymentProcessor</literal>. Injecting into a
             field of type <literal>PaymentProcessor</literal> introduces an ambigious condition. In these cases, the
-            bean manager must rely on some client-visible semantic that is satisified by one implementation of the bean
+            container must rely on some client-visible semantic that is satisified by one implementation of the bean
             type, but not by others. That semantic is called a qualifier.
          </para>
 
@@ -348,10 +357,9 @@ public class BookShop extends Business implements Shop<Book> {
             Here's an example of a qualifier annotation:
          </para>
 
-         <programlisting role="JAVA"><![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })
+         <programlisting role="JAVA"><![CDATA[@Qualifier
+@Target( { TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RUNTIME)
-@Documented
-@Qualifier
 public @interface CreditCard {}]]></programlisting> 
 
          <para>
@@ -382,8 +390,8 @@ public @interface CreditCard {}]]></programlisting>
          </note>
 
          <para>
-            For each injection point, the bean manager searches for a bean which satisfies the contract, meaning it
-            matches the bean time and all the qualifiers. It then injects that instance.
+            For each injection point, the container searches for a bean which satisfies the contract, meaning it matches
+            the bean time and all the qualifiers. It then injects that instance.
          </para>
 
          <para>
@@ -419,7 +427,7 @@ public class CreditCardPaymentProcessor
          <para>
             The <emphasis>scope</emphasis> of a bean defines the lifecycle and visibility of instances created from it.
             The CDI context model is extensible, accommodating arbitrary scopes. However, certain important scopes are
-            built-in to the specification, and provided by the bean manager. Each scope is represented by an annotation
+            built-in to the specification, and provided by the container. Each scope is represented by an annotation
             type.
          </para>
 
@@ -444,7 +452,7 @@ public class ShoppingCart { ... }]]></programlisting>
          <para>
             If a scope is not explicitly specified, then the bean belongs to a special scope called the
             <emphasis>dependent pseudo-scope</emphasis>. Beans with this scope live to serve the bean into which they
-            are injected, which means their life cycle is bound to the life cycle of that object.
+            are injected, which means their lifecycle is bound to the lifecycle of that object.
          </para>
 
          <para>We'll talk more about scopes in <xref linkend="scopescontexts"/>.</para>
@@ -496,6 +504,8 @@ public class ShoppingCart { ... }]]></programlisting>
 
       </section>
 
+      <!-- TODO the alternative section needs to be spruced up to support the text that comes in subsequent chapters. The
+      reader needs to feel confident than they would know how to create an alternative and enable it. -->
       <section>
          <title>Alternatives</title>
 
@@ -508,6 +518,12 @@ public class ShoppingCart { ... }]]></programlisting>
 
          <programlisting role="JAVA"><![CDATA[@Alternative
 public class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisting> 
+
+         <para>
+            An alternative can also be declared by annotating a bean, producer method or producer fields with a
+            stereotype that has the <literal>@Alternative</literal> annotation. Stereotypes are explained in <xref
+            linkend="stereotypes"/>.
+         </para>
 
          <para>
             You then enable the alternative using the CDI deployment descriptor, META-INF/beans.xml, in the classpath
@@ -642,7 +658,7 @@ public class ShoppingCart { ... }]]></programlisting>
          <title>Session beans</title>
 
          <para>
-            EJB 3 session beans belong to the EJB specification. That is, the basic life cycle and semantics. Beyond
+            EJB 3 session beans belong to the EJB specification. That is, the basic lifecycle and semantics. Beyond
             that, they get to participate in CDI just like any other bean. There are some restrictions about which
             scopes can be assigned to a session bean, but other than that, they are interchangable with regular managed
             beans. That means you can inject one session bean into another, a managed bean into a session bean, a
@@ -719,7 +735,7 @@ public class ShoppingCart { ... }]]></programlisting>
 
          <para>
             The point is, you use a session bean when you need the services it provides, not just because you want to
-            use dependency injection, life cycle management, or interceptors. The Java EE programming model makes a
+            use dependency injection, lifecycle management, or interceptors. The Java EE programming model makes a
             whole lot more sense now; you won't need to go off and invent your own bean container to make programming
             in Java EE palatable.
          </para>
@@ -744,9 +760,9 @@ public class ShoppingCart { ... }]]></programlisting>
 
          <para>
             A <emphasis>producer method</emphasis> is a method on a bean that is used as a bean source, meaning the
-            method itself describes the bean and the bean manager invokes the method to obtain an instance of the bean
-            when no instance exists in its specified context. A producer method lets the application take full control
-            of the instantiation process, specifically when:
+            method itself describes the bean and the container invokes the method to obtain an instance of the bean when
+            no instance exists in its specified context. A producer method lets the application take full control of the
+            instantiation process, specifically when:
          </para>
             
          <itemizedlist>

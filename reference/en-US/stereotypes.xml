@@ -1,179 +1,221 @@
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
-
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <chapter id="stereotypes">
-  <title>Stereotypes</title>
+
+   <title>Stereotypes</title>
   
-  <para>According to the Web Beans specification:</para>
+   <para>The CDI specification defines a stereotype as follows:</para>
   
-  <blockquote>
+   <blockquote>
   
-  <para>In many systems, use of architectural patterns produces a set of recurring Web 
-  Bean roles. A stereotype allows a framework developer to identify such a role and 
-  declare some common metadata for Web Beans with that role in a central place.</para>
+      <para>
+         In many systems, use of architectural patterns produces a set of recurring bean roles. A stereotype allows a
+         framework de- veloper to identify such a role and declare some common metadata for beans with that role in a
+         central place.
+      </para>
   
-  <para>A stereotype encapsulates any combination of:</para>
+      <para>A stereotype encapsulates any combination of:</para>
   
-  <itemizedlist>
-    <listitem>
-      <para>a default deployment type,</para>
-    </listitem>
-    <listitem>
-      <para>a default scope type,</para>
-    </listitem>
-    <listitem>
-      <para>a restriction upon the Web Bean scope,</para>
-    </listitem>
-    <listitem>
-      <para>a requirement that the Web Bean implement or extend a certain type, and</para>
-    </listitem>
-    <listitem>
-      <para>a set of interceptor binding annotations.</para>
-    </listitem>
-  </itemizedlist>
+      <itemizedlist>
+         <listitem>
+            <para>a default scope, and</para>
+         </listitem>
+         <listitem>
+            <para>a set of interceptor bindings.</para>
+         </listitem>
+      </itemizedlist>
+
+      <para>
+         A stereotype may also specify that: 
+      </para>
+
+      <itemizedlist>
+         <listitem>
+            <para>all beans with the stereotype have defaulted bean EL names, or that</para>
+         </listitem>
+         <listitem>
+            <para>all beans with the stereotype are alternatives.</para>
+         </listitem>
+      </itemizedlist>
   
-  <para>A stereotype may also specify that all Web Beans with the stereotype have 
-  defaulted Web Bean names.</para>
+      <para>
+         A bean may declare zero, one or multiple stereotypes. Stereotype annotations may be applied to a bean class or
+         producer method or field.
+      </para>
   
-  <para>A Web Bean may declare zero, one or multiple stereotypes.</para>
+   </blockquote>
   
-  </blockquote>
+   <para>
+      In layman's terms, a stereotype is a meta-annotation (an annotation used on another annotation) annotated with
+      <literal>@Stereotype</literal> that bundles other Java annotations to give them a particular semantic. For
+      instance, the following stereotype identifies action classes in some MVC framework:
+   </para>
   
-  <para>A stereotype is a Java annotation type. This stereotype identifies
-  action classes in some MVC framework:</para>
-  
-<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
+   <programlisting role="JAVA"><![CDATA[@Stereotype
+@Retention(RUNTIME)
 @Target(TYPE)
-@Stereotype
 public @interface Action {}]]></programlisting>
 
-  <para>We use the stereotype by applying the annotation to a Web Bean.</para>
+   <para>
+      We use the stereotype by applying the annotation to a bean.
+   </para>
   
-<programlisting role="JAVA"><![CDATA[@Action 
+   <programlisting role="JAVA"><![CDATA[@Action 
 public class LoginAction { ... }]]></programlisting>
 
-  <section>
-    <title>Default scope and deployment type for a stereotype</title>
+   <para>
+      Of course, we need to associate our stereotype annotation with some other annotations or else it isn't doing much
+      for us. Let's see how to add them.
+   </para>
+
+   <section>
+      <title>Default scope for a stereotype</title>
   
-    <para>A stereotype may specify a default scope and/or default deployment
-    type for Web Beans with that stereotype. For example, if the deployment
-    type <literal>@WebTier</literal> identifies Web Beans that should only
-    be deployed when the system executes as a web application, we might
-    specify the following defaults for action classes:</para>
+      <para>
+         A stereotype may specify a default scope for beans annotated with the stereotype. For example, if the we might
+         specify the following defaults for action classes in a web application:
+      </para>
     
-<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
-@Target(TYPE)
-@RequestScoped
-@WebTier
+      <programlisting role="JAVA"><![CDATA[@RequestScoped
 @Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
 public @interface Action {}]]></programlisting>
 
-    <para>Of course, a particular action may still override these defaults
-    if necessary:</para>
+      <para>
+         Of course, a particular action may still override this default if necessary:
+      </para>
     
-<programlisting role="JAVA"><![CDATA[@Dependent @Mock @Action 
-public class MockLoginAction { ... }]]></programlisting>
+      <programlisting role="JAVA"><![CDATA[@Dependent @Action 
+public class DependentScopedLoginAction { ... }]]></programlisting>
 
-    <para>If we want to force all actions to a particular scope, we can
-    do that too.</para>
+      <para>
+         Naturally, overriding a single default isn't much use. But remember, stereotypes can define more than just the
+         default scope.
+      </para>
 
-  </section>
+   </section>
   
-  <section>
-    <title>Restricting scope and type with a stereotype</title>
+   <section>
+      <title>Interceptor bindings for stereotypes</title>
     
-    <para>Suppose that we wish to prevent actions from declaring certain
-    scopes. Web Beans lets us explicitly specify the set of allowed scopes
-    for Web Beans with a certain stereotype. For example:</para>
+      <para>
+         A stereotype may specify a set of interceptor bindings to be inherited by all beans with that stereotype.
+      </para>
     
-<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
-@Target(TYPE)
-@RequestScoped
-@WebTier
-@Stereotype(supportedScopes=RequestScoped.class)
-public @interface Action {}]]></programlisting>
-
-    <para>If a particular action class attempts to specify a scope other
-    than the Web Beans request scope, an exception will be thrown by the 
-    Web Bean manager at initialization time.</para>
-
-    <para>We can also force all Web Bean with a certain stereotype to
-    implement an interface or extend a class:</para>
-    
-<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
-@Target(TYPE)
-@RequestScoped
-@WebTier
-@Stereotype(requiredTypes=AbstractAction.class)
-public @interface Action {}]]></programlisting>
-
-    <para>If a particular action class does not extend the class
-    <literal>AbstractAction</literal>, an exception will be thrown by the 
-    Web Bean manager at initialization time.</para>
-
-  </section>
-  
-  <section>
-    <title>Interceptor bindings for stereotypes</title>
-    
-    <para>A stereotype may specify a set of interceptor bindings to be 
-    inherited by all Web Beans with that stereotype.</para>
-    
-<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
-@Target(TYPE)
-@RequestScoped
+<programlisting role="JAVA"><![CDATA[@RequestScoped
 @Transactional(requiresNew=true)
 @Secure
-@WebTier
 @Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
 public @interface Action {}]]></programlisting>
 
-    <para>This helps us get technical concerns even further away from the
-    business code!</para>
+      <para>
+         This helps us get technical concerns, like transactions and security, even further away from the business code!
+      </para>
 
-  </section>
+   </section>
   
-  <section>
-    <title>Name defaulting with stereotypes</title>
+   <section>
+      <title>Name defaulting with stereotypes</title>
     
-    <para>Finally, we can specify that all Web Beans with a certain stereotype
-    have a Web Bean name, defaulted by the Web Bean manager. Actions are often
-    referenced in JSP pages, so they're a perfect use case for this feature.
-    All we need to do is add an empty <literal>@Named</literal> annotation:</para>
+      <para>
+         We can specify that all beans with a certain stereotype have a defaulted EL name when a name is not explicitly
+         defined on that bean. Actions are often referenced in JSF views, so they're a perfect use case for this
+         feature. All we need to do is add an empty <literal>@Named</literal> annotation:
+      </para>
     
-<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
-@Target(TYPE)
-@RequestScoped
+      <programlisting role="JAVA"><![CDATA[@RequestScoped
 @Transactional(requiresNew=true)
 @Secure
 @Named
-@WebTier
 @Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
 public @interface Action {}]]></programlisting>
 
-    <para>Now, <literal>LoginAction</literal> will have the name 
-    <literal>loginAction</literal>.</para>
+      <para>
+         Now, <literal>LoginAction</literal> bean from above will have the name <literal>loginAction</literal>.
+      </para>
     
-  </section>
+   </section>
+
+   <section>
+      <title>Alternatives as stereotypes</title>
+
+      <para>
+         A stereotype can inicate that all beans to which it is applied are <literal>@Alternative</literal> beans.  If
+         you can remember back to the early days of the specification, this is the closest match to a deployment type.
+         Whole sets of beans can be enabled or left disabled by activating a single stereotype.
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Alternative
+@Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Mock {}]]></programlisting>
+
+      <para>
+         Now you apply this stereotype to beans that should be active in mock environments.
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Mock
+public class MockLoginAction extends LoginAction { ... }]]></programlisting>
+
+   </section>
+
+   <section>
+      <title>Stereotype stacking</title>
+
+      <para>
+         This may blow your mind a bit, but stereotypes may declare other stereotypes, which we'll call
+         <emphasis>stereotype stacking</emphasis>. You may want to do this if you have two distinct
+         stereotypes which are meaningful on their own, but in other situation may be meaningful when
+         combined.
+      </para>
+
+      <para>
+         Here's an example that combines the <literal>@Action</literal> and <literal>@Auditable</literal> stereotypes:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Auditable
+@Action
+@Stereotype
+@Target(TYPE)
+@Retention(RUNTIME)
+public @interface AuditableAction {}]]></programlisting> 
+
+   </section>
   
-  <section>
-    <title>Standard stereotypes</title>
+   <section>
+      <title>Built-in stereotypes</title>
     
-    <para>We've already met two standard stereotypes defined by the Web Beans
-    specification: <literal>@Interceptor</literal> and <literal>@Decorator</literal>.</para>
+      <para>
+         We've already met two standard stereotypes defined by the CDI specification: <literal>@Interceptor</literal>
+         and <literal>@Decorator</literal>.
+      </para>
     
-    <para>Web Beans defines one further standard stereotype:</para>
+      <para>
+         CDI defines one further standard stereotype, <literal>@Model</literal>, which is expected to be used frequently
+         in web applications:
+      </para>
     
 <programlisting role="JAVA"><![CDATA[@Named 
 @RequestScoped 
 @Stereotype 
 @Target({TYPE, METHOD}) 
 @Retention(RUNTIME) 
-public @interface Model {} ]]></programlisting>
+public @interface Model {}]]></programlisting>
 
-    <para>This stereotype is intended for use with JSF. Instead of using JSF
-    managed beans, just annotate a Web Bean <literal>@Model</literal>, and
-    use it directly in your JSF page.</para>
+      <para>
+         Instead of using JSF managed beans, just annotate a Web Bean <literal>@Model</literal>, and use it directly in
+         your JSF view!
+      </para>
     
   </section>
 
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </chapter>

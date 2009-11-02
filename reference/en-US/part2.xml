@@ -1,54 +1,67 @@
-<!DOCTYPE partintro PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
-
+<!DOCTYPE partintro PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <partintro>
 
-<para>The first major theme of Web Beans is <emphasis>loose coupling</emphasis>. 
-We've already seen three means of achieving loose coupling:</para>
+   <para>
+      The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving
+      loose coupling:
+   </para>
 
-<itemizedlist>
-  <listitem>
-    <para><emphasis>deployment types</emphasis> enable deployment 
-    time polymorphism,</para>
-  </listitem>
-  <listitem>
-    <para><emphasis>producer methods</emphasis> enable runtime
-    polymorphism, and</para>
-  </listitem>
-  <listitem>
-    <para><emphasis>contextual lifecycle management</emphasis> decouples 
-    Web Bean lifecycles.</para>
-  </listitem>
-</itemizedlist>
+   <itemizedlist>
+      <listitem>
+         <para>
+            <emphasis>alternatives</emphasis> enable deployment time polymorphism,
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            <emphasis>producer methods</emphasis> enable runtime polymorphism, and</para>
+      </listitem>
+      <listitem>
+         <para>
+            <emphasis>contextual lifecycle management</emphasis> decouples bean lifecycles.
+         </para>
+      </listitem>
+   </itemizedlist>
 
-<para>These techniques serve to enable loose coupling of client and server. 
-The client is no longer tightly bound to an implementation of an API, nor 
-is it required to manage the lifecycle of the server object. This approach 
-lets <emphasis>stateful objects interact as if they were services</emphasis>.</para>
+   <para>
+      These techniques serve to enable loose coupling of client and server. The client is no longer tightly bound to an
+      implementation of an API, nor is it required to manage the lifecycle of the server object. This approach lets
+      <emphasis>stateful objects interact as if they were services</emphasis>.
+   </para>
 
-<para>Loose coupling makes a system more <emphasis>dynamic</emphasis>. The 
-system can respond to change in a well-defined manner. In the past, frameworks 
-that attempted to provide the facilities listed above invariably did it by 
-sacrificing type safety. Web Beans is the first technology that achieves this
-level of loose coupling in a typesafe way.</para>
+   <para>
+      Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system can respond to change in a
+      well-defined manner. In the past, frameworks that attempted to provide the facilities listed above invariably did
+      it by sacrificing type safety (most notably by using XML descriptors). CDI is the first technology, and certainly
+      the first specification in the Java EE platform, that achieves this level of loose coupling in a typesafe way.
+   </para>
 
-<para>Web Beans provides three extra important facilities that further the goal 
-of loose coupling:</para>
+   <para>
+      CDI provides three extra important facilities that further the goal of loose coupling:
+   </para>
 
-<itemizedlist>
-  <listitem>
-    <para><emphasis>interceptors</emphasis> decouple technical concerns from 
-    business logic,</para>
-  </listitem>
-  <listitem>
-    <para><emphasis>decorators</emphasis> may be used to decouple some business 
-    concerns, and</para>
-  </listitem>
-  <listitem>
-    <para><emphasis>event notifications</emphasis> decouple event producers 
-    from event consumers.</para>
-  </listitem>
-</itemizedlist>
+   <itemizedlist>
+      <listitem>
+         <para>
+            <emphasis>interceptors</emphasis> decouple technical concerns from business logic,
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            <emphasis>decorators</emphasis> may be used to decouple some business concerns, and
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            <emphasis>event notifications</emphasis> decouple event producers from event consumers.
+         </para>
+      </listitem>
+   </itemizedlist>
 
-<para>Let's explore interceptors first.</para>
+   <para>Let's explore interceptors first.</para>
 
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </partintro>

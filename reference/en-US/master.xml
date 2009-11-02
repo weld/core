@@ -1,13 +1,12 @@
 <?xml version='1.0' encoding="iso-8859-1"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
    "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
-
 <book lang="en">
 
    <xi:include href="Book_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
    
    <preface>
-      <title>Note</title>
+      <title>A note about naming and nomenclature</title>
       <para>
          Shortly before the final draft of JSR-299 was submitted, the specification changed its name from "Web Beans" to
          "Java Contexts and Dependency Injection for the Java EE platform", abbreviated CDI. For a brief period after
@@ -22,20 +21,29 @@
          defining beans in XML. These features will be available as portable extensions for CDI in the Weld project, and
          perhaps other implementations.
       </para>
+
+      <para>
+         Note that this reference guide was started while changes were still being made to the specification. We've done
+         our best to update it for accuracy. However, if there is a conflict between what is written in this guide and
+         the specification, the specification is the authority--assume it is correct. If you believe you have found an
+         error in the specification, then report it to the JSR-299 EG.
+      </para>
    </preface>
    
    <toc/>
    
    <part>
-      <title>Contextual components, loose-coupling and strong typing</title>
+      <title>Loosely-coupled, contextual components with strong typing</title>
       
       <xi:include href="part1.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
       <xi:include href="intro.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="example.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="gettingstarted.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="injection.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="scopescontexts.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="producermethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <!-- TODO <xi:include href="producerfields.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /> -->
      
    </part>
    
@@ -43,6 +51,7 @@
       <title>Developing loosely-coupled code</title>
       
       <xi:include href="part2.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
       <xi:include href="interceptors.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="decorators.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="events.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -56,7 +65,6 @@
       
       <xi:include href="stereotypes.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="specialization.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      <xi:include href="xml.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
    </part>
    
@@ -79,12 +87,14 @@
       
       <xi:include href="environments.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="extensions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <!--
+      <xi:include href="xml.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      -->
       <xi:include href="viewlayers.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="ri-spi.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
      
    </part>
    
-   <xi:include href="ri-spi.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
 <!--
 vim:et:ts=3:sw=3:tw=120
 -->

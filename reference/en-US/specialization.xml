@@ -1,150 +1,221 @@
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
-
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <chapter id="specialization">
-  <title>Specialization</title>
+
+   <title>Specialization, inheritance and alternatives</title>
+
+   <para>
+      When you first start developing with CDI, you'll likely be dealing only with a single bean implementation for each
+      bean type. In this case, it's easy to understand how beans get selected for injection. As the complexity of your
+      application grows, multiple occurances of the same bean type start appearing, either because you have multiple
+      implementations or two beans share a common (Java) inheritance. That's when you have to begin studying the
+      specialization, inheritance and alternative rules to work through unsatisified or ambiguous dependencies or to
+      avoid certain beans from being called.
+   </para>
+
+   <para>
+      The CDI specification recognizes two distinct scenarios in which one bean extends another:
+   </para>
+
+   <itemizedlist>
+      <listitem>
+         <para>
+            The second bean specializes the first bean in certain deployment scenarios. In these deployments, the second
+            bean completely replaces the first, fulfilling the same role in the system.
+         </para>
+         <para>
+            The second bean is simply reusing the Java implementation, and otherwise bears no relation to the first
+            bean. The first bean may not even have been designed for use as a contextual object.
+         </para>
+      </listitem>
+   </itemizedlist>
+
+   <para>
+      The second case is the default assumed by CDI. It's possible to have two beans in the system with the same part
+      bean type (interface or parent class). As you've learned, you select between the two implementations using
+      qualifiers.
+   </para>
+
+   <para>
+      The first case is the exception, and also requires more care. In any given deployment, only one bean can fulfill a
+      given role at a time. That means one bean needs to be enabled and the other disabled. There are a two modifiers
+      involved: <literal>@Alternative</literal> and <literal>@Specializes</literal>. We'll start by looking at bean
+      alternatives and then show the guarantees that specialization adds.
+   </para>
+
+   <section>
+      <title>Bean alternatives</title>
+
+      <para>
+         CDI let's you <emphasis>override</emphasis> the implementation of a bean type at deployment time using a bean
+         alternative. For example, the following bean provides an implementation of the
+         <literal>PaymentProcessor</literal> bean type in the default environment:
+      </para>
   
-  <para>We've already seen how the Web Beans dependency injection model lets
-  us <emphasis>override</emphasis> the implementation of an API at deployment 
-  time. For example, the following enterprise Web Bean provides an implementation 
-  of the API <literal>PaymentProcessor</literal> in production:</para>
-  
-<programlisting role="JAVA">@CreditCard @Stateless
+      <programlisting role="JAVA"><![CDATA[@CreditCard
 public class CreditCardPaymentProcessor 
-        implements PaymentProcessor {
-    ...
-}</programlisting>
+      implements PaymentProcessor {
+   ...
+}]]></programlisting>
 
-  <para>But in our staging environment, we override that implementation of 
-  <literal>PaymentProcessor</literal> with a different Web Bean:</para>
+      <para>
+         But in our staging environment, we override that implementation of <literal>PaymentProcessor</literal> with a
+         different bean:
+      </para>
   
-<programlisting role="JAVA">@CreditCard @Stateless @Staging
+      <programlisting role="JAVA"><![CDATA[@CreditCard @Alternative
 public class StagingCreditCardPaymentProcessor 
-        implements PaymentProcessor {
-    ...
-}</programlisting>
+      implements PaymentProcessor {
+   ...
+}]]></programlisting>
 
-  <para>What we've tried to do with <literal>StagingCreditCardPaymentProcessor</literal> 
-  is to completely replace <literal>AsyncPaymentProcessor</literal> in a particular
-  deployment of the system. In that deployment, the deployment type <literal>@Staging</literal>
-  would have a higher priority than the default deployment type <literal>@Production</literal>,
-  and therefore clients with the following injection point:</para>
-  
-<programlisting role="JAVA">@CreditCard PaymentProcessor ccpp</programlisting>
+      <para>or</para>
 
-  <para>Would receive an instance of <literal>StagingCreditCardPaymentProcessor</literal>.</para>
-
-  <para>Unfortunately, there are several traps we can easily fall into:</para>
-  
-  <itemizedlist>
-    <listitem>
-      <para>the higher-priority Web Bean may not implement all the API types of
-      the Web Bean that it attempts to override,</para>
-    </listitem>
-    <listitem>
-      <para>the higher-priority Web Bean may not declare all the binding types of
-      the Web Bean that it attempts to override,</para>
-    </listitem>
-    <listitem>
-      <para>the higher-priority Web Bean might not have the same name as the Web 
-      Bean that it attempts to override, or</para>
-    </listitem>
-    <listitem>
-      <para>the Web Bean that it attempts to override might declare a producer
-      method, disposal method or observer method.</para>
-    </listitem>
-  </itemizedlist>
-  
-  <para>In each of these cases, the Web Bean that we tried to override could still 
-  be called at runtime. Therefore, overriding is somewhat prone to developer error.</para>
-  
-  <para>Web Beans provides a special feature, called <emphasis>specialization</emphasis>,
-  that helps the developer avoid these traps. Specialization looks a little esoteric
-  at first, but it's easy to use in practice, and you'll really appreciate the extra
-  security it provides.</para>
-  
-  <section>
-    <title>Using specialization</title>
-  
-  <para>Specialization is a feature that is specific to simple and enterprise Web Beans.
-  To make use of specialization, the higher-priority Web Bean must:</para>
-  
-  <itemizedlist>
-    <listitem>
-      <para>be a direct subclass of the Web Bean it overrides, and</para>
-    </listitem>
-    <listitem>
-      <para>be a simple Web Bean if the Web Bean it overrides is a simple Web Bean or 
-      an enterprise Web Bean if the Web Bean it overrides is an enterprise Web Bean, 
-      and</para>
-    </listitem>
-    <listitem>
-      <para>be annotated <literal>@Specializes</literal>.</para>
-    </listitem>
-  </itemizedlist>
-  
-<programlisting role="JAVA">@Stateless @Staging @Specializes
+      <programlisting role="JAVA"><![CDATA[@CreditCard @Alternative
 public class StagingCreditCardPaymentProcessor 
-        extends CreditCardPaymentProcessor {
-    ...
-}</programlisting>
+      extends CreditCardPaymentProcessor {
+   ...
+}]]></programlisting>
 
-  <para>We say that the higher-priority Web Bean <emphasis>specializes</emphasis> its
-  superclass.</para>
-  
-  </section>
-  
-  <section>
-    <title>Advantages of specialization</title>
+      <para>
+         By default, <literal>@Alternative</literal> beans are disabled. We need to <emphasis>enable</emphasis> the
+         alternative--effectively replacing the bean implementation without the <literal>@Alternative</literal>
+         annotation--in the <literal>beans.xml</literal> descriptor of a bean deployment archive by specifying the bean
+         class (or the class that contains the alternative producer method or field). This activation only applies to
+         beans in the same archive.
+      </para>
 
-  <para>When specialization is used:</para>
+      <programlisting role="XML"><![CDATA[<beans
+   xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://java.sun.com/xml/ns/javaee
+      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+   <alternatives>
+         <class>org.mycompany.myapp.StagingCreditCardProcessor</class>
+   </alternatives>
+</beans>]]></programlisting>
+
+      <para>
+         Of course, if the goal is to enable all the alternatives for the staging environment, it would make much more
+         sense to make <literal>@Staging</literal> an <literal>@Alternative</literal> stereotype and annotate the
+         staging beans with this stereotype instead. You'll see how this level of indirection pays off. First, we create
+         the stereotype:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Stereotype
+@Alternative
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Staging {}]]></programlisting>
+
+      <para>
+         Then we replace the <literal>@Alternative</literal> annotation on our bean with <literal>@Staging</literal>:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@CreditCard @Staging
+public class StagingCreditCardPaymentProcessor 
+      extends CreditCardPaymentProcessor {
+   ...
+}]]></programlisting>
+
+      <para>
+         Finally, we activate the <literal>@Staging</literal> stereotype in the beans.xml descriptor:
+      </para>
+
+      <programlisting role="XML"><![CDATA[<beans
+   xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://java.sun.com/xml/ns/javaee
+      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+   <alternatives>
+         <stereotype>org.mycompany.myapp.Staging</stereotype>
+   </alternatives>
+</beans>]]></programlisting>
+
+      <para>
+         Now, no matter how many staging beans we have, they will all be enabled at once. Does that mean the default
+         implementation is disabled? Well, not exactly. If the default implementation has a qualifier, for instance
+         <literal>@LargeTransaction</literal>, and the alternative does not, you could still inject the default
+         implementation.
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@LargeTransaction @CreditCard PaymentProcessor paymentProcessor;]]></programlisting>
+
+      <para>
+         So we haven't completely replaced the default implementation in a particular deployment of the system. The only
+         way one bean can completely override a second bean at all injection points is if it implements all the bean
+         types and declares all the qualifiers of the second bean. However, if the second bean declares a producer
+         method or observer method, then even this is not enough to ensure that the second bean is never called! We need
+         something extra.
+      </para>
   
-  <itemizedlist>
-    <listitem>
-      <para>the binding types of the superclass are automatically inherited by the
-      Web Bean annotated <literal>@Specializes</literal>, and</para>
-    </listitem>
-    <listitem>
-      <para>the Web Bean name of the superclass is automatically inherited by the 
-      Web Bean annotated <literal>@Specializes</literal>, and</para>
-    </listitem>
-    <listitem>
-      <para>producer methods, disposal methods and observer methods declared by the
-      superclass are called upon an instance of the Web Bean annotated 
-      <literal>@Specializes</literal>.</para>
-    </listitem>
-  </itemizedlist>
+      <para>
+         CDI provides a special feature, called <emphasis>specialization</emphasis>, that helps the developer avoid
+         these traps. Specialization is a way of informing the system of your intent to completely replace and disable
+         an implementation of a bean.
+      </para>
+   </section>
   
-  <para>In our example, the binding type <literal>@CreditCard</literal> of 
-  <literal>CreditCardPaymentProcessor</literal> is inherited by 
-  <literal>StagingCreditCardPaymentProcessor</literal>.</para>
+   <section>
+      <title>Using specialization</title>
+
+      <para>
+         When the goal is to replace one bean implementation with a second, to help prevent developer error, the first
+         bean may:
+      </para>
+
+      <itemizedlist>
+         <listitem>
+            <para>
+               directly extend the bean class of the second bean, or
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               directly override the producer method, in the case that the second bean is a producer method, and then
+            </para>
+         </listitem>
+      </itemizedlist>
+
+      <para>explicitly declare that it <emphasis>specializes</emphasis> the second bean:</para>
+
+      <programlisting role="JAVA"><![CDATA[@Alternative @Specializes
+public class MockCreditCardPaymentProcessor 
+      extends CreditCardPaymentProcessor {
+   ...
+}]]></programlisting>
+      
+      <para>
+         When an enabled bean specializes another bean, the other bean is never instantiated or called by the container.
+         Even if the other bean defines a producer or observer method, the method will never be called.
+      </para>
+   </section>
+
+   <section>
+      <title>Inheritance</title>
+
+      <para>
+         So why does specialization work, and what does it have to do with inheritance?
+      </para>
+      
+      <para>
+         Since you are informing the container that your alternative bean is meant to stand in as a replacement for the
+         default implementation, the container automatically adds any qualifiers that are on the default implementation
+         to the alternative implementation.  Thus, in our example, <literal>MockCreditCardPaymentProcessor</literal> has
+         the qualifiers <literal>@Default</literal> and <literal>@CreditCard</literal>. Therefore, there are no
+         circumstances when the default implementation is going to get used because it is completely shadowed.
+      </para>
+
+      <para>
+         Additionally, if the default implementation declares a bean EL name using <literal>@Named</literal>, the name
+         is inherited by the specialized alternative bean.
+      </para>
+
+   </section>
   
-  <para>Furthermore, the Web Bean manager will validate that:</para>
-  
-  <itemizedlist>
-    <listitem>
-      <para>all API types of the superclass are API types of the Web Bean
-      annotated <literal>@Specializes</literal> (all local interfaces
-      of the superclass enterprise bean are also local interfaces of the
-      subclass),</para>
-    </listitem>
-    <listitem>
-      <para>the deployment type of the Web Bean annotated 
-      <literal>@Specializes</literal> has a higher precedence than the
-      deployment type of the superclass, and</para>
-    </listitem>
-    <listitem>
-      <para>there is no other enabled Web Bean that also specializes
-      the superclass.</para>
-    </listitem>
-  </itemizedlist>
-  
-  <para>If any of these conditions are violated, the Web Bean manager throws
-  an exception at initialization time.</para>
-  
-  <para>Therefore, we can be certain that the superclass will <emphasis>never</emphasis>
-  be called in any deployment of the system where the Web Bean annotated 
-  <literal>@Specializes</literal> is deployed and enabled.</para>
-  
-  </section>
-  
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </chapter>

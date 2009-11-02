@@ -15,7 +15,7 @@ tainer, for example, alternative web presentation technologies.
       The <ulink src="http://jcp.org/en/jsr/detail?id=299">JSR-299</ulink> specification (CDI) defines a set of services
       for the Java EE environment that make applications much easier to develop. CDI layers an enhanced lifecycle and
       interaction model over existing Java component types, including Managed Beans (JavaBeans) and Enterprise JavaBeans
-      (EJB session beans). As a complement to the traditional Java EE programming model, the services provide:
+      (EJB session beans). As a complement to the traditional Java EE programming model, the CDI services provide:
    </para>
 
    <itemizedlist>

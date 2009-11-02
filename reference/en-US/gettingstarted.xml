@@ -766,10 +766,9 @@ $> mvn war:inplace jetty:run -Pjetty]]></programlisting>
          <literal>@Random</literal> qualifier, used for injecting a random number:
       </para>
       
-      <programlisting role="JAVA"><![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })
+      <programlisting role="JAVA"><![CDATA[@Qualifier
+@Target( { TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RUNTIME)
-@Documented
-@Qualifier
 public @interface Random {}]]></programlisting>
 
       <para>
@@ -777,10 +776,9 @@ public @interface Random {}]]></programlisting>
          injecting the maximum number that can be injected:
       </para>
       
-      <programlisting role="JAVA"><![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })
+      <programlisting role="JAVA"><![CDATA[@Qualifier
+@Target( { TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RUNTIME)
-@Documented
-@Qualifier
 public @interface MaxNumber {}
 ]]></programlisting>
 
@@ -1207,7 +1205,7 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
 
                   <para>
                      The servlet listener is still required, as in the Tomcat example, to bootstrap CDI when Jetty
-                     starts and to hook CDI into the Jetty servlet request and session life cycles. However, rather than
+                     starts and to hook CDI into the Jetty servlet request and session lifecycles. However, rather than
                      putting it into the web.xml, it is placed into an override file,
                      src/main/webapp/WEB-INF/jetty-additions-to-web.xml, that is passed to Jetty as extra descriptor to
                      be appended to the web.xml configuration.
@@ -1765,7 +1763,7 @@ public class Game implements Serializable {
       
       <para>
          We've saved the most interesting bit to last, the code! The project has two simple beans,
-         <literal>SentenceParser</literal> and <literal>TextTranslator</literal> and two enterprise beans,
+         <literal>SentenceParser</literal> and <literal>TextTranslator</literal> and two session beans,
          <literal>TranslatorControllerBean</literal> and <literal>SentenceTranslator</literal>. You should be getting
          quite familiar with what a bean looks like by now, so we'll just highlight the most interesting bits here.
       </para>

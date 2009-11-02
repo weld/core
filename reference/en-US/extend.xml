@@ -1,163 +1,171 @@
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
-
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+<!-- This chapter needs *major* filling in; specifically, give an overview of how an extension plugins in -->
 <chapter id="extend">
-  <title>Extending Web Beans</title>
+   <title>Extending CDI through portable extensions</title>
   
-  <para>Web Beans is intended to be a platform for frameworks, extensions and 
-  integration with other technologies. Therefore, Web Beans exposes a set of 
-  SPIs for the use of developers of portable extensions to Web Beans. For
-  example, the following kinds of extensions were envisaged by the designers
-  of Web Beans:</para>
+   <para>
+      CDI is intended to be a foundation for frameworks, extensions and integration with other technologies. Therefore,
+      CDI exposes a set of SPIs for the use of developers of portable extensions to CDI. For example, the following
+      kinds of extensions were envisaged by the designers of CDI:
+   </para>
   
-  <itemizedlist>
-    <listitem>
-      <para>integration with Business Process Management engines,</para>
-    </listitem>
-    <listitem>
-      <para>integration with third-party frameworks such as Spring, 
-      Seam, GWT or Wicket, and</para>
-    </listitem>
-    <listitem>
-      <para>new technology based upon the Web Beans programming model.</para>
-    </listitem>
-  </itemizedlist>
+   <itemizedlist>
+      <listitem>
+         <para>integration with Business Process Management engines,</para>
+      </listitem>
+      <listitem>
+         <para>
+            integration with third-party frameworks such as Spring, Seam, GWT or Wicket, and
+         </para>
+      </listitem>
+      <listitem>
+         <para>new technology based upon the CDI programming model.</para>
+      </listitem>
+   </itemizedlist>
 
-  <para>The nerve center for extending Web Beans is the <literal>Manager</literal>
-  object.</para>
+   <para>
+      More formally, according to the spec:
+   </para>
+
+   <blockquote>
+      <para>A portable extension may integrate with the container by:</para>
+      <itemizedlist>
+         <listitem>
+            <para>
+               Providing its own beans, interceptors and decorators to the container
+            </para>
+            <para>
+            </para>
+               Injecting dependencies into its own objects using the dependency injection service
+            <para>
+               Providing a context implementation for a custom scope
+            </para>
+            <para>
+               Augmenting or overriding the annotation-based metadata with metadata from some other source
+            </para>
+         </listitem>
+      </itemizedlist>
+   </blockquote>
+
+   <para>
+      The nerve center for extending CDI is the <literal>BeanManager</literal> object.
+   </para>
   
-  <section>
-    <title>The <literal>Manager</literal> object</title>
+   <section>
+      <title>The <literal>BeanManager</literal> object</title>
     
-    <para>The <literal>Manager</literal> interface lets us register and obtain
-    Web Beans, interceptors, decorators, observers and contexts programatically.</para>
+      <para>
+         The <literal>BeanManager</literal> interface lets us register and obtain beans, interceptors, decorators,
+         observers and contexts programatically.
+      </para>
     
-<programlisting role="JAVA"><![CDATA[public interface Manager
-{
-
-   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindings);
-
-   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
-         Annotation... bindings);
-
-   public <T> T getInstanceByType(Class<T> type, Annotation... bindings);
-
-   public <T> T getInstanceByType(TypeLiteral<T> type,
-         Annotation... bindings);
-
-   public Set<Bean<?>> resolveByName(String name);
-
-   public Object getInstanceByName(String name);
-
-   public <T> T getInstance(Bean<T> bean);
-
+<programlisting role="JAVA"><![CDATA[public interface Manager {
+   public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx);
+   public Object getInjectableReference(InjectionPoint ij, CreationalContext<?> ctx);
+   public <T> CreationalContext<T> createCreationalContext(Contextual<T> contextual);
+   public Set<Bean<?>> getBeans(Type beanType, Annotation... bindings);
+   public Set<Bean<?>> getBeans(String name);
+   public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean);
+   public Bean<?> getPassivationCapableBean(String id);
+   public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans);
+   public void validate(InjectionPoint injectionPoint);
    public void fireEvent(Object event, Annotation... bindings);
-
+   public <T> Set<ObserverMethod<?, T>> resolveObserverMethods(T event, Annotation... bindings);
+   public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... bindings);
+   public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings);
+   public boolean isScope(Class<? extends Annotation> annotationType);
+   public boolean isNormalScope(Class<? extends Annotation> annotationType);
+   public boolean isPassivatingScope(Class<? extends Annotation> annotationType);
+   public boolean isQualifier(Class<? extends Annotation> annotationType);
+   public boolean isInterceptorBindingType(Class<? extends Annotation> annotationType);
+   public boolean isStereotype(Class<? extends Annotation> annotationType);
+   public Set<Annotation> getInterceptorBindingTypeDefinition(Class<? extends Annotation> bindingType);
+   public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype);
    public Context getContext(Class<? extends Annotation> scopeType);
-
-   public Manager addContext(Context context);
-
-   public Manager addBean(Bean<?> bean);
-
-   public Manager addInterceptor(Interceptor interceptor);
-
-   public Manager addDecorator(Decorator decorator);
-
-   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType,
-         Annotation... bindings);
-
-   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType,
-         Annotation... bindings);
-
-   public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType,
-         Annotation... bindings);
-
-   public <T> Manager removeObserver(Observer<T> observer,
-         TypeLiteral<T> eventType, Annotation... bindings);
-
-   public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings);
-
-   public List<Interceptor> resolveInterceptors(InterceptionType type,
-         Annotation... interceptorBindings);
-
-   public List<Decorator> resolveDecorators(Set<Class<?>> types,
-         Annotation... bindings);
-
+   public ELResolver getELResolver();
+   public ExpressionFactory wrapExpressionFactory(ExpressionFactory expressionFactory);
+   public <T> AnnotatedType<T> createAnnotatedType(Class<T> type);
+   public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type);
 }]]></programlisting>
 
-    <para>We can obtain an instance of <literal>Manager</literal> via injection:</para>
+      <para>We can obtain an instance of <literal>BeanManager</literal> via injection:</para>
     
-<programlisting role="JAVA">@Current Manager manager</programlisting>
+      <programlisting role="JAVA">@Inject BeanManager beanManager</programlisting>
+
+      <para>
+         Java EE components may obtain an instance of BeanManager from JNDI by looking up the name
+         <literal>java:comp/BeanManager</literal>.  Any operation of BeanManager may be called at any time during the
+         execution of the application.
+      </para>
+
+      <para>Let's study some of the interfaces exposed by the <literal>BeanManager</literal>.</para>
     
-  </section>
+   </section>
   
-  <section>
-    <title>The <literal>Bean</literal> class</title>
+   <section>
+      <title>The <literal>Bean</literal> class</title>
     
-    <para>Instances of the abstract class <literal>Bean</literal> represent
-    Web Beans. There is an instance of <literal>Bean</literal> registered
-    with the <literal>Manager</literal> object for every Web Bean in the
-    application.</para>
+      <para>
+         Instances of the interface <literal>Bean</literal> represent beans. There is an instance of
+         <literal>Bean</literal> registered with the <literal>BeanManager</literal> object for every bean in the
+         application.
+      </para>
     
-<programlisting role="JAVA">public abstract class Bean&lt;T&gt; {
-    
-    private final Manager manager;
-    
-    protected Bean(Manager manager) {
-        this.manager=manager;
-    }
-    
-    protected Manager getManager() {
-        return manager;
-    }
-    
-    public abstract Set&lt;Class&gt; getTypes();
-    public abstract Set&lt;Annotation&gt; getBindingTypes();
-    public abstract Class&lt;? extends Annotation&gt; getScopeType();
-    public abstract Class&lt;? extends Annotation&gt; getDeploymentType(); 
-    public abstract String getName();
-    
-    public abstract boolean isSerializable();
-    public abstract boolean isNullable();
+      <programlisting role="JAVA"><![CDATA[public interface class Bean<T> extends Contextual<T> {
+   public Set<Type> getTypes();
+   public Set<Annotation> getQualifiers();
+   public Class<? extends Annotation> getScope();
+   public String getName();
+   public Set<Class<? extends Annotation>> getStereotypes();
+   public Class<?> getBeanClass();
+   public boolean isAlternative();
+   public boolean isNullable();
+   public Set<InjectionPoint> getInjectionPoints();
+}]]></programlisting>
 
-    public abstract T create();
-    public abstract void destroy(T instance);
+      <para>
+         It's possible to implement the <literal>Bean</literal> interface and register instances by calling
+         <literal>AfterBeanDiscovery.addBean()</literal> (<literal>AfterBeanDiscovery</literal> is a built-in event type
+         that an extension can observe) to provide support for new kinds of beans, beyond those defined by the CDI
+         specification. For example, we could use the <literal>Bean</literal> interface to allow objects managed by
+         another framework to be injected into beans.
+      </para>
     
-}</programlisting>
+      <para>
+         There are two subinterfaces of <literal>Bean</literal> defined by the CDI specification:
+         <literal>Interceptor</literal> and <literal>Decorator</literal>.
+      </para>
+    
+   </section>
 
-    <para>It's possible to extend the <literal>Bean</literal> class and
-    register instances by calling <literal>Manager.addBean()</literal> to
-    provide support for new kinds of Web Beans, beyond those defined by the
-    Web Beans specification (simple and enterprise Web Beans, producer 
-    methods and JMS endpoints). For example, we could use the 
-    <literal>Bean</literal> class to allow objects managed by another framework
-    to be injected into Web Beans.</para>
+   <section>
+      <title>The <literal>Context</literal> interface</title>
     
-    <para>There are two subclasses of <literal>Bean</literal> defined by the
-    Web Beans specification: <literal>Interceptor</literal> and
-    <literal>Decorator</literal>.</para>
+      <para>
+         The <literal>Context</literal> interface supports addition of new scopes to CDI, or extension of the built-in
+         scopes to new environments.
+      </para>
     
-  </section>
+<programlisting role="JAVA"><![CDATA[public interface Context {
+   public Class<? extends Annotation> getScope();
+   public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext);
+   public <T> T get(Contextual<T> contextual);
+   boolean isActive();
+}]]></programlisting>
 
-  <section>
-    <title>The <literal>Context</literal> interface</title>
+      <para>
+         For example, we might implement <literal>Context</literal> to add a business process scope to CDI, or to add
+         support for the conversation scope to an application that uses Wicket.
+      </para>
     
-    <para>The <literal>Context</literal> interface supports addition of new
-    scopes to Web Beans, or extension of the built-in scopes to new environments.</para>
-    
-<programlisting role="JAVA">public interface Context {
-    
-    public Class&lt;? extends Annotation&gt; getScopeType();
-    
-    public &lt;T&gt; T get(Bean&lt;T&gt; bean, boolean create);
-    
-    boolean isActive();
-    
-}</programlisting>
+   </section>
 
-    <para>For example, we might implement <literal>Context</literal> to add a
-    business process scope to Web Beans, or to add support for the conversation
-    scope to an application that uses Wicket.</para>
-    
-  </section>
+  <!--
+  TODO finish me!
+  -->
   
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </chapter>

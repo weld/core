@@ -1,173 +1,188 @@
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
-
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <chapter id="producermethods">
  
-  <title>Producer methods</title>
+   <title>Producer methods</title>
   
-  <para>Producer methods let us overcome certain limitations that arise when the Web Bean manager, 
-  instead of the application, is responsible for instantiating objects. They're also the easiest 
-  way to integrate objects which are not Web Beans into the Web Beans environment. (We'll meet
-  a second approach in <xref linkend="xml"/>.)</para>
+   <para>
+      Producer methods let us overcome certain limitations that arise when a container, instead of the application, is
+      responsible for instantiating objects. They're also the easiest way to integrate objects which are not beans into
+      the CDI environment. <!--(We'll meet a second approach in <xref linkend="xml"/>, a chapter covering the Weld XML
+      extension).-->
+   </para>
 
-  <para>According to the spec:</para>
+   <para>According to the spec:</para>
 
-  <blockquote>
+   <blockquote>
 
-    <para>A Web Beans producer method acts as a source of objects to be injected, where:</para>
+      <para>A producer method acts as a source of objects to be injected, where:</para>
 
-    <itemizedlist>
-      <listitem>
-        <para>the objects to be injected are not required to be instances of Web Beans,</para>
-      </listitem>
-      <listitem>
-        <para>the concrete type of the objects to be injected may vary at runtime or</para>
-      </listitem>
-      <listitem>
-        <para>the objects require some custom initialization that is not performed by the 
-        Web Bean constructor</para>
-      </listitem>
-    </itemizedlist>
+      <itemizedlist>
+         <listitem>
+            <para>the objects to be injected are not required to be instances of beans,</para>
+         </listitem>
+         <listitem>
+            <para>the concrete type of the objects to be injected may vary at runtime or</para>
+         </listitem>
+         <listitem>
+            <para>
+               the objects require some custom initialization that is not performed by the bean constructor
+            </para>
+         </listitem>
+      </itemizedlist>
 
-  </blockquote>
+   </blockquote>
 
-  <para>For example, producer methods let us:</para>
+   <para>For example, producer methods let us:</para>
 
-  <itemizedlist>
-    <listitem>
-      <para>expose a JPA entity as a Web Bean,</para>
-    </listitem>
-    <listitem>
-      <para>expose any JDK class as a Web Bean,</para>
-    </listitem>
-    <listitem>
-      <para>define multiple Web Beans, with different scopes or initialization, 
-      for the same implementation class, or</para>
-    </listitem>
-    <listitem>
-      <para>vary the implementation of an API type at runtime.</para>
-    </listitem>
-  </itemizedlist>
+      <itemizedlist>
+         <listitem>
+            <para>expose a JPA entity as a bean,</para>
+         </listitem>
+         <listitem>
+            <para>expose any JDK class as a bean,</para>
+         </listitem>
+         <listitem>
+            <para>
+               define multiple beans, with different scopes or initialization, for the same implementation class, or
+            </para>
+         </listitem>
+         <listitem>
+            <para>vary the implementation of a bean type at runtime.</para>
+         </listitem>
+      </itemizedlist>
 
-  <para>In particular, producer methods let us use runtime polymorphism with 
-  Web Beans. As we've seen, deployment types are a powerful solution to the problem 
-  of deployment-time polymorphism. But once the system is deployed, the Web Bean 
-  implementation is fixed. A producer method has no such limitation:</para>
+      <para>
+         In particular, producer methods let us use runtime polymorphism with CDI. As we've seen, alternative beans are
+         one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI
+         implementation is fixed. A producer method has no such limitation:
+      </para>
 
 <programlisting role="JAVA"><![CDATA[@SessionScoped
 public class Preferences {
-    
-    private PaymentStrategyType paymentStrategy;
-    
-    ...
-    
-    @Produces @Preferred 
-    public PaymentStrategy getPaymentStrategy() {
-        switch (paymentStrategy) {
-            case CREDIT_CARD: return new CreditCardPaymentStrategy();
-            case CHEQUE: return new ChequePaymentStrategy();
-            case PAYPAL: return new PayPalPaymentStrategy();
-            default: return null;
-        } 
-    }
-    
+   private PaymentStrategyType paymentStrategy;
+   ...
+   @Produces @Preferred 
+   public PaymentStrategy getPaymentStrategy() {
+       switch (paymentStrategy) {
+           case CREDIT_CARD: return new CreditCardPaymentStrategy();
+           case CHECK: return new CheckPaymentStrategy();
+           case PAYPAL: return new PayPalPaymentStrategy();
+           default: return null;
+       } 
+   }
 }]]></programlisting>
 
-  <para>Consider an injection point:</para>
+      <para>Consider an injection point:</para>
 
-<programlisting role="JAVA"><![CDATA[@Preferred PaymentStrategy paymentStrat;]]></programlisting>
+      <programlisting role="JAVA"><![CDATA[@Inject @Preferred PaymentStrategy paymentStrategy;]]></programlisting>
 
-  <para>This injection point has the same type and binding annotations as the producer
-  method, so it resolves to the producer method using the usual Web Beans injection 
-  rules. The producer method will be called by the Web Bean manager to obtain an instance 
-  to service this injection point.</para>
+      <para>
+         This injection point has the same type and qualifier annotations as the producer method, so it resolves to the
+         producer method using the usual CDI injection rules. The producer method will be called by the container to
+         obtain an instance to service this injection point.
+      </para>
 
-<section>
-  <title>Scope of a producer method</title>
+      <section>
+         <title>Scope of a producer method</title>
 
-  <para>The scope of the producer method defaults to <literal>@Dependent</literal>, and so
-  it will be called <emphasis>every time</emphasis> the Web Bean manager injects this field 
-  or any other field that resolves to the same producer method. Thus, there could be 
-  multiple instances of the <literal>PaymentStrategy</literal> object for each user session.</para>
+         <para>
+            The scope of the producer method defaults to <literal>@Dependent</literal>, and so it will be called
+            <emphasis>every time</emphasis> the container injects this field or any other field that resolves to the
+            same producer method. Thus, there could be multiple instances of the <literal>PaymentStrategy</literal>
+            object for each user session.
+         </para>
 
-  <para>To change this behavior, we can add a <literal>@SessionScoped</literal> annotation 
-  to the method.</para>
+         <para>
+            To change this behavior, we can add a <literal>@SessionScoped</literal> annotation to the method.
+         </para>
   
-<programlisting role="JAVA"><![CDATA[@Produces @Preferred @SessionScoped
+         <programlisting role="JAVA"><![CDATA[@Produces @Preferred @SessionScoped
 public PaymentStrategy getPaymentStrategy() {
-    ...
+   ...
 }]]></programlisting>
 
-  <para>Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> 
-  will be bound to the session context. The producer method won't be called again in the same 
-  session.</para>
+         <para>
+            Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to
+            the session context. The producer method won't be called again in the same session.
+         </para>
   
-</section>
+      </section>
 
-<section>
-  <title>Injection into producer methods</title>
+      <section>
+         <title>Injection into producer methods</title>
 
-  <para>There's one potential problem with the code above. The implementations of 
-  <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java
-  <literal>new</literal> operator. Objects instantiated directly by the application
-  can't take advantage of dependency injection and don't have interceptors.</para>
+         <para>
+            There's one potential problem with the code above. The implementations of
+            <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal>
+            operator. Objects instantiated directly by the application can't take advantage of dependency injection and
+            don't have interceptors.
+         </para>
    
-  <para>If this isn't what we want we can use dependency injection into the 
-  producer method to obtain Web Bean instances:</para>
+         <para>
+            If this isn't what we want we can use dependency injection into the producer method to obtain bean
+            instances:
+         </para>
 
-<programlisting role="JAVA"><![CDATA[@Produces @Preferred @SessionScoped
+         <programlisting role="JAVA"><![CDATA[@Produces @Preferred @SessionScoped
 public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,
-                                          ChequePaymentStrategy cps,
+                                          CheckPaymentStrategy cps,
                                           PayPalPaymentStrategy ppps) {
-    switch (paymentStrategy) {
-        case CREDIT_CARD: return ccps;
-        case CHEQUE: return cps;
-        case PAYPAL: return ppps;
-        default: return null;
-    } 
+   switch (paymentStrategy) {
+      case CREDIT_CARD: return ccps;
+      case CHEQUE: return cps;
+      case PAYPAL: return ppps;
+      default: return null;
+   } 
 }]]></programlisting>
 
-  <para>Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request scoped 
-  Web Bean? Then the producer method has the effect of "promoting" the current request 
-  scoped instance into session scope. This is almost certainly a bug! The request
-  scoped object will be destroyed by the Web Bean manager before the session ends, but
-  the reference to the object will be left "hanging" in the session scope. This error 
-  will <emphasis>not</emphasis> be detected by the Web Bean manager, so please take 
-  extra care when returning Web Bean instances from producer methods!</para>
+         <para>
+            Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer
+            method has the effect of "promoting" the current request scoped instance into session scope. This is almost
+            certainly a bug! The request scoped object will be destroyed by the container before the session ends, but
+            the reference to the object will be left "hanging" in the session scope. This error will
+            <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean
+            instances from producer methods!
+         </para>
   
-  <para>There's at least three ways we could go about fixing this bug. We could change
-  the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this
-  would affect other clients of that Web Bean. A better option would be to change the 
-  scope of the producer method to <literal>@Dependent</literal> or 
-  <literal>@RequestScoped</literal>.</para>
+         <para>
+            There's at least three ways we could go about fixing this bug. We could change the scope of the
+            <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that
+            bean.  A better option would be to change the scope of the producer method to <literal>@Dependent</literal>
+            or <literal>@RequestScoped</literal>.
+         </para>
   
-  <para>But a more common solution is to use the special <literal>@New</literal> binding 
-  annotation.</para>
+         <para>But a more common solution is to use the special <literal>@New</literal> qualifier annotation.</para>
   
-</section>
+      </section>
 
-<section>
-  <title>Use of <literal>@New</literal> with producer methods</title>
+      <section>
+         <title>Use of <literal>@New</literal> with producer methods</title>
   
-  <para>Consider the following producer method:</para>
+         <para>Consider the following producer method:</para>
 
-<programlisting role="JAVA"><![CDATA[@Produces @Preferred @SessionScoped
+         <programlisting role="JAVA"><![CDATA[@Produces @Preferred @SessionScoped
 public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy ccps,
-                                          @New ChequePaymentStrategy cps,
+                                          @New CheckPaymentStrategy cps,
                                           @New PayPalPaymentStrategy ppps) {
-    switch (paymentStrategy) {
-        case CREDIT_CARD: return ccps;
-        case CHEQUE: return cps;
-        case PAYPAL: return ppps;
-        default: return null;
-    } 
+   switch (paymentStrategy) {
+      case CREDIT_CARD: return ccps;
+      case CHEQUE: return cps;
+      case PAYPAL: return ppps;
+      default: return null;
+   } 
 }]]></programlisting>
 
-  <para>Then a new <emphasis>dependent</emphasis> instance of 
-  <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer 
-  method, returned by the producer method and finally bound to the session context. The 
-  dependent object won't be destroyed until the <literal>Preferences</literal> object is 
-  destroyed, at the end of the session.</para>
+      <para>
+         Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be
+         created, passed to the producer method, returned by the producer method and finally bound to the session
+         context. The dependent object won't be destroyed until the <literal>Preferences</literal> object is destroyed,
+         at the end of the session.
+      </para>
 
-</section>
+   </section>
 
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </chapter>

@@ -1,613 +1,641 @@
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
-
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <chapter id="injection">
-  <title>Dependency injection</title>
+   <title>Dependency injection and programmatic lookup</title>
 
-<para>Web Beans supports three primary mechanisms for dependency injection:</para>
+   <para>
+      One of the most significant features of CDI, certainly the most recognized, is dependency injection. But not just
+      dependency injection; type-safe dependency injection. In this chapter, you'll learn how CDI is able to leverage
+      the Java type system and annotations to build a dependency injection strategy that is both strongly typed and
+      keeps the implementation hidden from the client.
+   </para>
 
-<para>Constructor parameter injection:</para>
+   <section>
+      <title>Where you can @Inject</title>
 
-<programlisting role="JAVA"><![CDATA[public class Checkout {
+      <para>
+         Injections are declared using the JSR-330 annotation, <literal>@Inject</literal>, along with an optional set of
+         qualifiers annotations. CDI supports three primary mechanisms for dependency injection during bean
+         construction:
+      </para>
+      
+      <para>
+         <emphasis>Bean constructor</emphasis> parameter injection:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[public class Checkout {
         
-    private final ShoppingCart cart;
+   private final ShoppingCart cart;
     
-    @Initializer
-    public Checkout(ShoppingCart cart) {
-        this.cart = cart;
-    }
+   @Inject
+   public Checkout(ShoppingCart cart) {
+      this.cart = cart;
+   }
 
 }]]></programlisting>
 
-<para><emphasis>Initializer</emphasis> method parameter injection:</para>
+      <note>
+         <para>
+            A bean can only have one injectable constructor.
+         </para>
+      </note>
 
-<programlisting role="JAVA"><![CDATA[public class Checkout {
+      <para>
+         <emphasis>Initializer</emphasis> method parameter injection:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[public class Checkout {
         
-    private ShoppingCart cart;
+   private ShoppingCart cart;
 
-    @Initializer 
-    void setShoppingCart(ShoppingCart cart) {
-        this.cart = cart;
-    }
+   @Inject
+   void setShoppingCart(ShoppingCart cart) {
+      this.cart = cart;
+   }
     
 }]]></programlisting>
 
-<para>And direct field injection:</para>
+      <note>
+         <para>
+            A bean can have multiple initializer methods. If the bean is a session bean, the initializer method is not
+            required to be a business method of the session bean.
+         </para>
+      </note>
 
-<programlisting role="JAVA"><![CDATA[public class Checkout {
+      <para>
+         And direct field injection:
+      </para>
 
-    private @Current ShoppingCart cart;
+      <programlisting role="JAVA"><![CDATA[public class Checkout {
+
+   private @Inject ShoppingCart cart;
     
 }]]></programlisting>
 
-<para>Dependency injection always occurs when the Web Bean instance is first 
-instantiated.</para>
+      <note>
+         <para>
+            Getter and setter methods are not required for field injection to work (unlike with JSF managed beans).
+         </para>
+      </note>
 
-<itemizedlist>
-  <listitem>
-    <para>First, the Web Bean manager calls the Web Bean constructor, to
-    obtain an instance of the Web Bean.</para>
-  </listitem>
-  <listitem>
-    <para>Next, the Web Bean manager initializes the values of all injected
-    fields of the Web Bean.</para>
-  </listitem>
-  <listitem>
-    <para>Next, the Web Bean manager calls all initializer methods of Web 
-    Bean.</para>
-  </listitem>
-  <listitem>
-    <para>Finally, the <literal>@PostConstruct</literal> method of the Web 
-    Bean, if any, is called.</para>
-  </listitem>
-</itemizedlist>
+      <para>
+         Dependency injection always occurs when the bean instance is first instantiated by the container.
+      </para>
 
-<para>Constructor parameter injection is not supported for EJB beans, since
-the EJB is instantiated by the EJB container, not the Web Bean manager.</para>
+      <itemizedlist>
+         <listitem>
+            <para>
+               First, the container calls the bean constructor (the default constructor or the one annotated @Inject), to
+               obtain an instance of the bean.
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               Next, the container initializes the values of all injected fields of the bean.
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               Next, the container calls all initializer methods of bean (the call order is not portable, don't rely on
+               it).
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               Finally, the <literal>@PostConstruct</literal> method of the bean is called, if defined.
+            </para>
+         </listitem>
+      </itemizedlist>
 
-<para>Parameters of constructors and initializer methods need not be explicitly
-annotated when the default binding type <literal>@Current</literal> applies. 
-Injected fields, however, <emphasis>must</emphasis> specify a binding type, even 
-when the default binding type applies. If the field does not specify a binding
-type, it will not be injected.</para>
+      <tip>
+         <para>
+            One major advantage of using constructor injection is that the bean can be made immutable.
+         </para>
+      </tip>
 
-<para>Producer methods also support parameter injection:</para>
+      <para>
+         Bean constructors, initializer methods and injected fields must be annotated <emphasis>@Inject</emphasis>. The
+         parameters of bean constructors and initializers are injection points, which means the container will search out
+         beans matching the bean type and qualifier and pass them in as arguments.         
+      </para>
 
-<programlisting role="JAVA"><![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {
+      <para>
+         If a parameter of bean constructors and initializer methods is not explicitly annotated with a qualifier, the
+         default qualifier, <literal>@Default</literal>, is applied. The same is goes for an injected field.
+      </para>
+
+      <para>
+         CDI also supports parameter injection on methods that are invoked by the container. For instance, parameter
+         injection is supported for producer methods:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {
     return new Checkout(cart);
 }]]></programlisting>
 
-<para>Finally, observer methods (which we'll meet in <xref linkend="events"/>), 
-disposal methods and destructor methods all support parameter injection.</para>
+      <para>
+        This is one of the cases where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at
+        an injection point. Other cases include observer methods (which we'll meet in <xref linkend="events"/>),
+        disposal methods and destructor methods, which all support parameter injection.
+      </para>
+   </section>
 
-<para>The Web Beans specification defines a procedure, called the <emphasis>typesafe
-resolution algorithm</emphasis>, that the Web Bean manager follows when identifying 
-the Web Bean to inject to an injection point. This algorithm looks complex at first, 
-but once you understand it, it's really quite intuitive. Typesafe resolution is 
-performed at system initialization time, which means that the manager will inform 
-the user immediately if a Web Bean's dependencies cannot be satisfied, by throwing
-a <literal>UnsatisfiedDependencyException</literal> or 
-<literal>AmbiguousDependencyException</literal>.</para>
+   <section>
+      <title>What gets injected</title>
 
-<para>The purpose of this algorithm is to allow multiple Web Beans to implement the
-same API type and either:</para>
+      <para>
+         The CDI specification defines a procedure, called the <emphasis>typesafe resolution algorithm</emphasis>, that
+         the container follows when identifying the bean to inject to an injection point.  This algorithm looks complex
+         at first, but once you understand it, it's really quite intuitive. Typesafe resolution is performed at system
+         initialization time, which means that the container will inform the developer immediately if a bean's
+         dependencies cannot be satisfied, by throwing a <literal>UnsatisfiedDependencyException</literal> or
+         <literal>AmbiguousDependencyException</literal>.
+      </para>
 
-<itemizedlist>
-  <listitem>
-    <para>allow the client to select which implementation it requires using 
-    <emphasis>binding annotations</emphasis>,
-    </para>
-  </listitem>
-  <listitem>
-    <para>allow the application deployer to select which implementation is appropriate 
-    for a particular deployment, without changes to the client, by enabling or 
-    disabling <emphasis>deployment types</emphasis>, or</para>
-  </listitem>
-  <listitem>
-    <para>allow one implementation of an API to override another implementation of 
-    the same API at deployment time, without changes to the client, using 
-    <emphasis>deployment type precedence</emphasis>.</para>
-  </listitem>
-</itemizedlist>
+      <para>
+         The purpose of this algorithm is to allow multiple beans to implement the same bean type and either:
+      </para>
 
-<para>Let's explore how the Web Beans manager determines a Web Bean to be injected.</para>
+      <itemizedlist>
+         <listitem>
+            <para>
+               allow the client to select which implementation it requires using <emphasis>qualifier</emphasis> or
+            </para>
+        </listitem>
+        <listitem>
+            <para>
+               allow the application deployer to select which implementation is appropriate for a particular deployment,
+               without changes to the client, by enabling or disabling an <emphasis>alternative</emphasis>, or
+            </para>
+        </listitem>
+      </itemizedlist>
 
-<section>
-  <title>Binding annotations</title>
+      <para>
+         Obviously, if you have exactly one bean of a given type, and an injection point with that same type, then bean A is
+         going to go into slot A. That's the simplest possible scenario. When you first start your application, you'll
+         likely have lots of those.
+      </para>
+      
+      <para>
+         But then, things start to get complicated. Let's explore how the container determines which bean to inject in
+         those not-so-obvious cases by taking a look at qualifiers and how they help your beans fit into the right
+         picture.
+      </para>
 
-<para>If we have more than one Web Bean that implements a particular API type, the 
-injection point can specify exactly which Web Bean should be injected using a binding 
-annotation. For example, there might be two implementations of 
-<literal>PaymentProcessor</literal>:</para>
+   </section>
 
-<programlisting role="JAVA"><![CDATA[@PayByCheque
-public class ChequePaymentProcessor implements PaymentProcessor {
-    public void process(Payment payment) { ... }
+   <section>
+      <title>Qualifier annotations</title>
+
+      <para>
+         If we have more than one bean that implements a particular bean type, the injection point can specify exactly
+         which bean should be injected using a qualifier annotation. For example, there might be two implementations of
+         <literal>PaymentProcessor</literal>:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Synchronous
+public class SynchronousPaymentProcessor implements PaymentProcessor {
+   public void process(Payment payment) { ... }
 }]]></programlisting>      
 
-<programlisting role="JAVA"><![CDATA[@PayByCreditCard
-public class CreditCardPaymentProcessor implements PaymentProcessor {
-    public void process(Payment payment) { ... }
+      <programlisting role="JAVA"><![CDATA[@Asynchronous
+public class AsynchronousPaymentProcessor implements PaymentProcessor {
+   public void process(Payment payment) { ... }
 }]]></programlisting>
 
-<para>Where <literal>@PayByCheque</literal> and <literal>@PayByCreditCard</literal> 
-are binding annotations:</para>
-
-<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
-@Target({TYPE, METHOD, FIELD, PARAMETER})
-@BindingType
-public @interface PayByCheque {}]]></programlisting>
-
-<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
-@Target({TYPE, METHOD, FIELD, PARAMETER})
-@BindingType
-public @interface PayByCreditCard {}]]></programlisting>
-
-<para>A client Web Bean developer uses the binding annotation to specify exactly which 
-Web Bean should be injected.</para>
-
-<para>Using field injection:</para>
-
-<programlisting role="JAVA"><![CDATA[@PayByCheque PaymentProcessor chequePaymentProcessor;
-@PayByCreditCard PaymentProcessor creditCardPaymentProcessor;]]></programlisting>
-
-<para>Using initializer method injection:</para>
-
-<programlisting role="JAVA"><![CDATA[@Initializer
-public void setPaymentProcessors(@PayByCheque PaymentProcessor chequePaymentProcessor, 
-                                 @PayByCreditCard PaymentProcessor creditCardPaymentProcessor) {
-   this.chequePaymentProcessor = chequePaymentProcessor;
-   this.creditCardPaymentProcessor = creditCardPaymentProcessor;
-}]]></programlisting>
-
-<para>Or using constructor injection:</para>
-
-<programlisting role="JAVA"><![CDATA[@Initializer
-public Checkout(@PayByCheque PaymentProcessor chequePaymentProcessor, 
-                @PayByCreditCard PaymentProcessor creditCardPaymentProcessor) {
-   this.chequePaymentProcessor = chequePaymentProcessor;
-   this.creditCardPaymentProcessor = creditCardPaymentProcessor;
-}]]></programlisting>
-
-<section>
-  <title>Binding annotations with members</title>
-
-  <para>Binding annotations may have members:</para>
-
-<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
-@Target({TYPE, METHOD, FIELD, PARAMETER})
-@BindingType
-public @interface PayBy {
-    PaymentType value();
-}]]></programlisting>
-
-  <para>In which case, the member value is significant:</para>
-
-<programlisting role="JAVA"><![CDATA[@PayBy(CHEQUE) PaymentProcessor chequePaymentProcessor;
-@PayBy(CREDIT_CARD) PaymentProcessor creditCardPaymentProcessor;]]></programlisting>
-
-  <para>You can tell the Web Bean manager to ignore a member of a binding annotation
-  type by annotating the member <literal>@NonBinding</literal>.</para>
-
-</section>
-
-<section>
-  <title>Combinations of binding annnotations</title>
-
-  <para>An injection point may even specify multiple binding annotations:</para>
-
-<programlisting role="JAVA"><![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]></programlisting>
-
-  <para>In this case, only a Web Bean which has <emphasis>both</emphasis> binding 
-  annotations would be eligible for injection.</para>
-
-</section>
-
-<section>
-  <title>Binding annotations and producer methods</title>
-
-<para>Even producer methods may specify binding annotations:</para>
-
-<programlisting role="JAVA"><![CDATA[@Produces 
-@Asynchronous @PayByCheque 
-PaymentProcessor createAsyncPaymentProcessor(@PayByCheque PaymentProcessor processor) {
-    return new AsynchronousPaymentProcessor(processor);
-}]]></programlisting>
-
-</section>
-
-<section>
-  <title>The default binding type</title>
-  
-  <para>Web Beans defines a binding type <literal>@Current</literal> that is the 
-  default binding type for any injection point or Web Bean that does not explicitly
-  specify a binding type.</para>
-  
-  <para>There are two common circumstances in which it is necessary to explicitly 
-  specify <literal>@Current</literal>:</para>
-  
-  <itemizedlist>
-    <listitem>
-      <para>on a field, in order to declare it as an injected field with the
-      default binding type, and</para>
-    </listitem>
-    <listitem>
-      <para>on a Web Bean which has another binding type in addition to the
-      default binding type.</para>
-    </listitem>
-  </itemizedlist>
-  
-</section>
-  
-</section>
-
-<section id="deploymenttypes">
-  <title>Deployment types</title>
-
-  <para>All Web Beans have a <emphasis>deployment type</emphasis>. Each deployment 
-  type identifies a set of Web Beans that should be conditionally installed in some 
-  deployments of the system.</para>
-
-  <para>For example, we could define a deployment type named <literal>@Mock</literal>, 
-  which would identify Web Beans that should only be installed when the system executes
-  inside an integration testing environment:</para>
-
-  <programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
-  @Target({TYPE, METHOD})
-  @DeploymentType
-  public @interface Mock {}]]></programlisting>
-
-  <para>Suppose we had some Web Bean that interacted with an external system to
-  process payments:</para>
-
-<programlisting role="JAVA"><![CDATA[public class ExternalPaymentProcessor {
-        
-    public void process(Payment p) {
-        ...
-    }
-    
-}]]></programlisting>
-
-  <para>Since this Web Bean does not explicitly specify a deployment type, it has the
-  default deployment type <literal>@Production</literal>.</para>
-
-  <para>For integration or unit testing, the external system is slow or unavailable.
-  So we would create a mock object:</para>
-
-<programlisting role="JAVA"><![CDATA[@Mock 
-public class MockPaymentProcessor implements PaymentProcessor {
-
-    @Override
-    public void process(Payment p) {
-        p.setSuccessful(true);
-    }
-
-}]]></programlisting>
-
-  <para>But how does the Web Bean manager determine which implementation to use in
-  a particular deployment?</para>
-
-<section>
-  <title>Enabling deployment types</title>
-
-  <para>Web Beans defines two built-in deployment types: <literal>@Production</literal> 
-  and <literal>@Standard</literal>. By default, only Web Beans with the built-in deployment 
-  types are enabled when the system is deployed. We can identify additional deployment 
-  types to be enabled in a particular deployment by listing them in 
-  <literal>web-beans.xml</literal>.</para>
-
-  <para>Going back to our example, when we deploy our integration tests, we want all 
-  our <literal>@Mock</literal> objects to be installed:</para>
-
-<programlisting role="XML"><![CDATA[<WebBeans>
-    <Deploy>
-        <Standard/>
-        <Production/>
-        <test:Mock/>
-    </Deploy>
-</WebBeans>]]></programlisting>
-
-  <para>Now the Web Bean manager will identify and install all Web Beans annotated
-  <literal>@Production</literal>, <literal>@Standard</literal> or <literal>@Mock</literal> 
-  at deployment time.</para>
-  
-  <para>The deployment type <literal>@Standard</literal> is used only for certain
-  special Web Beans defined by the Web Beans specification. We can't use it for
-  our own Web Beans, and we can't disable it.</para>
-  
-  <para>The deployment type <literal>@Production</literal> is the default deployment
-  type for Web Beans which don't explicitly declare a deployment type, and may be
-  disabled.</para>
-  
-</section>
-
-<section>
-  <title>Deployment type precedence</title>
-
-<para>If you've been paying attention, you're probably wondering how the Web Bean 
-manager decides which implementation &#151; <literal>ExternalPaymentProcessor</literal> 
-or <literal>MockPaymentProcessor</literal> &#151; to choose. Consider what happens when 
-the manager encounters this injection point:</para>
-
-<programlisting role="JAVA"><![CDATA[@Current PaymentProcessor paymentProcessor]]></programlisting>
-
-<para>There are now two Web Beans which satisfy the <literal>PaymentProcessor</literal> 
-contract. Of course, we can't use a binding annotation to disambiguate, since binding 
-annotations are hard-coded into the source at the injection point, and we want the 
-manager to be able to decide at deployment time!</para>
-
-<para>The solution to this problem is that each deployment type has a different
-<emphasis>precedence</emphasis>. The precedence of the deployment types is determined 
-by the order in which they appear in <literal>web-beans.xml</literal>. In our example, 
-<literal>@Mock</literal> appears later than <literal>@Production</literal> so it 
-has a higher precedence.</para>
-
-<para>Whenever the manager discovers that more than one Web Bean could satisfy the 
-contract (API type plus binding annotations) specified by an injection point, it 
-considers the relative precedence of the Web Beans. If one has a higher precedence 
-than the others, it chooses the higher precedence Web Bean to inject. So, in our example, 
-the Web Bean manager will inject <literal>MockPaymentProcessor</literal> when executing 
-in our integration testing environment (which is exactly what we want).</para>
-
-<para>It's interesting to compare this facility to today's popular manager 
-architectures. Various "lightweight" containers also allow conditional deployment 
-of classes that exist in the classpath, but the classes that are to be deployed 
-must be explicity, individually, listed in configuration code or in some XML 
-configuration file. Web Beans does support Web Bean definition and configuration 
-via XML, but in the common case where no complex configuration is required, deployment 
-types allow a whole set of Web Beans to be enabled with a single line of XML.
-Meanwhile, a developer browsing the code can easily identify what deployment
-scenarios the Web Bean will be used in.</para>
-
-</section>
-
-<section>
-  <title>Example deployment types</title>
-
-<para>Deployment types are useful for all kinds of things, here's some examples:</para>
-
-<itemizedlist>
-  <listitem>
-    <para><literal>@Mock</literal> and <literal>@Staging</literal> deployment types 
-    for testing</para>
-  </listitem>
-  <listitem>
-    <para><literal>@AustralianTaxLaw</literal> for site-specific Web Beans</para>
-  </listitem>
-  <listitem>
-    <para><literal>@SeamFramework</literal>, <literal>@Guice</literal> for third-party 
-    frameworks which build on Web Beans</para>
-  </listitem>
-  <listitem>
-    <para><literal>@Standard</literal> for standard Web Beans defined by the Web Beans 
-    specification</para>
-  </listitem>
-</itemizedlist>
-
-<para>I'm sure you can think of more applications...</para>
-
-</section>
-
-</section>
-
-<section>
-  <title>Fixing unsatisfied dependencies</title>
-  
-  <para>The typesafe resolution algorithm fails when, after considering the binding 
-  annotations and and deployment types of all Web Beans that implement the API type
-  of an injection point, the Web Bean manager is unable to identify exactly one
-  Web Bean to inject.</para>
-  
-  <para>It's usually easy to fix an <literal>UnsatisfiedDependencyException</literal> or 
-  <literal>AmbiguousDependencyException</literal>.</para>
-  
-  <para>To fix an <literal>UnsatisfiedDependencyException</literal>, simply provide 
-  a Web Bean which implements the API type and has the binding types of the injection
-  point &#151; or enable the deployment type of a Web Bean that already implements the 
-  API type and has the binding types.</para>
-  
-  <para>To fix an <literal>AmbiguousDependencyException</literal>, introduce a 
-  binding type to distinguish between the two implementations of the API type,
-  or change the deployment type of one of the implementations so that the Web
-  Bean manager can use deployment type precedence to choose between them. An
-  <literal>AmbiguousDependencyException</literal> can only occur if two Web Beans
-  share a binding type and have exactly the same deployment type.</para>
-  
-  <para>There's one more issue you need to be aware of when using dependency injection
-  in Web Beans.</para>
-
-</section>
-
-<section>
-  <title>Client proxies</title>
-  
-  <para>Clients of an injected Web Bean do not usually hold a direct reference to
-  a Web Bean instance.</para> 
-  
-  <para>Imagine that a Web Bean bound to the application scope held a direct reference 
-  to a Web Bean bound to the request scope. The application scoped Web Bean is shared 
-  between many different requests. However, each request should see a different instance
-  of the request scoped Web bean!</para>
-  
-  <para>Now imagine that a Web Bean bound to the session scope held a direct reference
-  to a Web Bean bound to the application scope. From time to time, the session context
-  is serialized to disk in order to use memory more efficiently. However, the application
-  scoped Web Bean instance should not be serialized along with the session scoped Web
-  Bean!</para>
-  
-  <para>Therefore, unless a Web Bean has the default scope <literal>@Dependent</literal>, 
-  the Web Bean manager must indirect all injected references to the Web Bean through a 
-  proxy object. This <emphasis>client proxy</emphasis> is responsible for ensuring that 
-  the Web Bean instance that receives a method invocation is the instance that is
-  associated with the current context. The client proxy also allows Web Beans bound
-  to contexts such as the session context to be serialized to disk without recursively
-  serializing other injected Web Beans.</para>
-  
-  <para>Unfortunately, due to limitations of the Java language, some Java types cannot
-  be proxied by the Web Bean manager. Therefore, the Web Bean manager throws an
-  <literal>UnproxyableDependencyException</literal> if the type of an injection point
-  cannot be proxied.</para>
-  
-  <para>The following Java types cannot be proxied by the Web Bean manager:</para>
-  
-  <itemizedlist>
-    <listitem>
-      <para>classes which are declared <literal>final</literal> or have a 
-      <literal>final</literal> method,</para>
-    </listitem>
-    <listitem>
-      <para>classes which have no non-private constructor with no parameters, and</para>
-    </listitem>
-    <listitem>
-      <para>arrays and primitive types.</para>
-    </listitem>
-  </itemizedlist>
-  
-  <para>It's usually very easy to fix an <literal>UnproxyableDependencyException</literal>.
-  Simply add a constructor with no parameters to the injected class, introduce an interface, 
-  or change the scope of the injected Web Bean to <literal>@Dependent</literal>.</para>
-  
-</section>
-
-<section>
-  <title>Obtaining a Web Bean by programatic lookup</title>
-  
-  <para>The application may obtain an instance of the interface <literal>Manager</literal>
-  by injection:</para>
-  
-  <programlisting role="JAVA"><![CDATA[@Current Manager manager;]]></programlisting>
-  
-  <para>The <literal>Manager</literal> object provides a set of methods for obtaining a
-  Web Bean instance programatically.</para>
-  
-  <programlisting role="JAVA"><![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class);]]></programlisting>
-  
-  <para>Binding annotations may be specified by subclassing the helper class 
-  <literal>AnnotationLiteral</literal>, since it is otherwise difficult to instantiate an
-  annotation type in Java.</para>
-  
-  <programlisting role="JAVA"><![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class, 
-                                               new AnnotationLiteral<CreditCard>(){});]]></programlisting>
-  
-  <para>If the binding type has an annotation member, we can't use an anonymous subclass of 
-  <literal>AnnotationLiteral</literal> &#151; instead we'll need to create a named subclass:</para>
-  
-<programlisting role="JAVA"><![CDATA[abstract class CreditCardBinding 
-    extends AnnotationLiteral<CreditCard> 
-    implements CreditCard {}]]></programlisting>
-
-<programlisting role="JAVA"><![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class, 
-                                               new CreditCardBinding() { 
-                                                   public void value() { return paymentType; } 
-                                               } );]]></programlisting>
-</section>
-
-<section>
-  <title>Lifecycle callbacks, <literal>@Resource</literal>, <literal>@EJB</literal> and
-  <literal>@PersistenceContext</literal></title>
-  
-  <para>Enterprise Web Beans support all the lifecycle callbacks defined by the EJB
-  specification: <literal>@PostConstruct</literal>, <literal>@PreDestroy</literal>,
-  <literal>@PrePassivate</literal> and <literal>@PostActivate</literal>.</para>
-  
-  <para>Simple Web Beans support only the <literal>@PostConstruct</literal> and 
-  <literal>@PreDestroy</literal> callbacks.</para>
-  
-  <para>Both enterprise and simple Web Beans support the use of <literal>@Resource</literal>, 
-  <literal>@EJB</literal> and <literal>@PersistenceContext</literal> for injection of Java
-  EE resources, EJBs and JPA persistence contexts, respectively. Simple Web Beans do not 
-  support the use of <literal>@PersistenceContext(type=EXTENDED)</literal>.</para>
-  
-  <para>The <literal>@PostConstruct</literal> callback always occurs after all dependencies
-  have been injected.</para>
-  
-</section>
-
-<section>
-  <title>The <literal>InjectionPoint</literal> object</title>
-  
-  <para>There are certain kinds of dependent objects &#151; Web Beans with scope 
-  <literal>@Dependent</literal> &#151; that need to know something about the object or injection 
-  point into which they are injected in order to be able to do what they do. For example:</para>
-  
-  <itemizedlist>
-    <listitem>
-      <para>The log category for a <literal>Logger</literal> depends upon the class of the object 
-      that owns it.</para>
-    </listitem>
-    <listitem>
-      <para>Injection of a HTTP parameter or header value depends upon what parameter 
-      or header name was specified at the injection point.</para>
-    </listitem>
-    <listitem>
-      <para>Injection of the result of an EL expression evaluation depends upon the 
-      expression that was specified at the injection point.</para>
-    </listitem>
-  </itemizedlist>
-
-  <para>A Web Bean with scope <literal>@Dependent</literal> may inject an instance of 
-  <literal>InjectionPoint</literal> and access metadata relating to the injection point to which 
-  it belongs.</para>
-
-  <para>Let's look at an example. The following code is verbose, and vulnerable to refactoring
-  problems:</para>
-
-<programlisting role="JAVA"><![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]></programlisting>
-
-  <para>This clever little producer method lets you inject a JDK <literal>Logger</literal> without 
-  explicitly specifying the log category:</para>
-
-<programlisting role="JAVA"><![CDATA[class LogFactory {
-
-   @Produces Logger createLogger(InjectionPoint injectionPoint) { 
-      return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName()); 
-   }
-
-}]]></programlisting>
-
-  <para>We can now write:</para>
-
-<programlisting role="JAVA"><![CDATA[@Current Logger log;]]></programlisting>
-
-  <para>Not convinced? Then here's a second example. To inject HTTP parameters, we need to define 
-  a binding type:</para>
-
-<programlisting role="JAVA"><![CDATA[@BindingType
+      <para>
+         Where <literal>@Synchronous</literal> and <literal>@Asynchronous</literal> are qualifier annotations:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Qualifier
 @Retention(RUNTIME)
 @Target({TYPE, METHOD, FIELD, PARAMETER})
-public @interface HttpParam {
-   @NonBinding public String value();
+public @interface Synchronous {}]]></programlisting>
+
+<programlisting role="JAVA"><![CDATA[@Qualifier
+@Retention(RUNTIME)
+@Target({TYPE, METHOD, FIELD, PARAMETER})
+public @interface Asynchronous {}]]></programlisting>
+
+      <para>
+         A client bean developer uses the qualifier annotation to specify exactly which bean should be injected.
+      </para>
+
+      <para>Using field injection:</para>
+
+      <programlisting role="JAVA"><![CDATA[@Inject @Synchronous PaymentProcessor syncPaymentProcessor;
+@Inject @Asynchronous PaymentProcessor asyncPaymentProcessor;]]></programlisting>
+
+      <para>Using initializer method injection:</para>
+
+      <programlisting role="JAVA"><![CDATA[@Inject
+public void setPaymentProcessors(@Synchronous PaymentProcessor syncPaymentProcessor, 
+                                 @Asynchronous PaymentProcessor asyncPaymentProcessor) {
+   this.syncPaymentProcessor = syncPaymentProcessor;
+   this.asyncPaymentProcessor = asyncPaymentProcessor;
 }]]></programlisting>
 
-  <para>We would use this binding type at injection points as follows:</para>
+      <para>Using using constructor injection:</para>
 
-<programlisting role="JAVA"><![CDATA[@HttpParam("username") String username;
-@HttpParam("password") String password;]]></programlisting>
-
-  <para>The following producer method does the work:</para>
-
-<programlisting role="JAVA"><![CDATA[class HttpParams
-
-   @Produces @HttpParam("")
-   String getParamValue(ServletRequest request, InjectionPoint ip) {
-      return request.getParameter(ip.getAnnotation(HttpParam.class).value());
-   }
-
+     <programlisting role="JAVA"><![CDATA[@Inject
+public Checkout(@Synchronous PaymentProcessor syncPaymentProcessor, 
+                @Asynchronous PaymentProcessor asyncPaymentProcessor) {
+   this.syncPaymentProcessor = syncPaymentProcessor;
+   this.asyncPaymentProcessor = asyncPaymentProcessor;
 }]]></programlisting>
 
-  <para>(Note that the <literal>value()</literal> member of the <literal>HttpParam</literal>
-  annotation is ignored by the Web Bean manager since it is annotated <literal>@NonBinding.</literal>)</para>
+      <para>
+         Qualifier annotations can also qualify method arguments of producer, disposer and observer methods. Combining
+         qualified arguments with producer methods is a good way to have an implementation of a bean type at runtime
+         selected at runtime based on the state of the system:
+      </para>
 
-<para>The Web Bean manager provides a built-in Web Bean that implements the
-<literal>InjectionPoint</literal> interface:</para>
+      <programlisting role="JAVA"><![CDATA[@Produces
+PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentProcessor,
+                                     @Asynchronous PaymentProcessor asyncPaymentProcessor) {
+   return isSynchronous() ? syncPaymentProcessor : asyncPaymentProcessor;
+}]]></programlisting> 
+   
+      <para>
+         Now, you may be thinking, <emphasis>"What's the different between using a qualifier and just specifying the
+         exact implementation class you want?"</emphasis> It's important to understand that a qualifier is like an
+         extension of the interface. You could potentially implement the asynchronous payment processor differently over
+         the age of the application. However, if you use qualifier annotations to hook injection points with the bean
+         implementing that functionality, the server implementation can vary without affecting the client code.  Plus,
+         you get all the benefits of using the bean's interface because you don't have a hard dependency on the
+         implementation.
+      </para>
 
-<programlisting role="JAVA"><![CDATA[public interface InjectionPoint { 
-   public Object getInstance(); 
-   public Bean<?> getBean(); 
-   public Member getMember(): 
-   public <T extends Annotation> T getAnnotation(Class<T> annotation); 
-   public Set<T extends Annotation> getAnnotations(); 
-}]]></programlisting>
+      <para>
+         Qualifiers will likely replace use of the factory pattern as well. The container becomes your factory and
+         the switch between implementations is dictated by the qualifier.
+      </para>
 
-</section>
+      <section>
+         <title>Qualifiers with members</title>
 
+         <para>
+            Annotations can have members (i.e., fields) just like regular classes. You can use these fields to furthur
+            discriminate the qualifier. This simply prevents an explosion of annotations that you have to introduce.
+            For instance, if you wanted to create several qualifiers representing different payment methods, you could
+            aggregate them under a single annotation using a member:
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@Qualifier
+@Retention(RUNTIME)
+@Target({METHOD, FIELD, PARAMETER, TYPE})
+public @interface PayBy {
+   PaymentMethod value();
+}]]></programlisting> 
+   
+         <para>
+            Then you select one of the possible values when you use the qualifier:
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[private @Inject @PayBy(CHECK) CheckPayment checkPayment;]]></programlisting> 
+
+         <para>
+            You can tell the container to ignore a member of a qualifier type by annotating the member @NonBinding.
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@Qualifier
+@Retention(RUNTIME)
+@Target({METHOD, FIELD, PARAMETER, TYPE})
+public @interface PayBy {
+   PaymentMethod value();
+   @NonBinding String comment;
+}]]></programlisting> 
+
+      </section>
+
+      <section>
+         <title>Combining qualifiers</title>
+
+         <para>
+            Both a bean and an injection point may specify multiple qualifiers:
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@Synchronous @Reliable
+public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
+   public void process(Payment payment) { ... }
+}]]></programlisting>      
+
+         <programlisting role="JAVA"><![CDATA[@Inject @Synchronous @Reliable PaymentProcessor syncPaymentProcessor;]]></programlisting>
+
+         <para>
+            In this case, only a bean which has <emphasis>both</emphasis> qualifier annotations would be eligible for
+            injection.
+         </para>
+
+      </section>
+
+      <section>
+         <title>Qualifiers on producer methods</title>
+
+         <para>
+            Even producer methods may specify qualifier annotations:
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@Produces @Asynchronous PaymentProcessor getPaymentProcessor() { ... }]]></programlisting>
+
+         <para>
+            This producer might create an asynchronous implementation powered by third party library such as Quartz
+            (though definitely check out the new scheduler support in EJB 3.1!).
+         </para>
+
+      </section>
+
+      <section>
+         <title>The default qualifier</title>
+  
+         <para>
+            CDI defines the qualifier annotation <literal>@Default</literal> that is the default qualifier type for any
+            injection point or bean that does not explicitly specify a qualifier.
+         </para>
+  
+         <para>
+            <!-- this is a really vague point -->
+            The most common circumstance when it's necessary to explicitly specify <literal>@Default</literal> is on a bean
+            which as another qualifier in addition to the default one.
+         </para>
+  
+      </section>
+  
+   </section>
+
+   <section>
+      <title>Fixing unsatisfied dependencies</title>
+  
+      <para>
+         The typesafe resolution algorithm fails when, after considering the qualifier annotations on all beans that
+         implement the bean type of an injection point and filtering out disabled beans (<literal>@Alternative</literal>
+         beans which are not explicitly enabled), the container is unable to identify exactly one bean to inject. The
+         container will either throw an <literal>UnsatisfiedDependencyException</literal> or
+         <literal>AmbiguousDependencyException</literal>, depending on the circumstance.
+      </para>
+  
+      <para>
+         During the course of your development, your going to encounter these errors. Let's learn how to resolve them.
+         It's usually pretty easy, and a decent IDE can really help out here.
+      </para>
+  
+      <para>
+         To fix an <literal>UnsatisfiedDependencyException</literal>, simply provide a bean which implements the bean
+         type and has all the qualifier types of the injection point &#151; or explicitly enable an
+         <literal>@Alternative</literal> bean that implements the bean type and has the appropriate qualifier types.
+      </para>
+  
+      <para>
+         To fix an <literal>AmbiguousDependencyException</literal>, introduce a qualifier to distinguish between the two
+         implementations of the bean type, or disable one of two <literal>@Alternative</literal> beans that are trying
+         to occupy the same space.  An <literal>AmbiguousDependencyException</literal> can only occur if two enabled
+         beans share the same qualifier types (and one bean does not specialize the other, which we'll get into
+         specialization in <xref linkend="specialization"/>).
+      </para>
+      
+      <tip>
+         <para>Just remember: "There can be only one."</para>
+      </tip>
+  
+      <para>
+         There's one more issue you need to be aware of when using dependency injection in beans: client proxies.
+      </para>
+
+   </section>
+
+   <section>
+      <title>Client proxies</title>
+  
+      <para>
+         Clients of an injected bean do not usually hold a direct reference to a bean instance, unless the bean is
+         dependent-scoped--in that case, the instance belongs to the bean.
+      </para> 
+  
+      <para>
+         Imagine that a bean bound to the application scope held a direct reference to a bean bound to the request
+         scope. The application-scoped bean is shared between many different requests. However, each request should see
+         a different instance of the request scoped bean--the current one!
+      </para>
+  
+      <para>
+         Now imagine that a bean bound to the session scope holds a direct reference to a bean bound to the application
+         scope. From time to time, the session context is serialized to disk in order to use memory more efficiently.
+         However, the application scoped bean instance should not be serialized along with the session scoped bean!  It
+         can get that reference any time. No need to hoard it!
+      </para>
+  
+      <para>
+         Therefore, unless a bean has the default scope <literal>@Dependent</literal>, the container must indirect all
+         injected references to the bean through a proxy object. This <emphasis>client proxy</emphasis> is responsible
+         for ensuring that the bean instance that receives a method invocation is the instance that is associated with
+         the current context. The client proxy also allows beans bound to contexts such as the session context to be
+         serialized to disk without recursively serializing other injected beans.
+      </para>
+
+      <note>
+         <para>
+            If you recall, Seam also boasted the ability to reference the current instance of a component. However, Seam
+            went about it differently. In Seam, the references are established prior to the method call and cleared
+            afterword using an interceptor--a process known as bijection. This model was not very friendly to multiple
+            threads sharing instances and thefore the client proxy approach was adopted in CDI instead.
+         </para>
+      </note>
+  
+      <para>
+         Unfortunately, due to limitations of the Java language, some Java types cannot be proxied by the container.  If
+         one of these types declares any scope other than <literal>@Dependent</literal>, the container throws an
+         <literal>UnproxyableDependencyException</literal> when processing its use as an injection point.
+      </para>
+  
+      <para>The following Java types cannot be proxied by the container:</para>
+  
+      <itemizedlist>
+         <listitem>
+            <para>classes which don't have a non-private constructor with no parameters, and</para>
+         </listitem>
+         <listitem>
+            <para>
+               classes which are declared <literal>final</literal> or have a <literal>final</literal> method,
+            </para>
+         </listitem>
+         <listitem>
+            <para>arrays and primitive types.</para>
+         </listitem>
+      </itemizedlist>
+  
+      <para>
+         It's usually very easy to fix an <literal>UnproxyableDependencyException</literal>.  Simply add a constructor
+         with no parameters to the injected class, introduce an interface, or, if all else fails, change the scope of
+         the injected bean to <literal>@Dependent</literal>.
+      </para>
+  
+   </section>
+
+   <section>
+
+      <title>Obtaining a contextual instance by programmatic lookup</title>
+
+      <para>
+         In certain situations, injection is not the most convenient way to obtain a contextual reference. For example,
+         it may not be used when:
+      </para>
+
+      <itemizedlist>
+         <listitem>
+            <para>
+               the bean type or qualifiers vary dynamically at runtime, or
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               depending upon the deployment, there may be no bean which satisfies the type and qualifiers, or
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               we would like to iterate over all beans of a certain type.
+            </para>
+         </listitem>
+      </itemizedlist>
+
+      <para>
+         In these situations, the application may obtain an instance of the interface <literal>Instance</literal> 
+         parameterized for the bean type by injection:
+      </para>
+  
+      <programlisting role="JAVA"><![CDATA[@Inject Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
+  
+      <para>
+         The <literal>get()</literal> method on <literal>Instance</literal> can be used to produce a contextual instance
+         of the bean programmatically.
+      </para>
+  
+      <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource.get()]]></programlisting>
+
+      <para>
+         Of course, qualifiers can be specified at the injection point, as with a bean injection:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Inject @Asynchronous Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
+  
+      <para>
+         You can also select a bean dynamically from the <literal>Instance</literal> based on the bean's qualifier.
+         First, you need to add the <literal>@Any</literal> annotation at the injection point:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
+      
+      <para>
+         Then you specify which bean you want, based on its qualifier, using the <literal>select()</literal> method on
+         <literal>Instance</literal>. You represent a qualifier annotation in code by subclassing the helper class
+         <literal>AnnotationLiteral</literal>, since it's otherwise difficult to instantiate an annotation type in Java.
+      </para>
+  
+      <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource
+   .select(new AnnotationLiteral<Asynchronous>() {});]]></programlisting>
+
+      <para>
+         You can choose to create a concreate type for all of your annotation literals, such as:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[abstract class AsynchronousQualifier
+extends AnnotationLiteral<Asynchronous> implements Asynchronous {}]]></programlisting>
+
+      <note>
+         <para>
+            The concrete is required if your qualifier has members, since an anonymous subclass cannot define members.
+         </para>
+      </note>
+
+      <para>
+         Again, like with annotation definitions, the <literal>AnnotationLiteral</literal> definition may seem a bit
+         foreign at first, but it will soon become second nature as you will see it often in CDI applications.
+      </para>
+
+      <para>
+         Here's how you might make use the dynamic selection:
+      </para>
+
+      <programlisting><![CDATA[Annotation qualifier = synchronously ?
+new SynchronousQualifier() : new AsynchronousQualifier();
+PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment);]]></programlisting> 
+
+   </section>
+
+   <section>
+      <title>Bean names and EL lookup</title>
+
+      <para>
+         You won't always be able to take advantage of the type safety that CDI provides. One of those places is the JSF
+         view. To accomodate that environment, CDI must learn to speak the binding language that view templates
+         understand. That language is the Unified EL.
+      </para>
+
+      <para>
+         In order to participate in the Unified EL, a bean must have a name. The old way of assigning a name to a
+         managed bean was in the faces-config.xml descriptor. This use of XML completely contradicts the approach
+         to metadata that's in CDI. Given that one of the primary goals of JSR-299 is to get JSF talking
+         with session beans (and, in turn, the rest of the Java EE platform), CDI needed to find a compromise. 
+         It did in the form of the <literal>@Named</literal>.
+      </para>
+
+      <para>
+         The <literal>@Named</literal> annotation, when added to a bean class, producer method or producer field,
+         gives an alternate way for that bean to be referenced--by a string-based name.
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[public @Named("cart") @SessionScoped class ShoppingCart {
+ ...
+}]]></programlisting> 
+      <programlisting role="JAVA"><![CDATA[public @Produces @Named("items") List<Item> getItems() { ... }]]></programlisting> 
+      <programlisting role="JAVA"><![CDATA[private @Produces @Named("currentUser") User user;]]></programlisting> 
+
+      <para>
+         Of course, you don't want to use this string-based name in your Java code, but you can use it your JSF views to
+         invoke or read state from a bean. Since a bean could be an session bean, now you can hook your JSF view
+         directly to your business component without any middle man and still keep the layers loosely coupled. Loosely
+         coupled? Yes, because names can be associated with the deployment time and runtime polymorphism that CDI
+         provides.
+      </para>
+
+      <para>
+         Although JSF 2 still includes a managed bean facility, it's expected that you are now going to prefer CDI and
+         EJB as your bean container, since they provides all that JSF managed beans have and much, much more. Plus, your
+         business tier isn't tied to JSF in any way.
+      </para>
+
+   </section>
+
+   <section>
+      <title>Lifecycle callbacks and resource injections</title>
+
+      <para>
+         As part of the managed bean contract, all CDI beans support the lifecycle callback methods,
+         <literal>@PostConstruct</literal> and <literal>@PreDestroy</literal> which are called after the bean is
+         initialized (and after injections take place) and before it is destroyed (when the context to which it is bound
+         ends), respectively.
+      </para>
+
+      <para>
+         Of course, session beans also support callback methods introduced by the EJB specification, such as
+         <literal>@PrePassivate</literal> and <literal>@PostActivate</literal>.
+      </para>
+
+      <para>
+         Managed beans also support Java EE 5-style resource injections, declared using the <literal>@Resource</literal>
+         annotation on a field. CDI beans can also inject session beans with the <literal>@EJB</literal> annotation.
+      </para>
+
+      <para>
+         However, as you learned in a previous section, these injections are not fully type-safe, nor do they have the
+         semantics that CDI provides. Therefore, it's the use of <literal>@Inject</literal> for injection is preferred.
+         Relegate the resource injections to a bean that uses producer fields to mold these container-managed objects
+         into injectable beans.
+      </para>
+
+   </section>
+
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </chapter>

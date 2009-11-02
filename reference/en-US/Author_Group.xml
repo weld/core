@@ -1,40 +1,41 @@
-<!DOCTYPE authorgroup PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" [
+<!DOCTYPE authorgroup PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" [
 ]>
 <authorgroup>
-	<author>
-		<firstname>Gavin</firstname>
-		<surname>King</surname>
-		<affiliation>
-			<jobtitle>JSR-299 specification lead</jobtitle>
-			<orgname>Red Hat, Inc.</orgname>
-		</affiliation>
-	</author>
-	<author>
-		<firstname>Pete</firstname>
-		<surname>Muir</surname>
-		<affiliation>
-			<jobtitle>Web Beans (JSR-299 Reference Implementation) lead
-			</jobtitle>
-			<orgname>Red Hat, Inc.</orgname>
-		</affiliation>
-	</author>
+   <author>
+      <firstname>Gavin</firstname>
+      <surname>King</surname>
+      <affiliation>
+         <jobtitle>JSR-299 specification lead</jobtitle>
+         <orgname>Red Hat, Inc.</orgname>
+      </affiliation>
+   </author>
+   <author>
+      <firstname>Pete</firstname>
+      <surname>Muir</surname>
+      <affiliation>
+         <jobtitle>Weld (JSR-299 Reference Implementation) lead
+         </jobtitle>
+         <orgname>Red Hat, Inc.</orgname>
+      </affiliation>
+   </author>
    <author>
       <firstname>Dan</firstname>
       <surname>Allen</surname>
-		<affiliation>
-			<jobtitle>Senior Software Engineer</jobtitle>
-			<orgname>Red Hat, Inc.</orgname>
-		</affiliation>
+      <affiliation>
+         <jobtitle>Senior Software Engineer</jobtitle>
+         <orgname>Red Hat, Inc.</orgname>
+      </affiliation>
    </author>
    <author>
       <firstname>David</firstname>
       <surname>Allen</surname>
    </author>
-	<othercredit>
-		<firstname>Nicola</firstname>
-		<surname>Benaglia</surname>
-		<contrib>Italian Translation</contrib>
-	</othercredit>
+   <othercredit>
+      <firstname>Nicola</firstname>
+      <surname>Benaglia</surname>
+      <contrib>Italian Translation</contrib>
+   </othercredit>
    <othercredit>
       <firstname>Gladys</firstname>
       <surname>Guerrero</surname>
@@ -72,4 +73,7 @@
          <orgname>Kava Community</orgname>
       </affiliation>
    </othercredit>
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </authorgroup>

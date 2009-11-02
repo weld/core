@@ -1,21 +1,33 @@
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+<chapter id="next">
+   <title>Next steps</title>
+  
+   <para>
+      Because CDI is so new, there's not yet a lot of information available online. That will change over time.
+      Regardless, the CDI specification remains the authority for information on CDI. The spec is kept at around 100
+      pages intentionally easy to read (don't worry, it's not like your Blue-ray player manual). You may be especially
+      interested in reading it since it covers many details that we've skipped over. The spec is available on the
+      <ulink src="http://jcp.org/en/jsr/detail?id=299">JSR-299 page</ulink> at the JCP website. Updates to the spec are
+      also frequently mailed to the <ulink src="https://lists.jboss.org/mailman/listinfo/weld-dev">weld-dev</ulink>
+      mailing list.
+   </para>
+  
+   <para>
+      The CDI reference implementation, Weld, is being developed at the <ulink src="http://seamframework.org/Weld">Seam
+      project</ulink>. The RI development team and the CDI spec lead blog at <ulink
+      src="http://in.relation.to">in.relation.to</ulink>. This guide was originally based on a series of blog entries
+      published there while the specification was being developed. It's probably the best source of information about
+      the future of CDI, Weld and Seam.
+   </para>
 
-<chapter>
-  <title>Next steps</title>
-  
-  <para>Because Web Beans is so new, there's not yet a lot of information
-  available online.</para>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-  
-  <para>Of course, the Web Beans specification is the best source of more
-  information about Web Beans. The spec is about 100 pages long, only 
-  twice the length of this article, and almost as readable. But, of course, 
-  it covers many details that we've skipped over. The spec is available 
-  from <literal>http://jcp.org/en/jsr/detail?id=299</literal>.</para>
-  
-  <para>The Web Beans Reference implementation is being developed at
-  <literal>http://seamframework.org/WebBeans</literal>. The RI development
-  team and the Web Beans spec lead blog at <literal>http://in.relation.to</literal>.
-  This article is substantially based upon a series of blog entries published
-  there.</para>
-  
+   <para>
+      We encourage you to follow the <ulink src="https://lists.jboss.org/mailman/listinfo/weld-dev">weld-dev</ulink>
+      mailing list and to get involved in <ulink src="http://seamframework.org/Weld/Development">development</ulink>. If
+      you are reading this guide, you likely have something to offer.
+   </para>
+
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
 </chapter>

@@ -77,16 +77,14 @@ public class Login {
 
    <para><literal>@LoggedIn</literal> and <literal>@UserDatabase</literal> are custom qualifier annotations:</para>
 
-   <programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
+   <programlisting role="JAVA"><![CDATA[@Qualifier
+@Retention(RUNTIME)
 @Target({TYPE, METHOD, PARAMETER, FIELD})
-@Documented
-@Qualifier
 public @interface LoggedIn {}]]></programlisting>
 
-   <programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
+   <programlisting role="JAVA"><![CDATA[@Qualifier
+@Retention(RUNTIME)
 @Target({METHOD, PARAMETER, FIELD})
-@Documented
-@Qualifier
 public @interface UserDatabase {}]]></programlisting>
 
    <para>
