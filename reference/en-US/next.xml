@@ -52,6 +52,12 @@
             Build using Maven 2
          </para>
          <programlisting><![CDATA[$> mvn]]></programlisting> 
+         <note>
+            <para>
+               If you experience an out of memory error, try setting this environment variable:
+               <literal>MAVEN_OPTS=-Xmx1024m</literal>
+            </para>
+         </note>
       </listitem>
       <listitem>
          <para>The PDF version of the reference guide will appear the current directory. You can find the HTML version
