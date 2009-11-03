@@ -16,7 +16,7 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.testng.annotations.Test;
 
 @Artifact
-public class ClassAnnotatedItemTest
+public class WeldClassTest
 {
 	
    private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
