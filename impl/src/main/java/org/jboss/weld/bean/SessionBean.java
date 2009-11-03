@@ -245,11 +245,11 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       if (ejbDescriptor.isStateless() && !isDependent())
       {
-         throw new DefinitionException("Scope " + getScope() + " is not allowed on stateless enterpise beans for " + getType() + ". Only @Dependent is allowed on stateless enterprise beans");
+         throw new DefinitionException("Scope " + getScope() + " is not allowed on stateless enterprise beans for " + getType() + ". Only @Dependent is allowed on stateless enterprise beans");
       }
       if (ejbDescriptor.isSingleton() && !(isDependent() || getScope().equals(ApplicationScoped.class)))
       {
-         throw new DefinitionException("Scope " + getScope() + " is not allowed on singleton enterpise beans for " + getType() + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise beans");
+         throw new DefinitionException("Scope " + getScope() + " is not allowed on singleton enterprise beans for " + getType() + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise beans");
       }
    }
 
@@ -310,8 +310,8 @@ public class SessionBean<T> extends AbstractClassBean<T>
       {
          throw new IllegalArgumentException("Cannot destroy session bean instance not created by the container");
       }
-      EnterpriseBeanInstance enterpiseBeanInstance = (EnterpriseBeanInstance) instance;
-      enterpiseBeanInstance.destroy(Marker.INSTANCE, this, creationalContext);
+      EnterpriseBeanInstance enterpriseBeanInstance = (EnterpriseBeanInstance) instance;
+      enterpriseBeanInstance.destroy(Marker.INSTANCE, this, creationalContext);
       creationalContext.release();
    }
 
