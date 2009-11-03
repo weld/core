@@ -63,6 +63,7 @@ public class NonBdaExtensionTest
       
       Observer1 observer1 = beanManager1.getInstanceByType(Observer1.class);
       assert observer1.isBeforeBeanDiscoveryCalled();
+      assert observer1.getBeforeBeanDiscoveryBeanManager().equals(beanManager1);
       assert observer1.isAfterBeanDiscoveryCalled();
       assert observer1.isAfterDeploymentValidationCalled();
       assert observer1.isProcessInjectionTargetCalled();
@@ -75,6 +76,7 @@ public class NonBdaExtensionTest
       
       Observer2 observer2 = beanManager2.getInstanceByType(Observer2.class);
       assert observer2.isBeforeBeanDiscoveryCalled();
+      assert observer2.getBeforeBeanDiscoveryBeanManager().equals(beanManager2);
       assert observer2.isAfterBeanDiscoveryCalled();
       assert observer2.isAfterDeploymentValidationCalled();
       assert observer2.isProcessInjectionTargetCalled();

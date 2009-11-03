@@ -72,8 +72,10 @@ public class BeanDeployment
          // bean is an EJB!
          ejbDescriptors.addAll(beanDeploymentArchive.getEjbs());
       }
-      
       beanDeployer = new BeanDeployer(beanManager, ejbDescriptors);
+      
+      // Must at the Manager bean straight away, as it can be injected during startup!
+      beanManager.addBean(new ManagerBean(beanManager));
       
       parseBeansXml();
    }
@@ -125,7 +127,6 @@ public class BeanDeployment
    public void deployBeans(Environment environment)
    {
       beanDeployer.addClasses(beanDeploymentArchive.getBeanClasses());
-      beanDeployer.getEnvironment().addBuiltInBean(new ManagerBean(beanManager));
       beanDeployer.getEnvironment().addBuiltInBean(new InjectionPointBean(beanManager));
       beanDeployer.getEnvironment().addBuiltInBean(new EventBean(beanManager));
       beanDeployer.getEnvironment().addBuiltInBean(new InstanceBean(beanManager));

@@ -3,6 +3,7 @@ package org.jboss.weld.test.unit.deployment.structure.extensions;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
@@ -17,9 +18,10 @@ public class Observer2 extends ObserverBase implements Extension
       this.afterBeanDiscoveryCalled = true;
    }
    
-   public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery event)
+   public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
    {
       this.beforeBeanDiscoveryCalled = true;
+      this.beforeBeanDiscoveryBeanManager = beanManager;
    }
    
    public void observeAfterDeploymentValidation(@Observes AfterDeploymentValidation event)

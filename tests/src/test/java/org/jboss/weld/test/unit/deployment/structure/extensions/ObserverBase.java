@@ -1,6 +1,6 @@
 package org.jboss.weld.test.unit.deployment.structure.extensions;
 
-import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.BeanManager;
 
 public class ObserverBase
 {
@@ -11,6 +11,8 @@ public class ObserverBase
    protected boolean processProducerCalled;
    protected boolean processInjectionTargetCalled;
    protected boolean processManagedBeanCalled;
+   
+   protected BeanManager beforeBeanDiscoveryBeanManager;
 
    public ObserverBase()
    {
@@ -45,6 +47,11 @@ public class ObserverBase
    public boolean isProcessManagedBeanCalled()
    {
       return processManagedBeanCalled;
+   }
+   
+   public BeanManager getBeforeBeanDiscoveryBeanManager()
+   {
+      return beforeBeanDiscoveryBeanManager;
    }
 
 }
