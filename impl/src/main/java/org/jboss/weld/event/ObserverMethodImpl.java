@@ -18,7 +18,6 @@ package org.jboss.weld.event;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -121,28 +120,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       if (eventObjects.size() > 1)
       {
          throw new DefinitionException(this + " is invalid because it contains more than event parameter annotated @Observes");
-      }
-      // Make sure the event object above is not parameterized with a type
-      // variable or wildcard
-      if (eventObjects.size() > 0)
-      {
-         WeldParameter<?, ?> eventParam = eventObjects.iterator().next();
-         if (eventParam.isParameterizedType())
-         {
-            for (Type type : eventParam.getActualTypeArguments())
-            {
-               if (type instanceof TypeVariable<?>)
-               {
-                  throw new DefinitionException("Cannot use a type variable " + type + " in an parameterized type " + toString());
-               }
-               // else if (type instanceof WildcardType)
-               // {
-               // throw new
-               // DefinitionException("Cannot use a wildcard variable " + type +
-               // " in an parameterized type " + toString());
-               // }
-            }
-         }
       }
       // Check for parameters annotated with @Disposes
       List<WeldParameter<?, X>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
