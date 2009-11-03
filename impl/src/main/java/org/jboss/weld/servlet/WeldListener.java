@@ -63,12 +63,29 @@ public class WeldListener extends AbstractServletListener
    private static BeanManagerImpl getBeanManager(ServletContext ctx)
    {
       BeanDeploymentArchive war = Container.instance().deploymentServices().get(ServletServices.class).getBeanDeploymentArchive(ctx);
-      return Container.instance().beanDeploymentArchives().get(war);
+      if (war == null)
+      {
+         throw new IllegalStateException("Unable to locate BeanDeploymentArchive. ServletContext: " + ctx);
+      }
+      BeanManagerImpl beanManager = Container.instance().beanDeploymentArchives().get(war);
+      if (beanManager == null)
+      {
+         throw new IllegalStateException("Unable to locate BeanManager. ServletContext: " + ctx + "; BeanDeploymentArchive: " + war);
+      }
+      return beanManager;
    }
    
    @Override
    public void contextInitialized(ServletContextEvent sce)
    {
+      if (!Container.instance().isInitialized())
+      {
+         throw new IllegalStateException("Weld bootstrap must be complete before contextInitialized event");
+      }
+      if (!Container.instance().deploymentServices().contains(ServletServices.class))
+      {
+         throw new IllegalStateException("Cannot use WeldListener without ServletServices");
+      }
       super.contextInitialized(sce);
       sce.getServletContext().setAttribute(BeanManager.class.getName(), getBeanManager(sce.getServletContext()));
    }
