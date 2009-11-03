@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.Conversation;
 import javax.enterprise.inject.Any;
@@ -50,6 +51,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.api.BeanStore;
+import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -61,10 +63,6 @@ import org.slf4j.cal10n.LocLogger;
 public abstract class AbstractConversationManager implements ConversationManager
 {
    private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
-
-   // The conversation terminator
-   @Inject
-   private ConversationTerminator conversationTerminator;
 
    // The current conversation
    @Inject @Any
@@ -203,7 +201,7 @@ public abstract class AbstractConversationManager implements ConversationManager
    private Future<?> scheduleForTermination(String cid, long timeout)
    {
       Runnable terminationTask = new TerminationTask(cid);
-      return conversationTerminator.scheduleForTermination(terminationTask, timeout);
+      return Container.instance().deploymentServices().get(ScheduledExecutorServiceFactory.class).get().schedule(terminationTask, timeout, TimeUnit.MILLISECONDS);
    }
 
    /**
