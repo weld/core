@@ -51,13 +51,13 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
    public static <T, X> WeldFieldImpl<T, X> of(Field field, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(field, classTransformer.getTypeStore());
-      return new WeldFieldImpl<T, X>(ensureAccessible(field), new Reflections.HierarchyDiscovery(field.getGenericType()).getTypeClosure(),  annotationStore, declaringClass, classTransformer);
+      return new WeldFieldImpl<T, X>(ensureAccessible(field), (Class<T>) field.getType(), field.getGenericType(), new Reflections.HierarchyDiscovery(field.getGenericType()).getTypeClosure(),  annotationStore, declaringClass, classTransformer);
    }
    
    public static <T, X> WeldFieldImpl<T, X> of(AnnotatedField<? super X> annotatedField, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(annotatedField.getAnnotations(), annotatedField.getAnnotations(), classTransformer.getTypeStore());
-      return new WeldFieldImpl<T, X>(ensureAccessible(annotatedField.getJavaMember()), annotatedField.getTypeClosure(), annotationStore, declaringClass, classTransformer);
+      return new WeldFieldImpl<T, X>(ensureAccessible(annotatedField.getJavaMember()), (Class<T>) annotatedField.getJavaMember().getType(), annotatedField.getBaseType(), annotatedField.getTypeClosure(), annotationStore, declaringClass, classTransformer);
    }
    
    /**
@@ -69,9 +69,9 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
     * @param field The actual field
     * @param declaringClass The abstraction of the declaring class
     */
-   private WeldFieldImpl(Field field, Set<Type> typeClosure, AnnotationStore annotationStore, WeldClass<X> declaringClass, ClassTransformer classTransformer)
+   private WeldFieldImpl(Field field, final Class<T> rawType, final Type type, Set<Type> typeClosure, AnnotationStore annotationStore, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      super(annotationStore, field, (Class<T>) field.getType(), field.getGenericType(), typeClosure, declaringClass);
+      super(annotationStore, field, rawType, type, typeClosure, declaringClass);
       this.field = field;
       this.toString = new StringBuilder().append("field ").append(declaringClass.getName()).append(".").append(field.getName()).toString();
    }

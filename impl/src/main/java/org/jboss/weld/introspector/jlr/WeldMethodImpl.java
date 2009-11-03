@@ -78,13 +78,13 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    public static <T, X> WeldMethodImpl<T, X> of(Method method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(method, classTransformer.getTypeStore());
-      return new WeldMethodImpl<T, X>(ensureAccessible(method),new Reflections.HierarchyDiscovery(method.getGenericReturnType()).getTypeClosure(), null, annotationStore, declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(ensureAccessible(method), (Class<T>) method.getReturnType(), method.getGenericReturnType(), new Reflections.HierarchyDiscovery(method.getGenericReturnType()).getTypeClosure(), null, annotationStore, declaringClass, classTransformer);
    }
    
    public static <T, X> WeldMethodImpl<T, X> of(AnnotatedMethod<T> method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(method.getAnnotations(), method.getAnnotations(), classTransformer.getTypeStore());
-      return new WeldMethodImpl<T, X>(ensureAccessible(method.getJavaMember()), method.getTypeClosure(), method, annotationStore, declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(ensureAccessible(method.getJavaMember()), (Class<T>) method.getJavaMember().getReturnType(), method.getBaseType(), method.getTypeClosure(), method, annotationStore, declaringClass, classTransformer);
    }
 
    /**
@@ -97,9 +97,9 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
     * @param declaringClass The declaring class abstraction
     */
    @SuppressWarnings("unchecked")
-   private WeldMethodImpl(Method method, Set<Type> typeClosure, AnnotatedMethod<T> annotatedMethod, AnnotationStore annotationStore, WeldClass<X> declaringClass, ClassTransformer classTransformer)
+   private WeldMethodImpl(Method method, final Class<T> rawType, final Type type, Set<Type> typeClosure, AnnotatedMethod<T> annotatedMethod, AnnotationStore annotationStore, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      super(annotationStore, method, (Class<T>) method.getReturnType(), method.getGenericReturnType(), typeClosure, declaringClass);
+      super(annotationStore, method, rawType, type, typeClosure, declaringClass);
       this.method = method;
       this.toString = new StringBuilder().append("method ").append(method.toString()).toString();
       this.parameters = new ArrayList<WeldParameter<?, X>>();
@@ -128,16 +128,16 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
          if (method.getParameterAnnotations()[i].length > 0 || annotatedTypeParameters.containsKey(i))
          {
             Class<? extends Object> clazz = method.getParameterTypes()[i];
-            Type type = method.getGenericParameterTypes()[i];
+            Type parametertype = method.getGenericParameterTypes()[i];
             WeldParameter<?, X> parameter = null;
             if (annotatedTypeParameters.containsKey(i))
             {
                AnnotatedParameter<?> annotatedParameter = annotatedTypeParameters.get(i);
-               parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), clazz, type, this, i, classTransformer);            
+               parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), clazz, parametertype, this, i, classTransformer);            
             }
             else
             {
-               parameter = WeldParameterImpl.of(method.getParameterAnnotations()[i], clazz, type, this, i, classTransformer);
+               parameter = WeldParameterImpl.of(method.getParameterAnnotations()[i], clazz, parametertype, this, i, classTransformer);
             }
             this.parameters.add(parameter);
             for (Annotation annotation : parameter.getAnnotations())
@@ -151,8 +151,8 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
          else
          {
             Class<? extends Object> clazz = method.getParameterTypes()[i];
-            Type type = method.getGenericParameterTypes()[i];
-            WeldParameter<?, X> parameter = WeldParameterImpl.of(new Annotation[0], (Class<Object>) clazz, type, this, i, classTransformer);
+            Type parameterType = method.getGenericParameterTypes()[i];
+            WeldParameter<?, X> parameter = WeldParameterImpl.of(new Annotation[0], (Class<Object>) clazz, parameterType, this, i, classTransformer);
             this.parameters.add(parameter);
          }  
       }
