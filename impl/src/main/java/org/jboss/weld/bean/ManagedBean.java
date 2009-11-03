@@ -270,7 +270,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    @Override
    protected void checkType()
    {
-      if (getAnnotatedItem().isNonStaticMemberClass())
+      if (getAnnotatedItem().isAnonymousClass() || (getAnnotatedItem().isMemberClass() && !getAnnotatedItem().isStatic()))
       {
          throw new DefinitionException("Simple bean " + type + " cannot be a non-static inner class");
       }

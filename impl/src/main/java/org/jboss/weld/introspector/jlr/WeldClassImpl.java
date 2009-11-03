@@ -121,8 +121,10 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    // Cached string representation
    private final String toString;
 
-   private final boolean _nonStaticMemberClass;
    private final boolean _abstract;
+   private final boolean _member;
+   private final boolean _local;
+   private final boolean _anonymous;
    private final boolean _enum;
 
    public static <T> WeldClass<T> of(Class<T> clazz, ClassTransformer classTransformer)
@@ -200,7 +202,9 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
          }
         
       });
-      this._nonStaticMemberClass = Reflections.isNonStaticInnerClass(rawType);
+      this._local = rawType.isLocalClass();
+      this._anonymous = rawType.isAnonymousClass();
+      this._member = rawType.isMemberClass();
       this._abstract = Reflections.isAbstract(rawType);
       this._enum = rawType.isEnum();
 
@@ -538,9 +542,19 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       return Collections.unmodifiableSet(annotatedFields.get(annotationType));
    }
 
-   public boolean isNonStaticMemberClass()
+   public boolean isLocalClass()
    {
-      return _nonStaticMemberClass;
+      return _local;
+   }
+   
+   public boolean isAnonymousClass()
+   {
+      return _anonymous;
+   }
+   
+   public boolean isMemberClass()
+   {
+      return _member;
    }
 
    public boolean isAbstract()

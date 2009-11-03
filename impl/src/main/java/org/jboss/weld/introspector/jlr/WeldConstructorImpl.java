@@ -39,6 +39,7 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.Reflections;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.ListMultimap;
@@ -116,12 +117,24 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
          }
       }
       
+      // If the class is a (non-static) member class, its constructors parameterTypes array will prefix the
+      // outer class instance, whilst the genericParameterTypes array isn't prefix'd 
+      int nesting = Reflections.getNesting(declaringClass.getJavaClass());
       for (int i = 0; i < constructor.getParameterTypes().length; i++)
       {
+         int gi = i - nesting;
          if (constructor.getParameterAnnotations()[i].length > 0 || annotatedTypeParameters.containsKey(i))
          {
             Class<?> clazz = constructor.getParameterTypes()[i];
-            Type type = constructor.getGenericParameterTypes()[i];
+            Type type;
+            if (constructor.getGenericParameterTypes().length > gi && gi >=0)
+            {
+               type = constructor.getGenericParameterTypes()[gi];
+            }
+            else
+            {
+               type = clazz;
+            }
             WeldParameter<?, T> parameter = null;
             if (annotatedTypeParameters.containsKey(i))
             {
@@ -144,9 +157,9 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
          {
             Class<?> clazz = constructor.getParameterTypes()[i];
             Type type;
-            if (constructor.getGenericParameterTypes().length > i)
+            if (constructor.getGenericParameterTypes().length > gi && gi >=0)
             {
-               type = constructor.getGenericParameterTypes()[i];
+               type = constructor.getGenericParameterTypes()[gi];
             }
             else
             {

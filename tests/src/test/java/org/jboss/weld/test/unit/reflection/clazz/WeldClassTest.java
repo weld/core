@@ -22,9 +22,23 @@ public class WeldClassTest
    private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
    
    @Test(groups = "broken", description="WELD-216")
-   public void testNonStaticInnerClassWithGenericTypes()
+   public void testMemberClassWithGenericTypes()
    {
       AnnotatedType at = WeldClassImpl.of(new Kangaroo().procreate().getClass(), transformer);
+      WeldClassImpl.of(at, transformer);
+   }
+   
+   @Test(description="WELD-216")
+   public void testLocalClassWithGenericTypes()
+   {
+      AnnotatedType at = WeldClassImpl.of(new Koala().procreate().getClass(), transformer);
+      WeldClassImpl.of(at, transformer);
+   }
+   
+   @Test(description="WELD-216")
+   public void testAnonymousClassWithGenericTypes()
+   {
+      AnnotatedType at = WeldClassImpl.of(new Possum().procreate().getClass(), transformer);
       WeldClassImpl.of(at, transformer);
    }
    

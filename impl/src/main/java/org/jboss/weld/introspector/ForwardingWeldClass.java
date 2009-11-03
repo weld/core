@@ -107,9 +107,19 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
       return delegate().getWeldSuperclass();
    }
 
-   public boolean isNonStaticMemberClass()
+   public boolean isLocalClass()
    {
-      return delegate().isNonStaticMemberClass();
+      return delegate().isLocalClass();
+   }
+   
+   public boolean isMemberClass()
+   {
+      return delegate().isMemberClass();
+   }
+   
+   public boolean isAnonymousClass()
+   {
+      return delegate().isAnonymousClass();
    }
 
    @Override

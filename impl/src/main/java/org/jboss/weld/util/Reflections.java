@@ -307,6 +307,18 @@ public class Reflections
    {
       return Modifier.isFinal(clazz.getModifiers());
    }
+   
+   public static int getNesting(Class<?> clazz)
+   {
+      if (clazz.isMemberClass() && !isStatic(clazz))
+      {
+         return 1 + getNesting(clazz.getDeclaringClass());
+      }
+      else
+      {
+         return 0;
+      }
+   }
 
    /**
     * Checks if member is final
@@ -393,17 +405,6 @@ public class Reflections
    public static boolean isAbstract(Class<?> clazz)
    {
       return Modifier.isAbstract(clazz.getModifiers());
-   }
-
-   /**
-    * Checks if class is a non-static inner one
-    * 
-    * @param clazz Class to Check
-    * @return True if static, false otherwise
-    */
-   public static boolean isNonStaticInnerClass(Class<?> clazz)
-   {
-      return (clazz.isMemberClass() || clazz.isAnonymousClass()) && !isStatic(clazz);
    }
 
    /**

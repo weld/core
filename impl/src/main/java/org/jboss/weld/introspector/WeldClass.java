@@ -207,18 +207,17 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     */
    public WeldClass<?> getWeldSuperclass();
 
-   /**
-    * Determine if this is a non-static member class
-    *
-    * @return true if this is a non-static member  
-    */
-   public boolean isNonStaticMemberClass();
-
    public boolean isParameterizedType();
 
    public boolean isAbstract();
 
    public boolean isEnum();
+   
+   public boolean isMemberClass();
+   
+   public boolean isLocalClass();
+   
+   public boolean isAnonymousClass();
 
    public <S> S cast(Object object);
 

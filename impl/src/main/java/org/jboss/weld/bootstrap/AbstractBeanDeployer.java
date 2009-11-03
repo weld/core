@@ -289,7 +289,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       JsfApiAbstraction jsfApiAbstraction = manager.getServices().get(JsfApiAbstraction.class);
       ServletApiAbstraction servletApiAbstraction = manager.getServices().get(ServletApiAbstraction.class);
       return !Extension.class.isAssignableFrom(clazz.getJavaClass()) &&
-             !clazz.isNonStaticMemberClass() &&
+             !(clazz.isAnonymousClass() || (clazz.isMemberClass() && !clazz.isStatic())) &&
              !Reflections.isParamerterizedTypeWithWildcard(javaClass) && 
              !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(javaClass) && 
              !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(javaClass) && 
