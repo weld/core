@@ -29,7 +29,6 @@ import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Reflections;
-import org.jboss.weld.util.Reflections.HierarchyDiscovery;
 import org.jboss.weld.util.collections.Arrays2;
 
 /**
@@ -77,7 +76,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
     * @param annotationMap A map of annotation to register
     * 
     */
-   public AbstractWeldAnnotated(AnnotationStore annotatedItemHelper, Class<T> rawType, Type type)
+   public AbstractWeldAnnotated(AnnotationStore annotatedItemHelper, Class<T> rawType, Type type, Set<Type> typeClosure)
    {
       this.annotationStore = annotatedItemHelper;
       this.rawType = rawType;
@@ -91,14 +90,13 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
          this.actualTypeArguments = new Type[0];
       }
       this._parameterizedType = Reflections.isParameterizedType(rawType);
-      HierarchyDiscovery discovery = new Reflections.HierarchyDiscovery(type);
       this.interfaceOnlyFlattenedTypes = new HashSet<Type>();
       for (Type t : rawType.getGenericInterfaces())
       {
-         interfaceOnlyFlattenedTypes.addAll(new Reflections.HierarchyDiscovery(t).getTypeClosureAsSet());
+         interfaceOnlyFlattenedTypes.addAll(new Reflections.HierarchyDiscovery(t).getTypeClosure());
       }
-      this.typeClosureAsSet = discovery.getTypeClosureAsSet();
-      this.typeClosureAsMap = discovery.getTypeClosureAsMap();
+      this.typeClosureAsMap = Reflections.buildTypeMap(typeClosure);
+      this.typeClosureAsSet = typeClosure;
       this.proxyable = Proxies.isTypesProxyable(typeClosureAsSet);
    }
 

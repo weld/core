@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedParameter;
@@ -73,13 +74,13 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
    public static <T> WeldConstructor<T> of(Constructor<T> constructor, WeldClass<T> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(constructor, classTransformer.getTypeStore());
-      return new WeldConstructorImpl<T>(ensureAccessible(constructor), null, annotationStore, declaringClass, classTransformer);
+      return new WeldConstructorImpl<T>(ensureAccessible(constructor), null, new Reflections.HierarchyDiscovery(constructor.getDeclaringClass()).getTypeClosure(), annotationStore, declaringClass, classTransformer);
    }
    
    public static <T> WeldConstructor<T> of(AnnotatedConstructor<T> annotatedConstructor,  WeldClass<T> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(annotatedConstructor.getAnnotations(), annotatedConstructor.getAnnotations(), classTransformer.getTypeStore());
-      return new WeldConstructorImpl<T>(ensureAccessible(annotatedConstructor.getJavaMember()), annotatedConstructor, annotationStore, declaringClass, classTransformer);
+      return new WeldConstructorImpl<T>(ensureAccessible(annotatedConstructor.getJavaMember()), annotatedConstructor, annotatedConstructor.getTypeClosure(), annotationStore, declaringClass, classTransformer);
    }
 
    /**
@@ -90,9 +91,9 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
     * @param constructor The constructor method
     * @param declaringClass The declaring class
     */
-   private WeldConstructorImpl(Constructor<T> constructor, AnnotatedConstructor<T> annotatedConstructor, AnnotationStore annotationStore, WeldClass<T> declaringClass, ClassTransformer classTransformer)
+   private WeldConstructorImpl(Constructor<T> constructor, AnnotatedConstructor<T> annotatedConstructor, Set<Type> typeClosure, AnnotationStore annotationStore, WeldClass<T> declaringClass, ClassTransformer classTransformer)
    {
-      super(annotationStore, constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass(), declaringClass);
+      super(annotationStore, constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass(), typeClosure, declaringClass);
       this.toString = new StringBuilder().append("constructor ").append(constructor.toString()).toString();
       this.constructor = constructor;
 

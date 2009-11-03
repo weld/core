@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
@@ -77,13 +78,13 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    public static <T, X> WeldMethodImpl<T, X> of(Method method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(method, classTransformer.getTypeStore());
-      return new WeldMethodImpl<T, X>(ensureAccessible(method), null, annotationStore, declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(ensureAccessible(method),new Reflections.HierarchyDiscovery(method.getGenericReturnType()).getTypeClosure(), null, annotationStore, declaringClass, classTransformer);
    }
    
    public static <T, X> WeldMethodImpl<T, X> of(AnnotatedMethod<T> method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(method.getAnnotations(), method.getAnnotations(), classTransformer.getTypeStore());
-      return new WeldMethodImpl<T, X>(ensureAccessible(method.getJavaMember()), method, annotationStore, declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(ensureAccessible(method.getJavaMember()), method.getTypeClosure(), method, annotationStore, declaringClass, classTransformer);
    }
 
    /**
@@ -96,9 +97,9 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
     * @param declaringClass The declaring class abstraction
     */
    @SuppressWarnings("unchecked")
-   private WeldMethodImpl(Method method, AnnotatedMethod<T> annotatedMethod, AnnotationStore annotationStore, WeldClass<X> declaringClass, ClassTransformer classTransformer)
+   private WeldMethodImpl(Method method, Set<Type> typeClosure, AnnotatedMethod<T> annotatedMethod, AnnotationStore annotationStore, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      super(annotationStore, method, (Class<T>) method.getReturnType(), method.getGenericReturnType(), declaringClass);
+      super(annotationStore, method, (Class<T>) method.getReturnType(), method.getGenericReturnType(), typeClosure, declaringClass);
       this.method = method;
       this.toString = new StringBuilder().append("method ").append(method.toString()).toString();
       this.parameters = new ArrayList<WeldParameter<?, X>>();

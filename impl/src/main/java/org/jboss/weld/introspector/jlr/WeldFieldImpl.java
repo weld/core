@@ -19,6 +19,8 @@ package org.jboss.weld.introspector.jlr;
 import static org.jboss.weld.util.Reflections.ensureAccessible;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedField;
 
@@ -49,13 +51,13 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
    public static <T, X> WeldFieldImpl<T, X> of(Field field, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(field, classTransformer.getTypeStore());
-      return new WeldFieldImpl<T, X>(ensureAccessible(field), annotationStore, declaringClass, classTransformer);
+      return new WeldFieldImpl<T, X>(ensureAccessible(field), new Reflections.HierarchyDiscovery(field.getGenericType()).getTypeClosure(),  annotationStore, declaringClass, classTransformer);
    }
    
    public static <T, X> WeldFieldImpl<T, X> of(AnnotatedField<? super X> annotatedField, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(annotatedField.getAnnotations(), annotatedField.getAnnotations(), classTransformer.getTypeStore());
-      return new WeldFieldImpl<T, X>(ensureAccessible(annotatedField.getJavaMember()), annotationStore, declaringClass, classTransformer);
+      return new WeldFieldImpl<T, X>(ensureAccessible(annotatedField.getJavaMember()), annotatedField.getTypeClosure(), annotationStore, declaringClass, classTransformer);
    }
    
    /**
@@ -67,9 +69,9 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
     * @param field The actual field
     * @param declaringClass The abstraction of the declaring class
     */
-   private WeldFieldImpl(Field field, AnnotationStore annotationStore, WeldClass<X> declaringClass, ClassTransformer classTransformer)
+   private WeldFieldImpl(Field field, Set<Type> typeClosure, AnnotationStore annotationStore, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      super(annotationStore, field, (Class<T>) field.getType(), field.getGenericType(), declaringClass);
+      super(annotationStore, field, (Class<T>) field.getType(), field.getGenericType(), typeClosure, declaringClass);
       this.field = field;
       this.toString = new StringBuilder().append("field ").append(declaringClass.getName()).append(".").append(field.getName()).toString();
    }

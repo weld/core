@@ -71,7 +71,6 @@ public class Reflections
 
       private final Type type;
 
-      private Map<Class<?>, Type> typeMap;
       private Set<Type> typeSet;
 
       public HierarchyDiscovery(Type type)
@@ -82,13 +81,9 @@ public class Reflections
       protected void add(Class<?> clazz, Type type)
       {
          typeSet.add(type);
-         if (clazz != null)
-         {
-            typeMap.put(clazz, type);
-         }
       }
 
-      public Set<Type> getTypeClosureAsSet()
+      public Set<Type> getTypeClosure()
       {
          if (typeSet == null)
          {
@@ -97,19 +92,9 @@ public class Reflections
          return typeSet;
       }
       
-      public Map<Class<?>, Type> getTypeClosureAsMap()
-      {
-         if (typeMap == null)
-         {
-            init();
-         }
-         return typeMap;
-      }
-      
       private void init()
       {
          this.typeSet = new HashSet<Type>();
-         this.typeMap = new HashMap<Class<?>, Type>();
          discoverTypes(type);
       }
 

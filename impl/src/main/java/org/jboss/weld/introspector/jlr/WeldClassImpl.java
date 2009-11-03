@@ -46,7 +46,6 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Names;
-import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Reflections;
 
 import com.google.common.base.Supplier;
@@ -127,32 +126,28 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    private final boolean _local;
    private final boolean _anonymous;
    private final boolean _enum;
-   private final boolean _proxyable;
-   
-   private final Set<Type> typeClosureAsSet;
-   private final Map<Class<?>, Type> typeClosureAsMap;
 
    public static <T> WeldClass<T> of(Class<T> clazz, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(clazz.getAnnotations(), clazz.getDeclaredAnnotations(), classTransformer.getTypeStore());
-      return new WeldClassImpl<T>(clazz, clazz, null, annotationStore, classTransformer);
+      return new WeldClassImpl<T>(clazz, clazz, null, new Reflections.HierarchyDiscovery(clazz).getTypeClosure(), annotationStore, classTransformer);
    }
 
    public static <T> WeldClass<T> of(AnnotatedType<T> annotatedType, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(annotatedType.getAnnotations(), annotatedType.getAnnotations(), classTransformer.getTypeStore());
-      return new WeldClassImpl<T>(annotatedType.getJavaClass(), annotatedType.getBaseType(), annotatedType, annotationStore, classTransformer);
+      return new WeldClassImpl<T>(annotatedType.getJavaClass(), annotatedType.getBaseType(), annotatedType, annotatedType.getTypeClosure(), annotationStore, classTransformer);
    }
    
    public static <T> WeldClass<T> of(Class<T> rawType, Type type, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(rawType.getAnnotations(), rawType.getDeclaredAnnotations(), classTransformer.getTypeStore());
-      return new WeldClassImpl<T>(rawType, type, null, annotationStore, classTransformer);
+      return new WeldClassImpl<T>(rawType, type, null, new Reflections.HierarchyDiscovery(type).getTypeClosure(), annotationStore, classTransformer);
    }
 
-   protected WeldClassImpl(Class<T> rawType, Type type, AnnotatedType<T> annotatedType, AnnotationStore annotationStore, ClassTransformer classTransformer)
+   protected WeldClassImpl(Class<T> rawType, Type type, AnnotatedType<T> annotatedType, Set<Type> typeClosure, AnnotationStore annotationStore, ClassTransformer classTransformer)
    {
-      super(annotationStore, rawType, type);
+      super(annotationStore, rawType, type, typeClosure);
       this.toString = "class " + Names.classToString(rawType);
       this.name = rawType.getName();
       this._simpleName = rawType.getSimpleName();
@@ -168,20 +163,6 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       this._private = Modifier.isPrivate(rawType.getModifiers());
       this._packagePrivate = Reflections.isPackagePrivate(rawType.getModifiers());
       this._package = rawType.getPackage();
-      
-      if (annotatedType == null)
-      {
-         // If this annotated type has not been enhanced, use the default version
-         this.typeClosureAsSet = super.getTypeClosure();
-         this.typeClosureAsMap = super.getTypeClosureAsMap();
-         this._proxyable = super.isProxyable();
-      }
-      else
-      {
-         this.typeClosureAsSet = annotatedType.getTypeClosure();
-         this.typeClosureAsMap = Reflections.buildTypeMap(typeClosureAsSet);
-         this._proxyable = Proxies.isTypesProxyable(typeClosureAsSet);
-      }
       
       this.fields = new HashSet<WeldField<?, ?>>();
       this.annotatedFields = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldField<?, ?>>>(), new Supplier< Set<WeldField<?, ?>>>()
@@ -806,24 +787,6 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    public Set<AnnotatedMethod<? super T>> getMethods()
    {
       return (Set) methods;
-   }
-   
-   @Override
-   public boolean isProxyable()
-   {
-      return _proxyable;
-   }
-   
-   @Override
-   public Set<Type> getTypeClosure()
-   {
-      return typeClosureAsSet;
-   }
-   
-   @Override
-   public Map<Class<?>, Type> getTypeClosureAsMap()
-   {
-      return typeClosureAsMap;
    }
 
 }

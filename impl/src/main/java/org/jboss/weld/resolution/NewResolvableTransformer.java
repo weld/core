@@ -86,7 +86,7 @@ public class NewResolvableTransformer implements ResolvableTransformer
          else
          {
             final Class<?> javaClass = originalNewAnnotation.value();
-            final Set<Type> typeClosure = new Reflections.HierarchyDiscovery(javaClass).getTypeClosureAsSet();
+            final Set<Type> typeClosure = new Reflections.HierarchyDiscovery(javaClass).getTypeClosure();
             return new ForwardingResolvable()
             {
                

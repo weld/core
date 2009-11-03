@@ -631,7 +631,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       bindingAnnotations.add(new AnyLiteral());
       Set<ObserverMethod<? super T>> observers = new HashSet<ObserverMethod<? super T>>();
-      Set<ObserverMethod<?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(eventType).getTypeClosureAsSet(),  bindingAnnotations, null));
+      Set<ObserverMethod<?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(eventType).getTypeClosure(),  bindingAnnotations, null));
       for (ObserverMethod<?> observer : eventObservers)
       {
          observers.add((ObserverMethod<T>) observer);

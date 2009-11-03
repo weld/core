@@ -19,6 +19,7 @@ package org.jboss.weld.introspector.jlr;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Set;
 
 import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.ForwardingWeldMember;
@@ -60,9 +61,9 @@ public abstract class AbstractWeldMember<T, X, S extends Member> extends Abstrac
     * 
     * @param annotationMap The annotation map
     */
-   protected AbstractWeldMember(AnnotationStore annotatedItemHelper, Member member, Class<T> rawType, Type type, WeldClass<X> declaringType)
+   protected AbstractWeldMember(AnnotationStore annotatedItemHelper, Member member, Class<T> rawType, Type type, Set<Type> typeClosure, WeldClass<X> declaringType)
    {
-      super(annotatedItemHelper, rawType, type);
+      super(annotatedItemHelper, rawType, type, typeClosure);
       name = member.getName();
       this._public = Modifier.isPublic(member.getModifiers());
       this._private = Modifier.isPrivate(member.getModifiers());

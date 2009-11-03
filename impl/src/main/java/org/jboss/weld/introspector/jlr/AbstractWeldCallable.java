@@ -18,6 +18,7 @@ package org.jboss.weld.introspector.jlr;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
+import java.util.Set;
 
 import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldCallable;
@@ -32,9 +33,9 @@ public abstract class AbstractWeldCallable<T, X, S extends Member> extends Abstr
 
    
    
-   protected AbstractWeldCallable(AnnotationStore annotatedItemHelper, Member member, Class<T> rawType, Type type, WeldClass<X> declaringType)
+   protected AbstractWeldCallable(AnnotationStore annotatedItemHelper, Member member, Class<T> rawType, Type type, Set<Type> typeClosure, WeldClass<X> declaringType)
    {
-      super(annotatedItemHelper, member, rawType, type, declaringType);
+      super(annotatedItemHelper, member, rawType, type, typeClosure, declaringType);
    }
 
 }

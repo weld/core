@@ -31,6 +31,7 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Names;
+import org.jboss.weld.util.Reflections;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
@@ -74,7 +75,7 @@ public class WeldAnnotationImpl<T extends Annotation> extends WeldClassImpl<T> i
     */
    protected WeldAnnotationImpl(Class<T> annotationType, ClassTransformer classTransformer)
    {
-      super(annotationType, annotationType, null, AnnotationStore.of(annotationType, classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore()), classTransformer);
+      super(annotationType, annotationType, null, new Reflections.HierarchyDiscovery(annotationType).getTypeClosure(), AnnotationStore.of(annotationType, classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore()), classTransformer);
       this.clazz = annotationType;
       this.toString = "class " + Names.classToString(getDelegate());
       members = new HashSet<WeldMethod<?, ?>>();

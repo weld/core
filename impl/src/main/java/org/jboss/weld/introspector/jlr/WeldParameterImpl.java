@@ -26,6 +26,7 @@ import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldCallable;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.Reflections;
 
 /**
  * Represents a parameter
@@ -56,12 +57,12 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
    
    public static <T, X> WeldParameter<T, X> of(Annotation[] annotations, Class<T> rawType, Type type, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
    {
-      return new WeldParameterImpl<T, X>(annotations, rawType, type, declaringMember, position, classTransformer);
+      return new WeldParameterImpl<T, X>(annotations, rawType, type, new Reflections.HierarchyDiscovery(type).getTypeClosure(), declaringMember, position, classTransformer);
    }
    
    public static <T, X> WeldParameter<T, X> of(Set<Annotation> annotations, Class<T> rawType, Type type, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
    {
-      return new WeldParameterImpl<T, X>(annotations.toArray(EMPTY_ANNOTATION_ARRAY), rawType, type, declaringMember, position, classTransformer);
+      return new WeldParameterImpl<T, X>(annotations.toArray(EMPTY_ANNOTATION_ARRAY), rawType, type, new Reflections.HierarchyDiscovery(type).getTypeClosure(), declaringMember, position, classTransformer);
    }
 
    /**
@@ -70,9 +71,9 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
     * @param annotations The annotations array
     * @param type The type of the parameter
     */
-   protected WeldParameterImpl(Annotation[] annotations, Class<T> rawType, Type type, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
+   protected WeldParameterImpl(Annotation[] annotations, Class<T> rawType, Type type, Set<Type> typeClosure, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(annotations, annotations, classTransformer.getTypeStore()), rawType, type);
+      super(AnnotationStore.of(annotations, annotations, classTransformer.getTypeStore()), rawType, type, typeClosure);
       this.declaringMember = declaringMember;
       this._package = declaringMember.getPackage();
       this.position = position;
