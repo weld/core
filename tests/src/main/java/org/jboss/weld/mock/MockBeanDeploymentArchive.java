@@ -121,5 +121,25 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
    {
       return id;
    }
+   
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof MockBeanDeploymentArchive)
+      {
+         MockBeanDeploymentArchive that = (MockBeanDeploymentArchive) obj;
+         return this.getId().equals(that.getId());
+      }
+      else
+      {
+         return false;
+      }
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return getId().hashCode();
+   }
 
 }
