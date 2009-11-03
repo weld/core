@@ -22,12 +22,18 @@
  */
 package org.jboss.weld.servlet;
 
+import javax.enterprise.inject.spi.BeanManager;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
 
+import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.context.ContextLifecycle;
+import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 
 /**
@@ -52,6 +58,26 @@ public class WeldListener extends AbstractServletListener
          this.lifecycle = new ServletLifecycle(Container.instance().deploymentServices().get(ContextLifecycle.class));
       }
       return lifecycle;
+   }
+   
+   private static BeanManagerImpl getBeanManager(ServletContext ctx)
+   {
+      BeanDeploymentArchive war = Container.instance().deploymentServices().get(ServletServices.class).getBeanDeploymentArchive(ctx);
+      return Container.instance().beanDeploymentArchives().get(war);
+   }
+   
+   @Override
+   public void contextInitialized(ServletContextEvent sce)
+   {
+      super.contextInitialized(sce);
+      sce.getServletContext().setAttribute(BeanManager.class.getName(), getBeanManager(sce.getServletContext()));
+   }
+   
+   @Override
+   public void contextDestroyed(ServletContextEvent sce)
+   {
+      sce.getServletContext().removeAttribute(BeanManager.class.getName());
+      super.contextDestroyed(sce);
    }
 
    /**

@@ -16,12 +16,10 @@
  */
 package org.jboss.weld.servlet;
 
+import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.Container;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.servlet.api.ServletServices;
 
 /**
  * @author pmuir
@@ -36,14 +34,15 @@ public class ServletHelper
       {
          throw new IllegalArgumentException("ServletContext is null");
       }
-      BeanDeploymentArchive beanDeploymentArchive = Container.instance().deploymentServices().get(ServletServices.class).getBeanDeploymentArchive(ctx);
-      BeanManagerImpl beanManagerImpl = Container.instance().beanDeploymentArchives().get(beanDeploymentArchive);
+      BeanManagerImpl beanManagerImpl = (BeanManagerImpl) ctx.getAttribute(BeanManager.class.getName());
       if (beanManagerImpl == null)
       {
-         throw new IllegalArgumentException("Unable to find BeanManager. BeanDeploymentArchive: " + beanDeploymentArchive + "; ServletContext: " + ctx);
+         throw new IllegalArgumentException("Unable to find BeanManager. ServletContext: " + ctx);
       }
-      // Actually we need the manager for the current activity
-      return beanManagerImpl.getCurrent();
+      else
+      {
+         return beanManagerImpl;
+      }
    }
 
 }
