@@ -1,12 +1,12 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
    "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <chapter id="intro">
-   <title>Getting started with JSR-299 (CDI)</title>
+   <title>Getting started with CDI</title>
   
    <para>
       So you're keen to get started writing your first bean?  Or perhaps you're skeptical, wondering what kinds of hoops
       the CDI specification will make you jump through! The good news is that you've probably already written and used
-      hundreds, perhaps thousands of beans. CDI just helps you make use them in your web or enterprise application.
+      hundreds, perhaps thousands of beans. CDI just makes it easier to actually use them to build an application!
    </para>
 
    <section id="bean-definition">
@@ -14,41 +14,42 @@
 
       <para>
          In this section, you'll learn that a bean is exactly what you think it is. Only now, it has a true identity in
-         Java EE.
+         the container environment.
       </para>
 
       <para>
-         Prior to Java EE 6, there existed no clear definition of a bean in the platform. Of course, we've been calling
-         Java classes used in web and enterprise applications beans for years. Third-party frameworks, such as Spring,
-         even have facilities for defining and creating beans; and there are a couple of bean variants in the platform
-         itself, including EJB session beans and JSF managed beans. What was missing was a common definition.
+         Prior to Java EE 6, there was no clear definition of the term "bean" in the Java EE platform. Of course, 
+         we've been calling Java classes used in web and enterprise applications "beans" for years. There were even a 
+         couple of different kinds of things called "beans" in EE specifications, including EJB session beans and JSF 
+         managed beans. Meanwhile, other third-party frameworks such as Spring and Seam introduced their own ideas of 
+         what it meant to be a "bean". What we've been missing is a common definition.
       </para>
 
       <para>
-         Java EE 6 finally lays down the definition of a bean in the Managed Bean specification. Managed Beans are
-         defined as container-managed objects with minimal requirements, otherwise known by their acronym, POJOs (Plain
-         Old Java Objects). They support a small set of basic services, such as resource injection, lifecycle callbacks
-         and interceptors. Companion specifications, such as EJB and CDI, build on this basic model. But, <emphasis>at
-         last</emphasis>, there is a universally accepted concept of a bean and a lightweight component model that's
+         Java EE 6 finally lays down that common definition in the Managed Beans specification. Managed Beans are
+         defined as container-managed objects with minimal programming restrictions, otherwise known by the acronym 
+         POJO (Plain Old Java Object). They support a small set of basic services, such as resource injection, lifecycle 
+         callbacks and interceptors. Companion specifications, such as EJB and CDI, build on this basic model. But, 
+         <emphasis>at last</emphasis>, there is a uniform concept of a bean and a lightweight component model that's
          aligned across the Java EE platform.
       </para>
 
       <para>
-         With certain, unique exceptions, every Java class that has a constructor with no parameters (or an alternate
-         constructor designated with the annotation <literal>@Inject</literal>) is a candidate for becoming a bean. Any
-         EJB session bean is also a candidate. They become beans, specifically CDI beans, if they reside in a Java EE
-         module that contains a special marker file (META-INF/beans.xml) and if instances of those classes are managed
-         by the Java EE container. Just know that, for simple JavaBean classes, there's no special metadata you need to
-         add to make them beans. They just are.
+         With very few exceptions, almost every concrete Java class that has a constructor with no parameters (or a
+         constructor designated with the annotation <literal>@Inject</literal>) is a bean. This includes every
+         JavaBean and every EJB session bean. If you've already got some JavaBeans or session beans lying around,
+         they're already beans&mdash;you won't need any additional special metadata. There's just little one thing you 
+         need to do before you can start injecting them into stuff: you need to put them in an archive (a jar, or a
+         Java EE module like a war or ejb-jar) that contains a special marker file: <literal>META-INF/beans.xml</literal>.
       </para>
       
       <para>
-         The JavaBeans and EJBs you've been writing every day, up until now, have not been able to take advantage of the
-         new services defined by the CDI specification. But you'll be able to use every one of them with CDI --
-         allowing the container to create and destroy instances of your beans and associate them with a designed context
-         (or scope), injecting them into other beans, using them in EL expressions, specializing them with qualifier
-         annotations, even adding interceptors and decorators to them&#8212;from this point forward without modifying
-         your code. At most, you'll have to add some annotations.
+         The JavaBeans and EJBs you've been writing every day, up until now, have not been able to take advantage 
+         of the new services defined by the CDI specification. But you'll be able to use every one of them with 
+         CDI&mdash;allowing the container to create and destroy instances of your beans and associate them with a 
+         designed context, injecting them into other beans, using them in EL expressions, specializing them with 
+         qualifier annotations, even adding interceptors and decorators to them&mdash;without modifying your 
+         existing code. At most, you'll need to add some annotations.
       </para>
 
       <para>
@@ -117,16 +118,16 @@ public interface Translator {
         
       <para>
          As you've guessed, the <literal>@Inject</literal> annotation has something to do with dependency injection!
-         <literal>@Inject</literal> may be applied to a constructor or method of a bean, and tells the container to call
-         that constructor or method when instantiating the bean. The container will inject other beans it finds into the
-         parameters of the constructor or method.
+         <literal>@Inject</literal> may be applied to a constructor or method of a bean, and tells the container to 
+         call that constructor or method when instantiating the bean. The container will inject other beans it finds 
+         into the parameters of the constructor or method.
       </para>
 
       <para>
          We may obtain an instance of <literal>TextTranslator</literal> by injecting it into a constructor, bean
-         "setter" method, producer method, observer method or field of a JavaBean or EJB session, or a field of a
-         Servlet. The injection is based on the type of the injection point, not the name of the field, method or
-         argument.
+         "setter" method, producer method, observer method or field of a JavaBean or EJB session bean, or a field 
+         of a servlet. The injection is based on the type of the injection point, not the name of the field, method 
+         or parameter.
       </para>
       
       <para>
@@ -209,7 +210,8 @@ public void translate() {
 
       <para>
          Now we are starting to venture off into the details, so let's pause and examine a bean's anatomy. What aspects
-         of the bean are significant, and what gives it its identity?
+         of the bean are significant, and what gives it its identity? Instead of giving examples of beans, we're going
+         to define what <emphasis>makes</emphasis> something a bean.
       </para>
     
    </section>
@@ -218,8 +220,8 @@ public void translate() {
       <title>The anatomy of a bean</title>
   
       <para>
-         A bean is an application class that contains business logic. It may be called directly from Java code, or it
-         may be invoked via Unified EL. A bean may access transactional resources. Dependencies between beans are
+         A bean is usually an application class that contains business logic. It may be called directly from Java code, 
+         or it may be invoked via Unified EL. A bean may access transactional resources. Dependencies between beans are
          managed automatically by the container. Most beans are <emphasis>stateful</emphasis> and
          <emphasis>contextual</emphasis>. The lifecycle of a bean is always managed by the container.
       </para>
@@ -279,12 +281,12 @@ public void translate() {
       <para>
          We can replace one bean with another different bean that implements the same interface and has a different lifecycle
          (a different scope) without affecting the other bean implementation. In fact, CDI defines a simple facility for
-         overriding bean implementations at deployment time, as we will see in <xref linkend="alternatives"/> (FIXREF).
+         overriding bean implementations at deployment time, as we will see in <xref linkend="alternatives"/>.
       </para>
   
       <para>
-         Note that not all clients of a bean are beans themselves. Other objects such as Servlets or Message-Driven
-         Beans&#8212;which are by nature not injectable, contextual objects&#8212;may also obtain references to beans by
+         Note that not all clients of a bean are beans themselves. Other objects such as servlets or message-driven
+         beans&mdash;which are by nature not injectable, contextual objects&mdash;may also obtain references to beans by
          injection.
       </para>
 
@@ -292,17 +294,18 @@ public void translate() {
 
       <blockquote>
 
-         <para>A bean comprises of the following attributes:</para>
+         <para>A bean comprises the following attributes:</para>
 
          <itemizedlist>
             <listitem><para>A (nonempty) set of bean types</para></listitem>
             <listitem><para>A (nonempty) set of qualifiers</para></listitem>
             <listitem><para>A scope</para></listitem>
-            <listitem><para>A deployment type</para></listitem>
             <listitem><para>Optionally, a bean EL name</para></listitem>
             <listitem><para>A set of interceptor bindings</para></listitem>
             <listitem><para>A bean implementation</para></listitem>
          </itemizedlist>
+         
+         <para>Furthermore, a bean may or may not be an alternative.</para>
 
       </blockquote>
 
@@ -334,9 +337,13 @@ public void translate() {
          <para>  
             The bean types are <literal>BookShop</literal>, <literal>Business</literal> and
             <literal>Shop&lt;Book&gt;</literal>, as well as the implicit type <literal>java.lang.Object</literal>.
-            (Notice that a parameterized type is a legal bean type). Meanwhile, this session bean has only the local
-            interfaces <literal>BookShop</literal>, <literal>Auditable</literal> and <literal>java.lang.Object</literal>
-            as bean types, since the bean class, <literal>BookShopBean</literal> is not a client-visible type.
+            (Notice that a parameterized type is a legal bean type). 
+         </para>
+         
+         <para>
+            Meanwhile, this session bean has only the local interfaces <literal>BookShop</literal>, 
+            <literal>Auditable</literal> and <literal>java.lang.Object</literal> as bean types, since the bean class, 
+            <literal>BookShopBean</literal> is not a client-visible type.
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Stateful
@@ -354,7 +361,7 @@ public class BookShopBean extends Business implements BookShop, Auditable {
          <para>
             Bean types may be restricted to an explicit set by annotating the bean with the <literal>@Typed</literal>
             annotation and listing the bean types in the value of the annotation. For instance, this bean has been
-            restricted to a single bean type, <literal>Shop</literal>:
+            restricted to a single bean type, <literal>Shop&lt;Book&gt;</literal>:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Typed(Shop.class)
@@ -364,7 +371,7 @@ public class BookShop extends Business implements Shop<Book> {
 
          <para>
             The bean types alone often do not provide enough information for the container to know which bean to inject.
-            For instance, say you have two implementations of the <literal>PaymentProcessor</literal> interface:
+            For instance, suppose we have two implementations of the <literal>PaymentProcessor</literal> interface:
             <literal>CreditCardPaymentProcessor</literal> and <literal>DebitPaymentProcessor</literal>. Injecting into a
             field of type <literal>PaymentProcessor</literal> introduces an ambigious condition. In these cases, the
             container must rely on some client-visible semantic that is satisified by one implementation of the bean
@@ -374,7 +381,7 @@ public class BookShop extends Business implements Shop<Book> {
          <para>
             Qualifiers are represented by user-defined annotations that are themselves annotated with
             <literal>@Qualifer</literal>. These annotations extend the type system in Java to let you further qualify
-            the type without having to fall back to string-based names as many dependency injection frameworks use.
+            the type without having to fall back to string-based names as in many other  dependency injection solutions.
             Here's an example of a qualifier annotation:
          </para>
 
@@ -385,14 +392,15 @@ public @interface CreditCard {}]]></programlisting>
 
          <para>
             You may not be used to seeing the definition of an annotation. In fact, this might be the first time you
-            have encountered one. With CDI, they will become very familiar artifact as you will be creating them often.
-            Pay attention to the names of the built-in annotations in CDI and EJB.
+            have encountered one. With CDI, they will become very familiar artifact as you will be creating them from
+            time to time. 
          </para>
          
          <tip>
             <para>
-               You'll notice that they are all adjectives. You are encouraged to follow this convention when creating
-               your custom annotations, since they serve to describe the behaviors and roles of the class.
+               Pay attention to the names of the built-in annotations in CDI and EJB. You'll notice that they are 
+               often adjectives. We encourage you to follow this convention when creating your custom annotations, 
+               since they serve to describe the behaviors and roles of the class.
             </para>
          </tip>
             
@@ -411,12 +419,13 @@ public @interface CreditCard {}]]></programlisting>
          </note>
 
          <para>
-            For each injection point, the container searches for a bean which satisfies the contract, meaning it matches
-            the bean time and all the qualifiers. It then injects that instance.
+            For each injection point, the container searches for a bean which satisfies the contract, one which has
+            the bean type and all the qualifiers. If it find exactly one matching bean, it injects an instance of 
+            that bean.
          </para>
 
          <para>
-            We've seen how to indicate that you want to inject qualified bean. But how do you actually qualify the bean?
+            We've seen how to indicate that you want to inject a qualified bean. But how do you actually qualify the bean?
             By using the annotation, of course! The following bean has the qualifier <literal>@CreditCard</literal>
             and implements the bean type <literal>PaymentProcessor</literal>. Therefore, it satisfies our qualified
             injection point:
@@ -434,9 +443,9 @@ public class CreditCardPaymentProcessor
          </note>
 
          <para>
-            CDI defines a sophisticated, yet intuitive <emphasis>resolution algorithm</emphasis> that helps the
-            container decide what to do if there is more than one bean that satisfies a particular contract. We'll get
-            into the details in <xref linkend="injection"/>.
+            CDI defines a simple <emphasis>resolution rule</emphasis> that helps the container decide what to do if there 
+            is more than one bean that satisfies a particular contract. We'll get into the details in 
+            <xref linkend="alternatives"/>. TBD: write a section about "fixing ambiguous dependencies"!
          </para>
 
       </section>
@@ -446,9 +455,9 @@ public class CreditCardPaymentProcessor
          <!-- I wonder whether the explaination of contextual above would fit better here -->
 
          <para>
-            The <emphasis>scope</emphasis> of a bean defines the lifecycle and visibility of instances created from it.
+            The <emphasis>scope</emphasis> of a bean defines the lifecycle and visibility of its instances.
             The CDI context model is extensible, accommodating arbitrary scopes. However, certain important scopes are
-            built-in to the specification, and provided by the container. Each scope is represented by an annotation
+            built into the specification, and provided by the container. Each scope is represented by an annotation
             type.
          </para>
 
@@ -484,13 +493,12 @@ public class ShoppingCart { ... }]]></programlisting>
          <title>EL name</title>
 
          <para>
-            If you want to reference a bean outside of Java, such as in JavaServer Faces (JSF) view, you must assign the
-            bean a <emphasis>name</emphasis>. The name is used as the EL name of the bean, allowing the bean to be used
-            in a Unified EL expression.
+            If you want to reference a bean in non-Java code that supports Unified EL expressions, for example, in a 
+            JSP or JSF page, you must assign the bean an <emphasis>EL name</emphasis>.
          </para>
          
          <para>
-            The name is specified using the <literal>@Named</literal> annotation, as shown here:
+            The EL name is specified using the <literal>@Named</literal> annotation, as shown here:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@SessionScoped @Named("cart")
@@ -531,31 +539,25 @@ public class ShoppingCart { ... }]]></programlisting>
          <title>Alternatives</title>
 
          <para>
-            There are cases when you want to replace one bean implementation with another at deployment time. For
-            instance, you may want to use a mock implementation in a testing environment. An
-            <emphasis>alternative</emphasis> may be declared by annotating the bean class or producer method or field
-            with the <literal>@Alternative</literal> annotation.
+            We've already seen how qualifiers let us choose between multiple implementations of an interface at
+            development time. But sometimes we have an interface whose implementation varies dependending upon
+            the deployment environment. For example, you may want to use a mock implementation in a testing 
+            environment. An <emphasis>alternative</emphasis> may be declared by annotating the bean class or 
+            producer method or field with the <literal>@Alternative</literal> annotation.
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Alternative
 public class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisting> 
 
          <para>
-            An alternative can also be declared by annotating a bean, producer method or producer fields with a
-            stereotype that has the <literal>@Alternative</literal> annotation. Stereotypes are explained in <xref
-            linkend="stereotypes"/>.
-         </para>
-
-         <para>
-            You then enable the alternative using the CDI deployment descriptor, META-INF/beans.xml, in the classpath
-            entry in which you intent to use it. An alternative must be explicitly selected in every bean deployment
-            archive in which the alternative should be available for injection, lookup and EL resolution.
+            You can choose between alternatives at deployment time by selecting an alternative using the CDI 
+            deployment descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE module that
+            uses it.
          </para>
 
          <para>
             Details on how to enable alternative beans, and how you can use them to specialize (override) beans and
-            producer methods is covered in <xref linkend="specialization"/>. CDI is very flexible when it comes
-            alternatives that are selected at deployment time.
+            producer methods is covered in <xref linkend="3"/>.
          </para>
          
       </section>
@@ -564,8 +566,8 @@ public class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></progr
          <title>Interceptor binding types</title>
 
          <para>
-            Since the introduction of the Managed Bean specification in Java EE 6, interceptors are available on
-            JavaBeans in additionn to EJB session beans. That's right, you no longer have to create an EJB just to
+            Since the introduction of the managed bean specification in Java EE 6, interceptors are available on
+            JavaBeans in addition to EJB session beans. That's right, you no longer have to create an EJB just to
             intercept method calls. Holler. So what does CDI have to offer? Well, a lot actually. Let's cover some
             background.
          </para>
