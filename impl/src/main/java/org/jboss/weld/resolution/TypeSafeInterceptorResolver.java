@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.enterprise.inject.spi.Interceptor;
+
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.util.Beans;
@@ -30,34 +32,34 @@ import org.jboss.weld.util.Beans;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable,InterceptorImpl<?>>
+public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable,Interceptor<?>>
 {
    private BeanManagerImpl manager;
 
 
-   public TypeSafeInterceptorResolver(BeanManagerImpl manager, Iterable<InterceptorImpl<?>> interceptors)
+   public TypeSafeInterceptorResolver(BeanManagerImpl manager, Iterable<Interceptor<?>> interceptors)
    {
       super(interceptors);
       this.manager = manager;
    }
 
    @Override
-   protected boolean matches(InterceptorResolvable resolvable, InterceptorImpl<?> bean)
+   protected boolean matches(InterceptorResolvable resolvable, Interceptor<?> bean)
    {
       return bean.intercepts(resolvable.getInterceptionType())
             && bean.getInterceptorBindings().size() > 0
             && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager())
-            && getManager().getEnabledInterceptorClasses().contains(bean.getType());
+            && getManager().getEnabledInterceptorClasses().contains(bean.getBeanClass());
    }
 
 
    @Override
-   protected Set<InterceptorImpl<?>> sortResult(Set<InterceptorImpl<?>> matchedInterceptors)
+   protected Set<Interceptor<?>> sortResult(Set<Interceptor<?>> matchedInterceptors)
    {
-      Set<InterceptorImpl<?>> sortedBeans = new TreeSet<InterceptorImpl<?>>(new Comparator<InterceptorImpl<?>>()
+      Set<Interceptor<?>> sortedBeans = new TreeSet<Interceptor<?>>(new Comparator<Interceptor<?>>()
       {
 
-         public int compare(InterceptorImpl<?> o1, InterceptorImpl<?> o2)
+         public int compare(Interceptor<?> o1, Interceptor<?> o2)
          {
             List<Class<?>> enabledInterceptors = getManager().getEnabledInterceptorClasses();
             int p1 = enabledInterceptors.indexOf(((InterceptorImpl<?>) o1).getType());
@@ -71,7 +73,7 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
    }
 
    @Override
-   protected Set<InterceptorImpl<?>> filterResult(Set<InterceptorImpl<?>> matched)
+   protected Set<Interceptor<?>> filterResult(Set<Interceptor<?>> matched)
    {
       return matched;
    }

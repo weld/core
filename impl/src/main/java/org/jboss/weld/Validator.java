@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -266,6 +267,7 @@ public class Validator implements Service
       validateBeans(manager.getDecorators(), new ArrayList<RIBean<?>>(), manager);
       validateBeans(manager.getBeans(), new ArrayList<RIBean<?>>(), manager);
       validateEnabledDecoratorClasses(manager);
+      validateEnabledInterceptorClasses(manager);
       validateEnabledPolicies(manager);
       validateDisposalMethods(environment);
       validateBeanNames(manager);
@@ -321,6 +323,28 @@ public class Validator implements Service
          if (accessibleNamespaces.contains(name))
          {
             throw new DeploymentException("The bean name " + name + " is used as a prefix for another bean");
+         }
+      }
+   }
+
+   private void validateEnabledInterceptorClasses(BeanManagerImpl beanManager)
+   {
+      Set<Class<?>> interceptorBeanClasses = new HashSet<Class<?>>();
+      for (Interceptor<?> interceptor : beanManager.getInterceptors())
+      {
+         interceptorBeanClasses.add(interceptor.getBeanClass());
+      }
+      for (Class<?> enabledInterceptorClass: beanManager.getEnabledInterceptorClasses())
+      {
+         if (beanManager.getEnabledInterceptorClasses().indexOf(enabledInterceptorClass)
+               < beanManager.getEnabledInterceptorClasses().lastIndexOf(enabledInterceptorClass))
+         {
+            throw new DeploymentException("Enabled interceptor class" + enabledInterceptorClass + " specified twice");
+         }
+         if (!interceptorBeanClasses.contains(enabledInterceptorClass))
+         {
+            throw new DeploymentException("Enabled interceptor class " + enabledInterceptorClass
+                  + " is neither annotated with @Interceptor, nor registered through a portable extension");
          }
       }
    }

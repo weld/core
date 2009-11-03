@@ -283,19 +283,7 @@ public class BeansXmlParser
             try
             {
                Class<?> clazz = resourceLoader.classForName(className);
-               if (!clazz.isAnnotationPresent(Interceptor.class))
-               {
-                   throw new DeploymentException("Class " + clazz.getName() + " is enabled as an interceptor," +
-                        " but it does not have the appropriate annotation");
-               }
-               else if (list.contains(clazz))
-               {
-                   throw new DeploymentException("Class " + clazz.getName() + " is listed twice as an enabled interceptor");
-               }
-               else
-               {
-                  list.add(clazz);
-               }
+               list.add(clazz);
             }
             catch (ResourceLoadingException e)
             {

@@ -218,7 +218,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    private transient final TypeSafeBeanResolver<Bean<?>> beanResolver;
    private transient final TypeSafeResolver<? extends Resolvable, DecoratorImpl<?>> decoratorResolver;
-   private transient final TypeSafeResolver<? extends Resolvable, InterceptorImpl<?>> interceptorResolver;
+   private transient final TypeSafeResolver<? extends Resolvable, Interceptor<?>> interceptorResolver;
    private transient final TypeSafeResolver<? extends Resolvable, ObserverMethod<?>> observerResolver;
    private transient final NameBasedResolver nameBasedResolver;
    private transient final ELResolver weldELResolver;
@@ -236,7 +236,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    private transient final List<Bean<?>> beans;
    private transient final List<Bean<?>> transitiveBeans;
    private transient final List<DecoratorImpl<?>> decorators;
-   private transient final List<InterceptorImpl<?>> interceptors;
+   private transient final List<Interceptor<?>> interceptors;
    private transient final List<String> namespaces;
    private transient final List<ObserverMethod<?>> observers;
    
@@ -290,7 +290,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<DecoratorImpl<?>>(),
-            new CopyOnWriteArrayList<InterceptorImpl<?>>(),
+            new CopyOnWriteArrayList<Interceptor<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?>>(),
             new CopyOnWriteArrayList<String>(),
             new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
@@ -319,7 +319,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<DecoratorImpl<?>>(),
-            new CopyOnWriteArrayList<InterceptorImpl<?>>(),
+            new CopyOnWriteArrayList<Interceptor<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?>>(),
             new CopyOnWriteArrayList<String>(),
             rootManager.getEnterpriseBeans(),
@@ -385,7 +385,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
          List<Bean<?>> beans, 
          List<Bean<?>> transitiveBeans,
          List<DecoratorImpl<?>> decorators,
-         List<InterceptorImpl<?>> interceptors,
+         List<Interceptor<?>> interceptors,
          List<ObserverMethod<?>> observers, 
          List<String> namespaces,
          Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans, 
@@ -528,10 +528,10 @@ public class BeanManagerImpl implements WeldManager, Serializable
          
       };
 
-      public static Transform<InterceptorImpl<?>> INTERCEPTOR_BEAN = new Transform<InterceptorImpl<?>>()
+      public static Transform<Interceptor<?>> INTERCEPTOR_BEAN = new Transform<Interceptor<?>>()
       {
 
-         public Iterable<InterceptorImpl<?>> transform(BeanManagerImpl beanManager)
+         public Iterable<Interceptor<?>> transform(BeanManagerImpl beanManager)
          {
             return beanManager.getInterceptors();
          }
@@ -610,7 +610,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return this.<T>resolveObserverMethods(event.getClass(), bindings);
    }
 
-   public void addInterceptor(InterceptorImpl<?> bean)
+   public void addInterceptor(Interceptor<?> bean)
    {
       interceptors.add(bean);
       getServices().get(ContextualStore.class).putIfAbsent(bean);
@@ -815,7 +815,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return Collections.unmodifiableList(decorators);
    }
 
-    public List<InterceptorImpl<?>> getInterceptors()
+    public List<Interceptor<?>> getInterceptors()
    {
       return Collections.unmodifiableList(interceptors);
    }

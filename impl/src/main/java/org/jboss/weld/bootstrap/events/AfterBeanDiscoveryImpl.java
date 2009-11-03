@@ -24,6 +24,8 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.decorator.Decorator;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployment;
@@ -56,7 +58,14 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
    public void addBean(Bean<?> bean)
    {
       BeanManagerImpl beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
-      beanManager.addBean(bean);
+      if (bean instanceof Interceptor)
+      {
+         beanManager.addInterceptor((Interceptor<?>) bean);
+      }
+      else
+      {
+         beanManager.addBean(bean);
+      }
       ProcessBeanImpl.fire(beanManager, bean);
    }
 
