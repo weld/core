@@ -32,7 +32,7 @@
    
    <toc/>
    
-   <part>
+   <part id="1">
       <title>Loosely-coupled, contextual components with strong typing</title>
       
       <xi:include href="part1.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -47,7 +47,7 @@
      
    </part>
    
-   <part>
+   <part id="2">
       <title>Developing loosely-coupled code</title>
       
       <xi:include href="part2.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -58,7 +58,7 @@
      
    </part>
    
-   <part>
+   <part id="3">
       <title>Making the most of strong typing</title>
       
       <xi:include href="part3.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -68,7 +68,7 @@
 
    </part>
    
-   <part>
+   <part id="4">
       <title>CDI and the Java EE ecosystem</title>
       
       <xi:include href="part4.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -80,7 +80,7 @@
    
    <xi:include href="next.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
    
-   <part>
+   <part id="5">
       <title>Weld reference</title>
       
       <xi:include href="part5.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
