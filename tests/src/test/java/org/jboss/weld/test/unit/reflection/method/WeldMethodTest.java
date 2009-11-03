@@ -16,11 +16,12 @@ public class WeldMethodTest
    private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
    private final Class<Choice<?, ?>> CHOICE_LITERAL = new TypeLiteral<Choice<?, ?>>() {}.getRawType();
    
-   @Test(groups = "broken", description = "WELD-221")
-   public void testNonStaticInnerClassWithGenericTypes() throws Exception
+   @Test(description = "WELD-221")
+   public void testMethodReturnsGenericTypeOfClass() throws Exception
    {
       WeldClass<Choice<?, ?>> clazz = WeldClassImpl.of(CHOICE_LITERAL, transformer);
       WeldMethod<Choice<?, ?>, Choice<?, ?>> method = WeldMethodImpl.of(Choice.class.getMethod("aMethod"), clazz, transformer);
+      assert method.getTypeClosure().size() == 3;
    }
 
 }

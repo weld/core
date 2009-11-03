@@ -198,19 +198,19 @@ public class Reflections
             {
                return resolveParameterizedType((ParameterizedType) beanType, (ParameterizedType) type);
             }
-            if (beanType instanceof Class)
+            if (beanType instanceof Class<?>)
             {
                return resolveType(((Class<?>) beanType).getGenericSuperclass(), type);
             }
          }
 
-         if (type instanceof TypeVariable)
+         if (type instanceof TypeVariable<?>)
          {
             if (beanType instanceof ParameterizedType)
             {
                return resolveTypeParameter((ParameterizedType) beanType, (TypeVariable<?>) type);
             }
-            if (beanType instanceof Class)
+            if (beanType instanceof Class<?>)
             {
                return resolveType(((Class<?>) beanType).getGenericSuperclass(), type);
             }
@@ -242,7 +242,7 @@ public class Reflections
          Type[] actualTypes = beanType.getActualTypeArguments();
          for (int i = 0; i < typeVariables.length; i++)
          {
-            if (typeVariables[i].equals(typeVariable))
+            if (typeVariables[i].equals(typeVariable) && !actualTypes[i].equals(typeVariable))
             {
                return resolveType(type, actualTypes[i]);
             }
