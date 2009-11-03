@@ -30,7 +30,9 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.Container;
 import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -52,7 +54,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    // The bean
    private transient Bean<?> bean;
    // The bean index in the manager
-   private final int beanIndex;
+   private final String id;
 
    private final BeanManagerImpl manager;
 
@@ -64,12 +66,12 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
     * @param bean The bean to proxy
     * @param beanIndex The index to the bean in the manager bean list
     */
-   public ClientProxyMethodHandler(Bean<?> bean, BeanManagerImpl manager, int beanIndex)
+   public ClientProxyMethodHandler(Bean<?> bean, BeanManagerImpl manager, String id)
    {
       this.bean = bean;
-      this.beanIndex = beanIndex;
+      this.id = id;
       this.manager = manager;
-      log.trace("Created method handler for bean " + bean + " indexed as " + beanIndex);
+      log.trace("Created method handler for bean " + bean + " identified as " + id);
    }
 
    /**
@@ -94,7 +96,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    {
       if (bean == null)
       {
-         bean = manager.getBeans().get(beanIndex);
+         bean = Container.instance().deploymentServices().get(ContextualStore.class).<Bean<Object>, Object>getContextual(id);
       }
       Object proxiedInstance = getProxiedInstance(bean);
       if ("touch".equals(proxiedMethod.getName()) && Marker.isMarker(0, proxiedMethod, args))
@@ -164,7 +166,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    {
       StringBuilder buffer = new StringBuilder();
       String beanInfo = bean == null ? "null bean" : bean.toString();
-      buffer.append("Proxy method handler for " + beanInfo + " with index " + beanIndex);
+      buffer.append("Proxy method handler for " + beanInfo + " with id " + id);
       return buffer.toString();
    }
 

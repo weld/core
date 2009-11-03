@@ -27,7 +27,9 @@ import javassist.util.proxy.ProxyFactory;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.Container;
 import org.jboss.weld.DefinitionException;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.ConcurrentCache;
 
@@ -70,12 +72,12 @@ public class ClientProxyProvider
     * @throws InstantiationException When the proxy couldn't be created
     * @throws IllegalAccessException When the proxy couldn't be created
     */
-   private static <T> T createClientProxy(Bean<T> bean, BeanManagerImpl manager, int beanIndex) throws RuntimeException
+   private static <T> T createClientProxy(Bean<T> bean, BeanManagerImpl manager, String id) throws RuntimeException
    {
       
       try
       {
-         ClientProxyMethodHandler proxyMethodHandler = new ClientProxyMethodHandler(bean, manager, beanIndex);
+         ClientProxyMethodHandler proxyMethodHandler = new ClientProxyMethodHandler(bean, manager, id);
          Set<Type> classes = new LinkedHashSet<Type>(bean.getTypes());
          //classes.add(ClientProxyInstance.class);
          classes.add(Serializable.class);
@@ -114,12 +116,12 @@ public class ClientProxyProvider
 
          public T call() throws Exception
          {
-            int beanIndex = manager.getBeans().indexOf(bean);
-            if (beanIndex < 0)
+            String id = Container.instance().deploymentServices().get(ContextualStore.class).putIfAbsent(bean);
+            if (id == null)
             {
-               throw new DefinitionException(bean + " is not known to the manager");
+               throw new DefinitionException("There was an error creating an id for " + bean);
             }
-            return createClientProxy(bean, manager, beanIndex);
+            return createClientProxy(bean, manager, id);
          }
 
       });
