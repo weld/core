@@ -43,7 +43,7 @@
       alternatives and then show the guarantees that specialization adds.
    </para>
 
-   <section>
+   <section id="alternatives">
       <title>Bean alternatives</title>
 
       <para>
