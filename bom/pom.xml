@@ -78,6 +78,7 @@
       <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
       <jboss.interceptor.version>1.0.0-CR5</jboss.interceptor.version>
       <slf4j.version>1.5.9.RC1</slf4j.version>
+      <cal10n.version>0.7.2</cal10n.version>
    </properties>
 
    <dependencyManagement>
@@ -161,6 +162,12 @@
              <groupId>org.slf4j</groupId>
              <artifactId>slf4j-simple</artifactId>
              <version>${slf4j.version}</version>
+         </dependency>
+  
+         <dependency>
+             <groupId>ch.qos</groupId>
+             <artifactId>cal10n-api</artifactId>
+             <version>${cal10n.version}</version>
          </dependency>
 
       </dependencies>
