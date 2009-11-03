@@ -6,11 +6,10 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class ClassAnnotatedItemTest extends AbstractWeldTest
+public class ClassAnnotatedItemTest
 {
 	
    private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
