@@ -271,6 +271,26 @@ public class Reflections
       }
 
    }
+   
+   public static Map<Class<?>, Type> buildTypeMap(Set<Type> types)
+   {
+      Map<Class<?>, Type> map = new HashMap<Class<?>, Type>();
+      for (Type type : types)
+      {
+         if (type instanceof Class<?>)
+         {
+            map.put((Class<?>) type, type);
+         }
+         else if (type instanceof ParameterizedType)
+         {
+            if (((ParameterizedType) type).getRawType() instanceof Class<?>)
+            {
+               map.put((Class<?>) ((ParameterizedType) type).getRawType(), type);
+            }
+         }
+      }
+      return map;
+   }
 
    /**
     * Gets the property name from a getter method
