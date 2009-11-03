@@ -356,7 +356,7 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
          <para>
             <!-- this is a really vague point -->
             The most common circumstance when it's necessary to explicitly specify <literal>@Default</literal> is on a bean
-            which as another qualifier in addition to the default one.
+            which has another qualifier in addition to the default one.
          </para>
   
       </section>
