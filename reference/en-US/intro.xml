@@ -40,7 +40,7 @@
          JavaBean and every EJB session bean. If you've already got some JavaBeans or session beans lying around,
          they're already beans&mdash;you won't need any additional special metadata. There's just little one thing you 
          need to do before you can start injecting them into stuff: you need to put them in an archive (a jar, or a
-         Java EE module like a war or ejb-jar) that contains a special marker file: <literal>META-INF/beans.xml</literal>.
+         Java EE module such as a war or EJB jar) that contains a special marker file: <literal>META-INF/beans.xml</literal>.
       </para>
       
       <para>
