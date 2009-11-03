@@ -80,6 +80,13 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(null, type, beanManager);
       this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(null, type, beanManager);
       this.resourceInjectionPoints = Beans.getResourceInjectionPoints(null, type, beanManager);
+      for (InjectionPoint ip : this.injectionPoints)
+      {
+         if (ip.getType().equals(InjectionPoint.class))
+         {
+            throw new DefinitionException("Cannot inject an InjectionPoint on a non-contextual type. Type: " + type + "; InjectionPoint: " + ip);
+         }
+      }
    }
 
    public T produce(CreationalContext<T> ctx)
