@@ -472,6 +472,10 @@
                   <literal>org.jboss.weld.servlet.WeldListener</literal> as a Servlet listener, either
                   automatically, or through user configuration, for each CDI application which uses Servlet.
                </para>
+               <para>
+                  You must ensure that that <literal>WeldListener.contextInitialized()</literal> is called
+                  after bootstrap is complete (<literal>Bootstrap.endInitialization()</literal> has been called). 
+               </para>
             </listitem>
          </varlistentry>
          <varlistentry>
