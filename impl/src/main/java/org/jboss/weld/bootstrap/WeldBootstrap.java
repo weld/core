@@ -22,6 +22,9 @@ import static org.jboss.weld.messages.BootstrapMessage.VERSION;
 import static org.jboss.weld.util.log.Category.BOOTSTRAP;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -57,19 +60,27 @@ import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.SessionContext;
 import org.jboss.weld.context.SingletonContext;
 import org.jboss.weld.context.api.BeanStore;
+import org.jboss.weld.conversation.ConversationImpl;
+import org.jboss.weld.conversation.NumericConversationIdGenerator;
+import org.jboss.weld.conversation.ServletConversationManager;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.DefaultResourceLoader;
+import org.jboss.weld.resources.SingleThreadScheduledExecutorServiceFactory;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
 import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.servlet.HttpSessionManager;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Names;
+import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.serviceProvider.DefaultServiceLoaderFactory;
 import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.jboss.weld.ws.WSApiAbstraction;
@@ -101,6 +112,7 @@ public class WeldBootstrap implements Bootstrap
       private final Environment environment;
       private final Deployment deployment;
       private final Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives;
+      private final BeanDeploymentArchive implementationBeanDeploymentArchive;
       
       public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, Deployment deployment)
       {
@@ -108,21 +120,63 @@ public class WeldBootstrap implements Bootstrap
          this.environment = environment;
          this.deployment = deployment;
          this.managerAwareBeanDeploymentArchives = new HashMap<BeanDeploymentArchive, BeanDeployment>();
+         this.implementationBeanDeploymentArchive = new BeanDeploymentArchive()
+         {
+            
+            private  final ServiceRegistry serviceRegistry = new SimpleServiceRegistry();
+            private final Set<Class<?>> beanClasses = Arrays2.<Class<?>>asSet(ConversationImpl.class, ServletConversationManager.class, NumericConversationIdGenerator.class, HttpSessionManager.class);
+            
+            public ServiceRegistry getServices()
+            {
+               return serviceRegistry;
+            }
+            
+            public String getId()
+            {
+               return "weld";
+            }
+            
+            public Collection<EjbDescriptor<?>> getEjbs()
+            {
+               return Collections.emptySet();
+            }
+            
+            public Collection<URL> getBeansXml()
+            {
+               return Collections.emptySet();
+            }
+            
+            public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
+            {
+               return Collections.emptySet();
+            }
+            
+            public Collection<Class<?>> getBeanClasses()
+            {
+               return beanClasses;
+            }
+         };
       }
       
       public Map<BeanDeploymentArchive, BeanDeployment> visit()
       {
+         // Add the impl beans
+         visit(implementationBeanDeploymentArchive, managerAwareBeanDeploymentArchives, new HashSet<BeanDeploymentArchive>(), false);
+         
          for (BeanDeploymentArchive archvive : deployment.getBeanDeploymentArchives())
          {
-            visit(archvive, managerAwareBeanDeploymentArchives, new HashSet<BeanDeploymentArchive>());
+            visit(archvive, managerAwareBeanDeploymentArchives, new HashSet<BeanDeploymentArchive>(), true);
          }
          return managerAwareBeanDeploymentArchives;
       }
       
-      private BeanDeployment visit(BeanDeploymentArchive beanDeploymentArchive, Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives, Set<BeanDeploymentArchive> seenBeanDeploymentArchives)
+      private BeanDeployment visit(BeanDeploymentArchive beanDeploymentArchive, Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives, Set<BeanDeploymentArchive> seenBeanDeploymentArchives, boolean validate)
       {
          // Check that the required services are specified
-         verifyServices(beanDeploymentArchive.getServices(), environment.getRequiredBeanDeploymentArchiveServices());
+         if (validate)
+         {
+            verifyServices(beanDeploymentArchive.getServices(), environment.getRequiredBeanDeploymentArchiveServices());
+         }
          
          // Check the id is not null
          if (beanDeploymentArchive.getId() == null)
@@ -143,10 +197,12 @@ public class WeldBootstrap implements Bootstrap
             // Cut any circularties
             if (!seenBeanDeploymentArchives.contains(archive))
             {
-               BeanDeployment child = visit(archive, managerAwareBeanDeploymentArchives, seenBeanDeploymentArchives);
+               BeanDeployment child = visit(archive, managerAwareBeanDeploymentArchives, seenBeanDeploymentArchives, validate);
                parent.getBeanManager().addAccessibleBeanManager(child.getBeanManager());
             }
          }
+         // Make the implementation beans accessible
+         parent.getBeanManager().addAccessibleBeanManager(managerAwareBeanDeploymentArchives.get(implementationBeanDeploymentArchive).getBeanManager());
          return parent;
       }
       
@@ -176,6 +232,10 @@ public class WeldBootstrap implements Bootstrap
          if (!deployment.getServices().contains(ResourceLoader.class))
          {
             deployment.getServices().add(ResourceLoader.class, new DefaultResourceLoader());
+         }
+         if (!deployment.getServices().contains(ScheduledExecutorServiceFactory.class))
+         {
+            deployment.getServices().add(ScheduledExecutorServiceFactory.class, new SingleThreadScheduledExecutorServiceFactory());
          }
          
          verifyServices(deployment.getServices(), environment.getRequiredDeploymentServices());

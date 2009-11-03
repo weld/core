@@ -32,19 +32,13 @@ import org.jboss.weld.bean.builtin.UserTransactionBean;
 import org.jboss.weld.bean.builtin.facade.EventBean;
 import org.jboss.weld.bean.builtin.facade.InstanceBean;
 import org.jboss.weld.bootstrap.api.Environment;
-import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.conversation.ConversationImpl;
-import org.jboss.weld.conversation.JavaSEConversationTerminator;
-import org.jboss.weld.conversation.NumericConversationIdGenerator;
-import org.jboss.weld.conversation.ServletConversationManager;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
-import org.jboss.weld.servlet.HttpSessionManager;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.validation.spi.ValidationServices;
 import org.jboss.weld.xml.BeansXmlParser;
@@ -135,14 +129,6 @@ public class BeanDeployment
       beanDeployer.getEnvironment().addBuiltInBean(new InjectionPointBean(beanManager));
       beanDeployer.getEnvironment().addBuiltInBean(new EventBean(beanManager));
       beanDeployer.getEnvironment().addBuiltInBean(new InstanceBean(beanManager));
-      if (!environment.equals(Environments.SE))
-      {
-         beanDeployer.addClass(ConversationImpl.class);
-         beanDeployer.addClass(ServletConversationManager.class);
-         beanDeployer.addClass(JavaSEConversationTerminator.class);
-         beanDeployer.addClass(NumericConversationIdGenerator.class);
-         beanDeployer.addClass(HttpSessionManager.class);
-      }
       if (beanManager.getServices().contains(TransactionServices.class))
       {
          beanDeployer.getEnvironment().addBuiltInBean(new UserTransactionBean(beanManager));

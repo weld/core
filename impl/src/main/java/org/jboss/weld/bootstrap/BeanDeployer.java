@@ -72,11 +72,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
       return this;
    }
    
-   // TODO Do we need to fire PAT for annotated types added via BBD? Probably not PLM.
    public BeanDeployer addClass(AnnotatedType<?> clazz)
    {
       ClassTransformer classTransformer = Container.instance().deploymentServices().get(ClassTransformer.class);
-      // TODO Discover any @New injection points, and store as newClasses
       classes.add(classTransformer.loadClass(clazz));
       return this;
    }

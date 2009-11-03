@@ -59,7 +59,10 @@ import javax.inject.Qualifier;
 import org.jboss.interceptor.registry.InterceptorRegistry;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
+import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
+import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.AbstractProcessInjectionTarget;
@@ -231,6 +234,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     * observers deployed in this bean deployment archive activity
     */
    private transient final List<Bean<?>> beans;
+   private transient final List<Bean<?>> transitiveBeans;
    private transient final List<DecoratorImpl<?>> decorators;
    private transient final List<InterceptorImpl<?>> interceptors;
    private transient final List<String> namespaces;
@@ -284,6 +288,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return new BeanManagerImpl(
             serviceRegistry, 
             new CopyOnWriteArrayList<Bean<?>>(),
+            new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<DecoratorImpl<?>>(),
             new CopyOnWriteArrayList<InterceptorImpl<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?>>(),
@@ -312,6 +317,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return new BeanManagerImpl(
             services, 
             new CopyOnWriteArrayList<Bean<?>>(),
+            new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<DecoratorImpl<?>>(),
             new CopyOnWriteArrayList<InterceptorImpl<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?>>(),
@@ -339,6 +345,8 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       List<Bean<?>> beans = new CopyOnWriteArrayList<Bean<?>>();
       beans.addAll(parentManager.getBeans());
+      List<Bean<?>> transitiveBeans = new CopyOnWriteArrayList<Bean<?>>();
+      beans.addAll(parentManager.getTransitiveBeans());
       
       List<ObserverMethod<?>> registeredObservers = new CopyOnWriteArrayList<ObserverMethod<?>>();
       registeredObservers.addAll(parentManager.getObservers());
@@ -348,6 +356,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return new BeanManagerImpl(
             parentManager.getServices(), 
             beans, 
+            transitiveBeans,
             parentManager.getDecorators(),
             parentManager.getInterceptors(),
             registeredObservers, 
@@ -374,6 +383,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    private BeanManagerImpl(
          ServiceRegistry serviceRegistry, 
          List<Bean<?>> beans, 
+         List<Bean<?>> transitiveBeans,
          List<DecoratorImpl<?>> decorators,
          List<InterceptorImpl<?>> interceptors,
          List<ObserverMethod<?>> observers, 
@@ -392,6 +402,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       this.services = serviceRegistry;
       this.beans = beans;
+      this.transitiveBeans = transitiveBeans;
       this.decorators = decorators;
       this.interceptors = interceptors;
       this.enterpriseBeans = enterpriseBeans;
@@ -414,11 +425,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
       
 
       // TODO Currently we build the accessible bean list on the fly, we need to set it in stone once bootstrap is finished...
-      this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, createDynamicAccessibleIterable(Transform.BEAN));
+      Transform<Bean<?>> beanTransform = new Transform.BeanTransform(this);
+      this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, createDynamicAccessibleIterable(beanTransform));
       this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicAccessibleIterable(Transform.DECORATOR_BEAN));
       this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicAccessibleIterable(Transform.INTERCEPTOR_BEAN));
       this.observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(Transform.EVENT_OBSERVER));
-      this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(Transform.BEAN));
+      this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
       this.weldELResolver = new WeldELResolver(this);
       this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
       
@@ -481,12 +493,27 @@ public class BeanManagerImpl implements WeldManager, Serializable
    private static interface Transform<T>
    {
       
-      public static Transform<Bean<?>> BEAN = new Transform<Bean<?>>()
+      public static class BeanTransform implements Transform<Bean<?>>
       {
+         
+         private final BeanManagerImpl declaringBeanManager;
+
+         public BeanTransform(BeanManagerImpl declaringBeanManager)
+         {
+            this.declaringBeanManager = declaringBeanManager;
+         }
 
          public Iterable<Bean<?>> transform(BeanManagerImpl beanManager)
          {
-            return beanManager.getBeans();
+            // New beans and built in beans aren't resolvable transitively
+            if (beanManager.equals(declaringBeanManager))
+            {
+               return beanManager.getBeans();
+            }
+            else
+            {
+               return beanManager.getTransitiveBeans();
+            }
          }
          
       };
@@ -560,6 +587,11 @@ public class BeanManagerImpl implements WeldManager, Serializable
       for (BeanManagerImpl childActivity : childActivities)
       {
          childActivity.addBean(bean);
+      }
+      // New beans and most built in beans aren't resolvable transtively
+      if (bean instanceof ExtensionBean || (!(bean instanceof NewBean) && !(bean instanceof AbstractBuiltInBean<?>)))
+      {
+         this.transitiveBeans.add(bean);
       }
       this.beans.add(bean);
       beanResolver.clear();
@@ -773,6 +805,11 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return Collections.unmodifiableList(beans);
    }
    
+   private List<Bean<?>> getTransitiveBeans()
+   {
+      return Collections.unmodifiableList(transitiveBeans);
+   }
+   
    public List<DecoratorImpl<?>> getDecorators()
    {
       return Collections.unmodifiableList(decorators);
@@ -785,7 +822,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    public Iterable<Bean<?>> getAccessibleBeans()
    {
-      return createDynamicAccessibleIterable(Transform.BEAN);
+      return createDynamicAccessibleIterable(new Transform.BeanTransform(this));
    }
 
    public void addContext(Context context)
@@ -1297,7 +1334,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
    }
 
-   public Set<Annotation> getInterceptorBindingTypeDefinition(Class<? extends Annotation> bindingType)
+   public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType)
    {
       if (getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingType).isValid())
       {
