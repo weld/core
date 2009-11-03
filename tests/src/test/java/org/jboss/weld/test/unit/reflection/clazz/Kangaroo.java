@@ -1,4 +1,4 @@
-package org.jboss.weld.test.unit.implementation.annotatedItem.anonymous;
+package org.jboss.weld.test.unit.reflection.clazz;
 
 
 class Kangaroo 

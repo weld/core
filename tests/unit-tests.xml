@@ -42,9 +42,6 @@
          <package name="org.jboss.weld.test.unit.environments.servlet" />
          <package name="org.jboss.weld.test.unit.extensions" />
          <package name="org.jboss.weld.test.unit.implementation" />
-         <package name="org.jboss.weld.test.unit.implementation.annotatedItem" />
-         <package name="org.jboss.weld.test.unit.implementation.annotatedItem.anonymous" />
-         <package name="org.jboss.weld.test.unit.implementation.annotatedItem.genericMethodReturnType" />
          <package name="org.jboss.weld.test.unit.implementation.enterpise" />
          <package name="org.jboss.weld.test.unit.implementation.enterpise.lifecycle" />
          <package name="org.jboss.weld.test.unit.implementation.enterprise.sbi" />
@@ -69,6 +66,8 @@
          <package name="org.jboss.weld.test.unit.noncontextual" />
          <package name="org.jboss.weld.test.unit.preinstantiatebeanmanager" />
          <package name="org.jboss.weld.test.unit.security" />
+         <package name="org.jboss.weld.test.unit.reflection.clazz" />
+         <package name="org.jboss.weld.test.unit.reflection.method" />
       </packages>
    </test>
    

@@ -1,4 +1,4 @@
-package org.jboss.weld.test.unit.implementation.annotatedItem;
+package org.jboss.weld.test.unit.reflection.clazz;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;

@@ -1,4 +1,4 @@
-package org.jboss.weld.test.unit.implementation.annotatedItem.genericMethodReturnType;
+package org.jboss.weld.test.unit.reflection.method;
 
 import javax.enterprise.util.TypeLiteral;
 
@@ -16,7 +16,7 @@ public class WeldMethodTest
    private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
    private final Class<Choice<?, ?>> CHOICE_LITERAL = new TypeLiteral<Choice<?, ?>>() {}.getRawType();
    
-   @Test(groups = "broken")
+   @Test(groups = "broken", description = "WELD-221")
    public void testNonStaticInnerClassWithGenericTypes() throws Exception
    {
       WeldClass<Choice<?, ?>> clazz = WeldClassImpl.of(CHOICE_LITERAL, transformer);

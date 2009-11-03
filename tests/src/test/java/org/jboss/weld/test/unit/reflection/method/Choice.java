@@ -1,4 +1,4 @@
-package org.jboss.weld.test.unit.implementation.annotatedItem.genericMethodReturnType;
+package org.jboss.weld.test.unit.reflection.method;
 
 abstract class ChoiceParent<T>
 {

@@ -1,10 +1,11 @@
-package org.jboss.weld.test.unit.implementation.annotatedItem;
+package org.jboss.weld.test.unit.reflection.clazz;
 
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import java.util.Set;
 
 import javax.enterprise.inject.Stereotype;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.inject.Qualifier;
 
 import org.jboss.testharness.impl.packaging.Artifact;
@@ -12,14 +13,20 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-public class ClassAnnotatedItemTest extends AbstractWeldTest
+public class ClassAnnotatedItemTest
 {
 	
    private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
+   
+   @Test(groups = "broken", description="WELD-216")
+   public void testNonStaticInnerClassWithGenericTypes()
+   {
+      AnnotatedType at = WeldClassImpl.of(new Kangaroo().procreate().getClass(), transformer);
+      WeldClassImpl.of(at, transformer);
+   }
    
    @Test
    public void testDeclaredAnnotations()
