@@ -108,7 +108,12 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
    @Override
    public boolean isProxyable()
    {
-      return false;
+      return true;
+   }
+   
+   public boolean isProxyRequired()
+   {
+      return true;
    }
    
    @Override

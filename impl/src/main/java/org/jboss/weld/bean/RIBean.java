@@ -72,6 +72,11 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
 
    public abstract boolean isProxyable();
 
+   public boolean isProxyRequired()
+   {
+      return false;
+   }
+   
    public abstract boolean isPrimitive();
 
    public abstract Set<WeldInjectionPoint<?, ?>> getAnnotatedInjectionPoints();

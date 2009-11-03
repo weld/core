@@ -60,6 +60,7 @@ import org.jboss.interceptor.registry.InterceptorRegistry;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.NewBean;
+import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
@@ -911,7 +912,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          creationalContext = ((WeldCreationalContext<?>) creationalContext).getCreationalContext(bean);
       }
-      if (getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal())
+      if (isProxyRequired(bean))
       {
          if (creationalContext != null || getContext(bean.getScope()).get(bean) != null)
          {
@@ -925,6 +926,22 @@ public class BeanManagerImpl implements WeldManager, Serializable
       else
       {
          return getContext(bean.getScope()).get((Contextual) bean, creationalContext);
+      }
+   }
+   
+   private boolean isProxyRequired(Bean<?> bean)
+   {
+      if (getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal())
+      {
+         return true;
+      }
+      else if (bean instanceof RIBean<?>)
+      {
+         return ((RIBean<?>) bean).isProxyRequired();
+      }
+      else
+      {
+         return false;
       }
    }
 
