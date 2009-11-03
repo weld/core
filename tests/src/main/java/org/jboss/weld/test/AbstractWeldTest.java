@@ -21,9 +21,7 @@ import javax.servlet.ServletContext;
 import org.jboss.testharness.AbstractTest;
 import org.jboss.testharness.impl.runner.servlet.ServletTestRunner;
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.mock.MockServletContext;
 import org.jboss.weld.mock.el.EL;
-import org.jboss.weld.servlet.ServletHelper;
 import org.jboss.weld.util.collections.EnumerationList;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
@@ -56,10 +54,6 @@ public abstract class AbstractWeldTest extends AbstractTest
       if (isInContainer())
       {
          servletContext = ServletTestRunner.getCurrentServletContext();
-      }
-      else
-      {
-         servletContext = new MockServletContext("");
       }
       
    }
@@ -133,7 +127,7 @@ public abstract class AbstractWeldTest extends AbstractTest
 
    protected BeanManagerImpl getCurrentManager()
    {
-      return ServletHelper.getModuleBeanManager(servletContext);
+      return BeanManagerLocator.INSTANCE.locate();
    }
 
    public boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException )
