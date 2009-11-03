@@ -17,27 +17,30 @@
 package org.jboss.weld.resources;
 
 import java.util.Hashtable;
+import java.util.Map.Entry;
 
 import javax.naming.Context;
 import javax.naming.Name;
+import javax.naming.NamingException;
 import javax.naming.spi.ObjectFactory;
 
+import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 
 public class ManagerObjectFactory implements ObjectFactory
 {
    
    public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception
    {
-      // Temp hack for JBoss Flat Deployment
-      if (Container.instance().beanDeploymentArchives().size() == 1)
+      for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance().beanDeploymentArchives().entrySet())
       {
-         return Container.instance().beanDeploymentArchives().entrySet().iterator().next().getValue().getCurrent();
+         if (entry.getKey().getId().equals("flat"))
+         {
+            return entry.getValue().getCurrent();
+         }
       }
-      else
-      {
-         throw new UnsupportedOperationException("Unable to determine which manager to return");
-      }
+      throw new NamingException("Unable to locate BeanManager");
    }
    
 }
