@@ -2,30 +2,18 @@ package org.jboss.weld.tck;
 
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.servlet.ServletContext;
 
 import org.jboss.jsr299.tck.spi.Managers;
-import org.jboss.testharness.impl.runner.servlet.ServletTestRunner;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
-import org.jboss.weld.mock.MockServletContext;
-import org.jboss.weld.servlet.ServletHelper;
+import org.jboss.weld.test.BeanManagerLocator;
 
 public class ManagersImpl implements Managers
 {
    
-   private static final ServletContext SERVLET_CONTEXT = new MockServletContext("");
-
    public BeanManager getManager()
    {
-      if (ServletTestRunner.getCurrentServletContext() != null)
-      {
-         return ServletHelper.getModuleBeanManager(ServletTestRunner.getCurrentServletContext());
-      }
-      else
-      {
-         return ServletHelper.getModuleBeanManager(SERVLET_CONTEXT);
-      }
+      return BeanManagerLocator.INSTANCE.locate();
    }
 
    public boolean isDefinitionError(org.jboss.testharness.api.DeploymentException deploymentException)
