@@ -71,10 +71,10 @@
    </repositories>
 
    <properties>
-      <weld.api.version>1.0-CR3</weld.api.version>
+      <weld.api.version>1.0-CR4</weld.api.version>
       <google.collections.version>1.0-rc3</google.collections.version>
       <javassist.version>3.11.0.GA</javassist.version>
-      <cdi.tck.version>1.0.0-CR4</cdi.tck.version>
+      <cdi.tck.version>1.0.0-CR5</cdi.tck.version>
       <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
       <jboss.interceptor.version>1.0.0-CR5</jboss.interceptor.version>
       <slf4j.version>1.5.9.RC1</slf4j.version>
