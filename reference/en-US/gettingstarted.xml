@@ -1,10 +1,6 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
    "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <chapter id="gettingstarted">
-<!-- TODO
-Explain use of war:inplace to use jetty
-Java SE numberguess example
--->
 
    <title>Getting started Weld, the JSR-299 reference implementation</title>
 
