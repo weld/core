@@ -9,11 +9,11 @@ import org.jboss.weld.mock.MockServletLifecycle;
 import org.jboss.weld.mock.TestContainer;
 import org.testng.annotations.Test;
 
-public class NonTransitiveResolutionTest
+public class TransitiveResolutionTest
 {
    
    @Test(description="WELD-236")
-   public void test()
+   public void testTypicalEarStructure()
    { 
       
       // Create the BDA in which we will deploy Foo. This is equivalent to a ejb jar
@@ -41,8 +41,19 @@ public class NonTransitiveResolutionTest
       container.startContainer();
       container.ensureRequestActive();
       
-      // Get the bean manager for bda1 and bda2
-      BeanManagerImpl beanManager1 = container.getBeanManager();
+      // Get the bean manager for war and ejb jar
+      BeanManagerImpl warBeanManager = container.getBeanManager();
+      BeanManagerImpl ejbJarBeanManager = container.getLifecycle().getBootstrap().getManager(ejbJar);
+      
+      assert warBeanManager.getBeans(Bar.class).size() == 1;
+      assert warBeanManager.getBeans(Foo.class).size() == 1;
+      assert ejbJarBeanManager.getBeans(Foo.class).size() == 1;
+      assert ejbJarBeanManager.getBeans(Bar.class).size() == 0;
+      Bar bar = warBeanManager.getInstanceByType(Bar.class);
+      assert bar.getFoo() != null;
+      assert bar.getBeanManager() != null;
+      assert bar.getBeanManager().equals(warBeanManager);
+      assert bar.getFoo().getBeanManager().equals(ejbJarBeanManager);
    }
    
 }
