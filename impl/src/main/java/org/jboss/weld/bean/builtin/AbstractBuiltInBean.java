@@ -111,11 +111,6 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
       return true;
    }
    
-   public boolean isProxyRequired()
-   {
-      return true;
-   }
-   
    @Override
    public String getDescription()
    {

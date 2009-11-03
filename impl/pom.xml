@@ -136,6 +136,7 @@
                         <enumType>org.jboss.weld.messages.JsfMessage</enumType>
                         <enumType>org.jboss.weld.messages.ReflectionMessage</enumType>
                         <enumType>org.jboss.weld.messages.UtilMessage</enumType>
+                        <enumType>org.jboss.weld.messages.ServletMessage</enumType>
                      </enumTypes>
                   </configuration>
                </execution>

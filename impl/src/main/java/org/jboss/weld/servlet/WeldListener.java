@@ -22,6 +22,10 @@
  */
 package org.jboss.weld.servlet;
 
+import static org.jboss.weld.messages.ServletMessage.NOT_STARTING;
+import static org.jboss.weld.util.log.Category.SERVLET;
+import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -35,6 +39,7 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * The Weld listener
@@ -48,6 +53,8 @@ import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
  */
 public class WeldListener extends AbstractServletListener
 {
+   
+   private static final LocLogger log = loggerFactory().getLogger(SERVLET);
    
    private ServletLifecycle lifecycle;
    
@@ -78,15 +85,16 @@ public class WeldListener extends AbstractServletListener
    @Override
    public void contextInitialized(ServletContextEvent sce)
    {
+      super.contextInitialized(sce);
       if (!Container.instance().isInitialized())
       {
-         throw new IllegalStateException("Weld bootstrap must be complete before contextInitialized event");
+         log.warn(NOT_STARTING);
+         return;
       }
       if (!Container.instance().deploymentServices().contains(ServletServices.class))
       {
          throw new IllegalStateException("Cannot use WeldListener without ServletServices");
       }
-      super.contextInitialized(sce);
       sce.getServletContext().setAttribute(BeanManager.class.getName(), getBeanManager(sce.getServletContext()));
    }
    
