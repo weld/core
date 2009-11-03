@@ -53,7 +53,7 @@
       </para>
 
       <para>
-         Let's see how to create your first bean.
+         Now let's see how to create your first bean that actually uses CDI.
       </para>
 
    </section>
