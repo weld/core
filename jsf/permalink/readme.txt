@@ -25,7 +25,7 @@ You can also execute the application in an embedded Tomcat 6 container:
 
  mvn war:inplace tomcat:run
 
-In both cases, any changes to assets in src/main/webapp take affect
+In both cases, any changes to assets in src/main/webapp take effect
 immediately. If a change to a webapp configuration file is made, the
 application may automatically redeploy. The redeploy behavior can be fined
 tuned in the plugin configuration (at least for Jetty). If you make a change

@@ -1,26 +1,42 @@
 Weld Numberguess Example
 ========================
 
-This example demonstrates the use of Weld in a Servlet container
-(Tomcat 6 / Jetty 6) and in as a non-EJB application JBoss AS. No alterations 
-are expected to be made to the container. All services are 
-self-contained within the deployment.
+This example demonstrates the use of Weld in a Servlet container (Tomcat 6 or
+Jetty 6) or as a non-EJB application in JBoss AS. No alterations are expected
+to be made to the container. All services are self-contained within the
+deployment.
 
-This example uses a Maven 2 build, and an ant script to deploy to JBoss AS. 
-Execute the following command to build the WAR. The WAR will will be located 
-in the target directory after completion of the build.
+You'll execute the Ant build script in this directory using the Ant command
+(ant) to compile, assemble and deploy the example to JBoss AS. The Ant build is
+using Maven under the covers, but you're not required to have Maven installed
+on your path.  If you do have Maven installed, you can use the Maven command
+(mvn) to compile and assemble a standalone artifact (WAR) and run the example
+in an embedded Servlet container.
+
+Execute the following command to build a WAR for a Java EE 6 container. The
+WAR will be located in the target directory after completion of the build.
 
  mvn
 
-Now you're ready to deploy.
+Now you're ready to deploy to JBoss AS.
 
 == Deploying to JBoss AS
 
-Make sure you have set the path to JBoss AS in ../../local.build.properties, using
-jboss.home as the key.
+Make sure you have assigned the path of your JBoss AS installation to the
+jboss.home property key in the following file, relative to this directory:
 
-Now, type ant restart to deploy the application to JBoss AS. You can access it
-at http://localhost:8080/weld-numberguess
+../../local.build.properties
+
+(This file is located in the examples directory of the Weld distribution).
+
+If you haven't already, start JBoss AS. Then, deploy the application to JBoss AS
+using this command:
+
+ ant restart
+
+Open this local URL to access the running application:
+
+ http://localhost:8080/weld-numberguess
 
 == Deploying with an embedded servlet container
 
@@ -32,9 +48,11 @@ You can also execute the application in an embedded Tomcat 6 container:
 
  mvn war:inplace tomcat:run -Ptomcat
  
-You'll can access the app at http://localhost:9090/weld-numberguess
+In both cases, you can access the application at the following local URL
 
-In both cases, any changes to assets in src/main/webapp take affect immediately. If
+ http://localhost:9090/weld-numberguess
+
+In both cases, any changes to assets in src/main/webapp take effect immediately. If
 a change to a webapp configuration file is made, the application may
 automatically redeploy. The redeploy behavior can be fined tuned in the plugin
 configuration (at least for Jetty). If you make a change to a classpath
@@ -42,11 +60,11 @@ resource, you need to execute a build:
 
  mvn compile war:inplace {-Ptomcat,-Pjetty} 
 
-Note that war:inplace copies the compiled classes and JARs inside WebContent,
-under WEB-INF/classes and WEB-INF/lib, respectively, mixing source and compiled
-files. However, the build does work around these temporary files by excluding
-them from the packaged WAR and cleaning them during the Maven clean phase.
-These folders are also ignored by SVN.
+Note that war:inplace copies the compiled classes and JARs inside
+src/main/webapp, under WEB-INF/classes and WEB-INF/lib, respectively, mixing
+source and compiled files. However, the build does work around these temporary
+files by excluding them from the packaged WAR and cleaning them during the
+Maven clean phase. These folders are also ignored by SVN.
 
 == Deploying to standalone Tomcat
 
@@ -63,12 +81,12 @@ Maven 2 settings.xml file, set the <username> and <password> elements to the
 appropriate values and uncomment the <server> element inside the
 tomcat-maven-plugin configuration in the pom.xml.
 
-You can deploy it as an exploded archive
-immediately after the war goal is finished assembling the exploded structure:
+You can deploy it as an exploded archive immediately after the war goal is
+finished assembling the exploded structure:
 
  mvn compile war:exploded tomcat:exploded -Ptomcat
 
-Once the application is deployed, you can redeploy it using the following command:
+Once the application is deployed, you can redeploy it using this command:
 
  mvn tomcat:redeploy -Ptomcat
 
@@ -78,11 +96,13 @@ But likely you want to run one or more build goals first before you redeploy:
  mvn war:exploded tomcat:redeploy -Ptomcat
  mvn compile war:exploded tomcat:redeploy -Ptomcat
 
-The application is available at http://localhost:8080/weld-numberguess
+The application is available at the following local URL:
+
+ http://localhost:8080/weld-numberguess
 
 == Launching Jetty embedded from Eclipse
 
-First, set up the eclipse environment:
+First, set up the Eclipse environment:
 
  mvn clean eclipse:clean eclipse:eclipse -Pjetty-ide
  
@@ -90,14 +110,15 @@ Next, put all the needed resources into the src/main/webapp
 
  mvn war:inplace -Pjetty-ide
  
-Now, you are ready to run the server in Eclipse; find the Start class in src/jetty/java, and run it's
-main method as a Java Application. The server will launch. You'll find the application at
-http://localhost:8080
+Now, you are ready to run the server in Eclipse; find the Start class in
+src/jetty/java, and run its main method as a Java Application. The server
+will launch. You can view the application at the following local URL:
 
+ http://localhost:8080
 
 == Using Google App Engine
 
-First, set up the eclipse environment:
+First, set up the Eclipse environment:
 
  mvn clean eclipse:clean eclipse:eclipse -Pgae
  
@@ -107,4 +128,5 @@ Next, put all the needed resources into the src/main/webapp
 
  mvn war:inplace -Pgae
 
-Now, in Eclipse, you can either run the app locally, or deploy it to Google App Engine
+Now, in Eclipse, you can either run the app locally, or deploy it to Google App Engine.
+
