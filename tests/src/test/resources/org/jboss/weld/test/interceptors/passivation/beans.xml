@@ -1,7 +1,0 @@
-<beans>
-  <interceptors>
-    <class>org.jboss.weld.test.interceptors.passivation.Goalkeeper</class>
-    <class>org.jboss.weld.test.interceptors.passivation.Defender</class>
-    <class>org.jboss.weld.test.interceptors.passivation.PassivationActivationInterceptor</class>
-  </interceptors>
-</beans>

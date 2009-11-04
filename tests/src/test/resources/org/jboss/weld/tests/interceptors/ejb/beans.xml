@@ -1,0 +1,7 @@
+<beans>
+  <interceptors>
+    <class>org.jboss.weld.tests.interceptors.ejb.Goalkeeper</class>
+    <class>org.jboss.weld.tests.interceptors.ejb.Defender</class>
+    <class>org.jboss.weld.tests.interceptors.ejb.Referee</class>
+  </interceptors>
+</beans>

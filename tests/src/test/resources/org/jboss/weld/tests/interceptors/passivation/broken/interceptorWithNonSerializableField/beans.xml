@@ -1,0 +1,5 @@
+<beans>
+  <interceptors>
+    <class>org.jboss.weld.tests.interceptors.passivation.broken.interceptorWithNonSerializableField.Defender</class>
+  </interceptors>
+</beans>

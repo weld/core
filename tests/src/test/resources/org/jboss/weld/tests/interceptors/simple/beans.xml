@@ -1,0 +1,9 @@
+<beans>
+    <interceptors>
+        <class>org.jboss.weld.tests.interceptors.simple.SimpleInterceptor</class>
+        <class>org.jboss.weld.tests.interceptors.simple.TwoBindingsInterceptor</class>
+    </interceptors>
+    <decorators>
+        <class>org.jboss.weld.tests.interceptors.simple.SimpleDecorator</class>
+    </decorators>
+</beans>
