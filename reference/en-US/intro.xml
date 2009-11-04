@@ -220,9 +220,9 @@ public void translate() {
       <title>The anatomy of a bean</title>
   
       <para>
-         A bean is usually an application class that contains business logic. It may be called directly from Java code, 
-         or it may be invoked via Unified EL. A bean may access transactional resources. Dependencies between beans are
-         managed automatically by the container. Most beans are <emphasis>stateful</emphasis> and
+         A bean is usually an application class that contains business logic. It may be called directly from Java code,
+         or it may be invoked via the Unified EL. A bean may access transactional resources. Dependencies between beans
+         are managed automatically by the container. Most beans are <emphasis>stateful</emphasis> and
          <emphasis>contextual</emphasis>. The lifecycle of a bean is always managed by the container.
       </para>
 
