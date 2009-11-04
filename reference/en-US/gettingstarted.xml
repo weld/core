@@ -1253,7 +1253,7 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
             </listitem>
             <listitem>
                <para>
-                  execute the following command
+                  Execute the following command
                </para>
                <programlisting>mvn -Drun</programlisting>
             </listitem>
