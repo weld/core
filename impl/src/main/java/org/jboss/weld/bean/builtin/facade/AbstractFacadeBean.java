@@ -20,10 +20,8 @@ import static org.jboss.weld.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUILT_IN_NOT
 import static org.jboss.weld.util.log.Category.BEAN;
 import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -51,7 +49,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
          if (genericType instanceof ParameterizedType )
          {
             Type type = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-            return newInstance(type, injectionPoint.getQualifiers());
+            return newInstance(type, injectionPoint);
          }
          else
          {
@@ -70,6 +68,6 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
       // TODO Auto-generated method stub
    }
    
-   protected abstract T newInstance(Type type, Set<Annotation> annotations);
+   protected abstract T newInstance(Type type, InjectionPoint ip);
    
 }

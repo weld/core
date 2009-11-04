@@ -18,7 +18,6 @@ package org.jboss.weld.event;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +33,7 @@ import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
+import javax.inject.Qualifier;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
@@ -43,6 +43,7 @@ import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.util.Beans;
 
@@ -60,6 +61,8 @@ import org.jboss.weld.util.Beans;
  */
 public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
 {
+   
+   private static final Annotation ANY = new AnyLiteral();
 
    private final Set<Annotation> bindings;
    private final Type eventType;
@@ -86,7 +89,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
       this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
 
-      this.bindings = new HashSet<Annotation>(Arrays.asList(observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray()));
+      this.bindings = new HashSet<Annotation>(observerMethod.getAnnotatedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
       Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
       this.notifyType = observesAnnotation.notifyObserver();
       transactionPhase = TransactionPhase.IN_PROGRESS;

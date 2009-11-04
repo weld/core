@@ -58,7 +58,6 @@ import javax.inject.Qualifier;
 
 import org.jboss.interceptor.registry.InterceptorRegistry;
 import org.jboss.weld.bean.DecoratorImpl;
-import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
@@ -76,7 +75,6 @@ import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
@@ -622,14 +620,8 @@ public class BeanManagerImpl implements WeldManager, Serializable
    @SuppressWarnings("unchecked")
    private <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... bindings)
    {
-      checkBindingTypes(Arrays.asList(bindings));
-      
-      // Manually hack in the default annotations here. We need to redo all the annotation defaulting throughout. PLM
+      checkBindingTypes(Arrays.asList(bindings));    
       HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(Arrays.asList(bindings));
-      if (bindingAnnotations.size() == 0)
-      {
-         bindingAnnotations.add(new DefaultLiteral());
-      }
       bindingAnnotations.add(new AnyLiteral());
       Set<ObserverMethod<? super T>> observers = new HashSet<ObserverMethod<? super T>>();
       Set<ObserverMethod<?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(eventType).getTypeClosure(),  bindingAnnotations, null));

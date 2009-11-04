@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Provider;
 
@@ -72,9 +73,9 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    }
 
    @Override
-   protected Instance<?> newInstance(Type type, Set<Annotation> annotations)
+   protected Instance<?> newInstance(Type type, InjectionPoint ip)
    {
-      return InstanceImpl.of(type, getManager(), annotations);
+      return InstanceImpl.of(type, getManager(), ip.getQualifiers());
    }
    
    @Override

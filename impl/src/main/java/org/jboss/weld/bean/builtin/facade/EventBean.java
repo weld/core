@@ -23,11 +23,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.event.EventImpl;
 import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.resolution.ResolvableTransformer;
 import org.jboss.weld.util.collections.Arrays2;
 
@@ -37,6 +40,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    private static final Class<Event<?>> TYPE = new TypeLiteral<Event<?>>() {}.getRawType();
    private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(TYPE, Object.class);
    private static final Annotation ANY = new AnyLiteral();
+   private static final Default DEFAULT = new DefaultLiteral();
    private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(ANY));
    public static final ResolvableTransformer TRANSFORMER = new FacadeBeanResolvableTransformer(TYPE);
    
@@ -69,9 +73,15 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    }
 
    @Override
-   protected Event<?> newInstance(Type type, Set<Annotation> annotations)
+   protected Event<?> newInstance(Type type, InjectionPoint ip)
    {
-      return EventImpl.of(type, getManager(), annotations);
+      Set<Annotation> qualifiers = new HashSet<Annotation>(ip.getQualifiers());
+      if (!ip.getAnnotated().isAnnotationPresent(Default.class))
+      {
+         // Remove any @Default if it doesn't appear on the injection point
+         qualifiers.remove(DEFAULT);
+      }
+      return EventImpl.of(type, getManager(), qualifiers);
    }
    
    @Override

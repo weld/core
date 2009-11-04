@@ -33,24 +33,22 @@ public class SimpleEventTest extends AbstractWeldTest
 
       manager.fireEvent("Fired using Manager Interface with AnnotationLiteral.", new AnnotationLiteral<Updated>(){});
 
-      assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_1_OBSERVED == true;
-      assert RECEIVE_3_OBSERVED == false;
+      assert RECEIVE_2_OBSERVED == true;
+      assert RECEIVE_3_OBSERVED == true;
       
       initFlags();
       
       manager.fireEvent("Fired using Manager Interface.");
       
-      assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_1_OBSERVED == false; // not called
+      assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_3_OBSERVED == true;
    }
    
    @Test
    public void testFireEventOnEvent()
    {
-      BeanManagerImpl manager = getCurrentManager();
-
       App app = createContextualInstance(App.class);
       
       initFlags();
@@ -59,15 +57,15 @@ public class SimpleEventTest extends AbstractWeldTest
 
       assert RECEIVE_1_OBSERVED == true;
       assert RECEIVE_2_OBSERVED == true;
-      assert RECEIVE_3_OBSERVED == false;
+      assert RECEIVE_3_OBSERVED == true;
       
       initFlags();
       
       app.fireEventByAnnotationLiteral();
       
-      assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_1_OBSERVED == true;
-      assert RECEIVE_3_OBSERVED == false;
+      assert RECEIVE_2_OBSERVED == true;
+      assert RECEIVE_3_OBSERVED == true;
       
       initFlags();
       
@@ -75,14 +73,14 @@ public class SimpleEventTest extends AbstractWeldTest
       
       assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_1_OBSERVED == false; // not called
-      assert RECEIVE_3_OBSERVED == false;
+      assert RECEIVE_3_OBSERVED == true;
       
       initFlags();
       
-      app.fireEventViaCurrent();
+      app.fireEventViaWithNoQualifier();
       
-      assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_1_OBSERVED == false; // not called
+      assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_3_OBSERVED == true;
    }
 
@@ -93,9 +91,6 @@ public class SimpleEventTest extends AbstractWeldTest
       
       @Inject @Updated
       Event<String> event2;
-
-      @Inject @Any
-      Event<String> event3;
       
       @Inject
       Event<String> event4;
@@ -112,12 +107,12 @@ public class SimpleEventTest extends AbstractWeldTest
       
       public void fireEventViaAny()
       {
-         event3.fire("Fired using Event Interface with Non-BindingType.");
+         event1.fire("Fired using Event Interface");
       }
       
-      public void fireEventViaCurrent()
+      public void fireEventViaWithNoQualifier()
       {
-         event4.fire("Fired using Event Interface with @Current");
+         event4.fire("Fired using Event Interface with no qualifier");
       }
    }
 

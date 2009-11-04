@@ -42,6 +42,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
 {
    
    private static final long serialVersionUID = 656782657242515455L;
+   private static final Annotation[] EMPTY_BINDINGS = new Annotation[0];
 
    public static <E> EventImpl<E> of(Type eventType, BeanManagerImpl manager, Set<Annotation> bindings)
    {
@@ -73,7 +74,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
 
    public void fire(T event)
    {
-      getManager().fireEvent(event, mergeInBindings());
+      getManager().fireEvent(event, getBindings().toArray(EMPTY_BINDINGS));
    }
    
    public Event<T> select(Annotation... bindings)
