@@ -78,6 +78,7 @@ import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.servlet.HttpSessionManager;
 import org.jboss.weld.servlet.ServletApiAbstraction;
+import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.collections.Arrays2;
@@ -114,7 +115,7 @@ public class WeldBootstrap implements Bootstrap
       private final Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives;
       private final BeanDeploymentArchive implementationBeanDeploymentArchive;
       
-      public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, Deployment deployment)
+      public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, final Deployment deployment)
       {
          this.deploymentManager = deploymentManager;
          this.environment = environment;
@@ -124,7 +125,9 @@ public class WeldBootstrap implements Bootstrap
          {
             
             private  final ServiceRegistry serviceRegistry = new SimpleServiceRegistry();
-            private final Set<Class<?>> beanClasses = Arrays2.<Class<?>>asSet(ConversationImpl.class, ServletConversationManager.class, NumericConversationIdGenerator.class, HttpSessionManager.class);
+            private final Set<Class<?>> beanClasses = (deployment.getServices().contains(ServletServices.class)) 
+                    ? Arrays2.<Class<?>>asSet(ConversationImpl.class, ServletConversationManager.class, NumericConversationIdGenerator.class, HttpSessionManager.class)
+                    : Arrays2.<Class<?>>asSet();
             
             public ServiceRegistry getServices()
             {
