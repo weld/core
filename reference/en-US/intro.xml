@@ -445,7 +445,7 @@ public class CreditCardPaymentProcessor
          <para>
             CDI defines a simple <emphasis>resolution rule</emphasis> that helps the container decide what to do if there 
             is more than one bean that satisfies a particular contract. We'll get into the details in 
-            <xref linkend="alternatives"/>. TBD: write a section about "fixing ambiguous dependencies"!
+            <xref linkend="alternatives"/>.
          </para>
 
       </section>
