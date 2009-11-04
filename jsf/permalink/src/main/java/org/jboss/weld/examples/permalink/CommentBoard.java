@@ -24,7 +24,7 @@ package org.jboss.weld.examples.permalink;
 import javax.faces.context.FacesContext;
 import javax.faces.application.FacesMessage;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.stereotype.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -32,8 +32,7 @@ import javax.inject.Named;
  * @author Dan Allen
  */
 public
-@Named
-@RequestScoped
+@Model
 class CommentBoard
 {
    @Inject BlogEntryRepository repository;

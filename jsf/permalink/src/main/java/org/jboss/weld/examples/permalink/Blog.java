@@ -26,7 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.stereotype.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -34,8 +34,7 @@ import javax.inject.Named;
  * @author Dan Allen
  */
 public
-@Named
-@RequestScoped
+@Model
 class Blog
 {
    private static final int PAGE_SIZE = 3;
