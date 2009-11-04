@@ -31,13 +31,13 @@ public class MessageGenerator
 
    public String getChallengeMessage()
    {
-      StringBuilder chalengeMsg = new StringBuilder("I'm thinking of a number between ");
-      chalengeMsg.append(game.getSmallest());
-      chalengeMsg.append(" and ");
-      chalengeMsg.append(game.getBiggest());
-      chalengeMsg.append(". Can you guess what it is?");
+      StringBuilder challengeMsg = new StringBuilder("I'm thinking of a number between ");
+      challengeMsg.append(game.getSmallest());
+      challengeMsg.append(" and ");
+      challengeMsg.append(game.getBiggest());
+      challengeMsg.append(". Can you guess what it is?");
 
-      return chalengeMsg.toString();
+      return challengeMsg.toString();
    }
 
    public String getResultMessage()
