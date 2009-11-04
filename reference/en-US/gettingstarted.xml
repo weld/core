@@ -818,8 +818,9 @@ public class Generator implements Serializable {
       <para>
          The final bean in the application is the session-scoped <literal>Game</literal> class. This is the primary
          entry point of the application. It's responsible for setting up or resetting the game, capturing and validating
-         the user's guess and providing feedback to the user with a <literal>FacesMessage</literal>. We've used
-         constructor injection to initialize the game with a random number.
+         the user's guess and providing feedback to the user with a <literal>FacesMessage</literal>. We've used the
+         post-construct lifecycle method to initialize the game by retrieving a random number from the <literal>@Random
+         Instance&lt;Integer&gt;</literal> bean.
       </para>
 
       <para>
