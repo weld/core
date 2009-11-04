@@ -1223,26 +1223,20 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
          <title>The numberguess example for Java SE with Swing</title>
 
          <para>
-            This example can be found in the 
-            <literal>examples/se/numberguess</literal> folder of the Weld
-            distribution.
+            This example shows how to use the Weld SE extension to in a
+            Java SE based Swing application with no EJB or servlet dependencies.
+            This example can be found in the <literal>examples/se/numberguess</literal>
+            folder of the Weld distribution.
          </para>
             
-            
          <para>
-            To run this example:
+            To run the example:
          </para>
        
          <itemizedlist>
             <listitem>
                <para>
-                  Open a command line/terminal window in the
-                  <literal>examples/se/numberguess</literal> directory
-               </para>
-            </listitem>
-            <listitem>
-               <para>
-                  Ensure that Maven 2 is installed and in your PATH
+                  Ensure that Maven 2 (version 2.0.10+) is installed and in your PATH
                </para>
             </listitem>
             <listitem>
@@ -1253,113 +1247,145 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
             </listitem>
             <listitem>
                <para>
+                  Open a command line or terminal window in the
+                  <literal>examples/se/numberguess</literal> directory
+               </para>
+            </listitem>
+            <listitem>
+               <para>
                   execute the following command
                </para>
-               <programlisting>$> mvn -Drun</programlisting>
+               <programlisting>mvn -Drun</programlisting>
             </listitem>
          </itemizedlist>
 
-       
+        <para>
+            Let's have a look at the significant code and configuration
+            files that make up this example.
+        </para>
 
-         <para>
-            There is an empty <literal>beans.xml</literal> file in the root 
+        <para>
+            As usual, there is an empty <literal>beans.xml</literal> file in the root
             package (<literal>src/main/resources/beans.xml</literal>), which 
             marks this application as a CDI application.
          </para>
 
          <para>
             The game's main logic is located in <literal>Game.java</literal>. 
-            Here is the code for that class, highlighting the changes made 
-            from the web application version:
+            Here is the code for that class, highlighting the ways in which this
+            differs from the web application version:
          </para>
 
          <programlistingco>
             <areaspec>
                <area id="scope" coords="1" />
-               <area id="name" coords="1" />
+               <area id="name" coords="2" />
                <area id="messages1" coords="26" />
-               <area id="validation" coords="39" />
-               <area id="reset" coords="68" />
+               <area id="validation" coords="41" />
+               <area id="reset" coords="73" />
              </areaspec>
              <programlisting role="JAVA"><![CDATA[@ApplicationScoped
-public class Game implements Serializable {
+public class Game implements Serializable
+{
+   public static final int MAX_NUM_GUESSES = 10;
 
-    private int number;
-    private int guess;
-    private int smallest;
-    private int biggest;
-    private int remainingGuesses;
-    private boolean validNumberRange = true;
+   private Integer number;
+   private int guess = 0;
+   private int smallest = 0;
 
-    @Inject @MaxNumber private int maxNumber;
+   @Inject
+   @MaxNumber
+   private int maxNumber;
 
-    @Inject Generator rndGenerator;
+   private int biggest;
+   private int remainingGuesses = MAX_NUM_GUESSES;
+   private boolean validNumberRange = true;
+
+   @Inject
+   Generator rndGenerator;
+
+   public Game()
+   {
+   }
 
     ...
 
-    public boolean isValidNumberRange() {
-        return validNumberRange;
-    }
+   public boolean isValidNumberRange()
+   {
+      return validNumberRange;
+   }
 
-    public boolean isGameWon() {
-        return guess == number;
-    }
+   public boolean isGameWon()
+   {
+      return guess == number;
+   }
 
-    public boolean isGameLost() {
-        return guess != number && remainingGuesses <= 0;
-    }
+   public boolean isGameLost()
+   {
+      return guess != number && remainingGuesses <= 0;
+   }
 
-    public boolean check() {
-        boolean result = false;
+   public boolean check()
+   {
+      boolean result = false;
 
-        if (checkNewNumberRangeIsValid()) {
-            if (guess > number) {
-                biggest = guess - 1;
-            }
+      if (checkNewNumberRangeIsValid())
+      {
+         if (guess > number)
+         {
+            biggest = guess - 1;
+         }
 
-            if (guess < number) {
-                smallest = guess + 1;
-            }
+         if (guess < number)
+         {
+            smallest = guess + 1;
+         }
 
-            if (guess == number) {
-                result = true;
-            }
+         if (guess == number)
+         {
+            result = true;
+         }
 
-            remainingGuesses--;
-        }
+         remainingGuesses--;
+      }
 
-        return result;
-    }
+      return result;
+   }
 
-    private boolean checkNewNumberRangeIsValid() {
-        return validNumberRange = ((guess >= smallest) && (guess <= biggest));
-    }
+   private boolean checkNewNumberRangeIsValid()
+   {
+      return validNumberRange = ((guess >= smallest) && (guess <= biggest));
+   }
 
-    @PostConstruct
-    public void reset() {
-        this.smallest = 0;
-        ...
-        this.number = rndGenerator.next();
-    }
+   @PostConstruct
+   public void reset()
+   {
+      this.smallest = 0;
+      this.guess = 0;
+      this.remainingGuesses = 10;
+      this.biggest = maxNumber;
+      this.number = rndGenerator.next();
+   }
 }]]></programlisting>
             <calloutlist>
                <callout arearefs="scope">
                   <para>
-                     The bean is application scoped instead of session scoped, 
-                     since an instance of the application represents a single 'session'.
+                     The bean is application scoped rather than session scoped,
+                     since an instance of a Swing application typically represents
+                     a single 'session'.
                  </para>
                </callout>
                <callout arearefs="name">
                   <para>
-                     The bean is not named, since it doesn't need to be accessed
-                     via EL
+                     Notice that the bean is not named, since it doesn't need to
+                     be accessed via EL.
                   </para>
                </callout>
                <callout arearefs="messages1">
                   <para>
-                     There is no JSF <literal>FacesContext</literal> to add 
-                     messages to. Instead the <literal>Game</literal> class 
-                     provides additional information about the state of the 
+                     In Java SE there is no JSF <literal>FacesContext</literal>
+                     to which messages can be added. Instead the <literal>Game</literal>
+                     class provides additional information about the state of the
                      current game including:
                   </para>
 
@@ -1380,26 +1406,25 @@ public class Game implements Serializable {
                   <para>
                      This allows the Swing UI to query the state of the game, 
                      which it does indirectly via a class called 
-                     <literal>MessageGenerator,</literal> in order to determine 
+                     <literal>MessageGenerator</literal>, in order to determine
                      the appropriate messages to display to the user during the 
                      game.
                   </para>
                </callout>
                <callout arearefs="validation">
                   <para>
-                     Validation of user input is performed during the 
-                     <literal>check()</literal> method, since there is no 
-                     dedicated validation phase
+                     Since there is no dedicated validation phase, validation of
+                     user input is performed during the <literal>check()</literal> method.
                   </para>
                </callout>
                <callout arearefs="reset">
                   <para>
                      The <literal>reset()</literal> method makes a call to the 
                      injected <literal>rndGenerator</literal> in order to get 
-                     the random number at the start of each game. It cannot use
-                     <literal>manager.getInstanceByType(Integer.class, new AnnotationLiteral&lt;Random&gt;(){})</literal>
-                     as the JSF example does because there will not be any active contexts like
-                     there is during a JSF request.
+                     the random number at the start of each game. Note that it
+                     cannot use <literal>manager.getInstanceByType(Integer.class, new AnnotationLiteral&lt;Random&gt;(){})</literal>
+                     as the JSF example does because there will not be any active 
+                     contexts like there is during a JSF request.
                   </para>
                </callout>
             </calloutlist>
@@ -1407,7 +1432,7 @@ public class Game implements Serializable {
 
          <para>
             The <literal>MessageGenerator</literal> class depends on the 
-            current instance of <literal>Game</literal>, and queries its 
+            current instance of <literal>Game</literal> and queries its 
             state in order to determine the appropriate messages to provide 
             as the prompt for the user's next guess and the response to the 
             previous guess. The code for <literal>MessageGenerator</literal> 
@@ -1417,49 +1442,59 @@ public class Game implements Serializable {
          <programlistingco>
          <areaspec>
             <area id="game" coords="3" />
-            <area id="challenge" coords="5" />
-            <area id="result" coords="16" />
+            <area id="challenge" coords="6" />
+            <area id="result" coords="17" />
          </areaspec>
-         <programlisting role="JAVA"><![CDATA[public class MessageGenerator {
-    @Inject Game game;
+         <programlisting role="JAVA"><![CDATA[public class MessageGenerator
+{
+   @Inject
+   private Game game;
 
-    public String getChallengeMessage() {
-        StringBuilder challengeMsg = new StringBuilder( "I'm thinking of a number between " );
-        challengeMsg.append( game.getSmallest() );
-        challengeMsg.append( " and " );
-        challengeMsg.append( game.getBiggest() );
-        challengeMsg.append( ". Can you guess what it is?" );
+   public String getChallengeMessage()
+   {
+      StringBuilder challengeMsg = new StringBuilder("I'm thinking of a number between ");
+      challengeMsg.append(game.getSmallest());
+      challengeMsg.append(" and ");
+      challengeMsg.append(game.getBiggest());
+      challengeMsg.append(". Can you guess what it is?");
 
-        return challengeMsg.toString();
-    }
+      return challengeMsg.toString();
+   }
 
-    public String getResultMessage() {
-        if ( game.isGameWon() ) {
-            return "You guess it! The number was " + game.getNumber();
-        }
-        else if ( game.isGameLost() ) {
-            return "You are fail! The number was " + game.getNumber();
-        }
-        else if ( ! game.isValidNumberRange() ) {
-            return "Invalid number range!";
-        }
-        else if ( game.getRemainingGuesses() == Game.MAX_NUM_GUESSES ) {
-            return "What is your first guess?";
-        }
-        else {
-            String direction = null;
+   public String getResultMessage()
+   {
+      if (game.isGameWon())
+      {
+         return "You guessed it! The number was " + game.getNumber();
+      }
+      else if (game.isGameLost())
+      {
+         return "You are fail! The number was " + game.getNumber();
+      }
+      else if (!game.isValidNumberRange())
+      {
+         return "Invalid number range!";
+      }
+      else if (game.getRemainingGuesses() == Game.MAX_NUM_GUESSES)
+      {
+         return "What is your first guess?";
+      }
+      else
+      {
+         String direction = null;
 
-            if ( game.getGuess() < game.getNumber() ) {
-                direction = "Higher";
-            }
-            else {
-                direction = "Lower";
-            }
+         if (game.getGuess() < game.getNumber())
+         {
+            direction = "Higher";
+         }
+         else
+         {
+            direction = "Lower";
+         }
 
-            return direction + "! You have " + game.getRemainingGuesses() + " guesses left.";
-        }
-    }
-
+         return direction + "! You have " + game.getRemainingGuesses() + " guesses left.";
+      }
+   }
 }]]></programlisting>
                <calloutlist>
                <callout arearefs="game">
@@ -1471,12 +1506,12 @@ public class Game implements Serializable {
                <callout arearefs="challenge">
                   <para>
                      The <literal>Game</literal>'s state is interrogated to 
-                     determine the appropriate challenge message.
+                     determine the appropriate challenge message ...
                   </para>
                </callout>
               <callout arearefs="result">
                   <para>
-                     And again to determine whether to congratulate, console or
+                     ... and again to determine whether to congratulate, console or
                      encourage the user to continue.
                   </para>
                </callout>
@@ -1491,71 +1526,76 @@ public class Game implements Serializable {
          <programlistingco>
             <areaspec>
                <area id="gameIn" coords="3" />
-               <area id="messagesIn" coords="4" />
-               <area id="start" coords="6" />
-               <area id="init" coords="18" />
-               <area id="guess1" coords="34" />
-               <area id="replay" coords="44" />
-               <area id="refresh" coords="50" />
+               <area id="messagesIn" coords="6" />
+               <area id="start" coords="9" />
+               <area id="init" coords="21" />
+               <area id="guess1" coords="38" />
+               <area id="replay" coords="48" />
             </areaspec>
-            <programlisting role="JAVA"><![CDATA[public class NumberGuessFrame extends javax.swing.JFrame {
+            <programlisting role="JAVA"><![CDATA[public class NumberGuessFrame extends javax.swing.JFrame
+{
+   @Inject
+   private Game game;
 
-    private @Inject Game game;
-    private @Inject MessageGenerator msgGenerator;
+   @Inject
+   private MessageGenerator msgGenerator;
 
-    public void start( @Observes @Deployed Manager manager ) {
-        java.awt.EventQueue.invokeLater( new Runnable()
-            {
-                public void run()
-                {
-                    initComponents();
-                    setVisible( true );
-                }
-            } );
-    }
+   public void start(@Observes ContainerInitialized event)
+   {
+      java.awt.EventQueue.invokeLater(new Runnable()
+      {
+         public void run()
+         {
+            initComponents();
+            setVisible(true);
+         }
+      });
+   }
 
-    private void initComponents() {
+   private void initComponents()
+   {
 
-        buttonPanel = new javax.swing.JPanel();
-        mainMsgPanel = new javax.swing.JPanel();
-        mainLabel = new javax.swing.JLabel();
-        messageLabel = new javax.swing.JLabel();
-        guessText = new javax.swing.JTextField();
+      buttonPanel = new javax.swing.JPanel();
+      mainMsgPanel = new javax.swing.JPanel();
+      mainLabel = new javax.swing.JLabel();
+      messageLabel = new javax.swing.JLabel();
+      guessText = new javax.swing.JTextField();
         ...
-        mainLabel.setText(msgGenerator.getChallengeMessage());
-        mainMsgPanel.add(mainLabel);
+      mainLabel.setText(msgGenerator.getChallengeMessage());
+      mainMsgPanel.add(mainLabel);
 
-        messageLabel.setText(msgGenerator.getResultMessage());
-        mainMsgPanel.add(messageLabel);
+      messageLabel.setText(msgGenerator.getResultMessage());
+      mainMsgPanel.add(messageLabel);
         ...
+   }
+
+    private void guessButtonActionPerformed( java.awt.event.ActionEvent evt )
+    {
+      int guess =  Integer.parseInt(guessText.getText());
+      game.setGuess( guess );
+      game.check();
+      refreshUI();
+
     }
 
-    private void guessButtonActionPerformed( java.awt.event.ActionEvent evt ) {
-        int guess =  Integer.parseInt(guessText.getText());
-
-        game.setGuess( guess );
-        game.check();
-        refreshUI();
-
-    }
-
-    private void replayBtnActionPerformed( java.awt.event.ActionEvent evt ) {
-       game.reset();
-       refreshUI();
-    }
+   private void replayBtnActionPerformed(java.awt.event.ActionEvent evt)
+   {
+      game.reset();
+      refreshUI();
+   }
 
     private void refreshUI() {
         mainLabel.setText( msgGenerator.getChallengeMessage() );
         messageLabel.setText( msgGenerator.getResultMessage() );
         guessText.setText( "" );
         guessesLeftBar.setValue( game.getRemainingGuesses() );
-        guessText.requestFocus();
-    }
+      guessText.requestFocus();
+   }
 
-    // swing components
-    private javax.swing.JPanel borderPanel;
+   // swing components
+   private javax.swing.JPanel borderPanel;
     ...
-    private javax.swing.JButton replayBtn;
+   private javax.swing.JButton replayBtn;
 
 }]]></programlisting>
             <calloutlist>
@@ -1571,14 +1611,14 @@ public class Game implements Serializable {
                </callout>
                <callout arearefs="start">
                   <para>
-                    This application is started in the usual CDI SE way, 
-                    by observing the <literal>@Deployed Manager</literal> event.
+                    This application is started in the prescribed Weld SE way,
+                    by observing the <literal>ContainerInitialized</literal> event.
                   </para>
                </callout>
                <callout arearefs="init">
                   <para>
                      This method initialises all of the Swing components. Note 
-                     the use of the <literal>msgGenerator</literal>.
+                     the use of the <literal>msgGenerator</literal> here.
                   </para>
                </callout>
                <callout arearefs="guess1">
@@ -1606,7 +1646,7 @@ public class Game implements Serializable {
                            Calls <literal>refreshUI</literal>. If there were 
                            validation errors with the input, this will have been 
                            captured during <literal>game.check()</literal> and 
-                           as such will be reflected in the messeges returned by
+                           as such will be reflected in the messages returned by
                            <literal>MessageGenerator</literal> and subsequently
                            presented to the user. If there are no validation 
                            errors then the user will be told to guess again 
@@ -1622,13 +1662,6 @@ public class Game implements Serializable {
                      <literal>replayBtnActionPerformed</literal> simply calls 
                      <literal>game.reset()</literal> to start a new game and 
                      refreshes the messages in the UI.
-                  </para>
-               </callout>
-               <callout arearefs="refresh">
-                  <para>
-                     <literal>refreshUI</literal> uses the 
-                     <literal>MessageGenerator</literal> to update the messages 
-                     to the user based on the current state of the Game.
                   </para>
                </callout>
             </calloutlist>
