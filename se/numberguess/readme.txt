@@ -15,52 +15,79 @@
     limitations under the License.
 ====
 
+===================
+Running the Example
+===================
+
+As with all Weld SE applications, this example is executed
+by starting Java with org.jboss.weld.environment.se.StartMain
+as the main class. Of course you will need all of the relevant jar dependencies
+on your classpath, which is most easily done by loading the project into your
+favourite Maven-capable IDE and running it from there.
+
+To run this example using Maven directly:
+
+ - Ensure that Maven 2 (version 2.0.10+) is installed and in your PATH
+ - Ensure that the JAVA_HOME environment variable is pointing to your JDK installation
+ - Open a command line or terminal window in the examples/se/numberguess directory
+ - Execute the following command
+
+       mvn -Drun
+
 ===========================
 Swing Example: Number Guess
 ===========================
 
 Here's an example of a Swing application, Number Guess, similar to the example in chapter 3.4.
+This example shows how to use the Weld SE extension to in a Java SE based Swing application
+with no EJB or servlet dependencies. This example can be found in the examples/se/numberguess
+folder of the Weld distribution.
+
 In the Number Guess application you get given 10 attempts to guess a number between 1 and
 100. After each attempt, you will be told whether you are too high, or too low. This example can
 be found in the examples/se/numberguess folder of the Web Beans distribution.
 
-There is an empty beans.xml file in the META-INF package (src/main/resources/META-INF/beans.xml), which
-marks this application as a Web Beans application.
+As usual, there is an empty beans.xml file in the root package (src/main/resources/beans.xml),
+which marks this application as a CDI application.
 
-The game's main logic is located in Game.java. Some key points about this class:
+The game's main logic is located in Game.java. Here is the code for that class,
+highlighting the ways in which this differs from the web application version:
 
-     The bean is application scoped instead of session scoped, since an instance of the
-     application represents a single 'session'.
+    The bean is application scoped rather than session scoped, since an instance
+    of a Swing application typically represents a single 'session'.
 
-     The bean is not named, since it doesn't need to be accessed via EL
+    Notice that the bean is not named, since it doesn't need to be accessed via EL.
 
-     There is no JSF FacesContext to add messages to. Instead the Game class provides
-     additional information about the state of the current game including:
+    In Java SE there is no JSF FacesContext to which messages can be added. Instead
+    the Game class provides additional information about the state of the current game
+    including:
 
-     - If the game has been won or lost
-     - If the most recent guess was invalid
+        If the game has been won or lost
 
-     This allows the Swing UI to query the state of the game, which it does indirectly via a class
-     called MessageGenerator, in order to determine the appropriate messages to display to the
-     user during the game.
+        If the most recent guess was invalid
 
-     Validation of user input is performed during the check() method, since there is no dedicated
-     validation phase
+    This allows the Swing UI to query the state of the game, which it does indirectly
+    via a class called MessageGenerator, in order to determine the appropriate messages
+    to display to the user during the game.
 
-     The reset() method makes a call to the injected rndGenerator in order
-     to get the random number at the start of each game. It cannot use
-     manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){})
-     as the JSF example does because there will not be any active contexts like there is during
-     a JSF request.
+    Since there is no dedicated validation phase, validation of user input is performed
+    during the check() method.
 
-The MessageGenerator class depends on the current instance of Game, and queries its state in
-order to determine the appropriate messages to provide as the prompt for the user's next guess
-and the response to the previous guess. Some key points about this class:
+    The reset() method makes a call to the injected rndGenerator in order to get
+    the random number at the start of each game. Note that it cannot use
+    manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){})
+    as the JSF example does because there will not be any active contexts like there
+    is during a JSF request.
+
+The MessageGenerator class depends on the current instance of Game and queries its state
+in order to determine the appropriate messages to provide as the prompt for the user's
+next guess and the response to the previous guess. The code for MessageGenerator is as follows:
 
     The instance of Game for the application is injected.
 
-    The Game's state is interrogated to determine the appropriate challenge message.
-    And again to determine whether to congratulate, console or encourage the user to continue.
+    The Game's state is interrogated to determine the appropriate challenge message ...
+
+    ... and again to determine whether to congratulate, console or encourage the user to continue.
 
 
 Finally we come to the NumberGuessFrame class which provides the Swing front end to our
@@ -87,25 +114,3 @@ guessing game.
 
    replayBtnActionPerformed simply calls game.reset() to start a new game and refreshes
    the messages in the UI.
-
-   refreshUI uses the MessageGenerator to update the messages to the user based on the
-   current state of the Game.
-
--------------------
-Running the Example
--------------------
-
-As with all Web Beans SE applications, this example is executed
-by starting Java with org.jboss.weld.environment.se.StartMain
-as the main class. Of course you will need all of the relevant jar dependencies
-on your classpath, which is most easily done by loading the project into your
-favourite Maven-capable IDE and running it from there..
-
-To run this example using Maven directly:
-
-- Open a command line/terminal window in the examples/se/numberguess directory
-- Ensure that Maven 2 is installed and in your PATH
-- Ensure that the JAVA_HOME environment variable is pointing to your JDK installation
-- execute the following command
-
-mvn -Drun
