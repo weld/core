@@ -1288,6 +1288,7 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
              <programlisting role="JAVA"><![CDATA[@ApplicationScoped
 public class Game implements Serializable
 {
+
    public static final int MAX_NUM_GUESSES = 10;
 
    private Integer number;
@@ -1309,7 +1310,7 @@ public class Game implements Serializable
    {
    }
 
-    ...
+   ...
 
    public boolean isValidNumberRange()
    {
@@ -1389,7 +1390,6 @@ public class Game implements Serializable
                      class provides additional information about the state of the
                      current game including:
                   </para>
-
 
                   <itemizedlist>
                      <listitem>
@@ -1561,23 +1561,22 @@ public class Game implements Serializable
       mainLabel = new javax.swing.JLabel();
       messageLabel = new javax.swing.JLabel();
       guessText = new javax.swing.JTextField();
-        ...
+      ...
       mainLabel.setText(msgGenerator.getChallengeMessage());
       mainMsgPanel.add(mainLabel);
 
       messageLabel.setText(msgGenerator.getResultMessage());
       mainMsgPanel.add(messageLabel);
-        ...
+      ...
    }
 
-    private void guessButtonActionPerformed( java.awt.event.ActionEvent evt )
-    {
+   private void guessButtonActionPerformed( java.awt.event.ActionEvent evt )
+   {
       int guess =  Integer.parseInt(guessText.getText());
       game.setGuess( guess );
       game.check();
       refreshUI();
-
-    }
+   }
 
    private void replayBtnActionPerformed(java.awt.event.ActionEvent evt)
    {
@@ -1585,17 +1584,17 @@ public class Game implements Serializable
       refreshUI();
    }
 
-    private void refreshUI() {
-        mainLabel.setText( msgGenerator.getChallengeMessage() );
-        messageLabel.setText( msgGenerator.getResultMessage() );
-        guessText.setText( "" );
-        guessesLeftBar.setValue( game.getRemainingGuesses() );
+   private void refreshUI() {
+      mainLabel.setText( msgGenerator.getChallengeMessage() );
+      messageLabel.setText( msgGenerator.getResultMessage() );
+      guessText.setText( "" );
+      guessesLeftBar.setValue( game.getRemainingGuesses() );
       guessText.requestFocus();
    }
 
    // swing components
    private javax.swing.JPanel borderPanel;
-    ...
+   ...
    private javax.swing.JButton replayBtn;
 
 }]]></programlisting>
