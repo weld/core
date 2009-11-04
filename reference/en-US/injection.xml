@@ -85,8 +85,8 @@
       <itemizedlist>
          <listitem>
             <para>
-               First, the container calls the bean constructor (the default constructor or the one annotated @Inject), to
-               obtain an instance of the bean.
+               First, the container calls the bean constructor (the default constructor or the one annotated
+               <literal>@Inject</literal>), to obtain an instance of the bean.
             </para>
          </listitem>
          <listitem>
