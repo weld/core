@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Weld" verbose="0"  >
+<suite name="Weld" verbose="3"  >
 
    <test name="Weld">
       <method-selectors>
@@ -18,53 +18,53 @@
          </run>
       </groups>
       <packages>
-         <package name="org.jboss.weld.test.activities" />
-         <package name="org.jboss.weld.test.activities.current" />
-         <package name="org.jboss.weld.test.activities.child" />
-         <package name="org.jboss.weld.test.annotatedType" />
-         <package name="org.jboss.weld.test.annotatedType.decoration" />
-         <package name="org.jboss.weld.test.beanDeployment.managed.multiple" />
-         <package name="org.jboss.weld.test.beanDeployment.managed.single" />
-         <package name="org.jboss.weld.test.beanDeployment.mixed" />
-         <package name="org.jboss.weld.test.beanDeployment.producers.singleProducerMethod" />
-         <package name="org.jboss.weld.test.beanDeployment.session.multiple" />
-         <package name="org.jboss.weld.test.beanDeployment.session.single" />
-         <package name="org.jboss.weld.test.beanManager.serializability" />
-         <package name="org.jboss.weld.test.contexts" />
-         <package name="org.jboss.weld.test.decorators" />
-         <package name="org.jboss.weld.test.el.resolver" />
-         <package name="org.jboss.weld.test.enterprise" />
-         <package name="org.jboss.weld.test.enterprise.lifecycle" />
-         <package name="org.jboss.weld.test.event" />
-         <package name="org.jboss.weld.test.event.tx" />
-         <package name="org.jboss.weld.test.examples" />
-         <package name="org.jboss.weld.test.extensions" />
-         <package name="org.jboss.weld.test.interceptors.ejb" />
-         <package name="org.jboss.weld.test.interceptors.ejb3model" />
-         <package name="org.jboss.weld.test.interceptors.passivation" />
-         <package name="org.jboss.weld.test.interceptors.simple" />
-         <package name="org.jboss.weld.test.managed.newBean" />
-         <package name="org.jboss.weld.test.nonContextual" />
-         <package name="org.jboss.weld.test.producer.field" />
-         <package name="org.jboss.weld.test.producer.method" />
-         <package name="org.jboss.weld.test.proxy" />
-         <package name="org.jboss.weld.test.proxy.enterprise" />
-         <package name="org.jboss.weld.test.resolution" />
-         <package name="org.jboss.weld.test.resolution.circular" />
-         <package name="org.jboss.weld.test.resolution.named" />
-         <package name="org.jboss.weld.test.resolution.wbri279" />
-         <package name="org.jboss.weld.test.resolution.wbri293" />
-         <package name="org.jboss.weld.test.session.newBean" />
-         <package name="org.jboss.weld.test.stereotypes" />
-         <package name="org.jboss.weld.test.unit.bootstrap" />
-         <package name="org.jboss.weld.test.unit.cluster" />
-         <package name="org.jboss.weld.test.unit.deployment.structure.extensions" />
-         <package name="org.jboss.weld.test.unit.deployment.structure.nonTransitiveResolution" />
-         <package name="org.jboss.weld.test.unit.deployment.structure.resolution" />
-         <package name="org.jboss.weld.test.unit.environments.servlet" />
-         <package name="org.jboss.weld.test.unit.reflection.clazz" />
-         <package name="org.jboss.weld.test.unit.reflection.method" />
-         <package name="org.jboss.weld.test.unit.security" />
+<!--         <package name="org.jboss.weld.test.activities" />-->
+<!--         <package name="org.jboss.weld.test.activities.child" />-->
+<!--         <package name="org.jboss.weld.test.activities.current" />-->
+<!--         <package name="org.jboss.weld.test.annotatedType" />-->
+<!--         <package name="org.jboss.weld.test.annotatedType.decoration" />-->
+<!--         <package name="org.jboss.weld.test.beanDeployment.managed.multiple" />-->
+<!--         <package name="org.jboss.weld.test.beanDeployment.managed.single" />-->
+<!--         <package name="org.jboss.weld.test.beanDeployment.mixed" />-->
+<!--         <package name="org.jboss.weld.test.beanDeployment.producers.singleProducerMethod" />-->
+<!--         <package name="org.jboss.weld.test.beanDeployment.session.multiple" />-->
+<!--         <package name="org.jboss.weld.test.beanDeployment.session.single" />-->
+<!--         <package name="org.jboss.weld.test.beanManager.serializability" />-->
+<!--         <package name="org.jboss.weld.test.contexts" />-->
+<!--         <package name="org.jboss.weld.test.decorators" />-->
+<!--         <package name="org.jboss.weld.test.el.resolver" />-->
+<!--         <package name="org.jboss.weld.test.enterprise" />-->
+<!--         <package name="org.jboss.weld.test.enterprise.lifecycle" />-->
+<!--         <package name="org.jboss.weld.test.event" />-->
+<!--         <package name="org.jboss.weld.test.event.tx" />-->
+<!--         <package name="org.jboss.weld.test.examples" />-->
+<!--         <package name="org.jboss.weld.test.extensions" />-->
+<!--         <package name="org.jboss.weld.test.interceptors.ejb" />-->
+<!--         <package name="org.jboss.weld.test.interceptors.ejb3model" />-->
+<!--         <package name="org.jboss.weld.test.interceptors.passivation" />-->
+<!--         <package name="org.jboss.weld.test.interceptors.simple" />-->
+<!--         <package name="org.jboss.weld.test.managed.newBean" />-->
+<!--         <package name="org.jboss.weld.test.nonContextual" />-->
+<!--         <package name="org.jboss.weld.test.producer.field" />-->
+<!--         <package name="org.jboss.weld.test.producer.method" />-->
+<!--         <package name="org.jboss.weld.test.proxy" />-->
+<!--         <package name="org.jboss.weld.test.proxy.enterprise" />-->
+<!--         <package name="org.jboss.weld.test.resolution" />-->
+<!--         <package name="org.jboss.weld.test.resolution.circular" />-->
+<!--         <package name="org.jboss.weld.test.resolution.named" />-->
+<!--         <package name="org.jboss.weld.test.resolution.wbri279" />-->
+<!--         <package name="org.jboss.weld.test.resolution.wbri293" />-->
+<!--         <package name="org.jboss.weld.test.session.newBean" />-->
+<!--         <package name="org.jboss.weld.test.stereotypes" />-->
+<!--         <package name="org.jboss.weld.test.unit.bootstrap" />-->
+<!--         <package name="org.jboss.weld.test.unit.cluster" />-->
+<!--         <package name="org.jboss.weld.test.unit.deployment.structure.extensions" />-->
+<!--         <package name="org.jboss.weld.test.unit.deployment.structure.nonTransitiveResolution" />-->
+<!--         <package name="org.jboss.weld.test.unit.deployment.structure.resolution" />-->
+<!--         <package name="org.jboss.weld.test.unit.environments.servlet" />-->
+<!--         <package name="org.jboss.weld.test.unit.reflection.clazz" />-->
+<!--         <package name="org.jboss.weld.test.unit.reflection.method" />-->
+         <package name="org.jboss.weld.test" />
       </packages>
    </test>
    
