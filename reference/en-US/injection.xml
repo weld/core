@@ -464,10 +464,22 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
       </itemizedlist>
   
       <para>
-         It's usually very easy to fix an <literal>UnproxyableDependencyException</literal>.  Simply add a constructor
+         It's usually very easy to fix an <literal>UnproxyableDependencyException</literal>. Simply add a constructor
          with no parameters to the injected class, introduce an interface, or, if all else fails, change the scope of
-         the injected bean to <literal>@Dependent</literal>.
+         the injected bean to <literal>@Dependent</literal>. Weld will probably support non-standard ways of getting
+         around this depending on what is available on the classpath:
       </para>
+
+      <itemizedlist>
+         <listitem>
+            <para>
+               Sun, IcedTea, Mac: <literal>Unsafe.allocateInstance()</literal> (The most efficient)
+            </para>
+            <para>
+               Above + IBM, JRockit: <literal>ReflectionFactory.newConstructorForSerialization()</literal>
+            </para>
+         </listitem>
+      </itemizedlist>
   
    </section>
 
