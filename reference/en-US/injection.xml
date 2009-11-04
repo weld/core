@@ -4,10 +4,10 @@
    <title>Dependency injection and programmatic lookup</title>
 
    <para>
-      One of the most significant features of CDI, certainly the most recognized, is dependency injection. But not just
-      dependency injection; type-safe dependency injection. In this chapter, you'll learn how CDI is able to leverage
-      the Java type system and annotations to build a dependency injection strategy that is both strongly typed and
-      keeps the implementation hidden from the client.
+      One of the most significant features of CDI, certainly the most recognized, is dependency injection; but not just
+      dependency injection, <emphasis>type-safe</emphasis> dependency injection. In this chapter, you'll learn how CDI
+      is able to leverage the Java type system and annotations to build a dependency injection strategy that is both
+      strongly typed and keeps the implementation hidden from the client.
    </para>
 
    <section>
