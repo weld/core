@@ -37,6 +37,7 @@ import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContextualStoreImpl;
 import org.jboss.weld.Validator;
+import org.jboss.weld.Container.Status;
 import org.jboss.weld.bean.builtin.ManagerBean;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
@@ -279,6 +280,7 @@ public class WeldBootstrap implements Bootstrap
          this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices);
          
          Container.initialize(deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
+         Container.instance().setStatus(Status.STARTING);
          
          createContexts();
          initializeContexts();
@@ -371,7 +373,8 @@ public class WeldBootstrap implements Bootstrap
          }
          // Re-read the deployment structure, this will be the physical structure, extensions, classes, and any beans added using addBean outside the physical structure
          beanDeployments = deploymentVisitor.visit();
-         log.debug(VALIDATING_BEANS);
+         Container.instance().putBeanDeployments(beanDeployments);
+         Container.instance().setStatus(Status.INITIALIZED);
       }
       return this;
    }
@@ -380,6 +383,7 @@ public class WeldBootstrap implements Bootstrap
    {
       synchronized (this)
       {
+         log.debug(VALIDATING_BEANS);
          for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
          {
             deployment.getServices().get(Validator.class).validateDeployment(entry.getValue().getBeanManager(), entry.getValue().getBeanDeployer().getEnvironment());
@@ -399,8 +403,7 @@ public class WeldBootstrap implements Bootstrap
       synchronized (this)
       {
          // Register the managers so external requests can handle them
-         Container.instance().putBeanDeployments(beanDeployments);
-         Container.instance().setInitialized(true);
+         Container.instance().setStatus(Status.VALIDATED);
       }
       return this;
    }
@@ -436,6 +439,7 @@ public class WeldBootstrap implements Bootstrap
       }
       finally
       {
+         Container.instance().setStatus(Status.SHUTDOWN);
          Container.instance().deploymentServices().get(ContextLifecycle.class).endApplication();
       }
    }

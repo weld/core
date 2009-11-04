@@ -35,6 +35,52 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 public class Container
 {
    
+   /**
+    * Container status
+    * @author pmuir
+    *
+    */
+   public enum Status
+   {
+      /**
+       * The container has not been started
+       */
+      STOPPED(false),
+      /**
+       * The container is starting
+       */
+      STARTING(false),
+      /**
+       * The container has started and beans have been deployed
+       */
+      INITIALIZED(true),
+      /**
+       * The deployment has been validated
+       */
+      VALIDATED(true),
+      /**
+       * The container has been shutdown
+       */
+      SHUTDOWN(false);
+      
+      private Status(boolean available)
+      {
+         this.available = available;
+      }
+      
+      final boolean available;
+      
+      /**
+       * Whether the container is available for use
+       * 
+       * @return
+       */
+      public boolean isAvailable()
+      {
+         return available;
+      }
+   }
+   
    private final static Singleton<Container> instance;
    
    static
@@ -50,6 +96,11 @@ public class Container
    public static Container instance()
    {
       return instance.get();
+   }
+   
+   public static boolean available()
+   {
+      return instance.isSet() && instance() != null && instance().getStatus().isAvailable();
    }
    
 
@@ -76,7 +127,7 @@ public class Container
    
    private final ServiceRegistry deploymentServices;
    
-   private boolean initialized = false;
+   private Status status = Status.STOPPED;
    
    public Container(BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices)
    {
@@ -171,24 +222,14 @@ public class Container
       }
    }
    
-   /**
-    * Check if the application container is fully initialized
-    * 
-    * @return the initialized
-    */
-   public boolean isInitialized()
+   public Status getStatus()
    {
-      return initialized;
+      return status;
    }
    
-   /**
-    * Put the application container into an initialized state
-    * 
-    * @param initialized the initialized to set
-    */
-   public void setInitialized(boolean initialized)
+   public void setStatus(Status status)
    {
-      this.initialized = initialized;
+      this.status = status;
    }
 
 }

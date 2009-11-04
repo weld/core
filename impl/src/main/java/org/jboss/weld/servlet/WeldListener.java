@@ -86,7 +86,7 @@ public class WeldListener extends AbstractServletListener
    public void contextInitialized(ServletContextEvent sce)
    {
       super.contextInitialized(sce);
-      if (!Container.instance().isInitialized())
+      if (!Container.available())
       {
          log.warn(NOT_STARTING);
          return;
@@ -114,7 +114,7 @@ public class WeldListener extends AbstractServletListener
    public void sessionCreated(HttpSessionEvent event) 
    {
       // JBoss AS will still start the deployment even if WB fails
-      if (Container.instance() != null && Container.instance().isInitialized())
+      if (Container.available())
       {
          getLifecycle().beginSession(event.getSession());
       }
@@ -129,7 +129,7 @@ public class WeldListener extends AbstractServletListener
    public void sessionDestroyed(HttpSessionEvent event) 
    {
       // JBoss AS will still start the deployment even if WB fails
-      if (Container.instance() != null && Container.instance().isInitialized())
+      if (Container.available())
       {
          getLifecycle().endSession(event.getSession());
       }
@@ -144,7 +144,7 @@ public class WeldListener extends AbstractServletListener
    public void requestDestroyed(ServletRequestEvent event)
    {
       // JBoss AS will still start the deployment even if WB fails
-      if (Container.instance() != null && Container.instance().isInitialized())
+      if (Container.available())
       {
          if (event.getServletRequest() instanceof HttpServletRequest)
          {
@@ -166,7 +166,7 @@ public class WeldListener extends AbstractServletListener
    public void requestInitialized(ServletRequestEvent event)
    {
       // JBoss AS will still start the deployment even if WB fails
-      if (Container.instance() != null && Container.instance().isInitialized())
+      if (Container.available())
       {
          if (event.getServletRequest() instanceof HttpServletRequest)
          {
