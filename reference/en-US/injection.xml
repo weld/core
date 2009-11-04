@@ -109,7 +109,7 @@
 
       <tip>
          <para>
-            One major advantage of using constructor injection is that the bean can be made immutable.
+            One major advantage of constructor injection is that it allows the bean to be immutable.
          </para>
       </tip>
 
