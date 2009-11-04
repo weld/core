@@ -258,7 +258,6 @@ version=1</content>
          <plugin>
             <groupId>org.twdata.maven</groupId>
             <artifactId>maven-cli-plugin</artifactId>
-            <version>0.6.3.CR3</version>
             <configuration>
                <prompt>${project.artifactId}</prompt>
                <!-- userAliases are for cli:execute-phase -->
