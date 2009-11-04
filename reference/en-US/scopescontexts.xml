@@ -267,7 +267,7 @@ public class OrderBuilder {
          <para>
             The container is permitted to destroy a conversation and all state held in its context at any time in order
             to preserve resources. A CDI implementation will normally do this on the basis of some kind of timeout
-            &#151; though this is not required by the CDI specification. The timeout is the period of inactivity before
+            &#8212; though this is not required by the CDI specification. The timeout is the period of inactivity before
             the conversation is destroyed (as opposed to the amount of time the conversation is active).
          </para>
     

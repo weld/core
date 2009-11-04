@@ -79,6 +79,7 @@ $> ant update</programlisting>
          jars: 
       </para>
       
+      <!-- TODO check for accuracy in 1.0 release -->
       <itemizedlist>
          <listitem>
             <para>

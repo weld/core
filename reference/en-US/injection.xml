@@ -381,7 +381,7 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
   
       <para>
          To fix an <literal>UnsatisfiedDependencyException</literal>, simply provide a bean which implements the bean
-         type and has all the qualifier types of the injection point &#151; or explicitly enable an
+         type and has all the qualifier types of the injection point &#8212; or explicitly enable an
          <literal>@Alternative</literal> bean that implements the bean type and has the appropriate qualifier types.
       </para>
   

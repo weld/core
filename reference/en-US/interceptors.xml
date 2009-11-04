@@ -278,7 +278,7 @@ public class ShoppingCart {
       <para>
          Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type
          with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings
-         are transitive &#151; any bean with the first interceptor binding inherits the interceptor bindings declared as
+         are transitive &#8212; any bean with the first interceptor binding inherits the interceptor bindings declared as
          meta-annotations.
       </para>
 
@@ -322,7 +322,7 @@ public class ShoppingCart {
          </listitem>
          <listitem>
             <para>
-               the interceptor ordering is non-global &#151; it is determined by the order in which interceptors are
+               the interceptor ordering is non-global &#8212; it is determined by the order in which interceptors are
                listed at the class level.
             </para>
          </listitem>
