@@ -1,4 +1,4 @@
-package org.jboss.weld.test;
+package org.jboss.weld.test.session.newBean;
 
 import java.util.Set;
 
