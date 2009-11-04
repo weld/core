@@ -1618,7 +1618,7 @@ public class Game implements Serializable
                </callout>
                <callout arearefs="init">
                   <para>
-                     This method initialises all of the Swing components. Note 
+                     This method initializes all of the Swing components. Note 
                      the use of the <literal>msgGenerator</literal> here.
                   </para>
                </callout>
