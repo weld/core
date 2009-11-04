@@ -54,7 +54,7 @@ public @interface ClusterScoped {}]]></programlisting>
       <para>
          Of course, that's the easy part of the job. For this scope type to be useful, we will also need to define a
          <literal>Context</literal> object that implements the scope!  Implementing a <literal>Context</literal> is
-         usually a very technical task, intended for framework development only. You can expect an implemention of the
+         usually a very technical task, intended for framework development only. You can expect an implementation of the
          business scope, for instance, in a future version of Seam.
       </para>
 
@@ -172,7 +172,7 @@ public class SecondLevelCache { ... }]]></programlisting>
          <title>Conversation demarcation</title>
   
          <para>
-            CDI provides a built-in bean for controlling the lifecyle of conversations in a JSF application. This bean
+            CDI provides a built-in bean for controlling the lifecycle of conversations in a JSF application. This bean
             may be obtained by injection:
          </para>
   

@@ -7,9 +7,9 @@
    <para>
       When you first start developing with CDI, you'll likely be dealing only with a single bean implementation for each
       bean type. In this case, it's easy to understand how beans get selected for injection. As the complexity of your
-      application grows, multiple occurances of the same bean type start appearing, either because you have multiple
+      application grows, multiple occurrences of the same bean type start appearing, either because you have multiple
       implementations or two beans share a common (Java) inheritance. That's when you have to begin studying the
-      specialization, inheritance and alternative rules to work through unsatisified or ambiguous dependencies or to
+      specialization, inheritance and alternative rules to work through unsatisfied or ambiguous dependencies or to
       avoid certain beans from being called.
    </para>
 

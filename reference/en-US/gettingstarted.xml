@@ -43,7 +43,7 @@
             <para>a supported runtime environment (minimum versions shown)</para>
             <itemizedlist>
                <listitem>
-                  <para>JBoss AS 5.2.0 (currenly only nightly builds of JBoss AS 5.2.0.Beta1 are available), or</para>
+                  <para>JBoss AS 5.2.0 (currently only nightly builds of JBoss AS 5.2.0.Beta1 are available), or</para>
                </listitem>
                <listitem>
                   <para>GlassFish 3.0, or</para>
@@ -98,7 +98,7 @@
       <para>
          After you have downloaded JBoss AS, extract it. (We recommended renaming the folder to include the
          <literal>as</literal> qualifier so it's clear that it's the application server). You can move the extracted
-         folder anywhere you like. Whereever it lays to rest, that's what we'll call the JBoss AS installation
+         folder anywhere you like. Wherever it lays to rest, that's what we'll call the JBoss AS installation
          directory, or <literal>JBOSS_HOME</literal>.
       </para>
       
@@ -324,7 +324,7 @@ $> ant package]]></programlisting>
 
          <para>
             In order for Ant to push the artifact to the Tomcat hot deploy directory, it needs to know where the Tomcat
-            installation is located. Again, we need to setup a propery in the local.build.properties file in the
+            installation is located. Again, we need to setup a property in the local.build.properties file in the
             examples directory of the Weld distribution. If you haven't yet created this file, do so now. Then assign
             the path of your Tomcat installation to the property key tomcat.home.
          </para>
@@ -410,7 +410,7 @@ $> start]]></programlisting>
             The Maven plugin communicates with Tomcat over HTTP, so it doesn't care where you have installed Tomcat.
             However, the plugin configuration assumes you are running Tomcat in its default configuration, with a hostname
             of localhost and port 8080. The readme.txt file in the example directory has information about how to modify
-            the Maven settings to accomodate a different setup.
+            the Maven settings to accommodate a different setup.
          </para>
 
          <para>
@@ -730,7 +730,7 @@ $> mvn war:inplace jetty:run -Pjetty]]></programlisting>
             <callout arearefs="instructions">
                <para>
                   As the user guesses, the range of numbers they can guess gets
-                  smaller - this sentance changes to make sure they know the
+                  smaller - this sentence changes to make sure they know the
                   number range of a valid guess.
                </para>
             </callout>
@@ -920,7 +920,7 @@ public class Game implements Serializable {
          <tip>
             <para>
                You must also include the JARs for JSF, EL, and the common annotations
-               (<literal>jsr250-api.jar</literal>), all of which are provided by the Java EE platorm (a Java EE
+               (<literal>jsr250-api.jar</literal>), all of which are provided by the Java EE platform (a Java EE
                application server). Are you starting to appreciate why a Java EE platform is worth using?
             </para>
          </tip>
@@ -969,7 +969,7 @@ public class Game implements Serializable {
          <note>
             <para>
                We'll also be using the Eclipse IDE in these examples. Instructions are provided later for running the
-               example from the commandline, but since you'll likely need to do more than just deploy examples, we'll get
+               example from the command line, but since you'll likely need to do more than just deploy examples, we'll get
                setup in this full development environment.
             </para>
          </note>
@@ -988,7 +988,7 @@ public class Game implements Serializable {
             <para>
                If you have m2eclipse installed, you can open any Maven project directly. From within Eclipse, select
                <emphasis>File -> Import... -> Maven Projects</emphasis>. Then, browse to the location of the Wicket
-               numberguess example. You should see that Eclipse recognizes the existance of a Maven project.
+               numberguess example. You should see that Eclipse recognizes the existence of a Maven project.
             </para>
 
             <mediaobject>
@@ -1652,7 +1652,7 @@ public class Game implements Serializable {
       
       <note>
          <para>
-            Jave EE 6, which bundles EJB 3.1, allows you to package EJBs in a WAR, which will make this structure much
+            Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a WAR, which will make this structure much
             simpler! Still, there are other advantages of using an EAR.
          </para>
       </note>
@@ -1716,7 +1716,7 @@ public class Game implements Serializable {
       </para>
       
       <para>
-         More intersting is the JSF view used to translate text. Just as in the numberguess example we have a template,
+         More interesting is the JSF view used to translate text. Just as in the numberguess example we have a template,
          which surrounds the form (ommitted here for brevity):
       </para>
       

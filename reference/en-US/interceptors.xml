@@ -5,7 +5,7 @@
    <title>Interceptors</title>
 
    <para>
-      Thanks to the managed bean specification, intereceptors are now part of the core functionality of a bean. That
+      Thanks to the managed bean specification, interceptors are now part of the core functionality of a bean. That
       means that you no longer need to make your class an EJB just to use interceptors!
    </para>
 
@@ -253,7 +253,7 @@ public class ShoppingCart {
    @Transactional public void checkout() { ... }
 }]]></programlisting>
 
-      <programlisting role="JAVA"><![CDATA[@Transactionl
+      <programlisting role="JAVA"><![CDATA[@Transactional
 public class ShoppingCart {
    @Secure public void checkout() { ... }
 }]]></programlisting>

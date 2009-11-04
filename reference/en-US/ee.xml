@@ -219,7 +219,7 @@ public void sendMessage(String price) {
       <para>
          For Java SE execution, beans may be deployed in any location in which EJBs may be deployed for execution by the
          embeddable EJB Lite container. Again, each location must contain a <literal>beans.xml</literal> file. (That
-         doesn't rule out the possibility of having an extention which provides support for normal Java SE execution,
+         doesn't rule out the possibility of having an extension which provides support for normal Java SE execution,
          like the Weld Java SE module).
       </para>
     

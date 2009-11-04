@@ -182,8 +182,8 @@ public class TranslateController {
       </tip>
 
       <para>
-         Alternatively, we may obtain an instance of <literal>TextTranslator</literal> programatically from an injected
-         instance of <literal>Instance</literal>, paramaterized with the bean type:
+         Alternatively, we may obtain an instance of <literal>TextTranslator</literal> programmatically from an injected
+         instance of <literal>Instance</literal>, parameterized with the bean type:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Inject Instance<TextTranslator> textTranslatorSource;
@@ -265,7 +265,7 @@ public void translate() {
       <para>
          One great advantage of the contextual model is that it allows stateful beans to be treated like services! The
          client need not concern itself with managing the lifecycle of the bean it's using, <emphasis>nor does it even
-         need to know what that lifecyle is.</emphasis> Beans interact by passing messages, and the bean implementations
+         need to know what that lifecycle is.</emphasis> Beans interact by passing messages, and the bean implementations
          define the lifecycle of their own state. The beans are loosely coupled because:
       </para>
 
@@ -373,8 +373,8 @@ public class BookShop extends Business implements Shop<Book> {
             The bean types alone often do not provide enough information for the container to know which bean to inject.
             For instance, suppose we have two implementations of the <literal>PaymentProcessor</literal> interface:
             <literal>CreditCardPaymentProcessor</literal> and <literal>DebitPaymentProcessor</literal>. Injecting into a
-            field of type <literal>PaymentProcessor</literal> introduces an ambigious condition. In these cases, the
-            container must rely on some client-visible semantic that is satisified by one implementation of the bean
+            field of type <literal>PaymentProcessor</literal> introduces an ambiguous condition. In these cases, the
+            container must rely on some client-visible semantic that is satisfied by one implementation of the bean
             type, but not by others. That semantic is called a qualifier.
          </para>
 
@@ -540,7 +540,7 @@ public class ShoppingCart { ... }]]></programlisting>
 
          <para>
             We've already seen how qualifiers let us choose between multiple implementations of an interface at
-            development time. But sometimes we have an interface whose implementation varies dependending upon
+            development time. But sometimes we have an interface whose implementation varies depending upon
             the deployment environment. For example, we may want to use a mock implementation in a testing 
             environment. An <emphasis>alternative</emphasis> may be declared by annotating the bean class or 
             producer method or field with the <literal>@Alternative</literal> annotation.
@@ -581,7 +581,7 @@ public class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></progr
             well just put the interceptor code <emphasis>in</emphasis> the implementation. Second, the order in which
             the interceptors are applied is taken from the order in which they are declared in the annotation or the XML
             descriptor. Perhaps this isn't so bad if you're applying the interceptors to a single bean. But, if you are
-            applying them repeatly, then there is a chance that you'll inadvertly define a different order for different
+            applying them repeatedly, then there is a chance that you'll inadvertently define a different order for different
             beans. Now that is a problem.
          </para>
 
@@ -685,7 +685,7 @@ public class ShoppingCart { ... }]]></programlisting>
          <para>
             EJB 3 session beans belong to the EJB specification. That is, the basic lifecycle and semantics. Beyond
             that, they get to participate in CDI just like any other bean. There are some restrictions about which
-            scopes can be assigned to a session bean, but other than that, they are interchangable with regular managed
+            scopes can be assigned to a session bean, but other than that, they are interchangeable with regular managed
             beans. That means you can inject one session bean into another, a managed bean into a session bean, a
             session bean into a managed bean, have a managed bean observe an event raised by a session bean, and so on.
          </para>
@@ -952,7 +952,7 @@ public class RandomNumberGenerator {
             
          <para>
             Naturally, there remained some mismatch with the new style of dependency injection in CDI. Most notably,
-            resource injections rely on string-based names to qualify ambigious types, and there is no real consistency
+            resource injections rely on string-based names to qualify ambiguous types, and there is no real consistency
             as to how a resource obtains its name (sometimes JNDI, other times from an XML descriptor or even a default
             name). Producer fields turned out to be an elegant adapter to rein them in and get them to participate in
             the CDI system just like any other injectable bean.

@@ -235,7 +235,7 @@ public void setPaymentProcessors(@Synchronous PaymentProcessor syncPaymentProces
    this.asyncPaymentProcessor = asyncPaymentProcessor;
 }]]></programlisting>
 
-      <para>Using using constructor injection:</para>
+      <para>Using constructor injection:</para>
 
      <programlisting role="JAVA"><![CDATA[@Inject
 public Checkout(@Synchronous PaymentProcessor syncPaymentProcessor, 
@@ -275,7 +275,7 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
          <title>Qualifiers with members</title>
 
          <para>
-            Annotations can have members (i.e., fields) just like regular classes. You can use these fields to furthur
+            Annotations can have members (i.e., fields) just like regular classes. You can use these fields to further
             discriminate the qualifier. This simply prevents an explosion of annotations that you have to introduce.
             For instance, if you wanted to create several qualifiers representing different payment methods, you could
             aggregate them under a single annotation using a member:
@@ -375,7 +375,7 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
       </para>
   
       <para>
-         During the course of your development, your going to encounter these errors. Let's learn how to resolve them.
+         During the course of your development, you're going to encounter these errors. Let's learn how to resolve them.
          It's usually pretty easy, and a decent IDE can really help out here.
       </para>
   
@@ -437,7 +437,7 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
             If you recall, Seam also boasted the ability to reference the current instance of a component. However, Seam
             went about it differently. In Seam, the references are established prior to the method call and cleared
             afterword using an interceptor&#8212;a process known as bijection. This model was not very friendly to multiple
-            threads sharing instances and thefore the client proxy approach was adopted in CDI instead.
+            threads sharing instances and therefore the client proxy approach was adopted in CDI instead.
          </para>
       </note>
   
@@ -535,7 +535,7 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
    .select(new AnnotationLiteral<Asynchronous>() {});]]></programlisting>
 
       <para>
-         You can choose to create a concreate type for all of your annotation literals, such as:
+         You can choose to create a concrete type for all of your annotation literals, such as:
       </para>
 
       <programlisting role="JAVA"><![CDATA[abstract class AsynchronousQualifier
@@ -543,7 +543,7 @@ extends AnnotationLiteral<Asynchronous> implements Asynchronous {}]]></programli
 
       <note>
          <para>
-            The concrete is required if your qualifier has members, since an anonymous subclass cannot define members.
+            The concrete type is required if your qualifier has members, since an anonymous subclass cannot define members.
          </para>
       </note>
 
@@ -567,7 +567,7 @@ PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment
 
       <para>
          You won't always be able to take advantage of the type safety that CDI provides. One of those places is the JSF
-         view. To accomodate that environment, CDI must learn to speak the binding language that view templates
+         view. To accommodate that environment, CDI must learn to speak the binding language that view templates
          understand. That language is the Unified EL.
       </para>
 

@@ -145,7 +145,7 @@ public @interface Action {}]]></programlisting>
       <title>Alternatives as stereotypes</title>
 
       <para>
-         A stereotype can inicate that all beans to which it is applied are <literal>@Alternative</literal> beans.  If
+         A stereotype can indicate that all beans to which it is applied are <literal>@Alternative</literal> beans.  If
          you can remember back to the early days of the specification, this is the closest match to a deployment type.
          Whole sets of beans can be enabled or left disabled by activating a single stereotype.
       </para>

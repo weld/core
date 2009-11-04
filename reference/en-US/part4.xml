@@ -14,7 +14,7 @@
       into the Java EE platform via an SPI. This SPI positions CDI as the foundation for a new ecosystem of
       <emphasis>portable</emphasis> extensions and integration with existing frameworks and technologies.  The CDI
       services will be able to reach a diverse collection of technologies, such as business process management (BPM)
-      engines, existing web frameworks and defacto standard component models. Of course, The Java EE platform will never
+      engines, existing web frameworks and de facto standard component models. Of course, The Java EE platform will never
       be able to standardize all the interesting technologies that are used in the world of Java application
       development, but CDI makes it easier to use the technologies which are not yet part of the platform seamlessly
       within the Java EE environment.

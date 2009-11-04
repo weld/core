@@ -138,7 +138,7 @@ tainer, for example, alternative web presentation technologies.
    </itemizedlist>
 
    <para>
-      The main theme of CDI, which is instrumental in removing these complexities, is <emphasis>loose-couping with
+      The main theme of CDI, which is instrumental in removing these complexities, is <emphasis>loose-coupling with
       strong typing</emphasis>. Let's study what that phrase means.
    </para>
   

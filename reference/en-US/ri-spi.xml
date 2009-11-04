@@ -114,7 +114,7 @@
          <para>
             BDA X may also reference another BDA Y whose beans can be resolved by, and injected into, any bean in BDA X.
             These are the accessible BDAs, and every BDA that is directly accessible by BDA X should be returned.  A BDA
-            will also have BDAs which are accessible transtivively, and the transitive closure of the sub-graph of BDA X
+            will also have BDAs which are accessible transitively, and the transitive closure of the sub-graph of BDA X
             describes all the beans resolvable by BDA X.
          </para>
          
@@ -291,7 +291,7 @@
          <para>
             <literal>InjectionServices</literal> provides a very simple contract, the
             <literal>InjectionServices.aroundInject(InjectionContext ic);</literal> intercepter will be called for every
-            instance that CDI injects, whether it is a contextual instance, or a non-contexutal instance injected by
+            instance that CDI injects, whether it is a contextual instance, or a non-contextual instance injected by
             <literal>InjectionTarget.inject()</literal>.
          </para>
          
@@ -491,7 +491,7 @@
                
                <para>
                   If you are integrating Weld into a JSF environment you must register
-                  <literal>org.jboss.weld.el.WeldELContextListener</literal> as as an EL Context listener.
+                  <literal>org.jboss.weld.el.WeldELContextListener</literal> as an EL Context listener.
                </para>
                
                <para>
@@ -537,7 +537,7 @@
                
                <para>
                   If you are integrating Weld into a JSP environment you must register
-                  <literal>org.jboss.weld.el.WeldELContextListener</literal> as as an EL Context listener.
+                  <literal>org.jboss.weld.el.WeldELContextListener</literal> as an EL Context listener.
                </para>
                
                <para>

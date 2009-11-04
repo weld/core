@@ -57,7 +57,7 @@
     
       <para>
          The <literal>BeanManager</literal> interface lets us register and obtain beans, interceptors, decorators,
-         observers and contexts programatically.
+         observers and contexts programmatically.
       </para>
     
 <programlisting role="JAVA"><![CDATA[public interface Manager {
