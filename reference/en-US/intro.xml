@@ -62,7 +62,7 @@
       <title>Your first bean (or is it?)</title>
 
       <para>
-         Suppose that we have two existing Java classes, that we've been using for years in various applications. The
+         Suppose that we have two existing Java classes that we've been using for years in various applications. The
          first class parses a string into a list of sentences:
       </para>
     
