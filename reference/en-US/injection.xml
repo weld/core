@@ -390,7 +390,7 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
          implementations of the bean type, or disable one of two <literal>@Alternative</literal> beans that are trying
          to occupy the same space.  An <literal>AmbiguousDependencyException</literal> can only occur if two enabled
          beans share the same qualifier types (and one bean does not specialize the other, which we'll get into
-         specialization in <xref linkend="specialization"/>).
+         in <xref linkend="specialization"/>).
       </para>
       
       <tip>
