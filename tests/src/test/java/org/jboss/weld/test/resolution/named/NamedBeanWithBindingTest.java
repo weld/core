@@ -1,4 +1,4 @@
-package org.jboss.weld.test.named;
+package org.jboss.weld.test.resolution.named;
 
 import javax.enterprise.inject.spi.Bean;
 

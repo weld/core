@@ -1,4 +1,4 @@
-package org.jboss.weld.test.newsimple;
+package org.jboss.weld.test.managed.newBean;
 
 import java.util.Set;
 

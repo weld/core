@@ -1,4 +1,4 @@
-package org.jboss.weld.test.named;
+package org.jboss.weld.test.resolution.named;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;

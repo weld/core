@@ -1,6 +1,0 @@
-<beans> 
-   <decorators>
-      <class>org.jboss.weld.test.unit.decorator.simple.SimpleDecorator1</class>
-      <class>org.jboss.weld.test.unit.decorator.simple.SimpleDecorator2</class>
-   </decorators>
-</beans>
