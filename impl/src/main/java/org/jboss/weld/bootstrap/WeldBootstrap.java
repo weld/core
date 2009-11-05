@@ -25,11 +25,12 @@ import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+ 
 
 import javax.enterprise.inject.spi.Extension;
 
@@ -121,7 +122,7 @@ public class WeldBootstrap implements Bootstrap
          this.deploymentManager = deploymentManager;
          this.environment = environment;
          this.deployment = deployment;
-         this.managerAwareBeanDeploymentArchives = new HashMap<BeanDeploymentArchive, BeanDeployment>();
+         this.managerAwareBeanDeploymentArchives = new ConcurrentHashMap<BeanDeploymentArchive, BeanDeployment>();
          this.implementationBeanDeploymentArchive = new BeanDeploymentArchive()
          {
             
