@@ -35,4 +35,6 @@ public interface SimpleBean
    int echo3(int i);
    
    int echo4(int i);
+
+   boolean isInvoked();
 }

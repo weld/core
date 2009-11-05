@@ -29,24 +29,34 @@ package org.jboss.weld.tests.decorators;
 public class SimpleBeanImpl implements SimpleBean
 {
 
+   private boolean invoked  = false;
+
    public int echo1(int i)
    {
+      invoked = true;
       return i;
    }
 
    public int echo2(int i)
    {
+      invoked = true;
       return i;
    }
 
    public int echo3(int i)
    {
+      invoked = true;
       return i;
    }
 
    public int echo4(int i)
    {
+      invoked = true;
       return i;
    }
 
+   public boolean isInvoked()
+   {
+      return invoked;
+   }
 }

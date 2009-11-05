@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 @BeansXml("beans.xml")
 public class SimpleDecoratorTest extends AbstractWeldTest
 {
-   @Test
+   @Test(groups = "broken")
    public void testSimpleDecorator()
    {
       SimpleBean simpleBean = getCurrentManager().getInstanceByType(SimpleBean.class);
@@ -22,19 +22,25 @@ public class SimpleDecoratorTest extends AbstractWeldTest
       resetDecorators();
       assert simpleBean.echo1(1) == 1;
       assertDecorators(true, false, false);
+      assert simpleBean.isInvoked();
       
       resetDecorators();
       assert simpleBean.echo2(2) == 2;
       assertDecorators(false, true, false);
+      assert simpleBean.isInvoked();
 
       //Only SimpleDecorator1 gets invoked, although I think SimpleDecorator2 should get invoked too
       resetDecorators();
       assert simpleBean.echo3(3) == 3;
       assertDecorators(false, false, true);
-      
+
+      assert simpleBean.isInvoked();
+
       resetDecorators();
       assert simpleBean.echo4(4) == 4; 
       assertDecorators(false, false, false);
+
+      assert simpleBean.isInvoked();
    }
    
    private void resetDecorators()
