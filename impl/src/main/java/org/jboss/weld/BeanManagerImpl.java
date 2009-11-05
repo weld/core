@@ -656,7 +656,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
 
    @SuppressWarnings("unchecked")
-   private <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... bindings)
+   public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... bindings)
    {
       checkBindingTypes(Arrays.asList(bindings));    
       HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(Arrays.asList(bindings));
