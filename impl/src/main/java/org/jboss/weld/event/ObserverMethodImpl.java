@@ -31,20 +31,20 @@ import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
 import javax.inject.Qualifier;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.Container;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.util.Beans;
 
 /**
@@ -192,6 +192,10 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
 
    public void notify(final T event)
    {
+      if (ignore(event))
+      {
+         return;
+      }
       sendEvent(event);
    }
 
@@ -206,7 +210,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       CreationalContext<?> creationalContext = null;
       try
       {
-         // Get the most specialized instance of the component
          if (notifyType.equals(Reception.ALWAYS))
          {
             creationalContext = manager.createCreationalContext(declaringBean);
@@ -229,17 +232,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       }
    }
 
-   /**
-    * Queues the event for later execution
-    * 
-    * @param event
-    */
-   protected void sendEventAsynchronously(final T event)
-   {
-      DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, this);
-      Container.instance().deploymentServices().get(ExecutorServices.class).getTaskExecutor().execute(deferredEvent);
-   }
-
    @Override
    public String toString()
    {
@@ -248,6 +240,20 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       builder.append("  Observer (Declaring) class: " + declaringBean.getBeanClass());
       builder.append("  Observer method: " + observerMethod);
       return builder.toString();
+   }
+   
+   protected boolean ignore(T event)
+   {
+      Class<?> eventType = event.getClass();
+      if (AbstractContainerEvent.class.isAssignableFrom(eventType))
+      {
+         // This is a container lifeycle event, ensure we are firing to an extension
+         if (!Extension.class.isAssignableFrom(getBeanClass()))
+         {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

@@ -53,6 +53,10 @@ class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X>
    @Override
    public void notify(T event)
    {
+      if (ignore(event))
+      {
+         return;
+      }
       if ((manager.getServices().get(TransactionServices.class) != null)  && (manager.getServices().get(TransactionServices.class).isTransactionActive()))
       {
          deferEvent(event);
