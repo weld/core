@@ -23,9 +23,8 @@ import java.util.Map;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.Interceptor;
-import javax.decorator.Decorator;
+import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployment;
@@ -37,7 +36,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
    
    public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments).fire();
+      new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments).fire(beanDeployments);
    }
    
    protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)

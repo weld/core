@@ -44,7 +44,6 @@ public class ExtensionBeanDeployer
 {
    
    private final BeanManagerImpl beanManager;
-   private final Set<ObserverMethodImpl<?, ?>> observerMethods;
    private final Set<Extension> extensions;
    private final Deployment deployment;
    private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
@@ -53,7 +52,6 @@ public class ExtensionBeanDeployer
    {
       this.beanManager = manager;
       this.extensions = new HashSet<Extension>();
-      this.observerMethods = new HashSet<ObserverMethodImpl<?,?>>();
       this.deployment = deployment;
       this.beanDeployments = beanDeployments;
    }
@@ -70,7 +68,8 @@ public class ExtensionBeanDeployer
          BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, clazz.getJavaClass());
          
          ExtensionBean bean = new ExtensionBean(beanDeployment.getBeanManager(), clazz, extension);
-         createObserverMethods(bean, beanDeployment.getBeanManager(), clazz);
+         Set<ObserverMethodImpl<?, ?>> observerMethods = new HashSet<ObserverMethodImpl<?,?>>();
+         createObserverMethods(bean, beanDeployment.getBeanManager(), clazz, observerMethods);
          beanDeployment.getBeanManager().addBean(bean);
          for (ObserverMethodImpl<?, ?> observerMethod : observerMethods)
          {
@@ -95,18 +94,18 @@ public class ExtensionBeanDeployer
       this.extensions.add(extension);
    }
    
-   protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldClass<X> annotatedClass)
+   protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldClass<X> annotatedClass, Set<ObserverMethodImpl<?, ?>> observerMethods)
    {
       for (WeldMethod<?, X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class))
       {
-         createObserverMethod(declaringBean, beanManager, method);
+         createObserverMethod(declaringBean, beanManager, method, observerMethods);
       }
    }
    
-   protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldMethod<T, X> method)
+   protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldMethod<T, X> method, Set<ObserverMethodImpl<?, ?>> observerMethods)
    {
       ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager);
-      this.observerMethods.add(observer);
+      observerMethods.add(observer);
    }
 
 }

@@ -62,6 +62,10 @@ import org.jboss.weld.util.Beans;
 public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
 {
    
+   public static final String ID_PREFIX = ObserverMethodImpl.class.getPackage().getName();
+   
+   public static final String ID_SEPARATOR = "-";
+   
    private static final Annotation ANY = new AnyLiteral();
 
    private final Set<Annotation> bindings;
@@ -71,6 +75,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    protected final RIBean<X> declaringBean;
    protected final MethodInjectionPoint<T, X> observerMethod;
    protected TransactionPhase transactionPhase;
+   private final String id;
 
    private final Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
 
@@ -88,7 +93,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       this.declaringBean = declaringBean;
       this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
       this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
-
+      this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
       this.bindings = new HashSet<Annotation>(observerMethod.getAnnotatedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
       Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
       this.notifyType = observesAnnotation.notifyObserver();
@@ -231,16 +236,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
          }
       }
    }
-
-   @Override
-   public String toString()
-   {
-      StringBuilder builder = new StringBuilder();
-      builder.append("Observer Implementation: \n");
-      builder.append("  Observer (Declaring) class: " + declaringBean.getBeanClass());
-      builder.append("  Observer method: " + observerMethod);
-      return builder.toString();
-   }
    
    protected boolean ignore(T event)
    {
@@ -254,6 +249,37 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
          }
       }
       return false;
+   }
+   
+   @Override
+   public String toString()
+   {
+      return id;
+   }
+   
+   public String getId()
+   {
+      return id;
+   }
+   
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof ObserverMethodImpl<?, ?>)
+      {
+         ObserverMethodImpl<?, ?> that = (ObserverMethodImpl<?, ?>) obj;
+         return this.getId().equals(that.getId());
+      }
+      else
+      {
+         return false;
+      }
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return getId().hashCode();
    }
 
 }

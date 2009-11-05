@@ -36,7 +36,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
 
    public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      new BeforeBeanDiscoveryImpl(beanManager, deployment, beanDeployments).fire();
+      new BeforeBeanDiscoveryImpl(beanManager, deployment, beanDeployments).fire(beanDeployments);
    }
 
    protected BeforeBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)

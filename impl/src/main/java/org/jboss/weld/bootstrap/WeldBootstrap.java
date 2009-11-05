@@ -346,10 +346,7 @@ public class WeldBootstrap implements Bootstrap
          // Re-Read the deployment structure, this will be the physical structure, and will add in BDAs for any extensions outside a physical BDA
          beanDeployments = deploymentVisitor.visit();
          
-         for (BeanDeployment beanDeployment : beanDeployments.values())
-         {
-            BeforeBeanDiscoveryImpl.fire(beanDeployment.getBeanManager(), deployment, beanDeployments);
-         }
+         BeforeBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments);
          
          // Re-Read the deployment structure, this will be the physical structure, extensions and any classes added using addAnnotatedType outside the physical BDA
          beanDeployments = deploymentVisitor.visit();
@@ -367,10 +364,7 @@ public class WeldBootstrap implements Bootstrap
          {
             entry.getValue().deployBeans(environment);
          }
-         for (BeanDeployment beanDeployment : beanDeployments.values())
-         {
-            AfterBeanDiscoveryImpl.fire(beanDeployment.getBeanManager(), deployment, beanDeployments);
-         }
+         AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments);
          // Re-read the deployment structure, this will be the physical structure, extensions, classes, and any beans added using addBean outside the physical structure
          beanDeployments = deploymentVisitor.visit();
          Container.instance().putBeanDeployments(beanDeployments);
@@ -388,11 +382,7 @@ public class WeldBootstrap implements Bootstrap
          {
             deployment.getServices().get(Validator.class).validateDeployment(entry.getValue().getBeanManager(), entry.getValue().getBeanDeployer().getEnvironment());
          }
-         for (BeanDeployment beanDeployment : beanDeployments.values())
-         {
-            AfterDeploymentValidationImpl.fire(beanDeployment.getBeanManager());
-         }
-         
+         AfterDeploymentValidationImpl.fire(deploymentManager, beanDeployments);
       }
       return this;
    }
