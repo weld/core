@@ -66,7 +66,7 @@ public abstract class AbstractContainerEvent
       Type eventType = new ParameterizedTypeImpl(getRawType(), getEmptyTypeArray(), null);
       for (BeanDeployment beanDeployment : beanDeployments.values())
       {
-         observers.addAll(beanDeployment.getBeanManager().resolveObserverMethods(eventType));
+         observers.addAll((Set) beanDeployment.getBeanManager().resolveObserverMethods(eventType));
       }
       for (ObserverMethod<Object> observerMethod : observers)
       {
