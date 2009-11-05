@@ -80,9 +80,9 @@ public class StagingCreditCardPaymentProcessor
       <para>
          By default, <literal>@Alternative</literal> beans are disabled. We need to <emphasis>enable</emphasis> the
          alternative&#8212;effectively replacing the bean implementation without the <literal>@Alternative</literal>
-         annotation&#8212;in the <literal>beans.xml</literal> descriptor of a bean deployment archive by specifying the bean
-         class (or the class that contains the alternative producer method or field). This activation only applies to
-         beans in the same archive.
+         annotation&#8212;in the <literal>beans.xml</literal> descriptor of a bean archive by specifying the bean
+         class (or the class that contains the alternative producer method or field). This activation only applies 
+         to the beans in that archive.
       </para>
 
       <programlisting role="XML"><![CDATA[<beans

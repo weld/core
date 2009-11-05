@@ -151,8 +151,8 @@ public abstract class LargeTransactionDecorator
 
       <para>
          By default, all decorators are disabled. We need to <emphasis>enable</emphasis> our decorator in the
-         <literal>beans.xml</literal> descriptor of a bean deployment archive. This activation only applies
-         to beans in the same archive.
+         <literal>beans.xml</literal> descriptor of a bean archive. This activation only applies to the beans 
+         in that archive.
       </para>
 
       <programlisting role="XML"><![CDATA[<beans

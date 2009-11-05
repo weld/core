@@ -120,8 +120,8 @@ public class TransactionInterceptor {
 
       <para>
          By default, all interceptors are disabled. We need to <emphasis>enable</emphasis> our interceptor in the
-         <literal>beans.xml</literal> descriptor of a bean deployment archive. This activation only applies to beans in
-         the same archive.
+         <literal>beans.xml</literal> descriptor of a bean archive. This activation only applies to the beans in 
+         that archive.
       </para>
 
 <programlisting role="XML"><![CDATA[<beans
