@@ -18,6 +18,7 @@ package org.jboss.weld;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +46,7 @@ import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.InjectionException;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
@@ -165,8 +167,44 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
    private static final long serialVersionUID = 3021562879133838561L;
 
-   // The JNDI key to place the manager under
-   public static final String JNDI_KEY = "java:app/Manager";
+   public static final InjectionPoint DUMMY_INJECTION_POINT = new InjectionPoint()
+   {
+      
+      public boolean isTransient()
+      {
+         return true;
+      }
+      
+      public boolean isDelegate()
+      {
+         return false;
+      }
+      
+      public Type getType()
+      {
+         return InjectionPoint.class;
+      }
+      
+      public Set<Annotation> getQualifiers()
+      {
+         return Collections.emptySet();
+      }
+      
+      public Member getMember()
+      {
+         return null;
+      }
+      
+      public Bean<?> getBean()
+      {
+         return null;
+      }
+      
+      public Annotated getAnnotated()
+      {
+         return null;
+      }
+   };
    
    /*
     * Application scoped services 
@@ -1234,6 +1272,19 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       currentInjectionPoint.get().push(injectionPoint);
       return originalInjectionPoint;
+   }
+   
+   public void pushDummyInjectionPoint()
+   {
+      currentInjectionPoint.get().push(DUMMY_INJECTION_POINT);
+   }
+   
+   public void popDummyInjectionPoint()
+   {
+      if (!currentInjectionPoint.get().isEmpty() && DUMMY_INJECTION_POINT.equals(currentInjectionPoint.get().peek()))
+      {
+         currentInjectionPoint.get().pop();
+      }
    }
 
    /**

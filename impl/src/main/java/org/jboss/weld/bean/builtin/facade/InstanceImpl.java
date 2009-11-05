@@ -63,10 +63,18 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    {
       Annotation[] annotations = mergeInBindings(bindings);
       Bean<T> bean = getManager().getBean(ResolvableWeldClass.<T>of(getType(), annotations, getManager()), annotations);
-      
-      @SuppressWarnings("unchecked")
-      T instance = (T) getManager().getReference(bean, getType(), getManager().createCreationalContext(bean));
-      return instance;
+      // Push in an empty CC to ensure that we don't get the CC of whatever is injecting the bean containing the Instance injection point
+      try
+      {
+         getManager().pushDummyInjectionPoint();
+         @SuppressWarnings("unchecked")
+         T instance = (T) getManager().getReference(bean, getType(), getManager().createCreationalContext(bean));
+         return instance;
+      }
+      finally
+      {
+         getManager().popDummyInjectionPoint();
+      }
    }
    
    public T get()

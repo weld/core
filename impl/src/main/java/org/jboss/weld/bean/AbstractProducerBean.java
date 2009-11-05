@@ -179,7 +179,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             throw new IllegalProductException("Producers cannot declare passivating scope and return a non-serializable class");
          }
          InjectionPoint injectionPoint = manager.getCurrentInjectionPoint();
-         if (injectionPoint == null)
+         if (injectionPoint == null || injectionPoint.equals(BeanManagerImpl.DUMMY_INJECTION_POINT))
          {
             return;
          }
@@ -187,7 +187,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
          {
             if (injectionPoint.getMember() instanceof Field)
             {
-               if (!Reflections.isTransient(injectionPoint.getMember()) && instance != null && !Reflections.isSerializable(instance.getClass()))
+               if (!injectionPoint.isTransient() && instance != null && !Reflections.isSerializable(instance.getClass()))
                {
                   throw new IllegalProductException("Producers cannot produce non-serializable instances for injection into non-transient fields of passivating beans\n\nProducer: " + this.toString() + "\nInjection Point: " + injectionPoint.toString());
                }

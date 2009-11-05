@@ -28,15 +28,4 @@ public class CircularDependencyTest extends AbstractWeldTest
       getCurrentManager().getInstanceByType(Violation.class).ping();
    }
 
-   @Test(groups="broken", timeOut=1000)
-   public void testDependentCircularConstructors() throws Exception
-   {
-      getCurrentManager().getInstanceByType(Fish.class);
-   }
-   
-   @Test(groups="broken", timeOut=1000)
-   public void testSelfConsumingConstructorsOnDependentBean() throws Exception
-   {      
-      getCurrentManager().getInstanceByType(Farm.class);
-   }
 }

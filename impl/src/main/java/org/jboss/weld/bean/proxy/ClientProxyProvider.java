@@ -79,7 +79,6 @@ public class ClientProxyProvider
       {
          ClientProxyMethodHandler proxyMethodHandler = new ClientProxyMethodHandler(bean, manager, id);
          Set<Type> classes = new LinkedHashSet<Type>(bean.getTypes());
-         //classes.add(ClientProxyInstance.class);
          classes.add(Serializable.class);
          ProxyFactory proxyFactory = Proxies.getProxyFactory(classes);
          proxyFactory.setHandler(proxyMethodHandler);
@@ -125,8 +124,6 @@ public class ClientProxyProvider
          }
 
       });
-      // TODO Break circular injection. Can we somehow support both?
-      //((ClientProxyInstance) instance).touch(Marker.INSTANCE);
       return instance;
    }
 

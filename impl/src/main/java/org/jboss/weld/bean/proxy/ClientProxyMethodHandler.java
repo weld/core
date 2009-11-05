@@ -99,13 +99,6 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
          bean = Container.instance().deploymentServices().get(ContextualStore.class).<Bean<Object>, Object>getContextual(id);
       }
       Object proxiedInstance = getProxiedInstance(bean);
-      if ("touch".equals(proxiedMethod.getName()) && Marker.isMarker(0, proxiedMethod, args))
-      {
-         // Our "touch" method, which simply ensures the proxy does any object
-         // instantiation needed, to avoid the annoying side effect of an object
-         // getting lazy created
-         return null;
-      }
       if (proxiedInstance == null)
       {
          // TODO not sure if this right PLM
@@ -145,10 +138,13 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       try
       {
          Context context = manager.getContext(bean.getScope());
+         // Ensure that there is no injection point associated
+         manager.pushDummyInjectionPoint();
          return context.get(bean, creationalContext);
       }
       finally
       {
+         manager.popDummyInjectionPoint();
          if (outer)
          {
             currentCreationalContext.remove();
