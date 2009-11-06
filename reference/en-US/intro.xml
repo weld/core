@@ -47,7 +47,7 @@
          The JavaBeans and EJBs you've been writing every day, up until now, have not been able to take advantage 
          of the new services defined by the CDI specification. But you'll be able to use every one of them with 
          CDI&#8212;allowing the container to create and destroy instances of your beans and associate them with a 
-         designed context, injecting them into other beans, using them in EL expressions, specializing them with 
+         designated context, injecting them into other beans, using them in EL expressions, specializing them with 
          qualifier annotations, even adding interceptors and decorators to them&#8212;without modifying your 
          existing code. At most, you'll need to add some annotations.
       </para>
@@ -124,10 +124,10 @@ public interface Translator {
       </para>
 
       <para>
-         We may obtain an instance of <literal>TextTranslator</literal> by injecting it into a constructor, bean
-         "setter" method, producer method, observer method or field of a JavaBean or EJB session bean, or a field 
-         of a servlet. The injection is based on the type of the injection point, not the name of the field, method 
-         or parameter.
+         We may obtain an instance of <literal>TextTranslator</literal> by injecting it into a constructor, method
+         or field of a bean, or a field or method of a Java EE component class such as a servlet. The container
+         chooses the object to be injected based on the type of the injection point, not the name of the field, 
+         method or parameter.
       </para>
       
       <para>
@@ -186,16 +186,16 @@ public class TranslateController {
          instance of <literal>Instance</literal>, parameterized with the bean type:
       </para>
 
-      <programlisting role="JAVA"><![CDATA[@Inject Instance<TextTranslator> textTranslatorSource;
+      <programlisting role="JAVA"><![CDATA[@Inject Instance<TextTranslator> textTranslatorInstance;
 ...
 public void translate() {
-   textTranslatorSource.get().translate(inputText);
+   textTranslatorInstance().translate(inputText);
 }]]></programlisting> 
 
       <para>
          Notice that it isn't necessary to create a getter or setter method to inject one bean into another. CDI can
-         access the field directly (even if it's private!), which should help eliminate some wasteful code. The name of
-         the field is arbitrary. It's the field's type that determines what is injected.
+         access an injected field directly (even if it's private!), which sometimes help eliminate some wasteful code. 
+         The name of the field is arbitrary. It's the field's type that determines what is injected.
       </para>
     
       <para>
@@ -204,8 +204,7 @@ public void translate() {
          <literal>SentenceTranslator</literal> EJB was not deployed&#8212;the container would throw an
          <literal>UnsatisfiedDependencyException</literal>. If more than one implementation of
          <literal>Translator</literal> were available, the container would throw an
-         <literal>AmbiguousDependencyException</literal>. The same for the <literal>TextTranslator</literal> injection
-         point.
+         <literal>AmbiguousDependencyException</literal>.
       </para>
 
       <para>
@@ -286,7 +285,7 @@ public void translate() {
   
       <para>
          Note that not all clients of a bean are beans themselves. Other objects such as servlets or message-driven
-         beans&mdash;which are by nature not injectable, contextual objects&mdash;may also obtain references to beans by
+         beans&#8212;which are by nature not injectable, contextual objects&#8212;may also obtain references to beans by
          injection.
       </para>
 
