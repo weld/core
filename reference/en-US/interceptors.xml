@@ -138,7 +138,7 @@ public class TransactionInterceptor {
       <para>Whoah! Why the angle bracket stew?</para> 
 
       <para>
-         Well, have the XML declaration is actually a <emphasis>good thing</emphasis>. It solves two problems:
+         Well, having the XML declaration is actually a <emphasis>good thing</emphasis>. It solves two problems:
       </para>
 
       <itemizedlist>
