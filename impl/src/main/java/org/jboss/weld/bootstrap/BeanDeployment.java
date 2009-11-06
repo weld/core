@@ -23,14 +23,14 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPT
 import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_POLICIES;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.bean.builtin.DefaultValidatorBean;
-import org.jboss.weld.bean.builtin.DefaultValidatorFactoryBean;
 import org.jboss.weld.bean.builtin.InjectionPointBean;
 import org.jboss.weld.bean.builtin.ManagerBean;
-import org.jboss.weld.bean.builtin.PrincipalBean;
-import org.jboss.weld.bean.builtin.UserTransactionBean;
 import org.jboss.weld.bean.builtin.facade.EventBean;
 import org.jboss.weld.bean.builtin.facade.InstanceBean;
+import org.jboss.weld.bean.ee.DefaultValidatorBean;
+import org.jboss.weld.bean.ee.DefaultValidatorFactoryBean;
+import org.jboss.weld.bean.ee.PrincipalBean;
+import org.jboss.weld.bean.ee.UserTransactionBean;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;

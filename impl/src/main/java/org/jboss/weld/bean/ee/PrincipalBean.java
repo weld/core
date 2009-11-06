@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bean.builtin;
+package org.jboss.weld.bean.ee;
 
 import java.lang.reflect.Type;
 import java.security.Principal;
@@ -23,6 +23,7 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.util.collections.Arrays2;
 
