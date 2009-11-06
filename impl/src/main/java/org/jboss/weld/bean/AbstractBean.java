@@ -16,14 +16,14 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.messages.BeanMessage.CREATING_BEAN;
-import static org.jboss.weld.messages.BeanMessage.QUALIFIERS_USED;
-import static org.jboss.weld.messages.BeanMessage.USING_DEFAULT_NAME;
-import static org.jboss.weld.messages.BeanMessage.USING_DEFAULT_QUALIFIER;
-import static org.jboss.weld.messages.BeanMessage.USING_NAME;
-import static org.jboss.weld.messages.BeanMessage.USING_SCOPE_FROM_STEREOTYPE;
-import static org.jboss.weld.util.log.Category.BEAN;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.CREATING_BEAN;
+import static org.jboss.weld.logging.messages.BeanMessage.QUALIFIERS_USED;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_NAME;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_QUALIFIER;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE_FROM_STEREOTYPE;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

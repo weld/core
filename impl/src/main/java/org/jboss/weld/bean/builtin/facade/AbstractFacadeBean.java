@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.bean.builtin.facade;
 
-import static org.jboss.weld.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED;
-import static org.jboss.weld.util.log.Category.BEAN;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

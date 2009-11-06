@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.messages.BeanMessage.CALL_PROXIED_METHOD;
-import static org.jboss.weld.messages.BeanMessage.CREATED_SESSION_BEAN_PROXY;
-import static org.jboss.weld.util.log.Category.BEAN;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.CALL_PROXIED_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.CREATED_SESSION_BEAN_PROXY;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;

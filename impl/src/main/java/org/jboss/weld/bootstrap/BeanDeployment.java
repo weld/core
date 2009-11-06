@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.messages.BootstrapMessage.ENABLED_DECORATORS;
-import static org.jboss.weld.messages.BootstrapMessage.ENABLED_INTERCEPTORS;
-import static org.jboss.weld.messages.BootstrapMessage.ENABLED_POLICIES;
-import static org.jboss.weld.util.log.Category.BOOTSTRAP;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_DECORATORS;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPTORS;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_POLICIES;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.builtin.DefaultValidatorBean;

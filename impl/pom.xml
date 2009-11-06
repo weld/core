@@ -128,15 +128,16 @@
                   <configuration>
                      <enumTypes>
                         <!-- list every enum type you would like to see checked -->
-                        <enumType>org.jboss.weld.messages.BeanMessage</enumType>
-                        <enumType>org.jboss.weld.messages.BootstrapMessage</enumType>
-                        <enumType>org.jboss.weld.messages.ContextMessage</enumType>
-                        <enumType>org.jboss.weld.messages.ConversationMessage</enumType>
-                        <enumType>org.jboss.weld.messages.EventMessage</enumType>
-                        <enumType>org.jboss.weld.messages.JsfMessage</enumType>
-                        <enumType>org.jboss.weld.messages.ReflectionMessage</enumType>
-                        <enumType>org.jboss.weld.messages.UtilMessage</enumType>
-                        <enumType>org.jboss.weld.messages.ServletMessage</enumType>
+                        <enumType>org.jboss.weld.logging.messages.BeanMessage</enumType>
+                        <enumType>org.jboss.weld.logging.messages.BootstrapMessage</enumType>
+                        <enumType>org.jboss.weld.logging.messages.ContextMessage</enumType>
+                        <enumType>org.jboss.weld.logging.messages.ConversationMessage</enumType>
+                        <enumType>org.jboss.weld.logging.messages.EventMessage</enumType>
+                        <enumType>org.jboss.weld.logging.messages.JsfMessage</enumType>
+                        <enumType>org.jboss.weld.logging.messages.ReflectionMessage</enumType>
+                        <enumType>org.jboss.weld.logging.messages.UtilMessage</enumType>
+                        <enumType>org.jboss.weld.logging.messages.ServletMessage</enumType>
+                        <enumType>org.jboss.weld.logging.messages.VersionMessage</enumType>
                      </enumTypes>
                   </configuration>
                </execution>

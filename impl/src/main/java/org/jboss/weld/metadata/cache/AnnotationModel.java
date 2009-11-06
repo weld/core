@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import static org.jboss.weld.messages.ReflectionMessage.MISSING_RETENTION;
-import static org.jboss.weld.util.log.Category.REFLECTION;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.REFLECTION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_RETENTION;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;

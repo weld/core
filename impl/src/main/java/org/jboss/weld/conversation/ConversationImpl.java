@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.conversation;
 
-import static org.jboss.weld.messages.ConversationMessage.DEMOTED_LRC;
-import static org.jboss.weld.messages.ConversationMessage.PROMOTED_TRANSIENT;
-import static org.jboss.weld.messages.ConversationMessage.SWITCHED_CONVERSATION;
-import static org.jboss.weld.util.log.Category.CONVERSATION;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.CONVERSATION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ConversationMessage.DEMOTED_LRC;
+import static org.jboss.weld.logging.messages.ConversationMessage.PROMOTED_TRANSIENT;
+import static org.jboss.weld.logging.messages.ConversationMessage.SWITCHED_CONVERSATION;
 
 import java.io.Serializable;
 

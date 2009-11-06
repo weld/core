@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.messages.EventMessage.ASYNC_FIRE;
-import static org.jboss.weld.messages.EventMessage.ASYNC_OBSERVER_FAILURE;
-import static org.jboss.weld.util.log.Category.EVENT;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.EVENT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.EventMessage.ASYNC_FIRE;
+import static org.jboss.weld.logging.messages.EventMessage.ASYNC_OBSERVER_FAILURE;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Lifecycle;

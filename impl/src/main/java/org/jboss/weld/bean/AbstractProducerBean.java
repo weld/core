@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.messages.BeanMessage.USING_DEFAULT_SCOPE;
-import static org.jboss.weld.messages.BeanMessage.USING_SCOPE;
-import static org.jboss.weld.util.log.Category.BEAN;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

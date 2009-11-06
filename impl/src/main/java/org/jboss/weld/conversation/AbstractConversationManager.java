@@ -22,18 +22,18 @@
  */
 package org.jboss.weld.conversation;
 
-import static org.jboss.weld.messages.ConversationMessage.CLEANING_UP_CONVERSATION;
-import static org.jboss.weld.messages.ConversationMessage.CONVERSATION_LOCK_UNAVAILABLE;
-import static org.jboss.weld.messages.ConversationMessage.CONVERSATION_SWITCHED;
-import static org.jboss.weld.messages.ConversationMessage.CONVERSATION_TERMINATION_SCHEDULED;
-import static org.jboss.weld.messages.ConversationMessage.DESTROY_ALL_LRC;
-import static org.jboss.weld.messages.ConversationMessage.DESTROY_LRC;
-import static org.jboss.weld.messages.ConversationMessage.DESTROY_TRANSIENT_COVERSATION;
-import static org.jboss.weld.messages.ConversationMessage.LRC_COUNT;
-import static org.jboss.weld.messages.ConversationMessage.NO_CONVERSATION_TO_RESTORE;
-import static org.jboss.weld.messages.ConversationMessage.UNABLE_TO_RESTORE_CONVERSATION;
-import static org.jboss.weld.util.log.Category.CONVERSATION;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.CONVERSATION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ConversationMessage.CLEANING_UP_CONVERSATION;
+import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_LOCK_UNAVAILABLE;
+import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_SWITCHED;
+import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_TERMINATION_SCHEDULED;
+import static org.jboss.weld.logging.messages.ConversationMessage.DESTROY_ALL_LRC;
+import static org.jboss.weld.logging.messages.ConversationMessage.DESTROY_LRC;
+import static org.jboss.weld.logging.messages.ConversationMessage.DESTROY_TRANSIENT_COVERSATION;
+import static org.jboss.weld.logging.messages.ConversationMessage.LRC_COUNT;
+import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_TO_RESTORE;
+import static org.jboss.weld.logging.messages.ConversationMessage.UNABLE_TO_RESTORE_CONVERSATION;
 
 import java.util.Collections;
 import java.util.HashSet;

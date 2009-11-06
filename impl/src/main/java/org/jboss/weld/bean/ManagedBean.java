@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.messages.BeanMessage.ERROR_DESTROYING;
-import static org.jboss.weld.util.log.Category.BEAN;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
+import static org.jboss.weld.logging.messages.BeanMessage.USER_DEFINED_DECORATOR_DISALLOWED;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,8 @@ import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
 
+import ch.qos.cal10n.IMessageConveyor;
+
 /**
  * Represents a simple bean
  *
@@ -68,6 +71,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    // Logger
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
    private static final XLogger xLog = loggerFactory().getXLogger(BEAN);
+   private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
 
    // The constructor
    private ConstructorInjectionPoint<T> constructor;
@@ -143,7 +147,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          return getManager().replaceOrPushCurrentInjectionPoint(outerDelegateInjectionPoint);
       } else
       {
-         throw new IllegalStateException("Cannot operate on user defined decorator");
+         throw new IllegalStateException(messageConveyer.getMessage(USER_DEFINED_DECORATOR_DISALLOWED, decorator));
       }
    }
 

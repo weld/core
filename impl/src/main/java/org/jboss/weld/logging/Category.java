@@ -1,9 +1,10 @@
-package org.jboss.weld.util.log;
+package org.jboss.weld.logging;
 
 public enum Category
 {
 
    BOOTSTRAP("Bootstrap"),
+   VERSION("Version"),
    UTIL("Utilities"),
    BEAN("Bean"), 
    SERVLET("Servlet"),

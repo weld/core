@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.context;
 
-import static org.jboss.weld.messages.ContextMessage.CONTEXTUAL_INSTANCE_REMOVED;
-import static org.jboss.weld.messages.ContextMessage.CONTEXT_CLEARED;
-import static org.jboss.weld.util.log.Category.CONTEXT;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.CONTEXT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE_REMOVED;
+import static org.jboss.weld.logging.messages.ContextMessage.CONTEXT_CLEARED;
 
 import java.lang.annotation.Annotation;
 import java.util.concurrent.locks.ReentrantLock;

@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.messages.BootstrapMessage.JTA_UNAVAILABLE;
-import static org.jboss.weld.messages.BootstrapMessage.VALIDATING_BEANS;
-import static org.jboss.weld.messages.BootstrapMessage.VERSION;
-import static org.jboss.weld.util.log.Category.BOOTSTRAP;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.Category.VERSION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.JTA_UNAVAILABLE;
+import static org.jboss.weld.logging.messages.BootstrapMessage.VALIDATING_BEANS;
 
 import java.net.URL;
 import java.util.Collection;
@@ -69,6 +69,7 @@ import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.jsf.JsfApiAbstraction;
+import org.jboss.weld.logging.messages.VersionMessage;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
@@ -215,7 +216,7 @@ public class WeldBootstrap implements Bootstrap
    
    static
    {
-	   log.info(VERSION, Names.version(WeldBootstrap.class.getPackage()));
+      loggerFactory().getLogger(VERSION).info(VersionMessage.VERSION, Names.version(WeldBootstrap.class.getPackage()));
    }
 
    // The Bean manager

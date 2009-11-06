@@ -25,11 +25,11 @@ package org.jboss.weld.jsf;
 import static org.jboss.weld.jsf.JsfHelper.getConversationId;
 import static org.jboss.weld.jsf.JsfHelper.getHttpSession;
 import static org.jboss.weld.jsf.JsfHelper.getModuleBeanManager;
-import static org.jboss.weld.messages.JsfMessage.CLEANING_UP_CONVERSATION;
-import static org.jboss.weld.messages.JsfMessage.INITIATING_CONVERSATION;
-import static org.jboss.weld.messages.JsfMessage.SKIPPING_CLEANING_UP_CONVERSATION;
-import static org.jboss.weld.util.log.Category.JSF;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.JSF;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATION;
+import static org.jboss.weld.logging.messages.JsfMessage.INITIATING_CONVERSATION;
+import static org.jboss.weld.logging.messages.JsfMessage.SKIPPING_CLEANING_UP_CONVERSATION;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;

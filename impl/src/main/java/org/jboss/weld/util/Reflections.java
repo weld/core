@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.messages.UtilMessage.SECURITY_EXCEPTION_SCANNING;
-import static org.jboss.weld.util.log.Category.UTIL;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.UTIL;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.UtilMessage.SECURITY_EXCEPTION_SCANNING;
 
 import java.beans.Introspector;
 import java.io.Serializable;

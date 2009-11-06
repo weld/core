@@ -17,11 +17,11 @@
 
 package org.jboss.weld.metadata.cache;
 
-import static org.jboss.weld.messages.ReflectionMessage.MISSING_TARGET;
-import static org.jboss.weld.messages.ReflectionMessage.MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE;
-import static org.jboss.weld.messages.ReflectionMessage.TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE;
-import static org.jboss.weld.util.log.Category.REFLECTION;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.REFLECTION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
+import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE;
+import static org.jboss.weld.logging.messages.ReflectionMessage.TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;

@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.context;
 
-import static org.jboss.weld.messages.ContextMessage.DEPENDENT_INSTANCE_ATTACHED;
-import static org.jboss.weld.util.log.Category.CONTEXT;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.CONTEXT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ContextMessage.DEPENDENT_INSTANCE_ATTACHED;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.jsf;
 
-import static org.jboss.weld.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
-import static org.jboss.weld.messages.JsfMessage.RESUMING_CONVERSATION;
-import static org.jboss.weld.util.log.Category.JSF;
-import static org.jboss.weld.util.log.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.Category.JSF;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
+import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
 import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.context.FacesContext;
