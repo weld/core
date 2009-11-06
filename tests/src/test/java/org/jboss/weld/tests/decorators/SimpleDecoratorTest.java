@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 @BeansXml("beans.xml")
 public class SimpleDecoratorTest extends AbstractWeldTest
 {
-   @Test(groups = "broken")
+   @Test
    public void testSimpleDecorator()
    {
       SimpleBean simpleBean = getCurrentManager().getInstanceByType(SimpleBean.class);

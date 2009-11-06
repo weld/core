@@ -94,6 +94,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    private Class<T> proxyClassForDecorators;
    
    private final ThreadLocal<Integer> decoratorStackPosition;
+
+   private final ThreadLocal<T> decoratedActualInstance = new ThreadLocal<T>();
+
    private WeldMethod<?, ?> postConstruct;
    private WeldMethod<?, ?> preDestroy;
    
@@ -178,6 +181,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       List<SerializableContextualInstance<DecoratorImpl<Object>, Object>> decoratorInstances = new ArrayList<SerializableContextualInstance<DecoratorImpl<Object>,Object>>();
       InjectionPoint ip = originalInjectionPoint;
       boolean outside = decoratorStackPosition.get().intValue() == 0;
+      if (outside)
+      {
+         decoratedActualInstance.set(instance);
+      }
+
       try
       {
          int i = decoratorStackPosition.get();
@@ -211,7 +219,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       try
       {
          T proxy = proxyClassForDecorators.newInstance();
-         ((ProxyObject) proxy).setHandler(new DecoratorProxyMethodHandler(decoratorInstances, instance));
+         // temporary fix for decorators - make sure that the instance wrapped by the decorators
+         // is the contextual instance
+         // TODO - correct the decoration algorithm to avoid the creation of new target class instances
+         ((ProxyObject) proxy).setHandler(new DecoratorProxyMethodHandler(decoratorInstances, decoratedActualInstance.get()));
          return proxy;
       }
       catch (InstantiationException e)
@@ -221,6 +232,13 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       catch (IllegalAccessException e)
       {
          throw new RuntimeException("Could not access bean correctly when creating decorator proxy for " + toString(), e);
+      }
+      finally
+      {
+         if (outside)
+         {
+            decoratedActualInstance.set(null);
+         }
       }
    }
    
