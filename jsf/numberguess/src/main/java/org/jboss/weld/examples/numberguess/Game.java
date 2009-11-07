@@ -63,22 +63,21 @@ public class Game implements Serializable
       return remainingGuesses;
    }
    
-   public String check()
+   public void check()
    {
-      if (guess>number)
+      if (guess > number)
       {
          biggest = guess - 1;
       }
-      if (guess<number)
+      else if (guess < number)
       {
          smallest = guess + 1;
       }
-      if (guess == number)
+      else if (guess == number)
       {
          FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Correct!"));
       }
       remainingGuesses--;
-      return null;
    }
    
    @PostConstruct
@@ -97,14 +96,14 @@ public class Game implements Serializable
       {
          FacesMessage message = new FacesMessage("No guesses left!");
          context.addMessage(toValidate.getClientId(context), message);
-         ((UIInput)toValidate).setValid(false);
+         ((UIInput) toValidate).setValid(false);
          return;
       }
       int input = (Integer) value;
 
       if (input < smallest || input > biggest) 
 	   {
-         ((UIInput)toValidate).setValid(false);
+         ((UIInput) toValidate).setValid(false);
 
          FacesMessage message = new FacesMessage("Invalid guess");
          context.addMessage(toValidate.getClientId(context), message);
