@@ -125,6 +125,7 @@
                <suiteXmlFiles>
                   <suiteXmlFile>unit-tests.xml</suiteXmlFile>
                </suiteXmlFiles>
+               <argLine>-Xmx256m</argLine>
             </configuration>
          </plugin>
          <plugin>
