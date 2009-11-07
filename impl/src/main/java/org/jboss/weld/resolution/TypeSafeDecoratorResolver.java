@@ -20,6 +20,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Collections;
+
+import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -30,31 +33,31 @@ import org.jboss.weld.util.Reflections;
  * @author pmuir
  *
  */
-public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<DecoratorImpl<?>>
+public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<Decorator<?>>
 {
 
-   public TypeSafeDecoratorResolver(BeanManagerImpl manager, Iterable<DecoratorImpl<?>> decorators)
+   public TypeSafeDecoratorResolver(BeanManagerImpl manager, Iterable<Decorator<?>> decorators)
    {
       super(manager, decorators);
    }
 
    @Override
-   protected boolean matches(Resolvable resolvable, DecoratorImpl<?> bean)
+   protected boolean matches(Resolvable resolvable, Decorator<?> bean)
    {
-      return Reflections.matches(bean.getDelegateTypes(), resolvable.getTypeClosure()) && Beans.containsAllBindings(bean.getDelegateQualifiers(), resolvable.getQualifiers(), getManager()) && getManager().getEnabledDecoratorClasses().contains(bean.getType());
+      return Reflections.matches(Collections.singleton(bean.getDelegateType()), resolvable.getTypeClosure()) && Beans.containsAllBindings(bean.getDelegateQualifiers(), resolvable.getQualifiers(), getManager()) && getManager().getEnabledDecoratorClasses().contains(bean.getBeanClass());
    }
    
    @Override
-   protected Set<DecoratorImpl<?>> sortResult(Set<DecoratorImpl<?>> matchedDecorators)
+   protected Set<Decorator<?>> sortResult(Set<Decorator<?>> matchedDecorators)
    {
-      Set<DecoratorImpl<?>> sortedBeans = new TreeSet<DecoratorImpl<?>>(new Comparator<DecoratorImpl<?>>()
+      Set<Decorator<?>> sortedBeans = new TreeSet<Decorator<?>>(new Comparator<Decorator<?>>()
       {
          
-         public int compare(DecoratorImpl<?> o1, DecoratorImpl<?> o2)
+         public int compare(Decorator<?> o1, Decorator<?> o2)
          {
             List<Class<?>> enabledDecorators = getManager().getEnabledDecoratorClasses();
-            int p1 = enabledDecorators.indexOf(((DecoratorImpl<?>) o1).getType());
-            int p2 = enabledDecorators.indexOf(((DecoratorImpl<?>) o2).getType());
+            int p1 = enabledDecorators.indexOf(((Decorator<?>) o1).getBeanClass());
+            int p2 = enabledDecorators.indexOf(((Decorator<?>) o2).getBeanClass());
             return p1 - p2;
          }
    

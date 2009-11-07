@@ -353,9 +353,9 @@ public class Validator implements Service
    {
       // TODO Move building this list to the boot or sth
       Set<Class<?>> decoratorBeanClasses = new HashSet<Class<?>>();
-      for (DecoratorImpl<?> bean : beanManager.getDecorators())
+      for (Decorator<?> bean : beanManager.getDecorators())
       {
-         decoratorBeanClasses.add(bean.getType());
+         decoratorBeanClasses.add(bean.getBeanClass());
       }
       for (Class<?> clazz : beanManager.getEnabledDecoratorClasses())
       {

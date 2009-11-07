@@ -37,7 +37,7 @@ import org.jboss.weld.introspector.WeldClass;
 public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
 {
 
-   public static <T> Decorator<T> wrapForResolver(final Decorator<T> decorator)
+   public static <T> Decorator<T> wrap(final Decorator<T> decorator)
    {
       return new ForwardingDecorator<T>()
       {
@@ -201,19 +201,9 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
    {
       return delegateInjectionPoint;
    }
-
-   /**
-    * The type closure of the delegate type
-    * 
-    * @return the delegateTypes
-    */
-   public Set<Type> getDelegateTypes()
-   {
-      return delegateTypes;
-   }
    
    @Override
-   protected void initDecorators()
+   public void initDecorators()
    {
       // No-op, decorators can't have decorators
    }

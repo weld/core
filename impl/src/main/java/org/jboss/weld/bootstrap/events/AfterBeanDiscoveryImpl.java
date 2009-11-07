@@ -23,10 +23,12 @@ import java.util.Map;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.bean.AnnotatedItemProvidingDecoratorWrapper;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -60,6 +62,10 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
       if (bean instanceof Interceptor)
       {
          beanManager.addInterceptor((Interceptor<?>) bean);
+      }
+      else if (bean instanceof Decorator)
+      {
+         beanManager.addDecorator(AnnotatedItemProvidingDecoratorWrapper.of((Decorator<?>)bean, beanManager));
       }
       else
       {

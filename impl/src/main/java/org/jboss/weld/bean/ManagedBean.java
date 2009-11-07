@@ -19,7 +19,7 @@ package org.jboss.weld.bean;
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
-import static org.jboss.weld.logging.messages.BeanMessage.USER_DEFINED_DECORATOR_DISALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_INJECTION_POINT_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,15 +140,11 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    protected InjectionPoint attachCorrectInjectionPoint()
    {
       Decorator<?> decorator = getDecorators().get(getDecorators().size() - 1);
-      if (decorator instanceof DecoratorImpl<?>)
-      {
-         DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
-         InjectionPoint outerDelegateInjectionPoint = decoratorBean.getDelegateInjectionPoint();
-         return getManager().replaceOrPushCurrentInjectionPoint(outerDelegateInjectionPoint);
-      } else
-      {
-         throw new IllegalStateException(messageConveyer.getMessage(USER_DEFINED_DECORATOR_DISALLOWED, decorator));
+      InjectionPoint outerDelegateInjectionPoint = Beans.getDelegateInjectionPoint(decorator);
+      if (outerDelegateInjectionPoint == null)
+{       throw new IllegalStateException(messageConveyer.getMessage(DELEGATE_INJECTION_POINT_NOT_FOUND, decorator));
       }
+      return getManager().replaceOrPushCurrentInjectionPoint(outerDelegateInjectionPoint);
    }
 
    /**

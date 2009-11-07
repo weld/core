@@ -22,7 +22,12 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_DECORATOR
 import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPTORS;
 import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_POLICIES;
 
+import java.util.List;
+
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.InjectionPointBean;
 import org.jboss.weld.bean.builtin.ManagerBean;
 import org.jboss.weld.bean.builtin.facade.EventBean;
@@ -146,4 +151,21 @@ public class BeanDeployment
       beanDeployer.createBeans().deploy();
    }
 
+   public void afterBeanDiscovery(Environment environment)
+   {
+      doAfterBeanDiscovery(beanManager.getBeans());
+      doAfterBeanDiscovery(beanManager.getDecorators());
+      doAfterBeanDiscovery(beanManager.getInterceptors());
+   }
+
+   private void doAfterBeanDiscovery(List<? extends Bean> beanList)
+   {
+      for (Bean<?> bean : beanList)
+      {
+         if (bean instanceof RIBean)
+         {
+            ((RIBean) bean).initializeAfterBeanDiscovery();
+         }
+      }
+   }
 }

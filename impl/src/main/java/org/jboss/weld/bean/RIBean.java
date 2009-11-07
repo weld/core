@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.injection.WeldInjectionPoint;
 
 /**
@@ -62,6 +63,19 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
    }
    
    public abstract void initialize(BeanDeployerEnvironment environment);
+
+   /**
+    * In particular cases, the deployer must perform some initialization operations
+    * only after all beans have been deployed (e.g. for initializing decorators
+    * taking into account the possibility of having custom decorators which are
+    * deployed through portable extensions)
+    * 
+    * @param environment
+    */
+   public void initializeAfterBeanDiscovery()
+   {
+      // no-op by default
+   }
 
    public abstract boolean isSpecializing();
 
@@ -120,6 +134,6 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
    }
    
    public abstract String getDescription();
-   
+
 
 }

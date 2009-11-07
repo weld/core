@@ -47,6 +47,7 @@ import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
 import org.jboss.interceptor.model.InterceptionType;
@@ -56,6 +57,7 @@ import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
@@ -87,6 +89,7 @@ import com.google.common.collect.Multimaps;
  * 
  * @author Pete Muir
  * @author David Allen
+ * @author Marius Bogoevici
  *
  */
 public class Beans
@@ -749,4 +752,20 @@ public class Beans
       return annotatedItem.isAnnotationPresent(Decorator.class);
    }
 
+   public static InjectionPoint getDelegateInjectionPoint(javax.enterprise.inject.spi.Decorator<?> decorator)
+   {
+      if (decorator instanceof DecoratorImpl<?>)
+      {
+         return ((DecoratorImpl<?>)decorator).getDelegateInjectionPoint();
+      }
+      else
+      {
+         for (InjectionPoint injectionPoint: decorator.getInjectionPoints())
+         {
+            if (injectionPoint.isDelegate())
+               return injectionPoint;
+         }
+      }
+      return null;
+   }
 }

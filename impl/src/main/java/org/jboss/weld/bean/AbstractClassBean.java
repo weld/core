@@ -88,11 +88,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    private List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
    // The initializer methods of each type in the type hierarchy, with the actual type at the bottom
    private List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
-   
+
    private List<Decorator<?>> decorators;
-   
+
    private Class<T> proxyClassForDecorators;
-   
+
    private final ThreadLocal<Integer> decoratorStackPosition;
 
    private final ThreadLocal<T> decoratedActualInstance = new ThreadLocal<T>();
@@ -138,47 +138,54 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       checkBeanImplementation();
       initDecorators();
       checkType();
-      initProxyClassForDecoratedBean();
       if (isInterceptionCandidate())
       {
             initCdiBoundInterceptors();
             initDirectlyDefinedInterceptors();
       }
    }
-   
+
+   @Override
+   public void initializeAfterBeanDiscovery()
+   {
+      super.initializeAfterBeanDiscovery();
+      initDecorators();
+      if (hasDecorators())
+      {
+         initProxyClassForDecoratedBean();
+      }
+   }
+
    protected void checkType()
    {
       
    }
-   
-   protected void initDecorators()
+
+   public void initDecorators()
    {
       this.decorators = getManager().resolveDecorators(getTypes(), getQualifiers());
    }
-   
+
    public boolean hasDecorators()
    {
       return this.decorators != null && this.decorators.size() > 0;
    }
-   
+
    protected void initProxyClassForDecoratedBean()
    {
-      if (hasDecorators())
-      {
-         Set<Type> types = new LinkedHashSet<Type>(getTypes());
-         types.add(TargetInstanceProxy.class);
-         ProxyFactory proxyFactory = Proxies.getProxyFactory(types);
-   
-         @SuppressWarnings("unchecked")
-         Class<T> proxyClass = proxyFactory.createClass();
-   
-         this.proxyClassForDecorators = proxyClass;
-      }
+      Set<Type> types = new LinkedHashSet<Type>(getTypes());
+      types.add(TargetInstanceProxy.class);
+      ProxyFactory proxyFactory = Proxies.getProxyFactory(types);
+
+      @SuppressWarnings("unchecked")
+      Class<T> proxyClass = proxyFactory.createClass();
+
+      this.proxyClassForDecorators = proxyClass;
    }
-   
+
    protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint)
    {
-      List<SerializableContextualInstance<DecoratorImpl<Object>, Object>> decoratorInstances = new ArrayList<SerializableContextualInstance<DecoratorImpl<Object>,Object>>();
+      List<SerializableContextualInstance<Decorator<Object>, Object>> decoratorInstances = new ArrayList<SerializableContextualInstance<Decorator<Object>,Object>>();
       InjectionPoint ip = originalInjectionPoint;
       boolean outside = decoratorStackPosition.get().intValue() == 0;
       if (outside)
@@ -192,18 +199,13 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          while (i < decorators.size())
          {
             Decorator<?> decorator = decorators.get(i);
-            if (decorator instanceof DecoratorImpl<?>)
-            {
                decoratorStackPosition.set(++i);
-               
-               @SuppressWarnings("unchecked")
-               DecoratorImpl<Object> decoratorBean = (DecoratorImpl<Object>) decorator;
-               
-               Object decoratorInstance = getManager().getReference(ip, decorator, creationalContext);
-               decoratorInstances.add(new SerializableContextualInstanceImpl<DecoratorImpl<Object>, Object>(decoratorBean, decoratorInstance, null));
-               ip = decoratorBean.getDelegateInjectionPoint();
-            }
-            else
+
+            Object decoratorInstance = getManager().getReference(ip, decorator, creationalContext);
+            decoratorInstances.add(new SerializableContextualInstanceImpl<Decorator<Object>, Object>((Decorator<Object>) decorator, decoratorInstance, null));
+            
+            ip = Beans.getDelegateInjectionPoint(decorator);
+            if (ip == null)
             {
                throw new IllegalStateException("Cannot operate on non container provided decorator " + decorator);
             }

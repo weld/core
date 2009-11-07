@@ -373,8 +373,8 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    }
 
    /**
-    * Returns the annotated time the bean represents
-    * 
+    * Returns the annotated item the bean represents
+    *
     * @return The annotated item
     */
    public abstract WeldAnnotated<T, S> getAnnotatedItem();

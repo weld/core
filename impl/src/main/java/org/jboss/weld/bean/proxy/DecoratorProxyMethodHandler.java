@@ -21,7 +21,10 @@ import static org.jboss.weld.util.Reflections.ensureAccessible;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.enterprise.inject.spi.Decorator;
+
 import org.jboss.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
+import org.jboss.weld.bean.AnnotatedItemProvidingDecoratorWrapper;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
@@ -38,7 +41,7 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
 {
    private static final long serialVersionUID = 4577632640130385060L;
 
-   private final List<SerializableContextualInstance<DecoratorImpl<Object>, Object>> decoratorInstances;
+   private final List<SerializableContextualInstance<Decorator<Object>, Object>> decoratorInstances;
 
    /**
     * Constructor
@@ -47,7 +50,7 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
     * 
     * @param proxy The generic proxy
     */
-   public DecoratorProxyMethodHandler(List<SerializableContextualInstance<DecoratorImpl<Object>, Object>> decoratorInstances, Object instance)
+   public DecoratorProxyMethodHandler(List<SerializableContextualInstance<Decorator<Object>, Object>> decoratorInstances, Object instance)
    {
       super (instance, instance.getClass());
       this.decoratorInstances = decoratorInstances;
@@ -73,9 +76,21 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
    protected Object doInvoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
       MethodSignature methodSignature = new MethodSignatureImpl(method);
-      for (SerializableContextualInstance<DecoratorImpl<Object>, Object> beanInstance : decoratorInstances)
+      for (SerializableContextualInstance<Decorator<Object>, Object> beanInstance : decoratorInstances)
       {
-         WeldMethod<?, ?> decoratorMethod = beanInstance.getContextual().get().getAnnotatedItem().getWBMethod(methodSignature);
+         WeldMethod<?, ?> decoratorMethod;
+         if (beanInstance.getContextual().get() instanceof DecoratorImpl)
+         {
+            decoratorMethod = ((DecoratorImpl)beanInstance.getContextual().get()).getAnnotatedItem().getWBMethod(methodSignature);
+         }
+         else if (beanInstance.getContextual().get() instanceof AnnotatedItemProvidingDecoratorWrapper)
+         {
+            decoratorMethod = ((AnnotatedItemProvidingDecoratorWrapper)beanInstance.getContextual().get()).getAnnotatedItem().getWBMethod(methodSignature);
+         }
+         else
+         {
+            throw new IllegalStateException("Unexpected unwrapped custom decorator instance: " + beanInstance.getContextual().get());
+         }
          if (decoratorMethod != null)
          {
             return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);

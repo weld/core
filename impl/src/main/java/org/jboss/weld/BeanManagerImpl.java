@@ -254,7 +254,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     * archives
     */
    private transient final TypeSafeBeanResolver<Bean<?>> beanResolver;
-   private transient final TypeSafeResolver<? extends Resolvable, DecoratorImpl<?>> decoratorResolver;
+   private transient final TypeSafeResolver<? extends Resolvable, Decorator<?>> decoratorResolver;
    private transient final TypeSafeResolver<? extends Resolvable, Interceptor<?>> interceptorResolver;
    private transient final TypeSafeResolver<? extends Resolvable, ObserverMethod<?>> observerResolver;
    private transient final NameBasedResolver nameBasedResolver;
@@ -272,7 +272,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    private transient final List<Bean<?>> beans;
    private transient final List<Bean<?>> transitiveBeans;
-   private transient final List<DecoratorImpl<?>> decorators;
+   private transient final List<Decorator<?>> decorators;
    private transient final List<Interceptor<?>> interceptors;
    private transient final List<String> namespaces;
    private transient final List<ObserverMethod<?>> observers;
@@ -326,7 +326,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             serviceRegistry, 
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<Bean<?>>(),
-            new CopyOnWriteArrayList<DecoratorImpl<?>>(),
+            new CopyOnWriteArrayList<Decorator<?>>(),
             new CopyOnWriteArrayList<Interceptor<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?>>(),
             new CopyOnWriteArrayList<String>(),
@@ -355,7 +355,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             services, 
             new CopyOnWriteArrayList<Bean<?>>(),
             new CopyOnWriteArrayList<Bean<?>>(),
-            new CopyOnWriteArrayList<DecoratorImpl<?>>(),
+            new CopyOnWriteArrayList<Decorator<?>>(),
             new CopyOnWriteArrayList<Interceptor<?>>(),
             new CopyOnWriteArrayList<ObserverMethod<?>>(),
             new CopyOnWriteArrayList<String>(),
@@ -421,7 +421,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
          ServiceRegistry serviceRegistry, 
          List<Bean<?>> beans, 
          List<Bean<?>> transitiveBeans,
-         List<DecoratorImpl<?>> decorators,
+         List<Decorator<?>> decorators,
          List<Interceptor<?>> interceptors,
          List<ObserverMethod<?>> observers, 
          List<String> namespaces,
@@ -555,10 +555,10 @@ public class BeanManagerImpl implements WeldManager, Serializable
          
       };
       
-      public static Transform<DecoratorImpl<?>> DECORATOR_BEAN = new Transform<DecoratorImpl<?>>()
+      public static Transform<Decorator<?>> DECORATOR_BEAN = new Transform<Decorator<?>>()
       {
 
-         public Iterable<DecoratorImpl<?>> transform(BeanManagerImpl beanManager)
+         public Iterable<Decorator<?>> transform(BeanManagerImpl beanManager)
          {
             return beanManager.getDecorators();
          }
@@ -634,7 +634,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       beanResolver.clear();
    }
    
-   public void addDecorator(DecoratorImpl<?> bean)
+   public void addDecorator(Decorator<?> bean)
    {
       decorators.add(bean);
       getServices().get(ContextualStore.class).putIfAbsent(bean);
@@ -841,7 +841,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return Collections.unmodifiableList(transitiveBeans);
    }
    
-   public List<DecoratorImpl<?>> getDecorators()
+   public List<Decorator<?>> getDecorators()
    {
       return Collections.unmodifiableList(decorators);
    }
@@ -1033,12 +1033,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
    }
   
-   
+
    public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
    {
-      WeldAnnotated<?, ?> element = ResolvableWeldClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this);
-      Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
-      return getReference(injectionPoint, resolvedBean, creationalContext);
+         WeldAnnotated<?, ?> element = ResolvableWeldClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this);
+         Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
+         return getReference(injectionPoint, resolvedBean, creationalContext);
    }
 
    /**
