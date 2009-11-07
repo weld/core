@@ -19,25 +19,29 @@ Now you are ready to deploy.
 
 Run this command to execute the application in an embedded Jetty 6 container:
 
- mvn war:inplace jetty:run
+ mvn jetty:run -Pjetty
 
 You can also execute the application in an embedded Tomcat 6 container:
 
- mvn war:inplace tomcat:run
+ mvn war:inplace tomcat:run -Ptomcat
 
 In both cases, any changes to assets in src/main/webapp take effect immediately.
 If a change to a webapp configuration file is made, the application may
 automatically redeploy. The redeploy behavior can be fine-tuned in the plugin
 configuration (at least for Jetty). If you make a change to a classpath
-resource, you need to execute a build:
+resource, you need to execute a build. For Jetty:
 
- mvn compile war:inplace
+ mvn compile
 
-Note that war:inplace copies the compiled classes and JARs inside WebContent,
-under WEB-INF/classes and WEB-INF/lib, respectively, mixing source and compiled
-files. However, the build does work around these temporary files by excluding
-them from the packaged WAR and cleaning them during the Maven clean phase.
-These folders are also ignored by SVN.
+and for Tomcat:
+
+ mvn compile war:inplace -Ptomcat
+
+Note that war:inplace copies the compiled classes and JARs inside
+src/main/webapp, under WEB-INF/classes and WEB-INF/lib, respectively, mixing
+source and compiled files. However, the build does work around these temporary
+files by excluding them from the packaged WAR and cleaning them during the Maven
+clean phase.  These folders are also ignored by SVN.
 
 == Deploying to standalone Tomcat
 
@@ -56,7 +60,7 @@ tomcat-maven-plugin configuration in the pom.xml.
 
 You can deploy the packaged archive to Tomcat via HTTP PUT using this command:
 
- mvn package tomcat:deploy
+ mvn package tomcat:deploy -Ptomcat
 
 Then you use this command to undeploy the application:
 
@@ -65,7 +69,7 @@ Then you use this command to undeploy the application:
 Instead of packaging the WAR, you can deploy it as an exploded archive
 immediately after the war goal is finished assembling the exploded structure:
 
- mvn compile war:exploded tomcat:exploded
+ mvn compile war:exploded tomcat:exploded -Ptomcat
 
 Once the application is deployed, you can redeploy it using the following command:
 
@@ -73,9 +77,9 @@ Once the application is deployed, you can redeploy it using the following comman
 
 But likely you want to run one or more build goals first before you redeploy:
 
- mvn compile tomcat:redeploy
- mvn war:exploded tomcat:redeploy
- mvn compile war:exploded tomcat:redeploy
+ mvn compile tomcat:redeploy -Ptomcat
+ mvn war:exploded tomcat:redeploy -Ptomcat
+ mvn compile war:exploded tomcat:redeploy -Ptomcat
 
 = Importing the project into Eclipse
 
