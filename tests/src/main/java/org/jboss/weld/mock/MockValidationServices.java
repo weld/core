@@ -19,6 +19,7 @@ package org.jboss.weld.mock;
 import javax.validation.ConstraintValidatorFactory;
 import javax.validation.MessageInterpolator;
 import javax.validation.TraversableResolver;
+import javax.validation.ValidationException;
 import javax.validation.Validator;
 import javax.validation.ValidatorContext;
 import javax.validation.ValidatorFactory;
@@ -45,14 +46,19 @@ public class MockValidationServices implements ValidationServices
          
          public <T> T unwrap(Class<T> type)
          {
-            // TODO Auto-generated method stub
-            return null;
+            if (type.equals(ValidatorFactory.class))
+            {
+               return type.cast(this);
+            }
+            else
+            {
+               throw new ValidationException();
+            }
          }
          
          public Validator getValidator()
          {
-            // TODO Auto-generated method stub
-            return null;
+            return new MockValidator();
          }
          
          public TraversableResolver getTraversableResolver()

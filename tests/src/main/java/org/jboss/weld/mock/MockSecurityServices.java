@@ -27,13 +27,16 @@ import org.jboss.weld.security.spi.SecurityServices;
 public class MockSecurityServices implements SecurityServices
 {
 
-   /* (non-Javadoc)
-    * @see org.jboss.weld.security.spi.SecurityServices#getPrincipal()
-    */
    public Principal getPrincipal()
    {
-      // TODO Auto-generated method stub
-      return null;
+      return new Principal()
+      {
+         
+         public String getName()
+         {
+            return null;
+         }
+      };
    }
    
    public void cleanup() {}
