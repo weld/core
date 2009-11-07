@@ -360,7 +360,8 @@ public class BookShopBean extends Business implements BookShop, Auditable {
          <para>
             Bean types may be restricted to an explicit set by annotating the bean with the <literal>@Typed</literal>
             annotation and listing the bean types in the value of the annotation. For instance, this bean has been
-            restricted to a single bean type, <literal>Shop&lt;Book&gt;</literal>:
+            restricted to the bean type explicitly listed, <literal>Shop&lt;Book&gt;</literal>, together with 
+            <literal>java.lang.Object</literal>:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Typed(Shop.class)
@@ -385,7 +386,7 @@ public class BookShop extends Business implements Shop<Book> {
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Qualifier
-@Target( { TYPE, METHOD, PARAMETER, FIELD })
+@Target({TYPE, METHOD, PARAMETER, FIELD})
 @Retention(RUNTIME)
 public @interface CreditCard {}]]></programlisting> 
 
@@ -412,8 +413,8 @@ public @interface CreditCard {}]]></programlisting>
 
          <note>
             <para>
-               If no qualifier is specified at an injection point, the default qualifier, <literal>@Default</literal>, is
-               assumed.
+               If an injection point does not explicitly specify a qualifier, it has the default qualifier, 
+               <literal>@Default</literal>.
             </para>
          </note>
 
@@ -422,7 +423,7 @@ public @interface CreditCard {}]]></programlisting>
             the bean type and all the qualifiers. If it find exactly one matching bean, it injects an instance of 
             that bean.
          </para>
-
+         
          <para>
             We've seen how to indicate that you want to inject a qualified bean. But how do you actually qualify the bean?
             By using the annotation, of course! The following bean has the qualifier <literal>@CreditCard</literal>
@@ -436,17 +437,37 @@ public class CreditCardPaymentProcessor
 
          <note>
             <para>
-               If a bean does not explicitly specify a qualifier, it has exactly one qualifier, the default qualifier,
-               <literal>@Default</literal>.
+               If a bean does not explicitly specify a qualifier, it has the default qualifier, <literal>@Default</literal>.
             </para>
          </note>
-
+         
+         <!-- 
+         <note>
+            <para>
+               All beans have the qualifier, <literal>@Any</literal>.
+            </para>
+         </note>
+         -->
+         
          <para>
             CDI defines a simple <emphasis>resolution rule</emphasis> that helps the container decide what to do if there 
             is more than one bean that satisfies a particular contract. We'll get into the details in 
             <xref linkend="alternatives"/>.
          </para>
-
+         
+         <!--
+         <tip>
+            <para>
+               If you're expectng more than one bean to satisfy the contract, you can inject an <literal>Instance</literal>,
+               object which let's you iterate over all the beans which satisfy the contract. For example, we can iterate
+               over all our implementations of <literal>PaymentProcessor</literal> using:
+            </para>
+            <programlisting>@Inject void init(@Any Instance&lt;PaymentProcessor&gt; paymentProcessorInstance) {
+    for (PaymentProcessor pp: paymentProcessorInstance) { ... }
+}</programlisting>
+         </tip>
+         -->
+           
       </section>
 
       <section>
@@ -538,11 +559,11 @@ public class ShoppingCart { ... }]]></programlisting>
          <title>Alternatives</title>
 
          <para>
-            We've already seen how qualifiers let us choose between multiple implementations of an interface at
-            development time. But sometimes we have an interface whose implementation varies depending upon
-            the deployment environment. For example, we may want to use a mock implementation in a testing 
-            environment. An <emphasis>alternative</emphasis> may be declared by annotating the bean class or 
-            producer method or field with the <literal>@Alternative</literal> annotation.
+            We've already seen how qualifiers let us choose between multiple implementations of an interface 
+            at development time. But sometimes we have an interface (or other bean type) whose implementation 
+            varies depending upon the deployment environment. For example, we may want to use a mock 
+            implementation in a testing environment. An <emphasis>alternative</emphasis> may be declared by 
+            annotating the bean class with the <literal>@Alternative</literal> annotation.
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Alternative
@@ -550,10 +571,10 @@ public class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></progr
          
          <para>
             We normally annotate a bean <literal>@Alternative</literal> only when there is some other
-            implementation of some interface it implements. We can choose between alternatives at deployment time 
-            by <emphasis>selecting</emphasis> an alternative using the CDI deployment descriptor 
-            <literal>META-INF/beans.xml</literal> of the jar or Java EE module that uses it. Different modules
-            can specify that they use different alternatives.
+            implementation of an interface it implements (or of any of its bean types). We can choose between 
+            alternatives at deployment time by <emphasis>selecting</emphasis> an alternative in the CDI 
+            deployment descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE module that uses 
+            it. Different modules can specify that they use different alternatives.
          </para>
 
          <para>
@@ -567,51 +588,61 @@ public class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></progr
          <title>Interceptor binding types</title>
 
          <para>
-            Since the introduction of the managed bean specification in Java EE 6, interceptors are available on
-            JavaBeans in addition to EJB session beans. That's right, you no longer have to create an EJB just to
-            intercept method calls. Holler. So what does CDI have to offer? Well, a lot actually. Let's cover some
-            background.
+            You might be familiar with the use of interceptors in EJB 3.0. In Java EE 6, this functionality has
+            been generalized to work with other managed beans. That's right, you no longer have to make your bean 
+            an EJB just to intercept its methods. Holler. So what does CDI have to offer above and beyond that? Well, 
+            quite a lot actually. Let's cover some background.
          </para>
 
          <para>
-            The way that interceptors are defined in Java EE 5 is counter-intuitive. You are required to specify the
+            The way that interceptors were defined in Java EE 5 was counter-intuitive. You were required to specify the
             <emphasis>implementation</emphasis> of the interceptor directly on the <emphasis>implementation</emphasis>
             of the EJB, either in the <literal>@Interceptors</literal> annotation or in the XML descriptor. You might as
-            well just put the interceptor code <emphasis>in</emphasis> the implementation. Second, the order in which
+            well just put the interceptor code <emphasis>in</emphasis> the implementation! Second, the order in which
             the interceptors are applied is taken from the order in which they are declared in the annotation or the XML
             descriptor. Perhaps this isn't so bad if you're applying the interceptors to a single bean. But, if you are
-            applying them repeatedly, then there is a chance that you'll inadvertently define a different order for different
-            beans. Now that is a problem.
+            applying them repeatedly, then there's a good chance that you'll inadvertently define a different order for 
+            different beans. Now that's a problem.
          </para>
 
          <para>
-            CDI provides a new approach to binding interceptors to beans that introduces a level of abstraction (and
-            thus control). You define a special kind of annotation called an <emphasis>interceptor binding
-            type</emphasis> whose name describes the role of the interceptor, in this case to add transaction support:
+            CDI provides a new approach to binding interceptors to beans that introduces a level of indirection (and
+            thus control). We define a special kind of annotation called an <emphasis>interceptor binding
+            type</emphasis> whose name describes the behavior implemented by the interceptor, in this case to perform 
+            transaction management:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@InterceptorBinding
 @Inherited
 @Target( { TYPE, METHOD })
 @Retention(RUNTIME)
-public @interface Transactional {}]]></programlisting> 
+public @interface Transactional {}]]></programlisting>
+
+         <para>
+           The interceptor that implements transaction management declares this annotation: 
+         </para>
+         
+         <programlisting role="JAVA"><![CDATA[@Transactional @Interceptor
+public class TransactionInterceptor { ... }]]></programlisting>
          
          <para>
-            Then you apply the annotation to the class whose methods you wish to have intercepted.
+            We you can apply the interceptor to a bean by annotating to the bean class with the same interceptor
+            binding type:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@SessionScoped @Transactional
 public class ShoppingCart { ... }]]></programlisting>
 
          <para>
-            Where is the interceptor? You match the interceptor(s) to apply to the bean by also annotating the
-            interceptor class. Never do the two implementations (bean and interceptor) come in direct contact.
-            Activating and ordering of the interceptors is then controlled by the XML descriptor, one of the few times
-            XML is warranted.
+            Now there's no direct dependency between the two implementations (bean and interceptor). Activation of 
+            interceptors is controlled by the CDI deployment descriptor <literal>META-INF/beans.xml</literal> 
+            of the jar or Java EE module, allowing us to control which interceptors apply in which deployment
+            scenarios, along with the order of interceptor invocation when multiple interceptors apply to a
+            bean.
          </para>
          
          <para>
-            We'll discuss bean interceptors, and their cousins, decorators, in <xref linkend="interceptors"/> and <xref
+            We'll discuss interceptors, and their cousins, decorators, in <xref linkend="interceptors"/> and <xref
             linkend="decorators"/>.
          </para>
 
@@ -623,19 +654,21 @@ public class ShoppingCart { ... }]]></programlisting>
       <title>What kinds of classes are beans?</title>
      
       <para>
-         We've already seen that JavaBeans and EJBs can be (CDI) beans. Is that the whole story?  Let's start from what
-         we know, and go from there.
+         We've already seen that JavaBeans and EJB session beans can be (CDI) beans. Is that the whole story?  Let's 
+         start from what we know, and go from there.
       </para>
      
       <section>
          <title>Managed beans</title>
 
          <para>
-            A managed bean is a bean that is implemented by almost any Java class. This class is called the bean class
-            of the managed bean.  The basic lifecycle and semantics of a managed bean is defined by the Managed Beans
-            specification. If the class is not picked up as a managed bean by the container, then CDI will allow it
-            to be a bean if:
+            A managed bean is a Java class. The basic lifecycle and semantics of a managed bean are defined by the 
+            Managed Beans specification. You can explicitly declare a managed bean by annotating the bean class
+            <literal>@ManagedBean</literal>, but in CDI you don't need to. According to the specification the CDI 
+            container treats any class that satisfies the following conditions as a managed bean:
          </para>
+
+         <blockquote>
 
          <itemizedlist>
             <listitem>
@@ -646,9 +679,12 @@ public class ShoppingCart { ... }]]></programlisting>
             </listitem>
             <listitem>
                <para>
-                  It is neither annotated with an EJB component-defining annotation or declared as an EJB bean class in
-                  ejb-jar.xml.
+                  It is not annotated with an EJB component-defining annotation or declared as an EJB bean class in
+                  <literal>ejb-jar.xml</literal>.
                </para>
+            </listitem>
+            <listitem>
+               <para>It does not implement <literal>javax.enterprise.inject.spi.Extension</literal>.</para>
             </listitem>
             <listitem>
                <para>
@@ -664,16 +700,18 @@ public class ShoppingCart { ... }]]></programlisting>
                </itemizedlist>
             </listitem>
          </itemizedlist>
+         
+         </blockquote>
+         
+         <para>The unrestricted set of bean types for a managed bean contains the bean class, every superclass and all 
+         interfaces it implements directly or indirectly.</para>
+
+         <para>If a managed bean has a public field, it must have the default scope <literal>@Dependent</literal>.</para>
 
          <para>
-            <emphasis>Unlike</emphasis> the managed bean definition, no special declaration is required to define a
-            managed bean. CDI takes advantage of the fact that the Managed Bean specification allows companion
-            specifications to relax the requirement of having to add the <literal>@ManagedBean</literal> annotation.
-         </para>
-
-         <para>
-            Some managed beans are much more. Those are the session beans. While still technically managed beans, they
-            have enough additional, enterprise features, that we consider them to be their own kind.
+            Session beans are also, technically, managed beans. However, since they have their own special lifecycle and 
+            take advantage of additional enterprise services, the CDI specification considers them to be a different
+            kind of bean.
          </para>
          
       </section>
@@ -682,19 +720,20 @@ public class ShoppingCart { ... }]]></programlisting>
          <title>Session beans</title>
 
          <para>
-            EJB 3 session beans belong to the EJB specification. That is, the basic lifecycle and semantics. Beyond
-            that, they get to participate in CDI just like any other bean. There are some restrictions about which
-            scopes can be assigned to a session bean, but other than that, they are interchangeable with regular managed
-            beans. That means you can inject one session bean into another, a managed bean into a session bean, a
-            session bean into a managed bean, have a managed bean observe an event raised by a session bean, and so on.
+            Session beans belong to the EJB specification. They have a special lifecycle, state management and concurrency
+            model that is different to other managed beans and non-managed Java objects. But session beans participate in 
+            CDI just like any other bean. There are some restrictions upon the scope that can be assigned to a session bean, 
+            but apart from than that, they may be used interchangeably with regular managed beans. That means you can inject 
+            one session bean into another session bean, a managed bean into a session bean, a session bean into a managed 
+            bean, have a managed bean observe an event raised by a session bean, and so on.
          </para>
 
          <note>
             <para>
                Message-driven and entity beans are by nature non-contextual objects and may not be injected into other
-               objects. Message-driven beans can take advantage of some CDI functionality, such as dependency injection
-               and interceptors. In fact, CDI will perform injection into any message-driven or session bean, even those
-               which are not contextual instances.
+               objects. However, message-driven beans can take advantage of some CDI functionality, such as dependency 
+               injection, interceptors and decorators. In fact, CDI will perform injection into any session or 
+               message-driven bean, even those which are not contextual instances.
             </para>
          </note>
 
@@ -706,15 +745,20 @@ public class ShoppingCart { ... }]]></programlisting>
             types.
          </para>
 
+         <para>There's no reason to explicitly declare the scope of a stateless session bean or singleton session bean. 
+         The EJB container controls the lifecycle of these beans, according to the semantics of the <literal>@Stateless</literal>
+         or <literal>@Singleton</literal> declaration. On the other hand, a stateful session bean may have any scope.</para>
+         
          <para>
-            Stateful session beans can define a no arguments remove method, annotated <literal>@Remove</literal>, that
-            is used by the application to indicate the instance should be destroyed. However, in a CDI environment, this
-            method can only be executed by the application if the bean is dependent-scoped. Otherwise, it's illegal for
-            the application to invoke this method because the container is controlling its lifecycle.
+            Stateful session beans may define a <emphasis>remove method</emphasis>, annotated <literal>@Remove</literal>, 
+            that is used by the application to indicate that an instance should be destroyed. However, for a contextual 
+            instance of the bean&#8212;an instance under the control of CDI&#8212;this method may only be called by the 
+            application if the bean has scope <literal>@Dependent</literal>. For beans with other scopes, the application 
+            must let the container destroy the bean.
          </para>
 
          <para>
-            So, when should we use a session instead of a basic managed bean? Whenever we need the advanced enterprise
+            So, when should we use a session bean instead of a plain managed bean? Whenever we need the advanced enterprise
             services offered by EJB, such as:
          </para>
        
@@ -730,19 +774,19 @@ public class ShoppingCart { ... }]]></programlisting>
               instance-pooling for stateless session beans,</para>
             </listitem>
             <listitem>
-              <para>remote and web service invocation, and</para>
+              <para>remote or web service invocation, or</para>
             </listitem>
             <listitem>
               <para>timers and asynchronous methods,</para>
             </listitem>
          </itemizedlist>
        
-         <para>When we don't need any of these things, a basic managed bean will serve just fine.</para>
+         <para>When we don't need any of these things, an ordinary managed bean will serve just fine.</para>
        
          <para>
-            Many beans (including any session or application scoped bean) are available for concurrent access.
-            Therefore, the concurrency management provided by EJB 3.1 is especially useful. Most session and application
-            scoped beans should be EJBs.
+            Many beans (including any <literal>@SessionScoped</literal> or <literal>@ApplicationScoped</literal> 
+            beans) are available for concurrent access. Therefore, the concurrency management provided by EJB 3.1 
+            is especially useful. Most session and application scoped beans should be EJBs.
          </para>
        
          <para>
@@ -758,57 +802,43 @@ public class ShoppingCart { ... }]]></programlisting>
          </para>
 
          <para>
-            The point is, you use a session bean when you need the services it provides, not just because you want to
-            use dependency injection, lifecycle management, or interceptors. The Java EE programming model makes a
-            whole lot more sense now; you won't need to go off and invent your own bean container to make programming
-            in Java EE palatable.
+            The point we're trying to make is: use a session bean when you need the services it provides, not just 
+            because you want to use dependency injection, lifecycle management, or interceptors. Java EE 6 provides
+            a graduated programming model. It's usually easy to start with an ordinary managed bean, and later turn 
+            it into an EJB just by adding one of the following annotations: <literal>@Stateless</literal>, 
+            <literal>@Stateful</literal> or <literal>@Singleton</literal>.
          </para>
-       
+            
          <para>
-            In fact, it's easy to start with simple managed bean, and later turn it into an EJB just by adding one of
-            the following annotations: <literal>@Stateless</literal>, <literal>@Stateful</literal> or
-            <literal>@Singleton</literal>.
+            On the other hand, don't be scared to use session beans just because you've heard your friends say that 
+            they're "heavyweight". It's nothing more than supersitition to think that something is "heavier" just 
+            because it's hosted natively within the Java EE container, instead of by a proprietary bean container 
+            or dependency injection framework that runs as an additional layer of obfuscation. And as a general
+            principle, you should be skeptical of folks who use vaguely defined terminology like "heavyweight".
          </para>
-   
+         
      </section>
      
       <section>
          <title>Producer methods</title>
    
          <para>
-            Surely not everything you want to inject can be a bean class. What if you need to inject the implementation
-            of an API that varies at runtime? And how would you inject objects that are created by another mechanism,
-            such as a JPA result? Fortunately, the CDI specification recognized these and other cases and introduced the
-            concept of a producer method.
+            Not everything that needs to be injected can be boiled down to a bean class instantiated by the container
+            using <literal>new</literal>. There are plenty of cases where we need additional control. What if we need 
+            to decide at runtime which implementation of a type to instantiate and inject? What if we need to inject an 
+            object that is obtained by querying a service or transaction resource, for example by executing a JPA query?
          </para>
 
          <para>
-            A <emphasis>producer method</emphasis> is a method on a bean that is used as a bean source, meaning the
-            method itself describes the bean and the container invokes the method to obtain an instance of the bean when
-            no instance exists in its specified context. A producer method lets the application take full control of the
-            instantiation process, specifically when:
+            A <emphasis>producer method</emphasis> is a method that acts as a source of bean instances, meaning the
+            method declaration itself describes the bean and the container invokes the method to obtain an instance of 
+            the bean when no instance exists in the specified context. A producer method lets the application take full 
+            control of the instantiation process.
          </para>
             
-         <itemizedlist>
-            <listitem>
-               <para>
-                  the objects to be injected are not required to be instances of beans, or
-               </para>
-            </listitem>
-            <listitem>
-               <para>
-                  the concrete type of the objects to be injected may vary at runtime, or
-               </para>
-            </listitem>
-            <listitem>
-               <para>
-                  the objects require some custom initialization that is not performed by the bean constructor.
-               </para>
-            </listitem>
-         </itemizedlist>
-
          <para>
-            For example:
+            A producer method is declared by annotating a method of a bean class with the <literal>@Produces</literal> 
+            annotation.
          </para>
    
    <programlisting role="JAVA"><![CDATA[@ApplicationScoped
@@ -823,20 +853,21 @@ public class RandomNumberGenerator {
 }]]></programlisting>
 
          <para>
-            Obviously, you cannot define a bean that is itself a random number. A producer method allows you do define
-            its result as a bean, in this case an <literal>Integer</literal> with qualifier <literal>@Random</literal>,
-            scope <literal>@Dependent</literal> (implied) and name <literal>randomNumber</literal> (derived from bean
-            property convention; otherwise it would be the same as the method name). It can be injected just like any
-            other bean:
+            We can't write a bean class that is itself a random number. But we can certainly write a method that returns 
+            a random number. By making the method a producer method, we allow the return value of the method&#8212;in this 
+            case an <literal>Integer</literal>&#8212;to be injected. We can even specify a qualifier&#8212;in this case 
+            <literal>@Random</literal>, a scope&#8212;which in this case defaults to <literal>@Dependent</literal>, 
+            and an EL name&#8212;which in this case defaults to <literal>randomNumber</literal> according to the JavaBeans 
+            property name convention. Now we can get a random number anywhere:
          </para>
    
          <programlisting role="JAVA"><![CDATA[@Inject @Random int randomNumber;]]></programlisting>
 
          <para>
-            or used in a Unified EL expression:
+            Even in a Unified EL expression:
          </para>
 
-         <programlisting><![CDATA[Your raffle number is #{randomNumber}.]]></programlisting> 
+         <programlisting><![CDATA[<p>Your raffle number is #{randomNumber}.</p>]]></programlisting> 
          
          <para>
             A producer method must be a non-abstract method of a managed bean class or session bean class. A producer
@@ -870,31 +901,16 @@ public class RandomNumberGenerator {
          </itemizedlist>
 
          <para>
-            Some producer methods return objects that require explicit destruction:
-         </para>
-       
-         <programlisting role="JAVA"><![CDATA[@Produces @RequestScoped Connection connect(User user) {
-   return createConnection(user.getId(), user.getPassword());
-}]]></programlisting>
-
-         <para>
-            If the producer method has method arguments, as in this example, the container will look for matching beans
-            and pass them into the method automatically&#8212;another form of dependency injection.
+            If the producer method has method parameters, the container will look for a bean that satisfies the type
+            and qualifiers of each parameter and pass it to the method automatically&#8212;another form of 
+            dependency injection.
          </para>
    
-         <para>Producer methods may also define matching <emphasis>disposal methods</emphasis>:</para>
-       
-         <programlisting role="JAVA"><![CDATA[void close(@Disposes Connection connection) {
-   connection.close();
+   <programlisting role="JAVA"><![CDATA[@Produces Set<Roles> getRoles(User user) {
+   return user.getRoles();
 }]]></programlisting>
    
-         <para>
-            The disposal method is called automatically when the context ends (in this case, the end of the request).
-            The disposal method requires at least one parameter, the bean produced by the producer method. Any
-            additional parameters will be satisfied by the container.
-         </para>
-   
-         <para>We'll talk much more about producer and disposal methods in <xref linkend="producermethods"/>.</para>
+         <para>We'll talk much more about producer methods in <xref linkend="producermethods"/>.</para>
    
      </section>
 
@@ -902,40 +918,24 @@ public class RandomNumberGenerator {
          <title>Producer fields</title>
 
          <para>
-            A <emphasis>producer field</emphasis> is a simpler alternative to a producer method and can also marry
-            dependency injection with bean definition. A producer field may be declared by annotating a field of a
-            managed bean class or session bean class with the <literal>@Produces</literal> annotation previously used on
-            producer methods.
+            A <emphasis>producer field</emphasis> is a simpler alternative to a producer method. A producer field is 
+            declared by annotating a field of a bean class with the <literal>@Produces</literal> annotation&#8212;the 
+            same annotation used for producer methods.
          </para>
 
          <programlisting role="JAVA"><![CDATA[public class Shop {
    @Produces PaymentProcessor paymentProcessor = ....;
-   @Produces List<Product> products = ....;
-}]]></programlisting> 
-
-         <para>
-            A producer field may also specify scope, name, stereotypes and/or qualifiers. It's a good way to expose
-            state from a bean as a top-level bean.
-         </para>
-
-         <programlisting role="JAVA"><![CDATA[public class Shop {
-   @Produces @Wishlist @Named("wishlist") List<Product> products = ....;
-}]]></programlisting> 
-
-         <para>
-            The result can be injected or used in a Unified EL expression.
-         </para>
+   @Produces @Catalog List<Product> products = ....;
+}]]></programlisting>
          
-         <programlisting role="JAVA"><![CDATA[@Inject @Wishlist List<Product> wishlist;]]></programlisting> 
-         <programlisting role="XML"><![CDATA[<h:dataTable var="_product" value="#{wishlist}">...</h:dataTable>]]></programlisting> 
-
          <para>
-            The rules for determining the bean types of a producer field parallel the rules for producer method.
+            The rules for determining the bean types of a producer field parallel the rules for producer methods.
          </para>
 
          <para>
-            Aside from convenience, producer fields serve a specific purpose as an adapter for Java EE resources
-            injections.
+            A producer field is really just a shortcut that lets us avoid writing a useless getter method. However, 
+            in addition to convenience, producer fields serve a specific purpose as an adaptor for Java EE component 
+            environment injection.
          </para>
 
       </section>
@@ -944,47 +944,72 @@ public class RandomNumberGenerator {
          <title>Java EE resources</title>
 
          <para>
-            Java EE 5 already introduced some support for dependency injection, in the form of resource injections.  A
-            resources is either a component defined in JNDI such as a data source or a container-provided component such
-            as a persistence unit, persistence context, EJB or web service.
+            Java EE 5 already introduced some limited support for dependency injection, in the form of component 
+            environment injection. A component environment resource is a Java EE component, for example a JDBC 
+            datasource, JMS queue or topic, JPA persistence context, remote EJB or web service.
          </para>
             
          <para>
-            Naturally, there remained some mismatch with the new style of dependency injection in CDI. Most notably,
-            resource injections rely on string-based names to qualify ambiguous types, and there is no real consistency
-            as to how a resource obtains its name (sometimes JNDI, other times from an XML descriptor or even a default
-            name). Producer fields turned out to be an elegant adapter to rein them in and get them to participate in
-            the CDI system just like any other injectable bean.
+            Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably,
+            component environment injection relies on a string-based name to qualify an ambiguous type, and there is no 
+            real consistency as to the nature of that name (sometimes a JNDI name, other times from an XML descriptor 
+            or even a default name). Producer fields turned out to be an elegant adaptor to reduce all this complexity 
+            to a common model and get component environment resources to participate in the CDI system just like any 
+            other kind of bean.
          </para>
 
          <para>
-            Producer fields have a duality in that they can both accept a standard Java EE resource injection and
-            produce a bean that can be injected into another bean in a typesafe way. Here are some examples of these
-            injection points. Notice that a qualifier annotation can be assigned at the injection point to adapt the
-            string-based name required by the injection point into a typesafe qualifier for injection elsewhere.
+            Fields have a duality in that they can both be the target of Java EE component environment injection and be 
+            declared as a CDI producer field. Therefore, they can define a mapping from a string-based name in the 
+            component environment, to a combination of type and qualifiers used in the world of typesafe injection. We 
+            call a producer field that represents a reference to an object in the Java EE component environment a 
+            <emphasis>resource</emphasis>.
          </para>
 
-         <programlisting role="JAVA"><![CDATA[@Produces @WebServiceRef(lookup="java:app/service/PaymentService")
-PaymentService paymentService;]]></programlisting> 
+         <programlisting role="JAVA"><![CDATA[@Produces @WebServiceRef(lookup="java:app/service/Catalog")
+Catalog catalog;]]></programlisting> 
+
+         <programlisting role="JAVA"><![CDATA[@Produces @Resource(lookup="java:global/env/jdbc/CustomerDatasource") 
+@CustomerDatabase Datasource customerDatabase;]]></programlisting> 
 
          <programlisting role="JAVA"><![CDATA[@Produces @PersistenceContext(unitName="CustomerDatabase")
-@CustomerDatabase EntityManager customerDatabasePersistenceContext;]]></programlisting> 
+@CustomerDatabase EntityManager customerDatabasePersistenceContext;]]></programlisting>
+
+          <programlisting role="JAVA"><![CDATA[@Produces @PersistenceUnit(unitName="CustomerDatabase") 
+@CustomerDatabase EntityManagerFactory customerDatabasePersistenceUnit;]]></programlisting>
+
+          <programlisting role="JAVA"><![CDATA[@Produces @EJB(ejbLink="../their.jar#PaymentService") 
+PaymentService paymentService;]]></programlisting>
 
          <para>
             These resources can then be injected in the usual way.
          </para>
 
-         <programlisting role="JAVA"><![CDATA[@Inject PaymentService paymentService;]]></programlisting> 
+         <programlisting role="JAVA"><![CDATA[@Inject Catalog catalog;]]></programlisting> 
+         <programlisting role="JAVA"><![CDATA[@Inject @CustomerDatabase Datasource customerDatabase;]]></programlisting> 
          <programlisting role="JAVA"><![CDATA[@Inject @CustomerDatabase EntityManager customerDatabaseEntityManager;]]></programlisting> 
+         <programlisting role="JAVA"><![CDATA[@Inject @CustomerDatabase EntityManagerFactory customerDatabaseEntityManagerFactory;]]></programlisting> 
+         <programlisting role="JAVA"><![CDATA[@Inject PaymentService paymentService;]]></programlisting> 
 
          <para>
             The bean type and qualifiers of the resource are determined by the producer field declaration.
          </para>
 
          <para>
-            While you may have to introduce a couple extra managed beans to serve as typesafe adapters, it's well worth
-            the effort so that you can minimize the number of places in your code you have to repeat the old-style
-            dependency injection and string-based qualifiers.
+            It might seem like a pain to have to write these extra producer field declarations, just to gain an additional
+            level of indirection. You could just as well use component environment injection directly, right? But remember
+            that you're going to be using resources like the <literal>EntityManager</literal> in several different beans. 
+            Isn't it nicer and more typesafe to write 
+         </para>
+         
+            <programlisting>@Inject @CustomerDatabase EntityManager</programlisting> 
+            
+         <para>instead of</para>
+            
+            <programlisting>@PersistenceContext(unitName="CustomerDatabase") EntityManager</programlisting> 
+            
+         <para>
+            all over the place?
          </para>
 
       </section>
@@ -993,41 +1018,36 @@ PaymentService paymentService;]]></programlisting>
          <title>Built-in beans</title>
 
          <para>
-            Java EE gives you some other goodies in the form of built-in beans. A Java EE (or embeddable EJB) container
-            provide the following built-in beans, all of which have qualifier <literal>@Default</literal>:
+            In the Java EE environment, we get some additional goodies. The container provides the following 
+            built-in beans, all with the qualifier <literal>@Default</literal>:
          </para>
 
          <itemizedlist>
             <listitem>
                <para>
-                  a bean with bean type <literal>javax.transaction.UserTransaction</literal>, allowing injection of a
-                  reference to the JTA <literal>UserTransaction</literal>,
+                  the current JTA <literal>UserTransaction</literal>,
                </para>
             </listitem>
             <listitem>
                <para>
-                  a bean with bean type <literal>javax.security.Principal</literal>, allowing injection of a
-                  <literal>Principal</literal> representing the current caller identity.
+                  a <literal>Principal</literal> representing the current caller identity,
                </para>
             </listitem>
             <listitem>
                <para>
-                  a bean with bean type <literal>javax.validation.ValidationFactory</literal>, allowing injection of the
-                  default <ulink src="http://jcp.org/en/jsr/detail?id=303">Bean Validation</ulink>
+                  the default <ulink src="http://jcp.org/en/jsr/detail?id=303">Bean Validation</ulink> 
                   <literal>ValidationFactory</literal>, and
                </para>
             </listitem>
             <listitem>
                <para>
-                  a bean with bean type <literal>javax.validation.Validator</literal>, allowing injection of a Validator
-                  for the default Bean Validation <literal>ValidationFactory</literal>.
+                  a <literal>Validator</literal> for the default <literal>ValidationFactory</literal>.
                </para>
             </listitem>
          </itemizedlist>
 
          <para>
-            Aren't you excited to start using this stuff? Wait no longer. In the next two chapters, we'll look at some
-            examples.
+            Can't wait to get started? Great! In the next two chapters, we'll start working on some examples.
          </para>
 
       </section>

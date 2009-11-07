@@ -4,7 +4,7 @@
    <title>JSF web application example</title>
 
    <para>
-      Let's illustrate these ideas with a full example. We're going to implement a user login/logout for an application
+      Let's illustrate these ideas with a full example. We're going to implement user login/logout for an application
       that uses JSF. First, we'll define a request-scoped bean to hold the username and password entered during login:
    </para>
 
@@ -88,14 +88,14 @@ public @interface LoggedIn {}]]></programlisting>
 public @interface UserDatabase {}]]></programlisting>
 
    <para>
-      We need an adapter bean to expose our typesafe <literal>EntityManager</literal>:
+      We need an adaptor bean to expose our typesafe <literal>EntityManager</literal>:
    </para>
 
    <programlisting role="JAVA"><![CDATA[public class UserDatabaseProducer {
    @Produces @UserDatabase @PersistenceContext EntityManager userDatabase;
 }]]></programlisting> 
    
-   <para>Now, any other bean can easily inject the current user, as well as other beans:</para>
+   <para>Now <literal>DocumentEditor</literal>, or any other bean, can easily inject the current user:</para>
 
    <programlisting role="JAVA"><![CDATA[public class DocumentEditor {
    @Inject Document document;
@@ -115,7 +115,7 @@ public @interface UserDatabase {}]]></programlisting>
 </h:panelGroup>]]></programlisting> 
 
    <para>
-      Hopefully, this example gives a flavor of the CDI services.  In the next chapter, we'll explore examples from the
+      Hopefully, this example gives a flavor of the CDI services. In the next chapter, we'll explore examples from the
       CDI reference implementation, Weld, in greater depth.
    </para>
 

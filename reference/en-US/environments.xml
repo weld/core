@@ -14,15 +14,15 @@
       <para>
          If you are using JBoss AS &lt; 5.2, then you'll need to install Weld as an add-on. Fortunately, the
          distribution has a build that can handle this for you in a single command. First, we need to tell Weld where
-         JBoss AS is located.  Create a new file named local.build.properties in the examples directory of the Weld
-         distribution and assign the path of your JBoss AS installation to the property key
+         JBoss AS is located.  Create a new file named <literal>local.build.properties</literal> in the examples directory 
+         of the Weld distribution and assign the path of your JBoss AS installation to the property key
          <literal>jboss.home</literal>, as follows:
       </para>
 
       <programlisting><![CDATA[jboss.home=/path/to/jboss-as-5.x]]></programlisting>
 
       <para>
-         Now we can install the Weld deployer from the jboss-as directory of the Weld distribution:
+         Now we can install the Weld deployer from the <literal>jboss-as</literal> directory of the Weld distribution:
       </para>
       
       <programlisting>$> cd jboss-as
@@ -58,15 +58,15 @@ $> ant update</programlisting>
       <title>Servlet containers (such as Tomcat or Jetty)</title>
       
       <para>
-         While JSR-299 does not require support for Servlet environments, Weld can be used in any Servlet container,
+         While JSR-299 does not require support for servlet environments, Weld can be used in any servlet container,
          such as Tomcat 6.0 or Jetty 6.1.
       </para>
       
       <note>
          <para>
-            There is a major limitation to using a Servlet container. Weld doesn't support deploying session beans,
+            There is a major limitation to using a servlet container. Weld doesn't support deploying session beans,
             injection using <literal>@EJB</literal> or <literal>@PersistenceContext</literal>, or using transactional
-            events in Servlet containers. For enterprise features such as these, you should really be looking at a Java
+            events in servlet containers. For enterprise features such as these, you should really be looking at a Java
             EE application server.
          </para>
       </note>
@@ -75,7 +75,7 @@ $> ant update</programlisting>
          Weld should be used as a web application library in a servlet container. You should place
          <literal>weld-servlet.jar</literal> in <literal>WEB-INF/lib</literal> in the web root.
          <literal>weld-servlet.jar</literal> is an "uber-jar", meaning it bundles all the bits of Weld and CDI required
-         for running in a Servlet container, provided for your convenience: Alternatively, you could use its component
+         for running in a servlet container, provided for your convenience. Alternatively, you could use its component
          jars: 
       </para>
       

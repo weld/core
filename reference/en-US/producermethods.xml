@@ -181,6 +181,35 @@ public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy ccps,
       </para>
 
    </section>
+   
+   <section>
+      <title>Disposer methods</title>
+
+         <para>
+            Some producer methods return objects that require explicit destruction. For example, somebody needs to
+            close this JDBC connection:
+         </para>
+       
+         <programlisting role="JAVA"><![CDATA[@Produces @RequestScoped Connection connect(User user) {
+   return createConnection(user.getId(), user.getPassword());
+}]]></programlisting>
+
+         <para>Destruction can be performed by a matching <emphasis>disposer method</emphasis>, defined
+         by the same class as the producer method:</para>
+       
+         <programlisting role="JAVA"><![CDATA[void close(@Disposes Connection connection) {
+   connection.close();
+}]]></programlisting>
+   
+         <para>
+            The disposer method must have at least one parameter, annotated <literal>@Disposes</literal>, with the same 
+            type and qualifiers as the producer method. The disposer method is called automatically when the context ends 
+            (in this case, at the end of the request), and this parameter receives the object produced by the producer 
+            method. If the disposer method has additional method parameters, the container will look for a bean that 
+            satisfies the type and qualifiers of each parameter and pass it to the method automatically.
+         </para>
+         
+   </section>
 
 <!--
 vim:et:ts=3:sw=3:tw=120

@@ -11,7 +11,7 @@
    </para>
 
    <section>
-      <title>Where you can @Inject</title>
+      <title>Where you can <literal>@Inject</literal></title>
 
       <para>
          Injections are declared using the JSR-330 annotation, <literal>@Inject</literal>, along with an optional set of
@@ -114,7 +114,7 @@
       </tip>
 
       <para>
-         Bean constructors, initializer methods and injected fields must be annotated <emphasis>@Inject</emphasis>. The
+         Bean constructors, initializer methods and injected fields must be annotated <literal>@Inject</literal>. The
          parameters of bean constructors and initializers are injection points, which means the container will search out
          beans matching the bean type and qualifier and pass them in as arguments.         
       </para>
@@ -136,7 +136,7 @@
       <para>
         This is one of the cases where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at
         an injection point. Other cases include observer methods (which we'll meet in <xref linkend="events"/>) and
-        disposal methods, which also support parameter injection.
+        disposer methods, which also support parameter injection.
       </para>
    </section>
 
@@ -144,7 +144,7 @@
       <title>What gets injected</title>
 
       <para>
-         The CDI specification defines a procedure, called the <emphasis>typesafe resolution algorithm</emphasis>, that
+         The CDI specification defines a procedure, called <emphasis>typesafe resolution</emphasis>, that
          the container follows when identifying the bean to inject to an injection point.  This algorithm looks complex
          at first, but once you understand it, it's really quite intuitive. Typesafe resolution is performed at system
          initialization time, which means that the container will inform the developer immediately if a bean's
@@ -168,6 +168,11 @@
                without changes to the client, by enabling or disabling an <emphasis>alternative</emphasis>, or
             </para>
         </listitem>
+        <listitem>
+            <para>
+               be deployed in different, isolated modules.
+            </para>
+        </listitem>
       </itemizedlist>
 
       <para>
@@ -178,8 +183,7 @@
       
       <para>
          But then, things start to get complicated. Let's explore how the container determines which bean to inject in
-         those not-so-obvious cases by taking a look at qualifiers and how they help your beans fit into the right
-         picture.
+         those more advanced cases. We'll start by taking a closer look at qualifiers.
       </para>
 
    </section>
@@ -246,7 +250,7 @@ public Checkout(@Synchronous PaymentProcessor syncPaymentProcessor,
 
       <para>
          Qualifier annotations can also qualify method arguments of producer, disposer and observer methods. Combining
-         qualified arguments with producer methods is a good way to have an implementation of a bean type at runtime
+         qualified arguments with producer methods is a good way to have an implementation of a bean type
          selected at runtime based on the state of the system:
       </para>
 
@@ -276,7 +280,7 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
 
          <para>
             Annotations can have members (i.e., fields) just like regular classes. You can use these fields to further
-            discriminate the qualifier. This simply prevents an explosion of annotations that you have to introduce.
+            discriminate the qualifier. This prevents a potential explosion of new annotations.
             For instance, if you wanted to create several qualifiers representing different payment methods, you could
             aggregate them under a single annotation using a member:
          </para>
@@ -289,13 +293,13 @@ public @interface PayBy {
 }]]></programlisting> 
    
          <para>
-            Then you select one of the possible values when you use the qualifier:
+            Then you select one of the possible values when you apply the qualifier:
          </para>
 
          <programlisting role="JAVA"><![CDATA[private @Inject @PayBy(CHECK) CheckPayment checkPayment;]]></programlisting> 
 
          <para>
-            You can tell the container to ignore a member of a qualifier type by annotating the member @NonBinding.
+            You can tell the container to ignore a member of a qualifier type by annotating the member <literal>@NonBinding</literal>.
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Qualifier
@@ -303,7 +307,7 @@ public @interface PayBy {
 @Target({METHOD, FIELD, PARAMETER, TYPE})
 public @interface PayBy {
    PaymentMethod value();
-   @NonBinding String comment;
+   @NonBinding String comment() default "";
 }]]></programlisting> 
 
       </section>
@@ -312,7 +316,7 @@ public @interface PayBy {
          <title>Combining qualifiers</title>
 
          <para>
-            Both a bean and an injection point may specify multiple qualifiers:
+            Both beans and injection points may specify multiple qualifiers:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Synchronous @Reliable
