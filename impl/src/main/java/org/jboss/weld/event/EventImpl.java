@@ -16,19 +16,28 @@
  */
 package org.jboss.weld.event;
 
+import static org.jboss.weld.util.Reflections.EMPTY_ANNOTATIONS;
+
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.bean.builtin.facade.AbstractFacade;
+import org.jboss.weld.bean.builtin.AbstractFacade;
+import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Names;
 import org.jboss.weld.util.Observers;
-import org.jboss.weld.util.Strings;
 
 /**
  * Implementation of the Event interface
@@ -38,67 +47,100 @@ import org.jboss.weld.util.Strings;
  * @param <T> The type of event being wrapped
  * @see javax.enterprise.event.Event
  */
-public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T>
+public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T>, Serializable
 {
    
    private static final long serialVersionUID = 656782657242515455L;
-   private static final Annotation[] EMPTY_BINDINGS = new Annotation[0];
+   private static final Default DEFAULT = new DefaultLiteral();
 
-   public static <E> EventImpl<E> of(Type eventType, BeanManagerImpl manager, Set<Annotation> bindings)
+   public static <E> EventImpl<E> of(InjectionPoint injectionPoint, BeanManagerImpl beanManager)
    {
-      return new EventImpl<E>(eventType, manager, bindings);
+      return new EventImpl<E>(getFacadeType(injectionPoint), getFacadeEventQualifiers(injectionPoint), injectionPoint, beanManager);
    }
    
+   private static Annotation[] getFacadeEventQualifiers(InjectionPoint injectionPoint)
+   {
+      if (!injectionPoint.getAnnotated().isAnnotationPresent(Default.class))
+      {
+         Set<Annotation> qualifers = new HashSet<Annotation>(injectionPoint.getQualifiers());
+         qualifers.remove(DEFAULT);
+         return qualifers.toArray(EMPTY_ANNOTATIONS);
+      }
+      else
+      {
+         return injectionPoint.getQualifiers().toArray(EMPTY_ANNOTATIONS);
+      }
+   }
    
+   private EventImpl(Type type, Annotation[] qualifiers, InjectionPoint injectionPoint, BeanManagerImpl beanManager)
+   {
+      super(type, qualifiers, injectionPoint, beanManager);
+   }
+
    /**
-    * Constructor
+    * Gets a string representation
     * 
-    * @param eventType The event type
-    * @param manager The Bean manager
-    * @param bindings The binding types
+    * @return A string representation
     */
-   private EventImpl(Type eventType, BeanManagerImpl manager, Set<Annotation> bindings)
-   {
-      super(eventType, manager, bindings);
-   }
-
    @Override
    public String toString()
    {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("Observable Event:\n");
-      buffer.append("  Event Type: " + getType().toString() + "\n");
-      buffer.append(Strings.collectionToString("  Event Bindings: ", getBindings()));
-      return buffer.toString();
+      return new StringBuilder().append(Names.annotationsToString(getQualifiers())).append(" Event<").append(getType()).append(">").toString();
    }
 
    public void fire(T event)
    {
-      getManager().fireEvent(event, getBindings().toArray(EMPTY_BINDINGS));
+      getBeanManager().fireEvent(event, getQualifiers());
    }
    
-   public Event<T> select(Annotation... bindings)
+   public Event<T> select(Annotation... qualifiers)
    {
-      return selectEvent(this.getType(), bindings);
+      return selectEvent(this.getType(), qualifiers);
    }
 
-   public <U extends T> Event<U> select(Class<U> subtype, Annotation... bindings)
+   public <U extends T> Event<U> select(Class<U> subtype, Annotation... qualifiers)
    {
-      return selectEvent(subtype, bindings);
+      return selectEvent(subtype, qualifiers);
    }
 
-   public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... bindings)
+   public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... qualifiers)
    {
-      return selectEvent(subtype.getType(), bindings);
+      return selectEvent(subtype.getType(), qualifiers);
    }
    
-   public <U extends T> Event<U> selectEvent(Type subtype, Annotation[] bindings)
+   private <U extends T> Event<U> selectEvent(Type subtype, Annotation[] newQualifiers)
    {
       Observers.checkEventObjectType(subtype);
-      return new EventImpl<U>(
-            subtype, 
-            this.getManager(), 
-            new HashSet<Annotation>(Arrays.asList(mergeInBindings(bindings))));
-   } 
+      return new EventImpl<U>(subtype, Beans.mergeInQualifiers(getQualifiers(), newQualifiers), getInjectionPoint(), getBeanManager());
+   }
+   
+   // Serialization
+   
+   private Object writeReplace() throws ObjectStreamException
+   {
+      return new SerializationProxy(this);
+   }
+   
+   private void readObject(ObjectInputStream stream) throws InvalidObjectException
+   {
+      throw new InvalidObjectException("Proxy required");
+   }
+   
+   private static class SerializationProxy extends AbstractFacadeSerializationProxy
+   {
+
+      private static final long serialVersionUID = 9181171328831559650L;
+
+      public SerializationProxy(EventImpl<?> event)
+      {
+         super(event);
+      }
+      
+      private Object readResolve()
+      {
+         return EventImpl.of(getInjectionPoint(), getBeanManager());
+      }
+      
+   }
 
 }

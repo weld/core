@@ -14,20 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bean.builtin.facade;
+package org.jboss.weld.bean.builtin;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.slf4j.cal10n.LocLogger;
 
 public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
@@ -45,16 +41,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
       InjectionPoint injectionPoint = this.getManager().getCurrentInjectionPoint();
       if (injectionPoint != null)
       {
-         Type genericType = injectionPoint.getType();
-         if (genericType instanceof ParameterizedType )
-         {
-            Type type = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-            return newInstance(type, injectionPoint);
-         }
-         else
-         {
-            throw new IllegalStateException("Must have concrete type argument " + injectionPoint);
-         }
+         return newInstance(injectionPoint);
       }
       else
       {
@@ -68,6 +55,6 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
       // TODO Auto-generated method stub
    }
    
-   protected abstract T newInstance(Type type, InjectionPoint ip);
+   protected abstract T newInstance(InjectionPoint injectionPoint);
    
 }

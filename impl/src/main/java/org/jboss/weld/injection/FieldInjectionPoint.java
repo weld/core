@@ -18,6 +18,10 @@ package org.jboss.weld.injection;
 
 import static org.jboss.weld.injection.Exceptions.rethrowException;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -36,15 +40,16 @@ import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.introspector.ForwardingWeldField;
 import org.jboss.weld.introspector.WeldField;
 
-public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> implements WeldInjectionPoint<T, Field>
+public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> implements WeldInjectionPoint<T, Field>, Serializable
 {
-
+   
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
    private final Bean<?> declaringBean;
    private final WeldField<T, X> field;
    private final boolean delegate;
 
+   
    public static <T, X> FieldInjectionPoint<T, X> of(Bean<?> declaringBean, WeldField<T, X> field)
    {
       return new FieldInjectionPoint<T, X>(declaringBean, field);
@@ -130,6 +135,45 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
    public Member getMember()
    {
       return getJavaMember();
+   }
+   
+   
+   
+   // Serialization
+   
+   private Object writeReplace() throws ObjectStreamException
+   {
+      return new SerializationProxy<T>(this);
+   }
+   
+   private void readObject(ObjectInputStream stream) throws InvalidObjectException
+   {
+      throw new InvalidObjectException("Proxy required");
+   }
+   
+   private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Field>
+   {
+      
+      private static final long serialVersionUID = -3491482804822264969L;
+      
+      private final String fieldName;
+
+      public SerializationProxy(FieldInjectionPoint<T, ?> injectionPoint)
+      {
+         super(injectionPoint);
+         this.fieldName = injectionPoint.getName();
+      }
+      
+      private Object readResolve()
+      {
+         return FieldInjectionPoint.of(getDeclaringBean(), getWeldField());
+      }
+      
+      protected WeldField<T, ?> getWeldField()
+      {
+         return getWeldClass().getDeclaredWeldField(fieldName);
+      }
+      
    }
 
 

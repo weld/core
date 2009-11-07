@@ -17,12 +17,7 @@
 package org.jboss.weld.bean.proxy;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.concurrent.Callable;
-
-import javassist.util.proxy.ProxyFactory;
 
 import javax.enterprise.inject.spi.Bean;
 
@@ -31,6 +26,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.Proxies.TypeInfo;
 import org.jboss.weld.util.collections.ConcurrentCache;
 
 /**
@@ -74,20 +70,9 @@ public class ClientProxyProvider
     */
    private static <T> T createClientProxy(Bean<T> bean, BeanManagerImpl manager, String id) throws RuntimeException
    {
-      
       try
       {
-         ClientProxyMethodHandler proxyMethodHandler = new ClientProxyMethodHandler(bean, manager, id);
-         Set<Type> classes = new LinkedHashSet<Type>(bean.getTypes());
-         classes.add(Serializable.class);
-         ProxyFactory proxyFactory = Proxies.getProxyFactory(classes);
-         proxyFactory.setHandler(proxyMethodHandler);
-         Class<?> clazz = proxyFactory.createClass();
-         
-         @SuppressWarnings("unchecked")
-         T instance = (T) clazz.newInstance();
-         
-         return instance;
+         return Proxies.<T>createProxy(new ClientProxyMethodHandler(bean, manager, id), TypeInfo.of(bean.getTypes()).add(Serializable.class));
       }
       catch (InstantiationException e)
       {

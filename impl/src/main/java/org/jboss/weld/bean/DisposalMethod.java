@@ -96,7 +96,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    {
       // At least 1 parameter exists, already checked in constructor
       this.bindings = new HashSet<Annotation>();
-      this.bindings.addAll(disposalMethodInjectionPoint.getWBParameters().get(0).getQualifiers());
+      this.bindings.addAll(disposalMethodInjectionPoint.getWeldParameters().get(0).getQualifiers());
       initDefaultBindings();
    }
 
@@ -144,7 +144,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    }
 
    @Override
-   public boolean isSerializable()
+   public boolean isPassivationCapable()
    {
       // Not relevant
       return false;
@@ -179,7 +179,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
 
    private void checkDisposalMethod()
    {
-      if (!disposalMethodInjectionPoint.getWBParameters().get(0).isAnnotationPresent(Disposes.class))
+      if (!disposalMethodInjectionPoint.getWeldParameters().get(0).isAnnotationPresent(Disposes.class))
       {
          throw new DefinitionException(disposalMethodInjectionPoint.toString() + " doesn't have @Dispose as first parameter");
       }

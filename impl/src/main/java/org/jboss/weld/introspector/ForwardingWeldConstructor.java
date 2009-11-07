@@ -40,9 +40,9 @@ public abstract class ForwardingWeldConstructor<T> extends ForwardingWeldMember<
       return delegate().getDeclaringType();
    }
 
-   public List<? extends WeldParameter<?, T>> getWBParameters()
+   public List<? extends WeldParameter<?, T>> getWeldParameters()
    {
-      return delegate().getWBParameters();
+      return delegate().getWeldParameters();
    }
 
    public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException

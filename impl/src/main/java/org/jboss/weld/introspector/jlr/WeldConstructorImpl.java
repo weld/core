@@ -206,9 +206,9 @@ public Constructor<T> getDelegate()
     * 
     * @return A list of annotated parameter abstractions
     * 
-    * @see org.jboss.weld.introspector.WeldConstructor#getWBParameters()
+    * @see org.jboss.weld.introspector.WeldConstructor#getWeldParameters()
     */
-   public List<WeldParameter<?, T>> getWBParameters()
+   public List<WeldParameter<?, T>> getWeldParameters()
    {
       return Collections.unmodifiableList(parameters);
    }
@@ -259,7 +259,7 @@ public Constructor<T> getDelegate()
       if (super.equals(other) && other instanceof WeldConstructor)
       {
          WeldConstructor<?> that = (WeldConstructor<?>) other;
-         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getWBParameters().equals(that.getWBParameters());
+         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getWeldParameters().equals(that.getWeldParameters());
       }
       return false;
    }

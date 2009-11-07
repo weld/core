@@ -24,7 +24,9 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
+import javassist.util.proxy.ProxyObject;
 
 /**
  * Utilties for working with Javassist proxies
@@ -35,7 +37,7 @@ import javassist.util.proxy.ProxyFactory;
  */
 public class Proxies
 {
-
+   
    public static class TypeInfo
    {
 
@@ -87,9 +89,9 @@ public class Proxies
          return proxyFactory;
       }
 
-      private void add(Type type)
+      public TypeInfo add(Type type)
       {
-         if (type instanceof Class)
+         if (type instanceof Class<?>)
          {
             Class<?> clazz = (Class<?>) type;
             if (clazz.isInterface())
@@ -109,40 +111,48 @@ public class Proxies
          {
             throw new IllegalArgumentException("Cannot proxy non-Class Type " + type);
          }
+         return this;
       }
 
-      public static TypeInfo ofTypes(Set<? extends Type> types)
+      public static TypeInfo of(Set<? extends Type> types)
       {
-         TypeInfo typeInfo = new TypeInfo();
+         TypeInfo typeInfo = create();
          for (Type type : types)
          {
             typeInfo.add(type);
          }
          return typeInfo;
       }
-
-      public static TypeInfo ofClasses(Set<Class<?>> classes)
+      
+      public static TypeInfo create()
       {
-         TypeInfo typeInfo = new TypeInfo();
-         for (Class<?> type : classes)
-         {
-            typeInfo.add(type);
-         }
-         return typeInfo;
+         return new TypeInfo();
       }
 
    }
-
-   /**
-    * Get the proxy factory for the given set of types
-    * 
-    * @param types The types to create the proxy factory for
-    * @param classes Additional interfaces the proxy should implement
-    * @return the proxy factory
-    */
-   public static ProxyFactory getProxyFactory(Set<Type> types)
+   
+   public static <T> T createProxy(MethodHandler methodHandler, TypeInfo typeInfo) throws IllegalAccessException, InstantiationException
    {
-      return TypeInfo.ofTypes(types).createProxyFactory();
+      return Proxies.<T>createProxyClass(methodHandler, typeInfo).newInstance();
+   }
+   
+   public static <T> Class<T> createProxyClass(TypeInfo typeInfo)
+   {
+      return createProxyClass(null, typeInfo);
+   }
+   
+   public static <T> Class<T> createProxyClass(MethodHandler methodHandler, TypeInfo typeInfo)
+   {
+      ProxyFactory proxyFactory = typeInfo.createProxyFactory();
+      if (methodHandler != null)
+      {
+         proxyFactory.setHandler(methodHandler);
+      }
+      
+      @SuppressWarnings("unchecked")
+      Class<T> clazz = proxyFactory.createClass();
+      
+      return clazz;
    }
 
    /**
@@ -153,14 +163,14 @@ public class Proxies
     */
    public static boolean isTypeProxyable(Type type)
    {
-      if (type instanceof Class)
+      if (type instanceof Class<?>)
       {
          return isClassProxyable((Class<?>) type);
       }
       else if (type instanceof ParameterizedType)
       {
          Type rawType = ((ParameterizedType) type).getRawType();
-         if (rawType instanceof Class)
+         if (rawType instanceof Class<?>)
          {
             return isClassProxyable((Class<?>) rawType);
          }
@@ -236,6 +246,20 @@ public class Proxies
    public static boolean isProxy(Object instance)
    {
       return instance.getClass().getName().indexOf("_$$_javassist_") > 0;
+   }
+   
+   public static <T> T attachMethodHandler(T instance, MethodHandler methodHandler)
+   {
+      if (instance instanceof ProxyObject)
+      {
+         ((ProxyObject) instance).setHandler(methodHandler);
+         return instance;
+      }
+      else
+      {
+         throw new IllegalArgumentException("Instance not a proxy. Instance: " + instance);
+      }
+      
    }
 
 

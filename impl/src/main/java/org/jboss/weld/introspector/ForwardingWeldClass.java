@@ -87,9 +87,9 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
       return delegate().getWeldMethod(method);
    }
    
-   public <M> WeldMethod<M, ?> getWBMethod(MethodSignature signature)
+   public <M> WeldMethod<M, ?> getWeldMethod(MethodSignature signature)
    {
-      return delegate().getWBMethod(signature);
+      return delegate().getWeldMethod(signature);
    }
 
    public Set<WeldMethod<?, ?>> getWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
@@ -144,14 +144,14 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
       return delegate().getDeclaredWeldMethod(method);
    }
    
-   public <F> WeldField<F, ?> getDeclaredWeldField(String fieldName, WeldClass<F> expectedType)
+   public <F> WeldField<F, ?> getDeclaredWeldField(String fieldName)
    {
-      return delegate().getDeclaredWeldField(fieldName, expectedType);
+      return delegate().getDeclaredWeldField(fieldName);
    }
    
    public <M> WeldMethod<M, ?> getDeclaredWeldMethod(MethodSignature signature, WeldClass<M> expectedReturnType) 
    {
-      return delegate().getDeclaredWeldMethod(signature, expectedReturnType);
+      return delegate().getDeclaredWeldMethod(signature);
    }
    
    public WeldConstructor<T> getDeclaredWeldConstructor(ConstructorSignature signature)

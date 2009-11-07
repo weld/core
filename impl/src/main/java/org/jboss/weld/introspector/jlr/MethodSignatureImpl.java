@@ -34,10 +34,10 @@ public class MethodSignatureImpl implements MethodSignature
    public MethodSignatureImpl(WeldMethod<?, ?> method)
    {
       this.methodName = method.getName();
-      this.parameterTypes = new String[method.getWBParameters().size()];
-      for (int i = 0; i < method.getWBParameters().size(); i++)
+      this.parameterTypes = new String[method.getWeldParameters().size()];
+      for (int i = 0; i < method.getWeldParameters().size(); i++)
       {
-         parameterTypes[i] = method.getWBParameters().get(i).getJavaClass().getName();
+         parameterTypes[i] = method.getWeldParameters().get(i).getJavaClass().getName();
       }
    }
    
@@ -70,8 +70,8 @@ public class MethodSignatureImpl implements MethodSignature
    public int hashCode()
    {
       int hashCode = 17;
-      hashCode += getMethodName().hashCode() * 5;
-      hashCode += Arrays.hashCode(getParameterTypes()) * 7;
+      hashCode += methodName.hashCode() * 5;
+      hashCode += Arrays.hashCode(parameterTypes) * 7;
       return hashCode;
    }
    

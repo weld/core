@@ -28,14 +28,14 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.builtin.BeanManagerBean;
+import org.jboss.weld.bean.builtin.EventBean;
 import org.jboss.weld.bean.builtin.InjectionPointBean;
-import org.jboss.weld.bean.builtin.ManagerBean;
-import org.jboss.weld.bean.builtin.facade.EventBean;
-import org.jboss.weld.bean.builtin.facade.InstanceBean;
-import org.jboss.weld.bean.ee.DefaultValidatorBean;
-import org.jboss.weld.bean.ee.DefaultValidatorFactoryBean;
-import org.jboss.weld.bean.ee.PrincipalBean;
-import org.jboss.weld.bean.ee.UserTransactionBean;
+import org.jboss.weld.bean.builtin.InstanceBean;
+import org.jboss.weld.bean.builtin.ee.DefaultValidatorBean;
+import org.jboss.weld.bean.builtin.ee.DefaultValidatorFactoryBean;
+import org.jboss.weld.bean.builtin.ee.PrincipalBean;
+import org.jboss.weld.bean.builtin.ee.UserTransactionBean;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
@@ -80,7 +80,7 @@ public class BeanDeployment
       beanDeployer = new BeanDeployer(beanManager, ejbDescriptors);
       
       // Must at the Manager bean straight away, as it can be injected during startup!
-      beanManager.addBean(new ManagerBean(beanManager));
+      beanManager.addBean(new BeanManagerBean(beanManager));
       
       parseBeansXml();
    }
@@ -150,7 +150,7 @@ public class BeanDeployment
       }
       beanDeployer.createBeans().deploy();
    }
-
+   
    public void afterBeanDiscovery(Environment environment)
    {
       doAfterBeanDiscovery(beanManager.getBeans());
@@ -158,13 +158,13 @@ public class BeanDeployment
       doAfterBeanDiscovery(beanManager.getInterceptors());
    }
 
-   private void doAfterBeanDiscovery(List<? extends Bean> beanList)
+   private void doAfterBeanDiscovery(List<? extends Bean<?>> beanList)
    {
       for (Bean<?> bean : beanList)
       {
-         if (bean instanceof RIBean)
+         if (bean instanceof RIBean<?>)
          {
-            ((RIBean) bean).initializeAfterBeanDiscovery();
+            ((RIBean<?>) bean).initializeAfterBeanDiscovery();
          }
       }
    }

@@ -112,6 +112,12 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
    }
    
    @Override
+   public boolean isPassivationCapable()
+   {
+      return true;
+   }
+   
+   @Override
    public String getDescription()
    {
       return "Built-in bean " + getClass().getSimpleName();

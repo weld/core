@@ -484,8 +484,8 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    {
       return Collections.unmodifiableSet(declaredFields);
    }
-
-   public <F> WeldField<F, ?> getDeclaredWeldField(String fieldName, WeldClass<F> expectedType)
+   
+   public <F> WeldField<F, ?> getDeclaredWeldField(String fieldName)
    {
       return (WeldField<F, ?>) declaredFieldsByName.get(fieldName);
    }
@@ -661,17 +661,17 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    }
 
    @SuppressWarnings("unchecked")
-   public <M> WeldMethod<M, ?> getDeclaredWeldMethod(MethodSignature signature, WeldClass<M> expectedReturnType)
+   public <M> WeldMethod<M, ?> getDeclaredWeldMethod(MethodSignature signature)
    {
       return (WeldMethod<M, ?>) declaredMethodsBySignature.get(signature);
    }
 
    @SuppressWarnings("unchecked")
-   public <M> WeldMethod<M, ?> getWBMethod(MethodSignature signature)
+   public <M> WeldMethod<M, ?> getWeldMethod(MethodSignature signature)
    {
       return (WeldMethod<M, ?>) methodsBySignature.get(signature);
    }
-
+   
    /**
     * Gets a string representation of the class
     * 

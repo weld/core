@@ -83,6 +83,8 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    private Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
 
    private ManagedBean<?> specializedBean;
+   
+   private boolean passivationCapable;
 
    /**
     * Creates a simple, annotation defined Web Bean
@@ -186,6 +188,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          initPostConstruct();
          initPreDestroy();
          initEEInjectionPoints();
+         initPassivationCapable();
          if (isInterceptionCandidate())
          {
             initDirectlyDefinedInterceptors();
@@ -255,6 +258,18 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       }
    }
 
+   private void initPassivationCapable()
+   {
+      this.passivationCapable = Reflections.isSerializable(getAnnotatedItem().getJavaClass());
+      // TODO Add in interceptor and decorator checks
+   }
+   
+   @Override
+   public boolean isPassivationCapable()
+   {
+      return passivationCapable;
+   }
+
    private void initEEInjectionPoints()
    {
       this.ejbInjectionPoints = Beans.getEjbInjectionPoints(this, getAnnotatedItem(), getManager());
@@ -296,7 +311,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
                DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
                for (WeldMethod<?, ?> decoratorMethod : decoratorBean.getAnnotatedItem().getWeldMethods())
                {
-                  WeldMethod<?, ?> method = getAnnotatedItem().getWBMethod(decoratorMethod.getSignature());
+                  WeldMethod<?, ?> method = getAnnotatedItem().getWeldMethod(decoratorMethod.getSignature());
                   if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal())
                   {
                      throw new DefinitionException("Decorated bean method " + method + " (decorated by "+ decoratorMethod + ") cannot be declarted final");

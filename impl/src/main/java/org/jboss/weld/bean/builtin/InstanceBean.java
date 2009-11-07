@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bean.builtin.facade;
+package org.jboss.weld.bean.builtin;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -73,9 +73,9 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    }
 
    @Override
-   protected Instance<?> newInstance(Type type, InjectionPoint ip)
+   protected Instance<?> newInstance(InjectionPoint injectionPoint)
    {
-      return InstanceImpl.of(type, getManager(), ip.getQualifiers());
+      return InstanceImpl.of(injectionPoint, getManager());
    }
    
    @Override

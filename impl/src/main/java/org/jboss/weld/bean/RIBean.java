@@ -85,6 +85,8 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
    }
 
    public abstract boolean isProxyable();
+   
+   public abstract boolean isPassivationCapable();
 
    public boolean isProxyRequired()
    {

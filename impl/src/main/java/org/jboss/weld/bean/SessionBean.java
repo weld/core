@@ -24,12 +24,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javassist.util.proxy.ProxyFactory;
-import javassist.util.proxy.ProxyObject;
 
 import javax.decorator.Decorator;
 import javax.enterprise.context.ApplicationScoped;
@@ -49,7 +45,6 @@ import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.weld.bean.proxy.Marker;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
@@ -58,8 +53,10 @@ import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.Proxies.TypeInfo;
 
 /**
  * An enterprise bean representation
@@ -169,8 +166,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
                {
                   T instance = proxyClass.newInstance();
                   ctx.push(instance);
-                  ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, ctx));
-                  return instance;
+                  return Proxies.attachMethodHandler(instance, new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, ctx));
                }
                catch (InstantiationException e)
                {
@@ -211,15 +207,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
 
    protected void initProxyClass()
    {
-      Set<Type> types = new LinkedHashSet<Type>(getTypes());
-      types.add(EnterpriseBeanInstance.class);
-      types.add(Serializable.class);
-      ProxyFactory proxyFactory = Proxies.getProxyFactory(types);
-
-      @SuppressWarnings("unchecked")
-      Class<T> proxyClass = proxyFactory.createClass();
-
-      this.proxyClass = proxyClass;
+      this.proxyClass = Proxies.createProxyClass(TypeInfo.of(getTypes()).add(EnterpriseBeanInstance.class).add(Serializable.class));
    }
 
    /**
@@ -351,15 +339,9 @@ public class SessionBean<T> extends AbstractClassBean<T>
    }
    
    @Override
-   protected void initSerializable()
+   public boolean isPassivationCapable()
    {
-      // No-op
-   }
-   
-   @Override
-   public boolean isSerializable()
-   {
-      return true;
+      return getEjbDescriptor().isStateful();
    }
 
    public InternalEjbDescriptor<T> getEjbDescriptor()

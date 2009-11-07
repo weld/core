@@ -57,10 +57,9 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * 
     * @param <F> the expected type of the field
     * @param fieldName the field name
-    * @param expectedType the expected type of the field
     * @return the field
     */
-   public <F> WeldField<F, ?> getDeclaredWeldField(String fieldName, WeldClass<F> expectedType);
+   public <F> WeldField<F, ?> getDeclaredWeldField(String fieldName);
 
    /**
     * Gets all fields which are annotated with the given annotation type on this
@@ -154,11 +153,9 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * 
     * @param <M> the expected return type
     * @param signature the name of the method
-    * @param expectedReturnType the expected return type
     * @return the method, or null if it doesn't exist
     */
-   public <M> WeldMethod<M, ?> getDeclaredWeldMethod(MethodSignature signature, 
-         WeldClass<M> expectedReturnType);
+   public <M> WeldMethod<M, ?> getDeclaredWeldMethod(MethodSignature signature);
    
    /**
     * Get a method by name
@@ -167,7 +164,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * @param signature the name of the method
     * @return the method, or null if it doesn't exist
     */
-   public <M> WeldMethod<M, ?> getWBMethod(MethodSignature signature);
+   public <M> WeldMethod<M, ?> getWeldMethod(MethodSignature signature);
 
    // TODO Replace with AnnotatedMethod variant
    @Deprecated

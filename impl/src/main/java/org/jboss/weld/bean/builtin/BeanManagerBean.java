@@ -25,12 +25,12 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.util.collections.Arrays2;
 
-public class ManagerBean extends AbstractBuiltInBean<BeanManagerImpl>
+public class BeanManagerBean extends AbstractBuiltInBean<BeanManagerImpl>
 {
    
    private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, BeanManagerImpl.class, BeanManager.class);
    
-   public ManagerBean(BeanManagerImpl manager)
+   public BeanManagerBean(BeanManagerImpl manager)
    {
       super(BeanManager.class.getSimpleName(), manager);
    }

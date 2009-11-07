@@ -39,7 +39,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.ContextualStoreImpl;
 import org.jboss.weld.Validator;
 import org.jboss.weld.Container.Status;
-import org.jboss.weld.bean.builtin.ManagerBean;
+import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Lifecycle;
@@ -343,7 +343,7 @@ public class WeldBootstrap implements Bootstrap
          extensionBeanDeployer.deployBeans();
          
          // Add the Deployment BeanManager Bean to the Deployment BeanManager
-         deploymentManager.addBean(new ManagerBean(deploymentManager));
+         deploymentManager.addBean(new BeanManagerBean(deploymentManager));
          
          // Re-Read the deployment structure, this will be the physical structure, and will add in BDAs for any extensions outside a physical BDA
          beanDeployments = deploymentVisitor.visit();

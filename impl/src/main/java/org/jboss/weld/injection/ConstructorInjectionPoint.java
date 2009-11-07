@@ -18,6 +18,10 @@ package org.jboss.weld.injection;
 
 import static org.jboss.weld.injection.Exceptions.rethrowException;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -33,11 +37,13 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.introspector.ConstructorSignature;
 import org.jboss.weld.introspector.ForwardingWeldConstructor;
+import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldParameter;
 
-public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> implements WeldInjectionPoint<T, Constructor<T>>
+public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> implements WeldInjectionPoint<T, Constructor<T>>, Serializable
 {
 
    private static abstract class ForwardingParameterInjectionPointList<T, X> extends AbstractList<ParameterInjectionPoint<T, X>>
@@ -98,7 +104,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
    {
       try
       {
-         return delegate().newInstance(getParameterValues(getWBParameters(), null, null, manager, creationalContext));
+         return delegate().newInstance(getParameterValues(getWeldParameters(), null, null, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -120,9 +126,9 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
    }
 
    @Override
-   public List<ParameterInjectionPoint<?, T>> getWBParameters()
+   public List<ParameterInjectionPoint<?, T>> getWeldParameters()
    {
-      final List<? extends WeldParameter<?, T>> delegate = super.getWBParameters();
+      final List<? extends WeldParameter<?, T>> delegate = super.getWeldParameters();
       return new ForwardingParameterInjectionPointList()
       {
 
@@ -200,5 +206,50 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
       // TODO Auto-generated method stub
       return false;
    }
+   
+   // Serialization
+   
+   private Object writeReplace() throws ObjectStreamException
+   {
+      return new SerializationProxy<T>(this);
+   }
+   
+   private void readObject(ObjectInputStream stream) throws InvalidObjectException
+   {
+      throw new InvalidObjectException("Proxy required");
+   }
+   
+   private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Constructor<T>>
+   {
+
+      private static final long serialVersionUID = 9181171328831559650L;
+      
+      private final ConstructorSignature signature;
+
+      public SerializationProxy(ConstructorInjectionPoint<T> injectionPoint)
+      {
+         super(injectionPoint);
+         this.signature = injectionPoint.getSignature();
+      }
+      
+      private Object readResolve()
+      {
+         return ConstructorInjectionPoint.of(getDeclaringBean(), getWeldConstructor());
+      }
+      
+      protected WeldConstructor<T> getWeldConstructor()
+      {
+         return getWeldClass().getDeclaredWeldConstructor(signature);
+      }
+      
+      @SuppressWarnings("unchecked")
+      @Override
+      protected WeldClass<T> getWeldClass()
+      {
+         return (WeldClass<T>) super.getWeldClass();
+      }
+      
+   }
+
 
 }

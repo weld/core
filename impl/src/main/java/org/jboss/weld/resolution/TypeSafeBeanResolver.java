@@ -24,8 +24,8 @@ import java.util.concurrent.Callable;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.bean.builtin.facade.EventBean;
-import org.jboss.weld.bean.builtin.facade.InstanceBean;
+import org.jboss.weld.bean.builtin.EventBean;
+import org.jboss.weld.bean.builtin.InstanceBean;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Reflections;
 import org.jboss.weld.util.collections.ConcurrentCache;

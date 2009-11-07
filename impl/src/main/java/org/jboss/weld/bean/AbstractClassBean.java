@@ -22,15 +22,12 @@ import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
 import javax.enterprise.context.Dependent;
@@ -52,22 +49,23 @@ import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
-import org.jboss.weld.context.SerializableContextualInstanceImpl;
-import org.jboss.weld.context.SerializableContextualImpl;
-import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.context.SerializableContextualImpl;
+import org.jboss.weld.context.SerializableContextualInstanceImpl;
+import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Reflections;
 import org.jboss.weld.util.Strings;
+import org.jboss.weld.util.Proxies.TypeInfo;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -173,14 +171,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    protected void initProxyClassForDecoratedBean()
    {
-      Set<Type> types = new LinkedHashSet<Type>(getTypes());
-      types.add(TargetInstanceProxy.class);
-      ProxyFactory proxyFactory = Proxies.getProxyFactory(types);
-
-      @SuppressWarnings("unchecked")
-      Class<T> proxyClass = proxyFactory.createClass();
-
-      this.proxyClassForDecorators = proxyClass;
+      this.proxyClassForDecorators = Proxies.createProxyClass(TypeInfo.of(getTypes()).add(TargetInstanceProxy.class));
    }
 
    protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint)

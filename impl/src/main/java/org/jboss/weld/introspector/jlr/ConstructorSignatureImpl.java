@@ -31,10 +31,10 @@ public class ConstructorSignatureImpl implements ConstructorSignature
    
    public ConstructorSignatureImpl(WeldConstructor<?> method)
    {
-      this.parameterTypes = new String[method.getWBParameters().size()];
-      for (int i = 0; i < method.getWBParameters().size(); i++)
+      this.parameterTypes = new String[method.getWeldParameters().size()];
+      for (int i = 0; i < method.getWeldParameters().size(); i++)
       {
-         parameterTypes[i] = method.getWBParameters().get(i).getJavaClass().getName();
+         parameterTypes[i] = method.getWeldParameters().get(i).getJavaClass().getName();
       }
       
    }
@@ -56,7 +56,7 @@ public class ConstructorSignatureImpl implements ConstructorSignature
    @Override
    public int hashCode()
    {
-     return getParameterTypes().hashCode();
+     return Arrays.hashCode(parameterTypes);
    }
    
    public String[] getParameterTypes()

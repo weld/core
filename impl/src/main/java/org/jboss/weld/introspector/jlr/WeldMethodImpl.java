@@ -181,7 +181,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       return method;
    }
 
-   public List<WeldParameter<?, X>> getWBParameters()
+   public List<WeldParameter<?, X>> getWeldParameters()
    {
       return Collections.unmodifiableList(parameters);
    }
@@ -202,7 +202,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       if (other instanceof WeldMethod)
       {
          WeldMethod<?, ?> that = (WeldMethod<?, ?>) other;
-         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getName().equals(that.getName()) && this.getWBParameters().equals(that.getWBParameters());
+         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getName().equals(that.getName()) && this.getWeldParameters().equals(that.getWeldParameters());
       }
       else
       {

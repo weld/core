@@ -44,7 +44,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.Conversation;
-import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.weld.Container;
@@ -65,8 +65,8 @@ public abstract class AbstractConversationManager implements ConversationManager
    private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
 
    // The current conversation
-   @Inject @Any
-   private ConversationImpl currentConversation;
+   @Inject
+   private Instance<ConversationImpl> currentConversation;
 
    // The conversation timeout in milliseconds waiting for access to a blocked
    // conversation
@@ -129,7 +129,7 @@ public abstract class AbstractConversationManager implements ConversationManager
          // If all goes well, set the identity of the current conversation to
          // match the fetched long-running one
          String oldConversation = currentConversation.toString();
-         currentConversation.switchTo(resumedConversationEntry.getConversation());
+         currentConversation.get().switchTo(resumedConversationEntry.getConversation());
          log.trace(CONVERSATION_SWITCHED, oldConversation, currentConversation);
       }
    }
@@ -139,10 +139,10 @@ public abstract class AbstractConversationManager implements ConversationManager
    public void cleanupConversation()
    {
       log.trace(CLEANING_UP_CONVERSATION, currentConversation);
-      String cid = currentConversation.getUnderlyingId();
-      if (!currentConversation.isTransient())
+      String cid = currentConversation.get().getUnderlyingId();
+      if (!currentConversation.get().isTransient())
       {
-         Future<?> terminationHandle = scheduleForTermination(cid, currentConversation.getTimeout());
+         Future<?> terminationHandle = scheduleForTermination(cid, currentConversation.get().getTimeout());
          // When the conversation ends, a long-running conversation needs to
          // start its self-destruct. We can have the case where the conversation
          // is a previously known conversation (that had it's termination
@@ -157,7 +157,7 @@ public abstract class AbstractConversationManager implements ConversationManager
          }
          else
          {
-            ConversationEntry conversationEntry = ConversationEntry.of(getBeanStore(cid), currentConversation, terminationHandle);
+            ConversationEntry conversationEntry = ConversationEntry.of(getBeanStore(cid), currentConversation.get(), terminationHandle);
             longRunningConversations.put(cid, conversationEntry);
          }
          log.trace(CONVERSATION_TERMINATION_SCHEDULED, currentConversation);
@@ -183,12 +183,12 @@ public abstract class AbstractConversationManager implements ConversationManager
       // Conversation.begin(String), we need to unlock the original conversation
       // and re-schedule
       // it for termination
-      String originalCid = currentConversation.getOriginalId();
+      String originalCid = currentConversation.get().getOriginalId();
       ConversationEntry longRunningConversation = originalCid == null ? null : longRunningConversations.get(originalCid);
       if (longRunningConversation != null)
       {
          longRunningConversation.unlock();
-         longRunningConversation.reScheduleTermination(scheduleForTermination(originalCid, currentConversation.getTimeout()));
+         longRunningConversation.reScheduleTermination(scheduleForTermination(originalCid, currentConversation.get().getTimeout()));
       }
    }
 

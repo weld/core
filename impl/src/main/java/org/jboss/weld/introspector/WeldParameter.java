@@ -27,5 +27,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
  */
 public interface WeldParameter<T, X> extends WeldAnnotated<T, Object>, AnnotatedParameter<X>
 {
+   
+   public WeldCallable<?, X, ?> getDeclaringWeldCallable();
 
 }

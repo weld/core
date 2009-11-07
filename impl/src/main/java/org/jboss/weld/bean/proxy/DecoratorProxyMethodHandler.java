@@ -73,19 +73,20 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
     * 
     * @throws Throwable if the method invocation fails.
     */
+   @Override
    protected Object doInvoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
       MethodSignature methodSignature = new MethodSignatureImpl(method);
       for (SerializableContextualInstance<Decorator<Object>, Object> beanInstance : decoratorInstances)
       {
          WeldMethod<?, ?> decoratorMethod;
-         if (beanInstance.getContextual().get() instanceof DecoratorImpl)
+         if (beanInstance.getContextual().get() instanceof DecoratorImpl<?>)
          {
-            decoratorMethod = ((DecoratorImpl)beanInstance.getContextual().get()).getAnnotatedItem().getWBMethod(methodSignature);
+            decoratorMethod = ((DecoratorImpl<?>)beanInstance.getContextual().get()).getAnnotatedItem().getWeldMethod(methodSignature);
          }
          else if (beanInstance.getContextual().get() instanceof AnnotatedItemProvidingDecoratorWrapper)
          {
-            decoratorMethod = ((AnnotatedItemProvidingDecoratorWrapper)beanInstance.getContextual().get()).getAnnotatedItem().getWBMethod(methodSignature);
+            decoratorMethod = ((AnnotatedItemProvidingDecoratorWrapper)beanInstance.getContextual().get()).getAnnotatedItem().getWeldMethod(methodSignature);
          }
          else
          {

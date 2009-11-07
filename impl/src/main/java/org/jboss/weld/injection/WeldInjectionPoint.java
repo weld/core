@@ -16,12 +16,45 @@
  */
 package org.jboss.weld.injection;
 
+import java.io.Serializable;
+
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.introspector.WeldAnnotated;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.serialization.spi.ContextualStore;
 
 public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<T, S>
 {
+   
+   static abstract class WeldInjectionPointSerializationProxy<T, S> implements Serializable
+   {
+      
+      private static final long serialVersionUID = -5488095196637387378L;
+      
+      private final String declaringBeanId;
+      private final Class<?> declaringClass;
+      
+      public WeldInjectionPointSerializationProxy(WeldInjectionPoint<T, S> injectionPoint)
+      {
+         this.declaringBeanId = Container.instance().deploymentServices().get(ContextualStore.class).putIfAbsent(injectionPoint.getBean());
+         this.declaringClass = injectionPoint.getBean().getBeanClass();
+      }
+
+      protected Bean<T> getDeclaringBean()
+      {
+         return Container.instance().deploymentServices().get(ContextualStore.class).<Bean<T>, T>getContextual(declaringBeanId);
+      }
+      
+      protected WeldClass<?> getWeldClass()
+      {
+         return Container.instance().deploymentServices().get(ClassTransformer.class).loadClass(declaringClass);
+      }
+
+   }
    
    /**
     * Injects an instance

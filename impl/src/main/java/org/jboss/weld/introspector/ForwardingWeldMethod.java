@@ -44,9 +44,9 @@ public abstract class ForwardingWeldMethod<T, X> extends ForwardingWeldMember<T,
       return delegate().getParameterTypesAsArray();
    }
 
-   public List<? extends WeldParameter<?, X>> getWBParameters()
+   public List<? extends WeldParameter<?, X>> getWeldParameters()
    {
-      return delegate().getWBParameters();
+      return delegate().getWeldParameters();
    }
 
    public String getPropertyName()

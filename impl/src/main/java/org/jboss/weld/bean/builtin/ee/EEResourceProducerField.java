@@ -14,15 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bean.ee;
+package org.jboss.weld.bean.builtin.ee;
+
+import java.io.Serializable;
+
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerField;
+import org.jboss.weld.bean.builtin.CallableMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.Proxies.TypeInfo;
 import org.jboss.weld.ws.WSApiAbstraction;
 
 /**
@@ -31,6 +42,49 @@ import org.jboss.weld.ws.WSApiAbstraction;
  */
 public class EEResourceProducerField<X, T> extends ProducerField<X, T>
 {
+   
+   
+   private static class EEResourceCallable<T> extends AbstractEECallable<T>
+   {
+      
+      private static final long serialVersionUID = 6287931036073200963L;
+      
+      private final String beanId;
+      private transient T instance;
+
+      public EEResourceCallable(BeanManagerImpl beanManager, ProducerField<?, T> producerField/*, CreationalContext<T> creationalContext*/)
+      {
+         super(beanManager);
+         this.beanId = producerField.getId();
+      }
+
+      public T call() throws Exception
+      {
+         if (instance == null)
+         {
+            Contextual<T> contextual = Container.instance().deploymentServices().get(ContextualStore.class).<Contextual<T>, T>getContextual(beanId);
+            if (contextual instanceof EEResourceProducerField<?, ?>)
+            {
+               @SuppressWarnings("unchecked")
+               EEResourceProducerField<?, T> bean = (EEResourceProducerField<?, T>) contextual;
+               
+               this.instance = bean.createUnderlying(getBeanManager().createCreationalContext(bean));
+            }
+            else
+            {
+               throw new IllegalStateException("Bean is not an EE resource producer field. Bean: " + contextual);
+            }
+         }
+         return instance;
+      }
+      
+      @Override
+      public String toString()
+      {
+         return beanId;
+      }
+      
+   }
    
    /**
     * Creates an EE resource producer field
@@ -44,10 +98,31 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
    {
       return new EEResourceProducerField<X, T>(field, declaringBean, manager);
    }
+   
+   private final T proxy;
 
    protected EEResourceProducerField(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(field, declaringBean, manager);
+      try
+      {
+         if (Reflections.isFinal(field.getJavaClass()) || Serializable.class.isAssignableFrom(field.getJavaClass()))
+         {
+            this.proxy = null;
+         }
+         else
+         {
+            this.proxy = Proxies.<T>createProxy(new CallableMethodHandler(new EEResourceCallable<T>(getManager(), this)), TypeInfo.of(getTypes()).add(Serializable.class));
+         }
+      }
+      catch (InstantiationException e)
+      {
+         throw new RuntimeException("Error creating proxy for resource producer field. Field: " + this, e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new RuntimeException("Error creating proxy for resource field. Field: " + this, e);
+      }
    }
    
    @Override
@@ -70,5 +145,33 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
          throw new IllegalStateException("Tried to create an EEResourceProducerField, but no @Resource, @PersistenceContext, @PersistenceUnit, @WebServiceRef or @EJB is present " + getAnnotatedItem());
       }
    }
+   
+   @Override
+   public T create(CreationalContext<T> creationalContext)
+   {
+      if (proxy == null)
+      {
+         return createUnderlying(creationalContext);
+      }
+      else
+      {
+         return proxy;
+      }
+   }
+   
+   /**
+    * Access to the underlying producer field
+    */
+   private T createUnderlying(CreationalContext<T> creationalContext)
+   {
+      return super.create(creationalContext);
+   }
+   
+   @Override
+   public boolean isPassivationCapable()
+   {
+      return true;
+   }
+
 
 }

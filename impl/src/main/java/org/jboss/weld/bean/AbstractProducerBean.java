@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -65,6 +66,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
    
    private Producer<T> producer;
+   private boolean passivationCapable;
 
    /**
     * Constructor
@@ -152,6 +154,25 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       getDeclaringBean().initialize(environment);
       super.initialize(environment);
       checkProducerReturnType();
+      initPassivationCapable();
+   }
+   
+   private void initPassivationCapable()
+   {
+      if (getAnnotatedItem().isFinal() && !Serializable.class.isAssignableFrom(getAnnotatedItem().getJavaClass()))
+      {
+         this.passivationCapable = false;
+      }
+      else
+      {
+         this.passivationCapable = true;
+      }
+   }
+
+   @Override
+   public boolean isPassivationCapable()
+   {
+      return passivationCapable;
    }
    
    @Override
@@ -183,7 +204,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
          {
             return;
          }
-         if (!Reflections.isSerializable(instance.getClass()) && Beans.isPassivationCapableBean(injectionPoint.getBean()))
+         if (!Reflections.isSerializable(instance.getClass()) && Beans.isPassivatingScope(injectionPoint.getBean(), manager))
          {
             if (injectionPoint.getMember() instanceof Field)
             {
@@ -236,18 +257,6 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
          this.scopeType = Dependent.class;
          log.trace(USING_DEFAULT_SCOPE, this);
       }
-   }
-   
-   @Override
-   protected void initSerializable()
-   {
-      // No-op
-   }
-
-   @Override
-   public boolean isSerializable()
-   {
-      return true;
    }
    
    /**

@@ -133,7 +133,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
     */
    protected void initProducerMethodInjectableParameters()
    {
-      for (WeldParameter<?, ?> parameter : method.getWBParameters())
+      for (WeldParameter<?, ?> parameter : method.getWeldParameters())
       {
          addInjectionPoint(ParameterInjectionPoint.of(this, parameter));
       }

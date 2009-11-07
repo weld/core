@@ -35,7 +35,7 @@ public interface WeldCallable<T, X, S extends Member> extends WeldMember<T, X, S
     * @return A list of parameters. Returns an empty list if no parameters are
     *         present.
     */
-   public List<? extends WeldParameter<?, X>> getWBParameters();
+   public List<? extends WeldParameter<?, X>> getWeldParameters();
 
    /**
     * Gets the list of annotated parameters for a given annotation

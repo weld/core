@@ -18,6 +18,9 @@ package org.jboss.weld.injection;
 
 import static org.jboss.weld.injection.Exceptions.rethrowException;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -34,6 +37,7 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.introspector.ForwardingWeldMethod;
+import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 
@@ -98,7 +102,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    {
       try
       {
-         return delegate().invoke(declaringInstance, getParameterValues(getWBParameters(), null, null, manager, creationalContext));
+         return delegate().invoke(declaringInstance, getParameterValues(getWeldParameters(), null, null, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -120,7 +124,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    {
       try
       {
-         return invoke(declaringInstance, getParameterValues(getWBParameters(), annotatedParameter, parameter, manager, creationalContext));
+         return invoke(declaringInstance, getParameterValues(getWeldParameters(), annotatedParameter, parameter, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -141,7 +145,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    {
       try
       {
-         return delegate().invokeOnInstance(declaringInstance, getParameterValues(getWBParameters(), null, null, manager, creationalContext));
+         return delegate().invokeOnInstance(declaringInstance, getParameterValues(getWeldParameters(), null, null, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -171,7 +175,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    {
       try
       {
-         return invokeOnInstance(declaringInstance, getParameterValues(getWBParameters(), annotatedParameter, parameter, manager, creationalContext));
+         return invokeOnInstance(declaringInstance, getParameterValues(getWeldParameters(), annotatedParameter, parameter, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -197,9 +201,9 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    }
 
    @Override
-   public List<ParameterInjectionPoint<?, X>> getWBParameters()
+   public List<ParameterInjectionPoint<?, X>> getWeldParameters()
    {
-      final List<? extends WeldParameter<?, X>> delegate = super.getWBParameters();
+      final List<? extends WeldParameter<?, X>> delegate = super.getWeldParameters();
       return new ForwardingParameterInjectionPointList()
       {
 
@@ -291,6 +295,44 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    public Member getMember()
    {
       return getJavaMember();
+   }
+   
+   
+   // Serialization
+   
+   private Object writeReplace() throws ObjectStreamException
+   {
+      return new SerializationProxy<T>(this);
+   }
+   
+   private void readObject(ObjectInputStream stream) throws InvalidObjectException
+   {
+      throw new InvalidObjectException("Proxy required");
+   }
+   
+   private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Method>
+   {
+
+      private static final long serialVersionUID = 9181171328831559650L;
+      
+      private final MethodSignature signature;
+
+      public SerializationProxy(MethodInjectionPoint<T, ?> injectionPoint)
+      {
+         super(injectionPoint);
+         this.signature = injectionPoint.getSignature();
+      }
+      
+      private Object readResolve()
+      {
+         return MethodInjectionPoint.of(getDeclaringBean(), getWeldMethod());
+      }
+      
+      protected WeldMethod<T, ?> getWeldMethod()
+      {
+         return getWeldClass().getDeclaredWeldMethod(signature);
+      }
+      
    }
 
 }

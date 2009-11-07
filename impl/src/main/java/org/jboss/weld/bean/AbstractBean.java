@@ -101,8 +101,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    // The Bean manager
    protected BeanManagerImpl manager;
 
-   private boolean _serializable;
-
    private boolean initialized;
 
    
@@ -143,7 +141,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       log.trace(CREATING_BEAN, getType());
       initName();
       initScopeType();
-      initSerializable();
       initProxyable();
       checkDelegateInjectionPoints();
    }
@@ -490,18 +487,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    public boolean isPrimitive()
    {
       return primitive;
-   }
-
-   public boolean isSerializable()
-   {
-      // TODO WTF - why are we not caching the serializability of injection
-      // points!
-      return _serializable && checkInjectionPointsAreSerializable();
-   }
-
-   protected void initSerializable()
-   {
-      _serializable = Reflections.isSerializable(type);
    }
 
    @Override

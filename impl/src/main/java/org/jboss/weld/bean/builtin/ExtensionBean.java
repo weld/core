@@ -26,11 +26,13 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.util.Reflections;
 
 /**
  * @author pmuir
  *
  */
+// TODO Move out of built in
 public class ExtensionBean extends AbstractBuiltInBean<Extension>
 {
    
@@ -38,12 +40,14 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
    
    private final WeldClass<Extension> clazz;
    private final Extension instance;
+   private final boolean passivationCapable;
    
    public ExtensionBean(BeanManagerImpl manager, WeldClass<Extension> clazz, Extension instance)
    {
       super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
       this.clazz = clazz;
       this.instance = instance;
+      this.passivationCapable = Reflections.isSerializable(clazz.getJavaClass());
    }
 
    @Override
@@ -61,6 +65,12 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
    public boolean isProxyable()
    {
       return clazz.isProxyable();
+   }
+   
+   @Override
+   public boolean isPassivationCapable()
+   {
+      return passivationCapable;
    }
 
    public Extension create(CreationalContext<Extension> creationalContext)

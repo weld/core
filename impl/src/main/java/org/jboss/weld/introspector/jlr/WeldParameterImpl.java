@@ -151,6 +151,11 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
    {
       return declaringMember;
    }
+   
+   public WeldCallable<?, X, ?> getDeclaringWeldCallable()
+   {
+      return declaringMember;
+   }
 
    public int getPosition()
    {

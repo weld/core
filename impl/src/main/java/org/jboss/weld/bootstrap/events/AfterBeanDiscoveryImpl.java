@@ -59,7 +59,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
    public void addBean(Bean<?> bean)
    {
       BeanManagerImpl beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
-      if (bean instanceof Interceptor)
+      if (bean instanceof Interceptor<?>)
       {
          beanManager.addInterceptor((Interceptor<?>) bean);
       }

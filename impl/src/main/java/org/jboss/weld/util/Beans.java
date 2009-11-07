@@ -29,6 +29,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.FOUND_PRE_DESTROY_METH
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,8 +54,8 @@ import javax.inject.Inject;
 import org.jboss.interceptor.model.InterceptionType;
 import org.jboss.interceptor.model.InterceptionTypeRegistry;
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.Container;
 import org.jboss.weld.DefinitionException;
-import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -124,13 +125,9 @@ public class Beans
     */
    public static boolean isPassivationCapableBean(Bean<?> bean)
    {
-      if (bean instanceof SessionBean<?>)
+      if (bean instanceof RIBean<?>)
       {
-         return ((SessionBean<?>) bean).getEjbDescriptor().isStateful();
-      }
-      else if (bean instanceof AbstractProducerBean<?, ?, ?>)
-      {
-         return Reflections.isSerializable(((AbstractProducerBean<?, ?, ?>) bean).getType());
+         return ((RIBean<?>) bean).isPassivationCapable();
       }
       else
       {
@@ -394,7 +391,7 @@ public class Beans
    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, WeldConstructor<?> constructor)
    {
       Set<ParameterInjectionPoint<?,?>> injectionPoints = new HashSet<ParameterInjectionPoint<?,?>>();
-      for (WeldParameter<?, ?> parameter : constructor.getWBParameters())
+      for (WeldParameter<?, ?> parameter : constructor.getWeldParameters())
       {
          injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
       }
@@ -404,7 +401,7 @@ public class Beans
    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, MethodInjectionPoint<?, ?> method)
    {
       Set<ParameterInjectionPoint<?,?>> injectionPoints = new HashSet<ParameterInjectionPoint<?,?>>();
-      for (WeldParameter<?, ?> parameter : method.getWBParameters())
+      for (WeldParameter<?, ?> parameter : method.getWeldParameters())
       {
          injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
       }
@@ -418,7 +415,7 @@ public class Beans
       {
          for (MethodInjectionPoint<?, ?> method : i)
          {
-            for (WeldParameter<?, ?> parameter : method.getWBParameters())
+            for (WeldParameter<?, ?> parameter : method.getWeldParameters())
             {
                injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
             }
@@ -750,6 +747,27 @@ public class Beans
    public static <T> boolean isDecorator(WeldClass<T> annotatedItem)
    {
       return annotatedItem.isAnnotationPresent(Decorator.class);
+   }
+   
+   public static Annotation[] mergeInQualifiers(Annotation[] qualifiers, Annotation[] newQualifiers)
+   {
+      Set<Annotation> result = new HashSet<Annotation>();
+      result.addAll(Arrays.asList(qualifiers));
+      Set<Annotation> checkedNewQualifiers = new HashSet<Annotation>();
+      for (Annotation qualifier : newQualifiers)
+      {
+         if (!Container.instance().deploymentServices().get(MetaAnnotationStore.class).getBindingTypeModel(qualifier.annotationType()).isValid())
+         {
+            throw new IllegalArgumentException("Annotation is not a qualifier. Qualifier: " + qualifier);
+         }
+         if (checkedNewQualifiers.contains(qualifier))
+         {
+            throw new IllegalArgumentException("Qualifier is already present. Qualifier: " + qualifier + "; All qualifiers: " + Arrays.asList(newQualifiers));
+         }
+         checkedNewQualifiers.add(qualifier);
+      }
+      result.addAll(checkedNewQualifiers);
+      return result.toArray(Reflections.EMPTY_ANNOTATIONS);
    }
 
    public static InjectionPoint getDelegateInjectionPoint(javax.enterprise.inject.spi.Decorator<?> decorator)
