@@ -163,12 +163,12 @@ version=1</content>
                <prompt>${project.artifactId}</prompt>
                <!-- userAliases are for cli:execute-phase -->
                <userAliases>
-                  <runjetty>compile org.mortbay.jetty:maven-jetty-plugin:run</runjetty>
-                  <stopjetty>org.mortbay.jetty:maven-jetty-plugin:stop</stopjetty>
-                  <runtomcat>compile org.apache.maven.plugins:maven-war-plugin:inplace org.codehaus.mojo:tomcat-maven-plugin:run</runtomcat>
+                  <runjetty>compile org.mortbay.jetty:maven-jetty-plugin:run -Pjetty</runjetty>
+                  <stopjetty>org.mortbay.jetty:maven-jetty-plugin:stop -Pjetty</stopjetty>
+                  <runtomcat>compile org.apache.maven.plugins:maven-war-plugin:inplace org.codehaus.mojo:tomcat-maven-plugin:run -Ptomcat</runtomcat>
                   <explode>compile -o</explode>
                   <!-- tomcat requires use of war:inplace -->
-                  <tcexplode>compile org.apache.maven.plugins:maven-war-plugin:inplace -o</tcexplode>
+                  <tcexplode>compile org.apache.maven.plugins:maven-war-plugin:inplace -Ptomcat -o</tcexplode>
                   <restart>org.apache.maven.plugins:maven-antrun-plugin:run -Prestart-embedded</restart>
                   <profiles>org.apache.maven.plugins:maven-help-plugin:active-profiles -o</profiles>
                   <pom>org.apache.maven.plugins:maven-help-plugin:effective-pom -o</pom>
