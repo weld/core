@@ -18,8 +18,8 @@ package org.jboss.weld.bean;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
 import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_INJECTION_POINT_NOT_FOUND;
+import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -296,7 +296,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).isPassivating();
       if (passivating && !Reflections.isSerializable(getBeanClass()))
       {
-         throw new DefinitionException("Simple bean declaring a passivating scope must have a serializable implementation class " + toString());
+         throw new DefinitionException("Managed bean declaring a passivating scope must have a serializable implementation class. Bean: " + toString());
       }
       if (hasDecorators())
       {
