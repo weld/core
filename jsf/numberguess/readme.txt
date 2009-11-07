@@ -52,9 +52,9 @@ In both cases, you can access the application at the following local URL
 
  http://localhost:9090/weld-numberguess
 
-In both cases, any changes to assets in src/main/webapp take effect immediately. If
-a change to a webapp configuration file is made, the application may
-automatically redeploy. The redeploy behavior can be fined tuned in the plugin
+In both cases, any changes to assets in src/main/webapp take effect immediately.
+If a change to a webapp configuration file is made, the application may
+automatically redeploy. The redeploy behavior can be fine-tuned in the plugin
 configuration (at least for Jetty). If you make a change to a classpath
 resource, you need to execute a build:
 
@@ -130,3 +130,4 @@ Next, put all the needed resources into the src/main/webapp
 
 Now, in Eclipse, you can either run the app locally, or deploy it to Google App Engine.
 
+vim:tw=80
