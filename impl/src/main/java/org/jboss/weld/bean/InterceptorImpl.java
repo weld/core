@@ -18,8 +18,8 @@
 package org.jboss.weld.bean;
 
 import java.lang.annotation.Annotation;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
@@ -30,8 +30,8 @@ import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
 import org.jboss.interceptor.registry.InterceptorClassMetadataRegistry;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DeploymentException;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.util.Beans;
 
 /**
  * @author Marius Bogoevici
@@ -64,7 +64,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
    public static <T> InterceptorImpl<T> of(WeldClass<T> type, BeanManagerImpl manager)
    {
-      return new InterceptorImpl(type, manager);
+      return new InterceptorImpl<T>(type, manager);
    }
 
    public Set<Annotation> getInterceptorBindings()
