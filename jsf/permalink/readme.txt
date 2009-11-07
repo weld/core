@@ -25,11 +25,11 @@ You can also execute the application in an embedded Tomcat 6 container:
 
  mvn war:inplace tomcat:run
 
-In both cases, any changes to assets in src/main/webapp take effect
-immediately. If a change to a webapp configuration file is made, the
-application may automatically redeploy. The redeploy behavior can be fined
-tuned in the plugin configuration (at least for Jetty). If you make a change
-to a classpath resource, you need to execute a build:
+In both cases, any changes to assets in src/main/webapp take effect immediately.
+If a change to a webapp configuration file is made, the application may
+automatically redeploy. The redeploy behavior can be fine-tuned in the plugin
+configuration (at least for Jetty). If you make a change to a classpath
+resource, you need to execute a build:
 
  mvn compile war:inplace
 
@@ -91,8 +91,10 @@ You could also prepare the Eclipse project before hand, then import the project
 into Eclipse. First, transform the pom.xml into an m2eclipse Eclipse project
 using this command:
 
-  mvn eclipse:m2eclipse
+ mvn eclipse:m2eclipse
 
 Now go into Eclipse an import the project by selecting "Existing projects into
 workspace" and selecting the project folder. Both approaches use the Eclipse
 project configuration defined in the pom.xml file.
+
+vim:tw=80
