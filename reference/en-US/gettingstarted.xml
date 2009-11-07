@@ -505,7 +505,7 @@ $> mvn war:inplace jetty:run -Pjetty]]></programlisting>
 
       <para>
          Any changes to assets in src/main/webapp take effect immediately. If a change to a webapp configuration file is
-         made, the application may automatically redeploy. The redeploy behavior can be fined tuned in the plugin
+         made, the application may automatically redeploy. The redeploy behavior can be fine-tuned in the plugin
          configuration. If you make a change to a classpath resource, you need to execute a build and the inplace goal
          of the Maven WAR plugin, again with the jetty profile enabled.
       </para>
