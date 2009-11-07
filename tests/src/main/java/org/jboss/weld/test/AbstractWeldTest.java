@@ -119,10 +119,10 @@ public abstract class AbstractWeldTest extends AbstractTest
       return bytes.toByteArray();
    }
 
-   protected Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException
+   protected <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException
    {
       ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-      return in.readObject();
+      return (T) in.readObject();
    }
 
    protected BeanManagerImpl getCurrentManager()
