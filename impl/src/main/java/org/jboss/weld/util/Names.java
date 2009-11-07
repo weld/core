@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -162,22 +163,7 @@ public class Names
       return modifiers;
    }
 
-   /**
-    * Gets a string representation from an array of annotations
-    * 
-    * @param annotations The annotations
-    * @return The string representation
-    */
-   private static String annotationsToString(Annotation[] annotations)
-   {
-      StringBuilder buffer = new StringBuilder();
-      for (Annotation annotation : annotations)
-      {
-         buffer.append("@" + annotation.annotationType().getSimpleName());
-         buffer.append(" ");
-      }
-      return buffer.toString();
-   }
+
 
    /**
     * Gets a string representation from a field
@@ -315,22 +301,33 @@ public class Names
       return buffer.toString();
    }
    
-   public static String annotationsToString(Set<Annotation> annotations)
+   public static String annotationsToString(Iterable<Annotation> annotations)
    {
-      StringBuilder buffer = new StringBuilder();
+      StringBuilder builder = new StringBuilder();
       int i = 0;
-      buffer.append("[");
+      builder.append("[");
       for (Annotation annotation : annotations)
       {
          if (i > 0)
          {
-            buffer.append(", ");
+            builder.append(", ");
          }
-         buffer.append("@").append(annotation.annotationType().getSimpleName());
+         builder.append("@").append(annotation.annotationType().getSimpleName());
          i++;
       }
-      buffer.append("]");
-      return buffer.toString();
+      builder.append("]");
+      return builder.toString();
+   }
+   
+   /**
+    * Gets a string representation from an array of annotations
+    * 
+    * @param annotations The annotations
+    * @return The string representation
+    */
+   public static String annotationsToString(Annotation[] annotations)
+   {
+      return annotationsToString(Arrays.asList(annotations));
    }
    
    public static String version(Package pkg)
