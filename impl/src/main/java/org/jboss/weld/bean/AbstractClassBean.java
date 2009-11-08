@@ -18,9 +18,13 @@ package org.jboss.weld.bean;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
+import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.ONLY_ONE_SCOPE_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
 
@@ -54,9 +58,6 @@ import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
 import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.WeldException;
-import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
-import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.context.SerializableContextualImpl;
 import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.SerializableContextualImpl;
@@ -293,7 +294,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          }
          else if (scopeTypes.size() > 1)
          {
-            throw new DefinitionException("At most one scope may be specified on " + getAnnotatedItem());
+            throw new DefinitionException(ONLY_ONE_SCOPE_ALLOWED, getAnnotatedItem());
          }
       }
 
@@ -320,7 +321,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       super.preSpecialize(environment);
       if (getAnnotatedItem().getWeldSuperclass() == null || getAnnotatedItem().getWeldSuperclass().getJavaClass().equals(Object.class))
       {
-         throw new DefinitionException("Specializing bean must extend another bean " + toString());
+         throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
       }
    }
 
@@ -441,7 +442,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          if (classBindingAnnotations.size() > 0)
          {
             if (Beans.findInterceptorBindingConflicts(manager, classBindingAnnotations))
-               throw new DeploymentException("Conflicting interceptor bindings found on " + getType());
+               throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType());
 
             Annotation[] classBindingAnnotationsArray = classBindingAnnotations.toArray(new Annotation[0]);
 
@@ -466,7 +467,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             if (methodBindingAnnotations.size() > 0)
             {
                if (Beans.findInterceptorBindingConflicts(manager, classBindingAnnotations))
-                  throw new DeploymentException("Conflicting interceptor bindings found on " + getType() + "." + method.getName() + "()");
+                  throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType() + "." + method.getName() + "()");
 
                if (method.isAnnotationPresent(manager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
                {
@@ -517,7 +518,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
           }
           catch (Exception e)
           {
-             throw new RuntimeException("Unable to invoke " + preDestroy + " on " + instance, e);
+             throw new WeldException(INVOCATION_ERROR, e, preDestroy, instance);
           }
        }
    }
@@ -533,7 +534,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
           }
           catch (Exception e)
           {
-             throw new RuntimeException("Unable to invoke " + postConstruct + " on " + instance, e);
+             throw new WeldException(INVOCATION_ERROR, e, postConstruct, instance);
           }
        }
    }

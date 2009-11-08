@@ -16,6 +16,9 @@
  */
 package org.jboss.weld;
 
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import ch.qos.cal10n.IMessageConveyor;
+
 /**
  * Thrown if an deployment exception occurs.
  * 
@@ -25,9 +28,22 @@ public class DeploymentException extends RuntimeException
 {
    private static final long serialVersionUID = 8014646336322875707L;
 
+   // Exception messages
+   private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
+
    public DeploymentException()
    {
       super();
+   }
+
+   public <E extends Enum<?>> DeploymentException(E key, Object... args)
+   {
+      super(messageConveyer.getMessage(key, args));
+   }
+
+   public <E extends Enum<?>> DeploymentException(E key, Throwable throwable, Object... args)
+   {
+      super(messageConveyer.getMessage(key, args), throwable);
    }
 
    public DeploymentException(String message, Throwable throwable)
