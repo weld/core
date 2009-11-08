@@ -16,9 +16,12 @@
  */
 package org.jboss.weld.bean.builtin.ee;
 
+import static org.jboss.weld.logging.messages.BeanMessage.TRANSACTION_SERVICES_NOT_AVAILABLE;
+
 import javax.transaction.UserTransaction;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
 /**
@@ -46,7 +49,7 @@ public class UserTransactionBean extends AbstractEEBean<UserTransaction>
          }
          else
          {
-            throw new IllegalStateException("TransactionServices not available");
+            throw new ForbiddenStateException(TRANSACTION_SERVICES_NOT_AVAILABLE);
          }
       }
       

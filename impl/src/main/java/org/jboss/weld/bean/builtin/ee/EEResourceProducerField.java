@@ -16,12 +16,15 @@
  */
 package org.jboss.weld.bean.builtin.ee;
 
+import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
+
 import java.io.Serializable;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerField;
@@ -142,7 +145,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
       WSApiAbstraction wsApiAbstraction = manager.getServices().get(WSApiAbstraction.class);
       if (!(getAnnotatedItem().isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || getAnnotatedItem().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS) || getAnnotatedItem().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || getAnnotatedItem().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)) || getAnnotatedItem().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS))
       {
-         throw new IllegalStateException("Tried to create an EEResourceProducerField, but no @Resource, @PersistenceContext, @PersistenceUnit, @WebServiceRef or @EJB is present " + getAnnotatedItem());
+         throw new ForbiddenStateException(INVALID_RESOURCE_PRODUCER_FIELD, getAnnotatedItem());
       }
    }
    

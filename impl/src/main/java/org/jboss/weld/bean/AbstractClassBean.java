@@ -18,6 +18,9 @@ package org.jboss.weld.bean;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
 
@@ -49,6 +52,11 @@ import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
+import org.jboss.weld.ForbiddenStateException;
+import org.jboss.weld.WeldException;
+import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
+import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.context.SerializableContextualImpl;
 import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.SerializableContextualImpl;
@@ -198,7 +206,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             ip = Beans.getDelegateInjectionPoint(decorator);
             if (ip == null)
             {
-               throw new IllegalStateException("Cannot operate on non container provided decorator " + decorator);
+               throw new ForbiddenStateException(NON_CONTAINER_DECORATOR, decorator);
             }
          }
       }
@@ -220,11 +228,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       }
       catch (InstantiationException e)
       {
-         throw new RuntimeException("Could not instantiate decorator proxy for " + toString(), e);
+         throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
       }
       catch (IllegalAccessException e)
       {
-         throw new RuntimeException("Could not access bean correctly when creating decorator proxy for " + toString(), e);
+         throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
       }
       finally
       {

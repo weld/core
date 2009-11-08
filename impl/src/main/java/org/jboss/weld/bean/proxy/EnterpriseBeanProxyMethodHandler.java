@@ -20,6 +20,7 @@ import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.CALL_PROXIED_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.CREATED_SESSION_BEAN_PROXY;
+import static org.jboss.weld.logging.messages.BeanMessage.INVALID_REMOVE_METHOD_INVOCATION;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -29,6 +30,7 @@ import javassist.util.proxy.MethodHandler;
 
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.weld.InvalidOperationException;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.introspector.MethodSignature;
@@ -112,7 +114,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
          MethodSignature methodSignature = new MethodSignatureImpl(method);
          if (removeMethodSignatures.contains(methodSignature))
          {
-            throw new UnsupportedOperationException("Cannot call EJB remove method directly on non-dependent scoped bean " + method );
+            throw new InvalidOperationException(INVALID_REMOVE_METHOD_INVOCATION, method );
          }
       }
       Class<?> businessInterface = getBusinessInterface(method);

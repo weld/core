@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import static org.jboss.weld.logging.messages.BeanMessage.TYPE_PARAMETER_MUST_BE_CONCRETE;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -25,6 +27,7 @@ import java.util.Arrays;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.ForbiddenStateException;
 
 /**
  * Common implementation for binding-type-based helpers
@@ -45,7 +48,7 @@ public abstract class AbstractFacade<T, X>
       }
       else
       {
-         throw new IllegalStateException("Must have concrete type argument " + injectionPoint);
+         throw new ForbiddenStateException(TYPE_PARAMETER_MUST_BE_CONCRETE, injectionPoint);
       }
    }
 

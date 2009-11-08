@@ -19,7 +19,11 @@ package org.jboss.weld.bean;
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.CREATING_BEAN;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_NOT_ON_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_SCOPES_FOUND_FROM_STEREOTYPES;
+import static org.jboss.weld.logging.messages.BeanMessage.NAME_NOT_ALLOWED_ON_SPECIALIZATION;
 import static org.jboss.weld.logging.messages.BeanMessage.QUALIFIERS_USED;
+import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_NAME;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_QUALIFIER;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
@@ -154,7 +158,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    {
       if (this.delegateInjectionPoints.size() > 0)
       {
-         throw new DefinitionException("Cannot place @Decorates at an injection point which is not on a Decorator " + this);
+         throw new DefinitionException(DELEGATE_NOT_ON_DECORATOR, this);
       }
    }
    
@@ -210,7 +214,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       {
          if (!typeClosure.containsKey(specifiedClass))
          {
-            throw new DefinitionException("@Typed class " + specifiedClass.getName() + " is not present in the type hierarchy " + rawType);
+            throw new DefinitionException(TYPED_CLASS_NOT_IN_HIERARCHY, specifiedClass.getName(), rawType);
          }
          else
          {
@@ -337,7 +341,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       }
       else if (possibleScopeTypes.size() > 1)
       {
-         throw new DefinitionException("All stereotypes must specify the same scope OR a scope must be specified on " + getAnnotatedItem());
+         throw new DefinitionException(MULTIPLE_SCOPES_FOUND_FROM_STEREOTYPES, getAnnotatedItem());
       }
       else
       {
@@ -349,7 +353,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    {
       if (getAnnotatedItem().isAnnotationPresent(Named.class) && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
       {
-         throw new DefinitionException("Cannot put name on specializing and specialized class " + getAnnotatedItem());
+         throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getAnnotatedItem());
       }
       this.bindings.addAll(getSpecializedBean().getQualifiers());
       if (isSpecializing() && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))

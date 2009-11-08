@@ -16,10 +16,13 @@
  */
 package org.jboss.weld.bean.builtin.ee;
 
+import static org.jboss.weld.logging.messages.BeanMessage.VALIDATION_SERVICE_NOT_AVAILABLE;
+
 import javax.validation.Validator;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.validation.spi.ValidationServices;
 
 /**
@@ -47,7 +50,7 @@ public class DefaultValidatorBean extends AbstractEEBean<Validator>
          }
          else
          {
-            throw new IllegalStateException("ValidationServices not available");
+            throw new ForbiddenStateException(VALIDATION_SERVICE_NOT_AVAILABLE);
          }
       }
       

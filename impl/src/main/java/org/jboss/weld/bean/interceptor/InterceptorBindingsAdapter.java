@@ -17,17 +17,24 @@
 
 package org.jboss.weld.bean.interceptor;
 
+import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_MODEL_NULL;
+import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_LIFECYCLE;
+import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_NOT_LIFECYCLE;
+import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_NULL;
+import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NULL;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ArrayList;
-import java.lang.reflect.Method;
 
-import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.InterceptionType;
+import javax.enterprise.inject.spi.Interceptor;
 
+import org.jboss.interceptor.model.InterceptionModel;
+import org.jboss.weld.ForbiddenArgumentException;
 import org.jboss.weld.ejb.spi.InterceptorBindings;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
-import org.jboss.interceptor.model.InterceptionModel;
 
 /**
  * @author Marius Bogoevici
@@ -41,7 +48,7 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
    {
       if (interceptionModel == null)
       {
-         throw new IllegalArgumentException("Interception model must not be null");
+         throw new ForbiddenArgumentException(INTERCEPTION_MODEL_NULL);
       }
       this.interceptionModel = interceptionModel;
    }
@@ -56,19 +63,19 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
    {
       if (interceptionType == null)
       {
-         throw new IllegalArgumentException("InterceptionType must not be null");
+         throw new ForbiddenArgumentException(INTERCEPTION_TYPE_NULL);
       }
 
       if (method == null)
       {
-         throw new IllegalArgumentException("Method must not be null");
+         throw new ForbiddenArgumentException(METHOD_NULL);
       }
 
       org.jboss.interceptor.model.InterceptionType internalInterceptionType = org.jboss.interceptor.model.InterceptionType.valueOf(interceptionType.name());
 
       if (internalInterceptionType.isLifecycleCallback())
       {
-         throw new IllegalArgumentException("Interception type must not be lifecycle, but it is " + interceptionType.name());
+         throw new ForbiddenArgumentException(INTERCEPTION_TYPE_LIFECYCLE, interceptionType.name());
       }
 
       return toInterceptorList(interceptionModel.getInterceptors(internalInterceptionType, method));
@@ -79,14 +86,14 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
    {
       if (interceptionType == null)
       {
-         throw new IllegalArgumentException("InterceptionType must not be null");
+         throw new ForbiddenArgumentException(INTERCEPTION_TYPE_NULL);
       }
 
       org.jboss.interceptor.model.InterceptionType internalInterceptionType = org.jboss.interceptor.model.InterceptionType.valueOf(interceptionType.name());
 
       if (!internalInterceptionType.isLifecycleCallback())
       {
-         throw new IllegalArgumentException("Interception type must be lifecycle, but it is " + interceptionType.name());
+         throw new ForbiddenArgumentException(INTERCEPTION_TYPE_NOT_LIFECYCLE, interceptionType.name());
       }
 
       return toInterceptorList(interceptionModel.getInterceptors(internalInterceptionType, null));

@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.weld.logging.messages.BeanMessage.BEAN_ID_CREATION_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+
 import java.io.Serializable;
 import java.util.concurrent.Callable;
 
@@ -24,6 +27,8 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.DefinitionException;
+import org.jboss.weld.WeldException;
+import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
@@ -76,11 +81,11 @@ public class ClientProxyProvider
       }
       catch (InstantiationException e)
       {
-         throw new RuntimeException("Could not instantiate client proxy for " + bean, e);
+         throw new WeldException(PROXY_INSTANTIATION_FAILED, e, bean);
       }
       catch (IllegalAccessException e)
       {
-         throw new RuntimeException("Could not access bean correctly when creating client proxy for " + bean, e);
+         throw new WeldException(BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, bean);
       }
    }
 
@@ -103,7 +108,7 @@ public class ClientProxyProvider
             String id = Container.instance().deploymentServices().get(ContextualStore.class).putIfAbsent(bean);
             if (id == null)
             {
-               throw new DefinitionException("There was an error creating an id for " + bean);
+               throw new DefinitionException(BEAN_ID_CREATION_FAILED, bean);
             }
             return createClientProxy(bean, manager, id);
          }
