@@ -22,7 +22,7 @@
 public class TransactionInterceptor {
    @Resource Transaction transaction;
 
-   @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }
+   @AroundInvoke public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
 }]]></programlisting>
 
       <programlisting role="JAVA"><![CDATA[@SessionScoped

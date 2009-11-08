@@ -35,7 +35,7 @@
    </para>
   
    <programlisting role="JAVA"><![CDATA[public class TransactionInterceptor {
-   @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }
+   @AroundInvoke public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
 }]]></programlisting>
   
    <para>
@@ -92,7 +92,7 @@ public class ShoppingCart { ... }]]></programlisting>
 
       <programlisting role="JAVA"><![CDATA[@Transactional @Interceptor
 public class TransactionInterceptor {
-   @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }
+   @AroundInvoke public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
 }]]></programlisting>
 
       <para>
@@ -105,7 +105,7 @@ public class TransactionInterceptor {
 
     @Resource Transaction transaction;
 
-    @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }
+    @AroundInvoke public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
     
 }]]></programlisting>
 
@@ -194,7 +194,7 @@ public @interface Transactional {
 
       <programlisting role="JAVA"><![CDATA[@Transactional(requiresNew = true) @Interceptor
 public class RequiresNewTransactionInterceptor {
-   @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }
+   @AroundInvoke public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
 }]]></programlisting>
 
       <para>
