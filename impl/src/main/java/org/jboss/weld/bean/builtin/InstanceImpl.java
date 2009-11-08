@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.Reflections.EMPTY_ANNOTATIONS;
 
-import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -35,6 +35,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.InvalidObjectException;
 import org.jboss.weld.resolution.ResolvableWeldClass;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Names;
@@ -152,7 +153,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    
    private void readObject(ObjectInputStream stream) throws InvalidObjectException
    {
-      throw new InvalidObjectException("Proxy required");
+      throw new InvalidObjectException(PROXY_REQUIRED);
    }
    
    private static class SerializationProxy extends AbstractFacadeSerializationProxy

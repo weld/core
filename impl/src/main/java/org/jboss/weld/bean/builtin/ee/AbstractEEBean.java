@@ -1,5 +1,8 @@
 package org.jboss.weld.bean.builtin.ee;
 
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -35,11 +38,11 @@ public abstract class AbstractEEBean<T> extends AbstractBuiltInBean<T>
       }
       catch (InstantiationException e)
       {
-         throw new DefinitionException("Could not instantiate client proxy for " + this, e);
+         throw new DefinitionException(PROXY_INSTANTIATION_FAILED, e, this);
       }
       catch (IllegalAccessException e)
       {
-         throw new DefinitionException("Could not access bean correctly when creating client proxy for " + this, e);
+         throw new DefinitionException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
       }
    }
 

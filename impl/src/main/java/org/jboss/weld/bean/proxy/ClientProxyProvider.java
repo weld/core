@@ -17,6 +17,7 @@
 package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_ID_CREATION_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 
 import java.io.Serializable;
@@ -85,7 +86,7 @@ public class ClientProxyProvider
       }
       catch (IllegalAccessException e)
       {
-         throw new WeldException(BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, bean);
+         throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, bean);
       }
    }
 

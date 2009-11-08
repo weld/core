@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.bean.builtin.ee;
 
+import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 
 import java.io.Serializable;
 
@@ -24,14 +27,16 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.Container;
+import org.jboss.weld.ForbiddenStateException;
+import org.jboss.weld.WeldException;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.builtin.CallableMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies;
@@ -75,7 +80,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
             }
             else
             {
-               throw new IllegalStateException("Bean is not an EE resource producer field. Bean: " + contextual);
+               throw new ForbiddenStateException(BEAN_NOT_EE_RESOURCE_PRODUCER, contextual);
             }
          }
          return instance;
@@ -120,11 +125,11 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
       }
       catch (InstantiationException e)
       {
-         throw new RuntimeException("Error creating proxy for resource producer field. Field: " + this, e);
+         throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
       }
       catch (IllegalAccessException e)
       {
-         throw new RuntimeException("Error creating proxy for resource field. Field: " + this, e);
+         throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
       }
    }
    

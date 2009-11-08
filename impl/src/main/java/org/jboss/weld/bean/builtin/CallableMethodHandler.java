@@ -3,6 +3,7 @@ package org.jboss.weld.bean.builtin;
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.CALL_PROXIED_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.NULL_INSTANCE;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -11,6 +12,7 @@ import java.util.concurrent.Callable;
 
 import javassist.util.proxy.MethodHandler;
 
+import org.jboss.weld.NullInstanceException;
 import org.slf4j.cal10n.LocLogger;
 
 public class CallableMethodHandler implements MethodHandler, Serializable
@@ -37,7 +39,7 @@ public class CallableMethodHandler implements MethodHandler, Serializable
       Object instance = callable.call();
       if (instance == null)
       {
-         throw new NullPointerException("Unable to obtain instance. Bean: " + callable);
+         throw new NullInstanceException(NULL_INSTANCE, callable);
       }
       try
       {
