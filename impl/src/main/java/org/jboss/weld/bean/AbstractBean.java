@@ -221,6 +221,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
             types.add(typeClosure.get(specifiedClass));
          }
       }
+      types.add(Object.class);
       return types;
    }
 
