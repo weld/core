@@ -1034,6 +1034,13 @@ public class Game implements Serializable {
                that allow the project to compile. You're now ready to develop!
             </para>
 
+            <note>
+               <para>
+                  You are also advised to uncheck the box "Skip Maven compiler when processing resources" in the Maven
+                  properties screen because of conflicts with the Maven enforcer plugin.
+               </para>
+            </note>
+
             <para>
                If you are not using the m2eclipse plugin, you have to follow different steps to import the project.
                First, switch into the Wicket numberguess example, then execute the Maven Eclipse plugin with the jetty
@@ -1069,7 +1076,7 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
                in the <literal>Start</literal> class.  So running the example is as simple as right-clicking on that
                Start class in <literal>src/test/java</literal> in the <emphasis>Package Explorer</emphasis> and choosing
                <emphasis>Run as Java Application</emphasis>. You should see console output related to Jetty starting up;
-               then visit able <literal>http://localhost:8080</literal> to view the app. To debug choose <emphasis>Debug
+               then visit able <literal>http://localhost:9090</literal> to view the app. To debug choose <emphasis>Debug
                as Java Application</emphasis> instead.
             </para>
          </section>
@@ -1091,7 +1098,7 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
 
             <para>
                to deploy the example to Tomcat. You can then access application at
-               <literal>http://localhost:8080/weld-numberguess-wicket</literal>.
+               <literal>http://localhost:9090/weld-numberguess-wicket</literal>.
             </para>
 
             <para>
