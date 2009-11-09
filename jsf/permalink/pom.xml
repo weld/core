@@ -102,6 +102,7 @@
                      <!-- clean up files from war:inplace -->
                      <directory>${webapp.directory}</directory>
                      <includes>
+                        <include>META-INF/**</include>
                         <include>WEB-INF/classes/**</include>
                         <include>WEB-INF/lib/**</include>
                      </includes>
