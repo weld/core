@@ -21,12 +21,10 @@
  */
 package org.jboss.weld.examples.permalink;
 
-import javax.faces.context.FacesContext;
+import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
-
-import javax.enterprise.inject.stereotype.Model;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * @author Dan Allen

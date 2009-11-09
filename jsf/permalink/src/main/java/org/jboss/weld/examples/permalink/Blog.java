@@ -26,15 +26,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.inject.stereotype.Model;
+import javax.enterprise.inject.Model;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * @author Dan Allen
  */
-public
 @Model
+public
+
 class Blog
 {
    private static final int PAGE_SIZE = 3;
