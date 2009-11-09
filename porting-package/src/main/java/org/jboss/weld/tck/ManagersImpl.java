@@ -37,7 +37,7 @@ public class ManagersImpl implements Managers
       }
    }
 
-   public boolean isDeploymentError(org.jboss.testharness.api.DeploymentException deploymentException)
+   public boolean isDeploymentProblem(org.jboss.testharness.api.DeploymentException deploymentException)
    {
       return isDeploymentException(deploymentException.getCause());
    }
