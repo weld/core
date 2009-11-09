@@ -22,7 +22,7 @@ AS by default:
 
  mvn package
 
-Just copy target/weld-permalink.war to the JBoss AS deploy directory.  Open this
+Just copy target/weld-permalink.war to the JBoss AS deploy directory. Open this
 local URL to access the running application:
 
  http://localhost:8080/weld-permalink
@@ -61,7 +61,7 @@ Note that war:inplace copies the compiled classes and JARs inside
 src/main/webapp, under WEB-INF/classes and WEB-INF/lib, respectively, mixing
 source and compiled files. However, the build does work around these temporary
 files by excluding them from the packaged WAR and cleaning them during the Maven
-clean phase.  These folders are also ignored by SVN.
+clean phase. These folders are also ignored by SVN.
 
 == Deploying to standalone Tomcat
 
