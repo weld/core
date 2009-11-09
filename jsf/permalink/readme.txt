@@ -15,6 +15,20 @@ the build.
 
 Now you are ready to deploy.
 
+== Deploying to JBoss AS
+
+If you run a normal Maven build, the artifact it produces is deployable to JBoss
+AS by default:
+
+ mvn package
+
+Just copy target/weld-permalink.war to the JBoss AS deploy directory.  Open this
+local URL to access the running application:
+
+ http://localhost:8080/weld-permalink
+
+But you may want to take advantage of the embedded servlet containers.
+
 == Deploying with an embedded servlet container
 
 Run this command to execute the application in an embedded Jetty 6 container:
@@ -24,6 +38,10 @@ Run this command to execute the application in an embedded Jetty 6 container:
 You can also execute the application in an embedded Tomcat 6 container:
 
  mvn war:inplace tomcat:run -Ptomcat
+
+You can access the application for either container at the following local URL:
+
+ http://localhost:9090/weld-permalink
 
 In both cases, any changes to assets in src/main/webapp take effect immediately.
 If a change to a webapp configuration file is made, the application may
@@ -80,6 +98,10 @@ But likely you want to run one or more build goals first before you redeploy:
  mvn compile tomcat:redeploy -Ptomcat
  mvn war:exploded tomcat:redeploy -Ptomcat
  mvn compile war:exploded tomcat:redeploy -Ptomcat
+
+The application is available at the following local URL:
+
+ http://localhost:8080/weld-permalink
 
 = Importing the project into Eclipse
 
