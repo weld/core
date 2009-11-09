@@ -19,6 +19,18 @@
       <packages>
          <package name="org.jboss.jsr299.tck.tests.*" />
       </packages>
+      <classes>
+         <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.interceptorWithNonPassivatingInjectedField.PassivationCapableBeanWithNonPassivatingInterceptorTest">
+            <methods>
+               <exclude name="testPassivationCapableBeanWithNonPassivatingInterceptorFails" />
+            </methods>   
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.managedBeanWithNonSerializableInterceptorClass.ManagedBeanWithNonSerializableInterceptorClassTest">
+            <methods>
+               <exclude name="testManagedBeanWithNonSerializableInterceptorClassNotOK" />
+            </methods>
+         </class>
+      </classes>
    </test>
    
 </suite>
