@@ -41,6 +41,10 @@ You can also execute the application in an embedded Tomcat 6 container:
 
  mvn war:inplace tomcat:run -Ptomcat
 
+**Note that war:inplace overwrites src/main/webapp/WEB-INF/web.xml, effectively
+adding the Weld listener. You need to manually remove the listener before
+deploying to another container.
+
 You can access the application for either container at the following local URL:
 
  http://localhost:9090/weld-permalink
