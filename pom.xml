@@ -9,7 +9,7 @@
    <parent>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-parent</artifactId>
-      <version>4</version>
+      <version>6</version>
    </parent>
 
    <name>Weld Build Aggregator</name>

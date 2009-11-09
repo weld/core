@@ -337,7 +337,16 @@ public class Names
          String version = pkg.getImplementationVersion();
          if (version != null)
          {
-            return new StringBuilder().append(version.substring(0, version.lastIndexOf("-"))).append(" (").append(version.substring(version.lastIndexOf("-") + 1)).append(")").toString();
+            String separator = null;
+            if (version.indexOf("-") > 0)
+            {
+               separator = "-";
+            }
+            else
+            {
+               separator = ".";
+            }
+            return new StringBuilder().append(version.substring(0, version.lastIndexOf(separator))).append(" (").append(version.substring(version.lastIndexOf(separator) + 1)).append(")").toString();
          }
       }
       return "SNAPSHOT";

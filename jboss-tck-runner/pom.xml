@@ -92,7 +92,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
                <suiteXmlFiles>
-                  <suiteXmlFile>${project.build.directory}/dependency/jsr299-tck-impl-suite.xml</suiteXmlFile>
+                  <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                </suiteXmlFiles>
                <argLine>-Xmx748m</argLine>
                <forkMode>once</forkMode>
@@ -167,7 +167,7 @@
                   <artifactId>maven-surefire-plugin</artifactId>
                   <configuration>
                      <suiteXmlFiles>
-                        <suiteXmlFile>${project.build.directory}/dependency/jsr299-tck-impl-suite.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                      </suiteXmlFiles>
                      <systemProperties>
                         <property>
@@ -210,7 +210,7 @@
                   <artifactId>maven-surefire-plugin</artifactId>
                   <configuration>
                      <suiteXmlFiles>
-                        <suiteXmlFile>${project.build.directory}/dependency/jsr299-tck-impl-suite.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                      </suiteXmlFiles>
                      <systemProperties>
                         <property>
