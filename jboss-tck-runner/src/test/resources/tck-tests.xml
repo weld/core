@@ -18,6 +18,7 @@
       </groups>
       <packages>
          <package name="org.jboss.jsr299.tck.tests.*" />
+         <package name="org.jboss.jsr299.tck.interceptors.tests.*" />
       </packages>
       <classes>
          <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.interceptorWithNonPassivatingInjectedField.PassivationCapableBeanWithNonPassivatingInterceptorTest">
