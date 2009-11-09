@@ -39,7 +39,7 @@ public class Credentials {
       </para>
 
       <programlisting role="JAVA"><![CDATA[@SessionScoped @Named
-public class Login {
+public class Login implements Serializable {
 
    @Inject Credentials credentials;
    @Inject @UserDatabase EntityManager userDatabase;
