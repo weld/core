@@ -4,7 +4,7 @@
    <parent>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-parent</artifactId>
-      <version>2</version>
+      <version>6</version>
    </parent>
    <groupId>org.jboss.weld.examples</groupId>
    <artifactId>weld-examples-parent</artifactId>
@@ -86,13 +86,11 @@
 
    <properties>
       <jsf.version>2.0.0-RC</jsf.version>
-      <weld.api.version>1.0-SNAPSHOT</weld.api.version>
-      <weld.core.version>1.0.0-CR1</weld.core.version>
-      <weld.extensions.version>1.0.0-CR1</weld.extensions.version>
+      <weld.api.version>1.0</weld.api.version>
+      <weld.core.version>1.0.0</weld.core.version>
+      <weld.extensions.version>1.0.0-SNAPSHOT</weld.extensions.version>
       <jetty.version>6.1.21</jetty.version>
       <uel.glassfish.version>2.1.2-b04</uel.glassfish.version>
-      <log4j.version>1.2.14</log4j.version>
-      <slf4j.version>1.4.2</slf4j.version>
       <!-- Testing deps -->
       <testng.version>5.10</testng.version>
    </properties>
@@ -200,18 +198,6 @@
             <version>${jetty.version}</version>
          </dependency>
 
-         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
-         </dependency>
-
-         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-         </dependency>
-         
          <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>el-impl</artifactId>
