@@ -48,8 +48,8 @@ $> ant update</programlisting>
       
       <para>
          Weld is also built into GlassFish from V3 onwards. Since GlassFish V3 is the Java EE 6 reference
-         implementation, it must support all features of CDI. What better way for it to support these features than to
-         use Weld, the JSR-299 reference implementation? Just package up your CDI application and deploy.
+         implementation, it must support all features of CDI. What better way for GlassFish to support these features
+         than to use Weld, the JSR-299 reference implementation? Just package up your CDI application and deploy.
       </para>
    </section>
    
