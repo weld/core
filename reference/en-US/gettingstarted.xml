@@ -215,9 +215,26 @@ $> ant deploy]]></programlisting>
          pseudo-translating.
       </para>
 
-      <para>
-         TODO Insert note about upgrading the Weld deployer that directs reader to section on the JBoss AS environment
-      </para>
+      <tip>
+         <para>
+            There are a number of other examples that use CDI and JSF together. Consult the readme.txt file in the
+            following directories for introductions about how to run these examples.
+         </para>
+
+         <itemizedlist>
+            <listitem>
+               <para>
+                  examples/jsf/login - A basic login using a session-scoped bean.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  examples/jsf/permalink - A basic blog that demonstrates JSF 2.0 bookmarkable URL support using view
+                  parameters and pre-render view listeners. The build and deployment is based exclusively on Maven 2.
+               </para>
+            </listitem>
+         </itemizedlist>
+      </tip>
    
    </section>
 
