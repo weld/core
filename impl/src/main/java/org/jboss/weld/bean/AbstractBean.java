@@ -37,7 +37,6 @@ import java.util.Set;
 
 import javax.decorator.Delegate;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.Stereotype;
@@ -58,6 +57,7 @@ import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -88,7 +88,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    // The merged stereotypes
    private MergedStereotypes<T, S> mergedStereotypes;
    // Is it a policy, either defined by stereotypes or directly?
-   private boolean policy;
+   protected boolean alternative;
    // The type
    protected Class<T> type;
    // The API types
@@ -254,16 +254,9 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       this.bindings.add(ANY_LITERAL);
    }
 
-   protected void initPolicy()
+   protected void initAlternative()
    {
-      if (getAnnotatedItem().isAnnotationPresent(Alternative.class))
-      {
-         this.policy = true;
-      }
-      else
-      {
-         this.policy = getMergedStereotypes().isPolicy();
-      }
+      this.alternative = Beans.isAlternative(getAnnotatedItem(), getMergedStereotypes());
    }
 
    /**
@@ -513,7 +506,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    
    public boolean isAlternative()
    {
-      return policy;
+      return alternative;
    }
 
    @Override

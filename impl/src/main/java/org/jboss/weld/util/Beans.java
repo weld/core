@@ -44,6 +44,7 @@ import javax.decorator.Decorator;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
@@ -56,9 +57,9 @@ import org.jboss.interceptor.model.InterceptionTypeRegistry;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.DefinitionException;
+import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
@@ -69,6 +70,7 @@ import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.introspector.MethodSignature;
+import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldField;
@@ -77,6 +79,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.metadata.cache.BindingTypeModel;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
+import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
@@ -582,6 +585,18 @@ public class Beans
          }
       }
       return false;
+   }
+   
+   public static boolean isAlternative(WeldAnnotated<?, ?> annotated, MergedStereotypes<?, ?> mergedStereotypes)
+   {
+      if (annotated.isAnnotationPresent(Alternative.class))
+      {
+         return true;
+      }
+      else
+      {
+         return mergedStereotypes.isPolicy();
+      }
    }
    
    /**

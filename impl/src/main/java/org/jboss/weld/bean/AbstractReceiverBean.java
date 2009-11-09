@@ -105,7 +105,7 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
    }
    
    @Override
-   protected void initPolicy()
+   protected void initAlternative()
    {
       if (getDeclaringBean().isAlternative())
       {

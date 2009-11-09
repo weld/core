@@ -57,7 +57,6 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
       initType();
       initTypes();
       initStereotypes();
-      initPolicy();
       addInjectionPoints(Beans.getParameterInjectionPoints(this, disposalMethodInjectionPoint));
    }
    

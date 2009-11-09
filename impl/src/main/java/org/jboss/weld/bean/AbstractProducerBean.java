@@ -163,6 +163,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       super.initialize(environment);
       checkProducerReturnType();
       initPassivationCapable();
+      initAlternative();
    }
    
    private void initPassivationCapable()
@@ -175,6 +176,12 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       {
          this.passivationCapable = true;
       }
+   }
+   
+   @Override
+   protected void initAlternative()
+   {
+      super.alternative = Beans.isAlternative(getAnnotatedItem(), getMergedStereotypes()) || getDeclaringBean().isAlternative();
    }
 
    @Override

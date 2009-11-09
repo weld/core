@@ -71,7 +71,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
       initTypes();
       initBindings();
       initStereotypes();
-      initPolicy();
+      initAlternative();
    }
    
    @Override
