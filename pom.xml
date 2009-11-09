@@ -79,6 +79,7 @@
       <module>jsf/numberguess</module>
       <module>jsf/translator</module>
       <module>jsf/login</module>
+      <module>jsf/permalink</module>
       <module>se/numberguess</module>
       <module>se/hello-world</module>
       <module>wicket/numberguess</module>
