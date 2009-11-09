@@ -38,34 +38,6 @@ Open this local URL to access the running application:
 
  http://localhost:8080/weld-numberguess
 
-== Deploying with an embedded servlet container
-
-Run this command to execute the application in an embedded Jetty 6 container:
-
- mvn war:inplace jetty:run -Pjetty
-
-You can also execute the application in an embedded Tomcat 6 container:
-
- mvn war:inplace tomcat:run -Ptomcat
- 
-In both cases, you can access the application at the following local URL
-
- http://localhost:9090/weld-numberguess
-
-In both cases, any changes to assets in src/main/webapp take effect immediately.
-If a change to a webapp configuration file is made, the application may
-automatically redeploy. The redeploy behavior can be fine-tuned in the plugin
-configuration (at least for Jetty). If you make a change to a classpath
-resource, you need to execute a build:
-
- mvn compile war:inplace {-Ptomcat,-Pjetty} 
-
-Note that war:inplace copies the compiled classes and JARs inside
-src/main/webapp, under WEB-INF/classes and WEB-INF/lib, respectively, mixing
-source and compiled files. However, the build does work around these temporary
-files by excluding them from the packaged WAR and cleaning them during the
-Maven clean phase. These folders are also ignored by SVN.
-
 == Deploying to standalone Tomcat
 
 If you want to run the application on a standalone Tomcat 6, first download and
@@ -117,6 +89,8 @@ will launch. You can view the application at the following local URL:
  http://localhost:8080
 
 == Using Google App Engine
+
+KNOWN NOT WORKING IN THIS RELEASE
 
 First, set up the Eclipse environment:
 

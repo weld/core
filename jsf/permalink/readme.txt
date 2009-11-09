@@ -29,44 +29,6 @@ local URL to access the running application:
  
 Alternatively, run ant restart to have the app copied to you ${jboss.home}
 
-But you may want to take advantage of the embedded servlet containers.
-
-== Deploying with an embedded servlet container
-
-Run this command to execute the application in an embedded Jetty 6 container:
-
- mvn jetty:run -Pjetty
-
-You can also execute the application in an embedded Tomcat 6 container:
-
- mvn war:inplace tomcat:run -Ptomcat
-
-**Note that war:inplace overwrites src/main/webapp/WEB-INF/web.xml, effectively
-adding the Weld listener. You need to manually remove the listener before
-deploying to another container.
-
-You can access the application for either container at the following local URL:
-
- http://localhost:9090/weld-permalink
-
-In both cases, any changes to assets in src/main/webapp take effect immediately.
-If a change to a webapp configuration file is made, the application may
-automatically redeploy. The redeploy behavior can be fine-tuned in the plugin
-configuration (at least for Jetty). If you make a change to a classpath
-resource, you need to execute a build. For Jetty:
-
- mvn compile
-
-and for Tomcat:
-
- mvn compile war:inplace -Ptomcat
-
-Note that war:inplace copies the compiled classes and JARs inside
-src/main/webapp, under WEB-INF/classes and WEB-INF/lib, respectively, mixing
-source and compiled files. However, the build does work around these temporary
-files by excluding them from the packaged WAR and cleaning them during the Maven
-clean phase. These folders are also ignored by SVN.
-
 == Deploying to standalone Tomcat
 
 If you want to run the application on a standalone Tomcat 6, first download and
