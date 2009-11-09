@@ -32,9 +32,8 @@ import javax.inject.Inject;
 /**
  * @author Dan Allen
  */
-@Model
 public
-
+@Model
 class Blog
 {
    private static final int PAGE_SIZE = 3;
