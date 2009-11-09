@@ -1881,20 +1881,6 @@ public class TranslatorControllerBean implements TranslatorController {
    @Remove public void remove() {}
 
 }]]></programlisting>
-   
-      <para>
-         Since this is a stateful session bean, you can include an optional <literal>@Remove</literal> method, which the
-         container will call for you when the bean is destroyed; in this case at the end of the request. (Keep in mind
-         that since this bean is not dependent-scoped, the application is forbidden to invoke the remove method). Since
-         CDI is integrated into the container, it does not need this method to operate correctly. If the method's empty,
-         just get rid of it.
-      </para>
-
-      <para>
-         You'll notice in this example the smooth integration between the existing <literal>@EJB</literal> resource
-         injection annotation and the new <literal>@Inject</literal> annotation for injecting any managed or session
-         bean. The tight integration with Java EE is a key value proposition of CDI (not to mention a requirement).
-      </para>
 
    </section>
    
@@ -1902,11 +1888,6 @@ public class TranslatorControllerBean implements TranslatorController {
       That concludes our short tour of the Weld starter examples. For more information on Weld, or to help out with
       development, please visit <ulink
       url="http://www.seamframework.org/Weld/Development">http://www.seamframework.org/Weld/Development</ulink>.
-   </para>
-   
-   <para>
-      We need help in all areas - bug fixing, writing new features, writing examples and translating this reference
-      guide.
    </para>
 
 <!--
