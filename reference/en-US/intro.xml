@@ -20,7 +20,7 @@
       <para>
          Prior to Java EE 6, there was no clear definition of the term "bean" in the Java EE platform. Of course, 
          we've been calling Java classes used in web and enterprise applications "beans" for years. There were even a 
-         couple of different kinds of things called "beans" in EE specifications, including EJB session beans and JSF 
+         couple of different kinds of things called "beans" in EE specifications, including EJB beans and JSF 
          managed beans. Meanwhile, other third-party frameworks such as Spring and Seam introduced their own ideas of 
          what it meant to be a "bean". What we've been missing is a common definition.
       </para>
@@ -30,7 +30,7 @@
          defined as container-managed objects with minimal programming restrictions, otherwise known by the acronym 
          POJO (Plain Old Java Object). They support a small set of basic services, such as resource injection, lifecycle 
          callbacks and interceptors. Companion specifications, such as EJB and CDI, build on this basic model. But, 
-         <emphasis>at last</emphasis>, there is a uniform concept of a bean and a lightweight component model that's
+         <emphasis>at last</emphasis>, there's a uniform concept of a bean and a lightweight component model that's
          aligned across the Java EE platform.
       </para>
 
@@ -119,8 +119,8 @@ public interface Translator {
       <para>
          As you've guessed, the <literal>@Inject</literal> annotation has something to do with dependency injection!
          <literal>@Inject</literal> may be applied to a constructor or method of a bean, and tells the container to 
-         call that constructor or method when instantiating the bean. The container will inject other beans it finds 
-         into the parameters of the constructor or method.
+         call that constructor or method when instantiating the bean. The container will inject other beans into the 
+         parameters of the constructor or method.
       </para>
 
       <para>
@@ -329,7 +329,9 @@ public void translate() {
             have multiple bean types. For example, the following bean has four bean types:
          </para>
 
-         <programlisting role="JAVA"><![CDATA[public class BookShop extends Business implements Shop<Book> {
+         <programlisting role="JAVA"><![CDATA[public class BookShop 
+      extends Business 
+      implements Shop<Book> {
    ...
 }]]></programlisting> 
 
@@ -346,8 +348,10 @@ public void translate() {
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Stateful
-public class BookShopBean extends Business implements BookShop, Auditable {
-       ...
+public class BookShopBean 
+      extends Business 
+      implements BookShop, Auditable {
+   ...
 }]]></programlisting> 
 
          <note>
@@ -365,7 +369,9 @@ public class BookShopBean extends Business implements BookShop, Auditable {
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Typed(Shop.class)
-public class BookShop extends Business implements Shop<Book> {
+public class BookShop 
+      extends Business 
+      implements Shop<Book> {
    ...
 }]]></programlisting> 
 
@@ -485,8 +491,8 @@ public class CreditCardPaymentProcessor
             For example, any web application may have <emphasis>session scoped</emphasis> bean:
          </para>
 
-         <programlisting role="JAVA"><![CDATA[@SessionScoped
-public class ShoppingCart { ... }]]></programlisting>
+         <programlisting role="JAVA"><![CDATA[public @SessionScoped
+class ShoppingCart implements Serializable { ... }]]></programlisting>
 
          <para>An instance of a session-scoped bean is bound to a user session
   and is shared by all requests that execute in the context of that session.</para>
@@ -501,8 +507,8 @@ public class ShoppingCart { ... }]]></programlisting>
 
          <para>
             If a scope is not explicitly specified, then the bean belongs to a special scope called the
-            <emphasis>dependent pseudo-scope</emphasis>. Beans with this scope live to serve the bean into which they
-            are injected, which means their lifecycle is bound to the lifecycle of that object.
+            <emphasis>dependent pseudo-scope</emphasis>. Beans with this scope live to serve the object into which they
+            were injected, which means their lifecycle is bound to the lifecycle of that object.
          </para>
 
          <para>We'll talk more about scopes in <xref linkend="scopescontexts"/>.</para>
@@ -521,8 +527,8 @@ public class ShoppingCart { ... }]]></programlisting>
             The EL name is specified using the <literal>@Named</literal> annotation, as shown here:
          </para>
 
-         <programlisting role="JAVA"><![CDATA[@SessionScoped @Named("cart")
-public class ShoppingCart { ... }]]></programlisting>
+         <programlisting role="JAVA"><![CDATA[public @SessionScoped @Named("cart")
+class ShoppingCart implements Serializable { ... }]]></programlisting>
 
          <para>Now we can easily use the bean in any JSF or JSP page:</para>
 
@@ -543,8 +549,8 @@ public class ShoppingCart { ... }]]></programlisting>
             value of the <literal>@Named</literal> annotation:
          </para>
 
-         <programlisting role="JAVA"><![CDATA[@SessionScoped @Named
-public class ShoppingCart { ... }]]></programlisting>
+         <programlisting role="JAVA"><![CDATA[public @SessionScoped @Named
+class ShoppingCart implements Serializable { ... }]]></programlisting>
 
          <para>
             The name defaults to the unqualified class name, decapitalized; in this case,
@@ -566,8 +572,8 @@ public class ShoppingCart { ... }]]></programlisting>
             annotating the bean class with the <literal>@Alternative</literal> annotation.
          </para>
 
-         <programlisting role="JAVA"><![CDATA[@Alternative
-public class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisting> 
+         <programlisting role="JAVA"><![CDATA[public @Alternative
+class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisting> 
          
          <para>
             We normally annotate a bean <literal>@Alternative</literal> only when there is some other
@@ -622,16 +628,16 @@ public @interface Transactional {}]]></programlisting>
            The interceptor that implements transaction management declares this annotation: 
          </para>
          
-         <programlisting role="JAVA"><![CDATA[@Transactional @Interceptor
-public class TransactionInterceptor { ... }]]></programlisting>
+         <programlisting role="JAVA"><![CDATA[public @Transactional @Interceptor
+class TransactionInterceptor { ... }]]></programlisting>
          
          <para>
-            We you can apply the interceptor to a bean by annotating to the bean class with the same interceptor
+            We can apply the interceptor to a bean by annotating to the bean class with the same interceptor
             binding type:
          </para>
 
-         <programlisting role="JAVA"><![CDATA[@SessionScoped @Transactional
-public class ShoppingCart { ... }]]></programlisting>
+         <programlisting role="JAVA"><![CDATA[public @SessionScoped @Transactional
+class ShoppingCart implements Serializable { ... }]]></programlisting>
 
          <para>
             Now there's no direct dependency between the two implementations (bean and interceptor). Activation of 
@@ -654,8 +660,8 @@ public class ShoppingCart { ... }]]></programlisting>
       <title>What kinds of classes are beans?</title>
      
       <para>
-         We've already seen that JavaBeans and EJB session beans can be (CDI) beans. Is that the whole story?  Let's 
-         start from what we know, and go from there.
+         We've already seen that JavaBeans and EJB session beans can be (CDI) beans. Is that the whole story? 
+         Actually, it's just the beginning.
       </para>
      
       <section>
@@ -664,7 +670,7 @@ public class ShoppingCart { ... }]]></programlisting>
          <para>
             A managed bean is a Java class. The basic lifecycle and semantics of a managed bean are defined by the 
             Managed Beans specification. You can explicitly declare a managed bean by annotating the bean class
-            <literal>@ManagedBean</literal>, but in CDI you don't need to. According to the specification the CDI 
+            <literal>@ManagedBean</literal>, but in CDI you don't need to. According to the specification, the CDI 
             container treats any class that satisfies the following conditions as a managed bean:
          </para>
 
@@ -810,8 +816,8 @@ public class ShoppingCart { ... }]]></programlisting>
          </para>
             
          <para>
-            On the other hand, don't be scared to use session beans just because you've heard your friends say that 
-            they're "heavyweight". It's nothing more than supersitition to think that something is "heavier" just 
+            On the other hand, don't be scared to use session beans just because you've heard your friends say 
+            they're "heavyweight". It's nothing more than superstition to think that something is "heavier" just 
             because it's hosted natively within the Java EE container, instead of by a proprietary bean container 
             or dependency injection framework that runs as an additional layer of obfuscation. And as a general
             principle, you should be skeptical of folks who use vaguely defined terminology like "heavyweight".
@@ -826,14 +832,14 @@ public class ShoppingCart { ... }]]></programlisting>
             Not everything that needs to be injected can be boiled down to a bean class instantiated by the container
             using <literal>new</literal>. There are plenty of cases where we need additional control. What if we need 
             to decide at runtime which implementation of a type to instantiate and inject? What if we need to inject an 
-            object that is obtained by querying a service or transaction resource, for example by executing a JPA query?
+            object that is obtained by querying a service or transactional resource, for example by executing a JPA query?
          </para>
 
          <para>
             A <emphasis>producer method</emphasis> is a method that acts as a source of bean instances, meaning the
             method declaration itself describes the bean and the container invokes the method to obtain an instance of 
             the bean when no instance exists in the specified context. A producer method lets the application take full 
-            control of the instantiation process.
+            control of the bean instantiation process.
          </para>
             
          <para>
@@ -951,11 +957,11 @@ public class RandomNumberGenerator {
             
          <para>
             Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably,
-            component environment injection relies on a string-based name to qualify an ambiguous type, and there is no 
-            real consistency as to the nature of that name (sometimes a JNDI name, other times from an XML descriptor 
-            or even a default name). Producer fields turned out to be an elegant adaptor to reduce all this complexity 
-            to a common model and get component environment resources to participate in the CDI system just like any 
-            other kind of bean.
+            component environment injection relies on string-based names to qualify ambiguous types, and there is no 
+            real consistency as to the nature of the names (sometimes a JNDI name, other times an identifier from an 
+            XML descriptor, or even a default name). Producer fields turned out to be an elegant adaptor to reduce all 
+            this complexity to a common model and get component environment resources to participate in the CDI system 
+            just like any other kind of bean.
          </para>
 
          <para>
