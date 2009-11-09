@@ -77,8 +77,8 @@ tainer, for example, alternative web presentation technologies.
     
    <para>
      Both managed beans and EJB session beans may inject other beans. But some other objects, which are not 
-     themselves beans, can also make use of CDI by injecting beans. In the Java EE platform, the following 
-     kinds of component may inject beans:
+     themselves beans in the sense used here, may also have beans injected via CDI. In the Java EE platform, 
+     the following kinds of component may have beans injected:
    </para>
     
    <itemizedlist>
@@ -138,15 +138,15 @@ tainer, for example, alternative web presentation technologies.
    </itemizedlist>
 
    <para>
-      The main theme of CDI, which is instrumental in removing these complexities, is <emphasis>loose-coupling with
-      strong typing</emphasis>. Let's study what that phrase means.
+      CDI is more than a framework. It's a whole, rich programming model. The <emphasis>theme</emphasis> of CDI is 
+      <emphasis>loose-coupling with strong typing</emphasis>. Let's study what that phrase means.
    </para>
   
    <para>
       A bean specifies only the type and semantics of other beans it depends upon. It need not be aware of the actual
-      lifecycle, concrete implementation, threading model or other clients of any bean it depends upon. Even better, the
-      concrete implementation, lifecycle and threading model of a bean it depends upon may vary according to the
-      deployment scenario, without affecting any client. This loose-coupling is what makes this architecture so simple,
+      lifecycle, concrete implementation, threading model or other clients of any bean it interacts with. Even better, 
+      the concrete implementation, lifecycle and threading model of a bean it depends upon may vary according to the
+      deployment scenario, without affecting any client. This loose-coupling is what makes the architecture so simple,
       yet powerful. 
    </para>
   
@@ -172,16 +172,16 @@ tainer, for example, alternative web presentation technologies.
    <para>
       What's even more powerful (and comforting) is that CDI provides all these facilities in a
       <emphasis>typesafe</emphasis> way. CDI never relies on string-based identifiers to determine how collaborating
-      objects fit together. (XML is rarely used, reserved only to activate alternatives and define ordering at
-      deployment time). Instead, CDI uses the typing information that is already available in the Java object model,
-      then extends it using a new programming pattern, called <emphasis>qualifier annotations</emphasis>, to wire 
-      together beans, their dependencies, their interceptors and decorators, and their event consumers.
+      objects fit together. Instead, CDI uses the typing information that is already available in the Java object 
+      model, augmented using a new programming pattern, called <emphasis>qualifier annotations</emphasis>, to wire 
+      together beans, their dependencies, their interceptors and decorators, and their event consumers. Usage of
+      XML descriptors is minimized to truly deployment-specific information.
    </para>
   
    <para>
-      CDI even provides the necessary integration points, through a comprehensive SPI, so that other kinds of object
-      defined by future Java EE specifications or by third-party frameworks may be cleanly integrated with CDI, take
-      advantage of the CDI services, and interact with any other kind of bean.
+      CDI even provides a comprehensive SPI, allowing other kinds of object defined by future Java EE specifications 
+      or by third-party frameworks to be cleanly integrated with CDI, take advantage of the CDI services, and interact 
+      with any other kind of bean.
    </para>
   
    <para>
