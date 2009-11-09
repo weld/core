@@ -16,6 +16,14 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.DECORATED_TYPE_PARAMETERIZED_DELEGATE_NOT;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_ON_NON_INITIALIZER_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_TYPE_PARAMETER_MISMATCH;
+import static org.jboss.weld.logging.messages.BeanMessage.NO_DELEGATE_FOR_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_DELEGATES_FOR_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -29,6 +37,7 @@ import javax.inject.Inject;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
@@ -120,16 +129,16 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
       {
          if (injectionPoint instanceof MethodInjectionPoint<?, ?> && !injectionPoint.isAnnotationPresent(Inject.class))
          {
-            throw new DefinitionException("Method with @Decorates parameter must be an initializer method " + injectionPoint);
+            throw new DefinitionException(DELEGATE_ON_NON_INITIALIZER_METHOD, injectionPoint);
          }
       }
       if (getDelegateInjectionPoints().size() == 0)
       {
-         throw new DefinitionException("No delegate injection points defined " + this);
+         throw new DefinitionException(NO_DELEGATE_FOR_DECORATOR, this);
       }
       else if (getDelegateInjectionPoints().size() > 1)
       {
-         throw new DefinitionException("Too many delegate injection point defined " + this);
+         throw new DefinitionException(TOO_MANY_DELEGATES_FOR_DECORATOR, this);
       }
    }
 
@@ -154,7 +163,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
          {
             if (!((Class<?>) decoratedType).isAssignableFrom(delegateInjectionPoint.getJavaClass()))
             {
-               throw new DefinitionException("The delegate type must extend or implement every decorated type. Decorated type " + decoratedType + "." + this );
+               throw new DefinitionException(DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE, decoratedType, this );
             }
          }
          else if (decoratedType instanceof ParameterizedType)
@@ -162,20 +171,20 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
             ParameterizedType parameterizedType = (ParameterizedType) decoratedType;
             if (!delegateInjectionPoint.isParameterizedType())
             {
-               throw new DefinitionException("The decorated type is parameterized, but the delegate type isn't. Delegate type " + delegateType + "." + this);
+               throw new DefinitionException(DECORATED_TYPE_PARAMETERIZED_DELEGATE_NOT, delegateType, this);
             }
             if (!Arrays.equals(delegateInjectionPoint.getActualTypeArguments(), parameterizedType.getActualTypeArguments()))
             {
-               throw new DefinitionException("The delegate type must have exactly the same type parameters as the decorated type. Decorated type " + decoratedType + "." + this );
+               throw new DefinitionException(DELEGATE_TYPE_PARAMETER_MISMATCH, decoratedType, this );
             }
             Type rawType = ((ParameterizedType) decoratedType).getRawType();
             if (rawType instanceof Class && !((Class<?>) rawType).isAssignableFrom(delegateInjectionPoint.getJavaClass()))
             {
-               throw new DefinitionException("The delegate type must extend or implement every decorated type. Decorated type " + decoratedType + "." + this );
+               throw new DefinitionException(DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE, decoratedType, this );
             }
             else
             {
-               throw new IllegalStateException("Unable to process " + decoratedType);
+               throw new ForbiddenStateException(UNABLE_TO_PROCESS, decoratedType);
             }
 
          }

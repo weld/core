@@ -18,6 +18,16 @@ package org.jboss.weld.bean;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_CONSTRUCTOR_PARAM_INJECTION_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_FIELD_INJECTION_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_INITIALIZER_PARAM_INJECTION_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_PRODUCER_PARAM_INJECTION_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_PRODUCT_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.NULL_NOT_ALLOWED_FROM_PRODUCER;
+import static org.jboss.weld.logging.messages.BeanMessage.ONLY_ONE_SCOPE_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_CAST_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.RETURN_TYPE_MUST_BE_CONCRETE;
+import static org.jboss.weld.logging.messages.BeanMessage.TYPE_PARAMETER_MUST_BE_CONCRETE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
 
@@ -36,7 +46,6 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
@@ -45,6 +54,8 @@ import javax.inject.Scope;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
+import org.jboss.weld.IllegalProductException;
+import org.jboss.weld.WeldException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -119,7 +130,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       catch (ClassCastException e)
       {
          Type type = Beans.getDeclaredBeanType(getClass());
-         throw new RuntimeException(" Cannot cast producer type " + getAnnotatedItem().getJavaClass() + " to bean type " + (type == null ? " unknown " : type), e);
+         throw new WeldException(PRODUCER_CAST_ERROR, e, getAnnotatedItem().getJavaClass(), (type == null ? " unknown " : type));
       }
    }
 
@@ -128,19 +139,16 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     */
    protected void checkProducerReturnType()
    {
-      if (getAnnotatedItem().getBaseType() instanceof TypeVariable<?>)
+      if ((getAnnotatedItem().getBaseType() instanceof TypeVariable<?>) || 
+          (getAnnotatedItem().getBaseType() instanceof WildcardType))
       {
-         throw new DefinitionException("Return type must be concrete " + getAnnotatedItem().getBaseType());
-      }
-      if (getAnnotatedItem().getBaseType() instanceof WildcardType)
-      {
-         throw new DefinitionException("Return type must be concrete " + getAnnotatedItem().getBaseType());
+         throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, getAnnotatedItem().getBaseType());
       }
       for (Type type : getAnnotatedItem().getActualTypeArguments())
       {
          if (!(type instanceof Class))
          {
-            throw new DefinitionException("Producer type cannot be parameterized with type parameter or wildcard:\n" + this.getAnnotatedItem());
+            throw new DefinitionException(TYPE_PARAMETER_MUST_BE_CONCRETE, this.getAnnotatedItem());
          }
       }
    }
@@ -190,14 +198,14 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    {
       if (instance == null && !isDependent())
       {
-         throw new IllegalProductException("Cannot return null from a non-dependent producer method");
+         throw new IllegalProductException(NULL_NOT_ALLOWED_FROM_PRODUCER, getProducer());
       }
       else if (instance != null)
       {
          boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
          if (passivating && !Reflections.isSerializable(instance.getClass()))
          {
-            throw new IllegalProductException("Producers cannot declare passivating scope and return a non-serializable class");
+            throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
          }
          InjectionPoint injectionPoint = manager.getCurrentInjectionPoint();
          if (injectionPoint == null || injectionPoint.equals(BeanManagerImpl.DUMMY_INJECTION_POINT))
@@ -210,7 +218,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             {
                if (!injectionPoint.isTransient() && instance != null && !Reflections.isSerializable(instance.getClass()))
                {
-                  throw new IllegalProductException("Producers cannot produce non-serializable instances for injection into non-transient fields of passivating beans\n\nProducer: " + this.toString() + "\nInjection Point: " + injectionPoint.toString());
+                  throw new IllegalProductException(NON_SERIALIZABLE_FIELD_INJECTION_ERROR, this, injectionPoint);
                }
             }
             else if (injectionPoint.getMember() instanceof Method)
@@ -218,16 +226,16 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
                Method method = (Method) injectionPoint.getMember();
                if (method.isAnnotationPresent(Inject.class))
                {
-                  throw new IllegalProductException("Producers cannot produce non-serializable instances for injection into parameters of intializers of beans declaring passivating scope. Bean " + toString() + " being injected into " + injectionPoint.toString());
+                  throw new IllegalProductException(NON_SERIALIZABLE_INITIALIZER_PARAM_INJECTION_ERROR, this, injectionPoint);
                }
                if (method.isAnnotationPresent(Produces.class))
                {
-                  throw new IllegalProductException("Producers cannot produce non-serializable instances for injection into parameters of producer methods declaring passivating scope. Bean " + toString() + " being injected into " + injectionPoint.toString());
+                  throw new IllegalProductException(NON_SERIALIZABLE_PRODUCER_PARAM_INJECTION_ERROR, this, injectionPoint);
                }
             }
             else if (injectionPoint.getMember() instanceof Constructor)
             {
-               throw new IllegalProductException("Producers cannot produce non-serializable instances for injection into parameters of constructors of beans declaring passivating scope. Bean " + toString() + " being injected into " + injectionPoint.toString());
+               throw new IllegalProductException(NON_SERIALIZABLE_CONSTRUCTOR_PARAM_INJECTION_ERROR, this, injectionPoint);
             }
          }
       }
@@ -241,7 +249,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       scopeAnnotations.addAll(getAnnotatedItem().getMetaAnnotations(NormalScope.class));
       if (scopeAnnotations.size() > 1)
       {
-         throw new DefinitionException("At most one scope may be specified");
+         throw new DefinitionException(ONLY_ONE_SCOPE_ALLOWED, getProducer());
       }
       if (scopeAnnotations.size() == 1)
       {
