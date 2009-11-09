@@ -200,17 +200,16 @@ public void translate() {
     
       <para>
          At system initialization time, the container must validate that exactly one bean exists which satisfies each
-         injection point. In our example, if no implementation of <literal>Translator</literal> is available&#8212;if the
-         <literal>SentenceTranslator</literal> EJB was not deployed&#8212;the container would throw an
-         <literal>UnsatisfiedDependencyException</literal>. If more than one implementation of
-         <literal>Translator</literal> were available, the container would throw an
-         <literal>AmbiguousDependencyException</literal>.
+         injection point. In our example, if no implementation of <literal>Translator</literal> is available&#8212;if 
+         the <literal>SentenceTranslator</literal> EJB was not deployed&#8212;the container would inform us of an
+         <emphasis>unsatisfied dependency</emphasis>. If more than one implementation of <literal>Translator</literal> 
+         were available, the container would inform us of the <emphasis>ambiguous dependency</emphasis>.
       </para>
 
       <para>
-         Now we are starting to venture off into the details, so let's pause and examine a bean's anatomy. What aspects
-         of the bean are significant, and what gives it its identity? Instead of giving examples of beans, we're going
-         to define what <emphasis>makes</emphasis> something a bean.
+         Before we get too deep in the details, let's pause and examine a bean's anatomy. What aspects of the bean are 
+         significant, and what gives it its identity? Instead of just giving examples of beans, we're going to define 
+         what <emphasis>makes</emphasis> something a bean.
       </para>
     
    </section>
@@ -308,7 +307,7 @@ public void translate() {
 
       </blockquote>
 
-      <para>Let's see what some of these terms mean, to the CDI developer.</para>
+      <para>Let's see what some of these new terms mean.</para>
 
       <section>
          <title>Bean types, qualifiers and dependency injection</title>
