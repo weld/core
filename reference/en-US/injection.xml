@@ -336,15 +336,17 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
          <title>Qualifiers on producer methods</title>
 
          <para>
-            Even producer methods may specify qualifier annotations:
+            Even producer methods may specify qualifiers:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Produces @Asynchronous PaymentProcessor getPaymentProcessor() { ... }]]></programlisting>
 
-         <para>
-            This producer might create an asynchronous implementation powered by third party library such as Quartz
-            (though definitely check out the new scheduler support in EJB 3.1!).
-         </para>
+         <tip>
+            <para>
+               If we really need to create beans with asynchronous semantics, EJB 3.1 asynchronous methods are an
+               excellent solution.
+            </para>
+         </tip>
 
       </section>
 
