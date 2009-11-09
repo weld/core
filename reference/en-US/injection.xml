@@ -385,25 +385,73 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
       </para>
   
       <para>
-         To fix an <literal>UnsatisfiedDependencyException</literal>, simply provide a bean which implements the bean
-         type and has all the qualifier types of the injection point &#8212; or explicitly enable an
-         <literal>@Alternative</literal> bean that implements the bean type and has the appropriate qualifier types.
+         To fix an <literal>UnsatisfiedDependencyException</literal>, either: 
       </para>
-  
+         
+      <itemizedlist>
+         <listitem>      
+            <para>
+            create a bean which implements the bean type and has all the qualifier types of the injection point,
+            </para>
+         </listitem> 
+         <listitem>
+            <para>
+            make sure that the bean you already have is in the classpath of the module with the injection point, or
+            </para>
+         </listitem> 
+         <listitem> 
+            <para>
+            explicitly enable an <literal>@Alternative</literal> bean that implements the bean type and has the 
+            appropriate qualifier types, using <literal>beans.xml</literal>.
+            </para>
+         </listitem> 
+      </itemizedlist>
+      
       <para>
-         To fix an <literal>AmbiguousDependencyException</literal>, introduce a qualifier to distinguish between the two
-         implementations of the bean type, or disable one of two <literal>@Alternative</literal> beans that are trying
-         to occupy the same space.  An <literal>AmbiguousDependencyException</literal> can only occur if two enabled
-         beans share the same qualifier types (and one bean does not specialize the other, which we'll get into
-         in <xref linkend="specialization"/>).
+         To fix an <literal>AmbiguousDependencyException</literal>, either: 
+      </para>
+
+      <itemizedlist>
+         <listitem>      
+            <para>
+               introduce a qualifier to distinguish between the two implementations of the bean type, 
+            </para>
+         </listitem> 
+         <listitem>      
+            <para>
+               disable one of the beans by annotating it <literal>@Alternative</literal>, 
+            </para>
+         </listitem> 
+         <listitem>
+            <para>
+               move one of the implementations to a module that is not in the classpath of the module with the 
+               injection point, or
+            </para>
+         </listitem> 
+         <listitem> 
+            <para>
+               disable one of two <literal>@Alternative</literal> beans that are trying to occupy the same space, 
+               using <literal>beans.xml</literal>.  
+            </para>
+         </listitem> 
+      </itemizedlist>
+               
+      <para>
+         An <literal>AmbiguousDependencyException</literal> can only occur if two enabled beans share the same 
+         qualifier types.
       </para>
       
       <tip>
          <para>Just remember: "There can be only one."</para>
       </tip>
+      
+      <para>
+         On the other hand, if you really do have an optional or multivalued injection point, you should change
+         the type of your injection point to <literal>Instance</literal>, as we'll see in <xref linkend="lookup"/>.
+      </para>
   
       <para>
-         There's one more issue you need to be aware of when using dependency injection in beans: client proxies.
+         There's one more issue you need to be aware of when using the dependency injection service: client proxies.
       </para>
 
    </section>
@@ -413,7 +461,7 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
   
       <para>
          Clients of an injected bean do not usually hold a direct reference to a bean instance, unless the bean is
-         dependent-scoped&#8212;in that case, the instance belongs to the bean.
+         a dependent object (scope <literal>@Dependent</literal>).
       </para> 
   
       <para>
@@ -447,9 +495,10 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
       </note>
   
       <para>
-         Unfortunately, due to limitations of the Java language, some Java types cannot be proxied by the container.  If
-         one of these types declares any scope other than <literal>@Dependent</literal>, the container throws an
-         <literal>UnproxyableDependencyException</literal> when processing its use as an injection point.
+         Unfortunately, due to limitations of the Java language, some Java types cannot be proxied by the container. If
+         an inection point declared with one of these types resolves to a bean with any scope other than 
+         <literal>@Dependent</literal>, the container throws an <literal>UnproxyableDependencyException</literal> at
+         system initialization time.
       </para>
   
       <para>The following Java types cannot be proxied by the container:</para>
@@ -471,8 +520,13 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
       <para>
          It's usually very easy to fix an <literal>UnproxyableDependencyException</literal>. Simply add a constructor
          with no parameters to the injected class, introduce an interface, or, if all else fails, change the scope of
-         the injected bean to <literal>@Dependent</literal>. Weld will probably support non-standard ways of getting
-         around this depending on what is available on the classpath:
+         the injected bean to <literal>@Dependent</literal>. 
+      </para>
+      
+      <note>
+      <para>
+         A future release of Weld will likely support a non-standard workaround for this limitation, using
+         non-portable JVM APIs:
       </para>
 
       <itemizedlist>
@@ -480,15 +534,22 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
             <para>
                Sun, IcedTea, Mac: <literal>Unsafe.allocateInstance()</literal> (The most efficient)
             </para>
+         </listitem>
+         <listitem>
             <para>
-               Above + IBM, JRockit: <literal>ReflectionFactory.newConstructorForSerialization()</literal>
+               IBM, JRockit: <literal>ReflectionFactory.newConstructorForSerialization()</literal>
             </para>
          </listitem>
       </itemizedlist>
+      
+      <para>
+         But we didn't get around to implementing this yet.
+      </para>
+      </note>
   
    </section>
 
-   <section>
+   <section id="lookup">
 
       <title>Obtaining a contextual instance by programmatic lookup</title>
 
@@ -527,7 +588,7 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
          of the bean programmatically.
       </para>
   
-      <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource.get()]]></programlisting>
+      <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource.get();]]></programlisting>
 
       <para>
          Of course, qualifiers can be specified at the injection point, as with a bean injection:
@@ -536,14 +597,14 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
       <programlisting role="JAVA"><![CDATA[@Inject @Asynchronous Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
   
       <para>
-         You can also select a bean dynamically from the <literal>Instance</literal> based on the bean's qualifier.
+         You can also select a bean dynamically from the <literal>Instance</literal> by passing the bean's qualifier.
          First, you need to add the <literal>@Any</literal> annotation at the injection point:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
       
       <para>
-         Then you specify which bean you want, based on its qualifier, using the <literal>select()</literal> method on
+         Then you specify which bean you want, by passing  its qualifier to the <literal>select()</literal> method of
          <literal>Instance</literal>. You represent a qualifier annotation in code by subclassing the helper class
          <literal>AnnotationLiteral</literal>, since it's otherwise difficult to instantiate an annotation type in Java.
       </para>
@@ -570,7 +631,7 @@ extends AnnotationLiteral<Asynchronous> implements Asynchronous {}]]></programli
       </para>
 
       <para>
-         Here's how you might make use the dynamic selection:
+         Here's how you might make use of dynamic selection:
       </para>
 
       <programlisting><![CDATA[Annotation qualifier = synchronously ?
@@ -583,22 +644,18 @@ PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment
       <title>Bean names and EL lookup</title>
 
       <para>
-         You won't always be able to take advantage of the type safety that CDI provides. One of those places is the JSF
-         view. To accommodate that environment, CDI must learn to speak the binding language that view templates
-         understand. That language is the Unified EL.
+         You won't always be able to take advantage of the typesafety that CDI provides. Sometimes your Java
+         code needs to be called from some other language that doesn't support the Java type system. For example,
+         to bind your beans to a JSF view or JSP page, you need to be able to refer to them in a Unified EL
+         expression.
       </para>
 
       <para>
-         In order to participate in the Unified EL, a bean must have a name. The old way of assigning a name to a
-         managed bean was in the faces-config.xml descriptor. This use of XML completely contradicts the approach
-         to metadata that's in CDI. Given that one of the primary goals of JSR-299 is to get JSF talking
-         with session beans (and, in turn, the rest of the Java EE platform), CDI needed to find a compromise. 
-         It did in the form of the <literal>@Named</literal>.
-      </para>
-
-      <para>
-         The <literal>@Named</literal> annotation, when added to a bean class, producer method or producer field,
-         gives an alternate way for that bean to be referenced&#8212;by a string-based name.
+         Theres only one way to identity a bean in Unified EL: with a name. The old way of assigning a name to a
+         managed bean was the <literal>faces-config.xml</literal> descriptor. This use of XML completely 
+         contradicts the approach to metadata that's used in CDI. Given that one of the goals of JSR-299 was to get 
+         JSF talking with session beans (and, in turn, the rest of the Java EE platform), CDI needed to find a 
+         different approach. The <literal>@Named</literal> annotation assigns a string-based EL name to a bean.
       </para>
 
       <programlisting role="JAVA"><![CDATA[public @Named("cart") @SessionScoped 
