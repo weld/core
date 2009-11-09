@@ -274,11 +274,6 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
          implementation.
       </para>
 
-      <para>
-         Qualifiers will likely replace use of the factory pattern as well. The container becomes your factory and
-         the switch between implementations is dictated by the qualifier.
-      </para>
-
       <section>
          <title>Qualifiers with members</title>
 
