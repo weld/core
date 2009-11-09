@@ -1,0 +1,24 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<!-- JSR-299 TCK with mods (add excludes) -->
+
+<suite name="JSR-299 TCK" verbose="0"  >
+   <test name="JSR-299 TCK">
+      <method-selectors>
+         <method-selector>
+            <selector-class name="org.jboss.testharness.impl.testng.DisableIntegrationTestsMethodSelector" />
+         </method-selector>
+      </method-selectors>
+      <groups>
+         <run>
+            <exclude name="broken" />
+            <exclude name="ri-broken" />
+            <exclude name="jboss-as-broken" />  
+         </run>
+      </groups>
+      <packages>
+         <package name="org.jboss.jsr299.tck.tests.*" />
+      </packages>
+   </test>
+   
+</suite>
