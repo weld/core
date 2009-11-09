@@ -115,8 +115,7 @@ public @interface UserDatabase {}]]></programlisting>
 </h:panelGroup>]]></programlisting> 
 
    <para>
-      Hopefully, this example gives a flavor of the CDI services. In the next chapter, we'll explore examples from the
-      CDI reference implementation, Weld, in greater depth.
+      In the next chapter, we'll explore examples from the CDI reference implementation, Weld, in greater depth.
    </para>
 
 <!--
