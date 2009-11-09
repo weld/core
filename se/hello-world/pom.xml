@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <artifactId>weld-examples-parent</artifactId>
       <groupId>org.jboss.weld.examples</groupId>
@@ -34,44 +35,11 @@
                   </executions>
                   <groupId>org.codehaus.mojo</groupId>
                   <artifactId>exec-maven-plugin</artifactId>
-                  <version>1.1.1</version>
                   <configuration>
                      <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
                      <arguments>
                         <argument>${name}</argument>
                      </arguments>
-                  </configuration>
-               </plugin>
-               <plugin>
-                  <groupId>com.google.code.maven-license-plugin</groupId>
-                  <artifactId>maven-license-plugin</artifactId>
-                  <version>1.4.0</version>
-                  <configuration>
-                     <basedir>${basedir}</basedir>
-                     <header>${basedir}/src/etc/header.txt</header>
-                     <quiet>false</quiet>
-                     <failIfMissing>true</failIfMissing>
-                     <aggregate>false</aggregate>
-                     <encoding>UTF-8</encoding>
-                  </configuration>
-                  <executions>
-                     <execution>
-                        <phase>compile</phase>
-                        <goals>
-                           <goal>format</goal>
-                        </goals>
-                     </execution>
-                  </executions>
-               </plugin>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-jar-plugin</artifactId>
-                  <configuration>
-                     <archive>
-                        <manifest>
-                           <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
-                        </manifest>
-                     </archive>
                   </configuration>
                </plugin>
             </plugins>
@@ -90,5 +58,30 @@
          <scope>provided</scope>
       </dependency>
    </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-eclipse-plugin</artifactId>
+            <configuration>
+               <!-- This is needed so that we get StartMain on the RunAs list -->
+               <useProjectReferences>false</useProjectReferences>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+               <archive>
+                  <manifest>
+                     <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
+                  </manifest>
+               </archive>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
 
 </project>
