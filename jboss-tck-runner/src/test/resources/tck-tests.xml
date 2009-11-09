@@ -2,8 +2,8 @@
 
 <!-- JSR-299 TCK with mods (add excludes) -->
 
-<suite name="JSR-299 TCK" verbose="0"  >
-   <test name="JSR-299 TCK">
+<suite name="Weld / JBoss AS run of CDI TCK" verbose="0"  >
+   <test name="CDI TCK">
       <method-selectors>
          <method-selector>
             <selector-class name="org.jboss.testharness.impl.testng.DisableIntegrationTestsMethodSelector" />
