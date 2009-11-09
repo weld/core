@@ -5,16 +5,16 @@
 
    <para>
       One of the most significant features of CDI, certainly the most recognized, is dependency injection; but not just
-      dependency injection, <emphasis>type-safe</emphasis> dependency injection. In this chapter, you'll learn how CDI
-      is able to leverage the Java type system and annotations to build a dependency injection strategy that is both
-      strongly typed and keeps the implementation hidden from the client.
+      dependency injection&#8212;<emphasis>type-safe</emphasis> dependency injection. In this chapter, you'll learn how 
+      CDI is able to leverage the Java type system and annotations into a dependency injection strategy that is both
+      strongly typed and keeps the bean implementation hidden from its clients.
    </para>
 
    <section>
       <title>Where you can <literal>@Inject</literal></title>
 
       <para>
-         Injections are declared using the JSR-330 annotation, <literal>@Inject</literal>, along with an optional set of
+         Injection points are declared using the JSR-330 annotation, <literal>@Inject</literal>, along with an optional set of
          qualifiers annotations. CDI supports three primary mechanisms for dependency injection during bean
          construction:
       </para>
@@ -600,7 +600,8 @@ PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment
          gives an alternate way for that bean to be referenced&#8212;by a string-based name.
       </para>
 
-      <programlisting role="JAVA"><![CDATA[public @Named("cart") @SessionScoped class ShoppingCart {
+      <programlisting role="JAVA"><![CDATA[public @Named("cart") @SessionScoped 
+class ShoppingCart implements Serializable {
  ...
 }]]></programlisting> 
       <programlisting role="JAVA"><![CDATA[public @Produces @Named("items") List<Item> getItems() { ... }]]></programlisting> 
