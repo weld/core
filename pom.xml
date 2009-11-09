@@ -89,7 +89,7 @@
       <jsf.version>2.0.0-RC</jsf.version>
       <weld.api.version>1.0</weld.api.version>
       <weld.core.version>1.0.0</weld.core.version>
-      <weld.extensions.version>1.0.0-SNAPSHOT</weld.extensions.version>
+      <weld.extensions.version>1.0.0-CR2</weld.extensions.version>
       <jetty.version>6.1.21</jetty.version>
       <uel.glassfish.version>2.1.2-b04</uel.glassfish.version>
       <!-- Testing deps -->
