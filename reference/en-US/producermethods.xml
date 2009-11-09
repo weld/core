@@ -59,7 +59,7 @@
       </para>
 
 <programlisting role="JAVA"><![CDATA[@SessionScoped
-public class Preferences {
+public class Preferences implements Serializable {
    private PaymentStrategyType paymentStrategy;
    ...
    @Produces @Preferred 
