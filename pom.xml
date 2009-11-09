@@ -9,7 +9,7 @@
    <groupId>org.jboss.weld.examples</groupId>
    <artifactId>weld-examples-parent</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.0-CR2</version>
+   <version>1.0.0-SNAPSHOT</version>
    <name>Weld Examples</name>
 
    <description>
@@ -234,9 +234,9 @@
    </build>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/tags/1.0.0-CR2</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/tags/1.0.0-CR2</developerConnection>
-     <url>scm:svn:https://svn.jboss.org/repos/weld/examples/tags/1.0.0-CR2</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk</developerConnection>
+     <url>http://fisheye.jboss.org/browse/Weld/build/tags/weld-parent-2/weld-examples-parent</url>
   </scm>
 
 </project>
