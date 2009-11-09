@@ -2,6 +2,9 @@
    "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <chapter id="extensions">
 
+   <!-- TODO turn this into an extensions primer and have a separate guide for writing
+   extensions to CDI that perhaps go into detail about the Weld build -->
+
    <title>CDI extensions available as part of Weld</title>
    
    <important>
