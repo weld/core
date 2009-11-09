@@ -13,18 +13,13 @@
       </para>
       
       <para>
-         If you aren't on JBoss AS 5.2 yet, you can still use Weld with a JBoss AS 5.1 installation. Read on to learn
-         how to install Weld as an add-on to JBoss AS 5.1 or upgrade the built-in support on JBoss AS 5.2.
+         Unfortunately, you can't use Weld with earlier versions of JBoss AS since they are missing key libraries. If
+         you want to learn how to upgrade the built-in support on JBoss AS 5.2, then read on.
       </para>
          
       <para>
-         Installing Weld as an add-on is easy. The Weld distribution has a build that can take care of this task for you
-         in a single command. You can also use this script to update the version of Weld deployed to JBoss AS (even if
-         you already have JBoss AS 5.2).
-      </para>
-      
-      <para>
-         First, we need to tell Weld where JBoss AS is located. Create a new file named
+         Upgrading the Weld add-on is easy. The Weld distribution has a build that can take care of this task for you in
+         a single command. First, we need to tell Weld where JBoss AS is located. Create a new file named
          <literal>local.build.properties</literal> in the examples directory of the Weld distribution and assign the
          path of your JBoss AS installation to the property key <literal>jboss.home</literal>, as follows:
       </para>
@@ -42,7 +37,7 @@ $> ant update</programlisting>
          <para>
             A new deployer, <literal>weld.deployer</literal> is added to JBoss AS. This adds supports for JSR-299
             deployments to JBoss AS, and allows Weld to query the EJB 3 container and discover which EJBs are installed
-            in your application. It also performs a necessary upgrade of the Javassist library.
+            in your application. It also performs an upgrade of the Javassist library, if necessary.
          </para>
       </note>
 
