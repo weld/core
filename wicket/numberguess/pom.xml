@@ -83,6 +83,12 @@
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>maven-jetty-plugin</artifactId>
             <configuration>
+               <connectors>
+                  <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                     <port>${jetty.http.port}</port>
+                     <maxIdleTime>3600000</maxIdleTime>
+                  </connector>
+               </connectors>
                <overrideWebXml>src/main/webapp/WEB-INF/jetty-additions-to-web.xml</overrideWebXml>
             </configuration>
          </plugin>
@@ -164,5 +170,8 @@
       </profile>
    </profiles>
 
+   <properties>
+      <jetty.http.port>9090</jetty.http.port>
+   </properties>
 
 </project>
