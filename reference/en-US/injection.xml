@@ -14,9 +14,8 @@
       <title>Injection points</title>
 
       <para>
-         Injection points are declared using the JSR-330 annotation, <literal>@Inject</literal>, along with an 
-         optional set of qualifier annotations. CDI supports three primary mechanisms for dependency injection 
-         during bean construction:
+         The <literal>@Inject</literal> annotation lets us define an injection point that is injected during bean 
+         instantiation. Injection can occur via three different mechanisms.
       </para>
       
       <para>
@@ -116,13 +115,7 @@
             One major advantage of constructor injection is that it allows the bean to be immutable.
          </para>
       </tip>
-
-      <para>
-         Bean constructors, initializer methods and injected fields must be annotated <literal>@Inject</literal>. The
-         parameters of bean constructors and initializers are injection points, which means the container will search 
-         out beans matching the bean type and qualifiers and pass them in as arguments.         
-      </para>
-
+      
       <para>
          CDI also supports parameter injection for some other methods that are invoked by the container. For instance, 
          parameter injection is supported for producer methods:
