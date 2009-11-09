@@ -88,7 +88,10 @@
 
    <build>
       <defaultGoal>package</defaultGoal>
+      <finalName>weld-permalink</finalName>
+      <!--
       <finalName>${project.artifactId}</finalName>
+      -->
       <plugins>
 
          <plugin>
