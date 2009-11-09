@@ -17,6 +17,9 @@
 
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
+import static org.jboss.weld.logging.messages.BeanMessage.MISSING_BINDING_ON_INTERCEPTOR;
+
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,6 +34,7 @@ import org.jboss.interceptor.registry.InterceptorClassMetadataRegistry;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DeploymentException;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.util.Beans;
 
 /**
@@ -54,11 +58,11 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
       }
       if (this.interceptorBindingTypes.size() == 0)
       {
-         throw new DeploymentException("An interceptor must have at least one binding, but " + type.getName() + " has none");
+         throw new DeploymentException(MISSING_BINDING_ON_INTERCEPTOR, type.getName());
       }
       if (Beans.findInterceptorBindingConflicts(manager, interceptorBindingTypes))
       {
-         throw new DeploymentException("Conflicting interceptor bindings found on " + getType());
+         throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType());
       }
    }
 

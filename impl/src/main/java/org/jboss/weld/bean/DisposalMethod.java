@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.DISPOSE_NOT_FIRST_PARAM;
+import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSE_PARAMS;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -181,23 +186,23 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    {
       if (!disposalMethodInjectionPoint.getWeldParameters().get(0).isAnnotationPresent(Disposes.class))
       {
-         throw new DefinitionException(disposalMethodInjectionPoint.toString() + " doesn't have @Dispose as first parameter");
+         throw new DefinitionException(DISPOSE_NOT_FIRST_PARAM, disposalMethodInjectionPoint);
       }
       if (disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).size() > 1)
       {
-         throw new DefinitionException(disposalMethodInjectionPoint.toString() + " has more than one @Dispose parameters");
+         throw new DefinitionException(MULTIPLE_DISPOSE_PARAMS, disposalMethodInjectionPoint);
       }
       if (disposalMethodInjectionPoint.getAnnotatedParameters(Observes.class).size() > 0)
       {
-         throw new DefinitionException("@Observes is not allowed on disposal method, see " + disposalMethodInjectionPoint.toString());
+         throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Observes", "@Disposes", disposalMethodInjectionPoint);
       }
       if (disposalMethodInjectionPoint.getAnnotation(Inject.class) != null)
       {
-         throw new DefinitionException("@Intitializer is not allowed on a disposal method, see " + disposalMethodInjectionPoint.toString());
+         throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Intitializer", "@Disposes", disposalMethodInjectionPoint);
       }
       if (disposalMethodInjectionPoint.getAnnotation(Produces.class) != null)
       {
-         throw new DefinitionException("@Produces is not allowed on a disposal method, see " + disposalMethodInjectionPoint.toString());
+         throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Disposes", disposalMethodInjectionPoint);
       }
       if (getDeclaringBean() instanceof SessionBean<?>)
       {
@@ -221,7 +226,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
          }
          if (!methodDeclaredOnTypes)
          {
-            throw new DefinitionException("Producer method " + toString() + " must be declared on a business interface of " + getDeclaringBean());
+            throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, this, getDeclaringBean());
          }
       }
    }

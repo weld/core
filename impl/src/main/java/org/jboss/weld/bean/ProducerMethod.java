@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METHODS;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_NOT_SPECIALIZING;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -31,6 +36,7 @@ import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
@@ -146,11 +152,11 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    {
       if (getAnnotatedItem().getAnnotatedWBParameters(Observes.class).size() > 0)
       {
-         throw new DefinitionException("Producer method cannot have parameter annotated @Observes");
+         throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Observes");
       }
       else if (getAnnotatedItem().getAnnotatedWBParameters(Disposes.class).size() > 0)
       {
-         throw new DefinitionException("Producer method cannot have parameter annotated @Disposes");
+         throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Disposes");
       }
       else if (getDeclaringBean() instanceof SessionBean<?>)
       {
@@ -174,7 +180,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
          }
          if (!methodDeclaredOnTypes)
          {
-            throw new DefinitionException("Producer method " + toString() + " must be declared on a business interface of " + getDeclaringBean());
+            throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, this, getDeclaringBean());
          }
       }
    }
@@ -192,8 +198,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
       }
       else if (disposalBeans.size() > 1)
       {
-         // TODO List out found disposal methods
-         throw new DefinitionException("Cannot declare multiple disposal methods for this producer method. Producer method: " + this + ". Disposal methods: " + disposalBeans);
+         throw new DefinitionException(MULTIPLE_DISPOSAL_METHODS, this, disposalBeans);
       }
    }
 
@@ -277,7 +282,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    {
       if (getDeclaringBean().getAnnotatedItem().getWeldSuperclass().getDeclaredWeldMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
       {
-         throw new DefinitionException("Specialized producer method does not override a method on the direct superclass");
+         throw new DefinitionException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
       }
    }
 
@@ -287,7 +292,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
       WeldMethod<?, ?> superClassMethod = getDeclaringBean().getAnnotatedItem().getWeldSuperclass().getWeldMethod(getAnnotatedItem().getAnnotatedMethod());
       if (environment.getProducerMethod(superClassMethod) == null)
       {
-         throw new IllegalStateException(toString() + " does not specialize a bean");
+         throw new ForbiddenStateException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
       }
       this.specializedBean = environment.getProducerMethod(superClassMethod);
    }

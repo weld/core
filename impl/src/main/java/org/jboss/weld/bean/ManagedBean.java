@@ -18,8 +18,17 @@ package org.jboss.weld.bean;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.BEAN_MUST_BE_DEPENDENT;
 import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_INJECTION_POINT_NOT_FOUND;
 import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_DECORATED_BEAN_METHOD_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
+import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +48,7 @@ import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bean.interceptor.CdiInterceptorHandlerFactory;
 import org.jboss.weld.bean.interceptor.ClassInterceptionHandlerFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
@@ -49,6 +59,7 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Names;
@@ -56,8 +67,6 @@ import org.jboss.weld.util.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
-
-import ch.qos.cal10n.IMessageConveyor;
 
 /**
  * Represents a simple bean
@@ -71,7 +80,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    // Logger
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
    private static final XLogger xLog = loggerFactory().getXLogger(BEAN);
-   private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
 
    // The constructor
    private ConstructorInjectionPoint<T> constructor;
@@ -144,7 +152,8 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       Decorator<?> decorator = getDecorators().get(getDecorators().size() - 1);
       InjectionPoint outerDelegateInjectionPoint = Beans.getDelegateInjectionPoint(decorator);
       if (outerDelegateInjectionPoint == null)
-{       throw new IllegalStateException(messageConveyer.getMessage(DELEGATE_INJECTION_POINT_NOT_FOUND, decorator));
+      {
+         throw new ForbiddenStateException(DELEGATE_INJECTION_POINT_NOT_FOUND, decorator);
       }
       return getManager().replaceOrPushCurrentInjectionPoint(outerDelegateInjectionPoint);
    }
@@ -287,22 +296,22 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    {
       if (getAnnotatedItem().isAnonymousClass() || (getAnnotatedItem().isMemberClass() && !getAnnotatedItem().isStatic()))
       {
-         throw new DefinitionException("Simple bean " + type + " cannot be a non-static inner class");
+         throw new DefinitionException(SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED, type);
       }
       if (!isDependent() && getAnnotatedItem().isParameterizedType())
       {
-         throw new DefinitionException("Managed bean " + type + " must be @Dependent");
+         throw new DefinitionException(BEAN_MUST_BE_DEPENDENT, type);
       }
       boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).isPassivating();
       if (passivating && !Reflections.isSerializable(getBeanClass()))
       {
-         throw new DefinitionException("Managed bean declaring a passivating scope must have a serializable implementation class. Bean: " + toString());
+         throw new DefinitionException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
       }
       if (hasDecorators())
       {
          if (getAnnotatedItem().isFinal())
          {
-            throw new DefinitionException("Bean class which has decorators cannot be declared final " + this);
+            throw new DefinitionException(FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED, this);
          }
          for (Decorator<?> decorator : getDecorators())
          {
@@ -314,13 +323,13 @@ public class ManagedBean<T> extends AbstractClassBean<T>
                   WeldMethod<?, ?> method = getAnnotatedItem().getWeldMethod(decoratorMethod.getSignature());
                   if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal())
                   {
-                     throw new DefinitionException("Decorated bean method " + method + " (decorated by "+ decoratorMethod + ") cannot be declarted final");
+                     throw new DefinitionException(FINAL_DECORATED_BEAN_METHOD_NOT_ALLOWED, method, decoratorMethod);
                   }
                }
             }
             else
             {
-               throw new IllegalStateException("Can only operate on container provided decorators " + decorator);
+               throw new ForbiddenStateException(NON_CONTAINER_DECORATOR, decorator);
             }
          }
       }
@@ -336,7 +345,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          {
             if (field.isPublic() && !field.isStatic())
             {
-               throw new DefinitionException("Normal scoped Web Bean implementation class has a public field " + getAnnotatedItem());
+               throw new DefinitionException(PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED, getAnnotatedItem());
             }
          }
       }
@@ -346,11 +355,11 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    {
       if (!constructor.getAnnotatedWBParameters(Disposes.class).isEmpty())
       {
-         throw new DefinitionException("Managed bean constructor must not have a parameter annotated @Disposes " + constructor);
+         throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Disposes", constructor);
       }
       if (!constructor.getAnnotatedWBParameters(Observes.class).isEmpty())
       {
-         throw new DefinitionException("Managed bean constructor must not have a parameter annotated @Observes " + constructor);
+         throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Observes", constructor);
       }
    }
 
@@ -360,7 +369,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       super.preSpecialize(environment);
       if (environment.getEjbDescriptors().contains(getAnnotatedItem().getWeldSuperclass().getJavaClass()))
       {
-         throw new DefinitionException("Simple bean must specialize a simple bean");
+         throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
       }
    }
 
@@ -369,12 +378,12 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    {
       if (environment.getClassBean(getAnnotatedItem().getWeldSuperclass()) == null)
       {
-         throw new DefinitionException(toString() + " does not specialize a bean");
+         throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
       }
       AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getWeldSuperclass());
       if (!(specializedBean instanceof ManagedBean))
       {
-         throw new DefinitionException(toString() + " doesn't have a simple bean as a superclass " + specializedBean);
+         throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
       } else
       {
          this.specializedBean = (ManagedBean<?>) specializedBean;
