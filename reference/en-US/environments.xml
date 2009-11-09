@@ -7,16 +7,26 @@
       <title>Using Weld with JBoss AS</title>
       
       <para>
-         No special configuration is required, beyond making your application a bean archive by adding
-         <literal>META-INF/beans.xml</literal> to the classpath or <literal>WEB-INF/beans.xml</literal> to the web root.
+         If you are using JBoss AS 5.2, no additional configuration is required to use Weld (or CDI for that matter).
+         All you need to do is make your application a bean bean archive by adding <literal>META-INF/beans.xml</literal>
+         to the classpath or <literal>WEB-INF/beans.xml</literal> to the web root!
       </para>
       
       <para>
-         If you are using JBoss AS &lt; 5.2, then you'll need to install Weld as an add-on. Fortunately, the
-         distribution has a build that can handle this for you in a single command. First, we need to tell Weld where
-         JBoss AS is located.  Create a new file named <literal>local.build.properties</literal> in the examples directory 
-         of the Weld distribution and assign the path of your JBoss AS installation to the property key
-         <literal>jboss.home</literal>, as follows:
+         If you aren't on JBoss AS 5.2 yet, you can still use Weld with a JBoss AS 5.1 installation. Read on to learn
+         how to install Weld as an add-on to JBoss AS 5.1 or upgrade the built-in support on JBoss AS 5.2.
+      </para>
+         
+      <para>
+         Installing Weld as an add-on is easy. The Weld distribution has a build that can take care of this task for you
+         in a single command. You can also use this script to update the version of Weld deployed to JBoss AS (even if
+         you already have JBoss AS 5.2).
+      </para>
+      
+      <para>
+         First, we need to tell Weld where JBoss AS is located. Create a new file named
+         <literal>local.build.properties</literal> in the examples directory of the Weld distribution and assign the
+         path of your JBoss AS installation to the property key <literal>jboss.home</literal>, as follows:
       </para>
 
       <programlisting><![CDATA[jboss.home=/path/to/jboss-as-5.x]]></programlisting>
@@ -35,11 +45,6 @@ $> ant update</programlisting>
             in your application. It also performs a necessary upgrade of the Javassist library.
          </para>
       </note>
-      
-      <para>
-         Weld is built into all releases of JBoss AS from 5.2 onwards. Regardless, you can use this script to update the
-         version of Weld deployed to JBoss AS at any time.
-      </para>
 
    </section>
    
@@ -48,9 +53,8 @@ $> ant update</programlisting>
       
       <para>
          Weld is also built into GlassFish from V3 onwards. Since GlassFish V3 is the Java EE 6 reference
-         implementation, you can be confident that it will support all features of CDI. What better way
-         for it to support these features than to use the JSR-299 reference implementation? Just package up
-         your CDI application and deploy away!
+         implementation, it must support all features of CDI. What better way for it to support these features than to
+         use Weld, the JSR-299 reference implementation? Just package up your CDI application and deploy.
       </para>
    </section>
    
