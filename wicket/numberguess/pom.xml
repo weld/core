@@ -89,6 +89,7 @@
                      <maxIdleTime>3600000</maxIdleTime>
                   </connector>
                </connectors>
+               <contextPath>/${project.build.finalName}</contextPath>
                <overrideWebXml>src/main/webapp/WEB-INF/jetty-additions-to-web.xml</overrideWebXml>
             </configuration>
          </plugin>
@@ -135,15 +136,21 @@
             <!--  JETTY DEPENDENCIES FOR IN IDE TESTING  -->
 
             <dependency>
-               <groupId>org.mortbay.jetty</groupId>
-               <artifactId>jetty</artifactId>
+               <groupId>javax.servlet.jsp</groupId>
+               <artifactId>jsp-api</artifactId>
                <scope>test</scope>
             </dependency>
 
             <dependency>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-jdk14</artifactId>
-               <scope>runtime</scope>
+               <groupId>javax.el</groupId>
+               <artifactId>el-api</artifactId>
+               <scope>test</scope>
+            </dependency>
+
+            <dependency>
+               <groupId>org.mortbay.jetty</groupId>
+               <artifactId>jetty</artifactId>
+               <scope>test</scope>
             </dependency>
 
          </dependencies>
