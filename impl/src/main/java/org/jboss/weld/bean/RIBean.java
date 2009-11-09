@@ -77,6 +77,11 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
       // no-op by default
    }
 
+    public void checkType()
+    {
+
+    }
+
    public abstract boolean isSpecializing();
 
    public boolean isDependent()

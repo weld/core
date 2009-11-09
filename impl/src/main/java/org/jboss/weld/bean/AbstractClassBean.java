@@ -104,6 +104,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    private final ThreadLocal<T> decoratedActualInstance = new ThreadLocal<T>();
 
+   private boolean hasSerializationOrInvocationInterceptorMethods;
+
    private WeldMethod<?, ?> postConstruct;
    private WeldMethod<?, ?> preDestroy;
    
@@ -143,8 +145,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       super.initialize(environment);
       checkBeanImplementation();
-      initDecorators();
-      checkType();
       if (isInterceptionCandidate())
       {
             initCdiBoundInterceptors();
@@ -163,7 +163,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       }
    }
 
-   protected void checkType()
+   public void checkType()
    {
       
    }
@@ -557,12 +557,16 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          return false;
    }
 
-      public boolean hasDirectlyDefinedInterceptors()
+   public boolean hasDirectlyDefinedInterceptors()
    {
       if (manager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()) != null)
-         return manager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
+      {
+         return hasSerializationOrInvocationInterceptorMethods || manager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
+      }
       else
+      {
          return false;
+      }
    }
 
    protected void initDirectlyDefinedInterceptors()
@@ -605,7 +609,13 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             }
          }
          InterceptionModel<Class<?>, Class<?>> interceptionModel = builder.build();
-         if (interceptionModel.getAllInterceptors().size() > 0 || new InterceptorClassMetadataImpl(getType()).isInterceptor())
+         InterceptorClassMetadataImpl interceptorClassMetadata = new InterceptorClassMetadataImpl(getType());
+         hasSerializationOrInvocationInterceptorMethods =
+               !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_INVOKE).isEmpty()
+               || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_TIMEOUT).isEmpty()
+               || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.PRE_PASSIVATE).isEmpty()
+               || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.POST_ACTIVATE).isEmpty();
+         if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods)
             manager.getClassDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
       }
    }

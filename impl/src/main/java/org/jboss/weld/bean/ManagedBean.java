@@ -40,6 +40,8 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
 import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
@@ -61,6 +63,7 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.Reflections;
@@ -167,7 +170,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    {
       try
       {
-         if (!isInterceptionCandidate() || !hasCdiBoundInterceptors())
+         if (!isInterceptionCandidate() || !(hasCdiBoundInterceptors() || hasDirectlyDefinedInterceptors()))
          {
             getInjectionTarget().preDestroy(instance);
          }
@@ -267,10 +270,48 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       }
    }
 
+   @Override
+   public void initializeAfterBeanDiscovery()
+   {
+      super.initializeAfterBeanDiscovery();
+      if (this.passivationCapable && this.hasDecorators())
+      {
+         for (Decorator<?> decorator : this.getDecorators())
+         {
+            if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !Reflections.isSerializable(decorator.getBeanClass()))
+            {
+               this.passivationCapable = false;
+               break;
+            }
+         }
+      }
+      if (this.passivationCapable && hasCdiBoundInterceptors())
+      {
+         for (SerializableContextual<Interceptor<?>, ?> interceptor : getManager().getCdiInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors())
+         {
+            if (!(PassivationCapable.class.isAssignableFrom(interceptor.get().getClass())) || !Reflections.isSerializable(interceptor.get().getBeanClass()))
+            {
+               this.passivationCapable = false;
+               break;
+            }
+         }
+      }
+      if (this.passivationCapable && hasDirectlyDefinedInterceptors())
+      {
+         for (Class<?> interceptorClass : getManager().getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors())
+         {
+            if (!Reflections.isSerializable(interceptorClass))
+            {
+               this.passivationCapable = false;
+               break;
+            }
+         }
+      }
+   }
+
    private void initPassivationCapable()
    {
       this.passivationCapable = Reflections.isSerializable(getAnnotatedItem().getJavaClass());
-      // TODO Add in interceptor and decorator checks
    }
    
    @Override
@@ -288,11 +329,13 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    }
 
 
+
+
    /**
     * Validates the type
     */
    @Override
-   protected void checkType()
+   public void checkType()
    {
       if (getAnnotatedItem().isAnonymousClass() || (getAnnotatedItem().isMemberClass() && !getAnnotatedItem().isStatic()))
       {
@@ -303,7 +346,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          throw new DefinitionException(BEAN_MUST_BE_DEPENDENT, type);
       }
       boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).isPassivating();
-      if (passivating && !Reflections.isSerializable(getBeanClass()))
+      if (passivating && !isPassivationCapable())
       {
          throw new DefinitionException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
       }
@@ -315,21 +358,28 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          }
          for (Decorator<?> decorator : getDecorators())
          {
+            WeldClass<?> decoratorClass;
             if (decorator instanceof DecoratorImpl<?>)
             {
                DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
-               for (WeldMethod<?, ?> decoratorMethod : decoratorBean.getAnnotatedItem().getWeldMethods())
-               {
-                  WeldMethod<?, ?> method = getAnnotatedItem().getWeldMethod(decoratorMethod.getSignature());
-                  if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal())
-                  {
-                     throw new DefinitionException(FINAL_DECORATED_BEAN_METHOD_NOT_ALLOWED, method, decoratorMethod);
-                  }
-               }
+               decoratorClass = decoratorBean.getAnnotatedItem();
+            }
+            else if (decorator instanceof AnnotatedItemProvidingDecoratorWrapper)
+            {
+               decoratorClass = ((AnnotatedItemProvidingDecoratorWrapper) decorator).getAnnotatedItem();
             }
             else
             {
                throw new ForbiddenStateException(NON_CONTAINER_DECORATOR, decorator);
+            }
+
+            for (WeldMethod<?, ?> decoratorMethod : decoratorClass.getWeldMethods())
+            {
+               WeldMethod<?, ?> method = getAnnotatedItem().getWeldMethod(decoratorMethod.getSignature());
+               if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal())
+               {
+                  throw new DefinitionException(FINAL_DECORATED_BEAN_METHOD_NOT_ALLOWED, method, decoratorMethod);
+               }
             }
          }
       }

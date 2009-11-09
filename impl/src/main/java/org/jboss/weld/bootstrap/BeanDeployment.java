@@ -165,6 +165,7 @@ public class BeanDeployment
          if (bean instanceof RIBean<?>)
          {
             ((RIBean<?>) bean).initializeAfterBeanDiscovery();
+            ((RIBean<?>) bean).checkType();
          }
       }
    }
