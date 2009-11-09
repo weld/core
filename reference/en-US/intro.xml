@@ -137,7 +137,7 @@ public interface Translator {
     
       <programlistingco>
          <areaspec>
-            <area id="injection" coords="3"/>
+            <area id="textTranslator" coords="3"/>
          </areaspec>
          <programlisting role="JAVA"><![CDATA[@Named @RequestScoped
 public class TranslateController {
@@ -164,7 +164,7 @@ public class TranslateController {
    }
 }]]></programlisting>
          <calloutlist>
-            <callout arearefs="injection">
+            <callout arearefs="textTranslator">
                <para>
                   Field injection of <literal>TextTranslator</literal> instance
                </para>
@@ -307,7 +307,7 @@ public void translate() {
 
       </blockquote>
 
-      <para>Let's see what some of these new terms mean.</para>
+      <para>Let's see what all this new terminology means.</para>
 
       <section>
          <title>Bean types, qualifiers and dependency injection</title>
@@ -323,7 +323,7 @@ public void translate() {
          </itemizedlist>
 
          <para>
-            A bean type is a user-defined class or interface; types that are client-visible. If the bean is an EJB
+            A bean type is a user-defined class or interface; a type that is client-visible. If the bean is an EJB
             session bean, the bean type is the <literal>@Local</literal> interface or bean-class local view. A bean may
             have multiple bean types. For example, the following bean has four bean types:
          </para>
@@ -362,9 +362,8 @@ public class BookShopBean
 
          <para>
             Bean types may be restricted to an explicit set by annotating the bean with the <literal>@Typed</literal>
-            annotation and listing the bean types in the value of the annotation. For instance, this bean has been
-            restricted to the bean type explicitly listed, <literal>Shop&lt;Book&gt;</literal>, together with 
-            <literal>java.lang.Object</literal>:
+            annotation and listing the classes that should be bean types. For instance, the bean types of this bean have 
+            been restricted to <literal>Shop&lt;Book&gt;</literal>, together with <literal>java.lang.Object</literal>:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Typed(Shop.class)
@@ -375,19 +374,18 @@ public class BookShop
 }]]></programlisting> 
 
          <para>
-            The bean types alone often do not provide enough information for the container to know which bean to inject.
+            Sometimes, a bean type alone does not provide enough information for the container to know which bean to inject.
             For instance, suppose we have two implementations of the <literal>PaymentProcessor</literal> interface:
-            <literal>CreditCardPaymentProcessor</literal> and <literal>DebitPaymentProcessor</literal>. Injecting into a
-            field of type <literal>PaymentProcessor</literal> introduces an ambiguous condition. In these cases, the
-            container must rely on some client-visible semantic that is satisfied by one implementation of the bean
-            type, but not by others. That semantic is called a qualifier.
+            <literal>CreditCardPaymentProcessor</literal> and <literal>DebitPaymentProcessor</literal>. Injecting a field of 
+            type <literal>PaymentProcessor</literal> introduces an ambiguous condition. In these cases, the client must 
+            specify some additional quality of the implementation it is interested in. We model this kind of "quality" using
+            a qualifier.
          </para>
 
          <para>
-            Qualifiers are represented by user-defined annotations that are themselves annotated with
-            <literal>@Qualifer</literal>. These annotations extend the type system in Java to let you further qualify
-            the type without having to fall back to string-based names as in many other  dependency injection solutions.
-            Here's an example of a qualifier annotation:
+            A qualifier is a user-defined annotation that is itself annotated <literal>@Qualifer</literal>. A qualifier 
+            annotation is an extension of the type system. It lets us disambiguate a type without having to fall back to 
+            string-based names. Here's an example of a qualifier annotation:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Qualifier
@@ -396,9 +394,9 @@ public class BookShop
 public @interface CreditCard {}]]></programlisting> 
 
          <para>
-            You may not be used to seeing the definition of an annotation. In fact, this might be the first time you
-            have encountered one. With CDI, they will become very familiar artifact as you will be creating them from
-            time to time. 
+            You may not be used to seeing the definition of an annotation. In fact, this might be the first time you've
+            encountered one. With CDI, annotation definitions will become a familiar artifact as you'll be creating them 
+            from time to time. 
          </para>
          
          <tip>
@@ -410,8 +408,9 @@ public @interface CreditCard {}]]></programlisting>
          </tip>
             
          <para>
-            Now that we have defined a qualifier annotation, we can use it. The following injection point has the bean
-            type <literal>PaymentProcessor</literal> and qualifier <literal>@CreditCard</literal>:
+            Now that we have defined a qualifier annotation, we can use it to disambiguate an injection point. The 
+            following injection point has the bean type <literal>PaymentProcessor</literal> and qualifier 
+            <literal>@CreditCard</literal>:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Inject @CreditCard PaymentProcessor paymentProcessor]]></programlisting>
@@ -425,15 +424,14 @@ public @interface CreditCard {}]]></programlisting>
 
          <para>
             For each injection point, the container searches for a bean which satisfies the contract, one which has
-            the bean type and all the qualifiers. If it find exactly one matching bean, it injects an instance of 
-            that bean.
+            the bean type and all the qualifiers. If it finds exactly one matching bean, it injects an instance of 
+            that bean. If it doesn't, it reports an error to the user.
          </para>
          
          <para>
-            We've seen how to indicate that you want to inject a qualified bean. But how do you actually qualify the bean?
-            By using the annotation, of course! The following bean has the qualifier <literal>@CreditCard</literal>
-            and implements the bean type <literal>PaymentProcessor</literal>. Therefore, it satisfies our qualified
-            injection point:
+            How do we specify that qualifiers of a bean? By annotating the bean class, of course! The following bean 
+            has the qualifier <literal>@CreditCard</literal> and implements the bean type <literal>PaymentProcessor</literal>. 
+            Therefore, it satisfies our qualified injection point:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@CreditCard
@@ -455,9 +453,9 @@ public class CreditCardPaymentProcessor
          -->
          
          <para>
-            CDI defines a simple <emphasis>resolution rule</emphasis> that helps the container decide what to do if there 
-            is more than one bean that satisfies a particular contract. We'll get into the details in 
-            <xref linkend="alternatives"/>.
+            That's not quite the end of the story. CDI also defines a simple <emphasis>resolution rule</emphasis> that helps 
+            the container decide what to do if there is more than one bean that satisfies a particular contract. We'll get 
+            into the details in <xref linkend="alternatives"/>.
          </para>
          
          <!--
@@ -544,8 +542,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          </note>
 
          <para>
-            If you want, you can let CDI select a name for you by leaving off the
-            value of the <literal>@Named</literal> annotation:
+            We can let CDI choose a name for us by leaving off the value of the <literal>@Named</literal> annotation:
          </para>
 
          <programlisting role="JAVA"><![CDATA[public @SessionScoped @Named
@@ -612,9 +609,13 @@ class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisti
 
          <para>
             CDI provides a new approach to binding interceptors to beans that introduces a level of indirection (and
-            thus control). We define a special kind of annotation called an <emphasis>interceptor binding
-            type</emphasis> whose name describes the behavior implemented by the interceptor, in this case to perform 
-            transaction management:
+            thus control). We must define an <emphasis>interceptor binding type</emphasis> to describe the behavior 
+            implemented by the interceptor.
+         </para>
+         
+         <para>
+            An interceptor binding type is a user-defined annotation that is itself annotated <literal>@InterceptorBinding</literal>.
+            It lets us bind interceptor classes to bean classes with no direct dependency between the two classes.
          </para>
 
          <programlisting role="JAVA"><![CDATA[@InterceptorBinding
@@ -631,19 +632,22 @@ public @interface Transactional {}]]></programlisting>
 class TransactionInterceptor { ... }]]></programlisting>
          
          <para>
-            We can apply the interceptor to a bean by annotating to the bean class with the same interceptor
-            binding type:
+            We can apply the interceptor to a bean by annotating the bean class with the same interceptor binding type:
          </para>
 
          <programlisting role="JAVA"><![CDATA[public @SessionScoped @Transactional
 class ShoppingCart implements Serializable { ... }]]></programlisting>
 
          <para>
-            Now there's no direct dependency between the two implementations (bean and interceptor). Activation of 
-            interceptors is controlled by the CDI deployment descriptor <literal>META-INF/beans.xml</literal> 
-            of the jar or Java EE module, allowing us to control which interceptors apply in which deployment
-            scenarios, along with the order of interceptor invocation when multiple interceptors apply to a
-            bean.
+            Notice that <literal>ShoppingCart</literal> and <literal>TransactionInterceptor</literal> don't know 
+            anything about each other.
+         </para>
+
+         <para>
+            Interceptors are deployment-specific. (We don't need a <literal>TransactionInterceptor</literal> in our
+            unit tests!) By default, an interceptor is disabled. We can enable an interceptor using the CDI deployment 
+            descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE module. This is also where we
+            specify the interceptor ordering.
          </para>
          
          <para>
@@ -659,8 +663,9 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
       <title>What kinds of classes are beans?</title>
      
       <para>
-         We've already seen that JavaBeans and EJB session beans can be (CDI) beans. Is that the whole story? 
-         Actually, it's just the beginning.
+         We've already seen two types of beans: JavaBeans and EJB session beans. Is that the whole story? Actually, 
+         it's just the beginning. Let's explore the various kinds of beans that CDI implementations must support 
+         out-of-the-box.
       </para>
      
       <section>
@@ -727,10 +732,9 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          <para>
             Session beans belong to the EJB specification. They have a special lifecycle, state management and concurrency
             model that is different to other managed beans and non-managed Java objects. But session beans participate in 
-            CDI just like any other bean. There are some restrictions upon the scope that can be assigned to a session bean, 
-            but apart from than that, they may be used interchangeably with regular managed beans. That means you can inject 
-            one session bean into another session bean, a managed bean into a session bean, a session bean into a managed 
-            bean, have a managed bean observe an event raised by a session bean, and so on.
+            CDI just like any other bean. You can inject one session bean into another session bean, a managed bean into a 
+            session bean, a session bean into a managed bean, have a managed bean observe an event raised by a session bean, 
+            and so on.
          </para>
 
          <note>
@@ -746,7 +750,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
             The unrestricted set of bean types for a session bean contains all local interfaces of the bean and their
             superinterfaces. If the session bean has a bean class local view, the unrestricted set of bean types
             contains the bean class and all superclasses. In addition, <literal>java.lang.Object</literal> is a bean
-            type of every session bean. But, remote interfaces are <emphasis>not</emphasis> included in the set of bean
+            type of every session bean. But remote interfaces are <emphasis>not</emphasis> included in the set of bean
             types.
          </para>
 
@@ -796,8 +800,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
        
          <para>
             Beans which hold references to heavy-weight resources, or hold a lot of internal state benefit from the
-            advanced container-managed lifecycle defined by the EJB
-            <literal>@Stateless</literal>/<literal>@Stateful</literal>/<literal>@Singleton</literal> model, with its
+            advanced container-managed lifecycle defined by the EJB stateless/stateful/singleton model, with its
             support for passivation and instance pooling.
          </para>
        
@@ -830,14 +833,15 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          <para>
             Not everything that needs to be injected can be boiled down to a bean class instantiated by the container
             using <literal>new</literal>. There are plenty of cases where we need additional control. What if we need 
-            to decide at runtime which implementation of a type to instantiate and inject? What if we need to inject an 
-            object that is obtained by querying a service or transactional resource, for example by executing a JPA query?
+            to decide at runtime which implementation of a type to instantiate and inject? What if we need to inject  
+            an object that is obtained by querying a service or transactional resource, for example by executing a JPA 
+            query?
          </para>
 
          <para>
-            A <emphasis>producer method</emphasis> is a method that acts as a source of bean instances, meaning the
-            method declaration itself describes the bean and the container invokes the method to obtain an instance of 
-            the bean when no instance exists in the specified context. A producer method lets the application take full 
+            A <emphasis>producer method</emphasis> is a method that acts as a source of bean instances. The method 
+            declaration itself describes the bean and the container invokes the method to obtain an instance of the 
+            bean when no instance exists in the specified context. A producer method lets the application take full 
             control of the bean instantiation process.
          </para>
             
@@ -957,10 +961,10 @@ public class RandomNumberGenerator {
          <para>
             Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably,
             component environment injection relies on string-based names to qualify ambiguous types, and there is no 
-            real consistency as to the nature of the names (sometimes a JNDI name, other times an identifier from an 
-            XML descriptor, or even a default name). Producer fields turned out to be an elegant adaptor to reduce all 
-            this complexity to a common model and get component environment resources to participate in the CDI system 
-            just like any other kind of bean.
+            real consistency as to the nature of the names (sometimes a JNDI name, sometimes a persistence unit name, 
+            sometimes an EJB link, sometimes a nonportable "mapped name"). Producer fields turned out to be an elegant 
+            adaptor to reduce all this complexity to a common model and get component environment resources to 
+            participate in the CDI system just like any other kind of bean.
          </para>
 
          <para>
