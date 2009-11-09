@@ -14,9 +14,9 @@
       <title>Where you can <literal>@Inject</literal></title>
 
       <para>
-         Injection points are declared using the JSR-330 annotation, <literal>@Inject</literal>, along with an optional set of
-         qualifiers annotations. CDI supports three primary mechanisms for dependency injection during bean
-         construction:
+         Injection points are declared using the JSR-330 annotation, <literal>@Inject</literal>, along with an 
+         optional set of qualifier annotations. CDI supports three primary mechanisms for dependency injection 
+         during bean construction:
       </para>
       
       <para>
@@ -57,8 +57,8 @@
 
       <note>
          <para>
-            A bean can have multiple initializer methods. If the bean is a session bean, the initializer method is not
-            required to be a business method of the session bean.
+            A bean can have multiple initializer methods. If the bean is a session bean, the initializer method 
+            is not required to be a business method of the session bean.
          </para>
       </note>
 
@@ -80,6 +80,7 @@
 
       <para>
          Dependency injection always occurs when the bean instance is first instantiated by the container.
+         Simplifying just a little, things happen in this order:
       </para>
 
       <itemizedlist>
@@ -96,8 +97,8 @@
          </listitem>
          <listitem>
             <para>
-               Next, the container calls all initializer methods of bean (the call order is not portable, don't rely on
-               it).
+               Next, the container calls all initializer methods of bean (the call order is not portable, don't 
+               rely on it).
             </para>
          </listitem>
          <listitem>
@@ -106,6 +107,9 @@
             </para>
          </listitem>
       </itemizedlist>
+      
+      <para>(The only complication is that the container might call initializer methods declared by a superclass 
+      before initializing injected fields declared by a subclass.)</para>
 
       <tip>
          <para>
@@ -115,18 +119,18 @@
 
       <para>
          Bean constructors, initializer methods and injected fields must be annotated <literal>@Inject</literal>. The
-         parameters of bean constructors and initializers are injection points, which means the container will search out
-         beans matching the bean type and qualifier and pass them in as arguments.         
+         parameters of bean constructors and initializers are injection points, which means the container will search 
+         out beans matching the bean type and qualifiers and pass them in as arguments.         
       </para>
 
       <para>
-         If a parameter of bean constructors and initializer methods is not explicitly annotated with a qualifier, the
-         default qualifier, <literal>@Default</literal>, is applied. The same is goes for an injected field.
+         If an injected field or a parameter of a bean constructor or initializer method is not explicitly annotated 
+         with a qualifier, the default qualifier, <literal>@Default</literal>, is assumed.
       </para>
 
       <para>
-         CDI also supports parameter injection on methods that are invoked by the container. For instance, parameter
-         injection is supported for producer methods:
+         CDI also supports parameter injection for some other methods that are invoked by the container. For instance, 
+         parameter injection is supported for producer methods:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {
@@ -136,7 +140,7 @@
       <para>
         This is one of the cases where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at
         an injection point. Other cases include observer methods (which we'll meet in <xref linkend="events"/>) and
-        disposer methods, which also support parameter injection.
+        disposer methods.
       </para>
    </section>
 
@@ -159,7 +163,7 @@
       <itemizedlist>
          <listitem>
             <para>
-               allow the client to select which implementation it requires using <emphasis>qualifier</emphasis> or
+               allow the client to select which implementation it requires using a <emphasis>qualifier</emphasis> or
             </para>
         </listitem>
         <listitem>
@@ -170,7 +174,7 @@
         </listitem>
         <listitem>
             <para>
-               be deployed in different, isolated modules.
+               allow the beans to be isolated into separate modules.
             </para>
         </listitem>
       </itemizedlist>
@@ -183,7 +187,7 @@
       
       <para>
          But then, things start to get complicated. Let's explore how the container determines which bean to inject in
-         those more advanced cases. We'll start by taking a closer look at qualifiers.
+         more advanced cases. We'll start by taking a closer look at qualifiers.
       </para>
 
    </section>
