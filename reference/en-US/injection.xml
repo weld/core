@@ -278,10 +278,10 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
          <title>Qualifiers with members</title>
 
          <para>
-            Annotations can have members (i.e., fields) just like regular classes. You can use these fields to further
-            discriminate the qualifier. This prevents a potential explosion of new annotations.
-            For instance, if you wanted to create several qualifiers representing different payment methods, you could
-            aggregate them under a single annotation using a member:
+            Annotations can have members just like regular classes. We can use members to further discriminate the 
+            qualifier. This prevents a potential explosion of new annotations. For instance, if you wanted to create 
+            several qualifiers representing different payment methods, you could aggregate them into a single annotation 
+            using a member:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Qualifier
