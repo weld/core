@@ -179,6 +179,12 @@ tainer, for example, alternative web presentation technologies.
    </para>
   
    <para>
+      But CDI isn't a restrictive programming model. It doesn't tell you how you should to structure your application
+      into layers, how you should handle persistence, or what web framework you have to use. You'll have to decide 
+      those kinds of things for yourself.
+   </para>
+  
+   <para>
       CDI even provides a comprehensive SPI, allowing other kinds of object defined by future Java EE specifications 
       or by third-party frameworks to be cleanly integrated with CDI, take advantage of the CDI services, and interact 
       with any other kind of bean.
