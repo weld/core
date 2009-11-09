@@ -26,6 +26,8 @@ Just copy target/weld-permalink.war to the JBoss AS deploy directory.  Open this
 local URL to access the running application:
 
  http://localhost:8080/weld-permalink
+ 
+Alternatively, run ant restart to have the app copied to you ${jboss.home}
 
 But you may want to take advantage of the embedded servlet containers.
 
@@ -105,7 +107,7 @@ The application is available at the following local URL:
 
 = Importing the project into Eclipse
 
-The recommended way to setup a Seam example in Eclipse is to use the m2eclipse
+The recommended way to setup a Weld example in Eclipse is to use the m2eclipse
 plugin. This plugin derives the build classpath from the dependencies listed in
 the pom.xml file. It also has direct integration with Maven build commands.
 
