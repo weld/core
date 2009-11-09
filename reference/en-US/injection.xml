@@ -618,7 +618,7 @@ class ShoppingCart implements Serializable {
       <title>Lifecycle callbacks and component environment injection</title>
 
       <para>
-         Managed beans and EJB beans support the lifecycle callback methods, <literal>@PostConstruct</literal> and 
+         Managed beans and EJB beans support the lifecycle callback methods <literal>@PostConstruct</literal> and 
          <literal>@PreDestroy</literal> which are called after after all dependencies have been injected, and before the 
          bean is destroyed (when the context to which it belongs ends), respectively. EJB beans also support the EJB 
          callback methods <literal>@PrePassivate</literal> and <literal>@PostActivate</literal>.
