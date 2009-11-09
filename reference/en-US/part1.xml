@@ -14,8 +14,8 @@ tainer, for example, alternative web presentation technologies.
    <para>
       The <ulink src="http://jcp.org/en/jsr/detail?id=299">JSR-299</ulink> specification (CDI) defines a set of 
       complementary services that help improve the structure of application code. CDI layers an enhanced lifecycle 
-      and interaction model over existing Java component types, including managed beans (JavaBeans) and Enterprise 
-      Java Beans. The CDI services provide:
+      and interaction model over existing Java component types, including managed beans and Enterprise Java Beans. 
+      The CDI services provide:
    </para>
 
    <itemizedlist>
@@ -126,7 +126,7 @@ tainer, for example, alternative web presentation technologies.
       </listitem>
       <listitem>
          <para>
-            How can I define alternative an implementation, so that the implementation can vary 
+            How can I define an alternative implementation, so that the implementation can vary 
             at deployment time?
          </para>
       </listitem>
@@ -151,7 +151,7 @@ tainer, for example, alternative web presentation technologies.
    </para>
   
    <para>
-      Events, interceptors and decorators enhance the <emphasis>loose-coupling</emphasis> inherent in this model:
+      Events, interceptors and decorators enhance the loose-coupling inherent in this model:
    </para>
   
    <itemizedlist>
@@ -174,8 +174,8 @@ tainer, for example, alternative web presentation technologies.
       <emphasis>typesafe</emphasis> way. CDI never relies on string-based identifiers to determine how collaborating
       objects fit together. (XML is rarely used, reserved only to activate alternatives and define ordering at
       deployment time). Instead, CDI uses the typing information that is already available in the Java object model,
-      then extends it with a new typing pattern, called <emphasis>qualifier annotations</emphasis>, to wire together
-      beans, their dependencies, their interceptors and decorators, and their event consumers.
+      then extends it using a new programming pattern, called <emphasis>qualifier annotations</emphasis>, to wire 
+      together beans, their dependencies, their interceptors and decorators, and their event consumers.
    </para>
   
    <para>
