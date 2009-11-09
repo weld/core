@@ -279,9 +279,9 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
 
          <para>
             Annotations can have members just like regular classes. We can use members to further discriminate the 
-            qualifier. This prevents a potential explosion of new annotations. For instance, if you wanted to create 
-            several qualifiers representing different payment methods, you could aggregate them into a single annotation 
-            using a member:
+            qualifier. This prevents a potential explosion of new annotations. For example, instead of creating
+            several qualifiers representing different payment methods, we could aggregate them into a single annotation 
+            with a member:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Qualifier
@@ -292,13 +292,13 @@ public @interface PayBy {
 }]]></programlisting> 
    
          <para>
-            Then you select one of the possible values when you apply the qualifier:
+            Then we select one of the possible member values when appling the qualifier:
          </para>
 
          <programlisting role="JAVA"><![CDATA[private @Inject @PayBy(CHECK) CheckPayment checkPayment;]]></programlisting> 
 
          <para>
-            You can tell the container to ignore a member of a qualifier type by annotating the member <literal>@NonBinding</literal>.
+            We can force the container to ignore a member of a qualifier type by annotating the member <literal>@NonBinding</literal>.
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Qualifier
