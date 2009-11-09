@@ -11,7 +11,7 @@
    </para>
 
    <section>
-      <title>Where you can <literal>@Inject</literal></title>
+      <title>Injection points</title>
 
       <para>
          Injection points are declared using the JSR-330 annotation, <literal>@Inject</literal>, along with an 
@@ -41,7 +41,7 @@
       </note>
 
       <para>
-         <emphasis>Initializer</emphasis> method parameter injection:
+         <emphasis>Initializer method</emphasis> parameter injection:
       </para>
 
       <programlisting role="JAVA"><![CDATA[public class Checkout {
@@ -124,11 +124,6 @@
       </para>
 
       <para>
-         If an injected field or a parameter of a bean constructor or initializer method is not explicitly annotated 
-         with a qualifier, the default qualifier, <literal>@Default</literal>, is assumed.
-      </para>
-
-      <para>
          CDI also supports parameter injection for some other methods that are invoked by the container. For instance, 
          parameter injection is supported for producer methods:
       </para>
@@ -138,8 +133,8 @@
 }]]></programlisting>
 
       <para>
-        This is one of the cases where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at
-        an injection point. Other cases include observer methods (which we'll meet in <xref linkend="events"/>) and
+        This is a case where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at the
+        injection point. The same is true for observer methods (which we'll meet in <xref linkend="events"/>) and
         disposer methods.
       </para>
    </section>
@@ -148,12 +143,11 @@
       <title>What gets injected</title>
 
       <para>
-         The CDI specification defines a procedure, called <emphasis>typesafe resolution</emphasis>, that
-         the container follows when identifying the bean to inject to an injection point.  This algorithm looks complex
-         at first, but once you understand it, it's really quite intuitive. Typesafe resolution is performed at system
-         initialization time, which means that the container will inform the developer immediately if a bean's
-         dependencies cannot be satisfied, by throwing a <literal>UnsatisfiedDependencyException</literal> or
-         <literal>AmbiguousDependencyException</literal>.
+         The CDI specification defines a procedure, called <emphasis>typesafe resolution</emphasis>, that the container 
+         follows when identifying the bean to inject to an injection point.  This algorithm looks complex at first, but 
+         once you understand it, it's really quite intuitive. Typesafe resolution is performed at system initialization 
+         time, which means that the container will inform the developer immediately if a bean's
+         dependencies cannot be satisfied.
       </para>
 
       <para>
@@ -265,23 +259,24 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
 }]]></programlisting> 
    
       <para>
+         If an injected field or a parameter of a bean constructor or initializer method is not explicitly annotated 
+         with a qualifier, the default qualifier, <literal>@Default</literal>, is assumed.
+      </para>
+
+      <para>
          Now, you may be thinking, <emphasis>"What's the different between using a qualifier and just specifying the
          exact implementation class you want?"</emphasis> It's important to understand that a qualifier is like an
-         extension of the interface. You could potentially implement the asynchronous payment processor differently over
-         the age of the application. However, if you use qualifier annotations to hook injection points with the bean
-         implementing that functionality, the server implementation can vary without affecting the client code.  Plus,
-         you get all the benefits of using the bean's interface because you don't have a hard dependency on the
-         implementation.
+         extension of the interface. It does not create a direct dependency to any particular implementation. There 
+         may be multiple alterative implementations of <literal>@Asynchronous PaymentProcessor</literal>!
       </para>
 
       <section>
          <title>Qualifiers with members</title>
 
          <para>
-            Annotations can have members just like regular classes. We can use members to further discriminate the 
-            qualifier. This prevents a potential explosion of new annotations. For example, instead of creating
-            several qualifiers representing different payment methods, we could aggregate them into a single annotation 
-            with a member:
+            Java annotations can have members. We can use annotation members to further discriminate a qualifier. This 
+            prevents a potential explosion of new annotations. For example, instead of creating several qualifiers 
+            representing different payment methods, we could aggregate them into a single annotation with a member:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Qualifier
@@ -315,20 +310,20 @@ public @interface PayBy {
          <title>Combining qualifiers</title>
 
          <para>
-            Both beans and injection points may specify multiple qualifiers:
+            An injection point may specify multiple qualifiers:
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@Inject @Synchronous @Reliable PaymentProcessor syncPaymentProcessor;]]></programlisting>
+
+         <para>
+            Then a bean which has <emphasis>both</emphasis> qualifier annotations would be eligible for
+            injection.
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Synchronous @Reliable
 public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
    public void process(Payment payment) { ... }
 }]]></programlisting>      
-
-         <programlisting role="JAVA"><![CDATA[@Inject @Synchronous @Reliable PaymentProcessor syncPaymentProcessor;]]></programlisting>
-
-         <para>
-            In this case, only a bean which has <emphasis>both</emphasis> qualifier annotations would be eligible for
-            injection.
-         </para>
 
       </section>
 
