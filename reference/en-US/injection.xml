@@ -5,7 +5,7 @@
 
    <para>
       One of the most significant features of CDI, certainly the most recognized, is dependency injection; but not just
-      dependency injection&#8212;<emphasis>type-safe</emphasis> dependency injection. In this chapter, you'll learn how 
+      dependency injection&#8212;<emphasis>typesafe</emphasis> dependency injection. In this chapter, you'll learn how 
       CDI is able to leverage the Java type system and annotations into a dependency injection strategy that is both
       strongly typed and keeps the bean implementation hidden from its clients.
    </para>
