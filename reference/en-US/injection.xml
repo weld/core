@@ -526,11 +526,29 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
       <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource.get();]]></programlisting>
 
       <para>
-         Qualifiers can be specified at the injection point:
+         Qualifiers can be specified in one of two ways:
+      </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>by annotating the <literal>Instance</literal> injection point, or</para>
+        </listitem>
+        <listitem>
+          <para>by passing qualifiers to the <literal>select()</literal> of <literal>Event</literal>.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>
+         Specifying the qualifiers at the injection point is much, much easier:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Inject @Asynchronous Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
-  
+      
+      <para>
+         Now, the <literal>PaymentProcessor</literal> returned by <literal>get()</literal> will have the qualifier
+         <literal>@Asynchronous</literal>.
+      </para>
+      
       <para>
          Alternatively, we can specify the qualifier dynamically. First, we add the <literal>@Any</literal> qualifier to
          the injection point, to suppress the default qualifier. (All beans have the qualifier <literal>@Any</literal>.)

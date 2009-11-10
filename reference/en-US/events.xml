@@ -93,7 +93,7 @@ public @interface Updated {}]]></programlisting>
 
       <para>
          Event producers fire events using an instance of the parameterized <literal>Event</literal> interface.
-         An instance of this interface are obtained by injection:
+         An instance of this interface is obtained by injection:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Inject @Any Event<Document> documentEvent;]]></programlisting>
@@ -126,27 +126,27 @@ public @interface Updated {}]]></programlisting>
       </para>
 
       <para>
-         Qualifiers can be applied to an event type in one of two ways:
+         Qualifiers can be applied to an event in one of two ways:
       </para>
 
       <itemizedlist>
         <listitem>
-          <para>Add qualifier annotations to the field where <literal>Event</literal> is injected or</para>
+          <para>by annotating the <literal>Event</literal> injection point, or</para>
         </listitem>
         <listitem>
-          <para>pass qualifier annotation literals to the <literal>select()</literal> of <literal>Event</literal>.</para>
+          <para>by passing qualifiers to the <literal>select()</literal> of <literal>Event</literal>.</para>
         </listitem>
       </itemizedlist>
 
       <para>
-         The first option is the simplest:
+         Specifying the qualifiers at the injection point is far simpler:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Inject @Updated Event<Document> documentUpdatedEvent;]]></programlisting>
 
       <para>
          Then, every event fired via this instance of <literal>Event</literal> has the event qualifier
-         <literal>@Updated</literal>. The event will be delivered to every observer method that:
+         <literal>@Updated</literal>. The event is delivered to every observer method that:
       </para>
   
       <itemizedlist>
@@ -162,27 +162,17 @@ public @interface Updated {}]]></programlisting>
       </itemizedlist>
 
       <para>
-         The downside of annotating the injection point is that you can not specify the qualifiers dynamically.
-         Fortunately, CDI provides an alternative way of generating derived <literal>Event</literal> instances
-         from an <literal>Event</literal> instance using the <literal>select()</literal> method and passing
-         in qualifier annotation literals. Events can then be fired from that narrower source:
+         The downside of annotating the injection point is that we can't specify the qualifier dynamically. CDI 
+         lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>. 
+         That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>.
       </para>
 
       <programlisting role="JAVA"><![CDATA[documentEvent.select(new AnnotationLiteral<Updated>(){}).fire(document);]]></programlisting>
-  
-      <para>
-         There is no difference between the firing of this event and the previous one, were the qualifiers were
-         specified at the injection point. Both events carry the <literal>@Updated</literal> qualifier.
-      </para>
 
       <para>
-         As mentioned earlier, the helper class <literal>AnnotationLiteral</literal> makes it possible to instantiate
-         qualifiers inline, since this is otherwise difficult to do in Java.
-      </para>
-
-      <para>
-         Event types can have multiple event qualifier types as well, assembled using any combination of annotations
-         at the injection point and annotations passed to the <literal>select()</literal> method.
+         Events can have multiple event qualifiers, assembled using any combination of annotations at the 
+         <literal>Event</literal> injection point and qualifier instances passed to the <literal>select()</literal> 
+         method.
       </para>
 
    </section>
@@ -191,21 +181,20 @@ public @interface Updated {}]]></programlisting>
       <title>Conditional observer methods</title>
 
       <para>
-         Normally, observer beans will be "woken up", so to speak, when an event is fired so that they can respond to
-         the event. This behavior isn't always what you want. You may be interested in delivering an event only to
-         instances of the observers that exist in one of the currently active contexts.
+         By default, if there is no instance of an observer in the current context, the container will instantiate the 
+         observer in order to deliver an event to it. This behavior isn't always desirable. We may want to deliver events 
+         only to instances of the observer that already exist in the current contexts.
       </para>
 
       <para>
-         A conditional observer is specified by adding <literal>receive = IF_EXISTS</literal> to the
-         <literal>@Observes</literal> annotation. The default is to always receive, which means creating
-         an instance of the bean.
+         A conditional observer is specified by adding <literal>receive = IF_EXISTS</literal> to the <literal>@Observes</literal> 
+         annotation.
       </para>
 
       <programlisting role="JAVA"><![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = IF_EXISTS) @Updated Document d) { ... }]]></programlisting> 
 
       <para>
-         A dependent-scoped bean cannot be a conditional observer, essentially because it's not a contextual bean.
+         A bean with scope <literal>@Dependent</literal> cannot be a conditional observer, since it would never be called!
       </para>
 
    </section>
@@ -313,8 +302,8 @@ if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire
       </itemizedlist>
 
       <para>
-         Transactional observers are very important in a stateful object model because state is often held for longer
-         than a single atomic transaction.
+         Transactional observers are very important in a stateful object model because state is often held for 
+         longer  than a single atomic transaction.
       </para>
   
       <para>Imagine that we have cached a JPA query result set in the application scope:</para>
