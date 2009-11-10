@@ -10,7 +10,7 @@
   
       <para>
          In many systems, use of architectural patterns produces a set of recurring bean roles. A stereotype allows a
-         framework de- veloper to identify such a role and declare some common metadata for beans with that role in a
+         framework developer to identify such a role and declare some common metadata for beans with that role in a
          central place.
       </para>
   
@@ -46,14 +46,14 @@
    </blockquote>
   
    <para>
-      In layman's terms, a stereotype is a meta-annotation (an annotation used on another annotation) annotated with
-      <literal>@Stereotype</literal> that bundles other Java annotations to give them a particular semantic. For
-      instance, the following stereotype identifies action classes in some MVC framework:
+      A stereotype is an annotation, annotated <literal>@Stereotype</literal>, that packages several other annotations. 
+      For instance, the following stereotype identifies action classes in some MVC framework:
    </para>
   
    <programlisting role="JAVA"><![CDATA[@Stereotype
 @Retention(RUNTIME)
 @Target(TYPE)
+...
 public @interface Action {}]]></programlisting>
 
    <para>
@@ -64,16 +64,14 @@ public @interface Action {}]]></programlisting>
 public class LoginAction { ... }]]></programlisting>
 
    <para>
-      Of course, we need to associate our stereotype annotation with some other annotations or else it isn't doing much
-      for us. Let's see how to add them.
+      Of course, we need to apply some other annotations to our stereotype or else it wouldn't be adding much value.
    </para>
 
    <section>
       <title>Default scope for a stereotype</title>
   
       <para>
-         A stereotype may specify a default scope for beans annotated with the stereotype. For example, if the we might
-         specify the following defaults for action classes in a web application:
+         A stereotype may specify a default scope for beans annotated with the stereotype. For example:
       </para>
     
       <programlisting role="JAVA"><![CDATA[@RequestScoped
@@ -83,7 +81,7 @@ public class LoginAction { ... }]]></programlisting>
 public @interface Action {}]]></programlisting>
 
       <para>
-         Of course, a particular action may still override this default if necessary:
+         A particular action may still override this default if necessary:
       </para>
     
       <programlisting role="JAVA"><![CDATA[@Dependent @Action 
@@ -122,8 +120,7 @@ public @interface Action {}]]></programlisting>
     
       <para>
          We can specify that all beans with a certain stereotype have a defaulted EL name when a name is not explicitly
-         defined on that bean. Actions are often referenced in JSF views, so they're a perfect use case for this
-         feature. All we need to do is add an empty <literal>@Named</literal> annotation:
+         defined for that bean. All we need to do is add an empty <literal>@Named</literal> annotation:
       </para>
     
       <programlisting role="JAVA"><![CDATA[@RequestScoped
@@ -136,18 +133,16 @@ public @interface Action {}]]></programlisting>
 public @interface Action {}]]></programlisting>
 
       <para>
-         Now, <literal>LoginAction</literal> bean from above will have the name <literal>loginAction</literal>.
+         Now, the <literal>LoginAction</literal> bean will have the defaulted name <literal>loginAction</literal>.
       </para>
     
    </section>
 
    <section>
-      <title>Alternatives as stereotypes</title>
+      <title>Alternative stereotypes</title>
 
       <para>
-         A stereotype can indicate that all beans to which it is applied are <literal>@Alternative</literal> beans.  If
-         you can remember back to the early days of the specification, this is the closest match to a deployment type.
-         Whole sets of beans can be enabled or left disabled by activating a single stereotype.
+         A stereotype can indicate that all beans to which it is applied are <literal>@Alternative</literal>s.
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Alternative
@@ -157,12 +152,18 @@ public @interface Action {}]]></programlisting>
 public @interface Mock {}]]></programlisting>
 
       <para>
-         Now you apply this stereotype to beans that should be active in mock environments.
+         We can apply an alternative stereotype to a whole set of beans, and activate them all with one line
+         of code in <literal>beans.xml</literal>.
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Mock
 public class MockLoginAction extends LoginAction { ... }]]></programlisting>
 
+      <programlisting role="JAVA"><![CDATA[<beans>
+   <alternatives>
+      <stereotype>org.mycompany.testing.Mock</stereotype>
+   </alternatives>
+</beans>]]></programlisting>
    </section>
 
    <section>
@@ -209,7 +210,7 @@ public @interface AuditableAction {}]]></programlisting>
 public @interface Model {}]]></programlisting>
 
       <para>
-         Instead of using JSF managed beans, just annotate a Web Bean <literal>@Model</literal>, and use it directly in
+         Instead of using JSF managed beans, just annotate a bean <literal>@Model</literal>, and use it directly in
          your JSF view!
       </para>
     
