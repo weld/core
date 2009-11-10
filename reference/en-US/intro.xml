@@ -189,7 +189,7 @@ public class TranslateController {
       <programlisting role="JAVA"><![CDATA[@Inject Instance<TextTranslator> textTranslatorInstance;
 ...
 public void translate() {
-   textTranslatorInstance().translate(inputText);
+   textTranslatorInstance.get().translate(inputText);
 }]]></programlisting> 
 
       <para>
