@@ -717,6 +717,9 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          interfaces it implements directly or indirectly.</para>
 
          <para>If a managed bean has a public field, it must have the default scope <literal>@Dependent</literal>.</para>
+         
+         <para>Managed beans support the <literal>@PostConstruct</literal> and <literal>@PreDestroy</literal> lifecycle
+         callbacks.</para>
 
          <para>
             Session beans are also, technically, managed beans. However, since they have their own special lifecycle and 
