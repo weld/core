@@ -25,7 +25,8 @@
    <xsl:param name="programlisting.font" select="$monospace.font.family" />
 
    <!-- Make the font for programlisting slightly smaller -->
-   <xsl:param name="programlisting.font.size" select="'75%'" /> 
+   <xsl:param name="programlisting.font.size" select="'75%'" />
+   <xsl:param name="body.font.size" select="'75%'" /> 
 
 <xsl:template name="book.titlepage.recto">
   <xsl:choose>
