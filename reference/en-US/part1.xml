@@ -143,7 +143,7 @@ tainer, for example, alternative web presentation technologies.
       A bean specifies only the type and semantics of other beans it depends upon. It need not be aware of the actual
       lifecycle, concrete implementation, threading model or other clients of any bean it interacts with. Even better, 
       the concrete implementation, lifecycle and threading model of a bean may vary according to the deployment scenario, 
-      without affecting any client. This loose-coupling is what makes the architecture so simple, yet powerful. 
+      without affecting any client. This loose-coupling makes your code easier to maintain. 
    </para>
   
    <para>
