@@ -10,7 +10,7 @@
   
    <para>
       You don't see string-based identifiers in CDI code, not because the framework is hiding them from you using clever
-      defaulting rules &#8212; so-called "configuration by convention" &#8212; but because there are simply no strings
+      defaulting rules&#8212;so-called "configuration by convention"&#8212;but because there are simply no strings
       there to begin with!
    </para>
 
