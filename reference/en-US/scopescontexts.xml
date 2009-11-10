@@ -33,8 +33,7 @@
 
    <note>
       <para>
-         There's actually no way to remove a bean from a context explicitly. It turns out that's a good thing because
-         there is no confusion as to which instance you are getting.
+         There's actually no way to remove a bean from a context until the entire context is destroyed.
       </para>
    </note>
 
@@ -103,7 +102,7 @@ public class SecondLevelCache { ... }]]></programlisting>
       </itemizedlist>
 
       <note>
-         <para>A CDI extension can support the conversation for other frameworks as well.</para>
+         <para>A CDI extension can support the conversation scope for other frameworks as well.</para>
       </note>
 
       <para>The request and application scopes are also active:</para>
@@ -151,7 +150,7 @@ public class SecondLevelCache { ... }]]></programlisting>
          <listitem>
             <para>
                holds state associated with a particular web browser tab in a JSF application (browsers tend to share
-               domain cookies, and hence the session cookie, between tabs, which is the root of the issue).
+               domain cookies, and hence the session cookie, between tabs, so this is not the case for the session scope).
             </para>
          </listitem>
       </itemizedlist>
@@ -221,14 +220,15 @@ public class OrderBuilder {
             This bean is able to control its own lifecycle through use of the <literal>Conversation</literal> API. But
             some other beans have a lifecycle which depends completely upon another object.
          </para>
+         
       </section>
   
       <section>
          <title>Conversation propagation</title>
     
          <para>
-            The conversation context automatically propagates with any JSF faces request (JSF form submission). It does
-            not automatically propagate with non-faces requests, for example, navigation via a link.
+            The conversation context automatically propagates with any JSF faces request (JSF form submission) or redirect. 
+            It does  not automatically propagate with non-faces requests, for example, navigation via a link.
          </para>
     
          <para>
@@ -245,19 +245,20 @@ public class OrderBuilder {
          <programlisting role="HTML"><![CDATA[<a href="/addProduct.jsp?cid=#{conversation.id}">Add Product</a>]]></programlisting>
 
          <para>
-            Though it's probably better to use one of the link components in JSF 2:
+            It's probably better to use one of the link components in JSF 2:
          </para>
 
          <programlisting role="HTML"><![CDATA[<h:link outcome="/addProduct.xhtml value="Add Product">
    <f:param name="cid" value="#{conversation.id}"/>
 </h:link>]]></programlisting>
-
+         
+         <tip>
          <para>
-            The container is also required to propagate conversations across any redirect, even if the conversation is
-            not marked long-running. This makes it very easy to implement the common POST-then-redirect pattern, without
-            resort to fragile constructs such as a "flash" object. In this case, the container automatically adds a
-            request parameter to the redirect URL.
+            The conversation context propagates across redirects, making it very easy to implement the common 
+            POST-then-redirect pattern, without resort to fragile constructs such as a "flash" object. The container 
+            automatically adds the conversation id to the redirect URL as a request parameter.
          </para>
+         </tip>
 
       </section>
   
@@ -266,8 +267,8 @@ public class OrderBuilder {
     
          <para>
             The container is permitted to destroy a conversation and all state held in its context at any time in order
-            to preserve resources. A CDI implementation will normally do this on the basis of some kind of timeout
-            &#8212; though this is not required by the CDI specification. The timeout is the period of inactivity before
+            to conserve resources. A CDI implementation will normally do this on the basis of some kind of 
+            timeout&#8212;though this is not required by the specification. The timeout is the period of inactivity before
             the conversation is destroyed (as opposed to the amount of time the conversation is active).
          </para>
     
@@ -286,8 +287,8 @@ public class OrderBuilder {
       <title>The dependent pseudo-scope</title>
 
       <para>
-         In addition to the four built-in scopes, CDI features the so-called <emphasis>dependent
-         pseudo-scope</emphasis>. This is the default scope for a bean which does not explicitly declare a scope type.
+         In addition to the four built-in scopes, CDI features the so-called <emphasis>dependent pseudo-scope</emphasis>. 
+         This is the default scope for a bean which does not explicitly declare a scope type.
       </para>
 
       <para>
@@ -297,14 +298,9 @@ public class OrderBuilder {
       <programlisting role="JAVA"><![CDATA[public class Calculator { ... }]]></programlisting>
 
       <para>
-         When an injection point of a bean resolves to a dependent bean, a new instance of the dependent bean is created
-         when the bean into which it's being injected is instantiated. Instances of dependent beans are never shared
-         between different beans or different injection points. They are strictly <emphasis>dependent objects</emphasis>
-         of some other bean instance.
-      </para>
-  
-      <para>
-         Dependent bean instances are destroyed when the instance they depend upon is destroyed.
+         An instances of a dependent bean is never shared between different clients or different injection points. It is 
+         strictly a <emphasis>dependent object</emphasis> of some other object. It is instantiated when the object it 
+         belongs to is created, and destroyed when the object it belongs to is destroyed.
       </para>
 
       <para>
@@ -313,7 +309,7 @@ public class OrderBuilder {
       </para>
 
       <section>
-         <title>The <literal>@New</literal> annotation</title>
+         <title>The <literal>@New</literal> qualifier</title>
 
          <para>
             The built-in <literal>@New</literal> qualifier annotation allows <emphasis>implicit</emphasis> definition of
