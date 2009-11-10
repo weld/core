@@ -14,13 +14,14 @@
     
       <para>
          All managed beans may take advantage of Java EE dependency injection using <literal>@Resource</literal>,
-         <literal>@EJB</literal> and <literal>@PersistenceContext</literal>. We've already seen a couple of examples of
-         this, though we didn't pay much attention at the time:
+         <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PeristenceUnit</literal> and
+         <literal>@WebServiceRef</literal>. We've already seen a couple of examples of this, though we didn't pay 
+         much attention at the time:
       </para>
     
       <programlisting role="JAVA"><![CDATA[@Transactional @Interceptor
 public class TransactionInterceptor {
-   @Resource Transaction transaction;
+   @Resource UserTransaction transaction;
 
    @AroundInvoke public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
 }]]></programlisting>
@@ -38,18 +39,13 @@ public class Login implements Serializable {
          injection has been performed.
       </para>
     
-      <para>
-         There is one restriction to be aware of here: <literal>@PersistenceContext(type=EXTENDED)</literal> is not
-         supported for non-session beans (that's strictly a feature of stateful session beans).
-      </para>
-    
    </section>
   
    <section>
-      <title>Calling a bean from a Servlet</title>
+      <title>Calling a bean from a servlet</title>
     
       <para>
-         It's easy to use a bean from a Servlet in Java EE 6. Simply inject the bean using field or initializer method
+         It's easy to use a bean from a servlet in Java EE 6. Simply inject the bean using field or initializer method
          injection.
       </para>
     
@@ -74,23 +70,22 @@ public class Login implements Serializable {
 }]]></programlisting>
 
       <para>
-         Since instances of Servlets are shared across all incoming threads, the bean client proxy takes care of routing
-         method invocations from the Servlet to the correct instances of <literal>Credentials</literal> and
+         Since instances of servlets are shared across all incoming threads, the bean client proxy takes care of routing
+         method invocations from the servlet to the correct instances of <literal>Credentials</literal> and
          <literal>Login</literal> for the current request and HTTP session.
       </para> 
     
    </section>
   
    <section>
-      <title>Calling a bean from a Message-Driven Bean</title>
+      <title>Calling a bean from a message-driven bean</title>
     
       <para>
          CDI injection applies to all EJBs, even when they aren't managed beans. In particular, you can use CDI
-         injection in Message-Driven Beans, which are not considered beans because you can't inject them and their
-         instances are not contextual (not even dependent).
+         injection in message-driven beans, which are by nature not contextual objects.
       </para>
     
-      <para>You can even use CDI interceptor bindings for Message-Driven Beans.</para>
+      <para>You can even use CDI interceptor bindings for message-driven Beans.</para>
 
       <programlisting role="JAVA"><![CDATA[@Transactional @MessageDriven
 public class ProcessOrder implements MessageListener {
@@ -103,14 +98,13 @@ public class ProcessOrder implements MessageListener {
 }]]></programlisting>
 
       <para>
-         Thus, receiving messages is super-easy in an environment with CDI (e.g., Java EE 6). But beware that there is
-         no session or conversation context available when a message is delivered to a Message-Driven Bean. Only
-         <literal>@RequestScoped</literal> and <literal>@ApplicationScoped</literal> beans are available.
+         Please note that there is no session or conversation context available when a message is delivered to a 
+         message-driven bean. Only <literal>@RequestScoped</literal> and <literal>@ApplicationScoped</literal> 
+         beans are available.
       </para>
     
       <para>
-         It's also easy to send messages using beans, if you require the full event bus of JMS rather than the
-         architecturally simpler CDI event notification facility.
+         But how about beans which <emphasis>send</emphasis> JMS messages?
       </para>
 
    </section>
@@ -206,21 +200,17 @@ public void sendMessage(String price) {
       <title>Packaging and deployment</title>
     
       <para>
-         CDI doesn't define any special deployment archive. You can package beans in JARs, EJB-JARs or WARs &#8212; any
+         CDI doesn't define any special deployment archive. You can package beans in JARs, EJB-JARs or WARs&#8212;any
          deployment location in the application classpath. However, the archive must be a "bean archive". That means
          each archive that contains beans <emphasis>must</emphasis> include a file named <literal>beans.xml</literal> in
          the <literal>META-INF</literal> directory of the classpath or <literal>WEB-INF</literal> directory of the web
          root (for WAR archives). The file may be empty. Beans deployed in archives that do not have a
-         <literal>beans.xml</literal> file (i.e., not in a bean archive) will not be available for use in the
-         application.
-
+         <literal>beans.xml</literal> file will not be available for use in the application.
       </para>
     
       <para>
-         For Java SE execution, beans may be deployed in any location in which EJBs may be deployed for execution by the
-         embeddable EJB Lite container. Again, each location must contain a <literal>beans.xml</literal> file. (That
-         doesn't rule out the possibility of having an extension which provides support for normal Java SE execution,
-         like the Weld Java SE module).
+         In an embeddable EJB container, beans may be deployed in any location in which EJBs may be deployed. Again, each 
+         location must contain a <literal>beans.xml</literal> file.
       </para>
     
    </section>
