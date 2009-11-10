@@ -315,14 +315,51 @@ public @interface PayBy {
          <programlisting role="JAVA"><![CDATA[@Synchronous @Reliable
 public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
    public void process(Payment payment) { ... }
-}]]></programlisting>      
+}]]></programlisting>
 
       </section>
   
    </section>
+   
+   <section id="alternatives">
+      <title>Alternatives</title>
+      
+      <para>Alternatives are beans whose implementation is specific to a particular client module or deployment
+      scenario. This alternative defines a mock implementation of both <literal>@Synchronous PaymentProcessor</literal>
+      and <literal>@Asynchronous PaymentProcessor</literal>, all in one:</para>
+      
+      <programlisting role="JAVA"><![CDATA[@Alternative @Synchronous @Asynchronous
+public class MockPaymentProcessor implements PaymentProcessor {
+   public void process(Payment payment) { ... }
+}]]></programlisting>
+      
+      <para>
+         By default, <literal>@Alternative</literal> beans are disabled. We need to <emphasis>enable</emphasis> an
+         alternative in the <literal>beans.xml</literal> descriptor of a bean archive to make it available for
+         instantiation and injection. This activation only applies to the beans in that archive.
+      </para>
+
+      <programlisting role="XML"><![CDATA[<beans
+   xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://java.sun.com/xml/ns/javaee
+      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+   <alternatives>
+         <class>org.mycompany.mock.MockPaymentProcessor</class>
+   </alternatives>
+</beans>]]></programlisting>
+      
+      <para>
+         When an ambiguous dependency exists at an injection point, the container attempts to resolve the ambiguity
+         by looking for an enabled alternative among the beans that could be injected. If there is exactly one
+         enabled alternative, that's the bean that will be injected.
+      </para>
+      
+   </section>
 
    <section>
-      <title>Fixing unsatisfied dependencies</title>
+      <title>Fixing unsatisfied and ambiguous dependencies</title>
   
       <para>
          The typesafe resolution algorithm fails when, after considering the qualifier annotations on all beans that

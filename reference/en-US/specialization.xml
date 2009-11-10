@@ -47,68 +47,53 @@
       alternatives and then show the guarantees that specialization adds.
    </para>
 
-   <section id="alternatives">
-      <title>Alternatives</title>
+   <section id="alternativestereotypes">
+      <title>Using alternative stereotypes</title>
 
       <para>
          CDI lets you <emphasis>override</emphasis> the implementation of a bean type at deployment time using an
-         alternative. For example, the following bean provides an implementation of the
-         <literal>PaymentProcessor</literal> bean type in the default environment:
+         alternative. For example, the following bean provides a default implementation of the 
+         <literal>PaymentProcessor</literal> interface:
       </para>
   
-      <programlisting role="JAVA"><![CDATA[@CreditCard
-public class CreditCardPaymentProcessor 
+      <programlisting role="JAVA"><![CDATA[public class DefaultPaymentProcessor 
       implements PaymentProcessor {
    ...
 }]]></programlisting>
 
       <para>
-         But in our staging environment, we override that implementation of <literal>PaymentProcessor</literal> with a
-         different bean:
+         But in our staging environment, we don't really want to submit payments to the external system, so we override 
+         that implementation of <literal>PaymentProcessor</literal> with a different bean:
       </para>
   
-      <programlisting role="JAVA"><![CDATA[@CreditCard @Alternative
-public class StagingCreditCardPaymentProcessor 
+      <programlisting role="JAVA"><![CDATA[public @Alternative
+class StagingPaymentProcessor 
       implements PaymentProcessor {
    ...
 }]]></programlisting>
 
       <para>or</para>
 
-      <programlisting role="JAVA"><![CDATA[@CreditCard @Alternative
-public class StagingCreditCardPaymentProcessor 
-      extends CreditCardPaymentProcessor {
+      <programlisting role="JAVA"><![CDATA[public @Alternative
+class StagingPaymentProcessor 
+      extends DefaultPaymentProcessor {
    ...
 }]]></programlisting>
 
       <para>
-         By default, <literal>@Alternative</literal> beans are disabled. We need to <emphasis>enable</emphasis> the
-         alternative&#8212;effectively replacing the bean implementation without the <literal>@Alternative</literal>
-         annotation&#8212;in the <literal>beans.xml</literal> descriptor of a bean archive by specifying the bean
-         class (or the class that contains the alternative producer method or field). This activation only applies 
-         to the beans in that archive.
+         We've already seen how we can enable this alternative by listing its class in the <literal>beans.xml</literal>
+         descriptor.
       </para>
-
-      <programlisting role="XML"><![CDATA[<beans
-   xmlns="http://java.sun.com/xml/ns/javaee"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="
-      http://java.sun.com/xml/ns/javaee
-      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
-   <alternatives>
-         <class>org.mycompany.myapp.StagingCreditCardProcessor</class>
-   </alternatives>
-</beans>]]></programlisting>
 
       <para>
-         Of course, if the goal is to enable all the alternatives for the staging environment, it would make much more
-         sense to make <literal>@Staging</literal> an <literal>@Alternative</literal> stereotype and annotate the
-         staging beans with this stereotype instead. You'll see how this level of indirection pays off. First, we create
-         the stereotype:
+         But suppose we have many alternatives in the staging environment. It would be much more convenient to be able
+         to enable them all at once. So let's make <literal>@Staging</literal> an <literal>@Alternative</literal> stereotype 
+         and annotate the staging beans with this stereotype instead. You'll see how this level of indirection pays off. 
+         First, we create the stereotype:
       </para>
 
-      <programlisting role="JAVA"><![CDATA[@Stereotype
-@Alternative
+      <programlisting role="JAVA"><![CDATA[@Alternative
+@Stereotype
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface Staging {}]]></programlisting>
@@ -117,14 +102,14 @@ public @interface Staging {}]]></programlisting>
          Then we replace the <literal>@Alternative</literal> annotation on our bean with <literal>@Staging</literal>:
       </para>
 
-      <programlisting role="JAVA"><![CDATA[@CreditCard @Staging
-public class StagingCreditCardPaymentProcessor 
-      extends CreditCardPaymentProcessor {
+      <programlisting role="JAVA"><![CDATA[@Staging
+public class StagingPaymentProcessor 
+      implements PaymentProcessor {
    ...
 }]]></programlisting>
 
       <para>
-         Finally, we activate the <literal>@Staging</literal> stereotype in the beans.xml descriptor:
+         Finally, we activate the <literal>@Staging</literal> stereotype in the <literal>beans.xml</literal> descriptor:
       </para>
 
       <programlisting role="XML"><![CDATA[<beans
@@ -139,20 +124,28 @@ public class StagingCreditCardPaymentProcessor
 </beans>]]></programlisting>
 
       <para>
-         Now, no matter how many staging beans we have, they will all be enabled at once. Does that mean the default
-         implementation is disabled? Well, not exactly. If the default implementation has a qualifier, for instance
-         <literal>@LargeTransaction</literal>, and the alternative does not, you could still inject the default
-         implementation.
+         Now, no matter how many staging beans we have, they will all be enabled at once. 
+      </para>
+      
+   </section>
+    
+   <section>
+      <title>A minor problem with alternatives</title>
+    
+      <para>
+         When we enable an alternative, does that mean the default implementation is disabled? Well, not exactly. If the 
+         default implementation has a qualifier, for instance <literal>@LargeTransaction</literal>, and the alternative 
+         does not, you could still inject the default implementation.
       </para>
 
-      <programlisting role="JAVA"><![CDATA[@LargeTransaction @CreditCard PaymentProcessor paymentProcessor;]]></programlisting>
+      <programlisting role="JAVA"><![CDATA[@Inject @LargeTransaction PaymentProcessor paymentProcessor;]]></programlisting>
 
       <para>
-         So we haven't completely replaced the default implementation in this deployment of the system. The only
-         way one bean can completely override a second bean at all injection points is if it implements all the bean
-         types and declares all the qualifiers of the second bean. However, if the second bean declares a producer
-         method or observer method, then even this is not enough to ensure that the second bean is never called! We need
-         something extra.
+         So we haven't completely replaced the default implementation in this deployment of the system. The only way one 
+         bean can completely override a second bean at all injection points is if it implements all the bean types and 
+         declares all the qualifiers of the second bean. However, if the second bean declares a producer method or 
+         observer method, then even this is not enough to ensure that the second bean is never called! We need something 
+         extra.
       </para>
   
       <para>
@@ -160,6 +153,7 @@ public class StagingCreditCardPaymentProcessor
          these traps. Specialization is a way of informing the system of your intent to completely replace and disable
          an implementation of a bean.
       </para>
+      
    </section>
   
    <section>
