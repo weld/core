@@ -33,7 +33,7 @@
    <toc/>
    
    <part id="1">
-      <title>Loosely-coupled, contextual components with strong typing</title>
+      <title>Beans</title>
       
       <xi:include href="part1.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 

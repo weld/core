@@ -65,13 +65,10 @@ tainer, for example, alternative web presentation technologies.
    
    <itemizedlist>
       <listitem>
-         <para>managed beans</para>
+         <para>managed beans, and</para>
       </listitem>
       <listitem>
-         <para>EJB session beans, and</para>
-      </listitem>
-      <listitem>
-         <para>JAX-RS resources.</para>
+         <para>EJB session beans.</para>
       </listitem>
    </itemizedlist>
     
