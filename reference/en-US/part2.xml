@@ -26,8 +26,8 @@
 
    <para>
       These techniques serve to enable loose coupling of client and server. The client is no longer tightly bound to an
-      implementation of an API, nor is it required to manage the lifecycle of the server object. This approach lets
-      <emphasis>stateful objects interact as if they were services</emphasis>.
+      implementation of an interface, nor is it required to manage the lifecycle of the implementation. This approach 
+      lets <emphasis>stateful objects interact as if they were services</emphasis>.
    </para>
 
    <para>
