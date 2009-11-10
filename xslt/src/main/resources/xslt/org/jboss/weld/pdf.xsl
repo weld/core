@@ -14,6 +14,12 @@
                 exclude-result-prefixes="#default">
 
    <xsl:import href="classpath:/xslt/org/jboss/seam/pdf.xsl"/>
+   
+     <!-- Change the font color for titles to black one -->
+   <xsl:param name="title.color">black</xsl:param>
+   <xsl:param name="titlepage.color">black</xsl:param>
+   <xsl:param name="chapter.title.color">black</xsl:param>
+   <xsl:param name="section.title.color">black</xsl:param>
 
 <xsl:template name="book.titlepage.recto">
   <xsl:choose>
@@ -27,6 +33,8 @@
       <xsl:apply-templates mode="book.titlepage.recto.auto.mode" select="title"/>
     </xsl:when>
   </xsl:choose>
+  
+
 
   <xsl:apply-templates mode="book.titlepage.recto.auto.mode" select="bookinfo/issuenum"/>
   <xsl:apply-templates mode="book.titlepage.recto.auto.mode" select="info/issuenum"/>
