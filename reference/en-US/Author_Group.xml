@@ -5,27 +5,28 @@
    <author>
       <firstname>Gavin</firstname>
       <surname>King</surname>
-      <affiliation>
-         <jobtitle>JSR-299 specification lead</jobtitle>
-         <orgname>Red Hat, Inc.</orgname>
-      </affiliation>
+      <contrib>JSR-299: Contexts and Dependency Injection Lead</contrib>
+<!--      <affiliation>-->
+<!--         <jobtitle>JSR-299 specification lead</jobtitle>-->
+<!--         <orgname>Red Hat, Inc.</orgname>-->
+<!--      </affiliation>-->
    </author>
    <author>
       <firstname>Pete</firstname>
       <surname>Muir</surname>
-      <affiliation>
-         <jobtitle>Weld (JSR-299 Reference Implementation) lead
-         </jobtitle>
-         <orgname>Red Hat, Inc.</orgname>
-      </affiliation>
+      <contrib>Weld (JSR-299 RI) Lead</contrib>
+<!--      <affiliation>-->
+<!--         <jobtitle>Weld (JSR-299 Reference Implementation) lead-->
+<!--         </jobtitle>-->
+<!--         <orgname>Red Hat, Inc.</orgname>-->
+<!--      </affiliation>-->
    </author>
    <author>
       <firstname>Dan</firstname>
       <surname>Allen</surname>
-      <affiliation>
-         <jobtitle>Senior Software Engineer</jobtitle>
-         <orgname>Red Hat, Inc.</orgname>
-      </affiliation>
+<!--      <affiliation>-->
+<!--         <orgname>Red Hat, Inc.</orgname>-->
+<!--      </affiliation>-->
    </author>
    <author>
       <firstname>David</firstname>
@@ -40,25 +41,25 @@
       <firstname>Gladys</firstname>
       <surname>Guerrero</surname>
       <contrib>Spanish Translation</contrib>
-      <affiliation>
-         <orgname>Red Hat, Inc.</orgname>
-      </affiliation>
+<!--      <affiliation>-->
+<!--         <orgname>Red Hat, Inc.</orgname>-->
+<!--      </affiliation>-->
    </othercredit>
    <othercredit>
       <firstname>Eun-Ju</firstname>
       <surname>Ki,</surname>
       <contrib>Korean Translation</contrib>
-      <affiliation>
-         <orgname>Red Hat, Inc.</orgname>
-      </affiliation>
+<!--      <affiliation>-->
+<!--         <orgname>Red Hat, Inc.</orgname>-->
+<!--      </affiliation>-->
    </othercredit>
    <othercredit>
       <firstname>Terry</firstname>
       <surname>Chuang</surname>
       <contrib>Traditional Chinese Translation</contrib>
-      <affiliation>
-         <orgname>Red Hat, Inc.</orgname>
-      </affiliation>
+<!--      <affiliation>-->
+<!--         <orgname>Red Hat, Inc.</orgname>-->
+<!--      </affiliation>-->
    </othercredit>
    <othercredit>
       <firstname>Francesco</firstname>
@@ -69,9 +70,9 @@
       <firstname>Sean</firstname>
       <surname>Wu</surname>
       <contrib>Simplified Chinese Translation</contrib>
-      <affiliation>
-         <orgname>Kava Community</orgname>
-      </affiliation>
+<!--      <affiliation>-->
+<!--         <orgname>Kava Community</orgname>-->
+<!--      </affiliation>-->
    </othercredit>
 <!--
 vim:et:ts=3:sw=3:tw=120
