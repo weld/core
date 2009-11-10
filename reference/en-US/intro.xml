@@ -59,7 +59,7 @@
    </section>
 
    <section id="first-bean">
-      <title>Your first bean (or is it?)</title>
+      <title>Getting our feet wet</title>
 
       <para>
          Suppose that we have two existing Java classes that we've been using for years in various applications. The
