@@ -143,6 +143,7 @@ public @interface Action {}]]></programlisting>
 
       <para>
          A stereotype can indicate that all beans to which it is applied are <literal>@Alternative</literal>s.
+         An <emphasis>alternative stereotype</emphasis> lets us classify beans by deployment scenario.
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Alternative
@@ -158,12 +159,14 @@ public @interface Mock {}]]></programlisting>
 
       <programlisting role="JAVA"><![CDATA[@Mock
 public class MockLoginAction extends LoginAction { ... }]]></programlisting>
-
+<!-- 
       <programlisting role="JAVA"><![CDATA[<beans>
    <alternatives>
       <stereotype>org.mycompany.testing.Mock</stereotype>
    </alternatives>
 </beans>]]></programlisting>
+-->
+
    </section>
 
    <section>
@@ -177,7 +180,8 @@ public class MockLoginAction extends LoginAction { ... }]]></programlisting>
       </para>
 
       <para>
-         Here's an example that combines the <literal>@Action</literal> and <literal>@Auditable</literal> stereotypes:
+         Here's an example that combines the <literal>@Action</literal> and <literal>@Auditable</literal> 
+         stereotypes:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Auditable

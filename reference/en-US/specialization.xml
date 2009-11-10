@@ -17,18 +17,22 @@
       The CDI specification recognizes two distinct scenarios in which one bean extends another:
    </para>
 
+   <blockquote>
    <itemizedlist>
       <listitem>
          <para>
-            The second bean specializes the first bean in certain deployment scenarios. In these deployments, the second
-            bean completely replaces the first, fulfilling the same role in the system.
+            The second bean <emphasis>specializes</emphasis> the first bean in certain deployment scenarios. In these 
+            deployments, the second bean completely replaces the first, fulfilling the same role in the system.
          </para>
+      </listitem>
+      <listitem>
          <para>
             The second bean is simply reusing the Java implementation, and otherwise bears no relation to the first
             bean. The first bean may not even have been designed for use as a contextual object.
          </para>
       </listitem>
    </itemizedlist>
+   </blockquote>
 
    <para>
       The second case is the default assumed by CDI. It's possible to have two beans in the system with the same part
@@ -39,15 +43,15 @@
    <para>
       The first case is the exception, and also requires more care. In any given deployment, only one bean can fulfill a
       given role at a time. That means one bean needs to be enabled and the other disabled. There are a two modifiers
-      involved: <literal>@Alternative</literal> and <literal>@Specializes</literal>. We'll start by looking at bean
+      involved: <literal>@Alternative</literal> and <literal>@Specializes</literal>. We'll start by looking at
       alternatives and then show the guarantees that specialization adds.
    </para>
 
    <section id="alternatives">
-      <title>Bean alternatives</title>
+      <title>Alternatives</title>
 
       <para>
-         CDI let's you <emphasis>override</emphasis> the implementation of a bean type at deployment time using a bean
+         CDI lets you <emphasis>override</emphasis> the implementation of a bean type at deployment time using an
          alternative. For example, the following bean provides an implementation of the
          <literal>PaymentProcessor</literal> bean type in the default environment:
       </para>
@@ -144,7 +148,7 @@ public class StagingCreditCardPaymentProcessor
       <programlisting role="JAVA"><![CDATA[@LargeTransaction @CreditCard PaymentProcessor paymentProcessor;]]></programlisting>
 
       <para>
-         So we haven't completely replaced the default implementation in a particular deployment of the system. The only
+         So we haven't completely replaced the default implementation in this deployment of the system. The only
          way one bean can completely override a second bean at all injection points is if it implements all the bean
          types and declares all the qualifiers of the second bean. However, if the second bean declares a producer
          method or observer method, then even this is not enough to ensure that the second bean is never called! We need
@@ -191,25 +195,20 @@ public class MockCreditCardPaymentProcessor
          When an enabled bean specializes another bean, the other bean is never instantiated or called by the container.
          Even if the other bean defines a producer or observer method, the method will never be called.
       </para>
-   </section>
-
-   <section>
-      <title>Inheritance</title>
-
+      
       <para>
          So why does specialization work, and what does it have to do with inheritance?
       </para>
       
       <para>
-         Since you are informing the container that your alternative bean is meant to stand in as a replacement for the
-         default implementation, the container automatically adds any qualifiers that are on the default implementation
-         to the alternative implementation.  Thus, in our example, <literal>MockCreditCardPaymentProcessor</literal> has
-         the qualifiers <literal>@Default</literal> and <literal>@CreditCard</literal>. Therefore, there are no
-         circumstances when the default implementation is going to get used because it is completely shadowed.
+         Since we're informing the container that our alternative bean is meant to stand in as a replacement for the
+         default implementation, the alternative implementation automatically inherits all qualifiers of the default 
+         implementation. Thus, in our example, <literal>MockCreditCardPaymentProcessor</literal> inherits the qualifiers 
+         <literal>@Default</literal> and <literal>@CreditCard</literal>.
       </para>
 
       <para>
-         Additionally, if the default implementation declares a bean EL name using <literal>@Named</literal>, the name
+         Furthermore, if the default implementation declares a bean EL name using <literal>@Named</literal>, the name
          is inherited by the specialized alternative bean.
       </para>
 
