@@ -17,8 +17,8 @@
       interface, and is therefore aware of all the semantics attached to that interface. Since decorators directly
       implement operations with business semantics, it makes them the perfect tool for modeling some kinds of business
       concerns. It also means that a decorator doesn't have the generality of an interceptor. Decorators aren't able to
-      solve technical concerns that cut across many disparate types. The two complement one another. Let's look at some
-      cases where decorators fit the bill.
+      solve technical concerns that cut across many disparate types. Interceptors and decorators, though similar in many
+      ways, are complementary. Let's look at some cases where decorators fit the bill.
    </para>
   
    <para>Suppose we have an interface that represents accounts:</para>

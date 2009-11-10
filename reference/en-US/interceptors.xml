@@ -5,19 +5,12 @@
    <title>Interceptors</title>
 
    <para>
-      Thanks to the managed bean specification, interceptors are now part of the core functionality of a bean. That
-      means that you no longer need to make your class an EJB just to use interceptors!
+      Interceptor functionality is defined in the Java Interceptors specification. CDI enhances this functionality with 
+      a more sophisticated, semantic, annotation-based approach to binding interceptors to beans.
    </para>
 
    <para>
-      But that doesn't mean there aren't other improvements that can be made. CDI builds on the interceptor architecture
-      of managed beans by introducing a more sophisticated, semantic, annotation-based approach to binding interceptors
-      to beans.
-   </para>
-
-   <para>
-      Interceptor functionality is defined in the interceptor specification, which the managed bean, CDI, and EJB
-      specifications all support. The interceptor specification defines two kinds of interception points:
+      The Interceptors specification defines two kinds of interception points:
    </para>
   
    <itemizedlist>
@@ -30,12 +23,17 @@
    </itemizedlist>
   
    <para>
+      In addition, the EJB specification defines timeout method interception.
+   </para>
+  
+   <para>
       A <emphasis>business method interceptor</emphasis> applies to invocations of methods of the bean by clients of the
       bean:
    </para>
   
    <programlisting role="JAVA"><![CDATA[public class TransactionInterceptor {
-   @AroundInvoke public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
+   @AroundInvoke 
+   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
 }]]></programlisting>
   
    <para>
@@ -44,19 +42,30 @@
    </para>
   
    <programlisting role="JAVA"><![CDATA[public class DependencyInjectionInterceptor {
-   @PostConstruct public void injectDependencies(InvocationContext ctx) { ... }
+   @PostConstruct 
+   public void injectDependencies(InvocationContext ctx) { ... }
 }]]></programlisting>
 
    <para>
       An interceptor class may intercept both lifecycle callbacks and business methods.
    </para>
+   
+   <para>
+      A <emphasis>timeout method interceptor</emphasis> applies to invocations of EJB timeout methods by the
+      container:
+   </para>
+  
+   <programlisting role="JAVA"><![CDATA[public class TimeoutInterceptor {
+   @AroundTimeout 
+   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
+}]]></programlisting>
   
    <section>
       <title>Interceptor bindings</title>
 
       <para>
          Suppose we want to declare that some of our beans are transactional. The first thing we need is an
-         <emphasis>interceptor binding annotation</emphasis> to specify exactly which beans we're interested in:
+         <emphasis>interceptor binding type</emphasis> to specify exactly which beans we're interested in:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@InterceptorBinding
@@ -92,20 +101,21 @@ public class ShoppingCart { ... }]]></programlisting>
 
       <programlisting role="JAVA"><![CDATA[@Transactional @Interceptor
 public class TransactionInterceptor {
-   @AroundInvoke public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
+   @AroundInvoke 
+   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
 }]]></programlisting>
 
       <para>
-         All bean interceptors are beans, and can take advantage of dependency injection and contextual lifecycle
-         management.
+         Interceptors can take advantage of dependency injection:
       </para>
 
-      <programlisting role="JAVA"><![CDATA[@ApplicationScoped @Transactional @Interceptor
+      <programlisting role="JAVA"><![CDATA[@Transactional @Interceptor
 public class TransactionInterceptor {
 
-    @Resource Transaction transaction;
+    @Inject UserTransaction transaction;
 
-    @AroundInvoke public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
+    @AroundInvoke 
+    public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
     
 }]]></programlisting>
 
@@ -169,7 +179,8 @@ public class TransactionInterceptor {
    </interceptors>
 </beans>]]></programlisting>
 
-      <para>Or we could turn them both off in our test environment by simply taking no action! Ah, so simple.</para>
+      <para>Or we could turn them both off in our test environment by simply not mentioning them in 
+      <literal>beans.xml</literal>! Ah, so simple.</para>
 
    </section>
 
@@ -194,7 +205,8 @@ public @interface Transactional {
 
       <programlisting role="JAVA"><![CDATA[@Transactional(requiresNew = true) @Interceptor
 public class RequiresNewTransactionInterceptor {
-   @AroundInvoke public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
+   @AroundInvoke 
+   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
 }]]></programlisting>
 
       <para>
