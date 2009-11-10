@@ -2,7 +2,7 @@
    "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <!-- This chapter needs *major* filling in; specifically, give an overview of how an extension plugins in -->
 <chapter id="extend">
-   <title>Extending CDI through portable extensions</title>
+   <title>Portable extensions</title>
   
    <para>
       CDI is intended to be a foundation for frameworks, extensions and integration with other technologies. Therefore,
@@ -35,12 +35,18 @@
             <para>
                Providing its own beans, interceptors and decorators to the container
             </para>
+          </listitem>
+          <listitem>
             <para>
-            </para>
                Injecting dependencies into its own objects using the dependency injection service
+            </para>
+          </listitem>
+          <listitem>
             <para>
                Providing a context implementation for a custom scope
             </para>
+          </listitem>
+          <listitem>
             <para>
                Augmenting or overriding the annotation-based metadata with metadata from some other source
             </para>
@@ -56,7 +62,7 @@
       <title>The <literal>BeanManager</literal> object</title>
     
       <para>
-         The <literal>BeanManager</literal> interface lets us register and obtain beans, interceptors, decorators,
+         The <literal>BeanManager</literal> interface lets us obtain beans, interceptors, decorators,
          observers and contexts programmatically.
       </para>
     
@@ -94,9 +100,9 @@
       <programlisting role="JAVA">@Inject BeanManager beanManager</programlisting>
 
       <para>
-         Java EE components may obtain an instance of BeanManager from JNDI by looking up the name
-         <literal>java:comp/BeanManager</literal>.  Any operation of BeanManager may be called at any time during the
-         execution of the application.
+         Java EE components may obtain an instance of <literal>BeanManager</literal> from JNDI by looking up the name
+         <literal>java:comp/BeanManager</literal>. Any operation of <literal>BeanManager</literal> may be called at any 
+         time during the execution of the application.
       </para>
 
       <para>Let's study some of the interfaces exposed by the <literal>BeanManager</literal>.</para>
@@ -104,7 +110,7 @@
    </section>
   
    <section>
-      <title>The <literal>Bean</literal> class</title>
+      <title>The <literal>Bean</literal> interface</title>
     
       <para>
          Instances of the interface <literal>Bean</literal> represent beans. There is an instance of
@@ -112,7 +118,7 @@
          application.
       </para>
     
-      <programlisting role="JAVA"><![CDATA[public interface class Bean<T> extends Contextual<T> {
+      <programlisting role="JAVA"><![CDATA[public interface Bean<T> extends Contextual<T> {
    public Set<Type> getTypes();
    public Set<Annotation> getQualifiers();
    public Class<? extends Annotation> getScope();
