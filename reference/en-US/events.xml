@@ -240,7 +240,7 @@ public @interface Role {
    </section>
 
    <section>
-      <title>Multiple event bindings</title>
+      <title>Multiple event qualifiers</title>
 
       <para>Event qualifier types may be combined, for example:</para>
 

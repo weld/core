@@ -1,7 +1,7 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
    "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 <chapter id="beanscdi">
-   <title>Beans in CDI</title>
+   <title>More about beans</title>
   
       <para>
          A bean is usually an application class that contains business logic. It may be called directly from Java code,

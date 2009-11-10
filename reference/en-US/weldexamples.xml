@@ -398,8 +398,10 @@ public class Game implements Serializable {
             interface name. You generally don't need to access this interface, but Weld makes use of it.
          </para>
 
-      </section>
-      
+      </section>   
+
+   </section>
+   
       <section id="numberguess-wicket">
          <title>The numberguess example for Apache Wicket</title>
          <para>
@@ -1123,7 +1125,6 @@ public class Game implements Serializable
          </programlistingco>
 
       </section>
-   </section>
    
    <section id="translator">
       <title>The translator example in depth</title>

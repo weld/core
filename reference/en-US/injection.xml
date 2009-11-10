@@ -261,6 +261,8 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
          may be multiple alterative implementations of <literal>@Asynchronous PaymentProcessor</literal>!
       </para>
 
+   </section>
+
       <section>
          <title>Qualifiers with members</title>
 
@@ -299,7 +301,7 @@ public @interface PayBy {
       </section>
 
       <section>
-         <title>Combining qualifiers</title>
+         <title>Multiple qualifiers</title>
 
          <para>
             An injection point may specify multiple qualifiers:
@@ -318,8 +320,6 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
 }]]></programlisting>
 
       </section>
-  
-   </section>
    
    <section id="alternatives">
       <title>Alternatives</title>

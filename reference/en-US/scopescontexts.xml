@@ -307,6 +307,8 @@ public class OrderBuilder {
          CDI makes it easy to obtain a dependent instance of a bean, even if the bean is already declared as a bean with
          some other scope type.
       </para>
+      
+   </section>
 
       <section>
          <title>The <literal>@New</literal> qualifier</title>
@@ -347,8 +349,6 @@ public class Calculator { ... }]]></programlisting>
          </para>
 
       </section>
-
-   </section>
 
 <!--
 vim:et:ts=3:sw=3:tw=120
