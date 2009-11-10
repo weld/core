@@ -5,12 +5,10 @@
   
    <para>
       Because CDI is so new, there's not yet a lot of information available online. That will change over time.
-      Regardless, the CDI specification remains the authority for information on CDI. The spec is kept at around 100
-      pages intentionally easy to read (don't worry, it's not like your Blue-ray player manual). You may be especially
-      interested in reading it since it covers many details that we've skipped over. The spec is available on the
-      <ulink src="http://jcp.org/en/jsr/detail?id=299">JSR-299 page</ulink> at the JCP website. Updates to the spec are
-      also frequently mailed to the <ulink src="https://lists.jboss.org/mailman/listinfo/weld-dev">weld-dev</ulink>
-      mailing list.
+      Regardless, the CDI specification remains the authority for information on CDI. The spec less than 100 pages and 
+      is quite readable (don't worry, it's not like your Blu-ray player manual). Of course, it covers many details we've 
+      skipped over here. The spec is available on the
+      <ulink src="http://jcp.org/en/jsr/detail?id=299">JSR-299 page</ulink> at the JCP website.
    </para>
   
    <para>
