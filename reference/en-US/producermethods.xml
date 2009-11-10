@@ -120,7 +120,7 @@ public PaymentStrategy getPaymentStrategy() {
          </para>
    
          <para>
-            If this isn't what we want we can use dependency injection into the producer method to obtain bean
+            If this isn't what we want, we can use dependency injection into the producer method to obtain bean
             instances:
          </para>
 
