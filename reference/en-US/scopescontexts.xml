@@ -312,20 +312,15 @@ public class OrderBuilder {
          <title>The <literal>@New</literal> qualifier</title>
 
          <para>
-            The built-in <literal>@New</literal> qualifier annotation allows <emphasis>implicit</emphasis> definition of
-            a dependent bean at an injection point. Suppose we declare the following injected field:
+            The built-in qualifier <literal>@New</literal> allows us to obtain a dependent object of a specified class.
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Inject @New Calculator calculator;]]></programlisting>
-
+         
+         <para>The class must be a valid managed bean or session bean, but need not be an enabled bean.</para>
+         
          <para>
-            Then a bean with scope <literal>@Dependent</literal>, qualifier type <literal>@New</literal>, API type
-            <literal>Calculator</literal>, implementation class <literal>Calculator</literal> and deployment type
-            <literal>@Standard</literal> is implicitly defined.
-         </para>
-
-         <para>
-            This is true even if <literal>Calculator</literal> is <emphasis>already</emphasis> declared with a different
+            This works even if <literal>Calculator</literal> is <emphasis>already</emphasis> declared with a different
             scope type, for example:
          </para>
 
