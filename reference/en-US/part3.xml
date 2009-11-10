@@ -3,7 +3,7 @@
 <partintro>
   
    <para>
-      The second major theme of Weld is <emphasis>strong typing</emphasis>. The information about the dependencies,
+      The second major theme of CDI is <emphasis>strong typing</emphasis>. The information about the dependencies,
       interceptors and decorators of a bean, and the information about event consumers for an event producer, is
       contained in typesafe Java constructs that may be validated by the compiler.
    </para>

@@ -6,14 +6,48 @@
    <para>
       CDI is fully integrated into the Java EE environment. Beans have access to Java EE resources and JPA persistence
       contexts. They may be used in Unified EL expressions in JSF and JSP pages. They may even be injected into other
-      platform components, such as Servlets and Message-Driven Beans, which are not beans themselves.
+      platform components, such as servlets and message-driven Beans, which are not beans themselves.
    </para>
   
+      <section>
+         <title>Built-in beans</title>
+
+         <para>
+            In the Java EE environment, the container provides the following built-in beans, all with the qualifier 
+            <literal>@Default</literal>:
+         </para>
+
+         <itemizedlist>
+            <listitem>
+               <para>
+                  the current JTA <literal>UserTransaction</literal>,
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  a <literal>Principal</literal> representing the current caller identity,
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  the default <ulink src="http://jcp.org/en/jsr/detail?id=303">Bean Validation</ulink> 
+                  <literal>ValidationFactory</literal>, and
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  a <literal>Validator</literal> for the default <literal>ValidationFactory</literal>.
+               </para>
+            </listitem>
+         </itemizedlist>
+         
+      </section>
+
    <section>
       <title>Injecting Java EE resources into a bean</title>
     
       <para>
-         All managed beans may take advantage of Java EE dependency injection using <literal>@Resource</literal>,
+         All managed beans may take advantage of Java EE component environment injection using <literal>@Resource</literal>,
          <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PeristenceUnit</literal> and
          <literal>@WebServiceRef</literal>. We've already seen a couple of examples of this, though we didn't pay 
          much attention at the time:
@@ -37,6 +71,11 @@ public class Login implements Serializable {
          The Java EE <literal>@PostConstruct</literal> and <literal>@PreDestroy</literal> callbacks are also supported
          for all managed beans. The <literal>@PostConstruct</literal> method is called after <emphasis>all</emphasis>
          injection has been performed.
+      </para>
+      
+      <para>
+         Of course, we advise that component environment injection be used to define CDI resources, and that typesafe
+         injection be used in application code.
       </para>
     
    </section>

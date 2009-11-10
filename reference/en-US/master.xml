@@ -74,6 +74,7 @@
       
       <xi:include href="stereotypes.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="specialization.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="resources.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
    </part>
    

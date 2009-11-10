@@ -112,7 +112,7 @@ public class TransactionInterceptor {
       <programlisting role="JAVA"><![CDATA[@Transactional @Interceptor
 public class TransactionInterceptor {
 
-    @Inject UserTransaction transaction;
+    @Resource UserTransaction transaction;
 
     @AroundInvoke 
     public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
