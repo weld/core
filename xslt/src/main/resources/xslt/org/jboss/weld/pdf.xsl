@@ -20,6 +20,12 @@
    <xsl:param name="titlepage.color">black</xsl:param>
    <xsl:param name="chapter.title.color">black</xsl:param>
    <xsl:param name="section.title.color">black</xsl:param>
+   
+   <!-- Change to monospace font for programlisting, needed to workaround crappy callouts -->
+   <xsl:param name="programlisting.font" select="$monospace.font.family" />
+
+   <!-- Make the font for programlisting slightly smaller -->
+   <xsl:param name="programlisting.font.size" select="'75%'" /> 
 
 <xsl:template name="book.titlepage.recto">
   <xsl:choose>
