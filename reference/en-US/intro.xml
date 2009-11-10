@@ -455,7 +455,7 @@ public class CreditCardPaymentProcessor
          <para>
             That's not quite the end of the story. CDI also defines a simple <emphasis>resolution rule</emphasis> that helps 
             the container decide what to do if there is more than one bean that satisfies a particular contract. We'll get 
-            into the details in <xref linkend="alternatives"/>.
+            into the details in <xref linkend="injection"/>.
          </para>
          
          <!--
@@ -578,10 +578,9 @@ class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisti
             deployment descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE module that uses 
             it. Different modules can specify that they use different alternatives.
          </para>
-
+         
          <para>
-            Details on how to enable alternative beans, and how you can use them to specialize (override) beans 
-            and producer methods is covered in <xref linkend="3"/>.
+            We cover alternatives in more detail in <xref linkend="alternatives"/>.
          </para>
          
       </section>

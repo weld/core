@@ -41,7 +41,6 @@
       <xi:include href="example.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="injection.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="scopescontexts.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      <xi:include href="producermethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <!-- TODO <xi:include href="producerfields.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /> -->
      
    </part>
@@ -61,6 +60,7 @@
       
       <xi:include href="part2.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
+      <xi:include href="producermethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="interceptors.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="decorators.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="events.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />

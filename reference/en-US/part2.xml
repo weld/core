@@ -59,7 +59,7 @@
       </listitem>
    </itemizedlist>
 
-   <para>Let's explore interceptors first.</para>
+   <para>Let's explore producer methods first.</para>
 
 <!--
 vim:et:ts=3:sw=3:tw=120
