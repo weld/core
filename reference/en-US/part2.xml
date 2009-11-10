@@ -3,64 +3,16 @@
 <partintro>
 
    <para>
-      The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving
-      loose coupling:
+      Weld, the JSR-299 Reference Implementation (RI), is being developed as part of the <ulink
+      url="http://seamframework.org/Weld">Seam project</ulink>. You can download the latest community release of Weld
+      from the <ulink url="http://seamframework.org/Download">download page</ulink>. Information about the Weld source
+      code repository and instructions about how to obtain and build the source can be found on the same page.
    </para>
-
-   <itemizedlist>
-      <listitem>
-         <para>
-            <emphasis>alternatives</emphasis> enable deployment time polymorphism,
-         </para>
-      </listitem>
-      <listitem>
-         <para>
-            <emphasis>producer methods</emphasis> enable runtime polymorphism, and</para>
-      </listitem>
-      <listitem>
-         <para>
-            <emphasis>contextual lifecycle management</emphasis> decouples bean lifecycles.
-         </para>
-      </listitem>
-   </itemizedlist>
-
+   
    <para>
-      These techniques serve to enable loose coupling of client and server. The client is no longer tightly bound to an
-      implementation of an interface, nor is it required to manage the lifecycle of the implementation. This approach 
-      lets <emphasis>stateful objects interact as if they were services</emphasis>.
+      Weld comes with an extensive library of examples, which are a great starting point from which to learn CDI.
    </para>
-
-   <para>
-      Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system can respond to change in a
-      well-defined manner. In the past, frameworks that attempted to provide the facilities listed above invariably did
-      it by sacrificing type safety (most notably by using XML descriptors). CDI is the first technology, and certainly
-      the first specification in the Java EE platform, that achieves this level of loose coupling in a typesafe way.
-   </para>
-
-   <para>
-      CDI provides three extra important facilities that further the goal of loose coupling:
-   </para>
-
-   <itemizedlist>
-      <listitem>
-         <para>
-            <emphasis>interceptors</emphasis> decouple technical concerns from business logic,
-         </para>
-      </listitem>
-      <listitem>
-         <para>
-            <emphasis>decorators</emphasis> may be used to decouple some business concerns, and
-         </para>
-      </listitem>
-      <listitem>
-         <para>
-            <emphasis>event notifications</emphasis> decouple event producers from event consumers.
-         </para>
-      </listitem>
-   </itemizedlist>
-
-   <para>Let's explore producer methods first.</para>
-
+   
 <!--
 vim:et:ts=3:sw=3:tw=120
 -->

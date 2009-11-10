@@ -38,39 +38,32 @@
       <xi:include href="part1.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
       <xi:include href="intro.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="beans.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="example.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="injection.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="scopescontexts.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      <!-- TODO <xi:include href="producerfields.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /> -->
      
    </part>
 
-   <part id="1.5">
+   <part id="2">
       <title>Weld, the CDI Reference Implementation</title>
       
-      <xi:include href="part1.5.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="part2.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       
       <xi:include href="gettingstarted.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="weldexamples.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
    </part>
    
-   <part id="2">
-      <title>Developing loosely-coupled code</title>
+   <part id="3">
+      <title>Loose coupling with strong typing</title>
       
-      <xi:include href="part2.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="part3.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
       <xi:include href="producermethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="interceptors.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="decorators.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="events.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-     
-   </part>
-   
-   <part id="3">
-      <title>Making the most of strong typing</title>
-      
-      <xi:include href="part3.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       
       <xi:include href="stereotypes.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="specialization.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
