@@ -5,7 +5,7 @@
    <groupId>org.jboss.weld</groupId>
    <artifactId>weld-docbook-xslt</artifactId>
    <packaging>jar</packaging>
-   <version>1.1.1-SNAPSHOT</version>
+   <version>1.1.1-Beta4</version>
 
    <name>Weld DocBook XSLT</name>
    <description>
@@ -21,9 +21,9 @@
    </parent>
 
    <scm>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/doc/trunk/xslt</developerConnection>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/doc/trunk/xslt</connection>
-     <url>http://fisheye.jboss.org/browse/Weld/build/tags/weld-parent-3/weld-docbook-xslt</url>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/doc/tags/weld-docbook-xslt-1.1.1-Beta4</developerConnection>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/doc/tags/weld-docbook-xslt-1.1.1-Beta4</connection>
+     <url>http://fisheye.jboss.org/browse/Weld/build/tags/weld-docbook-xslt-1.1.1-Beta4</url>
   </scm>
 
    <contributors>
