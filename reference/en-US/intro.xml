@@ -194,7 +194,7 @@ public void translate() {
 
       <para>
          Notice that it isn't necessary to create a getter or setter method to inject one bean into another. CDI can
-         access an injected field directly (even if it's private!), which sometimes help eliminate some wasteful code. 
+         access an injected field directly (even if it's private!), which sometimes helps eliminate some wasteful code. 
          The name of the field is arbitrary. It's the field's type that determines what is injected.
       </para>
     

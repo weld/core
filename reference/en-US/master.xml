@@ -39,12 +39,21 @@
 
       <xi:include href="intro.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="example.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      <xi:include href="gettingstarted.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="injection.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="scopescontexts.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="producermethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <!-- TODO <xi:include href="producerfields.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /> -->
      
+   </part>
+
+   <part id="1.5">
+      <title>Weld, the CDI Reference Implementation</title>
+      
+      <xi:include href="part1.5.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      
+      <xi:include href="gettingstarted.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="weldexamples.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
    </part>
    
    <part id="2">

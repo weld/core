@@ -115,7 +115,8 @@ public @interface UserDatabase {}]]></programlisting>
 </h:panelGroup>]]></programlisting> 
 
    <para>
-      In the next chapter, we'll explore examples from the CDI reference implementation, Weld, in greater depth.
+      Hopefully, this example gave you a taste of the CDI programming model. In the next chapter, we'll explore 
+      dependency injection in greater depth.
    </para>
 
 <!--
