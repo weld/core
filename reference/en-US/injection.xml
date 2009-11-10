@@ -100,7 +100,7 @@
          </listitem>
          <listitem>
             <para>
-               Finally, the <literal>@PostConstruct</literal> method of the bean is called, if defined.
+               Finally, the <literal>@PostConstruct</literal> method, if any, is called.
             </para>
          </listitem>
       </itemizedlist>
@@ -526,42 +526,43 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
       <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource.get();]]></programlisting>
 
       <para>
-         Of course, qualifiers can be specified at the injection point:
+         Qualifiers can be specified at the injection point:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Inject @Asynchronous Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
   
       <para>
          Alternatively, we can specify the qualifier dynamically. First, we add the <literal>@Any</literal> qualifier to
-         the injection point:
+         the injection point, to suppress the default qualifier. (All beans have the qualifier <literal>@Any</literal>.)
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
       
       <para>
-         Now we can pass the qualifier to the <literal>select()</literal> method of <literal>Instance</literal>. We can 
-         obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>, since it's 
-         otherwise difficult to instantiate an annotation type in Java.
+         Next, we need to obtain an instance of our qualifier type. Since annotatons are interfaces, we can't just write
+         <literal>new Asynchronous()</literal>. It's also quite tedious to create a concrete implementation of an annotation 
+         type from scratch. Instead, CDI lets us obtain a qualifier instance by subclassing the helper class 
+         <literal>AnnotationLiteral</literal>. 
       </para>
-  
-      <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource
-   .select(new AnnotationLiteral<Asynchronous>() {});]]></programlisting>
-
-      <para>
-         We can choose to create a concrete type for the annotation literal:
-      </para>
-
+      
       <programlisting role="JAVA"><![CDATA[abstract class AsynchronousQualifier
 extends AnnotationLiteral<Asynchronous> implements Asynchronous {}]]></programlisting>
 
+      <para>
+         In some cases, we can use an anonymous class:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource
+   .select(new AnnotationLiteral<Asynchronous>() {});]]></programlisting>
+   
       <note>
          <para>
-            The concrete type is required if the qualifier has members.
+            We can't use an anonymous class to implement a qualifier type with members.
          </para>
       </note>
       
       <para>
-         Here's how you might make use of dynamic selection:
+         Now, finally, we can pass the qualifier to the <literal>select()</literal> method of <literal>Instance</literal>.
       </para>
 
       <programlisting><![CDATA[Annotation qualifier = synchronously ?
@@ -570,68 +571,93 @@ PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment
 
    </section>
 
-   <!--section>
-   
-      What the hell is the purpose of this section?! I didn't learn anything useful from it.
-   
-      <title>Bean names and EL lookup</title>
+<section>
+  <title>The <literal>InjectionPoint</literal> object</title>
+  
+  <para>There are certain kinds of dependent objects (beans with scope <literal>@Dependent</literal>) 
+  that need to know something about the object or injection point into which they are injected in order 
+  to be able to do what they do. For example:</para>
+  
+  <itemizedlist>
+    <listitem>
+      <para>The log category for a <literal>Logger</literal> depends upon the class of the object 
+      that owns it.</para>
+    </listitem>
+    <listitem>
+      <para>Injection of a HTTP parameter or header value depends upon what parameter 
+      or header name was specified at the injection point.</para>
+    </listitem>
+    <listitem>
+      <para>Injection of the result of an EL expression evaluation depends upon the 
+      expression that was specified at the injection point.</para>
+    </listitem>
+  </itemizedlist>
 
-      <para>
-         You won't always be able to take advantage of the typesafety that CDI provides. Sometimes your Java
-         code needs to be called from some other language that doesn't support the Java type system. For example,
-         to bind your beans to a JSF view or JSP page, you need to be able to refer to them in a Unified EL
-         expression.
-      </para>
+  <para>A bean with scope <literal>@Dependent</literal> may inject an instance of 
+  <literal>InjectionPoint</literal> and access metadata relating to the injection point to which 
+  it belongs.</para>
 
-      <para>
-         Theres only one way to identity a bean in Unified EL: with a name. The old way of assigning a name to a
-         managed bean was the <literal>faces-config.xml</literal> descriptor. This use of XML completely 
-         contradicts the approach to metadata that's used in CDI. Given that one of the goals of JSR-299 was to get 
-         JSF talking with session beans (and, in turn, the rest of the Java EE platform), CDI needed to find a 
-         different approach. The <literal>@Named</literal> annotation assigns a string-based EL name to a bean.
-      </para>
+  <para>Let's look at an example. The following code is verbose, and vulnerable to refactoring
+  problems:</para>
 
-      <programlisting role="JAVA"><![CDATA[public @Named("cart") @SessionScoped 
-class ShoppingCart implements Serializable {
- ...
-}]]></programlisting> 
-      <programlisting role="JAVA"><![CDATA[public @Produces @Named("items") List<Item> getItems() { ... }]]></programlisting> 
-      <programlisting role="JAVA"><![CDATA[private @Produces @Named("currentUser") User user;]]></programlisting> 
+<programlisting role="JAVA"><![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]></programlisting>
 
-      <para>
-         Of course, you don't want to use this string-based name in your Java code, but you can use it your JSF views to
-         invoke or read state from a bean. Since a bean could be an session bean, now you can hook your JSF view
-         directly to your business component without any middle man and still keep the layers loosely coupled. Loosely
-         coupled? Yes, because names can be associated with the deployment time and runtime polymorphism that CDI
-         provides.
-      </para>
+  <para>This clever little producer method lets you inject a JDK <literal>Logger</literal> without 
+  explicitly specifying the log category:</para>
 
-      <para>
-         Although JSF 2 still includes a managed bean facility, it's expected that you are now going to prefer CDI and
-         EJB as your bean container, since they provides all that JSF managed beans have and much, much more. Plus, your
-         business tier isn't tied to JSF in any way.
-      </para>
+<programlisting role="JAVA"><![CDATA[class LogFactory {
 
-   </section-->
+   @Produces Logger createLogger(InjectionPoint injectionPoint) { 
+      return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName()); 
+   }
 
-   <section>
-      <title>Lifecycle callbacks and component environment injection</title>
+}]]></programlisting>
 
-      <para>
-         Managed beans and EJB beans support the lifecycle callback methods <literal>@PostConstruct</literal> and 
-         <literal>@PreDestroy</literal> which are called after after all dependencies have been injected, and before the 
-         bean is destroyed (when the context to which it belongs ends), respectively. EJB beans also support the EJB 
-         callback methods <literal>@PrePassivate</literal> and <literal>@PostActivate</literal>.
-      </para>
+  <para>We can now write:</para>
 
-      <para>
-         Managed beans and EJB beans also support Java EE 5-style component environment injection, where the injection
-         point is declared using <literal>@Resource</literal>, <literal>@PersistenceContext</literal>, 
-         <literal>@PersistenceUnit</literal>, <literal>@WebServiceRef</literal> or <literal>@EJB</literal>. However, in 
-         a CDI environment, these annotations are most useful for declaring resources that can be injected by CDI.
-      </para>
+<programlisting role="JAVA"><![CDATA[@Inject Logger log;]]></programlisting>
 
-   </section>
+  <para>Not convinced? Then here's a second example. To inject HTTP parameters, we need to define 
+  a qualifier type:</para>
+
+<programlisting role="JAVA"><![CDATA[@BindingType
+@Retention(RUNTIME)
+@Target({TYPE, METHOD, FIELD, PARAMETER})
+public @interface HttpParam {
+   @NonBinding public String value();
+}]]></programlisting>
+
+  <para>We would use this qualifier type at injection points as follows:</para>
+
+<programlisting role="JAVA"><![CDATA[@HttpParam("username") String username;
+@HttpParam("password") String password;]]></programlisting>
+
+  <para>The following producer method does the work:</para>
+
+<programlisting role="JAVA"><![CDATA[class HttpParams
+
+   @Produces @HttpParam("")
+   String getParamValue(ServletRequest request, InjectionPoint ip) {
+      return request.getParameter(ip.getAnnotation(HttpParam.class).value());
+   }
+
+}]]></programlisting>
+
+  <para>(Note that the <literal>value()</literal> member of the <literal>HttpParam</literal>
+  annotation is ignored by the container since it is annotated <literal>@NonBinding.</literal>)</para>
+
+  <para>The container provides a built-in bean that implements the <literal>InjectionPoint</literal> 
+  interface:</para>
+
+<programlisting role="JAVA"><![CDATA[public interface InjectionPoint { 
+   public Object getInstance(); 
+   public Bean<?> getBean(); 
+   public Member getMember(): 
+   public <T extends Annotation> T getAnnotation(Class<T> annotation); 
+   public Set<T extends Annotation> getAnnotations(); 
+}]]></programlisting>
+
+</section>
 
 <!--
 vim:et:ts=3:sw=3:tw=120
