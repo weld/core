@@ -3,13 +3,13 @@
 <chapter id="resources">
 
          <title>Java EE component environment resources</title>
-
+         
          <para>
             Java EE 5 already introduced some limited support for dependency injection, in the form of component 
             environment injection. A component environment resource is a Java EE component, for example a JDBC 
             datasource, JMS queue or topic, JPA persistence context, remote EJB or web service.
          </para>
-            
+         
          <para>
             Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably,
             component environment injection relies on string-based names to qualify ambiguous types, and there is no 
@@ -18,7 +18,7 @@
             adaptor to reduce all this complexity to a common model and get component environment resources to 
             participate in the CDI system just like any other kind of bean.
          </para>
-
+         
          <para>
             Fields have a duality in that they can both be the target of Java EE component environment injection and be 
             declared as a CDI producer field. Therefore, they can define a mapping from a string-based name in the 
