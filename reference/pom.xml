@@ -4,7 +4,7 @@
 
    <groupId>org.jboss.weld.reference-guide</groupId>
    <artifactId>weld-reference-guide</artifactId>
-   <version>1.0.0</version>
+   <version>1.0.1-SNAPSHOT</version>
    <packaging>jdocbook</packaging>
    <name>Weld Reference Guide</name>
 
@@ -122,9 +122,9 @@
 
    <scm>
 
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/doc/tags/weld-refguide-1.0.0</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/doc/tags/weld-refguide-1.0.0</developerConnection>
-      <url>http://fisheye.jboss.org/browse/Weld/doc/tags/weld-refguide-1.0.0</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/doc</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/doc</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld/doc</url>
    </scm>
    
 </project>
