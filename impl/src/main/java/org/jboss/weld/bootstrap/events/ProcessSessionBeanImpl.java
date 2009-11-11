@@ -1,5 +1,7 @@
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_TYPE_NOT_EJB;
+
 import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -7,6 +9,7 @@ import javax.enterprise.inject.spi.ProcessSessionBean;
 import javax.enterprise.inject.spi.SessionBeanType;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bean.SessionBean;
 
 public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, SessionBean<Object>> implements ProcessSessionBean<X>
@@ -48,7 +51,7 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
       }
       else
       {
-         throw new IllegalStateException("Bean type is not STATELESS, STATEFUL or SINGELTON " + getBean());
+         throw new ForbiddenStateException(BEAN_TYPE_NOT_EJB, getBean());
       }
    }
 

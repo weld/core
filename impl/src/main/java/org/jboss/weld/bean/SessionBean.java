@@ -16,6 +16,19 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_DESTROY_ENTERPRISE_BEAN_NOT_CREATED;
+import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_DESTROY_NULL_BEAN;
+import static org.jboss.weld.logging.messages.BeanMessage.EJB_CANNOT_BE_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.EJB_CANNOT_BE_INTERCEPTOR;
+import static org.jboss.weld.logging.messages.BeanMessage.EJB_NOT_FOUND;
+import static org.jboss.weld.logging.messages.BeanMessage.MESSAGE_DRIVEN_BEANS_CANNOT_BE_MANAGED;
+import static org.jboss.weld.logging.messages.BeanMessage.OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_SINGLETON_BEAN;
+import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_STATELESS_SESSION_BEAN;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -31,7 +44,6 @@ import javax.decorator.Decorator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
@@ -39,7 +51,11 @@ import javax.interceptor.Interceptor;
 
 import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.CreationException;
 import org.jboss.weld.DefinitionException;
+import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.ForbiddenStateException;
+import org.jboss.weld.WeldException;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.EnterpriseBeanProxyMethodHandler;
@@ -170,15 +186,15 @@ public class SessionBean<T> extends AbstractClassBean<T>
                }
                catch (InstantiationException e)
                {
-                  throw new RuntimeException("Could not instantiate enterprise proxy for " + toString(), e);
+                  throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
                }
                catch (IllegalAccessException e)
                {
-                  throw new RuntimeException("Could not access bean correctly when creating enterprise proxy for " + toString(), e);
+                  throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
                }
                catch (Exception e)
                {
-                  throw new CreationException("could not find the EJB in JNDI " + proxyClass, e);
+                  throw new CreationException(EJB_NOT_FOUND, e, proxyClass);
                }
             }
             
@@ -217,11 +233,11 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       if (getType().isAnnotationPresent(Interceptor.class))
       {
-         throw new DefinitionException("Enterprise beans cannot be interceptors");
+         throw new DefinitionException(EJB_CANNOT_BE_INTERCEPTOR, getType());
       }
       if (getType().isAnnotationPresent(Decorator.class))
       {
-         throw new DefinitionException("Enterprise beans cannot be decorators");
+         throw new DefinitionException(EJB_CANNOT_BE_DECORATOR, getType());
       }
    }
 
@@ -233,11 +249,11 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       if (ejbDescriptor.isStateless() && !isDependent())
       {
-         throw new DefinitionException("Scope " + getScope() + " is not allowed on stateless enterprise beans for " + getType() + ". Only @Dependent is allowed on stateless enterprise beans");
+         throw new DefinitionException(SCOPE_NOT_ALLOWED_ON_STATELESS_SESSION_BEAN, getScope(), getType());
       }
       if (ejbDescriptor.isSingleton() && !(isDependent() || getScope().equals(ApplicationScoped.class)))
       {
-         throw new DefinitionException("Scope " + getScope() + " is not allowed on singleton enterprise beans for " + getType() + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise beans");
+         throw new DefinitionException(SCOPE_NOT_ALLOWED_ON_SINGLETON_BEAN, getScope(), getType());
       }
    }
 
@@ -251,7 +267,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
       // We appear to check this twice?
       if (!environment.getEjbDescriptors().contains(getAnnotatedItem().getWeldSuperclass().getJavaClass()))
       {
-         throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
+         throw new DefinitionException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
       }
    }
 
@@ -260,12 +276,12 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       if (environment.getClassBean(getAnnotatedItem().getWeldSuperclass()) == null)
       {
-         throw new IllegalStateException(toString() + " does not specialize a bean");
+         throw new ForbiddenStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
       }
       AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getWeldSuperclass());
       if (!(specializedBean instanceof SessionBean<?>))
       {
-         throw new IllegalStateException(toString() + " doesn't have a session bean as a superclass " + specializedBean);
+         throw new ForbiddenStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
       }
       else
       {
@@ -292,11 +308,11 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       if (instance == null)
       {
-         throw new IllegalArgumentException("instance to destroy cannot be null");
+         throw new ForbiddenArgumentException(CANNOT_DESTROY_NULL_BEAN, this);
       }
       if (!(instance instanceof EnterpriseBeanInstance))
       {
-         throw new IllegalArgumentException("Cannot destroy session bean instance not created by the container");
+         throw new ForbiddenArgumentException(CANNOT_DESTROY_ENTERPRISE_BEAN_NOT_CREATED, instance);
       }
       EnterpriseBeanInstance enterpriseBeanInstance = (EnterpriseBeanInstance) instance;
       enterpriseBeanInstance.destroy(Marker.INSTANCE, this, creationalContext);
@@ -310,7 +326,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       if (ejbDescriptor.isMessageDriven())
       {
-         throw new DefinitionException("Message Driven Beans can't be Managed Beans");
+         throw new DefinitionException(MESSAGE_DRIVEN_BEANS_CANNOT_BE_MANAGED, this);
       }
    }
 
@@ -372,7 +388,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
          {
             if (!isMethodExistsOnTypes(method))
             {
-               throw new DefinitionException("Observer method must be static or business method: " + method + " on " + getAnnotatedItem());
+               throw new DefinitionException(OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS, method, getAnnotatedItem());
             }
          }
       }

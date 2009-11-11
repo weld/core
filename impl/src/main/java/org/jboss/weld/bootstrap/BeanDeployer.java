@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -130,7 +132,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    {
       if (clazz.isAnnotationPresent(Decorator.class))
       {
-         throw new DeploymentException("Class " + clazz.getName() + " has both @Interceptor and @Decorator annotations");
+         throw new DeploymentException(BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR, clazz.getName());
       }
    }
 
@@ -138,7 +140,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    {
       if (clazz.isAnnotationPresent(Interceptor.class))
       {
-         throw new DeploymentException("Class " + clazz.getName() + " has both @Interceptor and @Decorator annotations");
+         throw new DeploymentException(BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR, clazz.getName());
       }
    }
 

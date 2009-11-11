@@ -19,7 +19,12 @@ package org.jboss.weld.bootstrap;
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.Category.VERSION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_STORE_MISSING;
+import static org.jboss.weld.logging.messages.BootstrapMessage.DEPLOYMENT_ARCHIVE_NULL;
+import static org.jboss.weld.logging.messages.BootstrapMessage.DEPLOYMENT_REQUIRED;
 import static org.jboss.weld.logging.messages.BootstrapMessage.JTA_UNAVAILABLE;
+import static org.jboss.weld.logging.messages.BootstrapMessage.MANAGER_NOT_INITIALIZED;
+import static org.jboss.weld.logging.messages.BootstrapMessage.UNSPECIFIED_REQUIRED_SERVICE;
 import static org.jboss.weld.logging.messages.BootstrapMessage.VALIDATING_BEANS;
 
 import java.net.URL;
@@ -30,13 +35,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
- 
 
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContextualStoreImpl;
+import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.Validator;
 import org.jboss.weld.Container.Status;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
@@ -187,7 +193,7 @@ public class WeldBootstrap implements Bootstrap
          // Check the id is not null
          if (beanDeploymentArchive.getId() == null)
          {
-            throw new IllegalArgumentException("BeanDeploymentArchive must not be null " + beanDeploymentArchive);
+            throw new ForbiddenArgumentException(DEPLOYMENT_ARCHIVE_NULL, beanDeploymentArchive);
          }
          
          BeanDeployment parent = managerAwareBeanDeploymentArchives.get(beanDeploymentArchive);
@@ -233,7 +239,7 @@ public class WeldBootstrap implements Bootstrap
       {
          if (deployment == null)
          {
-            throw new IllegalArgumentException("Must start the container with a deployment");
+            throw new ForbiddenArgumentException(DEPLOYMENT_REQUIRED);
          }
          if (!deployment.getServices().contains(ResourceLoader.class))
          {
@@ -265,7 +271,7 @@ public class WeldBootstrap implements Bootstrap
 //         }
          if (applicationBeanStore == null)
          {
-            throw new IllegalStateException("No application context BeanStore set");
+            throw new ForbiddenStateException(BEAN_STORE_MISSING);
          }
          
          this.deployment = deployment;
@@ -335,7 +341,7 @@ public class WeldBootstrap implements Bootstrap
       {
          if (deploymentManager == null)
          {
-            throw new IllegalStateException("Manager has not been initialized");
+            throw new ForbiddenStateException(MANAGER_NOT_INITIALIZED);
          }
          
          ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, beanDeployments);
@@ -446,7 +452,7 @@ public class WeldBootstrap implements Bootstrap
       {
          if (!services.contains(serviceType))
          {
-            throw new IllegalStateException("Required service " + serviceType.getName() + " has not been specified");
+            throw new ForbiddenStateException(UNSPECIFIED_REQUIRED_SERVICE, serviceType.getName());
          }
       }
    }

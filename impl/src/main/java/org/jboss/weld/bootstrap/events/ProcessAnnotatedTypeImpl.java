@@ -16,12 +16,15 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.logging.messages.BootstrapMessage.ANNOTATION_TYPE_NULL;
+
 import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.ForbiddenArgumentException;
 import org.jboss.weld.introspector.WeldClass;
 
 /**
@@ -60,7 +63,7 @@ public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEven
    {
       if (type == null)
       {
-         throw new IllegalArgumentException("Cannot set the type to null (if you want to stop the type being used, call veto()) " + this);
+         throw new ForbiddenArgumentException(ANNOTATION_TYPE_NULL, this);
       }
       this.annotatedType = type;
    }
