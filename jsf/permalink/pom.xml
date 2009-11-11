@@ -283,6 +283,9 @@
                <resource>
                   <directory>src/log/resources</directory>
                </resource>
+               <resource>
+                  <directory>src/main/resources</directory>
+               </resource>
             </resources>
             <plugins>
 
@@ -410,6 +413,9 @@
             <resources>
                <resource>
                   <directory>src/log/resources</directory>
+               </resource>
+               <resource>
+                  <directory>src/main/resources</directory>
                </resource>
             </resources>
             <plugins>
