@@ -15,7 +15,7 @@
 
    <xsl:import href="classpath:/xslt/org/jboss/seam/pdf.xsl"/>
    
-     <!-- Change the font color for titles to black one -->
+   <!-- Change the font color for titles to black one -->
    <xsl:param name="title.color">black</xsl:param>
    <xsl:param name="titlepage.color">black</xsl:param>
    <xsl:param name="chapter.title.color">black</xsl:param>
@@ -25,8 +25,10 @@
    <xsl:param name="programlisting.font" select="$monospace.font.family" />
 
    <!-- Make the font for programlisting slightly smaller -->
-   <xsl:param name="programlisting.font.size" select="'75%'" />
-   <xsl:param name="body.font.size" select="'75%'" /> 
+   <xsl:param name="programlisting.font.size" select="'90%'" />
+   <xsl:param name="body.font.size" select="'70%'" />
+   <xsl:param name="chapter.title.font.size" select="'60%'" /> 
+   <xsl:param name="section.title.font.size" select="'60%'" /> 
 
 <xsl:template name="book.titlepage.recto">
   <xsl:choose>
