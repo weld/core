@@ -10,6 +10,12 @@
    </para>
    
    <para>
+      Weld provides a complete SPI allowing Java EE containers such as JBoss AS and GlassFish to use Weld as their 
+      built-in CDI implementation. Weld also runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE 
+      environment.
+   </para>
+   
+   <para>
       Weld comes with an extensive library of examples, which are a great starting point from which to learn CDI.
    </para>
    
