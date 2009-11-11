@@ -84,6 +84,45 @@
       </plugins>
    </build>
 
+   <profiles>
+
+      <profile>
+         <id>translations</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.jboss.maven.plugins</groupId>
+                  <artifactId>maven-jdocbook-plugin</artifactId>
+
+                  <executions>
+                     <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                           <goal>translate</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+
+                  <configuration>
+                     <translations>
+                        <translation>it-IT</translation>
+                        <translation>zh-CN</translation>
+                        <translation>zh-TW</translation>
+                        <translation>es-ES</translation>
+                        <translation>ko-KR</translation>
+
+                        <translation>de-DE</translation>
+                        <translation>pt-BR</translation>
+                     </translations>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+
+   </profiles>
+
+
    <scm>
 
       <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/doc</connection>
