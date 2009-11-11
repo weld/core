@@ -16,10 +16,10 @@
    <xsl:import href="classpath:/xslt/org/jboss/seam/pdf.xsl"/>
    
    <!-- Change the font color for titles to black one -->
-   <xsl:param name="title.color">black</xsl:param>
-   <xsl:param name="titlepage.color">black</xsl:param>
-   <xsl:param name="chapter.title.color">black</xsl:param>
-   <xsl:param name="section.title.color">black</xsl:param>
+   <xsl:param name="title.color">brown</xsl:param>
+   <xsl:param name="titlepage.color">brown</xsl:param>
+   <xsl:param name="chapter.title.color">brown</xsl:param>
+   <xsl:param name="section.title.color">brown</xsl:param>
    
    <!-- Change to monospace font for programlisting, needed to workaround crappy callouts -->
    <xsl:param name="programlisting.font" select="$monospace.font.family" />
@@ -29,6 +29,7 @@
    <xsl:param name="body.font.size" select="'70%'" />
    <xsl:param name="chapter.title.font.size" select="'60%'" /> 
    <xsl:param name="section.title.font.size" select="'60%'" /> 
+   <xsl:param name="title.font.size" select="'60%'" /> 
 
 <xsl:template name="book.titlepage.recto">
   <xsl:choose>
