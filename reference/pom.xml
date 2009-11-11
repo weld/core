@@ -125,9 +125,9 @@
 
    <scm>
 
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/doc</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/doc</developerConnection>
-      <url>http://fisheye.jboss.org/browse/Weld/doc</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/doc/trunk/reference</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/doc/trunk/reference</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/doc/trunk/reference</url>
    </scm>
    
 </project>
