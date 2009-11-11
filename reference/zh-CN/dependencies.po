@@ -1,0 +1,134 @@
+# Language zh-CN translations for Weld_-_JSR-299_Reference_Implementation package.
+# Automatically generated, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"PO-Revision-Date: 2009-11-11 15:00+0000\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: dependencies.xml:5
+#, no-c-format
+msgid "Weld project dependencies"
+msgstr ""
+
+#. Tag: para
+#: dependencies.xml:7
+#, no-c-format
+msgid ""
+"This section lists compile-time and runtime dependencies for Weld. This list "
+"is currently maintained in the <ulink src=\"https://jira.jboss.org/jira/"
+"browse/WELD-222\">WELD-222</ulink> issue report as well as here in this "
+"appendix."
+msgstr ""
+
+#. Tag: title
+#: dependencies.xml:13
+#, no-c-format
+msgid "Artifacts coming from Sun"
+msgstr ""
+
+#. Tag: para
+#: dependencies.xml:21 dependencies.xml:110
+#, no-c-format
+msgid "Artifact"
+msgstr ""
+
+#. Tag: para
+#: dependencies.xml:24 dependencies.xml:113
+#, no-c-format
+msgid "Scope"
+msgstr ""
+
+#. Tag: literal
+#: dependencies.xml:33
+#, no-c-format
+msgid "javax.ejb:ejb-api:3.1"
+msgstr ""
+
+#. Tag: para
+#: dependencies.xml:36 dependencies.xml:44 dependencies.xml:52
+#: dependencies.xml:60 dependencies.xml:68 dependencies.xml:76
+#: dependencies.xml:128
+#, no-c-format
+msgid "compile"
+msgstr ""
+
+#. Tag: literal
+#: dependencies.xml:41
+#, no-c-format
+msgid "javax.faces:jsf-api:2.0"
+msgstr ""
+
+#. Tag: literal
+#: dependencies.xml:49
+#, no-c-format
+msgid "javax.el:el-api:2.1"
+msgstr ""
+
+#. Tag: literal
+#: dependencies.xml:57
+#, no-c-format
+msgid "javax.persistence:persistence-api:2.0"
+msgstr ""
+
+#. Tag: literal
+#: dependencies.xml:65
+#, no-c-format
+msgid "javax.servlet:servlet-api:3.0"
+msgstr ""
+
+#. Tag: literal
+#: dependencies.xml:73
+#, no-c-format
+msgid "javax.interceptor:interceptor-api:1.1"
+msgstr ""
+
+#. Tag: literal
+#: dependencies.xml:81
+#, no-c-format
+msgid "org.glasfish.web:el-impl:2.1.2"
+msgstr ""
+
+#. Tag: para
+#: dependencies.xml:84 dependencies.xml:92
+#, no-c-format
+msgid "runtime"
+msgstr ""
+
+#. Tag: literal
+#: dependencies.xml:89
+#, no-c-format
+msgid "javax.faces:jsf-impl:2.0.x"
+msgstr ""
+
+#. Tag: title
+#: dependencies.xml:101
+#, no-c-format
+msgid "Artifacts coming from Hibernate"
+msgstr ""
+
+#. Tag: para
+#: dependencies.xml:116
+#, no-c-format
+msgid "Notes"
+msgstr ""
+
+#. Tag: literal
+#: dependencies.xml:125
+#, no-c-format
+msgid "javax.validation:validation-api"
+msgstr ""
+
+#. Tag: ulink
+#: dependencies.xml:131
+#, no-c-format
+msgid "BVAL-193"
+msgstr ""

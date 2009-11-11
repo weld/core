@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Author_Group\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-28 17:09+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-02-07 14:52+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -16,117 +16,120 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: author
-#: Author_Group.xml:4
+#: Author_Group.xml:5
 #, no-c-format
 msgid "<firstname>Gavin</firstname> <surname>King</surname>"
 msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
 
-#. Tag: affiliation
-#: Author_Group.xml:7
+#. Tag: contrib
+#: Author_Group.xml:8
 #, no-c-format
-msgid ""
-"<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware "
-"LLC</orgname>"
+msgid "JSR-299: Contexts and Dependency Injection Lead"
 msgstr ""
-"<jobtitle>JSR-299 Spezifikations-Lead</jobtitle> <orgname>Red Hat Middleware "
-"LLC</orgname>"
 
 #. Tag: author
-#: Author_Group.xml:12
+#: Author_Group.xml:14
 #, no-c-format
 msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
 msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 
-#. Tag: affiliation
-#: Author_Group.xml:15
+#. Tag: contrib
+#: Author_Group.xml:17
 #, no-c-format
-msgid ""
-"<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
-"<orgname>Red Hat Middleware LLC</orgname>"
+msgid "Weld (JSR-299 RI) Lead"
 msgstr ""
-"<jobtitle>Web Beans (JSR-299 Referenz Implementation)-Lead </jobtitle> "
-"<orgname>Red Hat Middleware LLC</orgname>"
 
 #. Tag: author
-#: Author_Group.xml:21
+#: Author_Group.xml:24
+#, fuzzy, no-c-format
+msgid "<firstname>Dan</firstname> <surname>Allen</surname>"
+msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+
+#. Tag: author
+#: Author_Group.xml:31
 #, fuzzy, no-c-format
 msgid "<firstname>David</firstname> <surname>Allen</surname>"
 msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
 
 #. Tag: othercredit
-#: Author_Group.xml:25
+#: Author_Group.xml:35
 #, no-c-format
 msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:28 Author_Group.xml:57
+#: Author_Group.xml:38 Author_Group.xml:67
 #, no-c-format
 msgid "Italian Translation"
 msgstr "Italienische Übersetzung"
 
 #. Tag: othercredit
-#: Author_Group.xml:30
+#: Author_Group.xml:40
 #, no-c-format
 msgid "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
 msgstr "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:33
+#: Author_Group.xml:43
 #, no-c-format
 msgid "Spanish Translation"
 msgstr "Spanische Übersetzung"
 
-#. Tag: orgname
-#: Author_Group.xml:35 Author_Group.xml:43 Author_Group.xml:51
-#, no-c-format
-msgid "Red Hat Middleware LLC"
-msgstr "Red Hat Middleware LLC"
-
 #. Tag: othercredit
-#: Author_Group.xml:38
+#: Author_Group.xml:48
 #, no-c-format
 msgid "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
 msgstr "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:41
+#: Author_Group.xml:51
 #, no-c-format
 msgid "Korean Translation"
 msgstr "Koreanische Übersetzung"
 
 #. Tag: othercredit
-#: Author_Group.xml:46
+#: Author_Group.xml:56
 #, no-c-format
 msgid "<firstname>Terry</firstname> <surname>Chuang</surname>"
 msgstr "<firstname>Terry</firstname> <surname>Chuang</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:49
+#: Author_Group.xml:59
 #, no-c-format
 msgid "Traditional Chinese Translation"
 msgstr "Chinesische Übersetzung (traditionell)"
 
 #. Tag: othercredit
-#: Author_Group.xml:54
+#: Author_Group.xml:64
 #, no-c-format
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 
 #. Tag: othercredit
-#: Author_Group.xml:59
+#: Author_Group.xml:69
 #, fuzzy, no-c-format
 msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
 msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:62
+#: Author_Group.xml:72
 #, fuzzy, no-c-format
 msgid "Simplified Chinese Translation"
 msgstr "Chinesische Übersetzung (traditionell)"
 
-#. Tag: orgname
-#: Author_Group.xml:64
-#, no-c-format
-msgid "Kava Community"
-msgstr ""
+#~ msgid ""
+#~ "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat "
+#~ "Middleware LLC</orgname>"
+#~ msgstr ""
+#~ "<jobtitle>JSR-299 Spezifikations-Lead</jobtitle> <orgname>Red Hat "
+#~ "Middleware LLC</orgname>"
+
+#~ msgid ""
+#~ "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
+#~ "<orgname>Red Hat Middleware LLC</orgname>"
+#~ msgstr ""
+#~ "<jobtitle>Web Beans (JSR-299 Referenz Implementation)-Lead </jobtitle> "
+#~ "<orgname>Red Hat Middleware LLC</orgname>"
+
+#~ msgid "Red Hat Middleware LLC"
+#~ msgstr "Red Hat Middleware LLC"

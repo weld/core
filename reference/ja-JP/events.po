@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2008-12-19 20:26+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-04-30 23:50+0900\n"
 "Last-Translator: Fusayuki Minamoto <miki.htmnet@nifty.com>\n"
 "Language-Team: none\n"
@@ -22,457 +22,699 @@ msgstr "イベント"
 #. Tag: para
 #: events.xml:6
 #, no-c-format
-msgid "The Web Beans event notification facility allows Web Beans to interact in a totally decoupled manner. Event <emphasis>producers</emphasis> raise events that are then delivered to event <emphasis>observers</emphasis> by the Web Bean manager. This basic schema might sound like the familiar observer/observable pattern, but there are a couple of twists:"
-msgstr "Web Beansのイベント通知機能はWeb Beans同士が完全に疎結合ままで相互作用を可能にします。イベント <emphasis>プロデューサ</emphasis> は、Web Beanマネージャによってイベント <emphasis>オブザーバ</emphasis> へ配送されるイベントを発生します。この基本スキーマはおなじみの observer/observable パターンのように聞こえるかもしれませんが、次のように違いもあります。"
+msgid ""
+"Dependency injection enables loose-coupling by allowing the implementation "
+"of the injected bean type to vary, either a deployment time or runtime. "
+"Events go one step further, allowing beans to interact with no compile time "
+"dependency at all. Event <emphasis>producers</emphasis> raise events that "
+"are delivered to event <emphasis>observers</emphasis> by the container."
+msgstr ""
 
 #. Tag: para
-#: events.xml:14
+#: events.xml:13
 #, no-c-format
-msgid "not only are event producers decoupled from observers; observers are completely decoupled from producers,"
-msgstr "イベントプロデューサはオブザーバから分離されているだけではなく、オブザーバはプロデューサから完全に分離されています。"
+msgid ""
+"This basic schema might sound like the familiar observer/observable pattern, "
+"but there are a couple of twists:"
+msgstr ""
 
 #. Tag: para
 #: events.xml:18
 #, no-c-format
-msgid "observers can specify a combination of \"selectors\" to narrow the set of event notifications they will receive, and"
-msgstr "オブザーバは \"セレクタ\"の組み合わせを指定することで、受信するイベント通知の集まりを狭めることが可能です"
+msgid ""
+"not only are event producers decoupled from observers; observers are "
+"completely decoupled from producers,"
+msgstr ""
+"イベントプロデューサはオブザーバから分離されているだけではなく、オブザーバは"
+"プロデューサから完全に分離されています。"
 
 #. Tag: para
 #: events.xml:22
 #, no-c-format
-msgid "observers can be notified immediately, or can specify that delivery of the event should be delayed until the end of the current transaction"
-msgstr "オブザーバは直ちにに通知を受信するか、あるいは現在のトランザクションの終了を待ってイベント配送を遅延させるように指定することが可能です"
+msgid ""
+"observers can specify a combination of \"selectors\" to narrow the set of "
+"event notifications they will receive, and"
+msgstr ""
+"オブザーバは \"セレクタ\"の組み合わせを指定することで、受信するイベント通知の"
+"集まりを狭めることが可能です"
+
+#. Tag: para
+#: events.xml:28
+#, fuzzy, no-c-format
+msgid ""
+"observers can be notified immediately, or can specify that delivery of the "
+"event should be delayed until the end of the current transaction."
+msgstr ""
+"オブザーバは直ちにに通知を受信するか、あるいは現在のトランザクションの終了を"
+"待ってイベント配送を遅延させるように指定することが可能です"
+
+#. Tag: para
+#: events.xml:35
+#, no-c-format
+msgid ""
+"The CDI event notification facility uses more or less the same typesafe "
+"approach that we've already seen with the dependency injection service."
+msgstr ""
 
 #. Tag: title
-#: events.xml:28
+#: events.xml:39
+#, fuzzy, no-c-format
+msgid "Event payload"
+msgstr "イベントプロデューサ"
+
+#. Tag: para
+#: events.xml:41
+#, no-c-format
+msgid ""
+"The event object carries state from producer to consumer. The event object "
+"is nothing more than an instance of a concrete Java class. (The only "
+"restriction is that an event type may not contain type variables). An event "
+"may be assigned qualifiers, which allows observers to distinguish it from "
+"other events of the same type. The qualifiers function like topic selectors, "
+"allowing an observer to narrow the set of events it observes."
+msgstr ""
+
+#. Tag: para
+#: events.xml:48
+#, no-c-format
+msgid ""
+"An event qualifier is just a normal qualifier, defined using "
+"<literal>@Qualifier</literal>. Here's an example:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:52
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Qualifier\n"
+"@Target({FIELD, PARAMETER})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Updated {}]]>"
+msgstr ""
+"<![CDATA[@BindingType\n"
+"@Target({PARAMETER, FIELD})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Updated { ... }]]>"
+
+#. Tag: title
+#: events.xml:57
 #, no-c-format
 msgid "Event observers"
 msgstr "イベントオブザーバ"
 
 #. Tag: para
-#: events.xml:30
-#, no-c-format
-msgid "An <emphasis>observer method</emphasis> is a method of a Web Bean with a parameter annotated <literal>@Observes</literal>."
-msgstr "<emphasis>オブザーバメソッド</emphasis> は、 <literal>@Observes</literal> というアノテーションの付いたパラメータを持つWeb Beanのメソッドです。"
+#: events.xml:59
+#, fuzzy, no-c-format
+msgid ""
+"An <emphasis>observer method</emphasis> is a method of a bean with a "
+"parameter annotated <literal>@Observes</literal>."
+msgstr ""
+"<emphasis>オブザーバメソッド</emphasis> は、 <literal>@Observes</literal> と"
+"いうアノテーションの付いたパラメータを持つWeb Beanのメソッドです。"
 
 #. Tag: programlisting
-#: events.xml:33
-#, no-c-format
-msgid "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }]]>"
-msgstr "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }]]>"
-
-#. Tag: para
-#: events.xml:35
-#, no-c-format
-msgid "The annotated parameter is called the <emphasis>event parameter</emphasis>. The type of the event parameter is the observed <emphasis>event type</emphasis>. Observer methods may also specify \"selectors\", which are just instances of Web Beans binding types. When a binding type is used as an event selector, it is called an <emphasis>event binding type</emphasis>."
-msgstr "このアノテーション付きのパラメータは <emphasis>イベントパラメータ</emphasis> と呼ばれます。イベントパラメータの種類は<emphasis>イベントタイプ</emphasis> で指定されます。オブザーバメソッドは \"セレクタ\"を指定することもできます。それはWeb Beansバインディングタイプのインスタンスに過ぎません。バインディングタイプがイベントセレクタとして使用されると、それは <emphasis>イベントバインディングタイプ</emphasis> と呼ばれます。"
-
-#. Tag: programlisting
-#: events.xml:41
+#: events.xml:64
 #, no-c-format
 msgid ""
-"<![CDATA[@BindingType\n"
-"@Target({PARAMETER, FIELD})\n"
-"@Retention(RUNTIME)\n"
-"public @interface Updated { ... }]]>"
+"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+"{ ... }]]>"
 msgstr ""
-"<![CDATA[@BindingType\n"
-"@Target({PARAMETER, FIELD})\n"
-"@Retention(RUNTIME)\n"
-"public @interface Updated { ... }]]>"
+"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+"{ ... }]]>"
 
 #. Tag: para
-#: events.xml:43
-#, no-c-format
-msgid "We specify the event bindings of the observer method by annotating the event parameter:"
-msgstr "イベントパラメータにアノテーションを付加することによってオブザーバメソッドのイベントバインディングを指定します。"
+#: events.xml:66
+#, fuzzy, no-c-format
+msgid ""
+"The annotated parameter is called the <emphasis>event parameter</emphasis>. "
+"The type of the event parameter is the observed <emphasis>event type</"
+"emphasis>, in this case <literal>Document</literal>. The event parameter may "
+"also specify qualifiers."
+msgstr ""
+"このアノテーション付きのパラメータは <emphasis>イベントパラメータ</emphasis> "
+"と呼ばれます。イベントパラメータの種類は<emphasis>イベントタイプ</emphasis> "
+"で指定されます。オブザーバメソッドは \"セレクタ\"を指定することもできます。そ"
+"れはWeb Beansバインディングタイプのインスタンスに過ぎません。バインディングタ"
+"イプがイベントセレクタとして使用されると、それは <emphasis>イベントバインディ"
+"ングタイプ</emphasis> と呼ばれます。"
 
 #. Tag: programlisting
-#: events.xml:46
-#: events.xml:190
+#: events.xml:72 events.xml:240
 #, no-c-format
-msgid "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]>"
-msgstr "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]>"
+msgid ""
+"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+"document) { ... }]]>"
+msgstr ""
+"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+"document) { ... }]]>"
 
 #. Tag: para
-#: events.xml:48
-#, no-c-format
-msgid "An observer method need not specify any event bindings &#151; in this case it is interested in <emphasis>all</emphasis> events of a particular type. If it does specify event bindings, it is only interested in events which also have those event bindings."
-msgstr "オブザーバメソッドはイベントバインディングを指定する必要はありません&#151; このケースでは特定のタイプの <emphasis>すべて</emphasis> のイベントに関心があります。もしイベントバインディングを指定するのであれば、イベントバインディングを持つイベントだけに関心があります。"
+#: events.xml:74
+#, fuzzy, no-c-format
+msgid ""
+"An observer method need not specify any event qualifiers&#8212;in this case "
+"it is interested in <emphasis>all</emphasis> events of a particular type. If "
+"it does specify qualifiers, it's only interested in events which have those "
+"qualifiers."
+msgstr ""
+"オブザーバメソッドはイベントバインディングを指定する必要はありません&#151; こ"
+"のケースでは特定のタイプの <emphasis>すべて</emphasis> のイベントに関心があり"
+"ます。もしイベントバインディングを指定するのであれば、イベントバインディング"
+"を持つイベントだけに関心があります。"
 
 #. Tag: para
-#: events.xml:53
-#, no-c-format
-msgid "The observer method may have additional parameters, which are injected according to the usual Web Beans method parameter injection semantics:"
-msgstr "オブザーバメソッドは追加のパラメータを持つこともできます。それは通常のWeb Beansメソッドパラメータインジェクションのセマンティクスに従って依存性の注入が行われます。"
+#: events.xml:80
+#, fuzzy, no-c-format
+msgid ""
+"The observer method may have additional parameters, which are injection "
+"points:"
+msgstr ""
+"オブザーバメソッドは追加のパラメータを持つこともできます。それは通常のWeb "
+"Beansメソッドパラメータインジェクションのセマンティクスに従って依存性の注入が"
+"行われます。"
 
 #. Tag: programlisting
-#: events.xml:56
+#: events.xml:84
 #, no-c-format
-msgid "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document, User user) { ... }]]>"
-msgstr "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document, User user) { ... }]]>"
+msgid ""
+"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+"document, User user) { ... }]]>"
+msgstr ""
+"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+"document, User user) { ... }]]>"
 
 #. Tag: title
-#: events.xml:61
+#: events.xml:89
 #, no-c-format
 msgid "Event producers"
 msgstr "イベントプロデューサ"
 
 #. Tag: para
-#: events.xml:63
+#: events.xml:91
 #, no-c-format
-msgid "The event producer may obtain an <emphasis>event notifier</emphasis> object by injection:"
-msgstr "イベントプロデューサは次のようにインジェクションによって <emphasis>イベント通知</emphasis> オブジェクトを取得できます。"
+msgid ""
+"Event producers fire events using an instance of the parameterized "
+"<literal>Event</literal> interface. An instance of this interface is "
+"obtained by injection:"
+msgstr ""
 
 #. Tag: programlisting
-#: events.xml:66
-#, no-c-format
-msgid "<![CDATA[@Observable Event<Document> documentEvent]]>"
+#: events.xml:96
+#, fuzzy, no-c-format
+msgid "<![CDATA[@Inject @Any Event<Document> documentEvent;]]>"
 msgstr "<![CDATA[@Observable Event<Document> documentEvent]]>"
 
 #. Tag: para
-#: events.xml:68
-#, no-c-format
-msgid "The <literal>@Observable</literal> annotation implicitly defines a Web Bean with scope <literal>@Dependent</literal> and deployment type <literal>@Standard</literal>, with an implementation provided by the Web Bean manager."
-msgstr "<literal>@Observable</literal> アノテーションはスコープ <literal>@Dependent</literal> とデプロイメントタイプ <literal>@Standard</literal> とWeb Beanマネージャによって提供される実装を持つWeb Beanを暗黙的に定義します。"
-
-#. Tag: para
-#: events.xml:72
-#, no-c-format
-msgid "A producer raises events by calling the <literal>fire()</literal> method of the <literal>Event</literal> interface, passing an <emphasis>event object</emphasis>:"
-msgstr "プロデューサは <literal>Event</literal> インタフェースの <literal>fire()</literal> メソッドを呼び出し、<emphasis>イベントオブジェクト</emphasis> を渡すことでイベントを発生させます。"
+#: events.xml:98
+#, fuzzy, no-c-format
+msgid ""
+"A producer raises events by calling the <literal>fire()</literal> method of "
+"the <literal>Event</literal> interface, passing the event object:"
+msgstr ""
+"プロデューサは <literal>Event</literal> インタフェースの <literal>fire()</"
+"literal> メソッドを呼び出し、<emphasis>イベントオブジェクト</emphasis> を渡す"
+"ことでイベントを発生させます。"
 
 #. Tag: programlisting
-#: events.xml:75
+#: events.xml:103
 #, no-c-format
 msgid "<![CDATA[documentEvent.fire(document);]]>"
 msgstr "<![CDATA[documentEvent.fire(document);]]>"
 
 #. Tag: para
-#: events.xml:77
-#, no-c-format
-msgid "An event object may be an instance of any Java class that has no type variables or wildcard type parameters. The event will be delivered to every observer method that:"
-msgstr "イベントオブジェクトは、型変数またはワイルドカードの型パラメータを持たないJavaクラスのインスタンスになる可能性があります。そのイベントは次のような特徴を持つ各オブザーバメソッドに配送されます。"
+#: events.xml:105
+#, fuzzy, no-c-format
+msgid "This particular event will be delivered to every observer method that:"
+msgstr "イベントは次のような特徴を持つ各オブザーバメソッドへ配送されます。"
 
 #. Tag: para
-#: events.xml:83
-#: events.xml:107
-#: events.xml:126
+#: events.xml:111
+#, fuzzy, no-c-format
+msgid ""
+"has an event parameter to which the event object (the <literal>Document</"
+"literal>) is assignable, and"
+msgstr "イベントオブジェクトが代入可能なイベントパラメータ、かつ"
+
+#. Tag: para
+#: events.xml:115
+#, fuzzy, no-c-format
+msgid "specifies no qualifiers."
+msgstr "イベントバインディングを指定しない"
+
+#. Tag: para
+#: events.xml:119
+#, fuzzy, no-c-format
+msgid ""
+"The container simply calls all the observer methods, passing the event "
+"object as the value of the event parameter. If any observer method throws an "
+"exception, the container stops calling observer methods, and the exception "
+"is rethrown by the <literal>fire()</literal> method."
+msgstr ""
+"Web Beanマネージャは単にすべてのオブザーバメソッドを呼び出し、そのイベントパ"
+"ラメータの値としてイベントオブジェクトを渡します。もしオブザーバメソッドが例"
+"外をスローしたら、Web Beanマネージャはオブザーバメソッドの呼び出しを停止し、"
+"その例外は <literal>fire()</literal> メソッドによって再スローされます。"
+
+#. Tag: para
+#: events.xml:125
+#, no-c-format
+msgid "Qualifiers can be applied to an event in one of two ways:"
+msgstr ""
+
+#. Tag: para
+#: events.xml:131
+#, no-c-format
+msgid "by annotating the <literal>Event</literal> injection point, or"
+msgstr ""
+
+#. Tag: para
+#: events.xml:134
+#, no-c-format
+msgid ""
+"by passing qualifiers to the <literal>select()</literal> of <literal>Event</"
+"literal>."
+msgstr ""
+
+#. Tag: para
+#: events.xml:138
+#, no-c-format
+msgid "Specifying the qualifiers at the injection point is far simpler:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:142
+#, fuzzy, no-c-format
+msgid "<![CDATA[@Inject @Updated Event<Document> documentUpdatedEvent;]]>"
+msgstr "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
+
+#. Tag: para
+#: events.xml:144
+#, fuzzy, no-c-format
+msgid ""
+"Then, every event fired via this instance of <literal>Event</literal> has "
+"the event qualifier <literal>@Updated</literal>. The event is delivered to "
+"every observer method that:"
+msgstr ""
+"次に <literal>Event</literal> のインスタンスを介して発火したイベントは、イベ"
+"ントバインディングのアノテーションを付加します。そのイベントは次のような特徴"
+"持つ各オブザーバメソッドに配送されます。"
+
+#. Tag: para
+#: events.xml:151
 #, no-c-format
 msgid "has an event parameter to which the event object is assignable, and"
 msgstr "イベントオブジェクトが代入可能なイベントパラメータ、かつ"
 
 #. Tag: para
-#: events.xml:86
-#, no-c-format
-msgid "specifies no event bindings."
-msgstr "イベントバインディングを指定しない"
-
-#. Tag: para
-#: events.xml:90
-#, no-c-format
-msgid "The Web Bean manager simply calls all the observer methods, passing the event object as the value of the event parameter. If any observer method throws an exception, the Web Bean manager stops calling observer methods, and the exception is rethrown by the <literal>fire()</literal> method."
-msgstr "Web Beanマネージャは単にすべてのオブザーバメソッドを呼び出し、そのイベントパラメータの値としてイベントオブジェクトを渡します。もしオブザーバメソッドが例外をスローしたら、Web Beanマネージャはオブザーバメソッドの呼び出しを停止し、その例外は <literal>fire()</literal> メソッドによって再スローされます。"
-
-#. Tag: para
-#: events.xml:95
-#, no-c-format
-msgid "To specify a \"selector\", the event producer may pass an instance of the event binding type to the <literal>fire()</literal> method:"
-msgstr " \"セレクタ\" を指定するために、イベントプロデューサは次のように <literal>fire()</literal> メソッドへのイベントバインディングタイプのインスタンスを渡すことができます。"
-
-#. Tag: programlisting
-#: events.xml:98
-#, no-c-format
-msgid "<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>(){} );]]>"
-msgstr "<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>(){} );]]>"
-
-#. Tag: para
-#: events.xml:100
-#, no-c-format
-msgid "The helper class <literal>AnnotationLiteral</literal> makes it possible to instantiate binding types inline, since this is otherwise difficult to do in Java."
-msgstr "ヘルパークラス <literal>AnnotationLiteral</literal> はバインディングタイプをインラインで生成することが可能です。一方、これはJavaでは困難なことです。"
-
-#. Tag: para
-#: events.xml:103
-#, no-c-format
-msgid "The event will be delivered to every observer method that:"
-msgstr "イベントは次のような特徴を持つ各オブザーバメソッドへ配送されます。"
-
-#. Tag: para
-#: events.xml:110
-#, no-c-format
-msgid "does not specify any event binding <emphasis>except</emphasis> for the event bindings passed to <literal>fire()</literal>."
-msgstr "<literal>fire()</literal> へ渡されるイベントバインディングを <emphasis>除いて</emphasis> イベントバインディングを指定しない "
-
-#. Tag: para
-#: events.xml:115
-#, no-c-format
-msgid "Alternatively, event bindings may be specified by annotating the event notifier injection point:"
-msgstr "別の方法として、次のようにイベント通知インジェクションポイントのアノテーションを付加することでイベントバインディングを指定可能です。"
-
-#. Tag: programlisting
-#: events.xml:118
-#, no-c-format
-msgid "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
-msgstr "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
-
-#. Tag: para
-#: events.xml:120
-#, no-c-format
-msgid "Then every event fired via this instance of <literal>Event</literal> has the annotated event binding. The event will be delivered to every observer method that:"
-msgstr "次に <literal>Event</literal> のインスタンスを介して発火したイベントは、イベントバインディングのアノテーションを付加します。そのイベントは次のような特徴持つ各オブザーバメソッドに配送されます。"
-
-#. Tag: para
-#: events.xml:129
-#, no-c-format
-msgid "does not specify any event binding <emphasis>except</emphasis> for the event bindings passed to <literal>fire()</literal> or the annotated event bindings of the event notifier injection point."
-msgstr " <literal>fire()</literal> へ渡されるイベントバインディング、またはイベント通知インジェクションポイントのアノテートの付いたイベントバインディングを <emphasis>除いて</emphasis> イベントバインディングを指定しない。"
-
-#. Tag: title
-#: events.xml:138
-#, no-c-format
-msgid "Registering observers dynamically"
-msgstr "動的なオブザーバの登録"
-
-#. Tag: para
-#: events.xml:140
-#, no-c-format
-msgid "It's often useful to register an event observer dynamically. The application may implement the <literal>Observer</literal> interface and register an instance with an event notifier by calling the <literal>observe()</literal> method."
-msgstr "イベントオブザーバを動的に登録すると役立つことが多いです。アプリケーションは <literal>Observer</literal> インタフェースを実装し、 <literal>observe()</literal> メソッドを呼び出すことによってイベント通知を持つインスタンスを登録することができます。"
-
-#. Tag: programlisting
-#: events.xml:144
-#, no-c-format
-msgid "<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify(Document doc) { ... } } );]]>"
-msgstr "<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify(Document doc) { ... } } );]]>"
-
-#. Tag: para
-#: events.xml:146
-#, no-c-format
-msgid "Event binding types may be specified by the event notifier injection point or by passing event binding type instances to the <literal>observe()</literal> method:"
-msgstr "イベントバインディングタイプは、イベント通知インジェクションポイントまたは <literal>observe()</literal> メソッドへイベントバインディングタイプのインスタンスを渡すことによって指定できます。"
-
-#. Tag: programlisting
-#: events.xml:149
-#, no-c-format
-msgid ""
-"<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify(Document doc) { ... } }, \n"
-"                                                new AnnotationLiteral<Updated>(){} );]]>"
-msgstr ""
-"<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify(Document doc) { ... } }, \n"
-"                                                new AnnotationLiteral<Updated>(){} );]]>"
-
-#. Tag: title
 #: events.xml:154
-#, no-c-format
-msgid "Event bindings with members"
-msgstr "メンバを持ったイベントバインディング"
+#, fuzzy, no-c-format
+msgid ""
+"does not have any event qualifier <emphasis>except</emphasis> for the event "
+"qualifiers that match those specified at the <literal>Event</literal> "
+"injection point."
+msgstr ""
+"<literal>fire()</literal> へ渡されるイベントバインディングを <emphasis>除いて"
+"</emphasis> イベントバインディングを指定しない "
 
 #. Tag: para
-#: events.xml:156
-#, no-c-format
-msgid "An event binding type may have annotation members:"
-msgstr "イベントバインディングは次のようにアノテーションメンバーを持つことができます。"
-
-#. Tag: programlisting
-#: events.xml:158
+#: events.xml:161
 #, no-c-format
 msgid ""
-"<![CDATA[@BindingType\n"
-"@Target({PARAMETER, FIELD})\n"
-"@Retention(RUNTIME)\n"
-"public @interface Role {\n"
-"    RoleType value();\n"
-"}]]>"
+"The downside of annotating the injection point is that we can't specify the "
+"qualifier dynamically. CDI lets us obtain a qualifier instance by "
+"subclassing the helper class <literal>AnnotationLiteral</literal>. That way, "
+"we can pass the qualifier to the <literal>select()</literal> method of "
+"<literal>Event</literal>."
 msgstr ""
-"<![CDATA[@BindingType\n"
-"@Target({PARAMETER, FIELD})\n"
-"@Retention(RUNTIME)\n"
-"public @interface Role {\n"
-"    RoleType value();\n"
-"}]]>"
-
-#. Tag: para
-#: events.xml:160
-#, no-c-format
-msgid "The member value is used to narrow the messages delivered to the observer:"
-msgstr "メンバー値は次のようにオブザーバへ配送されるメッセージを狭めるのに使用されます。"
-
-#. Tag: programlisting
-#: events.xml:162
-#, no-c-format
-msgid "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) { ... }]]>"
-msgstr "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) { ... }]]>"
-
-#. Tag: para
-#: events.xml:164
-#, no-c-format
-msgid "Event binding type members may be specified statically by the event producer, via annotations at the event notifier injection point:"
-msgstr "イベントバインディングタイプはイベントプロデューサによって静的に指定できます。次の例は、イベント通知インジェクションポイントでのアノテーションを通じて指定しています。"
 
 #. Tag: programlisting
 #: events.xml:167
-#, no-c-format
-msgid "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
-msgstr "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[documentEvent.select(new AnnotationLiteral<Updated>(){}).fire"
+"(document);]]>"
+msgstr ""
+"<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>()"
+"{} );]]>"
 
 #. Tag: para
 #: events.xml:169
 #, no-c-format
-msgid "Alternatively, the value of the event binding type member may be determined dynamically by the event producer. We start by writing an abstract subclass of <literal>AnnotationLiteral</literal>:"
-msgstr "別の方法では、イベントバインディングタイプのメンバー値はイベントプロデューサによって動的に決定することもできます。まず、次のように <literal>AnnotationLiteral</literal> の抽象サブクラスを書くことで始めます。"
-
-#. Tag: programlisting
-#: events.xml:172
-#, no-c-format
 msgid ""
-"<![CDATA[abstract class RoleBinding \n"
-"    extends AnnotationLiteral<Role> \n"
-"    implements Role {}]]>"
+"Events can have multiple event qualifiers, assembled using any combination "
+"of annotations at the <literal>Event</literal> injection point and qualifier "
+"instances passed to the <literal>select()</literal> method."
 msgstr ""
-"<![CDATA[abstract class RoleBinding \n"
-"    extends AnnotationLiteral<Role> \n"
-"    implements Role {}]]>"
-
-#. Tag: para
-#: events.xml:174
-#, no-c-format
-msgid "The event producer passes an instance of this class to <literal>fire()</literal>:"
-msgstr "イベントプロデューサはこのクラスのインスタンスを <literal>fire()</literal> へ渡します。"
-
-#. Tag: programlisting
-#: events.xml:176
-#, no-c-format
-msgid "<![CDATA[documentEvent.fire( document, new RoleBinding() { public void value() { return user.getRole(); } } );]]>"
-msgstr "<![CDATA[documentEvent.fire( document, new RoleBinding() { public void value() { return user.getRole(); } } );]]>"
 
 #. Tag: title
-#: events.xml:181
-#, no-c-format
-msgid "Multiple event bindings"
-msgstr "複数のイベントバインディング"
+#: events.xml:178
+#, fuzzy, no-c-format
+msgid "Conditional observer methods"
+msgstr "トランザクション型オブザーバ"
 
 #. Tag: para
-#: events.xml:183
-#, no-c-format
-msgid "Event binding types may be combined, for example:"
-msgstr "イベントバインディングタイプは、たとえば次のように組み合わせることが可能です。"
-
-#. Tag: programlisting
-#: events.xml:185
+#: events.xml:180
 #, no-c-format
 msgid ""
-"<![CDATA[@Observable @Blog Event<Document> blogEvent;\n"
-"...\n"
-"if (document.isBlog()) blogEvent.fire(document, new AnnotationLiteral<Updated>(){});]]>"
+"By default, if there is no instance of an observer in the current context, "
+"the container will instantiate the observer in order to deliver an event to "
+"it. This behavior isn't always desirable. We may want to deliver events only "
+"to instances of the observer that already exist in the current contexts."
 msgstr ""
-"<![CDATA[@Observable @Blog Event<Document> blogEvent;\n"
-"...\n"
-"if (document.isBlog()) blogEvent.fire(document, new AnnotationLiteral<Updated>(){});]]>"
 
 #. Tag: para
-#: events.xml:187
+#: events.xml:186
 #, no-c-format
-msgid "When this event occurs, all of the following observer methods will be notified:"
-msgstr "このイベントが発生すると、次のすべてのオブザーバメソッドは通知されます。"
-
-#. Tag: programlisting
-#: events.xml:189
-#, no-c-format
-msgid "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }]]>"
-msgstr "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }]]>"
+msgid ""
+"A conditional observer is specified by adding <literal>receive = IF_EXISTS</"
+"literal> to the <literal>@Observes</literal> annotation."
+msgstr ""
 
 #. Tag: programlisting
 #: events.xml:191
-#, no-c-format
-msgid "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) { ... }]]>"
-msgstr "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) { ... }]]>"
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = IF_EXISTS) "
+"@Updated Document d) { ... }]]>"
+msgstr ""
+"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+"document) { ... }]]>"
 
-#. Tag: programlisting
-#: events.xml:192
+#. Tag: para
+#: events.xml:193
 #, no-c-format
-msgid "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }}}]]>"
-msgstr "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }}}]]>"
+msgid ""
+"A bean with scope <literal>@Dependent</literal> cannot be a conditional "
+"observer, since it would never be called!"
+msgstr ""
 
 #. Tag: title
-#: events.xml:197
+#: events.xml:200
+#, fuzzy, no-c-format
+msgid "Event qualifiers with members"
+msgstr "メンバを持ったイベントバインディング"
+
+#. Tag: para
+#: events.xml:202
+#, fuzzy, no-c-format
+msgid "An event qualifier type may have annotation members:"
+msgstr ""
+"イベントバインディングは次のようにアノテーションメンバーを持つことができま"
+"す。"
+
+#. Tag: programlisting
+#: events.xml:204
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Qualifier\n"
+"@Target({PARAMETER, FIELD})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Role {\n"
+"   RoleType value();\n"
+"}]]>"
+msgstr ""
+"<![CDATA[@BindingType\n"
+"@Target({PARAMETER, FIELD})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Role {\n"
+"    RoleType value();\n"
+"}]]>"
+
+#. Tag: para
+#: events.xml:206
+#, no-c-format
+msgid ""
+"The member value is used to narrow the messages delivered to the observer:"
+msgstr ""
+"メンバー値は次のようにオブザーバへ配送されるメッセージを狭めるのに使用されま"
+"す。"
+
+#. Tag: programlisting
+#: events.xml:208
+#, no-c-format
+msgid ""
+"<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
+"{ ... }]]>"
+msgstr ""
+"<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
+"{ ... }]]>"
+
+#. Tag: para
+#: events.xml:210
+#, fuzzy, no-c-format
+msgid ""
+"Event qualifier type members may be specified statically by the event "
+"producer, via annotations at the event notifier injection point:"
+msgstr ""
+"イベントバインディングタイプはイベントプロデューサによって静的に指定できま"
+"す。次の例は、イベント通知インジェクションポイントでのアノテーションを通じて"
+"指定しています。"
+
+#. Tag: programlisting
+#: events.xml:215
+#, fuzzy, no-c-format
+msgid "<![CDATA[@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;]]>"
+msgstr "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
+
+#. Tag: para
+#: events.xml:217
+#, fuzzy, no-c-format
+msgid ""
+"Alternatively, the value of the event qualifier type member may be "
+"determined dynamically by the event producer. We start by writing an "
+"abstract subclass of <literal>AnnotationLiteral</literal>:"
+msgstr ""
+"別の方法では、イベントバインディングタイプのメンバー値はイベントプロデューサ"
+"によって動的に決定することもできます。まず、次のように "
+"<literal>AnnotationLiteral</literal> の抽象サブクラスを書くことで始めます。"
+
+#. Tag: programlisting
+#: events.xml:222
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[abstract class RoleBinding \n"
+"   extends AnnotationLiteral<Role> \n"
+"   implements Role {}]]>"
+msgstr ""
+"<![CDATA[abstract class RoleBinding \n"
+"    extends AnnotationLiteral<Role> \n"
+"    implements Role {}]]>"
+
+#. Tag: para
+#: events.xml:224
+#, fuzzy, no-c-format
+msgid ""
+"The event producer passes an instance of this class to <literal>select()</"
+"literal>:"
+msgstr ""
+"イベントプロデューサはこのクラスのインスタンスを <literal>fire()</literal> へ"
+"渡します。"
+
+#. Tag: programlisting
+#: events.xml:226
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[documentEvent.select(new RoleBinding() {\n"
+"   public void value() { return user.getRole(); }\n"
+"}).fire(document);]]>"
+msgstr ""
+"<![CDATA[documentEvent.fire( document, new RoleBinding() { public void value"
+"() { return user.getRole(); } } );]]>"
+
+#. Tag: title
+#: events.xml:231
+#, fuzzy, no-c-format
+msgid "Multiple event qualifiers"
+msgstr "複数のイベントバインディング"
+
+#. Tag: para
+#: events.xml:233
+#, fuzzy, no-c-format
+msgid "Event qualifier types may be combined, for example:"
+msgstr ""
+"イベントバインディングタイプは、たとえば次のように組み合わせることが可能で"
+"す。"
+
+#. Tag: programlisting
+#: events.xml:235
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Inject @Blog Event<Document> blogEvent;\n"
+"...\n"
+"if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){})."
+"fire(document);]]>"
+msgstr ""
+"<![CDATA[@Observable @Blog Event<Document> blogEvent;\n"
+"...\n"
+"if (document.isBlog()) blogEvent.fire(document, new "
+"AnnotationLiteral<Updated>(){});]]>"
+
+#. Tag: para
+#: events.xml:237
+#, no-c-format
+msgid ""
+"When this event occurs, all of the following observer methods will be "
+"notified:"
+msgstr ""
+"このイベントが発生すると、次のすべてのオブザーバメソッドは通知されます。"
+
+#. Tag: programlisting
+#: events.xml:239
+#, no-c-format
+msgid ""
+"<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
+"document) { ... }]]>"
+msgstr ""
+"<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
+"document) { ... }]]>"
+
+#. Tag: programlisting
+#: events.xml:241
+#, no-c-format
+msgid ""
+"<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
+"{ ... }]]>"
+msgstr ""
+"<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
+"{ ... }]]>"
+
+#. Tag: programlisting
+#: events.xml:242
+#, no-c-format
+msgid ""
+"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+"{ ... }}}]]>"
+msgstr ""
+"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+"{ ... }}}]]>"
+
+#. Tag: title
+#: events.xml:247
 #, no-c-format
 msgid "Transactional observers"
 msgstr "トランザクション型オブザーバ"
 
 #. Tag: para
-#: events.xml:199
+#: events.xml:249
 #, no-c-format
-msgid "Transactional observers receive their event notifications during the before or after completion phase of the transaction in which the event was raised. For example, the following observer method needs to refresh a query result set that is cached in the application context, but only when transactions that update the <literal>Category</literal> tree succeed:"
-msgstr "トランザクション型オブザーバは、イベントが発生したときのトランザクションが完了前または完了後のフェーズ中にイベント通知を受け取ります。たとえば、次のオブザーバメソッドはアプリケーションコンテキストにキャッシュされたクエリーの結果をリフレッシュする必要がありますが、 <literal>Category</literal> ツリーの更新をしたトランザクションが成功したときだけ必要です。"
+msgid ""
+"Transactional observers receive their event notifications during the before "
+"or after completion phase of the transaction in which the event was raised. "
+"For example, the following observer method needs to refresh a query result "
+"set that is cached in the application context, but only when transactions "
+"that update the <literal>Category</literal> tree succeed:"
+msgstr ""
+"トランザクション型オブザーバは、イベントが発生したときのトランザクションが完"
+"了前または完了後のフェーズ中にイベント通知を受け取ります。たとえば、次のオブ"
+"ザーバメソッドはアプリケーションコンテキストにキャッシュされたクエリーの結果"
+"をリフレッシュする必要がありますが、 <literal>Category</literal> ツリーの更新"
+"をしたトランザクションが成功したときだけ必要です。"
 
 #. Tag: programlisting
-#: events.xml:205
-#, no-c-format
-msgid "<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Observes CategoryUpdateEvent event) { ... }]]>"
-msgstr "<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Observes CategoryUpdateEvent event) { ... }]]>"
+#: events.xml:256
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[public void refreshCategoryTree(@Observes(during = AFTER_SUCCESS) "
+"CategoryUpdateEvent event) { ... }]]>"
+msgstr ""
+"<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Observes "
+"CategoryUpdateEvent event) { ... }]]>"
 
 #. Tag: para
-#: events.xml:207
-#, no-c-format
-msgid "There are three kinds of transactional observers:"
+#: events.xml:258
+#, fuzzy, no-c-format
+msgid "There are five kinds of transactional observers:"
 msgstr "次の3種類のトランザクション型オブザーバが存在します。"
 
 #. Tag: para
-#: events.xml:211
+#: events.xml:262
 #, no-c-format
-msgid "<literal>@AfterTransactionSuccess</literal> observers are called during the after completion phase of the transaction, but only if the transaction completes successfully"
-msgstr "<literal>@AfterTransactionSuccess</literal> オブザーバは、トランザクション完了後のフェーズ中にそのトランザクションの完了に成功したときだけ呼び出される"
+msgid ""
+"<literal>IN_PROGESS</literal> observers are called immediately (default)"
+msgstr ""
 
 #. Tag: para
-#: events.xml:216
-#, no-c-format
-msgid "<literal>@AfterTransactionFailure</literal> observers are called during the after completion phase of the transaction, but only if the transaction fails to complete successfully"
-msgstr "<literal>@AfterTransactionFailure</literal> オブザーバは、トランザクション完了後のフェーズ中にそのトランザクションの完了に失敗したときだけ呼び出される"
+#: events.xml:265
+#, fuzzy, no-c-format
+msgid ""
+"<literal>AFTER_SUCCESS</literal> observers are called during the after "
+"completion phase of the transaction, but only if the transaction completes "
+"successfully"
+msgstr ""
+"<literal>@AfterTransactionSuccess</literal> オブザーバは、トランザクション完"
+"了後のフェーズ中にそのトランザクションの完了に成功したときだけ呼び出される"
 
 #. Tag: para
-#: events.xml:221
-#, no-c-format
-msgid "<literal>@AfterTransactionCompletion</literal> observers are called during the after completion phase of the transaction"
-msgstr "<literal>@AfterTransactionCompletion</literal> オブザーバは、トランザクション完了後のフェーズ中に呼び出される"
+#: events.xml:271
+#, fuzzy, no-c-format
+msgid ""
+"<literal>AFTER_FAILURE</literal> observers are called during the after "
+"completion phase of the transaction, but only if the transaction fails to "
+"complete successfully"
+msgstr ""
+"<literal>@AfterTransactionFailure</literal> オブザーバは、トランザクション完"
+"了後のフェーズ中にそのトランザクションの完了に失敗したときだけ呼び出される"
 
 #. Tag: para
-#: events.xml:225
-#, no-c-format
-msgid "<literal>@BeforeTransactionCompletion</literal> observers are called during the before completion phase of the transaction"
-msgstr "<literal>@BeforeTransactionCompletion</literal> オブザーバは、トランザクション完了前のフェーズ中に呼び出される"
+#: events.xml:277
+#, fuzzy, no-c-format
+msgid ""
+"<literal>AFTER_COMPLETION</literal> observers are called during the after "
+"completion phase of the transaction"
+msgstr ""
+"<literal>@AfterTransactionCompletion</literal> オブザーバは、トランザクション"
+"完了後のフェーズ中に呼び出される"
 
 #. Tag: para
-#: events.xml:230
-#, no-c-format
-msgid "Transactional observers are very important in a stateful object model like Web Beans, because state is often held for longer than a single atomic transaction."
-msgstr "トランザクション型オブザーバはWeb Beansのようなステートフルオブジェクトモデルにおいてはとても重要です。なぜなら、ステートは単一のアトミックトランザクションよりも長く保持されることが多いからです。"
+#: events.xml:283
+#, fuzzy, no-c-format
+msgid ""
+"<literal>BEFORE_COMPLETION</literal> observers are called during the before "
+"completion phase of the transaction"
+msgstr ""
+"<literal>@BeforeTransactionCompletion</literal> オブザーバは、トランザクショ"
+"ン完了前のフェーズ中に呼び出される"
 
 #. Tag: para
-#: events.xml:233
+#: events.xml:290
+#, fuzzy, no-c-format
+msgid ""
+"Transactional observers are very important in a stateful object model "
+"because state is often held for longer than a single atomic transaction."
+msgstr ""
+"トランザクション型オブザーバはWeb Beansのようなステートフルオブジェクトモデル"
+"においてはとても重要です。なぜなら、ステートは単一のアトミックトランザクショ"
+"ンよりも長く保持されることが多いからです。"
+
+#. Tag: para
+#: events.xml:295
 #, no-c-format
-msgid "Imagine that we have cached a JPA query result set in the application scope:"
-msgstr "アプリケーションスコープにおいてJPAクエリーの結果をキャッシュしたと想像してみてください。"
+msgid ""
+"Imagine that we have cached a JPA query result set in the application scope:"
+msgstr ""
+"アプリケーションスコープにおいてJPAクエリーの結果をキャッシュしたと想像してみ"
+"てください。"
 
 #. Tag: programlisting
-#: events.xml:235
-#, no-c-format
+#: events.xml:297
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@ApplicationScoped @Singleton\n"
 "public class Catalog {\n"
 "\n"
-"    @PersistenceContext EntityManager em;\n"
+"   @PersistenceContext EntityManager em;\n"
 "    \n"
-"    List<Product> products;\n"
+"   List<Product> products;\n"
 "\n"
-"    @Produces @Catalog \n"
-"    List<Product> getCatalog() {\n"
-"        if (products==null) {\n"
-"            products = em.createQuery(\"select p from Product p where p.deleted = false\")\n"
-"                .getResultList();\n"
-"        }\n"
-"        return products;\n"
-"    }\n"
+"   @Produces @Catalog \n"
+"   List<Product> getCatalog() {\n"
+"      if (products==null) {\n"
+"         products = em.createQuery(\"select p from Product p where p.deleted "
+"= false\")\n"
+"            .getResultList();\n"
+"      }\n"
+"      return products;\n"
+"   }\n"
 "    \n"
 "}]]>"
 msgstr ""
@@ -486,7 +728,8 @@ msgstr ""
 "    @Produces @Catalog \n"
 "    List<Product> getCatalog() {\n"
 "        if (products==null) {\n"
-"            products = em.createQuery(\"select p from Product p where p.deleted = false\")\n"
+"            products = em.createQuery(\"select p from Product p where p."
+"deleted = false\")\n"
 "                .getResultList();\n"
 "        }\n"
 "        return products;\n"
@@ -495,21 +738,52 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: events.xml:237
-#, no-c-format
-msgid "From time to time, a <literal>Product</literal> is created or deleted. When this occurs, we need to refresh the <literal>Product</literal> catalog. But we should wait until <emphasis>after</emphasis> the transaction completes successfully before performing this refresh!"
-msgstr "時が経つにつれ、 <literal>Product</literal> は生成され、削除されます。これが発生するとき、 <literal>Product</literal> カタログをリフレッシュする必要があります。しかし、このリフレッシュを実行する前にそのトランザクションの完了が成功する <emphasis>後</emphasis> まで待つべきなのです。"
-
-#. Tag: para
-#: events.xml:242
-#, no-c-format
-msgid "The Web Bean that creates and deletes <literal>Product</literal>s could raise events, for example:"
-msgstr " <literal>Product</literal> を生成、削除するWeb Beansは次のようにイベントを発生させます。"
-
-#. Tag: programlisting
-#: events.xml:245
+#: events.xml:299
 #, no-c-format
 msgid ""
+"From time to time, a <literal>Product</literal> is created or deleted. When "
+"this occurs, we need to refresh the <literal>Product</literal> catalog. But "
+"we should wait until <emphasis>after</emphasis> the transaction completes "
+"successfully before performing this refresh!"
+msgstr ""
+"時が経つにつれ、 <literal>Product</literal> は生成され、削除されます。これが"
+"発生するとき、 <literal>Product</literal> カタログをリフレッシュする必要があ"
+"ります。しかし、このリフレッシュを実行する前にそのトランザクションの完了が成"
+"功する <emphasis>後</emphasis> まで待つべきなのです。"
+
+#. Tag: para
+#: events.xml:305
+#, fuzzy, no-c-format
+msgid ""
+"The bean that creates and deletes <literal>Product</literal>s could raise "
+"events, for example:"
+msgstr ""
+" <literal>Product</literal> を生成、削除するWeb Beansは次のようにイベントを発"
+"生させます。"
+
+#. Tag: programlisting
+#: events.xml:309
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Stateless\n"
+"public class ProductManager {\n"
+"   @PersistenceContext EntityManager em;\n"
+"   @Inject @Any Event<Product> productEvent;\n"
+"\n"
+"   public void delete(Product product) {\n"
+"      em.delete(product);\n"
+"      productEvent.select(new AnnotationLiteral<Deleted>(){}).fire"
+"(product);\n"
+"   }\n"
+"    \n"
+"   public void persist(Product product) {\n"
+"      em.persist(product);\n"
+"      productEvent.select(new AnnotationLiteral<Created>(){}).fire"
+"(product);\n"
+"   }\n"
+"   ...\n"
+"}]]>"
+msgstr ""
 "<![CDATA[@Stateless\n"
 "public class ProductManager {\n"
 "\n"
@@ -529,50 +803,33 @@ msgid ""
 "    ...\n"
 "    \n"
 "}]]>"
-msgstr ""
-"<![CDATA[@Stateless\n"
-"public class ProductManager {\n"
-"\n"
-"    @PersistenceContext EntityManager em;\n"
-"    @Observable Event<Product> productEvent;\n"
-"\n"
-"    public void delete(Product product) {\n"
-"        em.delete(product);\n"
-"        productEvent.fire(product, new AnnotationLiteral<Deleted>(){});\n"
-"    }\n"
-"    \n"
-"    public void persist(Product product) {\n"
-"        em.persist(product);\n"
-"        productEvent.fire(product, new AnnotationLiteral<Created>(){});\n"
-"    }\n"
-"    \n"
-"    ...\n"
-"    \n"
-"}]]>"
 
 #. Tag: para
-#: events.xml:247
+#: events.xml:311
 #, no-c-format
-msgid "And now <literal>Catalog</literal> can observe the events after successful completion of the transaction:"
-msgstr "そして、 <literal>Catalog</literal> は次のようにトランザクションの完了が成功した後にイベントを観察できるようになります。"
+msgid ""
+"And now <literal>Catalog</literal> can observe the events after successful "
+"completion of the transaction:"
+msgstr ""
+"そして、 <literal>Catalog</literal> は次のようにトランザクションの完了が成功"
+"した後にイベントを観察できるようになります。"
 
 #. Tag: programlisting
-#: events.xml:250
-#, no-c-format
+#: events.xml:315
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@ApplicationScoped @Singleton\n"
 "public class Catalog {\n"
-"\n"
-"    ...\n"
+"   ...\n"
+"   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product "
+"product) {\n"
+"      products.add(product);\n"
+"   }\n"
 "    \n"
-"    void addProduct(@AfterTransactionSuccess @Observes @Created Product product) {\n"
-"        products.add(product);\n"
-"    }\n"
-"    \n"
-"    void addProduct(@AfterTransactionSuccess @Observes @Deleted Product product) {\n"
-"        products.remove(product);\n"
-"    }\n"
-"    \n"
+"   void addProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product "
+"product) {\n"
+"      products.remove(product);\n"
+"   }\n"
 "}]]>"
 msgstr ""
 "<![CDATA[@ApplicationScoped @Singleton\n"
@@ -580,13 +837,134 @@ msgstr ""
 "\n"
 "    ...\n"
 "    \n"
-"    void addProduct(@AfterTransactionSuccess @Observes @Created Product product) {\n"
+"    void addProduct(@AfterTransactionSuccess @Observes @Created Product "
+"product) {\n"
 "        products.add(product);\n"
 "    }\n"
 "    \n"
-"    void addProduct(@AfterTransactionSuccess @Observes @Deleted Product product) {\n"
+"    void addProduct(@AfterTransactionSuccess @Observes @Deleted Product "
+"product) {\n"
 "        products.remove(product);\n"
 "    }\n"
 "    \n"
 "}]]>"
 
+#~ msgid ""
+#~ "The Web Beans event notification facility allows Web Beans to interact in "
+#~ "a totally decoupled manner. Event <emphasis>producers</emphasis> raise "
+#~ "events that are then delivered to event <emphasis>observers</emphasis> by "
+#~ "the Web Bean manager. This basic schema might sound like the familiar "
+#~ "observer/observable pattern, but there are a couple of twists:"
+#~ msgstr ""
+#~ "Web Beansのイベント通知機能はWeb Beans同士が完全に疎結合ままで相互作用を可"
+#~ "能にします。イベント <emphasis>プロデューサ</emphasis> は、Web Beanマネー"
+#~ "ジャによってイベント <emphasis>オブザーバ</emphasis> へ配送されるイベント"
+#~ "を発生します。この基本スキーマはおなじみの observer/observable パターンの"
+#~ "ように聞こえるかもしれませんが、次のように違いもあります。"
+
+#~ msgid ""
+#~ "We specify the event bindings of the observer method by annotating the "
+#~ "event parameter:"
+#~ msgstr ""
+#~ "イベントパラメータにアノテーションを付加することによってオブザーバメソッド"
+#~ "のイベントバインディングを指定します。"
+
+#~ msgid ""
+#~ "The event producer may obtain an <emphasis>event notifier</emphasis> "
+#~ "object by injection:"
+#~ msgstr ""
+#~ "イベントプロデューサは次のようにインジェクションによって <emphasis>イベン"
+#~ "ト通知</emphasis> オブジェクトを取得できます。"
+
+#~ msgid ""
+#~ "The <literal>@Observable</literal> annotation implicitly defines a Web "
+#~ "Bean with scope <literal>@Dependent</literal> and deployment type "
+#~ "<literal>@Standard</literal>, with an implementation provided by the Web "
+#~ "Bean manager."
+#~ msgstr ""
+#~ "<literal>@Observable</literal> アノテーションはスコープ "
+#~ "<literal>@Dependent</literal> とデプロイメントタイプ <literal>@Standard</"
+#~ "literal> とWeb Beanマネージャによって提供される実装を持つWeb Beanを暗黙的"
+#~ "に定義します。"
+
+#~ msgid ""
+#~ "An event object may be an instance of any Java class that has no type "
+#~ "variables or wildcard type parameters. The event will be delivered to "
+#~ "every observer method that:"
+#~ msgstr ""
+#~ "イベントオブジェクトは、型変数またはワイルドカードの型パラメータを持たない"
+#~ "Javaクラスのインスタンスになる可能性があります。そのイベントは次のような特"
+#~ "徴を持つ各オブザーバメソッドに配送されます。"
+
+#~ msgid ""
+#~ "To specify a \"selector\", the event producer may pass an instance of the "
+#~ "event binding type to the <literal>fire()</literal> method:"
+#~ msgstr ""
+#~ " \"セレクタ\" を指定するために、イベントプロデューサは次のように "
+#~ "<literal>fire()</literal> メソッドへのイベントバインディングタイプのインス"
+#~ "タンスを渡すことができます。"
+
+#~ msgid ""
+#~ "The helper class <literal>AnnotationLiteral</literal> makes it possible "
+#~ "to instantiate binding types inline, since this is otherwise difficult to "
+#~ "do in Java."
+#~ msgstr ""
+#~ "ヘルパークラス <literal>AnnotationLiteral</literal> はバインディングタイプ"
+#~ "をインラインで生成することが可能です。一方、これはJavaでは困難なことです。"
+
+#~ msgid ""
+#~ "Alternatively, event bindings may be specified by annotating the event "
+#~ "notifier injection point:"
+#~ msgstr ""
+#~ "別の方法として、次のようにイベント通知インジェクションポイントのアノテー"
+#~ "ションを付加することでイベントバインディングを指定可能です。"
+
+#~ msgid ""
+#~ "does not specify any event binding <emphasis>except</emphasis> for the "
+#~ "event bindings passed to <literal>fire()</literal> or the annotated event "
+#~ "bindings of the event notifier injection point."
+#~ msgstr ""
+#~ " <literal>fire()</literal> へ渡されるイベントバインディング、またはイベン"
+#~ "ト通知インジェクションポイントのアノテートの付いたイベントバインディング"
+#~ "を <emphasis>除いて</emphasis> イベントバインディングを指定しない。"
+
+#~ msgid "Registering observers dynamically"
+#~ msgstr "動的なオブザーバの登録"
+
+#~ msgid ""
+#~ "It's often useful to register an event observer dynamically. The "
+#~ "application may implement the <literal>Observer</literal> interface and "
+#~ "register an instance with an event notifier by calling the "
+#~ "<literal>observe()</literal> method."
+#~ msgstr ""
+#~ "イベントオブザーバを動的に登録すると役立つことが多いです。アプリケーション"
+#~ "は <literal>Observer</literal> インタフェースを実装し、 <literal>observe()"
+#~ "</literal> メソッドを呼び出すことによってイベント通知を持つインスタンスを"
+#~ "登録することができます。"
+
+#~ msgid ""
+#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void "
+#~ "notify(Document doc) { ... } } );]]>"
+#~ msgstr ""
+#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void "
+#~ "notify(Document doc) { ... } } );]]>"
+
+#~ msgid ""
+#~ "Event binding types may be specified by the event notifier injection "
+#~ "point or by passing event binding type instances to the <literal>observe()"
+#~ "</literal> method:"
+#~ msgstr ""
+#~ "イベントバインディングタイプは、イベント通知インジェクションポイントまた"
+#~ "は <literal>observe()</literal> メソッドへイベントバインディングタイプのイ"
+#~ "ンスタンスを渡すことによって指定できます。"
+
+#~ msgid ""
+#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void "
+#~ "notify(Document doc) { ... } }, \n"
+#~ "                                                new "
+#~ "AnnotationLiteral<Updated>(){} );]]>"
+#~ msgstr ""
+#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void "
+#~ "notify(Document doc) { ... } }, \n"
+#~ "                                                new "
+#~ "AnnotationLiteral<Updated>(){} );]]>"

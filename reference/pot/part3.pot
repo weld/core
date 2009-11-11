@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-07-06 02:50+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -18,24 +18,106 @@ msgstr ""
 #: part3.xml:5
 #, no-c-format
 msgid ""
-"The second major theme of Web Beans is <emphasis>strong typing</emphasis>. "
-"The information about the dependencies, interceptors and decorators of a Web "
-"Bean, and the information about event consumers for an event producer, is "
+"The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've "
+"already seen three means of achieving loose coupling:"
+msgstr ""
+
+#. Tag: para
+#: part3.xml:12
+#, no-c-format
+msgid "<emphasis>alternatives</emphasis> enable deployment time polymorphism,"
+msgstr ""
+
+#. Tag: para
+#: part3.xml:17
+#, no-c-format
+msgid "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
+msgstr ""
+
+#. Tag: para
+#: part3.xml:21
+#, no-c-format
+msgid ""
+"<emphasis>contextual lifecycle management</emphasis> decouples bean "
+"lifecycles."
+msgstr ""
+
+#. Tag: para
+#: part3.xml:27
+#, no-c-format
+msgid ""
+"These techniques serve to enable loose coupling of client and server. The "
+"client is no longer tightly bound to an implementation of an interface, nor "
+"is it required to manage the lifecycle of the implementation. This approach "
+"lets <emphasis>stateful objects interact as if they were services</emphasis>."
+msgstr ""
+
+#. Tag: para
+#: part3.xml:33
+#, no-c-format
+msgid ""
+"Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system "
+"can respond to change in a well-defined manner. In the past, frameworks that "
+"attempted to provide the facilities listed above invariably did it by "
+"sacrificing type safety (most notably by using XML descriptors). CDI is the "
+"first technology, and certainly the first specification in the Java EE "
+"platform, that achieves this level of loose coupling in a typesafe way."
+msgstr ""
+
+#. Tag: para
+#: part3.xml:40
+#, no-c-format
+msgid ""
+"CDI provides three extra important facilities that further the goal of loose "
+"coupling:"
+msgstr ""
+
+#. Tag: para
+#: part3.xml:46
+#, no-c-format
+msgid ""
+"<emphasis>interceptors</emphasis> decouple technical concerns from business "
+"logic,"
+msgstr ""
+
+#. Tag: para
+#: part3.xml:51
+#, no-c-format
+msgid ""
+"<emphasis>decorators</emphasis> may be used to decouple some business "
+"concerns, and"
+msgstr ""
+
+#. Tag: para
+#: part3.xml:56
+#, no-c-format
+msgid ""
+"<emphasis>event notifications</emphasis> decouple event producers from event "
+"consumers."
+msgstr ""
+
+#. Tag: para
+#: part3.xml:62
+#, no-c-format
+msgid ""
+"The second major theme of CDI is <emphasis>strong typing</emphasis>. The "
+"information about the dependencies, interceptors and decorators of a bean, "
+"and the information about event consumers for an event producer, is "
 "contained in typesafe Java constructs that may be validated by the compiler."
 msgstr ""
 
 #. Tag: para
-#: part3.xml:10
+#: part3.xml:68
 #, no-c-format
 msgid ""
-"You don't see string-based identifiers in Web Beans code, not because the "
-"framework is hiding them from you using clever defaulting rules &#151; so-"
-"called \"configuration by convention\" &#151; but because there are simply "
-"no strings there to begin with!"
+"You don't see string-based identifiers in CDI code, not because the "
+"framework is hiding them from you using clever defaulting rules&#8212;so-"
+"called \"configuration by convention\"&#8212;but because there are simply no "
+"strings there to begin with!"
 msgstr ""
 
 #. Tag: para
-#: part3.xml:15
+#: part3.xml:74
 #, no-c-format
 msgid ""
 "The obvious benefit of this approach is that <emphasis>any</emphasis> IDE "
@@ -47,69 +129,68 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part3.xml:21
+#: part3.xml:81
 #, no-c-format
 msgid ""
-"Web Beans encourages you develop annotations that model concepts, for "
-"example,"
+"CDI encourages you develop annotations that model concepts, for example,"
 msgstr ""
 
 #. Tag: para
-#: part3.xml:26
+#: part3.xml:87
 #, no-c-format
 msgid "<literal>@Asynchronous</literal>,"
 msgstr ""
 
 #. Tag: para
-#: part3.xml:29
+#: part3.xml:90
 #, no-c-format
 msgid "<literal>@Mock</literal>,"
 msgstr ""
 
 #. Tag: para
-#: part3.xml:32
+#: part3.xml:93
 #, no-c-format
 msgid "<literal>@Secure</literal> or"
 msgstr ""
 
 #. Tag: para
-#: part3.xml:35
+#: part3.xml:96
 #, no-c-format
 msgid "<literal>@Updated</literal>,"
 msgstr ""
 
 #. Tag: para
-#: part3.xml:39
+#: part3.xml:100
 #, no-c-format
 msgid "instead of using compound names like"
 msgstr ""
 
 #. Tag: para
-#: part3.xml:43
+#: part3.xml:104
 #, no-c-format
 msgid "<literal>asyncPaymentProcessor</literal>,"
 msgstr ""
 
 #. Tag: para
-#: part3.xml:46
+#: part3.xml:107
 #, no-c-format
 msgid "<literal>mockPaymentProcessor</literal>,"
 msgstr ""
 
 #. Tag: para
-#: part3.xml:49
+#: part3.xml:110
 #, no-c-format
 msgid "<literal>SecurityInterceptor</literal> or"
 msgstr ""
 
 #. Tag: para
-#: part3.xml:52
+#: part3.xml:113
 #, no-c-format
 msgid "<literal>DocumentUpdatedEvent</literal>."
 msgstr ""
 
 #. Tag: para
-#: part3.xml:56
+#: part3.xml:117
 #, no-c-format
 msgid ""
 "The annotations are reusable. They help describe common qualities of "
@@ -119,33 +200,24 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part3.xml:61
+#: part3.xml:123
 #, no-c-format
 msgid ""
-"Web Beans <emphasis>stereotypes</emphasis> take this idea a step further. A "
+"CDI <emphasis>stereotypes</emphasis> take this idea a step further. A "
 "stereotype models a common <emphasis>role</emphasis> in your application "
 "architecture. It encapsulates various properties of the role, including "
-"scope, interceptor bindings, deployment type, etc, into a single reusable "
-"package."
+"scope, interceptor bindings, qualifiers, etc, into a single reusable "
+"package. (Of course, there is also the benefit of tucking some of those "
+"annotations away)."
 msgstr ""
 
 #. Tag: para
-#: part3.xml:66
+#: part3.xml:138
 #, no-c-format
 msgid ""
-"Even Web Beans XML metadata is strongly typed! There's no compiler for XML, "
-"so Web Beans takes advantage of XML schemas to validate the Java types and "
-"attributes that appear in XML. This approach turns out to make the XML more "
-"literate, just like annotations made our Java code more literate."
-msgstr ""
-
-#. Tag: para
-#: part3.xml:71
-#, no-c-format
-msgid ""
-"We're now ready to meet some more advanced features of Web Beans. Bear in "
-"mind that these features exist to make our code both easier to validate and "
-"more understandable. Most of the time you don't ever really <emphasis>need</"
+"We're now ready to meet some more advanced features of CDI. Bear in mind "
+"that these features exist to make our code both easier to validate and more "
+"understandable. Most of the time you don't ever really <emphasis>need</"
 "emphasis> to use these features, but if you use them wisely, you'll come to "
 "appreciate their power."
 msgstr ""

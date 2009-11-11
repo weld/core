@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2008-12-20 22:08+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-02-02 22:49+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
@@ -21,262 +21,407 @@ msgstr "Intégration dans Java EE"
 
 #. Tag: para
 #: ee.xml:6
-#, no-c-format
-msgid "Web Beans is fully integrated into the Java EE environment. Web Beans have access to Java EE resources and JPA persistence contexts. They may be used in Unified EL expressions in JSF and JSP pages. They may even be injected into some objects, such as Servlets and Message-Driven Beans, which are not Web Beans."
-msgstr "Les Web Beans sont totalement intégrés dans l'environnement Java EE. Les Web Beans ont accès aux ressources Java EE et aux contextes de persistance JPA. Ils peuvent être utilisés dans des expressions Unified EL dans des pages JSF et JSP. Ils peuvent même être injectés dans des certains objets, tels que les Servlets et les Message-Driven Beans, qui ne sont pas des Web Beans."
+#, fuzzy, no-c-format
+msgid ""
+"CDI is fully integrated into the Java EE environment. Beans have access to "
+"Java EE resources and JPA persistence contexts. They may be used in Unified "
+"EL expressions in JSF and JSP pages. They may even be injected into other "
+"platform components, such as servlets and message-driven Beans, which are "
+"not beans themselves."
+msgstr ""
+"Les Web Beans sont totalement intégrés dans l'environnement Java EE. Les Web "
+"Beans ont accès aux ressources Java EE et aux contextes de persistance JPA. "
+"Ils peuvent être utilisés dans des expressions Unified EL dans des pages JSF "
+"et JSP. Ils peuvent même être injectés dans des certains objets, tels que "
+"les Servlets et les Message-Driven Beans, qui ne sont pas des Web Beans."
 
 #. Tag: title
-#: ee.xml:12
+#: ee.xml:13
 #, no-c-format
-msgid "Injecting Java EE resources into a Web Bean"
+msgid "Built-in beans"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:15
+#, no-c-format
+msgid ""
+"In the Java EE environment, the container provides the following built-in "
+"beans, all with the qualifier <literal>@Default</literal>:"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:22
+#, no-c-format
+msgid "the current JTA <literal>UserTransaction</literal>,"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:27
+#, no-c-format
+msgid ""
+"a <literal>Principal</literal> representing the current caller identity,"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:32
+#, no-c-format
+msgid ""
+"the default <ulink src=\"http://jcp.org/en/jsr/detail?id=303\">Bean "
+"Validation</ulink> <literal>ValidationFactory</literal>, and"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:38
+#, no-c-format
+msgid ""
+"a <literal>Validator</literal> for the default <literal>ValidationFactory</"
+"literal>."
+msgstr ""
+
+#. Tag: title
+#: ee.xml:47
+#, fuzzy, no-c-format
+msgid "Injecting Java EE resources into a bean"
 msgstr "Injecter des ressources Java EE dans un Web Bean"
 
 #. Tag: para
-#: ee.xml:14
-#, no-c-format
-msgid "All simple and enterprise Web Beans may take advantage of Java EE dependency injection using <literal>@Resource</literal>, <literal>@EJB</literal> and <literal>@PersistenceContext</literal>. We've already seen a couple of examples of this, though we didn't pay much attention at the time:"
-msgstr "Tous les Web Beans, qu'ils soient simples ou d'entreprise peuvent bénéficier de l'injection de dépendance de Java EE en utilisant <literal>@Resource</literal>; <literal>@EJB</literal> et <literal>@PersistenceContext</literal>. Nous avons déjà vu quelques exemples de cela, bien que nous n'y ayons pas fait attention sur le moment:"
-
-#. Tag: programlisting
-#: ee.xml:19
-#, no-c-format
-msgid ""
-"<![CDATA[@Transactional @Interceptor\n"
-"public class TransactionInterceptor {\n"
-"\n"
-"    @Resource Transaction transaction;\n"
-"\n"
-"    @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }\n"
-"    \n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Transactional @Interceptor\n"
-"public class TransactionInterceptor {\n"
-"\n"
-"    @Resource Transaction transaction;\n"
-"\n"
-"    @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }\n"
-"    \n"
-"}]]>"
-
-#. Tag: programlisting
-#: ee.xml:21
-#, no-c-format
-msgid ""
-"<![CDATA[@SessionScoped\n"
-"public class Login {\n"
-"\n"
-"    @Current Credentials credentials;\n"
-"    @PersistenceContext EntityManager userDatabase;\n"
-"    \n"
-"    ...\n"
-"\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@SessionScoped\n"
-"public class Login {\n"
-"\n"
-"    @Current Credentials credentials;\n"
-"    @PersistenceContext EntityManager userDatabase;\n"
-"    \n"
-"    ...\n"
-"\n"
-"}]]>"
-
-#. Tag: para
-#: ee.xml:23
-#, no-c-format
-msgid "The Java EE <literal>@PostConstruct</literal> and <literal>@PreDestroy</literal> callbacks are also supported for all simple and enterprise Web Beans. The <literal>@PostConstruct</literal> method is called after <emphasis>all</emphasis> injection has been performed."
-msgstr "Les rappels de Java EE <literal>@PostContruct</literal> et <literal>@PreDestroy</literal> sont également supportés pour tous les Web Beans, simples ou d'entreprise. La méthode <literal>@PostConstruct</literal> est appelée après que <emphasis>toute</emphasis> injection ait été effectuée."
-
-#. Tag: para
-#: ee.xml:28
-#, no-c-format
-msgid "There is one restriction to be aware of here: <literal>@PersistenceContext(type=EXTENDED)</literal> is not supported for simple Web Beans."
-msgstr "Il y a une restriction dont vous devez être conscient: <literal>@PersistenceContext(type=EXTENDED)</literal> n'est pas supportée pour les Web Beans simples."
-
-#. Tag: title
-#: ee.xml:35
-#, no-c-format
-msgid "Calling a Web Bean from a Servlet"
-msgstr "Appeler un Web Bean à partir d'un Servlet"
-
-#. Tag: para
-#: ee.xml:37
-#, no-c-format
-msgid "It's easy to use a Web Bean from a Servlet in Java EE 6. Simply inject the Web Bean using Web Beans field or initializer method injection."
-msgstr "Il est facile d'utiliser un Web Bean à partir d'une Servlet dans Java EE 6. Injectez simplement le Web Bean en utilisant les méthodes d'injection de champs ou de méthode d'initialisation."
-
-#. Tag: programlisting
-#: ee.xml:40
-#, no-c-format
-msgid ""
-"public class Login extends HttpServlet {\n"
-"\n"
-"    @Current Credentials credentials;\n"
-"    @Current Login login;\n"
-"\n"
-"    @Override\n"
-"    public void service(HttpServletRequest request, HttpServletResponse response)\n"
-"        throws ServletException, IOException {\n"
-"        credentials.setUsername( request.getAttribute(\"username\") ):\n"
-"        credentials.setPassword( request.getAttribute(\"password\") ):\n"
-"        login.login();\n"
-"        if ( login.isLoggedIn() ) {\n"
-"            response.sendRedirect(\"/home.jsp\");\n"
-"        }\n"
-"        else {\n"
-"            response.sendRedirect(\"/loginError.jsp\");\n"
-"        }\n"
-"    }\n"
-"            \n"
-"}"
-msgstr ""
-"public class Login extends HttpServlet {\n"
-"\n"
-"    @Current Credentials credentials;\n"
-"    @Current Login login;\n"
-"\n"
-"    @Override\n"
-"    public void service(HttpServletRequest request, HttpServletResponse response)\n"
-"        throws ServletException, IOException {\n"
-"        credentials.setUsername( request.getAttribute(\"username\") ):\n"
-"        credentials.setPassword( request.getAttribute(\"password\") ):\n"
-"        login.login();\n"
-"        if ( login.isLoggedIn() ) {\n"
-"            response.sendRedirect(\"/home.jsp\");\n"
-"        }\n"
-"        else {\n"
-"            response.sendRedirect(\"/loginError.jsp\");\n"
-"        }\n"
-"    }\n"
-"            \n"
-"}"
-
-#. Tag: para
-#: ee.xml:42
-#, no-c-format
-msgid "The Web Beans client proxy takes care of routing method invocations from the Servlet to the correct instances of <literal>Credentials</literal> and <literal>Login</literal> for the current request and HTTP session."
-msgstr "Le client proxy Web Beans s'occupe du routage d'invocations de méthodes de la Servlet vers les bonnesi instances de <literal>Credentials</literal> et <literal>Login</literal> pour la requête courante et la session HTTP."
-
-#. Tag: title
 #: ee.xml:49
-#, no-c-format
-msgid "Calling a Web Bean from a Message-Driven Bean"
-msgstr "Appeler un Web Bean à partir d'un Message-Driven Bean"
-
-#. Tag: para
-#: ee.xml:51
-#, no-c-format
-msgid "Web Beans injection applies to all EJBs, even when they aren't under the control of the Web Bean manager (if they were obtained by direct JNDI lookup, or injection using <literal>@EJB</literal>, for example. In particular, you can use Web Beans injection in Message-Driven Beans, which are not considered Web Beans because you can't inject them."
-msgstr "L'injection de Web Beans s'applique à tous les EJBs, même ceux qui ne sont pas sous le contrôle du gestionnaire de Web Beans (s'ils ont été obtenus par une résolution direct par JNDI, ou par injection utilisant <literal>@EJB</literal>, par exemple). En particulier, vous pouvez utiliser l'injection de Web Beans dans des Message-Driven Beans, qui ne sont pas considérés comme des Web Beans car vous ne pouvez pas les injecter."
-
-#. Tag: para
-#: ee.xml:57
-#, no-c-format
-msgid "You can even use Web Beans interceptor bindings for Message-Driven Beans."
-msgstr "Vous pouvez même utiliser des liaisons d'intercepteurs de Web Beans avec des Message-Driven Beans."
+#, fuzzy, no-c-format
+msgid ""
+"All managed beans may take advantage of Java EE component environment "
+"injection using <literal>@Resource</literal>, <literal>@EJB</literal>, "
+"<literal>@PersistenceContext</literal>, <literal>@PeristenceUnit</literal> "
+"and <literal>@WebServiceRef</literal>. We've already seen a couple of "
+"examples of this, though we didn't pay much attention at the time:"
+msgstr ""
+"Tous les Web Beans, qu'ils soient simples ou d'entreprise peuvent bénéficier "
+"de l'injection de dépendance de Java EE en utilisant <literal>@Resource</"
+"literal>; <literal>@EJB</literal> et <literal>@PersistenceContext</literal>. "
+"Nous avons déjà vu quelques exemples de cela, bien que nous n'y ayons pas "
+"fait attention sur le moment:"
 
 #. Tag: programlisting
-#: ee.xml:59
-#, no-c-format
+#: ee.xml:56
+#, fuzzy, no-c-format
 msgid ""
-"@Transactional @MessageDriven\n"
-"public class ProcessOrder implements MessageListener {\n"
+"<![CDATA[@Transactional @Interceptor\n"
+"public class TransactionInterceptor {\n"
+"   @Resource UserTransaction transaction;\n"
 "\n"
-"    @Current Inventory inventory;\n"
-"    @PersistenceContext EntityManager em;\n"
-"\n"
-"    public void onMessage(Message message) {\n"
-"        ...\n"
-"    }\n"
-"            \n"
-"}"
+"   @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+"throws Exception { ... }\n"
+"}]]>"
 msgstr ""
-"@Transactional @MessageDriven\n"
-"public class ProcessOrder implements MessageListener {\n"
+"<![CDATA[@Transactional @Interceptor\n"
+"public class TransactionInterceptor {\n"
 "\n"
-"    @Current Inventory inventory;\n"
-"    @PersistenceContext EntityManager em;\n"
+"    @Resource Transaction transaction;\n"
 "\n"
-"    public void onMessage(Message message) {\n"
-"        ...\n"
-"    }\n"
-"            \n"
-"}"
+"    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+"{ ... }\n"
+"    \n"
+"}]]>"
+
+#. Tag: programlisting
+#: ee.xml:58
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@SessionScoped\n"
+"public class Login implements Serializable {\n"
+"   @Inject Credentials credentials;\n"
+"   @PersistenceContext EntityManager userDatabase;\n"
+"    ...\n"
+"}]]>"
+msgstr ""
+"<![CDATA[@SessionScoped\n"
+"public class Login {\n"
+"\n"
+"    @Current Credentials credentials;\n"
+"    @PersistenceContext EntityManager userDatabase;\n"
+"    \n"
+"    ...\n"
+"\n"
+"}]]>"
 
 #. Tag: para
-#: ee.xml:61
-#, no-c-format
-msgid "Thus, receiving messages is super-easy in a Web Beans environment. But beware that there is no session or conversation context available when a message is delivered to a Message-Driven Bean. Only <literal>@RequestScoped</literal> and <literal>@ApplicationScoped</literal> Web Beans are available."
-msgstr "Donc, recevoir des messages est très facile dans un environnement Web Beans. Mais faites attention, il n'y a pas de session ni de contexte de conversation disponible lorsqu'un message est délivré à un Message-Driven Bean. Seuls les Web Beans <literal>@RequestScoped</literal> et <literal>@ApplicationScoped</literal> sont disponibles."
+#: ee.xml:60
+#, fuzzy, no-c-format
+msgid ""
+"The Java EE <literal>@PostConstruct</literal> and <literal>@PreDestroy</"
+"literal> callbacks are also supported for all managed beans. The "
+"<literal>@PostConstruct</literal> method is called after <emphasis>all</"
+"emphasis> injection has been performed."
+msgstr ""
+"Les rappels de Java EE <literal>@PostContruct</literal> et "
+"<literal>@PreDestroy</literal> sont également supportés pour tous les Web "
+"Beans, simples ou d'entreprise. La méthode <literal>@PostConstruct</literal> "
+"est appelée après que <emphasis>toute</emphasis> injection ait été effectuée."
 
 #. Tag: para
 #: ee.xml:66
 #, no-c-format
-msgid "It's also easy to send messages using Web Beans."
-msgstr "Il est également facile d'envoyer des messages en utilisant des Web Beans."
+msgid ""
+"Of course, we advise that component environment injection be used to define "
+"CDI resources, and that typesafe injection be used in application code."
+msgstr ""
 
 #. Tag: title
-#: ee.xml:71
+#: ee.xml:74
+#, fuzzy, no-c-format
+msgid "Calling a bean from a servlet"
+msgstr "Appeler un Web Bean à partir d'un Servlet"
+
+#. Tag: para
+#: ee.xml:76
+#, fuzzy, no-c-format
+msgid ""
+"It's easy to use a bean from a servlet in Java EE 6. Simply inject the bean "
+"using field or initializer method injection."
+msgstr ""
+"Il est facile d'utiliser un Web Bean à partir d'une Servlet dans Java EE 6. "
+"Injectez simplement le Web Bean en utilisant les méthodes d'injection de "
+"champs ou de méthode d'initialisation."
+
+#. Tag: programlisting
+#: ee.xml:81
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[public class Login extends HttpServlet {\n"
+"   @Inject Credentials credentials;\n"
+"   @Inject Login login;\n"
+"\n"
+"   @Override\n"
+"   public void service(HttpServletRequest request, HttpServletResponse "
+"response)\n"
+"      throws ServletException, IOException {\n"
+"      credentials.setUsername(request.getParameter(\"username\")):\n"
+"      credentials.setPassword(request.getParameter(\"password\")):\n"
+"      login.login();\n"
+"      if ( login.isLoggedIn() ) {\n"
+"         response.sendRedirect(\"/home.jsp\");\n"
+"      }\n"
+"      else {\n"
+"         response.sendRedirect(\"/loginError.jsp\");\n"
+"      }\n"
+"   }\n"
+"            \n"
+"}]]>"
+msgstr ""
+"public class Login extends HttpServlet {\n"
+"\n"
+"    @Current Credentials credentials;\n"
+"    @Current Login login;\n"
+"\n"
+"    @Override\n"
+"    public void service(HttpServletRequest request, HttpServletResponse "
+"response)\n"
+"        throws ServletException, IOException {\n"
+"        credentials.setUsername( request.getAttribute(\"username\") ):\n"
+"        credentials.setPassword( request.getAttribute(\"password\") ):\n"
+"        login.login();\n"
+"        if ( login.isLoggedIn() ) {\n"
+"            response.sendRedirect(\"/home.jsp\");\n"
+"        }\n"
+"        else {\n"
+"            response.sendRedirect(\"/loginError.jsp\");\n"
+"        }\n"
+"    }\n"
+"            \n"
+"}"
+
+#. Tag: para
+#: ee.xml:83
+#, fuzzy, no-c-format
+msgid ""
+"Since instances of servlets are shared across all incoming threads, the bean "
+"client proxy takes care of routing method invocations from the servlet to "
+"the correct instances of <literal>Credentials</literal> and <literal>Login</"
+"literal> for the current request and HTTP session."
+msgstr ""
+"Le client proxy Web Beans s'occupe du routage d'invocations de méthodes de "
+"la Servlet vers les bonnesi instances de <literal>Credentials</literal> et "
+"<literal>Login</literal> pour la requête courante et la session HTTP."
+
+#. Tag: title
+#: ee.xml:92
+#, fuzzy, no-c-format
+msgid "Calling a bean from a message-driven bean"
+msgstr "Appeler un Web Bean à partir d'un Message-Driven Bean"
+
+#. Tag: para
+#: ee.xml:94
+#, no-c-format
+msgid ""
+"CDI injection applies to all EJBs, even when they aren't managed beans. In "
+"particular, you can use CDI injection in message-driven beans, which are by "
+"nature not contextual objects."
+msgstr ""
+
+#. Tag: para
+#: ee.xml:99
+#, fuzzy, no-c-format
+msgid "You can even use CDI interceptor bindings for message-driven Beans."
+msgstr ""
+"Vous pouvez même utiliser des liaisons d'intercepteurs de Web Beans avec des "
+"Message-Driven Beans."
+
+#. Tag: programlisting
+#: ee.xml:101
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Transactional @MessageDriven\n"
+"public class ProcessOrder implements MessageListener {\n"
+"   @Inject Inventory inventory;\n"
+"   @PersistenceContext EntityManager em;\n"
+"\n"
+"   public void onMessage(Message message) {\n"
+"      ...\n"
+"   }\n"
+"}]]>"
+msgstr ""
+"@Transactional @MessageDriven\n"
+"public class ProcessOrder implements MessageListener {\n"
+"\n"
+"    @Current Inventory inventory;\n"
+"    @PersistenceContext EntityManager em;\n"
+"\n"
+"    public void onMessage(Message message) {\n"
+"        ...\n"
+"    }\n"
+"            \n"
+"}"
+
+#. Tag: para
+#: ee.xml:103
+#, fuzzy, no-c-format
+msgid ""
+"Please note that there is no session or conversation context available when "
+"a message is delivered to a message-driven bean. Only "
+"<literal>@RequestScoped</literal> and <literal>@ApplicationScoped</literal> "
+"beans are available."
+msgstr ""
+"Donc, recevoir des messages est très facile dans un environnement Web Beans. "
+"Mais faites attention, il n'y a pas de session ni de contexte de "
+"conversation disponible lorsqu'un message est délivré à un Message-Driven "
+"Bean. Seuls les Web Beans <literal>@RequestScoped</literal> et "
+"<literal>@ApplicationScoped</literal> sont disponibles."
+
+#. Tag: para
+#: ee.xml:109
+#, no-c-format
+msgid "But how about beans which <emphasis>send</emphasis> JMS messages?"
+msgstr ""
+
+#. Tag: title
+#: ee.xml:116
 #, no-c-format
 msgid "JMS endpoints"
 msgstr "Terminaisons JMS"
 
 #. Tag: para
-#: ee.xml:73
+#: ee.xml:118
 #, no-c-format
-msgid "Sending messages using JMS can be quite complex, because of the number of different objects you need to deal with. For queues we have <literal>Queue</literal>, <literal>QueueConnectionFactory</literal>, <literal>QueueConnection</literal>, <literal>QueueSession</literal> and <literal>QueueSender</literal>. For topics we have <literal>Topic</literal>, <literal>TopicConnectionFactory</literal>, <literal>TopicConnection</literal>, <literal>TopicSession</literal> and <literal>TopicPublisher</literal>. Each of these objects has its own lifecycle and threading model that we need to worry about."
-msgstr "Envoyer des messages en utilisant JMS peut être assez complexe, à cause du nombre d'objets différents que vous devez traiter. Pour les queues, nous avons <literal>Queue</literal>; <literal>QueueConnectionFactory</literal>, <literal>QueueConnection</literal>, <literal>QueueSession</literal> et <literal>QueueSender</literal>. Pour les topics nous avons <literal>Topic</literal>, <literal>TopicConnectionFactory</literal>, <literal>TopicConnection</literal>, <literal>TopicSession</literal> et <literal>TopicPublisher</literal>. Chacun de ces objets a son propre cycle de vie et son modèle de threads dont nous devons nous soucier."
+msgid ""
+"Sending messages using JMS can be quite complex, because of the number of "
+"different objects you need to deal with. For queues we have <literal>Queue</"
+"literal>, <literal>QueueConnectionFactory</literal>, "
+"<literal>QueueConnection</literal>, <literal>QueueSession</literal> and "
+"<literal>QueueSender</literal>. For topics we have <literal>Topic</literal>, "
+"<literal>TopicConnectionFactory</literal>, <literal>TopicConnection</"
+"literal>, <literal>TopicSession</literal> and <literal>TopicPublisher</"
+"literal>. Each of these objects has its own lifecycle and threading model "
+"that we need to worry about."
+msgstr ""
+"Envoyer des messages en utilisant JMS peut être assez complexe, à cause du "
+"nombre d'objets différents que vous devez traiter. Pour les queues, nous "
+"avons <literal>Queue</literal>; <literal>QueueConnectionFactory</literal>, "
+"<literal>QueueConnection</literal>, <literal>QueueSession</literal> et "
+"<literal>QueueSender</literal>. Pour les topics nous avons <literal>Topic</"
+"literal>, <literal>TopicConnectionFactory</literal>, "
+"<literal>TopicConnection</literal>, <literal>TopicSession</literal> et "
+"<literal>TopicPublisher</literal>. Chacun de ces objets a son propre cycle "
+"de vie et son modèle de threads dont nous devons nous soucier."
 
 #. Tag: para
-#: ee.xml:82
-#, no-c-format
-msgid "Web Beans takes care of all this for us. All we need to do is declare the queue or topic in <literal>web-beans.xml</literal>, specifying an associated binding type and connection factory."
-msgstr "Les Web Beans prennent en charge tout cela pour nous. Tout ce que nous avons à faire est de déclarer la queue ou le topic dans <literal>web-beans.xml</literal>, en spécifiant un type de liaison et une usine de connexion."
-
-#. Tag: programlisting
-#: ee.xml:86
+#: ee.xml:127
 #, no-c-format
 msgid ""
-"<![CDATA[<Queue>\n"
-"    <destination>java:comp/env/jms/OrderQueue</destination>\n"
-"    <connectionFactory>java:comp/env/jms/QueueConnectionFactory</connectionFactory>\n"
-"    <myapp:OrderProcessor/>    \n"
-"</Queue>]]>"
+"You can use producer fields and methods to prepare all of these resources "
+"for injection into a bean:"
 msgstr ""
-"<![CDATA[<Queue>\n"
-"    <destination>java:comp/env/jms/OrderQueue</destination>\n"
-"    <connectionFactory>java:comp/env/jms/QueueConnectionFactory</connectionFactory>\n"
-"    <myapp:OrderProcessor/>    \n"
-"</Queue>]]>"
 
 #. Tag: programlisting
-#: ee.xml:88
+#: ee.xml:131
 #, no-c-format
 msgid ""
-"<![CDATA[<Topic>\n"
-"    <destination>java:comp/env/jms/StockPrices</destination>\n"
-"    <connectionFactory>java:comp/env/jms/TopicConnectionFactory</connectionFactory>\n"
-"    <myapp:StockPrices/>    \n"
-"</Topic>]]>"
+"<![CDATA[public class OrderResources {\n"
+"   @Resource(name=\"jms/ConnectionFactory\")\n"
+"   private ConnectionFactory connectionFactory;\n"
+"  \n"
+"   @Resource(name=\"jms/OrderQueue\")\n"
+"   private Queue orderQueue;\n"
+"  \n"
+"   @Produces @OrderConnection\n"
+"   public Connection createOrderConnection() throws JMSException {\n"
+"    return connectionFactory.createConnection();\n"
+"   }\n"
+"  \n"
+"   public void closeOrderConnection(@Disposes @OrderConnection Connection "
+"connection)\n"
+"         throws JMSException {\n"
+"      connection.close();\n"
+"   }\n"
+"  \n"
+"   @Produces @OrderSession\n"
+"   public Session createOrderSession(@OrderConnection Connection "
+"connection)\n"
+"         throws JMSException {\n"
+"      return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);\n"
+"   }\n"
+"  \n"
+"   public void closeOrderSession(@Disposes @OrderSession Session session)\n"
+"         throws JMSException {\n"
+"      session.close();\n"
+"   }\n"
+"  \n"
+"   @Produces @OrderMessageProducer\n"
+"   public MessageProducer createOrderMessageProducer(@OrderSession Session "
+"session)\n"
+"         throws JMSException {\n"
+"      return session.createProducer(orderQueue);\n"
+"   }\n"
+"  \n"
+"   public void closeOrderMessageProducer(@Disposes @OrderMessageProducer "
+"MessageProducer producer)\n"
+"         throws JMSException {\n"
+"      producer.close();\n"
+"   }\n"
+"}]]>"
 msgstr ""
-"<![CDATA[<Topic>\n"
-"    <destination>java:comp/env/jms/StockPrices</destination>\n"
-"    <connectionFactory>java:comp/env/jms/TopicConnectionFactory</connectionFactory>\n"
-"    <myapp:StockPrices/>    \n"
-"</Topic>]]>"
 
 #. Tag: para
-#: ee.xml:90
-#, no-c-format
-msgid "Now we can just inject the <literal>Queue</literal>, <literal>QueueConnection</literal>, <literal>QueueSession</literal> or <literal>QueueSender</literal> for a queue, or the <literal>Topic</literal>, <literal>TopicConnection</literal>, <literal>TopicSession</literal> or <literal>TopicPublisher</literal> for a topic."
-msgstr "Maintenant, nous avons juste à injecter la <literal>Queue</literal>, <literal>QueueConnection</literal>, <literal>QueueSession</literal> ou <literal>QueueSender</literal> pour une queue, ou le <literal>Topic</literal>, <literal>TopicConnection</literal>, <literal>TopicSession</literal> or <literal>TopicPublisher</literal> pour un topic."
-
-#. Tag: programlisting
-#: ee.xml:96
+#: ee.xml:133
 #, no-c-format
 msgid ""
+"In this example, we can just inject the prepared <literal>MessageProducer</"
+"literal>, <literal>Connection</literal> or <literal>QueueSession</literal>:"
+msgstr ""
+
+#. Tag: programlisting
+#: ee.xml:138
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Inject Order order;\n"
+"@Inject @OrderMessageProducer MessageProducer producer;\n"
+"@Inject @OrderSession QueueSession orderSession;\n"
+"\n"
+"public void sendMessage() {\n"
+"   MapMessage msg = orderSession.createMapMessage();\n"
+"   msg.setLong(\"orderId\", order.getId());\n"
+"   ...\n"
+"   producer.send(msg);\n"
+"}]]>"
+msgstr ""
 "@OrderProcessor QueueSender orderSender;\n"
 "@OrderProcessor QueueSession orderSession;\n"
 "\n"
@@ -285,55 +430,150 @@ msgid ""
 "    ...\n"
 "    orderSender.send(msg);\n"
 "}"
-msgstr ""
-"@OrderProcessor QueueSender orderSender;\n"
-"@OrderProcessor QueueSession orderSession;\n"
-"\n"
-"public void sendMessage() {\n"
-"    MapMessage msg = orderSession.createMapMessage();\n"
-"    ...\n"
-"    orderSender.send(msg);\n"
-"}"
-
-#. Tag: programlisting
-#: ee.xml:98
-#, no-c-format
-msgid ""
-"@StockPrices TopicPublisher pricePublisher;\n"
-"@StockPrices TopicSession priceSession;\n"
-"\n"
-"public void sendMessage(String price) {\n"
-"    pricePublisher.send( priceSession.createTextMessage(price) );\n"
-"}"
-msgstr ""
-"@StockPrices TopicPublisher pricePublisher;\n"
-"@StockPrices TopicSession priceSession;\n"
-"\n"
-"public void sendMessage(String price) {\n"
-"    pricePublisher.send( priceSession.createTextMessage(price) );\n"
-"}"
 
 #. Tag: para
-#: ee.xml:100
-#, no-c-format
-msgid "The lifecycle of the injected JMS objects is completely controlled by the Web Bean manager."
-msgstr "Le cycle de vie des objects JMS injectés est complètement contrôlé par le gestionnaire de Web Beans."
+#: ee.xml:144
+#, fuzzy, no-c-format
+msgid ""
+"The lifecycle of the injected JMS objects is completely controlled by the "
+"container."
+msgstr ""
+"Le cycle de vie des objects JMS injectés est complètement contrôlé par le "
+"gestionnaire de Web Beans."
 
 #. Tag: title
-#: ee.xml:106
+#: ee.xml:151
 #, no-c-format
 msgid "Packaging and deployment"
 msgstr "Paquetage et déploiement"
 
 #. Tag: para
-#: ee.xml:108
-#, no-c-format
-msgid "Web Beans doesn't define any special deployment archive. You can package Web Beans in JARs, EJB-JARs or WARs &#151; any deployment location in the application classpath. However, each archive that contains Web Beans must include a file named <literal>web-beans.xml</literal> in the <literal>META-INF</literal> or <literal>WEB-INF</literal> directory. The file may be empty. Web Beans deployed in archives that do not have a <literal>web-beans.xml</literal> file will not be available for use in the application."
-msgstr "Les Web Beans ne définissent aucune archive spéciale pour le déploiement. Vous pouvez paqueter des Web Beans dans des JARs, des EJB-JARs ou des WARs : tout emplacement de déploiement dans le classpath de l'application. Cependant, chaque archive contenant des Web Beans doit contenir un fichier nommé <literal>web-beans.xml</literal> dans le dossier <literal>META-INF</literal> ou <literal>WEB-INF</literal>. Le fichier peut être vide. Les Web Beans déployés dans des archives n'ayant pas de fichier <literal>web-beans.xml</literal> ne seront pas disponibles pour utilisation dans l'application."
+#: ee.xml:153
+#, fuzzy, no-c-format
+msgid ""
+"CDI doesn't define any special deployment archive. You can package beans in "
+"JARs, EJB-JARs or WARs&#8212;any deployment location in the application "
+"classpath. However, the archive must be a \"bean archive\". That means each "
+"archive that contains beans <emphasis>must</emphasis> include a file named "
+"<literal>beans.xml</literal> in the <literal>META-INF</literal> directory of "
+"the classpath or <literal>WEB-INF</literal> directory of the web root (for "
+"WAR archives). The file may be empty. Beans deployed in archives that do not "
+"have a <literal>beans.xml</literal> file will not be available for use in "
+"the application."
+msgstr ""
+"Les Web Beans ne définissent aucune archive spéciale pour le déploiement. "
+"Vous pouvez paqueter des Web Beans dans des JARs, des EJB-JARs ou des WARs : "
+"tout emplacement de déploiement dans le classpath de l'application. "
+"Cependant, chaque archive contenant des Web Beans doit contenir un fichier "
+"nommé <literal>web-beans.xml</literal> dans le dossier <literal>META-INF</"
+"literal> ou <literal>WEB-INF</literal>. Le fichier peut être vide. Les Web "
+"Beans déployés dans des archives n'ayant pas de fichier <literal>web-beans."
+"xml</literal> ne seront pas disponibles pour utilisation dans l'application."
 
 #. Tag: para
-#: ee.xml:116
-#, no-c-format
-msgid "For Java SE execution, Web Beans may be deployed in any location in which EJBs may be deployed for execution by the embeddable EJB Lite container. Again, each location must contain a <literal>web-beans.xml</literal> file."
-msgstr "Pour une exécution Java SE, les Web Beans peuvent être déployés dans tout emplacement dans lequel des EJBs peuvent être déployés pour exécution par le conteneur d'EJB lite. De nouveau, chaque emplacement doit contenir un fichier <literal>web-beans.xml</literal>."
+#: ee.xml:162
+#, fuzzy, no-c-format
+msgid ""
+"In an embeddable EJB container, beans may be deployed in any location in "
+"which EJBs may be deployed. Again, each location must contain a "
+"<literal>beans.xml</literal> file."
+msgstr ""
+"Pour une exécution Java SE, les Web Beans peuvent être déployés dans tout "
+"emplacement dans lequel des EJBs peuvent être déployés pour exécution par le "
+"conteneur d'EJB lite. De nouveau, chaque emplacement doit contenir un "
+"fichier <literal>web-beans.xml</literal>."
 
+#~ msgid ""
+#~ "There is one restriction to be aware of here: <literal>@PersistenceContext"
+#~ "(type=EXTENDED)</literal> is not supported for simple Web Beans."
+#~ msgstr ""
+#~ "Il y a une restriction dont vous devez être conscient: "
+#~ "<literal>@PersistenceContext(type=EXTENDED)</literal> n'est pas supportée "
+#~ "pour les Web Beans simples."
+
+#~ msgid ""
+#~ "Web Beans injection applies to all EJBs, even when they aren't under the "
+#~ "control of the Web Bean manager (if they were obtained by direct JNDI "
+#~ "lookup, or injection using <literal>@EJB</literal>, for example. In "
+#~ "particular, you can use Web Beans injection in Message-Driven Beans, "
+#~ "which are not considered Web Beans because you can't inject them."
+#~ msgstr ""
+#~ "L'injection de Web Beans s'applique à tous les EJBs, même ceux qui ne "
+#~ "sont pas sous le contrôle du gestionnaire de Web Beans (s'ils ont été "
+#~ "obtenus par une résolution direct par JNDI, ou par injection utilisant "
+#~ "<literal>@EJB</literal>, par exemple). En particulier, vous pouvez "
+#~ "utiliser l'injection de Web Beans dans des Message-Driven Beans, qui ne "
+#~ "sont pas considérés comme des Web Beans car vous ne pouvez pas les "
+#~ "injecter."
+
+#~ msgid "It's also easy to send messages using Web Beans."
+#~ msgstr ""
+#~ "Il est également facile d'envoyer des messages en utilisant des Web Beans."
+
+#~ msgid ""
+#~ "Web Beans takes care of all this for us. All we need to do is declare the "
+#~ "queue or topic in <literal>web-beans.xml</literal>, specifying an "
+#~ "associated binding type and connection factory."
+#~ msgstr ""
+#~ "Les Web Beans prennent en charge tout cela pour nous. Tout ce que nous "
+#~ "avons à faire est de déclarer la queue ou le topic dans <literal>web-"
+#~ "beans.xml</literal>, en spécifiant un type de liaison et une usine de "
+#~ "connexion."
+
+#~ msgid ""
+#~ "<![CDATA[<Queue>\n"
+#~ "    <destination>java:comp/env/jms/OrderQueue</destination>\n"
+#~ "    <connectionFactory>java:comp/env/jms/QueueConnectionFactory</"
+#~ "connectionFactory>\n"
+#~ "    <myapp:OrderProcessor/>    \n"
+#~ "</Queue>]]>"
+#~ msgstr ""
+#~ "<![CDATA[<Queue>\n"
+#~ "    <destination>java:comp/env/jms/OrderQueue</destination>\n"
+#~ "    <connectionFactory>java:comp/env/jms/QueueConnectionFactory</"
+#~ "connectionFactory>\n"
+#~ "    <myapp:OrderProcessor/>    \n"
+#~ "</Queue>]]>"
+
+#~ msgid ""
+#~ "<![CDATA[<Topic>\n"
+#~ "    <destination>java:comp/env/jms/StockPrices</destination>\n"
+#~ "    <connectionFactory>java:comp/env/jms/TopicConnectionFactory</"
+#~ "connectionFactory>\n"
+#~ "    <myapp:StockPrices/>    \n"
+#~ "</Topic>]]>"
+#~ msgstr ""
+#~ "<![CDATA[<Topic>\n"
+#~ "    <destination>java:comp/env/jms/StockPrices</destination>\n"
+#~ "    <connectionFactory>java:comp/env/jms/TopicConnectionFactory</"
+#~ "connectionFactory>\n"
+#~ "    <myapp:StockPrices/>    \n"
+#~ "</Topic>]]>"
+
+#~ msgid ""
+#~ "Now we can just inject the <literal>Queue</literal>, "
+#~ "<literal>QueueConnection</literal>, <literal>QueueSession</literal> or "
+#~ "<literal>QueueSender</literal> for a queue, or the <literal>Topic</"
+#~ "literal>, <literal>TopicConnection</literal>, <literal>TopicSession</"
+#~ "literal> or <literal>TopicPublisher</literal> for a topic."
+#~ msgstr ""
+#~ "Maintenant, nous avons juste à injecter la <literal>Queue</literal>, "
+#~ "<literal>QueueConnection</literal>, <literal>QueueSession</literal> ou "
+#~ "<literal>QueueSender</literal> pour une queue, ou le <literal>Topic</"
+#~ "literal>, <literal>TopicConnection</literal>, <literal>TopicSession</"
+#~ "literal> or <literal>TopicPublisher</literal> pour un topic."
+
+#~ msgid ""
+#~ "@StockPrices TopicPublisher pricePublisher;\n"
+#~ "@StockPrices TopicSession priceSession;\n"
+#~ "\n"
+#~ "public void sendMessage(String price) {\n"
+#~ "    pricePublisher.send( priceSession.createTextMessage(price) );\n"
+#~ "}"
+#~ msgstr ""
+#~ "@StockPrices TopicPublisher pricePublisher;\n"
+#~ "@StockPrices TopicSession priceSession;\n"
+#~ "\n"
+#~ "public void sendMessage(String price) {\n"
+#~ "    pricePublisher.send( priceSession.createTextMessage(price) );\n"
+#~ "}"

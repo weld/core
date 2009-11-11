@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Book_Info\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-01 21:16+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-01-08 16:25+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -23,14 +23,15 @@ msgstr ""
 #. Tag: title
 #: Book_Info.xml:4
 #, no-c-format
-msgid "Web Beans: Java Contexts and Dependency Injection"
+msgid "Weld - JSR-299 Reference Implementation"
 msgstr ""
 
 #. Tag: subtitle
 #: Book_Info.xml:5
 #, fuzzy, no-c-format
 msgid ""
-"The new standard for dependency injection and contextual state management"
+"JSR-299: The new Java standard for dependency injection and contextual "
+"lifecycle management"
 msgstr "의존성 주입 및 컨텍스트 상태 관리에 대한 새로운 Java 표준  "
 
 #~ msgid "Introduction to Web Beans"

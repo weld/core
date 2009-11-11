@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-06 11:30+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-01-21 12:44+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -19,56 +19,123 @@ msgstr ""
 #. Tag: title
 #: intro.xml:4
 #, no-c-format
-msgid "Getting started with Web Beans"
-msgstr "開始使用 Web Bean"
+msgid "Introduction"
+msgstr ""
 
 #. Tag: para
 #: intro.xml:6
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"So you're already keen to get started writing your first Web Bean? Or "
-"perhaps you're skeptical, wondering what kinds of hoops the Web Beans "
-"specification will make you jump through! The good news is that you've "
-"probably already written and used hundreds, perhaps thousands of Web Beans. "
-"You might not even remember the first Web Bean you wrote."
-msgstr "您是否已準備好開始編寫您的第一個 Web Bean 了呢？或是您針對於 Web Bean 本身的規格還是存有著一些疑問呢？不過好消息就是您從以前到現在可能早就已經編寫並使用了上百甚至是上千個 Web Bean 了。您可能根本已經不記得您所編寫的第一個 Web Bean 為何了。"
+"So you're keen to get started writing your first bean? Or perhaps you're "
+"skeptical, wondering what kinds of hoops the CDI specification will make you "
+"jump through! The good news is that you've probably already written and used "
+"hundreds, perhaps thousands of beans. CDI just makes it easier to actually "
+"use them to build an application!"
+msgstr ""
+"您是否已準備好開始編寫您的第一個 Web Bean 了呢？或是您針對於 Web Bean 本身的"
+"規格還是存有著一些疑問呢？不過好消息就是您從以前到現在可能早就已經編寫並使用"
+"了上百甚至是上千個 Web Bean 了。您可能根本已經不記得您所編寫的第一個 Web "
+"Bean 為何了。"
 
 #. Tag: title
 #: intro.xml:13
-#, no-c-format
-msgid "Your first Web Bean"
-msgstr "您的第一個 Web Bean"
+#, fuzzy, no-c-format
+msgid "What is a bean?"
+msgstr "Web Bean 是什麼？"
 
 #. Tag: para
 #: intro.xml:15
 #, no-c-format
 msgid ""
-"With certain, very special exceptions, every Java class with a constructor "
-"that accepts no parameters is a Web Bean. That includes every JavaBean. "
-"Furthermore, every EJB 3-style session bean is a Web Bean. Sure, the "
-"JavaBeans and EJBs you've been writing every day have not been able to take "
-"advantage of the new services defined by the Web Beans specification, but "
-"you'll be able to use every one of them as Web Beans &#151; injecting them "
-"into other Web Beans, configuring them via the Web Beans XML configuration "
-"facility, even adding interceptors and decorators to them &#151; without "
-"touching your existing code."
-msgstr "我們能夠很明確地告訴您，在絕大部分的情況下，所有含有不接受參數的 constructor 的 java class 都是個 Web Bean。這包含了所有的 JavaBean。另外，所有 EJB 3-style 的 session bean 也都屬於 Web Bean。當然，您先前所編寫的 JavaBean 和 EJB 皆無法有效利用 Web Bean 規格所定義的新服務，不過您卻可將它們全部作為 Web Bean 來使用 &#151; 將它們注入其它 Web Bean 中，透過 Web Bean XML 配置功能來配置它們，甚至是加入攔截器（interceptor）與裝飾器（decorator） &#151; 無須變動到您現有的程式碼。"
+"A bean is exactly what you think it is. Only now, it has a true identity in "
+"the container environment."
+msgstr ""
 
 #. Tag: para
-#: intro.xml:25
+#: intro.xml:19
 #, no-c-format
 msgid ""
-"Suppose that we have two existing Java classes, that we've been using for "
+"Prior to Java EE 6, there was no clear definition of the term \"bean\" in "
+"the Java EE platform. Of course, we've been calling Java classes used in web "
+"and enterprise applications \"beans\" for years. There were even a couple of "
+"different kinds of things called \"beans\" in EE specifications, including "
+"EJB beans and JSF managed beans. Meanwhile, other third-party frameworks "
+"such as Spring and Seam introduced their own ideas of what it meant to be a "
+"\"bean\". What we've been missing is a common definition."
+msgstr ""
+
+#. Tag: para
+#: intro.xml:27
+#, no-c-format
+msgid ""
+"Java EE 6 finally lays down that common definition in the Managed Beans "
+"specification. Managed Beans are defined as container-managed objects with "
+"minimal programming restrictions, otherwise known by the acronym POJO (Plain "
+"Old Java Object). They support a small set of basic services, such as "
+"resource injection, lifecycle callbacks and interceptors. Companion "
+"specifications, such as EJB and CDI, build on this basic model. But, "
+"<emphasis>at last</emphasis>, there's a uniform concept of a bean and a "
+"lightweight component model that's aligned across the Java EE platform."
+msgstr ""
+
+#. Tag: para
+#: intro.xml:36
+#, no-c-format
+msgid ""
+"With very few exceptions, almost every concrete Java class that has a "
+"constructor with no parameters (or a constructor designated with the "
+"annotation <literal>@Inject</literal>) is a bean. This includes every "
+"JavaBean and every EJB session bean. If you've already got some JavaBeans or "
+"session beans lying around, they're already beans&#8212;you won't need any "
+"additional special metadata. There's just little one thing you need to do "
+"before you can start injecting them into stuff: you need to put them in an "
+"archive (a jar, or a Java EE module such as a war or EJB jar) that contains "
+"a special marker file: <literal>META-INF/beans.xml</literal>."
+msgstr ""
+
+#. Tag: para
+#: intro.xml:45
+#, no-c-format
+msgid ""
+"The JavaBeans and EJBs you've been writing every day, up until now, have not "
+"been able to take advantage of the new services defined by the CDI "
+"specification. But you'll be able to use every one of them with CDI&#8212;"
+"allowing the container to create and destroy instances of your beans and "
+"associate them with a designated context, injecting them into other beans, "
+"using them in EL expressions, specializing them with qualifier annotations, "
+"even adding interceptors and decorators to them&#8212;without modifying your "
+"existing code. At most, you'll need to add some annotations."
+msgstr ""
+
+#. Tag: para
+#: intro.xml:54
+#, no-c-format
+msgid "Now let's see how to create your first bean that actually uses CDI."
+msgstr ""
+
+#. Tag: title
+#: intro.xml:61
+#, no-c-format
+msgid "Getting our feet wet"
+msgstr ""
+
+#. Tag: para
+#: intro.xml:63
+#, fuzzy, no-c-format
+msgid ""
+"Suppose that we have two existing Java classes that we've been using for "
 "years in various applications. The first class parses a string into a list "
 "of sentences:"
-msgstr "假設我們目前有兩個使用於各種應用程式中多年的 Java class。第一個 class 會將一個字串剖析入一列句子中："
+msgstr ""
+"假設我們目前有兩個使用於各種應用程式中多年的 Java class。第一個 class 會將一"
+"個字串剖析入一列句子中："
 
 #. Tag: programlisting
-#: intro.xml:29
-#, no-c-format
+#: intro.xml:68
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[public class SentenceParser {\n"
-"    public List<String> parse(String text) { ... }\n"
+"   public List<String> parse(String text) { ... }\n"
 "}]]>"
 msgstr ""
 "<![CDATA[public class SentenceParser {\n"
@@ -76,21 +143,23 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: intro.xml:31
+#: intro.xml:70
 #, no-c-format
 msgid ""
 "The second existing class is a stateless session bean front-end for an "
 "external system that is able to translate sentences from one language to "
 "another:"
-msgstr "第二個 class 則是個外部系統的無狀態 session bean 前端，並且它可將句子由一種語言翻譯成另一種語言："
+msgstr ""
+"第二個 class 則是個外部系統的無狀態 session bean 前端，並且它可將句子由一種語"
+"言翻譯成另一種語言："
 
 #. Tag: programlisting
-#: intro.xml:35
-#, no-c-format
+#: intro.xml:75
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@Stateless\n"
 "public class SentenceTranslator implements Translator {\n"
-"    public String translate(String sentence) { ... }\n"
+"   public String translate(String sentence) { ... }\n"
 "}]]>"
 msgstr ""
 "<![CDATA[@Stateless\n"
@@ -99,18 +168,18 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: intro.xml:37
-#, no-c-format
-msgid "Where <literal>Translator</literal> is the local interface:"
+#: intro.xml:77
+#, fuzzy, no-c-format
+msgid "Where <literal>Translator</literal> is the EJB local interface:"
 msgstr "<literal>Translator</literal> 為本地介面："
 
 #. Tag: programlisting
-#: intro.xml:39
-#, no-c-format
+#: intro.xml:79
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@Local\n"
 "public interface Translator {\n"
-"    public String translate(String sentence);\n"
+"   public String translate(String sentence);\n"
 "}]]>"
 msgstr ""
 "<![CDATA[@Local\n"
@@ -119,37 +188,37 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: intro.xml:41
-#, no-c-format
+#: intro.xml:81
+#, fuzzy, no-c-format
 msgid ""
-"Unfortunately, we don't have a preexisting class that translates whole text "
-"documents. So let's write a Web Bean that does this job:"
-msgstr "不巧的是，我們沒有一個可翻譯整個文字文件的現有 class。所以讓我們來編寫一個能夠完成這項工作的 Web Bean 吧："
+"Unfortunately, we don't have a class that translates whole text documents. "
+"So let's write a bean for this job:"
+msgstr ""
+"不巧的是，我們沒有一個可翻譯整個文字文件的現有 class。所以讓我們來編寫一個能"
+"夠完成這項工作的 Web Bean 吧："
 
 #. Tag: programlisting
-#: intro.xml:44
-#, no-c-format
+#: intro.xml:85
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[public class TextTranslator {\n"
+"   private SentenceParser sentenceParser;\n"
+"   private Translator sentenceTranslator;\n"
 "    \n"
-"    private SentenceParser sentenceParser;\n"
-"    private Translator sentenceTranslator;\n"
-"    \n"
-"    @Initializer\n"
-"    TextTranslator(SentenceParser sentenceParser, Translator "
+"   @Inject\n"
+"   TextTranslator(SentenceParser sentenceParser, Translator "
 "sentenceTranslator) {\n"
-"        this.sentenceParser = sentenceParser;\n"
-"        this.sentenceTranslator = sentenceTranslator;\n"
-"    }\n"
+"      this.sentenceParser = sentenceParser;\n"
+"      this.sentenceTranslator = sentenceTranslator;\n"
+"   }\n"
 "    \n"
-"    public String translate(String text) {\n"
-"        StringBuilder sb = new StringBuilder();\n"
-"        for (String sentence: sentenceParser.parse(text)) {\n"
-"            sb.append(sentenceTranslator.translate(sentence));\n"
-"        }\n"
-"        return sb.toString();\n"
-"    }\n"
-"    \n"
+"   public String translate(String text) {\n"
+"      StringBuilder sb = new StringBuilder();\n"
+"      for (String sentence: sentenceParser.parse(text)) {\n"
+"          sb.append(sentenceTranslator.translate(sentence));\n"
+"      }\n"
+"      return sb.toString();\n"
+"   }\n"
 "}]]>"
 msgstr ""
 "<![CDATA[public class TextTranslator {\n"
@@ -175,988 +244,952 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: intro.xml:46
+#: intro.xml:87
+#, fuzzy, no-c-format
+msgid ""
+"But wait! <literal>TextTranslator</literal> does not have a constructor with "
+"no parameters! Is it still a bean? If you remember, a class that does not "
+"have a constructor with no parameters can still be a bean if it has a "
+"constructor annotated <literal>@Inject</literal>."
+msgstr ""
+"不過請稍等：<literal>TextTranslator</literal> 並沒有一個無參數的 "
+"constructor！這樣它還是個 Web Bean 嗎？一個沒有無參數 constructor 的 class 若"
+"有個被標記了 <literal>@Initializer</literal> 的 constructor 的話，它還是能夠"
+"是個 Web Bean。"
+
+#. Tag: para
+#: intro.xml:93
+#, fuzzy, no-c-format
+msgid ""
+"As you've guessed, the <literal>@Inject</literal> annotation has something "
+"to do with dependency injection! <literal>@Inject</literal> may be applied "
+"to a constructor or method of a bean, and tells the container to call that "
+"constructor or method when instantiating the bean. The container will inject "
+"other beans into the parameters of the constructor or method."
+msgstr ""
+"就如您所猜測地，<literal>@Initializer</literal> 這個標記和依賴注入有關係！"
+"<literal>@Initializer</literal> 可套用至一個 Web Bean 的 constructor 或是 "
+"method 來指示 Web Bean 管理員在例示 Web Bean 時去調用該 constructor 或 "
+"method。Web Bean 管理員會將其它 Web Bean 注入至該 constructor 或 method 的參"
+"數中。"
+
+#. Tag: para
+#: intro.xml:100
 #, no-c-format
 msgid ""
 "We may obtain an instance of <literal>TextTranslator</literal> by injecting "
-"it into a Web Bean, Servlet or EJB:"
-msgstr "我們能夠藉由將注入一個 <literal>TextTranslator</literal> 的 instance 注入 Web Bean、Servlet 或是 EJB 中來取得這個 instance："
+"it into a constructor, method or field of a bean, or a field or method of a "
+"Java EE component class such as a servlet. The container chooses the object "
+"to be injected based on the type of the injection point, not the name of the "
+"field, method or parameter."
+msgstr ""
+
+#. Tag: para
+#: intro.xml:107
+#, no-c-format
+msgid ""
+"Let's create a UI controller bean that uses field injection to obtain an "
+"instance of the <literal>TextTranslator</literal>, translating the text "
+"entered by a user:"
+msgstr ""
 
 #. Tag: programlisting
-#: intro.xml:49
+#: intro.xml:116
 #, no-c-format
 msgid ""
-"<![CDATA[@Initializer\n"
-"public setTextTranslator(TextTranslator textTranslator) {\n"
-"    this.textTranslator = textTranslator;\n"
+"<![CDATA[@Named @RequestScoped\n"
+"public class TranslateController {\n"
+"   @Inject TextTranslator textTranslator;\n"
+"\n"
+"   private String inputText;\n"
+"   private String translation;\n"
+"\n"
+"   // JSF action method, perhaps\n"
+"   public void translate() {\n"
+"      translation = textTranslator.translate(inputText); \n"
+"   }\n"
+"\n"
+"   public String getInputText() {\n"
+"      return inputText;\n"
+"   }\n"
+"\n"
+"   public void setInputText(String text) {\n"
+"      this.inputText = text;\n"
+"   }\n"
+"\n"
+"   public String getTranslation() {\n"
+"      return translation;\n"
+"   }\n"
 "}]]>"
 msgstr ""
-"<![CDATA[@Initializer\n"
-"public setTextTranslator(TextTranslator textTranslator) {\n"
-"    this.textTranslator = textTranslator;\n"
-"}]]>"
-
-#. Tag: para
-#: intro.xml:51
-#, no-c-format
-msgid ""
-"Alternatively, we may obtain an instance by directly calling a method of the "
-"Web Bean manager:"
-msgstr "另外，我們也可藉由直接調用 Web Bean 管理員的一個 method 來取得一個 instance："
-
-#. Tag: programlisting
-#: intro.xml:54
-#, no-c-format
-msgid ""
-"<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator."
-"class);]]>"
-msgstr ""
-"<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator."
-"class);]]>"
-
-#. Tag: para
-#: intro.xml:56
-#, no-c-format
-msgid ""
-"But wait: <literal>TextTranslator</literal> does not have a constructor with "
-"no parameters! Is it still a Web Bean? Well, a class that does not have a "
-"constructor with no parameters can still be a Web Bean if it has a "
-"constructor annotated <literal>@Initializer</literal>."
-msgstr "不過請稍等：<literal>TextTranslator</literal> 並沒有一個無參數的 constructor！這樣它還是個 Web Bean 嗎？一個沒有無參數 constructor 的 class 若有個被標記了 <literal>@Initializer</literal> 的 constructor 的話，它還是能夠是個 Web Bean。"
-
-#. Tag: para
-#: intro.xml:61
-#, no-c-format
-msgid ""
-"As you've guessed, the <literal>@Initializer</literal> annotation has "
-"something to do with dependency injection! <literal>@Initializer</literal> "
-"may be applied to a constructor or method of a Web Bean, and tells the Web "
-"Bean manager to call that constructor or method when instantiating the Web "
-"Bean. The Web Bean manager will inject other Web Beans to the parameters of "
-"the constructor or method."
-msgstr "就如您所猜測地，<literal>@Initializer</literal> 這個標記和依賴注入有關係！<literal>@Initializer</literal> 可套用至一個 Web Bean 的 constructor 或是 method 來指示 Web Bean 管理員在例示 Web Bean 時去調用該 constructor 或 method。Web Bean 管理員會將其它 Web Bean 注入至該 constructor 或 method 的參數中。"
-
-#. Tag: para
-#: intro.xml:68
-#, no-c-format
-msgid ""
-"At system initialization time, the Web Bean manager must validate that "
-"exactly one Web Bean exists which satisfies each injection point. In our "
-"example, if no implementation of <literal>Translator</literal> "
-"available &#151; if the <literal>SentenceTranslator</literal> EJB was not "
-"deployed &#151; the Web Bean manager would throw an "
-"<literal>UnsatisfiedDependencyException</literal>. If more than one "
-"implementation of <literal>Translator</literal> was available, the Web Bean "
-"manager would throw an <literal>AmbiguousDependencyException</literal>."
-msgstr "當系統初始化時，Web Bean 管理員必須驗證是否有正好一個滿足所有注入點的 Web Bean 存在。在我們的範例中，若沒有可用的 <literal>Translator</literal> 實做 &#151; 若 <literal>SentenceTranslator</literal> EJB 沒有被建置 &#151; Web Bean 管理員便會回傳一個 <literal>UnsatisfiedDependencyException</literal>。若有超過一個可使用的 <literal>Translator</literal> 實做，那麼 Web Bean 管理員便會回傳一個 <literal>AmbiguousDependencyException</literal>。"
-
-#. Tag: title
-#: intro.xml:80
-#, no-c-format
-msgid "What is a Web Bean?"
-msgstr "Web Bean 是什麼？"
-
-#. Tag: para
-#: intro.xml:82
-#, no-c-format
-msgid "So what, <emphasis>exactly</emphasis>, is a Web Bean?"
-msgstr "所以 Web Bean <emphasis>到底</emphasis>是什麼？"
-
-#. Tag: para
-#: intro.xml:84
-#, no-c-format
-msgid ""
-"A Web Bean is an application class that contains business logic. A Web Bean "
-"may be called directly from Java code, or it may be invoked via Unified EL. "
-"A Web Bean may access transactional resources. Dependencies between Web "
-"Beans are managed automatically by the Web Bean manager. Most Web Beans are "
-"<emphasis>stateful</emphasis> and <emphasis>contextual</emphasis>. The "
-"lifecycle of a Web Bean is always managed by the Web Bean manager."
-msgstr "Web Bean 是個包含了商業邏輯的應用程式 class。Web Bean 可由 Java 程式碼被直接地調用，或是它亦可透過 Unified EL 來引動。Web Bean 可存取交易性的資源。Web Bean 之間的相依性是透過 Web Bean 管理員來自動管理的。大部分的 Web Bean 都屬於 <emphasis>stateful（有狀態）</emphasis> 和 <emphasis>contextual（語意式）</emphasis> 的。Web Bean 的生命週期（lifecycle）總是透過 Web Bean 管理員來管理的。"
-
-#. Tag: para
-#: intro.xml:91
-#, no-c-format
-msgid ""
-"Let's back up a second. What does it really mean to be \"contextual\"? Since "
-"Web Beans may be stateful, it matters <emphasis>which</emphasis> bean "
-"instance I have. Unlike a stateless component model (for example, stateless "
-"session beans) or a singleton component model (such as servlets, or "
-"singleton beans), different clients of a Web Bean see the Web Bean in "
-"different states. The client-visible state depends upon which instance of "
-"the Web Bean the client has a reference to."
-msgstr "讓我們向後看，「contextual（語意式）」到底代表什麼意思？因為 Web Bean 能夠是有狀態的，而最重要的是我們有<emphasis>哪個</emphasis> bean instance。和無狀態的元件模型（例如無狀態的 session bean）或單元件模型（例如 servlet 或是單獨的 bean）不同的是，對於不同的 Web Bean 客戶端而言，它們會看見不同狀態的 Web Bean。客戶端可看見的狀態基於客戶端參照的是 Web Bean 的哪個 instance。"
-
-#. Tag: para
-#: intro.xml:98
-#, no-c-format
-msgid ""
-"However, like a stateless or singleton model, but <emphasis>unlike</"
-"emphasis> stateful session beans, the client does not control the lifecycle "
-"of the instance by explicitly creating and destroying it. Instead, the "
-"<emphasis>scope</emphasis> of the Web Bean determines:"
-msgstr "不過，就和無狀態或是單獨的模型一樣，並與有狀態的 session bean <emphasis>不同</emphasis>，客戶端無法藉由明確建立和刪除 instance 來控制 instance 的生命週期。反之，Web Bean 的 <emphasis>scope</emphasis> 可決定："
-
-#. Tag: para
-#: intro.xml:105
-#, no-c-format
-msgid "the lifecycle of each instance of the Web Bean and"
-msgstr "Web Bean 的各個 instance 的生命週期以及"
-
-#. Tag: para
-#: intro.xml:108
-#, no-c-format
-msgid "which clients share a reference to a particular instance of the Web Bean."
-msgstr "哪些客戶端共享 Web Bean 的特定 instance 的參照。"
-
-#. Tag: para
-#: intro.xml:113
-#, no-c-format
-msgid ""
-"For a given thread in a Web Beans application, there may be an "
-"<emphasis>active context</emphasis> associated with the scope of the Web "
-"Bean. This context may be unique to the thread (for example, if the Web Bean "
-"is request scoped), or it may be shared with certain other threads (for "
-"example, if the Web Bean is session scoped) or even all other threads (if it "
-"is application scoped)."
-msgstr "Web Bean 應用程式中的某個執行緒可能會有個和該 Web Bean 的 scope 關聯的 <emphasis>active context</emphasis>。這個 context 對於執行緒來說可能會是獨一無二的（例如，若 Web Bean 為 request scoped 的話），或是它亦有可能共享於其它特定執行緒之間（例如，若 Web Bean 為 session scoped 的話）或甚至是共享於所有其它執行緒之間（若它是 application scoped 的話）。"
 
 #. Tag: para
 #: intro.xml:119
-#, no-c-format
-msgid ""
-"Clients (for example, other Web Beans) executing in the same context will "
-"see the same instance of the Web Bean. But clients in a different context "
-"will see a different instance."
-msgstr "相同 context 的客戶端（例如其它 Web Bean）將會看見相同的 Web Bean instance。不過不同 context 的客戶端則會看見不同的 instance。"
+#, fuzzy, no-c-format
+msgid "Field injection of <literal>TextTranslator</literal> instance"
+msgstr "<literal>Translator</literal> 為本地介面："
 
 #. Tag: para
-#: intro.xml:123
+#: intro.xml:127
 #, no-c-format
 msgid ""
-"One great advantage of the contextual model is that it allows stateful Web "
-"Beans to be treated like services! The client need not concern itself with "
-"managing the lifecycle of the Web Bean it is using, <emphasis>nor does it "
-"even need to know what that lifecyle is.</emphasis> Web Beans interact by "
-"passing messages, and the Web Bean implementations define the lifecycle of "
-"their own state. The Web Beans are loosely coupled because:"
-msgstr "Contextual model 的其中一個主要優點就是它允許有狀態的 Web Bean 能被視為是一項服務！客戶端不需要擔心如何管理它所使用的 Web Bean 的生命週期，<emphasis>它甚至不需要知道這個生命週期為何。</emphasis>Web Bean 會透過傳送訊息來進行互動，並且 Web Bean 的實做也能定義它們自己的狀態的生命週期。Web Bean 為鬆散耦合（loosely coupled）的，因為："
-
-#. Tag: para
-#: intro.xml:132
-#, no-c-format
-msgid "they interact via well-defined public APIs"
-msgstr "它們透過了定義明確的公用 API 來進行互動"
+"Notice the controller bean is request-scoped and named. Since this "
+"combination is so common in web applications, there's a built-in annotation "
+"for it in CDI that we could have used as a shorthand. When the (stereotype) "
+"annotation <literal>@Model</literal> is declared on a class, it creates a "
+"request-scoped and named bean."
+msgstr ""
 
 #. Tag: para
 #: intro.xml:135
-#, no-c-format
-msgid "their lifecycles are completely decoupled"
-msgstr "它們的生命週期已被完全地 decouple 了"
+#, fuzzy, no-c-format
+msgid ""
+"Alternatively, we may obtain an instance of <literal>TextTranslator</"
+"literal> programmatically from an injected instance of <literal>Instance</"
+"literal>, parameterized with the bean type:"
+msgstr ""
+"我們能夠藉由將注入一個 <literal>TextTranslator</literal> 的 instance 注入 "
+"Web Bean、Servlet 或是 EJB 中來取得這個 instance："
+
+#. Tag: programlisting
+#: intro.xml:140
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Inject Instance<TextTranslator> textTranslatorInstance;\n"
+"...\n"
+"public void translate() {\n"
+"   textTranslatorInstance.get().translate(inputText);\n"
+"}]]>"
+msgstr ""
+"<![CDATA[@Initializer\n"
+"public setTextTranslator(TextTranslator textTranslator) {\n"
+"    this.textTranslator = textTranslator;\n"
+"}]]>"
 
 #. Tag: para
-#: intro.xml:139
+#: intro.xml:142
 #, no-c-format
 msgid ""
-"We can replace one Web Bean with a different Web Bean that implements the "
-"same API and has a different lifecycle (a different scope) without affecting "
-"the other Web Bean implementation. In fact, Web Beans defines a "
-"sophisticated facility for overriding Web Bean implementations at deployment "
-"time, as we will see in <xref linkend=\"deploymenttypes\"/>."
-msgstr "我們能夠在不影響其它 Web Bean 實做的情況下將一個 Web Bean 取代為另一個實做相同 API 並有不同生命週期（不同 scope）的 Web Bean。事實上，Web Bean 可在建置時定義一項用來置換 Web Bean 實做的複雜功能，就如我們將在 <xref linkend=\"deploymenttypes\"/> 中所見。"
+"Notice that it isn't necessary to create a getter or setter method to inject "
+"one bean into another. CDI can access an injected field directly (even if "
+"it's private!), which sometimes helps eliminate some wasteful code. The name "
+"of the field is arbitrary. It's the field's type that determines what is "
+"injected."
+msgstr ""
 
 #. Tag: para
-#: intro.xml:145
-#, no-c-format
+#: intro.xml:148
+#, fuzzy, no-c-format
 msgid ""
-"Note that not all clients of a Web Bean are Web Beans. Other objects such as "
-"Servlets or Message-Driven Beans &#151; which are by nature not injectable, "
-"contextual objects &#151; may also obtain references to Web Beans by injection."
-msgstr "請注意，並非所有 Web Bean 的客戶端都是 Web Bean。像是 Servlet 或訊息導向的 Bean 之類的其它物件 &#151; 無法被注入，並屬於 contextual object &#151; 也能透過注入來取得 Web Bean 的參照。"
-
-#. Tag: para
-#: intro.xml:149
-#, no-c-format
-msgid "Enough hand-waving. More formally, according to the spec:"
-msgstr "根據規格："
-
-#. Tag: para
-#: intro.xml:153
-#, no-c-format
-msgid "A Web Bean comprises:"
-msgstr "Web Bean 包含著："
+"At system initialization time, the container must validate that exactly one "
+"bean exists which satisfies each injection point. In our example, if no "
+"implementation of <literal>Translator</literal> is available&#8212;if the "
+"<literal>SentenceTranslator</literal> EJB was not deployed&#8212;the "
+"container would inform us of an <emphasis>unsatisfied dependency</emphasis>. "
+"If more than one implementation of <literal>Translator</literal> were "
+"available, the container would inform us of the <emphasis>ambiguous "
+"dependency</emphasis>."
+msgstr ""
+"當系統初始化時，Web Bean 管理員必須驗證是否有正好一個滿足所有注入點的 Web "
+"Bean 存在。在我們的範例中，若沒有可用的 <literal>Translator</literal> 實做 "
+"&#151; 若 <literal>SentenceTranslator</literal> EJB 沒有被建置 &#151; Web "
+"Bean 管理員便會回傳一個 <literal>UnsatisfiedDependencyException</literal>。若"
+"有超過一個可使用的 <literal>Translator</literal> 實做，那麼 Web Bean 管理員便"
+"會回傳一個 <literal>AmbiguousDependencyException</literal>。"
 
 #. Tag: para
 #: intro.xml:156
 #, no-c-format
-msgid "A (nonempty) set of API types"
-msgstr "一組（非空的）API 類型（API type）"
-
-#. Tag: para
-#: intro.xml:157
-#, no-c-format
-msgid "A (nonempty) set of binding annotation types"
-msgstr "一組（非空的）綁定標記類型（binding annotation type）"
-
-#. Tag: para
-#: intro.xml:158
-#, no-c-format
-msgid "A scope"
-msgstr "一個 scope"
-
-#. Tag: para
-#: intro.xml:159
-#, no-c-format
-msgid "A deployment type"
-msgstr "一個建置類型（deployment type）"
-
-#. Tag: para
-#: intro.xml:160
-#, no-c-format
-msgid "Optionally, a Web Bean name"
-msgstr "亦可選擇性地包含著一組 Web Bean 名稱"
-
-#. Tag: para
-#: intro.xml:161
-#, no-c-format
-msgid "A set of interceptor binding types"
-msgstr "一組攔截器綁定類型（interceptor binding type）"
-
-#. Tag: para
-#: intro.xml:162
-#, no-c-format
-msgid "A Web Bean implementation"
-msgstr "一個 Web Bean 實做（Web Bean implementation）"
-
-#. Tag: para
-#: intro.xml:167
-#, no-c-format
-msgid "Let's see what some of these terms mean, to the Web Bean developer."
-msgstr "讓我們來看看這些術語對 Web Bean 開發人員來說代表什麼。"
-
-#. Tag: title
-#: intro.xml:170
-#, no-c-format
-msgid "API types, binding types and dependency injection"
-msgstr "API 類型、綁定類型以及依賴注入"
-
-#. Tag: para
-#: intro.xml:172
-#, no-c-format
 msgid ""
-"Web Beans usually acquire references to other Web Beans via dependency "
-"injection. Any injected attribute specifies a \"contract\" that must be "
-"satisfied by the Web Bean to be injected. The contract is:"
-msgstr "Web Bean 通常會透過依賴注入（dependency injection）來取得其它 Web Bean 的參照。任何被注入的屬性都會指定一個「合同（contract）」，該合同必須被 Web Bean 滿足才可被注入。這個合同為："
-
-#. Tag: para
-#: intro.xml:177
-#, no-c-format
-msgid "an API type, together with"
-msgstr "一個 API 類型，以及"
-
-#. Tag: para
-#: intro.xml:178
-#, no-c-format
-msgid "a set of binding types."
-msgstr "一組綁定類型。"
-
-#. Tag: para
-#: intro.xml:181
-#, no-c-format
-msgid ""
-"An API is a user-defined class or interface. (If the Web Bean is an EJB "
-"session bean, the API type is the <literal>@Local</literal> interface or "
-"bean-class local view). A binding type represents some client-visible "
-"semantic that is satisfied by some implementations of the API and not by "
-"others."
-msgstr "API 是個用戶定義的 class 或介面。（若 Web Bean 是個 EJB session bean 的話，那麼 API 類形便是 <literal>@Local</literal> 介面或是 bean-class 的 local view）。綁定類型代表一些客戶端可見的語意，這些語意可藉由一些 API 實做來滿足。"
-
-#. Tag: para
-#: intro.xml:186
-#, no-c-format
-msgid ""
-"Binding types are represented by user-defined annotations that are "
-"themselves annotated <literal>@BindingType</literal>. For example, the "
-"following injection point has API type <literal>PaymentProcessor</literal> "
-"and binding type <literal>@CreditCard</literal>:"
-msgstr "綁定類型是透過用戶定義、本身已被標記為 <literal>@BindingType</literal> 的標記來表示的。比方說，以下注入點含有一個 <literal>PaymentProcessor</literal> API 類型以及 <literal>@CreditCard</literal> 綁定類型："
-
-#. Tag: programlisting
-#: intro.xml:191
-#, no-c-format
-msgid "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
-msgstr "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
-
-#. Tag: para
-#: intro.xml:193
-#, no-c-format
-msgid ""
-"If no binding type is explicitly specified at an injection point, the "
-"default binding type <literal>@Current</literal> is assumed."
-msgstr "若在注入點沒有綁定類型被明確指定的話，那麼預設的綁定類型 <literal>@Current</literal> 就會被假設。"
-
-#. Tag: para
-#: intro.xml:196
-#, no-c-format
-msgid ""
-"For each injection point, the Web Bean manager searches for a Web Bean which "
-"satisfies the contract (implements the API, and has all the binding types), "
-"and injects that Web Bean."
-msgstr "Web Bean 管理員會針對於各個注入點搜尋滿足合同（實做 API 並擁有所有綁定類型）的 Web Bean，然後將該 Web Bean 注入。"
-
-#. Tag: para
-#: intro.xml:200
-#, no-c-format
-msgid ""
-"The following Web Bean has the binding type <literal>@CreditCard</literal> "
-"and implements the API type <literal>PaymentProcessor</literal>. It could "
-"therefore be injected to the example injection point:"
-msgstr "下列 Web Bean 的綁定類型為 <literal>@CreditCard</literal> 並且實做了 <literal>PaymentProcessor</literal> 這個 API 類型。因此它可被注入至範例的注入點中："
-
-#. Tag: programlisting
-#: intro.xml:204
-#, no-c-format
-msgid ""
-"<![CDATA[@CreditCard\n"
-"public class CreditCardPaymentProcessor \n"
-"    implements PaymentProcessor { ... }]]>"
+"Before we get too deep in the details, let's pause and examine a bean's "
+"anatomy. What aspects of the bean are significant, and what gives it its "
+"identity? Instead of just giving examples of beans, we're going to define "
+"what <emphasis>makes</emphasis> something a bean."
 msgstr ""
-"<![CDATA[@CreditCard\n"
-"public class CreditCardPaymentProcessor \n"
-"    implements PaymentProcessor { ... }]]>"
-
-#. Tag: para
-#: intro.xml:206
-#, no-c-format
-msgid ""
-"If a Web Bean does not explicitly specify a set of binding types, it has "
-"exactly one binding type: the default binding type <literal>@Current</"
-"literal>."
-msgstr "若 Web Bean 不明確指定一組綁定類型的話，它便會只有一個綁定類型：也就是預設的綁定類型 <literal>@Current</literal>。"
-
-#. Tag: para
-#: intro.xml:209
-#, no-c-format
-msgid ""
-"Web Beans defines a sophisticated but intuitive <emphasis>resolution "
-"algorithm</emphasis> that helps the container decide what to do if there is "
-"more than one Web Bean that satisfies a particular contract. We'll get into "
-"the details in <xref linkend=\"injection\"/>."
-msgstr "Web Bean 會定義一個複雜不過不難理解的 <emphasis>resolution algorithm（解析運算法）</emphasis>，它可在有超過一個滿足特定合同的 Web Bean 存在的情況下協助 container 決定該怎麼作。我們將在 <xref linkend=\"injection\"/> 中詳細討論。"
-
-#. Tag: title
-#: intro.xml:217
-#, no-c-format
-msgid "Deployment types"
-msgstr "建置類型（Deployment type）"
-
-#. Tag: para
-#: intro.xml:219
-#, no-c-format
-msgid ""
-"<emphasis>Deployment types</emphasis> let us classify our Web Beans by "
-"deployment scenario. A deployment type is an annotation that represents a "
-"particular deployment scenario, for example <literal>@Mock</literal>, "
-"<literal>@Staging</literal> or <literal>@AustralianTaxLaw</literal>. We "
-"apply the annotation to Web Beans which should be deployed in that scenario. "
-"A deployment type allows a whole set of Web Beans to be conditionally "
-"deployed, with a just single line of configuration."
-msgstr "<emphasis>Deployment type</emphasis> 可讓我們透過建置方案（deployment scenario）來為我們的 Web Bean 歸類。建置類型是個表示特定建置方案的標記，例如 <literal>@Mock</literal>、<literal>@Staging</literal> 或 <literal>@AustralianTaxLaw</literal>。我們會將標記套用至應透過該方案來建置的 Web Bean 中。建置類型能透過單行的配置來允許整組 Web Bean 被條件性地建置。"
-
-#. Tag: para
-#: intro.xml:226
-#, no-c-format
-msgid ""
-"Many Web Beans just use the default deployment type <literal>@Production</"
-"literal>, in which case no deployment type need be explicitly specified. All "
-"three Web Bean in our example have the deployment type <literal>@Production</"
-"literal>."
-msgstr "許多 Web Bean 只使用預設的建置類型 <literal>@Production</literal>，在此情況下無須明確地指定建置類型。我們範例中的所有三個 Web Bean 都擁有 <literal>@Production</literal> 這個建置類型。"
-
-#. Tag: para
-#: intro.xml:230
-#, no-c-format
-msgid ""
-"In a testing environment, we might want to replace the "
-"<literal>SentenceTranslator</literal> Web Bean with a \"mock object\":"
-msgstr "在測試環境中，我們可能會希望將 <literal>SentenceTranslator</literal> 這個 Web Bean 替換為一個「mock 物件」："
-
-#. Tag: programlisting
-#: intro.xml:233
-#, no-c-format
-msgid ""
-"<![CDATA[@Mock\n"
-"public class MockSentenceTranslator implements Translator {\n"
-"    public String translate(String sentence) {\n"
-"        return \"Lorem ipsum dolor sit amet\";\n"
-"    }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Mock\n"
-"public class MockSentenceTranslator implements Translator {\n"
-"    public String translate(String sentence) {\n"
-"        return \"Lorem ipsum dolor sit amet\";\n"
-"    }\n"
-"}]]>"
-
-#. Tag: para
-#: intro.xml:236
-#, no-c-format
-msgid ""
-"We would enable the deployment type <literal>@Mock</literal> in our testing "
-"environment, to indicate that <literal>MockSentenceTranslator</literal> and "
-"any other Web Bean annotated <literal>@Mock</literal> should be used."
-msgstr "我們將在測試環境中啟用 <literal>@Mock</literal> 這個 deployment type 來表示 <literal>MockSentenceTranslator</literal> 以及任何其它被標記為 <literal>@Mock</literal> 的 Web Bean 都應該被使用。"
-
-#. Tag: para
-#: intro.xml:240
-#, no-c-format
-msgid ""
-"We'll talk more about this unique and powerful feature in <xref linkend="
-"\"deploymenttypes\"/>."
-msgstr "我們將在 <xref linkend=\"deploymenttypes\"/> 中更詳細地討論到這項獨特和強大的功能。"
-
-#. Tag: title
-#: intro.xml:246
-#, no-c-format
-msgid "Scope"
-msgstr "Scope"
-
-#. Tag: para
-#: intro.xml:248
-#, no-c-format
-msgid ""
-"The <emphasis>scope</emphasis> defines the lifecycle and visibility of "
-"instances of the Web Bean. The Web Beans context model is extensible, "
-"accommodating arbitrary scopes. However, certain important scopes are built-"
-"in to the specification, and provided by the Web Bean manager. A scope is "
-"represented by an annotation type."
-msgstr "<emphasis>Scope</emphasis> 定義了 Web Bean instance 的生命週期以及可見度。Web Bean 的 context model 可延伸、並能包容任意的 scope。不過，有些重要的特定 scope 則會被內建在 Web Bean 規格中，並透過 Web Bean 管理員來提供。Scope 是以一個標記類型來表示的。"
-
-#. Tag: para
-#: intro.xml:254
-#, no-c-format
-msgid ""
-"For example, any web application may have <emphasis>session scoped</"
-"emphasis> Web Beans:"
-msgstr "比方說，任何網站應用程式都能夠有 <emphasis>session scoped</emphasis> 的 Web Bean："
-
-#. Tag: programlisting
-#: intro.xml:257
-#, no-c-format
-msgid ""
-"<![CDATA[@SessionScoped\n"
-"public class ShoppingCart { ... }]]>"
-msgstr ""
-"<![CDATA[@SessionScoped\n"
-"public class ShoppingCart { ... }]]>"
-
-#. Tag: para
-#: intro.xml:259
-#, no-c-format
-msgid ""
-"An instance of a session scoped Web Bean is bound to a user session and is "
-"shared by all requests that execute in the context of that session."
-msgstr "一個 session scoped 的 Web Bean 的 instance 會被綁定至一個用戶的 session，並且會被所有執行於該 session 的 context 中的請求共享。"
-
-#. Tag: para
-#: intro.xml:262
-#, no-c-format
-msgid ""
-"By default, Web Beans belong to a special scope called the "
-"<emphasis>dependent pseudo-scope</emphasis>. Web Beans with this scope are "
-"pure dependent objects of the object into which they are injected, and their "
-"lifecycle is bound to the lifecycle of that object."
-msgstr "就預設值，Web Bean 屬於一個稱為 <emphasis>dependent pseudo-scope</emphasis> 的特殊 scope。含有這個 scope 的 Web Bean 純粹就是它們所被注入的物件的相依物件，並且它們的生命週期綁定至該物件的生命週期。"
-
-#. Tag: para
-#: intro.xml:267
-#, no-c-format
-msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
-msgstr "我們將在 <xref linkend=\"scopescontexts\"/> 中詳細討論 scope。"
-
-#. Tag: title
-#: intro.xml:272
-#, no-c-format
-msgid "Web Bean names and Unified EL"
-msgstr "Web Bean 名稱和 Unified EL"
-
-#. Tag: para
-#: intro.xml:274
-#, no-c-format
-msgid ""
-"A Web Bean may have a <emphasis>name</emphasis>, allowing it to be used in "
-"Unified EL expressions. It's easy to specify the name of a Web Bean:"
-msgstr "Web Bean 能夠擁有一個<emphasis>名稱</emphasis>，這能允許它被使用於 Unified EL 表示式中。要指定 Web Bean 的名稱相當容易："
-
-#. Tag: programlisting
-#: intro.xml:278
-#, no-c-format
-msgid ""
-"<![CDATA[@SessionScoped @Named(\"cart\")\n"
-"public class ShoppingCart { ... }]]>"
-msgstr ""
-"<![CDATA[@SessionScoped @Named(\"cart\")\n"
-"public class ShoppingCart { ... }]]>"
-
-#. Tag: para
-#: intro.xml:280
-#, no-c-format
-msgid "Now we can easily use the Web Bean in any JSF or JSP page:"
-msgstr "現在我們能輕易地在任何 JSF 或 JSP 網頁中使用 Web Bean："
-
-#. Tag: programlisting
-#: intro.xml:282
-#, no-c-format
-msgid ""
-"<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
-"    ....\n"
-"</h:dataTable>]]>"
-msgstr ""
-"<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
-"    ....\n"
-"</h:dataTable>]]>"
-
-#. Tag: para
-#: intro.xml:284
-#, no-c-format
-msgid "It's even easier to just let the name be defaulted by the Web Bean manager:"
-msgstr "讓 Web Bean 管理員來預設這個名稱可能會更加容易："
-
-#. Tag: programlisting
-#: intro.xml:287
-#, no-c-format
-msgid ""
-"<![CDATA[@SessionScoped @Named\n"
-"public class ShoppingCart { ... }]]>"
-msgstr ""
-"<![CDATA[@SessionScoped @Named\n"
-"public class ShoppingCart { ... }]]>"
-
-#. Tag: para
-#: intro.xml:289
-#, no-c-format
-msgid ""
-"In this case, the name defaults to <literal>shoppingCart</literal> &#151; the "
-"unqualified class name, with the first character changed to lowercase."
-msgstr "在此情況下，名稱將被預設為 <literal>shoppingCart</literal> &#151; 這是個不完整的 class 名稱，並且第一個字元已被改變為小寫。"
-
-#. Tag: title
-#: intro.xml:295
-#, no-c-format
-msgid "Interceptor binding types"
-msgstr "攔截器綁定類型"
-
-#. Tag: para
-#: intro.xml:297
-#, no-c-format
-msgid ""
-"Web Beans supports the interceptor functionality defined by EJB 3, not only "
-"for EJB beans, but also for plain Java classes. In addition, Web Beans "
-"provides a new approach to binding interceptors to EJB beans and other Web "
-"Beans."
-msgstr "Web Bean 支援 EJB 3 所定義的攔截器功能，不只是 EJB bean 支援，純 Java 的 class 也支援。另外，Web Bean 也提供了一個新的方法來將攔截器綁定至 EJB bean 和其它的 Web Bean。"
-
-#. Tag: para
-#: intro.xml:302
-#, no-c-format
-msgid ""
-"It remains possible to directly specify the interceptor class via use of the "
-"<literal>@Interceptors</literal> annotation:"
-msgstr "您也能直接地透過使用 <literal>@Interceptors</literal> 標記來指定攔截器（interceptor）class："
-
-#. Tag: programlisting
-#: intro.xml:305
-#, no-c-format
-msgid ""
-"<![CDATA[@SessionScoped \n"
-"@Interceptors(TransactionInterceptor.class)\n"
-"public class ShoppingCart { ... }]]>"
-msgstr ""
-"<![CDATA[@SessionScoped \n"
-"@Interceptors(TransactionInterceptor.class)\n"
-"public class ShoppingCart { ... }]]>"
-
-#. Tag: para
-#: intro.xml:307
-#, no-c-format
-msgid ""
-"However, it is more elegant, and better practice, to indirect the "
-"interceptor binding through an <emphasis>interceptor binding type</emphasis>:"
-msgstr "不過，透過 <emphasis>interceptor binding type（攔截器綁定類型）</emphasis>來將攔截器綁定重定向會是較好的作法："
-
-#. Tag: programlisting
-#: intro.xml:311
-#, no-c-format
-msgid ""
-"<![CDATA[@SessionScoped @Transactional\n"
-"public class ShoppingCart { ... }]]>"
-msgstr ""
-"<![CDATA[@SessionScoped @Transactional\n"
-"public class ShoppingCart { ... }]]>"
-
-#. Tag: para
-#: intro.xml:313
-#, no-c-format
-msgid ""
-"We'll discuss Web Beans interceptors and decorators in <xref linkend="
-"\"interceptors\"/> and <xref linkend=\"decorators\"/>."
-msgstr "我們將在 <xref linkend=\"interceptors\"/> 和 <xref linkend=\"decorators\"/> 中更詳細地討論 Web Bean 攔截器與裝飾器。"
-
-#. Tag: title
-#: intro.xml:321
-#, no-c-format
-msgid "What kinds of objects can be Web Beans?"
-msgstr "哪種物件屬於 Web Bean？"
-
-#. Tag: para
-#: intro.xml:323
-#, no-c-format
-msgid ""
-"We've already seen that JavaBeans, EJBs and some other Java classes can be "
-"Web Beans. But exactly what kinds of objects are Web Beans?"
-msgstr "我們已經看過 JavaBean、EJB 和一些其它的 Java class 都能屬於 Web Bean。不過 Web Bean 到底是哪種物件呢？"
-
-#. Tag: title
-#: intro.xml:327
-#, no-c-format
-msgid "Simple Web Beans"
-msgstr "基本的 Web Bean"
-
-#. Tag: para
-#: intro.xml:329
-#, no-c-format
-msgid ""
-"The Web Beans specification says that a concrete Java class is a "
-"<emphasis>simple</emphasis> Web Bean if:"
-msgstr "Web Bean 規格談到了一個具備下列條件的具體 Java class 就是個 <emphasis>simple（基本）</emphasis>Web Bean："
-
-#. Tag: para
-#: intro.xml:334
-#, no-c-format
-msgid ""
-"it is not an EE container-managed component, like an EJB, a Servlet or a JPA "
-"entity,"
-msgstr "它不像 EJB、Servlet 或 JPA 實體都是個 EE container 所管理的元件、"
-
-#. Tag: para
-#: intro.xml:338
-#, no-c-format
-msgid "it is not a non-static static inner class,"
-msgstr "它不是個非靜態的靜態內部類別（static inner class）、"
-
-#. Tag: para
-#: intro.xml:341
-#, no-c-format
-msgid "it is not a parameterized type, and"
-msgstr "它不是個被參數化的類型，並且"
-
-#. Tag: para
-#: intro.xml:344
-#, no-c-format
-msgid ""
-"it has a constructor with no parameters, or a constructor annotated "
-"<literal>@Initializer</literal>."
-msgstr "它有個無參數的 constructor，或一個標記為 <literal>@Initializer</literal> 的 constructor。"
-
-#. Tag: para
-#: intro.xml:349
-#, no-c-format
-msgid "Thus, almost every JavaBean is a simple Web Bean."
-msgstr "因此，幾乎所有 JavaBean 都屬於基本的 Web Bean。"
-
-#. Tag: para
-#: intro.xml:351
-#, no-c-format
-msgid ""
-"Every interface implemented directly or indirectly by a simple Web Bean is "
-"an API type of the simple Web Bean. The class and its superclasses are also "
-"API types."
-msgstr "基本 Web Bean 所直接或間接實做的所有介面都屬於基本 Web Bean 的 API 類型。Class 和它的 superclass 也都屬於 API 類型。"
-
-#. Tag: title
-#: intro.xml:358
-#, no-c-format
-msgid "Enterprise Web Beans"
-msgstr "企業級的 Web Bean"
-
-#. Tag: para
-#: intro.xml:360
-#, no-c-format
-msgid ""
-"The specification says that all EJB 3-style session and singleton beans are "
-"<emphasis>enterprise</emphasis> Web Beans. Message driven beans are not Web "
-"Beans &#151; since they are not intended to be injected into other "
-"objects &#151; but they can take advantage of most of the functionality of Web "
-"Beans, including dependency injection and interceptors."
-msgstr "Web Bean 的規格顯示了所有 EJB 3 類型的 session 和 singleton 的 bean 都屬於<emphasis>企業級</emphasis>的 Web Bean。訊息導向的 bean 則不屬於 Web Bean &#151; 因為它們不會被注入其它的物件中 &#151; 不過它們能夠有效利用 Web Bean 大部分的功能，這包括依賴注入（dependency injection）以及攔截器（interceptor）。"
-
-#. Tag: para
-#: intro.xml:366
-#, no-c-format
-msgid ""
-"Every local interface of an enterprise Web Bean that does not have a "
-"wildcard type parameter or type variable, and every one of its "
-"superinterfaces, is an API type of the enterprise Web Bean. If the EJB bean "
-"has a bean class local view, the bean class, and every one of its "
-"superclasses, is also an API type."
-msgstr "所有沒有 wildcard 類型參數或是類型變數的企業級 Web Bean 的本地介面以及它所有的 superinterface 都屬於企業級 Web Bean 的 API 類型。若 EJB bean 有個 bean class local view 的話，那麼這個 bean class 以及它所有的 superclass 也都會是個 API 類型。"
-
-#. Tag: para
-#: intro.xml:372
-#, no-c-format
-msgid ""
-"Stateful session beans should declare a remove method with no parameters or "
-"a remove method annotated <literal>@Destructor</literal>. The Web Bean "
-"manager calls this method to destroy the stateful session bean instance at "
-"the end of its lifecycle. This method is called the <emphasis>destructor</"
-"emphasis> method of the enterprise Web Bean."
-msgstr "有狀態的 session bean 應宣告一個無參數的 remove method 或是一個標記為 <literal>@Destructor</literal> 的 remove method。Web Bean 管理員會調用這個 method 來在它的生命週期結束時刪除有狀態的 session bean instance。這個 method 亦稱為企業級 Web Bean 的 <emphasis>destructor</emphasis> method。"
-
-#. Tag: programlisting
-#: intro.xml:378
-#, no-c-format
-msgid ""
-"<![CDATA[@Stateful @SessionScoped\n"
-"public class ShoppingCart {\n"
-"\n"
-"    ...\n"
-"    \n"
-"    @Remove\n"
-"    public void destroy() {}\n"
-"\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Stateful @SessionScoped\n"
-"public class ShoppingCart {\n"
-"\n"
-"    ...\n"
-"    \n"
-"    @Remove\n"
-"    public void destroy() {}\n"
-"\n"
-"}]]>"
-
-#. Tag: para
-#: intro.xml:380
-#, no-c-format
-msgid ""
-"So when should we use an enterprise Web Bean instead of a simple Web Bean? "
-"Well, whenever we need the advanced enterprise services offered by EJB, such "
-"as:"
-msgstr "所以我們該何時使用企業級的 Web Bean 何時使用基本 Web Bean 呢？每當我們需要 EJB 所提供的進階企業級服務時，例如："
-
-#. Tag: para
-#: intro.xml:387
-#, no-c-format
-msgid "method-level transaction management and security,"
-msgstr "method 層級的交易管理與安全性、"
-
-#. Tag: para
-#: intro.xml:390
-#, no-c-format
-msgid "concurrency management,"
-msgstr "並行管理（concurrency management）、"
-
-#. Tag: para
-#: intro.xml:393
-#, no-c-format
-msgid ""
-"instance-level passivation for stateful session beans and instance-pooling "
-"for stateless session beans,"
-msgstr "有狀態的 session bean 的 instance 層級的 passivation 以及無狀態 session bean 的類別儲備（instance-pooling）、"
-
-#. Tag: para
-#: intro.xml:397
-#, no-c-format
-msgid "remote and web service invocation, and"
-msgstr "遠端和網站服務調用，以及"
-
-#. Tag: para
-#: intro.xml:400
-#, no-c-format
-msgid "timers and asynchronous methods,"
-msgstr "計時器與非同步的 method，"
-
-#. Tag: para
-#: intro.xml:404
-#, no-c-format
-msgid ""
-"we should use an enterprise Web Bean. When we don't need any of these "
-"things, a simple Web Bean will serve just fine."
-msgstr "當需要以上服務時我們便應使用企業級的 Web Bean。當我們不需要任何的這些服務時，使用基本的 Web Bean 即可。"
-
-#. Tag: para
-#: intro.xml:407
-#, no-c-format
-msgid ""
-"Many Web Beans (including any session or application scoped Web Bean) are "
-"available for concurrent access. Therefore, the concurrency management "
-"provided by EJB 3.1 is especially useful. Most session and application "
-"scoped Web Beans should be EJBs."
-msgstr "許多 Web Bean（包括任何 session 或 application scoped 的 Web Bean）都能被並行存取（concurrent access）。因此，EJB 3.1 所提供的並行管理（concurrency management）特別地有幫助。大部分的 session 和 application scoped 的 Web Bean 都應屬於 EJB。"
-
-#. Tag: para
-#: intro.xml:412
-#, no-c-format
-msgid ""
-"Web Beans which hold references to heavy-weight resources, or hold a lot of "
-"internal state benefit from the advanced container-managed lifecycle defined "
-"by the EJB <literal>@Stateless</literal>/<literal>@Stateful</literal>/"
-"<literal>@Singleton</literal> model, with its support for passivation and "
-"instance pooling."
-msgstr "持有重量級資源之參照或持有許多內部狀態的 Web Bean 皆可受益于支援 passivation 和類別儲備的 EJB <literal>@Stateless</literal>/<literal>@Stateful</literal>/<literal>@Singleton</literal> 模型所定義並由進階 container 所管理的生命週期。"
-
-#. Tag: para
-#: intro.xml:417
-#, no-c-format
-msgid ""
-"Finally, it's usually obvious when method-level transaction management, "
-"method-level security, timers, remote methods or asynchronous methods are "
-"needed."
-msgstr "最後，一般來講，何時需要使用到 method 層級的交易性管理、method 層級的安全性、計時器、遠端 method 或是非同步的 method 其實都是非常顯而易見的。"
-
-#. Tag: para
-#: intro.xml:420
-#, no-c-format
-msgid ""
-"It's usually easy to start with simple Web Bean, and then turn it into an "
-"EJB, just by adding an annotation: <literal>@Stateless</literal>, "
-"<literal>@Stateful</literal> or <literal>@Singleton</literal>."
-msgstr "通常從基本的 Web Bean 開始會較容易，然後只要再透過附加一個 <literal>@Stateless</literal>、<literal>@Stateful</literal> 或是 <literal>@Singleton</literal> 標記來將它轉換為一個 EJB 即可。"
-
-#. Tag: title
-#: intro.xml:427
-#, no-c-format
-msgid "Producer methods"
-msgstr "Producer method"
-
-#. Tag: para
-#: intro.xml:429
-#, no-c-format
-msgid ""
-"A <emphasis>producer method</emphasis> is a method that is called by the Web "
-"Bean manager to obtain an instance of the Web Bean when no instance exists "
-"in the current context. A producer method lets the application take full "
-"control of the instantiation process, instead of leaving instantiation to "
-"the Web Bean manager. For example:"
-msgstr "<emphasis>producer method</emphasis> 是個當目前 context 中沒有 instance 時會被 Web Bean 管理員調用來取得 Web Bean instance 的一個 method。Producer method 能讓應用程式完全掌控例示（instantiation）的程序，而不是留給 Web Bean 管理員去進行。例如："
-
-#. Tag: programlisting
-#: intro.xml:435
-#, no-c-format
-msgid ""
-"<![CDATA[@ApplicationScoped\n"
-"public class Generator {\n"
-"\n"
-"    private Random random = new Random( System.currentTimeMillis() );\n"
-"    \n"
-"    @Produces @Random int next() {\n"
-"        return random.nextInt(100);\n"
-"    }\n"
-"\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@ApplicationScoped\n"
-"public class Generator {\n"
-"\n"
-"    private Random random = new Random( System.currentTimeMillis() );\n"
-"    \n"
-"    @Produces @Random int next() {\n"
-"        return random.nextInt(100);\n"
-"    }\n"
-"\n"
-"}]]>"
-
-#. Tag: para
-#: intro.xml:437
-#, no-c-format
-msgid "The result of a producer method is injected just like any other Web Bean."
-msgstr "producer method 的結果會和其它任何 Web Bean 一樣地被注入。"
-
-#. Tag: programlisting
-#: intro.xml:439
-#, no-c-format
-msgid "<![CDATA[@Random int randomNumber]]>"
-msgstr "<![CDATA[@Random int randomNumber]]>"
-
-#. Tag: para
-#: intro.xml:441
-#, no-c-format
-msgid ""
-"The method return type and all interfaces it extends/implements directly or "
-"indirectly are API types of the producer method. If the return type is a "
-"class, all superclasses are also API types."
-msgstr "method 的回傳類型以及它所直接或間接延伸/實做的介面皆為 producer method 的 API 類型。若回傳的類型是個 class 的話，那麼所有的 superclass 也都會是 API 類型。"
-
-#. Tag: para
-#: intro.xml:445
-#, no-c-format
-msgid "Some producer methods return objects that require explicit destruction:"
-msgstr "有些 producer method 會回傳需要明確銷毀的物件："
-
-#. Tag: programlisting
-#: intro.xml:447
-#, no-c-format
-msgid ""
-"<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
-"    return createConnection( user.getId(), user.getPassword() );\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
-"    return createConnection( user.getId(), user.getPassword() );\n"
-"}]]>"
-
-#. Tag: para
-#: intro.xml:449
-#, no-c-format
-msgid ""
-"These producer methods may define matching <emphasis>disposal methods</"
-"emphasis>:"
-msgstr "這些 producer method 可定義符合的 <emphasis>disposal methods</emphasis>："
-
-#. Tag: programlisting
-#: intro.xml:451
-#, no-c-format
-msgid ""
-"<![CDATA[void close(@Disposes Connection connection) {\n"
-"    connection.close();\n"
-"}]]>"
-msgstr ""
-"<![CDATA[void close(@Disposes Connection connection) {\n"
-"    connection.close();\n"
-"}]]>"
-
-#. Tag: para
-#: intro.xml:453
-#, no-c-format
-msgid ""
-"This disposal method is called automatically by the Web Bean manager at the "
-"end of the request."
-msgstr "這個 disposal method 會在請求結束後自動地被 Web Bean 管理員調用。"
-
-#. Tag: para
-#: intro.xml:456
-#, no-c-format
-msgid ""
-"We'll talk much more about producer methods in <xref linkend="
-"\"producermethods\"/>."
-msgstr "我們將在 <xref linkend=\"producermethods\"/> 中詳細討論 producer method。"
-
-#. Tag: title
-#: intro.xml:461
-#, no-c-format
-msgid "JMS endpoints"
-msgstr "JMS 端點（endpoints）"
-
-#. Tag: para
-#: intro.xml:463
-#, no-c-format
-msgid ""
-"Finally, a JMS queue or topic can be a Web Bean. Web Beans relieves the "
-"developer from the tedium of managing the lifecycles of all the various JMS "
-"objects required to send messages to queues and topics. We'll discuss JMS "
-"endpoints in <xref linkend=\"jms\"/>."
-msgstr "最後，JMS 佇列（queue）或主題（topic）都能是個 Web Bean。Web Bean 能讓開發人員省去管理所有傳送訊息至佇列和主題所需的不同 JMS 物件生命週期的麻煩。我們將在 <xref linkend=\"jms\"/> 中詳細討論 JMS 端點。"
 
+#~ msgid "Getting started with Web Beans"
+#~ msgstr "開始使用 Web Bean"
+
+#~ msgid "Your first Web Bean"
+#~ msgstr "您的第一個 Web Bean"
+
+#~ msgid ""
+#~ "With certain, very special exceptions, every Java class with a "
+#~ "constructor that accepts no parameters is a Web Bean. That includes every "
+#~ "JavaBean. Furthermore, every EJB 3-style session bean is a Web Bean. "
+#~ "Sure, the JavaBeans and EJBs you've been writing every day have not been "
+#~ "able to take advantage of the new services defined by the Web Beans "
+#~ "specification, but you'll be able to use every one of them as Web Beans "
+#~ "&#151; injecting them into other Web Beans, configuring them via the Web "
+#~ "Beans XML configuration facility, even adding interceptors and decorators "
+#~ "to them &#151; without touching your existing code."
+#~ msgstr ""
+#~ "我們能夠很明確地告訴您，在絕大部分的情況下，所有含有不接受參數的 "
+#~ "constructor 的 java class 都是個 Web Bean。這包含了所有的 JavaBean。另外，"
+#~ "所有 EJB 3-style 的 session bean 也都屬於 Web Bean。當然，您先前所編寫的 "
+#~ "JavaBean 和 EJB 皆無法有效利用 Web Bean 規格所定義的新服務，不過您卻可將它"
+#~ "們全部作為 Web Bean 來使用 &#151; 將它們注入其它 Web Bean 中，透過 Web "
+#~ "Bean XML 配置功能來配置它們，甚至是加入攔截器（interceptor）與裝飾器"
+#~ "（decorator） &#151; 無須變動到您現有的程式碼。"
+
+#~ msgid ""
+#~ "Alternatively, we may obtain an instance by directly calling a method of "
+#~ "the Web Bean manager:"
+#~ msgstr ""
+#~ "另外，我們也可藉由直接調用 Web Bean 管理員的一個 method 來取得一個 "
+#~ "instance："
+
+#~ msgid ""
+#~ "<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator."
+#~ "class);]]>"
+#~ msgstr ""
+#~ "<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator."
+#~ "class);]]>"
+
+#~ msgid "So what, <emphasis>exactly</emphasis>, is a Web Bean?"
+#~ msgstr "所以 Web Bean <emphasis>到底</emphasis>是什麼？"
+
+#~ msgid ""
+#~ "A Web Bean is an application class that contains business logic. A Web "
+#~ "Bean may be called directly from Java code, or it may be invoked via "
+#~ "Unified EL. A Web Bean may access transactional resources. Dependencies "
+#~ "between Web Beans are managed automatically by the Web Bean manager. Most "
+#~ "Web Beans are <emphasis>stateful</emphasis> and <emphasis>contextual</"
+#~ "emphasis>. The lifecycle of a Web Bean is always managed by the Web Bean "
+#~ "manager."
+#~ msgstr ""
+#~ "Web Bean 是個包含了商業邏輯的應用程式 class。Web Bean 可由 Java 程式碼被直"
+#~ "接地調用，或是它亦可透過 Unified EL 來引動。Web Bean 可存取交易性的資源。"
+#~ "Web Bean 之間的相依性是透過 Web Bean 管理員來自動管理的。大部分的 Web "
+#~ "Bean 都屬於 <emphasis>stateful（有狀態）</emphasis> 和 "
+#~ "<emphasis>contextual（語意式）</emphasis> 的。Web Bean 的生命週期"
+#~ "（lifecycle）總是透過 Web Bean 管理員來管理的。"
+
+#~ msgid ""
+#~ "Let's back up a second. What does it really mean to be \"contextual\"? "
+#~ "Since Web Beans may be stateful, it matters <emphasis>which</emphasis> "
+#~ "bean instance I have. Unlike a stateless component model (for example, "
+#~ "stateless session beans) or a singleton component model (such as "
+#~ "servlets, or singleton beans), different clients of a Web Bean see the "
+#~ "Web Bean in different states. The client-visible state depends upon which "
+#~ "instance of the Web Bean the client has a reference to."
+#~ msgstr ""
+#~ "讓我們向後看，「contextual（語意式）」到底代表什麼意思？因為 Web Bean 能夠"
+#~ "是有狀態的，而最重要的是我們有<emphasis>哪個</emphasis> bean instance。和"
+#~ "無狀態的元件模型（例如無狀態的 session bean）或單元件模型（例如 servlet 或"
+#~ "是單獨的 bean）不同的是，對於不同的 Web Bean 客戶端而言，它們會看見不同狀"
+#~ "態的 Web Bean。客戶端可看見的狀態基於客戶端參照的是 Web Bean 的哪個 "
+#~ "instance。"
+
+#~ msgid ""
+#~ "However, like a stateless or singleton model, but <emphasis>unlike</"
+#~ "emphasis> stateful session beans, the client does not control the "
+#~ "lifecycle of the instance by explicitly creating and destroying it. "
+#~ "Instead, the <emphasis>scope</emphasis> of the Web Bean determines:"
+#~ msgstr ""
+#~ "不過，就和無狀態或是單獨的模型一樣，並與有狀態的 session bean <emphasis>不"
+#~ "同</emphasis>，客戶端無法藉由明確建立和刪除 instance 來控制 instance 的生"
+#~ "命週期。反之，Web Bean 的 <emphasis>scope</emphasis> 可決定："
+
+#~ msgid "the lifecycle of each instance of the Web Bean and"
+#~ msgstr "Web Bean 的各個 instance 的生命週期以及"
+
+#~ msgid ""
+#~ "which clients share a reference to a particular instance of the Web Bean."
+#~ msgstr "哪些客戶端共享 Web Bean 的特定 instance 的參照。"
+
+#~ msgid ""
+#~ "For a given thread in a Web Beans application, there may be an "
+#~ "<emphasis>active context</emphasis> associated with the scope of the Web "
+#~ "Bean. This context may be unique to the thread (for example, if the Web "
+#~ "Bean is request scoped), or it may be shared with certain other threads "
+#~ "(for example, if the Web Bean is session scoped) or even all other "
+#~ "threads (if it is application scoped)."
+#~ msgstr ""
+#~ "Web Bean 應用程式中的某個執行緒可能會有個和該 Web Bean 的 scope 關聯的 "
+#~ "<emphasis>active context</emphasis>。這個 context 對於執行緒來說可能會是獨"
+#~ "一無二的（例如，若 Web Bean 為 request scoped 的話），或是它亦有可能共享於"
+#~ "其它特定執行緒之間（例如，若 Web Bean 為 session scoped 的話）或甚至是共享"
+#~ "於所有其它執行緒之間（若它是 application scoped 的話）。"
+
+#~ msgid ""
+#~ "Clients (for example, other Web Beans) executing in the same context will "
+#~ "see the same instance of the Web Bean. But clients in a different context "
+#~ "will see a different instance."
+#~ msgstr ""
+#~ "相同 context 的客戶端（例如其它 Web Bean）將會看見相同的 Web Bean "
+#~ "instance。不過不同 context 的客戶端則會看見不同的 instance。"
+
+#~ msgid ""
+#~ "One great advantage of the contextual model is that it allows stateful "
+#~ "Web Beans to be treated like services! The client need not concern itself "
+#~ "with managing the lifecycle of the Web Bean it is using, <emphasis>nor "
+#~ "does it even need to know what that lifecyle is.</emphasis> Web Beans "
+#~ "interact by passing messages, and the Web Bean implementations define the "
+#~ "lifecycle of their own state. The Web Beans are loosely coupled because:"
+#~ msgstr ""
+#~ "Contextual model 的其中一個主要優點就是它允許有狀態的 Web Bean 能被視為是"
+#~ "一項服務！客戶端不需要擔心如何管理它所使用的 Web Bean 的生命週期，"
+#~ "<emphasis>它甚至不需要知道這個生命週期為何。</emphasis>Web Bean 會透過傳送"
+#~ "訊息來進行互動，並且 Web Bean 的實做也能定義它們自己的狀態的生命週期。Web "
+#~ "Bean 為鬆散耦合（loosely coupled）的，因為："
+
+#~ msgid "they interact via well-defined public APIs"
+#~ msgstr "它們透過了定義明確的公用 API 來進行互動"
+
+#~ msgid "their lifecycles are completely decoupled"
+#~ msgstr "它們的生命週期已被完全地 decouple 了"
+
+#~ msgid ""
+#~ "We can replace one Web Bean with a different Web Bean that implements the "
+#~ "same API and has a different lifecycle (a different scope) without "
+#~ "affecting the other Web Bean implementation. In fact, Web Beans defines a "
+#~ "sophisticated facility for overriding Web Bean implementations at "
+#~ "deployment time, as we will see in <xref linkend=\"deploymenttypes\"/>."
+#~ msgstr ""
+#~ "我們能夠在不影響其它 Web Bean 實做的情況下將一個 Web Bean 取代為另一個實做"
+#~ "相同 API 並有不同生命週期（不同 scope）的 Web Bean。事實上，Web Bean 可在"
+#~ "建置時定義一項用來置換 Web Bean 實做的複雜功能，就如我們將在 <xref "
+#~ "linkend=\"deploymenttypes\"/> 中所見。"
+
+#~ msgid ""
+#~ "Note that not all clients of a Web Bean are Web Beans. Other objects such "
+#~ "as Servlets or Message-Driven Beans &#151; which are by nature not "
+#~ "injectable, contextual objects &#151; may also obtain references to Web "
+#~ "Beans by injection."
+#~ msgstr ""
+#~ "請注意，並非所有 Web Bean 的客戶端都是 Web Bean。像是 Servlet 或訊息導向"
+#~ "的 Bean 之類的其它物件 &#151; 無法被注入，並屬於 contextual object &#151; "
+#~ "也能透過注入來取得 Web Bean 的參照。"
+
+#~ msgid "Enough hand-waving. More formally, according to the spec:"
+#~ msgstr "根據規格："
+
+#~ msgid "A Web Bean comprises:"
+#~ msgstr "Web Bean 包含著："
+
+#~ msgid "A (nonempty) set of API types"
+#~ msgstr "一組（非空的）API 類型（API type）"
+
+#~ msgid "A (nonempty) set of binding annotation types"
+#~ msgstr "一組（非空的）綁定標記類型（binding annotation type）"
+
+#~ msgid "A scope"
+#~ msgstr "一個 scope"
+
+#~ msgid "A deployment type"
+#~ msgstr "一個建置類型（deployment type）"
+
+#~ msgid "Optionally, a Web Bean name"
+#~ msgstr "亦可選擇性地包含著一組 Web Bean 名稱"
+
+#~ msgid "A set of interceptor binding types"
+#~ msgstr "一組攔截器綁定類型（interceptor binding type）"
+
+#~ msgid "A Web Bean implementation"
+#~ msgstr "一個 Web Bean 實做（Web Bean implementation）"
+
+#~ msgid "Let's see what some of these terms mean, to the Web Bean developer."
+#~ msgstr "讓我們來看看這些術語對 Web Bean 開發人員來說代表什麼。"
+
+#~ msgid "API types, binding types and dependency injection"
+#~ msgstr "API 類型、綁定類型以及依賴注入"
+
+#~ msgid ""
+#~ "Web Beans usually acquire references to other Web Beans via dependency "
+#~ "injection. Any injected attribute specifies a \"contract\" that must be "
+#~ "satisfied by the Web Bean to be injected. The contract is:"
+#~ msgstr ""
+#~ "Web Bean 通常會透過依賴注入（dependency injection）來取得其它 Web Bean 的"
+#~ "參照。任何被注入的屬性都會指定一個「合同（contract）」，該合同必須被 Web "
+#~ "Bean 滿足才可被注入。這個合同為："
+
+#~ msgid "an API type, together with"
+#~ msgstr "一個 API 類型，以及"
+
+#~ msgid "a set of binding types."
+#~ msgstr "一組綁定類型。"
+
+#~ msgid ""
+#~ "An API is a user-defined class or interface. (If the Web Bean is an EJB "
+#~ "session bean, the API type is the <literal>@Local</literal> interface or "
+#~ "bean-class local view). A binding type represents some client-visible "
+#~ "semantic that is satisfied by some implementations of the API and not by "
+#~ "others."
+#~ msgstr ""
+#~ "API 是個用戶定義的 class 或介面。（若 Web Bean 是個 EJB session bean 的"
+#~ "話，那麼 API 類形便是 <literal>@Local</literal> 介面或是 bean-class 的 "
+#~ "local view）。綁定類型代表一些客戶端可見的語意，這些語意可藉由一些 API 實"
+#~ "做來滿足。"
+
+#~ msgid ""
+#~ "Binding types are represented by user-defined annotations that are "
+#~ "themselves annotated <literal>@BindingType</literal>. For example, the "
+#~ "following injection point has API type <literal>PaymentProcessor</"
+#~ "literal> and binding type <literal>@CreditCard</literal>:"
+#~ msgstr ""
+#~ "綁定類型是透過用戶定義、本身已被標記為 <literal>@BindingType</literal> 的"
+#~ "標記來表示的。比方說，以下注入點含有一個 <literal>PaymentProcessor</"
+#~ "literal> API 類型以及 <literal>@CreditCard</literal> 綁定類型："
+
+#~ msgid "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
+#~ msgstr "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
+
+#~ msgid ""
+#~ "If no binding type is explicitly specified at an injection point, the "
+#~ "default binding type <literal>@Current</literal> is assumed."
+#~ msgstr ""
+#~ "若在注入點沒有綁定類型被明確指定的話，那麼預設的綁定類型 "
+#~ "<literal>@Current</literal> 就會被假設。"
+
+#~ msgid ""
+#~ "For each injection point, the Web Bean manager searches for a Web Bean "
+#~ "which satisfies the contract (implements the API, and has all the binding "
+#~ "types), and injects that Web Bean."
+#~ msgstr ""
+#~ "Web Bean 管理員會針對於各個注入點搜尋滿足合同（實做 API 並擁有所有綁定類"
+#~ "型）的 Web Bean，然後將該 Web Bean 注入。"
+
+#~ msgid ""
+#~ "The following Web Bean has the binding type <literal>@CreditCard</"
+#~ "literal> and implements the API type <literal>PaymentProcessor</literal>. "
+#~ "It could therefore be injected to the example injection point:"
+#~ msgstr ""
+#~ "下列 Web Bean 的綁定類型為 <literal>@CreditCard</literal> 並且實做了 "
+#~ "<literal>PaymentProcessor</literal> 這個 API 類型。因此它可被注入至範例的"
+#~ "注入點中："
+
+#~ msgid ""
+#~ "<![CDATA[@CreditCard\n"
+#~ "public class CreditCardPaymentProcessor \n"
+#~ "    implements PaymentProcessor { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@CreditCard\n"
+#~ "public class CreditCardPaymentProcessor \n"
+#~ "    implements PaymentProcessor { ... }]]>"
+
+#~ msgid ""
+#~ "If a Web Bean does not explicitly specify a set of binding types, it has "
+#~ "exactly one binding type: the default binding type <literal>@Current</"
+#~ "literal>."
+#~ msgstr ""
+#~ "若 Web Bean 不明確指定一組綁定類型的話，它便會只有一個綁定類型：也就是預設"
+#~ "的綁定類型 <literal>@Current</literal>。"
+
+#~ msgid ""
+#~ "Web Beans defines a sophisticated but intuitive <emphasis>resolution "
+#~ "algorithm</emphasis> that helps the container decide what to do if there "
+#~ "is more than one Web Bean that satisfies a particular contract. We'll get "
+#~ "into the details in <xref linkend=\"injection\"/>."
+#~ msgstr ""
+#~ "Web Bean 會定義一個複雜不過不難理解的 <emphasis>resolution algorithm（解析"
+#~ "運算法）</emphasis>，它可在有超過一個滿足特定合同的 Web Bean 存在的情況下"
+#~ "協助 container 決定該怎麼作。我們將在 <xref linkend=\"injection\"/> 中詳細"
+#~ "討論。"
+
+#~ msgid "Deployment types"
+#~ msgstr "建置類型（Deployment type）"
+
+#~ msgid ""
+#~ "<emphasis>Deployment types</emphasis> let us classify our Web Beans by "
+#~ "deployment scenario. A deployment type is an annotation that represents a "
+#~ "particular deployment scenario, for example <literal>@Mock</literal>, "
+#~ "<literal>@Staging</literal> or <literal>@AustralianTaxLaw</literal>. We "
+#~ "apply the annotation to Web Beans which should be deployed in that "
+#~ "scenario. A deployment type allows a whole set of Web Beans to be "
+#~ "conditionally deployed, with a just single line of configuration."
+#~ msgstr ""
+#~ "<emphasis>Deployment type</emphasis> 可讓我們透過建置方案（deployment "
+#~ "scenario）來為我們的 Web Bean 歸類。建置類型是個表示特定建置方案的標記，例"
+#~ "如 <literal>@Mock</literal>、<literal>@Staging</literal> 或 "
+#~ "<literal>@AustralianTaxLaw</literal>。我們會將標記套用至應透過該方案來建置"
+#~ "的 Web Bean 中。建置類型能透過單行的配置來允許整組 Web Bean 被條件性地建"
+#~ "置。"
+
+#~ msgid ""
+#~ "Many Web Beans just use the default deployment type <literal>@Production</"
+#~ "literal>, in which case no deployment type need be explicitly specified. "
+#~ "All three Web Bean in our example have the deployment type "
+#~ "<literal>@Production</literal>."
+#~ msgstr ""
+#~ "許多 Web Bean 只使用預設的建置類型 <literal>@Production</literal>，在此情"
+#~ "況下無須明確地指定建置類型。我們範例中的所有三個 Web Bean 都擁有 "
+#~ "<literal>@Production</literal> 這個建置類型。"
+
+#~ msgid ""
+#~ "In a testing environment, we might want to replace the "
+#~ "<literal>SentenceTranslator</literal> Web Bean with a \"mock object\":"
+#~ msgstr ""
+#~ "在測試環境中，我們可能會希望將 <literal>SentenceTranslator</literal> 這個 "
+#~ "Web Bean 替換為一個「mock 物件」："
+
+#~ msgid ""
+#~ "<![CDATA[@Mock\n"
+#~ "public class MockSentenceTranslator implements Translator {\n"
+#~ "    public String translate(String sentence) {\n"
+#~ "        return \"Lorem ipsum dolor sit amet\";\n"
+#~ "    }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Mock\n"
+#~ "public class MockSentenceTranslator implements Translator {\n"
+#~ "    public String translate(String sentence) {\n"
+#~ "        return \"Lorem ipsum dolor sit amet\";\n"
+#~ "    }\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "We would enable the deployment type <literal>@Mock</literal> in our "
+#~ "testing environment, to indicate that <literal>MockSentenceTranslator</"
+#~ "literal> and any other Web Bean annotated <literal>@Mock</literal> should "
+#~ "be used."
+#~ msgstr ""
+#~ "我們將在測試環境中啟用 <literal>@Mock</literal> 這個 deployment type 來表"
+#~ "示 <literal>MockSentenceTranslator</literal> 以及任何其它被標記為 "
+#~ "<literal>@Mock</literal> 的 Web Bean 都應該被使用。"
+
+#~ msgid ""
+#~ "We'll talk more about this unique and powerful feature in <xref linkend="
+#~ "\"deploymenttypes\"/>."
+#~ msgstr ""
+#~ "我們將在 <xref linkend=\"deploymenttypes\"/> 中更詳細地討論到這項獨特和強"
+#~ "大的功能。"
+
+#~ msgid "Scope"
+#~ msgstr "Scope"
+
+#~ msgid ""
+#~ "The <emphasis>scope</emphasis> defines the lifecycle and visibility of "
+#~ "instances of the Web Bean. The Web Beans context model is extensible, "
+#~ "accommodating arbitrary scopes. However, certain important scopes are "
+#~ "built-in to the specification, and provided by the Web Bean manager. A "
+#~ "scope is represented by an annotation type."
+#~ msgstr ""
+#~ "<emphasis>Scope</emphasis> 定義了 Web Bean instance 的生命週期以及可見度。"
+#~ "Web Bean 的 context model 可延伸、並能包容任意的 scope。不過，有些重要的特"
+#~ "定 scope 則會被內建在 Web Bean 規格中，並透過 Web Bean 管理員來提供。"
+#~ "Scope 是以一個標記類型來表示的。"
+
+#~ msgid ""
+#~ "For example, any web application may have <emphasis>session scoped</"
+#~ "emphasis> Web Beans:"
+#~ msgstr ""
+#~ "比方說，任何網站應用程式都能夠有 <emphasis>session scoped</emphasis> 的 "
+#~ "Web Bean："
+
+#~ msgid ""
+#~ "<![CDATA[@SessionScoped\n"
+#~ "public class ShoppingCart { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@SessionScoped\n"
+#~ "public class ShoppingCart { ... }]]>"
+
+#~ msgid ""
+#~ "An instance of a session scoped Web Bean is bound to a user session and "
+#~ "is shared by all requests that execute in the context of that session."
+#~ msgstr ""
+#~ "一個 session scoped 的 Web Bean 的 instance 會被綁定至一個用戶的 session，"
+#~ "並且會被所有執行於該 session 的 context 中的請求共享。"
+
+#~ msgid ""
+#~ "By default, Web Beans belong to a special scope called the "
+#~ "<emphasis>dependent pseudo-scope</emphasis>. Web Beans with this scope "
+#~ "are pure dependent objects of the object into which they are injected, "
+#~ "and their lifecycle is bound to the lifecycle of that object."
+#~ msgstr ""
+#~ "就預設值，Web Bean 屬於一個稱為 <emphasis>dependent pseudo-scope</"
+#~ "emphasis> 的特殊 scope。含有這個 scope 的 Web Bean 純粹就是它們所被注入的"
+#~ "物件的相依物件，並且它們的生命週期綁定至該物件的生命週期。"
+
+#~ msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
+#~ msgstr "我們將在 <xref linkend=\"scopescontexts\"/> 中詳細討論 scope。"
+
+#~ msgid "Web Bean names and Unified EL"
+#~ msgstr "Web Bean 名稱和 Unified EL"
+
+#~ msgid ""
+#~ "A Web Bean may have a <emphasis>name</emphasis>, allowing it to be used "
+#~ "in Unified EL expressions. It's easy to specify the name of a Web Bean:"
+#~ msgstr ""
+#~ "Web Bean 能夠擁有一個<emphasis>名稱</emphasis>，這能允許它被使用於 "
+#~ "Unified EL 表示式中。要指定 Web Bean 的名稱相當容易："
+
+#~ msgid ""
+#~ "<![CDATA[@SessionScoped @Named(\"cart\")\n"
+#~ "public class ShoppingCart { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@SessionScoped @Named(\"cart\")\n"
+#~ "public class ShoppingCart { ... }]]>"
+
+#~ msgid "Now we can easily use the Web Bean in any JSF or JSP page:"
+#~ msgstr "現在我們能輕易地在任何 JSF 或 JSP 網頁中使用 Web Bean："
+
+#~ msgid ""
+#~ "<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
+#~ "    ....\n"
+#~ "</h:dataTable>]]>"
+#~ msgstr ""
+#~ "<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
+#~ "    ....\n"
+#~ "</h:dataTable>]]>"
+
+#~ msgid ""
+#~ "It's even easier to just let the name be defaulted by the Web Bean "
+#~ "manager:"
+#~ msgstr "讓 Web Bean 管理員來預設這個名稱可能會更加容易："
+
+#~ msgid ""
+#~ "<![CDATA[@SessionScoped @Named\n"
+#~ "public class ShoppingCart { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@SessionScoped @Named\n"
+#~ "public class ShoppingCart { ... }]]>"
+
+#~ msgid ""
+#~ "In this case, the name defaults to <literal>shoppingCart</literal> &#151; "
+#~ "the unqualified class name, with the first character changed to lowercase."
+#~ msgstr ""
+#~ "在此情況下，名稱將被預設為 <literal>shoppingCart</literal> &#151; 這是個不"
+#~ "完整的 class 名稱，並且第一個字元已被改變為小寫。"
+
+#~ msgid "Interceptor binding types"
+#~ msgstr "攔截器綁定類型"
+
+#~ msgid ""
+#~ "Web Beans supports the interceptor functionality defined by EJB 3, not "
+#~ "only for EJB beans, but also for plain Java classes. In addition, Web "
+#~ "Beans provides a new approach to binding interceptors to EJB beans and "
+#~ "other Web Beans."
+#~ msgstr ""
+#~ "Web Bean 支援 EJB 3 所定義的攔截器功能，不只是 EJB bean 支援，純 Java 的 "
+#~ "class 也支援。另外，Web Bean 也提供了一個新的方法來將攔截器綁定至 EJB "
+#~ "bean 和其它的 Web Bean。"
+
+#~ msgid ""
+#~ "It remains possible to directly specify the interceptor class via use of "
+#~ "the <literal>@Interceptors</literal> annotation:"
+#~ msgstr ""
+#~ "您也能直接地透過使用 <literal>@Interceptors</literal> 標記來指定攔截器"
+#~ "（interceptor）class："
+
+#~ msgid ""
+#~ "<![CDATA[@SessionScoped \n"
+#~ "@Interceptors(TransactionInterceptor.class)\n"
+#~ "public class ShoppingCart { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@SessionScoped \n"
+#~ "@Interceptors(TransactionInterceptor.class)\n"
+#~ "public class ShoppingCart { ... }]]>"
+
+#~ msgid ""
+#~ "However, it is more elegant, and better practice, to indirect the "
+#~ "interceptor binding through an <emphasis>interceptor binding type</"
+#~ "emphasis>:"
+#~ msgstr ""
+#~ "不過，透過 <emphasis>interceptor binding type（攔截器綁定類型）</emphasis>"
+#~ "來將攔截器綁定重定向會是較好的作法："
+
+#~ msgid ""
+#~ "<![CDATA[@SessionScoped @Transactional\n"
+#~ "public class ShoppingCart { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@SessionScoped @Transactional\n"
+#~ "public class ShoppingCart { ... }]]>"
+
+#~ msgid ""
+#~ "We'll discuss Web Beans interceptors and decorators in <xref linkend="
+#~ "\"interceptors\"/> and <xref linkend=\"decorators\"/>."
+#~ msgstr ""
+#~ "我們將在 <xref linkend=\"interceptors\"/> 和 <xref linkend=\"decorators\"/"
+#~ "> 中更詳細地討論 Web Bean 攔截器與裝飾器。"
+
+#~ msgid "What kinds of objects can be Web Beans?"
+#~ msgstr "哪種物件屬於 Web Bean？"
+
+#~ msgid ""
+#~ "We've already seen that JavaBeans, EJBs and some other Java classes can "
+#~ "be Web Beans. But exactly what kinds of objects are Web Beans?"
+#~ msgstr ""
+#~ "我們已經看過 JavaBean、EJB 和一些其它的 Java class 都能屬於 Web Bean。不"
+#~ "過 Web Bean 到底是哪種物件呢？"
+
+#~ msgid "Simple Web Beans"
+#~ msgstr "基本的 Web Bean"
+
+#~ msgid ""
+#~ "The Web Beans specification says that a concrete Java class is a "
+#~ "<emphasis>simple</emphasis> Web Bean if:"
+#~ msgstr ""
+#~ "Web Bean 規格談到了一個具備下列條件的具體 Java class 就是個 "
+#~ "<emphasis>simple（基本）</emphasis>Web Bean："
+
+#~ msgid ""
+#~ "it is not an EE container-managed component, like an EJB, a Servlet or a "
+#~ "JPA entity,"
+#~ msgstr "它不像 EJB、Servlet 或 JPA 實體都是個 EE container 所管理的元件、"
+
+#~ msgid "it is not a non-static static inner class,"
+#~ msgstr "它不是個非靜態的靜態內部類別（static inner class）、"
+
+#~ msgid "it is not a parameterized type, and"
+#~ msgstr "它不是個被參數化的類型，並且"
+
+#~ msgid ""
+#~ "it has a constructor with no parameters, or a constructor annotated "
+#~ "<literal>@Initializer</literal>."
+#~ msgstr ""
+#~ "它有個無參數的 constructor，或一個標記為 <literal>@Initializer</literal> "
+#~ "的 constructor。"
+
+#~ msgid "Thus, almost every JavaBean is a simple Web Bean."
+#~ msgstr "因此，幾乎所有 JavaBean 都屬於基本的 Web Bean。"
+
+#~ msgid ""
+#~ "Every interface implemented directly or indirectly by a simple Web Bean "
+#~ "is an API type of the simple Web Bean. The class and its superclasses are "
+#~ "also API types."
+#~ msgstr ""
+#~ "基本 Web Bean 所直接或間接實做的所有介面都屬於基本 Web Bean 的 API 類型。"
+#~ "Class 和它的 superclass 也都屬於 API 類型。"
+
+#~ msgid "Enterprise Web Beans"
+#~ msgstr "企業級的 Web Bean"
+
+#~ msgid ""
+#~ "The specification says that all EJB 3-style session and singleton beans "
+#~ "are <emphasis>enterprise</emphasis> Web Beans. Message driven beans are "
+#~ "not Web Beans &#151; since they are not intended to be injected into "
+#~ "other objects &#151; but they can take advantage of most of the "
+#~ "functionality of Web Beans, including dependency injection and "
+#~ "interceptors."
+#~ msgstr ""
+#~ "Web Bean 的規格顯示了所有 EJB 3 類型的 session 和 singleton 的 bean 都屬於"
+#~ "<emphasis>企業級</emphasis>的 Web Bean。訊息導向的 bean 則不屬於 Web Bean "
+#~ "&#151; 因為它們不會被注入其它的物件中 &#151; 不過它們能夠有效利用 Web "
+#~ "Bean 大部分的功能，這包括依賴注入（dependency injection）以及攔截器"
+#~ "（interceptor）。"
+
+#~ msgid ""
+#~ "Every local interface of an enterprise Web Bean that does not have a "
+#~ "wildcard type parameter or type variable, and every one of its "
+#~ "superinterfaces, is an API type of the enterprise Web Bean. If the EJB "
+#~ "bean has a bean class local view, the bean class, and every one of its "
+#~ "superclasses, is also an API type."
+#~ msgstr ""
+#~ "所有沒有 wildcard 類型參數或是類型變數的企業級 Web Bean 的本地介面以及它所"
+#~ "有的 superinterface 都屬於企業級 Web Bean 的 API 類型。若 EJB bean 有個 "
+#~ "bean class local view 的話，那麼這個 bean class 以及它所有的 superclass 也"
+#~ "都會是個 API 類型。"
+
+#~ msgid ""
+#~ "Stateful session beans should declare a remove method with no parameters "
+#~ "or a remove method annotated <literal>@Destructor</literal>. The Web Bean "
+#~ "manager calls this method to destroy the stateful session bean instance "
+#~ "at the end of its lifecycle. This method is called the "
+#~ "<emphasis>destructor</emphasis> method of the enterprise Web Bean."
+#~ msgstr ""
+#~ "有狀態的 session bean 應宣告一個無參數的 remove method 或是一個標記為 "
+#~ "<literal>@Destructor</literal> 的 remove method。Web Bean 管理員會調用這"
+#~ "個 method 來在它的生命週期結束時刪除有狀態的 session bean instance。這個 "
+#~ "method 亦稱為企業級 Web Bean 的 <emphasis>destructor</emphasis> method。"
+
+#~ msgid ""
+#~ "<![CDATA[@Stateful @SessionScoped\n"
+#~ "public class ShoppingCart {\n"
+#~ "\n"
+#~ "    ...\n"
+#~ "    \n"
+#~ "    @Remove\n"
+#~ "    public void destroy() {}\n"
+#~ "\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Stateful @SessionScoped\n"
+#~ "public class ShoppingCart {\n"
+#~ "\n"
+#~ "    ...\n"
+#~ "    \n"
+#~ "    @Remove\n"
+#~ "    public void destroy() {}\n"
+#~ "\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "So when should we use an enterprise Web Bean instead of a simple Web "
+#~ "Bean? Well, whenever we need the advanced enterprise services offered by "
+#~ "EJB, such as:"
+#~ msgstr ""
+#~ "所以我們該何時使用企業級的 Web Bean 何時使用基本 Web Bean 呢？每當我們需"
+#~ "要 EJB 所提供的進階企業級服務時，例如："
+
+#~ msgid "method-level transaction management and security,"
+#~ msgstr "method 層級的交易管理與安全性、"
+
+#~ msgid "concurrency management,"
+#~ msgstr "並行管理（concurrency management）、"
+
+#~ msgid ""
+#~ "instance-level passivation for stateful session beans and instance-"
+#~ "pooling for stateless session beans,"
+#~ msgstr ""
+#~ "有狀態的 session bean 的 instance 層級的 passivation 以及無狀態 session "
+#~ "bean 的類別儲備（instance-pooling）、"
+
+#~ msgid "remote and web service invocation, and"
+#~ msgstr "遠端和網站服務調用，以及"
+
+#~ msgid "timers and asynchronous methods,"
+#~ msgstr "計時器與非同步的 method，"
+
+#~ msgid ""
+#~ "we should use an enterprise Web Bean. When we don't need any of these "
+#~ "things, a simple Web Bean will serve just fine."
+#~ msgstr ""
+#~ "當需要以上服務時我們便應使用企業級的 Web Bean。當我們不需要任何的這些服務"
+#~ "時，使用基本的 Web Bean 即可。"
+
+#~ msgid ""
+#~ "Many Web Beans (including any session or application scoped Web Bean) are "
+#~ "available for concurrent access. Therefore, the concurrency management "
+#~ "provided by EJB 3.1 is especially useful. Most session and application "
+#~ "scoped Web Beans should be EJBs."
+#~ msgstr ""
+#~ "許多 Web Bean（包括任何 session 或 application scoped 的 Web Bean）都能被"
+#~ "並行存取（concurrent access）。因此，EJB 3.1 所提供的並行管理"
+#~ "（concurrency management）特別地有幫助。大部分的 session 和 application "
+#~ "scoped 的 Web Bean 都應屬於 EJB。"
+
+#~ msgid ""
+#~ "Web Beans which hold references to heavy-weight resources, or hold a lot "
+#~ "of internal state benefit from the advanced container-managed lifecycle "
+#~ "defined by the EJB <literal>@Stateless</literal>/<literal>@Stateful</"
+#~ "literal>/<literal>@Singleton</literal> model, with its support for "
+#~ "passivation and instance pooling."
+#~ msgstr ""
+#~ "持有重量級資源之參照或持有許多內部狀態的 Web Bean 皆可受益于支援 "
+#~ "passivation 和類別儲備的 EJB <literal>@Stateless</literal>/"
+#~ "<literal>@Stateful</literal>/<literal>@Singleton</literal> 模型所定義並由"
+#~ "進階 container 所管理的生命週期。"
+
+#~ msgid ""
+#~ "Finally, it's usually obvious when method-level transaction management, "
+#~ "method-level security, timers, remote methods or asynchronous methods are "
+#~ "needed."
+#~ msgstr ""
+#~ "最後，一般來講，何時需要使用到 method 層級的交易性管理、method 層級的安全"
+#~ "性、計時器、遠端 method 或是非同步的 method 其實都是非常顯而易見的。"
+
+#~ msgid ""
+#~ "It's usually easy to start with simple Web Bean, and then turn it into an "
+#~ "EJB, just by adding an annotation: <literal>@Stateless</literal>, "
+#~ "<literal>@Stateful</literal> or <literal>@Singleton</literal>."
+#~ msgstr ""
+#~ "通常從基本的 Web Bean 開始會較容易，然後只要再透過附加一個 "
+#~ "<literal>@Stateless</literal>、<literal>@Stateful</literal> 或是 "
+#~ "<literal>@Singleton</literal> 標記來將它轉換為一個 EJB 即可。"
+
+#~ msgid "Producer methods"
+#~ msgstr "Producer method"
+
+#~ msgid ""
+#~ "A <emphasis>producer method</emphasis> is a method that is called by the "
+#~ "Web Bean manager to obtain an instance of the Web Bean when no instance "
+#~ "exists in the current context. A producer method lets the application "
+#~ "take full control of the instantiation process, instead of leaving "
+#~ "instantiation to the Web Bean manager. For example:"
+#~ msgstr ""
+#~ "<emphasis>producer method</emphasis> 是個當目前 context 中沒有 instance 時"
+#~ "會被 Web Bean 管理員調用來取得 Web Bean instance 的一個 method。Producer "
+#~ "method 能讓應用程式完全掌控例示（instantiation）的程序，而不是留給 Web "
+#~ "Bean 管理員去進行。例如："
+
+#~ msgid ""
+#~ "<![CDATA[@ApplicationScoped\n"
+#~ "public class Generator {\n"
+#~ "\n"
+#~ "    private Random random = new Random( System.currentTimeMillis() );\n"
+#~ "    \n"
+#~ "    @Produces @Random int next() {\n"
+#~ "        return random.nextInt(100);\n"
+#~ "    }\n"
+#~ "\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ApplicationScoped\n"
+#~ "public class Generator {\n"
+#~ "\n"
+#~ "    private Random random = new Random( System.currentTimeMillis() );\n"
+#~ "    \n"
+#~ "    @Produces @Random int next() {\n"
+#~ "        return random.nextInt(100);\n"
+#~ "    }\n"
+#~ "\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "The result of a producer method is injected just like any other Web Bean."
+#~ msgstr "producer method 的結果會和其它任何 Web Bean 一樣地被注入。"
+
+#~ msgid "<![CDATA[@Random int randomNumber]]>"
+#~ msgstr "<![CDATA[@Random int randomNumber]]>"
+
+#~ msgid ""
+#~ "The method return type and all interfaces it extends/implements directly "
+#~ "or indirectly are API types of the producer method. If the return type is "
+#~ "a class, all superclasses are also API types."
+#~ msgstr ""
+#~ "method 的回傳類型以及它所直接或間接延伸/實做的介面皆為 producer method 的 "
+#~ "API 類型。若回傳的類型是個 class 的話，那麼所有的 superclass 也都會是 API "
+#~ "類型。"
+
+#~ msgid ""
+#~ "Some producer methods return objects that require explicit destruction:"
+#~ msgstr "有些 producer method 會回傳需要明確銷毀的物件："
+
+#~ msgid ""
+#~ "<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
+#~ "    return createConnection( user.getId(), user.getPassword() );\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
+#~ "    return createConnection( user.getId(), user.getPassword() );\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "These producer methods may define matching <emphasis>disposal methods</"
+#~ "emphasis>:"
+#~ msgstr ""
+#~ "這些 producer method 可定義符合的 <emphasis>disposal methods</emphasis>："
+
+#~ msgid ""
+#~ "<![CDATA[void close(@Disposes Connection connection) {\n"
+#~ "    connection.close();\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[void close(@Disposes Connection connection) {\n"
+#~ "    connection.close();\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "This disposal method is called automatically by the Web Bean manager at "
+#~ "the end of the request."
+#~ msgstr "這個 disposal method 會在請求結束後自動地被 Web Bean 管理員調用。"
+
+#~ msgid ""
+#~ "We'll talk much more about producer methods in <xref linkend="
+#~ "\"producermethods\"/>."
+#~ msgstr ""
+#~ "我們將在 <xref linkend=\"producermethods\"/> 中詳細討論 producer method。"
+
+#~ msgid "JMS endpoints"
+#~ msgstr "JMS 端點（endpoints）"
+
+#~ msgid ""
+#~ "Finally, a JMS queue or topic can be a Web Bean. Web Beans relieves the "
+#~ "developer from the tedium of managing the lifecycles of all the various "
+#~ "JMS objects required to send messages to queues and topics. We'll discuss "
+#~ "JMS endpoints in <xref linkend=\"jms\"/>."
+#~ msgstr ""
+#~ "最後，JMS 佇列（queue）或主題（topic）都能是個 Web Bean。Web Bean 能讓開發"
+#~ "人員省去管理所有傳送訊息至佇列和主題所需的不同 JMS 物件生命週期的麻煩。我"
+#~ "們將在 <xref linkend=\"jms\"/> 中詳細討論 JMS 端點。"

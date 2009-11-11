@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-06 11:30+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-04-10 13:11-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -16,66 +16,113 @@ msgstr ""
 #. Tag: para
 #: part2.xml:5
 #, no-c-format
-msgid "The first major theme of Web Beans is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving loose coupling:"
-msgstr "O primeiro grande tema da Web Beans é <emphasis>fraco acoplamento</emphasis>. Já vimos três meios de alcançar o fraco acoplamento:"
+msgid ""
+"Weld, the JSR-299 Reference Implementation (RI), is being developed as part "
+"of the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. "
+"You can download the latest community release of Weld from the <ulink url="
+"\"http://seamframework.org/Download\">download page</ulink>. Information "
+"about the Weld source code repository and instructions about how to obtain "
+"and build the source can be found on the same page."
+msgstr ""
 
 #. Tag: para
-#: part2.xml:10
+#: part2.xml:12
 #, no-c-format
-msgid "<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
-msgstr "<emphasis>tipos de implantação</emphasis> habilitam o polimorfismo em tempo de implantação,"
-
-#. Tag: para
-#: part2.xml:14
-#, no-c-format
-msgid "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
-msgstr "<emphasis>método produtores</emphasis> habilitam o polimorfismo em tempo de execução, e"
+msgid ""
+"Weld provides a complete SPI allowing Java EE containers such as JBoss AS "
+"and GlassFish to use Weld as their built-in CDI implementation. Weld also "
+"runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE "
+"environment."
+msgstr ""
 
 #. Tag: para
 #: part2.xml:18
 #, no-c-format
-msgid "<emphasis>contextual lifecycle management</emphasis> decouples Web Bean lifecycles."
-msgstr "<emphasis>gerenciamento contextual do ciclo de vida</emphasis> desacopla o ciclo de vida do Web Bean."
+msgid ""
+"Weld comes with an extensive library of examples, which are a great starting "
+"point from which to learn CDI."
+msgstr ""
 
-#. Tag: para
-#: part2.xml:23
-#, no-c-format
-msgid "These techniques serve to enable loose coupling of client and server. The client is no longer tightly bound to an implementation of an API, nor is it required to manage the lifecycle of the server object. This approach lets <emphasis>stateful objects interact as if they were services</emphasis>."
-msgstr "Essas técnicas servem para habilitar o fraco acoplamento entre o cliente e o servidor. O cliente não está mais fortemente acoplado a uma implementação de uma API, nem é obrigado a gerenciar o ciclo de vida do objeto servidor. Essa abordagem permite que <emphasis>objetos stateful interajam como se fossem serviços</emphasis>."
+#~ msgid ""
+#~ "The first major theme of Web Beans is <emphasis>loose coupling</"
+#~ "emphasis>. We've already seen three means of achieving loose coupling:"
+#~ msgstr ""
+#~ "O primeiro grande tema da Web Beans é <emphasis>fraco acoplamento</"
+#~ "emphasis>. Já vimos três meios de alcançar o fraco acoplamento:"
 
-#. Tag: para
-#: part2.xml:28
-#, no-c-format
-msgid "Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system can respond to change in a well-defined manner. In the past, frameworks that attempted to provide the facilities listed above invariably did it by sacrificing type safety. Web Beans is the first technology that achieves this level of loose coupling in a typesafe way."
-msgstr "O fraco acoplamento torna o sistema mais <emphasis>dinâmico</emphasis>. O sistema pode responder a mudanças de uma maneira bem definida. No passado, frameworks que tentaram prover essas facilidades acima listadas, invariavelmente acabaram sacrificando a type safety. A Web Beans é a primeira tecnologia que alcança esse nível de fraco acoplamento de uma meneira typesafe."
+#~ msgid ""
+#~ "<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
+#~ msgstr ""
+#~ "<emphasis>tipos de implantação</emphasis> habilitam o polimorfismo em "
+#~ "tempo de implantação,"
 
-#. Tag: para
-#: part2.xml:34
-#, no-c-format
-msgid "Web Beans provides three extra important facilities that further the goal of loose coupling:"
-msgstr "Web Beans provê três facilidades extras importantes que ultrapassam o objetivo do fraco acoplamento:"
+#~ msgid ""
+#~ "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
+#~ msgstr ""
+#~ "<emphasis>método produtores</emphasis> habilitam o polimorfismo em tempo "
+#~ "de execução, e"
 
-#. Tag: para
-#: part2.xml:39
-#, no-c-format
-msgid "<emphasis>interceptors</emphasis> decouple technical concerns from business logic,"
-msgstr "<emphasis>interceptadores</emphasis> desacomplam detalhes técnicos da lógica de negócios,"
+#~ msgid ""
+#~ "<emphasis>contextual lifecycle management</emphasis> decouples Web Bean "
+#~ "lifecycles."
+#~ msgstr ""
+#~ "<emphasis>gerenciamento contextual do ciclo de vida</emphasis> desacopla "
+#~ "o ciclo de vida do Web Bean."
 
-#. Tag: para
-#: part2.xml:43
-#, no-c-format
-msgid "<emphasis>decorators</emphasis> may be used to decouple some business concerns, and"
-msgstr "<emphasis>decoradores</emphasis> podem ser utilizados para desacoplar detalhes de negócios, e"
+#~ msgid ""
+#~ "These techniques serve to enable loose coupling of client and server. The "
+#~ "client is no longer tightly bound to an implementation of an API, nor is "
+#~ "it required to manage the lifecycle of the server object. This approach "
+#~ "lets <emphasis>stateful objects interact as if they were services</"
+#~ "emphasis>."
+#~ msgstr ""
+#~ "Essas técnicas servem para habilitar o fraco acoplamento entre o cliente "
+#~ "e o servidor. O cliente não está mais fortemente acoplado a uma "
+#~ "implementação de uma API, nem é obrigado a gerenciar o ciclo de vida do "
+#~ "objeto servidor. Essa abordagem permite que <emphasis>objetos stateful "
+#~ "interajam como se fossem serviços</emphasis>."
 
-#. Tag: para
-#: part2.xml:47
-#, no-c-format
-msgid "<emphasis>event notifications</emphasis> decouple event producers from event consumers."
-msgstr "<emphasis>notificadores de eventos</emphasis> desacoplam os produtores de eventos dos consumidores de eventos."
+#~ msgid ""
+#~ "Loose coupling makes a system more <emphasis>dynamic</emphasis>. The "
+#~ "system can respond to change in a well-defined manner. In the past, "
+#~ "frameworks that attempted to provide the facilities listed above "
+#~ "invariably did it by sacrificing type safety. Web Beans is the first "
+#~ "technology that achieves this level of loose coupling in a typesafe way."
+#~ msgstr ""
+#~ "O fraco acoplamento torna o sistema mais <emphasis>dinâmico</emphasis>. O "
+#~ "sistema pode responder a mudanças de uma maneira bem definida. No "
+#~ "passado, frameworks que tentaram prover essas facilidades acima listadas, "
+#~ "invariavelmente acabaram sacrificando a type safety. A Web Beans é a "
+#~ "primeira tecnologia que alcança esse nível de fraco acoplamento de uma "
+#~ "meneira typesafe."
 
-#. Tag: para
-#: part2.xml:52
-#, no-c-format
-msgid "Let's explore interceptors first."
-msgstr "Primeiramente, exploraremos os interceptadores"
+#~ msgid ""
+#~ "Web Beans provides three extra important facilities that further the goal "
+#~ "of loose coupling:"
+#~ msgstr ""
+#~ "Web Beans provê três facilidades extras importantes que ultrapassam o "
+#~ "objetivo do fraco acoplamento:"
 
+#~ msgid ""
+#~ "<emphasis>interceptors</emphasis> decouple technical concerns from "
+#~ "business logic,"
+#~ msgstr ""
+#~ "<emphasis>interceptadores</emphasis> desacomplam detalhes técnicos da "
+#~ "lógica de negócios,"
+
+#~ msgid ""
+#~ "<emphasis>decorators</emphasis> may be used to decouple some business "
+#~ "concerns, and"
+#~ msgstr ""
+#~ "<emphasis>decoradores</emphasis> podem ser utilizados para desacoplar "
+#~ "detalhes de negócios, e"
+
+#~ msgid ""
+#~ "<emphasis>event notifications</emphasis> decouple event producers from "
+#~ "event consumers."
+#~ msgstr ""
+#~ "<emphasis>notificadores de eventos</emphasis> desacoplam os produtores de "
+#~ "eventos dos consumidores de eventos."
+
+#~ msgid "Let's explore interceptors first."
+#~ msgstr "Primeiramente, exploraremos os interceptadores"

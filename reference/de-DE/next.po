@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: next\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-10 14:18+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-01-28 06:27+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -25,31 +25,128 @@ msgstr "Die nächsten Schritte"
 #: next.xml:6
 #, no-c-format
 msgid ""
-"Because Web Beans is so new, there's not yet a lot of information available "
-"online."
-msgstr "Da Web Beans so neu sind, existieren noch nicht so viele Informationen online."
+"Because CDI is so new, there's not yet a lot of information available "
+"online. That will change over time. Regardless, the CDI specification "
+"remains the authority for information on CDI. The spec less than 100 pages "
+"and is quite readable (don't worry, it's not like your Blu-ray player "
+"manual). Of course, it covers many details we've skipped over here. The spec "
+"is available on the <ulink src=\"http://jcp.org/en/jsr/detail?id=299\">JSR-"
+"299 page</ulink> at the JCP website."
+msgstr ""
 
 #. Tag: para
-#: next.xml:9
-#, no-c-format
+#: next.xml:14
+#, fuzzy, no-c-format
 msgid ""
-"Of course, the Web Beans specification is the best source of more "
-"information about Web Beans. The spec is about 100 pages long, only twice "
-"the length of this article, and almost as readable. But, of course, it "
-"covers many details that we've skipped over. The spec is available from "
-"<literal>http://jcp.org/en/jsr/detail?id=299</literal>."
-msgstr "Natürlich ist die Web Beans Spezifikation die beste Quelle für weitere Information zu Web Beans. Die Spezifikation umfasst rund 100 Seiten, ist also nur etwa doppelt so lang wie dieser Artikel, aber nahezu so einfach verständlich wie dieser. Sie enthält aber zahlreiche Einzelheiten, auf die hier nicht eingegangen wird. Die Spezifikation ist unter <literal>http://jcp.org/en/jsr/detail?id=299</literal> verfügbar."
-
-#. Tag: para
-#: next.xml:15
-#, no-c-format
-msgid ""
-"The Web Beans Reference implementation is being developed at <literal>http://"
-"seamframework.org/WebBeans</literal>. The RI development team and the Web "
-"Beans spec lead blog at <literal>http://in.relation.to</literal>. This "
-"article is substantially based upon a series of blog entries published there."
+"The CDI reference implementation, Weld, is being developed at the <ulink src="
+"\"http://seamframework.org/Weld\">Seam project</ulink>. The RI development "
+"team and the CDI spec lead blog at <ulink src=\"http://in.relation.to\">in."
+"relation.to</ulink>. This guide was originally based on a series of blog "
+"entries published there while the specification was being developed. It's "
+"probably the best source of information about the future of CDI, Weld and "
+"Seam."
 msgstr ""
 "Die Web Beans Referenzimplementierung wird unter <literal>http://"
-"seamframework.org/WebBeans</literal> entwickelt. Das RI Entwicklungsteam und die Web "
-"Beans Spezifikation führen unter <literal>http://in.relation.to</literal> einen Blog. Dieser Artikel basiert im Wesentlichen auf eine dort veröffentlichte Reihe von Blog-Einträgen."
+"seamframework.org/WebBeans</literal> entwickelt. Das RI Entwicklungsteam und "
+"die Web Beans Spezifikation führen unter <literal>http://in.relation.to</"
+"literal> einen Blog. Dieser Artikel basiert im Wesentlichen auf eine dort "
+"veröffentlichte Reihe von Blog-Einträgen."
 
+#. Tag: para
+#: next.xml:22
+#, no-c-format
+msgid ""
+"We encourage you to follow the <ulink src=\"https://lists.jboss.org/mailman/"
+"listinfo/weld-dev\">weld-dev</ulink> mailing list and to get involved in "
+"<ulink src=\"http://seamframework.org/Weld/Development\">development</"
+"ulink>. If you are reading this guide, you likely have something to offer."
+msgstr ""
+
+#. Tag: para
+#: next.xml:28
+#, no-c-format
+msgid ""
+"We are eager to find volunteers to help revise, proofread or translate this "
+"guide. The first step is getting the source of this guide checked out. To "
+"build against the trunk (latest source), follow these steps:"
+msgstr ""
+
+#. Tag: para
+#: next.xml:35
+#, no-c-format
+msgid ""
+"Checkout source from <ulink src=\"http://anonsvn.jboss.org/repos/weld/doc/"
+"trunk/reference\">http://anonsvn.jboss.org/repos/weld/doc/trunk/reference</"
+"ulink> using SVN"
+msgstr ""
+
+#. Tag: programlisting
+#: next.xml:40
+#, no-c-format
+msgid ""
+"<![CDATA[$> svn co http://anonsvn.jboss.org/repos/weld/doc/trunk/reference "
+"weld-reference]]>"
+msgstr ""
+
+#. Tag: para
+#: next.xml:43
+#, no-c-format
+msgid ""
+"Edit the pom.xml file in the root of the checkout and remove the \"-SNAPSHOT"
+"\" from the version element (so you don't have to build other Weld modules)."
+msgstr ""
+
+#. Tag: para
+#: next.xml:49
+#, no-c-format
+msgid "Build using Maven 2"
+msgstr ""
+
+#. Tag: programlisting
+#: next.xml:52
+#, no-c-format
+msgid "<![CDATA[$> mvn]]>"
+msgstr ""
+
+#. Tag: para
+#: next.xml:54
+#, no-c-format
+msgid ""
+"If you experience an out of memory error, try setting this environment "
+"variable: <literal>MAVEN_OPTS=-Xmx1024m</literal>"
+msgstr ""
+
+#. Tag: para
+#: next.xml:61
+#, no-c-format
+msgid ""
+"The PDF version of the reference guide will appear the current directory. "
+"You can find the HTML version in target/docbook/publish/en-US/html"
+msgstr ""
+
+#. Tag: para
+#: next.xml:66
+#, no-c-format
+msgid "We look forward to your participation!"
+msgstr ""
+
+#~ msgid ""
+#~ "Because Web Beans is so new, there's not yet a lot of information "
+#~ "available online."
+#~ msgstr ""
+#~ "Da Web Beans so neu sind, existieren noch nicht so viele Informationen "
+#~ "online."
+
+#~ msgid ""
+#~ "Of course, the Web Beans specification is the best source of more "
+#~ "information about Web Beans. The spec is about 100 pages long, only twice "
+#~ "the length of this article, and almost as readable. But, of course, it "
+#~ "covers many details that we've skipped over. The spec is available from "
+#~ "<literal>http://jcp.org/en/jsr/detail?id=299</literal>."
+#~ msgstr ""
+#~ "Natürlich ist die Web Beans Spezifikation die beste Quelle für weitere "
+#~ "Information zu Web Beans. Die Spezifikation umfasst rund 100 Seiten, ist "
+#~ "also nur etwa doppelt so lang wie dieser Artikel, aber nahezu so einfach "
+#~ "verständlich wie dieser. Sie enthält aber zahlreiche Einzelheiten, auf "
+#~ "die hier nicht eingegangen wird. Die Spezifikation ist unter "
+#~ "<literal>http://jcp.org/en/jsr/detail?id=299</literal> verfügbar."

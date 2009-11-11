@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: producermethods\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-07-06 02:29+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-02-23 08:08+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -23,13 +23,12 @@ msgstr "Producer-Methoden"
 
 #. Tag: para
 #: producermethods.xml:7
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Producer methods let us overcome certain limitations that arise when the Web "
-"Bean manager, instead of the application, is responsible for instantiating "
-"objects. They're also the easiest way to integrate objects which are not Web "
-"Beans into the Web Beans environment. (We'll meet a second approach in <xref "
-"linkend=\"xml\"/>.)"
+"Producer methods let us overcome certain limitations that arise when a "
+"container, instead of the application, is responsible for instantiating "
+"objects. They're also the easiest way to integrate objects which are not "
+"beans into the CDI environment."
 msgstr ""
 "Producer-Methoden gestatten es uns, bestimmte Beschränkungen zu umgehen, die "
 "auftreten, wenn der Web Bean Manager statt die Anwendung für die "
@@ -38,104 +37,96 @@ msgstr ""
 "Beans sind. (In <xref linkend=\"xml\"/> lernen wir eine zweite Weise kennen.)"
 
 #. Tag: para
-#: producermethods.xml:12
+#: producermethods.xml:14
 #, no-c-format
 msgid "According to the spec:"
 msgstr "Gemäß der Spezifikation:"
 
 #. Tag: para
-#: producermethods.xml:16
+#: producermethods.xml:18
 #, no-c-format
-msgid ""
-"A Web Beans producer method acts as a source of objects to be injected, "
-"where:"
+msgid "A producer method acts as a source of objects to be injected, where:"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:20
+#: producermethods.xml:22
 #, no-c-format
-msgid ""
-"the objects to be injected are not required to be instances of Web Beans,"
+msgid "the objects to be injected are not required to be instances of beans,"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:23
+#: producermethods.xml:25
 #, no-c-format
 msgid "the concrete type of the objects to be injected may vary at runtime or"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:26
+#: producermethods.xml:28
 #, no-c-format
 msgid ""
 "the objects require some custom initialization that is not performed by the "
-"Web Bean constructor"
+"bean constructor"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:33
+#: producermethods.xml:36
 #, fuzzy, no-c-format
 msgid "For example, producer methods let us:"
 msgstr "Geltungsbereich einer Producer-Methode"
 
 #. Tag: para
-#: producermethods.xml:37
-#, no-c-format
-msgid "expose a JPA entity as a Web Bean,"
-msgstr ""
-
-#. Tag: para
 #: producermethods.xml:40
 #, no-c-format
-msgid "expose any JDK class as a Web Bean,"
+msgid "expose a JPA entity as a bean,"
 msgstr ""
 
 #. Tag: para
 #: producermethods.xml:43
 #, no-c-format
-msgid ""
-"define multiple Web Beans, with different scopes or initialization, for the "
-"same implementation class, or"
+msgid "expose any JDK class as a bean,"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:47
+#: producermethods.xml:46
 #, no-c-format
-msgid "vary the implementation of an API type at runtime."
+msgid ""
+"define multiple beans, with different scopes or initialization, for the same "
+"implementation class, or"
 msgstr ""
 
 #. Tag: para
 #: producermethods.xml:51
 #, no-c-format
+msgid "vary the implementation of a bean type at runtime."
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:55
+#, no-c-format
 msgid ""
-"In particular, producer methods let us use runtime polymorphism with Web "
-"Beans. As we've seen, deployment types are a powerful solution to the "
-"problem of deployment-time polymorphism. But once the system is deployed, "
-"the Web Bean implementation is fixed. A producer method has no such "
-"limitation:"
+"In particular, producer methods let us use runtime polymorphism with CDI. As "
+"we've seen, alternative beans are one solution to the problem of deployment-"
+"time polymorphism. But once the system is deployed, the CDI implementation "
+"is fixed. A producer method has no such limitation:"
 msgstr ""
 
 #. Tag: programlisting
-#: producermethods.xml:56
+#: producermethods.xml:61
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@SessionScoped\n"
-"public class Preferences {\n"
-"    \n"
-"    private PaymentStrategyType paymentStrategy;\n"
-"    \n"
-"    ...\n"
-"    \n"
-"    @Produces @Preferred \n"
-"    public PaymentStrategy getPaymentStrategy() {\n"
-"        switch (paymentStrategy) {\n"
-"            case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
-"            case CHEQUE: return new ChequePaymentStrategy();\n"
-"            case PAYPAL: return new PayPalPaymentStrategy();\n"
-"            default: return null;\n"
-"        } \n"
-"    }\n"
-"    \n"
+"public class Preferences implements Serializable {\n"
+"   private PaymentStrategyType paymentStrategy;\n"
+"   ...\n"
+"   @Produces @Preferred \n"
+"   public PaymentStrategy getPaymentStrategy() {\n"
+"       switch (paymentStrategy) {\n"
+"           case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
+"           case CHECK: return new CheckPaymentStrategy();\n"
+"           case PAYPAL: return new PayPalPaymentStrategy();\n"
+"           default: return null;\n"
+"       } \n"
+"   }\n"
 "}]]>"
 msgstr ""
 "<![CDATA[@Produces @Preferred @SessionScoped\n"
@@ -151,15 +142,15 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: producermethods.xml:58
+#: producermethods.xml:63
 #, no-c-format
 msgid "Consider an injection point:"
 msgstr ""
 
 #. Tag: programlisting
-#: producermethods.xml:60
+#: producermethods.xml:65
 #, fuzzy, no-c-format
-msgid "<![CDATA[@Preferred PaymentStrategy paymentStrat;]]>"
+msgid "<![CDATA[@Inject @Preferred PaymentStrategy paymentStrategy;]]>"
 msgstr ""
 "<![CDATA[@Produces @Preferred @SessionScoped\n"
 "public PaymentStrategy getPaymentStrategy() {\n"
@@ -167,29 +158,29 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: producermethods.xml:62
+#: producermethods.xml:67
 #, no-c-format
 msgid ""
-"This injection point has the same type and binding annotations as the "
-"producer method, so it resolves to the producer method using the usual Web "
-"Beans injection rules. The producer method will be called by the Web Bean "
-"manager to obtain an instance to service this injection point."
+"This injection point has the same type and qualifier annotations as the "
+"producer method, so it resolves to the producer method using the usual CDI "
+"injection rules. The producer method will be called by the container to "
+"obtain an instance to service this injection point."
 msgstr ""
 
 #. Tag: title
-#: producermethods.xml:68
+#: producermethods.xml:74
 #, no-c-format
 msgid "Scope of a producer method"
 msgstr "Geltungsbereich einer Producer-Methode"
 
 #. Tag: para
-#: producermethods.xml:70
-#, no-c-format
+#: producermethods.xml:76
+#, fuzzy, no-c-format
 msgid ""
 "The scope of the producer method defaults to <literal>@Dependent</literal>, "
-"and so it will be called <emphasis>every time</emphasis> the Web Bean "
-"manager injects this field or any other field that resolves to the same "
-"producer method. Thus, there could be multiple instances of the "
+"and so it will be called <emphasis>every time</emphasis> the container "
+"injects this field or any other field that resolves to the same producer "
+"method. Thus, there could be multiple instances of the "
 "<literal>PaymentStrategy</literal> object for each user session."
 msgstr ""
 "Der Geltungsbereich der Producer-Methode ist standardmäßig "
@@ -200,7 +191,7 @@ msgstr ""
 "Objekts für jede Benutzer-Session vorhanden sein."
 
 #. Tag: para
-#: producermethods.xml:75
+#: producermethods.xml:83
 #, no-c-format
 msgid ""
 "To change this behavior, we can add a <literal>@SessionScoped</literal> "
@@ -210,12 +201,12 @@ msgstr ""
 "<literal>@SessionScoped</literal>-Annotation hinzufügen."
 
 #. Tag: programlisting
-#: producermethods.xml:78
-#, no-c-format
+#: producermethods.xml:87
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@Produces @Preferred @SessionScoped\n"
 "public PaymentStrategy getPaymentStrategy() {\n"
-"    ...\n"
+"   ...\n"
 "}]]>"
 msgstr ""
 "<![CDATA[@Produces @Preferred @SessionScoped\n"
@@ -224,7 +215,7 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: producermethods.xml:80
+#: producermethods.xml:89
 #, no-c-format
 msgid ""
 "Now, when the producer method is called, the returned "
@@ -236,13 +227,13 @@ msgstr ""
 "Producer-Methode wird in drselben Session nicht mehr aufgerufen."
 
 #. Tag: title
-#: producermethods.xml:87
+#: producermethods.xml:97
 #, no-c-format
 msgid "Injection into producer methods"
 msgstr "Einspeisung in Producer-Methoden"
 
 #. Tag: para
-#: producermethods.xml:89
+#: producermethods.xml:99
 #, no-c-format
 msgid ""
 "There's one potential problem with the code above. The implementations of "
@@ -258,30 +249,30 @@ msgstr ""
 "nutzen und besitzen keine Interzeptoren."
 
 #. Tag: para
-#: producermethods.xml:94
-#, no-c-format
+#: producermethods.xml:106
+#, fuzzy, no-c-format
 msgid ""
-"If this isn't what we want we can use dependency injection into the producer "
-"method to obtain Web Bean instances:"
+"If this isn't what we want, we can use dependency injection into the "
+"producer method to obtain bean instances:"
 msgstr ""
 "Falls dies nicht das ist was wir wünschen, so können wir Dependency-"
 "Einspeisung in die Producer-Methode verwenden, um Web Bean Instanzen zu "
 "erhalten: "
 
 #. Tag: programlisting
-#: producermethods.xml:97
-#, no-c-format
+#: producermethods.xml:111
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@Produces @Preferred @SessionScoped\n"
 "public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,\n"
-"                                          ChequePaymentStrategy cps,\n"
+"                                          CheckPaymentStrategy cps,\n"
 "                                          PayPalPaymentStrategy ppps) {\n"
-"    switch (paymentStrategy) {\n"
-"        case CREDIT_CARD: return ccps;\n"
-"        case CHEQUE: return cps;\n"
-"        case PAYPAL: return ppps;\n"
-"        default: return null;\n"
-"    } \n"
+"   switch (paymentStrategy) {\n"
+"      case CREDIT_CARD: return ccps;\n"
+"      case CHEQUE: return cps;\n"
+"      case PAYPAL: return ppps;\n"
+"      default: return null;\n"
+"   } \n"
 "}]]>"
 msgstr ""
 "<![CDATA[@Produces @Preferred @SessionScoped\n"
@@ -297,17 +288,17 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: producermethods.xml:99
-#, no-c-format
+#: producermethods.xml:113
+#, fuzzy, no-c-format
 msgid ""
-"Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request "
-"scoped Web Bean? Then the producer method has the effect of \"promoting\" "
-"the current request scoped instance into session scope. This is almost "
-"certainly a bug! The request scoped object will be destroyed by the Web Bean "
-"manager before the session ends, but the reference to the object will be "
-"left \"hanging\" in the session scope. This error will <emphasis>not</"
-"emphasis> be detected by the Web Bean manager, so please take extra care "
-"when returning Web Bean instances from producer methods!"
+"Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-"
+"scoped bean? Then the producer method has the effect of \"promoting\" the "
+"current request scoped instance into session scope. This is almost certainly "
+"a bug! The request scoped object will be destroyed by the container before "
+"the session ends, but the reference to the object will be left \"hanging\" "
+"in the session scope. This error will <emphasis>not</emphasis> be detected "
+"by the container, so please take extra care when returning bean instances "
+"from producer methods!"
 msgstr ""
 "Aber Moment mal, was wenn <literal>CreditCardPaymentStrategy</literal> ein "
 "anfragenbegrenztes Web Bean ist? Dann hat die Producer-Methode die Wirkung, "
@@ -320,13 +311,13 @@ msgstr ""
 "vorsichtig wenn Sie Web Bean Instanzen von Producer-Methoden wiedergeben!"
 
 #. Tag: para
-#: producermethods.xml:107
-#, no-c-format
+#: producermethods.xml:122
+#, fuzzy, no-c-format
 msgid ""
 "There's at least three ways we could go about fixing this bug. We could "
 "change the scope of the <literal>CreditCardPaymentStrategy</literal> "
-"implementation, but this would affect other clients of that Web Bean. A "
-"better option would be to change the scope of the producer method to "
+"implementation, but this would affect other clients of that bean. A better "
+"option would be to change the scope of the producer method to "
 "<literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
 msgstr ""
 "Es existieren mindestens drei Arten, wie dieser Fehler behoben werden kann. "
@@ -337,43 +328,43 @@ msgstr ""
 "<literal>@RequestScoped</literal> zu ändern."
 
 #. Tag: para
-#: producermethods.xml:113
-#, no-c-format
+#: producermethods.xml:129
+#, fuzzy, no-c-format
 msgid ""
 "But a more common solution is to use the special <literal>@New</literal> "
-"binding annotation."
+"qualifier annotation."
 msgstr ""
 "Eine gängigere Lösung ist es jedoch, die spezielle <literal>@New</literal> "
 "Binding-Annotation zu verwenden."
 
 #. Tag: title
-#: producermethods.xml:119
+#: producermethods.xml:134
 #, no-c-format
 msgid "Use of <literal>@New</literal> with producer methods"
 msgstr "Verwendung von <literal>@New</literal> mit Producer-Methoden"
 
 #. Tag: para
-#: producermethods.xml:121
+#: producermethods.xml:136
 #, no-c-format
 msgid "Consider the following producer method:"
 msgstr "Sehen Sie sich folgende Producer-Methode an:"
 
 #. Tag: programlisting
-#: producermethods.xml:123
-#, no-c-format
+#: producermethods.xml:138
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@Produces @Preferred @SessionScoped\n"
 "public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy "
 "ccps,\n"
-"                                          @New ChequePaymentStrategy cps,\n"
+"                                          @New CheckPaymentStrategy cps,\n"
 "                                          @New PayPalPaymentStrategy ppps) "
 "{\n"
-"    switch (paymentStrategy) {\n"
-"        case CREDIT_CARD: return ccps;\n"
-"        case CHEQUE: return cps;\n"
-"        case PAYPAL: return ppps;\n"
-"        default: return null;\n"
-"    } \n"
+"   switch (paymentStrategy) {\n"
+"      case CREDIT_CARD: return ccps;\n"
+"      case CHEQUE: return cps;\n"
+"      case PAYPAL: return ppps;\n"
+"      default: return null;\n"
+"   } \n"
 "}]]>"
 msgstr ""
 "<![CDATA[@Produces @Preferred @SessionScoped\n"
@@ -391,7 +382,7 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: producermethods.xml:125
+#: producermethods.xml:140
 #, no-c-format
 msgid ""
 "Then a new <emphasis>dependent</emphasis> instance of "
@@ -407,6 +398,60 @@ msgstr ""
 "schließlich an den Session-Kontext gebunden. Das abhängige Objekt wird nicht "
 "gelöscht bis das <literal>Preferences</literal>-Objekt gelöscht wird, meist "
 "am Ende der Session."
+
+#. Tag: title
+#: producermethods.xml:150
+#, fuzzy, no-c-format
+msgid "Disposer methods"
+msgstr "Producer-Methoden"
+
+#. Tag: para
+#: producermethods.xml:152
+#, no-c-format
+msgid ""
+"Some producer methods return objects that require explicit destruction. For "
+"example, somebody needs to close this JDBC connection:"
+msgstr ""
+
+#. Tag: programlisting
+#: producermethods.xml:157
+#, no-c-format
+msgid ""
+"<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
+"   return createConnection(user.getId(), user.getPassword());\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:159
+#, no-c-format
+msgid ""
+"Destruction can be performed by a matching <emphasis>disposer method</"
+"emphasis>, defined by the same class as the producer method:"
+msgstr ""
+
+#. Tag: programlisting
+#: producermethods.xml:162
+#, no-c-format
+msgid ""
+"<![CDATA[void close(@Disposes Connection connection) {\n"
+"   connection.close();\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:164
+#, no-c-format
+msgid ""
+"The disposer method must have at least one parameter, annotated "
+"<literal>@Disposes</literal>, with the same type and qualifiers as the "
+"producer method. The disposer method is called automatically when the "
+"context ends (in this case, at the end of the request), and this parameter "
+"receives the object produced by the producer method. If the disposer method "
+"has additional method parameters, the container will look for a bean that "
+"satisfies the type and qualifiers of each parameter and pass it to the "
+"method automatically."
+msgstr ""
 
 #~ msgid ""
 #~ "<blockquote> <para>A Web Beans producer method acts as a source of "

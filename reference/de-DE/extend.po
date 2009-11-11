@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extend\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-10 14:18+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-02-14 06:59+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -16,318 +16,294 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: extend.xml:4
+#: extend.xml:5
 #, no-c-format
-msgid "Extending Web Beans"
-msgstr "Erweiterung von Web Beans"
+msgid "Portable extensions"
+msgstr ""
 
 #. Tag: para
-#: extend.xml:6
-#, no-c-format
+#: extend.xml:7
+#, fuzzy, no-c-format
 msgid ""
-"Web Beans is intended to be a platform for frameworks, extensions and "
-"integration with other technologies. Therefore, Web Beans exposes a set of "
-"SPIs for the use of developers of portable extensions to Web Beans. For "
-"example, the following kinds of extensions were envisaged by the designers "
-"of Web Beans:"
-msgstr "Web Beans sind als Plattform für Frameworks, Erweiterungen und Integration mit anderer Technologie vorgesehen. Web Beans bieten daher einen Satz von SPIs für den Gebrauch durch Entwickler übertragbarer Erweiterungen zu Web Beans. Die folgenden Arten von Erweiterungen zum Beispiel wurden von den Designern von Web Beans vorgesehen:"
+"CDI is intended to be a foundation for frameworks, extensions and "
+"integration with other technologies. Therefore, CDI exposes a set of SPIs "
+"for the use of developers of portable extensions to CDI. For example, the "
+"following kinds of extensions were envisaged by the designers of CDI:"
+msgstr ""
+"Web Beans sind als Plattform für Frameworks, Erweiterungen und Integration "
+"mit anderer Technologie vorgesehen. Web Beans bieten daher einen Satz von "
+"SPIs für den Gebrauch durch Entwickler übertragbarer Erweiterungen zu Web "
+"Beans. Die folgenden Arten von Erweiterungen zum Beispiel wurden von den "
+"Designern von Web Beans vorgesehen:"
 
 #. Tag: para
-#: extend.xml:14
+#: extend.xml:15
 #, no-c-format
 msgid "integration with Business Process Management engines,"
 msgstr "Integration mit Business Process Management Engines,"
 
 #. Tag: para
-#: extend.xml:17
+#: extend.xml:18
 #, no-c-format
 msgid ""
 "integration with third-party frameworks such as Spring, Seam, GWT or Wicket, "
 "and"
-msgstr "Integration mit den Frameworks Dritter, wie etwa Spring, Seam, GWT oder Wicket und"
+msgstr ""
+"Integration mit den Frameworks Dritter, wie etwa Spring, Seam, GWT oder "
+"Wicket und"
 
 #. Tag: para
-#: extend.xml:21
-#, no-c-format
-msgid "new technology based upon the Web Beans programming model."
+#: extend.xml:23
+#, fuzzy, no-c-format
+msgid "new technology based upon the CDI programming model."
 msgstr "neue, auf dem Web Beans Programmiermodell basierende Technologie."
 
 #. Tag: para
-#: extend.xml:25
+#: extend.xml:27
 #, no-c-format
-msgid ""
-"The nerve center for extending Web Beans is the <literal>Manager</literal> "
-"object."
-msgstr "Der zentrale Kern zur Erweiterung von Web Beans ist das <literal>Manager</literal>-Objekt."
-
-#. Tag: title
-#: extend.xml:29
-#, no-c-format
-msgid "The <literal>Manager</literal> object"
-msgstr "Das <literal>Manager</literal>-Objekt"
+msgid "More formally, according to the spec:"
+msgstr ""
 
 #. Tag: para
-#: extend.xml:31
+#: extend.xml:32
 #, no-c-format
-msgid ""
-"The <literal>Manager</literal> interface lets us register and obtain Web "
-"Beans, interceptors, decorators, observers and contexts programatically."
+msgid "A portable extension may integrate with the container by:"
 msgstr ""
-"Das <literal>Manager</literal>-Interface die programmatische Registrierung und den Erhalt von Web "
-"Beans, Interzeptoren, Dekoratoren, Observern und Kontexten."
-
-#. Tag: programlisting
-#: extend.xml:34
-#, no-c-format
-msgid ""
-"<![CDATA[public interface Manager\n"
-"{\n"
-"\n"
-"   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... "
-"bindings);\n"
-"\n"
-"   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,\n"
-"         Annotation... bindings);\n"
-"\n"
-"   public <T> T getInstanceByType(Class<T> type, Annotation... bindings);\n"
-"\n"
-"   public <T> T getInstanceByType(TypeLiteral<T> type,\n"
-"         Annotation... bindings);\n"
-"\n"
-"   public Set<Bean<?>> resolveByName(String name);\n"
-"\n"
-"   public Object getInstanceByName(String name);\n"
-"\n"
-"   public <T> T getInstance(Bean<T> bean);\n"
-"\n"
-"   public void fireEvent(Object event, Annotation... bindings);\n"
-"\n"
-"   public Context getContext(Class<? extends Annotation> scopeType);\n"
-"\n"
-"   public Manager addContext(Context context);\n"
-"\n"
-"   public Manager addBean(Bean<?> bean);\n"
-"\n"
-"   public Manager addInterceptor(Interceptor interceptor);\n"
-"\n"
-"   public Manager addDecorator(Decorator decorator);\n"
-"\n"
-"   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType,\n"
-"         Annotation... bindings);\n"
-"\n"
-"   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> "
-"eventType,\n"
-"         Annotation... bindings);\n"
-"\n"
-"   public <T> Manager removeObserver(Observer<T> observer, Class<T> "
-"eventType,\n"
-"         Annotation... bindings);\n"
-"\n"
-"   public <T> Manager removeObserver(Observer<T> observer,\n"
-"         TypeLiteral<T> eventType, Annotation... bindings);\n"
-"\n"
-"   public <T> Set<Observer<T>> resolveObservers(T event, Annotation... "
-"bindings);\n"
-"\n"
-"   public List<Interceptor> resolveInterceptors(InterceptionType type,\n"
-"         Annotation... interceptorBindings);\n"
-"\n"
-"   public List<Decorator> resolveDecorators(Set<Class<?>> types,\n"
-"         Annotation... bindings);\n"
-"\n"
-"}]]>"
-msgstr ""
-"<![CDATA[public interface Manager\n"
-"{\n"
-"\n"
-"   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... "
-"bindings);\n"
-"\n"
-"   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,\n"
-"         Annotation... bindings);\n"
-"\n"
-"   public <T> T getInstanceByType(Class<T> type, Annotation... bindings);\n"
-"\n"
-"   public <T> T getInstanceByType(TypeLiteral<T> type,\n"
-"         Annotation... bindings);\n"
-"\n"
-"   public Set<Bean<?>> resolveByName(String name);\n"
-"\n"
-"   public Object getInstanceByName(String name);\n"
-"\n"
-"   public <T> T getInstance(Bean<T> bean);\n"
-"\n"
-"   public void fireEvent(Object event, Annotation... bindings);\n"
-"\n"
-"   public Context getContext(Class<? extends Annotation> scopeType);\n"
-"\n"
-"   public Manager addContext(Context context);\n"
-"\n"
-"   public Manager addBean(Bean<?> bean);\n"
-"\n"
-"   public Manager addInterceptor(Interceptor interceptor);\n"
-"\n"
-"   public Manager addDecorator(Decorator decorator);\n"
-"\n"
-"   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType,\n"
-"         Annotation... bindings);\n"
-"\n"
-"   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> "
-"eventType,\n"
-"         Annotation... bindings);\n"
-"\n"
-"   public <T> Manager removeObserver(Observer<T> observer, Class<T> "
-"eventType,\n"
-"         Annotation... bindings);\n"
-"\n"
-"   public <T> Manager removeObserver(Observer<T> observer,\n"
-"         TypeLiteral<T> eventType, Annotation... bindings);\n"
-"\n"
-"   public <T> Set<Observer<T>> resolveObservers(T event, Annotation... "
-"bindings);\n"
-"\n"
-"   public List<Interceptor> resolveInterceptors(InterceptionType type,\n"
-"         Annotation... interceptorBindings);\n"
-"\n"
-"   public List<Decorator> resolveDecorators(Set<Class<?>> types,\n"
-"         Annotation... bindings);\n"
-"\n"
-"}]]>"
 
 #. Tag: para
-#: extend.xml:36
+#: extend.xml:35
 #, no-c-format
-msgid "We can obtain an instance of <literal>Manager</literal> via injection:"
-msgstr "Wir können eine Instanz von <literal>Manager</literal> via Einspeisung erhalten:"
+msgid "Providing its own beans, interceptors and decorators to the container"
+msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:38
+#. Tag: para
+#: extend.xml:40
 #, no-c-format
-msgid "@Current Manager manager"
-msgstr "@Current Manager Manager"
-
-#. Tag: title
-#: extend.xml:43
-#, no-c-format
-msgid "The <literal>Bean</literal> class"
-msgstr "Die <literal>Bean</literal>-Klasse"
+msgid ""
+"Injecting dependencies into its own objects using the dependency injection "
+"service"
+msgstr ""
 
 #. Tag: para
 #: extend.xml:45
 #, no-c-format
-msgid ""
-"Instances of the abstract class <literal>Bean</literal> represent Web Beans. "
-"There is an instance of <literal>Bean</literal> registered with the "
-"<literal>Manager</literal> object for every Web Bean in the application."
+msgid "Providing a context implementation for a custom scope"
 msgstr ""
-"Instanzen der abstrakten Klasse <literal>Bean</literal> repräsentieren Web Beans. "
-"Für jedes Web Bean in der Anwendung wird eine Instanz von <literal>Bean</literal> mit dem "
-"<literal>Manager</literal>-Objekt registriert."
 
-#. Tag: programlisting
+#. Tag: para
 #: extend.xml:50
 #, no-c-format
 msgid ""
-"public abstract class Bean&lt;T&gt; {\n"
-"    \n"
-"    private final Manager manager;\n"
-"    \n"
-"    protected Bean(Manager manager) {\n"
-"        this.manager=manager;\n"
-"    }\n"
-"    \n"
-"    protected Manager getManager() {\n"
-"        return manager;\n"
-"    }\n"
-"    \n"
-"    public abstract Set&lt;Class&gt; getTypes();\n"
-"    public abstract Set&lt;Annotation&gt; getBindingTypes();\n"
-"    public abstract Class&lt;? extends Annotation&gt; getScopeType();\n"
-"    public abstract Class&lt;? extends Annotation&gt; getDeploymentType(); \n"
-"    public abstract String getName();\n"
-"    \n"
-"    public abstract boolean isSerializable();\n"
-"    public abstract boolean isNullable();\n"
-"\n"
-"    public abstract T create();\n"
-"    public abstract void destroy(T instance);\n"
-"    \n"
-"}"
+"Augmenting or overriding the annotation-based metadata with metadata from "
+"some other source"
 msgstr ""
-"public abstract class Bean&lt;T&gt; {\n"
-"    \n"
-"    private final Manager manager;\n"
-"    \n"
-"    protected Bean(Manager manager) {\n"
-"        this.manager=manager;\n"
-"    }\n"
-"    \n"
-"    protected Manager getManager() {\n"
-"        return manager;\n"
-"    }\n"
-"    \n"
-"    public abstract Set&lt;Class&gt; getTypes();\n"
-"    public abstract Set&lt;Annotation&gt; getBindingTypes();\n"
-"    public abstract Class&lt;? extends Annotation&gt; getScopeType();\n"
-"    public abstract Class&lt;? extends Annotation&gt; getDeploymentType(); \n"
-"    public abstract String getName();\n"
-"    \n"
-"    public abstract boolean isSerializable();\n"
-"    public abstract boolean isNullable();\n"
-"\n"
-"    public abstract T create();\n"
-"    public abstract void destroy(T instance);\n"
-"    \n"
-"}"
 
 #. Tag: para
-#: extend.xml:52
-#, no-c-format
+#: extend.xml:57
+#, fuzzy, no-c-format
 msgid ""
-"It's possible to extend the <literal>Bean</literal> class and register "
-"instances by calling <literal>Manager.addBean()</literal> to provide support "
-"for new kinds of Web Beans, beyond those defined by the Web Beans "
-"specification (simple and enterprise Web Beans, producer methods and JMS "
-"endpoints). For example, we could use the <literal>Bean</literal> class to "
-"allow objects managed by another framework to be injected into Web Beans."
-msgstr "Es ist möglich, die <literal>Bean</literal>-Klasse zu erweitern und Instanzen durch Aufruf von <literal>Manager.addBean()</literal> zu registrieren, um Support für neue Arten von Web Beans zu bieten, neben denen, die durch die Web Beans Spezifikation definiert sind (einfache und Enterprise Web Beans, Producer Methoden und JMS Endpunkte). Zum Beispiel könnten wir die <literal>Bean</literal>-Klasse verwenden, um zu ermöglichen, dass durch ein anderes Framework gemanagte Objekte in Web Beans eingespeist werden."
-
-#. Tag: para
-#: extend.xml:60
-#, no-c-format
-msgid ""
-"There are two subclasses of <literal>Bean</literal> defined by the Web Beans "
-"specification: <literal>Interceptor</literal> and <literal>Decorator</"
-"literal>."
-msgstr "Durch die Web Beans Spezifikation werden zwei Unterklassen von <literal>Bean</literal> definiert: <literal>Interceptor</literal> und <literal>Decorator</literal>."
+"The nerve center for extending CDI is the <literal>BeanManager</literal> "
+"object."
+msgstr ""
+"Der zentrale Kern zur Erweiterung von Web Beans ist das <literal>Manager</"
+"literal>-Objekt."
 
 #. Tag: title
-#: extend.xml:67
+#: extend.xml:62
+#, fuzzy, no-c-format
+msgid "The <literal>BeanManager</literal> object"
+msgstr "Das <literal>Manager</literal>-Objekt"
+
+#. Tag: para
+#: extend.xml:64
+#, fuzzy, no-c-format
+msgid ""
+"The <literal>BeanManager</literal> interface lets us obtain beans, "
+"interceptors, decorators, observers and contexts programmatically."
+msgstr ""
+"Das <literal>Manager</literal>-Interface die programmatische Registrierung "
+"und den Erhalt von Web Beans, Interzeptoren, Dekoratoren, Observern und "
+"Kontexten."
+
+#. Tag: programlisting
+#: extend.xml:69
+#, no-c-format
+msgid ""
+"<![CDATA[public interface Manager {\n"
+"   public Object getReference(Bean<?> bean, Type beanType, "
+"CreationalContext<?> ctx);\n"
+"   public Object getInjectableReference(InjectionPoint ij, "
+"CreationalContext<?> ctx);\n"
+"   public <T> CreationalContext<T> createCreationalContext(Contextual<T> "
+"contextual);\n"
+"   public Set<Bean<?>> getBeans(Type beanType, Annotation... bindings);\n"
+"   public Set<Bean<?>> getBeans(String name);\n"
+"   public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean);\n"
+"   public Bean<?> getPassivationCapableBean(String id);\n"
+"   public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans);\n"
+"   public void validate(InjectionPoint injectionPoint);\n"
+"   public void fireEvent(Object event, Annotation... bindings);\n"
+"   public <T> Set<ObserverMethod<?, T>> resolveObserverMethods(T event, "
+"Annotation... bindings);\n"
+"   public List<Decorator<?>> resolveDecorators(Set<Type> types, "
+"Annotation... bindings);\n"
+"   public List<Interceptor<?>> resolveInterceptors(InterceptionType type, "
+"Annotation... interceptorBindings);\n"
+"   public boolean isScope(Class<? extends Annotation> annotationType);\n"
+"   public boolean isNormalScope(Class<? extends Annotation> "
+"annotationType);\n"
+"   public boolean isPassivatingScope(Class<? extends Annotation> "
+"annotationType);\n"
+"   public boolean isQualifier(Class<? extends Annotation> annotationType);\n"
+"   public boolean isInterceptorBindingType(Class<? extends Annotation> "
+"annotationType);\n"
+"   public boolean isStereotype(Class<? extends Annotation> annotationType);\n"
+"   public Set<Annotation> getInterceptorBindingTypeDefinition(Class<? "
+"extends Annotation> bindingType);\n"
+"   public Set<Annotation> getStereotypeDefinition(Class<? extends "
+"Annotation> stereotype);\n"
+"   public Context getContext(Class<? extends Annotation> scopeType);\n"
+"   public ELResolver getELResolver();\n"
+"   public ExpressionFactory wrapExpressionFactory(ExpressionFactory "
+"expressionFactory);\n"
+"   public <T> AnnotatedType<T> createAnnotatedType(Class<T> type);\n"
+"   public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> "
+"type);\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: extend.xml:71
+#, fuzzy, no-c-format
+msgid ""
+"We can obtain an instance of <literal>BeanManager</literal> via injection:"
+msgstr ""
+"Wir können eine Instanz von <literal>Manager</literal> via Einspeisung "
+"erhalten:"
+
+#. Tag: programlisting
+#: extend.xml:73
+#, fuzzy, no-c-format
+msgid "@Inject BeanManager beanManager"
+msgstr "@Current Manager Manager"
+
+#. Tag: para
+#: extend.xml:75
+#, no-c-format
+msgid ""
+"Java EE components may obtain an instance of <literal>BeanManager</literal> "
+"from JNDI by looking up the name <literal>java:comp/BeanManager</literal>. "
+"Any operation of <literal>BeanManager</literal> may be called at any time "
+"during the execution of the application."
+msgstr ""
+
+#. Tag: para
+#: extend.xml:81
+#, fuzzy, no-c-format
+msgid ""
+"Let's study some of the interfaces exposed by the <literal>BeanManager</"
+"literal>."
+msgstr ""
+"Der zentrale Kern zur Erweiterung von Web Beans ist das <literal>Manager</"
+"literal>-Objekt."
+
+#. Tag: title
+#: extend.xml:86
+#, fuzzy, no-c-format
+msgid "The <literal>Bean</literal> interface"
+msgstr "Das <literal>Context</literal>-Interface"
+
+#. Tag: para
+#: extend.xml:88
+#, fuzzy, no-c-format
+msgid ""
+"Instances of the interface <literal>Bean</literal> represent beans. There is "
+"an instance of <literal>Bean</literal> registered with the "
+"<literal>BeanManager</literal> object for every bean in the application."
+msgstr ""
+"Instanzen der abstrakten Klasse <literal>Bean</literal> repräsentieren Web "
+"Beans. Für jedes Web Bean in der Anwendung wird eine Instanz von "
+"<literal>Bean</literal> mit dem <literal>Manager</literal>-Objekt "
+"registriert."
+
+#. Tag: programlisting
+#: extend.xml:94
+#, no-c-format
+msgid ""
+"<![CDATA[public interface Bean<T> extends Contextual<T> {\n"
+"   public Set<Type> getTypes();\n"
+"   public Set<Annotation> getQualifiers();\n"
+"   public Class<? extends Annotation> getScope();\n"
+"   public String getName();\n"
+"   public Set<Class<? extends Annotation>> getStereotypes();\n"
+"   public Class<?> getBeanClass();\n"
+"   public boolean isAlternative();\n"
+"   public boolean isNullable();\n"
+"   public Set<InjectionPoint> getInjectionPoints();\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: extend.xml:96
+#, fuzzy, no-c-format
+msgid ""
+"It's possible to implement the <literal>Bean</literal> interface and "
+"register instances by calling <literal>AfterBeanDiscovery.addBean()</"
+"literal> (<literal>AfterBeanDiscovery</literal> is a built-in event type "
+"that an extension can observe) to provide support for new kinds of beans, "
+"beyond those defined by the CDI specification. For example, we could use the "
+"<literal>Bean</literal> interface to allow objects managed by another "
+"framework to be injected into beans."
+msgstr ""
+"Es ist möglich, die <literal>Bean</literal>-Klasse zu erweitern und "
+"Instanzen durch Aufruf von <literal>Manager.addBean()</literal> zu "
+"registrieren, um Support für neue Arten von Web Beans zu bieten, neben "
+"denen, die durch die Web Beans Spezifikation definiert sind (einfache und "
+"Enterprise Web Beans, Producer Methoden und JMS Endpunkte). Zum Beispiel "
+"könnten wir die <literal>Bean</literal>-Klasse verwenden, um zu ermöglichen, "
+"dass durch ein anderes Framework gemanagte Objekte in Web Beans eingespeist "
+"werden."
+
+#. Tag: para
+#: extend.xml:104
+#, fuzzy, no-c-format
+msgid ""
+"There are two subinterfaces of <literal>Bean</literal> defined by the CDI "
+"specification: <literal>Interceptor</literal> and <literal>Decorator</"
+"literal>."
+msgstr ""
+"Durch die Web Beans Spezifikation werden zwei Unterklassen von "
+"<literal>Bean</literal> definiert: <literal>Interceptor</literal> und "
+"<literal>Decorator</literal>."
+
+#. Tag: title
+#: extend.xml:112
 #, no-c-format
 msgid "The <literal>Context</literal> interface"
 msgstr "Das <literal>Context</literal>-Interface"
 
 #. Tag: para
-#: extend.xml:69
-#, no-c-format
+#: extend.xml:114
+#, fuzzy, no-c-format
 msgid ""
 "The <literal>Context</literal> interface supports addition of new scopes to "
-"Web Beans, or extension of the built-in scopes to new environments."
-msgstr "Das <literal>Context</literal>-Interface unterstützt die Hinzufügung neuer Geltungsbereiche zu Web Beans oder die Erweiterung eingebauter Geltungsbereiche zu neuen Umgebungen."
+"CDI, or extension of the built-in scopes to new environments."
+msgstr ""
+"Das <literal>Context</literal>-Interface unterstützt die Hinzufügung neuer "
+"Geltungsbereiche zu Web Beans oder die Erweiterung eingebauter "
+"Geltungsbereiche zu neuen Umgebungen."
 
 #. Tag: programlisting
-#: extend.xml:72
-#, no-c-format
+#: extend.xml:119
+#, fuzzy, no-c-format
 msgid ""
-"public interface Context {\n"
-"    \n"
-"    public Class&lt;? extends Annotation&gt; getScopeType();\n"
-"    \n"
-"    public &lt;T&gt; T get(Bean&lt;T&gt; bean, boolean create);\n"
-"    \n"
-"    boolean isActive();\n"
-"    \n"
-"}"
+"<![CDATA[public interface Context {\n"
+"   public Class<? extends Annotation> getScope();\n"
+"   public <T> T get(Contextual<T> contextual, CreationalContext<T> "
+"creationalContext);\n"
+"   public <T> T get(Contextual<T> contextual);\n"
+"   boolean isActive();\n"
+"}]]>"
 msgstr ""
 "public interface Context {\n"
 "    \n"
@@ -340,11 +316,194 @@ msgstr ""
 "}"
 
 #. Tag: para
-#: extend.xml:74
-#, no-c-format
+#: extend.xml:121
+#, fuzzy, no-c-format
 msgid ""
 "For example, we might implement <literal>Context</literal> to add a business "
-"process scope to Web Beans, or to add support for the conversation scope to "
-"an application that uses Wicket."
-msgstr "Wir könnten zum Beispiel <literal>Context</literal> implementieren, um den Geltungsbereich eines Business Prozesses zu Web Beans oder Support für den Konversationsgeltungsbereich einer Wickets verwendenen Anwendung hinzuzufügen."
+"process scope to CDI, or to add support for the conversation scope to an "
+"application that uses Wicket."
+msgstr ""
+"Wir könnten zum Beispiel <literal>Context</literal> implementieren, um den "
+"Geltungsbereich eines Business Prozesses zu Web Beans oder Support für den "
+"Konversationsgeltungsbereich einer Wickets verwendenen Anwendung "
+"hinzuzufügen."
 
+#~ msgid "Extending Web Beans"
+#~ msgstr "Erweiterung von Web Beans"
+
+#~ msgid ""
+#~ "<![CDATA[public interface Manager\n"
+#~ "{\n"
+#~ "\n"
+#~ "   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... "
+#~ "bindings);\n"
+#~ "\n"
+#~ "   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,\n"
+#~ "         Annotation... bindings);\n"
+#~ "\n"
+#~ "   public <T> T getInstanceByType(Class<T> type, Annotation... "
+#~ "bindings);\n"
+#~ "\n"
+#~ "   public <T> T getInstanceByType(TypeLiteral<T> type,\n"
+#~ "         Annotation... bindings);\n"
+#~ "\n"
+#~ "   public Set<Bean<?>> resolveByName(String name);\n"
+#~ "\n"
+#~ "   public Object getInstanceByName(String name);\n"
+#~ "\n"
+#~ "   public <T> T getInstance(Bean<T> bean);\n"
+#~ "\n"
+#~ "   public void fireEvent(Object event, Annotation... bindings);\n"
+#~ "\n"
+#~ "   public Context getContext(Class<? extends Annotation> scopeType);\n"
+#~ "\n"
+#~ "   public Manager addContext(Context context);\n"
+#~ "\n"
+#~ "   public Manager addBean(Bean<?> bean);\n"
+#~ "\n"
+#~ "   public Manager addInterceptor(Interceptor interceptor);\n"
+#~ "\n"
+#~ "   public Manager addDecorator(Decorator decorator);\n"
+#~ "\n"
+#~ "   public <T> Manager addObserver(Observer<T> observer, Class<T> "
+#~ "eventType,\n"
+#~ "         Annotation... bindings);\n"
+#~ "\n"
+#~ "   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> "
+#~ "eventType,\n"
+#~ "         Annotation... bindings);\n"
+#~ "\n"
+#~ "   public <T> Manager removeObserver(Observer<T> observer, Class<T> "
+#~ "eventType,\n"
+#~ "         Annotation... bindings);\n"
+#~ "\n"
+#~ "   public <T> Manager removeObserver(Observer<T> observer,\n"
+#~ "         TypeLiteral<T> eventType, Annotation... bindings);\n"
+#~ "\n"
+#~ "   public <T> Set<Observer<T>> resolveObservers(T event, Annotation... "
+#~ "bindings);\n"
+#~ "\n"
+#~ "   public List<Interceptor> resolveInterceptors(InterceptionType type,\n"
+#~ "         Annotation... interceptorBindings);\n"
+#~ "\n"
+#~ "   public List<Decorator> resolveDecorators(Set<Class<?>> types,\n"
+#~ "         Annotation... bindings);\n"
+#~ "\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public interface Manager\n"
+#~ "{\n"
+#~ "\n"
+#~ "   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... "
+#~ "bindings);\n"
+#~ "\n"
+#~ "   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,\n"
+#~ "         Annotation... bindings);\n"
+#~ "\n"
+#~ "   public <T> T getInstanceByType(Class<T> type, Annotation... "
+#~ "bindings);\n"
+#~ "\n"
+#~ "   public <T> T getInstanceByType(TypeLiteral<T> type,\n"
+#~ "         Annotation... bindings);\n"
+#~ "\n"
+#~ "   public Set<Bean<?>> resolveByName(String name);\n"
+#~ "\n"
+#~ "   public Object getInstanceByName(String name);\n"
+#~ "\n"
+#~ "   public <T> T getInstance(Bean<T> bean);\n"
+#~ "\n"
+#~ "   public void fireEvent(Object event, Annotation... bindings);\n"
+#~ "\n"
+#~ "   public Context getContext(Class<? extends Annotation> scopeType);\n"
+#~ "\n"
+#~ "   public Manager addContext(Context context);\n"
+#~ "\n"
+#~ "   public Manager addBean(Bean<?> bean);\n"
+#~ "\n"
+#~ "   public Manager addInterceptor(Interceptor interceptor);\n"
+#~ "\n"
+#~ "   public Manager addDecorator(Decorator decorator);\n"
+#~ "\n"
+#~ "   public <T> Manager addObserver(Observer<T> observer, Class<T> "
+#~ "eventType,\n"
+#~ "         Annotation... bindings);\n"
+#~ "\n"
+#~ "   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> "
+#~ "eventType,\n"
+#~ "         Annotation... bindings);\n"
+#~ "\n"
+#~ "   public <T> Manager removeObserver(Observer<T> observer, Class<T> "
+#~ "eventType,\n"
+#~ "         Annotation... bindings);\n"
+#~ "\n"
+#~ "   public <T> Manager removeObserver(Observer<T> observer,\n"
+#~ "         TypeLiteral<T> eventType, Annotation... bindings);\n"
+#~ "\n"
+#~ "   public <T> Set<Observer<T>> resolveObservers(T event, Annotation... "
+#~ "bindings);\n"
+#~ "\n"
+#~ "   public List<Interceptor> resolveInterceptors(InterceptionType type,\n"
+#~ "         Annotation... interceptorBindings);\n"
+#~ "\n"
+#~ "   public List<Decorator> resolveDecorators(Set<Class<?>> types,\n"
+#~ "         Annotation... bindings);\n"
+#~ "\n"
+#~ "}]]>"
+
+#~ msgid "The <literal>Bean</literal> class"
+#~ msgstr "Die <literal>Bean</literal>-Klasse"
+
+#~ msgid ""
+#~ "public abstract class Bean&lt;T&gt; {\n"
+#~ "    \n"
+#~ "    private final Manager manager;\n"
+#~ "    \n"
+#~ "    protected Bean(Manager manager) {\n"
+#~ "        this.manager=manager;\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    protected Manager getManager() {\n"
+#~ "        return manager;\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    public abstract Set&lt;Class&gt; getTypes();\n"
+#~ "    public abstract Set&lt;Annotation&gt; getBindingTypes();\n"
+#~ "    public abstract Class&lt;? extends Annotation&gt; getScopeType();\n"
+#~ "    public abstract Class&lt;? extends Annotation&gt; getDeploymentType"
+#~ "(); \n"
+#~ "    public abstract String getName();\n"
+#~ "    \n"
+#~ "    public abstract boolean isSerializable();\n"
+#~ "    public abstract boolean isNullable();\n"
+#~ "\n"
+#~ "    public abstract T create();\n"
+#~ "    public abstract void destroy(T instance);\n"
+#~ "    \n"
+#~ "}"
+#~ msgstr ""
+#~ "public abstract class Bean&lt;T&gt; {\n"
+#~ "    \n"
+#~ "    private final Manager manager;\n"
+#~ "    \n"
+#~ "    protected Bean(Manager manager) {\n"
+#~ "        this.manager=manager;\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    protected Manager getManager() {\n"
+#~ "        return manager;\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    public abstract Set&lt;Class&gt; getTypes();\n"
+#~ "    public abstract Set&lt;Annotation&gt; getBindingTypes();\n"
+#~ "    public abstract Class&lt;? extends Annotation&gt; getScopeType();\n"
+#~ "    public abstract Class&lt;? extends Annotation&gt; getDeploymentType"
+#~ "(); \n"
+#~ "    public abstract String getName();\n"
+#~ "    \n"
+#~ "    public abstract boolean isSerializable();\n"
+#~ "    public abstract boolean isNullable();\n"
+#~ "\n"
+#~ "    public abstract T create();\n"
+#~ "    public abstract void destroy(T instance);\n"
+#~ "    \n"
+#~ "}"

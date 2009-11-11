@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: part1\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-10 14:18+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-02-22 16:09+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -16,220 +16,379 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: para
-#: part1.xml:5
-#, no-c-format
+#: part1.xml:14
+#, fuzzy, no-c-format
 msgid ""
-"The Web Beans (JSR-299) specification defines a set of services for the Java "
-"EE environment that makes applications much easier to develop. Web Beans "
-"layers an enhanced lifecycle and interaction model over existing Java "
-"component types including JavaBeans and Enterprise Java Beans. As a "
-"complement to the traditional Java EE programming model, the Web Beans "
-"services provide:"
+"The <ulink src=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299</ulink> "
+"specification (CDI) defines a set of complementary services that help "
+"improve the structure of application code. CDI layers an enhanced lifecycle "
+"and interaction model over existing Java component types, including managed "
+"beans and Enterprise Java Beans. The CDI services provide:"
 msgstr ""
-"Die Web Beans (JSR-299) Speziifikation definiert einen Satz von Diensten für die Java "
-"EE Umgebung, der die Entwicklung von Anwendungen maßgeblich vereinfacht. Web Beans schichtet ein verbessertes Lebenszyklus- und Interaktionsmodell über bestehende Java-Komponententypen, einschließlich JavaBeans und Enterprise Java Beans. Zur Vervollständigung des traditionellen Java EE Programmiermodells bieten Web Beans Dienste:"
+"Die Web Beans (JSR-299) Speziifikation definiert einen Satz von Diensten für "
+"die Java EE Umgebung, der die Entwicklung von Anwendungen maßgeblich "
+"vereinfacht. Web Beans schichtet ein verbessertes Lebenszyklus- und "
+"Interaktionsmodell über bestehende Java-Komponententypen, einschließlich "
+"JavaBeans und Enterprise Java Beans. Zur Vervollständigung des "
+"traditionellen Java EE Programmiermodells bieten Web Beans Dienste:"
 
 #. Tag: para
-#: part1.xml:14
-#, no-c-format
+#: part1.xml:23
+#, fuzzy, no-c-format
 msgid ""
-"an improved lifecycle for stateful components, bound to well-defined "
+"an improved lifecycle for stateful objects, bound to well-defined "
 "<emphasis>contexts</emphasis>,"
 msgstr ""
-"einen verbesserten Lebenszyklus für stateful Komponenten, die an gut definierte "
-"<emphasis>Kontexte</emphasis> gebunden sind,"
+"einen verbesserten Lebenszyklus für stateful Komponenten, die an gut "
+"definierte <emphasis>Kontexte</emphasis> gebunden sind,"
 
 #. Tag: para
-#: part1.xml:18
+#: part1.xml:28
 #, no-c-format
 msgid "a typesafe approach to <emphasis>dependency injection</emphasis>,"
-msgstr "eine typensichere Herangehensweise an <emphasis>Dpendency-Einspeisung</emphasis>,"
+msgstr ""
+"eine typensichere Herangehensweise an <emphasis>Dpendency-Einspeisung</"
+"emphasis>,"
 
 #. Tag: para
-#: part1.xml:21
-#, no-c-format
-msgid "interaction via an <emphasis>event notification</emphasis> facility, and"
-msgstr "Interaktion über eine <emphasis>Ereignisbenachrichtigungs</emphasis>-Facility und"
-
-#. Tag: para
-#: part1.xml:25
-#, no-c-format
+#: part1.xml:33
+#, fuzzy, no-c-format
 msgid ""
-"a better approach to binding <emphasis>interceptors</emphasis> to "
-"components, along with a new kind of interceptor, called a "
-"<emphasis>decorator</emphasis>, that is more appropriate for use in solving "
-"business problems."
-msgstr "eine bessere Vorgehensweise bei der Bindung von <emphasis>Interzeptoren</emphasis> an Komponenten sowie eine neue Art von Interzeptor namens <emphasis>Dekorator</emphasis>, der für die Lösung von Business Problemen geeigneter ist."
-
-#. Tag: para
-#: part1.xml:32
-#, no-c-format
-msgid ""
-"Dependency injection, together with contextual lifecycle management, saves "
-"the user of an unfamiliar API from having to ask and answer the following "
-"questions:"
-msgstr "Dependency-Einspeisung sowie kontextuelles Lebenszyklus-Management erspart dem Benutzer eines unbekannten API das Stellen und die Beantwortung folgender Fragen:"
+"object interaction via an <emphasis>event notification facility</emphasis>,"
+msgstr ""
+"Interaktion über eine <emphasis>Ereignisbenachrichtigungs</emphasis>-"
+"Facility und"
 
 #. Tag: para
 #: part1.xml:38
-#, no-c-format
-msgid "what is the lifecycle of this object?"
-msgstr "was ist der Lebenszyklus dieses Objekts?"
+#, fuzzy, no-c-format
+msgid ""
+"a better approach to binding <emphasis>interceptors</emphasis> to objects, "
+"along with a new kind of interceptor, called a <emphasis>decorator</"
+"emphasis>, that is more appropriate for use in solving business problems, and"
+msgstr ""
+"eine bessere Vorgehensweise bei der Bindung von <emphasis>Interzeptoren</"
+"emphasis> an Komponenten sowie eine neue Art von Interzeptor namens "
+"<emphasis>Dekorator</emphasis>, der für die Lösung von Business Problemen "
+"geeigneter ist."
 
 #. Tag: para
-#: part1.xml:41
-#, no-c-format
-msgid "how many simultaneous clients can it have?"
-msgstr "wieviele simultane Clients kann es besitzen?"
-
-#. Tag: para
-#: part1.xml:44
-#, no-c-format
-msgid "is it multithreaded?"
-msgstr "ist es multithreaded?"
-
-#. Tag: para
-#: part1.xml:47
-#, no-c-format
-msgid "where can I get one from?"
-msgstr "wo kann ich eines bekommen?"
-
-#. Tag: para
-#: part1.xml:50
-#, no-c-format
-msgid "do I need to explicitly destroy it?"
-msgstr "muss ich es explizit löschen?"
-
-#. Tag: para
-#: part1.xml:53
-#, no-c-format
-msgid "where should I keep my reference to it when I'm not using it directly?"
-msgstr "wo sollte ich meinen Verweis darauf aufbewahren, wenn ich es nicht direkt verwende?"
-
-#. Tag: para
-#: part1.xml:57
+#: part1.xml:45
 #, no-c-format
 msgid ""
-"how can I add an indirection layer, so that the implementation of this "
-"object can vary at deployment time?"
-msgstr "wie kann ich ein Indirection-Layer hinzufügen, damit die Implementierung dieses Objekts zum Zeitpunkt des Deployment variieren kann? "
+"an <emphasis>SPI</emphasis> for developing portable extensions to the "
+"container."
+msgstr ""
+
+#. Tag: para
+#: part1.xml:51
+#, no-c-format
+msgid ""
+"The CDI services are a core aspect of the Java EE platform and include full "
+"support for Java EE modularity and the Java EE component architecture. But "
+"the specification does not limit the use of CDI to the Java EE environment. "
+"In the Java SE environment, the services might be provided by a standalone "
+"CDI implementation like Weld (see <xref linkend=\"weld-se\"/>), or even by a "
+"container that also implements the subset of EJB defined for embedded usage "
+"by the EJB 3.1 specification. CDI is especially useful in the context of web "
+"application development, but the problems it solves are general development "
+"concerns and it is therefore applicable to a wide variety of application."
+msgstr ""
 
 #. Tag: para
 #: part1.xml:61
 #, no-c-format
-msgid "how should I go about sharing this object between other objects?"
+msgid ""
+"An object bound to a lifecycle context is called a bean. CDI includes built-"
+"in support for several different kinds of bean, including the following Java "
+"EE component types:"
+msgstr ""
+
+#. Tag: para
+#: part1.xml:68
+#, no-c-format
+msgid "managed beans, and"
+msgstr ""
+
+#. Tag: para
+#: part1.xml:71
+#, no-c-format
+msgid "EJB session beans."
+msgstr ""
+
+#. Tag: para
+#: part1.xml:75
+#, no-c-format
+msgid ""
+"Both managed beans and EJB session beans may inject other beans. But some "
+"other objects, which are not themselves beans in the sense used here, may "
+"also have beans injected via CDI. In the Java EE platform, the following "
+"kinds of component may have beans injected:"
+msgstr ""
+
+#. Tag: para
+#: part1.xml:83
+#, no-c-format
+msgid "message-driven beans,"
+msgstr ""
+
+#. Tag: para
+#: part1.xml:86
+#, no-c-format
+msgid "interceptors,"
+msgstr ""
+
+#. Tag: para
+#: part1.xml:89
+#, no-c-format
+msgid "servlets, servlet filters and servlet event listeners,"
+msgstr ""
+
+#. Tag: para
+#: part1.xml:92
+#, no-c-format
+msgid "JAX-WS service endpoints and handlers, and"
+msgstr ""
+
+#. Tag: para
+#: part1.xml:95
+#, no-c-format
+msgid "JSP tag handlers and tag library event listeners."
+msgstr ""
+
+#. Tag: para
+#: part1.xml:99
+#, fuzzy, no-c-format
+msgid ""
+"CDI relieves the user of an unfamiliar API of the need to answer the "
+"following questions:"
+msgstr ""
+"Dependency-Einspeisung sowie kontextuelles Lebenszyklus-Management erspart "
+"dem Benutzer eines unbekannten API das Stellen und die Beantwortung "
+"folgender Fragen:"
+
+#. Tag: para
+#: part1.xml:105
+#, fuzzy, no-c-format
+msgid "What is the lifecycle of this object?"
+msgstr "was ist der Lebenszyklus dieses Objekts?"
+
+#. Tag: para
+#: part1.xml:108
+#, fuzzy, no-c-format
+msgid "How many simultaneous clients can it have?"
+msgstr "wieviele simultane Clients kann es besitzen?"
+
+#. Tag: para
+#: part1.xml:111
+#, fuzzy, no-c-format
+msgid "Is it multithreaded?"
+msgstr "ist es multithreaded?"
+
+#. Tag: para
+#: part1.xml:114
+#, no-c-format
+msgid "How do I get access to it from a client?"
+msgstr ""
+
+#. Tag: para
+#: part1.xml:117
+#, fuzzy, no-c-format
+msgid "Do I need to explicitly destroy it?"
+msgstr "muss ich es explizit löschen?"
+
+#. Tag: para
+#: part1.xml:120
+#, fuzzy, no-c-format
+msgid ""
+"Where should I keep the reference to it when I'm not currently using it?"
+msgstr ""
+"wo sollte ich meinen Verweis darauf aufbewahren, wenn ich es nicht direkt "
+"verwende?"
+
+#. Tag: para
+#: part1.xml:125
+#, fuzzy, no-c-format
+msgid ""
+"How can I define an alternative implementation, so that the implementation "
+"can vary at deployment time?"
+msgstr ""
+"wie kann ich ein Indirection-Layer hinzufügen, damit die Implementierung "
+"dieses Objekts zum Zeitpunkt des Deployment variieren kann? "
+
+#. Tag: para
+#: part1.xml:131
+#, fuzzy, no-c-format
+msgid "How should I go about sharing this object between other objects?"
 msgstr "wie kann ich dieses Objekt mit anderen Objekten teilen?"
 
 #. Tag: para
-#: part1.xml:65
+#: part1.xml:137
 #, no-c-format
 msgid ""
-"A Web Bean specifies only the type and semantics of other Web Beans it "
-"depends upon. It need not be aware of the actual lifecycle, concrete "
-"implementation, threading model or other clients of any Web Bean it depends "
-"upon. Even better, the concrete implementation, lifecycle and threading "
-"model of a Web Bean it depends upon may vary according to the deployment "
-"scenario, without affecting any client."
-msgstr "Ein Web Bean legt nur Typ und Semantik anderer Web Beans fest, von denen es abhängt. Es benötigt keine Informationen zum tatsächlichen Lebenszyklus, konkreter Implementierung, dem Threading-Modell oder anderen Clients eines Web Beans von dem es abhängt. Besser noch - die konkrete Implementierung, der Lebenszyklus und das Threading-Modell eines Web Beans von dem es abhängt können je nach Deployment-Szenario variieren, ohne dass dies Auswirkungen auf irgendeinen Client hätte."
+"CDI is more than a framework. It's a whole, rich programming model. The "
+"<emphasis>theme</emphasis> of CDI is <emphasis>loose-coupling with strong "
+"typing</emphasis>. Let's study what that phrase means."
+msgstr ""
 
 #. Tag: para
-#: part1.xml:72
-#, no-c-format
+#: part1.xml:142
+#, fuzzy, no-c-format
 msgid ""
-"Events, interceptors and decorators enhance the <emphasis>loose-coupling</"
-"emphasis> that is inherent in this model:"
-msgstr "Ereignisse, Interzeptoren und Dekoratoren verbessern die <emphasis>lose Paarung</emphasis>, die diesem Modell innewohnt:"
+"A bean specifies only the type and semantics of other beans it depends upon. "
+"It need not be aware of the actual lifecycle, concrete implementation, "
+"threading model or other clients of any bean it interacts with. Even better, "
+"the concrete implementation, lifecycle and threading model of a bean may "
+"vary according to the deployment scenario, without affecting any client. "
+"This loose-coupling makes your code easier to maintain."
+msgstr ""
+"Ein Web Bean legt nur Typ und Semantik anderer Web Beans fest, von denen es "
+"abhängt. Es benötigt keine Informationen zum tatsächlichen Lebenszyklus, "
+"konkreter Implementierung, dem Threading-Modell oder anderen Clients eines "
+"Web Beans von dem es abhängt. Besser noch - die konkrete Implementierung, "
+"der Lebenszyklus und das Threading-Modell eines Web Beans von dem es abhängt "
+"können je nach Deployment-Szenario variieren, ohne dass dies Auswirkungen "
+"auf irgendeinen Client hätte."
 
 #. Tag: para
-#: part1.xml:77
+#: part1.xml:149
+#, fuzzy, no-c-format
+msgid ""
+"Events, interceptors and decorators enhance the loose-coupling inherent in "
+"this model:"
+msgstr ""
+"Ereignisse, Interzeptoren und Dekoratoren verbessern die <emphasis>lose "
+"Paarung</emphasis>, die diesem Modell innewohnt:"
+
+#. Tag: para
+#: part1.xml:155
 #, no-c-format
 msgid ""
 "<emphasis>event notifications</emphasis> decouple event producers from event "
 "consumers,"
-msgstr "<emphasis>Ereignisbenachrictigungen</emphasis> entkoppeln Ereignis-Producer von Ereignis-Consumern,"
+msgstr ""
+"<emphasis>Ereignisbenachrictigungen</emphasis> entkoppeln Ereignis-Producer "
+"von Ereignis-Consumern,"
 
 #. Tag: para
-#: part1.xml:81
+#: part1.xml:159
 #, no-c-format
 msgid ""
 "<emphasis>interceptors</emphasis> decouple technical concerns from business "
 "logic, and"
-msgstr "<emphasis>Interzeptoren</emphasis> entkoppeln technische Probleme von Business-Logik und "
+msgstr ""
+"<emphasis>Interzeptoren</emphasis> entkoppeln technische Probleme von "
+"Business-Logik und "
 
 #. Tag: para
-#: part1.xml:85
+#: part1.xml:163
 #, no-c-format
 msgid ""
 "<emphasis>decorators</emphasis> allow business concerns to be "
 "compartmentalized."
-msgstr "<emphasis>Dekoratoren</emphasis> erlauben die Kompartmentalisierung von Business Problemen."
+msgstr ""
+"<emphasis>Dekoratoren</emphasis> erlauben die Kompartmentalisierung von "
+"Business Problemen."
 
 #. Tag: para
-#: part1.xml:90
+#: part1.xml:168
+#, fuzzy, no-c-format
+msgid ""
+"What's even more powerful (and comforting) is that CDI provides all these "
+"facilities in a <emphasis>typesafe</emphasis> way. CDI never relies on "
+"string-based identifiers to determine how collaborating objects fit "
+"together. Instead, CDI uses the typing information that is already available "
+"in the Java object model, augmented using a new programming pattern, called "
+"<emphasis>qualifier annotations</emphasis>, to wire together beans, their "
+"dependencies, their interceptors and decorators, and their event consumers. "
+"Usage of XML descriptors is minimized to truly deployment-specific "
+"information."
+msgstr ""
+"Und das Wichtigste - Web Beans bieten all diese Facilities auf "
+"<emphasis>typensichere</emphasis> Weise. Web Beans verwenden nie string-"
+"basierte Bezeichner, um zu bestimmen, wie zusammenarbeitende Objekte "
+"zusammenpassen. Und XML wird - obwohl es nach wie vor eine Option bleibt - "
+"wird selten verwendet. Stattdessen verwenden Web Beans die bereits im Java-"
+"Objektmodell verfügbaren Typinformationen gemeinsam mit einem neuen Muster "
+"namens <emphasis>Binding-Annotationen</emphasis>, um Web Beans, deren "
+"Abhängigkeiten, deren Interzeptoren und Dekoratoren sowie deren Ereignis-"
+"Consumer zu verbinden."
+
+#. Tag: para
+#: part1.xml:177
 #, no-c-format
 msgid ""
-"Most importantly, Web Beans provides all these facilities in a "
-"<emphasis>typesafe</emphasis> way. Web Beans never uses string-based "
-"identifiers to determine how collaborating objects fit together. And XML, "
-"though it remains an option, is rarely used. Instead, Web Beans uses the "
-"typing information that is already available in the Java object model, "
-"together with a new pattern, called <emphasis>binding annotations</"
-"emphasis>, to wire together Web Beans, their dependencies, their "
-"interceptors and decorators and their event consumers."
-msgstr "Und das Wichtigste - Web Beans bieten all diese Facilities auf <emphasis>typensichere</emphasis> Weise. Web Beans verwenden nie string-basierte Bezeichner, um zu bestimmen, wie zusammenarbeitende Objekte zusammenpassen. Und XML wird - obwohl es nach wie vor eine Option bleibt - wird selten verwendet. Stattdessen verwenden Web Beans die bereits im Java-Objektmodell verfügbaren Typinformationen gemeinsam mit einem neuen Muster namens <emphasis>Binding-Annotationen</emphasis>, um Web Beans, deren Abhängigkeiten, deren Interzeptoren und Dekoratoren sowie deren Ereignis-Consumer zu verbinden."
+"But CDI isn't a restrictive programming model. It doesn't tell you how you "
+"should to structure your application into layers, how you should handle "
+"persistence, or what web framework you have to use. You'll have to decide "
+"those kinds of things for yourself."
+msgstr ""
 
 #. Tag: para
-#: part1.xml:100
+#: part1.xml:183
+#, fuzzy, no-c-format
+msgid ""
+"CDI even provides a comprehensive SPI, allowing other kinds of object "
+"defined by future Java EE specifications or by third-party frameworks to be "
+"cleanly integrated with CDI, take advantage of the CDI services, and "
+"interact with any other kind of bean."
+msgstr ""
+"Web Beans bieten sogar die nötigen Integrationspunkte, so dass andere Arten "
+"von Komponenten, die durch zukünftige Java EE Spezifikationen oder nicht "
+"standardmäßige Frameworks definiert werden, sauber mit Web Beans integriert "
+"werden sowie die Web Beans Dienste nutzen und mit anderen Arten von Web "
+"Beans interagieren können."
+
+#. Tag: para
+#: part1.xml:189
+#, fuzzy, no-c-format
+msgid ""
+"CDI was influenced by a number of existing Java frameworks, including Seam, "
+"Guice and Spring. However, CDI has its own, very distinct, character: more "
+"typesafe than Seam, more stateful and less XML-centric than Spring, more web "
+"and enterprise-application capable than Guice. But it couldn't have been any "
+"of these without inspiration from the frameworks mentioned and "
+"<emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 "
+"Expert Group (EG)."
+msgstr ""
+"Web Beans wurden durch eine Reihe bestehender Java Frameworks beeinflusst, "
+"darunter Seam, Guice und Spring. Jedoch besitzen Web Beans ihre eigenen "
+"Eigenschaften: Typesicherer als Seam, mehr stateful und weniger XML-"
+"zentrisch als Spring, mehr Web- und Enterprise-anwendungsfähig als Guice."
+
+#. Tag: para
+#: part1.xml:197
 #, no-c-format
 msgid ""
-"The Web Beans services are general and apply to the following types of "
-"components that exist in the Java EE environment:"
-msgstr "Die Web Beans Dienste sind allgemein und wenden folgende Komponententypen an, die in der Java EE Umgebung existieren:"
+"Finally, CDI is a <ulink src=\"http://jcp.org\">Java Community Process</"
+"ulink> (JCP) standard. Java EE 6 requires that all compliant application "
+"servers provide support for JSR-299 (even in the web profile)."
+msgstr ""
 
-#. Tag: para
-#: part1.xml:105
-#, no-c-format
-msgid "all JavaBeans,"
-msgstr "alle JavaBeans,"
+#~ msgid "where can I get one from?"
+#~ msgstr "wo kann ich eines bekommen?"
 
-#. Tag: para
-#: part1.xml:108
-#, no-c-format
-msgid "all EJBs, and"
-msgstr "alle EJBs und"
+#~ msgid ""
+#~ "The Web Beans services are general and apply to the following types of "
+#~ "components that exist in the Java EE environment:"
+#~ msgstr ""
+#~ "Die Web Beans Dienste sind allgemein und wenden folgende Komponententypen "
+#~ "an, die in der Java EE Umgebung existieren:"
 
-#. Tag: para
-#: part1.xml:111
-#, no-c-format
-msgid "all Servlets."
-msgstr "alle Servlets."
+#~ msgid "all JavaBeans,"
+#~ msgstr "alle JavaBeans,"
 
-#. Tag: para
-#: part1.xml:115
-#, no-c-format
-msgid ""
-"Web Beans even provides the necessary integration points so that other kinds "
-"of components defined by future Java EE specifications or by non-standard "
-"frameworks may be cleanly integrated with Web Beans, take advantage of the "
-"Web Beans services, and interact with any other kind of Web Bean."
-msgstr "Web Beans bieten sogar die nötigen Integrationspunkte, so dass andere Arten von Komponenten, die durch zukünftige Java EE Spezifikationen oder nicht standardmäßige Frameworks definiert werden, sauber mit Web Beans integriert werden sowie die Web Beans Dienste nutzen und mit anderen Arten von Web Beans interagieren können."
+#~ msgid "all EJBs, and"
+#~ msgstr "alle EJBs und"
 
-#. Tag: para
-#: part1.xml:120
-#, no-c-format
-msgid ""
-"Web Beans was influenced by a number of existing Java frameworks, including "
-"Seam, Guice and Spring. However, Web Beans has its own very distinct "
-"character: more typesafe than Seam, more stateful and less XML-centric than "
-"Spring, more web and enterprise-application capable than Guice."
-msgstr "Web Beans wurden durch eine Reihe bestehender Java Frameworks beeinflusst, darunter Seam, Guice und Spring. Jedoch besitzen Web Beans ihre eigenen Eigenschaften: Typesicherer als Seam, mehr stateful und weniger XML-zentrisch als Spring, mehr Web- und Enterprise-anwendungsfähig als Guice."
+#~ msgid "all Servlets."
+#~ msgstr "alle Servlets."
 
-#. Tag: para
-#: part1.xml:125
-#, no-c-format
-msgid ""
-"Most importantly, Web Beans is a JCP standard that integrates cleanly with "
-"Java EE, and with any Java SE environment where embeddable EJB Lite is "
-"available."
-msgstr "Und das Wichtigste - bei Web Beans handelt es sich um einen JCP-Standard, der sich sauber mit Java EE und mit jeder anderen Java SE Umgebung integrieren lässt, bei der einbettbares EJB Lite verfügbar ist."
-
+#~ msgid ""
+#~ "Most importantly, Web Beans is a JCP standard that integrates cleanly "
+#~ "with Java EE, and with any Java SE environment where embeddable EJB Lite "
+#~ "is available."
+#~ msgstr ""
+#~ "Und das Wichtigste - bei Web Beans handelt es sich um einen JCP-Standard, "
+#~ "der sich sauber mit Java EE und mit jeder anderen Java SE Umgebung "
+#~ "integrieren lässt, bei der einbettbares EJB Lite verfügbar ist."

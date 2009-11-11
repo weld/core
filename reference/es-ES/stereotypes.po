@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stereotypes\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2008-12-19 20:26+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-01-20 11:23+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
@@ -17,276 +17,210 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: stereotypes.xml:4
+#: stereotypes.xml:5
 #, no-c-format
 msgid "Stereotypes"
 msgstr "Estereotipos"
 
 #. Tag: para
-#: stereotypes.xml:6
+#: stereotypes.xml:7
 #, no-c-format
-msgid "According to the Web Beans specification:"
-msgstr "Según la especificación de Web Beans:"
+msgid "The CDI specification defines a stereotype as follows:"
+msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:10
-#, no-c-format
+#: stereotypes.xml:11
+#, fuzzy, no-c-format
 msgid ""
 "In many systems, use of architectural patterns produces a set of recurring "
-"Web Bean roles. A stereotype allows a framework developer to identify such a "
-"role and declare some common metadata for Web Beans with that role in a "
-"central place."
-msgstr "En muchos sistemas, el uso de patrones arquitecturales produce una serie de roles de Web Beans recurrentes. Un estereotipo permite al desarrollador de marco identificar dicho rol y declarar algunos metadatos comunes para Web Beans con ese rol en un lugar central."
+"bean roles. A stereotype allows a framework developer to identify such a "
+"role and declare some common metadata for beans with that role in a central "
+"place."
+msgstr ""
+"En muchos sistemas, el uso de patrones arquitecturales produce una serie de "
+"roles de Web Beans recurrentes. Un estereotipo permite al desarrollador de "
+"marco identificar dicho rol y declarar algunos metadatos comunes para Web "
+"Beans con ese rol en un lugar central."
 
 #. Tag: para
-#: stereotypes.xml:14
+#: stereotypes.xml:17
 #, no-c-format
 msgid "A stereotype encapsulates any combination of:"
 msgstr "Un estereotipo encapsula cualquier combinación de:"
 
 #. Tag: para
-#: stereotypes.xml:18
-#, no-c-format
-msgid "a default deployment type,"
-msgstr "un tipo de despliegue predeterminado,"
-
-#. Tag: para
 #: stereotypes.xml:21
-#, no-c-format
-msgid "a default scope type,"
+#, fuzzy, no-c-format
+msgid "a default scope, and"
 msgstr "un tipo de ámbito predeterminado,"
 
 #. Tag: para
 #: stereotypes.xml:24
-#, no-c-format
-msgid "a restriction upon the Web Bean scope,"
-msgstr "una restricción en el ámbito de Web Bean,"
-
-#. Tag: para
-#: stereotypes.xml:27
-#, no-c-format
-msgid "a requirement that the Web Bean implement or extend a certain type, and"
-msgstr "un requisito que implementa el Web Bean o extiende un cierto tipo y "
-
-#. Tag: para
-#: stereotypes.xml:30
-#, no-c-format
-msgid "a set of interceptor binding annotations."
+#, fuzzy, no-c-format
+msgid "a set of interceptor bindings."
 msgstr "una serie de anotaciones de enlace del interceptor."
 
 #. Tag: para
-#: stereotypes.xml:34
+#: stereotypes.xml:28
 #, no-c-format
-msgid ""
-"A stereotype may also specify that all Web Beans with the stereotype have "
-"defaulted Web Bean names."
-msgstr "Un estereotipo puede también especificar que todos los Web Beans con el estereotipo tengan nombres de Web Beans predeterminados."
+msgid "A stereotype may also specify that:"
+msgstr ""
+
+#. Tag: para
+#: stereotypes.xml:34
+#, fuzzy, no-c-format
+msgid "all beans with the stereotype have defaulted bean EL names, or that"
+msgstr ""
+"Un estereotipo puede también especificar que todos los Web Beans con el "
+"estereotipo tengan nombres de Web Beans predeterminados."
 
 #. Tag: para
 #: stereotypes.xml:37
 #, no-c-format
-msgid "A Web Bean may declare zero, one or multiple stereotypes."
-msgstr "Un Web Bean puede declarar cero, uno o múltiples estereotipos."
+msgid "all beans with the stereotype are alternatives."
+msgstr ""
 
 #. Tag: para
 #: stereotypes.xml:41
 #, no-c-format
 msgid ""
-"A stereotype is a Java annotation type. This stereotype identifies action "
-"classes in some MVC framework:"
-msgstr "Un estereotipo es un tipo de anotación Java. Dicho estereotipo identifica clases de acción en algún marco MVC:"
-
-#. Tag: programlisting
-#: stereotypes.xml:44
-#, no-c-format
-msgid ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@Stereotype\n"
-"public @interface Action {}]]>"
+"A bean may declare zero, one or multiple stereotypes. Stereotype annotations "
+"may be applied to a bean class or producer method or field."
 msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@Stereotype\n"
-"public @interface Action {}]]>"
 
 #. Tag: para
-#: stereotypes.xml:46
-#, no-c-format
-msgid "We use the stereotype by applying the annotation to a Web Bean."
-msgstr "Utilizamos el estereotipo aplicando la anotación al Web Bean."
-
-#. Tag: programlisting
 #: stereotypes.xml:48
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"<![CDATA[@Action \n"
-"public class LoginAction { ... }]]>"
+"A stereotype is an annotation, annotated <literal>@Stereotype</literal>, "
+"that packages several other annotations. For instance, the following "
+"stereotype identifies action classes in some MVC framework:"
 msgstr ""
-"<![CDATA[@Action \n"
-"public class LoginAction { ... }]]>"
+"Un estereotipo es un tipo de anotación Java. Dicho estereotipo identifica "
+"clases de acción en algún marco MVC:"
 
-#. Tag: title
-#: stereotypes.xml:51
-#, no-c-format
-msgid "Default scope and deployment type for a stereotype"
-msgstr "El ámbito predeterminado y el tipo de despliegue para un estereotipo"
+#. Tag: programlisting
+#: stereotypes.xml:53
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Stereotype\n"
+"@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"...\n"
+"public @interface Action {}]]>"
+msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@Stereotype\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
-#: stereotypes.xml:53
-#, no-c-format
-msgid ""
-"A stereotype may specify a default scope and/or default deployment type for "
-"Web Beans with that stereotype. For example, if the deployment type "
-"<literal>@WebTier</literal> identifies Web Beans that should only be "
-"deployed when the system executes as a web application, we might specify the "
-"following defaults for action classes:"
-msgstr "Un estereotipo puede especificar un ámbito y /o tipo de despliegue predeterminados para Web Beans con ese estereotipo. Por ejemplo, si el tipo de despliegue <literal>@WebTier</literal> identifica Web Beans que deben ser desplegados sólo cuando el sistema se ejecuta como una aplicación de red, podríamos especificar los siguientes valores por defecto para clases de acción:"
+#: stereotypes.xml:55
+#, fuzzy, no-c-format
+msgid "We use the stereotype by applying the annotation to a bean."
+msgstr "Utilizamos el estereotipo aplicando la anotación al Web Bean."
 
 #. Tag: programlisting
 #: stereotypes.xml:59
 #, no-c-format
 msgid ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@RequestScoped\n"
-"@WebTier\n"
-"@Stereotype\n"
-"public @interface Action {}]]>"
+"<![CDATA[@Action \n"
+"public class LoginAction { ... }]]>"
 msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@RequestScoped\n"
-"@WebTier\n"
-"@Stereotype\n"
-"public @interface Action {}]]>"
+"<![CDATA[@Action \n"
+"public class LoginAction { ... }]]>"
 
 #. Tag: para
 #: stereotypes.xml:61
 #, no-c-format
 msgid ""
-"Of course, a particular action may still override these defaults if "
-"necessary:"
-msgstr "Obviamente, una acción particular aún puede omitir estos valores predeterminados si es necesario:"
-
-#. Tag: programlisting
-#: stereotypes.xml:64
-#, no-c-format
-msgid ""
-"<![CDATA[@Dependent @Mock @Action \n"
-"public class MockLoginAction { ... }]]>"
+"Of course, we need to apply some other annotations to our stereotype or else "
+"it wouldn't be adding much value."
 msgstr ""
-"<![CDATA[@Dependent @Mock @Action \n"
-"public class MockLoginAction { ... }]]>"
-
-#. Tag: para
-#: stereotypes.xml:66
-#, no-c-format
-msgid "If we want to force all actions to a particular scope, we can do that too."
-msgstr "Si deseamos forzar todas las acciones a un ámbito determinado, también lo podemos hacer."
 
 #. Tag: title
+#: stereotypes.xml:66
+#, fuzzy, no-c-format
+msgid "Default scope for a stereotype"
+msgstr "El ámbito predeterminado y el tipo de despliegue para un estereotipo"
+
+#. Tag: para
+#: stereotypes.xml:68
+#, fuzzy, no-c-format
+msgid ""
+"A stereotype may specify a default scope for beans annotated with the "
+"stereotype. For example:"
+msgstr ""
+"Un estereotipo puede también especificar que todos los Web Beans con el "
+"estereotipo tengan nombres de Web Beans predeterminados."
+
+#. Tag: programlisting
 #: stereotypes.xml:72
-#, no-c-format
-msgid "Restricting scope and type with a stereotype"
-msgstr "Restricción de ámbito y tipo con un estereotipo"
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@RequestScoped\n"
+"@Stereotype\n"
+"@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"public @interface Action {}]]>"
+msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@Stereotype\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:74
-#, no-c-format
-msgid ""
-"Suppose that we wish to prevent actions from declaring certain scopes. Web "
-"Beans lets us explicitly specify the set of allowed scopes for Web Beans "
-"with a certain stereotype. For example:"
-msgstr "Supongamos que deseamos evitar acciones de declarar determinados ámbitos. Web Beans nos permite especificar explícitamente la serie de ámbitos permitidos para Web Beans con un estereotipo determinado. Por ejemplo:"
+#, fuzzy, no-c-format
+msgid "A particular action may still override this default if necessary:"
+msgstr ""
+"Obviamente, una acción particular aún puede omitir estos valores "
+"predeterminados si es necesario:"
 
 #. Tag: programlisting
 #: stereotypes.xml:78
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@RequestScoped\n"
-"@WebTier\n"
-"@Stereotype(supportedScopes=RequestScoped.class)\n"
-"public @interface Action {}]]>"
+"<![CDATA[@Dependent @Action \n"
+"public class DependentScopedLoginAction { ... }]]>"
 msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@RequestScoped\n"
-"@WebTier\n"
-"@Stereotype(supportedScopes=RequestScoped.class)\n"
-"public @interface Action {}]]>"
+"<![CDATA[@Dependent @Mock @Action \n"
+"public class MockLoginAction { ... }]]>"
 
 #. Tag: para
 #: stereotypes.xml:80
 #, no-c-format
 msgid ""
-"If a particular action class attempts to specify a scope other than the Web "
-"Beans request scope, an exception will be thrown by the Web Bean manager at "
-"initialization time."
-msgstr "Si una clase de acción determinada intenta especificar un ámbito diferente al ámbito de la petición de Web Beans, el administrador de Web Bean producirá una excepción en el momento de inicialización."
-
-#. Tag: para
-#: stereotypes.xml:84
-#, no-c-format
-msgid ""
-"We can also force all Web Bean with a certain stereotype to implement an "
-"interface or extend a class:"
-msgstr "También podemos forzar todos los Web Bean con un estereotipo determinado para implementar una interfaz o extender una clase:"
-
-#. Tag: programlisting
-#: stereotypes.xml:87
-#, no-c-format
-msgid ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@RequestScoped\n"
-"@WebTier\n"
-"@Stereotype(requiredTypes=AbstractAction.class)\n"
-"public @interface Action {}]]>"
+"Naturally, overriding a single default isn't much use. But remember, "
+"stereotypes can define more than just the default scope."
 msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@RequestScoped\n"
-"@WebTier\n"
-"@Stereotype(requiredTypes=AbstractAction.class)\n"
-"public @interface Action {}]]>"
-
-#. Tag: para
-#: stereotypes.xml:89
-#, no-c-format
-msgid ""
-"If a particular action class does not extend the class "
-"<literal>AbstractAction</literal>, an exception will be thrown by the Web "
-"Bean manager at initialization time."
-msgstr "Si una clase particular de acción no extiende la clase <literal>AbstractAction</literal>, el administrador de Web Bean producirá una excepción en el momento de inicialización."
 
 #. Tag: title
-#: stereotypes.xml:96
+#: stereotypes.xml:88
 #, no-c-format
 msgid "Interceptor bindings for stereotypes"
 msgstr "Enlaces de interceptor para esterotipos"
 
 #. Tag: para
-#: stereotypes.xml:98
-#, no-c-format
+#: stereotypes.xml:90
+#, fuzzy, no-c-format
 msgid ""
 "A stereotype may specify a set of interceptor bindings to be inherited by "
-"all Web Beans with that stereotype."
-msgstr "Un estereotipo puede especificar una serie de enlaces de interceptor para que sean heredados por todos los Web Beans con ese estereotipo."
+"all beans with that stereotype."
+msgstr ""
+"Un estereotipo puede especificar una serie de enlaces de interceptor para "
+"que sean heredados por todos los Web Beans con ese estereotipo."
 
 #. Tag: programlisting
-#: stereotypes.xml:101
-#, no-c-format
+#: stereotypes.xml:94
+#, fuzzy, no-c-format
 msgid ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@RequestScoped\n"
+"<![CDATA[@RequestScoped\n"
 "@Transactional(requiresNew=true)\n"
 "@Secure\n"
-"@WebTier\n"
 "@Stereotype\n"
+"@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
 "public @interface Action {}]]>"
 msgstr ""
 "<![CDATA[@Retention(RUNTIME)\n"
@@ -299,41 +233,46 @@ msgstr ""
 "public @interface Action {}]]>"
 
 #. Tag: para
-#: stereotypes.xml:103
-#, no-c-format
+#: stereotypes.xml:96
+#, fuzzy, no-c-format
 msgid ""
-"This helps us get technical concerns even further away from the business "
-"code!"
-msgstr "¡Esto nos ayuda a obtener cuestiones técnicas aún más allá del código de negocios!"
+"This helps us get technical concerns, like transactions and security, even "
+"further away from the business code!"
+msgstr ""
+"¡Esto nos ayuda a obtener cuestiones técnicas aún más allá del código de "
+"negocios!"
 
 #. Tag: title
-#: stereotypes.xml:109
+#: stereotypes.xml:103
 #, no-c-format
 msgid "Name defaulting with stereotypes"
 msgstr "Predeterminación de nombre con estereotipos"
 
 #. Tag: para
-#: stereotypes.xml:111
-#, no-c-format
+#: stereotypes.xml:105
+#, fuzzy, no-c-format
 msgid ""
-"Finally, we can specify that all Web Beans with a certain stereotype have a "
-"Web Bean name, defaulted by the Web Bean manager. Actions are often "
-"referenced in JSP pages, so they're a perfect use case for this feature. All "
-"we need to do is add an empty <literal>@Named</literal> annotation:"
-msgstr "Por último, podemos especificar que todos los Web Beans con un determinado estereotipo tengan un nombre de Web Bean, predeterminado por el administrador del Web Bean. Se suele hacer referencia a las acciones en páginas JSP, así que son un caso de uso perfecto para esta función. Todo lo que necesitamos es agregar una anotación vacía a <literal>@Named</literal>."
+"We can specify that all beans with a certain stereotype have a defaulted EL "
+"name when a name is not explicitly defined for that bean. All we need to do "
+"is add an empty <literal>@Named</literal> annotation:"
+msgstr ""
+"Por último, podemos especificar que todos los Web Beans con un determinado "
+"estereotipo tengan un nombre de Web Bean, predeterminado por el "
+"administrador del Web Bean. Se suele hacer referencia a las acciones en "
+"páginas JSP, así que son un caso de uso perfecto para esta función. Todo lo "
+"que necesitamos es agregar una anotación vacía a <literal>@Named</literal>."
 
 #. Tag: programlisting
-#: stereotypes.xml:116
-#, no-c-format
+#: stereotypes.xml:110
+#, fuzzy, no-c-format
 msgid ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@RequestScoped\n"
+"<![CDATA[@RequestScoped\n"
 "@Transactional(requiresNew=true)\n"
 "@Secure\n"
 "@Named\n"
-"@WebTier\n"
 "@Stereotype\n"
+"@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
 "public @interface Action {}]]>"
 msgstr ""
 "<![CDATA[@Retention(RUNTIME)\n"
@@ -347,48 +286,140 @@ msgstr ""
 "public @interface Action {}]]>"
 
 #. Tag: para
-#: stereotypes.xml:118
-#, no-c-format
+#: stereotypes.xml:112
+#, fuzzy, no-c-format
 msgid ""
-"Now, <literal>LoginAction</literal> will have the name <literal>loginAction</"
-"literal>."
+"Now, the <literal>LoginAction</literal> bean will have the defaulted name "
+"<literal>loginAction</literal>."
 msgstr ""
 "Ahora, <literal>LoginAction</literal> se llamará<literal>loginAction</"
 "literal>."
 
 #. Tag: title
-#: stereotypes.xml:124
-#, no-c-format
-msgid "Standard stereotypes"
+#: stereotypes.xml:119
+#, fuzzy, no-c-format
+msgid "Alternative stereotypes"
 msgstr "Estereotipos estándar"
 
 #. Tag: para
-#: stereotypes.xml:126
+#: stereotypes.xml:121
 #, no-c-format
 msgid ""
-"We've already met two standard stereotypes defined by the Web Beans "
-"specification: <literal>@Interceptor</literal> and <literal>@Decorator</"
-"literal>."
+"A stereotype can indicate that all beans to which it is applied are "
+"<literal>@Alternative</literal>s. An <emphasis>alternative stereotype</"
+"emphasis> lets us classify beans by deployment scenario."
 msgstr ""
-"Ya hemos visto dos estereotipos estándar definidos por la especificación de Web Beans: <literal>@Interceptor</literal> y <literal>@Decorator</"
-"literal>."
-
-#. Tag: para
-#: stereotypes.xml:129
-#, no-c-format
-msgid "Web Beans defines one further standard stereotype:"
-msgstr "Web Beans define otro estereotipo estándar:"
 
 #. Tag: programlisting
-#: stereotypes.xml:131
+#: stereotypes.xml:126
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Alternative\n"
+"@Stereotype\n"
+"@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"public @interface Mock {}]]>"
+msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@Stereotype\n"
+"public @interface Action {}]]>"
+
+#. Tag: para
+#: stereotypes.xml:128
 #, no-c-format
 msgid ""
+"We can apply an alternative stereotype to a whole set of beans, and activate "
+"them all with one line of code in <literal>beans.xml</literal>."
+msgstr ""
+
+#. Tag: programlisting
+#: stereotypes.xml:133
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Mock\n"
+"public class MockLoginAction extends LoginAction { ... }]]>"
+msgstr ""
+"<![CDATA[@Action \n"
+"public class LoginAction { ... }]]>"
+
+#. Tag: title
+#: stereotypes.xml:141
+#, fuzzy, no-c-format
+msgid "Stereotype stacking"
+msgstr "Estereotipos"
+
+#. Tag: para
+#: stereotypes.xml:143
+#, no-c-format
+msgid ""
+"This may blow your mind a bit, but stereotypes may declare other "
+"stereotypes, which we'll call <emphasis>stereotype stacking</emphasis>. You "
+"may want to do this if you have two distinct stereotypes which are "
+"meaningful on their own, but in other situation may be meaningful when "
+"combined."
+msgstr ""
+
+#. Tag: para
+#: stereotypes.xml:150
+#, no-c-format
+msgid ""
+"Here's an example that combines the <literal>@Action</literal> and "
+"<literal>@Auditable</literal> stereotypes:"
+msgstr ""
+
+#. Tag: programlisting
+#: stereotypes.xml:155
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Auditable\n"
+"@Action\n"
+"@Stereotype\n"
+"@Target(TYPE)\n"
+"@Retention(RUNTIME)\n"
+"public @interface AuditableAction {}]]>"
+msgstr ""
 "<![CDATA[@Named \n"
 "@RequestScoped \n"
 "@Stereotype \n"
 "@Target({TYPE, METHOD}) \n"
 "@Retention(RUNTIME) \n"
 "public @interface Model {} ]]>"
+
+#. Tag: title
+#: stereotypes.xml:160
+#, fuzzy, no-c-format
+msgid "Built-in stereotypes"
+msgstr "Estereotipos estándar"
+
+#. Tag: para
+#: stereotypes.xml:162
+#, fuzzy, no-c-format
+msgid ""
+"We've already met two standard stereotypes defined by the CDI specification: "
+"<literal>@Interceptor</literal> and <literal>@Decorator</literal>."
+msgstr ""
+"Ya hemos visto dos estereotipos estándar definidos por la especificación de "
+"Web Beans: <literal>@Interceptor</literal> y <literal>@Decorator</literal>."
+
+#. Tag: para
+#: stereotypes.xml:167
+#, no-c-format
+msgid ""
+"CDI defines one further standard stereotype, <literal>@Model</literal>, "
+"which is expected to be used frequently in web applications:"
+msgstr ""
+
+#. Tag: programlisting
+#: stereotypes.xml:172
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Named \n"
+"@RequestScoped \n"
+"@Stereotype \n"
+"@Target({TYPE, METHOD}) \n"
+"@Retention(RUNTIME) \n"
+"public @interface Model {}]]>"
 msgstr ""
 "<![CDATA[@Named \n"
 "@RequestScoped \n"
@@ -398,11 +429,134 @@ msgstr ""
 "public @interface Model {} ]]>"
 
 #. Tag: para
-#: stereotypes.xml:133
-#, no-c-format
+#: stereotypes.xml:174
+#, fuzzy, no-c-format
 msgid ""
-"This stereotype is intended for use with JSF. Instead of using JSF managed "
-"beans, just annotate a Web Bean <literal>@Model</literal>, and use it "
-"directly in your JSF page."
-msgstr "Este estereotipo está destinado a ser utilizado con JSF. En lugar de usar beans JSF administrados, solamente anote un Web Bean <literal>@Model</literal>, y utilícelo directamente en su página JSF."
+"Instead of using JSF managed beans, just annotate a bean <literal>@Model</"
+"literal>, and use it directly in your JSF view!"
+msgstr ""
+"Este estereotipo está destinado a ser utilizado con JSF. En lugar de usar "
+"beans JSF administrados, solamente anote un Web Bean <literal>@Model</"
+"literal>, y utilícelo directamente en su página JSF."
 
+#~ msgid "According to the Web Beans specification:"
+#~ msgstr "Según la especificación de Web Beans:"
+
+#~ msgid "a default deployment type,"
+#~ msgstr "un tipo de despliegue predeterminado,"
+
+#~ msgid "a restriction upon the Web Bean scope,"
+#~ msgstr "una restricción en el ámbito de Web Bean,"
+
+#~ msgid ""
+#~ "a requirement that the Web Bean implement or extend a certain type, and"
+#~ msgstr ""
+#~ "un requisito que implementa el Web Bean o extiende un cierto tipo y "
+
+#~ msgid "A Web Bean may declare zero, one or multiple stereotypes."
+#~ msgstr "Un Web Bean puede declarar cero, uno o múltiples estereotipos."
+
+#~ msgid ""
+#~ "A stereotype may specify a default scope and/or default deployment type "
+#~ "for Web Beans with that stereotype. For example, if the deployment type "
+#~ "<literal>@WebTier</literal> identifies Web Beans that should only be "
+#~ "deployed when the system executes as a web application, we might specify "
+#~ "the following defaults for action classes:"
+#~ msgstr ""
+#~ "Un estereotipo puede especificar un ámbito y /o tipo de despliegue "
+#~ "predeterminados para Web Beans con ese estereotipo. Por ejemplo, si el "
+#~ "tipo de despliegue <literal>@WebTier</literal> identifica Web Beans que "
+#~ "deben ser desplegados sólo cuando el sistema se ejecuta como una "
+#~ "aplicación de red, podríamos especificar los siguientes valores por "
+#~ "defecto para clases de acción:"
+
+#~ msgid ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#~ msgid ""
+#~ "If we want to force all actions to a particular scope, we can do that too."
+#~ msgstr ""
+#~ "Si deseamos forzar todas las acciones a un ámbito determinado, también lo "
+#~ "podemos hacer."
+
+#~ msgid "Restricting scope and type with a stereotype"
+#~ msgstr "Restricción de ámbito y tipo con un estereotipo"
+
+#~ msgid ""
+#~ "Suppose that we wish to prevent actions from declaring certain scopes. "
+#~ "Web Beans lets us explicitly specify the set of allowed scopes for Web "
+#~ "Beans with a certain stereotype. For example:"
+#~ msgstr ""
+#~ "Supongamos que deseamos evitar acciones de declarar determinados ámbitos. "
+#~ "Web Beans nos permite especificar explícitamente la serie de ámbitos "
+#~ "permitidos para Web Beans con un estereotipo determinado. Por ejemplo:"
+
+#~ msgid ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype(supportedScopes=RequestScoped.class)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype(supportedScopes=RequestScoped.class)\n"
+#~ "public @interface Action {}]]>"
+
+#~ msgid ""
+#~ "If a particular action class attempts to specify a scope other than the "
+#~ "Web Beans request scope, an exception will be thrown by the Web Bean "
+#~ "manager at initialization time."
+#~ msgstr ""
+#~ "Si una clase de acción determinada intenta especificar un ámbito "
+#~ "diferente al ámbito de la petición de Web Beans, el administrador de Web "
+#~ "Bean producirá una excepción en el momento de inicialización."
+
+#~ msgid ""
+#~ "We can also force all Web Bean with a certain stereotype to implement an "
+#~ "interface or extend a class:"
+#~ msgstr ""
+#~ "También podemos forzar todos los Web Bean con un estereotipo determinado "
+#~ "para implementar una interfaz o extender una clase:"
+
+#~ msgid ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype(requiredTypes=AbstractAction.class)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype(requiredTypes=AbstractAction.class)\n"
+#~ "public @interface Action {}]]>"
+
+#~ msgid ""
+#~ "If a particular action class does not extend the class "
+#~ "<literal>AbstractAction</literal>, an exception will be thrown by the Web "
+#~ "Bean manager at initialization time."
+#~ msgstr ""
+#~ "Si una clase particular de acción no extiende la clase "
+#~ "<literal>AbstractAction</literal>, el administrador de Web Bean producirá "
+#~ "una excepción en el momento de inicialización."
+
+#~ msgid "Web Beans defines one further standard stereotype:"
+#~ msgstr "Web Beans define otro estereotipo estándar:"

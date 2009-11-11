@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2008-12-19 20:26+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-02-07 15:15+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
@@ -16,102 +16,254 @@ msgstr ""
 #. Tag: para
 #: part3.xml:5
 #, no-c-format
-msgid "The second major theme of Web Beans is <emphasis>strong typing</emphasis>. The information about the dependencies, interceptors and decorators of a Web Bean, and the information about event consumers for an event producer, is contained in typesafe Java constructs that may be validated by the compiler."
-msgstr "Le second thème majeur des Web Beans est <emphasis>le typage fort</emphasis>. L'information sur les dépendances, les intercepteurs et les décorateurs d'un Web Bean, et l'information sur les consommateurs évènements pour un producteur d'évènements, est contenue dans des constructions Java typesafe qui peuvent être validées par le compilateur."
+msgid ""
+"The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've "
+"already seen three means of achieving loose coupling:"
+msgstr ""
 
 #. Tag: para
-#: part3.xml:10
+#: part3.xml:12
 #, no-c-format
-msgid "You don't see string-based identifiers in Web Beans code, not because the framework is hiding them from you using clever defaulting rules &#151; so-called \"configuration by convention\" &#151; but because there are simply no strings there to begin with!"
-msgstr "Vous ne voyez pas d'identifiants basés sur des chaînes de caractères dans un code Web Bean, pas parce que le framework vous les cache en utilisant des règles par défaut intelligentes &#151; les soit-disant \"configuration par convention\" &#151; mais parce qu'il n'y a même pas de chaînes de caractères pour commencer!"
+msgid "<emphasis>alternatives</emphasis> enable deployment time polymorphism,"
+msgstr ""
 
 #. Tag: para
-#: part3.xml:15
+#: part3.xml:17
 #, no-c-format
-msgid "The obvious benefit of this approach is that <emphasis>any</emphasis> IDE can provide autocompletion, validation and refactoring without the need for special tooling. But there is a second, less-immediately-obvious, benefit. It turns out that when you start thinking of identifying objects, events or interceptors via annotations instead of names, you have an opportunity to lift the semantic level of your code."
-msgstr "Le bénéfice évident de cette approche est que <emphasis>tout<emphasis> EDI peuvet fournir de l'autocomplétion, de la validation et du refactoring sans avoir besoin d'une outillage spécial. Mais il y a un second bénéfice, moins évident. Quand vous pensez à identifier des objets, des évènements ou des intercepteurs via annotations à la place de noms, vous avez l'opportunité d'élever le niveau sémantique de votre code."
+msgid "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
+msgstr ""
 
 #. Tag: para
 #: part3.xml:21
 #, no-c-format
-msgid "Web Beans encourages you develop annotations that model concepts, for example,"
-msgstr "Les Web Beans vous encouragent à développer des annotaions qui modélisent des concepts, par exemple,"
+msgid ""
+"<emphasis>contextual lifecycle management</emphasis> decouples bean "
+"lifecycles."
+msgstr ""
 
 #. Tag: para
-#: part3.xml:26
+#: part3.xml:27
+#, no-c-format
+msgid ""
+"These techniques serve to enable loose coupling of client and server. The "
+"client is no longer tightly bound to an implementation of an interface, nor "
+"is it required to manage the lifecycle of the implementation. This approach "
+"lets <emphasis>stateful objects interact as if they were services</emphasis>."
+msgstr ""
+
+#. Tag: para
+#: part3.xml:33
+#, no-c-format
+msgid ""
+"Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system "
+"can respond to change in a well-defined manner. In the past, frameworks that "
+"attempted to provide the facilities listed above invariably did it by "
+"sacrificing type safety (most notably by using XML descriptors). CDI is the "
+"first technology, and certainly the first specification in the Java EE "
+"platform, that achieves this level of loose coupling in a typesafe way."
+msgstr ""
+
+#. Tag: para
+#: part3.xml:40
+#, no-c-format
+msgid ""
+"CDI provides three extra important facilities that further the goal of loose "
+"coupling:"
+msgstr ""
+
+#. Tag: para
+#: part3.xml:46
+#, no-c-format
+msgid ""
+"<emphasis>interceptors</emphasis> decouple technical concerns from business "
+"logic,"
+msgstr ""
+
+#. Tag: para
+#: part3.xml:51
+#, no-c-format
+msgid ""
+"<emphasis>decorators</emphasis> may be used to decouple some business "
+"concerns, and"
+msgstr ""
+
+#. Tag: para
+#: part3.xml:56
+#, no-c-format
+msgid ""
+"<emphasis>event notifications</emphasis> decouple event producers from event "
+"consumers."
+msgstr ""
+
+#. Tag: para
+#: part3.xml:62
+#, fuzzy, no-c-format
+msgid ""
+"The second major theme of CDI is <emphasis>strong typing</emphasis>. The "
+"information about the dependencies, interceptors and decorators of a bean, "
+"and the information about event consumers for an event producer, is "
+"contained in typesafe Java constructs that may be validated by the compiler."
+msgstr ""
+"Le second thème majeur des Web Beans est <emphasis>le typage fort</"
+"emphasis>. L'information sur les dépendances, les intercepteurs et les "
+"décorateurs d'un Web Bean, et l'information sur les consommateurs évènements "
+"pour un producteur d'évènements, est contenue dans des constructions Java "
+"typesafe qui peuvent être validées par le compilateur."
+
+#. Tag: para
+#: part3.xml:68
+#, fuzzy, no-c-format
+msgid ""
+"You don't see string-based identifiers in CDI code, not because the "
+"framework is hiding them from you using clever defaulting rules&#8212;so-"
+"called \"configuration by convention\"&#8212;but because there are simply no "
+"strings there to begin with!"
+msgstr ""
+"Vous ne voyez pas d'identifiants basés sur des chaînes de caractères dans un "
+"code Web Bean, pas parce que le framework vous les cache en utilisant des "
+"règles par défaut intelligentes &#151; les soit-disant \"configuration par "
+"convention\" &#151; mais parce qu'il n'y a même pas de chaînes de caractères "
+"pour commencer!"
+
+#. Tag: para
+#: part3.xml:74
+#, no-c-format
+msgid ""
+"The obvious benefit of this approach is that <emphasis>any</emphasis> IDE "
+"can provide autocompletion, validation and refactoring without the need for "
+"special tooling. But there is a second, less-immediately-obvious, benefit. "
+"It turns out that when you start thinking of identifying objects, events or "
+"interceptors via annotations instead of names, you have an opportunity to "
+"lift the semantic level of your code."
+msgstr ""
+"Le bénéfice évident de cette approche est que <emphasis>tout<emphasis> EDI "
+"peuvet fournir de l'autocomplétion, de la validation et du refactoring sans "
+"avoir besoin d'une outillage spécial. Mais il y a un second bénéfice, moins "
+"évident. Quand vous pensez à identifier des objets, des évènements ou des "
+"intercepteurs via annotations à la place de noms, vous avez l'opportunité "
+"d'élever le niveau sémantique de votre code."
+
+#. Tag: para
+#: part3.xml:81
+#, fuzzy, no-c-format
+msgid ""
+"CDI encourages you develop annotations that model concepts, for example,"
+msgstr ""
+"Les Web Beans vous encouragent à développer des annotaions qui modélisent "
+"des concepts, par exemple,"
+
+#. Tag: para
+#: part3.xml:87
 #, no-c-format
 msgid "<literal>@Asynchronous</literal>,"
 msgstr "<literal>@Asynchronous</literal>,"
 
 #. Tag: para
-#: part3.xml:29
+#: part3.xml:90
 #, no-c-format
 msgid "<literal>@Mock</literal>,"
 msgstr "<literal>@Mock</literal>,"
 
 #. Tag: para
-#: part3.xml:32
+#: part3.xml:93
 #, no-c-format
 msgid "<literal>@Secure</literal> or"
 msgstr "<literal>@Secure</literal> or"
 
 #. Tag: para
-#: part3.xml:35
+#: part3.xml:96
 #, no-c-format
 msgid "<literal>@Updated</literal>,"
 msgstr "<literal>@Updated</literal>,"
 
 #. Tag: para
-#: part3.xml:39
+#: part3.xml:100
 #, no-c-format
 msgid "instead of using compound names like"
 msgstr "au lieu d'utiliser des noms composés comme"
 
 #. Tag: para
-#: part3.xml:43
+#: part3.xml:104
 #, no-c-format
 msgid "<literal>asyncPaymentProcessor</literal>,"
 msgstr "<literal>asyncPaymentProcessor</literal>,"
 
 #. Tag: para
-#: part3.xml:46
+#: part3.xml:107
 #, no-c-format
 msgid "<literal>mockPaymentProcessor</literal>,"
 msgstr "<literal>mockPaymentProcessor</literal>,"
 
 #. Tag: para
-#: part3.xml:49
+#: part3.xml:110
 #, no-c-format
 msgid "<literal>SecurityInterceptor</literal> or"
 msgstr "<literal>SecurityInterceptor</literal> or"
 
 #. Tag: para
-#: part3.xml:52
+#: part3.xml:113
 #, no-c-format
 msgid "<literal>DocumentUpdatedEvent</literal>."
 msgstr "<literal>DocumentUpdatedEvent</literal>."
 
 #. Tag: para
-#: part3.xml:56
+#: part3.xml:117
 #, no-c-format
-msgid "The annotations are reusable. They help describe common qualities of disparate parts of the system. They help us categorize and understand our code. They help us deal with common concerns in a common way. They make our code more literate and more understandable."
-msgstr "Les annotations sont réutilisables. Ils aident à décrire des qualités communes de parties disparates du système. Elles nous aident à catégoriser et à comprendre notre code. Elles nous aident à traiter des problèmes communs d'une manière commune. Elles rendent notre code plus litéral et plus compréhensible."
+msgid ""
+"The annotations are reusable. They help describe common qualities of "
+"disparate parts of the system. They help us categorize and understand our "
+"code. They help us deal with common concerns in a common way. They make our "
+"code more literate and more understandable."
+msgstr ""
+"Les annotations sont réutilisables. Ils aident à décrire des qualités "
+"communes de parties disparates du système. Elles nous aident à catégoriser "
+"et à comprendre notre code. Elles nous aident à traiter des problèmes "
+"communs d'une manière commune. Elles rendent notre code plus litéral et plus "
+"compréhensible."
 
 #. Tag: para
-#: part3.xml:61
-#, no-c-format
-msgid "Web Beans <emphasis>stereotypes</emphasis> take this idea a step further. A stereotype models a common <emphasis>role</emphasis> in your application architecture. It encapsulates various properties of the role, including scope, interceptor bindings, deployment type, etc, into a single reusable package."
-msgstr "Les <emphasis>stéréotypes</emphasis> Web Beans poussent cette idée d'une étape supplémentaire. Un stéréotype modélise un <emphasis>role</emphasis> commun dans votre architecture d'application. Il encapsule des propriétés variées du rôle, comme la portée, les liaisions d'intercepteurs, le type de déploiement, etc, dans un seul paquetage réutilisable."
+#: part3.xml:123
+#, fuzzy, no-c-format
+msgid ""
+"CDI <emphasis>stereotypes</emphasis> take this idea a step further. A "
+"stereotype models a common <emphasis>role</emphasis> in your application "
+"architecture. It encapsulates various properties of the role, including "
+"scope, interceptor bindings, qualifiers, etc, into a single reusable "
+"package. (Of course, there is also the benefit of tucking some of those "
+"annotations away)."
+msgstr ""
+"Les <emphasis>stéréotypes</emphasis> Web Beans poussent cette idée d'une "
+"étape supplémentaire. Un stéréotype modélise un <emphasis>role</emphasis> "
+"commun dans votre architecture d'application. Il encapsule des propriétés "
+"variées du rôle, comme la portée, les liaisions d'intercepteurs, le type de "
+"déploiement, etc, dans un seul paquetage réutilisable."
 
 #. Tag: para
-#: part3.xml:66
-#, no-c-format
-msgid "Even Web Beans XML metadata is strongly typed! There's no compiler for XML, so Web Beans takes advantage of XML schemas to validate the Java types and attributes that appear in XML. This approach turns out to make the XML more literate, just like annotations made our Java code more literate."
-msgstr "Même les métadonnées XML des Web Beans sont fortement typées! Il n'y a pas de compilateur XML, donc les Web Beans utilisent des schémas XML pour valider les types Java et les attributs qui apparaissent dans le XML. Cette approche permet de rendre le XML plus litéral, tout comme les annotations rendent notre code Java plus litéral."
+#: part3.xml:138
+#, fuzzy, no-c-format
+msgid ""
+"We're now ready to meet some more advanced features of CDI. Bear in mind "
+"that these features exist to make our code both easier to validate and more "
+"understandable. Most of the time you don't ever really <emphasis>need</"
+"emphasis> to use these features, but if you use them wisely, you'll come to "
+"appreciate their power."
+msgstr ""
+"Nous commes maintenant prêts à découvrir quelques fonctionnalités plus "
+"avancées des Web Beans. Gardez à l'esprit que ces fonctionnalités existent "
+"pour rendre notre code à la fois plus facile à valider et plus "
+"compréhensible. La plupart du temps nous n'avons pas réellement "
+"<emphasis>besoin</emphaiss> d'utiliser ces fonctionnalités, mais si vous les "
+"utilisez sagement, vous en viendrez à apprécier leur pouvoir."
 
-#. Tag: para
-#: part3.xml:71
-#, no-c-format
-msgid "We're now ready to meet some more advanced features of Web Beans. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don't ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you'll come to appreciate their power."
-msgstr "Nous commes maintenant prêts à découvrir quelques fonctionnalités plus avancées des Web Beans. Gardez à l'esprit que ces fonctionnalités existent pour rendre notre code à la fois plus facile à valider et plus compréhensible. La plupart du temps nous n'avons pas réellement <emphasis>besoin</emphaiss> d'utiliser ces fonctionnalités, mais si vous les utilisez sagement, vous en viendrez à apprécier leur pouvoir."
-
+#~ msgid ""
+#~ "Even Web Beans XML metadata is strongly typed! There's no compiler for "
+#~ "XML, so Web Beans takes advantage of XML schemas to validate the Java "
+#~ "types and attributes that appear in XML. This approach turns out to make "
+#~ "the XML more literate, just like annotations made our Java code more "
+#~ "literate."
+#~ msgstr ""
+#~ "Même les métadonnées XML des Web Beans sont fortement typées! Il n'y a "
+#~ "pas de compilateur XML, donc les Web Beans utilisent des schémas XML pour "
+#~ "valider les types Java et les attributs qui apparaissent dans le XML. "
+#~ "Cette approche permet de rendre le XML plus litéral, tout comme les "
+#~ "annotations rendent notre code Java plus litéral."

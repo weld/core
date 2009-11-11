@@ -3,9 +3,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
+"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection "
+"VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-28 17:09+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-03-31 10:42+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
@@ -15,13 +16,44 @@ msgstr ""
 
 #. Tag: para
 #: part5.xml:5
-#, no-c-format
-msgid "Web Beans is the reference implementation of JSR-299, and is used by JBoss AS and Glassfish to provide JSR-299 services for Java Enterprise Edition applications. Web Beans also goes beyond the environments and APIs defined by the JSR-299 specification and provides support for a number of other environments (such as a servlet container such as Tomcat, or Java SE) and additional APIs and modules (such as logging, XSD generation for the JSR-299 XML deployment descriptors)."
-msgstr "Web Beans è la reference implementatio di JSR-299, ed è usata da JBoss AS e Glassfish per fornire i servizi JSR-299 per le applicazioni Java Enterprise Edition. Web Beans va oltre gli ambienti e le API definite dalla specifica JSR-299 e fornisce supporto ad un numero di altri ambienti (quali servlet container quali Tomcat o Java SE) ed API e moduli addizionali (quali il logging la generazione XSD per i descrittori di deploy XML JSR-299)."
+#, fuzzy, no-c-format
+msgid ""
+"Weld is the reference implementation of JSR-299, and is used by JBoss AS and "
+"Glassfish to provide CDI services for Java Enterprise Edition (Java EE) "
+"applications. Weld also goes beyond the environments and APIs defined by the "
+"JSR-299 specification by providing support for a number of other "
+"environments (such as a servlet container such as Tomcat, or Java SE) and "
+"additional APIs and modules (such as logging and bean utilities)."
+msgstr ""
+"Web Beans è la reference implementatio di JSR-299, ed è usata da JBoss AS e "
+"Glassfish per fornire i servizi JSR-299 per le applicazioni Java Enterprise "
+"Edition. Web Beans va oltre gli ambienti e le API definite dalla specifica "
+"JSR-299 e fornisce supporto ad un numero di altri ambienti (quali servlet "
+"container quali Tomcat o Java SE) ed API e moduli addizionali (quali il "
+"logging la generazione XSD per i descrittori di deploy XML JSR-299)."
 
 #. Tag: para
-#: part5.xml:15
+#: part5.xml:12
 #, no-c-format
-msgid "If you want to get started quickly using Web Beans with JBoss AS or Tomcat and experiment with one of the examples, take a look at <xref linkend=\"ri\"/>. Otherwise read on for a exhaustive discussion of using Web Beans in all the environments and application servers it supports, as well the Web Beans extensions."
-msgstr "Se si vuole velocemente iniziare ad usare Web Beans con JBoss AS o Tomcat e provare con un esempio, si guardi in <xref linkend=\"ri\"/>. Altrimenti continuare a leggere la discussione esaustiva per usare Web Beans in tutti gli ambienti e gli application server che vengono supportati, così come le estensioni Web Beans."
+msgid ""
+"Some of the extensions in Weld are portable across JSR-299 implementations "
+"(like the logging and bean utilities) and some are specific to Weld (such as "
+"the servlet container support). Weld also provides an SPI on which to build "
+"extensions, so there are several layers involved."
+msgstr ""
 
+#. Tag: para
+#: part5.xml:18
+#, fuzzy, no-c-format
+msgid ""
+"If you want to get started quickly using Weld (and, in turn, CDI) with JBoss "
+"AS, GlassFish or Tomcat and experiment with one of the examples, take a look "
+"at <xref linkend=\"gettingstarted\"/>. Otherwise read on for a exhaustive "
+"discussion of using Weld in all the environments and application servers it "
+"supports and the Weld extensions."
+msgstr ""
+"Se si vuole velocemente iniziare ad usare Web Beans con JBoss AS o Tomcat e "
+"provare con un esempio, si guardi in <xref linkend=\"ri\"/>. Altrimenti "
+"continuare a leggere la discussione esaustiva per usare Web Beans in tutti "
+"gli ambienti e gli application server che vengono supportati, così come le "
+"estensioni Web Beans."

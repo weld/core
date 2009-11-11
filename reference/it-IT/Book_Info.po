@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-01 21:16+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-02-01 22:20+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
@@ -16,31 +16,41 @@ msgstr ""
 #. Tag: title
 #: Book_Info.xml:4
 #, no-c-format
-msgid "Web Beans: Java Contexts and Dependency Injection"
-msgstr "Web Beans: Contesti Java e Dependency Injection"
+msgid "Weld - JSR-299 Reference Implementation"
+msgstr ""
 
 #. Tag: subtitle
 #: Book_Info.xml:5
-#, no-c-format
-msgid "The new standard for dependency injection and contextual state management"
-msgstr "Il nuovo standard Java per la dependency injection e la gestione contestuale dello stato"
+#, fuzzy, no-c-format
+msgid ""
+"JSR-299: The new Java standard for dependency injection and contextual "
+"lifecycle management"
+msgstr ""
+"Il nuovo standard Java per la dependency injection e la gestione contestuale "
+"dello stato"
+
+#~ msgid "Web Beans: Java Contexts and Dependency Injection"
+#~ msgstr "Web Beans: Contesti Java e Dependency Injection"
 
 #~ msgid "Introduction to Web Beans"
 #~ msgstr "Introduzione a Web Beans"
+
 #~ msgid "<firstname>Gavin</firstname> <surname>King</surname>"
 #~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+
 #~ msgid ""
 #~ "<jobtitle>Web Beans (JSR-299) specification lead</jobtitle> <orgname>Red "
 #~ "Hat Middleware LLC</orgname>"
 #~ msgstr ""
 #~ "<jobtitle>Responsabile della specifica di Web Beans (JSR-299)</jobtitle> "
 #~ "<orgname>Red Hat Middleware LLC</orgname>"
+
 #~ msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
 #~ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+
 #~ msgid ""
 #~ "<jobtitle>Web Beans (JSR-299) Reference Implementation lead</jobtitle> "
 #~ "<orgname>Red Hat Middleware LLC</orgname>"
 #~ msgstr ""
 #~ "<jobtitle>Responsabile per l'implementazione della documentazione Web "
 #~ "Beans (JSR-299)</jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
-

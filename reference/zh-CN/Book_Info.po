@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-01 21:16+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-03-12 11:25+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
@@ -16,31 +16,39 @@ msgstr ""
 #. Tag: title
 #: Book_Info.xml:4
 #, no-c-format
-msgid "Web Beans: Java Contexts and Dependency Injection"
-msgstr "Web Beans: Java 上下文和依赖注入"
+msgid "Weld - JSR-299 Reference Implementation"
+msgstr ""
 
 #. Tag: subtitle
 #: Book_Info.xml:5
-#, no-c-format
-msgid "The new standard for dependency injection and contextual state management"
+#, fuzzy, no-c-format
+msgid ""
+"JSR-299: The new Java standard for dependency injection and contextual "
+"lifecycle management"
 msgstr "关于依赖注入和上下文状态管理的Java新规范"
+
+#~ msgid "Web Beans: Java Contexts and Dependency Injection"
+#~ msgstr "Web Beans: Java 上下文和依赖注入"
 
 #~ msgid "Introduction to Web Beans"
 #~ msgstr "Web Beans介绍"
+
 #~ msgid "<firstname>Gavin</firstname> <surname>King</surname>"
 #~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+
 #~ msgid ""
 #~ "<jobtitle>Web Beans (JSR-299) specification lead</jobtitle> <orgname>Red "
 #~ "Hat Middleware LLC</orgname>"
 #~ msgstr ""
 #~ "<jobtitle>Web Beans (JSR-299) 规范领导人</jobtitle> <orgname>红帽中间件有"
 #~ "限责任公司</orgname>"
+
 #~ msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
 #~ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+
 #~ msgid ""
 #~ "<jobtitle>Web Beans (JSR-299) Reference Implementation lead</jobtitle> "
 #~ "<orgname>Red Hat Middleware LLC</orgname>"
 #~ msgstr ""
 #~ "<jobtitle>Web Beans (JSR-299) 参考实现领导人</jobtitle> <orgname>红帽中间"
 #~ "件有限责任公司</orgname>"
-

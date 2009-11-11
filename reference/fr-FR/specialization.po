@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-04 23:18+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2008-12-19 20:26+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -14,278 +14,344 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: specialization.xml:4
+#: specialization.xml:5
 #, no-c-format
-msgid "Specialization"
+msgid "Specialization, inheritance and alternatives"
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:6
+#: specialization.xml:7
 #, no-c-format
 msgid ""
-"We've already seen how the Web Beans dependency injection model lets us "
-"<emphasis>override</emphasis> the implementation of an API at deployment "
-"time. For example, the following enterprise Web Bean provides an "
-"implementation of the API <literal>PaymentProcessor</literal> in production:"
-msgstr ""
-
-#. Tag: programlisting
-#: specialization.xml:11
-#, no-c-format
-msgid ""
-"@CreditCard @Stateless\n"
-"public class CreditCardPaymentProcessor \n"
-"        implements PaymentProcessor {\n"
-"    ...\n"
-"}"
+"When you first start developing with CDI, you'll likely be dealing only with "
+"a single bean implementation for each bean type. In this case, it's easy to "
+"understand how beans get selected for injection. As the complexity of your "
+"application grows, multiple occurrences of the same bean type start "
+"appearing, either because you have multiple implementations or two beans "
+"share a common (Java) inheritance. That's when you have to begin studying "
+"the specialization, inheritance and alternative rules to work through "
+"unsatisfied or ambiguous dependencies or to avoid certain beans from being "
+"called."
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:13
-#, no-c-format
-msgid ""
-"But in our staging environment, we override that implementation of "
-"<literal>PaymentProcessor</literal> with a different Web Bean:"
-msgstr ""
-
-#. Tag: programlisting
 #: specialization.xml:16
 #, no-c-format
 msgid ""
-"@CreditCard @Stateless @Staging\n"
-"public class StagingCreditCardPaymentProcessor \n"
-"        implements PaymentProcessor {\n"
-"    ...\n"
-"}"
+"The CDI specification recognizes two distinct scenarios in which one bean "
+"extends another:"
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:18
+#: specialization.xml:23
 #, no-c-format
 msgid ""
-"What we've tried to do with <literal>StagingCreditCardPaymentProcessor</"
-"literal> is to completely replace <literal>AsyncPaymentProcessor</literal> "
-"in a particular deployment of the system. In that deployment, the deployment "
-"type <literal>@Staging</literal> would have a higher priority than the "
-"default deployment type <literal>@Production</literal>, and therefore "
-"clients with the following injection point:"
-msgstr ""
-
-#. Tag: programlisting
-#: specialization.xml:24
-#, no-c-format
-msgid "@CreditCard PaymentProcessor ccpp"
+"The second bean <emphasis>specializes</emphasis> the first bean in certain "
+"deployment scenarios. In these deployments, the second bean completely "
+"replaces the first, fulfilling the same role in the system."
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:26
+#: specialization.xml:29
 #, no-c-format
 msgid ""
-"Would receive an instance of <literal>StagingCreditCardPaymentProcessor</"
-"literal>."
+"The second bean is simply reusing the Java implementation, and otherwise "
+"bears no relation to the first bean. The first bean may not even have been "
+"designed for use as a contextual object."
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:28
-#, no-c-format
-msgid "Unfortunately, there are several traps we can easily fall into:"
-msgstr ""
-
-#. Tag: para
-#: specialization.xml:32
+#: specialization.xml:37
 #, no-c-format
 msgid ""
-"the higher-priority Web Bean may not implement all the API types of the Web "
-"Bean that it attempts to override,"
+"The second case is the default assumed by CDI. It's possible to have two "
+"beans in the system with the same part bean type (interface or parent "
+"class). As you've learned, you select between the two implementations using "
+"qualifiers."
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:36
+#: specialization.xml:43
 #, no-c-format
 msgid ""
-"the higher-priority Web Bean may not declare all the binding types of the "
-"Web Bean that it attempts to override,"
-msgstr ""
-
-#. Tag: para
-#: specialization.xml:40
-#, no-c-format
-msgid ""
-"the higher-priority Web Bean might not have the same name as the Web Bean "
-"that it attempts to override, or"
-msgstr ""
-
-#. Tag: para
-#: specialization.xml:44
-#, no-c-format
-msgid ""
-"the Web Bean that it attempts to override might declare a producer method, "
-"disposal method or observer method."
-msgstr ""
-
-#. Tag: para
-#: specialization.xml:49
-#, no-c-format
-msgid ""
-"In each of these cases, the Web Bean that we tried to override could still "
-"be called at runtime. Therefore, overriding is somewhat prone to developer "
-"error."
-msgstr ""
-
-#. Tag: para
-#: specialization.xml:52
-#, no-c-format
-msgid ""
-"Web Beans provides a special feature, called <emphasis>specialization</"
-"emphasis>, that helps the developer avoid these traps. Specialization looks "
-"a little esoteric at first, but it's easy to use in practice, and you'll "
-"really appreciate the extra security it provides."
+"The first case is the exception, and also requires more care. In any given "
+"deployment, only one bean can fulfill a given role at a time. That means one "
+"bean needs to be enabled and the other disabled. There are a two modifiers "
+"involved: <literal>@Alternative</literal> and <literal>@Specializes</"
+"literal>. We'll start by looking at alternatives and then show the "
+"guarantees that specialization adds."
 msgstr ""
 
 #. Tag: title
-#: specialization.xml:58
+#: specialization.xml:51
 #, no-c-format
-msgid "Using specialization"
+msgid "Using alternative stereotypes"
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:60
+#: specialization.xml:53
 #, no-c-format
 msgid ""
-"Specialization is a feature that is specific to simple and enterprise Web "
-"Beans. To make use of specialization, the higher-priority Web Bean must:"
+"CDI lets you <emphasis>override</emphasis> the implementation of a bean type "
+"at deployment time using an alternative. For example, the following bean "
+"provides a default implementation of the <literal>PaymentProcessor</literal> "
+"interface:"
+msgstr ""
+
+#. Tag: programlisting
+#: specialization.xml:59
+#, no-c-format
+msgid ""
+"<![CDATA[public class DefaultPaymentProcessor \n"
+"      implements PaymentProcessor {\n"
+"   ...\n"
+"}]]>"
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:65
+#: specialization.xml:61
 #, no-c-format
-msgid "be a direct subclass of the Web Bean it overrides, and"
+msgid ""
+"But in our staging environment, we don't really want to submit payments to "
+"the external system, so we override that implementation of "
+"<literal>PaymentProcessor</literal> with a different bean:"
+msgstr ""
+
+#. Tag: programlisting
+#: specialization.xml:66
+#, no-c-format
+msgid ""
+"<![CDATA[public @Alternative\n"
+"class StagingPaymentProcessor \n"
+"      implements PaymentProcessor {\n"
+"   ...\n"
+"}]]>"
 msgstr ""
 
 #. Tag: para
 #: specialization.xml:68
 #, no-c-format
-msgid ""
-"be a simple Web Bean if the Web Bean it overrides is a simple Web Bean or an "
-"enterprise Web Bean if the Web Bean it overrides is an enterprise Web Bean, "
-"and"
-msgstr ""
-
-#. Tag: para
-#: specialization.xml:73
-#, no-c-format
-msgid "be annotated <literal>@Specializes</literal>."
+msgid "<para>or</para>"
 msgstr ""
 
 #. Tag: programlisting
+#: specialization.xml:70
+#, no-c-format
+msgid ""
+"<![CDATA[public @Alternative\n"
+"class StagingPaymentProcessor \n"
+"      extends DefaultPaymentProcessor {\n"
+"   ...\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: specialization.xml:72
+#, no-c-format
+msgid ""
+"We've already seen how we can enable this alternative by listing its class "
+"in the <literal>beans.xml</literal> descriptor."
+msgstr ""
+
+#. Tag: para
 #: specialization.xml:77
 #, no-c-format
 msgid ""
-"@Stateless @Staging @Specializes\n"
-"public class StagingCreditCardPaymentProcessor \n"
-"        extends CreditCardPaymentProcessor {\n"
-"    ...\n"
-"}"
+"But suppose we have many alternatives in the staging environment. It would "
+"be much more convenient to be able to enable them all at once. So let's make "
+"<literal>@Staging</literal> an <literal>@Alternative</literal> stereotype "
+"and annotate the staging beans with this stereotype instead. You'll see how "
+"this level of indirection pays off. First, we create the stereotype:"
+msgstr ""
+
+#. Tag: programlisting
+#: specialization.xml:84
+#, no-c-format
+msgid ""
+"<![CDATA[@Alternative\n"
+"@Stereotype\n"
+"@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"public @interface Staging {}]]>"
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:79
+#: specialization.xml:86
 #, no-c-format
 msgid ""
-"We say that the higher-priority Web Bean <emphasis>specializes</emphasis> "
-"its superclass."
+"Then we replace the <literal>@Alternative</literal> annotation on our bean "
+"with <literal>@Staging</literal>:"
+msgstr ""
+
+#. Tag: programlisting
+#: specialization.xml:90
+#, no-c-format
+msgid ""
+"<![CDATA[@Staging\n"
+"public class StagingPaymentProcessor \n"
+"      implements PaymentProcessor {\n"
+"   ...\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: specialization.xml:92
+#, no-c-format
+msgid ""
+"Finally, we activate the <literal>@Staging</literal> stereotype in the "
+"<literal>beans.xml</literal> descriptor:"
+msgstr ""
+
+#. Tag: programlisting
+#: specialization.xml:96
+#, no-c-format
+msgid ""
+"<![CDATA[<beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
+"      http://java.sun.com/xml/ns/javaee\n"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
+"   <alternatives>\n"
+"         <stereotype>org.mycompany.myapp.Staging</stereotype>\n"
+"   </alternatives>\n"
+"</beans>]]>"
+msgstr ""
+
+#. Tag: para
+#: specialization.xml:98
+#, no-c-format
+msgid ""
+"Now, no matter how many staging beans we have, they will all be enabled at "
+"once."
 msgstr ""
 
 #. Tag: title
-#: specialization.xml:85
-#, no-c-format
-msgid "Advantages of specialization"
-msgstr ""
-
-#. Tag: para
-#: specialization.xml:87
-#, no-c-format
-msgid "When specialization is used:"
-msgstr ""
-
-#. Tag: para
-#: specialization.xml:91
-#, no-c-format
-msgid ""
-"the binding types of the superclass are automatically inherited by the Web "
-"Bean annotated <literal>@Specializes</literal>, and"
-msgstr ""
-
-#. Tag: para
-#: specialization.xml:95
-#, no-c-format
-msgid ""
-"the Web Bean name of the superclass is automatically inherited by the Web "
-"Bean annotated <literal>@Specializes</literal>, and"
-msgstr ""
-
-#. Tag: para
-#: specialization.xml:99
-#, no-c-format
-msgid ""
-"producer methods, disposal methods and observer methods declared by the "
-"superclass are called upon an instance of the Web Bean annotated "
-"<literal>@Specializes</literal>."
-msgstr ""
-
-#. Tag: para
 #: specialization.xml:105
 #, no-c-format
-msgid ""
-"In our example, the binding type <literal>@CreditCard</literal> of "
-"<literal>CreditCardPaymentProcessor</literal> is inherited by "
-"<literal>StagingCreditCardPaymentProcessor</literal>."
+msgid "A minor problem with alternatives"
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:109
+#: specialization.xml:107
 #, no-c-format
-msgid "Furthermore, the Web Bean manager will validate that:"
+msgid ""
+"When we enable an alternative, does that mean the default implementation is "
+"disabled? Well, not exactly. If the default implementation has a qualifier, "
+"for instance <literal>@LargeTransaction</literal>, and the alternative does "
+"not, you could still inject the default implementation."
 msgstr ""
 
-#. Tag: para
+#. Tag: programlisting
 #: specialization.xml:113
 #, no-c-format
 msgid ""
-"all API types of the superclass are API types of the Web Bean annotated "
-"<literal>@Specializes</literal> (all local interfaces of the superclass "
-"enterprise bean are also local interfaces of the subclass),"
+"<![CDATA[@Inject @LargeTransaction PaymentProcessor paymentProcessor;]]>"
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:119
+#: specialization.xml:115
 #, no-c-format
 msgid ""
-"the deployment type of the Web Bean annotated <literal>@Specializes</"
-"literal> has a higher precedence than the deployment type of the superclass, "
-"and"
+"So we haven't completely replaced the default implementation in this "
+"deployment of the system. The only way one bean can completely override a "
+"second bean at all injection points is if it implements all the bean types "
+"and declares all the qualifiers of the second bean. However, if the second "
+"bean declares a producer method or observer method, then even this is not "
+"enough to ensure that the second bean is never called! We need something "
+"extra."
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:124
+#: specialization.xml:123
 #, no-c-format
 msgid ""
-"there is no other enabled Web Bean that also specializes the superclass."
+"CDI provides a special feature, called <emphasis>specialization</emphasis>, "
+"that helps the developer avoid these traps. Specialization is a way of "
+"informing the system of your intent to completely replace and disable an "
+"implementation of a bean."
 msgstr ""
 
-#. Tag: para
-#: specialization.xml:129
-#, no-c-format
-msgid ""
-"If any of these conditions are violated, the Web Bean manager throws an "
-"exception at initialization time."
-msgstr ""
-
-#. Tag: para
+#. Tag: title
 #: specialization.xml:132
 #, no-c-format
+msgid "Using specialization"
+msgstr ""
+
+#. Tag: para
+#: specialization.xml:134
+#, no-c-format
 msgid ""
-"Therefore, we can be certain that the superclass will <emphasis>never</"
-"emphasis> be called in any deployment of the system where the Web Bean "
-"annotated <literal>@Specializes</literal> is deployed and enabled."
+"When the goal is to replace one bean implementation with a second, to help "
+"prevent developer error, the first bean may:"
+msgstr ""
+
+#. Tag: para
+#: specialization.xml:141
+#, no-c-format
+msgid "directly extend the bean class of the second bean, or"
+msgstr ""
+
+#. Tag: para
+#: specialization.xml:146
+#, no-c-format
+msgid ""
+"directly override the producer method, in the case that the second bean is a "
+"producer method, and then"
+msgstr ""
+
+#. Tag: para
+#: specialization.xml:152
+#, no-c-format
+msgid ""
+"explicitly declare that it <emphasis>specializes</emphasis> the second bean:"
+msgstr ""
+
+#. Tag: programlisting
+#: specialization.xml:154
+#, no-c-format
+msgid ""
+"<![CDATA[@Alternative @Specializes\n"
+"public class MockCreditCardPaymentProcessor \n"
+"      extends CreditCardPaymentProcessor {\n"
+"   ...\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: specialization.xml:156
+#, no-c-format
+msgid ""
+"When an enabled bean specializes another bean, the other bean is never "
+"instantiated or called by the container. Even if the other bean defines a "
+"producer or observer method, the method will never be called."
+msgstr ""
+
+#. Tag: para
+#: specialization.xml:161
+#, no-c-format
+msgid ""
+"So why does specialization work, and what does it have to do with "
+"inheritance?"
+msgstr ""
+
+#. Tag: para
+#: specialization.xml:165
+#, no-c-format
+msgid ""
+"Since we're informing the container that our alternative bean is meant to "
+"stand in as a replacement for the default implementation, the alternative "
+"implementation automatically inherits all qualifiers of the default "
+"implementation. Thus, in our example, "
+"<literal>MockCreditCardPaymentProcessor</literal> inherits the qualifiers "
+"<literal>@Default</literal> and <literal>@CreditCard</literal>."
+msgstr ""
+
+#. Tag: para
+#: specialization.xml:172
+#, no-c-format
+msgid ""
+"Furthermore, if the default implementation declares a bean EL name using "
+"<literal>@Named</literal>, the name is inherited by the specialized "
+"alternative bean."
 msgstr ""

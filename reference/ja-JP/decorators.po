@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2008-12-19 20:26+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-04-30 23:45+0900\n"
 "Last-Translator: Fusayuki Minamoto <miki.htmnet@nifty.com>\n"
 "Language-Team: none\n"
@@ -14,85 +14,142 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: decorators.xml:4
+#: decorators.xml:5
 #, no-c-format
 msgid "Decorators"
 msgstr "デコレータ"
 
 #. Tag: para
-#: decorators.xml:6
-#, no-c-format
-msgid "Interceptors are a powerful way to capture and separate concerns which are <emphasis>orthogonal</emphasis> to the type system. Any interceptor is able to intercept invocations of any Java type. This makes them perfect for solving technical concerns such as transaction management and security. However, by nature, interceptors are unaware of the actual semantics of the events they intercept. Thus, interceptors aren't an appropriate tool for separating business-related concerns."
-msgstr "インタセプタは、型システムとは <emphasis>直交した</emphasis> （複数の）関心事をとらえて、それらを分離する強力な方法です。インタセプタは任意のJavaの型の呼び出しに割り込むことができます。しかし、これは当然のこととして、トランザクション管理やセキュリティ管理のような技術的関心事を完全に解決します。しかし、インタセプタは割り込む対象となる事象の実際のセマンティクスまでは気づきません。したがって、インタセプタはビジネス関連の関心事を分離するには適したツールではありません。"
+#: decorators.xml:7
+#, fuzzy, no-c-format
+msgid ""
+"Interceptors are a powerful way to capture and separate concerns which are "
+"<emphasis>orthogonal</emphasis> to the application (and type system). Any "
+"interceptor is able to intercept invocations of any Java type. This makes "
+"them perfect for solving technical concerns such as transaction management, "
+"security and call logging. However, by nature, interceptors are unaware of "
+"the actual semantics of the events they intercept. Thus, interceptors aren't "
+"an appropriate tool for separating business-related concerns."
+msgstr ""
+"インタセプタは、型システムとは <emphasis>直交した</emphasis> （複数の）関心事"
+"をとらえて、それらを分離する強力な方法です。インタセプタは任意のJavaの型の呼"
+"び出しに割り込むことができます。しかし、これは当然のこととして、トランザク"
+"ション管理やセキュリティ管理のような技術的関心事を完全に解決します。しかし、"
+"インタセプタは割り込む対象となる事象の実際のセマンティクスまでは気づきませ"
+"ん。したがって、インタセプタはビジネス関連の関心事を分離するには適したツール"
+"ではありません。"
 
 #. Tag: para
-#: decorators.xml:14
-#, no-c-format
-msgid "The reverse is true of <emphasis>decorators</emphasis>. A decorator intercepts invocations only for a certain Java interface, and is therefore aware of all the semantics attached to that interface. This makes decorators a perfect tool for modeling some kinds of business concerns. It also means that a decorator doesn't have the generality of an interceptor. Decorators aren't able to solve technical concerns that cut across many disparate types."
-msgstr "反対のことは <emphasis>デコレータ</emphasis> についても言えます。デコレータは特定のJavaインタフェースのみの呼び出しに割り込むので、そのインタフェースに付随するすべてのセマンティクスを知っています。このことによってデコレータはある種のビジネス関心事をモデリングするための完全なツールになります。また、それはデコレータがインタセプタが持つ一般性を備えていないことも意味します。デコレータは多くの異なる型に対して横断的な技術的関心事を解決することはできないのです。"
+#: decorators.xml:15
+#, fuzzy, no-c-format
+msgid ""
+"The reverse is true of <emphasis>decorators</emphasis>. A decorator "
+"intercepts invocations only for a certain Java interface, and is therefore "
+"aware of all the semantics attached to that interface. Since decorators "
+"directly implement operations with business semantics, it makes them the "
+"perfect tool for modeling some kinds of business concerns. It also means "
+"that a decorator doesn't have the generality of an interceptor. Decorators "
+"aren't able to solve technical concerns that cut across many disparate "
+"types. Interceptors and decorators, though similar in many ways, are "
+"complementary. Let's look at some cases where decorators fit the bill."
+msgstr ""
+"反対のことは <emphasis>デコレータ</emphasis> についても言えます。デコレータは"
+"特定のJavaインタフェースのみの呼び出しに割り込むので、そのインタフェースに付"
+"随するすべてのセマンティクスを知っています。このことによってデコレータはある"
+"種のビジネス関心事をモデリングするための完全なツールになります。また、それは"
+"デコレータがインタセプタが持つ一般性を備えていないことも意味します。デコレー"
+"タは多くの異なる型に対して横断的な技術的関心事を解決することはできないので"
+"す。"
 
 #. Tag: para
-#: decorators.xml:22
-#, no-c-format
-msgid "Suppose we have an interface that represents accounts:"
-msgstr "次のような口座 (account) を表現するインタフェースがあると仮定しましょう。"
-
-#. Tag: programlisting
 #: decorators.xml:24
 #, no-c-format
-msgid ""
-"<![CDATA[public interface Account {\n"
-"    public BigDecimal getBalance();\n"
-"    public User getOwner();\n"
-"    public void withdraw(BigDecimal amount);\n"
-"    public void deposit(BigDecimal amount);\n"
-"}]]>"
+msgid "Suppose we have an interface that represents accounts:"
 msgstr ""
-"<![CDATA[public interface Account {\n"
-"    public BigDecimal getBalance();\n"
-"    public User getOwner();\n"
-"    public void withdraw(BigDecimal amount);\n"
-"    public void deposit(BigDecimal amount);\n"
-"}]]>"
-
-#. Tag: para
-#: decorators.xml:26
-#, no-c-format
-msgid "Several different Web Beans in our system implement the <literal>Account</literal> interface. However, we have a common legal requirement that, for any kind of account, large transactions must be recorded by the system in a special log. This is a perfect job for a decorator."
-msgstr "私たちのシステムではいくつかの異なるWeb Beansが <literal>Account</literal> を実装します。しかし、どのような口座であろうと大口の取引は特別なログに記録されなければならないという共通の法的要件があります。これはデコレータに最適な仕事です。"
-
-#. Tag: para
-#: decorators.xml:32
-#, no-c-format
-msgid "A decorator is a simple Web Bean that implements the type it decorates and is annotated <literal>@Decorator</literal>."
-msgstr "デコレータは <literal>@Decorator</literal> というアノテーションによって修飾された型を実装するシンプル Web Beanです。"
+"次のような口座 (account) を表現するインタフェースがあると仮定しましょう。"
 
 #. Tag: programlisting
-#: decorators.xml:35
-#, no-c-format
+#: decorators.xml:26
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[public interface Account {\n"
+"   public BigDecimal getBalance();\n"
+"   public User getOwner();\n"
+"   public void withdraw(BigDecimal amount);\n"
+"   public void deposit(BigDecimal amount);\n"
+"}]]>"
+msgstr ""
+"<![CDATA[public interface Account {\n"
+"    public BigDecimal getBalance();\n"
+"    public User getOwner();\n"
+"    public void withdraw(BigDecimal amount);\n"
+"    public void deposit(BigDecimal amount);\n"
+"}]]>"
+
+#. Tag: para
+#: decorators.xml:28
+#, fuzzy, no-c-format
+msgid ""
+"Several different beans in our system implement the <literal>Account</"
+"literal> interface. However, we have a common legal requirement that; for "
+"any kind of account, large transactions must be recorded by the system in a "
+"special log. This is a perfect job for a decorator."
+msgstr ""
+"私たちのシステムではいくつかの異なるWeb Beansが <literal>Account</literal> を"
+"実装します。しかし、どのような口座であろうと大口の取引は特別なログに記録され"
+"なければならないという共通の法的要件があります。これはデコレータに最適な仕事"
+"です。"
+
+#. Tag: para
+#: decorators.xml:34
+#, fuzzy, no-c-format
+msgid ""
+"A decorator is a bean (possibly even an abstract class) that implements the "
+"type it decorates and is annotated <literal>@Decorator</literal>."
+msgstr ""
+"デコレータは <literal>@Decorator</literal> というアノテーションによって修飾さ"
+"れた型を実装するシンプル Web Beanです。"
+
+#. Tag: programlisting
+#: decorators.xml:39
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@Decorator\n"
-"public abstract class LargeTransactionDecorator \n"
-"        implements Account {\n"
+"public abstract class LargeTransactionDecorator\n"
+"      implements Account {\n"
+"   ...\n"
+"}]]>"
+msgstr ""
+"<![CDATA[<Decorators>\n"
+"    <myapp:LargeTransactionDecorator/>\n"
+"</Decorators>]]>"
+
+#. Tag: para
+#: decorators.xml:41
+#, no-c-format
+msgid ""
+"The decorator implements the methods of the decorated type that it wants to "
+"intercept."
+msgstr ""
+
+#. Tag: programlisting
+#: decorators.xml:45
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Decorator\n"
+"public abstract class LargeTransactionDecorator\n"
+"      implements Account {\n"
+"   @Inject @Delegate @Any Account account;\n"
+"\n"
+"   @PersistenceContext EntityManager em;\n"
 "    \n"
-"    @Decorates Account account;\n"
+"   public void withdraw(BigDecimal amount) {\n"
+"      ...\n"
+"   }\n"
 "    \n"
-"    @PersistenceContext EntityManager em;\n"
-"    \n"
-"    public void withdraw(BigDecimal amount) {\n"
-"        account.withdraw(amount);\n"
-"        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
-"            em.persist( new LoggedWithdrawl(amount) );\n"
-"        }\n"
-"    }\n"
-"    \n"
-"    public void deposit(BigDecimal amount);\n"
-"        account.deposit(amount);\n"
-"        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
-"            em.persist( new LoggedDeposit(amount) );\n"
-"        }\n"
-"    }\n"
-"    \n"
+"   public void deposit(BigDecimal amount);\n"
+"      ...\n"
+"   }\n"
 "}]]>"
 msgstr ""
 "<![CDATA[@Decorator\n"
@@ -120,116 +177,239 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: decorators.xml:37
-#, no-c-format
-msgid "Unlike other simple Web Beans, a decorator may be an abstract class. If there's nothing special the decorator needs to do for a particular method of the decorated interface, you don't need to implement that method."
-msgstr "他のシンプル Web Beans とは異なり、デコレータは抽象クラスにすることができます。修飾されたインタフェースの特定のメソッドのためにデコレータとして何も特別なことをする必要がなければ、そのメソッドを実装する必要はありません。"
+#: decorators.xml:47
+#, fuzzy, no-c-format
+msgid ""
+"Unlike other beans, a decorator may be an abstract class. Therefore, if "
+"there's nothing special the decorator needs to do for a particular method of "
+"the decorated interface, you don't need to implement that method."
+msgstr ""
+"他のシンプル Web Beans とは異なり、デコレータは抽象クラスにすることができま"
+"す。修飾されたインタフェースの特定のメソッドのためにデコレータとして何も特別"
+"なことをする必要がなければ、そのメソッドを実装する必要はありません。"
+
+#. Tag: para
+#: decorators.xml:52
+#, fuzzy, no-c-format
+msgid ""
+"Interceptors for a method are called before decorators that apply to the "
+"method."
+msgstr ""
+"あるメソッドに対するインタセプタはデコレータがそのメソッドに適用される前に呼"
+"び出されます。"
 
 #. Tag: title
-#: decorators.xml:43
-#, no-c-format
-msgid "Delegate attributes"
+#: decorators.xml:57
+#, fuzzy, no-c-format
+msgid "Delegate object"
 msgstr "移譲属性"
 
 #. Tag: para
-#: decorators.xml:45
+#: decorators.xml:59
 #, no-c-format
-msgid "All decorators have a <emphasis>delegate attribute</emphasis>. The type and binding types of the delegate attribute determine which Web Beans the decorator is bound to. The delegate attribute type must implement or extend all interfaces implemented by the decorator."
-msgstr "デコレータは <emphasis>移譲属性 (delegate attribute)</emphasis> を持ちます。移譲属性の型やバインディングタイプ"
-
-#. Tag: para
-#: decorators.xml:50
-#, no-c-format
-msgid "This delegate attribute specifies that the decorator is bound to all Web Beans that implement <literal>Account</literal>:"
-msgstr "この移譲属性は、デコレータが <literal>Account</literal> を実装するすべてのWeb Beansに対して結びついていることを指定します。"
-
-#. Tag: programlisting
-#: decorators.xml:53
-#, no-c-format
-msgid "<![CDATA[@Decorates Account account;]]>"
-msgstr "<![CDATA[@Decorates Account account;]]>"
-
-#. Tag: para
-#: decorators.xml:55
-#, no-c-format
-msgid "A delegate attribute may specify a binding annotation. Then the decorator will only be bound to Web Beans with the same binding."
-msgstr "移譲属性はバインディングアノテーションを指定するかもしれません。そのときは、デコレータは同じバインディングを持つWeb Beansに結びつくだけです。"
+msgid ""
+"Decorators have a special injection point, called the <emphasis>delegate "
+"injection point</emphasis>, with the same type as the beans they decorate, "
+"and the annotation <literal>@Delegate</literal>. There must be exactly one "
+"delegate injection point, which can be a constructor parameter, initializer "
+"method parameter or injected field."
+msgstr ""
 
 #. Tag: programlisting
-#: decorators.xml:58
+#: decorators.xml:65
 #, no-c-format
-msgid "<![CDATA[@Decorates @Foreign Account account;]]>"
-msgstr "<![CDATA[@Decorates @Foreign Account account;]]>"
-
-#. Tag: para
-#: decorators.xml:60
-#, no-c-format
-msgid "A decorator is bound to any Web Bean which:"
-msgstr "デコレータは以下の任意のWeb Beanに結びつきます。"
-
-#. Tag: para
-#: decorators.xml:64
-#, no-c-format
-msgid "has the type of the delegate attribute as an API type, and"
-msgstr "APIタイプとして移譲属性のタイプを持つものと、"
+msgid ""
+"<![CDATA[@Decorator\n"
+"public abstract class LargeTransactionDecorator\n"
+"      implements Account {\n"
+"   @Inject @Delegate @Any Account account;\n"
+"   ...\n"
+"}]]>"
+msgstr ""
 
 #. Tag: para
 #: decorators.xml:67
-#, no-c-format
-msgid "has all binding types that are declared by the delegate attribute."
-msgstr "移譲属性によって宣言されるすべてのバインディングタイプを持つもの"
+#, fuzzy, no-c-format
+msgid "A decorator is bound to any bean which:"
+msgstr "デコレータは以下の任意のWeb Beanに結びつきます。"
 
 #. Tag: para
 #: decorators.xml:71
-#, no-c-format
-msgid "The decorator may invoke the delegate attribute, which has much the same effect as calling <literal>InvocationContext.proceed()</literal> from an interceptor."
-msgstr "デコレータは移譲属性を呼び出す可能性があります。その移譲属性はインタセプタから <literal>InvocationContext.proceed()</literal> を呼び出すのと同じ効果があります。"
+#, fuzzy, no-c-format
+msgid "has the type of the delegate injection point as a bean type, and"
+msgstr "APIタイプとして移譲属性のタイプを持つものと、"
+
+#. Tag: para
+#: decorators.xml:74
+#, fuzzy, no-c-format
+msgid "has all qualifiers that are declared at the delegate injection point."
+msgstr "移譲属性によって宣言されるすべてのバインディングタイプを持つもの"
+
+#. Tag: para
+#: decorators.xml:78
+#, fuzzy, no-c-format
+msgid ""
+"This delegate injection point specifies that the decorator is bound to all "
+"beans that implement <literal>Account</literal>:"
+msgstr ""
+"この移譲属性は、デコレータが <literal>Account</literal> を実装するすべての"
+"Web Beansに対して結びついていることを指定します。"
+
+#. Tag: programlisting
+#: decorators.xml:83
+#, fuzzy, no-c-format
+msgid "<![CDATA[@Inject @Delegate @Any Account account;]]>"
+msgstr "<![CDATA[@Decorates Account account;]]>"
+
+#. Tag: para
+#: decorators.xml:85
+#, fuzzy, no-c-format
+msgid ""
+"A delegate injection point may specify any number of qualifier annotations. "
+"The decorator will only be bound to beans with the same qualifiers."
+msgstr ""
+"移譲属性はバインディングアノテーションを指定するかもしれません。そのときは、"
+"デコレータは同じバインディングを持つWeb Beansに結びつくだけです。"
+
+#. Tag: programlisting
+#: decorators.xml:90
+#, fuzzy, no-c-format
+msgid "<![CDATA[@Inject @Delegate @Foreign Account account;]]>"
+msgstr "<![CDATA[@Decorates @Foreign Account account;]]>"
+
+#. Tag: para
+#: decorators.xml:92
+#, fuzzy, no-c-format
+msgid ""
+"The decorator may invoke the delegate object, which has much the same effect "
+"as calling <literal>InvocationContext.proceed()</literal> from an "
+"interceptor. The main difference is that the decorator can invoke "
+"<emphasis>any</emphasis> business method on the delegate object."
+msgstr ""
+"デコレータは移譲属性を呼び出す可能性があります。その移譲属性はインタセプタか"
+"ら <literal>InvocationContext.proceed()</literal> を呼び出すのと同じ効果があ"
+"ります。"
+
+#. Tag: programlisting
+#: decorators.xml:98
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Decorator\n"
+"public abstract class LargeTransactionDecorator\n"
+"      implements Account {\n"
+"   @Inject @Delegate @Any Account account;\n"
+"\n"
+"   @PersistenceContext EntityManager em;\n"
+"    \n"
+"   public void withdraw(BigDecimal amount) {\n"
+"      account.withdraw(amount);\n"
+"      if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+"         em.persist( new LoggedWithdrawl(amount) );\n"
+"      }\n"
+"   }\n"
+"    \n"
+"   public void deposit(BigDecimal amount);\n"
+"      account.deposit(amount);\n"
+"      if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+"         em.persist( new LoggedDeposit(amount) );\n"
+"      }\n"
+"   }\n"
+"}]]>"
+msgstr ""
+"<![CDATA[@Decorator\n"
+"public abstract class LargeTransactionDecorator \n"
+"        implements Account {\n"
+"    \n"
+"    @Decorates Account account;\n"
+"    \n"
+"    @PersistenceContext EntityManager em;\n"
+"    \n"
+"    public void withdraw(BigDecimal amount) {\n"
+"        account.withdraw(amount);\n"
+"        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+"            em.persist( new LoggedWithdrawl(amount) );\n"
+"        }\n"
+"    }\n"
+"    \n"
+"    public void deposit(BigDecimal amount);\n"
+"        account.deposit(amount);\n"
+"        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+"            em.persist( new LoggedDeposit(amount) );\n"
+"        }\n"
+"    }\n"
+"    \n"
+"}]]>"
 
 #. Tag: title
-#: decorators.xml:78
+#: decorators.xml:103
 #, no-c-format
 msgid "Enabling decorators"
 msgstr "デコレータの有効化"
 
 #. Tag: para
-#: decorators.xml:80
-#, no-c-format
-msgid "We need to <emphasis>enable</emphasis> our decorator in <literal>web-beans.xml</literal>."
-msgstr " デコレータは <literal>web-beans.xml</literal> で <emphasis>有効化</emphasis> する必要があります。"
-
-#. Tag: programlisting
-#: decorators.xml:83
+#: decorators.xml:105
 #, no-c-format
 msgid ""
-"<![CDATA[<Decorators>\n"
-"    <myapp:LargeTransactionDecorator/>\n"
-"</Decorators>]]>"
+"By default, all decorators are disabled. We need to <emphasis>enable</"
+"emphasis> our decorator in the <literal>beans.xml</literal> descriptor of a "
+"bean archive. This activation only applies to the beans in that archive."
 msgstr ""
-"<![CDATA[<Decorators>\n"
-"    <myapp:LargeTransactionDecorator/>\n"
-"</Decorators>]]>"
 
-#. Tag: para
-#: decorators.xml:85
+#. Tag: programlisting
+#: decorators.xml:111
 #, no-c-format
-msgid "This declaration serves the same purpose for decorators that the <literal>&lt;Interceptors&gt;</literal> declaration serves for interceptors:"
-msgstr "この宣言はデコレータに対して <literal>&lt;Interceptors&gt;</literal> 宣言がインタセプタに対するものと同じ目的を持ちます。"
+msgid ""
+"<![CDATA[<beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
+"      http://java.sun.com/xml/ns/javaee\n"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
+"   <decorators>\n"
+"         <class>org.mycompany.myapp.LargeTransactionDecorator</class>\n"
+"   </decorators>\n"
+"</beans>]]>"
+msgstr ""
 
 #. Tag: para
-#: decorators.xml:90
+#: decorators.xml:113
+#, fuzzy, no-c-format
+msgid ""
+"This declaration serves the same purpose for decorators that the "
+"<literal>&lt;interceptors&gt;</literal> declaration serves for interceptors:"
+msgstr ""
+"この宣言はデコレータに対して <literal>&lt;Interceptors&gt;</literal> 宣言がイ"
+"ンタセプタに対するものと同じ目的を持ちます。"
+
+#. Tag: para
+#: decorators.xml:120
 #, no-c-format
-msgid "it enables us to specify a total ordering for all decorators in our system, ensuring deterministic behavior, and"
-msgstr "私たちのシステムにおけるすべてのデコレータの全体の順番を指定できるようにします。"
+msgid ""
+"it enables us to specify a total ordering for all decorators in our system, "
+"ensuring deterministic behavior, and"
+msgstr ""
+"私たちのシステムにおけるすべてのデコレータの全体の順番を指定できるようにしま"
+"す。"
 
 #. Tag: para
-#: decorators.xml:94
+#: decorators.xml:126
 #, no-c-format
 msgid "it lets us enable or disable decorator classes at deployment time."
-msgstr "デプロイ時にデコレータクラスを有効にしたり無効にしたりできるようにします。"
+msgstr ""
+"デプロイ時にデコレータクラスを有効にしたり無効にしたりできるようにします。"
 
-#. Tag: para
-#: decorators.xml:98
-#, no-c-format
-msgid "Interceptors for a method are called before decorators that apply to that method."
-msgstr "あるメソッドに対するインタセプタはデコレータがそのメソッドに適用される前に呼び出されます。"
+#~ msgid ""
+#~ "All decorators have a <emphasis>delegate attribute</emphasis>. The type "
+#~ "and binding types of the delegate attribute determine which Web Beans the "
+#~ "decorator is bound to. The delegate attribute type must implement or "
+#~ "extend all interfaces implemented by the decorator."
+#~ msgstr ""
+#~ "デコレータは <emphasis>移譲属性 (delegate attribute)</emphasis> を持ちま"
+#~ "す。移譲属性の型やバインディングタイプ"
 
+#~ msgid ""
+#~ "We need to <emphasis>enable</emphasis> our decorator in <literal>web-"
+#~ "beans.xml</literal>."
+#~ msgstr ""
+#~ " デコレータは <literal>web-beans.xml</literal> で <emphasis>有効化</"
+#~ "emphasis> する必要があります。"

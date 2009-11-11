@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-07-06 02:50+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -17,141 +17,186 @@ msgstr ""
 #. Tag: title
 #: injection.xml:4
 #, no-c-format
-msgid "Dependency injection"
+msgid "Dependency injection and programmatic lookup"
 msgstr ""
 
 #. Tag: para
 #: injection.xml:6
 #, no-c-format
-msgid "Web Beans supports three primary mechanisms for dependency injection:"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:8
-#, no-c-format
-msgid "Constructor parameter injection:"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:10
-#, no-c-format
 msgid ""
-"<![CDATA[public class Checkout {\n"
-"        \n"
-"    private final ShoppingCart cart;\n"
-"    \n"
-"    @Initializer\n"
-"    public Checkout(ShoppingCart cart) {\n"
-"        this.cart = cart;\n"
-"    }\n"
-"\n"
-"}]]>"
+"One of the most significant features of CDI&#8212;certainly the most "
+"recognized&#8212;is dependency injection; excuse me, <emphasis>typesafe</"
+"emphasis> dependency injection."
 msgstr ""
 
-#. Tag: para
+#. Tag: title
 #: injection.xml:12
 #, no-c-format
-msgid "<emphasis>Initializer</emphasis> method parameter injection:"
+msgid "Injection points"
 msgstr ""
 
-#. Tag: programlisting
+#. Tag: para
 #: injection.xml:14
 #, no-c-format
 msgid ""
+"The <literal>@Inject</literal> annotation lets us define an injection point "
+"that is injected during bean instantiation. Injection can occur via three "
+"different mechanisms."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:19
+#, no-c-format
+msgid "<emphasis>Bean constructor</emphasis> parameter injection:"
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:23
+#, no-c-format
+msgid ""
 "<![CDATA[public class Checkout {\n"
 "        \n"
-"    private ShoppingCart cart;\n"
+"   private final ShoppingCart cart;\n"
+"    \n"
+"   @Inject\n"
+"   public Checkout(ShoppingCart cart) {\n"
+"      this.cart = cart;\n"
+"   }\n"
 "\n"
-"    @Initializer \n"
-"    void setShoppingCart(ShoppingCart cart) {\n"
-"        this.cart = cart;\n"
-"    }\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:26
+#, no-c-format
+msgid "A bean can only have one injectable constructor."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:31
+#, no-c-format
+msgid "<emphasis>Initializer method</emphasis> parameter injection:"
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:35
+#, no-c-format
+msgid ""
+"<![CDATA[public class Checkout {\n"
+"        \n"
+"   private ShoppingCart cart;\n"
+"\n"
+"   @Inject\n"
+"   void setShoppingCart(ShoppingCart cart) {\n"
+"      this.cart = cart;\n"
+"   }\n"
 "    \n"
 "}]]>"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:16
+#: injection.xml:38
+#, no-c-format
+msgid ""
+"A bean can have multiple initializer methods. If the bean is a session bean, "
+"the initializer method is not required to be a business method of the "
+"session bean."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:44
 #, no-c-format
 msgid "And direct field injection:"
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:18
+#: injection.xml:48
 #, no-c-format
 msgid ""
 "<![CDATA[public class Checkout {\n"
 "\n"
-"    private @Current ShoppingCart cart;\n"
+"   private @Inject ShoppingCart cart;\n"
 "    \n"
 "}]]>"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:20
-#, no-c-format
-msgid ""
-"Dependency injection always occurs when the Web Bean instance is first "
-"instantiated."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:25
-#, no-c-format
-msgid ""
-"First, the Web Bean manager calls the Web Bean constructor, to obtain an "
-"instance of the Web Bean."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:29
-#, no-c-format
-msgid ""
-"Next, the Web Bean manager initializes the values of all injected fields of "
-"the Web Bean."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:33
-#, no-c-format
-msgid "Next, the Web Bean manager calls all initializer methods of Web Bean."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:37
-#, no-c-format
-msgid ""
-"Finally, the <literal>@PostConstruct</literal> method of the Web Bean, if "
-"any, is called."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:42
-#, no-c-format
-msgid ""
-"Constructor parameter injection is not supported for EJB beans, since the "
-"EJB is instantiated by the EJB container, not the Web Bean manager."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:45
-#, no-c-format
-msgid ""
-"Parameters of constructors and initializer methods need not be explicitly "
-"annotated when the default binding type <literal>@Current</literal> applies. "
-"Injected fields, however, <emphasis>must</emphasis> specify a binding type, "
-"even when the default binding type applies. If the field does not specify a "
-"binding type, it will not be injected."
-msgstr ""
-
-#. Tag: para
 #: injection.xml:51
 #, no-c-format
-msgid "Producer methods also support parameter injection:"
+msgid ""
+"Getter and setter methods are not required for field injection to work "
+"(unlike with JSF managed beans)."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:56
+#, no-c-format
+msgid ""
+"Dependency injection always occurs when the bean instance is first "
+"instantiated by the container. Simplifying just a little, things happen in "
+"this order:"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:63
+#, no-c-format
+msgid ""
+"First, the container calls the bean constructor (the default constructor or "
+"the one annotated <literal>@Inject</literal>), to obtain an instance of the "
+"bean."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:69
+#, no-c-format
+msgid ""
+"Next, the container initializes the values of all injected fields of the "
+"bean."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:74
+#, no-c-format
+msgid ""
+"Next, the container calls all initializer methods of bean (the call order is "
+"not portable, don't rely on it)."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:80
+#, no-c-format
+msgid ""
+"Finally, the <literal>@PostConstruct</literal> method, if any, is called."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:86
+#, no-c-format
+msgid ""
+"(The only complication is that the container might call initializer methods "
+"declared by a superclass before initializing injected fields declared by a "
+"subclass.)"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:90
+#, no-c-format
+msgid ""
+"One major advantage of constructor injection is that it allows the bean to "
+"be immutable."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:95
+#, no-c-format
+msgid ""
+"CDI also supports parameter injection for some other methods that are "
+"invoked by the container. For instance, parameter injection is supported for "
+"producer methods:"
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:53
+#: injection.xml:100
 #, no-c-format
 msgid ""
 "<![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {\n"
@@ -160,733 +205,622 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:55
-#, no-c-format
-msgid ""
-"Finally, observer methods (which we'll meet in <xref linkend=\"events\"/>), "
-"disposal methods and destructor methods all support parameter injection."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:58
-#, no-c-format
-msgid ""
-"The Web Beans specification defines a procedure, called the "
-"<emphasis>typesafe resolution algorithm</emphasis>, that the Web Bean "
-"manager follows when identifying the Web Bean to inject to an injection "
-"point. This algorithm looks complex at first, but once you understand it, "
-"it's really quite intuitive. Typesafe resolution is performed at system "
-"initialization time, which means that the manager will inform the user "
-"immediately if a Web Bean's dependencies cannot be satisfied, by throwing a "
-"<literal>UnsatisfiedDependencyException</literal> or "
-"<literal>AmbiguousDependencyException</literal>."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:67
-#, no-c-format
-msgid ""
-"The purpose of this algorithm is to allow multiple Web Beans to implement "
-"the same API type and either:"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:72
-#, no-c-format
-msgid ""
-"allow the client to select which implementation it requires using "
-"<emphasis>binding annotations</emphasis>,"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:77
-#, no-c-format
-msgid ""
-"allow the application deployer to select which implementation is appropriate "
-"for a particular deployment, without changes to the client, by enabling or "
-"disabling <emphasis>deployment types</emphasis>, or"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:82
-#, no-c-format
-msgid ""
-"allow one implementation of an API to override another implementation of the "
-"same API at deployment time, without changes to the client, using "
-"<emphasis>deployment type precedence</emphasis>."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:88
-#, no-c-format
-msgid ""
-"Let's explore how the Web Beans manager determines a Web Bean to be injected."
-msgstr ""
-
-#. Tag: title
-#: injection.xml:91
-#, no-c-format
-msgid "Binding annotations"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:93
-#, no-c-format
-msgid ""
-"If we have more than one Web Bean that implements a particular API type, the "
-"injection point can specify exactly which Web Bean should be injected using "
-"a binding annotation. For example, there might be two implementations of "
-"<literal>PaymentProcessor</literal>:"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:98
-#, no-c-format
-msgid ""
-"<![CDATA[@PayByCheque\n"
-"public class ChequePaymentProcessor implements PaymentProcessor {\n"
-"    public void process(Payment payment) { ... }\n"
-"}]]>"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:100
-#, no-c-format
-msgid ""
-"<![CDATA[@PayByCreditCard\n"
-"public class CreditCardPaymentProcessor implements PaymentProcessor {\n"
-"    public void process(Payment payment) { ... }\n"
-"}]]>"
-msgstr ""
-
-#. Tag: para
 #: injection.xml:102
 #, no-c-format
 msgid ""
-"Where <literal>@PayByCheque</literal> and <literal>@PayByCreditCard</"
-"literal> are binding annotations:"
+"This is a case where the <literal>@Inject</literal> annotation <emphasis>is "
+"not</emphasis> required at the injection point. The same is true for "
+"observer methods (which we'll meet in <xref linkend=\"events\"/>) and "
+"disposer methods."
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:105
+#. Tag: title
+#: injection.xml:110
 #, no-c-format
-msgid ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-"@BindingType\n"
-"public @interface PayByCheque {}]]>"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:107
-#, no-c-format
-msgid ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-"@BindingType\n"
-"public @interface PayByCreditCard {}]]>"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:109
-#, no-c-format
-msgid ""
-"A client Web Bean developer uses the binding annotation to specify exactly "
-"which Web Bean should be injected."
+msgid "What gets injected"
 msgstr ""
 
 #. Tag: para
 #: injection.xml:112
 #, no-c-format
-msgid "Using field injection:"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:114
-#, no-c-format
 msgid ""
-"<![CDATA[@PayByCheque PaymentProcessor chequePaymentProcessor;\n"
-"@PayByCreditCard PaymentProcessor creditCardPaymentProcessor;]]>"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:116
-#, no-c-format
-msgid "Using initializer method injection:"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:118
-#, no-c-format
-msgid ""
-"<![CDATA[@Initializer\n"
-"public void setPaymentProcessors(@PayByCheque PaymentProcessor "
-"chequePaymentProcessor, \n"
-"                                 @PayByCreditCard PaymentProcessor "
-"creditCardPaymentProcessor) {\n"
-"   this.chequePaymentProcessor = chequePaymentProcessor;\n"
-"   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
-"}]]>"
+"The CDI specification defines a procedure, called <emphasis>typesafe "
+"resolution</emphasis>, that the container follows when identifying the bean "
+"to inject to an injection point. This algorithm looks complex at first, but "
+"once you understand it, it's really quite intuitive. Typesafe resolution is "
+"performed at system initialization time, which means that the container will "
+"inform the developer immediately if a bean's dependencies cannot be "
+"satisfied."
 msgstr ""
 
 #. Tag: para
 #: injection.xml:120
 #, no-c-format
-msgid "Or using constructor injection:"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:122
-#, no-c-format
 msgid ""
-"<![CDATA[@Initializer\n"
-"public Checkout(@PayByCheque PaymentProcessor chequePaymentProcessor, \n"
-"                @PayByCreditCard PaymentProcessor "
-"creditCardPaymentProcessor) {\n"
-"   this.chequePaymentProcessor = chequePaymentProcessor;\n"
-"   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
-"}]]>"
-msgstr ""
-
-#. Tag: title
-#: injection.xml:125
-#, no-c-format
-msgid "Binding annotations with members"
+"The purpose of this algorithm is to allow multiple beans to implement the "
+"same bean type and either:"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:127
-#, no-c-format
-msgid "Binding annotations may have members:"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:129
+#: injection.xml:126
 #, no-c-format
 msgid ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-"@BindingType\n"
-"public @interface PayBy {\n"
-"    PaymentType value();\n"
-"}]]>"
+"allow the client to select which implementation it requires using a "
+"<emphasis>qualifier</emphasis> or"
 msgstr ""
 
 #. Tag: para
 #: injection.xml:131
 #, no-c-format
-msgid "In which case, the member value is significant:"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:133
-#, no-c-format
 msgid ""
-"<![CDATA[@PayBy(CHEQUE) PaymentProcessor chequePaymentProcessor;\n"
-"@PayBy(CREDIT_CARD) PaymentProcessor creditCardPaymentProcessor;]]>"
+"allow the application deployer to select which implementation is appropriate "
+"for a particular deployment, without changes to the client, by enabling or "
+"disabling an <emphasis>alternative</emphasis>, or"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:135
+#: injection.xml:137
 #, no-c-format
-msgid ""
-"You can tell the Web Bean manager to ignore a member of a binding annotation "
-"type by annotating the member <literal>@NonBinding</literal>."
-msgstr ""
-
-#. Tag: title
-#: injection.xml:141
-#, no-c-format
-msgid "Combinations of binding annnotations"
+msgid "allow the beans to be isolated into separate modules."
 msgstr ""
 
 #. Tag: para
 #: injection.xml:143
 #, no-c-format
-msgid "An injection point may even specify multiple binding annotations:"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:145
-#, no-c-format
 msgid ""
-"<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
+"Obviously, if you have exactly one bean of a given type, and an injection "
+"point with that same type, then bean A is going to go into slot A. That's "
+"the simplest possible scenario. When you first start your application, "
+"you'll likely have lots of those."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:147
+#: injection.xml:149
 #, no-c-format
 msgid ""
-"In this case, only a Web Bean which has <emphasis>both</emphasis> binding "
-"annotations would be eligible for injection."
+"But then, things start to get complicated. Let's explore how the container "
+"determines which bean to inject in more advanced cases. We'll start by "
+"taking a closer look at qualifiers."
 msgstr ""
 
 #. Tag: title
-#: injection.xml:153
+#: injection.xml:157
 #, no-c-format
-msgid "Binding annotations and producer methods"
+msgid "Qualifier annotations"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:155
+#: injection.xml:159
 #, no-c-format
-msgid "Even producer methods may specify binding annotations:"
+msgid ""
+"If we have more than one bean that implements a particular bean type, the "
+"injection point can specify exactly which bean should be injected using a "
+"qualifier annotation. For example, there might be two implementations of "
+"<literal>PaymentProcessor</literal>:"
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:157
+#: injection.xml:165
 #, no-c-format
 msgid ""
-"<![CDATA[@Produces \n"
-"@Asynchronous @PayByCheque \n"
-"PaymentProcessor createAsyncPaymentProcessor(@PayByCheque PaymentProcessor "
-"processor) {\n"
-"    return new AsynchronousPaymentProcessor(processor);\n"
+"<![CDATA[@Synchronous\n"
+"public class SynchronousPaymentProcessor implements PaymentProcessor {\n"
+"   public void process(Payment payment) { ... }\n"
 "}]]>"
 msgstr ""
 
-#. Tag: title
-#: injection.xml:162
-#, no-c-format
-msgid "The default binding type"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:164
+#. Tag: programlisting
+#: injection.xml:167
 #, no-c-format
 msgid ""
-"Web Beans defines a binding type <literal>@Current</literal> that is the "
-"default binding type for any injection point or Web Bean that does not "
-"explicitly specify a binding type."
+"<![CDATA[@Asynchronous\n"
+"public class AsynchronousPaymentProcessor implements PaymentProcessor {\n"
+"   public void process(Payment payment) { ... }\n"
+"}]]>"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:168
+#: injection.xml:169
 #, no-c-format
 msgid ""
-"There are two common circumstances in which it is necessary to explicitly "
-"specify <literal>@Current</literal>:"
+"Where <literal>@Synchronous</literal> and <literal>@Asynchronous</literal> "
+"are qualifier annotations:"
 msgstr ""
 
-#. Tag: para
+#. Tag: programlisting
 #: injection.xml:173
 #, no-c-format
 msgid ""
-"on a field, in order to declare it as an injected field with the default "
-"binding type, and"
+"<![CDATA[@Qualifier\n"
+"@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"public @interface Synchronous {}]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:175
+#, no-c-format
+msgid ""
+"<![CDATA[@Qualifier\n"
+"@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"public @interface Asynchronous {}]]>"
 msgstr ""
 
 #. Tag: para
 #: injection.xml:177
 #, no-c-format
 msgid ""
-"on a Web Bean which has another binding type in addition to the default "
-"binding type."
+"A client bean developer uses the qualifier annotation to specify exactly "
+"which bean should be injected."
 msgstr ""
 
-#. Tag: title
+#. Tag: para
+#: injection.xml:181
+#, no-c-format
+msgid "Using field injection:"
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:183
+#, no-c-format
+msgid ""
+"<![CDATA[@Inject @Synchronous PaymentProcessor syncPaymentProcessor;\n"
+"@Inject @Asynchronous PaymentProcessor asyncPaymentProcessor;]]>"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:185
+#, no-c-format
+msgid "Using initializer method injection:"
+msgstr ""
+
+#. Tag: programlisting
 #: injection.xml:187
 #, no-c-format
-msgid "Deployment types"
+msgid ""
+"<![CDATA[@Inject\n"
+"public void setPaymentProcessors(@Synchronous PaymentProcessor "
+"syncPaymentProcessor, \n"
+"                                 @Asynchronous PaymentProcessor "
+"asyncPaymentProcessor) {\n"
+"   this.syncPaymentProcessor = syncPaymentProcessor;\n"
+"   this.asyncPaymentProcessor = asyncPaymentProcessor;\n"
+"}]]>"
 msgstr ""
 
 #. Tag: para
 #: injection.xml:189
 #, no-c-format
+msgid "Using constructor injection:"
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:191
+#, no-c-format
 msgid ""
-"All Web Beans have a <emphasis>deployment type</emphasis>. Each deployment "
-"type identifies a set of Web Beans that should be conditionally installed in "
-"some deployments of the system."
+"<![CDATA[@Inject\n"
+"public Checkout(@Synchronous PaymentProcessor syncPaymentProcessor, \n"
+"                @Asynchronous PaymentProcessor asyncPaymentProcessor) {\n"
+"   this.syncPaymentProcessor = syncPaymentProcessor;\n"
+"   this.asyncPaymentProcessor = asyncPaymentProcessor;\n"
+"}]]>"
 msgstr ""
 
 #. Tag: para
 #: injection.xml:193
 #, no-c-format
 msgid ""
-"For example, we could define a deployment type named <literal>@Mock</"
-"literal>, which would identify Web Beans that should only be installed when "
-"the system executes inside an integration testing environment:"
+"Qualifier annotations can also qualify method arguments of producer, "
+"disposer and observer methods. Combining qualified arguments with producer "
+"methods is a good way to have an implementation of a bean type selected at "
+"runtime based on the state of the system:"
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:197
-#, no-c-format
-msgid ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"  @Target({TYPE, METHOD})\n"
-"  @DeploymentType\n"
-"  public @interface Mock {}]]>"
-msgstr ""
-
-#. Tag: para
 #: injection.xml:199
 #, no-c-format
 msgid ""
-"Suppose we had some Web Bean that interacted with an external system to "
-"process payments:"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:202
-#, no-c-format
-msgid ""
-"<![CDATA[public class ExternalPaymentProcessor {\n"
-"        \n"
-"    public void process(Payment p) {\n"
-"        ...\n"
-"    }\n"
-"    \n"
+"<![CDATA[@Produces\n"
+"PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor "
+"syncPaymentProcessor,\n"
+"                                     @Asynchronous PaymentProcessor "
+"asyncPaymentProcessor) {\n"
+"   return isSynchronous() ? syncPaymentProcessor : asyncPaymentProcessor;\n"
 "}]]>"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:204
+#: injection.xml:201
 #, no-c-format
 msgid ""
-"Since this Web Bean does not explicitly specify a deployment type, it has "
-"the default deployment type <literal>@Production</literal>."
+"If an injected field or a parameter of a bean constructor or initializer "
+"method is not explicitly annotated with a qualifier, the default qualifier, "
+"<literal>@Default</literal>, is assumed."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:207
+#: injection.xml:206
 #, no-c-format
 msgid ""
-"For integration or unit testing, the external system is slow or unavailable. "
-"So we would create a mock object:"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:210
-#, no-c-format
-msgid ""
-"<![CDATA[@Mock \n"
-"public class MockPaymentProcessor implements PaymentProcessor {\n"
-"\n"
-"    @Override\n"
-"    public void process(Payment p) {\n"
-"        p.setSuccessful(true);\n"
-"    }\n"
-"\n"
-"}]]>"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:212
-#, no-c-format
-msgid ""
-"But how does the Web Bean manager determine which implementation to use in a "
-"particular deployment?"
+"Now, you may be thinking, <emphasis>\"What's the different between using a "
+"qualifier and just specifying the exact implementation class you want?\"</"
+"emphasis> It's important to understand that a qualifier is like an extension "
+"of the interface. It does not create a direct dependency to any particular "
+"implementation. There may be multiple alterative implementations of "
+"<literal>@Asynchronous PaymentProcessor</literal>!"
 msgstr ""
 
 #. Tag: title
 #: injection.xml:216
 #, no-c-format
-msgid "Enabling deployment types"
+msgid "Qualifiers with members"
 msgstr ""
 
 #. Tag: para
 #: injection.xml:218
 #, no-c-format
 msgid ""
-"Web Beans defines two built-in deployment types: <literal>@Production</"
-"literal> and <literal>@Standard</literal>. By default, only Web Beans with "
-"the built-in deployment types are enabled when the system is deployed. We "
-"can identify additional deployment types to be enabled in a particular "
-"deployment by listing them in <literal>web-beans.xml</literal>."
+"Java annotations can have members. We can use annotation members to further "
+"discriminate a qualifier. This prevents a potential explosion of new "
+"annotations. For example, instead of creating several qualifiers "
+"representing different payment methods, we could aggregate them into a "
+"single annotation with a member:"
 msgstr ""
 
-#. Tag: para
+#. Tag: programlisting
 #: injection.xml:224
 #, no-c-format
 msgid ""
-"Going back to our example, when we deploy our integration tests, we want all "
-"our <literal>@Mock</literal> objects to be installed:"
+"<![CDATA[@Qualifier\n"
+"@Retention(RUNTIME)\n"
+"@Target({METHOD, FIELD, PARAMETER, TYPE})\n"
+"public @interface PayBy {\n"
+"   PaymentMethod value();\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:226
+#, no-c-format
+msgid ""
+"Then we select one of the possible member values when appling the qualifier:"
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:227
+#: injection.xml:230
 #, no-c-format
 msgid ""
-"<![CDATA[<WebBeans>\n"
-"    <Deploy>\n"
-"        <Standard/>\n"
-"        <Production/>\n"
-"        <test:Mock/>\n"
-"    </Deploy>\n"
-"</WebBeans>]]>"
+"<![CDATA[private @Inject @PayBy(CHECK) PaymentProcessor checkPayment;]]>"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:229
+#: injection.xml:232
 #, no-c-format
 msgid ""
-"Now the Web Bean manager will identify and install all Web Beans annotated "
-"<literal>@Production</literal>, <literal>@Standard</literal> or "
-"<literal>@Mock</literal> at deployment time."
+"We can force the container to ignore a member of a qualifier type by "
+"annotating the member <literal>@NonBinding</literal>."
 msgstr ""
 
-#. Tag: para
-#: injection.xml:233
-#, no-c-format
-msgid ""
-"The deployment type <literal>@Standard</literal> is used only for certain "
-"special Web Beans defined by the Web Beans specification. We can't use it "
-"for our own Web Beans, and we can't disable it."
-msgstr ""
-
-#. Tag: para
+#. Tag: programlisting
 #: injection.xml:237
 #, no-c-format
 msgid ""
-"The deployment type <literal>@Production</literal> is the default deployment "
-"type for Web Beans which don't explicitly declare a deployment type, and may "
-"be disabled."
+"<![CDATA[@Qualifier\n"
+"@Retention(RUNTIME)\n"
+"@Target({METHOD, FIELD, PARAMETER, TYPE})\n"
+"public @interface PayBy {\n"
+"   PaymentMethod value();\n"
+"   @NonBinding String comment() default \"\";\n"
+"}]]>"
 msgstr ""
 
 #. Tag: title
-#: injection.xml:244
+#: injection.xml:242
 #, no-c-format
-msgid "Deployment type precedence"
+msgid "Multiple qualifiers"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:246
+#: injection.xml:244
 #, no-c-format
-msgid ""
-"If you've been paying attention, you're probably wondering how the Web Bean "
-"manager decides which implementation &#151; "
-"<literal>ExternalPaymentProcessor</literal> or "
-"<literal>MockPaymentProcessor</literal> &#151; to choose. Consider what "
-"happens when the manager encounters this injection point:"
+msgid "An injection point may specify multiple qualifiers:"
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:251
+#: injection.xml:248
 #, no-c-format
-msgid "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
+msgid ""
+"<![CDATA[@Inject @Synchronous @Reliable PaymentProcessor "
+"syncPaymentProcessor;]]>"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:253
+#: injection.xml:250
 #, no-c-format
 msgid ""
-"There are now two Web Beans which satisfy the <literal>PaymentProcessor</"
-"literal> contract. Of course, we can't use a binding annotation to "
-"disambiguate, since binding annotations are hard-coded into the source at "
-"the injection point, and we want the manager to be able to decide at "
-"deployment time!"
+"Then only a bean which has <emphasis>both</emphasis> qualifier annotations "
+"would be eligible for injection."
 msgstr ""
 
-#. Tag: para
-#: injection.xml:258
+#. Tag: programlisting
+#: injection.xml:255
 #, no-c-format
 msgid ""
-"The solution to this problem is that each deployment type has a different "
-"<emphasis>precedence</emphasis>. The precedence of the deployment types is "
-"determined by the order in which they appear in <literal>web-beans.xml</"
-"literal>. In our example, <literal>@Mock</literal> appears later than "
-"<literal>@Production</literal> so it has a higher precedence."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:264
-#, no-c-format
-msgid ""
-"Whenever the manager discovers that more than one Web Bean could satisfy the "
-"contract (API type plus binding annotations) specified by an injection "
-"point, it considers the relative precedence of the Web Beans. If one has a "
-"higher precedence than the others, it chooses the higher precedence Web Bean "
-"to inject. So, in our example, the Web Bean manager will inject "
-"<literal>MockPaymentProcessor</literal> when executing in our integration "
-"testing environment (which is exactly what we want)."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:271
-#, no-c-format
-msgid ""
-"It's interesting to compare this facility to today's popular manager "
-"architectures. Various \"lightweight\" containers also allow conditional "
-"deployment of classes that exist in the classpath, but the classes that are "
-"to be deployed must be explicity, individually, listed in configuration code "
-"or in some XML configuration file. Web Beans does support Web Bean "
-"definition and configuration via XML, but in the common case where no "
-"complex configuration is required, deployment types allow a whole set of Web "
-"Beans to be enabled with a single line of XML. Meanwhile, a developer "
-"browsing the code can easily identify what deployment scenarios the Web Bean "
-"will be used in."
+"<![CDATA[@Synchronous @Reliable\n"
+"public class SynchronousReliablePaymentProcessor implements PaymentProcessor "
+"{\n"
+"   public void process(Payment payment) { ... }\n"
+"}]]>"
 msgstr ""
 
 #. Tag: title
-#: injection.xml:284
+#: injection.xml:260
 #, no-c-format
-msgid "Example deployment types"
+msgid "Alternatives"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:286
+#: injection.xml:262
 #, no-c-format
 msgid ""
-"Deployment types are useful for all kinds of things, here's some examples:"
+"Alternatives are beans whose implementation is specific to a particular "
+"client module or deployment scenario. This alternative defines a mock "
+"implementation of both <literal>@Synchronous PaymentProcessor</literal> and "
+"<literal>@Asynchronous PaymentProcessor</literal>, all in one:"
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:266
+#, no-c-format
+msgid ""
+"<![CDATA[@Alternative @Synchronous @Asynchronous\n"
+"public class MockPaymentProcessor implements PaymentProcessor {\n"
+"   public void process(Payment payment) { ... }\n"
+"}]]>"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:290
+#: injection.xml:268
 #, no-c-format
 msgid ""
-"<literal>@Mock</literal> and <literal>@Staging</literal> deployment types "
-"for testing"
+"By default, <literal>@Alternative</literal> beans are disabled. We need to "
+"<emphasis>enable</emphasis> an alternative in the <literal>beans.xml</"
+"literal> descriptor of a bean archive to make it available for instantiation "
+"and injection. This activation only applies to the beans in that archive."
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:274
+#, no-c-format
+msgid ""
+"<![CDATA[<beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
+"      http://java.sun.com/xml/ns/javaee\n"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
+"   <alternatives>\n"
+"         <class>org.mycompany.mock.MockPaymentProcessor</class>\n"
+"   </alternatives>\n"
+"</beans>]]>"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:276
+#, no-c-format
+msgid ""
+"When an ambiguous dependency exists at an injection point, the container "
+"attempts to resolve the ambiguity by looking for an enabled alternative "
+"among the beans that could be injected. If there is exactly one enabled "
+"alternative, that's the bean that will be injected."
+msgstr ""
+
+#. Tag: title
+#: injection.xml:285
+#, no-c-format
+msgid "Fixing unsatisfied and ambiguous dependencies"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:287
+#, no-c-format
+msgid ""
+"The typesafe resolution algorithm fails when, after considering the "
+"qualifier annotations on all beans that implement the bean type of an "
+"injection point and filtering out disabled beans (<literal>@Alternative</"
+"literal> beans which are not explicitly enabled), the container is unable to "
+"identify exactly one bean to inject. The container will abort deployment, "
+"informing us of the unsatisfied or ambiguous dependency."
 msgstr ""
 
 #. Tag: para
 #: injection.xml:294
 #, no-c-format
-msgid "<literal>@AustralianTaxLaw</literal> for site-specific Web Beans"
+msgid ""
+"During the course of your development, you're going to encounter this "
+"situation. Let's learn how to resolve it."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:297
+#: injection.xml:298
+#, no-c-format
+msgid "To fix an <emphasis>unsatisfied dependency</emphasis>, either:"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:304
 #, no-c-format
 msgid ""
-"<literal>@SeamFramework</literal>, <literal>@Guice</literal> for third-party "
-"frameworks which build on Web Beans"
+"create a bean which implements the bean type and has all the qualifier types "
+"of the injection point,"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:301
+#: injection.xml:309
 #, no-c-format
 msgid ""
-"<literal>@Standard</literal> for standard Web Beans defined by the Web Beans "
-"specification"
+"make sure that the bean you already have is in the classpath of the module "
+"with the injection point, or"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:306
-#, no-c-format
-msgid "I'm sure you can think of more applications..."
-msgstr ""
-
-#. Tag: title
-#: injection.xml:313
-#, no-c-format
-msgid "Fixing unsatisfied dependencies"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:315
+#: injection.xml:314
 #, no-c-format
 msgid ""
-"The typesafe resolution algorithm fails when, after considering the binding "
-"annotations and and deployment types of all Web Beans that implement the API "
-"type of an injection point, the Web Bean manager is unable to identify "
-"exactly one Web Bean to inject."
+"explicitly enable an <literal>@Alternative</literal> bean that implements "
+"the bean type and has the appropriate qualifier types, using <literal>beans."
+"xml</literal>."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:320
+#: injection.xml:321
 #, no-c-format
-msgid ""
-"It's usually easy to fix an <literal>UnsatisfiedDependencyException</"
-"literal> or <literal>AmbiguousDependencyException</literal>."
+msgid "To fix an <emphasis>ambiguous dependency</emphasis>, either:"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:323
+#: injection.xml:327
 #, no-c-format
 msgid ""
-"To fix an <literal>UnsatisfiedDependencyException</literal>, simply provide "
-"a Web Bean which implements the API type and has the binding types of the "
-"injection point &#151; or enable the deployment type of a Web Bean that "
-"already implements the API type and has the binding types."
+"introduce a qualifier to distinguish between the two implementations of the "
+"bean type,"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:328
+#: injection.xml:332
 #, no-c-format
 msgid ""
-"To fix an <literal>AmbiguousDependencyException</literal>, introduce a "
-"binding type to distinguish between the two implementations of the API type, "
-"or change the deployment type of one of the implementations so that the Web "
-"Bean manager can use deployment type precedence to choose between them. An "
-"<literal>AmbiguousDependencyException</literal> can only occur if two Web "
-"Beans share a binding type and have exactly the same deployment type."
+"disable one of the beans by annotating it <literal>@Alternative</literal>,"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:335
+#: injection.xml:337
 #, no-c-format
 msgid ""
-"There's one more issue you need to be aware of when using dependency "
-"injection in Web Beans."
-msgstr ""
-
-#. Tag: title
-#: injection.xml:341
-#, no-c-format
-msgid "Client proxies"
+"move one of the implementations to a module that is not in the classpath of "
+"the module with the injection point, or"
 msgstr ""
 
 #. Tag: para
 #: injection.xml:343
 #, no-c-format
 msgid ""
-"Clients of an injected Web Bean do not usually hold a direct reference to a "
-"Web Bean instance."
+"disable one of two <literal>@Alternative</literal> beans that are trying to "
+"occupy the same space, using <literal>beans.xml</literal>."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:346
+#: injection.xml:350
 #, no-c-format
 msgid ""
-"Imagine that a Web Bean bound to the application scope held a direct "
-"reference to a Web Bean bound to the request scope. The application scoped "
-"Web Bean is shared between many different requests. However, each request "
-"should see a different instance of the request scoped Web bean!"
+"See <ulink src=\"http://sfwk.org/Documentation/"
+"HowDoAResolveAnAmbiguousResolutionExceptionBetweenAProducerMethodAndARawType"
+"\">this FAQ</ulink> for step-by-step instructions for how to resolve an "
+"ambigous resolution exception between a raw bean type and a producer method "
+"that returns the same bean type."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:351
+#: injection.xml:358
 #, no-c-format
-msgid ""
-"Now imagine that a Web Bean bound to the session scope held a direct "
-"reference to a Web Bean bound to the application scope. From time to time, "
-"the session context is serialized to disk in order to use memory more "
-"efficiently. However, the application scoped Web Bean instance should not be "
-"serialized along with the session scoped Web Bean!"
+msgid "Just remember: \"There can be only one.\""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:357
+#: injection.xml:361
 #, no-c-format
 msgid ""
-"Therefore, unless a Web Bean has the default scope <literal>@Dependent</"
-"literal>, the Web Bean manager must indirect all injected references to the "
-"Web Bean through a proxy object. This <emphasis>client proxy</emphasis> is "
-"responsible for ensuring that the Web Bean instance that receives a method "
+"On the other hand, if you really do have an optional or multivalued "
+"injection point, you should change the type of your injection point to "
+"<literal>Instance</literal>, as we'll see in <xref linkend=\"lookup\"/>."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:366
+#, no-c-format
+msgid ""
+"Now there's one more issue you need to be aware of when using the dependency "
+"injection service."
+msgstr ""
+
+#. Tag: title
+#: injection.xml:373
+#, no-c-format
+msgid "Client proxies"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:375
+#, no-c-format
+msgid ""
+"Clients of an injected bean do not usually hold a direct reference to a bean "
+"instance, unless the bean is a dependent object (scope <literal>@Dependent</"
+"literal>)."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:380
+#, no-c-format
+msgid ""
+"Imagine that a bean bound to the application scope held a direct reference "
+"to a bean bound to the request scope. The application-scoped bean is shared "
+"between many different requests. However, each request should see a "
+"different instance of the request scoped bean&#8212;the current one!"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:386
+#, no-c-format
+msgid ""
+"Now imagine that a bean bound to the session scope holds a direct reference "
+"to a bean bound to the application scope. From time to time, the session "
+"context is serialized to disk in order to use memory more efficiently. "
+"However, the application scoped bean instance should not be serialized along "
+"with the session scoped bean! It can get that reference any time. No need to "
+"hoard it!"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:393
+#, no-c-format
+msgid ""
+"Therefore, unless a bean has the default scope <literal>@Dependent</"
+"literal>, the container must indirect all injected references to the bean "
+"through a proxy object. This <emphasis>client proxy</emphasis> is "
+"responsible for ensuring that the bean instance that receives a method "
 "invocation is the instance that is associated with the current context. The "
-"client proxy also allows Web Beans bound to contexts such as the session "
-"context to be serialized to disk without recursively serializing other "
-"injected Web Beans."
+"client proxy also allows beans bound to contexts such as the session context "
+"to be serialized to disk without recursively serializing other injected "
+"beans."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:365
+#: injection.xml:401
 #, no-c-format
 msgid ""
 "Unfortunately, due to limitations of the Java language, some Java types "
-"cannot be proxied by the Web Bean manager. Therefore, the Web Bean manager "
-"throws an <literal>UnproxyableDependencyException</literal> if the type of "
-"an injection point cannot be proxied."
+"cannot be proxied by the container. If an injection point declared with one "
+"of these types resolves to a bean with any scope other than "
+"<literal>@Dependent</literal>, the container will abort deployment, "
+"informing us of the problem."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:370
+#: injection.xml:407
 #, no-c-format
-msgid "The following Java types cannot be proxied by the Web Bean manager:"
+msgid "The following Java types cannot be proxied by the container:"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:374
+#: injection.xml:411
+#, no-c-format
+msgid ""
+"classes which don't have a non-private constructor with no parameters, and"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:414
 #, no-c-format
 msgid ""
 "classes which are declared <literal>final</literal> or have a "
@@ -894,175 +828,247 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:378
-#, no-c-format
-msgid "classes which have no non-private constructor with no parameters, and"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:381
+#: injection.xml:419
 #, no-c-format
 msgid "arrays and primitive types."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:385
+#: injection.xml:423
 #, no-c-format
 msgid ""
-"It's usually very easy to fix an <literal>UnproxyableDependencyException</"
-"literal>. Simply add a constructor with no parameters to the injected class, "
-"introduce an interface, or change the scope of the injected Web Bean to "
+"It's usually very easy to fix an unproxyable dependency problem. Simply add "
+"a constructor with no parameters to the injected class, introduce an "
+"interface, or, if all else fails, change the scope of the injected bean to "
 "<literal>@Dependent</literal>."
 msgstr ""
 
-#. Tag: title
-#: injection.xml:392
+#. Tag: para
+#: injection.xml:430
 #, no-c-format
-msgid "Obtaining a Web Bean by programatic lookup"
+msgid ""
+"A future release of Weld will likely support a non-standard workaround for "
+"this limitation, using non-portable JVM APIs:"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:394
+#: injection.xml:437
 #, no-c-format
 msgid ""
-"The application may obtain an instance of the interface <literal>Manager</"
-"literal> by injection:"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:397
-#, no-c-format
-msgid "<![CDATA[@Current Manager manager;]]>"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:399
-#, no-c-format
-msgid ""
-"The <literal>Manager</literal> object provides a set of methods for "
-"obtaining a Web Bean instance programatically."
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:402
-#, no-c-format
-msgid ""
-"<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
-"class);]]>"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:404
-#, no-c-format
-msgid ""
-"Binding annotations may be specified by subclassing the helper class "
-"<literal>AnnotationLiteral</literal>, since it is otherwise difficult to "
-"instantiate an annotation type in Java."
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:408
-#, no-c-format
-msgid ""
-"<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
-"class, \n"
-"                                               new "
-"AnnotationLiteral<CreditCard>(){});]]>"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:410
-#, no-c-format
-msgid ""
-"If the binding type has an annotation member, we can't use an anonymous "
-"subclass of <literal>AnnotationLiteral</literal> &#151; instead we'll need "
-"to create a named subclass:"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:413
-#, no-c-format
-msgid ""
-"<![CDATA[abstract class CreditCardBinding \n"
-"    extends AnnotationLiteral<CreditCard> \n"
-"    implements CreditCard {}]]>"
-msgstr ""
-
-#. Tag: programlisting
-#: injection.xml:415
-#, no-c-format
-msgid ""
-"<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
-"class, \n"
-"                                               new CreditCardBinding() { \n"
-"                                                   public void value() "
-"{ return paymentType; } \n"
-"                                               } );]]>"
-msgstr ""
-
-#. Tag: title
-#: injection.xml:419
-#, no-c-format
-msgid ""
-"Lifecycle callbacks, <literal>@Resource</literal>, <literal>@EJB</literal> "
-"and <literal>@PersistenceContext</literal>"
-msgstr ""
-
-#. Tag: para
-#: injection.xml:422
-#, no-c-format
-msgid ""
-"Enterprise Web Beans support all the lifecycle callbacks defined by the EJB "
-"specification: <literal>@PostConstruct</literal>, <literal>@PreDestroy</"
-"literal>, <literal>@PrePassivate</literal> and <literal>@PostActivate</"
-"literal>."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:426
-#, no-c-format
-msgid ""
-"Simple Web Beans support only the <literal>@PostConstruct</literal> and "
-"<literal>@PreDestroy</literal> callbacks."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:429
-#, no-c-format
-msgid ""
-"Both enterprise and simple Web Beans support the use of <literal>@Resource</"
-"literal>, <literal>@EJB</literal> and <literal>@PersistenceContext</literal> "
-"for injection of Java EE resources, EJBs and JPA persistence contexts, "
-"respectively. Simple Web Beans do not support the use of "
-"<literal>@PersistenceContext(type=EXTENDED)</literal>."
-msgstr ""
-
-#. Tag: para
-#: injection.xml:434
-#, no-c-format
-msgid ""
-"The <literal>@PostConstruct</literal> callback always occurs after all "
-"dependencies have been injected."
-msgstr ""
-
-#. Tag: title
-#: injection.xml:440
-#, no-c-format
-msgid "The <literal>InjectionPoint</literal> object"
+"Sun, IcedTea, Mac: <literal>Unsafe.allocateInstance()</literal> (The most "
+"efficient)"
 msgstr ""
 
 #. Tag: para
 #: injection.xml:442
 #, no-c-format
 msgid ""
-"There are certain kinds of dependent objects &#151; Web Beans with scope "
-"<literal>@Dependent</literal> &#151; that need to know something about the "
-"object or injection point into which they are injected in order to be able "
-"to do what they do. For example:"
+"IBM, JRockit: <literal>ReflectionFactory.newConstructorForSerialization()</"
+"literal>"
 msgstr ""
 
 #. Tag: para
 #: injection.xml:448
+#, no-c-format
+msgid "But we didn't get around to implementing this yet."
+msgstr ""
+
+#. Tag: title
+#: injection.xml:457
+#, no-c-format
+msgid "Obtaining a contextual instance by programmatic lookup"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:459
+#, no-c-format
+msgid ""
+"In certain situations, injection is not the most convenient way to obtain a "
+"contextual reference. For example, it may not be used when:"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:466
+#, no-c-format
+msgid "the bean type or qualifiers vary dynamically at runtime, or"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:471
+#, no-c-format
+msgid ""
+"depending upon the deployment, there may be no bean which satisfies the type "
+"and qualifiers, or"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:476
+#, no-c-format
+msgid "we would like to iterate over all beans of a certain type."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:482
+#, no-c-format
+msgid ""
+"In these situations, the application may obtain an instance of the interface "
+"<literal>Instance</literal>, parameterized for the bean type, by injection:"
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:487
+#, no-c-format
+msgid "<![CDATA[@Inject Instance<PaymentProcessor> paymentProcessorSource;]]>"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:489
+#, no-c-format
+msgid ""
+"The <literal>get()</literal> method of <literal>Instance</literal> produces "
+"a contextual instance of the bean."
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:493
+#, no-c-format
+msgid "<![CDATA[PaymentProcessor p = paymentProcessorSource.get();]]>"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:495
+#, no-c-format
+msgid "Qualifiers can be specified in one of two ways:"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:501
+#, no-c-format
+msgid "by annotating the <literal>Instance</literal> injection point, or"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:504
+#, no-c-format
+msgid ""
+"by passing qualifiers to the <literal>select()</literal> of <literal>Event</"
+"literal>."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:508
+#, no-c-format
+msgid "Specifying the qualifiers at the injection point is much, much easier:"
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:512
+#, no-c-format
+msgid ""
+"<![CDATA[@Inject @Asynchronous Instance<PaymentProcessor> "
+"paymentProcessorSource;]]>"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:514
+#, no-c-format
+msgid ""
+"Now, the <literal>PaymentProcessor</literal> returned by <literal>get()</"
+"literal> will have the qualifier <literal>@Asynchronous</literal>."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:519
+#, no-c-format
+msgid ""
+"Alternatively, we can specify the qualifier dynamically. First, we add the "
+"<literal>@Any</literal> qualifier to the injection point, to suppress the "
+"default qualifier. (All beans have the qualifier <literal>@Any</literal>.)"
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:524
+#, no-c-format
+msgid ""
+"<![CDATA[@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]>"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:526
+#, no-c-format
+msgid ""
+"Next, we need to obtain an instance of our qualifier type. Since annotatons "
+"are interfaces, we can't just write <literal>new Asynchronous()</literal>. "
+"It's also quite tedious to create a concrete implementation of an annotation "
+"type from scratch. Instead, CDI lets us obtain a qualifier instance by "
+"subclassing the helper class <literal>AnnotationLiteral</literal>."
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:533
+#, no-c-format
+msgid ""
+"<![CDATA[abstract class AsynchronousQualifier\n"
+"extends AnnotationLiteral<Asynchronous> implements Asynchronous {}]]>"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:535
+#, no-c-format
+msgid "In some cases, we can use an anonymous class:"
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:539
+#, no-c-format
+msgid ""
+"<![CDATA[PaymentProcessor p = paymentProcessorSource\n"
+"   .select(new AnnotationLiteral<Asynchronous>() {});]]>"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:542
+#, no-c-format
+msgid ""
+"We can't use an anonymous class to implement a qualifier type with members."
+msgstr ""
+
+#. Tag: para
+#: injection.xml:547
+#, no-c-format
+msgid ""
+"Now, finally, we can pass the qualifier to the <literal>select()</literal> "
+"method of <literal>Instance</literal>."
+msgstr ""
+
+#. Tag: programlisting
+#: injection.xml:551
+#, no-c-format
+msgid ""
+"<![CDATA[Annotation qualifier = synchronously ?\n"
+"      new SynchronousQualifier() : new AsynchronousQualifier();\n"
+"PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process"
+"(payment);]]>"
+msgstr ""
+
+#. Tag: title
+#: injection.xml:556
+#, no-c-format
+msgid "The <literal>InjectionPoint</literal> object"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:558
+#, no-c-format
+msgid ""
+"There are certain kinds of dependent objects (beans with scope "
+"<literal>@Dependent</literal>) that need to know something about the object "
+"or injection point into which they are injected in order to be able to do "
+"what they do. For example:"
+msgstr ""
+
+#. Tag: para
+#: injection.xml:564
 #, no-c-format
 msgid ""
 "The log category for a <literal>Logger</literal> depends upon the class of "
@@ -1070,7 +1076,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:452
+#: injection.xml:568
 #, no-c-format
 msgid ""
 "Injection of a HTTP parameter or header value depends upon what parameter or "
@@ -1078,7 +1084,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:456
+#: injection.xml:572
 #, no-c-format
 msgid ""
 "Injection of the result of an EL expression evaluation depends upon the "
@@ -1086,16 +1092,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:461
+#: injection.xml:577
 #, no-c-format
 msgid ""
-"A Web Bean with scope <literal>@Dependent</literal> may inject an instance "
-"of <literal>InjectionPoint</literal> and access metadata relating to the "
+"A bean with scope <literal>@Dependent</literal> may inject an instance of "
+"<literal>InjectionPoint</literal> and access metadata relating to the "
 "injection point to which it belongs."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:465
+#: injection.xml:581
 #, no-c-format
 msgid ""
 "Let's look at an example. The following code is verbose, and vulnerable to "
@@ -1103,13 +1109,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:468
+#: injection.xml:584
 #, no-c-format
 msgid "<![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]>"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:470
+#: injection.xml:586
 #, no-c-format
 msgid ""
 "This clever little producer method lets you inject a JDK <literal>Logger</"
@@ -1117,7 +1123,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:473
+#: injection.xml:589
 #, no-c-format
 msgid ""
 "<![CDATA[class LogFactory {\n"
@@ -1131,27 +1137,27 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:475
+#: injection.xml:591
 #, no-c-format
 msgid "We can now write:"
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:477
+#: injection.xml:593
 #, no-c-format
-msgid "<![CDATA[@Current Logger log;]]>"
+msgid "<![CDATA[@Inject Logger log;]]>"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:479
+#: injection.xml:595
 #, no-c-format
 msgid ""
 "Not convinced? Then here's a second example. To inject HTTP parameters, we "
-"need to define a binding type:"
+"need to define a qualifier type:"
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:482
+#: injection.xml:598
 #, no-c-format
 msgid ""
 "<![CDATA[@BindingType\n"
@@ -1163,13 +1169,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:484
+#: injection.xml:600
 #, no-c-format
-msgid "We would use this binding type at injection points as follows:"
+msgid "We would use this qualifier type at injection points as follows:"
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:486
+#: injection.xml:602
 #, no-c-format
 msgid ""
 "<![CDATA[@HttpParam(\"username\") String username;\n"
@@ -1177,13 +1183,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:488
+#: injection.xml:604
 #, no-c-format
 msgid "The following producer method does the work:"
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:490
+#: injection.xml:606
 #, no-c-format
 msgid ""
 "<![CDATA[class HttpParams\n"
@@ -1198,24 +1204,24 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:492
+#: injection.xml:608
 #, no-c-format
 msgid ""
 "(Note that the <literal>value()</literal> member of the <literal>HttpParam</"
-"literal> annotation is ignored by the Web Bean manager since it is annotated "
+"literal> annotation is ignored by the container since it is annotated "
 "<literal>@NonBinding.</literal>)"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:495
+#: injection.xml:611
 #, no-c-format
 msgid ""
-"The Web Bean manager provides a built-in Web Bean that implements the "
+"The container provides a built-in bean that implements the "
 "<literal>InjectionPoint</literal> interface:"
 msgstr ""
 
 #. Tag: programlisting
-#: injection.xml:498
+#: injection.xml:614
 #, no-c-format
 msgid ""
 "<![CDATA[public interface InjectionPoint { \n"

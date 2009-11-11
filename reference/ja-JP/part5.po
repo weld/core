@@ -3,9 +3,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
+"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection "
+"VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-28 17:09+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-05-03 06:31+0900\n"
 "Last-Translator: TANABE Junnichi <jun@lmns.biz>\n"
 "Language-Team: none\n"
@@ -15,13 +16,43 @@ msgstr ""
 
 #. Tag: para
 #: part5.xml:5
-#, no-c-format
-msgid "Web Beans is the reference implementation of JSR-299, and is used by JBoss AS and Glassfish to provide JSR-299 services for Java Enterprise Edition applications. Web Beans also goes beyond the environments and APIs defined by the JSR-299 specification and provides support for a number of other environments (such as a servlet container such as Tomcat, or Java SE) and additional APIs and modules (such as logging, XSD generation for the JSR-299 XML deployment descriptors)."
-msgstr "Web BeansはJSR-299の参照実装で、Java Enterprise EditionアプリケーションにJSR-299サービスを提供するためにJBoss ASとGlassfishにより利用されています。Web Beansはまた、JSR-299仕様により定義された環境とAPIを飛び超え、(TomcatのようなサーブレットコンテナやJava SEのような)多くの他環境と(loggingやJSR-299のXMLディプロイメントデスクリプタの為のXSD生成のような)追加のAPIとモジュールに対するサポートを提供します。"
+#, fuzzy, no-c-format
+msgid ""
+"Weld is the reference implementation of JSR-299, and is used by JBoss AS and "
+"Glassfish to provide CDI services for Java Enterprise Edition (Java EE) "
+"applications. Weld also goes beyond the environments and APIs defined by the "
+"JSR-299 specification by providing support for a number of other "
+"environments (such as a servlet container such as Tomcat, or Java SE) and "
+"additional APIs and modules (such as logging and bean utilities)."
+msgstr ""
+"Web BeansはJSR-299の参照実装で、Java Enterprise EditionアプリケーションにJSR-"
+"299サービスを提供するためにJBoss ASとGlassfishにより利用されています。Web "
+"Beansはまた、JSR-299仕様により定義された環境とAPIを飛び超え、(Tomcatのような"
+"サーブレットコンテナやJava SEのような)多くの他環境と(loggingやJSR-299のXML"
+"ディプロイメントデスクリプタの為のXSD生成のような)追加のAPIとモジュールに対す"
+"るサポートを提供します。"
 
 #. Tag: para
-#: part5.xml:15
+#: part5.xml:12
 #, no-c-format
-msgid "If you want to get started quickly using Web Beans with JBoss AS or Tomcat and experiment with one of the examples, take a look at <xref linkend=\"ri\"/>. Otherwise read on for a exhaustive discussion of using Web Beans in all the environments and application servers it supports, as well the Web Beans extensions."
-msgstr "もし、あなたがJBoss ASやTomcatを用いてWeb Beansをさっさと使い始めてサンプルのどれかを使って実験してみたいなら、<xref linkend=\"ri\"/> をご覧ください。そうでなければ、サポートされるすべての環境とアプリケーションサーバーでWeb Beansを使った徹底的な議論のためにWeb Beans拡張もお読みください。"
+msgid ""
+"Some of the extensions in Weld are portable across JSR-299 implementations "
+"(like the logging and bean utilities) and some are specific to Weld (such as "
+"the servlet container support). Weld also provides an SPI on which to build "
+"extensions, so there are several layers involved."
+msgstr ""
 
+#. Tag: para
+#: part5.xml:18
+#, fuzzy, no-c-format
+msgid ""
+"If you want to get started quickly using Weld (and, in turn, CDI) with JBoss "
+"AS, GlassFish or Tomcat and experiment with one of the examples, take a look "
+"at <xref linkend=\"gettingstarted\"/>. Otherwise read on for a exhaustive "
+"discussion of using Weld in all the environments and application servers it "
+"supports and the Weld extensions."
+msgstr ""
+"もし、あなたがJBoss ASやTomcatを用いてWeb Beansをさっさと使い始めてサンプルの"
+"どれかを使って実験してみたいなら、<xref linkend=\"ri\"/> をご覧ください。そう"
+"でなければ、サポートされるすべての環境とアプリケーションサーバーでWeb Beansを"
+"使った徹底的な議論のためにWeb Beans拡張もお読みください。"

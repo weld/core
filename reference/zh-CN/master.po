@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-28 17:09+0000\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
 "PO-Revision-Date: 2009-03-27 13:37+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,63 +14,104 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
+#: master.xml:9
+#, no-c-format
+msgid "A note about naming and nomenclature"
+msgstr ""
+
+#. Tag: para
 #: master.xml:10
 #, no-c-format
-msgid "Note"
-msgstr "注释"
+msgid ""
+"Shortly before the final draft of JSR-299 was submitted, the specification "
+"changed its name from \"Web Beans\" to \"Java Contexts and Dependency "
+"Injection for the Java EE platform\", abbreviated CDI. For a brief period "
+"after the renaming, the reference implementation adopted the name \"Web Beans"
+"\". However, this ended up causing more confusion than it solved and Red Hat "
+"decided to change the name of the reference implementation to \"Weld\". You "
+"may still find other documentation, blogs, forum posts, etc. that use the "
+"old nomenclature. Please update any references you can. The naming game is "
+"over."
+msgstr ""
 
 #. Tag: para
-#: master.xml:11
+#: master.xml:19
 #, no-c-format
 msgid ""
-"JSR-299 has recently changed its name from \"Web Beans\" to \"Java Contexts "
-"and Dependency Injection\". The reference guide still refers to JSR-299 as "
-"\"Web Beans\" and the JSR-299 Reference Implementation as the \"Web Beans RI"
-"\". Other documentation, blogs, forum posts etc. may use the new "
-"nomenclature, including the new name for the JSR-299 Reference "
-"Implementation - \"Web Beans\"."
+"You'll also find that some of the functionality that once existed in the "
+"specification is now missing, such as defining beans in XML. These features "
+"will be available as portable extensions for CDI in the Weld project, and "
+"perhaps other implementations."
 msgstr ""
-"JSR-299最近将名字从\"Web Beans\"改为\"Java上下文和依赖注入\"。参考指南仍然使"
-"用\"Web Beans\"名称，参考实现仍然使用\"Web Beans RI\"名称。其他的文档，博客，"
-"论坛帖子等等可能使用新的命名，包括新的JSR-299参考实现的名字- \"Web Beans\"。"
 
 #. Tag: para
-#: master.xml:20
+#: master.xml:25
 #, no-c-format
 msgid ""
-"You'll also find that some of the more recent functionality to be specified "
-"is missing (such as producer fields, realization, asynchronous events, XML "
-"mapping of EE resources)."
+"Note that this reference guide was started while changes were still being "
+"made to the specification. We've done our best to update it for accuracy. If "
+"you discover a conflict between what is written in this guide and the "
+"specification, the specification is the authority&#8212;assume it is "
+"correct. If you believe you have found an error in the specification, please "
+"report it to the JSR-299 EG."
 msgstr ""
-"你也将发现一些指定的最近的一些功能缺失了(例如生产者域，实现(realization)，异"
-"步事件，Java EE资源的XML映射)"
 
 #. Tag: title
-#: master.xml:30
+#: master.xml:36
 #, no-c-format
-msgid "Using contextual objects"
-msgstr "使用具备上下文的对象"
+msgid "Beans"
+msgstr ""
 
 #. Tag: title
-#: master.xml:43
+#: master.xml:49
 #, no-c-format
-msgid "Developing loosely-coupled code"
-msgstr "开发松耦合的代码"
+msgid "Weld, the CDI Reference Implementation"
+msgstr ""
 
 #. Tag: title
-#: master.xml:53
-#, no-c-format
-msgid "Making the most of strong typing"
+#: master.xml:59
+#, fuzzy, no-c-format
+msgid "Loose coupling with strong typing"
 msgstr "最大程度地使用强类型"
 
 #. Tag: title
-#: master.xml:64
-#, no-c-format
-msgid "Web Beans and the Java EE ecosystem"
+#: master.xml:75
+#, fuzzy, no-c-format
+msgid "CDI and the Java EE ecosystem"
 msgstr "Web Beans和Java EE生态系统"
 
 #. Tag: title
-#: master.xml:76
+#: master.xml:87
 #, no-c-format
-msgid "Web Beans Reference"
+msgid "Weld reference"
 msgstr ""
+
+#~ msgid "Note"
+#~ msgstr "注释"
+
+#~ msgid ""
+#~ "JSR-299 has recently changed its name from \"Web Beans\" to \"Java "
+#~ "Contexts and Dependency Injection\". The reference guide still refers to "
+#~ "JSR-299 as \"Web Beans\" and the JSR-299 Reference Implementation as the "
+#~ "\"Web Beans RI\". Other documentation, blogs, forum posts etc. may use "
+#~ "the new nomenclature, including the new name for the JSR-299 Reference "
+#~ "Implementation - \"Web Beans\"."
+#~ msgstr ""
+#~ "JSR-299最近将名字从\"Web Beans\"改为\"Java上下文和依赖注入\"。参考指南仍然"
+#~ "使用\"Web Beans\"名称，参考实现仍然使用\"Web Beans RI\"名称。其他的文档，"
+#~ "博客，论坛帖子等等可能使用新的命名，包括新的JSR-299参考实现的名字- \"Web "
+#~ "Beans\"。"
+
+#~ msgid ""
+#~ "You'll also find that some of the more recent functionality to be "
+#~ "specified is missing (such as producer fields, realization, asynchronous "
+#~ "events, XML mapping of EE resources)."
+#~ msgstr ""
+#~ "你也将发现一些指定的最近的一些功能缺失了(例如生产者域，实现(realization)，"
+#~ "异步事件，Java EE资源的XML映射)"
+
+#~ msgid "Using contextual objects"
+#~ msgstr "使用具备上下文的对象"
+
+#~ msgid "Developing loosely-coupled code"
+#~ msgstr "开发松耦合的代码"

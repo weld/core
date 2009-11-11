@@ -1,0 +1,220 @@
+# Language ko-KR translations for Weld_-_JSR-299_Reference_Implementation package.
+# Automatically generated, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"PO-Revision-Date: 2009-11-11 15:00+0000\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: resources.xml:5
+#, no-c-format
+msgid "Java EE component environment resources"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:7
+#, no-c-format
+msgid ""
+"Java EE 5 already introduced some limited support for dependency injection, "
+"in the form of component environment injection. A component environment "
+"resource is a Java EE component, for example a JDBC datasource, JMS queue or "
+"topic, JPA persistence context, remote EJB or web service."
+msgstr ""
+
+#. Tag: para
+#: resources.xml:13
+#, no-c-format
+msgid ""
+"Naturally, there is now a slight mismatch with the new style of dependency "
+"injection in CDI. Most notably, component environment injection relies on "
+"string-based names to qualify ambiguous types, and there is no real "
+"consistency as to the nature of the names (sometimes a JNDI name, sometimes "
+"a persistence unit name, sometimes an EJB link, sometimes a nonportable "
+"\"mapped name\"). Producer fields turned out to be an elegant adaptor to "
+"reduce all this complexity to a common model and get component environment "
+"resources to participate in the CDI system just like any other kind of bean."
+msgstr ""
+
+#. Tag: para
+#: resources.xml:22
+#, no-c-format
+msgid ""
+"Fields have a duality in that they can both be the target of Java EE "
+"component environment injection and be declared as a CDI producer field. "
+"Therefore, they can define a mapping from a string-based name in the "
+"component environment, to a combination of type and qualifiers used in the "
+"world of typesafe injection. We call a producer field that represents a "
+"reference to an object in the Java EE component environment a "
+"<emphasis>resource</emphasis>."
+msgstr ""
+
+#. Tag: title
+#: resources.xml:31
+#, no-c-format
+msgid "Defining a resource"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:33
+#, no-c-format
+msgid ""
+"We declare a resource by annotating a producer field with a component "
+"environment injection annotation: <literal>@Resource</literal>, "
+"<literal>@EJB</literal>, <literal>@PersistenceContext</literal>, "
+"<literal>@PersistenceUnit</literal> or <literal>@WebServiceRef</literal>."
+msgstr ""
+
+#. Tag: programlisting
+#: resources.xml:37
+#, no-c-format
+msgid ""
+"<![CDATA[@Produces @WebServiceRef(lookup=\"java:app/service/Catalog\")\n"
+"Catalog catalog;]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: resources.xml:39
+#, no-c-format
+msgid ""
+"<![CDATA[@Produces @Resource(lookup=\"java:global/env/jdbc/CustomerDatasource"
+"\") \n"
+"@CustomerDatabase Datasource customerDatabase;]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: resources.xml:41
+#, no-c-format
+msgid ""
+"<![CDATA[@Produces @PersistenceContext(unitName=\"CustomerDatabase\")\n"
+"@CustomerDatabase EntityManager customerDatabasePersistenceContext;]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: resources.xml:43
+#, no-c-format
+msgid ""
+"<![CDATA[@Produces @PersistenceUnit(unitName=\"CustomerDatabase\") \n"
+"@CustomerDatabase EntityManagerFactory customerDatabasePersistenceUnit;]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: resources.xml:45
+#, no-c-format
+msgid ""
+"<![CDATA[@Produces @EJB(ejbLink=\"../their.jar#PaymentService\") \n"
+"PaymentService paymentService;]]>"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:47
+#, no-c-format
+msgid "The field may be static (but not final)."
+msgstr ""
+
+#. Tag: para
+#: resources.xml:49
+#, no-c-format
+msgid ""
+"It might feel strange to be declaring resources in Java code. Isn't this "
+"stuff that might be deployment-specific? Certainly, and that's why it makes "
+"sense to declare your resources in a class annotation <literal>@Alternative</"
+"literal>."
+msgstr ""
+
+#. Tag: title
+#: resources.xml:56
+#, no-c-format
+msgid "Typesafe resource injection"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:58
+#, no-c-format
+msgid "These resources can now be injected in the usual way."
+msgstr ""
+
+#. Tag: programlisting
+#: resources.xml:62
+#, no-c-format
+msgid "<![CDATA[@Inject Catalog catalog;]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: resources.xml:63
+#, no-c-format
+msgid "<![CDATA[@Inject @CustomerDatabase Datasource customerDatabase;]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: resources.xml:64
+#, no-c-format
+msgid ""
+"<![CDATA[@Inject @CustomerDatabase EntityManager "
+"customerDatabaseEntityManager;]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: resources.xml:65
+#, no-c-format
+msgid ""
+"<![CDATA[@Inject @CustomerDatabase EntityManagerFactory "
+"customerDatabaseEntityManagerFactory;]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: resources.xml:66
+#, no-c-format
+msgid "<![CDATA[@Inject PaymentService paymentService;]]>"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:68
+#, no-c-format
+msgid ""
+"The bean type and qualifiers of the resource are determined by the producer "
+"field declaration."
+msgstr ""
+
+#. Tag: para
+#: resources.xml:72
+#, no-c-format
+msgid ""
+"It might seem like a pain to have to write these extra producer field "
+"declarations, just to gain an additional level of indirection. You could "
+"just as well use component environment injection directly, right? But "
+"remember that you're going to be using resources like the "
+"<literal>EntityManager</literal> in several different beans. Isn't it nicer "
+"and more typesafe to write"
+msgstr ""
+
+#. Tag: programlisting
+#: resources.xml:79
+#, no-c-format
+msgid "@Inject @CustomerDatabase EntityManager"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:81
+#, no-c-format
+msgid "instead of"
+msgstr ""
+
+#. Tag: programlisting
+#: resources.xml:83
+#, no-c-format
+msgid "@PersistenceContext(unitName=\"CustomerDatabase\") EntityManager"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:85
+#, no-c-format
+msgid "all over the place?"
+msgstr ""
