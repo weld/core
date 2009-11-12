@@ -112,10 +112,16 @@ public class SecondLevelCache { ... }]]></programlisting>
             <para>during invocations of EJB remote methods,</para>
          </listitem>
          <listitem>
+            <para>during invocations of EJB asynchronous methods,</para>
+         </listitem>
+         <listitem>
             <para>during EJB timeouts,</para>
          </listitem>
          <listitem>
-            <para>during message delivery to a message-driven bean, and</para>
+            <para>during message delivery to a message-driven bean,</para>
+         </listitem>
+         <listitem>
+            <para>during message delivery to a <literal>MessageListener</literal>, and</para>
          </listitem>
          <listitem>
             <para>during web service invocations.</para>
