@@ -20,6 +20,13 @@ Also, each node generation should be indented from its parent.
 Generally, the text in paragraphs should appear on separate lines from the <para> tags, but there are some cases when
 this formatting rule has been relaxed.
 
+Please use the following two entity codes for inserting dashes:
+
+&#8211 - ndash
+&#8212 - mdash
+
+The DocType transformation stylesheet does not handle &ndash, &mdash, &#150; or &#151; properly.
+
 Bug in IcedTea
 ==============
 
