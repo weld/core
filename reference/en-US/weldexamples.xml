@@ -887,9 +887,9 @@ public class Game implements Serializable
                      The <literal>reset()</literal> method makes a call to the 
                      injected <literal>rndGenerator</literal> in order to get 
                      the random number at the start of each game. Note that it
-                     cannot use <literal>manager.getInstanceByType(Integer.class, new AnnotationLiteral&lt;Random&gt;(){})</literal>
-                     as the JSF example does because there will not be any active 
-                     contexts like there is during a JSF request.
+                     can't use <literal>Instance.get()</literal>  like the JSF 
+                     example does because there will not be any active contexts 
+                     like there are during a JSF request.
                   </para>
                </callout>
             </calloutlist>
