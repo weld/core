@@ -282,12 +282,69 @@ public class OrderBuilder {
       </section>
 
    </section>
+   
+   <section>
+      <title>The singleton pseudo-scope</title>
+      
+      <para>
+         In addition to the four built-in scopes, CDI also supports two <emphasis>pseudo-scopes</emphasis>. The first 
+         is the <literal>singleton pseudo-scope</literal>, which we specify using the annotation <literal>@Singleton</literal>.
+      </para>
+      
+      <note>
+         <para>
+            Unlike the other scopes, which belong to the package <literal>javax.enterprise.context</literal>, the 
+            <literal>@Singleton</literal> annotation is defined in the package <literal>javax.inject</literal>.
+         </para>
+      </note>
+      
+      <para>
+         You can guess what "singleton" means here. It means a bean that is instantiated once. Unfortunately, there's 
+         a little problem with this pseudo-scope. Beans with scope <literal>@Singleton</literal> don't have a proxy
+         object. Clients hold a direct reference to the singleton instance. So we need to consider the case of a client 
+         that can be serialized, for example, any bean with scope <literal>@SessionScoped</literal> or 
+         <literal>@ConversationScoped</literal>, any dependent object of a bean with scope <literal>@SessionScoped</literal>
+         or <literal>@ConversationScoped</literal>, or any stateful session bean.
+      </para>
+      
+      <para>
+         Now, if the singleton instance is a simple, immutable, serializable object like a string, a number or a date, 
+         we probably don't mind too much if it gets duplicated via serialization. However, that makes it no stop being a 
+         true singleton, and we may as well have just declared it with the default scope.
+      </para>
+
+      <para>There are several ways to ensure that the singleton bean remains a singleton when its client gets serialized:</para>
+      
+      <itemizedlist>
+         <listitem>
+            <para>
+               have the singleton bean implement <literal>writeResolve()</literal> and <literal>readReplace()</literal> 
+               (as defined by the Java serialization specification),
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               make sure the client keeps only a transient reference to the singleton bean, or
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               give the client a reference of type <literal>Instance&lt;X&gt;</literal> where <literal>X</literal> is the
+               bean type of the singleton bean.
+            </para>
+         </listitem>
+      </itemizedlist>
+      
+      <para>A third, better solution is to instead use <literal>@ApplicationScoped</literal>, allowing the container to
+      proxy the bean, and take care of serialization problems automatically.</para>
+   
+   </section>
 
    <section>
       <title>The dependent pseudo-scope</title>
 
       <para>
-         In addition to the four built-in scopes, CDI features the so-called <emphasis>dependent pseudo-scope</emphasis>. 
+         Finally, CDI features the so-called <emphasis>dependent pseudo-scope</emphasis>. 
          This is the default scope for a bean which does not explicitly declare a scope type.
       </para>
 
@@ -298,9 +355,14 @@ public class OrderBuilder {
       <programlisting role="JAVA"><![CDATA[public class Calculator { ... }]]></programlisting>
 
       <para>
-         An instances of a dependent bean is never shared between different clients or different injection points. It is 
+         An instance of a dependent bean is never shared between different clients or different injection points. It is 
          strictly a <emphasis>dependent object</emphasis> of some other object. It is instantiated when the object it 
          belongs to is created, and destroyed when the object it belongs to is destroyed.
+      </para>
+      
+      <para>
+         Beans with scope <literal>@Dependent</literal> don't need a proxy object. The client holds a direct reference
+         to its instance.
       </para>
 
       <para>
