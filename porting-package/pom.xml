@@ -38,7 +38,7 @@
       
       <dependency>
       	<groupId>org.jboss.weld</groupId>
-	      <artifactId>weld-core-test</artifactId>
+        <artifactId>weld-core-test</artifactId>
      </dependency>
       
    </dependencies>
