@@ -24,8 +24,8 @@ import org.testng.annotations.Test;
 public class EnterpriseBeanInterceptionTest extends AbstractWeldTest
 {
 
-   @Test(groups = { "interceptors"})
-   public void testEnterpriseBeanInterceptionMetadataAdded() throws Exception
+   @Test(groups = { "interceptors", "incontainer-broken"})
+   public void ls() throws Exception
    {
       SessionBean<Ball> ballSessionBean = (SessionBean<Ball>)getCurrentManager().getBeans(Ball.class).iterator().next();
       InterceptorBindings interceptorBindings = new InterceptorBindingsAdapter(getCurrentManager().getCdiInterceptorsRegistry().getInterceptionModel(ballSessionBean.getType()));
