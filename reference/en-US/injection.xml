@@ -498,10 +498,33 @@ public class MockPaymentProcessor implements PaymentProcessor {
       </itemizedlist>
   
       <para>
-         It's usually very easy to fix an unproxyable dependency problem. Simply add a constructor with no parameters to 
-         the injected class, introduce an interface, or, if all else fails, change the scope of the injected bean to 
-         <literal>@Dependent</literal>. 
+         It's usually very easy to fix an unproxyable dependency problem. If an injection point of type
+         <literal>X</literal> results in an unproxyable dependency, simply:
       </para>
+      
+      <itemizedlist>
+         <listitem>
+            <para>
+               add a constructor with no parameters to <literal>X</literal>,
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               change the type of the injection point to <literal>Instance&lt;X&gt;</literal>,
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               introduce an interface <literal>Y</literal>, implemented by the injected bean, and change 
+               the type of the injection point to <literal>Y</literal>, or
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               if all else fails, change the scope of the injected bean to <literal>@Dependent</literal>.
+            </para>
+         </listitem>
+      </itemizedlist>
       
       <note>
       <para>
