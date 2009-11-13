@@ -31,7 +31,7 @@
 
    <properties>
       <pdf.name>weld-reference.pdf</pdf.name>
-      <weld.docbook.version>1.1.1-Beta4</weld.docbook.version>
+      <weld.docbook.version>1.1.1-Beta5</weld.docbook.version>
    </properties>
 
    <build>
