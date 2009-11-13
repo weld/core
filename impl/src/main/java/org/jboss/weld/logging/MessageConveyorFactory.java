@@ -19,7 +19,7 @@ public abstract class MessageConveyorFactory
       {
          if (i > 0)
          {
-            throw new IllegalStateException("Maximum one service provider for IMessageConveyerFactory allowed, got " + serviceLoader);
+            throw new IllegalStateException("Maximum one service provider for MessageConveyerFactory allowed, got " + serviceLoader);
          }
          return f;
       }
