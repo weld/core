@@ -5,7 +5,7 @@
   
    <para>
       Because CDI is so new, there's not yet a lot of information available online. That will change over time.
-      Regardless, the CDI specification remains the authority for information on CDI. The spec less than 100 pages and 
+      Regardless, the CDI specification remains the authority for information on CDI. The spec is less than 100 pages and 
       is quite readable (don't worry, it's not like your Blu-ray player manual). Of course, it covers many details we've 
       skipped over here. The spec is available on the
       <ulink src="http://jcp.org/en/jsr/detail?id=299">JSR-299 page</ulink> at the JCP website.
@@ -41,8 +41,8 @@
       </listitem>
       <listitem>
          <para>
-            Edit the pom.xml file in the root of the checkout and remove the "-SNAPSHOT" from the version element (so
-            you don't have to build other Weld modules).
+            Edit the <literal>pom.xml</literal> file in the root of the checkout and remove the "<literal>-SNAPSHOT</literal>" 
+            from the version element (so you don't have to build other Weld modules).
          </para>
       </listitem>
       <listitem>
@@ -59,7 +59,7 @@
       </listitem>
       <listitem>
          <para>The PDF version of the reference guide will appear the current directory. You can find the HTML version
-         in target/docbook/publish/en-US/html</para>
+         in <literal>target/docbook/publish/en-US/html</literal>.</para>
       </listitem>
    </itemizedlist>
 
