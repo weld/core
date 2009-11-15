@@ -750,7 +750,7 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
                <area id="reset" coords="73" />
              </areaspec>
              <programlisting role="JAVA"><![CDATA[@ApplicationScoped
-public class Game implements Serializable
+public class Game
 {
 
    public static final int MAX_NUM_GUESSES = 10;
