@@ -19,7 +19,9 @@ package org.jboss.weld.context;
 import static org.jboss.weld.logging.Category.CONTEXT;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE_REMOVED;
+import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_IS_NULL;
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXT_CLEARED;
+import static org.jboss.weld.logging.messages.ContextMessage.NO_BEAN_STORE_AVAILABLE;
 
 import java.lang.annotation.Annotation;
 import java.util.concurrent.locks.ReentrantLock;
@@ -29,9 +31,11 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -83,7 +87,7 @@ public abstract class AbstractMapContext extends AbstractContext
       }
       if (contextual == null)
       {
-         throw new IllegalArgumentException("Must provide a contextual to get");
+         throw new ForbiddenArgumentException(CONTEXTUAL_IS_NULL);
       }
       String id = getId(contextual);
       ContextualInstance<T> beanInstance = getBeanStore().get(id);
@@ -136,7 +140,7 @@ public abstract class AbstractMapContext extends AbstractContext
    {
       if (getBeanStore() == null)
       {
-         throw new IllegalStateException("No bean store available for " + toString());
+         throw new ForbiddenStateException(NO_BEAN_STORE_AVAILABLE, this);
       }
       ContextualInstance<T> beanInstance = getBeanStore().get(id);
       beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
@@ -152,7 +156,7 @@ public abstract class AbstractMapContext extends AbstractContext
       log.trace(CONTEXT_CLEARED, this);
       if (getBeanStore() == null)
       {
-         throw new IllegalStateException("No bean store available for " + toString());
+         throw new ForbiddenStateException(NO_BEAN_STORE_AVAILABLE, this);
       }
       for (String id : getBeanStore().getContextualIds())
       {

@@ -17,6 +17,7 @@
 package org.jboss.weld.el;
 
 import static org.jboss.weld.el.ELCreationalContextStack.getCreationalContextStore;
+import static org.jboss.weld.logging.messages.ElMessage.RESOLUTION_ERROR;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import javax.el.ELResolver;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.WeldException;
 
 /**
  * An EL-resolver against the named beans
@@ -117,7 +119,7 @@ public abstract class AbstractWeldELResolver extends ELResolver
          }
          catch (Exception e)
          {
-            throw new RuntimeException("Error resolving property " + propertyString + " against base " + base, e);
+            throw new WeldException(RESOLUTION_ERROR, e, propertyString, base);
          }
          if (value != null)
          {

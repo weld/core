@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.context.beanstore;
 
+import static org.jboss.weld.logging.messages.ContextMessage.DELIMITER_IN_PREFIX;
+
+import org.jboss.weld.ForbiddenArgumentException;
+
 
 
 /**
@@ -26,16 +30,16 @@ package org.jboss.weld.context.beanstore;
 public class NamingScheme
 {
    public String prefix;
-   public String delimeter;
+   public String delimiter;
 
-   public NamingScheme(String prefix, String delimeter)
+   public NamingScheme(String prefix, String delimiter)
    {
-      if (prefix.indexOf(delimeter) >= 0)
+      if (prefix.indexOf(delimiter) >= 0)
       {
-         throw new IllegalArgumentException("The delimiter '" + delimeter + "' shouldn't be in the prefix '" + prefix + "'");
+         throw new ForbiddenArgumentException(DELIMITER_IN_PREFIX, delimiter, prefix);
       }
       this.prefix = prefix;
-      this.delimeter = delimeter;
+      this.delimiter = delimiter;
    }
 
    public boolean acceptKey(String key)
@@ -45,11 +49,11 @@ public class NamingScheme
 
    public String getId(String key)
    {
-      return new StringBuilder().append(key.substring(prefix.length() + delimeter.length())).toString();
+      return new StringBuilder().append(key.substring(prefix.length() + delimiter.length())).toString();
    }
 
    public String getKey(String id)
    {
-      return new StringBuilder().append(prefix).append(delimeter).append(id).toString();
+      return new StringBuilder().append(prefix).append(delimiter).append(id).toString();
    }
 }

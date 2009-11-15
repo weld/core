@@ -15,33 +15,28 @@
  * limitations under the License.
  */
 
-package org.jboss.weld;
+package org.jboss.weld.logging.messages;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import ch.qos.cal10n.IMessageConveyor;
+import org.jboss.weld.logging.MessageId;
 
+import ch.qos.cal10n.BaseName;
+import ch.qos.cal10n.Locale;
+import ch.qos.cal10n.LocaleData;
+
+@BaseName("org.jboss.weld.messages.el")
+@LocaleData({
+   @Locale("en")
+})
 /**
- * An exception used for unsupported operations or invocations of operations
- * that are invalid in certain contexts.
+ * Log messages for EL resolution.
+ * 
+ * Message IDs: 001000 - 001099
  * 
  * @author David Allen
  *
  */
-public class InvalidOperationException extends UnsupportedOperationException
+public enum ElMessage
 {
-
-   private static final long serialVersionUID = 1L;
-
-   // Exception messages
-   private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
-
-   public InvalidOperationException()
-   {
-      super();
-   }
-
-   public <E extends Enum<?>> InvalidOperationException(E key, Object... args)
-   {
-      super(messageConveyer.getMessage(key, args));
-   }
+   @MessageId("001000") RESOLUTION_ERROR,
+   @MessageId("001001") NULL_EXPRESSION_FACTORY;
 }

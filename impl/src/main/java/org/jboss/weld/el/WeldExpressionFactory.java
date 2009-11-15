@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.el;
 
+import static org.jboss.weld.logging.messages.ElMessage.NULL_EXPRESSION_FACTORY;
+
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
+import org.jboss.weld.ForbiddenArgumentException;
 import org.jboss.weld.util.el.ForwardingExpressionFactory;
 
 /**
@@ -36,7 +39,7 @@ public class WeldExpressionFactory extends ForwardingExpressionFactory
    {
       if (expressionFactory == null)
       {
-         throw new IllegalArgumentException("Cannot pass null expressionFactory");
+         throw new ForbiddenArgumentException(NULL_EXPRESSION_FACTORY);
       }
       this.delegate = expressionFactory;
    }

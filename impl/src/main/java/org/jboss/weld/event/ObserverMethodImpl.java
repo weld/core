@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.event;
 
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_DISPOSES_PARAMETER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
+import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -44,7 +50,6 @@ import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
-import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.util.Beans;
 
 /**
@@ -66,8 +71,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    
    public static final String ID_SEPARATOR = "-";
    
-   private static final Annotation ANY = new AnyLiteral();
-
    private final Set<Annotation> bindings;
    private final Type eventType;
    protected BeanManagerImpl manager;
@@ -123,27 +126,27 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       List<WeldParameter<?, X>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
       if (this.notifyType.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class))
       {
-         throw new DefinitionException(this + " is invalid because it is a conditional observer method, and is declared by a @Dependent scoped bean");
+         throw new DefinitionException(INVALID_SCOPED_CONDITIONAL_OBSERVER, this);
       }
       if (eventObjects.size() > 1)
       {
-         throw new DefinitionException(this + " is invalid because it contains more than event parameter annotated @Observes");
+         throw new DefinitionException(MULTIPLE_EVENT_PARAMETERS, this);
       }
       // Check for parameters annotated with @Disposes
       List<WeldParameter<?, X>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
       if (disposeParams.size() > 0)
       {
-         throw new DefinitionException(this + " cannot have any parameters annotated with @Disposes");
+         throw new DefinitionException(INVALID_DISPOSES_PARAMETER, this);
       }
       // Check annotations on the method to make sure this is not a producer
       // method, initializer method, or destructor method.
       if (this.observerMethod.isAnnotationPresent(Produces.class))
       {
-         throw new DefinitionException(this + " cannot be annotated with @Produces");
+         throw new DefinitionException(INVALID_PRODUCER, this);
       }
       if (this.observerMethod.isAnnotationPresent(Inject.class))
       {
-         throw new DefinitionException(this + " cannot be annotated with @Initializer");
+         throw new DefinitionException(INVALID_INITIALIZER, this);
       }
 
    }

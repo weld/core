@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.ejb;
 
+import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_EJBS_FOR_CLASS;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +25,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.weld.ForbiddenStateException;
+import org.jboss.weld.InvalidOperationException;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 
@@ -48,25 +52,25 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
       @Override
       public <T> void add(EjbDescriptor<T> ejbDescriptor)
       {
-         throw new UnsupportedOperationException();
+         throw new InvalidOperationException();
       }
       
       @Override
       public void addAll(Iterable<EjbDescriptor<?>> ejbDescriptors)
       {
-         throw new UnsupportedOperationException();
+         throw new InvalidOperationException();
       }
       
       @Override
       public void cleanup()
       {
-         throw new UnsupportedOperationException();
+         throw new InvalidOperationException();
       }
       
       @Override
       public void clear()
       {
-         throw new UnsupportedOperationException();
+         throw new InvalidOperationException();
       }
       
       
@@ -142,7 +146,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
       Set<String> ejbs = ejbByClass.get(beanClass);
       if (ejbs.size() > 0)
       {
-         throw new IllegalStateException("Unable to determine EJB for " + beanClass + ", multiple EJBs with that class " + ejbs);
+         throw new ForbiddenStateException(TOO_MANY_EJBS_FOR_CLASS, beanClass, ejbs);
       }
       else if (ejbs.size() == 0)
       {

@@ -18,7 +18,9 @@ package org.jboss.weld.conversation;
 
 import static org.jboss.weld.logging.Category.CONVERSATION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ConversationMessage.BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION;
 import static org.jboss.weld.logging.messages.ConversationMessage.DEMOTED_LRC;
+import static org.jboss.weld.logging.messages.ConversationMessage.END_CALLED_ON_TRANSIENT_CONVERSATION;
 import static org.jboss.weld.logging.messages.ConversationMessage.PROMOTED_TRANSIENT;
 import static org.jboss.weld.logging.messages.ConversationMessage.SWITCHED_CONVERSATION;
 
@@ -30,6 +32,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jboss.weld.ForbiddenStateException;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -97,7 +100,7 @@ public class ConversationImpl implements Conversation, Serializable
    {
       if (!isTransient())
       {
-         throw new IllegalStateException("Attempt to call begin() on a long-running conversation");
+         throw new ForbiddenStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
       }
       log.debug(PROMOTED_TRANSIENT, id);
       this._transient = false;
@@ -121,7 +124,7 @@ public class ConversationImpl implements Conversation, Serializable
    {
       if (isTransient())
       {
-         throw new IllegalStateException("Attempt to call end() on a transient conversation");
+         throw new ForbiddenStateException(END_CALLED_ON_TRANSIENT_CONVERSATION);
       }
       log.debug(DEMOTED_LRC, id);
       this._transient = true;
