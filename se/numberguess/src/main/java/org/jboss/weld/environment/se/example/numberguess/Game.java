@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.environment.se.example.numberguess;
 
-import java.io.Serializable;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -31,7 +29,7 @@ import javax.inject.Inject;
  * @author Peter Royle
  */
 @ApplicationScoped
-public class Game implements Serializable
+public class Game
 {
    public static final int MAX_NUM_GUESSES = 10;
 
