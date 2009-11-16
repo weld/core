@@ -93,16 +93,6 @@ public class Preferences implements Serializable {
             object for each user session.
          </para>
          
-         <note>
-            <para>
-               The producer method does <emphasis>not</emphasis> inherit the scope of the bean that declares the 
-               method. There are two different beans here: the producer method, and the bean which declares it. The 
-               scope of the producer method determines how often the method will be called, and the lifecycle of the 
-               objects returned by the method. The scope of the bean that declares the producer method determines the
-               lifecycle of the object upon which the producer method is invoked.
-            </para>
-         </note>
-
          <para>
             To change this behavior, we can add a <literal>@SessionScoped</literal> annotation to the method.
          </para>
@@ -117,6 +107,16 @@ public PaymentStrategy getPaymentStrategy() {
             the session context. The producer method won't be called again in the same session.
          </para>
   
+         <note>
+            <para>
+               A producer method does <emphasis>not</emphasis> inherit the scope of the bean that declares the 
+               method. There are two different beans here: the producer method, and the bean which declares it. The 
+               scope of the producer method determines how often the method will be called, and the lifecycle of the 
+               objects returned by the method. The scope of the bean that declares the producer method determines the
+               lifecycle of the object upon which the producer method is invoked.
+            </para>
+         </note>
+
       </section>
 
       <section>
