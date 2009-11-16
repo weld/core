@@ -474,7 +474,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
          the current context. The client proxy also allows beans bound to contexts such as the session context to be
          serialized to disk without recursively serializing other injected beans.
       </para>
-  
+      
       <para>
          Unfortunately, due to limitations of the Java language, some Java types cannot be proxied by the container. 
          If an injection point declared with one of these types resolves to a bean with any scope other than 
