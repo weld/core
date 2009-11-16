@@ -53,6 +53,18 @@
             </para>
          </note>
          
+         <tip>
+            <para>
+               Oh, you <emphasis>really</emphasis> want to inject the <literal>FacesContext</literal>? Alright then, try
+               this producer method:
+            </para>
+            <programlisting role="JAVA"><![CDATA[class FacesContextProducer {
+   @Produces @RequestScoped FacesContext getFacesContext() {
+      return FacesContext.getCurrentInstance();
+   }
+}]]></programlisting>
+         </tip>
+         
       </section>
 
    <section>
