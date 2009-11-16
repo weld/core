@@ -338,7 +338,7 @@
          }
          ...
       }
-      pat.setInjectionTarget(wrapped);
+      pit.setInjectionTarget(wrapped);
    } 
    
 }]]></programlisting>
