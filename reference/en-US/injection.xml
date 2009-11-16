@@ -268,7 +268,9 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
       
       <para>Whenever a bean or injection point does not explicitly declare a qualifier, the container assumes the
       qualifier <literal>@Default</literal>. From time to time, you'll need to decare an injection point without
-      specifying a qualifier. There's a qualifier for that too. All beans have the qualifier <literal>@Any</literal>.</para>
+      specifying a qualifier. There's a qualifier for that too. All beans have the qualifier <literal>@Any</literal>.
+      Therefore, by explicitly specifying <literal>@Any</literal> at an injection point, you suppress the default
+      qualifier, without otherwise restricting the beans that are eligible for injection.</para>
       
       <tip>
       <para>This is especially useful if you want to iterate over all beans with a certain bean type. For example:</para>
