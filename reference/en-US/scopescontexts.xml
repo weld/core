@@ -40,12 +40,6 @@
             an injected instance to the JPA |EntityManager|.
          </para>
       </tip>
-  
-   <note>
-      <para>
-         There's actually no way to remove a bean from a context until the entire context is destroyed.
-      </para>
-   </note>
 
    <section>
       <title>Scope types</title>

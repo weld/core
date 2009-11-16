@@ -286,8 +286,9 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          <note>
             <para>
                Keep in mind that once a bean is bound to a context, it remains in that context until the context is
-               destroyed. There is no way to explicitly remove a bean from a context. If you don't the bean to live in
-               the session indefinitely, consider using another scope such as the request or conversation scope instead.
+               destroyed. There is no way to manually remove a bean from a context. If you don't want the bean to sit 
+               in the session indefinitely, consider using another scope with a shorted lifespan, such as the request 
+               or conversation scope.
             </para>
          </note>
 
