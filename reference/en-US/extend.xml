@@ -285,8 +285,30 @@
    <section>
       <title>Wrapping an <literal>AnnotatedType</literal></title>
       
-      <para>TODO</para>
+      <para>
+         One of the most interesting things that an extension class can do is process the annotations of a bean class
+         <emphasis>before</emphasis> the container builds its metamodel.
+      </para>
       
+      <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
+      
+   <T> void processAnnotatedType(ProcessAnnotatedType<T> pat) {
+      final AnnotatedType<T> type = pat.getAnnotatedType();
+      if ( Service.class.isAssignableFrom( type.getJavaClass() ) ) {
+         //if the class implements Service, make it an @Alternative
+         AnnotatedType<T> wrapped = new AnnotatedType<T>() {
+            public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+               return annotationType.equals(Alternative.class) ? 
+                  true : type.isAnnotationPresent(annotationType);
+            }
+            ...
+         }
+         pat.setAnnotatedType(wrapped);
+      }
+   } 
+   
+}]]></programlisting>
+
    </section>
 
    <section>
