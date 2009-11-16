@@ -354,7 +354,8 @@ MyBean(MyExtension myExtension) {
             }
 
             @Override
-            public void destroy(SecurityManager instance, CreationalContext<SecurityManager> ctx) {
+            public void destroy(SecurityManager instance, 
+                                CreationalContext<SecurityManager> ctx) {
                 it.preDestroy(instance);
                 it.dispose(instance);
                 ctx.release();
