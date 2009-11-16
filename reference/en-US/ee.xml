@@ -41,6 +41,18 @@
             </listitem>
          </itemizedlist>
          
+         <note>
+            <para>
+               The CDI specification does not require the servlet context objects, <literal>HttpServletRequest</literal>,
+               <literal>HttpSession</literal> and <literal>ServletContext</literal> to be exposed as injectable beans. If 
+               you really want to be able to inject these objects, it's easy to create a portable extension to expose them 
+               as beans. However, we recommend that direct access to these objects be limited to servlets, servlet filters 
+               and servlet event listeners, where they may be obtained in the usual way as defined by the Java Servlets spec.
+               The <literal>FacesContext</literal> is also not injectable. You can get at it by calling 
+               <literal>FacesContext.getCurrentInstance()</literal>.
+            </para>
+         </note>
+         
       </section>
 
    <section>
