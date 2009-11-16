@@ -309,13 +309,40 @@
    
 }]]></programlisting>
 
+      <para>The <literal>AnnotatedType</literal> is not the only thing that can be wrapped by an extension.</para>
+
    </section>
 
    <section>
       <title>Wrapping an <literal>InjectionTarget</literal></title>
       
-      <para>TODO</para>
+      <para>
+          The <literal>InjectionTarget</literal> interface exposes operations for producing and disposing an instance
+          of a component, injecting its dependencies and invoking its lifecycle callbacks. A portable extension may 
+          wrap the <literal>InjectionTarget</literal> for any Java EE component that supports injection, allowing it
+          to intercept any of these operations when they are invoked by the container.
+      </para>
       
+      <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
+      
+   <T extends Servlet> void processServlet(ProcessInjectionTarget<T> pit) {
+      final InjectionTarget<T> it = pit.getInjectionTarget();
+      InjectionTarget<T> wrapped = new InjectionTarget<T>() {
+         public T produce(CreationalContext<T> ctx) {
+            Logger.global.debug("instantiating a servlet");
+            return it.produce(ctx);
+         }
+         public void inject(T instance, CreationalContext<T> ctx) {
+            Logger.global.debug("injecting servlet dependencies");
+            it.inject(instance, ctx);
+         }
+         ...
+      }
+      pat.setInjectionTarget(wrapped);
+   } 
+   
+}]]></programlisting>
+
    </section>
 
   <!--
