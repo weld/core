@@ -24,23 +24,26 @@ public class Credentials {
 
    <programlisting role="JAVA"><![CDATA[<h:form>
    <h:panelGrid columns="2" rendered="#{!login.loggedIn}">
-      <h:outputLabel for="username">Username:</h:outputLabel>
-      <h:inputText id="username" value="#{credentials.username}"/>
-      <h:outputLabel for="password">Password:</h:outputLabel>
-      <h:inputText id="password" value="#{credentials.password}"/>
+      <f:validateBean>
+         <h:outputLabel for="username">Username:</h:outputLabel>
+         <h:inputText id="username" value="#{credentials.username}"/>
+         <h:outputLabel for="password">Password:</h:outputLabel>
+         <h:inputText id="password" value="#{credentials.password}"/>
+      </f:validateBean>
    </h:panelGrid>
    <h:commandButton value="Login" action="#{login.login}" rendered="#{!login.loggedIn}"/>
    <h:commandButton value="Logout" action="#{login.logout}" rendered="#{login.loggedIn}"/>
 </h:form>]]></programlisting>
 
       <para>
-         Users are represented by a JPA entity:
+         Users are represented by a JPA entity, with constraints defined using annotations defined by the Bean Validation
+         specification:
       </para>
       
       <programlisting role="JAVA"><![CDATA[@Entity
 public class User {
-   private @Id String username;
-   private String password;
+   private @NotNull @Length(max=25) @Id String username;
+   private @NotNull @Length(min=6, max=20) String password;
    
    public String getUsername() { return username; }
    public void setUsername(String username) { this.username = username; }
