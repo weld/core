@@ -250,11 +250,11 @@ public class CreditCardPaymentProcessor
          <!--
          <tip>
             <para>
-               If you're expectng more than one bean to satisfy the contract, you can inject an <literal>Instance</literal>,
+               If you're expecting more than one bean to satisfy the contract, you can inject an <literal>Instance</literal>,
                object which let's you iterate over all the beans which satisfy the contract. For example, we can iterate
                over all our implementations of <literal>PaymentProcessor</literal> using:
             </para>
-            <programlisting>@Inject void init(@Any Instance&lt;PaymentProcessor&gt; paymentProcessorInstance) {
+            <programlisting role="JAVA">@Inject void init(@Any Instance&lt;PaymentProcessor&gt; paymentProcessorInstance) {
     for (PaymentProcessor pp: paymentProcessorInstance) { ... }
 }</programlisting>
          </tip>

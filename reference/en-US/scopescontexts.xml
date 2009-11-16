@@ -37,7 +37,7 @@
             which just doesn't map naturally to the model used in CDI. Therefore, we recommend against treating entities
             as CDI beans. You're certainly going to run into problems if you try to give an entity a scope other than
             the default scope <literal>@Dependent</literal>. The client proxy will get in the way if you try to pass
-            an injected instance to the JPA |EntityManager|.
+            an injected instance to the JPA <literal>EntityManager</literal>.
          </para>
       </tip>
 
