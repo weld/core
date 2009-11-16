@@ -79,6 +79,11 @@
          into other beans once the initialization process is complete.
       </para>
       
+      <programlisting>@Inject 
+MyBean(MyExtension myExtension) {
+   myExtension.doSomething();
+}</programlisting>
+      
       <para>
          And, like beans, extensions can have observer methods. Usually, the observer methods
          observe <emphasis>container lifecycle events</emphasis>.
@@ -164,11 +169,7 @@
          The observer method may inject a <literal>BeanManager</literal>
       </para>
 
-      <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
-      
-   <T> void processAnnotatedType(ProcessAnnotatedType<T> pat, BeanManager beanManager) { ... }
-   
-}]]></programlisting>
+      <programlisting role="JAVA"><![CDATA[<T> void processAnnotatedType(ProcessAnnotatedType<T> pat, BeanManager beanManager) { ... }]]></programlisting>
 
    </section>
   
@@ -213,7 +214,7 @@
       <para>Any bean or other Java EE component which supports injection can obtain an instance of <literal>BeanManager</literal> 
       via injection:</para>
     
-      <programlisting role="JAVA">@Inject BeanManager beanManager</programlisting>
+      <programlisting role="JAVA">@Inject BeanManager beanManager;</programlisting>
 
       <para>
          Java EE components may obtain an instance of <literal>BeanManager</literal> from JNDI by looking up the name
@@ -231,9 +232,21 @@
       <para>
          Instances of the interface <literal>Bean</literal> represent beans. There is an instance of
          <literal>Bean</literal> registered with the <literal>BeanManager</literal> object for every bean in the
-         application.
+         application. There are even <literal>Bean</literal> objects representing interceptors, decorators and
+         producer methods.
       </para>
-    
+      
+      <para>
+         There's an easy way to find out what beans exist in the application:
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[Set<Bean<?>> allBeans = beanManager.getBeans(Obect.class, new AnnotationLiteral<Any>() {});]]></programlisting>
+      
+      <para>
+         The <literal>Bean</literal> interface exposes all the interesting things we dicussed in
+         <xref linkend="bean-anatomy"/>.
+      </para>
+      
       <programlisting role="JAVA"><![CDATA[public interface Bean<T> extends Contextual<T> {
    public Set<Type> getTypes();
    public Set<Annotation> getQualifiers();
@@ -247,19 +260,305 @@
 }]]></programlisting>
 
       <para>
-         It's possible to implement the <literal>Bean</literal> interface and register instances by observing the
-         <literal>AfterBeanDiscovery</literal> container lifecycle event and calling <literal>AfterBeanDiscovery.addBean()</literal> 
-         to provide support for new kinds of beans, beyond those defined by the CDI specification. For example, we could 
-         use the <literal>Bean</literal> interface to allow objects managed by another framework to be injected into beans.
+         The <literal>Bean</literal> interface makes it possible for a portable extension to provide 
+         support for new kinds of beans, beyond those defined by the CDI specification. For example, 
+         we could use the <literal>Bean</literal> interface to allow objects managed by another framework 
+         to be injected into beans.
       </para>
-    
-      <para>
-         There are two subinterfaces of <literal>Bean</literal> defined by the CDI specification:
-         <literal>Interceptor</literal> and <literal>Decorator</literal>.
-      </para>
-    
+
    </section>
 
+   <section>
+      <title>Registering a <literal>Bean</literal></title>
+      
+      <para>
+         The most common kind of CDI portable extension registers a bean (or beans) with the container.
+      </para>
+      
+      <para>
+         In this example, we make a framework class, <literal>SecurityManager</literal> available
+         for injection. To make things a bit more interesting, we're going to delegate back to 
+         the container's <literal>InjectionTarget</literal> to perform instantiation and injection
+         upon the <literal>SecurityManager</literal> instance.
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[public class SecurityManagerExtension implements Extension {
+    
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager bm) {
+            
+            //use this to read annotations of the class
+            AnnotatedType<SecurityManager> at = bm.createAnnotatedType(SecurityManager.class); 
+
+            //use this to instantiate the class and inject dependencies
+            final InjectionTarget<SecurityManager> it = bm.createInjectionTarget(at); 
+
+            abd.addBean( new Bean<SecurityManager>() {
+    
+                @Override
+                public Class<?> getBeanClass() {
+                    return SecurityManager.class;
+                }
+    
+                @Override
+                public Set<InjectionPoint> getInjectionPoints() {
+                    return it.getInjectionPoints();
+                }
+    
+                @Override
+                public String getName() {
+                    return "securityManager";
+                }
+    
+                @Override
+                public Set<Annotation> getQualifiers() {
+                    Set<Annotation> qualifiers = new HashSet<Annotation>();
+                    qualifiers.add( new AnnotationLiteral<Default>() {} );
+                    qualifiers.add( new AnnotationLiteral<Any>() {} );
+                    return qualifiers;
+                }
+    
+                @Override
+                public Class<? extends Annotation> getScope() {
+                    return SessionScoped.class;
+                }
+    
+                @Override
+                public Set<Class<? extends Annotation>> getStereotypes() {
+                    return Collections.emptySet();
+                }
+    
+                @Override
+                public Set<Type> getTypes() {
+                    Set<Type> types = new HashSet<Type>();
+                    types.add(SecurityManager.class);
+                    types.add(Object.class);
+                    return types;
+                }
+    
+                @Override
+                public boolean isAlternative() {
+                    return false;
+                }
+    
+                @Override
+                public boolean isNullable() {
+                    return false;
+                }
+    
+                @Override
+                public Object create(CreationalContext<SecurityManager> ctx) {
+                    SecurityManager instance = it.produce(ctx);
+                    it.inject(instance, ctx);
+                    it.postConstruct(instance);
+                    return instance;
+                }
+    
+                @Override
+                public void destroy(SecurityManager instance, CreationalContext<SecurityManager> ctx) {
+                    it.preDestroy(instance);
+                    it.dispose(instance);
+                    ctx.release();
+                }
+                
+            } );
+        }
+    }
+    
+}]]></programlisting>
+
+      <para>
+         But a portable extension can also mess with beans that are discovered automatically by the container.
+      </para>
+      
+   </section>
+
+   <section>
+      <title>Wrapping an <literal>AnnotatedType</literal></title>
+      
+      <para>
+         One of the most interesting things that an extension class can do is process the annotations of a bean class
+         <emphasis>before</emphasis> the container builds its metamodel.
+      </para>
+      
+      <para>
+         Let's start with an example of an extension that provides support for the use of <literal>@Named</literal> at 
+         the package level. The package-level name is used to qualify the EL names of all beans defined in that package.
+         The portable extension uses the <literal>ProcessAnnotatedType</literal> event to wrap the 
+         <literal>AnnotatedType</literal> object and override the <literal>value()</literal> of the <literal>@Named</literal> 
+         annotation. 
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[public class QualifiedNameExtension implements Extension {
+
+    <X> void processAnnotatedType(@Observes ProcessAnnotatedType<X> pat) {
+
+        //wrap this to override the annotations of the class
+        final AnnotatedType<X> at = pat.getAnnotatedType();
+        
+        AnnotatedType<X> wrapped = new AnnotatedType<X>() {
+
+            @Override
+            public Set<AnnotatedConstructor<X>> getConstructors() {
+                return at.getConstructors();
+            }
+
+            @Override
+            public Set<AnnotatedField<? super X>> getFields() {
+                return at.getFields();
+            }
+
+            @Override
+            public Class<X> getJavaClass() {
+                return at.getJavaClass();
+            }
+
+            @Override
+            public Set<AnnotatedMethod<? super X>> getMethods() {
+                return at.getMethods();
+            }
+
+            @Override
+            public <T extends Annotation> T getAnnotation(final Class<T> annType) {
+                if ( Named.class.equals(annType) ) {
+                    class NamedLiteral 
+                            extends AnnotationLiteral<Named> 
+                            implements Named {
+                        @Override
+                        public String value() {
+                            Package pkg = at.getClass().getPackage();
+                            String unqualifiedName = at.getAnnotation(Named.class).value();
+                            final String qualifiedName;
+                            if ( pkg.isAnnotationPresent(Named.class) ) {
+                                qualifiedName = pkg.getAnnotation(Named.class).value() 
+                                      + '.' + unqualifiedName;
+                            }
+                            else {
+                                qualifiedName = unqualifiedName;
+                            }
+                            return qualifiedName;
+                        }
+                    }
+                    return (T) new NamedLiteral();
+                }
+                else {
+                    return at.getAnnotation(annType);
+                }
+            }
+
+            @Override
+            public Set<Annotation> getAnnotations() {
+                return at.getAnnotations();
+            }
+
+            @Override
+            public Type getBaseType() {
+                return at.getBaseType();
+            }
+
+            @Override
+            public Set<Type> getTypeClosure() {
+                return at.getTypeClosure();
+            }
+
+            @Override
+            public boolean isAnnotationPresent(Class<? extends Annotation> annType) {
+                return at.isAnnotationPresent(annType);
+            }
+            
+        };
+        
+        pat.setAnnotatedType(wrapped);
+    }
+    
+}]]></programlisting>
+
+      <para>
+         Here's a second example, which adds the <literal>@Alternative</literal> annotation to any
+         class which implements a certain <literal>Service</literal> interface.
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[class ServiceAlternativeExtension implements Extension {
+      
+   <T> void processAnnotatedType(ProcessAnnotatedType<T> pat) {
+   
+      final AnnotatedType<T> type = pat.getAnnotatedType();
+      
+      if ( Service.class.isAssignableFrom( type.getJavaClass() ) ) {
+      
+         //if the class implements Service, make it an @Alternative
+         AnnotatedType<T> wrapped = new AnnotatedType<T>() {
+         
+            @Override
+            public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+               return annotationType.equals(Alternative.class) ? 
+                  true : type.isAnnotationPresent(annotationType);
+            }
+            
+            //remaining methods of AnnotatedType
+            ...
+         }
+         
+         pat.setAnnotatedType(wrapped);
+      }
+   } 
+   
+}]]></programlisting>
+
+      <para>
+         
+      </para>
+
+      <para>The <literal>AnnotatedType</literal> is not the only thing that can be wrapped by an extension.</para>
+
+   </section>
+
+   <section>
+      <title>Wrapping an <literal>InjectionTarget</literal></title>
+      
+      <para>
+          The <literal>InjectionTarget</literal> interface exposes operations for producing and disposing an instance
+          of a component, injecting its dependencies and invoking its lifecycle callbacks. A portable extension may 
+          wrap the <literal>InjectionTarget</literal> for any Java EE component that supports injection, allowing it
+          to intercept any of these operations when they are invoked by the container.
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[class LogServletCreationExtension implements Extension {
+      
+   <T extends Servlet> void processServlet(ProcessInjectionTarget<T> pit) {
+   
+      //wrap this to intercept the component lifecycle
+      final InjectionTarget<T> it = pit.getInjectionTarget();
+      
+      InjectionTarget<T> wrapped = new InjectionTarget<T>() {
+      
+         @Override
+         public T produce(CreationalContext<T> ctx) {
+            Logger.global.debug("instantiating a servlet");
+            return it.produce(ctx);
+         }
+         
+         @Override
+         public void inject(T instance, CreationalContext<T> ctx) {
+            Logger.global.debug("injecting servlet dependencies");
+            it.inject(instance, ctx);
+         }
+         
+         //remaining methods of InjectionTarget
+         ...
+      }
+      
+      pit.setInjectionTarget(wrapped);
+   } 
+   
+}]]></programlisting>
+
+      <para>
+         There's a lot more to the portable extension SPI than what we've discussed here. Check out the CDI spec or
+         Javadoc for more information. For now, we'll just mention one more extension point.
+      </para>
+
+   </section>
+   
    <section>
       <title>The <literal>Context</literal> interface</title>
     
@@ -282,73 +581,6 @@
     
    </section>
    
-   <section>
-      <title>Wrapping an <literal>AnnotatedType</literal></title>
-      
-      <para>
-         One of the most interesting things that an extension class can do is process the annotations of a bean class
-         <emphasis>before</emphasis> the container builds its metamodel.
-      </para>
-      
-      <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
-      
-   <T> void processAnnotatedType(ProcessAnnotatedType<T> pat) {
-      final AnnotatedType<T> type = pat.getAnnotatedType();
-      if ( Service.class.isAssignableFrom( type.getJavaClass() ) ) {
-         //if the class implements Service, make it an @Alternative
-         AnnotatedType<T> wrapped = new AnnotatedType<T>() {
-            public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-               return annotationType.equals(Alternative.class) ? 
-                  true : type.isAnnotationPresent(annotationType);
-            }
-            ...
-         }
-         pat.setAnnotatedType(wrapped);
-      }
-   } 
-   
-}]]></programlisting>
-
-      <para>The <literal>AnnotatedType</literal> is not the only thing that can be wrapped by an extension.</para>
-
-   </section>
-
-   <section>
-      <title>Wrapping an <literal>InjectionTarget</literal></title>
-      
-      <para>
-          The <literal>InjectionTarget</literal> interface exposes operations for producing and disposing an instance
-          of a component, injecting its dependencies and invoking its lifecycle callbacks. A portable extension may 
-          wrap the <literal>InjectionTarget</literal> for any Java EE component that supports injection, allowing it
-          to intercept any of these operations when they are invoked by the container.
-      </para>
-      
-      <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
-      
-   <T extends Servlet> void processServlet(ProcessInjectionTarget<T> pit) {
-      final InjectionTarget<T> it = pit.getInjectionTarget();
-      InjectionTarget<T> wrapped = new InjectionTarget<T>() {
-         public T produce(CreationalContext<T> ctx) {
-            Logger.global.debug("instantiating a servlet");
-            return it.produce(ctx);
-         }
-         public void inject(T instance, CreationalContext<T> ctx) {
-            Logger.global.debug("injecting servlet dependencies");
-            it.inject(instance, ctx);
-         }
-         ...
-      }
-      pit.setInjectionTarget(wrapped);
-   } 
-   
-}]]></programlisting>
-
-   </section>
-
-  <!--
-  TODO finish me!
-  -->
-  
 <!--
 vim:et:ts=3:sw=3:tw=120
 -->
