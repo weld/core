@@ -53,16 +53,131 @@
          </listitem>
       </itemizedlist>
    </blockquote>
+   
+   <section>
+      <title>Creating an <literal>Extension</literal></title>
+      
+      <para>
+         The first step in creating a portable extension is to write a class that implements 
+         <literal>Extension</literal>. This marker interface does not define any methods, but
+         it's needed to satisfy the requirements of Java SE's service provider architecture.
+      </para>
+      
+      <programlisting role="JAVA">class MyExtension implements Extension { ... }</programlisting>
+      
+      <para>
+         Next, we need to register our extension as a service provider by creating a file named
+         <literal>META-INF/services/javax.enterprise.inject.spi.Extension</literal>, which contains
+         the name of our extension class:
+      </para>
+      
+      <programlisting>org.mydomain.extension.MyExtension</programlisting>
+      
+      <para>
+         An extension is not a bean, exactly, since it is instantiated by the container during the 
+         initialization process, before any beans or contexts exist. However, it can be injected
+         into other beans once the initialization process is complete.
+      </para>
+      
+      <para>
+         And, like beans, extensions can have observer methods. Usually, the observer methods
+         observe <emphasis>container lifecycle events</emphasis>.
+      </para>
+      
+   </section>
+   
+   <section>
+      <title>Container lifecycle events</title>
+      
+      <para>
+         During the initialization process, the container fires a series of events, including:
+      </para>
+      
+      <itemizedlist>
+         <listitem>
+            <para>
+               <literal>BeforeBeanDiscovery</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>ProcessAnnotatedType</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>ProcessInjectionTarget</literal> and <literal>ProcessProducer</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>ProcessBean</literal> and <literal>ProcessObserverMethod</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>AfterBeanDiscovery</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>AfterDeploymentValidation</literal>
+            </para>
+         </listitem>
+      </itemizedlist>
+      
+      <para>
+         Extensions may observe these events:
+      </para>
+   
+      <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
+      
+   void beforeBeanDiscovery(BeforeBeanDiscovery bbd) {
+      Logger.global.debug("beginning the scanning process");
+   }
+      
+   <T> void processAnnotatedType(ProcessAnnotatedType<T> pat) {
+      Logger.global.debug("scanning type: " + pat.getAnnotatedType().getJavaClass().getName());
+   } 
 
-   <para>
-      The nerve center for extending CDI is the <literal>BeanManager</literal> object.
-   </para>
+   void afterBeanDiscovery(AfterBeanDiscovery abd) {
+      Logger.global.debug("finished the scanning process");
+   }
+   
+}]]></programlisting>
+
+      <para>
+         In fact, the extension can do a lot more than just observe. The extension is permitted to 
+         modify the container's metamodel and more. Here's a very simple example:
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
+      
+   <T> void processAnnotatedType(ProcessAnnotatedType<T> pat) {
+      //tell the container to ignore the type if it is annotated @Ignore
+      if ( pat.getAnnotatedType().isAnnotionPresent(Ignore.class) ) pat.veto();   
+   } 
+   
+}]]></programlisting>
+
+      <para>
+         The observer method may inject a <literal>BeanManager</literal>
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
+      
+   <T> void processAnnotatedType(ProcessAnnotatedType<T> pat, BeanManager beanManager) { ... }
+   
+}]]></programlisting>
+
+   </section>
   
    <section>
       <title>The <literal>BeanManager</literal> object</title>
     
       <para>
-         The <literal>BeanManager</literal> interface lets us obtain beans, interceptors, decorators,
+         The nerve center for extending CDI is the <literal>BeanManager</literal> object. The 
+         <literal>BeanManager</literal> interface lets us obtain beans, interceptors, decorators,
          observers and contexts programmatically.
       </para>
     
@@ -84,9 +199,9 @@
    public boolean isNormalScope(Class<? extends Annotation> annotationType);
    public boolean isPassivatingScope(Class<? extends Annotation> annotationType);
    public boolean isQualifier(Class<? extends Annotation> annotationType);
-   public boolean isInterceptorBindingType(Class<? extends Annotation> annotationType);
+   public boolean isInterceptorBinding(Class<? extends Annotation> annotationType);
    public boolean isStereotype(Class<? extends Annotation> annotationType);
-   public Set<Annotation> getInterceptorBindingTypeDefinition(Class<? extends Annotation> bindingType);
+   public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType);
    public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype);
    public Context getContext(Class<? extends Annotation> scopeType);
    public ELResolver getELResolver();
@@ -95,7 +210,8 @@
    public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type);
 }]]></programlisting>
 
-      <para>We can obtain an instance of <literal>BeanManager</literal> via injection:</para>
+      <para>Any bean or other Java EE component which supports injection can obtain an instance of <literal>BeanManager</literal> 
+      via injection:</para>
     
       <programlisting role="JAVA">@Inject BeanManager beanManager</programlisting>
 
@@ -131,11 +247,10 @@
 }]]></programlisting>
 
       <para>
-         It's possible to implement the <literal>Bean</literal> interface and register instances by calling
-         <literal>AfterBeanDiscovery.addBean()</literal> (<literal>AfterBeanDiscovery</literal> is a built-in event type
-         that an extension can observe) to provide support for new kinds of beans, beyond those defined by the CDI
-         specification. For example, we could use the <literal>Bean</literal> interface to allow objects managed by
-         another framework to be injected into beans.
+         It's possible to implement the <literal>Bean</literal> interface and register instances by observing the
+         <literal>AfterBeanDiscovery</literal> container lifecycle event and calling <literal>AfterBeanDiscovery.addBean()</literal> 
+         to provide support for new kinds of beans, beyond those defined by the CDI specification. For example, we could 
+         use the <literal>Bean</literal> interface to allow objects managed by another framework to be injected into beans.
       </para>
     
       <para>
@@ -165,6 +280,20 @@
          support for the conversation scope to an application that uses Wicket.
       </para>
     
+   </section>
+   
+   <section>
+      <title>Wrapping an <literal>AnnotatedType</literal></title>
+      
+      <para>TODO</para>
+      
+   </section>
+
+   <section>
+      <title>Wrapping an <literal>InjectionTarget</literal></title>
+      
+      <para>TODO</para>
+      
    </section>
 
   <!--
