@@ -31,6 +31,16 @@
       session, and automatically destroyed when the session ends.
    </para>
 
+      <tip>
+         <para>
+            JPA entities aren't a great fit for this model. Entities have their whole own lifecycle and identity model
+            which just doesn't map naturally to the model used in CDI. Therefore, we recommend against treating entities
+            as CDI beans. You're certainly going to run into problems if you try to give an entity a scope other than
+            the default scope <literal>@Dependent</literal>. The client proxy will get in the way if you try to pass
+            an injected instance to the JPA |EntityManager|.
+         </para>
+      </tip>
+  
    <note>
       <para>
          There's actually no way to remove a bean from a context until the entire context is destroyed.
@@ -370,6 +380,22 @@ public class OrderBuilder {
          strictly a <emphasis>dependent object</emphasis> of some other object. It is instantiated when the object it 
          belongs to is created, and destroyed when the object it belongs to is destroyed.
       </para>
+      
+      <para>
+          If a Unified EL expression refers to a dependent bean by EL name, an instance of the bean is instantiated
+          every time the expression is evaluated. The instance is not reused during any other expression evaluation.
+      </para>
+      
+      <tip>
+         <para>
+            If you need to access a bean directly by EL name in a JSF page, you probably need to give it a scope other
+            than <literal>@Dependent</literal>. Otherwise, any value that gets set to the bean by a JSF input will be 
+            lost immediately. That's why CDI features the <literal>@Model</literal> stereotype; it lets you give a bean
+            a name, and set its scope to <literal>@RequestScoped</literal> in one stroke. If you need to access a bean
+            that really <emphasis>has</emphasis> to have the scope <literal>@Dependent</literal> from a JSF page,
+            inject it into a different bean, and expose it to EL via a getter method.
+         </para>
+      </tip>
       
       <para>
          Beans with scope <literal>@Dependent</literal> don't need a proxy object. The client holds a direct reference
