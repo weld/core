@@ -5,7 +5,8 @@
 
    <para>
       Let's illustrate these ideas with a full example. We're going to implement user login/logout for an application
-      that uses JSF. First, we'll define a request-scoped bean to hold the username and password entered during login:
+      that uses JSF. First, we'll define a request-scoped bean to hold the username and password entered during login, 
+      with constraints defined using annotations from the Bean Validation specification:
    </para>
 
 <programlisting role="JAVA"><![CDATA[@Named @RequestScoped
@@ -13,9 +14,11 @@ public class Credentials {
     private String username;
     private String password;
     
+    @NotNull @Length(min=3, max=25)
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
     
+    @NotNull @Length(min=6, max=20)
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 }]]></programlisting>
@@ -36,19 +39,17 @@ public class Credentials {
 </h:form>]]></programlisting>
 
       <para>
-         Users are represented by a JPA entity, with constraints defined using annotations defined by the Bean Validation
-         specification:
+         Users are represented by a JPA entity:
       </para>
       
       <programlisting role="JAVA"><![CDATA[@Entity
 public class User {
-   private @NotNull @Length(max=25) @Id String username;
+   private @NotNull @Length(min=3, max=25) @Id String username;
    private @NotNull @Length(min=6, max=20) String password;
    
    public String getUsername() { return username; }
    public void setUsername(String username) { this.username = username; }
    public String setPassword(String password) { this.password = password; }
-   
 }]]></programlisting>
 
       <para>
