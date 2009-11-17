@@ -1342,9 +1342,8 @@ public class TranslatorControllerBean implements TranslatorController {
    </section>
    
    <para>
-      That concludes our short tour of the Weld starter examples. For more information on Weld, or to help out with
-      development, please visit <ulink
-      url="http://www.seamframework.org/Weld/Development">http://www.seamframework.org/Weld/Development</ulink>.
+      That concludes our short tour of the Weld starter examples. For more information on Weld, please visit <ulink
+      url="http://www.seamframework.org/Weld">http://www.seamframework.org/Weld</ulink>.
    </para>
 
 <!--
