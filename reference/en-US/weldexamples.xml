@@ -510,8 +510,8 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
                in the <literal>Start</literal> class. So running the example is as simple as right-clicking on that
                Start class in <literal>src/test/java</literal> in the <emphasis>Package Explorer</emphasis> and choosing
                <emphasis>Run as Java Application</emphasis>. You should see console output related to Jetty starting up;
-               then visit able <literal>http://localhost:9090</literal> to view the app. To debug choose <emphasis>Debug
-               as Java Application</emphasis> instead.
+               then visit able <ulink url="http://localhost:9090">http://localhost:9090</ulink> to view the app. To debug 
+               choose <emphasis>Debug as Java Application</emphasis> instead.
             </para>
          </section>
       
@@ -532,7 +532,7 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
 
             <para>
                to deploy the example to Tomcat. You can then access application at
-               <literal>http://localhost:9090/weld-numberguess-wicket</literal>.
+               <ulink url="http://localhost:8080/weld-numberguess-wicket">http://localhost:8080/weld-numberguess-wicket</ulink>.
             </para>
 
             <para>
