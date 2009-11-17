@@ -101,7 +101,7 @@ $> mv jboss-5.2.*/ jboss-as-5.2]]></programlisting>
 
       <para>
          In order for the build scripts to know where to deploy the example, you have to tell them where to find your
-         JBoss AS installation (i.e., <literal>JBOSS_HOME</literal>). Create a new file named<literal>local.build.properties</literal> 
+         JBoss AS installation (i.e., <literal>JBOSS_HOME</literal>). Create a new file named <literal>local.build.properties</literal> 
          in the examples directory of the Weld distribution and assign the path of your JBoss AS installation to the 
          property key <literal>jboss.home</literal>, as follows:
       </para>
