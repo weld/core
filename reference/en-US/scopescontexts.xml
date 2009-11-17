@@ -257,13 +257,13 @@ public class OrderBuilder {
             Therefore, the following link propagates the conversation:
          </para>
     
-         <programlisting role="HTML"><![CDATA[<a href="/addProduct.jsp?cid=#{conversation.id}">Add Product</a>]]></programlisting>
+         <programlisting role="XML"><![CDATA[<a href="/addProduct.jsp?cid=#{conversation.id}">Add Product</a>]]></programlisting>
 
          <para>
             It's probably better to use one of the link components in JSF 2:
          </para>
 
-         <programlisting role="HTML"><![CDATA[<h:link outcome="/addProduct.xhtml value="Add Product">
+         <programlisting role="XML"><![CDATA[<h:link outcome="/addProduct.xhtml value="Add Product">
    <f:param name="cid" value="#{conversation.id}"/>
 </h:link>]]></programlisting>
          
