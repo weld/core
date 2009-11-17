@@ -225,6 +225,52 @@ MyBean(MyExtension myExtension) {
       <para>Let's study some of the interfaces exposed by the <literal>BeanManager</literal>.</para>
     
    </section>
+   
+   <section>
+      <title>The <literal>InjectionTarget</literal> interface</title>
+      
+      <para>
+         The first thing that a framework developer is going to look for in the portable extension SPI is a way to
+         inject CDI beans into objects which are not under the control of CDI. The <literal>InjectionTarget</literal> 
+         interface makes this very easy. 
+      </para>
+      
+      <tip>
+      <para>
+         We recommend that frameworks let CDI take over the job of actually instantiating the framework-controlled 
+         objects. That way, the framework-controlled objects can take advantage of constructor injection. However, 
+         if the framework requires use of a constructor with a special signature, the framework will need to 
+         instatiate the object itself, and so only method and field injection will be supported.
+      </para>
+      </tip>
+      
+      <programlisting role="JAVA"><![CDATA[//get the BeanManager from JNDI
+BeanManager beanManager = (BeanManager) new InitialContext().lookup("java:comp/BeanManager");
+
+//CDI uses an AnnotatedType object to read the annotations of a class
+AnnotatedType<SomeFrameworkComponent> type = beanManager.createAnnotatedType(SomeFrameworkComponent.class);
+
+//The extension uses an InjectionTarget to delegate instantiation, dependency injection 
+//and lifecycle callbacks to the CDI container
+InjectionTarget<SomeFrameworkComponent> it = beanManager.createInjectionTarget(type);
+
+//each instance needs its own CDI CreationalContext
+CreationalContext instanceContext = beanManager.createCreationalContext(null);
+
+//instantiate the framework component and inject its dependencies
+SomeFrameworkComponent instance = it.produce(instanceContext);  //call the constructor
+it.inject(instance, ctx);  //call initializer methods and perform field injection
+it.postConstruct(instance);  //call the @PostConstruct method
+
+...
+
+//destroy the framework component instance and clean up dependent objects
+it.preDestroy(instance);  //call the @PreDestroy method
+it.dispose(instance);  //it is now safe to discard the instance
+ctx.release();  //clean up dependent objects
+]]></programlisting>
+      
+   </section>
   
    <section>
       <title>The <literal>Bean</literal> interface</title>
@@ -235,12 +281,6 @@ MyBean(MyExtension myExtension) {
          application. There are even <literal>Bean</literal> objects representing interceptors, decorators and
          producer methods.
       </para>
-      
-      <para>
-         There's an easy way to find out what beans exist in the application:
-      </para>
-      
-      <programlisting role="JAVA"><![CDATA[Set<Bean<?>> allBeans = beanManager.getBeans(Obect.class, new AnnotationLiteral<Any>() {});]]></programlisting>
       
       <para>
          The <literal>Bean</literal> interface exposes all the interesting things we dicussed in
@@ -259,6 +299,12 @@ MyBean(MyExtension myExtension) {
    public Set<InjectionPoint> getInjectionPoints();
 }]]></programlisting>
 
+      <para>
+         There's an easy way to find out what beans exist in the application:
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[Set<Bean<?>> allBeans = beanManager.getBeans(Obect.class, new AnnotationLiteral<Any>() {});]]></programlisting>
+      
       <para>
          The <literal>Bean</literal> interface makes it possible for a portable extension to provide 
          support for new kinds of beans, beyond those defined by the CDI specification. For example, 
