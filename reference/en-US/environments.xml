@@ -250,7 +250,13 @@ $> ant update</programlisting>
          </listitem>
          <listitem>
             <para>
-               <literal>@Application</literal> and <literal>@Dependent</literal> scopes
+               <literal>@Application</literal>, <literal>@Dependent</literal> and
+               <literal>@Singleton</literal> scopes
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               Decorators
             </para>
          </listitem>
          <listitem>
@@ -265,7 +271,7 @@ $> ant update</programlisting>
          </listitem>
          <listitem>
             <para>
-               Portable extensions
+               Portable extension support
             </para>
          </listitem>
       </itemizedlist>
@@ -297,12 +303,10 @@ $> ant update</programlisting>
             Here's an example of a simple CDI SE application:
          </para>
 
-         <programlisting role="JAVA"><![CDATA[@ApplicationScoped
+         <programlisting role="JAVA"><![CDATA[@Singleton
 public class HelloWorld
 {
-   @Inject @Parameters List<String> parameters;
-
-   public void printHello(@Observes ContainerInitialized event) {
+   public void printHello(@Observes ContainerInitialized event, @Parameters List<String> parameters) {
        System.out.println("Hello " + parameters.get(0));
    }
 }]]></programlisting>
