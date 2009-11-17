@@ -30,7 +30,7 @@
             </listitem>
             <listitem>
                <para>
-                  the default <ulink src="http://jcp.org/en/jsr/detail?id=303">Bean Validation</ulink> 
+                  the default <ulink url="http://jcp.org/en/jsr/detail?id=303">Bean Validation</ulink> 
                   <literal>ValidationFactory</literal>, and
                </para>
             </listitem>

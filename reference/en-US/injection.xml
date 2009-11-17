@@ -447,7 +447,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
 
       <para>
          See <ulink
-         src="http://sfwk.org/Documentation/HowDoAResolveAnAmbiguousResolutionExceptionBetweenAProducerMethodAndARawType">this
+         url="http://sfwk.org/Documentation/HowDoAResolveAnAmbiguousResolutionExceptionBetweenAProducerMethodAndARawType">this
          FAQ</ulink> for step-by-step instructions for how to resolve an ambigous resolution exception between a raw
          bean type and a producer method that returns the same bean type.
       </para>

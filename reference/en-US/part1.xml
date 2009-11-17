@@ -12,7 +12,7 @@ tainer, for example, alternative web presentation technologies.
 
    <!-- NOTE synchronize this intro with the intro on http://seamframework.org/Weld -->
    <para>
-      The <ulink src="http://jcp.org/en/jsr/detail?id=299">JSR-299</ulink> specification (CDI) defines a set of 
+      The <ulink url="http://jcp.org/en/jsr/detail?id=299">JSR-299</ulink> specification (CDI) defines a set of 
       complementary services that help improve the structure of application code. CDI layers an enhanced lifecycle 
       and interaction model over existing Java component types, including managed beans and Enterprise Java Beans. 
       The CDI services provide:
@@ -195,7 +195,7 @@ tainer, for example, alternative web presentation technologies.
    </para>
   
    <para>
-      Finally, CDI is a <ulink src="http://jcp.org">Java Community Process</ulink> (JCP) standard. Java EE 6 requires 
+      Finally, CDI is a <ulink url="http://jcp.org">Java Community Process</ulink> (JCP) standard. Java EE 6 requires 
       that all compliant application servers provide support for JSR-299 (even in the web profile).
    </para>
   

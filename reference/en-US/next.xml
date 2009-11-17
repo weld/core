@@ -8,20 +8,20 @@
       Regardless, the CDI specification remains the authority for information on CDI. The spec is less than 100 pages and 
       is quite readable (don't worry, it's not like your Blu-ray player manual). Of course, it covers many details we've 
       skipped over here. The spec is available on the
-      <ulink src="http://jcp.org/en/jsr/detail?id=299">JSR-299 page</ulink> at the JCP website.
+      <ulink url="http://jcp.org/en/jsr/detail?id=299">JSR-299 page</ulink> at the JCP website.
    </para>
   
    <para>
-      The CDI reference implementation, Weld, is being developed at the <ulink src="http://seamframework.org/Weld">Seam
+      The CDI reference implementation, Weld, is being developed at the <ulink url="http://seamframework.org/Weld">Seam
       project</ulink>. The RI development team and the CDI spec lead blog at <ulink
-      src="http://in.relation.to">in.relation.to</ulink>. This guide was originally based on a series of blog entries
+      url="http://in.relation.to">in.relation.to</ulink>. This guide was originally based on a series of blog entries
       published there while the specification was being developed. It's probably the best source of information about
       the future of CDI, Weld and Seam.
    </para>
 
    <para>
-      We encourage you to follow the <ulink src="https://lists.jboss.org/mailman/listinfo/weld-dev">weld-dev</ulink>
-      mailing list and to get involved in <ulink src="http://seamframework.org/Weld/Development">development</ulink>. If
+      We encourage you to follow the <ulink url="https://lists.jboss.org/mailman/listinfo/weld-dev">weld-dev</ulink>
+      mailing list and to get involved in <ulink url="http://seamframework.org/Weld/Development">development</ulink>. If
       you are reading this guide, you likely have something to offer.
    </para>
 
@@ -34,7 +34,7 @@
       <listitem>
          <para>
             Checkout source from <ulink
-            src="http://anonsvn.jboss.org/repos/weld/doc/trunk/reference">http://anonsvn.jboss.org/repos/weld/doc/trunk/reference</ulink>
+            url="http://anonsvn.jboss.org/repos/weld/doc/trunk/reference">http://anonsvn.jboss.org/repos/weld/doc/trunk/reference</ulink>
             using SVN
          </para>
          <programlisting><![CDATA[$> svn co http://anonsvn.jboss.org/repos/weld/doc/trunk/reference weld-reference]]></programlisting> 

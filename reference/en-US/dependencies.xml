@@ -6,7 +6,7 @@
 
    <para>
       This section lists compile-time and runtime dependencies for Weld. This list is currently maintained in the <ulink
-      src="https://jira.jboss.org/jira/browse/WELD-222">WELD-222</ulink> issue report as well as here in this appendix.
+      url="https://jira.jboss.org/jira/browse/WELD-222">WELD-222</ulink> issue report as well as here in this appendix.
    </para>
 
    <table>
@@ -128,7 +128,7 @@
                 <para>compile</para>
               </entry>
               <entry>
-                <para><ulink src="http://opensource.atlassian.com/projects/hibernate/browse/BVAL-193">BVAL-193</ulink></para>
+                <para><ulink url="http://opensource.atlassian.com/projects/hibernate/browse/BVAL-193">BVAL-193</ulink></para>
               </entry>
             </row>
 

@@ -439,7 +439,7 @@ public class Game implements Serializable {
             <para>
                To use the Wicket example in Eclipse, you have one of two choices. You can either use a Maven plugin to
                generate a regular Eclipse Web project, or you can open the example natively using the <ulink
-               src="http://m2eclipse.sonatype.org/">m2eclipse plugin</ulink>.  Since the Weld source code relies so
+               url="http://m2eclipse.sonatype.org/">m2eclipse plugin</ulink>.  Since the Weld source code relies so
                heavily on Maven, we encourage you to bite the bullet and adopt the m2eclipse plugin. Both approaches are
                described here for your convenience..
             </para>
