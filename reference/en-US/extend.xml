@@ -568,34 +568,113 @@ ctx.release();  //clean up dependent objects
           to intercept any of these operations when they are invoked by the container.
       </para>
       
-      <programlisting role="JAVA"><![CDATA[class LogServletCreationExtension implements Extension {
+      <para>
+         Here's a CDI portable extension that reads values from properties files and configures fields of Java EE components, 
+         including servlets, EJBs, managed beans, interceptors and more. In this example, properties for a class such as 
+         <literal>org.mydomain.blog.Blogger</literal> go in a resource named <literal>org/mydomain/blog/Blogger.properties</literal>, 
+         and the name of a property must match the name of the field to be configured. So <literal>Blogger.properties</literal> 
+         could contain:
+      </para>
+
+      <programlisting>firstName=Gavin
+lastName=King</programlisting>
+
+      <para>The portable extension works by wrapping the containers <literal>InjectionTarget</literal> and setting field 
+      values from the <literal>inject()</literal> method.</para>
       
-   <T extends Servlet> void processServlet(ProcessInjectionTarget<T> pit) {
-   
-      //wrap this to intercept the component lifecycle
-      final InjectionTarget<T> it = pit.getInjectionTarget();
-      
-      InjectionTarget<T> wrapped = new InjectionTarget<T>() {
-      
-         @Override
-         public T produce(CreationalContext<T> ctx) {
-            Logger.global.debug("instantiating a servlet");
-            return it.produce(ctx);
-         }
-         
-         @Override
-         public void inject(T instance, CreationalContext<T> ctx) {
-            Logger.global.debug("injecting servlet dependencies");
-            it.inject(instance, ctx);
-         }
-         
-         //remaining methods of InjectionTarget
-         ...
-      }
-      
-      pit.setInjectionTarget(wrapped);
-   } 
-   
+      <programlisting role="JAVA"><![CDATA[public class ConfigExtension implements Extension {
+
+	<X> void processInjectionTarget(ProcessInjectionTarget<X> pit) {
+		
+		//wrap this to intercept the component lifecycle
+	    final InjectionTarget<X> it = pit.getInjectionTarget();
+	    
+        final Map<Field, Object> configuredValues = new HashMap<Field, Object>();
+        
+        //use this to read annotations of the class and its members
+        AnnotatedType<X> at = pit.getAnnotatedType();
+        
+        //read the properties file
+        String propsFileName = at.getClass().getSimpleName() + ".properties";
+        InputStream stream = at.getJavaClass().getResourceAsStream(propsFileName);
+        if (stream!=null) {
+            
+            try {
+                Properties props = new Properties();
+                props.load(stream);
+                for (Map.Entry<Object, Object> property : props.entrySet()) {
+                    String fieldName = property.getKey().toString();
+                    Object value = property.getValue();
+                    try {
+                        Field field = at.getJavaClass().getField(fieldName);
+                        field.setAccessible(true);
+                        if ( field.getType().isAssignableFrom( value.getClass() ) ) {
+                            configuredValues.put(field, value);
+                        }
+                        else {
+                            //TODO: do type conversion automatically
+                            pit.addDefinitionError( new InjectionException(
+                                   "field is not of type String: " + field ) );
+                        }
+                    }
+                    catch (NoSuchFieldException nsfe) {
+                        pit.addDefinitionError(nsfe);
+                    }
+                }
+            }
+            catch (IOException ioe) {
+                pit.addDefinitionError(ioe);
+            }
+        }
+        
+        InjectionTarget<X> wrapped = new InjectionTarget<X>() {
+
+            @Override
+            public void inject(X instance, CreationalContext<X> ctx) {
+                it.inject(instance, ctx);
+                
+                //set the values onto the new instance of the component
+                for (Map.Entry<Field, Object> configuredValue: configuredValues.entrySet()) {
+                    try {
+                        configuredValue.getKey().set(instance, configuredValue.getValue());
+                    }
+                    catch (Exception e) {
+                        throw new InjectionException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void postConstruct(X instance) {
+                it.postConstruct(instance);
+            }
+
+            @Override
+            public void preDestroy(X instance) {
+                it.dispose(instance);
+            }
+
+            @Override
+            public void dispose(X instance) {
+                it.dispose(instance);
+            }
+
+            @Override
+            public Set<InjectionPoint> getInjectionPoints() {
+                return it.getInjectionPoints();
+            }
+
+            @Override
+            public X produce(CreationalContext<X> ctx) {
+                return it.produce(ctx);
+            }
+            
+        };
+        
+        pit.setInjectionTarget(wrapped);
+        
+    }
+    
 }]]></programlisting>
 
       <para>
