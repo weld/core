@@ -239,35 +239,40 @@ $> ant update</programlisting>
       <itemizedlist>
          <listitem>
             <para>
-               <literal>POJOs (no EJBs)</literal>
+               Managed beans with <literal>@PostConstruct</literal> and <literal>@PreDestroy</literal> 
+               lifecycle callbacks
             </para>
          </listitem>
          <listitem>
             <para>
-               <literal>Typesafe Dependency Injection</literal>
+               Dependency injection with qualifiers and alternatives
             </para>
          </listitem>
          <listitem>
             <para>
-               <literal>Application and Dependent Contexts</literal>
+               <literal>@Application</literal> and <literal>@Dependent</literal> scopes
             </para>
          </listitem>
          <listitem>
             <para>
-               <literal>Qualifiers</literal>
+               Stereotypes
             </para>
          </listitem>
          <listitem>
             <para>
-               <literal>Stereotypes</literal>
+               Events
             </para>
          </listitem>
          <listitem>
             <para>
-               <literal>Typesafe Event Model</literal>
+               Portable extensions
             </para>
          </listitem>
       </itemizedlist>
+      
+      <para>
+         EJB beans are not supported.
+      </para>
 
       <section id="weld-se">
          <title>CDI SE Module</title>
@@ -279,9 +284,15 @@ $> ant update</programlisting>
             <literal>ContainerInitialized</literal> event provided by this extension. The command line parameters can be
             injected using either of the following:
          </para>
-         <programlisting role="JAVA"><![CDATA[@Inject @Parameters List<String> params;
-@Inject @Parameters String[] paramsArray; // useful for compatability with existing classes]]></programlisting>
-
+         
+         <programlisting role="JAVA"><![CDATA[@Inject @Parameters List<String> params;]]></programlisting>
+         
+         <programlisting role="JAVA"><![CDATA[@Inject @Parameters String[] paramsArray;]]></programlisting>
+         
+         <para>
+            The second form is useful for compatibility with existing classes.
+         </para>
+         
          <para>
             Here's an example of a simple CDI SE application:
          </para>
@@ -297,7 +308,7 @@ public class HelloWorld
 }]]></programlisting>
 
          <para>
-            CDI SE applications can be bootstrapped by running the StartMain class like so:
+            CDI SE applications can be bootstrapped by running the <literal>StartMain</literal> class like so:
          </para>
 
          <programlisting role="JAVA"><![CDATA[java org.jboss.weld.environments.se.StartMain <args>]]></programlisting>
