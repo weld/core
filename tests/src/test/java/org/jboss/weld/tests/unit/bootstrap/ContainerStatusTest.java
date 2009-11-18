@@ -28,7 +28,6 @@ public class ContainerStatusTest
       assert Container.instance().getStatus().equals(Status.VALIDATED);
       container.stopContainer();
       assert !Container.available();
-      assert Container.instance().getStatus().equals(Status.SHUTDOWN);
    }
 
 }
