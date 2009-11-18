@@ -35,8 +35,8 @@ public class Checkout {
 }]]></programlisting>
 
       <para>
-         The example shows how objects can be interpolated into a message. If you use this approach, you do not need to 
-         surround a call to the logger with a condition like <emphasis>if ( log.isDebugEnabled() )</emphasis> to
+         The example shows how objects can be interpolated into a message. If you use this approach, you do not need
+         to surround a call to the logger with a condition like <literal>if ( log.isDebugEnabled() )</literal> to
          avoid string concatenation.
       </para>
       
