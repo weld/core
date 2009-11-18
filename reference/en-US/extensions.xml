@@ -35,15 +35,9 @@ public class Checkout {
 }]]></programlisting>
 
       <para>
-         The example shows how objects can be interpolated into a message. This interpolation is done using
-         <emphasis>java.text.MessageFormat</emphasis>, so see the JavaDoc for that class for more details. In this case,
-         the <literal>ShoppingCart</literal> should have implemented the <emphasis>toString()</emphasis> method to
-         produce a human readable value that is meaningful in messages. Normally, this call would have involved
-         evaluating cart.toString() with String concatenation to produce a single String argument. Thus it was necessary
-         to surround the call with an if-statement using the condition <emphasis>log.isDebugEnabled()</emphasis> to
-         avoid the expensive String concatenation if the message was not actually going to be used. However, when using
-         <literal>@Logger</literal>-injected logging, the conditional test can be left out since the object arguments
-         are not evaluated unless the message is going to be logged.
+         The example shows how objects can be interpolated into a message. If you use this approach, you do not need to 
+         surround a call to the logger with a condition like <emphasis>if ( log.isDebugEnabled() )</emphasis> to
+         avoid string concatenation.
       </para>
       
       <note>
