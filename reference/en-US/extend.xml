@@ -620,6 +620,9 @@ lastName=King</programlisting>
                     catch (NoSuchFieldException nsfe) {
                         pit.addDefinitionError(nsfe);
                     }
+                    finally {
+                        stream.close();
+                    }
                 }
             }
             catch (IOException ioe) {

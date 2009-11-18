@@ -256,7 +256,7 @@ $> ant update</programlisting>
          </listitem>
          <listitem>
             <para>
-               Decorators
+               Interceptors and decorators
             </para>
          </listitem>
          <listitem>
