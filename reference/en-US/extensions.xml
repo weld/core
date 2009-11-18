@@ -18,21 +18,19 @@
       
       <para>
          Adding logging to your application is now even easier with simple injection of a logger object into any CDI
-         bean. Simply annotate a <literal>org.jboss.weld.log.Log</literal> type member with the
-         <emphasis>@Logger</emphasis> qualifier annotation and an appropriate logger object will be injected into any
-         instance of the bean.
+         bean. Simply create an injection point of type <literal>org.slf4j.Logger</literal> and an appropriate logger 
+         object will be injected into any instance of the bean.
       </para>
 
-      <programlisting role="JAVA"><![CDATA[import org.jboss.weld.annotation.Logger;
-import org.jboss.weld.log.Log;
+      <programlisting role="JAVA"><![CDATA[import org.slf4j.Logger;
 
 public class Checkout {
-   private @Inject @Logger Log log;
+   private @Inject Logger log;
 
    public void invoiceItems() {
       ShoppingCart cart;
       ...
-      log.debug("Items invoiced for {0}", cart);
+      log.debug("Items invoiced for {}", cart);
    }
 }]]></programlisting>
 
@@ -50,9 +48,9 @@ public class Checkout {
       
       <note>
 	      <para>
-            You can add the Weld Logger to your project by including weld-logger.jar, sl4j-api.jar and sl4j-jdk14.jar to
-            your project. Alternatively, express a dependency on the <literal>org.jboss.weld:weld-logger</literal> Maven
-            artifact. 
+            You can add Weld logging to your project by including weld-logger.jar, sl4j-api.jar and sl4j-jdk14.jar to
+            your project. Alternatively, express a dependency on the <literal>org.jboss.weld:weld-logger</literal> 
+            Maven artifact. 
 	      </para>
 	      <para>
             If you are using Weld as your JSR-299 implementation, there's no need to include sl4j as it's already
