@@ -23,6 +23,7 @@
       </para>
 
       <programlisting role="JAVA"><![CDATA[import org.slf4j.Logger;
+import javax.inject.Inject;
 
 public class Checkout {
    private @Inject Logger log;
