@@ -111,7 +111,7 @@ public abstract class AbstractWeldELResolver extends ELResolver
                   
                   public Object call() throws Exception
                   {
-                     return getManager(context).getReference(bean, creationalContext);
+                     return getManager(context).getReference(bean, creationalContext, false);
                   }
                   
                });

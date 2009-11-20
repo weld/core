@@ -59,7 +59,6 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import javax.inject.Qualifier;
 
 import org.jboss.interceptor.registry.InterceptorRegistry;
-import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
@@ -935,14 +934,14 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
    }
    
-   public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext)
+   public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext, boolean delegate)
    {
       bean = getMostSpecializedBean(bean);
       if (creationalContext instanceof WeldCreationalContext<?>)
       {
          creationalContext = ((WeldCreationalContext<?>) creationalContext).getCreationalContext(bean);
       }
-      if (isProxyRequired(bean))
+      if (!delegate && isProxyRequired(bean))
       {
          if (creationalContext != null || getContext(bean.getScope()).get(bean) != null)
          {
@@ -981,7 +980,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          throw new IllegalArgumentException("The given beanType is not a type " + beanType +" of the bean " + bean );
       }
-      return getReference(bean, creationalContext);
+      return getReference(bean, creationalContext, false);
    }
 
    
@@ -996,6 +995,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    public Object getReference(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext)
    {
       boolean registerInjectionPoint = (injectionPoint != null && !injectionPoint.getType().equals(InjectionPoint.class));
+      boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();
       try
       {
          if (registerInjectionPoint)
@@ -1016,12 +1016,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
             }
             else
             {
-               return getReference(resolvedBean, wbCreationalContext);
+               return getReference(resolvedBean, wbCreationalContext, delegateInjectionPoint);
             }
          }
          else
          {
-            return getReference(resolvedBean, creationalContext);
+            return getReference(resolvedBean, creationalContext, delegateInjectionPoint);
          }
       }
       finally

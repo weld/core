@@ -48,7 +48,7 @@ public class CdiInterceptorHandlerFactory implements InterceptionHandlerFactory<
    @SuppressWarnings("unchecked")
    public InterceptionHandler createFor(final SerializableContextual<Interceptor<Object>, Object> serializableContextual)
    {
-      Object instance = getManager().getReference(serializableContextual.get(), creationalContext);
+      Object instance = getManager().getReference(serializableContextual.get(), creationalContext, false);
       return new CdiInterceptorHandler(new SerializableContextualInstanceImpl<Interceptor<Object>, Object>(serializableContextual, instance, creationalContext),
             serializableContextual.get().getBeanClass());
    }

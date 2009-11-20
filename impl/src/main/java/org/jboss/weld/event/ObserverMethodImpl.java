@@ -222,7 +222,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
          {
             creationalContext = manager.createCreationalContext(declaringBean);
          }
-         instance = manager.getReference(declaringBean, creationalContext);
+         instance = manager.getReference(declaringBean, creationalContext, false);
          if (instance == null)
          {
             return;
