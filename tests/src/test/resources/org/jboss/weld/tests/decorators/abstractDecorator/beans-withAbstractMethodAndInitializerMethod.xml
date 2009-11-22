@@ -1,0 +1,6 @@
+<beans> 
+   <decorators>
+      <class>org.jboss.weld.tests.decorators.abstractDecorator.FrameWithInitializerMethodInjectedDelegateAndAbstractMethod</class>
+      <class>org.jboss.weld.tests.decorators.abstractDecorator.FrameWithFieldInjectedDelegate</class>
+   </decorators>
+</beans>

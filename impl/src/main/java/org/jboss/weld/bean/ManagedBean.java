@@ -58,10 +58,8 @@ import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
@@ -244,7 +242,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
             public T produce(CreationalContext<T> ctx)
             {
-               T instance = constructor.newInstance(manager, ctx);
+               T instance = ManagedBean.this.createInstance(ctx);
                if (!hasDecorators())
                {
                   // This should be safe, but needs verification PLM
@@ -268,6 +266,11 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             }
          });
       }
+   }
+
+   protected T createInstance(CreationalContext<T> ctx) 
+   {
+      return constructor.newInstance(manager, ctx);
    }
 
    @Override
@@ -456,7 +459,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     *
     * @return The constructor
     */
-   public WeldConstructor<T> getConstructor()
+   public ConstructorInjectionPoint<T> getConstructor()
    {
       return constructor;
    }

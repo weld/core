@@ -413,6 +413,17 @@ public class Reflections
    }
 
    /**
+    * Checks if a method is abstract
+    *
+    * @param method
+    * @return
+    */
+   public static boolean isAbstract(Method method)
+   {
+      return Modifier.isAbstract(method.getModifiers());
+   }
+
+   /**
     * Gets a constructor with matching parameter types
     * 
     * @param <T> The type
