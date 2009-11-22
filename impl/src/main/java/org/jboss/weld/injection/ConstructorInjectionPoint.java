@@ -51,7 +51,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
 
       protected abstract List<? extends WeldParameter<T, X>> delegate();
 
-      protected abstract Bean<X> declaringBean();;
+      protected abstract Bean<X> declaringBean();
 
       @Override
       public ParameterInjectionPoint<T, X> get(int index)
