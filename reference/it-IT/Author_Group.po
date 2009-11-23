@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-11-11 15:00+0000\n"
-"PO-Revision-Date: 2009-03-30 21:41+0100\n"
+"PO-Revision-Date: 2009-11-23 21:11+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
 #: Author_Group.xml:8
 #, no-c-format
 msgid "JSR-299: Contexts and Dependency Injection Lead"
-msgstr ""
+msgstr "JSR-299: Contexts and Dependency Injection Lead"
 
 #. Tag: author
 #: Author_Group.xml:14
@@ -35,13 +35,13 @@ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 #: Author_Group.xml:17
 #, no-c-format
 msgid "Weld (JSR-299 RI) Lead"
-msgstr ""
+msgstr "Weld (JSR-299 RI) Lead"
 
 #. Tag: author
 #: Author_Group.xml:24
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<firstname>Dan</firstname> <surname>Allen</surname>"
-msgstr "<firstname>David</firstname> <surname>Allen</surname>"
+msgstr "<firstname>Dan</firstname> <surname>Allen</surname>"
 
 #. Tag: author
 #: Author_Group.xml:31
@@ -56,7 +56,8 @@ msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:38 Author_Group.xml:67
+#: Author_Group.xml:38
+#: Author_Group.xml:67
 #, no-c-format
 msgid "Italian Translation"
 msgstr "Traduzione italiana"
@@ -121,16 +122,14 @@ msgstr "Traduzione cinese semplificato"
 #~ msgstr ""
 #~ "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat "
 #~ "Middleware LLC</orgname>"
-
 #~ msgid ""
 #~ "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
 #~ "<orgname>Red Hat Middleware LLC</orgname>"
 #~ msgstr ""
 #~ "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
 #~ "<orgname>Red Hat Middleware LLC</orgname>"
-
 #~ msgid "Red Hat Middleware LLC"
 #~ msgstr "Red Hat Middleware LLC"
-
 #~ msgid "Kava Community"
 #~ msgstr "Kava Community"
+
