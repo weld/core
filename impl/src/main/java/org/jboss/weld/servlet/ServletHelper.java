@@ -16,10 +16,14 @@
  */
 package org.jboss.weld.servlet;
 
+import static org.jboss.weld.logging.messages.ServletMessage.BEAN_MANAGER_NOT_FOUND;
+import static org.jboss.weld.logging.messages.ServletMessage.CONTEXT_NULL;
+
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.ForbiddenArgumentException;
 
 /**
  * @author pmuir
@@ -32,12 +36,12 @@ public class ServletHelper
    {
       if (ctx == null)
       {
-         throw new IllegalArgumentException("ServletContext is null");
+         throw new ForbiddenArgumentException(CONTEXT_NULL);
       }
       BeanManagerImpl beanManagerImpl = (BeanManagerImpl) ctx.getAttribute(BeanManager.class.getName());
       if (beanManagerImpl == null)
       {
-         throw new IllegalArgumentException("Unable to find BeanManager. ServletContext: " + ctx);
+         throw new ForbiddenArgumentException(BEAN_MANAGER_NOT_FOUND, ctx);
       }
       else
       {

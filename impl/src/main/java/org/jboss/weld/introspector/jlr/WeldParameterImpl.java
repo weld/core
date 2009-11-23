@@ -16,12 +16,15 @@
  */
 package org.jboss.weld.introspector.jlr;
 
+import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_PARAMETER_NAME;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedCallable;
 
+import org.jboss.weld.ForbiddenArgumentException;
 import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldCallable;
 import org.jboss.weld.introspector.WeldParameter;
@@ -133,7 +136,7 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
     */
    public String getName()
    {
-      throw new IllegalArgumentException("Unable to determine name of parameter");
+      throw new ForbiddenArgumentException(UNABLE_TO_GET_PARAMETER_NAME);
    }
 
    /**

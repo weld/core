@@ -17,8 +17,8 @@
 package org.jboss.weld.injection;
 
 import static org.jboss.weld.injection.Exceptions.rethrowException;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 
-import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.lang.annotation.Annotation;
@@ -36,6 +36,7 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.InvalidObjectException;
 import org.jboss.weld.introspector.ForwardingWeldMethod;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
@@ -307,7 +308,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    
    private void readObject(ObjectInputStream stream) throws InvalidObjectException
    {
-      throw new InvalidObjectException("Proxy required");
+      throw new InvalidObjectException(PROXY_REQUIRED);
    }
    
    private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Method>

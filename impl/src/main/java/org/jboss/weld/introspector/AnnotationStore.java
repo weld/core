@@ -17,6 +17,8 @@
 package org.jboss.weld.introspector;
 
 import static org.jboss.weld.introspector.WeldAnnotated.MAPPED_METAANNOTATIONS;
+import static org.jboss.weld.logging.messages.ReflectionMessage.ANNOTATION_MAP_NULL;
+import static org.jboss.weld.logging.messages.ReflectionMessage.DECLARED_ANNOTATION_MAP_NULL;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -30,7 +32,9 @@ import java.util.Set;
 
 import javax.inject.Qualifier;
 
+import org.jboss.weld.WeldException;
 import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.metadata.TypeStore;
 
 import com.google.common.base.Supplier;
@@ -155,7 +159,7 @@ public class AnnotationStore
    {
       if (annotationMap == null)
       {
-         throw new NullPointerException("annotationMap cannot be null");
+         throw new WeldException(ANNOTATION_MAP_NULL);
       }
       this.annotationMap = annotationMap;
       this.annotationSet = new HashSet<Annotation>();
@@ -176,7 +180,7 @@ public class AnnotationStore
       
       if (declaredAnnotationMap == null)
       {
-         throw new NullPointerException("declaredAnnotationMap cannot be null");
+         throw new WeldException(DECLARED_ANNOTATION_MAP_NULL);
       }
       this.declaredAnnotationMap = declaredAnnotationMap;
       this.declaredAnnotationSet = new HashSet<Annotation>();

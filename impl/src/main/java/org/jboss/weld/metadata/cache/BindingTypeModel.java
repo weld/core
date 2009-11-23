@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.metadata.cache;
 
+import static org.jboss.weld.logging.messages.MetadataMessage.NON_BINDING_MEMBER_TYPE;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
@@ -24,6 +26,7 @@ import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
 import org.jboss.weld.DefinitionException;
+import org.jboss.weld.WeldException;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Reflections;
@@ -76,7 +79,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
       {
          if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingTypes.contains(annotatedMethod))
          {
-            throw new DefinitionException("Member of array type or annotation type must be annotated @NonBinding " + annotatedMethod);
+            throw new DefinitionException(NON_BINDING_MEMBER_TYPE, annotatedMethod);
          }
       }
 
@@ -148,15 +151,15 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
                }
                catch (IllegalArgumentException e)
                {
-                  throw new RuntimeException(e);
+                  throw new WeldException(e);
                }
                catch (IllegalAccessException e)
                {
-                  throw new RuntimeException(e);
+                  throw new WeldException(e);
                }
                catch (InvocationTargetException e)
                {
-                  throw new RuntimeException(e);
+                  throw new WeldException(e);
                }
               
             }

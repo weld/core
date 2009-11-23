@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.resolution;
 
+import static org.jboss.weld.logging.messages.ResolutionMessage.CANNOT_EXTRACT_RAW_TYPE;
+import static org.jboss.weld.logging.messages.ResolutionMessage.CANNOT_EXTRACT_TYPE_INFORMATION;
+import static org.jboss.weld.logging.messages.ResolutionMessage.INVALID_MEMBER_TYPE;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -31,6 +35,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.InvalidOperationException;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.AnnotationStore;
@@ -90,7 +96,7 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
       }
       else
       {
-         throw new IllegalStateException();
+         throw new ForbiddenArgumentException(INVALID_MEMBER_TYPE, member);
       }
    }
 
@@ -109,7 +115,7 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
          }
          else
          {
-            throw new IllegalArgumentException("Cannot extract rawType from " + type);
+            throw new ForbiddenArgumentException(CANNOT_EXTRACT_RAW_TYPE, type);
          }
          this.actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
          this._string = rawType.toString() + "<" + Arrays.asList(actualTypeArguments).toString() + ">; binding types = " + Names.annotationsToString(annotationStore.getBindings());
@@ -122,7 +128,7 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
       }
       else
       {
-         throw new IllegalArgumentException("Unable to extract type information from " + type);
+         throw new ForbiddenArgumentException(CANNOT_EXTRACT_TYPE_INFORMATION, type);
       }
       this.typeClosure = new HashSet<Type>();
       typeClosure.add(type);
@@ -158,7 +164,7 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
 
    public String getName()
    {
-      throw new UnsupportedOperationException();
+      throw new InvalidOperationException();
    }
 
    @Override
@@ -169,38 +175,38 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
 
    public boolean isFinal()
    {
-      throw new UnsupportedOperationException();
+      throw new InvalidOperationException();
    }
 
    public boolean isPublic()
    {
-      throw new UnsupportedOperationException();
+      throw new InvalidOperationException();
    }
    
    public boolean isPrivate()
    {
-      throw new UnsupportedOperationException();
+      throw new InvalidOperationException();
    }
    
    public boolean isPackagePrivate()
    {
-      throw new UnsupportedOperationException();
+      throw new InvalidOperationException();
    }
    
    public Package getPackage()
    {
-      throw new UnsupportedOperationException();
+      throw new InvalidOperationException();
    }
 
    public boolean isStatic()
    {
-      throw new UnsupportedOperationException();
+      throw new InvalidOperationException();
    }
 
    @Override
    public boolean isProxyable()
    {
-      throw new UnsupportedOperationException();
+      throw new InvalidOperationException();
    }
 
    @Override

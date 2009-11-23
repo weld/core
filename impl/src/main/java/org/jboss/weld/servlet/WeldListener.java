@@ -24,7 +24,11 @@ package org.jboss.weld.servlet;
 
 import static org.jboss.weld.logging.Category.SERVLET;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ServletMessage.BEAN_DEPLOYMENT_ARCHIVE_MISSING;
+import static org.jboss.weld.logging.messages.ServletMessage.BEAN_MANAGER_FOR_ARCHIVE_NOT_FOUND;
+import static org.jboss.weld.logging.messages.ServletMessage.ILLEGAL_USE_OF_WELD_LISTENER;
 import static org.jboss.weld.logging.messages.ServletMessage.NOT_STARTING;
+import static org.jboss.weld.logging.messages.ServletMessage.ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
@@ -35,6 +39,7 @@ import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.servlet.api.ServletServices;
@@ -72,12 +77,12 @@ public class WeldListener extends AbstractServletListener
       BeanDeploymentArchive war = Container.instance().deploymentServices().get(ServletServices.class).getBeanDeploymentArchive(ctx);
       if (war == null)
       {
-         throw new IllegalStateException("Unable to locate BeanDeploymentArchive. ServletContext: " + ctx);
+         throw new ForbiddenStateException(BEAN_DEPLOYMENT_ARCHIVE_MISSING, ctx);
       }
       BeanManagerImpl beanManager = Container.instance().beanDeploymentArchives().get(war);
       if (beanManager == null)
       {
-         throw new IllegalStateException("Unable to locate BeanManager. ServletContext: " + ctx + "; BeanDeploymentArchive: " + war);
+         throw new ForbiddenStateException(BEAN_MANAGER_FOR_ARCHIVE_NOT_FOUND, ctx, war);
       }
       return beanManager;
    }
@@ -93,7 +98,7 @@ public class WeldListener extends AbstractServletListener
       }
       if (!Container.instance().deploymentServices().contains(ServletServices.class))
       {
-         throw new IllegalStateException("Cannot use WeldListener without ServletServices");
+         throw new ForbiddenStateException(ILLEGAL_USE_OF_WELD_LISTENER);
       }
       sce.getServletContext().setAttribute(BeanManager.class.getName(), getBeanManager(sce.getServletContext()));
    }
@@ -152,7 +157,7 @@ public class WeldListener extends AbstractServletListener
          }
          else
          {
-            throw new IllegalStateException("Non HTTP-Servlet lifecycle not defined");
+            throw new ForbiddenStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
          }
       }
    }
@@ -174,7 +179,7 @@ public class WeldListener extends AbstractServletListener
          }
          else
          {
-            throw new IllegalStateException("Non HTTP-Servlet lifecycle not defined");
+            throw new ForbiddenStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
          }
       }
    }

@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.introspector.WeldAnnotation;
+import org.jboss.weld.logging.messages.MetadataMessage;
 import org.jboss.weld.resources.ClassTransformer;
 import org.slf4j.cal10n.LocLogger;
 
@@ -71,7 +72,7 @@ public abstract class AnnotationModel<T extends Annotation>
    {
       if (!Annotation.class.isAssignableFrom(getRawType()))
       {
-         throw new DefinitionException(getMetaAnnotationTypes().toString() + " can only be applied to an annotation, it was applied to " + getRawType());
+         throw new DefinitionException(MetadataMessage.META_ANNOTATION_ON_WRONG_TYPE, getMetaAnnotationTypes(), getRawType());
       }
    }
 

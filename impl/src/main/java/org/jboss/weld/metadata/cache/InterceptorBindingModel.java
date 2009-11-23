@@ -19,6 +19,7 @@ package org.jboss.weld.metadata.cache;
 
 import static org.jboss.weld.logging.Category.REFLECTION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.MetadataMessage.NON_BINDING_MEMBER_TYPE;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE;
 import static org.jboss.weld.logging.messages.ReflectionMessage.TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE;
@@ -33,6 +34,7 @@ import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
 import org.jboss.weld.DefinitionException;
+import org.jboss.weld.WeldException;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Reflections;
@@ -127,7 +129,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
       {
          if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingTypes.contains(annotatedMethod))
          {
-            throw new DefinitionException("Member of array type or annotation type must be annotated @NonBinding " + annotatedMethod);
+            throw new DefinitionException(NON_BINDING_MEMBER_TYPE, annotatedMethod);
          }
       }
    }
@@ -161,15 +163,15 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
                }
                catch (IllegalArgumentException e)
                {
-                  throw new RuntimeException(e);
+                  throw new WeldException(e);
                }
                catch (IllegalAccessException e)
                {
-                  throw new RuntimeException(e);
+                  throw new WeldException(e);
                }
                catch (InvocationTargetException e)
                {
-                  throw new RuntimeException(e);
+                  throw new WeldException(e);
                }
 
             }

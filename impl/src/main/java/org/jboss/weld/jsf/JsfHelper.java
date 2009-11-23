@@ -19,6 +19,7 @@ package org.jboss.weld.jsf;
 import static org.jboss.weld.logging.Category.JSF;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
+import static org.jboss.weld.logging.messages.JsfMessage.IMPROPER_ENVIRONMENT;
 import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
 import javax.enterprise.util.AnnotationLiteral;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.conversation.ConversationIdName;
 import org.jboss.weld.servlet.ServletHelper;
 import org.jboss.weld.util.Reflections;
@@ -116,7 +118,7 @@ public class JsfHelper
       }
       else
       {
-         throw new IllegalStateException("Weld doesn not support using JSF in an non-servlet environment");
+         throw new ForbiddenStateException(IMPROPER_ENVIRONMENT);
       }
    }
 

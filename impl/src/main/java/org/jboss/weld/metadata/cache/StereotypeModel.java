@@ -21,6 +21,9 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static org.jboss.weld.logging.Category.REFLECTION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.MetadataMessage.MULTIPLE_SCOPES;
+import static org.jboss.weld.logging.messages.MetadataMessage.QUALIFIER_ON_STEREOTYPE;
+import static org.jboss.weld.logging.messages.MetadataMessage.VALUE_ON_NAMED_STEREOTYPE;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD;
 
@@ -96,7 +99,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
          {
             if (!annotation.annotationType().equals(Named.class))
             {
-               throw new DefinitionException("Cannot declare binding types on a stereotype " + getAnnotatedAnnotation());
+               throw new DefinitionException(QUALIFIER_ON_STEREOTYPE, getAnnotatedAnnotation());
             }
          }
       }
@@ -124,7 +127,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       {
          if (!"".equals(getAnnotatedAnnotation().getAnnotation(Named.class).value()))
          {
-            throw new DefinitionException("Cannot specify a value for a @Named stereotype " + getAnnotatedAnnotation());
+            throw new DefinitionException(VALUE_ON_NAMED_STEREOTYPE, getAnnotatedAnnotation());
          }
          beanNameDefaulted = true;
       }
@@ -140,7 +143,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       scopeTypes.addAll(getAnnotatedAnnotation().getMetaAnnotations(NormalScope.class));
       if (scopeTypes.size() > 1)
       {
-         throw new DefinitionException("At most one scope type may be specified for " + getAnnotatedAnnotation());
+         throw new DefinitionException(MULTIPLE_SCOPES, getAnnotatedAnnotation());
       }
       else if (scopeTypes.size() == 1)
       {

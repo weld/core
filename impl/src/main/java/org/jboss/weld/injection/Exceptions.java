@@ -20,6 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.enterprise.inject.CreationException;
 
+import org.jboss.weld.WeldException;
+
 class Exceptions
 {
    
@@ -38,11 +40,11 @@ class Exceptions
          }
          catch (InstantiationException e1)
          {
-            throw new RuntimeException(e1);
+            throw new WeldException(e1);
          }
          catch (IllegalAccessException e1)
          {
-            throw new RuntimeException(e1);
+            throw new WeldException(e1);
          }
          e.initCause(t);
          throw e;

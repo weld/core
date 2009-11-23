@@ -22,11 +22,13 @@
  */
 package org.jboss.weld.servlet;
 
+import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_SCOPE_BEAN_STORE_MISSING;
 import static org.jboss.weld.servlet.ServletHelper.getModuleBeanManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
@@ -152,7 +154,7 @@ public class ServletLifecycle
          BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
          if (beanStore == null)
          {
-            throw new IllegalStateException("Cannot obtain request scoped beans from the request");
+            throw new ForbiddenStateException(REQUEST_SCOPE_BEAN_STORE_MISSING);
          }
          lifecycle.endRequest(request.getRequestURI(), beanStore);
          request.removeAttribute(REQUEST_ATTRIBUTE_NAME);

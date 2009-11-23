@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.metadata.cache;
 
+import static org.jboss.weld.logging.messages.MetadataMessage.STEREOTYPE_NOT_REGISTERED;
+
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.ForbiddenStateException;
 
 /**
  * Meta model for the merged stereotype for a bean
@@ -66,7 +69,7 @@ public class MergedStereotypes<T, E>
          StereotypeModel<?> stereotype = manager.getServices().get(MetaAnnotationStore.class).getStereotype(stereotypeAnnotation.annotationType());
          if (stereotype == null)
          {
-            throw new IllegalStateException("Stereotype " + stereotypeAnnotation + " not registered with container");
+            throw new ForbiddenStateException(STEREOTYPE_NOT_REGISTERED, stereotypeAnnotation);
          }
          if (stereotype.isPolicy())
          {

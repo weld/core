@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.resources;
 
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.CANNOT_LOCATE_BEAN_MANAGER;
+
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
@@ -28,9 +31,13 @@ import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 
+import ch.qos.cal10n.IMessageConveyor;
+
 public class ManagerObjectFactory implements ObjectFactory
 {
-   
+   // Exception messages
+   private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
+
    public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception
    {
       for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance().beanDeploymentArchives().entrySet())
@@ -40,7 +47,7 @@ public class ManagerObjectFactory implements ObjectFactory
             return entry.getValue().getCurrent();
          }
       }
-      throw new NamingException("Unable to locate BeanManager");
+      throw new NamingException(messageConveyer.getMessage(CANNOT_LOCATE_BEAN_MANAGER));
    }
    
 }
