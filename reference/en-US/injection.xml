@@ -308,7 +308,7 @@ public @interface PayBy {
 
          <para>
             We can force the container to ignore a member of a qualifier type by annotating the member 
-            <literal>@NonBinding</literal>.
+            <literal>@Nonbinding</literal>.
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Qualifier
@@ -316,7 +316,7 @@ public @interface PayBy {
 @Target({METHOD, FIELD, PARAMETER, TYPE})
 public @interface PayBy {
    PaymentMethod value();
-   @NonBinding String comment() default "";
+   @Nonbinding String comment() default "";
 }]]></programlisting> 
 
       </section>
@@ -730,7 +730,7 @@ PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment
 @Retention(RUNTIME)
 @Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface HttpParam {
-   @NonBinding public String value();
+   @Nonbinding public String value();
 }]]></programlisting>
 
   <para>We would use this qualifier type at injection points as follows:</para>
@@ -750,7 +750,7 @@ public @interface HttpParam {
 }]]></programlisting>
 
   <para>(Note that the <literal>value()</literal> member of the <literal>HttpParam</literal>
-  annotation is ignored by the container since it is annotated <literal>@NonBinding.</literal>)</para>
+  annotation is ignored by the container since it is annotated <literal>@Nonbinding.</literal>)</para>
 
   <para>The container provides a built-in bean that implements the <literal>InjectionPoint</literal> 
   interface:</para>
