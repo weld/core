@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 public class StackOverFlowTest extends AbstractWeldTest
 {
    
-   @Test(description="WELD-296", groups="broken")
+   @Test(description="WELD-296")
    public void test()
    {
       getCurrentManager().getInstanceByType(PaymentService.class, new AnnotationLiteral<SimpleService>() {}).pay("Pete", new BigDecimal(100));
