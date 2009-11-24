@@ -15,6 +15,7 @@ public class ProcessSimpleInjectionTarget<T> extends AbstractProcessInjectionTar
    public ProcessSimpleInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<T> annotatedType, InjectionTarget<T> injectionTarget)
    {
       super(beanManager, annotatedType);
+      this.injectionTarget = injectionTarget;
    }
 
    public InjectionTarget<T> getInjectionTarget()
