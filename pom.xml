@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
-      <artifactId>weld-extensions-parent</artifactId>
+      <artifactId>weld-parent</artifactId>
       <groupId>org.jboss.weld</groupId>
-      <version>1.0.0-SNAPSHOT</version>
-      <relativePath>../parent/pom.xml</relativePath>
+      <version>7</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld</groupId>
    <artifactId>weld-se</artifactId>
+   <version>1.0.0-SNAPSHOT</version>
    <packaging>jar</packaging>
    <name>Weld SE Support</name>
 
@@ -22,6 +22,91 @@
          </roles>
       </developer>
    </developers>
+
+
+   <properties>
+      <!-- Testing deps -->
+      <testng.version>5.10</testng.version>
+      <weld.api.version>1.0</weld.api.version>
+      <weld.core.version>1.0.0</weld.core.version>
+      <slf4j.version>1.5.9.RC1</slf4j.version>
+   </properties>
+   
+   <!-- Dependency management, including extra repositories if needed -->
+   <repositories>
+      <repository>
+         <id>repository.jboss.org</id>
+         <name>JBoss Release Repository</name>
+         <url>http://repository.jboss.org/maven2</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+      <repository>
+         <id>snapshots.jboss.org</id>
+         <name>JBoss Snapshots Repository</name>
+         <url>http://snapshots.jboss.org/maven2</url>
+         <releases>
+            <enabled>false</enabled>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </snapshots>
+      </repository>
+      <repository>
+        <id>oss.sonatype.org/jboss-snapshots</id>
+        <name>JBoss (Nexus) Snapshots Repository</name>
+        <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
+        <releases>
+          <enabled>false</enabled>
+        </releases>
+        <snapshots>
+          <enabled>true</enabled>
+          <updatePolicy>never</updatePolicy>
+        </snapshots>
+      </repository>
+   </repositories>
+   
+   <!-- Import the BOMs -->
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api-bom</artifactId>
+            <version>${weld.api.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-bom</artifactId>
+            <version>${weld.core.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+            <version>${testng.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-se</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+   <!-- Set up local dependecies -->
 
    <dependencies>
       <dependency>
