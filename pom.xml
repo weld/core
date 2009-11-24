@@ -2,13 +2,13 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld.servlet</groupId>
    <artifactId>weld-servlet-parent</artifactId>
+   <version>1.0.0-SNAPSHOT</version>
    <packaging>pom</packaging>
    
    <parent>
       <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-extensions-parent</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <relativePath>../parent/pom.xml</relativePath>
+      <artifactId>weld-parent</artifactId>
+      <version>7</version>
   </parent>
 
    <name>Weld Servlet support build aggregator</name>
@@ -46,5 +46,169 @@
          <url>http://in.relation.to/Bloggers/Dan</url>
       </developer>
    </developers>
+
+   <properties>
+      <weld.api.version>1.0</weld.api.version>
+      <weld.core.version>1.0.0</weld.core.version>
+      <!-- Use JSF 2 for all extensions support, despite core using JSF 1.2 -->
+      <jsf.version>2.0.0-RC</jsf.version>
+      <tomcat.version>6.0.20</tomcat.version>
+      <uel.glassfish.version>2.1.2-b04</uel.glassfish.version>
+      <slf4j.version>1.5.9.RC1</slf4j.version>
+      <!-- Testing deps -->
+      <testng.version>5.10</testng.version>
+      <jboss.test.harness.version>1.1.0-CR3</jboss.test.harness.version>
+      <apache.httpclient.version>3.1</apache.httpclient.version>
+      <junit.version>4.7</junit.version>
+      <htmlunit.version>2.4</htmlunit.version>
+   </properties>
+
+   <!-- Dependency management, including extra repositories if needed -->
+   <repositories>
+      <repository>
+         <id>repository.jboss.org</id>
+         <name>JBoss Release Repository</name>
+         <url>http://repository.jboss.org/maven2</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+      <repository>
+         <id>snapshots.jboss.org</id>
+         <name>JBoss Snapshots Repository</name>
+         <url>http://snapshots.jboss.org/maven2</url>
+         <releases>
+            <enabled>false</enabled>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </snapshots>
+      </repository>
+      <repository>
+        <id>oss.sonatype.org/jboss-snapshots</id>
+        <name>JBoss (Nexus) Snapshots Repository</name>
+        <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
+        <releases>
+          <enabled>false</enabled>
+        </releases>
+        <snapshots>
+          <enabled>true</enabled>
+          <updatePolicy>never</updatePolicy>
+        </snapshots>
+      </repository>
+   </repositories>
+
+   <!-- Import the BOMs -->
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api-bom</artifactId>
+            <version>${weld.api.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-bom</artifactId>
+            <version>${weld.core.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+         <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+            <version>${jsf.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+            <version>${jsf.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+            <version>${testng.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket</artifactId>
+            <version>${wicket.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-int</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>catalina</artifactId>
+            <version>${tomcat.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>jasper</artifactId>
+            <version>${tomcat.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>el-impl</artifactId>
+            <version>${uel.glassfish.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-as-50</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-as-52</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-embedded</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-tomcat</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+
+      </dependencies>
+   </dependencyManagement>
+
+
    
 </project>
