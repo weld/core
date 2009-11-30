@@ -39,8 +39,7 @@ public abstract class AbstractDeploymentContainerEvent extends AbstractContainer
       super.fire();
       if (!getErrors().isEmpty())
       {
-         // FIXME communicate all the captured deployment errors in this exception
-         throw new DeploymentException(getErrors().get(0));
+         throw new DeploymentException(getErrors());
       }
    }
    

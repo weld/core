@@ -38,6 +38,7 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.InvalidObjectException;
+import org.jboss.weld.InvalidOperationException;
 import org.jboss.weld.introspector.ConstructorSignature;
 import org.jboss.weld.introspector.ForwardingWeldConstructor;
 import org.jboss.weld.introspector.WeldClass;
@@ -150,7 +151,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
 
    public void inject(Object declaringInstance, Object value)
    {
-      throw new UnsupportedOperationException();
+      throw new InvalidOperationException();
    }
 
    /**

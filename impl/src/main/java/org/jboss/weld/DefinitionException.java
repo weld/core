@@ -17,6 +17,9 @@
 package org.jboss.weld;
 
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+
+import java.util.List;
+
 import ch.qos.cal10n.IMessageConveyor;
 
 /**
@@ -31,6 +34,8 @@ public class DefinitionException extends RuntimeException
    // Exception messages
    private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
 
+   private String message = null;
+
    public DefinitionException()
    {
       super();
@@ -38,27 +43,60 @@ public class DefinitionException extends RuntimeException
 
    public <E extends Enum<?>> DefinitionException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
+      super();
+      this.message = messageConveyer.getMessage(key, args);
    }
 
    public <E extends Enum<?>> DefinitionException(E key, Throwable throwable, Object... args)
    {
-      super(messageConveyer.getMessage(key, args), throwable);
+      super(throwable);
+      this.message = messageConveyer.getMessage(key, args);
    }
 
    public DefinitionException(String message, Throwable throwable)
    {
-      super(message, throwable);
+      super(throwable);
+      this.message = message;
    }
 
    public DefinitionException(String message)
    {
-      super(message);
+      super();
+      this.message = message;
    }
 
    public DefinitionException(Throwable throwable)
    {
       super(throwable);
+      this.message = throwable.getLocalizedMessage();
+   }
+   
+   public DefinitionException(List<Throwable> errors)
+   {
+      super();
+      StringBuilder errorMessage = new StringBuilder();
+      boolean firstError = true;
+      for (Throwable throwable : errors)
+      {
+         if (!firstError)
+         {
+            errorMessage.append('\n');
+         }
+         errorMessage.append(throwable.getLocalizedMessage());
+      }
+      message = errorMessage.toString();
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message;
    }
    
 }

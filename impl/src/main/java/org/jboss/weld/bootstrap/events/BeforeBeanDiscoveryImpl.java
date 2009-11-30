@@ -23,6 +23,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.InvalidOperationException;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -68,7 +69,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
 
    public void addStereotype(Class<? extends Annotation> stereotype, Annotation... stereotypeDef)
    {
-      throw new UnsupportedOperationException();
+      throw new InvalidOperationException();
    }
 
    public void addAnnotatedType(AnnotatedType<?> type)

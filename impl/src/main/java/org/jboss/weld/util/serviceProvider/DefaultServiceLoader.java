@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.util.serviceProvider;
 
+import static org.jboss.weld.logging.messages.UtilMessage.DECLARED_EXTENSION_DOES_NOT_IMPLEMENT_EXTENSION;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +29,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.jboss.weld.ForbiddenStateException;
+import org.jboss.weld.InvalidOperationException;
 import org.jboss.weld.util.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +133,7 @@ public class DefaultServiceLoader<S> implements Iterable<S>
     */
    public static <S> DefaultServiceLoader<S> loadInstalled(Class<S> service)
    {
-      throw new UnsupportedOperationException();
+      throw new InvalidOperationException();
    }
    
    private final String serviceFile;
@@ -206,7 +210,7 @@ public class DefaultServiceLoader<S> implements Iterable<S>
                            }
                            catch (ClassCastException e)
                            {
-                              throw new IllegalStateException("Extension " + line + " does not implement Extension");
+                              throw new ForbiddenStateException(DECLARED_EXTENSION_DOES_NOT_IMPLEMENT_EXTENSION, line);
                            }
                            Constructor<? extends S> constructor = Reflections.ensureAccessible(serviceClass.getConstructor());
                            S instance = constructor.newInstance();

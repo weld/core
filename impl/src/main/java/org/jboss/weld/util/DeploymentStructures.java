@@ -1,8 +1,11 @@
 package org.jboss.weld.util;
 
+import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_BEAN_DEPLOYMENT_ARCHIVE;
+
 import java.util.Map;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -17,7 +20,7 @@ public class DeploymentStructures
       BeanDeploymentArchive beanDeploymentArchive = deployment.loadBeanDeploymentArchive(clazz);
       if (beanDeploymentArchive == null)
       {
-         throw new IllegalStateException("Unable to find Bean Deployment Archive for " + clazz);
+         throw new ForbiddenStateException(UNABLE_TO_FIND_BEAN_DEPLOYMENT_ARCHIVE, clazz);
       }
       else
       {

@@ -34,7 +34,7 @@ public class WeldException extends RuntimeException
 
    public WeldException(Throwable throwable)
    {
-      super(throwable);
+      super(throwable.getLocalizedMessage(), throwable);
    }
 
    public <E extends Enum<?>> WeldException(E key, Object... args)

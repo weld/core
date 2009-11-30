@@ -23,6 +23,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
+import org.jboss.weld.ForbiddenStateException;
+
 import com.google.common.collect.ForwardingMap;
 
 /**
@@ -180,7 +182,7 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
       }
       else
       {
-         throw new IllegalStateException(e.getCause());
+         throw new ForbiddenStateException(e.getCause());
       }
    }
 

@@ -39,8 +39,7 @@ public abstract class AbstractDefinitionContainerEvent extends AbstractContainer
       super.fire();
       if (!getErrors().isEmpty())
       {
-         // FIXME communicate all the captured definition errors in this exception
-         throw new DefinitionException(getErrors().get(0));
+         throw new DefinitionException(getErrors());
       }
    }
    

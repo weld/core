@@ -16,9 +16,14 @@
  */
 package org.jboss.weld.util;
 
+import static org.jboss.weld.logging.messages.UtilMessage.EVENT_TYPE_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+
+import org.jboss.weld.ForbiddenArgumentException;
 
 /**
  * @author pmuir
@@ -41,13 +46,13 @@ public class Observers
       }
       else
       {
-         throw new IllegalArgumentException("Event type " + resolvedType + " is not allowed");
+         throw new ForbiddenArgumentException(EVENT_TYPE_NOT_ALLOWED, resolvedType);
       }
       for (Type type : types)
       {
          if (type instanceof TypeVariable<?>)
          {
-            throw new IllegalArgumentException("Cannot provide an event type parameterized with a type parameter " + resolvedType);
+            throw new ForbiddenArgumentException(TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE, resolvedType);
          }
       }
    }

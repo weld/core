@@ -16,8 +16,11 @@
  */
 package org.jboss.weld.util.dom;
 
+import static org.jboss.weld.logging.messages.UtilMessage.XML_DOM_READONLY;
+
 import java.util.Iterator;
 
+import org.jboss.weld.InvalidOperationException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -46,7 +49,7 @@ public class NodeListIterator implements Iterator<Node>
 
    public void remove()
    {
-      throw new UnsupportedOperationException("XML DOM is readonly");
+      throw new InvalidOperationException(XML_DOM_READONLY);
    }
    
 }

@@ -37,4 +37,9 @@ public class ForbiddenStateException extends IllegalStateException
    {
       super(messageConveyer.getMessage(key, args));
    }
+   
+   public ForbiddenStateException(Throwable cause)
+   {
+      super(cause.getLocalizedMessage(), cause);
+   }
 }

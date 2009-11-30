@@ -25,6 +25,17 @@ import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_POST_CONSTRU
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_PRE_DESTROY_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_POST_CONSTRUCT_METHODS;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_PRE_DESTROY_METHODS;
+import static org.jboss.weld.logging.messages.UtilMessage.AMBIGUOUS_CONSTRUCTOR;
+import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_NOT_QUALIFIER;
+import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_DISPOSAL_METHOD;
+import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_OBSERVER;
+import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_PRODUCER;
+import static org.jboss.weld.logging.messages.UtilMessage.INVALID_QUANTITY_INJECTABLE_FIELDS_AND_INITIALIZER_METHODS;
+import static org.jboss.weld.logging.messages.UtilMessage.QUALIFIER_ON_FINAL_FIELD;
+import static org.jboss.weld.logging.messages.UtilMessage.REDUNDANT_QUALIFIER;
+import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_POST_CONSTRUCT_METHODS;
+import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_PRE_DESTROY_METHODS;
+import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_CONSTRUCTOR;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -57,6 +68,7 @@ import org.jboss.interceptor.model.InterceptionTypeRegistry;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.DefinitionException;
+import org.jboss.weld.ForbiddenArgumentException;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
@@ -192,7 +204,7 @@ public class Beans
       log.trace(FOUND_POST_CONSTRUCT_METHODS, postConstructMethods, type);
       if (postConstructMethods.size() > 1)
       {
-         throw new DefinitionException("Cannot have more than one post construct method annotated with @PostConstruct for " + type);
+         throw new DefinitionException(TOO_MANY_POST_CONSTRUCT_METHODS, type);
       }
       else if (postConstructMethods.size() == 1)
       {
@@ -214,7 +226,7 @@ public class Beans
       {
          // TODO actually this is wrong, in EJB you can have @PreDestroy methods
          // on the superclass, though the CDI spec is silent on the issue
-         throw new DefinitionException("Cannot have more than one pre destroy method annotated with @PreDestroy for " + type);
+         throw new DefinitionException(TOO_MANY_PRE_DESTROY_METHODS, type);
       }
       else if (preDestroyMethods.size() == 1)
       {
@@ -349,15 +361,15 @@ public class Beans
             {
                if (method.getAnnotation(Produces.class) != null)
                {
-                  throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Produces on " + type);
+                  throw new DefinitionException(INITIALIZER_CANNOT_BE_PRODUCER, method, type);
                }
                else if (method.getAnnotatedWBParameters(Disposes.class).size() > 0)
                {
-                  throw new DefinitionException("Initializer method " + method.toString() + " cannot have parameters annotated @Disposes on " + type);
+                  throw new DefinitionException(INITIALIZER_CANNOT_BE_DISPOSAL_METHOD, method, type);
                }
                else if (method.getAnnotatedWBParameters(Observes.class).size() > 0)
                {
-                  throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Observes on " + type);
+                  throw new DefinitionException(INITIALIZER_CANNOT_BE_OBSERVER, method, type);
                }
                else
                {
@@ -433,7 +445,7 @@ public class Beans
       {
          if (annotatedField.isFinal())
          {
-            throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
+            throw new DefinitionException(QUALIFIER_ON_FINAL_FIELD, annotatedField);
          }
          FieldInjectionPoint<?, ?> fieldInjectionPoint = FieldInjectionPoint.of(declaringBean, annotatedField);
          injectableFields.add(fieldInjectionPoint);
@@ -628,7 +640,7 @@ public class Beans
       {
          if (initializerAnnotatedConstructors.size() > 1)
          {
-            throw new DefinitionException("Cannot have more than one constructor annotated with @Initializer for " + type);
+            throw new DefinitionException(AMBIGUOUS_CONSTRUCTOR, type);
          }
       }
       else if (initializerAnnotatedConstructors.size() == 1)
@@ -645,7 +657,7 @@ public class Beans
       
       if (constructor == null)
       {
-         throw new DefinitionException("Cannot determine constructor to use for " + type);
+         throw new DefinitionException(UNABLE_TO_FIND_CONSTRUCTOR, type);
       }
       else
       {
@@ -732,7 +744,7 @@ public class Beans
    {
       if (injectableFields.size() != initializerMethods.size())
       {
-         throw new IllegalArgumentException("injectableFields and initializerMethods must have the same size. InjectableFields: " + injectableFields + "; InitializerMethods: " + initializerMethods);  
+         throw new ForbiddenArgumentException(INVALID_QUANTITY_INJECTABLE_FIELDS_AND_INITIALIZER_METHODS, injectableFields, initializerMethods);  
       }
       for (int i = 0; i < injectableFields.size(); i++)
       {
@@ -773,11 +785,11 @@ public class Beans
       {
          if (!Container.instance().deploymentServices().get(MetaAnnotationStore.class).getBindingTypeModel(qualifier.annotationType()).isValid())
          {
-            throw new IllegalArgumentException("Annotation is not a qualifier. Qualifier: " + qualifier);
+            throw new ForbiddenArgumentException(ANNOTATION_NOT_QUALIFIER, qualifier);
          }
          if (checkedNewQualifiers.contains(qualifier))
          {
-            throw new IllegalArgumentException("Qualifier is already present. Qualifier: " + qualifier + "; All qualifiers: " + Arrays.asList(newQualifiers));
+            throw new ForbiddenArgumentException(REDUNDANT_QUALIFIER, qualifier, Arrays.asList(newQualifiers));
          }
          checkedNewQualifiers.add(qualifier);
       }

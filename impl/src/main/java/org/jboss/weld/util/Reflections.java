@@ -18,6 +18,11 @@ package org.jboss.weld.util;
 
 import static org.jboss.weld.logging.Category.UTIL;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_CONSTRUCTOR;
+import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
+import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_VALUES_INACCESSIBLE;
+import static org.jboss.weld.logging.messages.UtilMessage.ERROR_INVOKING_METHOD;
+import static org.jboss.weld.logging.messages.UtilMessage.NO_SUCH_METHOD;
 import static org.jboss.weld.logging.messages.UtilMessage.SECURITY_EXCEPTION_SCANNING;
 
 import java.beans.Introspector;
@@ -45,6 +50,8 @@ import java.util.Set;
 import javax.inject.Qualifier;
 
 import org.jboss.weld.DeploymentException;
+import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.WeldException;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
@@ -443,7 +450,7 @@ public class Reflections
       }
       catch (Exception e)
       {
-         throw new RuntimeException("Error accessing constructor (with parameters " + Arrays.toString(parameterTypes) + ") of " + clazz, e);
+         throw new WeldException(ACCESS_ERROR_ON_CONSTRUCTOR, e, clazz);
       }
    }
 
@@ -529,15 +536,15 @@ public class Reflections
       }
       catch (IllegalArgumentException e)
       {
-         throw new RuntimeException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new WeldException(ERROR_INVOKING_METHOD, e, method.getName(), method.getDeclaringClass());
       }
       catch (IllegalAccessException e)
       {
-         throw new RuntimeException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new WeldException(ERROR_INVOKING_METHOD, e, method.getName(), method.getDeclaringClass());
       }
       catch (InvocationTargetException e)
       {
-         throw new RuntimeException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new WeldException(ERROR_INVOKING_METHOD, e, method.getName(), method.getDeclaringClass());
       }
    }
 
@@ -554,11 +561,11 @@ public class Reflections
       }
       catch (SecurityException e)
       {
-         throw new RuntimeException("Error invoking method " + methodName + " on " + instance.getClass(), e);
+         throw new WeldException(ERROR_INVOKING_METHOD, e, methodName, instance.getClass());
       }
       catch (NoSuchMethodException e)
       {
-         throw new RuntimeException("Error invoking method " + methodName + " on " + instance.getClass(), e);
+         throw new WeldException(ERROR_INVOKING_METHOD, e, methodName, instance.getClass());
       }
    }
 
@@ -577,11 +584,11 @@ public class Reflections
       }
       catch (IllegalArgumentException e)
       {
-         throw new RuntimeException("Error getting field " + field.getName() + " on " + field.getDeclaringClass(), e);
+         throw new WeldException(ACCESS_ERROR_ON_FIELD, e, field.getName(), field.getDeclaringClass());
       }
       catch (IllegalAccessException e)
       {
-         throw new RuntimeException("Error getting field " + field.getName() + " on " + field.getDeclaringClass(), e);
+         throw new WeldException(ACCESS_ERROR_ON_FIELD, e, field.getName(), field.getDeclaringClass());
       }
    }
 
@@ -593,11 +600,11 @@ public class Reflections
       }
       catch (SecurityException e)
       {
-         throw new RuntimeException("Error getting field " + fieldName + " on " + target.getClass(), e);
+         throw new WeldException(ACCESS_ERROR_ON_FIELD, e, fieldName, target.getClass());
       }
       catch (NoSuchFieldException e)
       {
-         throw new RuntimeException("Error getting field " + fieldName + " on " + target.getClass(), e);
+         throw new WeldException(ACCESS_ERROR_ON_FIELD, e, fieldName, target.getClass());
       }
    }
 
@@ -617,7 +624,7 @@ public class Reflections
       }
       catch (NoSuchMethodException e)
       {
-         throw new IllegalArgumentException(e);
+         throw new ForbiddenArgumentException(e);
       }
    }
 
@@ -663,7 +670,7 @@ public class Reflections
             // Expected, nothing to see here.
          }
       }
-      throw new NoSuchMethodException("Method " + methodName + Arrays.asList(parameterTypes).toString().replace("[", "(").replace("]", ")") + " not implemented by instance " + c.getName());
+      throw new WeldException(NO_SUCH_METHOD, methodName + Arrays.asList(parameterTypes).toString().replace("[", "(").replace("]", ")"), c.getName());
    }
 
    /**
@@ -1067,7 +1074,7 @@ public class Reflections
       }
       catch (Exception e)
       {
-         throw new DeploymentException("Cannot access values() on annotation", e);
+         throw new DeploymentException(ANNOTATION_VALUES_INACCESSIBLE, e);
       }
    }
 

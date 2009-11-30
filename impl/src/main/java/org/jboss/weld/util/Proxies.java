@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.util;
 
+import static org.jboss.weld.logging.messages.UtilMessage.CANNOT_PROXY_NON_CLASS_TYPE;
+import static org.jboss.weld.logging.messages.UtilMessage.INSTANCE_NOT_A_PROXY;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -27,6 +30,8 @@ import java.util.Set;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
+
+import org.jboss.weld.ForbiddenArgumentException;
 
 /**
  * Utilties for working with Javassist proxies
@@ -109,7 +114,7 @@ public class Proxies
          }
          else
          {
-            throw new IllegalArgumentException("Cannot proxy non-Class Type " + type);
+            throw new ForbiddenArgumentException(CANNOT_PROXY_NON_CLASS_TYPE, type);
          }
          return this;
       }
@@ -257,7 +262,7 @@ public class Proxies
       }
       else
       {
-         throw new IllegalArgumentException("Instance not a proxy. Instance: " + instance);
+         throw new ForbiddenArgumentException(INSTANCE_NOT_A_PROXY, instance);
       }
       
    }

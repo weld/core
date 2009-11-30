@@ -34,6 +34,11 @@ public class ForbiddenArgumentException extends IllegalArgumentException
    // Exception messages
    private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
 
+   public ForbiddenArgumentException(Throwable throwable)
+   {
+      super(throwable.getLocalizedMessage(), throwable);
+   }
+
    public <E extends Enum<?>> ForbiddenArgumentException(E key, Object... args)
    {
       super(messageConveyer.getMessage(key, args));

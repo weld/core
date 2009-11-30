@@ -16,7 +16,11 @@
  */
 package org.jboss.weld.injection;
 
-import java.io.InvalidObjectException;
+import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_READ_OBJECT;
+import static org.jboss.weld.logging.messages.BeanMessage.IP_NOT_CONSTRUCTOR_OR_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.PARAM_NOT_IN_PARAM_LIST;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -32,6 +36,9 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.ForbiddenStateException;
+import org.jboss.weld.InvalidObjectException;
+import org.jboss.weld.InvalidOperationException;
 import org.jboss.weld.introspector.ConstructorSignature;
 import org.jboss.weld.introspector.ForwardingWeldParameter;
 import org.jboss.weld.introspector.MethodSignature;
@@ -84,7 +91,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
 
    public void inject(Object declaringInstance, Object value)
    {
-      throw new UnsupportedOperationException();
+      throw new InvalidOperationException();
    }
 
    @SuppressWarnings("unchecked")
@@ -128,7 +135,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
    
    private void readObject(ObjectInputStream stream) throws InvalidObjectException
    {
-      throw new InvalidObjectException("Proxy required");
+      throw new InvalidObjectException(PROXY_REQUIRED);
    }
    
    private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Object>
@@ -156,7 +163,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
          }
          else
          {
-            throw new IllegalStateException("Cannot handle injection point as neither constructor or method. Injection Point: " + injectionPoint);
+            throw new ForbiddenStateException(IP_NOT_CONSTRUCTOR_OR_METHOD, injectionPoint);
          }
       }
       
@@ -181,7 +188,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
             }
             else
             {
-               throw new IllegalStateException("Parameter not in list. Parameter position: " + parameterPosition + "; Parameters: " + method.getParameters());
+               throw new ForbiddenStateException(PARAM_NOT_IN_PARAM_LIST, parameterPosition, method.getParameters());
             }
          }
          else if (constructorSignature != null)
@@ -198,12 +205,12 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
             }
             else
             {
-               throw new IllegalStateException("Parameter not in list. Parameter position: " + parameterPosition + "; Parameters: " + constructor.getParameters());
+               throw new ForbiddenStateException(PARAM_NOT_IN_PARAM_LIST, parameterPosition, constructor.getParameters());
             }
          }
          else
          {
-            throw new IllegalStateException("Cannot read object");
+            throw new ForbiddenStateException(CANNOT_READ_OBJECT);
          }
          
       }

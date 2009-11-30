@@ -33,8 +33,8 @@ import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
 import org.jboss.interceptor.registry.InterceptorClassMetadataRegistry;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DeploymentException;
+import org.jboss.weld.WeldException;
 import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.util.Beans;
 
 /**
@@ -83,7 +83,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
          return new DirectClassInterceptionHandler(instance, getType()).invoke(ctx.getTarget(), org.jboss.interceptor.model.InterceptionType.valueOf(type.name()), ctx);
       } catch (Exception e)
       {
-         throw new RuntimeException(e);
+         throw new WeldException(e);
       }
    }
 
