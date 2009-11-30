@@ -57,6 +57,8 @@ import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
 
+import ch.qos.cal10n.IMessageConveyor;
+
 /**
  * Utility class for static reflection-type operations
  * 
@@ -68,6 +70,9 @@ public class Reflections
 
    private static final LocLogger log = loggerFactory().getLogger(UTIL);
    private static final XLogger xLog = loggerFactory().getXLogger(UTIL);
+
+   // Exception messages
+   private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
 
    public static final Type[] EMPTY_TYPES = {};
 
@@ -563,7 +568,7 @@ public class Reflections
       {
          throw new WeldException(ERROR_INVOKING_METHOD, e, methodName, instance.getClass());
       }
-      catch (NoSuchMethodException e)
+      catch (java.lang.NoSuchMethodException e)
       {
          throw new WeldException(ERROR_INVOKING_METHOD, e, methodName, instance.getClass());
       }
@@ -670,7 +675,7 @@ public class Reflections
             // Expected, nothing to see here.
          }
       }
-      throw new WeldException(NO_SUCH_METHOD, methodName + Arrays.asList(parameterTypes).toString().replace("[", "(").replace("]", ")"), c.getName());
+      throw new NoSuchMethodException(messageConveyer.getMessage(NO_SUCH_METHOD, methodName + Arrays.asList(parameterTypes).toString().replace("[", "(").replace("]", ")"), c.getName()));
    }
 
    /**
