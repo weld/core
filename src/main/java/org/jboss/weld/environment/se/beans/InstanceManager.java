@@ -33,7 +33,7 @@ public class InstanceManager
 {
 
    @Inject Instance<Object> instances;
-   @Inject Instance<Event> events;
+   @Inject Event<Object> events;
 
    public InstanceManager()
    {
@@ -44,7 +44,7 @@ public class InstanceManager
       return instances;
    }
 
-   public Instance<Event> getEvents()
+   public Event<Object> getEvents()
    {
       return events;
    }

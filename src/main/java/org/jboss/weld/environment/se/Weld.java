@@ -89,7 +89,7 @@ public class Weld
       return instanceManager.getInstances();
    }
 
-   public Instance<Event> event()
+   public Event<Object> event()
    {
       return instanceManager.getEvents();
    }

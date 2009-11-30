@@ -65,9 +65,7 @@ public class WeldMainTest
       ObserverTestBean.reset();
 
       Weld weld = new Weld().initialize();
-      weld.getBeanManager().fireEvent(new CustomEvent());
-//      TODO(PR): this should work. What's with the compile error?
-//      weld.event().select(CustomEvent.class).fire(new CustomEvent());
+      weld.event().select(CustomEvent.class).fire(new CustomEvent());
 
       Assert.assertTrue(ObserverTestBean.isBuiltInObserved());
       Assert.assertTrue(ObserverTestBean.isCustomObserved());
