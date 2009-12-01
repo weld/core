@@ -16,19 +16,24 @@
  */
 package org.jboss.weld.xml;
 
+import static org.jboss.weld.logging.messages.XmlMessage.CANNOT_LOAD_CLASS;
+import static org.jboss.weld.logging.messages.XmlMessage.CONFIGURATION_ERROR;
+import static org.jboss.weld.logging.messages.XmlMessage.LOAD_ERROR;
+import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_ALTERNATIVES;
+import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_DECORATORS;
+import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_INTERCEPTORS;
+import static org.jboss.weld.logging.messages.XmlMessage.PARSING_ERROR;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import javax.enterprise.inject.InjectionException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.interceptor.Interceptor;
 
 import org.jboss.weld.DeploymentException;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -122,7 +127,7 @@ public class BeansXmlParser
       }
       catch (ParserConfigurationException e)
       {
-         throw new InjectionException("Error configuring XML parser", e);
+         throw new WeldXmlException(CONFIGURATION_ERROR, e);
       }
       List<XmlElement> policiesElements = new ArrayList<XmlElement>(); 
       List<XmlElement> decoratorsElements = new ArrayList<XmlElement>(); 
@@ -138,7 +143,7 @@ public class BeansXmlParser
          }
          catch (IOException e)
          {
-            throw new InjectionException("Error loading beans.xml " + url.toString(), e);
+            throw new WeldXmlException(LOAD_ERROR, e, url.toString());
          }
          if (fileHasContents)
          {
@@ -150,11 +155,11 @@ public class BeansXmlParser
             }
             catch (SAXException e)
             {
-               throw new DeploymentException("Error parsing beans.xml " + url.toString(), e);
+               throw new DeploymentException(PARSING_ERROR, e, url.toString());
             }
             catch (IOException e)
             {
-               throw new DeploymentException("Error loading beans.xml " + url.toString(), e);
+               throw new DeploymentException(LOAD_ERROR, e, url.toString());
             }
             Element beans = document.getDocumentElement();
             for (Node child : new NodeListIterable(beans.getChildNodes()))
@@ -178,7 +183,7 @@ public class BeansXmlParser
       
       if (policiesElements.size() > 1)
       {
-         throw new DeploymentException("<alternatives> can only be specified once, but it is specified muliple times " + policiesElements);
+         throw new DeploymentException(MULTIPLE_ALTERNATIVES, policiesElements);
       }
       else if (policiesElements.size() == 1)
       {
@@ -189,7 +194,7 @@ public class BeansXmlParser
       
       if (decoratorsElements.size() > 1)
       {
-         throw new DeploymentException("<decorator> can only be specified once, but it is specified muliple times " + decoratorsElements);
+         throw new DeploymentException(MULTIPLE_DECORATORS, decoratorsElements);
       }
       else if (decoratorsElements.size() == 1)
       {
@@ -199,7 +204,7 @@ public class BeansXmlParser
       
       if (interceptorsElements.size() > 1)
       {
-         throw new DeploymentException("<interceptor> can only be specified once, but it is specified muliple times " + interceptorsElements);
+         throw new DeploymentException(MULTIPLE_INTERCEPTORS, interceptorsElements);
       }
       else if (interceptorsElements.size() == 1)
       {
@@ -230,7 +235,7 @@ public class BeansXmlParser
             }
             catch (ResourceLoadingException e)
             {
-               throw new DeploymentException("Cannot load class " + className + " defined in " + element.getFile().toString());
+               throw new DeploymentException(CANNOT_LOAD_CLASS, className, element.getFile());
             }
          }
       }
@@ -263,7 +268,7 @@ public class BeansXmlParser
             }
             catch (ResourceLoadingException e)
             {
-               throw new DeploymentException("Cannot load class " + className + " defined in " + element.getFile().toString());
+               throw new DeploymentException(CANNOT_LOAD_CLASS, className, element.getFile());
             }
          }
       }
@@ -287,7 +292,7 @@ public class BeansXmlParser
             }
             catch (ResourceLoadingException e)
             {
-               throw new DeploymentException("Cannot load class " + className + " defined in " + element.getFile().toString());
+               throw new DeploymentException(CANNOT_LOAD_CLASS, className, element.getFile());
             }
          }
       }
