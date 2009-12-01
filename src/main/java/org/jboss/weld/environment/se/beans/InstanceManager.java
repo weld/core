@@ -19,14 +19,14 @@ package org.jboss.weld.environment.se.beans;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
 
 /**
  * A managed bean which holds all of the injected instances of managed beans and
- * events. It is primarily used as a delegate for the Weld class's instance()
+ * events. It is primarily used as a delegate for the WeldContainer class's instance()
  * and event() methods.
  * 
- * @see Weld
+ * @see WeldContainer
  * @author Peter Royle
  */
 public class InstanceManager

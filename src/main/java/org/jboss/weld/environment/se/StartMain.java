@@ -16,13 +16,12 @@
  */
 package org.jboss.weld.environment.se;
 
-import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 
 /**
  * This is the main class that should always be called from the command line for
- * a Weld SE app. Something like: <code>
+ * a WeldContainer SE app. Something like: <code>
  * java -jar MyApp.jar org.jboss.weld.environment.se.StarMain arguments
  * </code>
  * 
@@ -39,12 +38,11 @@ public class StartMain
         PARAMETERS = commandLineArgs;
     }
 
-    public BeanManager go()
+    public WeldContainer go()
     {
-        Weld weld = new Weld().initialize();
-
-        weld.getBeanManager().fireEvent(new ContainerInitialized());
-        return weld.getBeanManager();
+        WeldContainer weld = new Weld().initialize();
+        weld.event().select(ContainerInitialized.class).fire(new ContainerInitialized());
+        return weld;
     }
 
     /**

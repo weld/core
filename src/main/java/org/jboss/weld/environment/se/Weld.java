@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.environment.se;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -31,13 +28,13 @@ import org.jboss.weld.environment.se.util.WeldManagerUtils;
 import org.jboss.weld.manager.api.WeldManager;
 
 /**
- * An alternative means of booting Weld form an arbitrary main method within an
+ * An alternative means of booting WeldContainer form an arbitrary main method within an
  * SE application, <em>without</em> using the built-in ContainerInitialized event.
- * Typical usage of the API looks like this:
+ * Typical usage of this API looks like this:
  * <code>
- * Weld weld = new Weld().initialize();
+ * WeldContainer weld = new Weld().initialize();
  * weld.instance().select(Foo.class).get();
- * weld.event().select(Bar.class).fire( new Bar() );
+ * weld.event().select(Bar.class).fire(new Bar());
  * weld.shutdown();
  * </code>
  *
@@ -50,7 +47,6 @@ public class Weld
    private final Bootstrap bootstrap;
    private final BeanStore applicationBeanStore;
    private WeldManager manager;
-   private InstanceManager instanceManager;
 
    public Weld()
    {
@@ -64,7 +60,11 @@ public class Weld
       this.applicationBeanStore = new ConcurrentHashMapBeanStore();
    }
 
-   public Weld initialize()
+   /**
+    * Boots Weld and creates and returns a WeldContainer instance, through which
+    * beans and events can be accesed.
+    */
+   public WeldContainer initialize()
    {
 
       SEWeldDeployment deployment = new SEWeldDeployment()
@@ -79,30 +79,17 @@ public class Weld
       bootstrap.validateBeans();
       bootstrap.endInitialization();
 
-      instanceManager = WeldManagerUtils.getInstanceByType(manager, InstanceManager.class);
+      InstanceManager instanceManager = WeldManagerUtils.getInstanceByType(manager, InstanceManager.class);
 
-      return this;
-   }
+      return new WeldContainer(instanceManager, manager);
 
-   public Instance<Object> instance()
-   {
-      return instanceManager.getInstances();
-   }
-
-   public Event<Object> event()
-   {
-      return instanceManager.getEvents();
-   }
-
-   public BeanManager getBeanManager()
-   {
-      return manager;
    }
 
    /**
     * Convenience method for shutting down the container.
     */
-   public void shutdown() {
+   public void shutdown()
+   {
       WeldManagerUtils.getInstanceByType(manager, ShutdownManager.class).shutdown();
    }
 }

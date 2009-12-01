@@ -20,6 +20,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.events.Shutdown;
 import org.jboss.weld.environment.se.test.beans.CustomEvent;
 import org.jboss.weld.environment.se.test.beans.InitObserverTestBean;
@@ -37,13 +38,13 @@ public class WeldMainTest
 {
 
    /**
-    * Test the alternate API for boting Weld from an SE app.
+    * Test the alternate API for boting WeldContainer from an SE app.
     */
    @Test
    public void testInitialize()
    {
 
-      Weld weld = new Weld().initialize();
+      WeldContainer weld = new Weld().initialize();
 
       MainTestBean mainTestBean = weld.instance().select(MainTestBean.class).get();
       Assert.assertNotNull(mainTestBean);
@@ -56,7 +57,7 @@ public class WeldMainTest
    }
 
    /**
-    * Test the firing of observers using the alternate API for boting Weld from an SE app.
+    * Test the firing of observers using the alternate API for boting WeldContainer from an SE app.
     */
    @Test
    public void testObservers()
@@ -64,7 +65,8 @@ public class WeldMainTest
       InitObserverTestBean.reset();
       ObserverTestBean.reset();
 
-      Weld weld = new Weld().initialize();
+
+      WeldContainer weld = new Weld().initialize();
       weld.event().select(CustomEvent.class).fire(new CustomEvent());
 
       Assert.assertTrue(ObserverTestBean.isBuiltInObserved());

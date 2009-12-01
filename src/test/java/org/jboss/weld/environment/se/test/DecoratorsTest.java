@@ -19,7 +19,8 @@ package org.jboss.weld.environment.se.test;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 
-import org.jboss.weld.environment.se.StartMain;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.events.Shutdown;
 import org.jboss.weld.environment.se.test.decorators.CarDoor;
 import org.jboss.weld.environment.se.test.decorators.Door;
@@ -36,19 +37,16 @@ import org.testng.annotations.Test;
 public class DecoratorsTest
 {
 
-    public static String[] ARGS_EMPTY = new String[]
-    {
-    };
-
     /**
      * Test that decorators work as expected in SE.
      */
     @Test
     public void testDecorators()
     {
-        String[] args = ARGS_EMPTY;
-        BeanManager manager = new StartMain(args).go();
 
+        WeldContainer weld = new Weld().initialize();
+        BeanManager manager = weld.getBeanManager();
+       
         CarDoor carDoor = WeldManagerUtils.getInstanceByType(manager, CarDoor.class);
         Assert.assertNotNull(carDoor);
 

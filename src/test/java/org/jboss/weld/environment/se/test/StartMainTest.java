@@ -20,6 +20,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.weld.environment.se.StartMain;
+import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.events.Shutdown;
 import org.jboss.weld.environment.se.test.beans.CustomEvent;
 import org.jboss.weld.environment.se.test.beans.InitObserverTestBean;
@@ -49,7 +50,9 @@ public class StartMainTest
    public void testMain()
    {
       String[] args = ARGS;
-      BeanManager manager = new StartMain(args).go();
+
+      WeldContainer weld = new StartMain(args).go();
+      BeanManager manager = weld.getBeanManager();
 
       MainTestBean mainTestBean = WeldManagerUtils.getInstanceByType(manager, MainTestBean.class);
       Assert.assertNotNull(mainTestBean);
@@ -74,7 +77,8 @@ public class StartMainTest
    @Test
    public void testMainEmptyArgs()
    {
-      BeanManager manager = new StartMain(ARGS_EMPTY).go();
+      WeldContainer weld = new StartMain(ARGS_EMPTY).go();
+      BeanManager manager = weld.getBeanManager();
 
       MainTestBean mainTestBean = WeldManagerUtils.getInstanceByType(manager, MainTestBean.class);
       Assert.assertNotNull(mainTestBean);
@@ -92,7 +96,8 @@ public class StartMainTest
       InitObserverTestBean.reset();
       ObserverTestBean.reset();
 
-      BeanManager manager = new StartMain(ARGS_EMPTY).go();
+      WeldContainer weld = new StartMain(ARGS_EMPTY).go();
+      BeanManager manager = weld.getBeanManager();
       manager.fireEvent(new CustomEvent());
 
       Assert.assertTrue(ObserverTestBean.isBuiltInObserved());

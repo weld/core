@@ -19,7 +19,8 @@ package org.jboss.weld.environment.se.test;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 
-import org.jboss.weld.environment.se.StartMain;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.events.Shutdown;
 import org.jboss.weld.environment.se.test.beans.InterceptorTestBean;
 import org.jboss.weld.environment.se.test.interceptors.AggregatingInterceptor;
@@ -35,18 +36,14 @@ import org.testng.annotations.Test;
 public class InterceptorsTest
 {
 
-    public static String[] ARGS_EMPTY = new String[]
-    {
-    };
-
     /**
      * Test that interceptors work as expected in SE.
      */
     @Test
     public void testInterceptors()
     {
-        String[] args = ARGS_EMPTY;
-        BeanManager manager = new StartMain(args).go();
+        WeldContainer weld = new Weld().initialize();
+        BeanManager manager = weld.getBeanManager();
 
         InterceptorTestBean intTestBean = WeldManagerUtils.getInstanceByType(manager, InterceptorTestBean.class);
         Assert.assertNotNull(intTestBean);
