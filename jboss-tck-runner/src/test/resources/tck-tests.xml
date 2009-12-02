@@ -21,20 +21,10 @@
          <package name="org.jboss.jsr299.tck.interceptors.tests.*" />
       </packages>
       <classes>
-         <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.interceptorWithNonPassivatingInjectedField.PassivationCapableBeanWithNonPassivatingInterceptorTest">
+         <!-- JBoss AS 6.0.0.M1 is still using EJB 3.0 Interceptor API - JBAS-7421 -->
+         <class name="org.jboss.jsr299.tck.interceptors.tests.invocationContext.InvocationContextTest">
             <methods>
-               <exclude name="testPassivationCapableBeanWithNonPassivatingInterceptorFails" />
-            </methods>   
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.managedBeanWithNonSerializableInterceptorClass.ManagedBeanWithNonSerializableInterceptorClassTest">
-            <methods>
-               <exclude name="testManagedBeanWithNonSerializableInterceptorClassNotOK" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.policy.PolicyAvailabilityTest">
-            <methods>
-               <exclude name="testProducerPoliciesOnClass" />
-               <exclude name="testProducerPoliciesOnMethodAndField"  />
+               <exclude name="testGetTimerMethod" />
             </methods>
          </class>
       </classes>
