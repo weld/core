@@ -53,7 +53,7 @@ PaymentService paymentService;]]></programlisting>
             
             <para>It might feel strange to be declaring resources in Java code. Isn't this stuff that might be
             deployment-specific? Certainly, and that's why it makes sense to declare your resources in a class
-            annotation <literal>@Alternative</literal>.</para>
+            annotated <literal>@Alternative</literal>.</para>
 
          </section>
          
