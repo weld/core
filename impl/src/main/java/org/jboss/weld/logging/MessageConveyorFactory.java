@@ -9,7 +9,7 @@ import ch.qos.cal10n.IMessageConveyor;
 public abstract class MessageConveyorFactory
 {
    
-   private static MessageConveyorFactory INSTANCE = load();
+   private static MessageConveyorFactory INSTANCE;
    
    private static MessageConveyorFactory load()
    {
@@ -29,7 +29,16 @@ public abstract class MessageConveyorFactory
    
    public static MessageConveyorFactory messageConveyerFactory()
    {
+      if (INSTANCE == null)
+      {
+         INSTANCE = load();
+      }
       return INSTANCE;
+   }
+   
+   public static void cleanup()
+   {
+      INSTANCE = null;
    }
    
    public static IMessageConveyor defaultMessageConveyer(String subsystem)

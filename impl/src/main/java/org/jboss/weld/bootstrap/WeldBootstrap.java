@@ -46,6 +46,7 @@ import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.Validator;
 import org.jboss.weld.Container.Status;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
+import org.jboss.weld.bean.builtin.CallableMethodHandler.CallableMethodHandlerCleaner;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Lifecycle;
@@ -320,6 +321,7 @@ public class WeldBootstrap implements Bootstrap
       services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
       services.add(ContextualStore.class, new ContextualStoreImpl());
       services.add(ServiceLoaderFactory.class, new DefaultServiceLoaderFactory());
+      services.add(CallableMethodHandlerCleaner.class, new CallableMethodHandlerCleaner());
       return services;
    }
    

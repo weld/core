@@ -10,7 +10,12 @@ import ch.qos.cal10n.IMessageConveyor;
 public class LoggerFactory
 {
    
-   private static LoggerFactory INSTANCE = new LoggerFactory("WELD");
+   private static LoggerFactory INSTANCE;
+   
+   public static void cleanup()
+   {
+      INSTANCE = null;
+   }
    
    private final LocLoggerFactory locLoggerFactory;
    private final IMessageConveyor messageConveyor;
@@ -33,6 +38,10 @@ public class LoggerFactory
 
    public static LoggerFactory loggerFactory()
    {
+      if (INSTANCE == null)
+      {
+         INSTANCE = new LoggerFactory("WELD"); 
+      }
       return INSTANCE;
    }
    
