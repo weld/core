@@ -332,22 +332,40 @@ public class Names
    
    public static String version(Package pkg)
    {
-      if (pkg != null)
+      if (pkg == null)
       {
-         String version = pkg.getImplementationVersion();
-         if (version != null)
+         throw new IllegalArgumentException("Package can not be null");
+      }
+      else
+      {
+         return version(pkg.getImplementationVersion());
+      }
+   }
+   
+   public static String version(String version)
+   {  
+      if (version != null)
+      {
+         StringBuilder builder = new StringBuilder();
+         builder.append(version.substring(0, version.indexOf("."))).append(".");
+         version = version.substring(version.indexOf(".") + 1);
+         builder.append(version.substring(0, version.indexOf("."))).append(".");
+         version = version.substring(version.indexOf(".") + 1);
+         if (version.indexOf("-") > 0)
          {
-            String separator = null;
-            if (version.indexOf("-") > 0)
-            {
-               separator = "-";
-            }
-            else
-            {
-               separator = ".";
-            }
-            return new StringBuilder().append(version.substring(0, version.lastIndexOf(separator))).append(" (").append(version.substring(version.lastIndexOf(separator) + 1)).append(")").toString();
+            builder.append(version.substring(0, version.indexOf("-"))).append(" (");
+            builder.append(version.substring(version.indexOf("-") + 1)).append(")");
          }
+         else if (version.indexOf(".") > 0)
+         {
+            builder.append(version.substring(0, version.indexOf("."))).append(" (");
+            builder.append(version.substring(version.indexOf(".") + 1)).append(")");
+         }
+         else
+         {
+            builder.append(version);              
+         }
+         return builder.toString();
       }
       return "SNAPSHOT";
    }
