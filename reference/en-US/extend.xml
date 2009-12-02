@@ -1,6 +1,6 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
    "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
-<!-- This chapter needs *major* filling in; specifically, give an overview of how an extension plugins in -->
+   
 <chapter id="extend">
    <title>Portable extensions</title>
   
@@ -136,16 +136,16 @@ MyBean(MyExtension myExtension) {
       </para>
    
       <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
-      
-   void beforeBeanDiscovery(BeforeBeanDiscovery bbd) {
+   
+   void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd) {
       Logger.global.debug("beginning the scanning process");
    }
       
-   <T> void processAnnotatedType(ProcessAnnotatedType<T> pat) {
+   <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
       Logger.global.debug("scanning type: " + pat.getAnnotatedType().getJavaClass().getName());
    } 
 
-   void afterBeanDiscovery(AfterBeanDiscovery abd) {
+   void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
       Logger.global.debug("finished the scanning process");
    }
    
@@ -158,7 +158,7 @@ MyBean(MyExtension myExtension) {
       
       <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
       
-   <T> void processAnnotatedType(ProcessAnnotatedType<T> pat) {
+   <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
       //tell the container to ignore the type if it is annotated @Ignore
       if ( pat.getAnnotatedType().isAnnotionPresent(Ignore.class) ) pat.veto();   
    } 
@@ -169,7 +169,7 @@ MyBean(MyExtension myExtension) {
          The observer method may inject a <literal>BeanManager</literal>
       </para>
 
-      <programlisting role="JAVA"><![CDATA[<T> void processAnnotatedType(ProcessAnnotatedType<T> pat, BeanManager beanManager) { ... }]]></programlisting>
+      <programlisting role="JAVA"><![CDATA[<T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat, BeanManager beanManager) { ... }]]></programlisting>
 
    </section>
   
@@ -525,7 +525,7 @@ ctx.release();  //clean up dependent objects
       
       <programlisting role="JAVA"><![CDATA[class ServiceAlternativeExtension implements Extension {
       
-   <T> void processAnnotatedType(ProcessAnnotatedType<T> pat) {
+   <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
    
       final AnnotatedType<T> type = pat.getAnnotatedType();
       
@@ -584,7 +584,7 @@ lastName=King</programlisting>
       
       <programlisting role="JAVA"><![CDATA[public class ConfigExtension implements Extension {
 
-	<X> void processInjectionTarget(ProcessInjectionTarget<X> pit) {
+	<X> void processInjectionTarget(@Observes ProcessInjectionTarget<X> pit) {
 		
 		//wrap this to intercept the component lifecycle
 	    final InjectionTarget<X> it = pit.getInjectionTarget();
