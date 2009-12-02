@@ -30,6 +30,26 @@
          <section>
             <title>Defining a resource</title>
             
+            <para>The CDI specification uses the term <emphasis>resource</emphasis> to refer, generically, to any of
+            the following kinds of object which might be available in the Java EE component environment:</para>
+            
+            <itemizedlist>
+               <listitem>
+                  <para>JDBC <literal>Datasource</literal>s, JMS <literal>Queue</literal>s, <literal>Topic</literal>s
+                  and <literal>ConnectionFactory</literal>s, JavaMail <literal>Session</literal>s and other transactional 
+                  resources including JCA connectors,</para>
+               </listitem>
+               <listitem>
+                  <para>JPA <literal>EntityManager</literal>s and <literal>EntityManagerFactory</literal>s,</para>
+               </listitem>
+               <listitem>
+                  <para>remote EJBs, and</para>
+               </listitem>
+               <listitem>
+                  <para>web services</para>
+               </listitem>
+            </itemizedlist>
+            
             <para>We declare a resource by annotating a producer field with a component environment injection
             annotation: <literal>@Resource</literal>, <literal>@EJB</literal>, <literal>@PersistenceContext</literal>,
             <literal>@PersistenceUnit</literal> or <literal>@WebServiceRef</literal>.</para>
@@ -51,9 +71,23 @@ PaymentService paymentService;]]></programlisting>
 
             <para>The field may be static (but not final).</para>
             
-            <para>It might feel strange to be declaring resources in Java code. Isn't this stuff that might be
-            deployment-specific? Certainly, and that's why it makes sense to declare your resources in a class
-            annotated <literal>@Alternative</literal>.</para>
+            <para>A resource declaration really contains two pieces of information:</para>
+            
+            <itemizedlist>
+               <listitem>
+                  <para>the JNDI name, EJB link, persistence unit name, or other metadata needed to obtain a 
+                  reference to the resource from the component environment, and</para>
+               </listitem>
+               <listitem>
+                  <para>the type and qualifiers that we will use to inject the reference into our beans.</para>
+               </listitem>
+            </itemizedlist>
+            
+            <tip>
+               <para>It might feel strange to be declaring resources in Java code. Isn't this stuff that might be
+               deployment-specific? Certainly, and that's why it makes sense to declare your resources in a class
+               annotated <literal>@Alternative</literal>.</para>
+            </tip>
 
          </section>
          
