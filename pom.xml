@@ -58,16 +58,16 @@
          </snapshots>
       </repository>
       <repository>
-        <id>oss.sonatype.org/jboss-snapshots</id>
-        <name>JBoss (Nexus) Snapshots Repository</name>
-        <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
-        <releases>
-          <enabled>false</enabled>
-        </releases>
-        <snapshots>
-          <enabled>true</enabled>
-          <updatePolicy>never</updatePolicy>
-        </snapshots>
+         <id>oss.sonatype.org/jboss-snapshots</id>
+         <name>JBoss (Nexus) Snapshots Repository</name>
+         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
+         <releases>
+            <enabled>false</enabled>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </snapshots>
       </repository>
    </repositories>
    
@@ -144,7 +144,6 @@
       <dependency>
          <groupId>org.jboss.weld</groupId>
          <artifactId>weld-core</artifactId>
-         <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -168,6 +167,25 @@
       </dependency>
    </dependencies>
 
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+               <execution>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>shade</goal>
+                  </goals>
+                  <configuration>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+   
 </project>
 
 
