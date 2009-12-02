@@ -28,7 +28,7 @@ import ch.qos.cal10n.IMessageConveyor;
  * support.
  * 
  * @author David Allen
- *
+ * 
  */
 public class WeldXmlException extends InjectionException
 {
