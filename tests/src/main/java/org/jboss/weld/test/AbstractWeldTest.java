@@ -90,6 +90,12 @@ public abstract class AbstractWeldTest extends AbstractTest
       }
       return annotationTypeList.size() == 0;
    }
+   
+   public boolean typeSetMatches(Set<Type> types, Type... requiredTypes)
+   {
+      List<Type> typeList = Arrays.asList(requiredTypes);
+      return requiredTypes.length == types.size() && types.containsAll(typeList);
+   }
 
    protected Iterable<URL> getResources(String name)
    {

@@ -199,7 +199,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       }
       else
       {
-         this.types = getAnnotatedItem().getTypeClosure();
+         this.types = new HashSet<Type>(getAnnotatedItem().getTypeClosure());
          if (getType().isInterface())
          {
             this.types.add(Object.class);

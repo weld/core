@@ -42,7 +42,6 @@ import java.lang.reflect.WildcardType;
 import java.security.AccessControlException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,6 +56,9 @@ import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
 
 import ch.qos.cal10n.IMessageConveyor;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 /**
  * Utility class for static reflection-type operations
@@ -82,7 +84,7 @@ public class Reflections
 
       private final Type type;
 
-      private Set<Type> typeSet;
+      private BiMap<Type, Class<?>> types;
 
       public HierarchyDiscovery(Type type)
       {
@@ -91,21 +93,30 @@ public class Reflections
 
       protected void add(Class<?> clazz, Type type)
       {
-         typeSet.add(type);
+         types.forcePut(type, clazz);
       }
 
       public Set<Type> getTypeClosure()
       {
-         if (typeSet == null)
+         if (types == null)
          {
             init();
          }
-         return typeSet;
+         return types.keySet();
+      }
+      
+      public Map<Class<?>, Type> getTypeMap()
+      {
+         if (types == null)
+         {
+            init();
+         }
+         return types.inverse();
       }
       
       private void init()
       {
-         this.typeSet = new HashSet<Type>();
+         this.types = HashBiMap.create();
          discoverTypes(type);
       }
 

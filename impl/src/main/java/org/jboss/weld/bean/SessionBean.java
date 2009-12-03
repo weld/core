@@ -73,6 +73,7 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
+import org.jboss.weld.util.Reflections.HierarchyDiscovery;
 
 /**
  * An enterprise bean representation
@@ -206,9 +207,10 @@ public class SessionBean<T> extends AbstractClassBean<T>
    protected void initTypes()
    {
       Map<Class<?>, Type> types = new LinkedHashMap<Class<?>, Type>();
+      
       for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
       {
-         types.put(businessInterfaceDescriptor.getInterface(), businessInterfaceDescriptor.getInterface());
+         types.putAll(new HierarchyDiscovery(businessInterfaceDescriptor.getInterface()).getTypeMap());
       }
       if (getAnnotatedItem().isAnnotationPresent(Typed.class))
       {

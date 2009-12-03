@@ -36,5 +36,4 @@ public class EnterpriseBeanTest extends AbstractWeldTest
       assert false : "Expected a BowlerHatException to be in the cause stack";
    }
    
-   
 }
