@@ -22,6 +22,8 @@ import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM
 import static org.jboss.weld.logging.messages.JsfMessage.IMPROPER_ENVIRONMENT;
 import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
@@ -58,7 +60,15 @@ public class JsfHelper
    {
       if (Container.instance().deploymentServices().get(JsfApiAbstraction.class).isApiVersionCompatibleWith(2.0))
       {
-         return (Boolean) Reflections.invokeAndWrap("isPostback", facesContext);
+         try
+         {
+            return (Boolean) Reflections.invoke("isPostback", facesContext);
+         }
+         catch (Exception e)
+         {
+            // Sorry, guys ;-) --NIK
+            return false;
+         }
       }
       else
       {

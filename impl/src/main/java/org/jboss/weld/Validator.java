@@ -268,7 +268,7 @@ public class Validator implements Service
       validateBeans(manager.getBeans(), new ArrayList<RIBean<?>>(), manager);
       validateEnabledDecoratorClasses(manager);
       validateEnabledInterceptorClasses(manager);
-      validateEnabledPolicies(manager);
+      validateEnabledAlternatives(manager);
       validateDisposalMethods(environment);
       validateBeanNames(manager);
    }
@@ -371,32 +371,32 @@ public class Validator implements Service
    }
 
 
-   private void validateEnabledPolicies(BeanManagerImpl beanManager)
+   private void validateEnabledAlternatives(BeanManagerImpl beanManager)
    {
-      List<Class<?>> seenPolicies = new ArrayList<Class<?>>();
-      for (Class<? extends Annotation> stereotype : beanManager.getEnabledPolicyStereotypes())
+      List<Class<?>> seenAlternatives = new ArrayList<Class<?>>();
+      for (Class<? extends Annotation> stereotype : beanManager.getEnabledAlternativeStereotypes())
       {
          if (!stereotype.isAnnotationPresent(Alternative.class))
          {
-            throw new DeploymentException("Enabled policy sterotype " + stereotype + " is not annotated @Policy");
+            throw new DeploymentException("Enabled alternative sterotype " + stereotype + " is not annotated @Alternative");
          }
-         if (seenPolicies.contains(stereotype))
+         if (seenAlternatives.contains(stereotype))
          {
-            throw new DeploymentException("Cannot enable the same policy sterotype " + stereotype + " in beans.xml");
+            throw new DeploymentException("Cannot enable the same alternative sterotype " + stereotype + " in beans.xml");
          }
-         seenPolicies.add(stereotype);
+         seenAlternatives.add(stereotype);
       }
-      for (Class<?> clazz : beanManager.getEnabledPolicyClasses())
+      for (Class<?> clazz : beanManager.getEnabledAlternativeClasses())
       {
          if (!clazz.isAnnotationPresent(Alternative.class))
          {
-            throw new DeploymentException("Enabled policy bean class " + clazz + " is not annotated @Policy");
+            throw new DeploymentException("Enabled alternative bean class " + clazz + " is not annotated @Alternative");
          }
-         if (seenPolicies.contains(clazz))
+         if (seenAlternatives.contains(clazz))
          {
-            throw new DeploymentException("Cannot enable the same policy bean class " + clazz + " in beans.xml");
+            throw new DeploymentException("Cannot enable the same alternative bean class " + clazz + " in beans.xml");
          }
-         seenPolicies.add(clazz);
+         seenAlternatives.add(clazz);
       }
    }
    

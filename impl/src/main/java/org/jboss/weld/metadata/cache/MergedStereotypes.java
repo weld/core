@@ -36,8 +36,8 @@ public class MergedStereotypes<T, E>
    private final Set<Annotation> possibleScopeTypes;
    // Is the bean name defaulted?
    private boolean beanNameDefaulted;
-   // Are any of the sterotypes policies
-   private boolean policy;
+   // Are any of the sterotypes alternatives
+   private boolean alternative;
    
    private Set<Class<? extends Annotation>> stereotypes;
    
@@ -71,9 +71,9 @@ public class MergedStereotypes<T, E>
          {
             throw new ForbiddenStateException(STEREOTYPE_NOT_REGISTERED, stereotypeAnnotation);
          }
-         if (stereotype.isPolicy())
+         if (stereotype.isAlternative())
          {
-            policy = true;
+            alternative = true;
          }
          if (stereotype.getDefaultScopeType() != null)
          {
@@ -89,9 +89,9 @@ public class MergedStereotypes<T, E>
       }
    }
 
-   public boolean isPolicy()
+   public boolean isAlternative()
    {
-      return policy;
+      return alternative;
    }
 
    /**
@@ -130,8 +130,8 @@ public class MergedStereotypes<T, E>
    @Override
    public String toString()
    {
-     return "Merged stereotype model; Any of the sterotypes is a policy: " + 
-        policy + "; possible scopes " + possibleScopeTypes; 
+     return "Merged stereotype model; Any of the sterotypes is an alternative: " + 
+        alternative + "; possible scopes " + possibleScopeTypes; 
    }
    
 }

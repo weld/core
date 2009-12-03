@@ -12,11 +12,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
 
+import javassist.tools.reflect.Reflection;
 import javassist.util.proxy.MethodHandler;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.NullInstanceException;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.util.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
 public class CallableMethodHandler implements MethodHandler, Serializable
@@ -75,7 +77,7 @@ public class CallableMethodHandler implements MethodHandler, Serializable
       }
       try
       {
-         Object returnValue = proxiedMethod.invoke(instance, args);
+         Object returnValue = Reflections.invoke(proxiedMethod, instance, args);
          log.trace(CALL_PROXIED_METHOD, proxiedMethod, instance, args, returnValue == null ? null : returnValue);
          return returnValue;
       }

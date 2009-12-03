@@ -115,7 +115,7 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
       {
          this.policy = true;
       }
-      else if (getMergedStereotypes().isPolicy())
+      else if (getMergedStereotypes().isAlternative())
       {
          this.policy = true;
       }

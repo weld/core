@@ -237,8 +237,8 @@ public class BeanManagerImpl implements WeldManager, Serializable
     * archive accessibility, and the configuration for this bean deployment
     * archive
     */
-   private transient Collection<Class<?>> enabledPolicyClasses;
-   private transient Collection<Class<? extends Annotation>> enabledPolicyStereotypes;
+   private transient Collection<Class<?>> enabledAlternativeClasses;
+   private transient Collection<Class<? extends Annotation>> enabledAlternativeStereotypes;
    private transient List<Class<?>> enabledDecoratorClasses;
    private transient List<Class<?>> enabledInterceptorClasses;
    private transient final Set<CurrentActivity> currentActivities;   
@@ -402,8 +402,8 @@ public class BeanManagerImpl implements WeldManager, Serializable
             parentManager.getContexts(), 
             parentManager.getCurrentActivities(), 
             parentManager.getSpecializedBeans(),
-            parentManager.getEnabledPolicyClasses(),
-            parentManager.getEnabledPolicyStereotypes(),
+            parentManager.getEnabledAlternativeClasses(),
+            parentManager.getEnabledAlternativeStereotypes(),
             parentManager.getEnabledDecoratorClasses(),
             parentManager.getEnabledInterceptorClasses(),
             new StringBuilder().append(parentManager.getChildIds().incrementAndGet()).toString(),
@@ -429,8 +429,8 @@ public class BeanManagerImpl implements WeldManager, Serializable
          ListMultimap<Class<? extends Annotation>, Context> contexts, 
          Set<CurrentActivity> currentActivities, 
          Map<Contextual<?>, Contextual<?>> specializedBeans, 
-         Collection<Class<?>> enabledPolicyClasses,
-         Collection<Class<? extends Annotation>> enabledPolicyStereotypes,
+         Collection<Class<?>> enabledAlternativeClasses,
+         Collection<Class<? extends Annotation>> enabledAlternativeStereotypes,
          List<Class<?>> enabledDecoratorClasses,
          List<Class<?>> enabledInterceptorClasses,
          String id,
@@ -447,8 +447,8 @@ public class BeanManagerImpl implements WeldManager, Serializable
       this.currentActivities = currentActivities;
       this.specializedBeans = specializedBeans;
       this.observers = observers;
-      this.enabledPolicyClasses = enabledPolicyClasses;
-      this.enabledPolicyStereotypes = enabledPolicyStereotypes;
+      this.enabledAlternativeClasses = enabledAlternativeClasses;
+      this.enabledAlternativeStereotypes = enabledAlternativeStereotypes;
       setEnabledDecoratorClasses(enabledDecoratorClasses);
       setEnabledInterceptorClasses(enabledInterceptorClasses);
       this.namespaces = namespaces;
@@ -687,25 +687,25 @@ public class BeanManagerImpl implements WeldManager, Serializable
    }
 
    /**
-    * A collection of enabled policy classes
+    * A collection of enabled alternative classes
     * 
     */
-   public Collection<Class<?>> getEnabledPolicyClasses()
+   public Collection<Class<?>> getEnabledAlternativeClasses()
    {
-      return Collections.unmodifiableCollection(enabledPolicyClasses);
+      return Collections.unmodifiableCollection(enabledAlternativeClasses);
    }
    
    /**
-    * @return the enabledPolicySterotypes
+    * @return the enabled alternative stereotypes
     */
-   public Collection<Class<? extends Annotation>> getEnabledPolicyStereotypes()
+   public Collection<Class<? extends Annotation>> getEnabledAlternativeStereotypes()
    {
-      return Collections.unmodifiableCollection(enabledPolicyStereotypes);
+      return Collections.unmodifiableCollection(enabledAlternativeStereotypes);
    }
    
    public boolean isBeanEnabled(Bean<?> bean)
    {
-      return Beans.isBeanEnabled(bean, getEnabledPolicyClasses(), getEnabledPolicyStereotypes());   
+      return Beans.isBeanEnabled(bean, getEnabledAlternativeClasses(), getEnabledAlternativeStereotypes());   
    }
 
    /**
@@ -724,14 +724,14 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return Collections.unmodifiableList(enabledInterceptorClasses);
    }
 
-   public void setEnabledPolicyClasses(Collection<Class<?>> enabledPolicyClasses)
+   public void setEnabledAlternativeClasses(Collection<Class<?>> enabledAlternativeClasses)
    {
-      this.enabledPolicyClasses = enabledPolicyClasses;
+      this.enabledAlternativeClasses = enabledAlternativeClasses;
    }
    
-   public void setEnabledPolicyStereotypes(Collection<Class<? extends Annotation>> enabledPolicySterotypes)
+   public void setEnabledAlternativeStereotypes(Collection<Class<? extends Annotation>> enabledAlternativeSterotypes)
    {
-      this.enabledPolicyStereotypes = enabledPolicySterotypes;
+      this.enabledAlternativeStereotypes = enabledAlternativeSterotypes;
    }
    
    public void setEnabledDecoratorClasses(List<Class<?>> enabledDecoratorClasses)
@@ -1167,7 +1167,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Manager\n");
-      buffer.append("Enabled policies: " + getEnabledPolicyClasses() + " " + getEnabledPolicyStereotypes() + "\n");
+      buffer.append("Enabled alternatives: " + getEnabledAlternativeClasses() + " " + getEnabledAlternativeStereotypes() + "\n");
       buffer.append("Registered contexts: " + contexts.keySet() + "\n");
       buffer.append("Registered beans: " + getBeans().size() + "\n");
       buffer.append("Specialized beans: " + specializedBeans.size() + "\n");
@@ -1517,8 +1517,8 @@ public class BeanManagerImpl implements WeldManager, Serializable
       this.decorators.clear();
       this.enabledDecoratorClasses.clear();
       this.enabledInterceptorClasses.clear();
-      this.enabledPolicyClasses.clear();
-      this.enabledPolicyStereotypes.clear();
+      this.enabledAlternativeClasses.clear();
+      this.enabledAlternativeStereotypes.clear();
       this.enterpriseBeans.clear();
       this.interceptorResolver.clear();
       this.interceptors.clear();

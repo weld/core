@@ -535,7 +535,7 @@ public class Beans
     * @param enabledDeploymentTypes The enabled deployment types
     * @return The filtered beans
     */
-   public static <T extends Bean<?>> Set<T> retainEnabledPolicies(Set<T> beans, Collection<Class<?>> enabledPolicyClasses, Collection<Class<? extends Annotation>> enabledPolicySterotypes)
+   public static <T extends Bean<?>> Set<T> retainEnabledAlternatives(Set<T> beans, Collection<Class<?>> enabledAlternativeClasses, Collection<Class<? extends Annotation>> enabledAlternativeSterotypes)
    {
       if (beans.size() == 0)
       {
@@ -546,7 +546,7 @@ public class Beans
          Set<T> enabledBeans = new HashSet<T>();
          for (T bean : beans)
          {
-            if (isBeanEnabled(bean, enabledPolicyClasses, enabledPolicySterotypes))
+            if (isBeanEnabled(bean, enabledAlternativeClasses, enabledAlternativeSterotypes))
             {
                enabledBeans.add(bean);
             }
@@ -555,11 +555,11 @@ public class Beans
       }
    }
    
-   public static boolean isBeanEnabled(Bean<?> bean, Collection<Class<?>> enabledPolicyClasses, Collection<Class<? extends Annotation>> enabledPolicySterotypes)
+   public static boolean isBeanEnabled(Bean<?> bean, Collection<Class<?>> enabledAlternativeClasses, Collection<Class<? extends Annotation>> enabledAlternativeSterotypes)
    {
       if (bean.isAlternative())
       {
-         if (enabledPolicyClasses.contains(bean.getBeanClass()))
+         if (enabledAlternativeClasses.contains(bean.getBeanClass()))
          {
             return true;
          }
@@ -567,7 +567,7 @@ public class Beans
          {
             for (Class<? extends Annotation> stereotype : bean.getStereotypes())
             {
-               if (enabledPolicySterotypes.contains(stereotype))
+               if (enabledAlternativeSterotypes.contains(stereotype))
                {
                   return true;
                }
@@ -582,12 +582,12 @@ public class Beans
    }
    
    /**
-    * Check if any of the beans is a policy
+    * Check if any of the beans is an alternative
     * 
     * @param beans
     * @return
     */
-   public static <X> boolean isPolicyPresent(Set<Bean<? extends X>> beans)
+   public static <X> boolean isAlternativePresent(Set<Bean<? extends X>> beans)
    {
       for (Bean<?> bean : beans)
       {
@@ -607,7 +607,7 @@ public class Beans
       }
       else
       {
-         return mergedStereotypes.isPolicy();
+         return mergedStereotypes.isAlternative();
       }
    }
    

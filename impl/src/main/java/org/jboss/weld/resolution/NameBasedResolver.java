@@ -83,7 +83,7 @@ public class NameBasedResolver
                   matchedBeans.add(bean);
                }
             }
-            return Beans.retainEnabledPolicies(matchedBeans, manager.getEnabledPolicyClasses(), manager.getEnabledPolicyStereotypes());
+            return Beans.retainEnabledAlternatives(matchedBeans, manager.getEnabledAlternativeClasses(), manager.getEnabledAlternativeStereotypes());
          }
 
       });

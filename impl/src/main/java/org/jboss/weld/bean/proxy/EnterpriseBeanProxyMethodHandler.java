@@ -23,6 +23,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.CREATED_SESSION_BEAN_P
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_REMOVE_METHOD_INVOCATION;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
@@ -53,7 +54,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
    // The log provider
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
-   private final SessionObjectReference reference; 
+   private final SessionObjectReference reference;
    private final Class<?> objectInterface;
    private final Collection<MethodSignature> removeMethodSignatures;
    private final boolean clientCanCallRemoveMethods;
@@ -75,7 +76,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
       this.stateful = bean.getEjbDescriptor().isStateful();
       log.trace(CREATED_SESSION_BEAN_PROXY, bean);
    }
-   
+
    /**
     * Lookups the EJB in the container and executes the method on it
     * 
@@ -107,24 +108,38 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
          }
          return null;
       }
-      
+
       if (!clientCanCallRemoveMethods)
       {
          // TODO we can certainly optimize this search algorithm!
          MethodSignature methodSignature = new MethodSignatureImpl(method);
          if (removeMethodSignatures.contains(methodSignature))
          {
-            throw new InvalidOperationException(INVALID_REMOVE_METHOD_INVOCATION, method );
+            throw new InvalidOperationException(INVALID_REMOVE_METHOD_INVOCATION, method);
          }
       }
       Class<?> businessInterface = getBusinessInterface(method);
       Object proxiedInstance = reference.getBusinessObject(businessInterface);
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
-      Object returnValue = Reflections.invoke(proxiedMethod, proxiedInstance, args);
-      log.trace(CALL_PROXIED_METHOD, method, proxiedInstance, args, returnValue);
-      return returnValue;
+      try
+      {
+         Object returnValue = Reflections.invoke(proxiedMethod, proxiedInstance, args);
+         log.trace(CALL_PROXIED_METHOD, method, proxiedInstance, args, returnValue);
+         return returnValue;
+      }
+      catch (InvocationTargetException e)
+      {
+         if (e.getCause() != null)
+         {
+            throw e.getCause();
+         }
+         else
+         {
+            throw e;
+         }
+      }
    }
-   
+
    private Class<?> getBusinessInterface(Method method)
    {
       Class<?> businessInterface = method.getDeclaringClass();
@@ -137,5 +152,5 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
          return businessInterface;
       }
    }
-   
+
 }

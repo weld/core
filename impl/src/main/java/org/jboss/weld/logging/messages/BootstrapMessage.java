@@ -21,7 +21,7 @@ public enum BootstrapMessage
    
    @MessageId("000100") VALIDATING_BEANS,
    @MessageId("000101") JTA_UNAVAILABLE,
-   @MessageId("000103") ENABLED_POLICIES,
+   @MessageId("000103") ENABLED_ALTERNATIVES,
    @MessageId("000104") ENABLED_DECORATORS,
    @MessageId("000105") ENABLED_INTERCEPTORS,
    @MessageId("000106") FOUND_BEAN,

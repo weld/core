@@ -75,7 +75,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    @Override
    protected Set<T> filterResult(Set<T> matched)
    {
-      return Beans.retainEnabledPolicies(matched, manager.getEnabledPolicyClasses(), manager.getEnabledPolicyStereotypes());
+      return Beans.retainEnabledAlternatives(matched, manager.getEnabledAlternativeClasses(), manager.getEnabledAlternativeStereotypes());
    }
 
    @Override
@@ -100,12 +100,12 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
             Set<Bean<? extends X>> disambiguatedBeans = beans;
             if (disambiguatedBeans.size() > 1)
             {
-               boolean policyPresent = Beans.isPolicyPresent(disambiguatedBeans);
+               boolean alternativePresent = Beans.isAlternativePresent(disambiguatedBeans);
                disambiguatedBeans = new HashSet<Bean<? extends X>>();
                
                for (Bean<? extends X> bean : beans)
                {
-                  if (policyPresent ? bean.isAlternative() : true && !Beans.isSpecialized(bean, beans, manager.getSpecializedBeans()))
+                  if (alternativePresent ? bean.isAlternative() : true && !Beans.isSpecialized(bean, beans, manager.getSpecializedBeans()))
                   {
                      disambiguatedBeans.add(bean);
                   }

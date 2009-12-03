@@ -57,8 +57,8 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(Stereotype.class);
    private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
    
-   // Is the stereotype a policy
-   private boolean policy;
+   // Is the stereotype an alternative
+   private boolean alternative;
    // The default scope type
    private Annotation defaultScopeType;
    // Is the bean name defaulted
@@ -78,7 +78,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    public StereotypeModel(Class<T> sterotype, ClassTransformer transformer)
    {
       super(sterotype, transformer);
-      initPolicy();
+      initAlternative();
       initDefaultScopeType();
       initBeanNameDefaulted();
       initInterceptorBindings();
@@ -154,11 +154,11 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    /**
     * Initializes the default deployment type
     */
-   private void initPolicy()
+   private void initAlternative()
    {
       if (getAnnotatedAnnotation().isAnnotationPresent(Alternative.class))
       {
-         this.policy = true;
+         this.alternative = true;
       }
    }
    
@@ -230,9 +230,9 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    /**
     * @return
     */
-   public boolean isPolicy()
+   public boolean isAlternative()
    {
-      return policy;
+      return alternative;
    }
    
    public Set<Annotation> getInheritedSterotypes()

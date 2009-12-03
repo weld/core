@@ -37,7 +37,7 @@ import org.w3c.dom.NodeList;
  */
 public class MergedElements
 {
-   private List<BeansXmlElement> policiesElements = new ArrayList<BeansXmlElement>();
+   private List<BeansXmlElement> alternativesElements = new ArrayList<BeansXmlElement>();
    private List<BeansXmlElement> decoratorsElements = new ArrayList<BeansXmlElement>();
    private List<BeansXmlElement> interceptorsElements = new ArrayList<BeansXmlElement>();
 
@@ -45,7 +45,7 @@ public class MergedElements
    public void merge(URL url, Document beansXmlDocument)
    {
       Element documentElement = beansXmlDocument.getDocumentElement();
-      policiesElements.addAll(getNamedElement(url, documentElement, "alternatives", MULTIPLE_ALTERNATIVES));
+      alternativesElements.addAll(getNamedElement(url, documentElement, "alternatives", MULTIPLE_ALTERNATIVES));
       interceptorsElements.addAll(getNamedElement(url, documentElement, "interceptors", MULTIPLE_INTERCEPTORS));
       decoratorsElements.addAll(getNamedElement(url, documentElement, "decorators", MULTIPLE_DECORATORS));
    }
@@ -69,9 +69,9 @@ public class MergedElements
    }
 
    
-   public List<BeansXmlElement> getPoliciesElements()
+   public List<BeansXmlElement> getAlternativesElements()
    {
-      return policiesElements;
+      return alternativesElements;
    }
 
    public List<BeansXmlElement> getDecoratorsElements()

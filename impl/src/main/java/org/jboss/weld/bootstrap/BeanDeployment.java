@@ -20,7 +20,7 @@ import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_DECORATORS;
 import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPTORS;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_POLICIES;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_ALTERNATIVES;
 
 import java.util.List;
 
@@ -106,13 +106,13 @@ public class BeanDeployment
       BeansXmlParser parser = new BeansXmlParser(beanManager.getServices().get(ResourceLoader.class), getBeanDeploymentArchive().getBeansXml());
       parser.parse();
       
-      if (parser.getEnabledPolicyClasses() != null)
+      if (parser.getEnabledAlternativeClasses() != null)
       {
-         beanManager.setEnabledPolicyClasses(parser.getEnabledPolicyClasses());
+         beanManager.setEnabledAlternativeClasses(parser.getEnabledAlternativeClasses());
       }
-      if (parser.getEnabledPolicyStereotypes() != null)
+      if (parser.getEnabledAlternativeStereotypes() != null)
       {
-         beanManager.setEnabledPolicyStereotypes(parser.getEnabledPolicyStereotypes());
+         beanManager.setEnabledAlternativeStereotypes(parser.getEnabledAlternativeStereotypes());
       }
       if (parser.getEnabledDecoratorClasses() != null)
       {
@@ -122,7 +122,7 @@ public class BeanDeployment
       {
          beanManager.setEnabledInterceptorClasses(parser.getEnabledInterceptorClasses());
       }
-      log.debug(ENABLED_POLICIES, this.beanManager, beanManager.getEnabledPolicyClasses(), beanManager.getEnabledPolicyStereotypes());
+      log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes());
       log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabledDecoratorClasses());
       log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabledInterceptorClasses());
    }

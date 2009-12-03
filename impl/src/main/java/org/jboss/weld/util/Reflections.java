@@ -21,7 +21,6 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_CONSTRUCTOR;
 import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
 import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_VALUES_INACCESSIBLE;
-import static org.jboss.weld.logging.messages.UtilMessage.ERROR_INVOKING_METHOD;
 import static org.jboss.weld.logging.messages.UtilMessage.NO_SUCH_METHOD;
 import static org.jboss.weld.logging.messages.UtilMessage.SECURITY_EXCEPTION_SCANNING;
 
@@ -524,60 +523,23 @@ public class Reflections
       return false;
    }
 
-   /**
-    * Invokes a method and wraps exceptions
-    * 
-    * @param method The method to invoke
-    * @param instance The instance to invoke on
-    * @param parameters The parameters
-    * @return The return value
-    */
-   public static Object invokeAndWrap(Method method, Object instance, Object... parameters)
-   {
-      try
-      {
-         return invoke(method, instance, parameters);
-      }
-      catch (IllegalArgumentException e)
-      {
-         throw new WeldException(ERROR_INVOKING_METHOD, e, method.getName(), method.getDeclaringClass());
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new WeldException(ERROR_INVOKING_METHOD, e, method.getName(), method.getDeclaringClass());
-      }
-      catch (InvocationTargetException e)
-      {
-         throw new WeldException(ERROR_INVOKING_METHOD, e, method.getName(), method.getDeclaringClass());
-      }
-   }
-
    public static Object invoke(Method method, Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
    {
       ensureAccessible(method);
       return method.invoke(instance, parameters);
    }
 
-   public static Object invokeAndWrap(String methodName, Object instance, Object... parameters)
+   public static Object invoke(String methodName, Object instance, Object... parameters) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException
    {
       Class<?>[] parameterTypes = new Class<?>[parameters.length];
       for (int i = 0; i < parameters.length; i++)
       {
          parameterTypes[i] = parameters[i].getClass();
       }
-      try
-      {
-         return invokeAndWrap(instance.getClass().getMethod(methodName, parameterTypes), instance, parameters);
-      }
-      catch (SecurityException e)
-      {
-         throw new WeldException(ERROR_INVOKING_METHOD, e, methodName, instance.getClass());
-      }
-      catch (java.lang.NoSuchMethodException e)
-      {
-         throw new WeldException(ERROR_INVOKING_METHOD, e, methodName, instance.getClass());
-      }
+      Method method = instance.getClass().getMethod(methodName, parameterTypes);
+      return invoke(method, instance, parameters);
    }
+
 
    /**
     * Gets value of a field and wraps exceptions

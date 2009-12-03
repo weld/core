@@ -110,7 +110,8 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       }
       try
       {
-         Object returnValue = Reflections.lookupMethod(proxiedMethod, proxiedInstance).invoke(proxiedInstance, args);
+         Method method = Reflections.lookupMethod(proxiedMethod, proxiedInstance);
+         Object returnValue = Reflections.invoke(method, proxiedInstance, args);
          log.trace(CALL_PROXIED_METHOD, proxiedMethod, proxiedInstance, args, returnValue == null ? null : returnValue);
          return returnValue;
       }

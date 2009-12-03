@@ -47,14 +47,14 @@ public class BeansXmlParser
    private final ResourceLoader resourceLoader;
    private EnabledClasses enabledClasses = null;
 
-   public List<Class<?>> getEnabledPolicyClasses()
+   public List<Class<?>> getEnabledAlternativeClasses()
    {
-      return enabledClasses.getEnabledPolicyClasses();
+      return enabledClasses.getEnabledAlternativeClasses();
    }
 
-   public List<Class<? extends Annotation>> getEnabledPolicyStereotypes()
+   public List<Class<? extends Annotation>> getEnabledAlternativeStereotypes()
    {
-      return enabledClasses.getEnabledPolicyStereotypes();
+      return enabledClasses.getEnabledAlternativeStereotypes();
    }
 
    public List<Class<?>> getEnabledDecoratorClasses()

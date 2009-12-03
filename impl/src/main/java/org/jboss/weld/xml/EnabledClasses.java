@@ -31,16 +31,16 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public class EnabledClasses
 {
-   private List<Class<? extends Annotation>> enabledPolicyStereotypes;
-   private List<Class<?>> enabledPolicyClasses;
+   private List<Class<? extends Annotation>> enabledAlternativeStereotypes;
+   private List<Class<?>> enabledAlternativeClasses;
    private List<Class<?>> enabledDecoratorClasses;
    private List<Class<?>> enabledInterceptorClasses;
    private ResourceLoader resourceLoader;
 
    private EnabledClasses(MergedElements beanXmlElements, ResourceLoader resourceLoader)
    {
-      enabledPolicyStereotypes = new ArrayList<Class<? extends Annotation>>();
-      enabledPolicyClasses = new ArrayList<Class<?>>();
+      enabledAlternativeStereotypes = new ArrayList<Class<? extends Annotation>>();
+      enabledAlternativeClasses = new ArrayList<Class<?>>();
       enabledDecoratorClasses = new ArrayList<Class<?>>();
       enabledInterceptorClasses = new ArrayList<Class<?>>();
       this.resourceLoader = resourceLoader;
@@ -54,19 +54,19 @@ public class EnabledClasses
 
    private void process(MergedElements beanXmlElements)
    {
-      processPolicies(beanXmlElements.getPoliciesElements());
+      processAlternatives(beanXmlElements.getAlternativesElements());
       enabledDecoratorClasses.addAll(getClassesInElements(beanXmlElements.getDecoratorsElements()));
       enabledInterceptorClasses.addAll(getClassesInElements(beanXmlElements.getInterceptorsElements()));
    }
 
-   private void processPolicies(List<BeansXmlElement> policyElements)
+   private void processAlternatives(List<BeansXmlElement> alternativesElements)
    {
-      Collection<Class<?>> classes = getClassesInElements(policyElements);
+      Collection<Class<?>> classes = getClassesInElements(alternativesElements);
       for (Class<?> clazz : classes) {
          if (clazz.isAnnotation()) {
-            enabledPolicyStereotypes.add(clazz.asSubclass(Annotation.class));
+            enabledAlternativeStereotypes.add(clazz.asSubclass(Annotation.class));
          } else {
-            enabledPolicyClasses.add(clazz);
+            enabledAlternativeClasses.add(clazz);
          }
       }
    }
@@ -81,14 +81,14 @@ public class EnabledClasses
       return classes;
    }
 
-   public List<Class<? extends Annotation>> getEnabledPolicyStereotypes()
+   public List<Class<? extends Annotation>> getEnabledAlternativeStereotypes()
    {
-      return enabledPolicyStereotypes;
+      return enabledAlternativeStereotypes;
    }
 
-   public List<Class<?>> getEnabledPolicyClasses()
+   public List<Class<?>> getEnabledAlternativeClasses()
    {
-      return enabledPolicyClasses;
+      return enabledAlternativeClasses;
    }
 
    public List<Class<?>> getEnabledDecoratorClasses()
