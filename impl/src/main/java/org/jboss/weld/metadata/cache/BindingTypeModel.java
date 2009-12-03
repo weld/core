@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.metadata.cache;
 
+import static org.jboss.weld.logging.Category.REFLECTION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.MetadataMessage.NON_BINDING_MEMBER_TYPE;
 
 import java.lang.annotation.Annotation;
@@ -25,12 +27,12 @@ import java.util.Set;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
-import org.jboss.weld.DefinitionException;
 import org.jboss.weld.WeldException;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Reflections;
 import org.jboss.weld.util.collections.Arrays2;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * 
@@ -41,7 +43,7 @@ import org.jboss.weld.util.collections.Arrays2;
  */
 public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
 {
-   
+   private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
    
    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(Qualifier.class);
    
@@ -79,7 +81,8 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
       {
          if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingTypes.contains(annotatedMethod))
          {
-            throw new DefinitionException(NON_BINDING_MEMBER_TYPE, annotatedMethod);
+            super.valid = false;
+            log.debug(NON_BINDING_MEMBER_TYPE, annotatedMethod);
          }
       }
 
