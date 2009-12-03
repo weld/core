@@ -17,7 +17,7 @@
 package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.logging.messages.BeanMessage.UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR;
-import static org.jboss.weld.util.Reflections.ensureAccessible;
+import static org.jboss.weld.util.reflection.Reflections.ensureAccessible;
 
 import java.lang.reflect.Method;
 import java.util.List;

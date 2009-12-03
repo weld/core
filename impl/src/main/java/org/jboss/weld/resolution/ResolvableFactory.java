@@ -28,7 +28,7 @@ import java.util.Collections;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 
 import javax.enterprise.inject.spi.InterceptionType;
 

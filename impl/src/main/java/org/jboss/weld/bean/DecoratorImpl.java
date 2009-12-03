@@ -55,7 +55,7 @@ import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.introspector.jlr.WeldConstructorImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 
 public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
 {

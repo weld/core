@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.introspector.jlr;
 
-import static org.jboss.weld.util.Reflections.ensureAccessible;
+import static org.jboss.weld.util.reflection.Reflections.ensureAccessible;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +40,8 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.ListMultimap;
@@ -78,7 +79,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    public static <T, X> WeldMethodImpl<T, X> of(Method method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(method, classTransformer.getTypeStore());
-      return new WeldMethodImpl<T, X>(ensureAccessible(method), (Class<T>) method.getReturnType(), method.getGenericReturnType(), new Reflections.HierarchyDiscovery(method.getGenericReturnType()).getTypeClosure(), null, annotationStore, declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(ensureAccessible(method), (Class<T>) method.getReturnType(), method.getGenericReturnType(), new HierarchyDiscovery(method.getGenericReturnType()).getTypeClosure(), null, annotationStore, declaringClass, classTransformer);
    }
    
    public static <T, X> WeldMethodImpl<T, X> of(AnnotatedMethod<T> method, WeldClass<X> declaringClass, ClassTransformer classTransformer)

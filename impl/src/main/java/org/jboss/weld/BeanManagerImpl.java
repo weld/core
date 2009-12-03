@@ -94,7 +94,8 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
@@ -661,7 +662,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(Arrays.asList(bindings));
       bindingAnnotations.add(new AnyLiteral());
       Set<ObserverMethod<? super T>> observers = new HashSet<ObserverMethod<? super T>>();
-      Set<ObserverMethod<?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new Reflections.HierarchyDiscovery(eventType).getTypeClosure(),  bindingAnnotations, null));
+      Set<ObserverMethod<?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new HierarchyDiscovery(eventType).getTypeClosure(),  bindingAnnotations, null));
       for (ObserverMethod<?> observer : eventObservers)
       {
          observers.add((ObserverMethod<T>) observer);

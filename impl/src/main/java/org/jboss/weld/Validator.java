@@ -58,7 +58,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.ResolvableWeldClass;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;

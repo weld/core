@@ -40,8 +40,8 @@ import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Reflections;
 import org.jboss.weld.util.Proxies.TypeInfo;
+import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 
 /**

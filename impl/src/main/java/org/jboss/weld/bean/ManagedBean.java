@@ -64,7 +64,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Names;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;

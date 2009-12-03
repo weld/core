@@ -33,7 +33,7 @@ import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
 /**

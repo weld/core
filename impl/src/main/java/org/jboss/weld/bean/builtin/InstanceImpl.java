@@ -17,7 +17,7 @@
 package org.jboss.weld.bean.builtin;
 
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
-import static org.jboss.weld.util.Reflections.EMPTY_ANNOTATIONS;
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;

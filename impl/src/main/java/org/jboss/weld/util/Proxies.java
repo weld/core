@@ -32,6 +32,7 @@ import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
 import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Utilties for working with Javassist proxies

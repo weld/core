@@ -25,7 +25,7 @@ import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.ForwardingWeldMember;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMember;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Represents an abstract annotated memeber (field, method or constructor)

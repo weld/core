@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.introspector.jlr;
 
-import static org.jboss.weld.util.Reflections.ensureAccessible;
+import static org.jboss.weld.util.reflection.Reflections.ensureAccessible;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -28,7 +28,8 @@ import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Represents an annotated field
@@ -51,7 +52,7 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
    public static <T, X> WeldFieldImpl<T, X> of(Field field, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(field, classTransformer.getTypeStore());
-      return new WeldFieldImpl<T, X>(ensureAccessible(field), (Class<T>) field.getType(), field.getGenericType(), new Reflections.HierarchyDiscovery(field.getGenericType()).getTypeClosure(),  annotationStore, declaringClass, classTransformer);
+      return new WeldFieldImpl<T, X>(ensureAccessible(field), (Class<T>) field.getType(), field.getGenericType(), new HierarchyDiscovery(field.getGenericType()).getTypeClosure(),  annotationStore, declaringClass, classTransformer);
    }
    
    public static <T, X> WeldFieldImpl<T, X> of(AnnotatedField<? super X> annotatedField, WeldClass<X> declaringClass, ClassTransformer classTransformer)

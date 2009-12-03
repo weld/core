@@ -26,7 +26,7 @@ import org.jboss.interceptor.proxy.InterceptionHandler;
 import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DeploymentException;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author Marius Bogoevici

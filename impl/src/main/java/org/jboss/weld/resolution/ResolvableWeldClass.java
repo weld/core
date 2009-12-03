@@ -44,7 +44,7 @@ import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.introspector.jlr.AbstractWeldAnnotated;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.util.Names;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 
 public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> implements Resolvable
 {

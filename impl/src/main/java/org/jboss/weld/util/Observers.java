@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
 import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
  * @author pmuir
@@ -35,7 +36,7 @@ public class Observers
    public static void checkEventObjectType(Type eventType)
    {
       Type[] types;
-      Type resolvedType = new Reflections.HierarchyDiscovery(eventType).getResolvedType();
+      Type resolvedType = new HierarchyDiscovery(eventType).getResolvedType();
       if (resolvedType instanceof Class<?>)
       {
          types = new Type[0];

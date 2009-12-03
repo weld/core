@@ -29,7 +29,7 @@ import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldCallable;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
  * Represents a parameter
@@ -60,12 +60,12 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
    
    public static <T, X> WeldParameter<T, X> of(Annotation[] annotations, Class<T> rawType, Type type, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
    {
-      return new WeldParameterImpl<T, X>(annotations, rawType, type, new Reflections.HierarchyDiscovery(type).getTypeClosure(), declaringMember, position, classTransformer);
+      return new WeldParameterImpl<T, X>(annotations, rawType, type, new HierarchyDiscovery(type).getTypeClosure(), declaringMember, position, classTransformer);
    }
    
    public static <T, X> WeldParameter<T, X> of(Set<Annotation> annotations, Class<T> rawType, Type type, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
    {
-      return new WeldParameterImpl<T, X>(annotations.toArray(EMPTY_ANNOTATION_ARRAY), rawType, type, new Reflections.HierarchyDiscovery(type).getTypeClosure(), declaringMember, position, classTransformer);
+      return new WeldParameterImpl<T, X>(annotations.toArray(EMPTY_ANNOTATION_ARRAY), rawType, type, new HierarchyDiscovery(type).getTypeClosure(), declaringMember, position, classTransformer);
    }
 
    /**

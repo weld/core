@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.introspector.jlr;
 
-import static org.jboss.weld.util.Reflections.ensureAccessible;
+import static org.jboss.weld.util.reflection.Reflections.ensureAccessible;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -40,7 +40,8 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.ListMultimap;
@@ -74,7 +75,7 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
    public static <T> WeldConstructor<T> of(Constructor<T> constructor, WeldClass<T> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(constructor, classTransformer.getTypeStore());
-      return new WeldConstructorImpl<T>(ensureAccessible(constructor), constructor.getDeclaringClass(), constructor.getDeclaringClass(), null, new Reflections.HierarchyDiscovery(constructor.getDeclaringClass()).getTypeClosure(), annotationStore, declaringClass, classTransformer);
+      return new WeldConstructorImpl<T>(ensureAccessible(constructor), constructor.getDeclaringClass(), constructor.getDeclaringClass(), null, new HierarchyDiscovery(constructor.getDeclaringClass()).getTypeClosure(), annotationStore, declaringClass, classTransformer);
    }
    
    public static <T> WeldConstructor<T> of(AnnotatedConstructor<T> annotatedConstructor,  WeldClass<T> declaringClass, ClassTransformer classTransformer)

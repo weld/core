@@ -26,7 +26,7 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author pmuir

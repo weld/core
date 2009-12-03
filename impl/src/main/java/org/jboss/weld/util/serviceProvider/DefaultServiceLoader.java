@@ -31,7 +31,7 @@ import java.util.Set;
 
 import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.InvalidOperationException;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.ext.XLogger;

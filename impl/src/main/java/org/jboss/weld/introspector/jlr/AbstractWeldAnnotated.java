@@ -28,8 +28,9 @@ import java.util.Set;
 import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Reflections;
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Represents functionality common for all annotated items, mainly different
@@ -93,7 +94,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
       this.interfaceOnlyFlattenedTypes = new HashSet<Type>();
       for (Type t : rawType.getGenericInterfaces())
       {
-         interfaceOnlyFlattenedTypes.addAll(new Reflections.HierarchyDiscovery(t).getTypeClosure());
+         interfaceOnlyFlattenedTypes.addAll(new HierarchyDiscovery(t).getTypeClosure());
       }
       this.typeClosureAsMap = Reflections.buildTypeMap(typeClosure);
       this.typeClosureAsSet = typeClosure;

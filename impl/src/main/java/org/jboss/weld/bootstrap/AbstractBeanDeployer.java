@@ -66,7 +66,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.servlet.ServletApiAbstraction;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
 

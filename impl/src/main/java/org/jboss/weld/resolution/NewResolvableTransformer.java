@@ -24,7 +24,7 @@ import java.util.Set;
 import javax.enterprise.inject.New;
 
 import org.jboss.weld.literal.NewLiteral;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
  * @author pmuir
@@ -86,7 +86,7 @@ public class NewResolvableTransformer implements ResolvableTransformer
          else
          {
             final Class<?> javaClass = originalNewAnnotation.value();
-            final Set<Type> typeClosure = new Reflections.HierarchyDiscovery(javaClass).getTypeClosure();
+            final Set<Type> typeClosure = new HierarchyDiscovery(javaClass).getTypeClosure();
             return new ForwardingResolvable()
             {
                

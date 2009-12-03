@@ -22,7 +22,7 @@ import java.util.Set;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author pmuir

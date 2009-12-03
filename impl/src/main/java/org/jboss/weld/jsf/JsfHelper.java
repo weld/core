@@ -34,7 +34,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.conversation.ConversationIdName;
 import org.jboss.weld.servlet.ServletHelper;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
 /**

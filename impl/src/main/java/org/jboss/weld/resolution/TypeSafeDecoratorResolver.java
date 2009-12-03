@@ -27,7 +27,7 @@ import javax.enterprise.inject.spi.Decorator;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author pmuir

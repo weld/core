@@ -37,8 +37,8 @@ import org.jboss.weld.DefinitionException;
 import org.jboss.weld.WeldException;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Reflections;
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
 /**

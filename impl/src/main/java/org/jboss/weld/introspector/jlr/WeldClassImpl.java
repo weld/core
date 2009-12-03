@@ -46,7 +46,8 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Names;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
@@ -130,7 +131,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    public static <T> WeldClass<T> of(Class<T> clazz, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(clazz.getAnnotations(), clazz.getDeclaredAnnotations(), classTransformer.getTypeStore());
-      return new WeldClassImpl<T>(clazz, clazz, null, new Reflections.HierarchyDiscovery(clazz).getTypeClosure(), annotationStore, classTransformer);
+      return new WeldClassImpl<T>(clazz, clazz, null, new HierarchyDiscovery(clazz).getTypeClosure(), annotationStore, classTransformer);
    }
 
    public static <T> WeldClass<T> of(AnnotatedType<T> annotatedType, ClassTransformer classTransformer)
@@ -142,7 +143,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    public static <T> WeldClass<T> of(Class<T> rawType, Type type, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(rawType.getAnnotations(), rawType.getDeclaredAnnotations(), classTransformer.getTypeStore());
-      return new WeldClassImpl<T>(rawType, type, null, new Reflections.HierarchyDiscovery(type).getTypeClosure(), annotationStore, classTransformer);
+      return new WeldClassImpl<T>(rawType, type, null, new HierarchyDiscovery(type).getTypeClosure(), annotationStore, classTransformer);
    }
 
    protected WeldClassImpl(Class<T> rawType, Type type, AnnotatedType<T> annotatedType, Set<Type> typeClosure, AnnotationStore annotationStore, ClassTransformer classTransformer)

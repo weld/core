@@ -18,7 +18,7 @@ import javassist.util.proxy.MethodHandler;
 import org.jboss.weld.Container;
 import org.jboss.weld.NullInstanceException;
 import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
 public class CallableMethodHandler implements MethodHandler, Serializable

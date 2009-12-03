@@ -72,9 +72,9 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Reflections;
 import org.jboss.weld.util.Strings;
 import org.jboss.weld.util.Proxies.TypeInfo;
+import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
 /**

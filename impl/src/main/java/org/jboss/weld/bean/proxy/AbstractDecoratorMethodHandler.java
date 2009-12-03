@@ -26,7 +26,7 @@ import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
-import org.jboss.weld.util.Reflections;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * {@link MethodHandler} for Abstract decorators.

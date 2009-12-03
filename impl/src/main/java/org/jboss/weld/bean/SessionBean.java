@@ -73,7 +73,7 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
-import org.jboss.weld.util.Reflections.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
  * An enterprise bean representation

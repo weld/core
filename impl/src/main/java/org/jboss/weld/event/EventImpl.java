@@ -17,7 +17,7 @@
 package org.jboss.weld.event;
 
 import static org.jboss.weld.logging.messages.EventMessage.PROXY_REQUIRED;
-import static org.jboss.weld.util.Reflections.EMPTY_ANNOTATIONS;
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
