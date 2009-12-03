@@ -120,7 +120,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
       Class<?> businessInterface = getBusinessInterface(method);
       Object proxiedInstance = reference.getBusinessObject(businessInterface);
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
-      Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxiedInstance, args);
+      Object returnValue = Reflections.invoke(proxiedMethod, proxiedInstance, args);
       log.trace(CALL_PROXIED_METHOD, method, proxiedInstance, args, returnValue);
       return returnValue;
    }

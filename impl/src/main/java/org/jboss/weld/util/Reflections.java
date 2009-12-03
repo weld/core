@@ -536,8 +536,7 @@ public class Reflections
    {
       try
       {
-         method.setAccessible(true);
-         return method.invoke(instance, parameters);
+         return invoke(method, instance, parameters);
       }
       catch (IllegalArgumentException e)
       {
@@ -551,6 +550,12 @@ public class Reflections
       {
          throw new WeldException(ERROR_INVOKING_METHOD, e, method.getName(), method.getDeclaringClass());
       }
+   }
+
+   public static Object invoke(Method method, Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
+   {
+      ensureAccessible(method);
+      return method.invoke(instance, parameters);
    }
 
    public static Object invokeAndWrap(String methodName, Object instance, Object... parameters)
