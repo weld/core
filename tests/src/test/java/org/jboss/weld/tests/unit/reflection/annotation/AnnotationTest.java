@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
 
 import org.testng.annotations.Test;
 
@@ -17,6 +18,14 @@ public class AnnotationTest
    {
       Synchronous synchronous = AnnotationTest.class.getAnnotation(Synchronous.class);
       deserialize(serialize(synchronous));
+   }
+   
+   @Test
+   public void testGetAnnotationDefaults() throws Throwable
+   {
+      Method method = Quality.class.getMethod("value");
+      Object value = method.getDefaultValue();
+      assert value.equals("very");
    }
 
    protected byte[] serialize(Object instance) throws IOException
