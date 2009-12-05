@@ -16,6 +16,25 @@
  */
 package org.jboss.weld;
 
+import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_QUALIFIERS;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INVALID_QUALIFIER;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_PROXYABLE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_DECORATOR_TYPES;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_TYPE;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
@@ -38,14 +57,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
-import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.AmbiguousResolutionException;
-import javax.enterprise.inject.InjectionException;
-import javax.enterprise.inject.UnproxyableResolutionException;
-import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -67,6 +81,7 @@ import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.AbstractProcessInjectionTarget;
+import org.jboss.weld.context.ContextNotActiveException;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.ejb.EjbDescriptors;
@@ -677,12 +692,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          if (!getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotation.annotationType()).isValid())
          {
-            throw new IllegalArgumentException("Not a binding type " + annotation);
+            throw new ForbiddenArgumentException(INVALID_QUALIFIER, annotation);
          }
       }
       if (bindingAnnotations.size() < bindings.size())
       {
-         throw new IllegalArgumentException("Duplicate binding types: " + bindings);
+         throw new ForbiddenArgumentException(DUPLICATE_QUALIFIERS, bindings);
       }
 
    }
@@ -756,7 +771,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          if (!getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotation.annotationType()).isValid())
          {
-            throw new IllegalArgumentException("Not a binding type " + annotation);
+            throw new ForbiddenArgumentException(INVALID_QUALIFIER, annotation);
          }
       }
 //      for (Type type : element.getActualTypeArguments())
@@ -772,7 +787,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
 //      }
       if (bindings != null && bindings.length > element.getMetaAnnotations(Qualifier.class).size())
       {
-         throw new IllegalArgumentException("Duplicate bindings (" + Arrays.asList(bindings) + ") type passed " + element.toString());
+         throw new ForbiddenArgumentException(DUPLICATE_QUALIFIERS, Arrays.asList(bindings));
       }
       return beanResolver.resolve(ResolvableFactory.of(element));
    }
@@ -925,11 +940,11 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       if (activeContexts.isEmpty())
       {
-         throw new ContextNotActiveException("No active contexts for scope type " + scopeType.getName());
+         throw new ContextNotActiveException(CONTEXT_NOT_ACTIVE, scopeType.getName());
       }
       if (activeContexts.size() > 1)
       {
-         throw new IllegalStateException("More than one context active for scope type " + scopeType.getName());
+         throw new ForbiddenStateException(DUPLICATE_ACTIVE_CONTEXTS, scopeType.getName());
       }
       return activeContexts.iterator().next();
 
@@ -979,7 +994,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       if (!Reflections.isAssignableFrom(bean.getTypes(), beanType))
       {
-         throw new IllegalArgumentException("The given beanType is not a type " + beanType +" of the bean " + bean );
+         throw new ForbiddenArgumentException(SPECIFIED_TYPE_NOT_BEAN_TYPE, beanType, bean );
       }
       return getReference(bean, creationalContext, false);
    }
@@ -1005,7 +1020,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
          }
          if (getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
          {
-            throw new UnproxyableResolutionException("Attempting to inject an unproxyable normal scoped bean " + resolvedBean + " into " + injectionPoint);
+            throw new UnproxyableResolutionException(UNPROXYABLE_RESOLUTION, resolvedBean, injectionPoint);
          }
          // TODO Can we move this logic to getReference?
          if (creationalContext instanceof WeldCreationalContext<?>)
@@ -1057,7 +1072,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       Bean<?> bean = resolve(beans);
       if (bean == null)
       {
-         throw new UnsatisfiedResolutionException("Unable to resolve any beans. Class: " + beanType + "; Qualifiers: " + Arrays.toString(bindings)); 
+         throw new UnsatisfiedResolutionException(UNRESOLVABLE_TYPE, beanType, Arrays.toString(bindings)); 
       }
       Object reference = getReference(bean, beanType, createCreationalContext(bean));
       
@@ -1072,13 +1087,13 @@ public class BeanManagerImpl implements WeldManager, Serializable
       Bean<T> bean = (Bean<T>) resolve(getBeans(element, bindings));
       if (bean == null)
       {
-         throw new UnsatisfiedResolutionException(element + "Unable to resolve any Managed Beans");
+         throw new UnsatisfiedResolutionException(UNRESOLVABLE_ELEMENT, element);
       }
       
       boolean normalScoped = getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
       if (normalScoped && !Beans.isBeanProxyable(bean))
       {
-         throw new UnproxyableResolutionException("Normal scoped bean " + bean + " is not proxyable");
+         throw new UnproxyableResolutionException(NOT_PROXYABLE, bean);
       }
       return bean;
    }
@@ -1116,7 +1131,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       if (types.isEmpty())
       {
-         throw new IllegalArgumentException("No decorator types were specified in the set");
+         throw new ForbiddenArgumentException(NO_DECORATOR_TYPES);
       }
       checkBindingTypes(bindings);
    }
@@ -1135,14 +1150,14 @@ public class BeanManagerImpl implements WeldManager, Serializable
    public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings)
    {
       if (interceptorBindings.length == 0)
-         throw new IllegalArgumentException("Interceptor bindings list cannot be empty");
+         throw new ForbiddenArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
       Set<Class<?>> uniqueInterceptorBindings = new HashSet<Class<?>>();
       for (Annotation interceptorBinding: interceptorBindings)
       {
          if (uniqueInterceptorBindings.contains(interceptorBinding.annotationType()))
-            throw new IllegalArgumentException("Duplicate interceptor binding type: " + interceptorBinding.annotationType());
+            throw new ForbiddenArgumentException(DUPLICATE_INTERCEPTOR_BINDING, interceptorBinding.annotationType());
          if (!isInterceptorBinding(interceptorBinding.annotationType()))
-            throw new IllegalArgumentException("Trying to resolve interceptors with non-binding type: " + interceptorBinding.annotationType());
+            throw new ForbiddenArgumentException(INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE, interceptorBinding.annotationType());
          uniqueInterceptorBindings.add(interceptorBinding.annotationType());
       }
       return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(ResolvableFactory.of(type,interceptorBindings)));
@@ -1207,7 +1222,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       if (!getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).isNormal())
       {
-         throw new IllegalArgumentException("Scope must be a normal scope type " + scopeType);
+         throw new ForbiddenArgumentException(NON_NORMAL_SCOPE, scopeType);
       }
       currentActivities.add(new CurrentActivity(getContext(scopeType), this));
       return this;
@@ -1231,7 +1246,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          return activeCurrentActivities.get(0).getManager();
       }
-      throw new IllegalStateException("More than one current activity for an active context " + currentActivities);
+      throw new ForbiddenStateException(TOO_MANY_ACTIVITIES, currentActivities);
    }
 
    public ServiceRegistry getServices()
@@ -1391,7 +1406,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       catch (DeploymentException e) 
       {
-         throw new InjectionException(e.getMessage(), e.getCause());
+         throw new InjectionException(e.getLocalizedMessage(), e.getCause());
       }
    }
 
@@ -1403,7 +1418,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       else
       {
-         throw new IllegalArgumentException("Not a interception binding :" + bindingType);
+         throw new ForbiddenArgumentException(NOT_INTERCEPTOR_BINDING_TYPE, bindingType);
       }
    }
 
@@ -1420,7 +1435,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       else
       {
-         throw new IllegalArgumentException("Not a stereotype " + stereotype);
+         throw new ForbiddenArgumentException(NOT_STEREOTYPE, stereotype);
       }
    }
 
@@ -1489,7 +1504,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       else
       {
-         throw new AmbiguousResolutionException("Cannot resolve an ambiguous dependency between " + beans);
+         throw new AmbiguousResolutionException(AMBIGUOUS_BEANS_FOR_DEPENDENCY, beans);
       }
    }
 

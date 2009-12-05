@@ -16,6 +16,11 @@
  */
 package org.jboss.weld;
 
+import static org.jboss.weld.logging.messages.BeanManagerMessage.ERROR_INVOKING_POST_CONSTRUCT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.ERROR_INVOKING_PRE_DESTROY;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INJECTION_ON_NON_CONTEXTUAL;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.MISSING_BEAN_CONSTRUCTOR_FOUND;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -84,7 +89,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       {
          if (ip.getType().equals(InjectionPoint.class))
          {
-            throw new DefinitionException("Cannot inject an InjectionPoint on a non-contextual type. Type: " + type + "; InjectionPoint: " + ip);
+            throw new DefinitionException(INJECTION_ON_NON_CONTEXTUAL, type, ip);
          }
       }
    }
@@ -98,8 +103,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
          // try again so the correct DefinitionException is thrown
          Beans.getBeanConstructor(null, type);
          // should not be reached
-         throw new IllegalStateException(
-               "We were not previously able to find the bean constructor, but now are?");
+         throw new ForbiddenStateException(MISSING_BEAN_CONSTRUCTOR_FOUND);
       }
       return constructor.newInstance(beanManager, ctx);
    }
@@ -130,7 +134,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       }
       catch (Exception e)
       {
-         throw new RuntimeException("Error invoking postConstruct() " + postConstruct, e);
+         throw new WeldException(ERROR_INVOKING_POST_CONSTRUCT, e, postConstruct);
       }
    }
 
@@ -145,7 +149,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       }
       catch (Exception e)
       {
-         throw new RuntimeException("Error invoking preDestroy() " + preDestroy, e);
+         throw new WeldException(ERROR_INVOKING_PRE_DESTROY, e, preDestroy);
       }
    }
 

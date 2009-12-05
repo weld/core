@@ -16,6 +16,8 @@
  */
 package org.jboss.weld;
 
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_MANAGER_ID;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -196,7 +198,7 @@ public class Container
       String id = manager.getId();
       if (manager.getId() == null)
       {
-         throw new IllegalArgumentException("Bean manager must not be null " + manager.toString());
+         throw new ForbiddenArgumentException(NULL_BEAN_MANAGER_ID, manager);
       }
       managers.put(id, manager);
       return id;
