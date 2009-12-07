@@ -86,7 +86,7 @@ public class Weld
    }
 
    /**
-    * Convenience method for shutting down the container.
+    * Shuts down Weld.
     */
    public void shutdown()
    {

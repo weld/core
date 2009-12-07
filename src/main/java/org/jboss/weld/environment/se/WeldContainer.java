@@ -67,6 +67,9 @@ public class WeldContainer
       return instanceManager.getEvents();
    }
 
+   /**
+    * Provides direct access to the BeanManager.
+    */
    public BeanManager getBeanManager()
    {
       return beanManager;
