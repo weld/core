@@ -23,7 +23,6 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 
 import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.InvalidOperationException;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -31,6 +30,7 @@ import org.jboss.weld.literal.BindingTypeLiteral;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
 import org.jboss.weld.literal.NormalScopeLiteral;
 import org.jboss.weld.literal.ScopeLiteral;
+import org.jboss.weld.literal.StereotypeLiteral;
 
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery
 {
@@ -69,7 +69,11 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
 
    public void addStereotype(Class<? extends Annotation> stereotype, Annotation... stereotypeDef)
    {
-      throw new InvalidOperationException();
+      getTypeStore().add(stereotype, new StereotypeLiteral());
+      for(Annotation a : stereotypeDef)
+      {
+         getTypeStore().add(stereotype, a);
+      }
    }
 
    public void addAnnotatedType(AnnotatedType<?> type)
