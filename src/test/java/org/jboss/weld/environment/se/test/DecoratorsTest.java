@@ -17,11 +17,10 @@
 package org.jboss.weld.environment.se.test;
 
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
 
+import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.environment.se.events.Shutdown;
 import org.jboss.weld.environment.se.test.decorators.CarDoor;
 import org.jboss.weld.environment.se.test.decorators.Door;
 import org.jboss.weld.environment.se.test.decorators.CarDoorAlarm;
@@ -37,59 +36,52 @@ import org.testng.annotations.Test;
 public class DecoratorsTest
 {
 
-    /**
-     * Test that decorators work as expected in SE.
-     */
-    @Test
-    public void testDecorators()
-    {
+   /**
+    * Test that decorators work as expected in SE.
+    */
+   @Test
+   public void testDecorators()
+   {
 
-        WeldContainer weld = new Weld().initialize();
-        BeanManager manager = weld.getBeanManager();
-       
-        CarDoor carDoor = WeldManagerUtils.getInstanceByType(manager, CarDoor.class);
-        Assert.assertNotNull(carDoor);
+      WeldContainer weld = new Weld().initialize();
+      BeanManager manager = weld.getBeanManager();
 
-        // the car door is alarmed
-        CarDoorAlarm.alarmActivated = false;
-        Assert.assertFalse(CarDoorAlarm.alarmActivated);
-        testDoor(carDoor);
-        Assert.assertTrue(CarDoorAlarm.alarmActivated);
+      CarDoor carDoor = WeldManagerUtils.getInstanceByType(manager, CarDoor.class);
+      Assert.assertNotNull(carDoor);
 
-        HouseDoor houseDoor = WeldManagerUtils.getInstanceByType(manager, HouseDoor.class);
-        Assert.assertNotNull(carDoor);
+      // the car door is alarmed
+      CarDoorAlarm.alarmActivated = false;
+      Assert.assertFalse(CarDoorAlarm.alarmActivated);
+      testDoor(carDoor);
+      Assert.assertTrue(CarDoorAlarm.alarmActivated);
 
-        // the house door is not alarmed
-        CarDoorAlarm.alarmActivated = false;
-        Assert.assertFalse(CarDoorAlarm.alarmActivated);
-        testDoor(houseDoor);
-        Assert.assertFalse(CarDoorAlarm.alarmActivated);
+      HouseDoor houseDoor = WeldManagerUtils.getInstanceByType(manager, HouseDoor.class);
+      Assert.assertNotNull(carDoor);
 
-        shutdownManager(manager);
-    }
+      // the house door is not alarmed
+      CarDoorAlarm.alarmActivated = false;
+      Assert.assertFalse(CarDoorAlarm.alarmActivated);
+      testDoor(houseDoor);
+      Assert.assertFalse(CarDoorAlarm.alarmActivated);
 
-    private void testDoor(Door door)
-    {
-        Assert.assertTrue(door.open());
-        Assert.assertTrue(door.isOpen());
-        Assert.assertFalse(door.close());
-        Assert.assertFalse(door.isOpen());
-        Assert.assertTrue(door.lock());
-        Assert.assertTrue(door.isLocked());
-        Assert.assertFalse(door.open());
-        Assert.assertFalse(door.isOpen());
-    }
+      shutdownManager(weld);
+   }
 
-    private void shutdownManager(BeanManager manager)
-    {
-        manager.fireEvent(manager, new ShutdownAnnotation());
-    }
+   private void testDoor(Door door)
+   {
+      Assert.assertTrue(door.open());
+      Assert.assertTrue(door.isOpen());
+      Assert.assertFalse(door.close());
+      Assert.assertFalse(door.isOpen());
+      Assert.assertTrue(door.lock());
+      Assert.assertTrue(door.isLocked());
+      Assert.assertFalse(door.open());
+      Assert.assertFalse(door.isOpen());
+   }
 
-    private static class ShutdownAnnotation extends AnnotationLiteral<Shutdown>
-    {
-
-        public ShutdownAnnotation()
-        {
-        }
-    }
+   private void shutdownManager(WeldContainer weld)
+   {
+      ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
+      shutdownManager.shutdown();
+   }
 }

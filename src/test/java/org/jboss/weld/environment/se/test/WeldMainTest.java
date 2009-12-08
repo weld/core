@@ -16,12 +16,9 @@
  */
 package org.jboss.weld.environment.se.test;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
-
+import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.environment.se.events.Shutdown;
 import org.jboss.weld.environment.se.test.beans.CustomEvent;
 import org.jboss.weld.environment.se.test.beans.InitObserverTestBean;
 import org.jboss.weld.environment.se.test.beans.MainTestBean;
@@ -53,7 +50,7 @@ public class WeldMainTest
       Assert.assertNotNull(paramsBean);
       Assert.assertNotNull(paramsBean.getParameters());
 
-      shutdownManager(weld.getBeanManager());
+      shutdownManager(weld);
    }
 
    /**
@@ -76,16 +73,9 @@ public class WeldMainTest
       Assert.assertFalse(InitObserverTestBean.isInitObserved());
    }
 
-   private void shutdownManager(BeanManager manager)
+   private void shutdownManager(WeldContainer weld)
    {
-      manager.fireEvent(manager, new ShutdownAnnotation());
-   }
-
-   private static class ShutdownAnnotation extends AnnotationLiteral<Shutdown>
-   {
-
-      public ShutdownAnnotation()
-      {
-      }
+      ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
+      shutdownManager.shutdown();
    }
 }

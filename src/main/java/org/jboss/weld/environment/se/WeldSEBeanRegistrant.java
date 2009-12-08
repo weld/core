@@ -35,6 +35,7 @@ public class WeldSEBeanRegistrant implements Extension
       event.addAnnotatedType(beanManager.createAnnotatedType(ShutdownManager.class));
       event.addAnnotatedType(beanManager.createAnnotatedType(ParametersFactory.class));
       event.addAnnotatedType(beanManager.createAnnotatedType(InstanceManager.class));
+      event.addAnnotatedType(beanManager.createAnnotatedType(Weld.class));
    }
 
 }
