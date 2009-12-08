@@ -272,7 +272,7 @@ public class Validator implements Service
    
    public void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager)
    {
-      if (!ij.isTransient() && !Beans.isPassivationCapableBean(resolvedBean))
+      if (!ij.isTransient() && !Beans.isPassivationCapableDependency(resolvedBean))
       {
          if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?, ?,?>)
          {

@@ -25,7 +25,6 @@ import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.injection.WeldInjectionPoint;
 
 /**
@@ -91,7 +90,9 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
 
    public abstract boolean isProxyable();
    
-   public abstract boolean isPassivationCapable();
+   public abstract boolean isPassivationCapableBean();
+   
+   public abstract boolean isPassivationCapableDependency();
 
    public boolean isProxyRequired()
    {

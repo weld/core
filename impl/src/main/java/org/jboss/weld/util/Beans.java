@@ -52,6 +52,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.decorator.Decorator;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
@@ -143,11 +144,41 @@ public class Beans
    {
       if (bean instanceof RIBean<?>)
       {
-         return ((RIBean<?>) bean).isPassivationCapable();
+         return ((RIBean<?>) bean).isPassivationCapableBean();
       }
       else
       {
          return Reflections.isSerializable(bean.getBeanClass());
+      }
+   }
+   
+   /**
+    * Tests if a bean is capable of having its state temporarily stored to
+    * secondary storage
+    * 
+    * @param bean The bean to inspect
+    * @return True if the bean is passivation capable
+    */
+   public static boolean isPassivationCapableDependency(Bean<?> bean)
+   {
+      if (bean instanceof RIBean<?>)
+      {
+         return ((RIBean<?>) bean).isPassivationCapableDependency();
+      }
+      else
+      {
+         if (Container.instance().deploymentServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal())
+         {
+            return true;
+         }
+         else if (bean.getScope().equals(Dependent.class) && isPassivationCapableBean(bean))
+         {
+            return true;
+         }
+         else
+         {
+            return false;
+         }
       }
    }
 

@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
@@ -48,6 +49,7 @@ import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
 import org.jboss.interceptor.registry.InterceptorRegistry;
 import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.Container;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.DeploymentException;
 import org.jboss.weld.ForbiddenStateException;
@@ -93,7 +95,8 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    private ManagedBean<?> specializedBean;
    
-   private boolean passivationCapable;
+   private boolean passivationCapableBean;
+   private boolean passivationCapableDependency;
 
    /**
     * Creates a simple, annotation defined Web Bean
@@ -277,35 +280,35 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    public void initializeAfterBeanDiscovery()
    {
       super.initializeAfterBeanDiscovery();
-      if (this.passivationCapable && this.hasDecorators())
+      if (this.passivationCapableBean && this.hasDecorators())
       {
          for (Decorator<?> decorator : this.getDecorators())
          {
             if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !Reflections.isSerializable(decorator.getBeanClass()))
             {
-               this.passivationCapable = false;
+               this.passivationCapableBean = false;
                break;
             }
          }
       }
-      if (this.passivationCapable && hasCdiBoundInterceptors())
+      if (this.passivationCapableBean && hasCdiBoundInterceptors())
       {
          for (SerializableContextual<Interceptor<?>, ?> interceptor : getManager().getCdiInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors())
          {
             if (!(PassivationCapable.class.isAssignableFrom(interceptor.get().getClass())) || !Reflections.isSerializable(interceptor.get().getBeanClass()))
             {
-               this.passivationCapable = false;
+               this.passivationCapableBean = false;
                break;
             }
          }
       }
-      if (this.passivationCapable && hasDirectlyDefinedInterceptors())
+      if (this.passivationCapableBean && hasDirectlyDefinedInterceptors())
       {
          for (Class<?> interceptorClass : getManager().getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors())
          {
             if (!Reflections.isSerializable(interceptorClass))
             {
-               this.passivationCapable = false;
+               this.passivationCapableBean = false;
                break;
             }
          }
@@ -314,13 +317,31 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    private void initPassivationCapable()
    {
-      this.passivationCapable = Reflections.isSerializable(getAnnotatedItem().getJavaClass());
+      this.passivationCapableBean = Reflections.isSerializable(getAnnotatedItem().getJavaClass());
+      if (Container.instance().deploymentServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal())
+      {
+         this.passivationCapableDependency = true;
+      }
+      else if (getScope().equals(Dependent.class) && passivationCapableBean)
+      {
+         this.passivationCapableDependency = true;
+      }
+      else
+      {
+         this.passivationCapableDependency = false;
+      }
    }
    
    @Override
-   public boolean isPassivationCapable()
+   public boolean isPassivationCapableBean()
    {
-      return passivationCapable;
+      return passivationCapableBean;
+   }
+   
+   @Override
+   public boolean isPassivationCapableDependency()
+   {
+      return passivationCapableDependency;
    }
 
    private void initEEInjectionPoints()
@@ -349,7 +370,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          throw new DefinitionException(BEAN_MUST_BE_DEPENDENT, type);
       }
       boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).isPassivating();
-      if (passivating && !isPassivationCapable())
+      if (passivating && !isPassivationCapableBean())
       {
          throw new DefinitionException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
       }

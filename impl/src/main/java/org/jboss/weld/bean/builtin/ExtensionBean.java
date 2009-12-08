@@ -68,7 +68,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
    }
    
    @Override
-   public boolean isPassivationCapable()
+   public boolean isPassivationCapableBean()
    {
       return passivationCapable;
    }

@@ -148,7 +148,14 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    }
 
    @Override
-   public boolean isPassivationCapable()
+   public boolean isPassivationCapableBean()
+   {
+      // Not relevant
+      return false;
+   }
+   
+   @Override
+   public boolean isPassivationCapableDependency()
    {
       // Not relevant
       return false;

@@ -176,7 +176,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
    }
    
    @Override
-   public boolean isPassivationCapable()
+   public boolean isPassivationCapableBean()
    {
       return true;
    }

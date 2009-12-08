@@ -53,6 +53,7 @@ import javax.inject.Inject;
 import javax.inject.Scope;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.Container;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.IllegalProductException;
 import org.jboss.weld.WeldException;
@@ -77,7 +78,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
    
    private Producer<T> producer;
-   private boolean passivationCapable;
+   private boolean passivationCapableBean;
+   private boolean passivationCapableDependency;
 
    /**
     * Constructor
@@ -170,11 +172,23 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    {
       if (getAnnotatedItem().isFinal() && !Serializable.class.isAssignableFrom(getAnnotatedItem().getJavaClass()))
       {
-         this.passivationCapable = false;
+         this.passivationCapableBean = false;
       }
       else
       {
-         this.passivationCapable = true;
+         this.passivationCapableBean = true;
+      }
+      if (Container.instance().deploymentServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal())
+      {
+         this.passivationCapableDependency = true;
+      }
+      else if (getScope().equals(Dependent.class) && passivationCapableBean)
+      {
+         this.passivationCapableDependency = true;
+      }
+      else
+      {
+         this.passivationCapableDependency = false;
       }
    }
    
@@ -185,9 +199,15 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    }
 
    @Override
-   public boolean isPassivationCapable()
+   public boolean isPassivationCapableBean()
    {
-      return passivationCapable;
+      return passivationCapableBean;
+   }
+   
+   @Override
+   public boolean isPassivationCapableDependency()
+   {
+      return passivationCapableDependency;
    }
    
    @Override

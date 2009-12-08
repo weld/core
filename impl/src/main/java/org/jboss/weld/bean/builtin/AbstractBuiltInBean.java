@@ -112,7 +112,13 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
    }
    
    @Override
-   public boolean isPassivationCapable()
+   public boolean isPassivationCapableBean()
+   {
+      return true;
+   }
+   
+   @Override
+   public boolean isPassivationCapableDependency()
    {
       return true;
    }

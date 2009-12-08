@@ -357,9 +357,15 @@ public class SessionBean<T> extends AbstractClassBean<T>
    }
    
    @Override
-   public boolean isPassivationCapable()
+   public boolean isPassivationCapableBean()
    {
       return getEjbDescriptor().isStateful();
+   }
+   
+   @Override
+   public boolean isPassivationCapableDependency()
+   {
+      return true;
    }
 
    public InternalEjbDescriptor<T> getEjbDescriptor()
