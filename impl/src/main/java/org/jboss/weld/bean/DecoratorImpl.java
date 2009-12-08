@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE;
 import static org.jboss.weld.logging.messages.BeanMessage.DECORATED_TYPE_PARAMETERIZED_DELEGATE_NOT;
 import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE;
 import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_ON_NON_INITIALIZER_METHOD;
@@ -23,12 +24,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_TYPE_PARAMETE
 import static org.jboss.weld.logging.messages.BeanMessage.NO_DELEGATE_FOR_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_DELEGATES_FOR_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
-import static org.jboss.weld.logging.messages.BeanMessage.ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Decorator;
-import javax.inject.Inject;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -39,6 +35,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javassist.util.proxy.ProxyObject;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.Decorator;
+import javax.inject.Inject;
+
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
 import org.jboss.weld.ForbiddenStateException;
@@ -178,7 +180,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
    {
       for (Type decoratedType : getDecoratedTypes())
       {
-         if (decoratedType instanceof Class)
+         if (decoratedType instanceof Class<?>)
          {
             if (!((Class<?>) decoratedType).isAssignableFrom(delegateInjectionPoint.getJavaClass()))
             {
@@ -197,7 +199,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
                throw new DefinitionException(DELEGATE_TYPE_PARAMETER_MISMATCH, decoratedType, this );
             }
             Type rawType = ((ParameterizedType) decoratedType).getRawType();
-            if (rawType instanceof Class && !((Class<?>) rawType).isAssignableFrom(delegateInjectionPoint.getJavaClass()))
+            if (rawType instanceof Class<?> && !((Class<?>) rawType).isAssignableFrom(delegateInjectionPoint.getJavaClass()))
             {
                throw new DefinitionException(DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE, decoratedType, this );
             }
