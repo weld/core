@@ -17,11 +17,7 @@
 package org.jboss.weld.environment.se;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.environment.se.events.Shutdown;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,21 +26,15 @@ public class ShutdownManager
 {
    
    private static Logger log = LoggerFactory.getLogger(ShutdownManager.class);
-   
-   @Inject 
-   private BeanManager manager;
 
    private boolean hasShutdownBeenCalled = false;
    
    private Bootstrap bootstrap;
    
    /**
-    * The observer of the optional shutdown request which will in turn fire the
-    * Shutdown event.
-    * 
-    * @param shutdownRequest
+    * Shutdown Weld SE gracefully.
     */
-   public void shutdown(@Observes @Shutdown BeanManager shutdownRequest)
+   public void shutdown()
    {
       synchronized (this)
       {
@@ -57,21 +47,12 @@ public class ShutdownManager
          else
          {
             log.debug("Skipping spurious call to shutdown");
-            log.trace("Spurious call to shutdown located at: ",
+            log.trace("Spurious call to shutdown from: ",
                     Thread.currentThread().getStackTrace());
          }
       }
    }
 
-   /**
-    * Shutdown Weld SE gracefully (call this as an alternative to firing the
-    * "@Shutdown Manager" event.
-    */
-   public void shutdown() 
-   {
-       shutdown(manager);
-   }
-   
    public void setBootstrap(Bootstrap bootstrap)
    {
       this.bootstrap = bootstrap;
