@@ -1,5 +1,7 @@
 package org.jboss.weld.tests.enterprise;
 
+import javax.ejb.EJBException;
+
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.IntegrationTest;
 import org.jboss.testharness.impl.packaging.Packaging;
@@ -18,6 +20,23 @@ public class EnterpriseBeanTest extends AbstractWeldTest
    {
       
    }
+   
+   @Test(description="WBRI-326")
+   public void testInvocationExceptionIsUnwrapped()
+   {
+      try
+      {
+         getCurrentManager().getInstanceByType(Fedora.class).causeRuntimeException();
+      }
+      catch (Throwable t)
+      {
+         if (t instanceof EJBException && t.getCause() instanceof BowlerHatException)
+         {
+            return;
+         }
+      }
+      assert false : "Expected a BowlerHatException to be thrown";
+   }   
    
    @Test(description="WBRI-275")
    public void testSLSBBusinessMethodThrowsRuntimeException()
