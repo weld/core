@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.se;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.jws.soap.InitParam;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -64,6 +67,7 @@ public class Weld
     * Boots Weld and creates and returns a WeldContainer instance, through which
     * beans and events can be accesed.
     */
+   @PostConstruct
    public WeldContainer initialize()
    {
 
