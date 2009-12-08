@@ -16,6 +16,9 @@
  */
 package org.jboss.weld;
 
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import ch.qos.cal10n.IMessageConveyor;
+
 
 /**
  * Thrown if a simple bean is dependent scoped and injected into a stateful 
@@ -29,6 +32,14 @@ public class UnserializableDependencyException extends DeploymentException
 {
 
    private static final long serialVersionUID = -6287506607413810688L;
+
+   // Exception messages
+   private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
+
+   public <E extends Enum<?>> UnserializableDependencyException(E key, Object... args)
+   {
+      super(messageConveyer.getMessage(key, args));
+   }
 
    public UnserializableDependencyException()
    {

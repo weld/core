@@ -16,6 +16,9 @@
  */
 package org.jboss.weld;
 
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import ch.qos.cal10n.IMessageConveyor;
+
 /**
  * 
  * @author Pete Muir
@@ -25,6 +28,14 @@ public class InconsistentSpecializationException extends DeploymentException
 
    private static final long serialVersionUID = 4359656880524913555L;
 
+   // Exception messages
+   private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
+
+   public <E extends Enum<?>> InconsistentSpecializationException(E key, Object... args)
+   {
+      super(messageConveyer.getMessage(key, args));
+   }
+   
    public InconsistentSpecializationException()
    {
       super();
@@ -42,7 +53,7 @@ public class InconsistentSpecializationException extends DeploymentException
 
    public InconsistentSpecializationException(Throwable throwable)
    {
-      super(throwable);
+      super(throwable.getLocalizedMessage(), throwable);
    }
 
    
