@@ -7,16 +7,14 @@
 
    <property name="maven.dir" location="${wbexamples.dir}/lib/maven" />
 
+   <property environment="env"/><!-- assign OS environment variables to an object visible to ANT -->
+
    <!-- preserve local build.properties if they're still being used -->
    <property file="${wbexamples.dir}/../jboss-as/local.build.properties" />
    <property file="${wbexamples.dir}/local.build.properties" />    
    
-   <!-- Use CATALINA_HOME or JBOSS_HOME from OS if no local values are set -->
-   <property environment="env"/><!-- assign OS environment variables to an object visible to ANT -->
-   <property name="jboss.home" value="${env.JBOSS_HOME}" /> 
-   <property name="tomcat.home" value="${env.CATALINA_HOME}" />
-   
    <property file="${wbexamples.dir}/../jboss-as/build.properties" />
+   <property file="${wbexamples.dir}/build.properties" />
 
    <property name="final.url" value="http://localhost:8080/${example.name}" />
 
