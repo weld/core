@@ -38,6 +38,28 @@
 
    <property name="artifact.dir" value="${artifact.target.dir}/${example.name}" />
 
+   <target name="check.jboss.home">
+      <fail message="Please set the JBOSS_HOME environment variable to a JBoss AS 6 installation. (Alternatively, you can set jboss.home in ${wbexamples.dir}/build.properties">
+         <condition>
+            <or>
+               <length string="${jboss.home}" trim="true" length="0"/>
+               <not><available file="${jboss.home}/bin/run.conf"/></not>
+            </or>
+         </condition>
+      </fail> 
+   </target>
+
+   <target name="check.tomcat.home">
+      <fail message="Please set the CATALINA_HOME environment variable to a Tomcat 6 installation. (Alternatively, you can set tomcat.home in ${wbexamples.dir}/build.properties">
+         <condition>
+            <or>
+               <length string="${tomcat.home}" trim="true" length="0"/>
+               <not><available file="${tomcat.home}/webapps" type="dir"/></not>
+            </or>
+         </condition>
+      </fail> 
+   </target>
+
    <target name="package">
       <maven target="install" basedir="${basedir}">
          <arg line="-f ${pom.file}" />
@@ -56,26 +78,26 @@
       </maven>
    </target>
 
-   <target name="explode" depends="package">
+   <target name="explode" depends="check.jboss.home, package">
       <mkdir dir="${jboss.home}/server/default/deploy/${example.name}.${type}" />
       <copy todir="${jboss.home}/server/default/deploy/${example.name}.${type}">
          <fileset dir="${artifact.dir}" />
       </copy>
    </target>
 
-   <target name="tomcat.explode" depends="tomcat.package">
+   <target name="tomcat.explode" depends="check.tomcat.home, tomcat.package">
       <mkdir dir="${tomcat.home}/webapps/${example.name}" />
       <copy todir="${tomcat.home}/webapps/${example.name}">
          <fileset dir="${artifact.dir}" />
       </copy>
    </target>
 
-   <target name="deploy" depends="package">
+   <target name="deploy" depends="check.jboss.home, package">
       <copy todir="${jboss.home}/server/default/deploy/" file="${artifact.target.dir}/${example.name}.${type}" />
       <echo message="The app can be accessed at ${final.url}" />
    </target>
 
-   <target name="tomcat.deploy" depends="tomcat.package">
+   <target name="tomcat.deploy" depends="check.tomcat.home, tomcat.package">
       <copy todir="${tomcat.home}/webapps/" file="${artifact.target.dir}/${example.name}.${type}" />
       <echo message="The app can be accessed at ${final.url}" />
    </target>
@@ -97,16 +119,16 @@
       <echo message="The app can be accessed at ${jboss.home}" />
    </target>
 
-   <target name="undeploy">
+   <target name="undeploy" depends="check.jboss.home">
       <delete dir="${jboss.home}/server/default/deploy/${example.name}.${type}" failonerror="false" />
       <delete file="${jboss.home}/server/default/deploy/${example.name}.${type}" failonerror="false" />
    </target>
 
-   <target name="tomcat.undeploy">
+   <target name="tomcat.undeploy" depends="check.tomcat.home">
       <delete file="${tomcat.home}/webapps/${example.name}.war" failonerror="false" />
    </target>
 
-   <target name="tomcat.unexplode">
+   <target name="tomcat.unexplode" depends="check.tomcat.home">
       <delete dir="${tomcat.home}/webapps/${example.name}" failonerror="false" />
    </target>
 
