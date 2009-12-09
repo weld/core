@@ -1,0 +1,135 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-core-jboss-as-updater</artifactId>
+   <packaging>pom</packaging>
+   <version>1.0.1-SNAPSHOT</version>
+
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-core-parent</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+      <relativePath>../parent/pom.xml</relativePath>
+   </parent>
+
+   <name>Weld JBoss AS Updater</name>
+
+   <!-- Minimal metadata -->
+   <description>A script to update Weld in JBoss AS</description>
+
+   <!-- SCM and distribution management -->
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld</url>
+   </scm>
+
+   <properties>
+      <weld-deployer.version>5.2.0-SNAPSHOT</weld-deployer.version>
+   </properties>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.jboss.weld.integration</groupId>
+         <artifactId>weld-jboss-int-deployer-assembly</artifactId>
+         <version>${weld-deployer.version}</version>
+         <type>zip</type>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+   </dependencies>
+   <build>
+      <defaultGoal>package</defaultGoal>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>copy-dependencies</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                     <goal>copy-dependencies</goal>
+                  </goals>
+                  <configuration>
+                     <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
+                     <overwriteSnapshots>true</overwriteSnapshots>
+                     <stripVersion>true</stripVersion>
+                     <includeArtifactIds>cdi-api,weld-api,weld-core,weld-jboss-int-deployer-assembly</includeArtifactIds>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>update-jboss-as</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+                  <configuration>
+                     <tasks>
+                        <property file="${project.directory}/local.build.properties" />
+                        <property file="${project.directory}/build.properties" />
+                        <property name="jboss.home" value="${env.JBOSS_HOME}" />
+                        <delete
+                           dir="${jboss.home}/server/default/deployers/weld.deployer"
+                           failonerror="false" />
+                        <delete
+                           dir="${jboss.home}/server/default/deployers/webbeans.deployer"
+                           failonerror="false" />
+
+                        <unzip dest="${project.build.directory}"
+                           src="${project.build.directory}/dependency/lib/weld-jboss-int-deployer-assembly.zip" />
+
+                        <copy todir="target/weld.deployer/lib-int/"
+                           overwrite="true">
+                           <fileset dir="target/dependency/lib">
+                              <include name="weld-core.jar" />
+                           </fileset>
+                        </copy>
+
+                        <copy todir="${jboss.home}/client"
+                           overwrite="true">
+                           <fileset dir="target/dependency/lib">
+                              <include name="weld-api.jar" />
+                              <include name="cdi-api.jar" />
+                           </fileset>
+                        </copy>
+                        <copy todir="${jboss.home}/common/lib"
+                           overwrite="true">
+                           <fileset dir="target/dependency/lib">
+                              <include name="weld-api.jar" />
+                              <include name="cdi-api.jar" />
+                           </fileset>
+                        </copy>
+
+                        <copy
+                           todir="${jboss.home}/server/default/deployers/weld.deployer">
+                           <fileset dir="target/weld.deployer">
+                              <include name="**/*" />
+                           </fileset>
+                        </copy>
+                     </tasks>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <configuration>
+               <skip>true</skip>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>
