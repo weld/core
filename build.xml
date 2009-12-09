@@ -1,138 +1,138 @@
 <project basedir="." name="example.build.script" default="restart">
-	<!--
-		Running this build requires that you set JBOSS_HOME to run on JBoss 6 
-		or CATALINA_HOME to run on Tomcat 6 as an environment variable in your OS.
-	-->
-	<dirname property="wbexamples.dir" file="${ant.file.example.build.script}" />
+   <!--
+      Running this build requires that you set JBOSS_HOME to run on JBoss 6 
+      or CATALINA_HOME to run on Tomcat 6 as an environment variable in your OS.
+   -->
+   <dirname property="wbexamples.dir" file="${ant.file.example.build.script}" />
 
-	<property name="maven.dir" location="${wbexamples.dir}/lib/maven" />
+   <property name="maven.dir" location="${wbexamples.dir}/lib/maven" />
 
-	<!-- preserve local build.properties if they're still being used -->
-	<property file="${wbexamples.dir}/../jboss-as/local.build.properties" />
-	<property file="${wbexamples.dir}/local.build.properties" />	 
-	
-	<!-- Use CATALINA_HOME or JBOSS_HOME from OS if no local values are set -->
-	<property environment="env"/><!-- assign OS environment variables to an object visible to ANT -->
-	<property name="jboss.home" value="${env.JBOSS_HOME}" /> 
-	<property name="tomcat.home" value="${env.CATALINA_HOME}" />
-	
-	<property file="${wbexamples.dir}/../jboss-as/build.properties" />
+   <!-- preserve local build.properties if they're still being used -->
+   <property file="${wbexamples.dir}/../jboss-as/local.build.properties" />
+   <property file="${wbexamples.dir}/local.build.properties" />    
+   
+   <!-- Use CATALINA_HOME or JBOSS_HOME from OS if no local values are set -->
+   <property environment="env"/><!-- assign OS environment variables to an object visible to ANT -->
+   <property name="jboss.home" value="${env.JBOSS_HOME}" /> 
+   <property name="tomcat.home" value="${env.CATALINA_HOME}" />
+   
+   <property file="${wbexamples.dir}/../jboss-as/build.properties" />
 
-	<property name="final.url" value="http://localhost:8080/${example.name}" />
+   <property name="final.url" value="http://localhost:8080/${example.name}" />
 
-	<property name="pom.file" value="pom.xml" />
+   <property name="pom.file" value="pom.xml" />
 
-	<property name="type" value="war" />
+   <property name="type" value="war" />
 
-	<condition property="war">
-		<equals arg1="${type}" arg2="war" />
-	</condition>
-	<condition property="ear">
-		<equals arg1="${type}" arg2="ear" />
-	</condition>
+   <condition property="war">
+      <equals arg1="${type}" arg2="war" />
+   </condition>
+   <condition property="ear">
+      <equals arg1="${type}" arg2="ear" />
+   </condition>
 
-	<condition property="artifact.target.dir" value="${basedir}/target">
-		<equals arg1="${type}" arg2="war" />
-	</condition>
-	<condition property="artifact.target.dir" value="${basedir}/ear/target">
-		<equals arg1="${type}" arg2="ear" />
-	</condition>
+   <condition property="artifact.target.dir" value="${basedir}/target">
+      <equals arg1="${type}" arg2="war" />
+   </condition>
+   <condition property="artifact.target.dir" value="${basedir}/ear/target">
+      <equals arg1="${type}" arg2="ear" />
+   </condition>
 
-	<property name="artifact.dir" value="${artifact.target.dir}/${example.name}" />
+   <property name="artifact.dir" value="${artifact.target.dir}/${example.name}" />
 
-	<target name="package">
-		<maven target="install" basedir="${basedir}">
-			<arg line="-f ${pom.file}" />
-		</maven>
-	</target>
+   <target name="package">
+      <maven target="install" basedir="${basedir}">
+         <arg line="-f ${pom.file}" />
+      </maven>
+   </target>
 
-	<target name="clean">
-		<maven target="clean" basedir="${basedir}">
-			<arg line="-f ${pom.file}" />
-		</maven>
-	</target>
+   <target name="clean">
+      <maven target="clean" basedir="${basedir}">
+         <arg line="-f ${pom.file}" />
+      </maven>
+   </target>
 
-	<target name="tomcat.package">
-		<maven target="install" basedir="${basedir}">
-			<arg line="-f ${pom.file} -Ptomcat" />
-		</maven>
-	</target>
+   <target name="tomcat.package">
+      <maven target="install" basedir="${basedir}">
+         <arg line="-f ${pom.file} -Ptomcat" />
+      </maven>
+   </target>
 
-	<target name="explode" depends="package">
-		<mkdir dir="${jboss.home}/server/default/deploy/${example.name}.${type}" />
-		<copy todir="${jboss.home}/server/default/deploy/${example.name}.${type}">
-			<fileset dir="${artifact.dir}" />
-		</copy>
-	</target>
+   <target name="explode" depends="package">
+      <mkdir dir="${jboss.home}/server/default/deploy/${example.name}.${type}" />
+      <copy todir="${jboss.home}/server/default/deploy/${example.name}.${type}">
+         <fileset dir="${artifact.dir}" />
+      </copy>
+   </target>
 
-	<target name="tomcat.explode" depends="tomcat.package">
-		<mkdir dir="${tomcat.home}/webapps/${example.name}" />
-		<copy todir="${tomcat.home}/webapps/${example.name}">
-			<fileset dir="${artifact.dir}" />
-		</copy>
-	</target>
+   <target name="tomcat.explode" depends="tomcat.package">
+      <mkdir dir="${tomcat.home}/webapps/${example.name}" />
+      <copy todir="${tomcat.home}/webapps/${example.name}">
+         <fileset dir="${artifact.dir}" />
+      </copy>
+   </target>
 
-	<target name="deploy" depends="package">
-		<copy todir="${jboss.home}/server/default/deploy/" file="${artifact.target.dir}/${example.name}.${type}" />
-		<echo message="The app can be accessed at ${final.url}" />
-	</target>
+   <target name="deploy" depends="package">
+      <copy todir="${jboss.home}/server/default/deploy/" file="${artifact.target.dir}/${example.name}.${type}" />
+      <echo message="The app can be accessed at ${final.url}" />
+   </target>
 
-	<target name="tomcat.deploy" depends="tomcat.package">
-		<copy todir="${tomcat.home}/webapps/" file="${artifact.target.dir}/${example.name}.${type}" />
-		<echo message="The app can be accessed at ${final.url}" />
-	</target>
+   <target name="tomcat.deploy" depends="tomcat.package">
+      <copy todir="${tomcat.home}/webapps/" file="${artifact.target.dir}/${example.name}.${type}" />
+      <echo message="The app can be accessed at ${final.url}" />
+   </target>
 
-	<target name="restart.war" depends="explode" if="war">
-		<touch file="${jboss.home}/server/default/deploy/${example.name}.war/WEB-INF/web.xml" />
-	</target>
+   <target name="restart.war" depends="explode" if="war">
+      <touch file="${jboss.home}/server/default/deploy/${example.name}.war/WEB-INF/web.xml" />
+   </target>
 
-	<target name="tomcat.restart" depends="tomcat.explode" if="war">
-		<touch file="${tomcat.home}/webapps/${example.name}/WEB-INF/web.xml" />
-	</target>
+   <target name="tomcat.restart" depends="tomcat.explode" if="war">
+      <touch file="${tomcat.home}/webapps/${example.name}/WEB-INF/web.xml" />
+   </target>
 
-	<target name="restart.ear" depends="explode" if="ear">
-		<touch file="${jboss.home}/server/default/deploy/${example.name}.ear/META-INF/application.xml" />
-	</target>
+   <target name="restart.ear" depends="explode" if="ear">
+      <touch file="${jboss.home}/server/default/deploy/${example.name}.ear/META-INF/application.xml" />
+   </target>
 
-	<target name="restart" depends="restart.war, restart.ear">
-		<echo message="The app can be accessed at ${final.url}" />
-		<echo message="The app can be accessed at ${jboss.home}" />
-	</target>
+   <target name="restart" depends="restart.war, restart.ear">
+      <echo message="The app can be accessed at ${final.url}" />
+      <echo message="The app can be accessed at ${jboss.home}" />
+   </target>
 
-	<target name="undeploy">
-		<delete dir="${jboss.home}/server/default/deploy/${example.name}.${type}" failonerror="false" />
-		<delete file="${jboss.home}/server/default/deploy/${example.name}.${type}" failonerror="false" />
-	</target>
+   <target name="undeploy">
+      <delete dir="${jboss.home}/server/default/deploy/${example.name}.${type}" failonerror="false" />
+      <delete file="${jboss.home}/server/default/deploy/${example.name}.${type}" failonerror="false" />
+   </target>
 
-	<target name="tomcat.undeploy">
-		<delete file="${tomcat.home}/webapps/${example.name}.war" failonerror="false" />
-	</target>
+   <target name="tomcat.undeploy">
+      <delete file="${tomcat.home}/webapps/${example.name}.war" failonerror="false" />
+   </target>
 
-	<target name="tomcat.unexplode">
-		<delete dir="${tomcat.home}/webapps/${example.name}" failonerror="false" />
-	</target>
+   <target name="tomcat.unexplode">
+      <delete dir="${tomcat.home}/webapps/${example.name}" failonerror="false" />
+   </target>
 
 
-	<macrodef name="maven">
-		<attribute name="target" />
-		<attribute name="basedir" />
-		<element name="args" implicit="true" optional="true" />
-		<sequential>
-			<java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}" failonerror="true">
-				<classpath>
-					<fileset dir="${maven.dir}/boot">
-						<include name="*.jar" />
-					</fileset>
-					<fileset dir="${maven.dir}/bin">
-						<include name="*.*" />
-					</fileset>
-				</classpath>
-				<sysproperty key="classworlds.conf" value="${maven.dir}/bin/m2.conf" />
-				<sysproperty key="maven.home" value="${maven.dir}" />
-				<args />
-				<arg line="@{target}" />
-			</java>
-		</sequential>
-	</macrodef>
+   <macrodef name="maven">
+      <attribute name="target" />
+      <attribute name="basedir" />
+      <element name="args" implicit="true" optional="true" />
+      <sequential>
+         <java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}" failonerror="true">
+            <classpath>
+               <fileset dir="${maven.dir}/boot">
+                  <include name="*.jar" />
+               </fileset>
+               <fileset dir="${maven.dir}/bin">
+                  <include name="*.*" />
+               </fileset>
+            </classpath>
+            <sysproperty key="classworlds.conf" value="${maven.dir}/bin/m2.conf" />
+            <sysproperty key="maven.home" value="${maven.dir}" />
+            <args />
+            <arg line="@{target}" />
+         </java>
+      </sequential>
+   </macrodef>
 
 </project>
