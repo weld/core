@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <artifactId>weld-core-parent</artifactId>
       <groupId>org.jboss.weld</groupId>
@@ -144,6 +145,36 @@
                <outputName>test-report</outputName>
             </configuration>
          </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>copy</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                     <goal>copy</goal>
+                  </goals>
+                  <configuration>
+                     <stripVersion>true</stripVersion>
+                     <artifactItems>
+                        <artifactItem>
+                           <groupId>org.jboss.test-harness</groupId>
+                           <artifactId>jboss-test-harness</artifactId>
+                           <overWrite>true</overWrite>
+                           <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                        </artifactItem>
+                        <artifactItem>
+                           <groupId>org.glassfish.web</groupId>
+                           <artifactId>el-impl</artifactId>
+                           <overWrite>true</overWrite>
+                           <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
+                        </artifactItem>
+                     </artifactItems>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
    </build>
 
@@ -157,36 +188,6 @@
          </activation>
          <build>
             <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-dependency-plugin</artifactId>
-                  <executions>
-                     <execution>
-                        <id>copy</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                           <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                           <stripVersion>true</stripVersion>
-                           <artifactItems>
-                              <artifactItem>
-                                 <groupId>org.jboss.test-harness</groupId>
-                                 <artifactId>jboss-test-harness</artifactId>
-                                 <overWrite>true</overWrite>
-                                 <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
-                              </artifactItem>
-                              <artifactItem>
-                                 <groupId>org.glassfish.web</groupId>
-                                 <artifactId>el-impl</artifactId>
-                                 <overWrite>true</overWrite>
-                                 <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
-                              </artifactItem>
-                           </artifactItems>
-                        </configuration>
-                     </execution>
-                  </executions>
-               </plugin>
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-surefire-plugin</artifactId>
