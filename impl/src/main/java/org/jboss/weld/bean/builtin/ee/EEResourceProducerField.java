@@ -36,7 +36,6 @@ import org.jboss.weld.bean.builtin.CallableMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies;
@@ -59,11 +58,13 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
       
       private final String beanId;
       private transient T instance;
+      private final CreationalContext<T> creationalContext;
 
-      public EEResourceCallable(BeanManagerImpl beanManager, ProducerField<?, T> producerField/*, CreationalContext<T> creationalContext*/)
+      public EEResourceCallable(BeanManagerImpl beanManager, ProducerField<?, T> producerField, CreationalContext<T> creationalContext)
       {
          super(beanManager);
          this.beanId = producerField.getId();
+         this.creationalContext = creationalContext;
       }
 
       public T call() throws Exception
@@ -76,7 +77,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
                @SuppressWarnings("unchecked")
                EEResourceProducerField<?, T> bean = (EEResourceProducerField<?, T>) contextual;
                
-               this.instance = bean.createUnderlying(getBeanManager().createCreationalContext(bean));
+               this.instance = bean.createUnderlying(creationalContext);
             }
             else
             {
@@ -106,31 +107,10 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
    {
       return new EEResourceProducerField<X, T>(field, declaringBean, manager);
    }
-   
-   private final T proxy;
 
    protected EEResourceProducerField(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(field, declaringBean, manager);
-      try
-      {
-         if (Reflections.isFinal(field.getJavaClass()) || Serializable.class.isAssignableFrom(field.getJavaClass()))
-         {
-            this.proxy = null;
-         }
-         else
-         {
-            this.proxy = Proxies.<T>createProxy(new CallableMethodHandler(new EEResourceCallable<T>(getManager(), this)), TypeInfo.of(getTypes()).add(Serializable.class));
-         }
-      }
-      catch (InstantiationException e)
-      {
-         throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
-      }
    }
    
    @Override
@@ -157,13 +137,24 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
    @Override
    public T create(CreationalContext<T> creationalContext)
    {
-      if (proxy == null)
+      try
       {
-         return createUnderlying(creationalContext);
+         if (Reflections.isFinal(getAnnotatedItem().getJavaClass()) || Serializable.class.isAssignableFrom(getAnnotatedItem().getJavaClass()))
+         {
+            return createUnderlying(creationalContext);
+         }
+         else
+         {
+            return Proxies.<T>createProxy(new CallableMethodHandler(new EEResourceCallable<T>(getManager(), this, creationalContext)), TypeInfo.of(getTypes()).add(Serializable.class));
+         }
       }
-      else
+      catch (InstantiationException e)
       {
-         return proxy;
+         throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
       }
    }
    

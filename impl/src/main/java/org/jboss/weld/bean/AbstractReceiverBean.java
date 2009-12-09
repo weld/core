@@ -62,7 +62,7 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
     */
    protected Object getReceiver(CreationalContext<?> creationalContext)
    {
-      // This is a bit dangerous, as it means that producer methods can end of
+      // This is a bit dangerous, as it means that producer methods can end up
       // executing on partially constructed instances. Also, it's not required
       // by the spec...
       if (getAnnotatedItem().isStatic())

@@ -54,19 +54,19 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
       incompleteInstances.put(contextual, incompleteInstance);
    }
    
-   public <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> Contextual)
+   public <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> contextual)
    {
-      return new CreationalContextImpl<S>(Contextual, new HashMap<Contextual<?>, Object>(incompleteInstances), dependentInstancesStore);
+      return new CreationalContextImpl<S>(contextual, incompleteInstances == null ? new HashMap<Contextual<?>, Object>() : new HashMap<Contextual<?>, Object>(incompleteInstances), dependentInstancesStore);
    }
    
    public <S> S getIncompleteInstance(Contextual<S> bean)
    {
-      return (S) incompleteInstances.get(bean);
+      return incompleteInstances == null ? null : (S) incompleteInstances.get(bean);
    }
    
    public boolean containsIncompleteInstance(Contextual<?> bean)
    {
-      return incompleteInstances.containsKey(bean);
+      return incompleteInstances == null ? false : incompleteInstances.containsKey(bean);
    }
    
    public DependentInstancesStore getParentDependentInstancesStore()
@@ -77,7 +77,10 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
    public void release()
    {
       dependentInstancesStore.destroyDependentInstances();
-      incompleteInstances.clear();
+      if (incompleteInstances != null)
+      {
+         incompleteInstances.clear();
+      }
    }
    
 }
