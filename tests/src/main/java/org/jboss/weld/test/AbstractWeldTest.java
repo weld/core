@@ -180,13 +180,13 @@ public abstract class AbstractWeldTest extends AbstractTest
    @SuppressWarnings("unchecked")
    public <T> T createContextualInstance(Class<T> beanType, Annotation... bindings)
    {
-      return (T) createContextualInstance((Type) beanType, bindings);
-   }
-
-   public Object createContextualInstance(Type beanType, Annotation... bindings)
-   {
       Bean<?> bean = getBean(beanType, bindings);
-      return getCurrentManager().getReference(bean, beanType, getCurrentManager().createCreationalContext(bean));
+      return (T) getCurrentManager().getReference(bean, beanType, getCurrentManager().createCreationalContext(bean));
+   }
+   
+   public <T> T getReference(Bean<T> bean)
+   {
+      return (T) getCurrentManager().getReference(bean, bean.getBeanClass(), getCurrentManager().createCreationalContext(bean));
    }
 
    @SuppressWarnings("unchecked")
