@@ -21,7 +21,7 @@ public class EnterpriseBeanTest extends AbstractWeldTest
       
    }
    
-   @Test(description="WBRI-326")
+   @Test(description="WELD-326")
    public void testInvocationExceptionIsUnwrapped()
    {
       try

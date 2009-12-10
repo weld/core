@@ -19,7 +19,6 @@ package org.jboss.weld.xml;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -73,7 +72,7 @@ public class EnabledClasses
    
    private Collection<Class<?>> getClassesInElements(List<BeansXmlElement> elements)
    {
-      LinkedHashSet<Class<?>> classes = new LinkedHashSet<Class<?>>();
+      List<Class<?>> classes = new ArrayList<Class<?>>();
       for (BeansXmlElement element : elements)
       {
          classes.addAll(element.getClasses(resourceLoader));

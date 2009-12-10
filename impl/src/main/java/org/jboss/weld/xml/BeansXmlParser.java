@@ -30,7 +30,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.jboss.weld.DeploymentException;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -102,11 +101,11 @@ public class BeansXmlParser
       }
       catch (SAXException e)
       {
-         throw new DeploymentException(PARSING_ERROR, e, beansXml.toString());
+         throw new WeldXmlException(PARSING_ERROR, e, beansXml.toString());
       }
       catch (IOException e)
       {
-         throw new DeploymentException(LOAD_ERROR, e, beansXml.toString());
+         throw new WeldXmlException(LOAD_ERROR, e, beansXml.toString());
       }
       finally
       {
@@ -133,6 +132,10 @@ public class BeansXmlParser
 
    private boolean isBeansXmlOK(URL beansXml)
    {
+      if (beansXml == null)
+      {
+         throw new WeldXmlException(LOAD_ERROR, "null-URL");
+      }
       InputStream in = null;
       try
       {

@@ -22,8 +22,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.weld.DeploymentException;
-import org.jboss.weld.logging.messages.XmlMessage;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.dom.NodeListIterable;
@@ -40,32 +38,12 @@ public class BeansXmlElement
 {
    private URL file;
    private Element element;
-   private List<String> classNames;
 
    private BeansXmlElement(URL file, Element element)
    {
       super();
       this.file = file;
       this.element = element;
-      classNames = new ArrayList<String>();
-   }
-
-   public BeansXmlElement validateWithMessage(XmlMessage multipleViolationMessage)
-   {
-      for (Node child : new NodeListIterable(element.getChildNodes()))
-      {
-         String className = getClassNameFromNode(child);
-         if (className == null)
-         {
-            continue;
-         }
-         if (classNames.contains(className))
-         {
-            throw new DeploymentException(multipleViolationMessage);
-         }
-         classNames.add(className);
-      }
-      return this;
    }
 
    private String getClassNameFromNode(Node node)
@@ -89,15 +67,20 @@ public class BeansXmlElement
    public List<Class<?>> getClasses(ResourceLoader resourceLoader)
    {
       List<Class<?>> classes = new ArrayList<Class<?>>();
-      for (String className : classNames)
+      for (Node child : new NodeListIterable(element.getChildNodes()))
       {
+         String className = getClassNameFromNode(child);
+         if (className == null)
+         {
+            continue;
+         }
          try
          {
             classes.add(resourceLoader.classForName(className));
          }
          catch (ResourceLoadingException e)
          {
-            throw new DeploymentException(CANNOT_LOAD_CLASS, className, file);
+            throw new WeldXmlException(CANNOT_LOAD_CLASS, className, file);
          }
       }
       return classes;

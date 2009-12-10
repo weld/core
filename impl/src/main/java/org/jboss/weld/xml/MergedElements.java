@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.weld.DeploymentException;
 import org.jboss.weld.logging.messages.XmlMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,19 +49,17 @@ public class MergedElements
       decoratorsElements.addAll(getNamedElement(url, documentElement, "decorators", MULTIPLE_DECORATORS));
    }
 
-   // TODO: look over exception message when multiple blocks or multiple
-   // classes. Now they're the same.
    private List<BeansXmlElement> getNamedElement(URL url, Element beans, String name, XmlMessage multipleViolationMessage)
    {
       List<BeansXmlElement> elements = new ArrayList<BeansXmlElement>();
       NodeList nodeList = beans.getElementsByTagName(name);
       if (nodeList.getLength() > 1)
       {
-         throw new DeploymentException(multipleViolationMessage);
+         throw new WeldXmlException(multipleViolationMessage);
       }
       else if (nodeList.getLength() == 1)
       {
-         BeansXmlElement element = BeansXmlElement.of(url, nodeList.item(0)).validateWithMessage(multipleViolationMessage);
+         BeansXmlElement element = BeansXmlElement.of(url, nodeList.item(0));
          elements.add(element);
       }
       return elements;
