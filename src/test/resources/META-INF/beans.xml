@@ -17,11 +17,12 @@
 
 -->
 <beans>
-    <interceptors>
-        <class>org.jboss.weld.environment.se.test.interceptors.RecordingInterceptor</class>
-        <class>org.jboss.weld.environment.se.test.interceptors.AggregatingInterceptor</class>
-    </interceptors>
-    <decorators>
-        <class>org.jboss.weld.environment.se.test.decorators.CarDoorAlarm</class>
-    </decorators>
+   <interceptors>
+      <class>org.jboss.weld.environment.se.test.interceptors.RecordingInterceptor</class>
+      <class>org.jboss.weld.environment.se.test.interceptors.AggregatingInterceptor</class>
+   </interceptors>
+   <decorators>
+      <class>org.jboss.weld.environment.se.test.decorators.CarDoorAlarm</class>
+      <class>org.jboss.weld.environment.se.threading.RunnableDecorator</class>
+   </decorators>
 </beans>

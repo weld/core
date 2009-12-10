@@ -17,8 +17,6 @@
 package org.jboss.weld.environment.se;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.jws.soap.InitParam;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;

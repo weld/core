@@ -16,26 +16,46 @@
  */
 package org.jboss.weld.environment.se;
 
+import org.jboss.weld.environment.se.threading.RunnableDecorator;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import org.jboss.weld.context.api.BeanStore;
+import org.jboss.weld.context.beanstore.HashMapBeanStore;
 import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
+import org.jboss.weld.environment.se.contexts.ThreadContext;
 
 /**
- * Explicitly registers all of the 'built-in' Java SE related beans.
+ * Explicitly registers all of the 'built-in' Java SE related beans and contexts.
  * @author Peter Royle
  */
 public class WeldSEBeanRegistrant implements Extension
 {
 
-   public void registerWeldSEBeans(@Observes BeforeBeanDiscovery event, BeanManager beanManager)
+   public static ThreadContext THREAD_CONTEXT = null;
+
+   public void registerWeldSEBeans(@Observes BeforeBeanDiscovery event, BeanManager manager)
    {
-      event.addAnnotatedType(beanManager.createAnnotatedType(ShutdownManager.class));
-      event.addAnnotatedType(beanManager.createAnnotatedType(ParametersFactory.class));
-      event.addAnnotatedType(beanManager.createAnnotatedType(InstanceManager.class));
-      event.addAnnotatedType(beanManager.createAnnotatedType(Weld.class));
+      event.addAnnotatedType(manager.createAnnotatedType(ShutdownManager.class));
+      event.addAnnotatedType(manager.createAnnotatedType(ParametersFactory.class));
+      event.addAnnotatedType(manager.createAnnotatedType(InstanceManager.class));
+      event.addAnnotatedType(manager.createAnnotatedType(Weld.class));
+      event.addAnnotatedType(manager.createAnnotatedType(RunnableDecorator.class));
    }
 
+   public void registerWeldSEContexts(@Observes AfterBeanDiscovery event)
+   {
+      // set up this thread's bean store
+      BeanStore beanStore = new HashMapBeanStore();
+      final ThreadContext threadContext = new ThreadContext();
+      threadContext.setBeanStore(beanStore);
+
+      // activate and add context
+      threadContext.setActive(true);
+      event.addContext(threadContext);
+      THREAD_CONTEXT = threadContext;
+   }
 }
