@@ -18,6 +18,9 @@
 package org.jboss.weld;
 
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+
+import java.util.List;
+
 import ch.qos.cal10n.IMessageConveyor;
 
 /**
@@ -32,19 +35,94 @@ public class WeldException extends RuntimeException
    // Exception messages
    private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
 
+   private String message = null;
+
+   /**
+    * Default constructor mostly for serialization purposes.
+    */
+   protected WeldException()
+   {
+      super();
+   }
+
+   /**
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
+    */
    public WeldException(Throwable throwable)
    {
       super(throwable.getLocalizedMessage(), throwable);
+      this.message = throwable.getLocalizedMessage();
    }
 
+   /**
+    * Creates a new exception with the given localized message key and optional
+    * arguments for the message.
+    * 
+    * @param <E> The enumeration type for the message keys
+    * @param key The localized message to use
+    * @param args Optional arguments to insert into the message
+    */
    public <E extends Enum<?>> WeldException(E key, Object... args)
    {
       super(messageConveyer.getMessage(key, args));
+      this.message = messageConveyer.getMessage(key, args);
    }
 
+   /**
+    * Creates a new exception with the given localized message key, the cause
+    * for this exception and optional arguments for the message.
+    * 
+    * @param <E> The enumeration type for the message keys
+    * @param key The localized message to use
+    * @param throwable The cause for this exception
+    * @param args Optional arguments to insert into the message
+    */
    public <E extends Enum<?>> WeldException(E key, Throwable throwable, Object... args)
    {
       super(messageConveyer.getMessage(key, args), throwable);
+      this.message = messageConveyer.getMessage(key, args);
    }
 
+   /**
+    * Creates a new exception based on a list of throwables.  The throwables are not
+    * used as the cause, but the message from each throwable is included as the message
+    * for this exception.
+    * 
+    * @param errors A list of throwables to use in the message
+    */
+   public WeldException(List<Throwable> errors)
+   {
+      super();
+      StringBuilder errorMessage = new StringBuilder();
+      boolean firstError = true;
+      for (Throwable throwable : errors)
+      {
+         if (!firstError)
+         {
+            errorMessage.append('\n');
+         }
+         errorMessage.append(throwable.getLocalizedMessage());
+      }
+      setMessage(errorMessage.toString());
+   }
+
+   protected void setMessage(String message)
+   {
+      this.message = message;
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message;
+   }
+   
 }

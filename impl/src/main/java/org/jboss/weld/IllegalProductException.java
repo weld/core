@@ -35,6 +35,14 @@ public class IllegalProductException extends javax.enterprise.inject.IllegalProd
    // Exception messages
    private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
 
+   /**
+    * Creates a new exception with the given localized message key and optional
+    * arguments for the message.
+    * 
+    * @param <E> The enumeration type for the message keys
+    * @param key The localized message to use
+    * @param args Optional arguments to insert into the message
+    */
    public <E extends Enum<?>> IllegalProductException(E key, Object... args)
    {
       super(messageConveyer.getMessage(key, args));

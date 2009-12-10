@@ -16,87 +16,68 @@
  */
 package org.jboss.weld;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-
 import java.util.List;
-
-import ch.qos.cal10n.IMessageConveyor;
 
 /**
  * Thrown if an deployment exception occurs.
  * 
  * @author Pete Muir
  */
-public class DeploymentException extends RuntimeException
+public class DeploymentException extends WeldException
 {
    private static final long serialVersionUID = 8014646336322875707L;
-
-   // Exception messages
-   private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
-
-   private String message = null;
 
    public DeploymentException()
    {
       super();
    }
 
+   /**
+    * Creates a new exception with the given localized message key and optional
+    * arguments for the message.
+    * 
+    * @param <E> The enumeration type for the message keys
+    * @param key The localized message to use
+    * @param args Optional arguments to insert into the message
+    */
    public <E extends Enum<?>> DeploymentException(E key, Object... args)
    {
-      super();
-      this.message = messageConveyer.getMessage(key, args);
+      super(key, args);
    }
 
+   /**
+    * Creates a new exception with the given localized message key, the cause
+    * for this exception and optional arguments for the message.
+    * 
+    * @param <E> The enumeration type for the message keys
+    * @param key The localized message to use
+    * @param throwable The cause for this exception
+    * @param args Optional arguments to insert into the message
+    */
    public <E extends Enum<?>> DeploymentException(E key, Throwable throwable, Object... args)
    {
-      super(throwable);
-      this.message = messageConveyer.getMessage(key, args);
+      super(key, throwable, args);
    }
 
-   public DeploymentException(String message, Throwable throwable)
-   {
-      super(throwable);
-      this.message = message;
-   }
-
-   public DeploymentException(String message)
-   {
-      super();
-      this.message = message;
-   }
-
+   /**
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
+    */
    public DeploymentException(Throwable throwable)
    {
       super(throwable);
-      this.message = throwable.getLocalizedMessage();
    }
    
+   /**
+    * Creates a new exception based on a list of throwables.  The throwables are not
+    * used as the cause, but the message from each throwable is included as the message
+    * for this exception.
+    * 
+    * @param errors A list of throwables to use in the message
+    */
    public DeploymentException(List<Throwable> errors)
    {
-      super();
-      StringBuilder errorMessage = new StringBuilder();
-      boolean firstError = true;
-      for (Throwable throwable : errors)
-      {
-         if (!firstError)
-         {
-            errorMessage.append('\n');
-         }
-         errorMessage.append(throwable.getLocalizedMessage());
-      }
-      message = errorMessage.toString();
+      super(errors);
    }
-
-   @Override
-   public String getLocalizedMessage()
-   {
-      return getMessage();
-   }
-
-   @Override
-   public String getMessage()
-   {
-      return message;
-   }
-   
 }

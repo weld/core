@@ -20,6 +20,8 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.AMBIGUOUS_EL_NAME;
+import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREFIX;
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_SPECIALIZED_TOO_MANY_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_SPECIFIED_TWICE;
@@ -338,11 +340,11 @@ public class Validator implements Service
          Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(namedAccessibleBeans.get(name));
          if (resolvedBeans.size() > 1)
          {
-            throw new DeploymentException("An unresolvable ambiguous EL name exists for " + name + "; found " + resolvedBeans );
+            throw new DeploymentException(AMBIGUOUS_EL_NAME, name, resolvedBeans );
          }
          if (accessibleNamespaces.contains(name))
          {
-            throw new DeploymentException("The bean name " + name + " is used as a prefix for another bean");
+            throw new DeploymentException(BEAN_NAME_IS_PREFIX, name);
          }
       }
    }

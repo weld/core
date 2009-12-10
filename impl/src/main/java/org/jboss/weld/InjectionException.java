@@ -33,16 +33,37 @@ public class InjectionException extends javax.enterprise.inject.InjectionExcepti
    // Exception messages
    private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
 
+   /**
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
+    */
    public InjectionException(Throwable throwable)
    {
       super(throwable.getLocalizedMessage(), throwable);
    }
 
+   /**
+    * Creates a new exception with an arbitrary message and the cause of the
+    * exception.  It is not recommended to use this constructor since the
+    * message cannot be localized.
+    * 
+    * @param message The error message
+    * @param throwable The cause of the exception or wrapped throwable
+    */
    public InjectionException(String message, Throwable throwable)
    {
       super(message, throwable);
    }
 
+   /**
+    * Creates a new exception with the given localized message key and optional
+    * arguments for the message.
+    * 
+    * @param <E> The enumeration type for the message keys
+    * @param key The localized message to use
+    * @param args Optional arguments to insert into the message
+    */
    public <E extends Enum<?>> InjectionException(E key, Object... args)
    {
       super(messageConveyer.getMessage(key, args));

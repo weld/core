@@ -16,8 +16,6 @@
  */
 package org.jboss.weld;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import ch.qos.cal10n.IMessageConveyor;
 
 /**
  * Thrown if an injection point of primitive type resolves to a bean which may
@@ -30,29 +28,24 @@ public class NullableDependencyException extends DeploymentException
 
    private static final long serialVersionUID = 6877485218767005761L;
 
-   // Exception messages
-   private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
-
+   /**
+    * Creates a new exception with the given localized message key and optional
+    * arguments for the message.
+    * 
+    * @param <E> The enumeration type for the message keys
+    * @param key The localized message to use
+    * @param args Optional arguments to insert into the message
+    */
    public <E extends Enum<?>> NullableDependencyException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
+      super(key, args);
    }
    
-   public NullableDependencyException()
-   {
-      super();
-   }
-
-   public NullableDependencyException(String message, Throwable throwable)
-   {
-      super(message, throwable);
-   }
-
-   public NullableDependencyException(String message)
-   {
-      super(message);
-   }
-
+   /**
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
+    */
    public NullableDependencyException(Throwable throwable)
    {
       super(throwable);
