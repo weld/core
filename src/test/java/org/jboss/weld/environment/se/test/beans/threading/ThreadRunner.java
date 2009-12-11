@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test;
+package org.jboss.weld.environment.se.test.beans.threading;
 
+import org.jboss.weld.environment.se.test.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jboss.weld.environment.se.test.beans.threading.SingletonCounter;
-import org.jboss.weld.environment.se.test.beans.threading.ThreadCounter;
 
 import static org.testng.Assert.assertEquals;
 

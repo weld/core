@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.se.test;
 
+import org.jboss.weld.environment.se.test.beans.threading.ThreadRunner;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -34,8 +35,8 @@ import static org.testng.Assert.assertEquals;
 public class ThreadContextTest
 {
 
-   static final int NUM_THREADS = 10;
-   static final int NUM_LOOPS = 10;
+   public static final int NUM_THREADS = 10;
+   public static final int NUM_LOOPS = 10;
 
    @Test
    public void testThreadContext()
