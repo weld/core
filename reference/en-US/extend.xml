@@ -182,19 +182,18 @@ MyBean(MyExtension myExtension) {
          observers and contexts programmatically.
       </para>
     
-<programlisting role="JAVA"><![CDATA[public interface Manager {
+<programlisting role="JAVA"><![CDATA[public interface BeanManager {
    public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx);
    public Object getInjectableReference(InjectionPoint ij, CreationalContext<?> ctx);
    public <T> CreationalContext<T> createCreationalContext(Contextual<T> contextual);
-   public Set<Bean<?>> getBeans(Type beanType, Annotation... bindings);
+   public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers);
    public Set<Bean<?>> getBeans(String name);
-   public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean);
    public Bean<?> getPassivationCapableBean(String id);
    public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans);
    public void validate(InjectionPoint injectionPoint);
-   public void fireEvent(Object event, Annotation... bindings);
-   public <T> Set<ObserverMethod<?, T>> resolveObserverMethods(T event, Annotation... bindings);
-   public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... bindings);
+   public void fireEvent(Object event, Annotation... qualifiers);
+   public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... qualifiers);
+   public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... qualifiers);
    public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings);
    public boolean isScope(Class<? extends Annotation> annotationType);
    public boolean isNormalScope(Class<? extends Annotation> annotationType);
@@ -255,10 +254,10 @@ AnnotatedType<SomeFrameworkComponent> type = beanManager.createAnnotatedType(Som
 InjectionTarget<SomeFrameworkComponent> it = beanManager.createInjectionTarget(type);
 
 //each instance needs its own CDI CreationalContext
-CreationalContext instanceContext = beanManager.createCreationalContext(null);
+CreationalContext ctx = beanManager.createCreationalContext(null);
 
 //instantiate the framework component and inject its dependencies
-SomeFrameworkComponent instance = it.produce(instanceContext);  //call the constructor
+SomeFrameworkComponent instance = it.produce(ctx);  //call the constructor
 it.inject(instance, ctx);  //call initializer methods and perform field injection
 it.postConstruct(instance);  //call the @PostConstruct method
 

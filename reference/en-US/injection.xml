@@ -744,7 +744,7 @@ public @interface HttpParam {
 
    @Produces @HttpParam("")
    String getParamValue(ServletRequest request, InjectionPoint ip) {
-      return request.getParameter(ip.getAnnotation(HttpParam.class).value());
+      return request.getParameter(ip.getAnnotated().getAnnotation(HttpParam.class).value());
    }
 
 }]]></programlisting>
@@ -756,11 +756,13 @@ public @interface HttpParam {
   interface:</para>
 
 <programlisting role="JAVA"><![CDATA[public interface InjectionPoint { 
-   public Object getInstance(); 
-   public Bean<?> getBean(); 
-   public Member getMember(): 
-   public <T extends Annotation> T getAnnotation(Class<T> annotation); 
-   public Set<T extends Annotation> getAnnotations(); 
+   public Type getType();
+   public Set<Annotation> getQualifiers();
+   public Bean<?> getBean();
+   public Member getMember();
+   public Annotated getAnnotated();
+   public boolean isDelegate();
+   public boolean isTransient();
 }]]></programlisting>
 
 </section>
