@@ -46,6 +46,7 @@ public class RunnableDecorator implements Runnable {
       threadContext.setActive(true);
       // run the original thread
       runnable.run();
+      threadContext.destroy();
    }
 
 
