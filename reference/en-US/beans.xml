@@ -365,7 +365,7 @@ class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisti
             We normally annotate a bean <literal>@Alternative</literal> only when there is some other
             implementation of an interface it implements (or of any of its bean types). We can choose between 
             alternatives at deployment time by <emphasis>selecting</emphasis> an alternative in the CDI 
-            deployment descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE module that uses 
+            deployment descriptor <literal>META-INF/beans.xml</literal> of the JAR or Java EE module that uses 
             it. Different modules can specify that they use different alternatives.
          </para>
          
@@ -435,7 +435,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          <para>
             Interceptors are deployment-specific. (We don't need a <literal>TransactionInterceptor</literal> in our
             unit tests!) By default, an interceptor is disabled. We can enable an interceptor using the CDI deployment 
-            descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE module. This is also where we
+            descriptor <literal>META-INF/beans.xml</literal> of the JAR or Java EE module. This is also where we
             specify the interceptor ordering.
          </para>
          
@@ -742,6 +742,264 @@ public class RandomNumberGenerator {
 
       </section>
    
+   </section>
+
+   <section id="bean-descriptor">
+      <title>The (minimal) bean descriptor</title>
+
+      <para>
+         First, it's important to understand that the XML bean descriptor in CDI (beans.xml) is not there to define
+         beans in XML, like in other popular bean containers. Rather, you use this file to enable CDI services for the
+         current bean archive that is difficult to define consistently in Java or which you don't want to define in Java
+         (e.g., to accomodate testing).
+      </para>
+      
+      <para>
+         For example, the XML is used to enable interceptors (which are disabled by default) and define interceptor
+         ordering. So the bean descriptor <emphasis>complements</emphasis> the metadata that is provided in the Java
+         language syntax. (You may still want to define beans in XML for other reasons, but that is the concern of an
+         extension).
+      </para>
+
+      <para>
+         Let's first ask why the beans.xml is required, then look at what services it is used used to enable.
+      </para>
+
+      <section>
+         <title>Why is beans.xml required?</title>
+
+         <para>
+            You may be wondering, if beans are not described using XML, why do we need beans.xml at all, particularly if
+            you don't have anything that you would need the bean descriptor to enable (alternatives, interceptors or
+            decorators)?
+         </para>
+
+         <para>
+            There are two things about CDI that we need to keep in mind:
+         </para>
+
+         <itemizedlist>
+            <listitem>
+               <para>
+                  CDI does not require any special declaration for a Java class to be injected - that's right, no
+                  annotation or XML declaration at all!
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  CDI does not define any special kind of module - CDI beans can be deployed in a library JAR, EJB JAR,
+                  WAR, RAR, or JVM classpath directory.
+               </para>
+            </listitem>
+         </itemizedlist>
+
+         <para>
+            The CDI specification calls the process of identifying beans in modules <emphasis>bean discovery</emphasis>.
+         </para>
+
+         <para>
+            So there are potentially a lot of classes in the classpath which might be beans! We don't want to force the
+            container to scan every one of those classes at startup and build its internal metamodel for each of them. This
+            really could make bean discovery very slow.
+         </para>
+
+         <para>
+            But there's another reason we need to give the user some control over which classes are available for
+            injection. We don't want every class in the classpath to potentially match an injection point, including
+            classes that were never intended to be injected into things. This would force the developer to have to use
+            qualifiers much more often to disambiguate injection points.
+         </para>
+
+         <para>
+            So we have two choices. We could have the developer:
+         </para>
+
+         <orderedlist>
+            <listitem>
+               <para>explicitly exclude modules which do not contain beans, or</para>
+            </listitem>
+            <listitem>
+               <para>explicitly declare modules which do contain beans.</para>
+            </listitem>
+         </orderedlist>
+
+         <para>
+            It should be clear that the second option is a much better way to go. Thus, CDI has the notion of a bean
+            archive. A bean archive is just a module that has a file named beans.xml in the META-INF directory. The
+            container looks for beans in bean archives. It ignores other modules.
+         </para>
+
+         <para>
+            Now, you might be wondering if we've got the granularity wrong here. Why should module be the right criteria to
+            use for including/excluding a class. Why not consider:
+         </para>
+
+         <itemizedlist>
+            <listitem>
+               <para>a class-level annotation,</para>
+            </listitem>
+            <listitem>
+               <para>the package,</para>
+            </listitem>
+            <listitem>
+               <para>some type it implements or extends, or</para>
+            </listitem>
+            <listitem>
+               <para>some naming convention.</para>
+            </listitem>
+         </itemizedlist>
+
+         <para>
+            We've got the first option covered. Annotate a bean <literal>@Alternative</literal>, or with an alternative
+            stereotype, and it will be considered disabled by CDI, as long as you don't explicitly enable it in
+            beans.xml. That's not quite the same thing as excluding the class from scanning altogether, but it's close.
+            (One difference is that a portable extension with still get a <literal>ProcessAnnotatedType</literal> event
+            for that class).
+         </para>
+
+         <para>
+            A future version of CDI might allow you to declare excluded packages in beans.xml. Excluding a bean by type or
+            naming convention isn't really that appealing. In the world of CDI, we use stereotypes for identifying
+            architectural roles. We don't use marker interfaces or naming conventions. Names really shouldn't affect
+            functionality as it is too fragile.
+         </para>
+
+         <para>
+            Enough theory, what elements are available in beans.xml?
+         </para>
+      </section>
+
+      <section>
+         <title>Bean descriptor schema</title>
+
+         <para>
+            If you don't need to activate any interceptors, decorators or alternatives (you just have plain beans that
+            you need to use in an archive), the beans.xml file can be <emphasis>empty</emphasis>. If you do have one
+            of these requirements, then you need to start popularing the descriptor.
+         </para>
+
+         <para>
+            The root element of a beans.xml file is <literal>beans</literal>, with the following <ulink
+            url="http://anonsvn.jboss.org/repos/weld/api/trunk/cdi/src/main/resources/beans.xsd">schema</ulink>:
+         </para>
+
+         <programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://java.sun.com/xml/ns/javaee 
+      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+</beans>]]></programlisting> 
+
+         <para>
+            The <literal>beans</literal> element can have one or more of each of the following children: 
+         </para>
+
+         <itemizedlist>
+            <listitem>
+               <para><literal>interceptors</literal></para>
+            </listitem>
+            <listitem>
+               <para><literal>decorators</literal></para>
+            </listitem>
+            <listitem>
+               <para><literal>alternatives</literal></para>
+            </listitem>
+         </itemizedlist>
+
+         <para>
+            Let's look at each element in detail.
+         </para>
+
+         <section>
+            <title>&lt;interceptors&gt;</title>
+
+            <para>
+               By default, a bean archive has no enabled interceptors bound via interceptor bindings. An interceptor
+               must be explicitly enabled by listing the fully qualified class name in a child &lt;class&gt; element of
+               &lt;interceptors&gt;.
+            </para>
+            
+            <para>
+               There may be zero or more interceptor class elements. The order of the class
+               declarations determines the interceptor ordering. Interceptors which occur earlier in the list are called
+               first. The same class may not be listed twice. And of course, the class must exist and it must be an
+               interceptor class.
+            </para>
+
+            <programlisting role="XML"><![CDATA[<interceptors>
+   <class>com.acme.intercept.SecurityInterceptor</class>
+   <class>com.acme.intercept.TransactionInterceptor</class>
+</interceptors>]]></programlisting> 
+            
+
+         </section>
+
+         <section>
+            <title>&lt;decorators&gt;</title>
+
+            <para>
+               By default, a bean archive has no enabled decorators. A decorator 
+               must be explicitly enabled by listing the fully qualified class name in a child &lt;class&gt; element of
+               &lt;decorators&gt;.
+            </para>
+            
+            <para>
+               There may be zero or more decorator class elements. The order of the class
+               declarations determines the decorator ordering. Decorators which occur earlier in the list are called
+               first. The same class may not be listed twice. And of course, the class must exist and it must be an
+               decorator class.
+            </para>
+
+            <programlisting role="XML"><![CDATA[<interceptors>
+   <class>com.acme.decorate.BigAccountDecorator</class>
+   <class>com.acme.decorate.SpecialGiftDecorator</class>
+</interceptors>]]></programlisting> 
+
+         </section>
+
+         <section>
+            <title>&lt;alternatives&gt;</title>
+
+            <para>
+               An alternative is a bean that must be explicitly declared in the beans.xml file if it should be available
+               for lookup, injection or EL resolution. By default, a bean archive has no active alternatives. An
+               alternative must be explicitly declared using the fully qualified bean class name or stereotype class
+               name in either a child &lt;class&gt;
+               or &lt;stereotype&gt; element of &lt;alternatives&gt;, respectively.
+            </para>
+            
+            <para>
+               An alternative is selected for the bean archive if either: the alternative is a managed bean or session
+               bean and the bean class of the bean is listed, or the alternative is a producer method, field or
+               resource, and the bean class that declares the method or field is listed, or any
+               <literal>@Alternative</literal> stereotype of the alternative is listed.
+            </para>
+
+            <para>
+               There may be zero or more alternative bean class elements. The same class may not be listed twice. And of
+               course, the class must exist and it must be an alternative bean class.
+            </para>
+
+            <para>
+               There may also be zero or more <literal>@Alternative</literal> stereotype elements. The same stereotype
+               may not be listed twice. And of course, the stereotype class must exist and it must be an stereotype
+               annotation.
+            </para>
+
+            <programlisting role="XML"><![CDATA[<stereotypes>
+   <class>com.acme.business.MockPaymentProcessor</class>
+   <stereotype>com.acme.stereotype.Mock</stereotype>
+</stereotypes>]]></programlisting> 
+
+         </section>
+
+         <para>
+            And that's it! A very simple schema, used only to activate and order CDI services.
+         </para>
+
+      </section>
+
    </section>
 
 <!--
