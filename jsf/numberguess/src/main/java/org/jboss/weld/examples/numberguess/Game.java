@@ -16,6 +16,11 @@ import javax.inject.Named;
 @SessionScoped
 public class Game implements Serializable
 {
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 991300443278089016L;
+
    private int number;
    
    private int guess;
@@ -92,7 +97,7 @@ public class Game implements Serializable
    
    public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value)
    {
-      if (remainingGuesses <= 0)
+      if (remainingGuesses <= 1)
       {
          FacesMessage message = new FacesMessage("No guesses left!");
          context.addMessage(toValidate.getClientId(context), message);
