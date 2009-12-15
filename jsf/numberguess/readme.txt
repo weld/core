@@ -25,7 +25,7 @@ Now you're ready to deploy to JBoss AS.
 Make sure you have assigned the path of your JBoss AS installation to the
 jboss.home property key in the following file, relative to this directory:
 
-../../local.build.properties
+../../build.properties
 
 (This file is located in the examples directory of the Weld distribution).
 
