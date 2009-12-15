@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 public class GenericBeanTest extends AbstractWeldTest
 {
 
-   @Test(groups = "broken")
+   @Test
    public void testGenericBean()
    {
       TestBean testBean = getCurrentManager().getInstanceByType(TestBean.class);

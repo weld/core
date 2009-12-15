@@ -699,6 +699,14 @@ public class Reflections
             return true;
          }
       }
+      else if (type2 instanceof TypeVariable)
+      {
+         TypeVariable typeVariable = (TypeVariable) type2;
+         if (isTypeBounded(rawType1, actualTypeArguments1, typeVariable.getBounds()))
+         {
+            return true;
+         }
+      }
       return false;
    }
    

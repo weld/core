@@ -13,7 +13,7 @@
          <run>
             <exclude name="broken" />
             <exclude name="ri-broken" />
-            <exclude name="jboss-as-broken" />  
+            <exclude name="jboss-as-broken" />
          </run>
       </groups>
       <packages>
@@ -27,6 +27,41 @@
                <exclude name="testGetTimerMethod" />
             </methods>
          </class>
+         <!--  T
+               The following tests are broken in TCK 1.0.0 and succeed because of a bug in the 1.0.0 version of the RI
+               The fix for the 1.0.1 version of the RI requires version 1.1.0 of the TCK.
+               The tests must be re-enabled once the 1.1.0 version of the TCK is used.
+          -->
+         <class name="org.jboss.jsr299.tck.tests.implementation.producer.field.definition.ProducerFieldDefinitionTest">
+            <methods>
+               <exclude name="testApiTypeForArrayTypeReturn"/>
+               <exclude name="testApiTypeForClassReturn"/>
+               <exclude name="testApiTypeForInterfaceReturn"/>
+               <exclude name="testApiTypeForPrimitiveReturn"/>
+               <exclude name="testBeanDeclaresMultipleProducerFields"/>
+               <exclude name="testBindingType"/>
+               <exclude name="testDefaultBindingType"/>
+               <exclude name="testDefaultNamedField"/>
+               <exclude name="testNamedField"/>
+               <exclude name="testNonStaticProducerFieldNotIndirectlyInherited"/>
+               <exclude name="testNonStaticProducerFieldNotInherited"/>
+               <exclude name="testParameterizedReturnType"/>
+               <exclude name="testScopeType"/>
+               <exclude name="testStereotype"/>
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.implementation.producer.method.definition.ProducerMethodDefinitionTest">
+             <methods>
+                 <exclude name="testParameterizedReturnType"/>
+             </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.lookup.typesafe.resolution.ResolutionByTypeTest">
+             <methods>
+                 <exclude name="testGenericBeanTypesOnManagedBean"/>
+                 <exclude name="testResolveByTypeWithTypeParameter"/>
+             </methods>
+         </class>
+          
       </classes>
    </test>
    
