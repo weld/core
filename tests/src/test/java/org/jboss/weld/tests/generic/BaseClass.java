@@ -17,28 +17,9 @@
 
 package org.jboss.weld.tests.generic;
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.Test;
-
 /**
  * @author Marius Bogoevici
  */
-@Artifact
-public class GenericBeanTest extends AbstractWeldTest
+public class BaseClass
 {
-
-   @Test(groups = "broken")
-   public void testGenericBean()
-   {
-      TestBean testBean = getCurrentManager().getInstanceByType(TestBean.class);
-      assert "Hello".equals(testBean.echo("Hello"));
-      assert Integer.valueOf(1).equals(testBean.echo(1));
-      Subclass subclassInstance = new Subclass();
-      assert subclassInstance == testBean.echo(subclassInstance);
-      assert subclassInstance == testBean.echo((BaseClass)subclassInstance);
-      BaseClass baseInstance = new BaseClass();
-      assert baseInstance == testBean.echo(baseInstance);
-   }
-
 }
