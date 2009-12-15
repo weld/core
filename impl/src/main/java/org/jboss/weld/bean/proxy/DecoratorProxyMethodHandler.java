@@ -17,7 +17,6 @@
 package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.logging.messages.BeanMessage.UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR;
-import static org.jboss.weld.util.reflection.Reflections.ensureAccessible;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -32,6 +31,7 @@ import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Method handler for decorated beans
@@ -82,6 +82,7 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
       for (SerializableContextualInstance<Decorator<Object>, Object> beanInstance : decoratorInstances)
       {
          WeldMethod<?, ?> decoratorMethod;
+
          if (beanInstance.getContextual().get() instanceof DecoratorImpl<?>)
          {
             decoratorMethod = ((DecoratorImpl<?>)beanInstance.getContextual().get()).getAnnotatedItem().getWeldMethod(methodSignature);
@@ -100,6 +101,6 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
          }
       }
       
-      return ensureAccessible(method).invoke(getTargetInstance(), args);
+      return Reflections.invoke(method,getTargetInstance(), args);
    }
 }
