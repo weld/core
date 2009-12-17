@@ -17,26 +17,23 @@
 
 package org.jboss.weld;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import ch.qos.cal10n.IMessageConveyor;
-
 /**
  * An exception used for unsupported operations or invocations of operations
  * that are invalid in certain contexts.
  * 
  * @author David Allen
- *
  */
 public class InvalidOperationException extends UnsupportedOperationException
 {
 
-   private static final long serialVersionUID = 1L;
+   private static final long    serialVersionUID = 2L;
 
-   // Exception messages
-   private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
+   private WeldExceptionMessage message;
 
    /**
-    * Default constructor mostly for serialization purposes.
+    * Creates a new exception with no message.  Here the stacktrace serves as the
+    * main information since it has the method which was invoked causing this
+    * exception.
     */
    public InvalidOperationException()
    {
@@ -53,6 +50,18 @@ public class InvalidOperationException extends UnsupportedOperationException
     */
    public <E extends Enum<?>> InvalidOperationException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
+      message = new WeldExceptionMessage(key, args);
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
    }
 }

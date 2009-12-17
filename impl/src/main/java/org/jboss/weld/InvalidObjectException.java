@@ -17,23 +17,18 @@
 
 package org.jboss.weld;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import ch.qos.cal10n.IMessageConveyor;
-
 /**
  * An extended version of {@link java.io.InvalidObjectException} that supports
  * localization.
  * 
  * @author David Allen
- *
  */
 public class InvalidObjectException extends java.io.InvalidObjectException
 {
 
-   private static final long serialVersionUID = 1L;
+   private static final long    serialVersionUID = 2L;
 
-   // Exception messages
-   private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
+   private WeldExceptionMessage message;
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -45,7 +40,20 @@ public class InvalidObjectException extends java.io.InvalidObjectException
     */
    public <E extends Enum<?>> InvalidObjectException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
+      super(null);
+      message = new WeldExceptionMessage(key, args);
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
    }
 
 }

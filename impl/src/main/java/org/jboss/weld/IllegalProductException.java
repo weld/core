@@ -17,23 +17,18 @@
 
 package org.jboss.weld;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import ch.qos.cal10n.IMessageConveyor;
-
 /**
  * An {@link javax.enterprise.inject.IllegalProductException} with support for
  * localized messages in Weld.
  * 
  * @author David Allen
- *
  */
 public class IllegalProductException extends javax.enterprise.inject.IllegalProductException
 {
 
-   private static final long serialVersionUID = -8200417008899252835L;
+   private static final long    serialVersionUID = 2L;
 
-   // Exception messages
-   private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
+   private WeldExceptionMessage message;
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -45,6 +40,18 @@ public class IllegalProductException extends javax.enterprise.inject.IllegalProd
     */
    public <E extends Enum<?>> IllegalProductException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
+      message = new WeldExceptionMessage(key, args);
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
    }
 }

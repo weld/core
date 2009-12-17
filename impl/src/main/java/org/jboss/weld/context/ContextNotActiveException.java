@@ -17,22 +17,20 @@
 
 package org.jboss.weld.context;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import ch.qos.cal10n.IMessageConveyor;
+import org.jboss.weld.WeldExceptionMessage;
 
 /**
- * A localized message version of the {@link javax.enterprise.context.ContextNotActiveException}.
+ * A localized message version of the
+ * {@link javax.enterprise.context.ContextNotActiveException}.
  * 
  * @author David Allen
- *
  */
 public class ContextNotActiveException extends javax.enterprise.context.ContextNotActiveException
 {
 
-   private static final long serialVersionUID = 1L;
+   private static final long    serialVersionUID = 2L;
 
-   // Exception messages
-   private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
+   private WeldExceptionMessage message;
 
    public ContextNotActiveException(Throwable throwable)
    {
@@ -41,6 +39,18 @@ public class ContextNotActiveException extends javax.enterprise.context.ContextN
 
    public <E extends Enum<?>> ContextNotActiveException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
+      message = new WeldExceptionMessage(key, args);
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
    }
 }

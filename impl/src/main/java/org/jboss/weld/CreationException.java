@@ -17,23 +17,18 @@
 
 package org.jboss.weld;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import ch.qos.cal10n.IMessageConveyor;
-
 /**
  * A version of {@link javax.enterprise.inject.CreationException} that supports
  * message localization.
  * 
  * @author David Allen
- *
  */
 public class CreationException extends javax.enterprise.inject.CreationException
 {
 
-   private static final long serialVersionUID = 5167626747306493463L;
+   private static final long    serialVersionUID = 2L;
 
-   // Exception messages
-   private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
+   private WeldExceptionMessage message;
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -45,7 +40,7 @@ public class CreationException extends javax.enterprise.inject.CreationException
     */
    public <E extends Enum<?>> CreationException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
+      message = new WeldExceptionMessage(key, args);
    }
 
    /**
@@ -59,6 +54,19 @@ public class CreationException extends javax.enterprise.inject.CreationException
     */
    public <E extends Enum<?>> CreationException(E key, Throwable throwable, Object... args)
    {
-      super(messageConveyer.getMessage(key, args), throwable);
+      super(throwable);
+      message = new WeldExceptionMessage(key, args);
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
    }
 }

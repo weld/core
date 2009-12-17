@@ -17,9 +17,6 @@
 
 package org.jboss.weld;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import ch.qos.cal10n.IMessageConveyor;
-
 /**
  * Provides message localization service for the
  * {@link javax.enterprise.inject.InjectionException}.
@@ -28,10 +25,9 @@ import ch.qos.cal10n.IMessageConveyor;
  */
 public class InjectionException extends javax.enterprise.inject.InjectionException
 {
-   private static final long serialVersionUID = 1L;
+   private static final long    serialVersionUID = 2L;
 
-   // Exception messages
-   private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
+   private WeldExceptionMessage message;
 
    /**
     * Creates a new exception with the given cause.
@@ -40,20 +36,22 @@ public class InjectionException extends javax.enterprise.inject.InjectionExcepti
     */
    public InjectionException(Throwable throwable)
    {
-      super(throwable.getLocalizedMessage(), throwable);
+      super(throwable);
+      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
    }
 
    /**
     * Creates a new exception with an arbitrary message and the cause of the
-    * exception.  It is not recommended to use this constructor since the
-    * message cannot be localized.
+    * exception. It is not recommended to use this constructor since the message
+    * cannot be localized.
     * 
     * @param message The error message
     * @param throwable The cause of the exception or wrapped throwable
     */
    public InjectionException(String message, Throwable throwable)
    {
-      super(message, throwable);
+      super(throwable);
+      this.message = new WeldExceptionMessage(message);
    }
 
    /**
@@ -66,6 +64,18 @@ public class InjectionException extends javax.enterprise.inject.InjectionExcepti
     */
    public <E extends Enum<?>> InjectionException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
+      message = new WeldExceptionMessage(key, args);
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
    }
 }

@@ -17,34 +17,43 @@
 
 package org.jboss.weld.xml;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-
 import javax.enterprise.inject.InjectionException;
 
-import ch.qos.cal10n.IMessageConveyor;
+import org.jboss.weld.WeldExceptionMessage;
 
 /**
  * Used for exceptions from the Weld XML parser and provides localization
  * support.
  * 
  * @author David Allen
- * 
  */
 public class WeldXmlException extends InjectionException
 {
 
-   private static final long serialVersionUID = -6716110761385845182L;
+   private static final long    serialVersionUID = 2L;
 
-   // Exception messages
-   private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
+   private WeldExceptionMessage message;
 
    public WeldXmlException(Throwable throwable)
    {
-      super(throwable.getLocalizedMessage(), throwable);
+      super(throwable);
+      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
    }
 
    public <E extends Enum<?>> WeldXmlException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
+      message = new WeldExceptionMessage(key, args);
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
    }
 }

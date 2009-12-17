@@ -17,9 +17,6 @@
 
 package org.jboss.weld;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import ch.qos.cal10n.IMessageConveyor;
-
 /**
  * Provides message localization service for the
  * {@link javax.enterprise.inject.UnproxyableResolutionException}.
@@ -28,10 +25,9 @@ import ch.qos.cal10n.IMessageConveyor;
  */
 public class UnproxyableResolutionException extends javax.enterprise.inject.UnproxyableResolutionException
 {
-   private static final long serialVersionUID = 1L;
+   private static final long    serialVersionUID = 2L;
 
-   // Exception messages
-   private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
+   private WeldExceptionMessage message;
 
    /**
     * Creates a new exception with the given cause.
@@ -40,7 +36,8 @@ public class UnproxyableResolutionException extends javax.enterprise.inject.Unpr
     */
    public UnproxyableResolutionException(Throwable throwable)
    {
-      super(throwable.getLocalizedMessage(), throwable);
+      super(throwable);
+      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
    }
 
    /**
@@ -53,7 +50,19 @@ public class UnproxyableResolutionException extends javax.enterprise.inject.Unpr
     */
    public <E extends Enum<?>> UnproxyableResolutionException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
+      message = new WeldExceptionMessage(key, args);
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
    }
 
 }

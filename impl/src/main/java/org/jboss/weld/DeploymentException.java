@@ -27,11 +27,6 @@ public class DeploymentException extends WeldException
 {
    private static final long serialVersionUID = 8014646336322875707L;
 
-   public DeploymentException()
-   {
-      super();
-   }
-
    /**
     * Creates a new exception with the given localized message key and optional
     * arguments for the message.

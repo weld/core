@@ -17,9 +17,6 @@
 
 package org.jboss.weld;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import ch.qos.cal10n.IMessageConveyor;
-
 /**
  * This exception is used when the specification calls for an
  * {@link java.lang.IllegalStateException}.
@@ -28,10 +25,9 @@ import ch.qos.cal10n.IMessageConveyor;
  */
 public class ForbiddenStateException extends IllegalStateException
 {
-   private static final long             serialVersionUID = 1L;
+   private static final long    serialVersionUID = 2L;
 
-   // Exception messages
-   private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
+   private WeldExceptionMessage message;
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -43,9 +39,9 @@ public class ForbiddenStateException extends IllegalStateException
     */
    public <E extends Enum<?>> ForbiddenStateException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
+      message = new WeldExceptionMessage(key, args);
    }
-   
+
    /**
     * Creates a new exception with the given cause.
     * 
@@ -54,5 +50,17 @@ public class ForbiddenStateException extends IllegalStateException
    public ForbiddenStateException(Throwable cause)
    {
       super(cause.getLocalizedMessage(), cause);
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
    }
 }

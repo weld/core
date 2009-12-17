@@ -17,9 +17,6 @@
 
 package org.jboss.weld;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import ch.qos.cal10n.IMessageConveyor;
-
 /**
  * This exception is used when the specification calls for an
  * {@link java.lang.IllegalArgumentException}.
@@ -29,10 +26,9 @@ import ch.qos.cal10n.IMessageConveyor;
 public class ForbiddenArgumentException extends IllegalArgumentException
 {
 
-   private static final long serialVersionUID = 1L;
+   private static final long    serialVersionUID = 2L;
 
-   // Exception messages
-   private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
+   private WeldExceptionMessage message;
 
    /**
     * Creates a new exception with the given cause.
@@ -41,7 +37,8 @@ public class ForbiddenArgumentException extends IllegalArgumentException
     */
    public ForbiddenArgumentException(Throwable throwable)
    {
-      super(throwable.getLocalizedMessage(), throwable);
+      super(throwable);
+      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
    }
 
    /**
@@ -54,6 +51,18 @@ public class ForbiddenArgumentException extends IllegalArgumentException
     */
    public <E extends Enum<?>> ForbiddenArgumentException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
+      message = new WeldExceptionMessage(key, args);
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
    }
 }

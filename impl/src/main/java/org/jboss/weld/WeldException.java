@@ -17,11 +17,7 @@
 
 package org.jboss.weld;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-
 import java.util.List;
-
-import ch.qos.cal10n.IMessageConveyor;
 
 /**
  * A general run-time exception used by the JSR-299 reference implementation Weld.
@@ -30,21 +26,10 @@ import ch.qos.cal10n.IMessageConveyor;
  */
 public class WeldException extends RuntimeException
 {
-   private static final long             serialVersionUID = 1L;
+   private static final long             serialVersionUID = 2L;
 
-   // Exception messages
-   private static final IMessageConveyor messageConveyer  = loggerFactory().getMessageConveyor();
-
-   private String message = null;
-
-   /**
-    * Default constructor mostly for serialization purposes.
-    */
-   protected WeldException()
-   {
-      super();
-   }
-
+   private WeldExceptionMessage message;
+   
    /**
     * Creates a new exception with the given cause.
     * 
@@ -52,8 +37,8 @@ public class WeldException extends RuntimeException
     */
    public WeldException(Throwable throwable)
    {
-      super(throwable.getLocalizedMessage(), throwable);
-      this.message = throwable.getLocalizedMessage();
+      super(throwable);
+      this.message = new WeldExceptionMessage(throwable.getLocalizedMessage());
    }
 
    /**
@@ -66,8 +51,7 @@ public class WeldException extends RuntimeException
     */
    public <E extends Enum<?>> WeldException(E key, Object... args)
    {
-      super(messageConveyer.getMessage(key, args));
-      this.message = messageConveyer.getMessage(key, args);
+      this.message = new WeldExceptionMessage(key, args);
    }
 
    /**
@@ -81,8 +65,8 @@ public class WeldException extends RuntimeException
     */
    public <E extends Enum<?>> WeldException(E key, Throwable throwable, Object... args)
    {
-      super(messageConveyer.getMessage(key, args), throwable);
-      this.message = messageConveyer.getMessage(key, args);
+      super(throwable);
+      this.message = new WeldExceptionMessage(key, args);
    }
 
    /**
@@ -105,12 +89,7 @@ public class WeldException extends RuntimeException
          }
          errorMessage.append(throwable.getLocalizedMessage());
       }
-      setMessage(errorMessage.toString());
-   }
-
-   protected void setMessage(String message)
-   {
-      this.message = message;
+      this.message = new WeldExceptionMessage(errorMessage.toString());
    }
 
    @Override
@@ -122,7 +101,7 @@ public class WeldException extends RuntimeException
    @Override
    public String getMessage()
    {
-      return message;
+      return message.getAsString();
    }
    
 }
