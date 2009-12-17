@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
@@ -232,7 +233,7 @@
       <profile>
          <id>gae</id>
          <dependencies>
-         
+
             <!-- Use JSF 1.2, JSF 2 has issues on GAE still -->
 
             <dependency>
@@ -399,9 +400,9 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
             </dependency>
 
          </dependencies>
-         
+
          <build>
-            
+
             <resources>
                <resource>
                   <directory>src/jetty/resources</directory>
@@ -434,7 +435,80 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
                   </configuration>
                </plugin>
             </plugins>
-            
+
+         </build>
+      </profile>
+
+      <profile>
+         <id>ftest-jboss-remote-51</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+         </activation>
+
+         <properties>
+            <ftest.version>0.1${ftest.version.discriminator}</ftest.version>
+         </properties>
+
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.weld.examples.ftest</groupId>
+               <artifactId>ftest-numberguess</artifactId>
+               <version>${ftest.version}</version>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.codehaus.cargo</groupId>
+                  <artifactId>cargo-maven2-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>selenium-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      <profile>
+         <id>ftest-jboss-remote-60</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+         </activation>
+
+         <properties>
+            <ftest.version>0.1${ftest.version.discriminator}</ftest.version>
+         </properties>
+
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.weld.examples.ftest</groupId>
+               <artifactId>ftest-numberguess</artifactId>
+               <version>${ftest.version}</version>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.codehaus.cargo</groupId>
+                  <artifactId>cargo-maven2-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>selenium-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId>
+               </plugin>
+            </plugins>
          </build>
       </profile>
    </profiles>
@@ -523,7 +597,8 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
             <artifactId>maven-jetty-plugin</artifactId>
             <configuration>
                <connectors>
-                  <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                  <connector
+                     implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                      <port>${jetty.http.port}</port>
                      <maxIdleTime>3600000</maxIdleTime>
                   </connector>
