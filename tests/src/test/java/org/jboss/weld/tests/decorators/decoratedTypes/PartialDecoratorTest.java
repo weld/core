@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
 public class PartialDecoratorTest extends AbstractWeldTest
 {
 
-   @Test(groups = "broken")
+   @Test
    public void testDecoratorDoesNotDecorateOutsideDecoratedTypes()
    {
       TestBean testBean = getCurrentManager().getInstanceByType(TestBean.class);

@@ -30,9 +30,9 @@ public class PartialDecorator<T> implements Decorated<T>
 
    @Inject @Delegate GenericBean<T> delegate;
 
-   static boolean decoratedInvoked;
+   static boolean decoratedInvoked = false;
 
-   static boolean notDecoratedInvoked;
+   static boolean notDecoratedInvoked = false;
 
    public T decoratedEcho(T parameter)
    {
