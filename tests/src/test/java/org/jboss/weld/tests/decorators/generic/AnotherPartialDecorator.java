@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.decorators.custom;
+package org.jboss.weld.tests.decorators.generic;
 
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
@@ -25,16 +25,17 @@ import javax.inject.Inject;
  * @author Marius Bogoevici
  */
 @Decorator
-public class InnerFrame
+public class AnotherPartialDecorator implements Decorated<String>
 {
-   static boolean drawn = false;
+   @Inject
+   @Delegate
+   GenericBean<String> delegate;
 
-   @Inject @Delegate Window window;
+   static boolean invoked = true;
 
-   void draw()
+   public String decoratedEcho(String parameter)
    {
-      window.draw();
-      drawn = true;
+      invoked = true;
+      return delegate.decoratedEcho(parameter);
    }
-
 }

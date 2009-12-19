@@ -14,25 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jboss.weld.tests.decorators.abstractDecorator;
 
 /**
- *
  * @author Marius Bogoevici
  */
-public class Window
+public interface Window
 {
-   static boolean drawn;
+   void draw();
 
-   static boolean moved;
-
-   public void draw()
-   {
-      drawn = true;
-   }
-
-   public void move()
-   {
-      moved = true; 
-   }
+   void move();
 }

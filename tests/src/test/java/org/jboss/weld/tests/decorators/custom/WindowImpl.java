@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright <Year>, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -17,16 +17,20 @@
 
 package org.jboss.weld.tests.decorators.custom;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
-
-
-public class AfterBeanDiscoveryObserver implements Extension
+/**
+ * @author Marius Bogoevici
+ */
+public class WindowImpl implements Window
 {
-   public void addDecorators(@Observes AfterBeanDiscovery event, BeanManager beanManager)
+   public boolean drawn = false;
+
+   public void draw()
    {
-      event.addBean(new CustomDecorator(beanManager));
+      drawn = true;
+   }
+
+   public boolean isDrawn()
+   {
+      return drawn;
    }
 }

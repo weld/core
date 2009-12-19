@@ -27,11 +27,52 @@
                <exclude name="testGetTimerMethod" />
             </methods>
          </class>
-         <!--  T
+         <!--
                The following tests are broken in TCK 1.0.0 and succeed because of a bug in the 1.0.0 version of the RI
-               The fix for the 1.0.1 version of the RI requires version 1.1.0 of the TCK.
-               The tests must be re-enabled once the 1.1.0 version of the TCK is used.
+               The fix for the 1.0.1 version of the RI requires version 1.0.1 or later of the TCK.
+               The tests must be re-enabled once CDI TCK 1.0.1 or later is used.
           -->
+         <class name="org.jboss.jsr299.tck.tests.context.dependent.DependentContextTest">
+             <methods>
+                 <exclude name="testDependentScopedDecoratorsAreDependentObjectsOfBean"/>
+             </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.decorators.definition.DecoratorDefinitionTest">
+             <methods>
+                 <exclude name="testDecoratorIsManagedBean"/>
+             </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.decorators.definition.inject.delegateConstructor.DelegateInjectionPointTest">
+             <methods>
+                 <exclude name="testDecoratorDelegateInjectionPoints"/>
+             </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.decorators.definition.inject.delegateField.DelegateFieldInjectionPointTest">
+             <methods>
+                 <exclude name="testDecoratorDelegateInjectionPoints"/>
+             </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.decorators.definition.inject.delegateInitializerMethod.DelegateInjectionPointTest">
+             <methods>
+                 <exclude name="testDecoratorDelegateInjectionPoints"/>
+             </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.decorators.invocation.DecoratorInvocationTest">
+             <methods>
+                 <exclude name="testChainedDecoratorInvocation"/>
+                 <exclude name="testDecoratorInvocation"/>
+             </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.decorators.invocation.observer.DecoratorInvocationTest">
+            <methods>
+                <exclude name="testDecoratorInvocation"/>
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.decorators.invocation.producer.method.DecoratorInvocationTest">
+            <methods>
+                <exclude name="testDecoratorInvocation"/>
+            </methods>
+         </class>
          <class name="org.jboss.jsr299.tck.tests.implementation.producer.field.definition.ProducerFieldDefinitionTest">
             <methods>
                <exclude name="testApiTypeForArrayTypeReturn"/>
@@ -50,6 +91,11 @@
                <exclude name="testStereotype"/>
             </methods>
          </class>
+         <class name="org.jboss.jsr299.tck.tests.lookup.injectionpoint.InjectionPointTest">
+             <methods>
+                <exclude name="testIsDelegate"/>
+             </methods>
+         </class>
          <class name="org.jboss.jsr299.tck.tests.implementation.producer.method.definition.ProducerMethodDefinitionTest">
              <methods>
                  <exclude name="testParameterizedReturnType"/>
@@ -61,7 +107,6 @@
                  <exclude name="testResolveByTypeWithTypeParameter"/>
              </methods>
          </class>
-          
       </classes>
    </test>
    

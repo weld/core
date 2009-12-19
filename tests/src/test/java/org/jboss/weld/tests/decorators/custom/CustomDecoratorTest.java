@@ -31,7 +31,6 @@ import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.jboss.weld.util.serviceProvider.PackageServiceLoaderFactory;
 import org.jboss.weld.BeanManagerImpl;
 
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
 /**
@@ -43,7 +42,7 @@ public class CustomDecoratorTest
    @Test
    public void testCustomDecoratorAppliedByItself()
    {
-      MockBeanDeploymentArchive beanDeploymentArchive = new MockBeanDeploymentArchive("1", Window.class, CustomFrame.class, InnerFrame.class, OuterFrame.class );
+      MockBeanDeploymentArchive beanDeploymentArchive = new MockBeanDeploymentArchive("1", WindowImpl.class, CustomWindowFrame.class, InnerWindowFrame.class, OuterWindowFrame.class );
       beanDeploymentArchive.setBeansXmlFiles(Arrays.asList(CustomDecoratorTest.class.getResource("beans-custom-only.xml")));
       TestContainer testContainer = new TestContainer(new MockServletLifecycle(new MockDeployment(beanDeploymentArchive), beanDeploymentArchive));
       testContainer.getLifecycle().initialize();
@@ -51,20 +50,20 @@ public class CustomDecoratorTest
       testContainer.getLifecycle().beginApplication();
 
       BeanManagerImpl beanManager = testContainer.getBeanManager();
-      Bean<Object> windowBean = (Bean<Object>) beanManager.getBeans(Window.class).iterator().next();
+      Bean<Object> windowBean = (Bean<Object>) beanManager.getBeans(WindowImpl.class).iterator().next();
       CreationalContext<Object> creationalContext = beanManager.createCreationalContext(windowBean);
-      Window window  = (Window) windowBean.create(creationalContext);
+      WindowImpl window  = (WindowImpl) windowBean.create(creationalContext);
       window.draw();
 
       assert window.isDrawn();
-      assert CustomFrame.drawn;
+      assert CustomWindowFrame.drawn;
       testContainer.stopContainer();
    }
 
    @Test
    public void testCustomDecoratorAppliedWithWeldDecorators()
    {
-      MockBeanDeploymentArchive beanDeploymentArchive = new MockBeanDeploymentArchive("1", Window.class, CustomFrame.class, InnerFrame.class, OuterFrame.class );
+      MockBeanDeploymentArchive beanDeploymentArchive = new MockBeanDeploymentArchive("1", WindowImpl.class, CustomWindowFrame.class, InnerWindowFrame.class, OuterWindowFrame.class );
       beanDeploymentArchive.setBeansXmlFiles(Arrays.asList(CustomDecoratorTest.class.getResource("beans.xml")));
       TestContainer testContainer = new TestContainer(new MockServletLifecycle(new MockDeployment(beanDeploymentArchive), beanDeploymentArchive));
       testContainer.getLifecycle().initialize();
@@ -72,15 +71,15 @@ public class CustomDecoratorTest
       testContainer.getLifecycle().beginApplication();
 
       BeanManagerImpl beanManager = testContainer.getBeanManager();
-      Bean<Object> windowBean = (Bean<Object>) beanManager.getBeans(Window.class).iterator().next();
+      Bean<Object> windowBean = (Bean<Object>) beanManager.getBeans(WindowImpl.class).iterator().next();
       CreationalContext<Object> creationalContext = beanManager.createCreationalContext(windowBean);
-      Window window  = (Window) windowBean.create(creationalContext);
+      WindowImpl window  = (WindowImpl) windowBean.create(creationalContext);
       window.draw();
 
       assert window.isDrawn();
-      assert OuterFrame.drawn;
-      assert InnerFrame.drawn;
-      assert CustomFrame.drawn;
+      assert OuterWindowFrame.drawn;
+      assert InnerWindowFrame.drawn;
+      assert CustomWindowFrame.drawn;
 
       testContainer.stopContainer();
    }

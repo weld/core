@@ -26,7 +26,7 @@ import javax.inject.Inject;
  * @version $Revision: 1.1 $
  */
 @Decorator
-public class SimpleDecorator
+public class SimpleDecorator implements SimpleBean
 {
    @Inject @Delegate
    SimpleBean delegate;

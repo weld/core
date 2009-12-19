@@ -24,8 +24,8 @@ public class AbstractDecoratorTestHelper
 {
    static void resetAll()
    {
-      Window.drawn = false;
-      Window.moved = false;
+      WindowImpl.drawn = false;
+      WindowImpl.moved = false;
       FrameWithFieldInjectedDelegate.drawn = false;
       FrameWithFieldInjectedDelegateAndAbstractMethod.moved = false;
       FrameWithFieldInjectedDelegateAndSelfInvokedAbstractMethod.moved = false;

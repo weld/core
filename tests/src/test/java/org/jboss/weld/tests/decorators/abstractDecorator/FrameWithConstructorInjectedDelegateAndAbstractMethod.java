@@ -25,7 +25,7 @@ import javax.inject.Inject;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 @Decorator
-public abstract class FrameWithConstructorInjectedDelegateAndAbstractMethod
+public abstract class FrameWithConstructorInjectedDelegateAndAbstractMethod implements Window
 {
 
    Window window;

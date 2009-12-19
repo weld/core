@@ -23,7 +23,6 @@ import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_ON_NON_INITIA
 import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_TYPE_PARAMETER_MISMATCH;
 import static org.jboss.weld.logging.messages.BeanMessage.NO_DELEGATE_FOR_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_DELEGATES_FOR_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -43,7 +42,6 @@ import javax.inject.Inject;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DefinitionException;
-import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bean.proxy.AbstractDecoratorMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.MethodInjectionPoint;
@@ -56,15 +54,18 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.introspector.jlr.WeldConstructorImpl;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.Deployers;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Reflections;
 
-public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
+public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
 {
    private WeldClass<?> annotatedDelegateItem;
 
    private WeldClass<T> proxyClassForAbstractDecorators;
    private WeldConstructor<T> constructorForAbstractDecorator;
+
+   private Set<MethodSignature> decoratedMethodSignatures;
 
    public static <T> Decorator<T> wrap(final Decorator<T> decorator)
    {
@@ -110,6 +111,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
    private Type delegateType;
    private Set<Type> delegateTypes;
    private Set<Type> decoratedTypes;
+   private HashSet<WeldClass<?>> annotatedDecoratedTypes;
 
    protected DecoratorImpl(WeldClass<T> type, BeanManagerImpl manager)
    {
@@ -136,6 +138,8 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
       this.decoratedTypes = new HashSet<Type>();
       this.decoratedTypes.addAll(getAnnotatedItem().getInterfaceOnlyFlattenedTypeHierarchy());
       this.decoratedTypes.remove(Serializable.class);
+
+      this.decoratedMethodSignatures = Deployers.getDecoratedMethodSignatures(getManager(), this.decoratedTypes);
    }
 
    protected void initDelegateInjectionPoint()
@@ -203,11 +207,6 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
             {
                throw new DefinitionException(DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE, decoratedType, this );
             }
-            else
-            {
-               throw new ForbiddenStateException(UNABLE_TO_PROCESS, decoratedType);
-            }
-
          }
       }
       annotatedDelegateItem = WeldClassImpl.of(delegateInjectionPoint.getJavaClass(), manager.getServices().get(ClassTransformer.class));
@@ -307,4 +306,8 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements Decorator<T>
       return super.getDescription("decorator");
    }
 
+   public Set<MethodSignature> getDecoratedMethodSignatures()
+   {
+      return decoratedMethodSignatures;
+   }
 }

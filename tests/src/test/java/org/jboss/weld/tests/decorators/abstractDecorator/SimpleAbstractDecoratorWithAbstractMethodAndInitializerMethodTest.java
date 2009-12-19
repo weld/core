@@ -35,17 +35,17 @@ public class SimpleAbstractDecoratorWithAbstractMethodAndInitializerMethodTest e
    public void testAbstractDecoratorApplied()
    {
 
-      Window window = getCurrentManager().getInstanceByType(Window.class);
+      Window window = getCurrentManager().getInstanceByType(WindowImpl.class);
 
       resetAll();
       window.draw();
-      assert Window.drawn;
+      assert WindowImpl.drawn;
       assert FrameWithFieldInjectedDelegate.drawn;
       assert !FrameWithInitializerMethodInjectedDelegateAndAbstractMethod.moved;
 
       resetAll();
       window.move();
-      assert Window.moved;
+      assert WindowImpl.moved;
       assert !FrameWithFieldInjectedDelegate.drawn;
       assert FrameWithInitializerMethodInjectedDelegateAndAbstractMethod.moved;
 

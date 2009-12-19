@@ -20,8 +20,12 @@ package org.jboss.weld.bean;
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.Deployers;
+
+import java.util.Set;
 
 /**
  * A wrapper for a decorated instance. Allows to enhance custom decorators with metadata
@@ -29,22 +33,25 @@ import org.jboss.weld.resources.ClassTransformer;
  *
  * @author Marius Bogoevici
  */
-public class AnnotatedItemProvidingDecoratorWrapper extends ForwardingDecorator<Object>
+public class CustomDecoratorWrapper extends ForwardingDecorator<Object> implements WeldDecorator<Object>
 {
    private Decorator<Object> delegate;
    private WeldClass<?> annotatedItem;
 
-   public static AnnotatedItemProvidingDecoratorWrapper of(Decorator<?> delegate, BeanManagerImpl beanManager)
+   private Set<MethodSignature> decoratedMethodSignatures;
+
+   public static CustomDecoratorWrapper of(Decorator<?> delegate, BeanManagerImpl beanManager)
    {
-      return new AnnotatedItemProvidingDecoratorWrapper((Decorator<Object>) delegate, beanManager);
+      return new CustomDecoratorWrapper((Decorator<Object>) delegate, beanManager);
    }
 
-   private AnnotatedItemProvidingDecoratorWrapper(Decorator<Object> delegate, BeanManagerImpl beanManager)
+   private CustomDecoratorWrapper(Decorator<Object> delegate, BeanManagerImpl beanManager)
    {
       this.delegate = delegate;
       ClassTransformer transformer = beanManager.getServices().get(ClassTransformer.class);
       Class<?> beanClass = delegate.getBeanClass();
       this.annotatedItem =  transformer.loadClass(beanClass);
+      this.decoratedMethodSignatures = Deployers.getDecoratedMethodSignatures(beanManager, delegate.getDecoratedTypes());
    }
 
    @Override
@@ -57,4 +64,10 @@ public class AnnotatedItemProvidingDecoratorWrapper extends ForwardingDecorator<
    {
       return annotatedItem;
    }
+
+   public Set<MethodSignature> getDecoratedMethodSignatures()
+   {
+      return decoratedMethodSignatures;
+   }
+   
 }

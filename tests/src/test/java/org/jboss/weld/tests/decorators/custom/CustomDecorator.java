@@ -70,7 +70,7 @@ public class CustomDecorator implements Decorator<Object>
 
    public Set<Type> getTypes()
    {
-      return Collections.<Type>singleton(Window.class);
+      return Collections.<Type>singleton(CustomWindowFrame.class);
    }
 
    public Set<Annotation> getQualifiers()
@@ -96,7 +96,7 @@ public class CustomDecorator implements Decorator<Object>
 
    public Class<?> getBeanClass()
    {
-      return CustomFrame.class;
+      return CustomWindowFrame.class;
    }
 
    public boolean isAlternative()
@@ -116,7 +116,7 @@ public class CustomDecorator implements Decorator<Object>
 
    public Object create(CreationalContext<Object> creationalContext)
    {
-      CustomFrame customFrame = new CustomFrame();
+      CustomWindowFrame customFrame = new CustomWindowFrame();
       customFrame.window = (Window) beanManager.getInjectableReference(injectionPoints.iterator().next(), creationalContext);
       return customFrame;
    }
@@ -129,12 +129,12 @@ public class CustomDecorator implements Decorator<Object>
    class CustomInjectionPoint implements InjectionPoint
    {
       private final WeldClass<?> targetClass;
-      private final WeldField<CustomFrame,?> windowField;
+      private final WeldField<CustomWindowFrame,?> windowField;
 
       public CustomInjectionPoint()
       {
          ClassTransformer transformer = new ClassTransformer(new TypeStore());
-         targetClass = WeldClassImpl.of(CustomFrame.class, transformer);
+         targetClass = WeldClassImpl.of(CustomWindowFrame.class, transformer);
          windowField = targetClass.getDeclaredWeldField("window");
       }
 

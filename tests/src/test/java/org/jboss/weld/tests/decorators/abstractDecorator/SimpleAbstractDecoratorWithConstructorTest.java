@@ -37,15 +37,15 @@ public class SimpleAbstractDecoratorWithConstructorTest extends AbstractWeldTest
 
       resetAll();
 
-      Window window = getCurrentManager().getInstanceByType(Window.class);
+      Window window = getCurrentManager().getInstanceByType(WindowImpl.class);
       window.draw();
-      assert Window.drawn;
+      assert WindowImpl.drawn;
       assert FrameWithConstructorInjectedDelegate.drawn;
 
       resetAll();
       window.move();
-      assert !Window.moved;
-      assert Window.drawn;
+      assert !WindowImpl.moved;
+      assert WindowImpl.drawn;
       assert FrameWithConstructorInjectedDelegate.drawn;
       assert FrameWithConstructorInjectedDelegateAndAbstractMethod.moved;
 

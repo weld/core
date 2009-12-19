@@ -3,7 +3,7 @@ package org.jboss.weld.tests.decorators.custom;
 /**
  * @author Marius Bogoevici
  */
-public class CustomFrame
+public class CustomWindowFrame implements Window
 {
    public static boolean drawn;
 

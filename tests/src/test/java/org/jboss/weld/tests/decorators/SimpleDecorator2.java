@@ -31,7 +31,7 @@ import javax.inject.Inject;
  * @version $Revision: 1.1 $
  */
 @Decorator
-public class SimpleDecorator2
+public abstract class SimpleDecorator2 implements SimpleBean
 {
    @Inject  @Delegate
    SimpleBean delegate;

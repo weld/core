@@ -14,35 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.tests.decorators.abstractDecorator;
 
-import static org.jboss.weld.tests.decorators.abstractDecorator.AbstractDecoratorTestHelper.resetAll;
-
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.Test;
-
 /**
- * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
+ *
+ * @author Marius Bogoevici
  */
-@Artifact
-@BeansXml("beans-withCallToItself.xml")
-public class SimpleAbstractDecoratorWithCallToItselfTest extends AbstractWeldTest
+public class WindowImpl implements Window
 {
-   @Test
-   public void testAbstractDecoratorApplied()
+   static boolean drawn;
+
+   static boolean moved;
+
+   public void draw()
    {
-
-      Window window = getCurrentManager().getInstanceByType(WindowImpl.class);
-
-      resetAll();
-      window.move();
-      assert WindowImpl.drawn;
-      assert FrameWithFieldInjectedDelegate.drawn;
-      assert FrameWithFieldInjectedDelegateAndSelfInvokedAbstractMethod.moved;
-
+      drawn = true;
    }
 
+   public void move()
+   {
+      moved = true; 
+   }
 }

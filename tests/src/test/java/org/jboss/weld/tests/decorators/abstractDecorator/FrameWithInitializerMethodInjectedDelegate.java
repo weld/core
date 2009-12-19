@@ -25,7 +25,7 @@ import javax.inject.Inject;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 @Decorator
-public abstract class FrameWithInitializerMethodInjectedDelegate
+public abstract class FrameWithInitializerMethodInjectedDelegate implements Window
 {
 
    static boolean drawn;

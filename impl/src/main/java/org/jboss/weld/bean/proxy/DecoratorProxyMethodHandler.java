@@ -25,8 +25,7 @@ import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
 import org.jboss.weld.ForbiddenStateException;
-import org.jboss.weld.bean.AnnotatedItemProvidingDecoratorWrapper;
-import org.jboss.weld.bean.DecoratorImpl;
+import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
@@ -81,26 +80,23 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
       MethodSignature methodSignature = new MethodSignatureImpl(method);
       for (SerializableContextualInstance<Decorator<Object>, Object> beanInstance : decoratorInstances)
       {
-         WeldMethod<?, ?> decoratorMethod;
-
-         if (beanInstance.getContextual().get() instanceof DecoratorImpl<?>)
+         if (beanInstance.getContextual().get() instanceof WeldDecorator<?>)
          {
-            decoratorMethod = ((DecoratorImpl<?>)beanInstance.getContextual().get()).getAnnotatedItem().getWeldMethod(methodSignature);
-         }
-         else if (beanInstance.getContextual().get() instanceof AnnotatedItemProvidingDecoratorWrapper)
-         {
-            decoratorMethod = ((AnnotatedItemProvidingDecoratorWrapper)beanInstance.getContextual().get()).getAnnotatedItem().getWeldMethod(methodSignature);
+            WeldDecorator<?> decorator = (WeldDecorator<?>) beanInstance.getContextual().get();
+            if (decorator.getDecoratedMethodSignatures().contains(methodSignature))
+            {
+               WeldMethod<?, ?> decoratorMethod = decorator.getAnnotatedItem().getWeldMethod(methodSignature);
+               if (decoratorMethod != null)
+               {
+                  return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);
+               }
+            }
          }
          else
          {
             throw new ForbiddenStateException(UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR, beanInstance.getContextual().get());
          }
-         if (decoratorMethod != null)
-         {
-            return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);
-         }
       }
-      
-      return Reflections.invoke(method,getTargetInstance(), args);
+      return Reflections.invoke(method, getTargetInstance(), args);
    }
 }

@@ -388,9 +388,9 @@ public class ManagedBean<T> extends AbstractClassBean<T>
                DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
                decoratorClass = decoratorBean.getAnnotatedItem();
             }
-            else if (decorator instanceof AnnotatedItemProvidingDecoratorWrapper)
+            else if (decorator instanceof CustomDecoratorWrapper)
             {
-               decoratorClass = ((AnnotatedItemProvidingDecoratorWrapper) decorator).getAnnotatedItem();
+               decoratorClass = ((CustomDecoratorWrapper) decorator).getAnnotatedItem();
             }
             else
             {

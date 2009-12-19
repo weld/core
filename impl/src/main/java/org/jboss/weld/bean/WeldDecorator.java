@@ -15,28 +15,28 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.decorators.abstractDecorator;
+package org.jboss.weld.bean;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.Decorator;
+
+import org.jboss.weld.introspector.MethodSignature;
+import org.jboss.weld.introspector.WeldClass;
+
+
 
 /**
- * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
+ * Sub-interface of {@link Decorator} that contains metadata information about Weld-deployed
+ * Decorators (including custom decorators).
+ *
+ * @author Marius Bogoevici
  */
-@Decorator
-public abstract class FrameWithFieldInjectedDelegate implements Window
+public interface WeldDecorator<T> extends Decorator<T>
 {
 
-   static boolean drawn;
+   WeldClass<?> getAnnotatedItem();
 
-   @Inject @Delegate
-   Window window;
-
-   public void draw()
-   {
-     drawn = true;
-     window.draw();
-   }
+   Set<MethodSignature> getDecoratedMethodSignatures();
    
 }

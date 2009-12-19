@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright <Year>, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -20,17 +20,7 @@ package org.jboss.weld.tests.decorators.custom;
 /**
  * @author Marius Bogoevici
  */
-public class Window
+public interface Window
 {
-   public boolean drawn = false;
-
-   void draw()
-   {
-      drawn = true;
-   }
-
-   public boolean isDrawn()
-   {
-      return drawn;
-   }
+   void draw();
 }

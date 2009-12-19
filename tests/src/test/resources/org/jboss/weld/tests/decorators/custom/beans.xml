@@ -17,8 +17,8 @@
 
 <beans>
    <decorators>
-      <decorator>org.jboss.weld.tests.decorators.custom.OuterFrame</decorator>
-      <decorator>org.jboss.weld.tests.decorators.custom.CustomFrame</decorator>
-      <decorator>org.jboss.weld.tests.decorators.custom.InnerFrame</decorator>
+      <decorator>org.jboss.weld.tests.decorators.custom.OuterWindowFrame</decorator>
+      <decorator>org.jboss.weld.tests.decorators.custom.CustomWindowFrame</decorator>
+      <decorator>org.jboss.weld.tests.decorators.custom.InnerWindowFrame</decorator>
    </decorators>
 </beans>

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright <Year>, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -15,28 +15,27 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.decorators.abstractDecorator;
+package org.jboss.weld.tests.decorators.custom;
 
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
 
 /**
- * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
+ * @author Marius Bogoevici
  */
 @Decorator
-public abstract class FrameWithFieldInjectedDelegate implements Window
+public class OuterWindowFrame implements Window
 {
-
-   static boolean drawn;
+   static boolean drawn = false;
 
    @Inject @Delegate
    Window window;
 
    public void draw()
    {
-     drawn = true;
-     window.draw();
+      window.draw();
+      drawn = true;
    }
-   
+
 }
