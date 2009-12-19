@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-11-11 15:00+0000\n"
-"PO-Revision-Date: 2009-04-06 13:01-0300\n"
+"PO-Revision-Date: 2009-12-19 18:08-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -22,18 +22,8 @@ msgstr ""
 #. Tag: para
 #: intro.xml:6
 #, fuzzy, no-c-format
-msgid ""
-"So you're keen to get started writing your first bean? Or perhaps you're "
-"skeptical, wondering what kinds of hoops the CDI specification will make you "
-"jump through! The good news is that you've probably already written and used "
-"hundreds, perhaps thousands of beans. CDI just makes it easier to actually "
-"use them to build an application!"
-msgstr ""
-"Então você está interessado em começar a escrever o seu primeiro Web Bean? "
-"Ou talvez você é cético, imaginando que tipos de hoops a especificação Web "
-"Beans fará com que você passe! A boa notícia é que você provavelmente já "
-"escreveu e utilizou centenas, talvez milhares de Web Beans. Você pode até "
-"não se lembrar do primeiro Web Bean que escreveu."
+msgid "So you're keen to get started writing your first bean? Or perhaps you're skeptical, wondering what kinds of hoops the CDI specification will make you jump through! The good news is that you've probably already written and used hundreds, perhaps thousands of beans. CDI just makes it easier to actually use them to build an application!"
+msgstr "Então você está interessado em começar a escrever o seu primeiro Web Bean? Ou talvez você é cético, imaginando que tipos de hoops a especificação Web Beans fará com que você passe! A boa notícia é que você provavelmente já escreveu e utilizou centenas, talvez milhares de Web Beans. Você pode até não se lembrar do primeiro Web Bean que escreveu."
 
 #. Tag: title
 #: intro.xml:13
@@ -44,65 +34,31 @@ msgstr "O que é um Web Bean?"
 #. Tag: para
 #: intro.xml:15
 #, no-c-format
-msgid ""
-"A bean is exactly what you think it is. Only now, it has a true identity in "
-"the container environment."
+msgid "A bean is exactly what you think it is. Only now, it has a true identity in the container environment."
 msgstr ""
 
 #. Tag: para
 #: intro.xml:19
 #, no-c-format
-msgid ""
-"Prior to Java EE 6, there was no clear definition of the term \"bean\" in "
-"the Java EE platform. Of course, we've been calling Java classes used in web "
-"and enterprise applications \"beans\" for years. There were even a couple of "
-"different kinds of things called \"beans\" in EE specifications, including "
-"EJB beans and JSF managed beans. Meanwhile, other third-party frameworks "
-"such as Spring and Seam introduced their own ideas of what it meant to be a "
-"\"bean\". What we've been missing is a common definition."
+msgid "Prior to Java EE 6, there was no clear definition of the term \"bean\" in the Java EE platform. Of course, we've been calling Java classes used in web and enterprise applications \"beans\" for years. There were even a couple of different kinds of things called \"beans\" in EE specifications, including EJB beans and JSF managed beans. Meanwhile, other third-party frameworks such as Spring and Seam introduced their own ideas of what it meant to be a \"bean\". What we've been missing is a common definition."
 msgstr ""
 
 #. Tag: para
 #: intro.xml:27
 #, no-c-format
-msgid ""
-"Java EE 6 finally lays down that common definition in the Managed Beans "
-"specification. Managed Beans are defined as container-managed objects with "
-"minimal programming restrictions, otherwise known by the acronym POJO (Plain "
-"Old Java Object). They support a small set of basic services, such as "
-"resource injection, lifecycle callbacks and interceptors. Companion "
-"specifications, such as EJB and CDI, build on this basic model. But, "
-"<emphasis>at last</emphasis>, there's a uniform concept of a bean and a "
-"lightweight component model that's aligned across the Java EE platform."
+msgid "Java EE 6 finally lays down that common definition in the Managed Beans specification. Managed Beans are defined as container-managed objects with minimal programming restrictions, otherwise known by the acronym POJO (Plain Old Java Object). They support a small set of basic services, such as resource injection, lifecycle callbacks and interceptors. Companion specifications, such as EJB and CDI, build on this basic model. But, <emphasis>at last</emphasis>, there's a uniform concept of a bean and a lightweight component model that's aligned across the Java EE platform."
 msgstr ""
 
 #. Tag: para
 #: intro.xml:36
 #, no-c-format
-msgid ""
-"With very few exceptions, almost every concrete Java class that has a "
-"constructor with no parameters (or a constructor designated with the "
-"annotation <literal>@Inject</literal>) is a bean. This includes every "
-"JavaBean and every EJB session bean. If you've already got some JavaBeans or "
-"session beans lying around, they're already beans&#8212;you won't need any "
-"additional special metadata. There's just little one thing you need to do "
-"before you can start injecting them into stuff: you need to put them in an "
-"archive (a jar, or a Java EE module such as a war or EJB jar) that contains "
-"a special marker file: <literal>META-INF/beans.xml</literal>."
+msgid "With very few exceptions, almost every concrete Java class that has a constructor with no parameters (or a constructor designated with the annotation <literal>@Inject</literal>) is a bean. This includes every JavaBean and every EJB session bean. If you've already got some JavaBeans or session beans lying around, they're already beans&#8212;you won't need any additional special metadata. There's just little one thing you need to do before you can start injecting them into stuff: you need to put them in an archive (a jar, or a Java EE module such as a war or EJB jar) that contains a special marker file: <literal>META-INF/beans.xml</literal>."
 msgstr ""
 
 #. Tag: para
 #: intro.xml:45
 #, no-c-format
-msgid ""
-"The JavaBeans and EJBs you've been writing every day, up until now, have not "
-"been able to take advantage of the new services defined by the CDI "
-"specification. But you'll be able to use every one of them with CDI&#8212;"
-"allowing the container to create and destroy instances of your beans and "
-"associate them with a designated context, injecting them into other beans, "
-"using them in EL expressions, specializing them with qualifier annotations, "
-"even adding interceptors and decorators to them&#8212;without modifying your "
-"existing code. At most, you'll need to add some annotations."
+msgid "The JavaBeans and EJBs you've been writing every day, up until now, have not been able to take advantage of the new services defined by the CDI specification. But you'll be able to use every one of them with CDI&#8212;allowing the container to create and destroy instances of your beans and associate them with a designated context, injecting them into other beans, using them in EL expressions, specializing them with qualifier annotations, even adding interceptors and decorators to them&#8212;without modifying your existing code. At most, you'll need to add some annotations."
 msgstr ""
 
 #. Tag: para
@@ -120,42 +76,30 @@ msgstr ""
 #. Tag: para
 #: intro.xml:63
 #, fuzzy, no-c-format
-msgid ""
-"Suppose that we have two existing Java classes that we've been using for "
-"years in various applications. The first class parses a string into a list "
-"of sentences:"
-msgstr ""
-"Suponha que temos duas classes Java existentes, que temos utilizado por anos "
-"em várias aplicações. A primeira classe faz a divisão (parse) de uma string "
-"em uma lista de sentenças:"
+msgid "Suppose that we have two existing Java classes that we've been using for years in various applications. The first class parses a string into a list of sentences:"
+msgstr "Suponha que temos duas classes Java existentes, que temos utilizado por anos em várias aplicações. A primeira classe faz a divisão (parse) de uma string em uma lista de sentenças:"
 
 #. Tag: programlisting
 #: intro.xml:68
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[public class SentenceParser {\n"
 "   public List<String> parse(String text) { ... }\n"
 "}]]>"
 msgstr ""
 "<![CDATA[public class SentenceParser {\n"
-"    public List<String> parse(String text) { ... }\n"
+"   public List<String> parse(String text) { ... }\n"
 "}]]>"
 
 #. Tag: para
 #: intro.xml:70
 #, no-c-format
-msgid ""
-"The second existing class is a stateless session bean front-end for an "
-"external system that is able to translate sentences from one language to "
-"another:"
-msgstr ""
-"A segunda classe existente é um stateless session bean de fachada (front-"
-"end) para um sistema externo que é capaz de traduzir frases de uma língua "
-"para outra:"
+msgid "The second existing class is a stateless session bean front-end for an external system that is able to translate sentences from one language to another:"
+msgstr "A segunda classe existente é um stateless session bean de fachada (front-end) para um sistema externo que é capaz de traduzir frases de uma língua para outra:"
 
 #. Tag: programlisting
 #: intro.xml:75
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[@Stateless\n"
 "public class SentenceTranslator implements Translator {\n"
@@ -164,7 +108,7 @@ msgid ""
 msgstr ""
 "<![CDATA[@Stateless\n"
 "public class SentenceTranslator implements Translator {\n"
-"    public String translate(String sentence) { ... }\n"
+"   public String translate(String sentence) { ... }\n"
 "}]]>"
 
 #. Tag: para
@@ -175,7 +119,7 @@ msgstr "Onde <literal>Translator</literal> é a interface local:"
 
 #. Tag: programlisting
 #: intro.xml:79
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[@Local\n"
 "public interface Translator {\n"
@@ -184,30 +128,25 @@ msgid ""
 msgstr ""
 "<![CDATA[@Local\n"
 "public interface Translator {\n"
-"    public String translate(String sentence);\n"
+"   public String translate(String sentence);\n"
 "}]]>"
 
 #. Tag: para
 #: intro.xml:81
 #, fuzzy, no-c-format
-msgid ""
-"Unfortunately, we don't have a class that translates whole text documents. "
-"So let's write a bean for this job:"
-msgstr ""
-" Infelizmente, não temos uma classe pré-existente que traduz todo o texto de "
-"documentos. Então vamos escrever um Web Bean que faz este trabalho:"
+msgid "Unfortunately, we don't have a class that translates whole text documents. So let's write a bean for this job:"
+msgstr " Infelizmente, não temos uma classe pré-existente que traduz todo o texto de documentos. Então vamos escrever um Web Bean que faz este trabalho:"
 
 #. Tag: programlisting
 #: intro.xml:85
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[public class TextTranslator {\n"
 "   private SentenceParser sentenceParser;\n"
 "   private Translator sentenceTranslator;\n"
 "    \n"
 "   @Inject\n"
-"   TextTranslator(SentenceParser sentenceParser, Translator "
-"sentenceTranslator) {\n"
+"   TextTranslator(SentenceParser sentenceParser, Translator sentenceTranslator) {\n"
 "      this.sentenceParser = sentenceParser;\n"
 "      this.sentenceTranslator = sentenceTranslator;\n"
 "   }\n"
@@ -222,70 +161,46 @@ msgid ""
 "}]]>"
 msgstr ""
 "<![CDATA[public class TextTranslator {\n"
+"   private SentenceParser sentenceParser;\n"
+"   private Translator sentenceTranslator;\n"
 "    \n"
-"    private SentenceParser sentenceParser;\n"
-"    private Translator sentenceTranslator;\n"
+"   @Inject\n"
+"   TextTranslator(SentenceParser sentenceParser, Translator sentenceTranslator) {\n"
+"      this.sentenceParser = sentenceParser;\n"
+"      this.sentenceTranslator = sentenceTranslator;\n"
+"   }\n"
 "    \n"
-"    @Initializer\n"
-"    TextTranslator(SentenceParser sentenceParser, Translator "
-"sentenceTranslator) {\n"
-"        this.sentenceParser = sentenceParser;\n"
-"        this.sentenceTranslator = sentenceTranslator;\n"
-"    }\n"
-"    \n"
-"    public String translate(String text) {\n"
-"        StringBuilder sb = new StringBuilder();\n"
-"        for (String sentence: sentenceParser.parse(text)) {\n"
-"            sb.append(sentenceTranslator.translate(sentence));\n"
-"        }\n"
-"        return sb.toString();\n"
-"    }\n"
-"    \n"
+"   public String translate(String text) {\n"
+"      StringBuilder sb = new StringBuilder();\n"
+"      for (String sentence: sentenceParser.parse(text)) {\n"
+"          sb.append(sentenceTranslator.translate(sentence));\n"
+"      }\n"
+"      return sb.toString();\n"
+"   }\n"
 "}]]>"
 
 #. Tag: para
 #: intro.xml:87
 #, fuzzy, no-c-format
-msgid ""
-"But wait! <literal>TextTranslator</literal> does not have a constructor with "
-"no parameters! Is it still a bean? If you remember, a class that does not "
-"have a constructor with no parameters can still be a bean if it has a "
-"constructor annotated <literal>@Inject</literal>."
-msgstr ""
-"Mas espere: <literal>TextTranslator</literal> não tem um construtor sem "
-"parâmetros! É ainda um Web Bean? Bem, uma classe que não tem um construtor "
-"sem parâmetros ainda pode ser um Web Bean, se tiver um construtor anotado "
-"com <literal>@Initializer</literal>."
+msgid "But wait! <literal>TextTranslator</literal> does not have a constructor with no parameters! Is it still a bean? If you remember, a class that does not have a constructor with no parameters can still be a bean if it has a constructor annotated <literal>@Inject</literal>."
+msgstr "Mas espere: <literal>TextTranslator</literal> não tem um construtor sem parâmetros! É ainda um Web Bean? Bem, uma classe que não tem um construtor sem parâmetros ainda pode ser um Web Bean, se tiver um construtor anotado com <literal>@Initializer</literal>."
 
 #. Tag: para
 #: intro.xml:93
 #, no-c-format
-msgid ""
-"As you've guessed, the <literal>@Inject</literal> annotation has something "
-"to do with dependency injection! <literal>@Inject</literal> may be applied "
-"to a constructor or method of a bean, and tells the container to call that "
-"constructor or method when instantiating the bean. The container will inject "
-"other beans into the parameters of the constructor or method."
+msgid "As you've guessed, the <literal>@Inject</literal> annotation has something to do with dependency injection! <literal>@Inject</literal> may be applied to a constructor or method of a bean, and tells the container to call that constructor or method when instantiating the bean. The container will inject other beans into the parameters of the constructor or method."
 msgstr ""
 
 #. Tag: para
 #: intro.xml:100
 #, no-c-format
-msgid ""
-"We may obtain an instance of <literal>TextTranslator</literal> by injecting "
-"it into a constructor, method or field of a bean, or a field or method of a "
-"Java EE component class such as a servlet. The container chooses the object "
-"to be injected based on the type of the injection point, not the name of the "
-"field, method or parameter."
+msgid "We may obtain an instance of <literal>TextTranslator</literal> by injecting it into a constructor, method or field of a bean, or a field or method of a Java EE component class such as a servlet. The container chooses the object to be injected based on the type of the injection point, not the name of the field, method or parameter."
 msgstr ""
 
 #. Tag: para
 #: intro.xml:107
 #, no-c-format
-msgid ""
-"Let's create a UI controller bean that uses field injection to obtain an "
-"instance of the <literal>TextTranslator</literal>, translating the text "
-"entered by a user:"
+msgid "Let's create a UI controller bean that uses field injection to obtain an instance of the <literal>TextTranslator</literal>, translating the text entered by a user:"
 msgstr ""
 
 #. Tag: programlisting
@@ -317,6 +232,30 @@ msgid ""
 "   }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Named @RequestScoped\n"
+"public class TranslateController {\n"
+"   @Inject TextTranslator textTranslator;\n"
+"\n"
+"   private String inputText;\n"
+"   private String translation;\n"
+"\n"
+"   // JSF action method, perhaps\n"
+"   public void translate() {\n"
+"      translation = textTranslator.translate(inputText); \n"
+"   }\n"
+"\n"
+"   public String getInputText() {\n"
+"      return inputText;\n"
+"   }\n"
+"\n"
+"   public void setInputText(String text) {\n"
+"      this.inputText = text;\n"
+"   }\n"
+"\n"
+"   public String getTranslation() {\n"
+"      return translation;\n"
+"   }\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:119
@@ -327,28 +266,18 @@ msgstr "Onde <literal>Translator</literal> é a interface local:"
 #. Tag: para
 #: intro.xml:127
 #, no-c-format
-msgid ""
-"Notice the controller bean is request-scoped and named. Since this "
-"combination is so common in web applications, there's a built-in annotation "
-"for it in CDI that we could have used as a shorthand. When the (stereotype) "
-"annotation <literal>@Model</literal> is declared on a class, it creates a "
-"request-scoped and named bean."
+msgid "Notice the controller bean is request-scoped and named. Since this combination is so common in web applications, there's a built-in annotation for it in CDI that we could have used as a shorthand. When the (stereotype) annotation <literal>@Model</literal> is declared on a class, it creates a request-scoped and named bean."
 msgstr ""
 
 #. Tag: para
 #: intro.xml:135
 #, fuzzy, no-c-format
-msgid ""
-"Alternatively, we may obtain an instance of <literal>TextTranslator</"
-"literal> programmatically from an injected instance of <literal>Instance</"
-"literal>, parameterized with the bean type:"
-msgstr ""
-"Podemos obter uma instância de <literal>TextTranslator</literal> injetando-a "
-"em um Web Bean, Servlet ou EJB:"
+msgid "Alternatively, we may obtain an instance of <literal>TextTranslator</literal> programmatically from an injected instance of <literal>Instance</literal>, parameterized with the bean type:"
+msgstr "Podemos obter uma instância de <literal>TextTranslator</literal> injetando-a em um Web Bean, Servlet ou EJB:"
 
 #. Tag: programlisting
 #: intro.xml:140
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[@Inject Instance<TextTranslator> textTranslatorInstance;\n"
 "...\n"
@@ -356,52 +285,34 @@ msgid ""
 "   textTranslatorInstance.get().translate(inputText);\n"
 "}]]>"
 msgstr ""
-"<![CDATA[@Initializer\n"
-"public setTextTranslator(TextTranslator textTranslator) {\n"
-"    this.textTranslator = textTranslator;\n"
+"<![CDATA[@Inject Instance<TextTranslator> textTranslatorInstance;\n"
+"...\n"
+"public void translate() {\n"
+"   textTranslatorInstance.get().translate(inputText);\n"
 "}]]>"
 
 #. Tag: para
 #: intro.xml:142
 #, no-c-format
-msgid ""
-"Notice that it isn't necessary to create a getter or setter method to inject "
-"one bean into another. CDI can access an injected field directly (even if "
-"it's private!), which sometimes helps eliminate some wasteful code. The name "
-"of the field is arbitrary. It's the field's type that determines what is "
-"injected."
+msgid "Notice that it isn't necessary to create a getter or setter method to inject one bean into another. CDI can access an injected field directly (even if it's private!), which sometimes helps eliminate some wasteful code. The name of the field is arbitrary. It's the field's type that determines what is injected."
 msgstr ""
 
 #. Tag: para
 #: intro.xml:148
 #, no-c-format
-msgid ""
-"At system initialization time, the container must validate that exactly one "
-"bean exists which satisfies each injection point. In our example, if no "
-"implementation of <literal>Translator</literal> is available&#8212;if the "
-"<literal>SentenceTranslator</literal> EJB was not deployed&#8212;the "
-"container would inform us of an <emphasis>unsatisfied dependency</emphasis>. "
-"If more than one implementation of <literal>Translator</literal> were "
-"available, the container would inform us of the <emphasis>ambiguous "
-"dependency</emphasis>."
+msgid "At system initialization time, the container must validate that exactly one bean exists which satisfies each injection point. In our example, if no implementation of <literal>Translator</literal> is available&#8212;if the <literal>SentenceTranslator</literal> EJB was not deployed&#8212;the container would inform us of an <emphasis>unsatisfied dependency</emphasis>. If more than one implementation of <literal>Translator</literal> were available, the container would inform us of the <emphasis>ambiguous dependency</emphasis>."
 msgstr ""
 
 #. Tag: para
 #: intro.xml:156
 #, no-c-format
-msgid ""
-"Before we get too deep in the details, let's pause and examine a bean's "
-"anatomy. What aspects of the bean are significant, and what gives it its "
-"identity? Instead of just giving examples of beans, we're going to define "
-"what <emphasis>makes</emphasis> something a bean."
+msgid "Before we get too deep in the details, let's pause and examine a bean's anatomy. What aspects of the bean are significant, and what gives it its identity? Instead of just giving examples of beans, we're going to define what <emphasis>makes</emphasis> something a bean."
 msgstr ""
 
 #~ msgid "Getting started with Web Beans"
 #~ msgstr "Introdução a Web Beans"
-
 #~ msgid "Your first Web Bean"
 #~ msgstr "Seu primeiro Web Bean"
-
 #~ msgid ""
 #~ "With certain, very special exceptions, every Java class with a "
 #~ "constructor that accepts no parameters is a Web Bean. That includes every "
@@ -422,24 +333,20 @@ msgstr ""
 #~ "em outros Web Beans, configurando-os através da Web Beans XML "
 #~ "configuration facility, e até acrescentando interceptadores e decoradores "
 #~ "&#151; sem tocar o seu código existente."
-
 #~ msgid ""
 #~ "Alternatively, we may obtain an instance by directly calling a method of "
 #~ "the Web Bean manager:"
 #~ msgstr ""
 #~ "Alternativamente, nós podemos obter uma instância invocando diretamente o "
 #~ "método do gerenciador do Web Bean:"
-
 #~ msgid ""
 #~ "<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator."
 #~ "class);]]>"
 #~ msgstr ""
 #~ "<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator."
 #~ "class);]]>"
-
 #~ msgid "So what, <emphasis>exactly</emphasis>, is a Web Bean?"
 #~ msgstr "Então, o que, <emphasis>exatamente</emphasis>, é um Web Bean?"
-
 #~ msgid ""
 #~ "However, like a stateless or singleton model, but <emphasis>unlike</"
 #~ "emphasis> stateful session beans, the client does not control the "
@@ -450,16 +357,13 @@ msgstr ""
 #~ "contrário</emphasis> dos stateful session beans, o cliente não controla o "
 #~ "ciclo de vida da instância por explicitamente criar e destruí-lo. Em vez "
 #~ "disso, o <emphasis>escopo</emphasis> do Web Bean determina:"
-
 #~ msgid "the lifecycle of each instance of the Web Bean and"
 #~ msgstr "o ciclo de vida de cada instância do Web Bean e"
-
 #~ msgid ""
 #~ "which clients share a reference to a particular instance of the Web Bean."
 #~ msgstr ""
 #~ "que os clientes compartilham uma referência a uma instância específica do "
 #~ "Web Bean."
-
 #~ msgid ""
 #~ "Clients (for example, other Web Beans) executing in the same context will "
 #~ "see the same instance of the Web Bean. But clients in a different context "
@@ -468,13 +372,10 @@ msgstr ""
 #~ "Os clientes (por exemplo, outros Web Beans) executam no mesmo contexto "
 #~ "verão a mesma instância do Web Bean. Mas os clientes em um contexto "
 #~ "diferente verão uma outra instância."
-
 #~ msgid "they interact via well-defined public APIs"
 #~ msgstr "ele interagem por uma API pública bem definida"
-
 #~ msgid "their lifecycles are completely decoupled"
 #~ msgstr "seus ciclos de vida são completamente desacoplados"
-
 #~ msgid ""
 #~ "Note that not all clients of a Web Bean are Web Beans. Other objects such "
 #~ "as Servlets or Message-Driven Beans &#151; which are by nature not "
@@ -485,52 +386,37 @@ msgstr ""
 #~ "objetos, tais como Servlets ou Message-Driven Beans &#151; que são, por "
 #~ "natureza, não injetável, objetos contextuais &#151; podem também obter "
 #~ "referências a Web Beans por injeção."
-
 #~ msgid "Enough hand-waving. More formally, according to the spec:"
 #~ msgstr ""
 #~ "Chega de mão abanando. Mais formalmente, de acordo com a especificação:"
-
 #~ msgid "A Web Bean comprises:"
 #~ msgstr "Um Web Bean compreende:"
-
 #~ msgid "A (nonempty) set of API types"
 #~ msgstr "Um conjunto (não vazio) de tipos de API (API types)"
-
 #~ msgid "A (nonempty) set of binding annotation types"
 #~ msgstr "Um conjunto (não vazio) de tipos de anotações de binding "
-
 #~ msgid "A scope"
 #~ msgstr "Um escopo"
-
 #~ msgid "A deployment type"
 #~ msgstr "Um tipo de publicação (deployment type)"
-
 #~ msgid "Optionally, a Web Bean name"
 #~ msgstr "Opcionalmente, um nome Web Bean"
-
 #~ msgid "A set of interceptor binding types"
 #~ msgstr "Um conjunto de tipos de interceptor binding"
-
 #~ msgid "A Web Bean implementation"
 #~ msgstr "A implementação de Web Bean"
-
 #~ msgid "Let's see what some of these terms mean, to the Web Bean developer."
 #~ msgstr ""
 #~ "Vamos ver o que alguns destes termos significam, para o desenvolvedor Web "
 #~ "Bean."
-
 #~ msgid "API types, binding types and dependency injection"
 #~ msgstr "Tipos de API, tipos de binding e injeção de dependências "
-
 #~ msgid "an API type, together with"
 #~ msgstr "um tipo de API, juntamente com"
-
 #~ msgid "a set of binding types."
 #~ msgstr "um conjunto de tipos de binding"
-
 #~ msgid "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
 #~ msgstr "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
-
 #~ msgid ""
 #~ "<![CDATA[@CreditCard\n"
 #~ "public class CreditCardPaymentProcessor \n"
@@ -539,10 +425,8 @@ msgstr ""
 #~ "<![CDATA[@CreditCard\n"
 #~ "public class CreditCardPaymentProcessor \n"
 #~ "    implements PaymentProcessor { ... }]]>"
-
 #~ msgid "Deployment types"
 #~ msgstr "Tipos de publicação (deployment types)"
-
 #~ msgid ""
 #~ "<![CDATA[@Mock\n"
 #~ "public class MockSentenceTranslator implements Translator {\n"
@@ -557,31 +441,26 @@ msgstr ""
 #~ "        return \"Lorem ipsum dolor sit amet\";\n"
 #~ "    }\n"
 #~ "}]]>"
-
 #~ msgid ""
 #~ "We'll talk more about this unique and powerful feature in <xref linkend="
 #~ "\"deploymenttypes\"/>."
 #~ msgstr ""
 #~ "Iremos falar mais sobre essa única e poderosa funcionalidade em <xref "
 #~ "linkend=\"deploymenttypes\"/>."
-
 #~ msgid "Scope"
 #~ msgstr "Escopo"
-
 #~ msgid ""
 #~ "For example, any web application may have <emphasis>session scoped</"
 #~ "emphasis> Web Beans:"
 #~ msgstr ""
 #~ "Por exemplo, qualquer aplicação web pode ter Web Beans com "
 #~ "<emphasis>escopo de sessão (session scoped)</emphasis>:"
-
 #~ msgid ""
 #~ "<![CDATA[@SessionScoped\n"
 #~ "public class ShoppingCart { ... }]]>"
 #~ msgstr ""
 #~ "<![CDATA[@SessionScoped\n"
 #~ "public class ShoppingCart { ... }]]>"
-
 #~ msgid ""
 #~ "By default, Web Beans belong to a special scope called the "
 #~ "<emphasis>dependent pseudo-scope</emphasis>. Web Beans with this scope "
@@ -592,13 +471,10 @@ msgstr ""
 #~ "<emphasis>dependent pseudo-scope</emphasis>. Web Beans com este escopo "
 #~ "são objetos puramente dependentes do objeto em que são injetados, e seu "
 #~ "ciclo de vida está atrelado ao ciclo de vida desse objeto."
-
 #~ msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
 #~ msgstr "Falaremos mais sobre escopos no <xref linkend=\"scopescontexts\"/>."
-
 #~ msgid "Web Bean names and Unified EL"
 #~ msgstr "Nomes Web Beans e Unified EL"
-
 #~ msgid ""
 #~ "A Web Bean may have a <emphasis>name</emphasis>, allowing it to be used "
 #~ "in Unified EL expressions. It's easy to specify the name of a Web Bean:"
@@ -606,19 +482,16 @@ msgstr ""
 #~ "Um Web Bean pode ter um <emphasis>name</emphasis>, que lhe permite ser "
 #~ "utilizado em expressões da Unified EL. É fácil especificar o nome de um "
 #~ "Web Bean:"
-
 #~ msgid ""
 #~ "<![CDATA[@SessionScoped @Named(\"cart\")\n"
 #~ "public class ShoppingCart { ... }]]>"
 #~ msgstr ""
 #~ "<![CDATA[@SessionScoped @Named(\"cart\")\n"
 #~ "public class ShoppingCart { ... }]]>"
-
 #~ msgid "Now we can easily use the Web Bean in any JSF or JSP page:"
 #~ msgstr ""
 #~ "Agora, podemos facilmente utilizar o Web Bean em qualquer página JSF ou "
 #~ "JSP:"
-
 #~ msgid ""
 #~ "<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
 #~ "    ....\n"
@@ -627,21 +500,18 @@ msgstr ""
 #~ "<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
 #~ "    ....\n"
 #~ "</h:dataTable>]]>"
-
 #~ msgid ""
 #~ "It's even easier to just let the name be defaulted by the Web Bean "
 #~ "manager:"
 #~ msgstr ""
 #~ "É ainda mais fácil, deixar o nome ser atribuído pelo gerenciador do Web "
 #~ "Bean:"
-
 #~ msgid ""
 #~ "<![CDATA[@SessionScoped @Named\n"
 #~ "public class ShoppingCart { ... }]]>"
 #~ msgstr ""
 #~ "<![CDATA[@SessionScoped @Named\n"
 #~ "public class ShoppingCart { ... }]]>"
-
 #~ msgid ""
 #~ "In this case, the name defaults to <literal>shoppingCart</literal> &#151; "
 #~ "the unqualified class name, with the first character changed to lowercase."
@@ -649,10 +519,8 @@ msgstr ""
 #~ "Neste caso, o nome fica <literal>shoppingCart</literal> &#151; o nome da "
 #~ "classe não qualificado (unqualified class name), com o primeiro caractere "
 #~ "alterado para minúsculas."
-
 #~ msgid "Interceptor binding types"
 #~ msgstr "Tipos de interceptor binding"
-
 #~ msgid ""
 #~ "Web Beans supports the interceptor functionality defined by EJB 3, not "
 #~ "only for EJB beans, but also for plain Java classes. In addition, Web "
@@ -664,7 +532,6 @@ msgstr ""
 #~ "Java simples (plain Java classes). Além disso, a Web Beans oferece uma "
 #~ "nova abordagem para vincular interceptores (binding interceptors) para "
 #~ "beans EJB e outros Web Beans."
-
 #~ msgid ""
 #~ "<![CDATA[@SessionScoped \n"
 #~ "@Interceptors(TransactionInterceptor.class)\n"
@@ -673,7 +540,6 @@ msgstr ""
 #~ "<![CDATA[@SessionScoped \n"
 #~ "@Interceptors(TransactionInterceptor.class)\n"
 #~ "public class ShoppingCart { ... }]]>"
-
 #~ msgid ""
 #~ "However, it is more elegant, and better practice, to indirect the "
 #~ "interceptor binding through an <emphasis>interceptor binding type</"
@@ -682,50 +548,40 @@ msgstr ""
 #~ "No entanto, é mais elegante, e uma melhor prática, indirecionar o binding "
 #~ "do interceptador através de um <emphasis>interceptor binding type</"
 #~ "emphasis>:"
-
 #~ msgid ""
 #~ "<![CDATA[@SessionScoped @Transactional\n"
 #~ "public class ShoppingCart { ... }]]>"
 #~ msgstr ""
 #~ "<![CDATA[@SessionScoped @Transactional\n"
 #~ "public class ShoppingCart { ... }]]>"
-
 #~ msgid "What kinds of objects can be Web Beans?"
 #~ msgstr "Que tipos de objetos podem ser Web Beans?"
-
 #~ msgid "Simple Web Beans"
 #~ msgstr "Web Beans Simples"
-
 #~ msgid ""
 #~ "The Web Beans specification says that a concrete Java class is a "
 #~ "<emphasis>simple</emphasis> Web Bean if:"
 #~ msgstr ""
 #~ "A especificação de Web Beans diz que uma classe Java concreta é um Web "
 #~ "Bean <emphasis>simples</emphasis> se:"
-
 #~ msgid ""
 #~ "it is not an EE container-managed component, like an EJB, a Servlet or a "
 #~ "JPA entity,"
 #~ msgstr ""
 #~ "não é um componente gerenciado pelo container, como um EJB, um Servlet ou "
 #~ "uma entidade da JPA,"
-
 #~ msgid "it is not a parameterized type, and"
 #~ msgstr "não é um tipo parametrizado, e"
-
 #~ msgid ""
 #~ "it has a constructor with no parameters, or a constructor annotated "
 #~ "<literal>@Initializer</literal>."
 #~ msgstr ""
 #~ "que tem um construtor sem parâmetros, ou um construtor anotado com "
 #~ "<literal>@Initializer</literal>."
-
 #~ msgid "Thus, almost every JavaBean is a simple Web Bean."
 #~ msgstr "Assim, quase todo JavaBean é um Web Bean simples."
-
 #~ msgid "Enterprise Web Beans"
 #~ msgstr "Web Beans corporativos (Enterprise Web Beans)"
-
 #~ msgid ""
 #~ "<![CDATA[@Stateful @SessionScoped\n"
 #~ "public class ShoppingCart {\n"
@@ -746,7 +602,6 @@ msgstr ""
 #~ "    public void destroy() {}\n"
 #~ "\n"
 #~ "}]]>"
-
 #~ msgid ""
 #~ "So when should we use an enterprise Web Bean instead of a simple Web "
 #~ "Bean? Well, whenever we need the advanced enterprise services offered by "
@@ -755,19 +610,14 @@ msgstr ""
 #~ "Então, quando deveremos usar Web Bean corporativo (enterprise) em vez de "
 #~ "um simples Web Bean? Bem, sempre que tivermos a necessidade de serviços "
 #~ "corporatvios (enterprise) avançados oferecidos pelo EJB, tais como:"
-
 #~ msgid "method-level transaction management and security,"
 #~ msgstr "gerenciamento de transações e segurança em nível de método,"
-
 #~ msgid "concurrency management,"
 #~ msgstr "gerenciamento de concorrência,"
-
 #~ msgid "remote and web service invocation, and"
 #~ msgstr "remoto e invocação de web service, e"
-
 #~ msgid "timers and asynchronous methods,"
 #~ msgstr "temporizadores (timers) e métodos assíncronos"
-
 #~ msgid ""
 #~ "we should use an enterprise Web Bean. When we don't need any of these "
 #~ "things, a simple Web Bean will serve just fine."
@@ -775,7 +625,6 @@ msgstr ""
 #~ "devemos utilizar um Web Bean corporativo (enterprise). Quando não "
 #~ "precisamos de nenhuma destas coisas, um Web Bean simples vai servir muito "
 #~ "bem."
-
 #~ msgid ""
 #~ "Many Web Beans (including any session or application scoped Web Bean) are "
 #~ "available for concurrent access. Therefore, the concurrency management "
@@ -787,7 +636,6 @@ msgstr ""
 #~ "gerenciamento de concorrência fornecida pelo EJB 3.1 é especialmente "
 #~ "útil. A maioria dos Web Beans em escopo de sessão e aplicação devem ser "
 #~ "EJBs."
-
 #~ msgid ""
 #~ "Finally, it's usually obvious when method-level transaction management, "
 #~ "method-level security, timers, remote methods or asynchronous methods are "
@@ -796,10 +644,8 @@ msgstr ""
 #~ "Por último, isso normalmente é óbvio quando gerenciamento de transações e "
 #~ "segurança em nível de método, temporizadores, métodos remotos ou "
 #~ "assíncronos são necessários."
-
 #~ msgid "Producer methods"
 #~ msgstr "Métodos produtores (producer methods)"
-
 #~ msgid ""
 #~ "<![CDATA[@ApplicationScoped\n"
 #~ "public class Generator {\n"
@@ -822,21 +668,17 @@ msgstr ""
 #~ "    }\n"
 #~ "\n"
 #~ "}]]>"
-
 #~ msgid ""
 #~ "The result of a producer method is injected just like any other Web Bean."
 #~ msgstr ""
 #~ "O resultado do método produtor é injetado como qualquer outro Web Bean."
-
 #~ msgid "<![CDATA[@Random int randomNumber]]>"
 #~ msgstr "<![CDATA[@Random int randomNumber]]>"
-
 #~ msgid ""
 #~ "Some producer methods return objects that require explicit destruction:"
 #~ msgstr ""
 #~ "Alguns métodos produtores retornam objetos que exigem destruição "
 #~ "explícita :"
-
 #~ msgid ""
 #~ "<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
 #~ "    return createConnection( user.getId(), user.getPassword() );\n"
@@ -845,14 +687,12 @@ msgstr ""
 #~ "<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
 #~ "    return createConnection( user.getId(), user.getPassword() );\n"
 #~ "}]]>"
-
 #~ msgid ""
 #~ "These producer methods may define matching <emphasis>disposal methods</"
 #~ "emphasis>:"
 #~ msgstr ""
 #~ "Estes métodos produtores podem definir <emphasis>métodos eliminação "
 #~ "(disposal methods)</emphasis>:"
-
 #~ msgid ""
 #~ "<![CDATA[void close(@Disposes Connection connection) {\n"
 #~ "    connection.close();\n"
@@ -861,20 +701,18 @@ msgstr ""
 #~ "<![CDATA[void close(@Disposes Connection connection) {\n"
 #~ "    connection.close();\n"
 #~ "}]]>"
-
 #~ msgid ""
 #~ "This disposal method is called automatically by the Web Bean manager at "
 #~ "the end of the request."
 #~ msgstr ""
 #~ "Este método de eliminação (disposal method) é chamado automaticamente "
 #~ "pelo gerenciador do Web Bean no final da requisição."
-
 #~ msgid ""
 #~ "We'll talk much more about producer methods in <xref linkend="
 #~ "\"producermethods\"/>."
 #~ msgstr ""
 #~ "Falaremos mais sobre métodos produtores no <xref linkend=\"producermethods"
 #~ "\"/>."
-
 #~ msgid "JMS endpoints"
 #~ msgstr "JMS endpoints"
+
