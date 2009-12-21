@@ -39,7 +39,6 @@ public class PartialDecoratorTest extends AbstractWeldTest
       assert PartialDecorator.decoratedInvoked;
       assert !PartialDecorator.notDecoratedInvoked;
       assert StringPartialDecorator.invoked;
-      assert !IntegerPartialDecorator.invoked;
       assert GenericBean.decoratedInvoked;
       assert GenericBean.notDecoratedInvoked;
    }
