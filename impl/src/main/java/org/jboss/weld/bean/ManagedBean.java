@@ -140,14 +140,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    {
       T instance = getInjectionTarget().produce(creationalContext);
       getInjectionTarget().inject(instance, creationalContext);
-      if (isInterceptionCandidate() && (hasCdiBoundInterceptors() || hasDirectlyDefinedInterceptors()))
-      {
-         InterceptionUtils.executePostConstruct(instance);
-      }
-      else
-      {
-         getInjectionTarget().postConstruct(instance);
-      }
+      getInjectionTarget().postConstruct(instance);
       return instance;
    }
 
@@ -171,14 +164,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    {
       try
       {
-         if (!isInterceptionCandidate() || !(hasCdiBoundInterceptors() || hasDirectlyDefinedInterceptors()))
-         {
-            getInjectionTarget().preDestroy(instance);
-         }
-         else
-         {
-            InterceptionUtils.executePredestroy(instance);
-         }
+         getInjectionTarget().preDestroy(instance);
          creationalContext.release();
       }
       catch (Exception e)
@@ -225,12 +211,26 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
             public void postConstruct(T instance)
             {
-               defaultPostConstruct(instance);
+               if (isInterceptionCandidate() && (hasCdiBoundInterceptors() || hasDirectlyDefinedInterceptors()))
+               {
+                  InterceptionUtils.executePostConstruct(instance);
+               }
+               else
+               {
+                  defaultPostConstruct(instance);
+               }
             }
 
             public void preDestroy(T instance)
             {
-               defaultPreDestroy(instance);
+               if (!isInterceptionCandidate() || !(hasCdiBoundInterceptors() || hasDirectlyDefinedInterceptors()))
+               {
+                  defaultPreDestroy(instance);
+               }
+               else
+               {
+                  InterceptionUtils.executePredestroy(instance);
+               }
             }
 
             public void dispose(T instance)
