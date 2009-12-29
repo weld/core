@@ -9,7 +9,7 @@
    <groupId>org.jboss.weld</groupId>
    <artifactId>weld-jboss-tck-runner</artifactId>
    <name>CDI TCK runner for Weld</name>
-   <description>Aggregates dependencies and run's the CDI TCK (both standalone and on JBoss AS)</description>
+   <description>Aggregates dependencies and runs the CDI TCK (both standalone and on JBoss AS)</description>
    
    <dependencies>
       <dependency>
@@ -36,7 +36,7 @@
       
       <dependency>
          <groupId>org.jboss.test-harness</groupId>
-         <artifactId>jboss-test-harness-jboss-as-52</artifactId>
+         <artifactId>jboss-test-harness-jboss-as-60</artifactId>
          <scope>test</scope>
       </dependency>
       

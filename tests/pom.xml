@@ -32,7 +32,7 @@
 
       <dependency>
          <groupId>org.jboss.test-harness</groupId>
-         <artifactId>jboss-test-harness-jboss-as-52</artifactId>
+         <artifactId>jboss-test-harness-jboss-as-60</artifactId>
          <exclusions>
             <exclusion>
                <groupId>org.jboss.slf4j</groupId>
