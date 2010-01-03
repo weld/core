@@ -18,7 +18,6 @@ package org.jboss.weld.environment.se.threading;
 
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
-import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import org.jboss.weld.context.beanstore.HashMapBeanStore;
 import org.jboss.weld.environment.se.WeldSEBeanRegistrant;
@@ -33,7 +32,7 @@ import org.jboss.weld.environment.se.contexts.ThreadContext;
 @Decorator
 public class RunnableDecorator implements Runnable {
 
-   @Inject @Delegate @Any Runnable runnable;
+   @Inject @Delegate Runnable runnable;
 
    /**
     * Set up the ThreadContet and delegate.

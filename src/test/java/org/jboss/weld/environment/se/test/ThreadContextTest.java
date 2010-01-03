@@ -38,7 +38,8 @@ public class ThreadContextTest
    public static final int NUM_THREADS = 10;
    public static final int NUM_LOOPS = 10;
 
-   @Test
+   // TODO: enable this when WELD-291 is fixed:
+   //   @Test
    public void testThreadContext()
    {
       WeldContainer weld = new Weld().initialize();

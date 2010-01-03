@@ -43,7 +43,8 @@ public class WeldSEBeanRegistrant implements Extension
       event.addAnnotatedType(manager.createAnnotatedType(ParametersFactory.class));
       event.addAnnotatedType(manager.createAnnotatedType(InstanceManager.class));
       event.addAnnotatedType(manager.createAnnotatedType(Weld.class));
-      event.addAnnotatedType(manager.createAnnotatedType(RunnableDecorator.class));
+      // TODO: enable this when WELD-291 is fixed:
+//      event.addAnnotatedType(manager.createAnnotatedType(RunnableDecorator.class));
    }
 
    public void registerWeldSEContexts(@Observes AfterBeanDiscovery event)
