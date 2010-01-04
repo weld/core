@@ -284,7 +284,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       {
          for (Decorator<?> decorator : this.getDecorators())
          {
-            if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !Reflections.isSerializable(decorator.getBeanClass()))
+            if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>)decorator).getAnnotatedItem().isSerializable())
             {
                this.passivationCapableBean = false;
                break;
@@ -295,7 +295,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       {
          for (SerializableContextual<Interceptor<?>, ?> interceptor : getManager().getCdiInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors())
          {
-            if (!(PassivationCapable.class.isAssignableFrom(interceptor.get().getClass())) || !Reflections.isSerializable(interceptor.get().getBeanClass()))
+            if (!(PassivationCapable.class.isAssignableFrom(interceptor.get().getClass())) || !((InterceptorImpl<?>)interceptor.get()).isSerializable())
             {
                this.passivationCapableBean = false;
                break;
@@ -317,7 +317,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    private void initPassivationCapable()
    {
-      this.passivationCapableBean = Reflections.isSerializable(getAnnotatedItem().getJavaClass());
+      this.passivationCapableBean = getAnnotatedItem().isSerializable();
       if (Container.instance().deploymentServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal())
       {
          this.passivationCapableDependency = true;

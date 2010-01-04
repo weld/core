@@ -42,6 +42,7 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
@@ -62,6 +63,7 @@ import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Names;
+import org.jboss.weld.util.collections.ConcurrentCache;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -69,17 +71,26 @@ import org.slf4j.cal10n.LocLogger;
  * The implicit producer bean
  * 
  * @author Gavin King
+ * @author David Allen
  * 
+ * @param <X>
  * @param <T>
  * @param <S>
  */
 public abstract class AbstractProducerBean<X, T, S extends Member> extends AbstractReceiverBean<X, T, S>
 {
+   // Logger for messages
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
    
+   // Underlying Producer represented by this bean
    private Producer<T> producer;
+   
+   // Passivation flags
    private boolean passivationCapableBean;
    private boolean passivationCapableDependency;
+   
+   // Serialization cache for produced types at runtime
+   private ConcurrentCache<Class<?>, Boolean> serializationCheckCache;
 
    /**
     * Constructor
@@ -89,6 +100,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    public AbstractProducerBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(idSuffix, declaringBean, manager);
+      serializationCheckCache = new ConcurrentCache<Class<?>, Boolean>();
    }
 
    @Override
@@ -230,7 +242,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       else if (instance != null)
       {
          boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
-         if (passivating && !Reflections.isSerializable(instance.getClass()))
+         boolean instanceSerializable = isTypeSerializable(instance.getClass());
+         if (passivating && !instanceSerializable)
          {
             throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
          }
@@ -239,11 +252,11 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
          {
             return;
          }
-         if (!Reflections.isSerializable(instance.getClass()) && Beans.isPassivatingScope(injectionPoint.getBean(), manager))
+         if (!instanceSerializable && Beans.isPassivatingScope(injectionPoint.getBean(), manager))
          {
             if (injectionPoint.getMember() instanceof Field)
             {
-               if (!injectionPoint.isTransient() && instance != null && !Reflections.isSerializable(instance.getClass()))
+               if (!injectionPoint.isTransient() && instance != null && !instanceSerializable)
                {
                   throw new IllegalProductException(NON_SERIALIZABLE_FIELD_INJECTION_ERROR, this, injectionPoint);
                }
@@ -266,6 +279,19 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             }
          }
       }
+   }
+
+   protected boolean isTypeSerializable(final Class<?> clazz)
+   {
+      return serializationCheckCache.putIfAbsent(clazz, new Callable<Boolean>()
+      {
+
+         public Boolean call() throws Exception
+         {
+            return Reflections.isSerializable(clazz);
+         }
+
+      });
    }
 
    @Override

@@ -41,7 +41,6 @@ import javax.enterprise.inject.New;
 import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.Typed;
-import javax.enterprise.inject.spi.Bean;
 import javax.inject.Named;
 import javax.inject.Qualifier;
 
@@ -51,8 +50,6 @@ import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldAnnotated;
-import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
@@ -299,24 +296,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    protected void initPrimitive()
    {
       this.primitive = Reflections.isPrimitive(getType());
-   }
-
-   private boolean checkInjectionPointsAreSerializable()
-   {
-      boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(this.getScope()).isPassivating();
-      for (WeldInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
-      {
-         Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(Qualifier.class);
-         Bean<?> resolvedBean = manager.getBeans(injectionPoint.getJavaClass(), bindings).iterator().next();
-         if (passivating)
-         {
-            if (Dependent.class.equals(resolvedBean.getScope()) && !Reflections.isSerializable(resolvedBean.getBeanClass()) && (((injectionPoint instanceof WeldField<?, ?>) && !((WeldField<?, ?>) injectionPoint).isTransient()) || (injectionPoint instanceof WeldParameter<?, ?>)))
-            {
-               return false;
-            }
-         }
-      }
-      return true;
    }
 
    /**

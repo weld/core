@@ -45,11 +45,14 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
    private final InterceptorClassMetadata interceptorClassMetadata;
 
    private final Set<Annotation> interceptorBindingTypes;
+   
+   private boolean serializable;
 
    protected InterceptorImpl(WeldClass<T> type, BeanManagerImpl manager)
    {
       super(type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), manager);
       this.interceptorClassMetadata = InterceptorClassMetadataRegistry.getRegistry().getInterceptorClassMetadata(type.getJavaClass());
+      this.serializable = type.isSerializable();
       this.interceptorBindingTypes = new HashSet<Annotation>();
       interceptorBindingTypes.addAll(flattenInterceptorBindings(manager, getAnnotatedItem().getAnnotations()));
       for (Class<? extends Annotation> annotation : getStereotypes())
@@ -90,6 +93,11 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
    public boolean intercepts(InterceptionType type)
    {
       return interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.valueOf(type.name())).size() > 0;
+   }
+
+   public boolean isSerializable()
+   {
+      return serializable;
    }
 
    @Override

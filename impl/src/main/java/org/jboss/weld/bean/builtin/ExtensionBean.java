@@ -26,7 +26,6 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author pmuir
@@ -47,7 +46,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
       super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
       this.clazz = clazz;
       this.instance = instance;
-      this.passivationCapable = Reflections.isSerializable(clazz.getJavaClass());
+      this.passivationCapable = clazz.isSerializable();
    }
 
    @Override

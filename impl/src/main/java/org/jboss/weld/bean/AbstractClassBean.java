@@ -81,34 +81,38 @@ import org.slf4j.cal10n.LocLogger;
  * An abstract bean representation common for class-based beans
  * 
  * @author Pete Muir
+ * @author David Allen
  * 
- * @param <T>
- * @param <E>
+ * @param <T> the type of class for the bean
  */
 public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 {
    // Logger
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
+
    // The item representation
    protected WeldClass<T> annotatedItem;
+
    // The injectable fields of each type in the type hierarchy, with the actual type at the bottom 
    private List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
+
    // The initializer methods of each type in the type hierarchy, with the actual type at the bottom
    private List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
 
-   private List<Decorator<?>> decorators;
-
-   private Class<T> proxyClassForDecorators;
-
+   // Decorators
+   private List<Decorator<?>>         decorators;
+   private Class<T>                   proxyClassForDecorators;
    private final ThreadLocal<Integer> decoratorStackPosition;
+   private final ThreadLocal<T>       decoratedActualInstance = new ThreadLocal<T>();
 
-   private final ThreadLocal<T> decoratedActualInstance = new ThreadLocal<T>();
-
+   // Interceptors
    private boolean hasSerializationOrInvocationInterceptorMethods;
 
+   // Bean callback methods
    private WeldMethod<?, ?> postConstruct;
    private WeldMethod<?, ?> preDestroy;
    
+   // Injection target for the bean
    private InjectionTarget<T> injectionTarget;
 
    /**

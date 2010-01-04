@@ -59,23 +59,28 @@ import com.google.common.collect.SetMultimap;
  * This class is immutable, and therefore threadsafe
  * 
  * @author Pete Muir
+ * @author David Allen
  * 
- * @param <T>
+ * @param <T> the type of the class
  */
 public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> implements WeldClass<T>
 {
    
-// The superclass abstraction of the type
+   // Class attributes
    private final WeldClass<?> superclass;
-   // The name of the type
-   private final String name;
-   
-   private final String _simpleName;
-   private final boolean _public;
-   private final boolean _private;
-   private final boolean _packagePrivate;
-   private final Package _package;
-  
+   private final String       name;
+   private final String       _simpleName;
+   private final boolean      _public;
+   private final boolean      _private;
+   private final boolean      _packagePrivate;
+   private final Package      _package;
+   private final boolean      _abstract;
+   private final boolean      _member;
+   private final boolean      _local;
+   private final boolean      _anonymous;
+   private final boolean      _enum;
+   private final boolean      _serializable;
+
    private static List<Class<?>> NO_ARGUMENTS = Collections.emptyList();
 
    // The set of abstracted fields
@@ -122,11 +127,6 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    // Cached string representation
    private final String toString;
 
-   private final boolean _abstract;
-   private final boolean _member;
-   private final boolean _local;
-   private final boolean _anonymous;
-   private final boolean _enum;
 
    public static <T> WeldClass<T> of(Class<T> clazz, ClassTransformer classTransformer)
    {
@@ -150,6 +150,8 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    {
       super(annotationStore, rawType, type, typeClosure);
       this.toString = "class " + Names.classToString(rawType);
+      
+      // Assign class attributes
       this.name = rawType.getName();
       this._simpleName = rawType.getSimpleName();
       if (rawType.getSuperclass() != null)
@@ -164,7 +166,14 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       this._private = Modifier.isPrivate(rawType.getModifiers());
       this._packagePrivate = Reflections.isPackagePrivate(rawType.getModifiers());
       this._package = rawType.getPackage();
+      this._local = rawType.isLocalClass();
+      this._anonymous = rawType.isAnonymousClass();
+      this._member = rawType.isMemberClass();
+      this._abstract = Reflections.isAbstract(rawType);
+      this._enum = rawType.isEnum();
+      this._serializable = Reflections.isSerializable(rawType);
       
+      // Assign class field information
       this.fields = new HashSet<WeldField<?, ?>>();
       this.annotatedFields = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldField<?, ?>>>(), new Supplier< Set<WeldField<?, ?>>>()
       {
@@ -204,12 +213,6 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
          }
         
       });
-      this._local = rawType.isLocalClass();
-      this._anonymous = rawType.isAnonymousClass();
-      this._member = rawType.isMemberClass();
-      this._abstract = Reflections.isAbstract(rawType);
-      this._enum = rawType.isEnum();
-
       
       Map<Field, AnnotatedField<? super T>> annotatedTypeFields = new HashMap<Field, AnnotatedField<? super T>>();
       if (annotatedType != null)
@@ -264,6 +267,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
          }
       }
 
+      // Assign constructor information
       this.constructors = new HashSet<WeldConstructor<T>>();
       this.constructorsByArgumentMap = new HashMap<List<Class<?>>, WeldConstructor<T>>();
       this.annotatedConstructors = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldConstructor<T>>>(), new Supplier< Set<WeldConstructor<T>>>()
@@ -337,6 +341,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
          }
       }
 
+      // Assign method information
       this.methods = new HashSet<WeldMethod<?, ?>>();
       this.annotatedMethods = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldMethod<?, ?>>>(), new Supplier< Set<WeldMethod<?, ?>>>()
       {
@@ -567,6 +572,11 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    public boolean isEnum()
    {
       return _enum;
+   }
+
+   public boolean isSerializable()
+   {
+      return _serializable;
    }
 
    /**

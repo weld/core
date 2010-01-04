@@ -71,9 +71,11 @@ import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DisposalMethod;
+import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.introspector.WeldAnnotated;
@@ -92,11 +94,11 @@ import com.google.common.collect.Multimaps;
  * Checks a list of beans for DeploymentExceptions and their subclasses
  * 
  * @author Nicklas Karlsson
- * 
+ * @author David Allen
  */
 public class Validator implements Service
 {
-   
+
    private void validateBean(Bean<?> bean, BeanManagerImpl beanManager)
    {
       for (InjectionPoint ij : bean.getInjectionPoints())
@@ -109,11 +111,10 @@ public class Validator implements Service
          throw new UnproxyableResolutionException(NOT_PROXYABLE, bean);
       }
    }
-   
+
    /**
-    * Validate an RIBean.
-    * 
-    * This includes validating whether two beans specialize the same bean
+    * Validate an RIBean. This includes validating whether two beans specialize
+    * the same bean
     * 
     * @param bean the bean to validate
     * @param beanManager the current manager
@@ -133,7 +134,7 @@ public class Validator implements Service
             }
             specializedBeans.add(abstractBean.getSpecializedBean());
          }
-         if (Beans.isPassivationCapableBean(bean) && bean instanceof AbstractClassBean<?>)
+         if ((bean instanceof AbstractClassBean<?>) && bean.isPassivationCapableBean())
          {
             AbstractClassBean<?> classBean = (AbstractClassBean<?>) bean;
             if (classBean.hasDecorators())
@@ -154,22 +155,23 @@ public class Validator implements Service
       }
    }
 
+   @SuppressWarnings("unchecked")
    private void validateDirectlyDefinedInterceptorClasses(BeanManagerImpl beanManager, AbstractClassBean<?> classBean)
    {
-      InterceptionModel<Class<?>, Class<?>> ejbInterceptorModel = beanManager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(((AbstractClassBean<?>) classBean).getType());
+      InterceptionModel<Class<?>, Class<?>> ejbInterceptorModel = beanManager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(classBean.getType());
       if (ejbInterceptorModel != null)
       {
          Class<?>[] classDeclaredInterceptors = ejbInterceptorModel.getAllInterceptors().toArray(new Class<?>[ejbInterceptorModel.getAllInterceptors().size()]);
          if (classDeclaredInterceptors != null)
          {
-            for (Class<?> interceptorClass: classDeclaredInterceptors)
+            for (Class<?> interceptorClass : classDeclaredInterceptors)
             {
                if (!Reflections.isSerializable(interceptorClass))
                {
                   throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, this, interceptorClass.getName());
                }
                InjectionTarget<Object> injectionTarget = (InjectionTarget<Object>) beanManager.createInjectionTarget(beanManager.createAnnotatedType(interceptorClass));
-               for (InjectionPoint injectionPoint: injectionTarget.getInjectionPoints())
+               for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints())
                {
                   Bean<?> resolvedBean = beanManager.resolve(beanManager.getInjectableBeans(injectionPoint));
                   validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
@@ -181,33 +183,33 @@ public class Validator implements Service
 
    private void validateCdiBoundInterceptors(BeanManagerImpl beanManager, AbstractClassBean<?> classBean)
    {
-      InterceptionModel<Class<?>, SerializableContextual<Interceptor<?>, ?>> cdiInterceptorModel = beanManager.getCdiInterceptorsRegistry().getInterceptionModel(((AbstractClassBean<?>) classBean).getType());
+      InterceptionModel<Class<?>, SerializableContextual<Interceptor<?>, ?>> cdiInterceptorModel = beanManager.getCdiInterceptorsRegistry().getInterceptionModel(classBean.getType());
       if (cdiInterceptorModel != null)
+      {
+         Collection<SerializableContextual<Interceptor<?>, ?>> interceptors = cdiInterceptorModel.getAllInterceptors();
+         if (interceptors.size() > 0)
+         {
+            for (SerializableContextual<Interceptor<?>, ?> serializableContextual : interceptors)
             {
-               Collection<SerializableContextual<Interceptor<?>, ?>> interceptors = cdiInterceptorModel.getAllInterceptors();
-               if (interceptors.size() > 0)
+               if (!((InterceptorImpl<?>)serializableContextual.get()).isSerializable())
                {
-                  for (SerializableContextual<Interceptor<?>, ?> serializableContextual : interceptors)
-                  {
-                     if (!Reflections.isSerializable(serializableContextual.get().getBeanClass()))
-                     {
-                        throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, this, serializableContextual.get());
-                     }
-                     for (InjectionPoint injectionPoint: serializableContextual.get().getInjectionPoints())
-                     {
-                        Bean<?> resolvedBean = beanManager.resolve(beanManager.getInjectableBeans(injectionPoint));
-                        validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
-                     }
-                  }
+                  throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, serializableContextual.get());
+               }
+               for (InjectionPoint injectionPoint : serializableContextual.get().getInjectionPoints())
+               {
+                  Bean<?> resolvedBean = beanManager.resolve(beanManager.getInjectableBeans(injectionPoint));
+                  validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
                }
             }
+         }
+      }
    }
 
    private void validateDecorators(BeanManagerImpl beanManager, AbstractClassBean<?> classBean)
    {
       for (Decorator<?> decorator : classBean.getDecorators())
       {
-         if (!Reflections.isSerializable(decorator.getBeanClass()))
+         if (!((WeldDecorator<?>)decorator).getAnnotatedItem().isSerializable())
          {
             throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, classBean, decorator);
          }
@@ -223,7 +225,8 @@ public class Validator implements Service
     * Validate an injection point
     * 
     * @param ij the injection point to validate
-    * @param declaringBean the bean into which the injectionPoint has been injected, if null, certain validations aren't available
+    * @param declaringBean the bean into which the injectionPoint has been
+    *           injected, if null, certain validations aren't available
     * @param beanManager
     */
    public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager)
@@ -238,7 +241,7 @@ public class Validator implements Service
       }
       if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(ij.getBean().getScope()))
       {
-         throw new DefinitionException(INJECTION_INTO_NON_DEPENDENT_BEAN, ij); 
+         throw new DefinitionException(INJECTION_INTO_NON_DEPENDENT_BEAN, ij);
       }
       if (ij.getType() instanceof TypeVariable<?>)
       {
@@ -255,7 +258,7 @@ public class Validator implements Service
       }
       if (resolvedBeans.size() > 1)
       {
-         throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Arrays.toString(bindings) +"; Possible dependencies: " + resolvedBeans);
+         throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Arrays.toString(bindings) + "; Possible dependencies: " + resolvedBeans);
       }
       Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
       if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(ij.getType()))
@@ -271,12 +274,12 @@ public class Validator implements Service
          validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
       }
    }
-   
+
    public void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager)
    {
       if (!ij.isTransient() && !Beans.isPassivationCapableDependency(resolvedBean))
       {
-         if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?, ?,?>)
+         if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?, ?, ?>)
          {
             throw new IllegalProductException(NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN, ij.getBean(), resolvedBean);
          }
@@ -294,7 +297,7 @@ public class Validator implements Service
       validateDisposalMethods(environment);
       validateBeanNames(manager);
    }
-   
+
    public void validateBeans(Collection<? extends Bean<?>> beans, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager)
    {
       for (Bean<?> bean : beans)
@@ -309,17 +312,17 @@ public class Validator implements Service
          }
       }
    }
-   
+
    public void validateBeanNames(BeanManagerImpl beanManager)
    {
       Multimap<String, Bean<?>> namedAccessibleBeans = Multimaps.newSetMultimap(new HashMap<String, Collection<Bean<?>>>(), new Supplier<Set<Bean<?>>>()
       {
-         
+
          public Set<Bean<?>> get()
          {
             return new HashSet<Bean<?>>();
          }
-         
+
       });
       for (Bean<?> bean : beanManager.getAccessibleBeans())
       {
@@ -328,19 +331,19 @@ public class Validator implements Service
             namedAccessibleBeans.put(bean.getName(), bean);
          }
       }
-      
+
       List<String> accessibleNamespaces = new ArrayList<String>();
       for (String namespace : beanManager.getAccessibleNamespaces())
       {
          accessibleNamespaces.add(namespace);
       }
-      
+
       for (String name : namedAccessibleBeans.keySet())
       {
          Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(namedAccessibleBeans.get(name));
          if (resolvedBeans.size() > 1)
          {
-            throw new DeploymentException(AMBIGUOUS_EL_NAME, name, resolvedBeans );
+            throw new DeploymentException(AMBIGUOUS_EL_NAME, name, resolvedBeans);
          }
          if (accessibleNamespaces.contains(name))
          {
@@ -356,10 +359,9 @@ public class Validator implements Service
       {
          interceptorBeanClasses.add(interceptor.getBeanClass());
       }
-      for (Class<?> enabledInterceptorClass: beanManager.getEnabledInterceptorClasses())
+      for (Class<?> enabledInterceptorClass : beanManager.getEnabledInterceptorClasses())
       {
-         if (beanManager.getEnabledInterceptorClasses().indexOf(enabledInterceptorClass)
-               < beanManager.getEnabledInterceptorClasses().lastIndexOf(enabledInterceptorClass))
+         if (beanManager.getEnabledInterceptorClasses().indexOf(enabledInterceptorClass) < beanManager.getEnabledInterceptorClasses().lastIndexOf(enabledInterceptorClass))
          {
             throw new DeploymentException(INTERCEPTOR_SPECIFIED_TWICE, enabledInterceptorClass + " specified twice");
          }
@@ -369,7 +371,7 @@ public class Validator implements Service
          }
       }
    }
-   
+
    private void validateEnabledDecoratorClasses(BeanManagerImpl beanManager)
    {
       // TODO Move building this list to the boot or sth
@@ -390,7 +392,6 @@ public class Validator implements Service
          }
       }
    }
-
 
    private void validateEnabledAlternatives(BeanManagerImpl beanManager)
    {
@@ -420,7 +421,7 @@ public class Validator implements Service
          seenAlternatives.add(clazz);
       }
    }
-   
+
    private void validateDisposalMethods(BeanDeployerEnvironment environment)
    {
       Set<DisposalMethod<?, ?>> beans = environment.getUnresolvedDisposalBeans();
@@ -451,10 +452,11 @@ public class Validator implements Service
             throw new DefinitionException(INJECTION_POINT_MUST_HAVE_TYPE_PARAMETER, type, injectionPoint);
          }
       }
-      
+
    }
 
-
-   public void cleanup() {}
+   public void cleanup()
+   {
+   }
 
 }

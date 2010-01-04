@@ -137,7 +137,12 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
    {
       return delegate().isEnum();
    }
-   
+
+   public boolean isSerializable()
+   {
+      return delegate().isSerializable();
+   }
+
    @Deprecated
    public WeldMethod<?, ?> getDeclaredWeldMethod(Method method)
    {
