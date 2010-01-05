@@ -442,6 +442,80 @@
          </build>
 
       </profile>
+	
+      <profile>
+         <id>ftest-jboss-remote-51</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+         </activation>
+
+         <properties>
+            <ftest.version>0.1${ftest.version.discriminator}</ftest.version>
+         </properties>
+
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.weld.examples.ftest</groupId>
+               <artifactId>ftest-permalink</artifactId>
+               <version>${ftest.version}</version>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.codehaus.cargo</groupId>
+                  <artifactId>cargo-maven2-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>selenium-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+
+      <profile>
+         <id>ftest-jboss-remote-60</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+         </activation>
+
+         <properties>
+            <ftest.version>0.1${ftest.version.discriminator}</ftest.version>
+         </properties>
+
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.weld.examples.ftest</groupId>
+               <artifactId>ftest-permalink</artifactId>
+               <version>${ftest.version}</version>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.codehaus.cargo</groupId>
+                  <artifactId>cargo-maven2-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>selenium-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
 
       <profile>
          <id>restart-embedded</id>
