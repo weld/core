@@ -35,7 +35,7 @@ import java.io.Serializable;
 public class WeldExceptionMessage implements Serializable
 {
 
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
 
    /**
     * The string version of the message. This is only used when the original
@@ -76,7 +76,15 @@ public class WeldExceptionMessage implements Serializable
    public <E extends Enum<?>> WeldExceptionMessage(E key, Object... args)
    {
       this.messageKey = key;
-      this.messageArguments = args;
+      if ((args != null) && (args.length > 0))
+      {
+         this.messageArguments = new String[args.length];
+         int index = 0;
+         for (Object arg : args)
+         {
+            messageArguments[index++] = arg.toString();
+         }
+      }
    }
 
    /**
