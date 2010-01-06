@@ -78,7 +78,6 @@ public class BeansXmlParser
       MergedElements mergedElements = new MergedElements();
       for (URL beansXml : beansXmls)
       {
-         // TODO: Do we really need to check if there is content?
          if (!isBeansXmlOK(beansXml))
          {
             continue;
@@ -134,7 +133,7 @@ public class BeansXmlParser
    {
       if (beansXml == null)
       {
-         throw new WeldXmlException(LOAD_ERROR, "null-URL");
+         throw new WeldXmlException(LOAD_ERROR, "URL: null");
       }
       InputStream in = null;
       try
