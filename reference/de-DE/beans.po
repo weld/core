@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-01-06 12:17+0000\n"
 "PO-Revision-Date: 2009-11-11 15:00+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -484,14 +484,14 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Keep in mind that once a bean is bound to a context, it remains in that "
-"context until the context is destroyed. There is no way to explicitly remove "
-"a bean from a context. If you don't the bean to live in the session "
-"indefinitely, consider using another scope such as the request or "
-"conversation scope instead."
+"context until the context is destroyed. There is no way to manually remove a "
+"bean from a context. If you don't want the bean to sit in the session "
+"indefinitely, consider using another scope with a shorted lifespan, such as "
+"the request or conversation scope."
 msgstr ""
 
 #. Tag: para
-#: beans.xml:272
+#: beans.xml:273
 #, no-c-format
 msgid ""
 "If a scope is not explicitly specified, then the bean belongs to a special "
@@ -501,19 +501,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:278
+#: beans.xml:279
 #, no-c-format
 msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
 msgstr ""
 
 #. Tag: title
-#: beans.xml:283
+#: beans.xml:284
 #, no-c-format
 msgid "EL name"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:285
+#: beans.xml:286
 #, no-c-format
 msgid ""
 "If you want to reference a bean in non-Java code that supports Unified EL "
@@ -522,7 +522,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:290
+#: beans.xml:291
 #, no-c-format
 msgid ""
 "The EL name is specified using the <literal>@Named</literal> annotation, as "
@@ -530,7 +530,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: beans.xml:294
+#: beans.xml:295
 #, no-c-format
 msgid ""
 "<![CDATA[public @SessionScoped @Named(\"cart\")\n"
@@ -538,13 +538,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:296
+#: beans.xml:297
 #, no-c-format
 msgid "Now we can easily use the bean in any JSF or JSP page:"
 msgstr ""
 
 #. Tag: programlisting
-#: beans.xml:298
+#: beans.xml:299
 #, no-c-format
 msgid ""
 "<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
@@ -553,7 +553,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:301
+#: beans.xml:302
 #, no-c-format
 msgid ""
 "The <literal>@Named</literal> annotation is not what makes the class a bean. "
@@ -563,7 +563,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:308
+#: beans.xml:309
 #, no-c-format
 msgid ""
 "We can let CDI choose a name for us by leaving off the value of the "
@@ -571,7 +571,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: beans.xml:312
+#: beans.xml:313
 #, no-c-format
 msgid ""
 "<![CDATA[public @SessionScoped @Named\n"
@@ -579,7 +579,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:314
+#: beans.xml:315
 #, no-c-format
 msgid ""
 "The name defaults to the unqualified class name, decapitalized; in this "
@@ -587,13 +587,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: beans.xml:324
+#: beans.xml:325
 #, no-c-format
 msgid "Alternatives"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:326
+#: beans.xml:327
 #, no-c-format
 msgid ""
 "We've already seen how qualifiers let us choose between multiple "
@@ -606,7 +606,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: beans.xml:334
+#: beans.xml:335
 #, no-c-format
 msgid ""
 "<![CDATA[public @Alternative\n"
@@ -614,33 +614,33 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:336
+#: beans.xml:337
 #, no-c-format
 msgid ""
 "We normally annotate a bean <literal>@Alternative</literal> only when there "
 "is some other implementation of an interface it implements (or of any of its "
 "bean types). We can choose between alternatives at deployment time by "
 "<emphasis>selecting</emphasis> an alternative in the CDI deployment "
-"descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE "
+"descriptor <literal>META-INF/beans.xml</literal> of the JAR or Java EE "
 "module that uses it. Different modules can specify that they use different "
 "alternatives."
 msgstr ""
 
 #. Tag: para
-#: beans.xml:344
+#: beans.xml:345
 #, no-c-format
 msgid ""
 "We cover alternatives in more detail in <xref linkend=\"alternatives\"/>."
 msgstr ""
 
 #. Tag: title
-#: beans.xml:351
+#: beans.xml:352
 #, no-c-format
 msgid "Interceptor binding types"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:353
+#: beans.xml:354
 #, no-c-format
 msgid ""
 "You might be familiar with the use of interceptors in EJB 3.0. In Java EE 6, "
@@ -651,7 +651,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:360
+#: beans.xml:361
 #, no-c-format
 msgid ""
 "The way that interceptors were defined in Java EE 5 was counter-intuitive. "
@@ -668,7 +668,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:371
+#: beans.xml:372
 #, no-c-format
 msgid ""
 "CDI provides a new approach to binding interceptors to beans that introduces "
@@ -678,7 +678,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:377
+#: beans.xml:378
 #, no-c-format
 msgid ""
 "An interceptor binding type is a user-defined annotation that is itself "
@@ -688,7 +688,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: beans.xml:382
+#: beans.xml:383
 #, no-c-format
 msgid ""
 "<![CDATA[@InterceptorBinding\n"
@@ -699,7 +699,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:384
+#: beans.xml:385
 #, no-c-format
 msgid ""
 "The interceptor that implements transaction management declares this "
@@ -707,7 +707,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: beans.xml:388
+#: beans.xml:389
 #, no-c-format
 msgid ""
 "<![CDATA[public @Transactional @Interceptor\n"
@@ -715,7 +715,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:390
+#: beans.xml:391
 #, no-c-format
 msgid ""
 "We can apply the interceptor to a bean by annotating the bean class with the "
@@ -723,7 +723,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: beans.xml:394
+#: beans.xml:395
 #, no-c-format
 msgid ""
 "<![CDATA[public @SessionScoped @Transactional\n"
@@ -731,7 +731,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:396
+#: beans.xml:397
 #, no-c-format
 msgid ""
 "Notice that <literal>ShoppingCart</literal> and "
@@ -740,18 +740,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:401
+#: beans.xml:402
 #, no-c-format
 msgid ""
 "Interceptors are deployment-specific. (We don't need a "
 "<literal>TransactionInterceptor</literal> in our unit tests!) By default, an "
 "interceptor is disabled. We can enable an interceptor using the CDI "
-"deployment descriptor <literal>META-INF/beans.xml</literal> of the jar or "
+"deployment descriptor <literal>META-INF/beans.xml</literal> of the JAR or "
 "Java EE module. This is also where we specify the interceptor ordering."
 msgstr ""
 
 #. Tag: para
-#: beans.xml:408
+#: beans.xml:409
 #, no-c-format
 msgid ""
 "We'll discuss interceptors, and their cousins, decorators, in <xref linkend="
@@ -759,13 +759,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: beans.xml:418
+#: beans.xml:419
 #, no-c-format
 msgid "What kinds of classes are beans?"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:420
+#: beans.xml:421
 #, no-c-format
 msgid ""
 "We've already seen two types of beans: JavaBeans and EJB session beans. Is "
@@ -774,13 +774,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: beans.xml:427
+#: beans.xml:428
 #, no-c-format
 msgid "Managed beans"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:429
+#: beans.xml:430
 #, no-c-format
 msgid ""
 "A managed bean is a Java class. The basic lifecycle and semantics of a "
@@ -792,19 +792,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:440
+#: beans.xml:441
 #, no-c-format
 msgid "It is not a non-static inner class."
 msgstr ""
 
 #. Tag: para
-#: beans.xml:443
+#: beans.xml:444
 #, no-c-format
 msgid "It is a concrete class, or is annotated <literal>@Decorator</literal>."
 msgstr ""
 
 #. Tag: para
-#: beans.xml:446
+#: beans.xml:447
 #, no-c-format
 msgid ""
 "It is not annotated with an EJB component-defining annotation or declared as "
@@ -812,7 +812,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:452
+#: beans.xml:453
 #, no-c-format
 msgid ""
 "It does not implement <literal>javax.enterprise.inject.spi.Extension</"
@@ -820,25 +820,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:455
+#: beans.xml:456
 #, no-c-format
 msgid "It has an appropriate constructor&#8212;either:"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:460
+#: beans.xml:461
 #, no-c-format
 msgid "the class has a constructor with no parameters, or"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:463
+#: beans.xml:464
 #, no-c-format
 msgid "the class declares a constructor annotated <literal>@Inject</literal>."
 msgstr ""
 
 #. Tag: para
-#: beans.xml:471
+#: beans.xml:472
 #, no-c-format
 msgid ""
 "The unrestricted set of bean types for a managed bean contains the bean "
@@ -847,7 +847,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:474
+#: beans.xml:475
 #, no-c-format
 msgid ""
 "If a managed bean has a public field, it must have the default scope "
@@ -855,7 +855,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:476
+#: beans.xml:477
 #, no-c-format
 msgid ""
 "Managed beans support the <literal>@PostConstruct</literal> and "
@@ -863,7 +863,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:479
+#: beans.xml:480
 #, no-c-format
 msgid ""
 "Session beans are also, technically, managed beans. However, since they have "
@@ -873,13 +873,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: beans.xml:488
+#: beans.xml:489
 #, no-c-format
 msgid "Session beans"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:490
+#: beans.xml:491
 #, no-c-format
 msgid ""
 "Session beans belong to the EJB specification. They have a special "
@@ -892,7 +892,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:499
+#: beans.xml:500
 #, no-c-format
 msgid ""
 "Message-driven and entity beans are by nature non-contextual objects and may "
@@ -904,7 +904,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:507
+#: beans.xml:508
 #, no-c-format
 msgid ""
 "The unrestricted set of bean types for a session bean contains all local "
@@ -916,7 +916,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:515
+#: beans.xml:516
 #, no-c-format
 msgid ""
 "There's no reason to explicitly declare the scope of a stateless session "
@@ -927,7 +927,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:519
+#: beans.xml:520
 #, no-c-format
 msgid ""
 "Stateful session beans may define a <emphasis>remove method</emphasis>, "
@@ -940,7 +940,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:527
+#: beans.xml:528
 #, no-c-format
 msgid ""
 "So, when should we use a session bean instead of a plain managed bean? "
@@ -948,19 +948,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:534
+#: beans.xml:535
 #, no-c-format
 msgid "method-level transaction management and security,"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:537
+#: beans.xml:538
 #, no-c-format
 msgid "concurrency management,"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:540
+#: beans.xml:541
 #, no-c-format
 msgid ""
 "instance-level passivation for stateful session beans and instance-pooling "
@@ -968,19 +968,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:544
+#: beans.xml:545
 #, no-c-format
 msgid "remote or web service invocation, or"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:547
+#: beans.xml:548
 #, no-c-format
 msgid "timers and asynchronous methods,"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:551
+#: beans.xml:552
 #, no-c-format
 msgid ""
 "When we don't need any of these things, an ordinary managed bean will serve "
@@ -988,7 +988,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:553
+#: beans.xml:554
 #, no-c-format
 msgid ""
 "Many beans (including any <literal>@SessionScoped</literal> or "
@@ -998,7 +998,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:559
+#: beans.xml:560
 #, no-c-format
 msgid ""
 "Beans which hold references to heavy-weight resources, or hold a lot of "
@@ -1008,7 +1008,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:565
+#: beans.xml:566
 #, no-c-format
 msgid ""
 "Finally, it's usually obvious when method-level transaction management, "
@@ -1017,7 +1017,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:570
+#: beans.xml:571
 #, no-c-format
 msgid ""
 "The point we're trying to make is: use a session bean when you need the "
@@ -1030,7 +1030,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:578
+#: beans.xml:579
 #, no-c-format
 msgid ""
 "On the other hand, don't be scared to use session beans just because you've "
@@ -1043,13 +1043,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: beans.xml:589
+#: beans.xml:590
 #, no-c-format
 msgid "Producer methods"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:591
+#: beans.xml:592
 #, no-c-format
 msgid ""
 "Not everything that needs to be injected can be boiled down to a bean class "
@@ -1061,7 +1061,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:599
+#: beans.xml:600
 #, no-c-format
 msgid ""
 "A <emphasis>producer method</emphasis> is a method that acts as a source of "
@@ -1072,7 +1072,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:606
+#: beans.xml:607
 #, no-c-format
 msgid ""
 "A producer method is declared by annotating a method of a bean class with "
@@ -1080,7 +1080,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: beans.xml:611
+#: beans.xml:612
 #, no-c-format
 msgid ""
 "<![CDATA[@ApplicationScoped\n"
@@ -1096,7 +1096,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:613
+#: beans.xml:614
 #, no-c-format
 msgid ""
 "We can't write a bean class that is itself a random number. But we can "
@@ -1111,25 +1111,25 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: beans.xml:622
+#: beans.xml:623
 #, no-c-format
 msgid "<![CDATA[@Inject @Random int randomNumber;]]>"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:624
+#: beans.xml:625
 #, no-c-format
 msgid "Even in a Unified EL expression:"
 msgstr ""
 
 #. Tag: programlisting
-#: beans.xml:628
+#: beans.xml:629
 #, no-c-format
 msgid "<![CDATA[<p>Your raffle number is #{randomNumber}.</p>]]>"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:630
+#: beans.xml:631
 #, no-c-format
 msgid ""
 "A producer method must be a non-abstract method of a managed bean class or "
@@ -1139,13 +1139,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:636
+#: beans.xml:637
 #, no-c-format
 msgid "The bean types of a producer method depend upon the method return type:"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:642
+#: beans.xml:643
 #, no-c-format
 msgid ""
 "If the return type is an interface, the unrestricted set of bean types "
@@ -1154,7 +1154,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:648
+#: beans.xml:649
 #, no-c-format
 msgid ""
 "If a return type is primitive or is a Java array type, the unrestricted set "
@@ -1163,7 +1163,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:654
+#: beans.xml:655
 #, no-c-format
 msgid ""
 "If the return type is a class, the unrestricted set of bean types contains "
@@ -1172,7 +1172,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:661
+#: beans.xml:662
 #, no-c-format
 msgid ""
 "If the producer method has method parameters, the container will look for a "
@@ -1181,7 +1181,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: beans.xml:667
+#: beans.xml:668
 #, no-c-format
 msgid ""
 "<![CDATA[@Produces Set<Roles> getRoles(User user) {\n"
@@ -1190,7 +1190,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:669
+#: beans.xml:670
 #, no-c-format
 msgid ""
 "We'll talk much more about producer methods in <xref linkend="
@@ -1198,13 +1198,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: beans.xml:674
+#: beans.xml:675
 #, no-c-format
 msgid "Producer fields"
 msgstr ""
 
 #. Tag: para
-#: beans.xml:676
+#: beans.xml:677
 #, no-c-format
 msgid ""
 "A <emphasis>producer field</emphasis> is a simpler alternative to a producer "
@@ -1214,7 +1214,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: beans.xml:682
+#: beans.xml:683
 #, no-c-format
 msgid ""
 "<![CDATA[public class Shop {\n"
@@ -1224,7 +1224,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:684
+#: beans.xml:685
 #, no-c-format
 msgid ""
 "The rules for determining the bean types of a producer field parallel the "
@@ -1232,7 +1232,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: beans.xml:688
+#: beans.xml:689
 #, no-c-format
 msgid ""
 "A producer field is really just a shortcut that lets us avoid writing a "
@@ -1241,4 +1241,406 @@ msgid ""
 "injection, but to learn more about that, you'll have to wait until <xref "
 "linkend=\"resources\"/>. Because we can't wait to get to work on some "
 "examples."
+msgstr ""
+
+#. Tag: title
+#: beans.xml:701
+#, no-c-format
+msgid "The (minimal) bean descriptor"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:703
+#, no-c-format
+msgid ""
+"First, it's important to understand that the XML bean descriptor in CDI "
+"(beans.xml) is not there to define beans in XML, like in other popular bean "
+"containers. Rather, you use this file to enable CDI services for the current "
+"bean archive that is difficult to define consistently in Java or which you "
+"don't want to define in Java (e.g., to accomodate testing)."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:710
+#, no-c-format
+msgid ""
+"For example, the XML is used to enable interceptors (which are disabled by "
+"default) and define interceptor ordering. So the bean descriptor "
+"<emphasis>complements</emphasis> the metadata that is provided in the Java "
+"language syntax. (You may still want to define beans in XML for other "
+"reasons, but that is the concern of an extension)."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:717
+#, no-c-format
+msgid ""
+"Let's first ask why the beans.xml is required, then look at what services it "
+"is used used to enable."
+msgstr ""
+
+#. Tag: title
+#: beans.xml:722
+#, no-c-format
+msgid "Why is beans.xml required?"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:724
+#, no-c-format
+msgid ""
+"You may be wondering, if beans are not described using XML, why do we need "
+"beans.xml at all, particularly if you don't have anything that you would "
+"need the bean descriptor to enable (alternatives, interceptors or "
+"decorators)?"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:730
+#, no-c-format
+msgid "There are two things about CDI that we need to keep in mind:"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:736
+#, no-c-format
+msgid ""
+"CDI does not require any special declaration for a Java class to be injected "
+"- that's right, no annotation or XML declaration at all!"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:742
+#, no-c-format
+msgid ""
+"CDI does not define any special kind of module - CDI beans can be deployed "
+"in a library JAR, EJB JAR, WAR, RAR, or JVM classpath directory."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:749
+#, no-c-format
+msgid ""
+"The CDI specification calls the process of identifying beans in modules "
+"<emphasis>bean discovery</emphasis>."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:753
+#, no-c-format
+msgid ""
+"So there are potentially a lot of classes in the classpath which might be "
+"beans! We don't want to force the container to scan every one of those "
+"classes at startup and build its internal metamodel for each of them. This "
+"really could make bean discovery very slow."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:759
+#, no-c-format
+msgid ""
+"But there's another reason we need to give the user some control over which "
+"classes are available for injection. We don't want every class in the "
+"classpath to potentially match an injection point, including classes that "
+"were never intended to be injected into things. This would force the "
+"developer to have to use qualifiers much more often to disambiguate "
+"injection points."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:766
+#, no-c-format
+msgid "So we have two choices. We could have the developer:"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:772
+#, no-c-format
+msgid "explicitly exclude modules which do not contain beans, or"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:775
+#, no-c-format
+msgid "explicitly declare modules which do contain beans."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:779
+#, no-c-format
+msgid ""
+"It should be clear that the second option is a much better way to go. Thus, "
+"CDI has the notion of a bean archive. A bean archive is just a module that "
+"has a file named beans.xml in the META-INF directory. The container looks "
+"for beans in bean archives. It ignores other modules."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:785
+#, no-c-format
+msgid ""
+"Now, you might be wondering if we've got the granularity wrong here. Why "
+"should module be the right criteria to use for including/excluding a class. "
+"Why not consider:"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:792
+#, no-c-format
+msgid "a class-level annotation,"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:795
+#, no-c-format
+msgid "the package,"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:798
+#, no-c-format
+msgid "some type it implements or extends, or"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:801
+#, no-c-format
+msgid "some naming convention."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:805
+#, no-c-format
+msgid ""
+"We've got the first option covered. Annotate a bean <literal>@Alternative</"
+"literal>, or with an alternative stereotype, and it will be considered "
+"disabled by CDI, as long as you don't explicitly enable it in beans.xml. "
+"That's not quite the same thing as excluding the class from scanning "
+"altogether, but it's close. (One difference is that a portable extension "
+"with still get a <literal>ProcessAnnotatedType</literal> event for that "
+"class)."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:813
+#, no-c-format
+msgid ""
+"A future version of CDI might allow you to declare excluded packages in "
+"beans.xml. Excluding a bean by type or naming convention isn't really that "
+"appealing. In the world of CDI, we use stereotypes for identifying "
+"architectural roles. We don't use marker interfaces or naming conventions. "
+"Names really shouldn't affect functionality as it is too fragile."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:820
+#, no-c-format
+msgid "Enough theory, what elements are available in beans.xml?"
+msgstr ""
+
+#. Tag: title
+#: beans.xml:826
+#, no-c-format
+msgid "Bean descriptor schema"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:828
+#, no-c-format
+msgid ""
+"If you don't need to activate any interceptors, decorators or alternatives "
+"(you just have plain beans that you need to use in an archive), the beans."
+"xml file can be <emphasis>empty</emphasis>. If you do have one of these "
+"requirements, then you need to start popularing the descriptor."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:834
+#, no-c-format
+msgid ""
+"The root element of a beans.xml file is <literal>beans</literal>, with the "
+"following <ulink url=\"http://anonsvn.jboss.org/repos/weld/api/trunk/cdi/src/"
+"main/resources/beans.xsd\">schema</ulink>:"
+msgstr ""
+
+#. Tag: programlisting
+#: beans.xml:839
+#, no-c-format
+msgid ""
+"<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<beans xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
+"      http://java.sun.com/xml/ns/javaee \n"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
+"</beans>]]>"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:841
+#, no-c-format
+msgid ""
+"The <literal>beans</literal> element can have one or more of each of the "
+"following children:"
+msgstr ""
+
+#. Tag: literal
+#: beans.xml:847
+#, no-c-format
+msgid "interceptors"
+msgstr ""
+
+#. Tag: literal
+#: beans.xml:850
+#, no-c-format
+msgid "decorators"
+msgstr ""
+
+#. Tag: literal
+#: beans.xml:853
+#, no-c-format
+msgid "alternatives"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:857
+#, no-c-format
+msgid "Let's look at each element in detail."
+msgstr ""
+
+#. Tag: title
+#: beans.xml:862
+#, no-c-format
+msgid "&lt;interceptors&gt;"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:864
+#, no-c-format
+msgid ""
+"By default, a bean archive has no enabled interceptors bound via interceptor "
+"bindings. An interceptor must be explicitly enabled by listing the fully "
+"qualified class name in a child &lt;class&gt; element of &lt;"
+"interceptors&gt;."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:870
+#, no-c-format
+msgid ""
+"There may be zero or more interceptor class elements. The order of the class "
+"declarations determines the interceptor ordering. Interceptors which occur "
+"earlier in the list are called first. The same class may not be listed "
+"twice. And of course, the class must exist and it must be an interceptor "
+"class."
+msgstr ""
+
+#. Tag: programlisting
+#: beans.xml:877
+#, no-c-format
+msgid ""
+"<![CDATA[<interceptors>\n"
+"   <class>com.acme.intercept.SecurityInterceptor</class>\n"
+"   <class>com.acme.intercept.TransactionInterceptor</class>\n"
+"</interceptors>]]>"
+msgstr ""
+
+#. Tag: title
+#: beans.xml:883
+#, no-c-format
+msgid "&lt;decorators&gt;"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:885
+#, no-c-format
+msgid ""
+"By default, a bean archive has no enabled decorators. A decorator must be "
+"explicitly enabled by listing the fully qualified class name in a child &lt;"
+"class&gt; element of &lt;decorators&gt;."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:891
+#, no-c-format
+msgid ""
+"There may be zero or more decorator class elements. The order of the class "
+"declarations determines the decorator ordering. Decorators which occur "
+"earlier in the list are called first. The same class may not be listed "
+"twice. And of course, the class must exist and it must be an decorator class."
+msgstr ""
+
+#. Tag: programlisting
+#: beans.xml:898
+#, no-c-format
+msgid ""
+"<![CDATA[<interceptors>\n"
+"   <class>com.acme.decorate.BigAccountDecorator</class>\n"
+"   <class>com.acme.decorate.SpecialGiftDecorator</class>\n"
+"</interceptors>]]>"
+msgstr ""
+
+#. Tag: title
+#: beans.xml:903
+#, no-c-format
+msgid "&lt;alternatives&gt;"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:905
+#, no-c-format
+msgid ""
+"An alternative is a bean that must be explicitly declared in the beans.xml "
+"file if it should be available for lookup, injection or EL resolution. By "
+"default, a bean archive has no active alternatives. An alternative must be "
+"explicitly declared using the fully qualified bean class name or stereotype "
+"class name in either a child &lt;class&gt; or &lt;stereotype&gt; element of "
+"&lt;alternatives&gt;, respectively."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:913
+#, no-c-format
+msgid ""
+"An alternative is selected for the bean archive if either: the alternative "
+"is a managed bean or session bean and the bean class of the bean is listed, "
+"or the alternative is a producer method, field or resource, and the bean "
+"class that declares the method or field is listed, or any "
+"<literal>@Alternative</literal> stereotype of the alternative is listed."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:920
+#, no-c-format
+msgid ""
+"There may be zero or more alternative bean class elements. The same class "
+"may not be listed twice. And of course, the class must exist and it must be "
+"an alternative bean class."
+msgstr ""
+
+#. Tag: para
+#: beans.xml:925
+#, no-c-format
+msgid ""
+"There may also be zero or more <literal>@Alternative</literal> stereotype "
+"elements. The same stereotype may not be listed twice. And of course, the "
+"stereotype class must exist and it must be an stereotype annotation."
+msgstr ""
+
+#. Tag: programlisting
+#: beans.xml:931
+#, no-c-format
+msgid ""
+"<![CDATA[<stereotypes>\n"
+"   <class>com.acme.business.MockPaymentProcessor</class>\n"
+"   <stereotype>com.acme.stereotype.Mock</stereotype>\n"
+"</stereotypes>]]>"
+msgstr ""
+
+#. Tag: para
+#: beans.xml:935
+#, no-c-format
+msgid ""
+"And that's it! A very simple schema, used only to activate and order CDI "
+"services."
 msgstr ""

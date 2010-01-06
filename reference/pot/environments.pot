@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-01-06 12:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -383,128 +383,93 @@ msgid ""
 "available:"
 msgstr ""
 
-#. Tag: literal
-#: environments.xml:215
+#. Tag: para
+#: environments.xml:214
 #, no-c-format
-msgid "POJOs (no EJBs)"
+msgid ""
+"Managed beans with <literal>@PostConstruct</literal> and "
+"<literal>@PreDestroy</literal> lifecycle callbacks"
 msgstr ""
 
-#. Tag: literal
+#. Tag: para
 #: environments.xml:220
 #, no-c-format
-msgid "Typesafe Dependency Injection"
+msgid "Dependency injection with qualifiers and alternatives"
 msgstr ""
 
-#. Tag: literal
+#. Tag: para
 #: environments.xml:225
 #, no-c-format
-msgid "Application and Dependent Contexts"
+msgid ""
+"<literal>@Application</literal>, <literal>@Dependent</literal> and "
+"<literal>@Singleton</literal> scopes"
 msgstr ""
 
-#. Tag: literal
-#: environments.xml:230
+#. Tag: para
+#: environments.xml:231
 #, no-c-format
-msgid "Qualifiers"
+msgid "Interceptors and decorators"
 msgstr ""
 
-#. Tag: literal
-#: environments.xml:235
+#. Tag: para
+#: environments.xml:236
 #, no-c-format
 msgid "Stereotypes"
 msgstr ""
 
-#. Tag: literal
-#: environments.xml:240
+#. Tag: para
+#: environments.xml:241
 #, no-c-format
-msgid "Typesafe Event Model"
+msgid "Events"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:246
+#, no-c-format
+msgid "Portable extension support"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:252
+#, no-c-format
+msgid "EJB beans are not supported."
 msgstr ""
 
 #. Tag: title
-#: environments.xml:246
+#: environments.xml:257
 #, no-c-format
 msgid "CDI SE Module"
 msgstr ""
 
 #. Tag: para
-#: environments.xml:248
+#: environments.xml:259
 #, no-c-format
 msgid ""
 "Weld provides an extension which will boot a CDI bean manager in Java SE, "
-"automatically registering all simple beans found on the classpath. "
-"Application developers need not write any bootstrapping code. The entry "
-"point for application code is a simple bean which observes the special "
-"<literal>ContainerInitialized</literal> event provided by this extension. "
-"The command line parameters can be injected using either of the following:"
+"automatically registering all simple beans found on the classpath. The "
+"command line parameters can be injected using either of the following:"
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:255
+#: environments.xml:264
 #, no-c-format
-msgid ""
-"<![CDATA[@Inject @Parameters List<String> params;\n"
-"@Inject @Parameters String[] paramsArray; // useful for compatability with "
-"existing classes]]>"
-msgstr ""
-
-#. Tag: para
-#: environments.xml:257
-#, no-c-format
-msgid "Here's an example of a simple CDI SE application:"
+msgid "<![CDATA[@Inject @Parameters List<String> params;]]>"
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:261
+#: environments.xml:266
 #, no-c-format
-msgid ""
-"<![CDATA[@ApplicationScoped\n"
-"public class HelloWorld\n"
-"{\n"
-"   @Inject @Parameters List<String> parameters;\n"
-"\n"
-"   public void printHello(@Observes ContainerInitialized event) {\n"
-"       System.out.println(\"Hello \" + parameters.get(0));\n"
-"   }\n"
-"}]]>"
+msgid "<![CDATA[@Inject @Parameters String[] paramsArray;]]>"
 msgstr ""
 
 #. Tag: para
-#: environments.xml:263
+#: environments.xml:268
 #, no-c-format
-msgid ""
-"CDI SE applications can be bootstrapped by running the StartMain class like "
-"so:"
-msgstr ""
-
-#. Tag: programlisting
-#: environments.xml:267
-#, no-c-format
-msgid "<![CDATA[java org.jboss.weld.environments.se.StartMain <args>]]>"
+msgid "The second form is useful for compatibility with existing classes."
 msgstr ""
 
 #. Tag: para
-#: environments.xml:269
-#, no-c-format
-msgid ""
-"If you need to do any custom initialization of the CDI bean manager, for "
-"example registering custom contexts or initializing resources for your beans "
-"you can do so in response to the <literal>AfterBeanDiscovery</literal> or "
-"<literal>AfterDeploymentValidation</literal> events. The following example "
-"registers a custom context:"
-msgstr ""
-
-#. Tag: programlisting
-#: environments.xml:276
-#, no-c-format
-msgid ""
-"<![CDATA[public class PerformSetup {\n"
-"   public void setup(@Observes AfterBeanDiscovery event) {\n"
-"      event.addContext( ThreadContext.INSTANCE );\n"
-"   }\n"
-"}]]>"
-msgstr ""
-
-#. Tag: para
-#: environments.xml:279
+#: environments.xml:273
 #, no-c-format
 msgid ""
 "The command line parameters do not become available for injection until the "
@@ -512,4 +477,176 @@ msgid ""
 "to the parameters during initialization you can do so via the "
 "<literal>public static String[] getParameters()</literal> method in "
 "<literal>StartMain</literal>."
+msgstr ""
+
+#. Tag: para
+#: environments.xml:282
+#, no-c-format
+msgid "Here's an example of a simple CDI SE application:"
+msgstr ""
+
+#. Tag: programlisting
+#: environments.xml:286
+#, no-c-format
+msgid ""
+"<![CDATA[@Singleton\n"
+"public class HelloWorld\n"
+"{\n"
+"   public void printHello(@Observes ContainerInitialized event, @Parameters "
+"List<String> parameters) {\n"
+"       System.out.println(\"Hello \" + parameters.get(0));\n"
+"   }\n"
+"}]]>"
+msgstr ""
+
+#. Tag: title
+#: environments.xml:292
+#, no-c-format
+msgid "Bootstrapping CDI SE"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:294
+#, no-c-format
+msgid "CDI SE applications can be bootstrapped in the following ways."
+msgstr ""
+
+#. Tag: title
+#: environments.xml:300
+#, no-c-format
+msgid "The ContainerInitialized Event"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:302
+#, no-c-format
+msgid ""
+"Thanks to the power of CDI's typesafe event model, application developers "
+"need not write any bootstrapping code. The Weld SE module comes with a built-"
+"in main method which will bootstrap CDI for you and then fire a "
+"<literal>ContainerInitialized</literal> event. The entry point for your "
+"application code would therefore be a simple bean which observes the "
+"<literal>ContainerInitialized</literal> event, as in the previous example."
+msgstr ""
+
+#. Tag: para
+#: environments.xml:310
+#, no-c-format
+msgid ""
+"In this case your application can be started by calling the provided main "
+"method like so:"
+msgstr ""
+
+#. Tag: programlisting
+#: environments.xml:313
+#, no-c-format
+msgid "<![CDATA[java org.jboss.weld.environments.se.StartMain <args>]]>"
+msgstr ""
+
+#. Tag: title
+#: environments.xml:319
+#, no-c-format
+msgid "Programatic Bootstrap API"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:321
+#, no-c-format
+msgid ""
+"For added flexibility, CDI SE also comes with a bootstrap API which can be "
+"called from within your application in order to initialize CDI and obtain "
+"references to your application's beans and events. The API consists of two "
+"classes: <literal>Weld</literal> and <literal>WeldContainer</literal>."
+msgstr ""
+
+#. Tag: programlisting
+#: environments.xml:327
+#, no-c-format
+msgid ""
+"<![CDATA[public class Weld\n"
+"{\n"
+"\n"
+"   /** Boots Weld and creates and returns a WeldContainer instance, through "
+"which\n"
+"    * beans and events can be accesed. */\n"
+"   public WeldContainer initialize() {...}\n"
+"\n"
+"   /** Convenience method for shutting down the container. */\n"
+"   public void shutdown() {...}\n"
+"\n"
+"}]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: environments.xml:329
+#, no-c-format
+msgid ""
+"<![CDATA[public class WeldContainer\n"
+"{\n"
+"\n"
+"   /** Provides access to all beans within the application. */\n"
+"   public Instance<Object> instance() {...}\n"
+"\n"
+"   /** Provides access to all events within the application. */\n"
+"   public Event<Object> event() {...}\n"
+"\n"
+"   /** Provides direct access to the BeanManager. */\n"
+"   public BeanManager getBeanManager() {...}\n"
+"\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:331
+#, no-c-format
+msgid ""
+"Here's an example application main method which uses this API to initialize "
+"a bean of type <literal>MyApplicationBean</literal>."
+msgstr ""
+
+#. Tag: programlisting
+#: environments.xml:334
+#, no-c-format
+msgid ""
+"<![CDATA[public static void main(String[] args) {\n"
+"   WeldContainer weld = new Weld().initialize();\n"
+"   weld.instance().select(MyApplicationBean.class).get();\n"
+"   weld.shutdown();\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:336
+#, no-c-format
+msgid ""
+"Alternatively the application could be started by firing a custom event "
+"which would then be observed by another simple bean. The following example "
+"fires <literal>MyEvent</literal> on startup."
+msgstr ""
+
+#. Tag: programlisting
+#: environments.xml:340
+#, no-c-format
+msgid ""
+"<![CDATA[public static void main(String[] args) {\n"
+"   WeldContainer weld = new Weld().initialize();\n"
+"   weld.event().select(MyEvent.class).fire( new MyEvent() );\n"
+"   weld.shutdown();\n"
+"}]]>"
+msgstr ""
+
+#. Tag: title
+#: environments.xml:348
+#, no-c-format
+msgid "Setting the Classpath"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:350
+#, no-c-format
+msgid ""
+"Weld SE comes packaged as a 'shaded' jar which includes the CDI API, Weld "
+"Core and all dependant classes bundled into a single jar. Therefore the only "
+"Weld jar you need on the classpath, in addition to your application's "
+"classes and dependant jars, is the Weld SE jar."
 msgstr ""

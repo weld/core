@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-01-06 12:17+0000\n"
 "PO-Revision-Date: 2009-12-19 18:04-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -22,7 +22,10 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:7
 #, no-c-format
-msgid "It's time to pull the covers back and dive into the internals of Weld example applications. Let's start with the simpler of the two examples, <literal>weld-numberguess</literal>."
+msgid ""
+"It's time to pull the covers back and dive into the internals of Weld "
+"example applications. Let's start with the simpler of the two examples, "
+"<literal>weld-numberguess</literal>."
 msgstr ""
 
 #. Tag: title
@@ -34,19 +37,31 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:15
 #, no-c-format
-msgid "In the numberguess application you get 10 attempts to guess a number between 1 and 100. After each attempt, you're told whether your guess was too high or too low."
+msgid ""
+"In the numberguess application you get 10 attempts to guess a number between "
+"1 and 100. After each attempt, you're told whether your guess was too high "
+"or too low."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:20
 #, no-c-format
-msgid "The numberguess example is comprised of a number of beans, configuration files and Facelets (JSF) views, packaged as a WAR module. Let's start by examining the configuration files."
+msgid ""
+"The numberguess example is comprised of a number of beans, configuration "
+"files and Facelets (JSF) views, packaged as a WAR module. Let's start by "
+"examining the configuration files."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:25
 #, no-c-format
-msgid "All the configuration files for this example are located in <literal>WEB-INF/</literal>, which can be found in the <literal>src/main/webapp</literal> directory of the example. First, we have the JSF 2.0 version of <literal>faces-config.xml</literal>. A standardized version of Facelets is the default view handler in JSF 2.0, so there's really nothing that we have to configure. Thus, the configuration consists of only the root element."
+msgid ""
+"All the configuration files for this example are located in <literal>WEB-INF/"
+"</literal>, which can be found in the <literal>src/main/webapp</literal> "
+"directory of the example. First, we have the JSF 2.0 version of "
+"<literal>faces-config.xml</literal>. A standardized version of Facelets is "
+"the default view handler in JSF 2.0, so there's really nothing that we have "
+"to configure. Thus, the configuration consists of only the root element."
 msgstr ""
 
 #. Tag: programlisting
@@ -72,7 +87,10 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:35
 #, no-c-format
-msgid "There's also an empty <literal>beans.xml</literal> file, which tells the container to look for beans in this application and to activate the CDI services."
+msgid ""
+"There's also an empty <literal>beans.xml</literal> file, which tells the "
+"container to look for beans in this application and to activate the CDI "
+"services."
 msgstr ""
 
 #. Tag: para
@@ -85,7 +103,10 @@ msgstr ""
 #: weldexamples.xml:42
 #, no-c-format
 msgid ""
-"<programlistingco> <areaspec> <area id=\"faces.servlet\" coords=\"10\"/> <area id=\"faces.servlet.mapping\" coords=\"16\"/> <area id=\"faces.default.suffix\" coords=\"21\"/> <area id=\"session.timeout\" coords=\"26\"/> </areaspec> <programlisting role=\"XML\"><![CDATA[<web-app version=\"2.5\"\n"
+"<programlistingco> <areaspec> <area id=\"faces.servlet\" coords=\"10\"/> "
+"<area id=\"faces.servlet.mapping\" coords=\"16\"/> <area id=\"faces.default."
+"suffix\" coords=\"21\"/> <area id=\"session.timeout\" coords=\"26\"/> </"
+"areaspec> <programlisting role=\"XML\"><![CDATA[<web-app version=\"2.5\"\n"
 "   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
 "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
 "   xsi:schemaLocation=\"\n"
@@ -115,7 +136,24 @@ msgid ""
 "      <session-timeout>10</session-timeout>\n"
 "   </session-config>\n"
 "\n"
-"</web-app>]]></programlisting> <calloutlist> <callout arearefs=\"faces.servlet\"> <para> Enable and initialize the JSF servlet </para> </callout> <callout arearefs=\"faces.servlet.mapping\"> <para> Configure requests for URLs ending in <literal>.jsf</literal> to be handled by JSF </para> </callout> <callout arearefs=\"faces.default.suffix\"> <para> Tell JSF that we will be giving our JSF views (Facelets templates) an extension of <literal>.xhtml</literal> </para> </callout> <callout arearefs=\"session.timeout\"> <para> Configure a session timeout of 10 minutes </para> </callout> </calloutlist> </programlistingco> <note> <para> This demo uses JSF 2 as the view framework, but you can use Weld with any servlet-based web framework, such as JSF 1.2 or Wicket. </para> </note> <para> Let's take a look at the main JSF view, <literal>src/main/webapp/home.xhtml</literal>. </para> <programlistingco> <areaspec> <area id=\"template\" coords=\"8\"/> <area id=\"statusMessages\" coords=\"12\"/> <area id=\"instructions\" coords=\"20\"/> <area id=\"guess\" coords=\"27\"/> <area id=\"validator\" coords=\"29\"/> <area id=\"submit\" coords=\"30\"/> </areaspec> <programlisting role=\"HTML\"><![CDATA[<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
+"</web-app>]]></programlisting> <calloutlist> <callout arearefs=\"faces."
+"servlet\"> <para> Enable and initialize the JSF servlet </para> </callout> "
+"<callout arearefs=\"faces.servlet.mapping\"> <para> Configure requests for "
+"URLs ending in <literal>.jsf</literal> to be handled by JSF </para> </"
+"callout> <callout arearefs=\"faces.default.suffix\"> <para> Tell JSF that we "
+"will be giving our JSF views (Facelets templates) an extension of <literal>."
+"xhtml</literal> </para> </callout> <callout arearefs=\"session.timeout\"> "
+"<para> Configure a session timeout of 10 minutes </para> </callout> </"
+"calloutlist> </programlistingco> <note> <para> This demo uses JSF 2 as the "
+"view framework, but you can use Weld with any servlet-based web framework, "
+"such as JSF 1.2 or Wicket. </para> </note> <para> Let's take a look at the "
+"main JSF view, <literal>src/main/webapp/home.xhtml</literal>. </para> "
+"<programlistingco> <areaspec> <area id=\"template\" coords=\"8\"/> <area id="
+"\"statusMessages\" coords=\"12\"/> <area id=\"instructions\" coords=\"20\"/> "
+"<area id=\"guess\" coords=\"27\"/> <area id=\"validator\" coords=\"29\"/> "
+"<area id=\"submit\" coords=\"30\"/> </areaspec> <programlisting role=\"XML"
+"\"><![CDATA[<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN"
+"\"\n"
 "   \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
 "<html xmlns=\"http://www.w3.org/1999/xhtml\"\n"
 "   xmlns:ui=\"http://java.sun.com/jsf/facelets\"\n"
@@ -129,37 +167,62 @@ msgid ""
 "            <div style=\"color: red\">\n"
 "               <h:messages id=\"messages\" globalOnly=\"false\"/>\n"
 "               <h:outputText id=\"Higher\" value=\"Higher!\"\n"
-"                  rendered=\"#{game.number gt game.guess and game.guess ne 0}\"/>\n"
+"                  rendered=\"#{game.number gt game.guess and game.guess ne 0}"
+"\"/>\n"
 "               <h:outputText id=\"Lower\" value=\"Lower!\"\n"
-"                  rendered=\"#{game.number lt game.guess and game.guess ne 0}\"/>\n"
+"                  rendered=\"#{game.number lt game.guess and game.guess ne 0}"
+"\"/>\n"
 "            </div>\n"
 "    \n"
 "            <div>\n"
-"               I'm thinking of a number between #{game.smallest} and #{game.biggest}.\n"
+"               I'm thinking of a number between #{game.smallest} and #{game."
+"biggest}.\n"
 "               You have #{game.remainingGuesses} guesses remaining.\n"
 "            </div>\n"
 "       \n"
 "            <div>\n"
 "               Your guess: \n"
 "               <h:inputText id=\"inputGuess\" value=\"#{game.guess}\"\n"
-"                  size=\"3\" required=\"true\" disabled=\"#{game.number eq game.guess}\"\n"
+"                  size=\"3\" required=\"true\" disabled=\"#{game.number eq "
+"game.guess}\"\n"
 "                  validator=\"#{game.validateNumberRange}\"/>\n"
 "               <h:commandButton id=\"guessButton\" value=\"Guess\" \n"
-"                  action=\"#{game.check}\" disabled=\"#{game.number eq game.guess}\"/>\n"
+"                  action=\"#{game.check}\" disabled=\"#{game.number eq game."
+"guess}\"/>\n"
 "            </div>\n"
 "            <div>\n"
-"              <h:commandButton id=\"restartButton\" value=\"Reset\" action=\"#{game.reset}\" immediate=\"true\"/>\n"
+"              <h:commandButton id=\"restartButton\" value=\"Reset\" action="
+"\"#{game.reset}\" immediate=\"true\"/>\n"
 "            </div>\n"
 "         </h:form>\n"
 "      </ui:define>\n"
 "   </ui:composition>\n"
-"</html>]]></programlisting> <calloutlist> <callout arearefs=\"template\"> <para> Facelets is the built-in templating language for JSF. Here we are wrapping our page in a template which defines the layout. </para> </callout> <callout arearefs=\"statusMessages\"> <para> There are a number of messages which can be sent to the user, \"Higher!\", \"Lower!\" and \"Correct!\" </para> </callout> <callout arearefs=\"instructions\"> <para> As the user guesses, the range of numbers they can guess gets smaller - this sentence changes to make sure they know the number range of a valid guess. </para> </callout> <callout arearefs=\"guess\"> <para> This input field is bound to a bean property using a value expression. </para> </callout> <callout arearefs=\"validator\"> <para> A validator binding is used to make sure the user doesn't accidentally input a number outside of the range in which they can guess - if the validator wasn't here, the user might use up a guess on an out of bounds number. </para> </callout> <callout arearefs=\"submit\"> <para> And, of course, there must be a way for the user to send their guess to the server. Here we bind to an action method on the bean. </para> </callout> </calloutlist> </programlistingco>"
+"</html>]]></programlisting> <calloutlist> <callout arearefs=\"template\"> "
+"<para> Facelets is the built-in templating language for JSF. Here we are "
+"wrapping our page in a template which defines the layout. </para> </callout> "
+"<callout arearefs=\"statusMessages\"> <para> There are a number of messages "
+"which can be sent to the user, \"Higher!\", \"Lower!\" and \"Correct!\" </"
+"para> </callout> <callout arearefs=\"instructions\"> <para> As the user "
+"guesses, the range of numbers they can guess gets smaller - this sentence "
+"changes to make sure they know the number range of a valid guess. </para> </"
+"callout> <callout arearefs=\"guess\"> <para> This input field is bound to a "
+"bean property using a value expression. </para> </callout> <callout arearefs="
+"\"validator\"> <para> A validator binding is used to make sure the user "
+"doesn't accidentally input a number outside of the range in which they can "
+"guess - if the validator wasn't here, the user might use up a guess on an "
+"out of bounds number. </para> </callout> <callout arearefs=\"submit\"> "
+"<para> And, of course, there must be a way for the user to send their guess "
+"to the server. Here we bind to an action method on the bean. </para> </"
+"callout> </calloutlist> </programlistingco>"
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:142
 #, no-c-format
-msgid "The example exists of 4 classes, the first two of which are qualifiers. First, there is the <literal>@Random</literal> qualifier, used for injecting a random number:"
+msgid ""
+"The example exists of 4 classes, the first two of which are qualifiers. "
+"First, there is the <literal>@Random</literal> qualifier, used for injecting "
+"a random number:"
 msgstr ""
 
 #. Tag: programlisting
@@ -179,7 +242,9 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:149
 #, no-c-format
-msgid "There is also the <literal>@MaxNumber</literal> qualifier, used for injecting the maximum number that can be injected:"
+msgid ""
+"There is also the <literal>@MaxNumber</literal> qualifier, used for "
+"injecting the maximum number that can be injected:"
 msgstr ""
 
 #. Tag: programlisting
@@ -201,7 +266,10 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:156
 #, no-c-format
-msgid "The application-scoped <literal>Generator</literal> class is responsible for creating the random number, via a producer method. It also exposes the maximum possible number via a producer method:"
+msgid ""
+"The application-scoped <literal>Generator</literal> class is responsible for "
+"creating the random number, via a producer method. It also exposes the "
+"maximum possible number via a producer method:"
 msgstr ""
 
 #. Tag: programlisting
@@ -211,7 +279,8 @@ msgid ""
 "<![CDATA[@ApplicationScoped\n"
 "public class Generator implements Serializable {\n"
 "\n"
-"   private java.util.Random random = new java.util.Random(System.currentTimeMillis());\n"
+"   private java.util.Random random = new java.util.Random(System."
+"currentTimeMillis());\n"
 "   \n"
 "   private int maxNumber = 100;\n"
 "   \n"
@@ -232,7 +301,8 @@ msgstr ""
 "<![CDATA[@ApplicationScoped\n"
 "public class Generator implements Serializable {\n"
 "\n"
-"   private java.util.Random random = new java.util.Random(System.currentTimeMillis());\n"
+"   private java.util.Random random = new java.util.Random(System."
+"currentTimeMillis());\n"
 "   \n"
 "   private int maxNumber = 100;\n"
 "   \n"
@@ -253,25 +323,39 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:163
 #, no-c-format
-msgid "The <literal>Generator</literal> is application scoped, so we don't get a different random each time."
+msgid ""
+"The <literal>Generator</literal> is application scoped, so we don't get a "
+"different random each time."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:168
 #, no-c-format
-msgid "The package declaration and imports have been excluded from these listings. The complete listing is available in the example source code."
+msgid ""
+"The package declaration and imports have been excluded from these listings. "
+"The complete listing is available in the example source code."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:174
 #, no-c-format
-msgid "The final bean in the application is the session-scoped <literal>Game</literal> class. This is the primary entry point of the application. It's responsible for setting up or resetting the game, capturing and validating the user's guess and providing feedback to the user with a <literal>FacesMessage</literal>. We've used the post-construct lifecycle method to initialize the game by retrieving a random number from the <literal>@Random Instance&lt;Integer&gt;</literal> bean."
+msgid ""
+"The final bean in the application is the session-scoped <literal>Game</"
+"literal> class. This is the primary entry point of the application. It's "
+"responsible for setting up or resetting the game, capturing and validating "
+"the user's guess and providing feedback to the user with a "
+"<literal>FacesMessage</literal>. We've used the post-construct lifecycle "
+"method to initialize the game by retrieving a random number from the "
+"<literal>@Random Instance&lt;Integer&gt;</literal> bean."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:182
 #, no-c-format
-msgid "You'll notice that we've also added the <literal>@Named</literal> annotation to this class. This annotation is only required when you want to make the bean accessible to a JSF view via EL (i.e., #{game})."
+msgid ""
+"You'll notice that we've also added the <literal>@Named</literal> annotation "
+"to this class. This annotation is only required when you want to make the "
+"bean accessible to a JSF view via EL (i.e., #{game})."
 msgstr ""
 
 #. Tag: programlisting
@@ -301,7 +385,8 @@ msgid ""
 "         smallest = guess + 1;\n"
 "      }\n"
 "      else if (guess == number) {\n"
-"         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(\"Correct!\"));\n"
+"         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage"
+"(\"Correct!\"));\n"
 "      }\n"
 "      remainingGuesses--;\n"
 "   }\n"
@@ -315,7 +400,8 @@ msgid ""
 "      this.number = randomNumber.get();\n"
 "   }\n"
 "   \n"
-"   public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value) {\n"
+"   public void validateNumberRange(FacesContext context,  UIComponent "
+"toValidate, Object value) {\n"
 "      if (remainingGuesses <= 0) {\n"
 "         FacesMessage message = new FacesMessage(\"No guesses left!\");\n"
 "         context.addMessage(toValidate.getClientId(context), message);\n"
@@ -381,7 +467,8 @@ msgstr ""
 "         smallest = guess + 1;\n"
 "      }\n"
 "      else if (guess == number) {\n"
-"         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(\"Correct!\"));\n"
+"         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage"
+"(\"Correct!\"));\n"
 "      }\n"
 "      remainingGuesses--;\n"
 "   }\n"
@@ -395,7 +482,8 @@ msgstr ""
 "      this.number = randomNumber.get();\n"
 "   }\n"
 "   \n"
-"   public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value) {\n"
+"   public void validateNumberRange(FacesContext context,  UIComponent "
+"toValidate, Object value) {\n"
 "      if (remainingGuesses <= 0) {\n"
 "         FacesMessage message = new FacesMessage(\"No guesses left!\");\n"
 "         context.addMessage(toValidate.getClientId(context), message);\n"
@@ -447,19 +535,32 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:192
 #, no-c-format
-msgid "A couple of modifications must be made to the numberguess artifact in order to deploy it to Tomcat or Jetty. First, Weld must be deployed as a Web Application library under <literal>WEB-INF/lib</literal> since the servlet container does not provide the CDI services. For your convenience we provide a single JAR suitable for running Weld in any servlet container (including Jetty), <literal>weld-servlet.jar</literal>."
+msgid ""
+"A couple of modifications must be made to the numberguess artifact in order "
+"to deploy it to Tomcat or Jetty. First, Weld must be deployed as a Web "
+"Application library under <literal>WEB-INF/lib</literal> since the servlet "
+"container does not provide the CDI services. For your convenience we provide "
+"a single JAR suitable for running Weld in any servlet container (including "
+"Jetty), <literal>weld-servlet.jar</literal>."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:200
 #, no-c-format
-msgid "You must also include the JARs for JSF, EL, and the common annotations (<literal>jsr250-api.jar</literal>), all of which are provided by the Java EE platform (a Java EE application server). Are you starting to appreciate why a Java EE platform is worth using?"
+msgid ""
+"You must also include the JARs for JSF, EL, and the common annotations "
+"(<literal>jsr250-api.jar</literal>), all of which are provided by the Java "
+"EE platform (a Java EE application server). Are you starting to appreciate "
+"why a Java EE platform is worth using?"
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:207
 #, no-c-format
-msgid "Second, we need to explicitly specify the servlet listener in <literal>web.xml</literal>, again because the container isn't doing this stuff for you. The servlet listener boots Weld and controls it's interaction with requests."
+msgid ""
+"Second, we need to explicitly specify the servlet listener in <literal>web."
+"xml</literal>, again because the container isn't doing this stuff for you. "
+"The servlet listener boots Weld and controls it's interaction with requests."
 msgstr ""
 
 #. Tag: programlisting
@@ -467,17 +568,24 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<![CDATA[<listener>\n"
-"   <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>\n"
+"   <listener-class>org.jboss.weld.environment.servlet.Listener</listener-"
+"class>\n"
 "</listener>]]>"
 msgstr ""
 "<![CDATA[<listener>\n"
-"   <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>\n"
+"   <listener-class>org.jboss.weld.environment.servlet.Listener</listener-"
+"class>\n"
 "</listener>]]>"
 
 #. Tag: para
 #: weldexamples.xml:215
 #, no-c-format
-msgid "When Weld boots, it places the <literal>javax.enterprise.inject.spi.BeanManager</literal>, the portable SPI for obtaining bean instances, in the ServletContext under a variable name equal to the fully-qualified interface name. You generally don't need to access this interface, but Weld makes use of it."
+msgid ""
+"When Weld boots, it places the <literal>javax.enterprise.inject.spi."
+"BeanManager</literal>, the portable SPI for obtaining bean instances, in the "
+"ServletContext under a variable name equal to the fully-qualified interface "
+"name. You generally don't need to access this interface, but Weld makes use "
+"of it."
 msgstr ""
 
 #. Tag: title
@@ -489,25 +597,41 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:227
 #, no-c-format
-msgid "Weld includes a number of portable extensions for JSR-299, including an extension for Wicket, which allows you to inject beans into Wicket components and leverage the conversation context. In this section, we'll walk you through the Wicket version of the numberguess example."
+msgid ""
+"Weld includes a number of portable extensions for JSR-299, including an "
+"extension for Wicket, which allows you to inject beans into Wicket "
+"components and leverage the conversation context. In this section, we'll "
+"walk you through the Wicket version of the numberguess example."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:234
 #, no-c-format
-msgid "You may want to review the Wicket documentation at <ulink url=\"http://wicket.apache.org/\">http://wicket.apache.org/</ulink> before reading this section, if you aren't already familiar with the framework."
+msgid ""
+"You may want to review the Wicket documentation at <ulink url=\"http://"
+"wicket.apache.org/\">http://wicket.apache.org/</ulink> before reading this "
+"section, if you aren't already familiar with the framework."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:241
 #, no-c-format
-msgid "Wicket is another environment that relies on the Weld servlet extension. The use of <ulink url=\"http://jetty.mortbay.org\">Jetty</ulink> is common in the Wicket community, and is thus chosen here as the runtime container. You've seen already that Jetty is perfectly capable of running CDI applications with Weld add-ons, and this environment is no different."
+msgid ""
+"Wicket is another environment that relies on the Weld servlet extension. The "
+"use of <ulink url=\"http://jetty.mortbay.org\">Jetty</ulink> is common in "
+"the Wicket community, and is thus chosen here as the runtime container. "
+"You've seen already that Jetty is perfectly capable of running CDI "
+"applications with Weld add-ons, and this environment is no different."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:249
 #, no-c-format
-msgid "We'll also be using the Eclipse IDE in these examples. Instructions are provided later for running the example from the command line, but since you'll likely need to do more than just deploy examples, we'll get setup in this full development environment."
+msgid ""
+"We'll also be using the Eclipse IDE in these examples. Instructions are "
+"provided later for running the example from the command line, but since "
+"you'll likely need to do more than just deploy examples, we'll get setup in "
+"this full development environment."
 msgstr ""
 
 #. Tag: title
@@ -519,37 +643,63 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:259
 #, no-c-format
-msgid "To use the Wicket example in Eclipse, you have one of two choices. You can either use a Maven plugin to generate a regular Eclipse Web project, or you can open the example natively using the <ulink src=\"http://m2eclipse.sonatype.org/\">m2eclipse plugin</ulink>. Since the Weld source code relies so heavily on Maven, we encourage you to bite the bullet and adopt the m2eclipse plugin. Both approaches are described here for your convenience.."
+msgid ""
+"To use the Wicket example in Eclipse, you have one of two choices. You can "
+"either use a Maven plugin to generate a regular Eclipse Web project, or you "
+"can open the example natively using the <ulink url=\"http://m2eclipse."
+"sonatype.org/\">m2eclipse plugin</ulink>. Since the Weld source code relies "
+"so heavily on Maven, we encourage you to bite the bullet and adopt the "
+"m2eclipse plugin. Both approaches are described here for your convenience.."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:267
 #, no-c-format
-msgid "If you have m2eclipse installed, you can open any Maven project directly. From within Eclipse, select <emphasis>File -> Import... -> Maven Projects</emphasis>. Then, browse to the location of the Wicket numberguess example. You should see that Eclipse recognizes the existence of a Maven project."
+msgid ""
+"If you have m2eclipse installed, you can open any Maven project directly. "
+"From within Eclipse, select <emphasis>File -> Import... -> Maven Projects</"
+"emphasis>. Then, browse to the location of the Wicket numberguess example. "
+"You should see that Eclipse recognizes the existence of a Maven project."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:279
 #, no-c-format
-msgid "This will create a project in your workspace called <literal>weld-wicket-numberguess</literal>."
+msgid ""
+"This will create a project in your workspace called <literal>weld-wicket-"
+"numberguess</literal>."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:283
 #, no-c-format
-msgid "You'll notice after importing, the project has a build error. That's because we need to enable a Maven profile. Right-click on the project and select <emphasis>Properties</emphasis>, then select the <emphasis>Maven</emphasis> tab in the window that appears. In the form field labeled \"Active Maven Profiles (comma separated):\", type <literal>jetty</literal>. That will enable some extra dependencies that allow the project to compile. You're now ready to develop!"
+msgid ""
+"You'll notice after importing, the project has a build error. That's because "
+"we need to enable a Maven profile. Right-click on the project and select "
+"<emphasis>Properties</emphasis>, then select the <emphasis>Maven</emphasis> "
+"tab in the window that appears. In the form field labeled \"Active Maven "
+"Profiles (comma separated):\", type <literal>jetty</literal>. That will "
+"enable some extra dependencies that allow the project to compile. You're now "
+"ready to develop!"
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:292
 #, no-c-format
-msgid "You are also advised to uncheck the box \"Skip Maven compiler when processing resources\" in the Maven properties screen because of conflicts with the Maven enforcer plugin."
+msgid ""
+"You are also advised to uncheck the box \"Skip Maven compiler when "
+"processing resources\" in the Maven properties screen because of conflicts "
+"with the Maven enforcer plugin."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:298
 #, no-c-format
-msgid "If you are not using the m2eclipse plugin, you have to follow different steps to import the project. First, switch into the Wicket numberguess example, then execute the Maven Eclipse plugin with the jetty profile activated, as follows:"
+msgid ""
+"If you are not using the m2eclipse plugin, you have to follow different "
+"steps to import the project. First, switch into the Wicket numberguess "
+"example, then execute the Maven Eclipse plugin with the jetty profile "
+"activated, as follows:"
 msgstr ""
 
 #. Tag: programlisting
@@ -563,7 +713,11 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:306
 #, no-c-format
-msgid "Then, from Eclipse, choose <emphasis>File -> Import... -> General -> Existing Projects into Workspace</emphasis>, select the root directory of the numberguess example, and click Finish. This will create a project in your workspace called <literal>weld-wicket-numberguess</literal>."
+msgid ""
+"Then, from Eclipse, choose <emphasis>File -> Import... -> General -> "
+"Existing Projects into Workspace</emphasis>, select the root directory of "
+"the numberguess example, and click Finish. This will create a project in "
+"your workspace called <literal>weld-wicket-numberguess</literal>."
 msgstr ""
 
 #. Tag: para
@@ -581,7 +735,16 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:327
 #, no-c-format
-msgid "This project follows the <literal>wicket-quickstart</literal> approach of creating an instance of Jetty in the <literal>Start</literal> class. So running the example is as simple as right-clicking on that Start class in <literal>src/test/java</literal> in the <emphasis>Package Explorer</emphasis> and choosing <emphasis>Run as Java Application</emphasis>. You should see console output related to Jetty starting up; then visit able <literal>http://localhost:9090</literal> to view the app. To debug choose <emphasis>Debug as Java Application</emphasis> instead."
+msgid ""
+"This project follows the <literal>wicket-quickstart</literal> approach of "
+"creating an instance of Jetty in the <literal>Start</literal> class. So "
+"running the example is as simple as right-clicking on that Start class in "
+"<literal>src/test/java</literal> in the <emphasis>Package Explorer</"
+"emphasis> and choosing <emphasis>Run as Java Application</emphasis>. You "
+"should see console output related to Jetty starting up; then visit able "
+"<ulink url=\"http://localhost:9090\">http://localhost:9090</ulink> to view "
+"the app. To debug choose <emphasis>Debug as Java Application</emphasis> "
+"instead."
 msgstr ""
 
 #. Tag: title
@@ -593,7 +756,12 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:340
 #, no-c-format
-msgid "This example can also be deployed from the command line in a (similar to the other examples). Assuming you have set up the <literal>local.build.properties</literal> file in the <literal>examples</literal> directory to specify the location of JBoss AS or Tomcat, as previously described, you can run:"
+msgid ""
+"This example can also be deployed from the command line in a (similar to the "
+"other examples). Assuming you have set up the <literal>local.build."
+"properties</literal> file in the <literal>examples</literal> directory to "
+"specify the location of JBoss AS or Tomcat, as previously described, you can "
+"run:"
 msgstr ""
 
 #. Tag: programlisting
@@ -617,13 +785,18 @@ msgstr "<![CDATA[$> ant tomcat.deploy]]>"
 #. Tag: para
 #: weldexamples.xml:352
 #, no-c-format
-msgid "to deploy the example to Tomcat. You can then access application at <literal>http://localhost:9090/weld-numberguess-wicket</literal>."
+msgid ""
+"to deploy the example to Tomcat. You can then access application at <ulink "
+"url=\"http://localhost:8080/weld-numberguess-wicket\">http://localhost:8080/"
+"weld-numberguess-wicket</ulink>."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:357
 #, no-c-format
-msgid "Alternatively, you can run the application in place on an embedded Jetty container using the following Maven command:"
+msgid ""
+"Alternatively, you can run the application in place on an embedded Jetty "
+"container using the following Maven command:"
 msgstr ""
 
 #. Tag: programlisting
@@ -647,13 +820,25 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:373
 #, no-c-format
-msgid "The code in the wicket numberguess example is very similar to the JSF-based numberguess example. The business layer is identical! Where things differ is in view binding. JSF uses Unified EL expressions to bind XML-based view layer components in JSF views to beans. In contrast, Wicket defines its components in Java. These Java-based view components have a one-to-one mapping with HTML elements in an adjacent (pure) HTML file. All view logic, including binding of components to models and controlling the response of view actions, is handled in Java."
+msgid ""
+"The code in the wicket numberguess example is very similar to the JSF-based "
+"numberguess example. The business layer is identical! Where things differ is "
+"in view binding. JSF uses Unified EL expressions to bind XML-based view "
+"layer components in JSF views to beans. In contrast, Wicket defines its "
+"components in Java. These Java-based view components have a one-to-one "
+"mapping with HTML elements in an adjacent (pure) HTML file. All view logic, "
+"including binding of components to models and controlling the response of "
+"view actions, is handled in Java."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:382
 #, no-c-format
-msgid "The integration of Weld with Wicket takes advantage of the same qualifier annotations used in your business layer to provide injection into your <literal>WebPage</literal> subclass (or into other custom Wicket component subclasses)."
+msgid ""
+"The integration of Weld with Wicket takes advantage of the same qualifier "
+"annotations used in your business layer to provide injection into your "
+"<literal>WebPage</literal> subclass (or into other custom Wicket component "
+"subclasses)."
 msgstr ""
 
 #. Tag: para
@@ -665,7 +850,10 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:394
 #, no-c-format
-msgid "Each wicket application must have a <literal>WeldApplication</literal> subclass. In our case, our application class is <literal>NumberGuessApplication</literal>:"
+msgid ""
+"Each wicket application must have a <literal>WeldApplication</literal> "
+"subclass. In our case, our application class is "
+"<literal>NumberGuessApplication</literal>:"
 msgstr ""
 
 #. Tag: programlisting
@@ -687,13 +875,18 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:399
 #, no-c-format
-msgid "This class specifies which page Wicket should treat as our home page, in our case, <literal>HomePage.class</literal>"
+msgid ""
+"This class specifies which page Wicket should treat as our home page, in our "
+"case, <literal>HomePage.class</literal>"
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:405
 #, no-c-format
-msgid "In <literal>HomePage</literal>, we see typical Wicket code to set up page elements. The bit that is interesting is the injection of the <literal>Game</literal> bean:"
+msgid ""
+"In <literal>HomePage</literal>, we see typical Wicket code to set up page "
+"elements. The bit that is interesting is the injection of the <literal>Game</"
+"literal> bean:"
 msgstr ""
 
 #. Tag: programlisting
@@ -705,7 +898,9 @@ msgstr "<![CDATA[@Inject Game game;]]>"
 #. Tag: para
 #: weldexamples.xml:412
 #, no-c-format
-msgid "The <literal>Game</literal> bean is can then be used, for example, by the code for submitting a guess:"
+msgid ""
+"The <literal>Game</literal> bean is can then be used, for example, by the "
+"code for submitting a guess:"
 msgstr ""
 
 #. Tag: programlisting
@@ -765,25 +960,38 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:420
 #, no-c-format
-msgid "All injections may be serialized; actual storage of the bean is managed by JSR-299. Note that Wicket components, like the <literal>HomePage</literal> and it subcomponents, are <emphasis>not</emphasis> JSR-299 beans."
+msgid ""
+"All injections may be serialized; actual storage of the bean is managed by "
+"JSR-299. Note that Wicket components, like the <literal>HomePage</literal> "
+"and it subcomponents, are <emphasis>not</emphasis> JSR-299 beans."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:425
 #, no-c-format
-msgid "Wicket components allow injection, but they <emphasis>cannot</emphasis> use interceptors, decorators or lifecycle callbacks such as <literal>@PostConstruct</literal> or methods. The components would need to delegate to actual beans to leverage these features."
+msgid ""
+"Wicket components allow injection, but they <emphasis>cannot</emphasis> use "
+"interceptors, decorators or lifecycle callbacks such as "
+"<literal>@PostConstruct</literal> or methods. The components would need to "
+"delegate to actual beans to leverage these features."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:433
 #, no-c-format
-msgid "The example uses AJAX for processing of button events, and dynamically hides buttons that are no longer relevant, for example when the user has won the game."
+msgid ""
+"The example uses AJAX for processing of button events, and dynamically hides "
+"buttons that are no longer relevant, for example when the user has won the "
+"game."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:440
 #, no-c-format
-msgid "In order to activate Wicket for this webapp, the Wicket filter is added to <literal>web.xml</literal>, and our application class is specified in <literal>web.xml</literal>:"
+msgid ""
+"In order to activate Wicket for this webapp, the Wicket filter is added to "
+"<literal>web.xml</literal>, and our application class is specified in "
+"<literal>web.xml</literal>:"
 msgstr ""
 
 #. Tag: programlisting
@@ -792,10 +1000,12 @@ msgstr ""
 msgid ""
 "<![CDATA[<filter>\n"
 "   <filter-name>Wicket Filter</filter-name>\n"
-"   <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>\n"
+"   <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-"
+"class>\n"
 "   <init-param>\n"
 "      <param-name>applicationClassName</param-name>\n"
-"      <param-value>org.jboss.weld.examples.wicket.NumberGuessApplication</param-value>\n"
+"      <param-value>org.jboss.weld.examples.wicket.NumberGuessApplication</"
+"param-value>\n"
 "   </init-param>\n"
 "</filter>\n"
 "\n"
@@ -806,10 +1016,12 @@ msgid ""
 msgstr ""
 "<![CDATA[<filter>\n"
 "   <filter-name>Wicket Filter</filter-name>\n"
-"   <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>\n"
+"   <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-"
+"class>\n"
 "   <init-param>\n"
 "      <param-name>applicationClassName</param-name>\n"
-"      <param-value>org.jboss.weld.examples.wicket.NumberGuessApplication</param-value>\n"
+"      <param-value>org.jboss.weld.examples.wicket.NumberGuessApplication</"
+"param-value>\n"
 "   </init-param>\n"
 "</filter>\n"
 "\n"
@@ -821,7 +1033,13 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:447
 #, no-c-format
-msgid "The servlet listener is still required, as in the Tomcat example, to bootstrap CDI when Jetty starts and to hook CDI into the Jetty servlet request and session lifecycles. However, rather than putting it into the web.xml, it is placed into an override file, <literal>src/main/webapp/WEB-INF/jetty-additions-to-web.xml</literal>, that is passed to Jetty as an extra descriptor to be appended to the <literal>web.xml</literal> configuration."
+msgid ""
+"The servlet listener is still required, as in the Tomcat example, to "
+"bootstrap CDI when Jetty starts and to hook CDI into the Jetty servlet "
+"request and session lifecycles. However, rather than putting it into the web."
+"xml, it is placed into an override file, <literal>src/main/webapp/WEB-INF/"
+"jetty-additions-to-web.xml</literal>, that is passed to Jetty as an extra "
+"descriptor to be appended to the <literal>web.xml</literal> configuration."
 msgstr ""
 
 #. Tag: programlisting
@@ -830,13 +1048,15 @@ msgstr ""
 msgid ""
 "<![CDATA[<web-app version=\"2.4\" ...>\n"
 "   <listener>\n"
-"      <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>\n"
+"      <listener-class>org.jboss.weld.environment.servlet.Listener</listener-"
+"class>\n"
 "   </listener>\n"
 "</web-app>]]>"
 msgstr ""
 "<![CDATA[<web-app version=\"2.4\" ...>\n"
 "   <listener>\n"
-"      <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>\n"
+"      <listener-class>org.jboss.weld.environment.servlet.Listener</listener-"
+"class>\n"
 "   </listener>\n"
 "</web-app>]]>"
 
@@ -849,7 +1069,11 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:466
 #, no-c-format
-msgid "This example shows how to use the Weld SE extension to in a Java SE based Swing application with no EJB or servlet dependencies. This example can be found in the <literal>examples/se/numberguess</literal> folder of the Weld distribution."
+msgid ""
+"This example shows how to use the Weld SE extension to in a Java SE based "
+"Swing application with no EJB or servlet dependencies. This example can be "
+"found in the <literal>examples/se/numberguess</literal> folder of the Weld "
+"distribution."
 msgstr ""
 
 #. Tag: para
@@ -867,13 +1091,17 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:484
 #, no-c-format
-msgid "Ensure that the <literal>JAVA_HOME</literal> environment variable is pointing to your JDK installation"
+msgid ""
+"Ensure that the <literal>JAVA_HOME</literal> environment variable is "
+"pointing to your JDK installation"
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:490
 #, no-c-format
-msgid "Open a command line or terminal window in the <literal>examples/se/numberguess</literal> directory"
+msgid ""
+"Open a command line or terminal window in the <literal>examples/se/"
+"numberguess</literal> directory"
 msgstr ""
 
 #. Tag: para
@@ -891,27 +1119,38 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:503
 #, no-c-format
-msgid "Let's have a look at the significant code and configuration files that make up this example."
+msgid ""
+"Let's have a look at the significant code and configuration files that make "
+"up this example."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:508
 #, no-c-format
-msgid "As usual, there is an empty <literal>beans.xml</literal> file in the root package (<literal>src/main/resources/beans.xml</literal>), which marks this application as a CDI application."
+msgid ""
+"As usual, there is an empty <literal>beans.xml</literal> file in the root "
+"package (<literal>src/main/resources/beans.xml</literal>), which marks this "
+"application as a CDI application."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:514
 #, no-c-format
-msgid "The game's main logic is located in <literal>Game.java</literal>. Here is the code for that class, highlighting the ways in which this differs from the web application version:"
+msgid ""
+"The game's main logic is located in <literal>Game.java</literal>. Here is "
+"the code for that class, highlighting the ways in which this differs from "
+"the web application version:"
 msgstr ""
 
 #. Tag: section
 #: weldexamples.xml:518
 #, no-c-format
 msgid ""
-"<programlistingco> <areaspec> <area id=\"scope\" coords=\"1\"/> <area id=\"name\" coords=\"2\"/> <area id=\"messages1\" coords=\"26\"/> <area id=\"validation\" coords=\"41\"/> <area id=\"reset\" coords=\"73\"/> </areaspec> <programlisting role=\"JAVA\"><![CDATA[@ApplicationScoped\n"
-"public class Game implements Serializable\n"
+"<programlistingco> <areaspec> <area id=\"scope\" coords=\"1\"/> <area id="
+"\"name\" coords=\"2\"/> <area id=\"messages1\" coords=\"26\"/> <area id="
+"\"validation\" coords=\"41\"/> <area id=\"reset\" coords=\"73\"/> </"
+"areaspec> <programlisting role=\"JAVA\"><![CDATA[@ApplicationScoped\n"
+"public class Game\n"
 "{\n"
 "\n"
 "   public static final int MAX_NUM_GUESSES = 10;\n"
@@ -981,7 +1220,8 @@ msgid ""
 "\n"
 "   private boolean checkNewNumberRangeIsValid()\n"
 "   {\n"
-"      return validNumberRange = ((guess >= smallest) && (guess <= biggest));\n"
+"      return validNumberRange = ((guess >= smallest) && (guess <= "
+"biggest));\n"
 "   }\n"
 "\n"
 "   @PostConstruct\n"
@@ -993,14 +1233,45 @@ msgid ""
 "      this.biggest = maxNumber;\n"
 "      this.number = rndGenerator.next();\n"
 "   }\n"
-"}]]></programlisting> <calloutlist> <callout arearefs=\"scope\"> <para> The bean is application scoped rather than session scoped, since an instance of a Swing application typically represents a single 'session'. </para> </callout> <callout arearefs=\"name\"> <para> Notice that the bean is not named, since it doesn't need to be accessed via EL. </para> </callout> <callout arearefs=\"messages1\"> <para> In Java SE there is no JSF <literal>FacesContext</literal> to which messages can be added. Instead the <literal>Game</literal> class provides additional information about the state of the current game including: </para> <itemizedlist> <listitem> <para> If the game has been won or lost </para> </listitem> <listitem> <para> If the most recent guess was invalid </para> </listitem> </itemizedlist> <para> This allows the Swing UI to query the state of the game, which it does indirectly via a class called <literal>MessageGenerator</literal>, in order to determine the appropriate messages to display to the user during the game. </para> </callout> <callout arearefs=\"validation\"> <para> Since there is no dedicated validation phase, validation of user input is performed during the <literal>check()</literal> method. </para> </callout> <callout arearefs=\"reset\"> <para> The <literal>reset()</literal> method makes a call to the injected <literal>rndGenerator</literal> in order to get the random number at the start of each game. Note that it cannot use <literal>manager.getInstanceByType(Integer.class, new AnnotationLiteral&lt;Random&gt;(){})</literal> as the JSF example does because there will not be any active contexts like there is during a JSF request. </para> </callout> </calloutlist> </programlistingco> <para> The <literal>MessageGenerator</literal> class depends on the current instance of <literal>Game</literal> and queries its state in order to determine the appropriate messages to provide as the prompt for the user's next guess and the response to the previous guess. The code for <literal>MessageGenerator</literal> is as follows: </para> <programlistingco> <areaspec> <area id=\"game\" coords=\"3\"/> <area id=\"challenge\" coords=\"6\"/> <area id=\"result\" coords=\"17\"/> </areaspec> <programlisting role=\"JAVA\"><![CDATA[public class MessageGenerator\n"
+"}]]></programlisting> <calloutlist> <callout arearefs=\"scope\"> <para> The "
+"bean is application scoped rather than session scoped, since an instance of "
+"a Swing application typically represents a single 'session'. </para> </"
+"callout> <callout arearefs=\"name\"> <para> Notice that the bean is not "
+"named, since it doesn't need to be accessed via EL. </para> </callout> "
+"<callout arearefs=\"messages1\"> <para> In Java SE there is no JSF "
+"<literal>FacesContext</literal> to which messages can be added. Instead the "
+"<literal>Game</literal> class provides additional information about the "
+"state of the current game including: </para> <itemizedlist> <listitem> "
+"<para> If the game has been won or lost </para> </listitem> <listitem> "
+"<para> If the most recent guess was invalid </para> </listitem> </"
+"itemizedlist> <para> This allows the Swing UI to query the state of the "
+"game, which it does indirectly via a class called <literal>MessageGenerator</"
+"literal>, in order to determine the appropriate messages to display to the "
+"user during the game. </para> </callout> <callout arearefs=\"validation\"> "
+"<para> Since there is no dedicated validation phase, validation of user "
+"input is performed during the <literal>check()</literal> method. </para> </"
+"callout> <callout arearefs=\"reset\"> <para> The <literal>reset()</literal> "
+"method makes a call to the injected <literal>rndGenerator</literal> in order "
+"to get the random number at the start of each game. Note that it can't use "
+"<literal>Instance.get()</literal> like the JSF example does because there "
+"will not be any active contexts like there are during a JSF request. </para> "
+"</callout> </calloutlist> </programlistingco> <para> The "
+"<literal>MessageGenerator</literal> class depends on the current instance of "
+"<literal>Game</literal> and queries its state in order to determine the "
+"appropriate messages to provide as the prompt for the user's next guess and "
+"the response to the previous guess. The code for <literal>MessageGenerator</"
+"literal> is as follows: </para> <programlistingco> <areaspec> <area id=\"game"
+"\" coords=\"3\"/> <area id=\"challenge\" coords=\"6\"/> <area id=\"result\" "
+"coords=\"17\"/> </areaspec> <programlisting role=\"JAVA\"><![CDATA[public "
+"class MessageGenerator\n"
 "{\n"
 "   @Inject\n"
 "   private Game game;\n"
 "\n"
 "   public String getChallengeMessage()\n"
 "   {\n"
-"      StringBuilder challengeMsg = new StringBuilder(\"I'm thinking of a number between \");\n"
+"      StringBuilder challengeMsg = new StringBuilder(\"I'm thinking of a "
+"number between \");\n"
 "      challengeMsg.append(game.getSmallest());\n"
 "      challengeMsg.append(\" and \");\n"
 "      challengeMsg.append(game.getBiggest());\n"
@@ -1040,10 +1311,24 @@ msgid ""
 "            direction = \"Lower\";\n"
 "         }\n"
 "\n"
-"         return direction + \"! You have \" + game.getRemainingGuesses() + \" guesses left.\";\n"
+"         return direction + \"! You have \" + game.getRemainingGuesses() + "
+"\" guesses left.\";\n"
 "      }\n"
 "   }\n"
-"}]]></programlisting> <calloutlist> <callout arearefs=\"game\"> <para> The instance of <literal>Game</literal> for the application is injected here. </para> </callout> <callout arearefs=\"challenge\"> <para> The <literal>Game</literal>'s state is interrogated to determine the appropriate challenge message ... </para> </callout> <callout arearefs=\"result\"> <para> ... and again to determine whether to congratulate, console or encourage the user to continue. </para> </callout> </calloutlist> </programlistingco> <para> Finally we come to the <literal>NumberGuessFrame</literal> class which provides the Swing front end to our guessing game. </para> <programlistingco> <areaspec> <area id=\"gameIn\" coords=\"3\"/> <area id=\"messagesIn\" coords=\"6\"/> <area id=\"start\" coords=\"9\"/> <area id=\"init\" coords=\"21\"/> <area id=\"guess1\" coords=\"38\"/> <area id=\"replay\" coords=\"48\"/> </areaspec> <programlisting role=\"JAVA\"><![CDATA[public class NumberGuessFrame extends javax.swing.JFrame\n"
+"}]]></programlisting> <calloutlist> <callout arearefs=\"game\"> <para> The "
+"instance of <literal>Game</literal> for the application is injected here. </"
+"para> </callout> <callout arearefs=\"challenge\"> <para> The <literal>Game</"
+"literal>'s state is interrogated to determine the appropriate challenge "
+"message ... </para> </callout> <callout arearefs=\"result\"> <para> ... and "
+"again to determine whether to congratulate, console or encourage the user to "
+"continue. </para> </callout> </calloutlist> </programlistingco> <para> "
+"Finally we come to the <literal>NumberGuessFrame</literal> class which "
+"provides the Swing front end to our guessing game. </para> "
+"<programlistingco> <areaspec> <area id=\"gameIn\" coords=\"3\"/> <area id="
+"\"messagesIn\" coords=\"6\"/> <area id=\"start\" coords=\"9\"/> <area id="
+"\"init\" coords=\"21\"/> <area id=\"guess1\" coords=\"38\"/> <area id="
+"\"replay\" coords=\"48\"/> </areaspec> <programlisting role=\"JAVA\"><![CDATA"
+"[public class NumberGuessFrame extends javax.swing.JFrame\n"
 "{\n"
 "   @Inject\n"
 "   private Game game;\n"
@@ -1080,7 +1365,8 @@ msgid ""
 "      ...\n"
 "   }\n"
 "\n"
-"   private void guessButtonActionPerformed( java.awt.event.ActionEvent evt )\n"
+"   private void guessButtonActionPerformed( java.awt.event.ActionEvent "
+"evt )\n"
 "   {\n"
 "      int guess =  Integer.parseInt(guessText.getText());\n"
 "      game.setGuess( guess );\n"
@@ -1107,7 +1393,32 @@ msgid ""
 "   ...\n"
 "   private javax.swing.JButton replayBtn;\n"
 "\n"
-"}]]></programlisting> <calloutlist> <callout arearefs=\"gameIn\"> <para> The injected instance of the game (logic and state). </para> </callout> <callout arearefs=\"messagesIn\"> <para> The injected message generator for UI messages. </para> </callout> <callout arearefs=\"start\"> <para> This application is started in the prescribed Weld SE way, by observing the <literal>ContainerInitialized</literal> event. </para> </callout> <callout arearefs=\"init\"> <para> This method initializes all of the Swing components. Note the use of the <literal>msgGenerator</literal> here. </para> </callout> <callout arearefs=\"guess1\"> <para> <literal>guessButtonActionPerformed</literal> is called when the 'Guess' button is clicked, and it does the following: </para> <itemizedlist> <listitem> <para> Gets the guess entered by the user and sets it as the current guess in the <literal>Game</literal> </para> </listitem> <listitem> <para> Calls <literal>game.check()</literal> to validate and perform one 'turn' of the game </para> </listitem> <listitem> <para> Calls <literal>refreshUI</literal>. If there were validation errors with the input, this will have been captured during <literal>game.check()</literal> and as such will be reflected in the messages returned by <literal>MessageGenerator</literal> and subsequently presented to the user. If there are no validation errors then the user will be told to guess again (higher or lower) or that the game has ended either in a win (correct guess) or a loss (ran out of guesses). </para> </listitem> </itemizedlist> </callout> <callout arearefs=\"replay\"> <para> <literal>replayBtnActionPerformed</literal> simply calls <literal>game.reset()</literal> to start a new game and refreshes the messages in the UI. </para> </callout> </calloutlist> </programlistingco>"
+"}]]></programlisting> <calloutlist> <callout arearefs=\"gameIn\"> <para> The "
+"injected instance of the game (logic and state). </para> </callout> <callout "
+"arearefs=\"messagesIn\"> <para> The injected message generator for UI "
+"messages. </para> </callout> <callout arearefs=\"start\"> <para> This "
+"application is started in the prescribed Weld SE way, by observing the "
+"<literal>ContainerInitialized</literal> event. </para> </callout> <callout "
+"arearefs=\"init\"> <para> This method initializes all of the Swing "
+"components. Note the use of the <literal>msgGenerator</literal> here. </"
+"para> </callout> <callout arearefs=\"guess1\"> <para> "
+"<literal>guessButtonActionPerformed</literal> is called when the 'Guess' "
+"button is clicked, and it does the following: </para> <itemizedlist> "
+"<listitem> <para> Gets the guess entered by the user and sets it as the "
+"current guess in the <literal>Game</literal> </para> </listitem> <listitem> "
+"<para> Calls <literal>game.check()</literal> to validate and perform one "
+"'turn' of the game </para> </listitem> <listitem> <para> Calls "
+"<literal>refreshUI</literal>. If there were validation errors with the "
+"input, this will have been captured during <literal>game.check()</literal> "
+"and as such will be reflected in the messages returned by "
+"<literal>MessageGenerator</literal> and subsequently presented to the user. "
+"If there are no validation errors then the user will be told to guess again "
+"(higher or lower) or that the game has ended either in a win (correct guess) "
+"or a loss (ran out of guesses). </para> </listitem> </itemizedlist> </"
+"callout> <callout arearefs=\"replay\"> <para> "
+"<literal>replayBtnActionPerformed</literal> simply calls <literal>game.reset"
+"()</literal> to start a new game and refreshes the messages in the UI. </"
+"para> </callout> </calloutlist> </programlistingco>"
 msgstr ""
 
 #. Tag: title
@@ -1119,25 +1430,36 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:718
 #, no-c-format
-msgid "The translator example will take any sentences you enter, and translate them to Latin. (Well, not really, but the stub is there for you to implement, at least. Good luck!)"
+msgid ""
+"The translator example will take any sentences you enter, and translate them "
+"to Latin. (Well, not really, but the stub is there for you to implement, at "
+"least. Good luck!)"
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:723
 #, no-c-format
-msgid "The translator example is built as an EAR and contains EJBs. As a result, it's structure is more complex than the numberguess example."
+msgid ""
+"The translator example is built as an EAR and contains EJBs. As a result, "
+"it's structure is more complex than the numberguess example."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:729
 #, no-c-format
-msgid "Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a WAR, which will make this structure much simpler! Still, there are other advantages of using an EAR."
+msgid ""
+"Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a WAR, which "
+"will make this structure much simpler! Still, there are other advantages of "
+"using an EAR."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:735
 #, no-c-format
-msgid "First, let's take a look at the EAR aggregator, which is located in the example's <literal>ear</literal> directory. Maven automatically generates the <literal>application.xml</literal> for us from this plugin configuration:"
+msgid ""
+"First, let's take a look at the EAR aggregator, which is located in the "
+"example's <literal>ear</literal> directory. Maven automatically generates "
+"the <literal>application.xml</literal> for us from this plugin configuration:"
 msgstr ""
 
 #. Tag: programlisting
@@ -1175,13 +1497,18 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:742
 #, no-c-format
-msgid "This configuration overrides the web context path, resulting in this application URL: <ulink url=\"http://localhost:8080/weld-translator\">http://localhost:8080/weld-translator</ulink>."
+msgid ""
+"This configuration overrides the web context path, resulting in this "
+"application URL: <ulink url=\"http://localhost:8080/weld-translator\">http://"
+"localhost:8080/weld-translator</ulink>."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:748
 #, no-c-format
-msgid "If you weren't using Maven to generate these files, you would need <literal>META-INF/application.xml</literal>:"
+msgid ""
+"If you weren't using Maven to generate these files, you would need "
+"<literal>META-INF/application.xml</literal>:"
 msgstr ""
 
 #. Tag: programlisting
@@ -1233,13 +1560,21 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:756
 #, no-c-format
-msgid "Next, lets look at the WAR, which is located in the example's <literal>war</literal> directory. Just as in the numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.0 and a <literal>web.xml</literal> (to activate JSF) under WEB-INF, both sourced from <literal>src/main/webapp/WEB-INF</literal>."
+msgid ""
+"Next, lets look at the WAR, which is located in the example's <literal>war</"
+"literal> directory. Just as in the numberguess example, we have a "
+"<literal>faces-config.xml</literal> for JSF 2.0 and a <literal>web.xml</"
+"literal> (to activate JSF) under WEB-INF, both sourced from <literal>src/"
+"main/webapp/WEB-INF</literal>."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:762
 #, no-c-format
-msgid "More interesting is the JSF view used to translate text. Just as in the numberguess example we have a template, which surrounds the form (ommitted here for brevity):"
+msgid ""
+"More interesting is the JSF view used to translate text. Just as in the "
+"numberguess example we have a template, which surrounds the form (ommitted "
+"here for brevity):"
 msgstr ""
 
 #. Tag: programlisting
@@ -1259,7 +1594,8 @@ msgid ""
 "      </tr>\n"
 "      <tr>\n"
 "         <td>\n"
-"            <h:inputTextarea id=\"text\" value=\"#{translator.text}\" required=\"true\" rows=\"5\" cols=\"80\"/>\n"
+"            <h:inputTextarea id=\"text\" value=\"#{translator.text}\" "
+"required=\"true\" rows=\"5\" cols=\"80\"/>\n"
 "         </td>\n"
 "         <td>\n"
 "            <h:outputText value=\"#{translator.translatedText}\"/>\n"
@@ -1267,7 +1603,8 @@ msgid ""
 "      </tr>\n"
 "   </table>\n"
 "   <div>\n"
-"      <h:commandButton id=\"button\" value=\"Translate\" action=\"#{translator.translate}\"/>\n"
+"      <h:commandButton id=\"button\" value=\"Translate\" action=\"#"
+"{translator.translate}\"/>\n"
 "   </div>\n"
 "   \n"
 "</h:form>]]>"
@@ -1285,7 +1622,8 @@ msgstr ""
 "      </tr>\n"
 "      <tr>\n"
 "         <td>\n"
-"            <h:inputTextarea id=\"text\" value=\"#{translator.text}\" required=\"true\" rows=\"5\" cols=\"80\"/>\n"
+"            <h:inputTextarea id=\"text\" value=\"#{translator.text}\" "
+"required=\"true\" rows=\"5\" cols=\"80\"/>\n"
 "         </td>\n"
 "         <td>\n"
 "            <h:outputText value=\"#{translator.translatedText}\"/>\n"
@@ -1293,7 +1631,8 @@ msgstr ""
 "      </tr>\n"
 "   </table>\n"
 "   <div>\n"
-"      <h:commandButton id=\"button\" value=\"Translate\" action=\"#{translator.translate}\"/>\n"
+"      <h:commandButton id=\"button\" value=\"Translate\" action=\"#"
+"{translator.translate}\"/>\n"
 "   </div>\n"
 "   \n"
 "</h:form>]]>"
@@ -1301,25 +1640,40 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:769
 #, no-c-format
-msgid "The user can enter some text in the left-hand textarea, and hit the translate button to see the result to the right."
+msgid ""
+"The user can enter some text in the left-hand textarea, and hit the "
+"translate button to see the result to the right."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:774
 #, no-c-format
-msgid "Finally, let's look at the EJB module, which is located in the example's <literal>ejb</literal> directory. In <literal>src/main/resources/META-INF</literal> there is just an empty <literal>beans.xml</literal>, used to mark the archive as containing beans."
+msgid ""
+"Finally, let's look at the EJB module, which is located in the example's "
+"<literal>ejb</literal> directory. In <literal>src/main/resources/META-INF</"
+"literal> there is just an empty <literal>beans.xml</literal>, used to mark "
+"the archive as containing beans."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:780
 #, no-c-format
-msgid "We've saved the most interesting bit to last, the code! The project has two simple beans, <literal>SentenceParser</literal> and <literal>TextTranslator</literal> and two session beans, <literal>TranslatorControllerBean</literal> and <literal>SentenceTranslator</literal>. You should be getting quite familiar with what a bean looks like by now, so we'll just highlight the most interesting bits here."
+msgid ""
+"We've saved the most interesting bit to last, the code! The project has two "
+"simple beans, <literal>SentenceParser</literal> and <literal>TextTranslator</"
+"literal> and two session beans, <literal>TranslatorControllerBean</literal> "
+"and <literal>SentenceTranslator</literal>. You should be getting quite "
+"familiar with what a bean looks like by now, so we'll just highlight the "
+"most interesting bits here."
 msgstr ""
 
 #. Tag: para
 #: weldexamples.xml:787
 #, no-c-format
-msgid "Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> are dependent beans, and <literal>TextTranslator</literal> uses constructor injection:"
+msgid ""
+"Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> "
+"are dependent beans, and <literal>TextTranslator</literal> uses constructor "
+"injection:"
 msgstr ""
 
 #. Tag: programlisting
@@ -1369,7 +1723,13 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:794
 #, no-c-format
-msgid "<literal>TextTranslator</literal> uses the simple bean (really just a plain Java class!) <literal>SentenceParser</literal> to parse the sentence and then calls on the stateless bean with the local business interface <literal>Translator</literal> to perform the translation. That's where the magic happens. Of course, we couldn't develop a full translator, but it's convincing enough to anyone who doesn't understand Latin!"
+msgid ""
+"<literal>TextTranslator</literal> uses the simple bean (really just a plain "
+"Java class!) <literal>SentenceParser</literal> to parse the sentence and "
+"then calls on the stateless bean with the local business interface "
+"<literal>Translator</literal> to perform the translation. That's where the "
+"magic happens. Of course, we couldn't develop a full translator, but it's "
+"convincing enough to anyone who doesn't understand Latin!"
 msgstr ""
 
 #. Tag: programlisting
@@ -1397,7 +1757,11 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:804
 #, no-c-format
-msgid "Finally, there is UI orientated controller. This is a request scoped, named, stateful session bean, which injects the translator. It collects the text from the user and dispatches it to the translator. The bean also has getters and setters for all the fields on the page."
+msgid ""
+"Finally, there is UI orientated controller. This is a request scoped, named, "
+"stateful session bean, which injects the translator. It collects the text "
+"from the user and dispatches it to the translator. The bean also has getters "
+"and setters for all the fields on the page."
 msgstr ""
 
 #. Tag: programlisting
@@ -1469,6 +1833,8 @@ msgstr ""
 #. Tag: para
 #: weldexamples.xml:814
 #, no-c-format
-msgid "That concludes our short tour of the Weld starter examples. For more information on Weld, or to help out with development, please visit <ulink url=\"http://www.seamframework.org/Weld/Development\">http://www.seamframework.org/Weld/Development</ulink>."
+msgid ""
+"That concludes our short tour of the Weld starter examples. For more "
+"information on Weld, please visit <ulink url=\"http://www.seamframework.org/"
+"Weld\">http://www.seamframework.org/Weld</ulink>."
 msgstr ""
-

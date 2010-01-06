@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-01-06 12:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -67,6 +67,45 @@ msgstr ""
 #: resources.xml:33
 #, no-c-format
 msgid ""
+"The CDI specification uses the term <emphasis>resource</emphasis> to refer, "
+"generically, to any of the following kinds of object which might be "
+"available in the Java EE component environment:"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:38
+#, no-c-format
+msgid ""
+"JDBC <literal>Datasource</literal>s, JMS <literal>Queue</literal>s, "
+"<literal>Topic</literal>s and <literal>ConnectionFactory</literal>s, "
+"JavaMail <literal>Session</literal>s and other transactional resources "
+"including JCA connectors,"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:43
+#, no-c-format
+msgid ""
+"JPA <literal>EntityManager</literal>s and <literal>EntityManagerFactory</"
+"literal>s,"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:46
+#, no-c-format
+msgid "remote EJBs, and"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:49
+#, no-c-format
+msgid "web services"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:53
+#, no-c-format
+msgid ""
 "We declare a resource by annotating a producer field with a component "
 "environment injection annotation: <literal>@Resource</literal>, "
 "<literal>@EJB</literal>, <literal>@PersistenceContext</literal>, "
@@ -74,7 +113,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: resources.xml:37
+#: resources.xml:57
 #, no-c-format
 msgid ""
 "<![CDATA[@Produces @WebServiceRef(lookup=\"java:app/service/Catalog\")\n"
@@ -82,7 +121,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: resources.xml:39
+#: resources.xml:59
 #, no-c-format
 msgid ""
 "<![CDATA[@Produces @Resource(lookup=\"java:global/env/jdbc/CustomerDatasource"
@@ -91,7 +130,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: resources.xml:41
+#: resources.xml:61
 #, no-c-format
 msgid ""
 "<![CDATA[@Produces @PersistenceContext(unitName=\"CustomerDatabase\")\n"
@@ -99,7 +138,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: resources.xml:43
+#: resources.xml:63
 #, no-c-format
 msgid ""
 "<![CDATA[@Produces @PersistenceUnit(unitName=\"CustomerDatabase\") \n"
@@ -107,7 +146,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: resources.xml:45
+#: resources.xml:65
 #, no-c-format
 msgid ""
 "<![CDATA[@Produces @EJB(ejbLink=\"../their.jar#PaymentService\") \n"
@@ -115,47 +154,69 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: resources.xml:47
+#: resources.xml:67
 #, no-c-format
 msgid "The field may be static (but not final)."
 msgstr ""
 
 #. Tag: para
-#: resources.xml:49
+#: resources.xml:69
+#, no-c-format
+msgid "A resource declaration really contains two pieces of information:"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:73
+#, no-c-format
+msgid ""
+"the JNDI name, EJB link, persistence unit name, or other metadata needed to "
+"obtain a reference to the resource from the component environment, and"
+msgstr ""
+
+#. Tag: para
+#: resources.xml:77
+#, no-c-format
+msgid ""
+"the type and qualifiers that we will use to inject the reference into our "
+"beans."
+msgstr ""
+
+#. Tag: para
+#: resources.xml:82
 #, no-c-format
 msgid ""
 "It might feel strange to be declaring resources in Java code. Isn't this "
 "stuff that might be deployment-specific? Certainly, and that's why it makes "
-"sense to declare your resources in a class annotation <literal>@Alternative</"
+"sense to declare your resources in a class annotated <literal>@Alternative</"
 "literal>."
 msgstr ""
 
 #. Tag: title
-#: resources.xml:56
+#: resources.xml:90
 #, no-c-format
 msgid "Typesafe resource injection"
 msgstr ""
 
 #. Tag: para
-#: resources.xml:58
+#: resources.xml:92
 #, no-c-format
 msgid "These resources can now be injected in the usual way."
 msgstr ""
 
 #. Tag: programlisting
-#: resources.xml:62
+#: resources.xml:96
 #, no-c-format
 msgid "<![CDATA[@Inject Catalog catalog;]]>"
 msgstr ""
 
 #. Tag: programlisting
-#: resources.xml:63
+#: resources.xml:97
 #, no-c-format
 msgid "<![CDATA[@Inject @CustomerDatabase Datasource customerDatabase;]]>"
 msgstr ""
 
 #. Tag: programlisting
-#: resources.xml:64
+#: resources.xml:98
 #, no-c-format
 msgid ""
 "<![CDATA[@Inject @CustomerDatabase EntityManager "
@@ -163,7 +224,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: resources.xml:65
+#: resources.xml:99
 #, no-c-format
 msgid ""
 "<![CDATA[@Inject @CustomerDatabase EntityManagerFactory "
@@ -171,13 +232,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: resources.xml:66
+#: resources.xml:100
 #, no-c-format
 msgid "<![CDATA[@Inject PaymentService paymentService;]]>"
 msgstr ""
 
 #. Tag: para
-#: resources.xml:68
+#: resources.xml:102
 #, no-c-format
 msgid ""
 "The bean type and qualifiers of the resource are determined by the producer "
@@ -185,7 +246,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: resources.xml:72
+#: resources.xml:106
 #, no-c-format
 msgid ""
 "It might seem like a pain to have to write these extra producer field "
@@ -197,25 +258,25 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: resources.xml:79
+#: resources.xml:113
 #, no-c-format
 msgid "@Inject @CustomerDatabase EntityManager"
 msgstr ""
 
 #. Tag: para
-#: resources.xml:81
+#: resources.xml:115
 #, no-c-format
 msgid "instead of"
 msgstr ""
 
 #. Tag: programlisting
-#: resources.xml:83
+#: resources.xml:117
 #, no-c-format
 msgid "@PersistenceContext(unitName=\"CustomerDatabase\") EntityManager"
 msgstr ""
 
 #. Tag: para
-#: resources.xml:85
+#: resources.xml:119
 #, no-c-format
 msgid "all over the place?"
 msgstr ""

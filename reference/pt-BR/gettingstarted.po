@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-01-06 12:17+0000\n"
 "PO-Revision-Date: 2009-12-19 18:01-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -22,13 +22,23 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:7
 #, no-c-format
-msgid "Weld comes with two starter example applications, in addition to more specialized examples. The first, <literal>weld-numberguess</literal>, is a web (WAR) example containing only non-transactional managed beans. This example can be run on a wide range of servers, including JBoss AS, GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java EE 6 container. The second example, <literal>weld-translator</literal>, is an enterprise (EAR) example that contains session beans. This example must be run on JBoss AS 5.2, Glassfish 3.0 or any compliant Java EE 6 container."
+msgid ""
+"Weld comes with two starter example applications, in addition to more "
+"specialized examples. The first, <literal>weld-numberguess</literal>, is a "
+"web (WAR) example containing only non-transactional managed beans. This "
+"example can be run on a wide range of servers, including JBoss AS, "
+"GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java "
+"EE 6 container. The second example, <literal>weld-translator</literal>, is "
+"an enterprise (EAR) example that contains session beans. This example must "
+"be run on JBoss AS 5.2, Glassfish 3.0 or any compliant Java EE 6 container."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:16
 #, no-c-format
-msgid "Both examples use JSF 2.0 as the web framework and, as such, can be found in the <literal>examples/jsf</literal> directory of the Weld distribution."
+msgid ""
+"Both examples use JSF 2.0 as the web framework and, as such, can be found in "
+"the <literal>examples/jsf</literal> directory of the Weld distribution."
 msgstr ""
 
 #. Tag: title
@@ -40,7 +50,9 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:24
 #, no-c-format
-msgid "To run the examples with the provided build scripts, you'll need the following:"
+msgid ""
+"To run the examples with the provided build scripts, you'll need the "
+"following:"
 msgstr ""
 
 #. Tag: para
@@ -64,7 +76,9 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:39
 #, no-c-format
-msgid "JBoss AS 5.2.0 (currently only nightly builds of JBoss AS 5.2.0.Beta1 are available),"
+msgid ""
+"JBoss AS 5.2.0 (currently only nightly builds of JBoss AS 5.2.0.Beta1 are "
+"available),"
 msgstr ""
 
 #. Tag: para
@@ -88,31 +102,45 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:53
 #, no-c-format
-msgid "(optionally) Maven 2.x, to run the examples in an embedded servlet container"
+msgid ""
+"(optionally) Maven 2.x, to run the examples in an embedded servlet container"
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:58
 #, no-c-format
-msgid "You'll need a full install of Ant 1.7.0. Some linux distributions only supply a partial installation of Ant which cause the build to fail. If you encounter problems, verify that ant-nodeps.jar is on the classpath."
+msgid ""
+"You'll need a full install of Ant 1.7.0. Some linux distributions only "
+"supply a partial installation of Ant which cause the build to fail. If you "
+"encounter problems, verify that ant-nodeps.jar is on the classpath."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:64
 #, no-c-format
-msgid "In the next few sections, you'll be using the Ant command (<literal>ant</literal>) to invoke the Ant build script in each example to compile, assemble and deploy the example to JBoss AS and, for the WAR example, Apache Tomcat. You can also deploy the generated artifact (WAR or EAR) to any other container that supports Java EE 6, such as GlassFish 3."
+msgid ""
+"In the next few sections, you'll be using the Ant command (<literal>ant</"
+"literal>) to invoke the Ant build script in each example to compile, "
+"assemble and deploy the example to JBoss AS and, for the WAR example, Apache "
+"Tomcat. You can also deploy the generated artifact (WAR or EAR) to any other "
+"container that supports Java EE 6, such as GlassFish 3."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:71
 #, no-c-format
-msgid "If you have Maven installed, you can use the Maven command (<literal>mvn</literal>) to compile and assemble the standalone artifact (WAR or EAR) and, for the WAR example, run it in an embedded container."
+msgid ""
+"If you have Maven installed, you can use the Maven command (<literal>mvn</"
+"literal>) to compile and assemble the standalone artifact (WAR or EAR) and, "
+"for the WAR example, run it in an embedded container."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:76
 #, no-c-format
-msgid "The sections below cover the steps for deploying with both Ant and Maven in detail. Let's start with JBoss AS."
+msgid ""
+"The sections below cover the steps for deploying with both Ant and Maven in "
+"detail. Let's start with JBoss AS."
 msgstr ""
 
 #. Tag: title
@@ -124,13 +152,27 @@ msgstr "Utilizando o JBoss AS 5"
 #. Tag: para
 #: gettingstarted.xml:83
 #, no-c-format
-msgid "To deploy the examples to JBoss AS, you'll need <ulink src=\"http://jboss.org/jbossas/\">JBoss AS 5.2.0.Beta1</ulink> or above. If a release of the JBoss AS 5.2 line isn't yet available, you can download a <ulink src=\"http://hudson.jboss.org/hudson/view/JBoss%20AS/job/JBoss-AS-5.x-sun16/\">nightly snapshot</ulink>. The reason JBoss AS 5.2.0.Beta1 or above is required is because it's the first release that has both CDI and Bean Validation support built-in, making it close enough to Java EE 6 to run the examples. The good news is that there are no additional modifications you have to make to the server. It's ready to go!"
+msgid ""
+"To deploy the examples to JBoss AS, you'll need <ulink url=\"http://jboss."
+"org/jbossas/\">JBoss AS 5.2.0.Beta1</ulink> or above. If a release of the "
+"JBoss AS 5.2 line isn't yet available, you can download a <ulink url="
+"\"http://hudson.jboss.org/hudson/view/JBoss%20AS/job/JBoss-AS-5.x-sun16/"
+"\">nightly snapshot</ulink>. The reason JBoss AS 5.2.0.Beta1 or above is "
+"required is because it's the first release that has both CDI and Bean "
+"Validation support built-in, making it close enough to Java EE 6 to run the "
+"examples. The good news is that there are no additional modifications you "
+"have to make to the server. It's ready to go!"
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:92
 #, no-c-format
-msgid "After you have downloaded JBoss AS, extract it. (We recommended renaming the folder to include the <literal>as</literal> qualifier so it's clear that it's the application server). You can move the extracted folder anywhere you like. Wherever it lays to rest, that's what we'll call the JBoss AS installation directory, or <literal>JBOSS_HOME</literal>."
+msgid ""
+"After you have downloaded JBoss AS, extract it. (We recommended renaming the "
+"folder to include the <literal>as</literal> qualifier so it's clear that "
+"it's the application server). You can move the extracted folder anywhere you "
+"like. Wherever it lays to rest, that's what we'll call the JBoss AS "
+"installation directory, or <literal>JBOSS_HOME</literal>."
 msgstr ""
 
 #. Tag: programlisting
@@ -144,7 +186,13 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:101
 #, no-c-format
-msgid "In order for the build scripts to know where to deploy the example, you have to tell them where to find your JBoss AS installation (i.e., <literal>JBOSS_HOME</literal>). Create a new file named<literal>local.build.properties</literal> in the examples directory of the Weld distribution and assign the path of your JBoss AS installation to the property key <literal>jboss.home</literal>, as follows:"
+msgid ""
+"In order for the build scripts to know where to deploy the example, you have "
+"to tell them where to find your JBoss AS installation (i.e., "
+"<literal>JBOSS_HOME</literal>). Create a new file named <literal>local.build."
+"properties</literal> in the examples directory of the Weld distribution and "
+"assign the path of your JBoss AS installation to the property key "
+"<literal>jboss.home</literal>, as follows:"
 msgstr ""
 
 #. Tag: programlisting
@@ -157,12 +205,15 @@ msgstr "<![CDATA[jboss.home=/path/to/jboss-as-5.2]]>"
 #: gettingstarted.xml:110
 #, fuzzy, no-c-format
 msgid "You're now ready to deploy your first example!"
-msgstr "Agora, você está pronto para fazer a publicação do seu primeiro exemplo!"
+msgstr ""
+"Agora, você está pronto para fazer a publicação do seu primeiro exemplo!"
 
 #. Tag: para
 #: gettingstarted.xml:114
 #, no-c-format
-msgid "Switch to the <literal>examples/jsf/numberguess</literal> directory and execute the Ant <literal>deploy</literal> target:"
+msgid ""
+"Switch to the <literal>examples/jsf/numberguess</literal> directory and "
+"execute the Ant <literal>deploy</literal> target:"
 msgstr ""
 
 #. Tag: programlisting
@@ -178,7 +229,9 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:121
 #, no-c-format
-msgid "If you haven't already, start JBoss AS. You can either start JBoss AS from a Linux shell:"
+msgid ""
+"If you haven't already, start JBoss AS. You can either start JBoss AS from a "
+"Linux shell:"
 msgstr ""
 
 #. Tag: programlisting
@@ -192,8 +245,7 @@ msgstr ""
 "$> ./bin/run.sh]]>"
 
 #. Tag: para
-#: gettingstarted.xml:127
-#: gettingstarted.xml:369
+#: gettingstarted.xml:127 gettingstarted.xml:369
 #, no-c-format
 msgid "a Windows command window:"
 msgstr ""
@@ -209,8 +261,7 @@ msgstr ""
 "$> run]]>"
 
 #. Tag: para
-#: gettingstarted.xml:133
-#: gettingstarted.xml:375
+#: gettingstarted.xml:133 gettingstarted.xml:375
 #, no-c-format
 msgid "or you can start the server using an IDE, like Eclipse."
 msgstr ""
@@ -218,38 +269,62 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:138
 #, no-c-format
-msgid "If you are using Eclipse, you should seriously consider installing the <ulink src=\"http://www.jboss.org/tools\">JBoss Tools</ulink> add-ons, which include a wide variety of tooling for JSR-299 and Java EE development, as well as an enhanced JBoss AS server view."
+msgid ""
+"If you are using Eclipse, you should seriously consider installing the "
+"<ulink url=\"http://www.jboss.org/tools\">JBoss Tools</ulink> add-ons, which "
+"include a wide variety of tooling for JSR-299 and Java EE development, as "
+"well as an enhanced JBoss AS server view."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:145
-#, no-c-format
-msgid "Wait a few seconds for the application to deploy (or the application server to start) and see if you can determine the most efficient approach to pinpoint the random number at the local URL <ulink src=\"http://localhost:8080/weld-numberguess\">http://localhost:8080/weld-numberguess</ulink>."
+#, fuzzy, no-c-format
+msgid ""
+"Wait a few seconds for the application to deploy (or the application server "
+"to start) and see if you can determine the most efficient approach to "
+"pinpoint the random number at the local URL <ulink url=\"http://"
+"localhost:8080/weld-numberguess\">http://localhost:8080/weld-numberguess</"
+"ulink>."
 msgstr ""
+"Aqui nós definiremos o caminho do contexto, que nos dá uma url amigável "
+"(<ulink url=\"http://localhost:8080/webbeans-translator\">http://"
+"localhost:8080/webbeans-translator</ulink>). ulink&gt;) ."
 
 #. Tag: para
 #: gettingstarted.xml:152
 #, no-c-format
-msgid "The Ant build script includes additional targets for JBoss AS to deploy and undeploy the archive in either exploded or packaged format and to tidy things up."
+msgid ""
+"The Ant build script includes additional targets for JBoss AS to deploy and "
+"undeploy the archive in either exploded or packaged format and to tidy "
+"things up."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:158
 #, fuzzy, no-c-format
-msgid "<literal>ant restart</literal> - deploy the example in exploded format to JBoss AS"
-msgstr "<literal>ant restart</literal> - implanta o exemplo no formato explodido"
+msgid ""
+"<literal>ant restart</literal> - deploy the example in exploded format to "
+"JBoss AS"
+msgstr ""
+"<literal>ant restart</literal> - implanta o exemplo no formato explodido"
 
 #. Tag: para
 #: gettingstarted.xml:163
 #, no-c-format
-msgid "<literal>ant explode</literal> - update an exploded example, without restarting the deployment"
-msgstr "<literal>ant explode</literal> - atualiza o exemplo explodido, sem reiniciar "
+msgid ""
+"<literal>ant explode</literal> - update an exploded example, without "
+"restarting the deployment"
+msgstr ""
+"<literal>ant explode</literal> - atualiza o exemplo explodido, sem reiniciar "
 
 #. Tag: para
 #: gettingstarted.xml:168
 #, fuzzy, no-c-format
-msgid "<literal>ant deploy</literal> - deploy the example in compressed jar format to JBoss AS"
-msgstr "<literal>ant deploy</literal> - implanta o exemplo no formato jar compactado"
+msgid ""
+"<literal>ant deploy</literal> - deploy the example in compressed jar format "
+"to JBoss AS"
+msgstr ""
+"<literal>ant deploy</literal> - implanta o exemplo no formato jar compactado"
 
 #. Tag: para
 #: gettingstarted.xml:173
@@ -266,7 +341,11 @@ msgstr "<literal>ant clean</literal> - limpa o exemplo"
 #. Tag: para
 #: gettingstarted.xml:185
 #, no-c-format
-msgid "The second starter example, <literal>weld-translator</literal>, will translate your text into Latin. (Well, not really, but the stub is there for you to implement, at least. Good luck!) To try it out, switch to the translator example directory and execute the deploy target:"
+msgid ""
+"The second starter example, <literal>weld-translator</literal>, will "
+"translate your text into Latin. (Well, not really, but the stub is there for "
+"you to implement, at least. Good luck!) To try it out, switch to the "
+"translator example directory and execute the deploy target:"
 msgstr ""
 
 #. Tag: programlisting
@@ -282,19 +361,31 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:194
 #, no-c-format
-msgid "The translator uses session beans, which are packaged in an EJB module within an EAR. Java EE 6 will allow session beans to be deployed in WAR modules, but that's a topic for a later chapter."
+msgid ""
+"The translator uses session beans, which are packaged in an EJB module "
+"within an EAR. Java EE 6 will allow session beans to be deployed in WAR "
+"modules, but that's a topic for a later chapter."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:200
 #, fuzzy, no-c-format
-msgid "Again, wait a few seconds for the application to deploy (if you're really bored, read the log messages), and visit <ulink src=\"http://localhost:8080/weld-translator\">http://localhost:8080/weld-translator</ulink> to begin pseudo-translating."
-msgstr "Aqui nós definiremos o caminho do contexto, que nos dá uma url amigável (<ulink url=\"http://localhost:8080/webbeans-translator\">http://localhost:8080/webbeans-translator</ulink>). ulink&gt;) ."
+msgid ""
+"Again, wait a few seconds for the application to deploy (if you're really "
+"bored, read the log messages), and visit <ulink url=\"http://localhost:8080/"
+"weld-translator\">http://localhost:8080/weld-translator</ulink> to begin "
+"pseudo-translating."
+msgstr ""
+"Aqui nós definiremos o caminho do contexto, que nos dá uma url amigável "
+"(<ulink url=\"http://localhost:8080/webbeans-translator\">http://"
+"localhost:8080/webbeans-translator</ulink>). ulink&gt;) ."
 
 #. Tag: para
 #: gettingstarted.xml:206
 #, no-c-format
-msgid "TODO Insert note about upgrading the Weld deployer that directs reader to section on the JBoss AS environment"
+msgid ""
+"TODO Insert note about upgrading the Weld deployer that directs reader to "
+"section on the JBoss AS environment"
 msgstr ""
 
 #. Tag: title
@@ -306,13 +397,26 @@ msgstr "Utilizando o GlassFish"
 #. Tag: para
 #: gettingstarted.xml:215
 #, no-c-format
-msgid "Deploying to GlassFish should be easy, right? After all, it's the Java EE 6 reference implementation. Since it's the Java EE 6 reference implementation, that means it also bundles the JSR-299 reference implementation, Weld! So yes, it's very easy."
+msgid ""
+"Deploying to GlassFish should be easy, right? After all, it's the Java EE 6 "
+"reference implementation. Since it's the Java EE 6 reference implementation, "
+"that means it also bundles the JSR-299 reference implementation, Weld! So "
+"yes, it's very easy."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:221
 #, no-c-format
-msgid "To deploy the examples to GlassFish, you'll need the final <ulink src=\"https://glassfish.dev.java.net/\">GlassFish V3</ulink> release (the preview release won't do). If the final release isn't yet available, you can download a <ulink src=\"http://download.java.net/glassfish/v3/promoted/\">promoted build</ulink> in the meantime. Select the b69 preview release or above that ends in either <literal>-unix.sh</literal> or <literal>-windows.exe</literal> depending on your platform. After the download is complete, execute the installer. On Linux/Unix, you'll need to first make the script executable."
+msgid ""
+"To deploy the examples to GlassFish, you'll need the final <ulink url="
+"\"https://glassfish.dev.java.net/\">GlassFish V3</ulink> release (the "
+"preview release won't do). If the final release isn't yet available, you can "
+"download a <ulink url=\"http://download.java.net/glassfish/v3/promoted/"
+"\">promoted build</ulink> in the meantime. Select the b69 preview release or "
+"above that ends in either <literal>-unix.sh</literal> or <literal>-windows."
+"exe</literal> depending on your platform. After the download is complete, "
+"execute the installer. On Linux/Unix, you'll need to first make the script "
+"executable."
 msgstr ""
 
 #. Tag: programlisting
@@ -328,13 +432,22 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:233
 #, no-c-format
-msgid "On Windows you can just click on the executable. Follow the instructions in the installer. It will create a single domain named <literal>domain1</literal>. You'll use that domain to deploy the example. We recommend that you choose <literal>7070</literal> as the main HTTP port to avoid conflicts with a running instance of JBoss AS (or Apache Tomcat)."
+msgid ""
+"On Windows you can just click on the executable. Follow the instructions in "
+"the installer. It will create a single domain named <literal>domain1</"
+"literal>. You'll use that domain to deploy the example. We recommend that "
+"you choose <literal>7070</literal> as the main HTTP port to avoid conflicts "
+"with a running instance of JBoss AS (or Apache Tomcat)."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:240
 #, no-c-format
-msgid "If you've deployed either of the starter examples, <literal>weld-numberguess</literal> or <literal>weld-translator</literal>, to JBoss AS, then you already have the deployable artifact you need. If not, switch to either of the two directories and build it."
+msgid ""
+"If you've deployed either of the starter examples, <literal>weld-"
+"numberguess</literal> or <literal>weld-translator</literal>, to JBoss AS, "
+"then you already have the deployable artifact you need. If not, switch to "
+"either of the two directories and build it."
 msgstr ""
 
 #. Tag: programlisting
@@ -350,13 +463,24 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:248
 #, no-c-format
-msgid "The deployable archive for the <literal>weld-numberguess</literal>, named <literal>weld-numberguess.war</literal>, ends up in the example's <literal>target</literal> directory. The archive for the <literal>weld-translator</literal> example, named <literal>weld-translator.ear</literal>, ends up in the example's <literal>ear/target</literal> directory. All you need to do now is deploy them to GlassFish."
+msgid ""
+"The deployable archive for the <literal>weld-numberguess</literal>, named "
+"<literal>weld-numberguess.war</literal>, ends up in the example's "
+"<literal>target</literal> directory. The archive for the <literal>weld-"
+"translator</literal> example, named <literal>weld-translator.ear</literal>, "
+"ends up in the example's <literal>ear/target</literal> directory. All you "
+"need to do now is deploy them to GlassFish."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:255
 #, no-c-format
-msgid "You deploy applications to GlassFish using the <ulink src=\"http://localhost:4848\">GlassFish Admin Console</ulink>. To get the Admin Console running, you need to start a GlassFish domain, in our case <literal>domain1</literal>. Switch to the <literal>bin</literal> folder in the directory where you installed GlassFish and execute the following command:"
+msgid ""
+"You deploy applications to GlassFish using the <ulink url=\"http://"
+"localhost:4848\">GlassFish Admin Console</ulink>. To get the Admin Console "
+"running, you need to start a GlassFish domain, in our case <literal>domain1</"
+"literal>. Switch to the <literal>bin</literal> folder in the directory where "
+"you installed GlassFish and execute the following command:"
 msgstr ""
 
 #. Tag: programlisting
@@ -368,13 +492,27 @@ msgstr "<![CDATA[$> asadmin start-domain domain1]]>"
 #. Tag: para
 #: gettingstarted.xml:264
 #, no-c-format
-msgid "After a few seconds you can visit the Admin Console in the browser at the URL <ulink src=\"http://localhost:4848\">http://localhost:4848</ulink>. In the tree on the left-hand side of the page, click on \"Applications\", then click on the \"Deploy...\" button under the heading \"Applications\" and select the deployable artifact for either of the two examples. The deployer should recognize that you have selected a Java EE artifact and allow you to start it. You can see the examples running at either <ulink src=\"http://localhost:7070/weld-numberguess\">http://localhost:7070/weld-numberguess</ulink> or <ulink src=\"http://localhost:7070/weld-translator\">http://localhost:7070/weld-translator</ulink>, depending on which example you deployed."
+msgid ""
+"After a few seconds you can visit the Admin Console in the browser at the "
+"URL <ulink url=\"http://localhost:4848\">http://localhost:4848</ulink>. In "
+"the tree on the left-hand side of the page, click on \"Applications\", then "
+"click on the \"Deploy...\" button under the heading \"Applications\" and "
+"select the deployable artifact for either of the two examples. The deployer "
+"should recognize that you have selected a Java EE artifact and allow you to "
+"start it. You can see the examples running at either <ulink url=\"http://"
+"localhost:7070/weld-numberguess\">http://localhost:7070/weld-numberguess</"
+"ulink> or <ulink url=\"http://localhost:7070/weld-translator\">http://"
+"localhost:7070/weld-translator</ulink>, depending on which example you "
+"deployed."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:276
 #, no-c-format
-msgid "The reason the same artifact can be deployed to both JBoss AS and GlassFish, without any modifications, is because all of the features being used are part of the standard platform. And what a capable platform it has become!"
+msgid ""
+"The reason the same artifact can be deployed to both JBoss AS and GlassFish, "
+"without any modifications, is because all of the features being used are "
+"part of the standard platform. And what a capable platform it has become!"
 msgstr ""
 
 #. Tag: title
@@ -386,20 +524,34 @@ msgstr "Utilizando o Apache Tomcat 6.0"
 #. Tag: para
 #: gettingstarted.xml:287
 #, no-c-format
-msgid "Servlet containers are not required to support Java EE services like CDI. However, you can use CDI in a servlet container like Tomcat by embedding a standalone CDI implementation such as Weld."
+msgid ""
+"Servlet containers are not required to support Java EE services like CDI. "
+"However, you can use CDI in a servlet container like Tomcat by embedding a "
+"standalone CDI implementation such as Weld."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:291
 #, no-c-format
-msgid "Weld comes with a servlet listener which bootstraps the CDI environment, registers the <literal>BeanManager</literal> in JNDI and provides injection into servlets. Basically, it emulates some of the work done by the Java EE container. (But you don't get enterprise features such as session beans and container-managed transactions.)"
+msgid ""
+"Weld comes with a servlet listener which bootstraps the CDI environment, "
+"registers the <literal>BeanManager</literal> in JNDI and provides injection "
+"into servlets. Basically, it emulates some of the work done by the Java EE "
+"container. (But you don't get enterprise features such as session beans and "
+"container-managed transactions.)"
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:297
 #, fuzzy, no-c-format
-msgid "Let's give the Weld servlet extension a spin on Apache Tomcat. First, you'll need to download Tomcat 6.0.18 or later from <ulink src=\"http://tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink> and extract it."
-msgstr "Depois, faça o download do Tomcat 6.0.18 ou posterior em <ulink url=\"http://tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink>, e descompacte-o. Por exemplo"
+msgid ""
+"Let's give the Weld servlet extension a spin on Apache Tomcat. First, you'll "
+"need to download Tomcat 6.0.18 or later from <ulink url=\"http://tomcat."
+"apache.org/download-60.cgi\">tomcat.apache.org</ulink> and extract it."
+msgstr ""
+"Depois, faça o download do Tomcat 6.0.18 ou posterior em <ulink url=\"http://"
+"tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink>, e descompacte-"
+"o. Por exemplo"
 
 #. Tag: programlisting
 #: gettingstarted.xml:302
@@ -410,7 +562,12 @@ msgstr "<![CDATA[$> unzip apache-tomcat-6.0.18.zip]]>"
 #. Tag: para
 #: gettingstarted.xml:304
 #, no-c-format
-msgid "You have two choices for how you can deploy the application to Tomcat. You can deploy it by pushing the artifact to the hot deploy directory using Ant or you can deploy to the server across HTTP using a Maven plugin. The Ant approach doesn't require that you have Maven installed, so we'll start there. If you want to use Maven, you can just skip ahead."
+msgid ""
+"You have two choices for how you can deploy the application to Tomcat. You "
+"can deploy it by pushing the artifact to the hot deploy directory using Ant "
+"or you can deploy to the server across HTTP using a Maven plugin. The Ant "
+"approach doesn't require that you have Maven installed, so we'll start "
+"there. If you want to use Maven, you can just skip ahead."
 msgstr ""
 
 #. Tag: title
@@ -422,7 +579,13 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:314
 #, no-c-format
-msgid "In order for Ant to push the artifact to the Tomcat hot deploy directory, it needs to know where the Tomcat installation is located. Again, we need to set a property in the <literal>local.build.properties</literal> file in the examples directory of the Weld distribution. If you haven't yet created this file, do so now. Then assign the path of your Tomcat installation to the property key <literal>tomcat.home</literal>."
+msgid ""
+"In order for Ant to push the artifact to the Tomcat hot deploy directory, it "
+"needs to know where the Tomcat installation is located. Again, we need to "
+"set a property in the <literal>local.build.properties</literal> file in the "
+"examples directory of the Weld distribution. If you haven't yet created this "
+"file, do so now. Then assign the path of your Tomcat installation to the "
+"property key <literal>tomcat.home</literal>."
 msgstr ""
 
 #. Tag: programlisting
@@ -440,7 +603,9 @@ msgstr "Para implantar o exemplo numberguess no tomcat:"
 #. Tag: para
 #: gettingstarted.xml:327
 #, no-c-format
-msgid "Change to the <literal>examples/jsf/numberguess</literal> directory again and run the Ant <literal>deploy</literal> target for Tomcat:"
+msgid ""
+"Change to the <literal>examples/jsf/numberguess</literal> directory again "
+"and run the Ant <literal>deploy</literal> target for Tomcat:"
 msgstr ""
 
 #. Tag: programlisting
@@ -456,26 +621,41 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:335
 #, no-c-format
-msgid "The Ant build script includes additional targets for Tomcat to deploy and undeploy the archive in either exploded or packaged format. They are the same target names used for JBoss AS, prefixed with \"tomcat.\"."
+msgid ""
+"The Ant build script includes additional targets for Tomcat to deploy and "
+"undeploy the archive in either exploded or packaged format. They are the "
+"same target names used for JBoss AS, prefixed with \"tomcat.\"."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:341
 #, fuzzy, no-c-format
-msgid "<literal>ant tomcat.restart</literal> - deploy the example in exploded format to Tomcat"
-msgstr "<literal>ant tomcat.restart</literal> - publica o exemplo no formato explodido"
+msgid ""
+"<literal>ant tomcat.restart</literal> - deploy the example in exploded "
+"format to Tomcat"
+msgstr ""
+"<literal>ant tomcat.restart</literal> - publica o exemplo no formato "
+"explodido"
 
 #. Tag: para
 #: gettingstarted.xml:346
 #, no-c-format
-msgid "<literal>ant tomcat.explode</literal> - update an exploded example, without restarting the deployment"
-msgstr "<literal>ant tomcat.explode</literal> - atualiza o exemplo explodido, sem reiniciar "
+msgid ""
+"<literal>ant tomcat.explode</literal> - update an exploded example, without "
+"restarting the deployment"
+msgstr ""
+"<literal>ant tomcat.explode</literal> - atualiza o exemplo explodido, sem "
+"reiniciar "
 
 #. Tag: para
 #: gettingstarted.xml:351
 #, fuzzy, no-c-format
-msgid "<literal>ant tomcat.deploy</literal> - deploy the example in compressed jar format to Tomcat"
-msgstr "<literal>ant tomcat.deploy</literal> - publica o exemplo no formato jar compactado"
+msgid ""
+"<literal>ant tomcat.deploy</literal> - deploy the example in compressed jar "
+"format to Tomcat"
+msgstr ""
+"<literal>ant tomcat.deploy</literal> - publica o exemplo no formato jar "
+"compactado"
 
 #. Tag: para
 #: gettingstarted.xml:356
@@ -486,7 +666,9 @@ msgstr "<literal>ant undeploy</literal> - remove o exemplo do servidor"
 #. Tag: para
 #: gettingstarted.xml:363
 #, no-c-format
-msgid "If you haven't already, start Tomcat. You can either start Tomcat from a Linux shell:"
+msgid ""
+"If you haven't already, start Tomcat. You can either start Tomcat from a "
+"Linux shell:"
 msgstr ""
 
 #. Tag: programlisting
@@ -512,7 +694,12 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:379
 #, no-c-format
-msgid "Wait a few seconds for the application to deploy (or the application server to start) and see if you can figure out the most efficient approach to pinpoint the random number at the local URL <ulink src=\"http://localhost:8080/weld-numberguess\">http://localhost:8080/weld-numberguess</ulink>!"
+msgid ""
+"Wait a few seconds for the application to deploy (or the application server "
+"to start) and see if you can figure out the most efficient approach to "
+"pinpoint the random number at the local URL <ulink url=\"http://"
+"localhost:8080/weld-numberguess\">http://localhost:8080/weld-numberguess</"
+"ulink>!"
 msgstr ""
 
 #. Tag: title
@@ -524,19 +711,32 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:390
 #, no-c-format
-msgid "You can also deploy the application to Tomcat using Maven. This section is a bit more advanced, so skip it unless you're itching to use Maven natively. Of course, you'll first need to make sure that you have Maven installed on your path, similar to how you setup Ant."
+msgid ""
+"You can also deploy the application to Tomcat using Maven. This section is a "
+"bit more advanced, so skip it unless you're itching to use Maven natively. "
+"Of course, you'll first need to make sure that you have Maven installed on "
+"your path, similar to how you setup Ant."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:396
 #, no-c-format
-msgid "The Maven plugin communicates with Tomcat over HTTP, so it doesn't care where you have installed Tomcat. However, the plugin configuration assumes you are running Tomcat in its default configuration, with a hostname of localhost and port <literal>8080</literal>. The <literal>readme.txt</literal> file in the example directory has information about how to modify the Maven settings to accommodate a different setup."
+msgid ""
+"The Maven plugin communicates with Tomcat over HTTP, so it doesn't care "
+"where you have installed Tomcat. However, the plugin configuration assumes "
+"you are running Tomcat in its default configuration, with a hostname of "
+"localhost and port <literal>8080</literal>. The <literal>readme.txt</"
+"literal> file in the example directory has information about how to modify "
+"the Maven settings to accommodate a different setup."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:403
 #, no-c-format
-msgid "To allow Maven to communicate with Tomcat over HTTP, edit the <literal>conf/tomcat-users.xml</literal> file in your Tomcat installation and add the following line:"
+msgid ""
+"To allow Maven to communicate with Tomcat over HTTP, edit the <literal>conf/"
+"tomcat-users.xml</literal> file in your Tomcat installation and add the "
+"following line:"
 msgstr ""
 
 #. Tag: programlisting
@@ -548,7 +748,9 @@ msgstr "<![CDATA[<user username=\"admin\" password=\"\" roles=\"manager\"/>]]>"
 #. Tag: para
 #: gettingstarted.xml:410
 #, no-c-format
-msgid "Restart Tomcat. You can now deploy the application to Tomcat with Maven using this command:"
+msgid ""
+"Restart Tomcat. You can now deploy the application to Tomcat with Maven "
+"using this command:"
 msgstr ""
 
 #. Tag: programlisting
@@ -560,7 +762,8 @@ msgstr "<![CDATA[$> mvn compile war:exploded tomcat:exploded -Ptomcat]]>"
 #. Tag: para
 #: gettingstarted.xml:416
 #, no-c-format
-msgid "Once the application is deployed, you can redeploy it using this command:"
+msgid ""
+"Once the application is deployed, you can redeploy it using this command:"
 msgstr ""
 
 #. Tag: programlisting
@@ -572,13 +775,18 @@ msgstr "<![CDATA[$> mvn tomcat:redeploy -Ptomcat]]>"
 #. Tag: para
 #: gettingstarted.xml:422
 #, no-c-format
-msgid "The <literal>-Ptomcat</literal> argument activates the <literal>tomcat</literal> profile defined in the Maven POM (<literal>pom.xml</literal>). Among other things, this profile activates the Tomcat plugin."
+msgid ""
+"The <literal>-Ptomcat</literal> argument activates the <literal>tomcat</"
+"literal> profile defined in the Maven POM (<literal>pom.xml</literal>). "
+"Among other things, this profile activates the Tomcat plugin."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:427
 #, no-c-format
-msgid "Rather than shipping the container off to a standalone Tomcat installation, you can also execute the application in an embedded Tomcat 6 container:"
+msgid ""
+"Rather than shipping the container off to a standalone Tomcat installation, "
+"you can also execute the application in an embedded Tomcat 6 container:"
 msgstr ""
 
 #. Tag: programlisting
@@ -590,7 +798,12 @@ msgstr "<![CDATA[$> mvn war:inplace tomcat:run -Ptomcat]]>"
 #. Tag: para
 #: gettingstarted.xml:434
 #, no-c-format
-msgid "The advantage of using the embedded server is that changes to assets in <literal>src/main/webapp</literal> take effect immediately. If a change to a webapp configuration file is made, the application may automatically redeploy (depending on the plugin configuration). If you make a change to a classpath resource, you need to execute a build:"
+msgid ""
+"The advantage of using the embedded server is that changes to assets in "
+"<literal>src/main/webapp</literal> take effect immediately. If a change to a "
+"webapp configuration file is made, the application may automatically "
+"redeploy (depending on the plugin configuration). If you make a change to a "
+"classpath resource, you need to execute a build:"
 msgstr ""
 
 #. Tag: programlisting
@@ -602,7 +815,10 @@ msgstr "<![CDATA[$> mvn compile war:inplace -Ptomcat]]>"
 #. Tag: para
 #: gettingstarted.xml:443
 #, no-c-format
-msgid "There are several other Maven goals that you can use if you are hacking on the example, which are documented in the example's <literal>readme.txt</literal> file."
+msgid ""
+"There are several other Maven goals that you can use if you are hacking on "
+"the example, which are documented in the example's <literal>readme.txt</"
+"literal> file."
 msgstr ""
 
 #. Tag: title
@@ -614,25 +830,44 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:457
 #, no-c-format
-msgid "Support for Jetty in the examples is a more recent addition. Since Jetty is traditionally used with Maven, there are no Ant targets. You must invoke the Maven build directly to deploy the examples to Jetty out of the box. Also, only the <literal>weld-numberguess</literal> example is configured for Jetty support at the time of writing."
+msgid ""
+"Support for Jetty in the examples is a more recent addition. Since Jetty is "
+"traditionally used with Maven, there are no Ant targets. You must invoke the "
+"Maven build directly to deploy the examples to Jetty out of the box. Also, "
+"only the <literal>weld-numberguess</literal> example is configured for Jetty "
+"support at the time of writing."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:464
 #, no-c-format
-msgid "If you've read through the entire Tomcat section, then you're all ready to go. The Maven build parallels the embedded Tomcat deployment. If not, don't worry. We'll still go over everything that you need to know again in this section."
+msgid ""
+"If you've read through the entire Tomcat section, then you're all ready to "
+"go. The Maven build parallels the embedded Tomcat deployment. If not, don't "
+"worry. We'll still go over everything that you need to know again in this "
+"section."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:470
 #, no-c-format
-msgid "The Maven POM (<literal>pom.xml</literal>) includes a profile named <literal>jetty</literal> that activates the Maven Jetty plugin, which you can use to start Jetty in embedded mode and deploy the application in place. You don't need anything else installed except to have the Maven command (<literal>mvn</literal>) on your path. The rest will be downloaded from the internet when the build is run."
+msgid ""
+"The Maven POM (<literal>pom.xml</literal>) includes a profile named "
+"<literal>jetty</literal> that activates the Maven Jetty plugin, which you "
+"can use to start Jetty in embedded mode and deploy the application in place. "
+"You don't need anything else installed except to have the Maven command "
+"(<literal>mvn</literal>) on your path. The rest will be downloaded from the "
+"internet when the build is run."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:479
 #, no-c-format
-msgid "To run the <literal>weld-numberguess</literal> example on Jetty, switch to the example directory and execute the <literal>inplace</literal> goal of the Maven WAR plugin followed by the <literal>run</literal> goal of the Maven Jetty plugin with the <literal>jetty</literal> profile enabled, as follows:"
+msgid ""
+"To run the <literal>weld-numberguess</literal> example on Jetty, switch to "
+"the example directory and execute the <literal>inplace</literal> goal of the "
+"Maven WAR plugin followed by the <literal>run</literal> goal of the Maven "
+"Jetty plugin with the <literal>jetty</literal> profile enabled, as follows:"
 msgstr ""
 
 #. Tag: programlisting
@@ -648,13 +883,25 @@ msgstr ""
 #. Tag: para
 #: gettingstarted.xml:487
 #, no-c-format
-msgid "The log output of Jetty will be shown in the console. Once Jetty reports that the application has deployed, you can access it at the following local URL: <ulink src=\"http://localhost:9090/weld-numberguess\">http://localhost:9090/weld-numberguess</ulink>. The port is defined in the Maven Jetty plugin configuration within the <literal>jetty</literal> profile."
+msgid ""
+"The log output of Jetty will be shown in the console. Once Jetty reports "
+"that the application has deployed, you can access it at the following local "
+"URL: <ulink url=\"http://localhost:9090/weld-numberguess\">http://"
+"localhost:9090/weld-numberguess</ulink>. The port is defined in the Maven "
+"Jetty plugin configuration within the <literal>jetty</literal> profile."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:494
 #, no-c-format
-msgid "Any changes to assets in <literal>src/main/webapp</literal> take effect immediately. If a change to a webapp configuration file is made, the application may automatically redeploy. The redeploy behavior can be fined-tuned in the plugin configuration. If you make a change to a classpath resource, you need to execute a build and the <literal>inplace</literal> goal of the Maven WAR plugin, again with the <literal>jetty</literal> profile enabled."
+msgid ""
+"Any changes to assets in <literal>src/main/webapp</literal> take effect "
+"immediately. If a change to a webapp configuration file is made, the "
+"application may automatically redeploy. The redeploy behavior can be fined-"
+"tuned in the plugin configuration. If you make a change to a classpath "
+"resource, you need to execute a build and the <literal>inplace</literal> "
+"goal of the Maven WAR plugin, again with the <literal>jetty</literal> "
+"profile enabled."
 msgstr ""
 
 #. Tag: programlisting
@@ -666,13 +913,23 @@ msgstr "<![CDATA[$> mvn compile war:inplace -Pjetty]]>"
 #. Tag: para
 #: gettingstarted.xml:503
 #, no-c-format
-msgid "The <literal>war:inplace</literal> goal copies the compiled classes and JARs inside <literal>src/main/webapp</literal>, under <literal>WEB-INF/classes</literal> and <literal>WEB-INF/lib</literal>, respectively, mixing source and compiled files. However, the build does work around these temporary files by excluding them from the packaged WAR and cleaning them during the Maven clean phase."
+msgid ""
+"The <literal>war:inplace</literal> goal copies the compiled classes and JARs "
+"inside <literal>src/main/webapp</literal>, under <literal>WEB-INF/classes</"
+"literal> and <literal>WEB-INF/lib</literal>, respectively, mixing source and "
+"compiled files. However, the build does work around these temporary files by "
+"excluding them from the packaged WAR and cleaning them during the Maven "
+"clean phase."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:510
 #, no-c-format
-msgid "You have two options if you want to run the example on Jetty from the IDE. You can either install the m2eclispe[link] plugin and run the goals as described above. Your other option is to start the Jetty container from a Java application."
+msgid ""
+"You have two options if you want to run the example on Jetty from the IDE. "
+"You can either install the m2eclispe[link] plugin and run the goals as "
+"described above. Your other option is to start the Jetty container from a "
+"Java application."
 msgstr ""
 
 #. Tag: para
@@ -690,7 +947,9 @@ msgstr "<![CDATA[$> mvn clean eclipse:clean eclipse:eclipse -Pjetty-ide]]>"
 #. Tag: para
 #: gettingstarted.xml:522
 #, no-c-format
-msgid "Next, assemble all the necessary resources under <literal>src/main/webapp</literal>:"
+msgid ""
+"Next, assemble all the necessary resources under <literal>src/main/webapp</"
+"literal>:"
 msgstr ""
 
 #. Tag: programlisting
@@ -702,19 +961,30 @@ msgstr "<![CDATA[$> mvn war:inplace -Pjetty-ide]]>"
 #. Tag: para
 #: gettingstarted.xml:528
 #, no-c-format
-msgid "Now, you are ready to run the server in Eclipse. Import the project into your Eclipse workspace using \"Import Existing Project into Workspace. Then, find the start class in <literal>src/jetty/java</literal> and run its main method as a Java Application. Jetty will launch. You can view the application at the following local URL: <ulink src=\"http://localhost:8080\">http://localhost:8080</ulink>. Pay particular attention to the port in the URL and the lack of a trailing context path."
+msgid ""
+"Now, you are ready to run the server in Eclipse. Import the project into "
+"your Eclipse workspace using \"Import Existing Project into Workspace. Then, "
+"find the start class in <literal>src/jetty/java</literal> and run its main "
+"method as a Java Application. Jetty will launch. You can view the "
+"application at the following local URL: <ulink url=\"http://localhost:8080"
+"\">http://localhost:8080</ulink>. Pay particular attention to the port in "
+"the URL and the lack of a trailing context path."
 msgstr ""
 
 #. Tag: para
 #: gettingstarted.xml:536
 #, no-c-format
-msgid "Now that you have gotten the starter applications deployed on the server of your choice, you probably want to know a little bit about how they actually work."
+msgid ""
+"Now that you have gotten the starter applications deployed on the server of "
+"your choice, you probably want to know a little bit about how they actually "
+"work."
 msgstr ""
 
 #, fuzzy
 #~ msgid ""
 #~ "Getting started with Web Beans, the Reference Implementation of JSR-299"
 #~ msgstr "Web Beans, a Implementação de Referência da JSR-299"
+
 #~ msgid ""
 #~ "The Web Beans is being developed at <ulink url=\"http://seamframework.org/"
 #~ "WebBeans\">the Seam project</ulink>. You can download the latest "
@@ -725,6 +995,7 @@ msgstr ""
 #~ "org/WebBeans\">projeto Seam</ulink>. Você pode baixar a última versão da "
 #~ "Web Beans na <ulink url=\"http://seamframework.org/Download\">página de "
 #~ "downloads</ulink>."
+
 #~ msgid ""
 #~ "Web Beans comes with a two deployable example applications: "
 #~ "<literal>webbeans-numberguess</literal>, a war example, containing only "
@@ -741,10 +1012,13 @@ msgstr ""
 #~ "do exemplo numberguess: o exemplo tomcat (adequado para a implantação no "
 #~ "Tomcat) e o exemplo jsf2, que você pode usar se estiver utilizando JSF2. "
 #~ "Para executar os exemplos, você precisará do seguinte:"
+
 #~ msgid "JBoss AS 5.0.1.GA, or"
 #~ msgstr "JBoss AS 5.0.1.GA, e"
+
 #~ msgid "Ant 1.7.0."
 #~ msgstr "Ant 1.7.0."
+
 #~ msgid ""
 #~ "You'll need to download JBoss AS 5.0.1.GA from <ulink url=\"http://www."
 #~ "jboss.org/jbossas/downloads/\">jboss.org</ulink>, and unzip it. For "
@@ -753,24 +1027,28 @@ msgstr ""
 #~ "Você precisará fazer o download do JBoss AS 5.0.1.GA em <ulink url="
 #~ "\"http://www.jboss.org/jbossas/downloads/\">jboss.org</ulink> e "
 #~ "descompactá-lo. Por exemplo:\""
+
 #~ msgid ""
 #~ "<![CDATA[$ cd /Applications\n"
 #~ "$ unzip ~/jboss-5.0.1.GA.zip]]>"
 #~ msgstr ""
 #~ "<![CDATA[$ cd /Applications\n"
 #~ "$ unzip ~/jboss-5.0.1.GA.zip]]>"
+
 #~ msgid ""
 #~ "Next, download Web Beans from <ulink url=\"http://seamframework.org/"
 #~ "Download\">seamframework.org</ulink>, and unzip it. For example"
 #~ msgstr ""
 #~ "Depois, faça o download da Web Beans em <ulink url=\"http://seamframework."
 #~ "org/Download\">seamframework.org</ulink> e descompacte-o. Por exemplo"
+
 #~ msgid ""
 #~ "<![CDATA[$ cd ~/\n"
 #~ "$ unzip ~/webbeans-$VERSION.zip]]>"
 #~ msgstr ""
 #~ "<![CDATA[$ cd ~/\n"
 #~ "$ unzip ~/webbeans-1.0.0.ALPHA1.zip]]>"
+
 #~ msgid ""
 #~ "Next, we need to tell Web Beans where JBoss is located. Edit "
 #~ "<literal>jboss-as/build.properties</literal> and set the <literal>jboss."
@@ -779,45 +1057,55 @@ msgstr ""
 #~ "Em seguida, temos de dizer aos Web Beans onde o JBoss está localizado. "
 #~ "Editar o <literal>jboss-as/build.properties</literal> e definir a "
 #~ "propriedade <literal>jboss.home</literal>. Por exemplo:"
+
 #~ msgid ""
 #~ "To install Web Beans, you'll need Ant 1.7.0 installed, and the "
 #~ "<literal>ANT_HOME</literal> environment variable set. For example:"
 #~ msgstr ""
 #~ "Para instalar a Web Beans, você precisará do Ant 1.7.0 instalado e a "
 #~ "variável de ambiente <literal>ANT_HOME</literal> setada. Por exemplo:"
+
 #~ msgid ""
 #~ "$ unzip apache-ant-1.7.0.zip\n"
 #~ "$ export ANT_HOME=~/apache-ant-1.7.0"
 #~ msgstr ""
 #~ "$ unzip apache-ant-1.7.0.zip\n"
 #~ "$ export ANT_HOME=~/apache-ant-1.7.0"
+
 #~ msgid ""
 #~ "Then, you can install the update. The update script will use Maven to "
 #~ "download Web Beans automatically."
 #~ msgstr ""
 #~ "Então, você pode instalar a atualização. O script de atualização  "
 #~ "utilizará o Maven para fazer o download da Web Beans automaticamente."
+
 #~ msgid ""
 #~ "$ cd webbeans-$VERSION/jboss-as\n"
 #~ "$ ant update"
 #~ msgstr ""
 #~ "$ cd webbeans-1.0.0.ALPHA1/jboss-as\n"
 #~ "$ ant update"
+
 #~ msgid ""
 #~ "The build scripts for the examples offer a number of targets for JBoss "
 #~ "AS, these are:"
 #~ msgstr ""
 #~ "Os scripts para criar os exemplos oferecem uma série de alvos para JBoss "
 #~ "AS, entre eles:"
+
 #~ msgid "To deploy the numberguess example:"
 #~ msgstr "Para implantar o exemplo numberguess:"
+
 #~ msgid "Start JBoss AS:"
 #~ msgstr "Inicializando o JBoss AS:"
+
 #~ msgid "$ /Application/jboss-5.0.0.GA/bin/run.sh"
 #~ msgstr "$ /Application/jboss-5.0.0.GA/bin/run.sh"
+
 #~ msgid "If you use Windows, use the <literal>run.bat</literal>script."
 #~ msgstr ""
 #~ "Se você utiliza o Windows, utilize o script <literal>run.bat</literal>."
+
 #~ msgid ""
 #~ "Wait for the application to deploy, and enjoy hours of fun at <ulink url="
 #~ "\"http://localhost:8080/webbeans-numberguess\"></ulink>!"
@@ -825,6 +1113,7 @@ msgstr ""
 #~ "Aguarde até que a aplicação seja implantada, e desfrute de horas de "
 #~ "diversão em <ulink url=\"http://localhost:8080/webbeans-numberguess\"></"
 #~ "ulink>!"
+
 #~ msgid ""
 #~ "Web Beans includes a second simple example that will translate your text "
 #~ "into Latin. The numberguess example is a war example, and uses only "
@@ -835,12 +1124,14 @@ msgstr ""
 #~ "para o Latim. O exemplo numberguess é um war e usa apenas beans simples; "
 #~ "o exemplo translator é um exemplo ear e inclui benas corporativos, "
 #~ "empacotados em um módulo EJB. Para experimentá-lo:"
+
 #~ msgid ""
 #~ "Wait for the application to deploy, and visit <ulink url=\"http://"
 #~ "localhost:8080/webbeans-translator\"></ulink>!"
 #~ msgstr ""
 #~ "Aguarde até que a aplicação seja implantada, e acesse  <ulink url="
 #~ "\"http://localhost:8080/webbeans-translator\"></ulink>!"
+
 #~ msgid ""
 #~ "Next, we need to tell Web Beans where Tomcat is located. Edit "
 #~ "<literal>jboss-as/build.properties</literal> and set the <literal>tomcat."
@@ -849,6 +1140,7 @@ msgstr ""
 #~ "Em seguida, temos de dizer aos Web Beans onde o Tomcat está localizado. "
 #~ "Editar o <literal>jboss-as/build.properties</literal> e definir a "
 #~ "propriedade <literal>tomcat.home</literal>. Por exemplo:"
+
 #~ msgid ""
 #~ "The build scripts for the examples offer a number of targets for Tomcat, "
 #~ "these are:"
@@ -870,24 +1162,31 @@ msgstr ""
 #~ "format) from the server"
 #~ msgstr ""
 #~ "<literal>ant tomcat.undeploy</literal> - remove o exemplo do servidor"
+
 #~ msgid "<literal>ant tomcat.clean</literal> - clean the example"
 #~ msgstr "<literal>ant tomcat.clean</literal> - clean the example"
+
 #~ msgid ""
 #~ "$ cd examples/tomcat\n"
 #~ "ant tomcat.deploy"
 #~ msgstr ""
 #~ "$ cd examples/tomcat\n"
 #~ "ant tomcat.deploy"
+
 #~ msgid "Start Tomcat:"
 #~ msgstr "Inicializando o Tomcat:"
+
 #~ msgid "If you use Windows, use the <literal>startup.bat</literal>script."
 #~ msgstr ""
 #~ "Se você utiliza o Windows, utilize o script <literal>startup.bat</"
 #~ "literal>."
+
 #~ msgid "TODO"
 #~ msgstr "TODO"
+
 #~ msgid "The numberguess example"
 #~ msgstr "O exemplo numberguess"
+
 #~ msgid ""
 #~ "In the numberguess application you get given 10 attempts to guess a "
 #~ "number between 1 and 100. After each attempt, you will be told whether "
@@ -896,6 +1195,7 @@ msgstr ""
 #~ "Na aplicação numberguess você terá 10 tentativas para adivinhar um número "
 #~ "entre 1 e 100. Após cada tentativa, você será informado se você disse "
 #~ "muito acima, ou muito abaixo."
+
 #~ msgid ""
 #~ "The numberguess example is comprised of a number of Web Beans, "
 #~ "configuration files, and Facelet JSF pages, packaged as a war. Let's "
@@ -904,6 +1204,7 @@ msgstr ""
 #~ "O exemplo numberguess é composto de um número de Web Beans, arquivos de "
 #~ "configuração e páginas Facelet JSF , empacotados como um war. Vamos "
 #~ "começar com os arquivos de configuração."
+
 #~ msgid ""
 #~ "All the configuration files for this example are located in <literal>WEB-"
 #~ "INF/</literal>, which is stored in <literal>WebContent</literal> in the "
@@ -914,6 +1215,7 @@ msgstr ""
 #~ "<literal>WEB-INF/</literal>, que é armazenado no <literal>WebContent</"
 #~ "literal> na árvore de fontes. Primeiro, temos  <literal>faces-config.xml</"
 #~ "literal>, onde dizemos para o JSF usar o Facelets:"
+
 #~ msgid ""
 #~ "<![CDATA[<?xml version='1.0' encoding='UTF-8'?>\n"
 #~ "<faces-config version=\"1.2\"\n"
@@ -940,12 +1242,14 @@ msgstr ""
 #~ "    </application>\n"
 #~ "\n"
 #~ "</faces-config>]]>"
+
 #~ msgid ""
 #~ "There is an empty <literal>web-beans.xml</literal> file, which marks this "
 #~ "application as a Web Beans application."
 #~ msgstr ""
 #~ "Existe um arquivo <literal>web-beans.xml</literal> vazio, que assinala "
 #~ "essa aplicação como uma aplicação Web Beans."
+
 #~ msgid "Finally there is <literal>web.xml</literal>:"
 #~ msgstr "Finalmente no <literal>web.xml</literal>:"
 
@@ -1184,6 +1488,7 @@ msgstr ""
 #~ "\"> <para> And, of course, there must be a way for the user to send their "
 #~ "guess to the server. Here we bind to an action method on the Web Bean. </"
 #~ "para> </callout> </calloutlist> </programlistingco>"
+
 #~ msgid ""
 #~ "The example exists of 4 classes, the first two of which are binding "
 #~ "types. First, there is the <literal>@Random</literal> binding type, used "
@@ -1192,6 +1497,7 @@ msgstr ""
 #~ "No exemplo, existem 4 classes: as duas primeiras são tipos de binding. "
 #~ "Primeiro, há o tipo de binding <literal>@Random</literal>, utilizado para "
 #~ "a injeção de um número aleatório:"
+
 #~ msgid ""
 #~ "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
 #~ "@Retention(RUNTIME)\n"
@@ -1204,12 +1510,14 @@ msgstr ""
 #~ "@Documented\n"
 #~ "@BindingType\n"
 #~ "public @interface Random {}]]>"
+
 #~ msgid ""
 #~ "There is also the <literal>@MaxNumber</literal> binding type, used for "
 #~ "injecting the maximum number that can be injected:"
 #~ msgstr ""
 #~ "Há também o binding type <literal>@MaxNumber</literal>, utilizado para "
 #~ "injetar o número máximo que pode ser injetado:"
+
 #~ msgid ""
 #~ "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
 #~ "@Retention(RUNTIME)\n"
@@ -1224,6 +1532,7 @@ msgstr ""
 #~ "@BindingType\n"
 #~ "public @interface MaxNumber {}\n"
 #~ "]]>"
+
 #~ msgid ""
 #~ "The <literal>Generator</literal> class is responsible for creating the "
 #~ "random number, via a producer method. It also exposes the maximum "
@@ -1232,6 +1541,7 @@ msgstr ""
 #~ "A classe <literal>Generator</literal> é responsável por criar um número "
 #~ "aleatório, através de um método produtor. Ela também expõe o número "
 #~ "máximo possível através de um método produtor:"
+
 #~ msgid ""
 #~ "<![CDATA[@ApplicationScoped\n"
 #~ "public class Generator {\n"
@@ -1280,18 +1590,21 @@ msgstr ""
 #~ "   }\n"
 #~ "\n"
 #~ "}]]>"
+
 #~ msgid ""
 #~ "You'll notice that the <literal>Generator</literal> is application "
 #~ "scoped; therefore we don't get a different random each time."
 #~ msgstr ""
 #~ "Você perceberá que o <literal>Generator</literal> está no escopo de "
 #~ "aplicação; portanto, não obtemos um número aleatório diferente a cada vez."
+
 #~ msgid ""
 #~ "The final Web Bean in the application is the session scoped "
 #~ "<literal>Game</literal>."
 #~ msgstr ""
 #~ "O Web Bean final da aplicação é o <literal>Game</literal> em escopo de "
 #~ "sessão."
+
 #~ msgid ""
 #~ "You'll note that we've used the <literal>@Named</literal> annotation, so "
 #~ "that we can use the bean through EL in the JSF page. Finally, we've used "
@@ -1304,6 +1617,7 @@ msgstr ""
 #~ "utilizamos injeção de construtor para inicializar o jogo com um número "
 #~ "aleatório. E, claro, precisamos de dizer ao jogador quando ele venceu. "
 #~ "Por isso, informaremos através do <literal>FacesMessage</literal>."
+
 #~ msgid ""
 #~ "<![CDATA[package org.jboss.webbeans.examples.numberguess;\n"
 #~ "\n"
@@ -1516,6 +1830,7 @@ msgstr ""
 #~ "<literal>WEB-INF/lib</literal>. Para sua comodidade, fornecemos um único "
 #~ "jar adequado para executar Web Beans no Tomcat <literal>webbeans-tomcat."
 #~ "jar</literal>."
+
 #~ msgid ""
 #~ "Of course, you must also include JSF and EL, as well common annotations "
 #~ "(<literal>jsr250-api.jar</literal>) which a JEE server includes by "
@@ -1534,6 +1849,7 @@ msgstr ""
 #~ "Em segundo lugar, precisamos indicar explicitamente o Tomcat servlet "
 #~ "listener (utilizado para \"bootar\" a Web Beans, e controlar sua "
 #~ "interação com as requisições) no  <literal>web.xml</literal>:"
+
 #~ msgid ""
 #~ "<![CDATA[<listener>\n"
 #~ "   <listener-class>org.jboss.webbeans.environment.servlet.Listener</"
@@ -1544,12 +1860,16 @@ msgstr ""
 #~ "   <listener-class>org.jboss.webbeans.environment.servlet.Listener</"
 #~ "listener-class>\n"
 #~ "</listener>]]>"
+
 #~ msgid "The numberguess example for Apache Wicket"
 #~ msgstr "O exemplo numberguess para o Apache Wicket"
+
 #~ msgid "Understanding the code"
 #~ msgstr "Entendendo o código"
+
 #~ msgid "Differences are:"
 #~ msgstr "Diferenças são:"
+
 #~ msgid ""
 #~ "<![CDATA[public class SampleApplication extends WebBeansApplication {\n"
 #~ "   @Override\n"
@@ -1564,8 +1884,10 @@ msgstr ""
 #~ "      return HomePage.class;\n"
 #~ "   }\n"
 #~ "}]]>"
+
 #~ msgid "<![CDATA[ @Current Game game;]]>"
 #~ msgstr "<![CDATA[ @Current Game game;]]>"
+
 #~ msgid ""
 #~ "<![CDATA[final Component guessButton = new AjaxButton(\"GuessButton\") "
 #~ "{ \n"
@@ -1576,6 +1898,7 @@ msgstr ""
 #~ "{ \n"
 #~ "   protected void onSubmit(AjaxRequestTarget target, Form form) {\n"
 #~ "      if (game.check()) {]]>"
+
 #~ msgid ""
 #~ "<![CDATA[<filter>\n"
 #~ "   <filter-name>wicket.numberguess-example</filter-name>\n"
@@ -1618,12 +1941,16 @@ msgstr ""
 #~ "   <listener-class>org.jboss.webbeans.environment.servlet.Listener</"
 #~ "listener-class>\n"
 #~ "</listener>]]>"
+
 #~ msgid "The numberguess example for Java SE with Swing"
 #~ msgstr "O exemplo numberguess para o Java SE com Swing"
+
 #~ msgid "To run this example:"
 #~ msgstr "Para rodar esse exemplo:"
+
 #~ msgid "execute the following command"
 #~ msgstr "execute o seguinte comando"
+
 #~ msgid "mvn -Drun"
 #~ msgstr "mvn -Drun"
 
@@ -1635,6 +1962,7 @@ msgstr ""
 #~ msgstr ""
 #~ "Existe um arquivo <literal>web-beans.xml</literal> vazio, que assinala "
 #~ "essa aplicação como uma aplicação Web Beans."
+
 #~ msgid ""
 #~ "<programlistingco> <areaspec> <area id=\"scope\" coords=\"1\"/> <area id="
 #~ "\"name\" coords=\"1\"/> <area id=\"messages1\" coords=\"26\"/> <area id="
@@ -2161,26 +2489,31 @@ msgstr ""
 #~ "<literal>refreshUI</literal> uses the <literal>MessageGenerator</literal> "
 #~ "to update the messages to the user based on the current state of the "
 #~ "Game. </para> </callout> </calloutlist> </programlistingco>"
+
 #~ msgid "The translator example"
 #~ msgstr "O exemplo translator"
+
 #~ msgid ""
 #~ "The translator example will take any sentences you enter, and translate "
 #~ "them to Latin."
 #~ msgstr ""
 #~ "O exemplo translator pegará qualquer frase que você fornecer e a  "
 #~ "traduzirá para o Latim."
+
 #~ msgid ""
 #~ "The translator example is built as an ear, and contains EJBs. As a "
 #~ "result, it's structure is more complex than the numberguess example."
 #~ msgstr ""
 #~ "O exemplo translator é construído como um ear e contém EJBs. Como "
 #~ "resultado, a sua estrutura é mais complexa do que o exemplo numberguess."
+
 #~ msgid ""
 #~ "EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will make "
 #~ "this structure much simpler!"
 #~ msgstr ""
 #~ "EJB 3.1 e Java EE 6 permitem a você empacotar EJBs em um war, o que "
 #~ "tornará esta estrutura muito mais simples!"
+
 #~ msgid ""
 #~ "First, let's take a look at the ear aggregator, which is located in "
 #~ "<literal>webbeans-translator-ear</literal> module. Maven automatically "
@@ -2189,6 +2522,7 @@ msgstr ""
 #~ "Primeiro, vamos dar uma olhada no ear aggregator, que está localizado "
 #~ "módulo <literal>webbeans-translator-ear</literal>. Maven gera "
 #~ "automaticamente o<literal>application.xml</literal> para nós:"
+
 #~ msgid ""
 #~ "<![CDATA[<plugin>\n"
 #~ "   <groupId>org.apache.maven.plugins</groupId>\n"
@@ -2217,12 +2551,14 @@ msgstr ""
 #~ "      </modules>\n"
 #~ "   </configuration>\n"
 #~ "</plugin>]]>"
+
 #~ msgid ""
 #~ "If you aren't using Maven to generate these files, you would need "
 #~ "<literal>META-INF/application.xml</literal>:"
 #~ msgstr ""
 #~ "Se você não está usando o Maven para gerar esses arquivos, você "
 #~ "precisaria <literal>META-INF/application.xml</literal>:"
+
 #~ msgid ""
 #~ "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 #~ "<application xmlns=\"http://java.sun.com/xml/ns/javaee\" \n"
@@ -2265,6 +2601,7 @@ msgstr ""
 #~ "    <ejb>webbeans-translator.jar</ejb>\n"
 #~ "  </module>\n"
 #~ "</application>]]>"
+
 #~ msgid ""
 #~ "Next, lets look at the war. Just as in the numberguess example, we have a "
 #~ "<literal>faces-config.xml</literal> (to enable Facelets) and a "
@@ -2275,6 +2612,7 @@ msgstr ""
 #~ "<literal>faces-config.xml</literal> (para habilitar o Facelets) e um "
 #~ "<literal>web.xml</literal> (para habilitar o JSF) no <literal>WebContent/"
 #~ "WEB-INF</literal>."
+
 #~ msgid ""
 #~ "More intersting is the facelet used to translate text. Just as in the "
 #~ "numberguess example we have a template, which surrounds the form "
@@ -2283,6 +2621,7 @@ msgstr ""
 #~ "Mais interessante é o facelet utilizado para traduzir texto. Tal como no "
 #~ "exemplo numberguess, temos um template, que envolve o formulário (omitido "
 #~ "aqui por brevitude):"
+
 #~ msgid ""
 #~ "<![CDATA[<h:form id=\"NumberGuessMain\">\n"
 #~ "            \n"
@@ -2339,12 +2678,14 @@ msgstr ""
 #~ "   </div>\n"
 #~ "   \n"
 #~ "</h:form>]]>"
+
 #~ msgid ""
 #~ "The user can enter some text in the lefthand textarea, and hit the "
 #~ "translate button to see the result to the right."
 #~ msgstr ""
 #~ "O usuário pode digitar um texto no textarea esquerdo e clicar no botão "
 #~ "traduzir para ver o resultado à direita."
+
 #~ msgid ""
 #~ "Finally, let's look at the ejb module, <literal>webbeans-translator-ejb</"
 #~ "literal>. In <literal>src/main/resources/META-INF</literal> there is just "
@@ -2355,6 +2696,7 @@ msgstr ""
 #~ "literal>. Em <literal>src/main/resources/META-INF</literal> existe apenas "
 #~ "um <literal>web-beans.xml</literal> vazio, utilizado para marcar o "
 #~ "arquivo como contendo Web Beans."
+
 #~ msgid ""
 #~ "We've saved the most interesting bit to last, the code! The project has "
 #~ "two simple beans, <literal>SentenceParser</literal> and "
@@ -2371,6 +2713,7 @@ msgstr ""
 #~ "<literal>SentenceTranslator</literal>. Você deve estar bastante "
 #~ "familiarizado com o que um Web Bean parece até agora. Então, vamos apenas "
 #~ "destacar as partes mais interessantes aqui."
+
 #~ msgid ""
 #~ "Both <literal>SentenceParser</literal> and <literal>TextTranslator</"
 #~ "literal> are dependent beans, and <literal>TextTranslator</literal> uses "
@@ -2379,6 +2722,7 @@ msgstr ""
 #~ "Tanto <literal>SentenceParser</literal> quanto <literal>TextTranslator</"
 #~ "literal> são beans dependentes, e <literal>TextTranslator</literal> usa "
 #~ "inicialização por construtor :"
+
 #~ msgid ""
 #~ "<![CDATA[public class TextTranslator { \n"
 #~ "   private SentenceParser sentenceParser; \n"
@@ -2418,6 +2762,7 @@ msgstr ""
 #~ "   </div>\n"
 #~ "   \n"
 #~ "</h:form>]]>"
+
 #~ msgid ""
 #~ "<literal>TextTranslator</literal> is a stateless bean (with a local "
 #~ "business interface), where the magic happens - of course, we couldn't "
@@ -2426,6 +2771,7 @@ msgstr ""
 #~ "<literal>TextTranslator</literal> é um bean stateless (com uma interface "
 #~ "de negócios local), onde a mágica acontece . Obviamente, não poderíamos "
 #~ "desenvolver um tradutor completo, mas lhe demos um bom caminho!"
+
 #~ msgid ""
 #~ "Finally, there is UI orientated controller, that collects the text from "
 #~ "the user, and dispatches it to the translator. This is a request scoped, "
@@ -2434,6 +2780,7 @@ msgstr ""
 #~ "Finalmente, há um controlador orientado à interface, que recolhe o texto "
 #~ "do usuário e despacha para o tradutor. Esse é um escopo de requisição, "
 #~ "com o nome, stateful session bean, que injeta o tradutor."
+
 #~ msgid ""
 #~ "<![CDATA[@Stateful\n"
 #~ "@RequestScoped\n"
@@ -2450,12 +2797,15 @@ msgstr ""
 #~ "{\n"
 #~ "   \n"
 #~ "   @Current TextTranslator translator;]]>"
+
 #~ msgid ""
 #~ "The bean also has getters and setters for all the fields on the page."
 #~ msgstr "O bean também tem getters e setters para todos os campos da página."
+
 #~ msgid "As this is a stateful session bean, we have to have a remove method:"
 #~ msgstr ""
 #~ "Como esse é um stateful session bean, temos de ter um método de remoção:"
+
 #~ msgid ""
 #~ "<![CDATA[   @Remove\n"
 #~ "   public void remove()\n"
@@ -2468,12 +2818,14 @@ msgstr ""
 #~ "   {\n"
 #~ "      \n"
 #~ "   }]]>"
+
 #~ msgid ""
 #~ "The Web Beans manager will call the remove method for you when the bean "
 #~ "is destroyed; in this case at the end of the request."
 #~ msgstr ""
 #~ "O gerenciador do Web Beans chamará o método remover para você quando o "
 #~ "bean for destruído - neste caso, no final da requisição."
+
 #~ msgid ""
 #~ "That concludes our short tour of the Web Beans examples. For more on Web "
 #~ "Beans , or to help out, please visit <ulink url=\"http://www."
@@ -2484,6 +2836,7 @@ msgstr ""
 #~ "mais informações sobre a Web Beans, ou para ajudar, por favor visite "
 #~ "<ulink url=\"http://www.seamframework.org/WebBeans/Development\">http://"
 #~ "www.seamframework.org/WebBeans/Development</ulink>."
+
 #~ msgid ""
 #~ "We need help in all areas - bug fixing, writing new features, writing "
 #~ "examples and translating this reference guide."
@@ -2491,6 +2844,7 @@ msgstr ""
 #~ "Precisamos de ajuda em todas as áreas - correção de bugs, escrita de "
 #~ "novas funcionalidades, escrita de exemplos e tradução deste guia de "
 #~ "referência."
+
 #~ msgid ""
 #~ "As Web Beans is a new piece of software, you need to update JBoss AS to "
 #~ "run the Web Beans RI. Future versions of JBoss AS will include these "
@@ -2500,4 +2854,3 @@ msgstr ""
 #~ "do JBoss AS para poder executar a implementação de referência de Web "
 #~ "Beans (Web Beans RI). Futuras versões do JBoss AS incluirão essas "
 #~ "atualizações e esse passo será desnecessário."
-

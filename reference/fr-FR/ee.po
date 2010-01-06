@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-01-06 12:17+0000\n"
 "PO-Revision-Date: 2009-02-02 22:49+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
@@ -66,7 +66,7 @@ msgstr ""
 #: ee.xml:32
 #, no-c-format
 msgid ""
-"the default <ulink src=\"http://jcp.org/en/jsr/detail?id=303\">Bean "
+"the default <ulink url=\"http://jcp.org/en/jsr/detail?id=303\">Bean "
 "Validation</ulink> <literal>ValidationFactory</literal>, and"
 msgstr ""
 
@@ -78,14 +78,49 @@ msgid ""
 "literal>."
 msgstr ""
 
+#. Tag: para
+#: ee.xml:45
+#, no-c-format
+msgid ""
+"The CDI specification does not require the servlet context objects, "
+"<literal>HttpServletRequest</literal>, <literal>HttpSession</literal> and "
+"<literal>ServletContext</literal> to be exposed as injectable beans. If you "
+"really want to be able to inject these objects, it's easy to create a "
+"portable extension to expose them as beans. However, we recommend that "
+"direct access to these objects be limited to servlets, servlet filters and "
+"servlet event listeners, where they may be obtained in the usual way as "
+"defined by the Java Servlets spec. The <literal>FacesContext</literal> is "
+"also not injectable. You can get at it by calling <literal>FacesContext."
+"getCurrentInstance()</literal>."
+msgstr ""
+
+#. Tag: para
+#: ee.xml:57
+#, no-c-format
+msgid ""
+"Oh, you <emphasis>really</emphasis> want to inject the "
+"<literal>FacesContext</literal>? Alright then, try this producer method:"
+msgstr ""
+
+#. Tag: programlisting
+#: ee.xml:61
+#, no-c-format
+msgid ""
+"<![CDATA[class FacesContextProducer {\n"
+"   @Produces @RequestScoped FacesContext getFacesContext() {\n"
+"      return FacesContext.getCurrentInstance();\n"
+"   }\n"
+"}]]>"
+msgstr ""
+
 #. Tag: title
-#: ee.xml:47
+#: ee.xml:67
 #, fuzzy, no-c-format
 msgid "Injecting Java EE resources into a bean"
 msgstr "Injecter des ressources Java EE dans un Web Bean"
 
 #. Tag: para
-#: ee.xml:49
+#: ee.xml:69
 #, fuzzy, no-c-format
 msgid ""
 "All managed beans may take advantage of Java EE component environment "
@@ -101,7 +136,7 @@ msgstr ""
 "fait attention sur le moment:"
 
 #. Tag: programlisting
-#: ee.xml:56
+#: ee.xml:76
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@Transactional @Interceptor\n"
@@ -123,7 +158,7 @@ msgstr ""
 "}]]>"
 
 #. Tag: programlisting
-#: ee.xml:58
+#: ee.xml:78
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@SessionScoped\n"
@@ -144,7 +179,7 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: ee.xml:60
+#: ee.xml:80
 #, fuzzy, no-c-format
 msgid ""
 "The Java EE <literal>@PostConstruct</literal> and <literal>@PreDestroy</"
@@ -158,7 +193,7 @@ msgstr ""
 "est appelée après que <emphasis>toute</emphasis> injection ait été effectuée."
 
 #. Tag: para
-#: ee.xml:66
+#: ee.xml:86
 #, no-c-format
 msgid ""
 "Of course, we advise that component environment injection be used to define "
@@ -166,13 +201,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ee.xml:74
+#: ee.xml:94
 #, fuzzy, no-c-format
 msgid "Calling a bean from a servlet"
 msgstr "Appeler un Web Bean à partir d'un Servlet"
 
 #. Tag: para
-#: ee.xml:76
+#: ee.xml:96
 #, fuzzy, no-c-format
 msgid ""
 "It's easy to use a bean from a servlet in Java EE 6. Simply inject the bean "
@@ -183,7 +218,7 @@ msgstr ""
 "champs ou de méthode d'initialisation."
 
 #. Tag: programlisting
-#: ee.xml:81
+#: ee.xml:101
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[public class Login extends HttpServlet {\n"
@@ -230,7 +265,7 @@ msgstr ""
 "}"
 
 #. Tag: para
-#: ee.xml:83
+#: ee.xml:103
 #, fuzzy, no-c-format
 msgid ""
 "Since instances of servlets are shared across all incoming threads, the bean "
@@ -243,13 +278,13 @@ msgstr ""
 "<literal>Login</literal> pour la requête courante et la session HTTP."
 
 #. Tag: title
-#: ee.xml:92
+#: ee.xml:112
 #, fuzzy, no-c-format
 msgid "Calling a bean from a message-driven bean"
 msgstr "Appeler un Web Bean à partir d'un Message-Driven Bean"
 
 #. Tag: para
-#: ee.xml:94
+#: ee.xml:114
 #, no-c-format
 msgid ""
 "CDI injection applies to all EJBs, even when they aren't managed beans. In "
@@ -258,7 +293,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ee.xml:99
+#: ee.xml:119
 #, fuzzy, no-c-format
 msgid "You can even use CDI interceptor bindings for message-driven Beans."
 msgstr ""
@@ -266,7 +301,7 @@ msgstr ""
 "Message-Driven Beans."
 
 #. Tag: programlisting
-#: ee.xml:101
+#: ee.xml:121
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@Transactional @MessageDriven\n"
@@ -292,7 +327,7 @@ msgstr ""
 "}"
 
 #. Tag: para
-#: ee.xml:103
+#: ee.xml:123
 #, fuzzy, no-c-format
 msgid ""
 "Please note that there is no session or conversation context available when "
@@ -307,19 +342,19 @@ msgstr ""
 "<literal>@ApplicationScoped</literal> sont disponibles."
 
 #. Tag: para
-#: ee.xml:109
+#: ee.xml:129
 #, no-c-format
 msgid "But how about beans which <emphasis>send</emphasis> JMS messages?"
 msgstr ""
 
 #. Tag: title
-#: ee.xml:116
+#: ee.xml:136
 #, no-c-format
 msgid "JMS endpoints"
 msgstr "Terminaisons JMS"
 
 #. Tag: para
-#: ee.xml:118
+#: ee.xml:138
 #, no-c-format
 msgid ""
 "Sending messages using JMS can be quite complex, because of the number of "
@@ -343,7 +378,7 @@ msgstr ""
 "de vie et son modèle de threads dont nous devons nous soucier."
 
 #. Tag: para
-#: ee.xml:127
+#: ee.xml:147
 #, no-c-format
 msgid ""
 "You can use producer fields and methods to prepare all of these resources "
@@ -351,7 +386,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ee.xml:131
+#: ee.xml:151
 #, no-c-format
 msgid ""
 "<![CDATA[public class OrderResources {\n"
@@ -400,7 +435,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ee.xml:133
+#: ee.xml:153
 #, no-c-format
 msgid ""
 "In this example, we can just inject the prepared <literal>MessageProducer</"
@@ -408,7 +443,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ee.xml:138
+#: ee.xml:158
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@Inject Order order;\n"
@@ -432,7 +467,7 @@ msgstr ""
 "}"
 
 #. Tag: para
-#: ee.xml:144
+#: ee.xml:164
 #, fuzzy, no-c-format
 msgid ""
 "The lifecycle of the injected JMS objects is completely controlled by the "
@@ -442,13 +477,13 @@ msgstr ""
 "gestionnaire de Web Beans."
 
 #. Tag: title
-#: ee.xml:151
+#: ee.xml:171
 #, no-c-format
 msgid "Packaging and deployment"
 msgstr "Paquetage et déploiement"
 
 #. Tag: para
-#: ee.xml:153
+#: ee.xml:173
 #, fuzzy, no-c-format
 msgid ""
 "CDI doesn't define any special deployment archive. You can package beans in "
@@ -471,7 +506,7 @@ msgstr ""
 "xml</literal> ne seront pas disponibles pour utilisation dans l'application."
 
 #. Tag: para
-#: ee.xml:162
+#: ee.xml:182
 #, fuzzy, no-c-format
 msgid ""
 "In an embeddable EJB container, beans may be deployed in any location in "

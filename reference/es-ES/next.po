@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: next\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-01-06 12:17+0000\n"
 "PO-Revision-Date: 2009-01-20 09:48+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
@@ -28,10 +28,10 @@ msgstr "Siguientes pasos"
 msgid ""
 "Because CDI is so new, there's not yet a lot of information available "
 "online. That will change over time. Regardless, the CDI specification "
-"remains the authority for information on CDI. The spec less than 100 pages "
-"and is quite readable (don't worry, it's not like your Blu-ray player "
+"remains the authority for information on CDI. The spec is less than 100 "
+"pages and is quite readable (don't worry, it's not like your Blu-ray player "
 "manual). Of course, it covers many details we've skipped over here. The spec "
-"is available on the <ulink src=\"http://jcp.org/en/jsr/detail?id=299\">JSR-"
+"is available on the <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-"
 "299 page</ulink> at the JCP website."
 msgstr ""
 
@@ -39,9 +39,9 @@ msgstr ""
 #: next.xml:14
 #, fuzzy, no-c-format
 msgid ""
-"The CDI reference implementation, Weld, is being developed at the <ulink src="
+"The CDI reference implementation, Weld, is being developed at the <ulink url="
 "\"http://seamframework.org/Weld\">Seam project</ulink>. The RI development "
-"team and the CDI spec lead blog at <ulink src=\"http://in.relation.to\">in."
+"team and the CDI spec lead blog at <ulink url=\"http://in.relation.to\">in."
 "relation.to</ulink>. This guide was originally based on a series of blog "
 "entries published there while the specification was being developed. It's "
 "probably the best source of information about the future of CDI, Weld and "
@@ -57,9 +57,9 @@ msgstr ""
 #: next.xml:22
 #, no-c-format
 msgid ""
-"We encourage you to follow the <ulink src=\"https://lists.jboss.org/mailman/"
+"We encourage you to follow the <ulink url=\"https://lists.jboss.org/mailman/"
 "listinfo/weld-dev\">weld-dev</ulink> mailing list and to get involved in "
-"<ulink src=\"http://seamframework.org/Weld/Development\">development</"
+"<ulink url=\"http://seamframework.org/Weld/Development\">development</"
 "ulink>. If you are reading this guide, you likely have something to offer."
 msgstr ""
 
@@ -76,7 +76,7 @@ msgstr ""
 #: next.xml:35
 #, no-c-format
 msgid ""
-"Checkout source from <ulink src=\"http://anonsvn.jboss.org/repos/weld/doc/"
+"Checkout source from <ulink url=\"http://anonsvn.jboss.org/repos/weld/doc/"
 "trunk/reference\">http://anonsvn.jboss.org/repos/weld/doc/trunk/reference</"
 "ulink> using SVN"
 msgstr ""
@@ -93,8 +93,9 @@ msgstr ""
 #: next.xml:43
 #, no-c-format
 msgid ""
-"Edit the pom.xml file in the root of the checkout and remove the \"-SNAPSHOT"
-"\" from the version element (so you don't have to build other Weld modules)."
+"Edit the <literal>pom.xml</literal> file in the root of the checkout and "
+"remove the \"<literal>-SNAPSHOT</literal>\" from the version element (so you "
+"don't have to build other Weld modules)."
 msgstr ""
 
 #. Tag: para
@@ -122,7 +123,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The PDF version of the reference guide will appear the current directory. "
-"You can find the HTML version in target/docbook/publish/en-US/html"
+"You can find the HTML version in <literal>target/docbook/publish/en-US/html</"
+"literal>."
 msgstr ""
 
 #. Tag: para

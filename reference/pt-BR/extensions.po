@@ -3,9 +3,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
+"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection "
+"VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-01-06 12:17+0000\n"
 "PO-Revision-Date: 2009-12-19 18:02-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -23,7 +24,9 @@ msgstr "Extensões da JSR-299 disponíveis como parte da Web Beans"
 #: extensions.xml:11
 #, fuzzy, no-c-format
 msgid "These modules are usable on any JSR-299 implementation, not just Weld!"
-msgstr "Estes módulos são utilizáveis em qualquer implementação da JSR-299, e não apenas na Web Beans!"
+msgstr ""
+"Estes módulos são utilizáveis em qualquer implementação da JSR-299, e não "
+"apenas na Web Beans!"
 
 #. Tag: title
 #: extensions.xml:17
@@ -34,59 +37,84 @@ msgstr "Web Beans Logger"
 #. Tag: para
 #: extensions.xml:19
 #, fuzzy, no-c-format
-msgid "Adding logging to your application is now even easier with simple injection of a logger object into any CDI bean. Simply annotate a <literal>org.jboss.weld.log.Log</literal> type member with the <emphasis>@Logger</emphasis> qualifier annotation and an appropriate logger object will be injected into any instance of the bean."
-msgstr "Adicionar logging na sua aplicação é agora ainda mais fácil com a simples injeção de um objeto logger em qualquer bean JSR-299. Basta anotar um membro tipo org.jboss.webbeans.log.Log com <emphasis>@Logger</emphasis> e um adequado objeto logger será injetado em qualquer instância do bean."
+msgid ""
+"Adding logging to your application is now even easier with simple injection "
+"of a logger object into any CDI bean. Simply create an injection point of "
+"type <literal>org.slf4j.Logger</literal> and an appropriate logger object "
+"will be injected into any instance of the bean."
+msgstr ""
+"Adicionar logging na sua aplicação é agora ainda mais fácil com a simples "
+"injeção de um objeto logger em qualquer bean JSR-299. Basta anotar um membro "
+"tipo org.jboss.webbeans.log.Log com <emphasis>@Logger</emphasis> e um "
+"adequado objeto logger será injetado em qualquer instância do bean."
 
 #. Tag: programlisting
-#: extensions.xml:26
+#: extensions.xml:25
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[import org.slf4j.Logger;\n"
+"import javax.inject.Inject;\n"
+"\n"
+"public class Checkout {\n"
+"   private @Inject Logger log;\n"
+"\n"
+"   public void invoiceItems() {\n"
+"      ShoppingCart cart;\n"
+"      ...\n"
+"      log.debug(\"Items invoiced for {}\", cart);\n"
+"   }\n"
+"}]]>"
+msgstr ""
+"<![CDATA[import org.jboss.weld.annotation.Logger;\n"
+"import org.jboss.weld.log.Log;\n"
+"\n"
+"public class Checkout {\n"
+"   private @Inject @Logger Log log;\n"
+"\n"
+"   public void invoiceItems() {\n"
+"      ShoppingCart cart;\n"
+"      ...\n"
+"      log.debug(\"Items invoiced for {0}\", cart);\n"
+"   }\n"
+"}]]>"
+
+#. Tag: para
+#: extensions.xml:27
 #, no-c-format
 msgid ""
-"<![CDATA[import org.jboss.weld.annotation.Logger;\n"
-"import org.jboss.weld.log.Log;\n"
-"\n"
-"public class Checkout {\n"
-"   private @Inject @Logger Log log;\n"
-"\n"
-"   public void invoiceItems() {\n"
-"      ShoppingCart cart;\n"
-"      ...\n"
-"      log.debug(\"Items invoiced for {0}\", cart);\n"
-"   }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[import org.jboss.weld.annotation.Logger;\n"
-"import org.jboss.weld.log.Log;\n"
-"\n"
-"public class Checkout {\n"
-"   private @Inject @Logger Log log;\n"
-"\n"
-"   public void invoiceItems() {\n"
-"      ShoppingCart cart;\n"
-"      ...\n"
-"      log.debug(\"Items invoiced for {0}\", cart);\n"
-"   }\n"
-"}]]>"
-
-#. Tag: para
-#: extensions.xml:28
-#, no-c-format
-msgid "The example shows how objects can be interpolated into a message. This interpolation is done using <emphasis>java.text.MessageFormat</emphasis>, so see the JavaDoc for that class for more details. In this case, the <literal>ShoppingCart</literal> should have implemented the <emphasis>toString()</emphasis> method to produce a human readable value that is meaningful in messages. Normally, this call would have involved evaluating cart.toString() with String concatenation to produce a single String argument. Thus it was necessary to surround the call with an if-statement using the condition <emphasis>log.isDebugEnabled()</emphasis> to avoid the expensive String concatenation if the message was not actually going to be used. However, when using <literal>@Logger</literal>-injected logging, the conditional test can be left out since the object arguments are not evaluated unless the message is going to be logged."
+"The example shows how objects can be interpolated into a message. If you use "
+"this approach, you do not need to surround a call to the logger with a "
+"condition like <literal>if ( log.isDebugEnabled() )</literal> to avoid "
+"string concatenation."
 msgstr ""
 
 #. Tag: para
-#: extensions.xml:41
+#: extensions.xml:34
 #, fuzzy, no-c-format
-msgid "You can add the Weld Logger to your project by including weld-logger.jar, sl4j-api.jar and sl4j-jdk14.jar to your project. Alternatively, express a dependency on the <literal>org.jboss.weld:weld-logger</literal> Maven artifact."
-msgstr "Você pode adicionar o Web Beans Logger no seu projeto através da inclusão de webbeans-logger.jar e webbeans-logging.jar no seu projeto. Alternativamente, expressar uma dependência do artefato Maven <literal>org.jboss.webbeans:webbeans-logger</literal> ."
+msgid ""
+"You can add Weld logging to your project by including weld-logger.jar, sl4j-"
+"api.jar and sl4j-jdk14.jar to your project. Alternatively, express a "
+"dependency on the <literal>org.jboss.weld:weld-logger</literal> Maven "
+"artifact."
+msgstr ""
+"Você pode adicionar o Web Beans Logger no seu projeto através da inclusão de "
+"webbeans-logger.jar e webbeans-logging.jar no seu projeto. Alternativamente, "
+"expressar uma dependência do artefato Maven <literal>org.jboss.webbeans:"
+"webbeans-logger</literal> ."
 
 #. Tag: para
-#: extensions.xml:46
+#: extensions.xml:39
 #, fuzzy, no-c-format
-msgid "If you are using Weld as your JSR-299 implementation, there's no need to include sl4j as it's already included (and used internally)."
-msgstr "Se você estiver utilizando a Web Beans como sua implementação da JSR-299, não há necessidade de incluir <literal>webbeans-logging.jar</literal> pois ele já está incluído."
+msgid ""
+"If you are using Weld as your JSR-299 implementation, there's no need to "
+"include sl4j as it's already included (and used internally)."
+msgstr ""
+"Se você estiver utilizando a Web Beans como sua implementação da JSR-299, "
+"não há necessidade de incluir <literal>webbeans-logging.jar</literal> pois "
+"ele já está incluído."
 
 #~ msgid "TODO"
 #~ msgstr "TODO"
+
 #~ msgid "XSD Generator for JSR-299 XML deployment descriptors"
 #~ msgstr "Gerador XSD para descritores de implantação XML da JSR-299   "
-

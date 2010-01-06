@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-01-06 12:17+0000\n"
 "PO-Revision-Date: 2009-06-09 03:51+0900\n"
 "Last-Translator: Shinobu NOGAMI <s-nogami@sourceforge.jp>\n"
 "Language-Team: none\n"
@@ -25,14 +25,16 @@ msgstr "JSF Web アプリケーションサンプル"
 msgid ""
 "Let's illustrate these ideas with a full example. We're going to implement "
 "user login/logout for an application that uses JSF. First, we'll define a "
-"request-scoped bean to hold the username and password entered during login:"
+"request-scoped bean to hold the username and password entered during login, "
+"with constraints defined using annotations from the Bean Validation "
+"specification:"
 msgstr ""
 "完全な例でこの考えを説明しましょう。JSF を 使用するアプリケーションとしてユー"
 "ザのログイン / ログアウトを実装します。まず最初に、ログインしている間にユーザ"
 "名とパスワードを保持しておくための Web Bean を定義するでしょう:"
 
 #. Tag: programlisting
-#: example.xml:11
+#: example.xml:12
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@Named @RequestScoped\n"
@@ -40,9 +42,11 @@ msgid ""
 "    private String username;\n"
 "    private String password;\n"
 "    \n"
+"    @NotNull @Length(min=3, max=25)\n"
 "    public String getUsername() { return username; }\n"
 "    public void setUsername(String username) { this.username = username; }\n"
 "    \n"
+"    @NotNull @Length(min=6, max=20)\n"
 "    public String getPassword() { return password; }\n"
 "    public void setPassword(String password) { this.password = password; }\n"
 "}]]>"
@@ -62,22 +66,24 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: example.xml:13
+#: example.xml:14
 #, fuzzy, no-c-format
 msgid "This bean is bound to the login prompt in the following JSF form:"
 msgstr ""
 "この Web Bean は、以下の JSF フォームのログインプロンプトにバインドされます:"
 
 #. Tag: programlisting
-#: example.xml:15
+#: example.xml:16
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[<h:form>\n"
 "   <h:panelGrid columns=\"2\" rendered=\"#{!login.loggedIn}\">\n"
-"      <h:outputLabel for=\"username\">Username:</h:outputLabel>\n"
-"      <h:inputText id=\"username\" value=\"#{credentials.username}\"/>\n"
-"      <h:outputLabel for=\"password\">Password:</h:outputLabel>\n"
-"      <h:inputText id=\"password\" value=\"#{credentials.password}\"/>\n"
+"      <f:validateBean>\n"
+"         <h:outputLabel for=\"username\">Username:</h:outputLabel>\n"
+"         <h:inputText id=\"username\" value=\"#{credentials.username}\"/>\n"
+"         <h:outputLabel for=\"password\">Password:</h:outputLabel>\n"
+"         <h:inputText id=\"password\" value=\"#{credentials.password}\"/>\n"
+"      </f:validateBean>\n"
 "   </h:panelGrid>\n"
 "   <h:commandButton value=\"Login\" action=\"#{login.login}\" rendered=\"#{!"
 "login.loggedIn}\"/>\n"
@@ -99,7 +105,50 @@ msgstr ""
 "</f:form]]>"
 
 #. Tag: para
-#: example.xml:17
+#: example.xml:18
+#, no-c-format
+msgid "Users are represented by a JPA entity:"
+msgstr ""
+
+#. Tag: programlisting
+#: example.xml:22
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@Entity\n"
+"public class User {\n"
+"   private @NotNull @Length(min=3, max=25) @Id String username;\n"
+"   private @NotNull @Length(min=6, max=20) String password;\n"
+"   \n"
+"   public String getUsername() { return username; }\n"
+"   public void setUsername(String username) { this.username = username; }\n"
+"   public String setPassword(String password) { this.password = password; }\n"
+"}]]>"
+msgstr ""
+"<![CDATA[@Named\n"
+"public class Credentials {\n"
+"        \n"
+"    private String username;\n"
+"    private String password;\n"
+"    \n"
+"    public String getUsername() { return username; }\n"
+"    public void setUsername(String username) { this.username = username; }\n"
+"    \n"
+"    public String getPassword() { return password; }\n"
+"    public void setPassword(String password) { this.password = password; }\n"
+"    \n"
+"}]]>"
+
+#. Tag: para
+#: example.xml:24
+#, no-c-format
+msgid ""
+"(Note that we're also going to need a <literal>persistence.xml</literal> "
+"file to configure the JPA persistence unit containing <literal>User</"
+"literal>.)"
+msgstr ""
+
+#. Tag: para
+#: example.xml:29
 #, fuzzy, no-c-format
 msgid ""
 "The actual work is done by a session-scoped bean that maintains information "
@@ -111,7 +160,7 @@ msgstr ""
 "ティを公開します:"
 
 #. Tag: programlisting
-#: example.xml:22
+#: example.xml:34
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@SessionScoped @Named\n"
@@ -190,7 +239,7 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: example.xml:24
+#: example.xml:36
 #, no-c-format
 msgid ""
 "<literal>@LoggedIn</literal> and <literal>@UserDatabase</literal> are custom "
@@ -198,7 +247,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: example.xml:26
+#: example.xml:38
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@Qualifier\n"
@@ -212,7 +261,7 @@ msgstr ""
 "public @interface LoggedIn {}]]>"
 
 #. Tag: programlisting
-#: example.xml:28
+#: example.xml:40
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[@Qualifier\n"
@@ -226,7 +275,7 @@ msgstr ""
 "public @interface LoggedIn {}]]>"
 
 #. Tag: para
-#: example.xml:30
+#: example.xml:42
 #, no-c-format
 msgid ""
 "We need an adaptor bean to expose our typesafe <literal>EntityManager</"
@@ -234,16 +283,17 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: example.xml:34
+#: example.xml:46
 #, no-c-format
 msgid ""
-"<![CDATA[public class UserDatabaseProducer {\n"
-"   @Produces @UserDatabase @PersistenceContext EntityManager userDatabase;\n"
+"<![CDATA[class UserDatabaseProducer {\n"
+"   @Produces @UserDatabase @PersistenceContext \n"
+"   static EntityManager userDatabase;\n"
 "}]]>"
 msgstr ""
 
 #. Tag: para
-#: example.xml:36
+#: example.xml:48
 #, fuzzy, no-c-format
 msgid ""
 "Now <literal>DocumentEditor</literal>, or any other bean, can easily inject "
@@ -252,7 +302,7 @@ msgstr ""
 "これで他の Web Bean に、現在のユーザを簡単にインジェクトすることができます:"
 
 #. Tag: programlisting
-#: example.xml:38
+#: example.xml:50
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[public class DocumentEditor {\n"
@@ -280,13 +330,13 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: example.xml:40
+#: example.xml:52
 #, no-c-format
 msgid "Or we can reference the current user in a JSF view:"
 msgstr ""
 
 #. Tag: programlisting
-#: example.xml:42
+#: example.xml:54
 #, no-c-format
 msgid ""
 "<![CDATA[<h:panelGroup rendered=\"#{login.loggedIn}\">\n"
@@ -295,7 +345,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: example.xml:44
+#: example.xml:56
 #, fuzzy, no-c-format
 msgid ""
 "Hopefully, this example gave you a taste of the CDI programming model. In "

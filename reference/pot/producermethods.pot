@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-01-06 12:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -190,14 +190,27 @@ msgid ""
 "producer method won't be called again in the same session."
 msgstr ""
 
+#. Tag: para
+#: producermethods.xml:95
+#, no-c-format
+msgid ""
+"A producer method does <emphasis>not</emphasis> inherit the scope of the "
+"bean that declares the method. There are two different beans here: the "
+"producer method, and the bean which declares it. The scope of the producer "
+"method determines how often the method will be called, and the lifecycle of "
+"the objects returned by the method. The scope of the bean that declares the "
+"producer method determines the lifecycle of the object upon which the "
+"producer method is invoked."
+msgstr ""
+
 #. Tag: title
-#: producermethods.xml:97
+#: producermethods.xml:107
 #, no-c-format
 msgid "Injection into producer methods"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:99
+#: producermethods.xml:109
 #, no-c-format
 msgid ""
 "There's one potential problem with the code above. The implementations of "
@@ -208,7 +221,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:106
+#: producermethods.xml:116
 #, no-c-format
 msgid ""
 "If this isn't what we want, we can use dependency injection into the "
@@ -216,7 +229,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: producermethods.xml:111
+#: producermethods.xml:121
 #, no-c-format
 msgid ""
 "<![CDATA[@Produces @Preferred @SessionScoped\n"
@@ -233,7 +246,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:113
+#: producermethods.xml:123
 #, no-c-format
 msgid ""
 "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-"
@@ -247,7 +260,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:122
+#: producermethods.xml:132
 #, no-c-format
 msgid ""
 "There's at least three ways we could go about fixing this bug. We could "
@@ -258,7 +271,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:129
+#: producermethods.xml:139
 #, no-c-format
 msgid ""
 "But a more common solution is to use the special <literal>@New</literal> "
@@ -266,19 +279,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: producermethods.xml:134
+#: producermethods.xml:144
 #, no-c-format
 msgid "Use of <literal>@New</literal> with producer methods"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:136
+#: producermethods.xml:146
 #, no-c-format
 msgid "Consider the following producer method:"
 msgstr ""
 
 #. Tag: programlisting
-#: producermethods.xml:138
+#: producermethods.xml:148
 #, no-c-format
 msgid ""
 "<![CDATA[@Produces @Preferred @SessionScoped\n"
@@ -297,7 +310,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:140
+#: producermethods.xml:150
 #, no-c-format
 msgid ""
 "Then a new <emphasis>dependent</emphasis> instance of "
@@ -309,13 +322,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: producermethods.xml:150
+#: producermethods.xml:160
 #, no-c-format
 msgid "Disposer methods"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:152
+#: producermethods.xml:162
 #, no-c-format
 msgid ""
 "Some producer methods return objects that require explicit destruction. For "
@@ -323,7 +336,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: producermethods.xml:157
+#: producermethods.xml:167
 #, no-c-format
 msgid ""
 "<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
@@ -332,7 +345,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:159
+#: producermethods.xml:169
 #, no-c-format
 msgid ""
 "Destruction can be performed by a matching <emphasis>disposer method</"
@@ -340,7 +353,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: producermethods.xml:162
+#: producermethods.xml:172
 #, no-c-format
 msgid ""
 "<![CDATA[void close(@Disposes Connection connection) {\n"
@@ -349,7 +362,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:164
+#: producermethods.xml:174
 #, no-c-format
 msgid ""
 "The disposer method must have at least one parameter, annotated "
