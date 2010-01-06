@@ -95,7 +95,9 @@ public class Reflections
    }
 
    /**
-    * Gets the property name from a getter method
+    * Gets the property name from a getter method.
+    * 
+    * We extend JavaBean conventions, allowing the getter method to have parameters
     * 
     * @param method The getter method
     * @return The name of the property. Returns null if method wasn't JavaBean
@@ -104,11 +106,11 @@ public class Reflections
    public static String getPropertyName(Method method)
    {
       String methodName = method.getName();
-      if (methodName.matches("^(get).*") && method.getParameterTypes().length == 0)
+      if (methodName.matches("^(get).*"))
       {
          return Introspector.decapitalize(methodName.substring(3));
       }
-      else if (methodName.matches("^(is).*") && method.getParameterTypes().length == 0)
+      else if (methodName.matches("^(is).*"))
       {
          return Introspector.decapitalize(methodName.substring(2));
       }
