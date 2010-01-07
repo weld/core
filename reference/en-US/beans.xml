@@ -113,8 +113,8 @@
 
          <para>
             A bean type is a user-defined class or interface; a type that is client-visible. If the bean is an EJB
-            session bean, the bean type is the <literal>@Local</literal> interface or bean-class local view. A bean may
-            have multiple bean types. For example, the following bean has four bean types:
+            session bean, the bean type is the <literal>@Local</literal> interface or bean-class local view. A bean 
+            may have multiple bean types. For example, the following bean has four bean types:
          </para>
 
          <programlisting role="JAVA"><![CDATA[public class BookShop 
@@ -144,8 +144,10 @@ public class BookShopBean
 
          <note>
             <para>
-               Most bean types you can probably figure out. One gotcha is primitive types. All primitive types are assumed
-               to be identical to their corresponding wrapper types in <literal>java.lang</literal>.
+               The bean types of a session bean include local interfaces and the bean class local view (if any). 
+               EJB remote interfaces are not considered bean types of a session bean. You can't inject an EJB using
+               its remote interface unless you define a <emphasis>resource</emphasis>, which we'll meet in 
+               <xref linkend="resources"/>.
             </para>
          </note>
 
@@ -345,8 +347,8 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
 
       </section>
 
-      <!-- TODO the alternative section needs to be spruced up to support the text that comes in subsequent chapters. The
-      reader needs to feel confident than they would know how to create an alternative and enable it. -->
+      <!-- TODO the alternative section needs to be spruced up to support the text that comes in subsequent chapters. 
+      The reader needs to feel confident than they would know how to create an alternative and enable it. -->
       <section>
          <title>Alternatives</title>
 
@@ -700,6 +702,14 @@ public class RandomNumberGenerator {
                </para>
             </listitem>
          </itemizedlist>
+
+         <note>
+            <para>
+               Producer methods and fields may have a primitive bean type. For the purpose of resolving dependencies,
+               primitive types are considered to be identical to their corresponding wrapper types in 
+               <literal>java.lang</literal>.
+            </para>
+         </note>
 
          <para>
             If the producer method has method parameters, the container will look for a bean that satisfies the type
