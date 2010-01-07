@@ -47,7 +47,6 @@ import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.ee.EEResourceProducerField;
-import org.jboss.weld.bean.builtin.ee.PersistenceContextProducerField;
 import org.jboss.weld.bootstrap.events.ProcessBeanImpl;
 import org.jboss.weld.bootstrap.events.ProcessBeanInjectionTarget;
 import org.jboss.weld.bootstrap.events.ProcessManagedBeanImpl;
@@ -199,11 +198,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    protected <X, T> void createProducerField(AbstractClassBean<X> declaringBean, WeldField<T, X> field)
    {
       ProducerField<X, T> bean;
-      if (isPersistenceContextProducerField(field))
-      {
-         bean = PersistenceContextProducerField.of(field, declaringBean, manager);
-      }
-      else if (isEEResourceProducerField(field))
+      if (isEEResourceProducerField(field))
       {
          bean = EEResourceProducerField.of(field, declaringBean, manager);
       }
@@ -306,13 +301,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
       PersistenceApiAbstraction persistenceApiAbstraction = manager.getServices().get(PersistenceApiAbstraction.class);
       WSApiAbstraction wsApiAbstraction = manager.getServices().get(WSApiAbstraction.class);
-      return field.isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS) || field.isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || field.isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS); 
-   }
-   
-   protected boolean isPersistenceContextProducerField(WeldField<?, ?> field)
-   {
-      PersistenceApiAbstraction persistenceApiAbstraction = manager.getServices().get(PersistenceApiAbstraction.class);
-      return field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS); 
+      return field.isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS) || field.isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS) || field.isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS); 
    }
    
    private static boolean hasSimpleWebBeanConstructor(WeldClass<?> type)
