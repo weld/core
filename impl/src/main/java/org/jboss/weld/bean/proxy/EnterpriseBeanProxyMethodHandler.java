@@ -37,6 +37,7 @@ import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -120,10 +121,10 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
       }
       Class<?> businessInterface = getBusinessInterface(method);
       Object proxiedInstance = reference.getBusinessObject(businessInterface);
-      Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
+      Method proxiedMethod = SecureReflections.lookupMethod(proxiedInstance, method);
       try
       {
-         Object returnValue = Reflections.invoke(proxiedMethod, proxiedInstance, args);
+         Object returnValue = SecureReflections.invoke(proxiedInstance, proxiedMethod, args);
          log.trace(CALL_PROXIED_METHOD, method, proxiedInstance, args, returnValue);
          return returnValue;
       }

@@ -19,6 +19,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.NullInstanceException;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 public class CallableMethodHandler implements MethodHandler, Serializable
@@ -77,7 +78,7 @@ public class CallableMethodHandler implements MethodHandler, Serializable
       }
       try
       {
-         Object returnValue = Reflections.invoke(proxiedMethod, instance, args);
+         Object returnValue = SecureReflections.invoke(instance, proxiedMethod, args);
          log.trace(CALL_PROXIED_METHOD, proxiedMethod, instance, args, returnValue == null ? null : returnValue);
          return returnValue;
       }

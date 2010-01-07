@@ -41,6 +41,7 @@ import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
 {
@@ -219,14 +220,10 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
             if (type instanceof Class<?>)
             {
                Class<?> clazz = (Class<?>) type;
-               try
+               if (SecureReflections.methodExists(clazz, disposalMethodInjectionPoint.getName(), disposalMethodInjectionPoint.getParameterTypesAsArray()))
                {
-                  clazz.getDeclaredMethod(disposalMethodInjectionPoint.getName(), disposalMethodInjectionPoint.getParameterTypesAsArray());
                   methodDeclaredOnTypes = true;
-               }
-               catch (NoSuchMethodException nsme)
-               {
-                  // No - op
+                  continue;
                }
             }
          }

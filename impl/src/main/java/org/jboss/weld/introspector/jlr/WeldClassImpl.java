@@ -48,6 +48,7 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
@@ -225,12 +226,8 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       
       for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
       {
-         for (Field field : c.getDeclaredFields())
+         for (Field field : SecureReflections.getDeclaredFields(c))
          {
-            if (!field.isAccessible())
-            {
-               field.setAccessible(true);
-            }
             WeldField<?, T> annotatedField = null;
             if (annotatedTypeFields.containsKey(field))
             {
@@ -299,7 +296,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       }
       
       this.declaredConstructorsBySignature = new HashMap<ConstructorSignature, WeldConstructor<?>>();
-      for (Constructor<?> constructor : rawType.getDeclaredConstructors())
+      for (Constructor<?> constructor : SecureReflections.getDeclaredConstructors(rawType))
       {
          WeldConstructor<T> annotatedConstructor = null;
          if (annotatedTypeConstructors.containsKey(constructor))
@@ -314,10 +311,6 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
             annotatedConstructor = WeldConstructorImpl.of(c, this.<T>getDeclaringWBClass(c, classTransformer), classTransformer);
          }
          
-         if (!constructor.isAccessible())
-         {
-            constructor.setAccessible(true);
-         }
          this.constructors.add(annotatedConstructor);
          this.constructorsByArgumentMap.put(Arrays.asList(constructor.getParameterTypes()), annotatedConstructor);
 
@@ -394,13 +387,8 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       
       for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
       {
-         for (Method method : c.getDeclaredMethods())
+         for (Method method : SecureReflections.getDeclaredMethods(c))
          {
-            if (!method.isAccessible())
-            {
-               method.setAccessible(true);
-            }
-
             WeldMethod<?, T> annotatedMethod = null;
             if (annotatedTypeMethods.containsKey(method))
             {

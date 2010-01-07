@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.introspector.jlr;
 
-import static org.jboss.weld.util.reflection.Reflections.ensureAccessible;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -42,6 +40,7 @@ import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.ListMultimap;
@@ -79,13 +78,13 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    public static <T, X> WeldMethodImpl<T, X> of(Method method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(method, classTransformer.getTypeStore());
-      return new WeldMethodImpl<T, X>(ensureAccessible(method), (Class<T>) method.getReturnType(), method.getGenericReturnType(), new HierarchyDiscovery(method.getGenericReturnType()).getTypeClosure(), null, annotationStore, declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(method, (Class<T>) method.getReturnType(), method.getGenericReturnType(), new HierarchyDiscovery(method.getGenericReturnType()).getTypeClosure(), null, annotationStore, declaringClass, classTransformer);
    }
-   
+
    public static <T, X> WeldMethodImpl<T, X> of(AnnotatedMethod<T> method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(method.getAnnotations(), method.getAnnotations(), classTransformer.getTypeStore());
-      return new WeldMethodImpl<T, X>(ensureAccessible(method.getJavaMember()), (Class<T>) method.getJavaMember().getReturnType(), method.getBaseType(), method.getTypeClosure(), method, annotationStore, declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(method.getJavaMember(), (Class<T>) method.getJavaMember().getReturnType(), method.getBaseType(), method.getTypeClosure(), method, annotationStore, declaringClass, classTransformer);
    }
 
    /**
@@ -106,16 +105,16 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       this.parameters = new ArrayList<WeldParameter<?, X>>();
       this.annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldParameter<?, X>>>(), new Supplier<List<WeldParameter<?, X>>>()
       {
-         
+
          public List<WeldParameter<?, X>> get()
          {
             return new ArrayList<WeldParameter<?, X>>();
          }
-        
+
       });
-      
+
       Map<Integer, AnnotatedParameter<?>> annotatedTypeParameters = new HashMap<Integer, AnnotatedParameter<?>>();
-      
+
       if (annotatedMethod != null)
       {
          for (AnnotatedParameter<?> annotated : annotatedMethod.getParameters())
@@ -134,7 +133,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
             if (annotatedTypeParameters.containsKey(i))
             {
                AnnotatedParameter<?> annotatedParameter = annotatedTypeParameters.get(i);
-               parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), clazz, parametertype, this, i, classTransformer);            
+               parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), clazz, parametertype, this, i, classTransformer);
             }
             else
             {
@@ -155,7 +154,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
             Type parameterType = method.getGenericParameterTypes()[i];
             WeldParameter<?, X> parameter = WeldParameterImpl.of(new Annotation[0], (Class<Object>) clazz, parameterType, this, i, classTransformer);
             this.parameters.add(parameter);
-         }  
+         }
       }
 
       String propertyName = Reflections.getPropertyName(getDelegate());
@@ -168,7 +167,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
          this.propertyName = propertyName;
       }
       this.signature = new MethodSignatureImpl(this);
-      
+
    }
 
    public Method getAnnotatedMethod()
@@ -222,18 +221,18 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       return getDelegate().hashCode();
    }
 
-   public T invokeOnInstance(Object instance, Object...parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
+   public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
    {
-      Method method = Reflections.lookupMethod(getName(), getParameterTypesAsArray(), instance);
+      Method method = SecureReflections.lookupMethod(instance.getClass(), getName(), getParameterTypesAsArray());
       @SuppressWarnings("unchecked")
-      T result = (T) method.invoke(instance, parameters);
+      T result = (T) SecureReflections.invoke(instance, method, parameters);
       return result;
    }
 
    public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
    {
       @SuppressWarnings("unchecked")
-      T result = (T) method.invoke(instance, parameters);
+      T result = (T) SecureReflections.invoke(instance, method, parameters);
       return result;
    }
 

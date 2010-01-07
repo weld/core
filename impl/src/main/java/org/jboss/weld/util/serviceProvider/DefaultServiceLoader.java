@@ -32,6 +32,7 @@ import java.util.Set;
 import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.InvalidOperationException;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.ext.XLogger;
@@ -212,7 +213,7 @@ public class DefaultServiceLoader<S> implements Iterable<S>
                            {
                               throw new ForbiddenStateException(DECLARED_EXTENSION_DOES_NOT_IMPLEMENT_EXTENSION, line);
                            }
-                           Constructor<? extends S> constructor = Reflections.ensureAccessible(serviceClass.getConstructor());
+                           Constructor<? extends S> constructor = (Constructor<? extends S>) SecureReflections.getConstructor(serviceClass);
                            S instance = constructor.newInstance();
                            providers.add(instance);
                         }

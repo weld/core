@@ -75,6 +75,7 @@ import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Strings;
 import org.jboss.weld.util.Proxies.TypeInfo;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -224,7 +225,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       }
       try
       {
-         T proxy = proxyClassForDecorators.newInstance();
+         T proxy = SecureReflections.newInstance(proxyClassForDecorators);
          // temporary fix for decorators - make sure that the instance wrapped by the decorators
          // is the contextual instance
          // TODO - correct the decoration algorithm to avoid the creation of new target class instances
@@ -583,7 +584,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          if (getAnnotatedItem().isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
          {
             Annotation interceptorsAnnotation = getType().getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass());
-            classDeclaredInterceptors = Reflections.extractValues(interceptorsAnnotation);
+            classDeclaredInterceptors = SecureReflections.extractValues(interceptorsAnnotation);
          }
 
          if (classDeclaredInterceptors != null)
@@ -598,7 +599,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             Class<?>[] methodDeclaredInterceptors = null;
             if (method.isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
             {
-               methodDeclaredInterceptors = Reflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));
+               methodDeclaredInterceptors = SecureReflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));
             }
             if (excludeClassInterceptors)
             {

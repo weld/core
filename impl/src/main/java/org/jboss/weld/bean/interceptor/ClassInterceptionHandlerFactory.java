@@ -21,12 +21,12 @@ import java.lang.reflect.Constructor;
 
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
-import org.jboss.interceptor.proxy.InterceptionHandler;
 import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
+import org.jboss.interceptor.proxy.InterceptionHandler;
+import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
 import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.DeploymentException;
-import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * @author Marius Bogoevici
@@ -47,8 +47,7 @@ public class ClassInterceptionHandlerFactory implements InterceptionHandlerFacto
       try
       {
          // this is not a managed instance - assume no-argument constructor exists
-         Constructor constructor = clazz.getDeclaredConstructor();
-         Reflections.ensureAccessible(constructor);
+         Constructor constructor = SecureReflections.getDeclaredConstructor(clazz);
          Object interceptorInstance = constructor.newInstance();
          // inject
          manager.createInjectionTarget(manager.createAnnotatedType(clazz)).inject(interceptorInstance, creationalContext);

@@ -74,6 +74,7 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * An enterprise bean representation
@@ -181,7 +182,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
             {
                try
                {
-                  T instance = proxyClass.newInstance();
+                  T instance = SecureReflections.newInstance(proxyClass);
                   ctx.push(instance);
                   return Proxies.attachMethodHandler(instance, new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, ctx));
                }
@@ -409,7 +410,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
       {
          if (type instanceof Class)
          {
-            for (Method m : ((Class<?>) type).getMethods())
+            for (Method m : SecureReflections.getMethods((Class<?>) type))
             {
                if (method.getName().equals(m.getName()) && Arrays.equals(method.getParameterTypesAsArray(), m.getParameterTypes()))
                {

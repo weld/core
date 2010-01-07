@@ -23,6 +23,7 @@ import java.lang.annotation.Annotation;
 import org.jboss.weld.ForbiddenArgumentException;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * A base class for utility classes that represent annotations, classes etc
@@ -119,7 +120,7 @@ public class ApiAbstraction
       }
       try
       {
-         return clazz.getField(memberName);
+         return SecureReflections.getField(clazz, memberName);
       }
       catch (SecurityException e)
       {

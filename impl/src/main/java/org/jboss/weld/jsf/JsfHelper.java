@@ -22,8 +22,6 @@ import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM
 import static org.jboss.weld.logging.messages.JsfMessage.IMPROPER_ENVIRONMENT;
 import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
-import java.lang.reflect.InvocationTargetException;
-
 import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
@@ -34,7 +32,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.conversation.ConversationIdName;
 import org.jboss.weld.servlet.ServletHelper;
-import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -62,7 +60,7 @@ public class JsfHelper
       {
          try
          {
-            return (Boolean) Reflections.invoke("isPostback", facesContext);
+            return (Boolean) SecureReflections.invoke(facesContext, "isPostback");
          }
          catch (Exception e)
          {

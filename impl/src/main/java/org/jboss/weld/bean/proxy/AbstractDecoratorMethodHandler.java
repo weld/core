@@ -27,6 +27,7 @@ import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * {@link MethodHandler} for Abstract decorators.
@@ -74,7 +75,7 @@ public class AbstractDecoratorMethodHandler implements MethodHandler
       if (Reflections.isAbstract(thisMethod))
       {
          Method method = ((AnnotatedMethod<?>) delegateClass.getWeldMethod(new MethodSignatureImpl(thisMethod))).getJavaMember();
-         return Reflections.invoke(method, delegate, args);
+         return SecureReflections.invoke(delegate, method, args);
       }
 
       return proceed.invoke(self, args);

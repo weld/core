@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import org.jboss.weld.util.collections.ConcurrentCache;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 import ch.qos.cal10n.MessageConveyor;
 import ch.qos.cal10n.MessageConveyorException;
@@ -37,7 +38,7 @@ public class WeldMessageConveyor extends MessageConveyor
          
          public String call() throws Exception
          {
-            Field field = key.getClass().getField(key.name());
+            Field field = SecureReflections.getField(key.getClass(), key.name());
             if (!field.isAnnotationPresent(MessageId.class))
             {
                throw new IllegalArgumentException("@MessageId must be present. Key: " + key + "; Key Type: " + key.getClass());

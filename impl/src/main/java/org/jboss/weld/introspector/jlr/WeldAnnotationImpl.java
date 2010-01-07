@@ -32,6 +32,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
@@ -89,7 +90,7 @@ public class WeldAnnotationImpl<T extends Annotation> extends WeldClassImpl<T> i
          
       });
       this.namedMembers = new HashMap<String, WeldMethod<?, ?>>();
-      for (Method member : clazz.getDeclaredMethods())
+      for (Method member : SecureReflections.getDeclaredMethods(clazz))
       {
          WeldMethod<?, ?> annotatedMethod = WeldMethodImpl.of(member, this, classTransformer);
          members.add(annotatedMethod);

@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jboss.weld.util.reflection.SecureReflections;
+
 /**
  * Utility class to produce friendly names e.g. for debugging
  * 
@@ -173,10 +175,6 @@ public class Names
     */
    public static String fieldToString(Field field)
    {
-      if (!field.isAccessible())
-      {
-         field.setAccessible(true);
-      }
       return "  Field " + annotationsToString(field.getAnnotations()) + listToString(parseModifiers(field.getModifiers()), " ") + field.getName();
    }
 
@@ -188,10 +186,6 @@ public class Names
     */
    public static String methodToString(Method method)
    {
-      if (!method.isAccessible())
-      {
-         method.setAccessible(true);
-      }
       return "  Method " + method.getReturnType().getSimpleName() + " " + annotationsToString(method.getAnnotations()) + listToString(parseModifiers(method.getModifiers()), " ") + method.getName() + "(" + parametersToString(method.getParameterTypes(), method.getParameterAnnotations(), false) + ");\n";
    }
 
@@ -261,15 +255,15 @@ public class Names
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Class " + typeToString(clazz) + "\n");
-      for (Field field : clazz.getFields())
+      for (Field field : SecureReflections.getFields(clazz))
       {
          buffer.append(fieldToString(field));
       }
-      for (Constructor<?> constructor : clazz.getConstructors())
+      for (Constructor<?> constructor : SecureReflections.getConstructors(clazz))
       {
          buffer.append(constructorToString(constructor));
       }
-      for (Method method : clazz.getMethods())
+      for (Method method : SecureReflections.getMethods(clazz))
       {
          buffer.append(methodToString(method));
       }

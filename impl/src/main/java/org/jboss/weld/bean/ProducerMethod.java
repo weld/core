@@ -43,6 +43,7 @@ import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.util.Names;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Represents a producer method bean
@@ -166,15 +167,10 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
          {
             if (type instanceof Class)
             {
-               Class<?> clazz = (Class<?>) type;
-               try
+               if (SecureReflections.methodExists((Class<?>) type, getAnnotatedItem().getName(), getAnnotatedItem().getParameterTypesAsArray()))
                {
-                  clazz.getDeclaredMethod(getAnnotatedItem().getName(), getAnnotatedItem().getParameterTypesAsArray());
                   methodDeclaredOnTypes = true;
-               }
-               catch (NoSuchMethodException nsme)
-               {
-                  // No - op
+                  continue;
                }
             }
          }

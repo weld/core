@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.introspector.jlr;
 
-import static org.jboss.weld.util.reflection.Reflections.ensureAccessible;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -75,13 +73,13 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
    public static <T> WeldConstructor<T> of(Constructor<T> constructor, WeldClass<T> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(constructor, classTransformer.getTypeStore());
-      return new WeldConstructorImpl<T>(ensureAccessible(constructor), constructor.getDeclaringClass(), constructor.getDeclaringClass(), null, new HierarchyDiscovery(constructor.getDeclaringClass()).getTypeClosure(), annotationStore, declaringClass, classTransformer);
+      return new WeldConstructorImpl<T>(constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass(), null, new HierarchyDiscovery(constructor.getDeclaringClass()).getTypeClosure(), annotationStore, declaringClass, classTransformer);
    }
    
    public static <T> WeldConstructor<T> of(AnnotatedConstructor<T> annotatedConstructor,  WeldClass<T> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(annotatedConstructor.getAnnotations(), annotatedConstructor.getAnnotations(), classTransformer.getTypeStore());
-      return new WeldConstructorImpl<T>(ensureAccessible(annotatedConstructor.getJavaMember()), annotatedConstructor.getJavaMember().getDeclaringClass(), annotatedConstructor.getBaseType(), annotatedConstructor, annotatedConstructor.getTypeClosure(), annotationStore, declaringClass, classTransformer);
+      return new WeldConstructorImpl<T>(annotatedConstructor.getJavaMember(), annotatedConstructor.getJavaMember().getDeclaringClass(), annotatedConstructor.getBaseType(), annotatedConstructor, annotatedConstructor.getTypeClosure(), annotationStore, declaringClass, classTransformer);
    }
 
    /**

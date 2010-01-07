@@ -16,20 +16,19 @@
  */
 package org.jboss.weld.introspector.jlr;
 
-import static org.jboss.weld.util.reflection.Reflections.ensureAccessible;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Set;
-
+import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
 import javax.enterprise.inject.spi.AnnotatedField;
 
+import org.jboss.weld.WeldException;
 import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
-import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Represents an annotated field
@@ -52,15 +51,15 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
    public static <T, X> WeldFieldImpl<T, X> of(Field field, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(field, classTransformer.getTypeStore());
-      return new WeldFieldImpl<T, X>(ensureAccessible(field), (Class<T>) field.getType(), field.getGenericType(), new HierarchyDiscovery(field.getGenericType()).getTypeClosure(),  annotationStore, declaringClass, classTransformer);
+      return new WeldFieldImpl<T, X>(field, (Class<T>) field.getType(), field.getGenericType(), new HierarchyDiscovery(field.getGenericType()).getTypeClosure(), annotationStore, declaringClass, classTransformer);
    }
-   
+
    public static <T, X> WeldFieldImpl<T, X> of(AnnotatedField<? super X> annotatedField, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       AnnotationStore annotationStore = AnnotationStore.of(annotatedField.getAnnotations(), annotatedField.getAnnotations(), classTransformer.getTypeStore());
-      return new WeldFieldImpl<T, X>(ensureAccessible(annotatedField.getJavaMember()), (Class<T>) annotatedField.getJavaMember().getType(), annotatedField.getBaseType(), annotatedField.getTypeClosure(), annotationStore, declaringClass, classTransformer);
+      return new WeldFieldImpl<T, X>(annotatedField.getJavaMember(), (Class<T>) annotatedField.getJavaMember().getType(), annotatedField.getBaseType(), annotatedField.getTypeClosure(), annotationStore, declaringClass, classTransformer);
    }
-   
+
    /**
     * Constructor
     * 
@@ -100,13 +99,20 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
 
    public void setOnInstance(Object instance, Object value) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException
    {
-      instance.getClass().getField(getName()).set(instance, value);
+      SecureReflections.getField(instance.getClass(), getName()).set(instance, value);
    }
 
    @SuppressWarnings("unchecked")
    public T get(Object instance)
    {
-      return (T) Reflections.getAndWrap(getDelegate(), instance);
+      try
+      {
+         return (T) getDelegate().get(instance);
+      }
+      catch (Exception e)
+      {
+         throw new WeldException(ACCESS_ERROR_ON_FIELD, e, getDelegate().getName(), getDelegate().getDeclaringClass());
+      }
    }
 
    /**
@@ -145,7 +151,6 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
          return false;
       }
    }
-
 
    @Override
    public int hashCode()

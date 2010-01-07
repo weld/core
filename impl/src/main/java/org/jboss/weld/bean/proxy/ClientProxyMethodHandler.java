@@ -34,6 +34,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -110,8 +111,8 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       }
       try
       {
-         Method method = Reflections.lookupMethod(proxiedMethod, proxiedInstance);
-         Object returnValue = Reflections.invoke(method, proxiedInstance, args);
+         Method method = SecureReflections.lookupMethod(proxiedInstance, proxiedMethod);
+         Object returnValue = SecureReflections.invoke(proxiedInstance, method, args);
          log.trace(CALL_PROXIED_METHOD, proxiedMethod, proxiedInstance, args, returnValue == null ? null : returnValue);
          return returnValue;
       }

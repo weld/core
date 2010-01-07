@@ -33,6 +33,7 @@ import javassist.util.proxy.ProxyObject;
 
 import org.jboss.weld.ForbiddenArgumentException;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Utilties for working with Javassist proxies
@@ -139,7 +140,7 @@ public class Proxies
    
    public static <T> T createProxy(MethodHandler methodHandler, TypeInfo typeInfo) throws IllegalAccessException, InstantiationException
    {
-      return Proxies.<T>createProxyClass(methodHandler, typeInfo).newInstance();
+      return SecureReflections.newInstance(Proxies.<T>createProxyClass(methodHandler, typeInfo));
    }
    
    public static <T> Class<T> createProxyClass(TypeInfo typeInfo)
@@ -215,7 +216,15 @@ public class Proxies
       }
       else
       {
-         Constructor<?> constructor = Reflections.getDeclaredConstructor(clazz);
+         Constructor<?> constructor = null;
+         try
+         {
+            constructor = SecureReflections.getDeclaredConstructor(clazz);
+         }
+         catch (NoSuchMethodException e)
+         {
+            return false;
+         }
          if (constructor == null)
          {
             return false;

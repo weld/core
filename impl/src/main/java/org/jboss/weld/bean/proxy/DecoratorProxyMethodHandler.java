@@ -30,7 +30,7 @@ import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
-import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Method handler for decorated beans
@@ -97,6 +97,6 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
             throw new ForbiddenStateException(UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR, beanInstance.getContextual().get());
          }
       }
-      return Reflections.invoke(method, getTargetInstance(), args);
+      return SecureReflections.invoke(getTargetInstance(), method, args);
    }
 }

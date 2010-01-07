@@ -18,19 +18,12 @@ package org.jboss.weld.util.reflection;
 
 import static org.jboss.weld.logging.Category.UTIL;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
-import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_VALUES_INACCESSIBLE;
-import static org.jboss.weld.logging.messages.UtilMessage.NO_SUCH_METHOD;
 
 import java.beans.Introspector;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -38,22 +31,17 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Qualifier;
 
-import org.jboss.weld.DeploymentException;
-import org.jboss.weld.ForbiddenArgumentException;
-import org.jboss.weld.WeldException;
 import org.jboss.weld.util.Types;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 
 import ch.qos.cal10n.IMessageConveyor;
-
 
 /**
  * Utility class for static reflection-type operations
@@ -131,7 +119,7 @@ public class Reflections
    {
       return Modifier.isFinal(clazz.getModifiers());
    }
-   
+
    public static int getNesting(Class<?> clazz)
    {
       if (clazz.isMemberClass() && !isStatic(clazz))
@@ -233,37 +221,13 @@ public class Reflections
 
    /**
     * Checks if a method is abstract
-    *
+    * 
     * @param method
     * @return
     */
    public static boolean isAbstract(Method method)
    {
       return Modifier.isAbstract(method.getModifiers());
-   }
-
-   /**
-    * Gets a constructor with matching parameter types
-    * 
-    * @param <T> The type
-    * @param clazz The class
-    * @param parameterTypes The parameter types
-    * @return The matching constructor. Null is returned if none is found
-    */
-   public static <T> Constructor<T> getDeclaredConstructor(Class<T> clazz, Class<?>... parameterTypes)
-   {
-      try
-      {
-         return clazz.getDeclaredConstructor(parameterTypes);
-      }
-      catch (NoSuchMethodException e)
-      {
-         return null;
-      }
-      catch (Exception e)
-      {
-         throw new WeldException(ACCESS_ERROR_ON_CONSTRUCTOR, e, clazz);
-      }
    }
 
    /**
@@ -331,128 +295,6 @@ public class Reflections
       return false;
    }
 
-   public static Object invoke(Method method, Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-   {
-      ensureAccessible(method);
-      return method.invoke(instance, parameters);
-   }
-
-   public static Object invoke(String methodName, Object instance, Object... parameters) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException
-   {
-      Class<?>[] parameterTypes = new Class<?>[parameters.length];
-      for (int i = 0; i < parameters.length; i++)
-      {
-         parameterTypes[i] = parameters[i].getClass();
-      }
-      Method method = instance.getClass().getMethod(methodName, parameterTypes);
-      return invoke(method, instance, parameters);
-   }
-
-
-   /**
-    * Gets value of a field and wraps exceptions
-    * 
-    * @param field The field to set on
-    * @param target The instance to set on
-    * @return The value to set
-    */
-   public static Object getAndWrap(Field field, Object target)
-   {
-      try
-      {
-         return field.get(target);
-      }
-      catch (IllegalArgumentException e)
-      {
-         throw new WeldException(ACCESS_ERROR_ON_FIELD, e, field.getName(), field.getDeclaringClass());
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new WeldException(ACCESS_ERROR_ON_FIELD, e, field.getName(), field.getDeclaringClass());
-      }
-   }
-
-   public static Object getAndWrap(String fieldName, Object target)
-   {
-      try
-      {
-         return getAndWrap(target.getClass().getField(fieldName), target);
-      }
-      catch (SecurityException e)
-      {
-         throw new WeldException(ACCESS_ERROR_ON_FIELD, e, fieldName, target.getClass());
-      }
-      catch (NoSuchFieldException e)
-      {
-         throw new WeldException(ACCESS_ERROR_ON_FIELD, e, fieldName, target.getClass());
-      }
-   }
-
-   /**
-    * Looks up a method in the type hierarchy of an instance
-    * 
-    * @param method The method to look for
-    * @param instance The instance to start from
-    * @return The method found
-    * @throws IllegalArgumentException if the method is not found
-    */
-   public static Method lookupMethod(Method method, Object instance)
-   {
-      try
-      {
-         return lookupMethod(method.getName(), method.getParameterTypes(), instance);
-      }
-      catch (NoSuchMethodException e)
-      {
-         throw new ForbiddenArgumentException(e);
-      }
-   }
-
-   /**
-    * Looks up a method in the type hierarchy of an instance
-    * 
-    * @param method The method to look for
-    * @param instance The instance to start from
-    * @return the method
-    * @throws NoSuchMethodException if the method is not found
-    */
-   public static Method lookupMethod(String methodName, Class<?>[] parameterTypes, Object instance) throws NoSuchMethodException
-   {
-      return lookupMethod(methodName, parameterTypes, instance.getClass());
-   }
-
-   private static Method lookupMethod(String methodName, Class<?>[] parameterTypes, Class<?> c) throws NoSuchMethodException
-   {
-      for (Class<? extends Object> clazz = c; clazz != null; clazz = clazz.getSuperclass())
-      {
-         for (Class<?> intf : clazz.getInterfaces())
-         {
-            try
-            {
-               return lookupMethod(methodName, parameterTypes, intf);
-            }
-            catch (NoSuchMethodException e)
-            {
-               // Expected
-            }
-         }
-         try
-         {
-            Method targetMethod = clazz.getDeclaredMethod(methodName, parameterTypes);
-            if (!targetMethod.isAccessible())
-            {
-               targetMethod.setAccessible(true);
-            }
-            return targetMethod;
-         }
-         catch (NoSuchMethodException nsme)
-         {
-            // Expected, nothing to see here.
-         }
-      }
-      throw new NoSuchMethodException(messageConveyer.getMessage(NO_SUCH_METHOD, methodName + Arrays.asList(parameterTypes).toString().replace("[", "(").replace("]", ")"), c.getName()));
-   }
-
    /**
     * Checks the bindingType to make sure the annotation was declared properly
     * as a binding type (annotated with @BindingType) and that it has a runtime
@@ -489,7 +331,7 @@ public class Reflections
    {
       return Types.boxedClass(rawType1).isAssignableFrom(Types.boxedClass(rawType2)) && isAssignableFrom(actualTypeArguments1, actualTypeArguments2);
    }
-   
+
    public static boolean matches(Class<?> rawType1, Type[] actualTypeArguments1, Class<?> rawType2, Type[] actualTypeArguments2)
    {
       return Types.boxedClass(rawType1).equals(Types.boxedClass(rawType2)) && isAssignableFrom(actualTypeArguments1, actualTypeArguments2);
@@ -524,7 +366,7 @@ public class Reflections
       }
       return false;
    }
-   
+
    public static boolean matches(Type type1, Set<? extends Type> types2)
    {
       for (Type type2 : types2)
@@ -604,7 +446,7 @@ public class Reflections
       }
       return false;
    }
-   
+
    public static boolean matches(Type type1, Type type2)
    {
       if (type1 instanceof Class<?>)
@@ -711,7 +553,7 @@ public class Reflections
       }
       return false;
    }
-   
+
    public static boolean matches(Class<?> rawType1, Type[] actualTypeArguments1, Type type2)
    {
       if (type2 instanceof ParameterizedType)
@@ -755,7 +597,7 @@ public class Reflections
       }
       return false;
    }
-   
+
    /**
     * Check whether whether any of the types1 matches a type in types2
     * 
@@ -810,60 +652,6 @@ public class Reflections
    public static boolean isSerializable(Class<?> clazz)
    {
       return clazz.isPrimitive() || Serializable.class.isAssignableFrom(clazz);
-   }
-
-   public static Field ensureAccessible(Field field)
-   {
-      if (!field.isAccessible() && !isIgnorePackage(field.getDeclaringClass().getPackage()))
-      {
-         field.setAccessible(true);
-      }
-      return field;
-   }
-
-   public static Method ensureAccessible(Method method)
-   {
-      if (!method.isAccessible() && !isIgnorePackage(method.getDeclaringClass().getPackage()))
-      {
-         method.setAccessible(true);
-      }
-      return method;
-   }
-
-   public static <T> Constructor<T> ensureAccessible(Constructor<T> constructor)
-   {
-      Class<?> c = constructor.getDeclaringClass();
-      Package p = c.getPackage();
-      if (!constructor.isAccessible() && !isIgnorePackage(p))
-      {
-         constructor.setAccessible(true);
-      }
-      return constructor;
-   }
-
-   private static boolean isIgnorePackage(Package pkg)
-   {
-      if (pkg != null)
-      {
-         return pkg.getName().startsWith("java.lang");
-      }
-      else
-      {
-         return false;
-      }
-   }
-
-   public static Class<?>[] extractValues(Annotation annotation)
-   {
-      try
-      {
-         Class<?>[] valueClasses = (Class<?>[]) annotation.annotationType().getMethod("value").invoke(annotation);
-         return valueClasses;
-      }
-      catch (Exception e)
-      {
-         throw new DeploymentException(ANNOTATION_VALUES_INACCESSIBLE, e);
-      }
    }
 
 }
