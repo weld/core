@@ -14,7 +14,7 @@ public enum Category
    CONVERSATION("Conversation"),
    CONTEXT("Context");
    
-   private static final String LOG_PREFIX = "Weld/";
+   private static final String LOG_PREFIX = "org.jboss.weld.";
    
    private final String name;
    
