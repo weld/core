@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-01-06 12:17+0000\n"
-"PO-Revision-Date: 2009-12-19 18:06-0300\n"
-"Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
+"PO-Revision-Date: 2010-01-07 14:27-0300\n"
+"Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,7 +17,7 @@ msgstr ""
 #: beans.xml:4
 #, no-c-format
 msgid "More about beans"
-msgstr ""
+msgstr "Mais sobre beans"
 
 #. Tag: para
 #: beans.xml:6
@@ -30,6 +30,12 @@ msgid ""
 "emphasis> and <emphasis>contextual</emphasis>. The lifecycle of a bean is "
 "always managed by the container."
 msgstr ""
+"Um bean é usualmente uma classe de aplicação que contém lógica de negócio. "
+"Pode ser chamado diretamente a partir do código Java, ou pode ser invocado "
+"por meio da Unified EL. Um bean pode acessar recursos transacionais. As "
+"dependências entre beans são gerenciadas automaticamente pelo contêiner. A "
+"maioria dos beans são <emphasis>stateful</emphasis> e <emphasis>contextuais</"
+"emphasis>. O ciclo de vida de um bean é sempre gerenciado pelo contêiner."
 
 #. Tag: para
 #: beans.xml:13
@@ -43,6 +49,14 @@ msgid ""
 "different states. The client-visible state depends upon which instance of "
 "the bean the client has a reference to."
 msgstr ""
+"Vamos voltar um segundo. O que realmente significa ser <emphasis>contextual</"
+"emphasis>? Uma vez que os beans podem ser stateful, é importante saber "
+"<emphasis>qual</emphasis> instância do bean eu tenho. Ao contrário de um "
+"modelo de componentes stateless (por exemplo, stateless session beans) ou um "
+"modelo de componentes singleton (como servlets, ou singleton beans), "
+"diferentes clientes de um bean vêem o bean em diferentes estados. O estado "
+"visível ao cliente depende de para qual instância do bean o cliente tem uma "
+"referência."
 
 #. Tag: para
 #: beans.xml:21
@@ -53,18 +67,24 @@ msgid ""
 "of the instance by explicitly creating and destroying it. Instead, the "
 "<emphasis>scope</emphasis> of the bean determines:"
 msgstr ""
+"No entanto, como em um modelo stateless ou singleton, mas de modo "
+"<emphasis>diferente</emphasis> em stateful session beans, o cliente não "
+"controla o ciclo de vida da instância pela explícita criação e destruição "
+"dela. Em vez disso, o <emphasis>escopo</emphasis> do bean determina:"
 
 #. Tag: para
 #: beans.xml:29
 #, no-c-format
 msgid "the lifecycle of each instance of the bean and"
-msgstr ""
+msgstr "o ciclo de vida de cada instância do bean e"
 
 #. Tag: para
 #: beans.xml:32
 #, no-c-format
 msgid "which clients share a reference to a particular instance of the bean."
 msgstr ""
+"quais clientes compartilham uma referência para uma instância específica do "
+"bean."
 
 #. Tag: para
 #: beans.xml:36
@@ -76,6 +96,12 @@ msgid ""
 "may be shared with certain other threads (for example, if the bean is "
 "session scoped) or even all other threads (if it is application scoped)."
 msgstr ""
+"Para uma dada thread em uma aplicação CDI, pode haver um <emphasis>contexto "
+"ativo</emphasis> associado com o escopo do bean. Este contexto pode ser "
+"único para a thread (por exemplo, se o bean possui escopo de solicitação), "
+"ou pode ser compartilhado com algumas outras threads (por exemplo, se o bean "
+"possui escopo de sessão) ou mesmo com todas as outras threads (se ele possui "
+"escopo de aplicação)."
 
 #. Tag: para
 #: beans.xml:43
@@ -85,6 +111,9 @@ msgid ""
 "the same instance of the bean. But clients in a different context may see a "
 "different instance (depending on the relationship between the contexts)."
 msgstr ""
+"Os clientes (por exemplo, outros beans) executados no mesmo contexto verão a "
+"mesma instância do bean. Mas os clientes em um diferente contexto podem ver "
+"uma instância diferente (dependendo do relacionamento entre os contextos)."
 
 #. Tag: para
 #: beans.xml:49
@@ -97,18 +126,24 @@ msgid ""
 "messages, and the bean implementations define the lifecycle of their own "
 "state. The beans are loosely coupled because:"
 msgstr ""
+"Uma grande vantagem do modelo contextual é que ele permite que stateful "
+"beans sejam tratados como serviços!  O cliente não precisa se preocupar com "
+"o gerenciamento do ciclo de vida do bean que ele está usando, <emphasis>nem "
+"mesmo precisam saber o que é ciclo de vida.</emphasis> Os beans interagem "
+"passando mensagens, e as implementações do bean definem o ciclo de vida de "
+"seu próprio estado. Os beans são de baixo acoplamento porque:"
 
 #. Tag: para
 #: beans.xml:58
 #, no-c-format
 msgid "they interact via well-defined public APIs"
-msgstr ""
+msgstr "eles interagem por meio de APIs bem definidas e públicas"
 
 #. Tag: para
 #: beans.xml:61
 #, no-c-format
 msgid "their lifecycles are completely decoupled"
-msgstr ""
+msgstr "seus ciclos de vida são completamente desacoplados"
 
 #. Tag: para
 #: beans.xml:65
@@ -120,6 +155,11 @@ msgid ""
 "facility for overriding bean implementations at deployment time, as we will "
 "see in <xref linkend=\"alternatives\"/>."
 msgstr ""
+"Podemos substituir um bean por outro bean diferente que implementa a mesma "
+"interface e tem um ciclo de vida diferente (um escopo diferente) sem afetar "
+"a outra implementação do bean. Na verdade, CDI define um mecanismo simples "
+"para sobrepor implementações de bean em tempo de implantação, como veremos "
+"na <xref linkend=\"alternatives\"/>."
 
 #. Tag: para
 #: beans.xml:71
@@ -130,12 +170,16 @@ msgid ""
 "injectable, contextual objects&#8212;may also obtain references to beans by "
 "injection."
 msgstr ""
+"Note que nem todos os clientes de um bean são eles próprios também beans. "
+"Outros objetos como servlets ou message-driven beans&#8212;que são por "
+"natureza objetos não injetáveis e não contextuais &#8212;podem também obter "
+"referências para beans por meio de injeção."
 
 #. Tag: title
 #: beans.xml:78
 #, no-c-format
 msgid "The anatomy of a bean"
-msgstr ""
+msgstr "A anatomia de um bean"
 
 #. Tag: para
 #: beans.xml:80
@@ -144,66 +188,68 @@ msgid ""
 "Enough hand-waving. More formally, the anatomy of a bean, according to the "
 "spec:"
 msgstr ""
+"Já chega de acenar as mãos. Mais formalmente, a anatomia de um bean, de "
+"acordo com a especificação:"
 
 #. Tag: para
 #: beans.xml:84
 #, no-c-format
 msgid "A bean comprises the following attributes:"
-msgstr ""
+msgstr "Um bean abrange os seguintes atributos:"
 
 #. Tag: para
 #: beans.xml:87
 #, no-c-format
 msgid "A (nonempty) set of bean types"
-msgstr ""
+msgstr "Um conjunto (não vazio) de tipos de bean"
 
 #. Tag: para
 #: beans.xml:88
 #, no-c-format
 msgid "A (nonempty) set of qualifiers"
-msgstr ""
+msgstr "Um conjunto (não vazio) de qualificadores"
 
 #. Tag: para
 #: beans.xml:89
 #, no-c-format
 msgid "A scope"
-msgstr ""
+msgstr "Um escopo"
 
 #. Tag: para
 #: beans.xml:90
 #, no-c-format
 msgid "Optionally, a bean EL name"
-msgstr ""
+msgstr "Opcionalmente, um nome EL do bean"
 
 #. Tag: para
 #: beans.xml:91
 #, no-c-format
 msgid "A set of interceptor bindings"
-msgstr ""
+msgstr "Um conjunto de vinculações com interceptadores"
 
 #. Tag: para
 #: beans.xml:92
 #, no-c-format
 msgid "A bean implementation"
-msgstr ""
+msgstr "Uma implementação do bean"
 
 #. Tag: para
 #: beans.xml:95
 #, no-c-format
 msgid "Furthermore, a bean may or may not be an alternative."
-msgstr ""
+msgstr "Além disso, um bean pode ou não pode ser um bean alternativo."
 
 #. Tag: para
 #: beans.xml:99
 #, no-c-format
 msgid "Let's see what all this new terminology means."
-msgstr ""
+msgstr "Vamos ver o que toda esta nova terminologia significa."
 
 #. Tag: title
 #: beans.xml:102
 #, no-c-format
 msgid "Bean types, qualifiers and dependency injection"
-msgstr ""
+msgstr "Tipos e qualificadores de bean e injeção de dependência"
 
 #. Tag: para
 #: beans.xml:104
@@ -213,18 +259,21 @@ msgid ""
 "Any injected attribute specifies a \"contract\" that must be satisfied by "
 "the bean to be injected. The contract is:"
 msgstr ""
+"Beans usualmente adquirem referências para outros beans por meio de injeção "
+"de dependência. Qualquer atributo injetado especifica um \"contrato\" que "
+"deve ser satisfeito pelo bean para ser injetado. O contrato é:"
 
 #. Tag: para
 #: beans.xml:110
 #, no-c-format
 msgid "a bean type, together with"
-msgstr ""
+msgstr "um tipo de bean, juntamente com"
 
 #. Tag: para
 #: beans.xml:111
 #, no-c-format
 msgid "a set of qualifiers."
-msgstr ""
+msgstr "um conjunto de qualificadores."
 
 #. Tag: para
 #: beans.xml:114
@@ -236,6 +285,11 @@ msgid ""
 "have multiple bean types. For example, the following bean has four bean "
 "types:"
 msgstr ""
+"Um tipo de bean é uma classe ou interface definida pelo usuário; um tipo que "
+"é visível ao cliente. Se o bean é um EJB session bean, o tipo do bean é a "
+"interface <literal>@Local</literal> ou a classe do bean da visão local. Um "
+"bean pode possuir múltiplos tipos. Por exemplo, o seguinte bean possui "
+"quatro tipos de bean:"
 
 #. Tag: programlisting
 #: beans.xml:120
@@ -262,6 +316,10 @@ msgid ""
 "<literal>java.lang.Object</literal>. (Notice that a parameterized type is a "
 "legal bean type)."
 msgstr ""
+"Os tipos de bean são <literal>BookShop</literal>, <literal>Business</"
+"literal> e <literal>Shop&lt;Book&gt;</literal>, bem como o tipo implícito "
+"<literal>java.lang.Object</literal>. (Observe que um tipo parametrizado é um "
+"tipo de bean válido)."
 
 #. Tag: para
 #: beans.xml:128
@@ -272,6 +330,10 @@ msgid ""
 "lang.Object</literal> as bean types, since the bean class, "
 "<literal>BookShopBean</literal> is not a client-visible type."
 msgstr ""
+"Entretanto, este session bean possui somente as interfaces locais "
+"<literal>BookShop</literal>, <literal>Auditable</literal> e <literal>java."
+"lang.Object</literal> como tipos de bean, uma vez que a classe do bean, "
+"<literal>BookShopBean</literal>, não é um tipo visível ao cliente."
 
 #. Tag: programlisting
 #: beans.xml:134
@@ -299,6 +361,10 @@ msgid ""
 "All primitive types are assumed to be identical to their corresponding "
 "wrapper types in <literal>java.lang</literal>."
 msgstr ""
+"A maioria dos tipos de bean você pode provavelmente descobrir. Uma pegadinha "
+"são os tipos primitivos. Todos os tipos primitivos são assumidos como "
+"idênticos aos seus correspondentes tipos adaptadores em <literal>java.lang</"
+"literal>."
 
 #. Tag: para
 #: beans.xml:143
@@ -310,6 +376,11 @@ msgid ""
 "restricted to <literal>Shop&lt;Book&gt;</literal>, together with "
 "<literal>java.lang.Object</literal>:"
 msgstr ""
+"Os tipos do bean podem ser limitados a um conjunto explícito, anotando o "
+"bean com a anotação <literal>@Typed</literal> e listando as classes que "
+"devem ser os tipos do bean. Por exemplo, os tipos de bean desde bean foram "
+"restritos a <literal>Shop&lt;Book&gt;</literal>, juntamente com "
+"<literal>java.lang.Object</literal>:"
 
 #. Tag: programlisting
 #: beans.xml:149
@@ -343,6 +414,15 @@ msgid ""
 "implementation it is interested in. We model this kind of \"quality\" using "
 "a qualifier."
 msgstr ""
+"Algumas vezes um tipo de bean sozinho não fornece informação suficiente para "
+"o contêiner saber qual bean injetar. Por exemplo, suponha que temos duas "
+"implementações da interface <literal>PaymentProcessor</literal>: "
+"<literal>CreditCardPaymentProcessor</literal> e "
+"<literal>DebitPaymentProcessor</literal>. Injetar em um campo do tipo "
+"<literal>PaymentProcessor</literal> introduz uma condição ambígua. Nestes "
+"casos, o cliente deve especificar algum qualidade adicional da implementação "
+"que ele está interessado. Modelamos esta categoria de \"qualidade\" usando "
+"um qualificador."
 
 #. Tag: para
 #: beans.xml:160
@@ -353,6 +433,11 @@ msgid ""
 "type system. It lets us disambiguate a type without having to fall back to "
 "string-based names. Here's an example of a qualifier annotation:"
 msgstr ""
+"Um qualificador é uma anotação definida pelo usuário que é ela própria "
+"anotada com <literal>@Qualifer</literal>. Uma anotação de qualificador é uma "
+"extensão do sitema de tipos. Ela nos permite desambiguar um tipo sem ter que "
+"recorrer a nomes baseados em strings. Aqui está um exemplo de uma anotação "
+"de qualificador:"
 
 #. Tag: programlisting
 #: beans.xml:166
@@ -377,6 +462,10 @@ msgid ""
 "definitions will become a familiar artifact as you'll be creating them from "
 "time to time."
 msgstr ""
+"Você pode não estar acostumado a ver a definição de uma anotação. Na "
+"verdade, essa poderia ser a primeira vez que você encontrou uma. Com CDI, "
+"definições de anotação se tornará um artefato familiar conforme você for "
+"criando-os de vez em quando."
 
 #. Tag: para
 #: beans.xml:175
@@ -387,6 +476,10 @@ msgid ""
 "this convention when creating your custom annotations, since they serve to "
 "describe the behaviors and roles of the class."
 msgstr ""
+"Preste atenção nos nomes das anotações embutidas em CDI e EJB. Você "
+"perceberá que elas são muitas vezes adjetivos. Nós encorajamos você a seguir "
+"esta convenção ao criar suas próprias anotações, uma vez que elas servem "
+"para descrever os comportamentos e papéis da classe."
 
 #. Tag: para
 #: beans.xml:182
@@ -397,6 +490,10 @@ msgid ""
 "type <literal>PaymentProcessor</literal> and qualifier <literal>@CreditCard</"
 "literal>:"
 msgstr ""
+"Agora que temos definido uma anotação de qualificador, podemos utilizá-la "
+"para resolver a ambiguidade no ponto de injeção. O seguinte ponto de injeção "
+"possui o tipo de bean <literal>PaymentProcessor</literal> e o qualificador "
+"<literal>@CreditCard</literal>:"
 
 #. Tag: programlisting
 #: beans.xml:188
@@ -411,6 +508,8 @@ msgid ""
 "If an injection point does not explicitly specify a qualifier, it has the "
 "default qualifier, <literal>@Default</literal>."
 msgstr ""
+"Se um ponto de injeção não define explicitamente um qualificador, ele terá o "
+"qualificador padrão, <literal>@Default</literal>."
 
 #. Tag: para
 #: beans.xml:197
@@ -421,6 +520,10 @@ msgid ""
 "finds exactly one matching bean, it injects an instance of that bean. If it "
 "doesn't, it reports an error to the user."
 msgstr ""
+"Para cada ponto de injeção, o contêiner pesquisa por um bean que satisfaça o "
+"contrato, um que tenha o tipo de bean e todos os qualificadores. Se ele "
+"encontrar exatamente um bean, ele injeta uma instância deste bean. Se ele "
+"não encontrar, ele reporta um erro ao usuário."
 
 #. Tag: para
 #: beans.xml:203
@@ -431,6 +534,10 @@ msgid ""
 "literal> and implements the bean type <literal>PaymentProcessor</literal>. "
 "Therefore, it satisfies our qualified injection point:"
 msgstr ""
+"Como especificamos os qualificadores de um bean? Anotando a classe de bean, "
+"é claro! O seguinte bean possui o qualificador <literal>@CreditCard</"
+"literal> e implementa o tipo de bean <literal>PaymentProcessor</literal>. "
+"Portanto, ele satisfaz nosso ponto de injeção qualificado:"
 
 #. Tag: programlisting
 #: beans.xml:209
@@ -451,6 +558,8 @@ msgid ""
 "If a bean does not explicitly specify a qualifier, it has the default "
 "qualifier, <literal>@Default</literal>."
 msgstr ""
+"Se um bean não define explicitamente um qualificador, ele terá o "
+"qualificador padrão, <literal>@Default</literal>."
 
 #. Tag: para
 #: beans.xml:225
@@ -461,12 +570,16 @@ msgid ""
 "do if there is more than one bean that satisfies a particular contract. "
 "We'll get into the details in <xref linkend=\"injection\"/>."
 msgstr ""
+"Esse não é bem o fim da história. CDI também define uma simples "
+"<emphasis>regra de resolução</emphasis> que ajuda o contêiner decidir o que "
+"fazer se houver mais de um bean que satisfaz um contrato específico. Vamos "
+"entrar em mais detalhes no <xref linkend=\"injection\"/>."
 
 #. Tag: title
 #: beans.xml:245
 #, no-c-format
 msgid "Scope"
-msgstr ""
+msgstr "Escopo"
 
 #. Tag: para
 #: beans.xml:248
@@ -478,6 +591,11 @@ msgid ""
 "into the specification, and provided by the container. Each scope is "
 "represented by an annotation type."
 msgstr ""
+"O <emphasis>escopo</emphasis> de um bean define o ciclo de vida e a "
+"visibilidade de suas instâncias. O modelo de contexto da CDI é extensível, "
+"acomodando escopos arbitrários. No entanto, certos escopos importantes estão "
+"encorporados na especificação, e fornecidos pelo contêiner. Cada escopo é "
+"representado por um tipo de anotação."
 
 #. Tag: para
 #: beans.xml:255
@@ -486,6 +604,8 @@ msgid ""
 "For example, any web application may have <emphasis>session scoped</"
 "emphasis> bean:"
 msgstr ""
+"Por exemplo, qualquer aplicação web pode possuir beans com <emphasis>escopo "
+"de sessão</emphasis>:"
 
 #. Tag: programlisting
 #: beans.xml:259
@@ -504,6 +624,9 @@ msgid ""
 "An instance of a session-scoped bean is bound to a user session and is "
 "shared by all requests that execute in the context of that session."
 msgstr ""
+"Uma instância de um bean com escopo de sessão está vinculada à sessão do "
+"usuário e é compartilhada por todas as solicitações executadas no contexto "
+"desta sessão."
 
 #. Tag: para
 #: beans.xml:265
@@ -515,6 +638,12 @@ msgid ""
 "indefinitely, consider using another scope with a shorted lifespan, such as "
 "the request or conversation scope."
 msgstr ""
+"Mantenha em mente que uma vez que um bean está vinculado a um contexto, ele "
+"permanece neste contexto até que o contexto seja destruído. Não existe modo "
+"algum para remover manualmente um bean daquele contexto. Se você não quer "
+"que o bean fique na sessão indefinitivamente, considere o uso de um outro "
+"escopo com um tempo de vida mais curto, como os escopos de solicitação e "
+"conversação."
 
 #. Tag: para
 #: beans.xml:273
@@ -525,18 +654,24 @@ msgid ""
 "this scope live to serve the object into which they were injected, which "
 "means their lifecycle is bound to the lifecycle of that object."
 msgstr ""
+"Se um escopo não está explicitamente especificado, então o bean pertence a "
+"um escopo especial chamado de <emphasis>pseudo-escopo dependente</emphasis>. "
+"Os beans com este escopo vivem para servir o objeto no qual eles foram "
+"injetados, o que significa que seu ciclo de vida está vinculado ao ciclo de "
+"vida deste objeto."
 
 #. Tag: para
 #: beans.xml:279
 #, no-c-format
 msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
 msgstr ""
+"Nós falaremos mais sobre escopos no <xref linkend=\"scopescontexts\"/>."
 
 #. Tag: title
 #: beans.xml:284
 #, no-c-format
 msgid "EL name"
-msgstr ""
+msgstr "Nome EL"
 
 #. Tag: para
 #: beans.xml:286
@@ -546,6 +681,9 @@ msgid ""
 "expressions, for example, in a JSP or JSF page, you must assign the bean an "
 "<emphasis>EL name</emphasis>."
 msgstr ""
+"Se você quer referenciar um bean em um código não-Java que suporta "
+"expressões Unified EL, por exemplo, em uma página JSP ou JSF, você deve "
+"assinar o bean com um <emphasis>nome EL</emphasis>."
 
 #. Tag: para
 #: beans.xml:291
@@ -554,6 +692,8 @@ msgid ""
 "The EL name is specified using the <literal>@Named</literal> annotation, as "
 "shown here:"
 msgstr ""
+"O nome EL é especificado usando a anotação <literal>@Named</literal>, como "
+"mostrado aqui:"
 
 #. Tag: programlisting
 #: beans.xml:295
@@ -569,7 +709,7 @@ msgstr ""
 #: beans.xml:297
 #, no-c-format
 msgid "Now we can easily use the bean in any JSF or JSP page:"
-msgstr ""
+msgstr "Agora podemos facilmente usar o bean em qualquer página JSF ou JSP:"
 
 #. Tag: programlisting
 #: beans.xml:299
@@ -579,6 +719,9 @@ msgid ""
 "   ...\n"
 "</h:dataTable>]]>"
 msgstr ""
+"<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
+"   ...\n"
+"</h:dataTable>]]>"
 
 #. Tag: para
 #: beans.xml:302
@@ -589,6 +732,10 @@ msgid ""
 "<literal>@Named</literal> annotation just makes it possible to reference the "
 "bean from the EL, most commonly from a JSF view."
 msgstr ""
+"A anotação <literal>@Named</literal> não é o que torna a classe um bean. A "
+"maioria das classes em um arquivo de beans já são reconhecidas como beans. A "
+"anotação <literal>@Named</literal> apenas torna possível referenciar o bean "
+"a partir da EL, mais comumente a partir de uma visão JSF."
 
 #. Tag: para
 #: beans.xml:309
@@ -597,6 +744,8 @@ msgid ""
 "We can let CDI choose a name for us by leaving off the value of the "
 "<literal>@Named</literal> annotation:"
 msgstr ""
+"Nós podemos deixar o CDI escolher um nome para nós, deixando de fora o valor "
+"da anotação <literal>@Named</literal>:"
 
 #. Tag: programlisting
 #: beans.xml:313
@@ -615,12 +764,14 @@ msgid ""
 "The name defaults to the unqualified class name, decapitalized; in this "
 "case, <literal>shoppingCart</literal>."
 msgstr ""
+"O nome padrão vem do nome não-qualificado da classe, descapitalizado; neste "
+"caso, <literal>shoppingCart</literal>."
 
 #. Tag: title
 #: beans.xml:325
 #, no-c-format
 msgid "Alternatives"
-msgstr ""
+msgstr "Alternativos"
 
 #. Tag: para
 #: beans.xml:327
@@ -634,6 +785,13 @@ msgid ""
 "may be declared by annotating the bean class with the <literal>@Alternative</"
 "literal> annotation."
 msgstr ""
+"Nós já vimos como os qualificadores nos permite escolher entre múltiplas "
+"implementações de uma interface durante o desenvolvimento. Mas algumas vezes "
+"temos uma interface (ou outro tipo de bean), cuja implementação varia "
+"dependendo do ambiente de implantação. Por exemplo, podemos querer usar uma "
+"implementação de imitação em um ambiente de teste. Uma "
+"<emphasis>alternativa</emphasis> seria declarar a classe de bean com a "
+"anotação <literal>@Alternative</literal>."
 
 #. Tag: programlisting
 #: beans.xml:335
@@ -657,6 +815,13 @@ msgid ""
 "module that uses it. Different modules can specify that they use different "
 "alternatives."
 msgstr ""
+"Normalmente anotamos um bean com <literal>@Alternative</literal> somente "
+"quando existe alguma outra implementação de uma interface que ele implementa "
+"(ou de qualquer de seus tipos de bean). Podemos escolher entre as "
+"alternativas no momento da implantação <emphasis>selecionando</emphasis> uma "
+"alternativa no descritor de implantação do CDI <literal>META-INF/beans.xml</"
+"literal> dentro do JAR ou módulo Java EE que utiliza-o. Diferentes módulos "
+"podem especificar que eles usam diferentes alternativas."
 
 #. Tag: para
 #: beans.xml:345
@@ -664,12 +829,14 @@ msgstr ""
 msgid ""
 "We cover alternatives in more detail in <xref linkend=\"alternatives\"/>."
 msgstr ""
+"Nós cobriremos os alternativos em mais detalhes na <xref linkend="
+"\"alternatives\"/>."
 
 #. Tag: title
 #: beans.xml:352
 #, no-c-format
 msgid "Interceptor binding types"
-msgstr ""
+msgstr "Tipos para vinculação de interceptador"
 
 #. Tag: para
 #: beans.xml:354
@@ -681,6 +848,11 @@ msgid ""
 "its methods. Holler. So what does CDI have to offer above and beyond that? "
 "Well, quite a lot actually. Let's cover some background."
 msgstr ""
+"Você pode estar familiarizado com o uso de interceptadores em EJB 3.0. Em "
+"Java EE 6, esta funcionalidade foi generalizada para trabalhar com outros "
+"beans gerenciados. Está bem, você não precisa tornar seu bean um EJB apenas "
+"para interceptar seus métodos. (Berro). Então, o que CDI tem a oferecer além "
+"disso? Bem, bastante realmente. Vamos dar algumas explicações."
 
 #. Tag: para
 #: beans.xml:361
@@ -698,6 +870,18 @@ msgid ""
 "repeatedly, then there's a good chance that you'll inadvertently define a "
 "different order for different beans. Now that's a problem."
 msgstr ""
+"A maneira em que interceptadores foram definidos em Java EE 5 não foi muito "
+"intuitivo. Era necessário especificar a <emphasis>implementação</emphasis> "
+"do interceptador diretamente na <emphasis>implementação</emphasis> do EJB, "
+"seja pela anotação <literal>@Interceptors</literal> ou no descritor XML. "
+"Você pode muito bem apenas colocar o código do interceptador "
+"<emphasis>dentro</emphasis> da implementação! Em segundo lugar, a ordem na "
+"qual os interceptadores são aplicados é obtida a partir da ordem na qual "
+"eles são declarados na anotação ou no descritor XML. Talvez isto não seja "
+"tão ruim se você está aplicando os interceptadores a um único bean. Mas, se "
+"você está aplicando eles repetidamente, então há uma boa chance de você "
+"definir por descuido uma ordem diferente para diferentes beans. Agora isso é "
+"um problema."
 
 #. Tag: para
 #: beans.xml:372
@@ -708,6 +892,10 @@ msgid ""
 "<emphasis>interceptor binding type</emphasis> to describe the behavior "
 "implemented by the interceptor."
 msgstr ""
+"CDI fornece uma nova abordagem para vincular interceptadores a beans que "
+"introduz um nível de indirecionamento (e, portanto, de controle). Nós temos "
+"que definir um <emphasis>tipo para vinculação de interceptador</emphasis> "
+"que descreve o comportamento implementado pelo interceptador."
 
 #. Tag: para
 #: beans.xml:378
@@ -718,6 +906,10 @@ msgid ""
 "interceptor classes to bean classes with no direct dependency between the "
 "two classes."
 msgstr ""
+"Um tipo para vinculação de interceptador é uma anotação definida pelo "
+"usuário que é ela mesma anotada com <literal>@InterceptorBinding</literal>. "
+"Isto nos permite vincular as classes de interceptador a classes de bean com "
+"nenhuma dependência direta entre as duas classes."
 
 #. Tag: programlisting
 #: beans.xml:383
@@ -742,6 +934,8 @@ msgid ""
 "The interceptor that implements transaction management declares this "
 "annotation:"
 msgstr ""
+"O interceptador que implementa o gerenciamento de transação declara esta "
+"anotação:"
 
 #. Tag: programlisting
 #: beans.xml:389
@@ -760,6 +954,8 @@ msgid ""
 "We can apply the interceptor to a bean by annotating the bean class with the "
 "same interceptor binding type:"
 msgstr ""
+"Podemos aplicar o interceptador em um bean anotando a classe de bean com o "
+"mesmo tipo para vinculação de interceptador."
 
 #. Tag: programlisting
 #: beans.xml:395
@@ -768,6 +964,8 @@ msgid ""
 "<![CDATA[public @SessionScoped @Transactional\n"
 "class ShoppingCart implements Serializable { ... }]]>"
 msgstr ""
+"<![CDATA[public @SessionScoped @Transactional\n"
+"class ShoppingCart implements Serializable { ... }]]>"
 
 #. Tag: para
 #: beans.xml:397
@@ -777,6 +975,8 @@ msgid ""
 "<literal>TransactionInterceptor</literal> don't know anything about each "
 "other."
 msgstr ""
+"Observe que <literal>ShoppingCart</literal> e "
+"<literal>TransactionInterceptor</literal> não sabem nada sobre o outro."
 
 #. Tag: para
 #: beans.xml:402
@@ -788,6 +988,11 @@ msgid ""
 "deployment descriptor <literal>META-INF/beans.xml</literal> of the JAR or "
 "Java EE module. This is also where we specify the interceptor ordering."
 msgstr ""
+"Interceptadores são específicos de implantação. (Não precisamos de um "
+"<literal>TransactionInterceptor</literal> em nossos testes de unidade!) Por "
+"padrão, um interceptador está disabilitado. Podemos habilitar um "
+"interceptador usando o descritor de implantação do CDI <literal>META-INF/"
+"beans.xml</literal> do JAR ou módulo Java EE."
 
 #. Tag: para
 #: beans.xml:409
@@ -796,6 +1001,8 @@ msgid ""
 "We'll discuss interceptors, and their cousins, decorators, in <xref linkend="
 "\"interceptors\"/> and <xref linkend=\"decorators\"/>."
 msgstr ""
+"Discutiremos sobre interceptadores, e seus primos decoradores, no <xref "
+"linkend=\"interceptors\"/> e <xref linkend=\"decorators\"/>."
 
 #. Tag: title
 #: beans.xml:419
