@@ -22,6 +22,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTO
 import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.ONLY_ONE_SCOPE_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
@@ -40,6 +41,8 @@ import javassist.util.proxy.ProxyObject;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -63,6 +66,7 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.SerializableContextualImpl;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
+import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
@@ -74,7 +78,6 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Strings;
 import org.jboss.weld.util.Proxies.TypeInfo;
-import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -115,6 +118,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    
    // Injection target for the bean
    private InjectionTarget<T> injectionTarget;
+
+   private ConstructorInjectionPoint<T> constructor;
 
    /**
     * Constructor
@@ -168,6 +173,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       }
    }
 
+   @Override
    public void checkType()
    {
       
@@ -623,6 +629,38 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods)
             manager.getClassDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
       }
+   }
+
+   protected void checkConstructor()
+   {
+      if (!constructor.getAnnotatedWBParameters(Disposes.class).isEmpty())
+      {
+         throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Disposes", constructor);
+      }
+      if (!constructor.getAnnotatedWBParameters(Observes.class).isEmpty())
+      {
+         throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Observes", constructor);
+      }
+   }
+
+   /**
+    * Initializes the constructor
+    */
+   protected void initConstructor()
+   {
+      this.constructor = Beans.getBeanConstructor(this, getAnnotatedItem());
+      // TODO We loop unecessarily many times here, I want to probably introduce some callback mechanism. PLM.
+      addInjectionPoints(Beans.getParameterInjectionPoints(this, constructor));
+   }
+
+   /**
+    * Returns the constructor
+    *
+    * @return The constructor
+    */
+   public ConstructorInjectionPoint<T> getConstructor()
+   {
+      return constructor;
    }
 
 

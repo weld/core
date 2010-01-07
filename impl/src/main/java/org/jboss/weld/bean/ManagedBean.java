@@ -24,7 +24,6 @@ import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_DECORATED_BEAN_METHOD_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
 import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
 import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
@@ -36,8 +35,6 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
@@ -56,7 +53,6 @@ import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bean.interceptor.CdiInterceptorHandlerFactory;
 import org.jboss.weld.bean.interceptor.ClassInterceptionHandlerFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
@@ -84,9 +80,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
    private static final XLogger xLog = loggerFactory().getXLogger(BEAN);
 
-   // The constructor
-   private ConstructorInjectionPoint<T> constructor;
-   
    // The Java EE style injection points
    private Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
    private Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
@@ -273,7 +266,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    protected T createInstance(CreationalContext<T> ctx) 
    {
-      return constructor.newInstance(manager, ctx);
+      return getConstructor().newInstance(manager, ctx);
    }
 
    @Override
@@ -425,18 +418,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       }
    }
 
-   protected void checkConstructor()
-   {
-      if (!constructor.getAnnotatedWBParameters(Disposes.class).isEmpty())
-      {
-         throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Disposes", constructor);
-      }
-      if (!constructor.getAnnotatedWBParameters(Observes.class).isEmpty())
-      {
-         throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Observes", constructor);
-      }
-   }
-
    @Override
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
@@ -464,26 +445,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       }
    }
 
-
-   /**
-    * Initializes the constructor
-    */
-   protected void initConstructor()
-   {
-      this.constructor = Beans.getBeanConstructor(this, getAnnotatedItem());
-      // TODO We loop unecessarily many times here, I want to probably introduce some callback mechanism. PLM.
-      addInjectionPoints(Beans.getParameterInjectionPoints(this, constructor));
-   }
-
-   /**
-    * Returns the constructor
-    *
-    * @return The constructor
-    */
-   public ConstructorInjectionPoint<T> getConstructor()
-   {
-      return constructor;
-   }
 
    /**
     * Gets a string representation

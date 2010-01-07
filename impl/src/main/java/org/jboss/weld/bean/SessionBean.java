@@ -125,6 +125,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
       this.ejbDescriptor = ejbDescriptor;
       initTypes();
       initBindings();
+      initConstructor();
    }
 
    /**
@@ -135,6 +136,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       if (!isInitialized())
       {
+         checkConstructor();
          super.initialize(environment);
          initProxyClass();
          checkEJBTypeAllowed();
@@ -180,28 +182,16 @@ public class SessionBean<T> extends AbstractClassBean<T>
 
             public T produce(CreationalContext<T> ctx)
             {
-               try
-               {
-                  T instance = SecureReflections.newInstance(proxyClass);
-                  ctx.push(instance);
-                  return Proxies.attachMethodHandler(instance, new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, ctx));
-               }
-               catch (InstantiationException e)
-               {
-                  throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
-               }
-               catch (IllegalAccessException e)
-               {
-                  throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
-               }
-               catch (Exception e)
-               {
-                  throw new CreationException(EJB_NOT_FOUND, e, proxyClass);
-               }
+               return SessionBean.this.createInstance(ctx);
             }
             
          });
       }
+   }
+   
+   protected T createInstance(CreationalContext<T> ctx) 
+   {
+      return getConstructor().newInstance(manager, ctx);
    }
 
    @Override
@@ -299,12 +289,30 @@ public class SessionBean<T> extends AbstractClassBean<T>
     */
    public T create(final CreationalContext<T> creationalContext)
    {
-      T instance = getInjectionTarget().produce(creationalContext);
-      if (hasDecorators())
+      try
       {
-         instance = applyDecorators(instance, creationalContext, null);
+         T instance = SecureReflections.newInstance(proxyClass);
+         creationalContext.push(instance);
+         Proxies.attachMethodHandler(instance, new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, creationalContext));
+         if (hasDecorators())
+         {
+            instance = applyDecorators(instance, creationalContext, null);
+         }
+         return instance;
       }
-      return instance;
+      catch (InstantiationException e)
+      {
+         throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
+      }
+      catch (Exception e)
+      {
+         throw new CreationException(EJB_NOT_FOUND, e, proxyClass);
+      }
+      
    }
 
    public void destroy(T instance, CreationalContext<T> creationalContext)
