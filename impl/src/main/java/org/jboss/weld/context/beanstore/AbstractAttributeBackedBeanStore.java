@@ -162,6 +162,6 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
    @Override
    public String toString()
    {
-      return "holding " + Names.count(getContextualIds()) + " instances";
+      return this.getClass().getName();
    }
 }
