@@ -102,10 +102,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    private List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
 
    // Decorators
-   private List<Decorator<?>>         decorators;
-   private Class<T>                   proxyClassForDecorators;
+   private List<Decorator<?>> decorators;
+   private Class<T> proxyClassForDecorators;
    private final ThreadLocal<Integer> decoratorStackPosition;
-   private final ThreadLocal<T>       decoratedActualInstance = new ThreadLocal<T>();
+   private final ThreadLocal<T> decoratedActualInstance = new ThreadLocal<T>();
 
    // Interceptors
    private boolean hasSerializationOrInvocationInterceptorMethods;
