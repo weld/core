@@ -29,7 +29,6 @@ import javax.enterprise.util.TypeLiteral;
 import org.jboss.weld.event.EventImpl;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resolution.ResolvableTransformer;
 import org.jboss.weld.util.collections.Arrays2;
 
 public class EventBean extends AbstractFacadeBean<Event<?>>
@@ -39,7 +38,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(TYPE, Object.class);
    private static final Annotation ANY = new AnyLiteral();
    private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(ANY));
-   public static final ResolvableTransformer TRANSFORMER = new FacadeBeanResolvableTransformer(TYPE);
+   
    
    public EventBean(BeanManagerImpl manager)
    {
