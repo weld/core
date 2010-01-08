@@ -29,6 +29,8 @@ import static org.jboss.weld.logging.messages.ServletMessage.BEAN_MANAGER_FOR_AR
 import static org.jboss.weld.logging.messages.ServletMessage.ILLEGAL_USE_OF_WELD_LISTENER;
 import static org.jboss.weld.logging.messages.ServletMessage.NOT_STARTING;
 import static org.jboss.weld.logging.messages.ServletMessage.ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED;
+import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_DESTROYED;
+import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_INITIALIZED;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
@@ -148,6 +150,7 @@ public class WeldListener extends AbstractServletListener
    @Override
    public void requestDestroyed(ServletRequestEvent event)
    {
+      log.trace(REQUEST_DESTROYED, event.getServletRequest());
       // JBoss AS will still start the deployment even if WB fails
       if (Container.available())
       {
@@ -170,6 +173,7 @@ public class WeldListener extends AbstractServletListener
    @Override
    public void requestInitialized(ServletRequestEvent event)
    {
+      log.trace(REQUEST_INITIALIZED, event.getServletRequest());
       // JBoss AS will still start the deployment even if WB fails
       if (Container.available())
       {

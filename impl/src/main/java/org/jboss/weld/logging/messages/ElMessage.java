@@ -38,5 +38,7 @@ import ch.qos.cal10n.LocaleData;
 public enum ElMessage
 {
    @MessageId("001000") RESOLUTION_ERROR,
-   @MessageId("001001") NULL_EXPRESSION_FACTORY;
+   @MessageId("001001") NULL_EXPRESSION_FACTORY,
+   @MessageId("001002") PROPERTY_LOOKUP,
+   @MessageId("001003") PROPERTY_RESOLVED;
 }

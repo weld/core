@@ -12,7 +12,8 @@ public enum Category
    JSF("JSF"),
    EVENT("Event"),
    CONVERSATION("Conversation"),
-   CONTEXT("Context");
+   CONTEXT("Context"),
+   EL("El");
    
    private static final String LOG_PREFIX = "org.jboss.weld.";
    

@@ -17,6 +17,10 @@
 package org.jboss.weld.el;
 
 import static org.jboss.weld.el.ELCreationalContextStack.getCreationalContextStore;
+import static org.jboss.weld.logging.Category.EL;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ElMessage.PROPERTY_LOOKUP;
+import static org.jboss.weld.logging.messages.ElMessage.PROPERTY_RESOLVED;
 import static org.jboss.weld.logging.messages.ElMessage.RESOLUTION_ERROR;
 
 import java.beans.FeatureDescriptor;
@@ -29,6 +33,7 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * An EL-resolver against the named beans
@@ -37,6 +42,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public abstract class AbstractWeldELResolver extends ELResolver
 {
+   private static final LocLogger log = loggerFactory().getLogger(EL);
    
    protected abstract BeanManagerImpl getManager(ELContext context);
 
@@ -64,13 +70,16 @@ public abstract class AbstractWeldELResolver extends ELResolver
       if (property != null)
       {
          String propertyString = property.toString();
+         log.trace(PROPERTY_LOOKUP, propertyString);
          Namespace namespace = null;
-         if (base == null) 
+         if (base == null)
          {
             if (getManager(context).getRootNamespace().contains(propertyString))
             {
+               Object value = getManager(context).getRootNamespace().get(propertyString);
                context.setPropertyResolved(true);
-               return getManager(context).getRootNamespace().get(propertyString);
+               log.trace(PROPERTY_RESOLVED, propertyString, value);
+               return value;
             }
          }
          else if (base instanceof Namespace)
@@ -81,7 +90,9 @@ public abstract class AbstractWeldELResolver extends ELResolver
             if (namespace.contains(propertyString))
             {
                // There is a child namespace
-               return namespace.get(propertyString);
+               Object value = namespace.get(propertyString);
+               log.trace(PROPERTY_RESOLVED, propertyString, value);
+               return value;
             }
          }
          else
@@ -108,12 +119,12 @@ public abstract class AbstractWeldELResolver extends ELResolver
             {
                value = creationalContext.putIfAbsent(bean, new Callable<Object>()
                {
-                  
+
                   public Object call() throws Exception
                   {
                      return getManager(context).getReference(bean, creationalContext, false);
                   }
-                  
+
                });
             }
          }
@@ -124,6 +135,7 @@ public abstract class AbstractWeldELResolver extends ELResolver
          if (value != null)
          {
             context.setPropertyResolved(true);
+            log.trace(PROPERTY_RESOLVED, propertyString, value);
             return value;
          }
       }
