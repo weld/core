@@ -37,7 +37,6 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_TY
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +59,6 @@ import javax.el.ExpressionFactory;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
@@ -140,95 +138,7 @@ import com.google.common.collect.Multimaps;
 public class BeanManagerImpl implements WeldManager, Serializable
 {
 
-
-   private static class CurrentActivity
-   {
-	
-      private final Context context;
-      private final BeanManagerImpl manager;
-		
-      public CurrentActivity(Context context, BeanManagerImpl manager)
-      {
-         this.context = context;
-         this.manager = manager;
-      }
-
-      public Context getContext()
-      {
-         return context;
-      }
-      
-      public BeanManagerImpl getManager()
-      {
-         return manager;
-      }
-      
-      @Override
-      public boolean equals(Object obj)
-      {
-         if (obj instanceof CurrentActivity)
-         {
-            return this.getContext().equals(((CurrentActivity) obj).getContext());
-         }
-         else
-         {
-            return false;
-         }
-      }
-      
-      @Override
-      public int hashCode()
-      {
-         return getContext().hashCode();
-      }
-      
-      @Override
-      public String toString()
-      {
-         return getContext() + " -> " + getManager();
-      }
-   }
-
    private static final long serialVersionUID = 3021562879133838561L;
-
-   public static final InjectionPoint DUMMY_INJECTION_POINT = new InjectionPoint()
-   {
-      
-      public boolean isTransient()
-      {
-         return true;
-      }
-      
-      public boolean isDelegate()
-      {
-         return false;
-      }
-      
-      public Type getType()
-      {
-         return InjectionPoint.class;
-      }
-      
-      public Set<Annotation> getQualifiers()
-      {
-         return Collections.emptySet();
-      }
-      
-      public Member getMember()
-      {
-         return null;
-      }
-      
-      public Bean<?> getBean()
-      {
-         return null;
-      }
-      
-      public Annotated getAnnotated()
-      {
-         return null;
-      }
-   };
    
    /*
     * Application scoped services 
@@ -486,11 +396,11 @@ public class BeanManagerImpl implements WeldManager, Serializable
       
 
       // TODO Currently we build the accessible bean list on the fly, we need to set it in stone once bootstrap is finished...
-      Transform<Bean<?>> beanTransform = new Transform.BeanTransform(this);
+      Transform<Bean<?>> beanTransform = new BeanTransform(this);
       this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, createDynamicAccessibleIterable(beanTransform));
-      this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicAccessibleIterable(Transform.DECORATOR_BEAN));
-      this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicAccessibleIterable(Transform.INTERCEPTOR_BEAN));
-      this.observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(Transform.EVENT_OBSERVER));
+      this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicAccessibleIterable(new DecoratorTransform()));
+      this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicAccessibleIterable(new InterceptorTransform()));
+      this.observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(new ObserverMethodTransform()));
       this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
       this.weldELResolver = new WeldELResolver(this);
       this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
@@ -549,78 +459,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       Set<Iterable<T>> iterable = buildAccessibleClosure(new ArrayList<BeanManagerImpl>(), transform);
       return Iterables.concat(iterable); 
-   }
-   
-   private static interface Transform<T>
-   {
-      
-      public static class BeanTransform implements Transform<Bean<?>>
-      {
-         
-         private final BeanManagerImpl declaringBeanManager;
-
-         public BeanTransform(BeanManagerImpl declaringBeanManager)
-         {
-            this.declaringBeanManager = declaringBeanManager;
-         }
-
-         public Iterable<Bean<?>> transform(BeanManagerImpl beanManager)
-         {
-            // New beans and built in beans aren't resolvable transitively
-            if (beanManager.equals(declaringBeanManager))
-            {
-               return beanManager.getBeans();
-            }
-            else
-            {
-               return beanManager.getTransitiveBeans();
-            }
-         }
-         
-      };
-      
-      public static Transform<Decorator<?>> DECORATOR_BEAN = new Transform<Decorator<?>>()
-      {
-
-         public Iterable<Decorator<?>> transform(BeanManagerImpl beanManager)
-         {
-            return beanManager.getDecorators();
-         }
-         
-      };
-
-      public static Transform<Interceptor<?>> INTERCEPTOR_BEAN = new Transform<Interceptor<?>>()
-      {
-
-         public Iterable<Interceptor<?>> transform(BeanManagerImpl beanManager)
-         {
-            return beanManager.getInterceptors();
-         }
-
-      };
-      
-      public static Transform<ObserverMethod<?>> EVENT_OBSERVER = new Transform<ObserverMethod<?>>()
-      {
-
-         public Iterable<ObserverMethod<?>> transform(BeanManagerImpl beanManager)
-         {
-            return beanManager.getObservers();
-         }
-         
-      };
-      
-      public static Transform<String> NAMESPACE = new Transform<String>()
-      {
-
-         public Iterable<String> transform(BeanManagerImpl beanManager)
-         {
-            return beanManager.getNamespaces();
-         }
-         
-      };
-      
-      public Iterable<T> transform(BeanManagerImpl beanManager);
-      
    }
    
    public void addAccessibleBeanManager(BeanManagerImpl accessibleBeanManager)
@@ -860,7 +698,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return Collections.unmodifiableList(beans);
    }
    
-   private List<Bean<?>> getTransitiveBeans()
+   List<Bean<?>> getTransitiveBeans()
    {
       return Collections.unmodifiableList(transitiveBeans);
    }
@@ -877,7 +715,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    public Iterable<Bean<?>> getAccessibleBeans()
    {
-      return createDynamicAccessibleIterable(new Transform.BeanTransform(this));
+      return createDynamicAccessibleIterable(new BeanTransform(this));
    }
 
    public void addContext(Context context)
@@ -1301,12 +1139,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    public void pushDummyInjectionPoint()
    {
-      currentInjectionPoint.get().push(DUMMY_INJECTION_POINT);
+      currentInjectionPoint.get().push(DummyInjectionPoint.INSTANCE);
    }
    
    public void popDummyInjectionPoint()
    {
-      if (!currentInjectionPoint.get().isEmpty() && DUMMY_INJECTION_POINT.equals(currentInjectionPoint.get().peek()))
+      if (!currentInjectionPoint.get().isEmpty() && DummyInjectionPoint.INSTANCE.equals(currentInjectionPoint.get().peek()))
       {
          currentInjectionPoint.get().pop();
       }
@@ -1350,7 +1188,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    public Iterable<String> getAccessibleNamespaces()
    {
       // TODO Cache this
-      return createDynamicAccessibleIterable(Transform.NAMESPACE);
+      return createDynamicAccessibleIterable(new NamespaceTransform());
    }
    
    private Set<CurrentActivity> getCurrentActivities()
@@ -1378,7 +1216,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       // TODO I don't like this lazy init
       if (rootNamespace == null)
       {
-         rootNamespace = new Namespace(createDynamicAccessibleIterable(Transform.NAMESPACE));
+         rootNamespace = new Namespace(createDynamicAccessibleIterable(new NamespaceTransform()));
       }
       return rootNamespace;
    }

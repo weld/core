@@ -40,7 +40,7 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContextualStoreImpl;
-import org.jboss.weld.Container.Status;
+import org.jboss.weld.ContainerState;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
@@ -288,7 +288,7 @@ public class WeldBootstrap implements Bootstrap
          this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices);
          
          Container.initialize(deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
-         Container.instance().setStatus(Status.STARTING);
+         Container.instance().setStatus(ContainerState.STARTING);
          
          createContexts();
          initializeContexts();
@@ -381,7 +381,7 @@ public class WeldBootstrap implements Bootstrap
          // Re-read the deployment structure, this will be the physical structure, extensions, classes, and any beans added using addBean outside the physical structure
          beanDeployments = deploymentVisitor.visit();
          Container.instance().putBeanDeployments(beanDeployments);
-         Container.instance().setStatus(Status.INITIALIZED);
+         Container.instance().setStatus(ContainerState.INITIALIZED);
       }
       return this;
    }
@@ -406,7 +406,7 @@ public class WeldBootstrap implements Bootstrap
       synchronized (this)
       {
          // Register the managers so external requests can handle them
-         Container.instance().setStatus(Status.VALIDATED);
+         Container.instance().setStatus(ContainerState.VALIDATED);
       }
       return this;
    }
@@ -442,7 +442,7 @@ public class WeldBootstrap implements Bootstrap
       }
       finally
       {
-         Container.instance().setStatus(Status.SHUTDOWN);
+         Container.instance().setStatus(ContainerState.SHUTDOWN);
          Container.instance().deploymentServices().get(ContextLifecycle.class).endApplication();
       }
    }

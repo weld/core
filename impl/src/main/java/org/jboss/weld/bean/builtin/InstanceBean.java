@@ -30,19 +30,15 @@ import javax.inject.Provider;
 
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resolution.ResolvableTransformer;
 import org.jboss.weld.util.collections.Arrays2;
 
 public class InstanceBean extends AbstractFacadeBean<Instance<?>>
 {
-
    private static final Class<Instance<?>> INSTANCE_TYPE = new TypeLiteral<Instance<?>>() {}.getRawType();
    private static final Class<Provider<?>> PROVIDER_TYPE = new TypeLiteral<Provider<?>>() {}.getRawType();
    private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(INSTANCE_TYPE, PROVIDER_TYPE, Object.class);
    private static final Any ANY = new AnyLiteral();
    private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(ANY));
-   public static final ResolvableTransformer INSTANCE_TRANSFORMER = new FacadeBeanResolvableTransformer(INSTANCE_TYPE);
-   public static final ResolvableTransformer PROVIDER_TRANSFORMER = new FacadeBeanResolvableTransformer(PROVIDER_TYPE);
    
    public InstanceBean(BeanManagerImpl manager)
    {

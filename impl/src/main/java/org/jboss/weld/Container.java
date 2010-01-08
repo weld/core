@@ -41,52 +41,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class Container
 {
    
-   /**
-    * Container status
-    * @author pmuir
-    *
-    */
-   public enum Status
-   {
-      /**
-       * The container has not been started
-       */
-      STOPPED(false),
-      /**
-       * The container is starting
-       */
-      STARTING(false),
-      /**
-       * The container has started and beans have been deployed
-       */
-      INITIALIZED(true),
-      /**
-       * The deployment has been validated
-       */
-      VALIDATED(true),
-      /**
-       * The container has been shutdown
-       */
-      SHUTDOWN(false);
-      
-      private Status(boolean available)
-      {
-         this.available = available;
-      }
-      
-      final boolean available;
-      
-      /**
-       * Whether the container is available for use
-       * 
-       * @return
-       */
-      public boolean isAvailable()
-      {
-         return available;
-      }
-   }
-   
    private final static Singleton<Container> instance;
    
    static
@@ -132,7 +86,7 @@ public class Container
    
    private final ServiceRegistry deploymentServices;
    
-   private Status status = Status.STOPPED;
+   private ContainerState status = ContainerState.STOPPED;
    
    public Container(BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices)
    {
@@ -230,12 +184,12 @@ public class Container
       }
    }
    
-   public Status getStatus()
+   public ContainerState getStatus()
    {
       return status;
    }
    
-   public void setStatus(Status status)
+   public void setStatus(ContainerState status)
    {
       this.status = status;
    }

@@ -60,6 +60,7 @@ import org.jboss.weld.exceptions.IllegalProductException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.DummyInjectionPoint;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Names;
@@ -248,7 +249,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
          }
          InjectionPoint injectionPoint = manager.getCurrentInjectionPoint();
-         if (injectionPoint == null || injectionPoint.equals(BeanManagerImpl.DUMMY_INJECTION_POINT))
+         if (injectionPoint == null || injectionPoint.equals(DummyInjectionPoint.INSTANCE))
          {
             return;
          }

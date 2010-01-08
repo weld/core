@@ -28,7 +28,6 @@ import java.util.Set;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.ForbiddenStateException;
-import org.jboss.weld.exceptions.InvalidOperationException;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
@@ -47,34 +46,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
    
    private final SetMultimap<Class<?>, String> ejbByClass;
    
-   public static final EjbDescriptors EMPTY = new EjbDescriptors()
-   {
-      @Override
-      public <T> void add(EjbDescriptor<T> ejbDescriptor)
-      {
-         throw new InvalidOperationException();
-      }
-      
-      @Override
-      public void addAll(Iterable<EjbDescriptor<?>> ejbDescriptors)
-      {
-         throw new InvalidOperationException();
-      }
-      
-      @Override
-      public void cleanup()
-      {
-         throw new InvalidOperationException();
-      }
-      
-      @Override
-      public void clear()
-      {
-         throw new InvalidOperationException();
-      }
-      
-      
-   };
+   public static final EjbDescriptors EMPTY = new EjbDescriptors();
 
    /**
     * Constructor

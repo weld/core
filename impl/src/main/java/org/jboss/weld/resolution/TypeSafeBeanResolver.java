@@ -21,10 +21,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.util.TypeLiteral;
+import javax.inject.Provider;
 
-import org.jboss.weld.bean.builtin.EventBean;
-import org.jboss.weld.bean.builtin.InstanceBean;
+import org.jboss.weld.bean.builtin.FacadeBeanResolvableTransformer;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ConcurrentCache;
@@ -36,26 +39,25 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Resolvable, T>
 {
-
-   public static final Set<ResolvableTransformer> TRANSFORMERS;
    
+   private static final Class<Instance<?>> INSTANCE_TYPE = new TypeLiteral<Instance<?>>() {}.getRawType();
+   private static final Class<Provider<?>> PROVIDER_TYPE = new TypeLiteral<Provider<?>>() {}.getRawType();
+   private static final Class<Event<?>> EVENT_TYPE = new TypeLiteral<Event<?>>() {}.getRawType();
+
+   private final Set<ResolvableTransformer> transformers;
    private final BeanManagerImpl manager;
    private final ConcurrentCache<Set<?>, Set<Bean<?>>> disambiguatedBeans; 
-   
-   static
-   {
-      TRANSFORMERS = new HashSet<ResolvableTransformer>();
-      TRANSFORMERS.add(EventBean.TRANSFORMER);
-      TRANSFORMERS.add(InstanceBean.INSTANCE_TRANSFORMER);
-      TRANSFORMERS.add(InstanceBean.PROVIDER_TRANSFORMER);
-      TRANSFORMERS.add(new NewResolvableTransformer());
-   }
 
    public TypeSafeBeanResolver(BeanManagerImpl manager, Iterable<T> beans)
    {
       super(beans);
       this.manager = manager;
       this.disambiguatedBeans = new ConcurrentCache<Set<?>, Set<Bean<?>>>();
+      transformers = new HashSet<ResolvableTransformer>();
+      transformers.add(new FacadeBeanResolvableTransformer(EVENT_TYPE));
+      transformers.add(new FacadeBeanResolvableTransformer(INSTANCE_TYPE));
+      transformers.add(new FacadeBeanResolvableTransformer(PROVIDER_TYPE));
+      transformers.add(new NewResolvableTransformer());
    }
 
    @Override
@@ -81,7 +83,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    @Override
    protected Iterable<ResolvableTransformer> getTransformers()
    {
-      return TRANSFORMERS;
+      return transformers;
    }
 
    @Override

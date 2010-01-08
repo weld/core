@@ -57,7 +57,7 @@ public class ApiAbstraction
    /**
     * "Not found" enumeration value.
     */
-   public enum DummyEnum
+   public static enum DummyEnum
    {
        DUMMY_VALUE
    }
