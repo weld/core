@@ -99,6 +99,7 @@
       <selenium.maven.plugin.version>1.0</selenium.maven.plugin.version>
       <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
       <maven.antrun.plugin.version>1.3</maven.antrun.plugin.version>
+      <failsafe.maven.plugin.version>2.4.3-alpha-1</failsafe.maven.plugin.version>
       <ant.junit.version>1.6.2</ant.junit.version>
       <ftest.version.discriminator></ftest.version.discriminator>
       <selenium.browser>*firefoxproxy</selenium.browser>
@@ -289,12 +290,37 @@
          <build>
             <pluginManagement>
                <plugins>
-                  <!-- deploy war/ear file to container -->
+                  <!-- get functional tests from ftest artifact -->
+                  <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-dependency-plugin</artifactId>
+                     <executions>
+                        <execution>
+                           <id>copy-ftest</id>
+                           <phase>process-sources</phase>
+                           <goals>
+                              <goal>copy</goal>
+                           </goals>
+                           <configuration>
+                              <outputDirectory>${project.build.directory}/ftest</outputDirectory>
+                              <stripVersion>true</stripVersion>
+                              <artifactItems>
+                                 <artifactItem>
+                                    <groupId>org.jboss.weld.examples.ftest</groupId>
+                                    <artifactId>${ftest.artifact}</artifactId>
+                                    <overWrite>true</overWrite>
+                                 </artifactItem>
+                              </artifactItems>
+                           </configuration>
+                        </execution>
+                     </executions>
+                  </plugin>
+
+                  <!-- deploy/undeploy application archive to/from container -->
                   <plugin>
                      <groupId>org.codehaus.cargo</groupId>
                      <artifactId>cargo-maven2-plugin</artifactId>
                      <version>${cargo.maven2.plugin.version}</version>
-
                      <configuration>
                         <container>
                            <containerId>jboss5x</containerId>
@@ -304,7 +330,6 @@
                            <type>runtime</type>
                         </configuration>
                      </configuration>
-
                      <executions>
                         <execution>
                            <id>deploy</id>
@@ -313,7 +338,6 @@
                               <goal>deploy</goal>
                            </goals>
                         </execution>
-
                         <execution>
                            <id>undeploy</id>
                            <phase>post-integration-test</phase>
@@ -323,6 +347,7 @@
                         </execution>
                      </executions>
                   </plugin>
+
                   <!--  start Selenium server -->
                   <plugin>
                      <groupId>org.codehaus.mojo</groupId>
@@ -341,10 +366,10 @@
                            </configuration>
                         </execution>
                         <!--
-                           this can't be used until plugin send the
+                           this can't be used until plugin sends the
                            right command, using Ant GET instead
                         -->
-                        <!-- 
+                        <!--
                            <execution> <id>stop-selenium</id>
                            <phase>post-integration-test</phase> <goals>
                            <goal>stop-server</goal> </goals>
@@ -355,69 +380,76 @@
                      </executions>
                   </plugin>
 
-                  <!-- launch tests -->
+                  <!-- run functional tests -->
+                  <plugin>
+                     <groupId>org.codehaus.mojo</groupId>
+                     <artifactId>failsafe-maven-plugin</artifactId>
+                     <version>${failsafe.maven.plugin.version}</version>
+                     <configuration>
+                        <testClassesDirectory>${project.build.directory}/ftest</testClassesDirectory>
+                        <suiteXmlFiles>
+                           <suiteXmlFile>src/test/selenium/${ftest.testsuite}</suiteXmlFile>
+                        </suiteXmlFiles>
+                        <argLine>-Xmx748m</argLine>
+                        <forkMode>once</forkMode>
+                        <systemProperties>
+                           <property>
+                              <name>selenium.server.port</name>
+                              <value>${selenium.server.port}</value>
+                           </property>
+                           <property>
+                              <name>selenium.server.host</name>
+                              <value>${selenium.server.host}</value>
+                           </property>
+                           <property>
+                              <name>selenium.browser</name>
+                              <value>${selenium.browser}</value>
+                           </property>
+                           <property>
+                              <name>selenium.browser.url</name>
+                              <value>${selenium.browser.url}</value>
+                           </property>
+                           <property>
+                              <name>selenium.speed</name>
+                              <value>${selenium.speed}</value>
+                           </property>
+                           <property>
+                              <name>selenium.timeout</name>
+                              <value>${selenium.timeout}</value>
+                           </property>
+                           <property>
+                              <name>basedir</name>
+                              <value>${basedir}</value>
+                           </property>
+                        </systemProperties>
+                     </configuration>
+                     <executions>
+                        <execution>
+                           <id>integration-test</id>
+                           <phase>integration-test</phase>
+                           <goals>
+                              <goal>integration-test</goal>
+                           </goals>
+                        </execution>
+                        <execution>
+                           <id>verify</id>
+                           <phase>verify</phase>
+                           <goals>
+                              <goal>verify</goal>
+                           </goals>
+                        </execution>
+                     </executions>
+                  </plugin>
+
+
+                  <!-- stop Selenium -->
                   <plugin>
                      <groupId>org.apache.maven.plugins</groupId>
                      <artifactId>maven-antrun-plugin</artifactId>
                      <version>${maven.antrun.plugin.version}</version>
 
-                     <!--  generate JUnit like report -->
-                     <dependencies>
-                        <dependency>
-                           <groupId>ant</groupId>
-                           <artifactId>ant-junit</artifactId>
-                           <version>${ant.junit.version}</version>
-                        </dependency>
-                     </dependencies>
-
                      <executions>
                         <!-- this ant script runs testng natively -->
-                        <execution>
-                           <id>testng</id>
-                           <phase>integration-test</phase>
-                           <configuration>
-                              <tasks>
-                                 <taskdef resource="testngtasks"
-                                    classpath="testng.jar" classpathref="maven.test.classpath" />
-                                 <testng classpathref="maven.test.classpath"
-                                    outputdir="${project.build.directory}/test-reports"
-                                    haltonfailure="false">
-                                    <xmlfileset dir="src/test/selenium"
-                                       includes="${ftest.testsuite}" />
-                                    <sysproperty key="selenium.server.port"
-                                       value="${selenium.server.port}" />
-                                    <sysproperty key="selenium.server.host"
-                                       value="${selenium.server.host}" />
-                                    <sysproperty key="selenium.browser"
-                                       value="${selenium.browser}" />
-                                    <sysproperty key="selenium.browser.url"
-                                       value="${selenium.browser.url}" />
-                                    <sysproperty key="selenium.speed"
-                                       value="${selenium.speed}" />
-                                    <sysproperty key="selenium.timeout"
-                                       value="${selenium.timeout}" />
-                                    <sysproperty key="basedir"
-                                       value="${basedir}" />
-                                 </testng>
-
-                                 <junitreport
-                                    todir="${project.build.directory}/test-reports">
-                                    <fileset
-                                       dir="${project.build.directory}/test-reports">
-                                       <include name="**/*.xml" />
-                                       <exclude name="**/*testng*.xml" />
-                                       <exclude
-                                          name="**/TESTS-TestSuites.xml" />
-                                    </fileset>
-                                    <report format="noframes"
-                                       todir="${project.build.directory}/test-reports" />
-                                 </junitreport>
-                              </tasks>
-                           </configuration>
-                           <goals>
-                              <goal>run</goal>
-                           </goals>
-                        </execution> 
                         <execution>
                            <id>stop-selenium</id>
                            <phase>post-integration-test</phase>
@@ -434,7 +466,7 @@
                            <goals>
                               <goal>run</goal>
                            </goals>
-                        </execution> 
+                        </execution>
                      </executions>
                   </plugin>
                </plugins>
@@ -477,12 +509,37 @@
          <build>
             <pluginManagement>
                <plugins>
-                  <!-- deploy war/ear file to container -->
+                  <!-- get functional tests from ftest artifact -->
+                  <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-dependency-plugin</artifactId>
+                     <executions>
+                        <execution>
+                           <id>copy-ftest</id>
+                           <phase>process-sources</phase>
+                           <goals>
+                              <goal>copy</goal>
+                           </goals>
+                           <configuration>
+                              <outputDirectory>${project.build.directory}/ftest</outputDirectory>
+                              <stripVersion>true</stripVersion>
+                              <artifactItems>
+                                 <artifactItem>
+                                    <groupId>org.jboss.weld.examples.ftest</groupId>
+                                    <artifactId>${ftest.artifact}</artifactId>
+                                    <overWrite>true</overWrite>
+                                 </artifactItem>
+                              </artifactItems>
+                           </configuration>
+                        </execution>
+                     </executions>
+                  </plugin>
+
+                  <!-- deploy/undeploy application archive to/from container -->
                   <plugin>
                      <groupId>org.codehaus.cargo</groupId>
                      <artifactId>cargo-maven2-plugin</artifactId>
                      <version>${cargo.maven2.plugin.version}</version>
-
                      <configuration>
                         <container>
                            <containerId>jboss5x</containerId>
@@ -492,7 +549,6 @@
                            <type>runtime</type>
                         </configuration>
                      </configuration>
-
                      <executions>
                         <execution>
                            <id>deploy</id>
@@ -501,7 +557,6 @@
                               <goal>deploy</goal>
                            </goals>
                         </execution>
-
                         <execution>
                            <id>undeploy</id>
                            <phase>post-integration-test</phase>
@@ -511,6 +566,7 @@
                         </execution>
                      </executions>
                   </plugin>
+
                   <!--  start Selenium server -->
                   <plugin>
                      <groupId>org.codehaus.mojo</groupId>
@@ -529,7 +585,7 @@
                            </configuration>
                         </execution>
                         <!--
-                           this can't be used until plugin send the
+                           this can't be used until plugin sends the
                            right command, using Ant GET instead
                         -->
                         <!--
@@ -543,69 +599,76 @@
                      </executions>
                   </plugin>
 
-                  <!-- launch tests -->
+                  <!-- run functional tests -->
+                  <plugin>
+                     <groupId>org.codehaus.mojo</groupId>
+                     <artifactId>failsafe-maven-plugin</artifactId>
+                     <version>${failsafe.maven.plugin.version}</version>
+                     <configuration>
+                        <testClassesDirectory>${project.build.directory}/ftest</testClassesDirectory>
+                        <suiteXmlFiles>
+                           <suiteXmlFile>src/test/selenium/${ftest.testsuite}</suiteXmlFile>
+                        </suiteXmlFiles>
+                        <argLine>-Xmx748m</argLine>
+                        <forkMode>once</forkMode>
+                        <systemProperties>
+                           <property>
+                              <name>selenium.server.port</name>
+                              <value>${selenium.server.port}</value>
+                           </property>
+                           <property>
+                              <name>selenium.server.host</name>
+                              <value>${selenium.server.host}</value>
+                           </property>
+                           <property>
+                              <name>selenium.browser</name>
+                              <value>${selenium.browser}</value>
+                           </property>
+                           <property>
+                              <name>selenium.browser.url</name>
+                              <value>${selenium.browser.url}</value>
+                           </property>
+                           <property>
+                              <name>selenium.speed</name>
+                              <value>${selenium.speed}</value>
+                           </property>
+                           <property>
+                              <name>selenium.timeout</name>
+                              <value>${selenium.timeout}</value>
+                           </property>
+                           <property>
+                              <name>basedir</name>
+                              <value>${basedir}</value>
+                           </property>
+                        </systemProperties>
+                     </configuration>
+                     <executions>
+                        <execution>
+                           <id>integration-test</id>
+                           <phase>integration-test</phase>
+                           <goals>
+                              <goal>integration-test</goal>
+                           </goals>
+                        </execution>
+                        <execution>
+                           <id>verify</id>
+                           <phase>verify</phase>
+                           <goals>
+                              <goal>verify</goal>
+                           </goals>
+                        </execution>
+                     </executions>
+                  </plugin>
+
+
+                  <!-- stop Selenium -->
                   <plugin>
                      <groupId>org.apache.maven.plugins</groupId>
                      <artifactId>maven-antrun-plugin</artifactId>
                      <version>${maven.antrun.plugin.version}</version>
 
-                     <!--  generate JUnit like report -->
-                     <dependencies>
-                        <dependency>
-                           <groupId>ant</groupId>
-                           <artifactId>ant-junit</artifactId>
-                           <version>${ant.junit.version}</version>
-                        </dependency>
-                     </dependencies>
-
                      <executions>
                         <!-- this ant script runs testng natively -->
-                        <execution>
-                           <id>testng</id>
-                           <phase>integration-test</phase>
-                           <configuration>
-                              <tasks>
-                                 <taskdef resource="testngtasks"
-                                    classpath="testng.jar" classpathref="maven.test.classpath" />
-                                 <testng classpathref="maven.test.classpath"
-                                    outputdir="${project.build.directory}/test-reports"
-                                    haltonfailure="false">
-                                    <xmlfileset dir="src/test/selenium"
-                                       includes="${ftest.testsuite}" />
-                                    <sysproperty key="selenium.server.port"
-                                       value="${selenium.server.port}" />
-                                    <sysproperty key="selenium.server.host"
-                                       value="${selenium.server.host}" />
-                                    <sysproperty key="selenium.browser"
-                                       value="${selenium.browser}" />
-                                    <sysproperty key="selenium.browser.url"
-                                       value="${selenium.browser.url}" />
-                                    <sysproperty key="selenium.speed"
-                                       value="${selenium.speed}" />
-                                    <sysproperty key="selenium.timeout"
-                                       value="${selenium.timeout}" />
-                                    <sysproperty key="basedir"
-                                       value="${basedir}" />
-                                 </testng>
-
-                                 <junitreport
-                                    todir="${project.build.directory}/test-reports">
-                                    <fileset
-                                       dir="${project.build.directory}/test-reports">
-                                       <include name="**/*.xml" />
-                                       <exclude name="**/*testng*.xml" />
-                                       <exclude
-                                          name="**/TESTS-TestSuites.xml" />
-                                    </fileset>
-                                    <report format="noframes"
-                                       todir="${project.build.directory}/test-reports" />
-                                 </junitreport>
-                              </tasks>
-                           </configuration>
-                           <goals>
-                              <goal>run</goal>
-                           </goals>
-                        </execution>
                         <execution>
                            <id>stop-selenium</id>
                            <phase>post-integration-test</phase>

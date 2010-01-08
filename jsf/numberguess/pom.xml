@@ -439,6 +439,7 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
          </build>
       </profile>
 
+      <!-- functional tests -->
       <profile>
          <id>ftest-jboss-remote-51</id>
          <activation>
@@ -446,13 +447,14 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
          </activation>
 
          <properties>
+            <ftest.artifact>ftest-numberguess</ftest.artifact>
             <ftest.version>0.1${ftest.version.discriminator}</ftest.version>
          </properties>
 
          <dependencies>
             <dependency>
                <groupId>org.jboss.weld.examples.ftest</groupId>
-               <artifactId>ftest-numberguess</artifactId>
+               <artifactId>${ftest.artifact}</artifactId>
                <version>${ftest.version}</version>
                <scope>test</scope>
             </dependency>
@@ -461,12 +463,20 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
          <build>
             <plugins>
                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-dependency-plugin</artifactId>
+               </plugin>
+               <plugin>
                   <groupId>org.codehaus.cargo</groupId>
                   <artifactId>cargo-maven2-plugin</artifactId>
                </plugin>
                <plugin>
                   <groupId>org.codehaus.mojo</groupId>
                   <artifactId>selenium-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>failsafe-maven-plugin</artifactId>
                </plugin>
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
@@ -482,13 +492,14 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
          </activation>
 
          <properties>
+            <ftest.artifact>ftest-numberguess</ftest.artifact>
             <ftest.version>0.1${ftest.version.discriminator}</ftest.version>
          </properties>
 
          <dependencies>
             <dependency>
                <groupId>org.jboss.weld.examples.ftest</groupId>
-               <artifactId>ftest-numberguess</artifactId>
+               <artifactId>${ftest.artifact}</artifactId>
                <version>${ftest.version}</version>
                <scope>test</scope>
             </dependency>
@@ -497,12 +508,20 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
          <build>
             <plugins>
                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-dependency-plugin</artifactId>
+               </plugin>
+               <plugin>
                   <groupId>org.codehaus.cargo</groupId>
                   <artifactId>cargo-maven2-plugin</artifactId>
                </plugin>
                <plugin>
                   <groupId>org.codehaus.mojo</groupId>
                   <artifactId>selenium-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>failsafe-maven-plugin</artifactId>
                </plugin>
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
@@ -424,7 +425,8 @@
                   <artifactId>maven-jetty-plugin</artifactId>
                   <configuration>
                      <connectors>
-                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                        <connector
+                           implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                            <port>${jetty.http.port}</port>
                            <maxIdleTime>3600000</maxIdleTime>
                         </connector>
@@ -442,7 +444,6 @@
          </build>
 
       </profile>
-	
       <profile>
          <id>ftest-jboss-remote-51</id>
          <activation>
@@ -450,13 +451,14 @@
          </activation>
 
          <properties>
+            <ftest.artifact>ftest-permalink</ftest.artifact>
             <ftest.version>0.1${ftest.version.discriminator}</ftest.version>
          </properties>
 
          <dependencies>
             <dependency>
                <groupId>org.jboss.weld.examples.ftest</groupId>
-               <artifactId>ftest-permalink</artifactId>
+               <artifactId>${ftest.artifact}</artifactId>
                <version>${ftest.version}</version>
                <scope>test</scope>
             </dependency>
@@ -465,12 +467,20 @@
          <build>
             <plugins>
                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-dependency-plugin</artifactId>
+               </plugin>
+               <plugin>
                   <groupId>org.codehaus.cargo</groupId>
                   <artifactId>cargo-maven2-plugin</artifactId>
                </plugin>
                <plugin>
                   <groupId>org.codehaus.mojo</groupId>
                   <artifactId>selenium-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>failsafe-maven-plugin</artifactId>
                </plugin>
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
@@ -479,7 +489,6 @@
             </plugins>
          </build>
       </profile>
-
       <profile>
          <id>ftest-jboss-remote-60</id>
          <activation>
@@ -487,13 +496,14 @@
          </activation>
 
          <properties>
+            <ftest.artifact>ftest-permalink</ftest.artifact>
             <ftest.version>0.1${ftest.version.discriminator}</ftest.version>
          </properties>
 
          <dependencies>
             <dependency>
                <groupId>org.jboss.weld.examples.ftest</groupId>
-               <artifactId>ftest-permalink</artifactId>
+               <artifactId>${ftest.artifact}</artifactId>
                <version>${ftest.version}</version>
                <scope>test</scope>
             </dependency>
@@ -502,12 +512,20 @@
          <build>
             <plugins>
                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-dependency-plugin</artifactId>
+               </plugin>
+               <plugin>
                   <groupId>org.codehaus.cargo</groupId>
                   <artifactId>cargo-maven2-plugin</artifactId>
                </plugin>
                <plugin>
                   <groupId>org.codehaus.mojo</groupId>
                   <artifactId>selenium-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>failsafe-maven-plugin</artifactId>
                </plugin>
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
@@ -532,9 +550,10 @@
                   <!--
                      <executions> <execution> <id>touch-web-inf</id>
                      <phase>validate</phase> <configuration> <tasks>
-                     <touch file="${webapp.directory}/WEB-INF/web.xml" />
-                     </tasks> </configuration> <goals> <goal>run</goal>
-                     </goals> </execution> </executions>
+                     <touch file="${webapp.directory}/WEB-INF/web.xml"
+                     /> </tasks> </configuration> <goals>
+                     <goal>run</goal> </goals> </execution>
+                     </executions>
                   -->
                </plugin>
             </plugins>
