@@ -57,7 +57,7 @@
       
          <para>
             An application is often comprised of a number of modules. For example, a Java EE deployment may contain a
-            number of EJB modules (containing business logic) and WAR modules (containing the user interface). A
+            number of EJB modules (containing business logic) and war modules (containing the user interface). A
             container may enforce certain <emphasis>accessibility</emphasis> rules which limit the visibility of classes
             between modules. CDI allows these same rules to apply to bean and observer method resolution. As the
             accessibility rules vary between containers, Weld requires the container to <emphasis>describe</emphasis>
@@ -335,7 +335,7 @@
          
          <tip>
             <para>
-               Most Servlet contains use a classloader-per-WAR, this may provide
+               Most Servlet contains use a classloader-per-war, this may provide
                a good way to identify the BDA in use for web requests.
             </para>
          </tip>
@@ -350,7 +350,7 @@
                <term><literal>ServletServices.getBeanDeploymentArchive(ServletContext ctx)</literal></term>
                <listitem>
                   <para>
-                     Identify the WAR in use. The <literal>ServletContext</literal> is provided for additional context.
+                     Identify the war in use. The <literal>ServletContext</literal> is provided for additional context.
                   </para>
                </listitem>
             </varlistentry>

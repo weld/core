@@ -263,11 +263,11 @@ public void sendMessage(String price) {
       <title>Packaging and deployment</title>
     
       <para>
-         CDI doesn't define any special deployment archive. You can package beans in JARs, EJB-JARs or WARs&#8212;any
+         CDI doesn't define any special deployment archive. You can package beans in jars, ejb jars or wars&#8212;any
          deployment location in the application classpath. However, the archive must be a "bean archive". That means
          each archive that contains beans <emphasis>must</emphasis> include a file named <literal>beans.xml</literal> in
          the <literal>META-INF</literal> directory of the classpath or <literal>WEB-INF</literal> directory of the web
-         root (for WAR archives). The file may be empty. Beans deployed in archives that do not have a
+         root (for war archives). The file may be empty. Beans deployed in archives that do not have a
          <literal>beans.xml</literal> file will not be available for use in the application.
       </para>
     

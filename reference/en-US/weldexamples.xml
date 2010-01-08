@@ -19,7 +19,7 @@
       
       <para>
          The numberguess example is comprised of a number of beans, configuration files and Facelets (JSF) views,
-         packaged as a WAR module. Let's start by examining the configuration files.
+         packaged as a war module. Let's start by examining the configuration files.
       </para>
       
       <para>
@@ -62,7 +62,7 @@
       http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
    
    <display-name>weld-jsf-numberguess-war</display-name>
-   <description>Weld JSF numberguess example (WAR)</description>
+   <description>Weld JSF numberguess example (war)</description>
 
    <servlet>
       <servlet-name>Faces Servlet</servlet-name>
@@ -370,13 +370,13 @@ public class Game implements Serializable {
          <para>
             A couple of modifications must be made to the numberguess artifact in order to deploy it to Tomcat or Jetty.
             First, Weld must be deployed as a Web Application library under <literal>WEB-INF/lib</literal> since the
-            servlet container does not provide the CDI services. For your convenience we provide a single JAR suitable
+            servlet container does not provide the CDI services. For your convenience we provide a single jar suitable
             for running Weld in any servlet container (including Jetty), <literal>weld-servlet.jar</literal>.
          </para>
          
          <tip>
             <para>
-               You must also include the JARs for JSF, EL, and the common annotations
+               You must also include the jars for JSF, EL, and the common annotations
                (<literal>jsr250-api.jar</literal>), all of which are provided by the Java EE platform (a Java EE
                application server). Are you starting to appreciate why a Java EE platform is worth using?
             </para>
@@ -1142,19 +1142,19 @@ public class Game
       </para>
       
       <para>
-         The translator example is built as an EAR and contains EJBs. As a result, it's structure is more complex than
+         The translator example is built as an ear and contains EJBs. As a result, it's structure is more complex than
          the numberguess example.
       </para>
       
       <note>
          <para>
-            Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a WAR, which will make this structure much
-            simpler! Still, there are other advantages of using an EAR.
+            Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a war, which will make this structure much
+            simpler! Still, there are other advantages of using an ear.
          </para>
       </note>
       
       <para>
-         First, let's take a look at the EAR aggregator, which is located in the example's <literal>ear</literal> directory. Maven
+         First, let's take a look at the ear aggregator, which is located in the example's <literal>ear</literal> directory. Maven
          automatically generates the <literal>application.xml</literal> for us from this plugin configuration:
       </para>
       
@@ -1191,7 +1191,7 @@ public class Game
       http://java.sun.com/xml/ns/javaee/application_5.xsd">
 
   <display-name>weld-jsf-translator-ear</display-name>
-  <description>The Weld JSF translator example (EAR)</description>
+  <description>The Weld JSF translator example (ear)</description>
   
   <module>
     <web>
@@ -1206,7 +1206,7 @@ public class Game
       </tip>
       
       <para>
-         Next, lets look at the WAR, which is located in the example's <literal>war</literal> directory. Just as in the
+         Next, lets look at the war, which is located in the example's <literal>war</literal> directory. Just as in the
          numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.0 and a <literal>web.xml</literal>
          (to activate JSF) under WEB-INF, both sourced from <literal>src/main/webapp/WEB-INF</literal>.
       </para>

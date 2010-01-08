@@ -6,10 +6,10 @@
 
    <para>
       Weld comes with two starter example applications, in addition to more specialized examples. The first,
-      <literal>weld-numberguess</literal>, is a web (WAR) example containing only non-transactional managed beans.
+      <literal>weld-numberguess</literal>, is a web (war) example containing only non-transactional managed beans.
       This example can be run on a wide range of servers, including JBoss AS, GlassFish, Apache Tomcat, Jetty, Google
       App Engine, and any compliant Java EE 6 container. The second example, <literal>weld-translator</literal>, is
-      an enterprise (EAR) example that contains session beans. This example must be run on JBoss AS 5.2, Glassfish 3.0 
+      an enterprise (ear) example that contains session beans. This example must be run on JBoss AS 5.2, Glassfish 3.0 
       or any compliant Java EE 6 container.
    </para>
    
@@ -42,10 +42,10 @@
                   <para>GlassFish 3.0,</para>
                </listitem>
                <listitem>
-                  <para>Apache Tomcat 6.0.x (WAR example only), or</para>
+                  <para>Apache Tomcat 6.0.x (war example only), or</para>
                </listitem>
                <listitem>
-                  <para>Jetty 6.1.x (WAR example only)</para>
+                  <para>Jetty 6.1.x (war example only)</para>
                </listitem>
             </itemizedlist>
          </listitem>
@@ -63,14 +63,14 @@
    
       <para>
          In the next few sections, you'll be using the Ant command (<literal>ant</literal>) to invoke the Ant build script 
-         in each example to compile, assemble and deploy the example to JBoss AS and, for the WAR example, Apache Tomcat. 
-         You can also deploy the generated artifact (WAR or EAR) to any other container that supports Java EE 6, such as 
+         in each example to compile, assemble and deploy the example to JBoss AS and, for the war example, Apache Tomcat. 
+         You can also deploy the generated artifact (war or ear) to any other container that supports Java EE 6, such as 
          GlassFish 3.
       </para>
    
       <para>
          If you have Maven installed, you can use the Maven command (<literal>mvn</literal>) to compile and assemble the 
-         standalone artifact (WAR or EAR) and, for the WAR example, run it in an embedded container.
+         standalone artifact (war or ear) and, for the war example, run it in an embedded container.
       </para>
       
       <para>The sections below cover the steps for deploying with both Ant and Maven in detail. Let's start with JBoss AS.</para>
@@ -197,8 +197,8 @@ $> ant deploy]]></programlisting>
 
       <note>
          <para>
-            The translator uses session beans, which are packaged in an EJB module within an EAR. Java EE 6 will allow
-            session beans to be deployed in WAR modules, but that's a topic for a later chapter.
+            The translator uses session beans, which are packaged in an EJB module within an ear. Java EE 6 will allow
+            session beans to be deployed in war modules, but that's a topic for a later chapter.
          </para>
       </note>
 
@@ -488,7 +488,7 @@ $> start]]></programlisting>
 
       <para>
          To run the <literal>weld-numberguess</literal> example on Jetty, switch to the example directory and execute
-         the <literal>inplace</literal> goal of the Maven WAR plugin followed by the <literal>run</literal> goal of 
+         the <literal>inplace</literal> goal of the Maven war plugin followed by the <literal>run</literal> goal of 
          the Maven Jetty plugin with the <literal>jetty</literal> profile enabled, as follows:
       </para>
 
@@ -506,15 +506,15 @@ $> mvn war:inplace jetty:run -Pjetty]]></programlisting>
          Any changes to assets in <literal>src/main/webapp</literal> take effect immediately. If a change to a webapp 
          configuration file is made, the application may automatically redeploy. The redeploy behavior can be fined-tuned 
          in the plugin configuration. If you make a change to a classpath resource, you need to execute a build and the 
-         <literal>inplace</literal> goal of the Maven WAR plugin, again with the <literal>jetty</literal> profile enabled.
+         <literal>inplace</literal> goal of the Maven war plugin, again with the <literal>jetty</literal> profile enabled.
       </para>
 
       <programlisting><![CDATA[$> mvn compile war:inplace -Pjetty]]></programlisting> 
 
       <para>
-         The <literal>war:inplace</literal> goal copies the compiled classes and JARs inside <literal>src/main/webapp</literal>, 
+         The <literal>war:inplace</literal> goal copies the compiled classes and jars inside <literal>src/main/webapp</literal>, 
          under <literal>WEB-INF/classes</literal> and <literal>WEB-INF/lib</literal>, respectively, mixing source and compiled 
-         files. However, the build does work around these temporary files by excluding them from the packaged WAR and cleaning 
+         files. However, the build does work around these temporary files by excluding them from the packaged war and cleaning 
          them during the Maven clean phase. 
       </para>
 
