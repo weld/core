@@ -24,8 +24,8 @@ import java.util.List;
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
-import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bean.WeldDecorator;
+import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;

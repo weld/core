@@ -36,14 +36,14 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.InvalidObjectException;
-import org.jboss.weld.InvalidOperationException;
+import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.exceptions.InvalidOperationException;
 import org.jboss.weld.introspector.ConstructorSignature;
 import org.jboss.weld.introspector.ForwardingWeldConstructor;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> implements WeldInjectionPoint<T, Constructor<T>>, Serializable
 {

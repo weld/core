@@ -22,9 +22,9 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.literal.NewLiteral;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Represents a @New simple bean

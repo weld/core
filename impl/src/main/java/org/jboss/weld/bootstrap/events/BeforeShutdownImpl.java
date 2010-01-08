@@ -18,7 +18,7 @@ package org.jboss.weld.bootstrap.events;
 
 import javax.enterprise.inject.spi.BeforeShutdown;
 
-import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * @author pmuir

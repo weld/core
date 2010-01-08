@@ -27,8 +27,8 @@ import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.WeldException;
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * An EL-resolver against the named beans

@@ -29,8 +29,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.jboss.weld.ForbiddenStateException;
-import org.jboss.weld.InvalidOperationException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.InvalidOperationException;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.Logger;

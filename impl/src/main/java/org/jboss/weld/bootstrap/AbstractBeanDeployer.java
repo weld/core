@@ -32,7 +32,6 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -63,6 +62,7 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.jsf.JsfApiAbstraction;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.util.reflection.Reflections;

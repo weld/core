@@ -26,9 +26,9 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.interceptor.util.InterceptionUtils;
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Names;
 
 /**

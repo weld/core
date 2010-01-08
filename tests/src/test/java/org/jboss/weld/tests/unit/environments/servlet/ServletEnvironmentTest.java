@@ -8,9 +8,9 @@ import java.util.Map;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.util.AnnotationLiteral;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.MockServletLifecycle;
 import org.jboss.weld.mock.TestContainer;
 import org.testng.annotations.AfterClass;

@@ -4,7 +4,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 
-import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 
 public class ProcessSimpleInjectionTarget<T> extends AbstractProcessInjectionTarget<T> implements ProcessInjectionTarget<T>

@@ -27,10 +27,10 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
-import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.conversation.ConversationIdName;
+import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.ServletHelper;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;

@@ -25,13 +25,13 @@ import javax.decorator.Decorator;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.interceptor.Interceptor;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
-import org.jboss.weld.DeploymentException;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
+import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 
 /**

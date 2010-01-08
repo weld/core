@@ -38,15 +38,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContextualStoreImpl;
-import org.jboss.weld.ForbiddenArgumentException;
-import org.jboss.weld.ForbiddenStateException;
-import org.jboss.weld.Validator;
 import org.jboss.weld.Container.Status;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
-import org.jboss.weld.bean.builtin.CallableMethodHandler.CallableMethodHandlerCleaner;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Lifecycle;
@@ -75,8 +70,11 @@ import org.jboss.weld.conversation.ServletConversationManager;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.logging.messages.VersionMessage;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
@@ -90,6 +88,7 @@ import org.jboss.weld.servlet.HttpSessionManager;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
+import org.jboss.weld.util.JavassistCleaner;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.serviceProvider.DefaultServiceLoaderFactory;
@@ -321,7 +320,7 @@ public class WeldBootstrap implements Bootstrap
       services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
       services.add(ContextualStore.class, new ContextualStoreImpl());
       services.add(ServiceLoaderFactory.class, new DefaultServiceLoaderFactory());
-      services.add(CallableMethodHandlerCleaner.class, new CallableMethodHandlerCleaner());
+      services.add(JavassistCleaner.class, new JavassistCleaner());
       return services;
    }
    

@@ -15,20 +15,19 @@
  * limitations under the License.
  */
 
-package org.jboss.weld;
+package org.jboss.weld.exceptions;
 
 /**
- * This exception occurs in cases where an object instance was expected, but
- * the reference was null.  A typical example is with a producer method that
- * is not allowed to return null.
+ * This exception is used when the specification calls for an
+ * {@link java.lang.IllegalStateException}.
  * 
  * @author David Allen
- *
  */
-public class NullInstanceException extends WeldException
+public class ForbiddenStateException extends IllegalStateException
 {
+   private static final long    serialVersionUID = 2L;
 
-   private static final long serialVersionUID = 1L;
+   private WeldExceptionMessage message;
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -38,9 +37,30 @@ public class NullInstanceException extends WeldException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> NullInstanceException(E key, Object... args)
+   public <E extends Enum<?>> ForbiddenStateException(E key, Object... args)
    {
-      super(key, args);
+      message = new WeldExceptionMessage(key, args);
    }
 
+   /**
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
+    */
+   public ForbiddenStateException(Throwable cause)
+   {
+      super(cause.getLocalizedMessage(), cause);
+   }
+
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
+   }
 }

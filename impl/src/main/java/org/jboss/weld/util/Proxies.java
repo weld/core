@@ -31,7 +31,8 @@ import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
-import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
@@ -138,27 +139,54 @@ public class Proxies
 
    }
    
+   private static final String DEFAULT_INTERCEPTOR = "default_interceptor";
+   
+   /**
+    * Create a proxy with a handler, registering the proxy for cleanup
+    * 
+    * @param <T>
+    * @param methodHandler
+    * @param typeInfo
+    * @return
+    * @throws IllegalAccessException
+    * @throws InstantiationException
+    */
    public static <T> T createProxy(MethodHandler methodHandler, TypeInfo typeInfo) throws IllegalAccessException, InstantiationException
    {
       return SecureReflections.newInstance(Proxies.<T>createProxyClass(methodHandler, typeInfo));
    }
    
+   /**
+    * Create a proxy class
+    * 
+    * You will need to manually register the proxy instances for cleanup
+    * 
+    * @param <T>
+    * @param typeInfo
+    * @return
+    */
    public static <T> Class<T> createProxyClass(TypeInfo typeInfo)
    {
       return createProxyClass(null, typeInfo);
    }
    
+   /**
+    * Create a proxy class
+    * 
+    * You will need to manually register the proxy instances for cleanup
+    * 
+    * @param <T>
+    * @param methodHandler
+    * @param typeInfo
+    * @return
+    */
    public static <T> Class<T> createProxyClass(MethodHandler methodHandler, TypeInfo typeInfo)
    {
       ProxyFactory proxyFactory = typeInfo.createProxyFactory();
-      if (methodHandler != null)
-      {
-         proxyFactory.setHandler(methodHandler);
-      }
+      attachMethodHandler(proxyFactory, methodHandler);
       
       @SuppressWarnings("unchecked")
       Class<T> clazz = proxyFactory.createClass();
-      
       return clazz;
    }
 
@@ -263,11 +291,23 @@ public class Proxies
       return instance.getClass().getName().indexOf("_$$_javassist_") > 0;
    }
    
+   public static ProxyFactory attachMethodHandler(ProxyFactory proxyFactory, MethodHandler methodHandler)
+   {
+      if (methodHandler != null)
+      {
+         proxyFactory.setHandler(new CleanableMethodHandler(methodHandler));
+      }
+      return proxyFactory;
+   }
+   
    public static <T> T attachMethodHandler(T instance, MethodHandler methodHandler)
    {
       if (instance instanceof ProxyObject)
       {
-         ((ProxyObject) instance).setHandler(methodHandler);
+         if (methodHandler != null)
+         {
+            ((ProxyObject) instance).setHandler(new CleanableMethodHandler(methodHandler));
+         }
          return instance;
       }
       else
@@ -275,6 +315,30 @@ public class Proxies
          throw new ForbiddenArgumentException(INSTANCE_NOT_A_PROXY, instance);
       }
       
+   }
+   
+   public static void clean(Class<?> clazz)
+   {
+      if (!ProxyObject.class.isAssignableFrom(clazz))
+      {
+         throw new ForbiddenArgumentException(INSTANCE_NOT_A_PROXY, clazz);
+      }
+      else
+      {
+         // Clear the default handler
+         try
+         {
+            SecureReflections.getDeclaredField(clazz, DEFAULT_INTERCEPTOR).set(null, null);
+         }
+         catch (IllegalAccessException e)
+         {
+            throw new WeldException(e);
+         }
+         catch (NoSuchFieldException e)
+         {
+            throw new WeldException(e);
+         }
+      }
    }
 
 

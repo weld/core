@@ -23,13 +23,13 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.TestContainer;
 import org.jboss.weld.mock.MockServletLifecycle;
 import org.jboss.weld.mock.MockBeanDeploymentArchive;
 import org.jboss.weld.mock.MockDeployment;
 import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.jboss.weld.util.serviceProvider.PackageServiceLoaderFactory;
-import org.jboss.weld.BeanManagerImpl;
 
 import org.testng.annotations.Test;
 

@@ -34,14 +34,14 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.DefinitionException;
-import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.reflection.SecureReflections;
 

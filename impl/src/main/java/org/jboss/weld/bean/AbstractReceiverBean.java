@@ -25,10 +25,10 @@ import java.lang.reflect.Member;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Alternative;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.introspector.WeldMember;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.slf4j.cal10n.LocLogger;
 
 /**

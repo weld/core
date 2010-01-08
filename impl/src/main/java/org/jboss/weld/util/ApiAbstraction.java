@@ -20,7 +20,7 @@ import static org.jboss.weld.logging.messages.UtilMessage.CLASS_NOT_ENUM;
 
 import java.lang.annotation.Annotation;
 
-import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.reflection.SecureReflections;

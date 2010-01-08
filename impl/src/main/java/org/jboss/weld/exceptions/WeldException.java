@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2008, Red Hat, Inc. and/or its affiliates, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -9,23 +9,37 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,  
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld;
+
+package org.jboss.weld.exceptions;
 
 import java.util.List;
 
 /**
- * Thrown if the definition of a bean is incorrect
+ * A general run-time exception used by the JSR-299 reference implementation Weld.
  * 
- * @author Pete Muir
+ * @author David Allen
  */
-public class DefinitionException extends WeldException
+public class WeldException extends RuntimeException
 {
-   private static final long serialVersionUID = 8014646336322875707L;
+   private static final long             serialVersionUID = 2L;
+
+   private WeldExceptionMessage message;
+   
+   /**
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
+    */
+   public WeldException(Throwable throwable)
+   {
+      super(throwable);
+      this.message = new WeldExceptionMessage(throwable.getLocalizedMessage());
+   }
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -35,9 +49,9 @@ public class DefinitionException extends WeldException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> DefinitionException(E key, Object... args)
+   public <E extends Enum<?>> WeldException(E key, Object... args)
    {
-      super(key, args);
+      this.message = new WeldExceptionMessage(key, args);
    }
 
    /**
@@ -49,19 +63,10 @@ public class DefinitionException extends WeldException
     * @param throwable The cause for this exception
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> DefinitionException(E key, Throwable throwable, Object... args)
+   public <E extends Enum<?>> WeldException(E key, Throwable throwable, Object... args)
    {
       super(throwable);
-   }
-
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public DefinitionException(Throwable throwable)
-   {
-      super(throwable);
+      this.message = new WeldExceptionMessage(key, args);
    }
 
    /**
@@ -71,9 +76,32 @@ public class DefinitionException extends WeldException
     * 
     * @param errors A list of throwables to use in the message
     */
-   public DefinitionException(List<Throwable> errors)
+   public WeldException(List<Throwable> errors)
    {
-      super(errors);
+      super();
+      StringBuilder errorMessage = new StringBuilder();
+      boolean firstError = true;
+      for (Throwable throwable : errors)
+      {
+         if (!firstError)
+         {
+            errorMessage.append('\n');
+         }
+         errorMessage.append(throwable.getLocalizedMessage());
+      }
+      this.message = new WeldExceptionMessage(errorMessage.toString());
    }
 
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
+
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
+   }
+   
 }

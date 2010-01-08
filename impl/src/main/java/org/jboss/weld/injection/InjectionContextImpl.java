@@ -18,9 +18,9 @@ package org.jboss.weld.injection;
 
 import javax.enterprise.inject.spi.InjectionTarget;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.injection.spi.InjectionContext;
 import org.jboss.weld.injection.spi.InjectionServices;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * @author pmuir

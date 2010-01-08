@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-package org.jboss.weld;
+package org.jboss.weld.exceptions;
 
 /**
  * Provides message localization service for the
- * {@link javax.enterprise.inject.UnproxyableResolutionException}.
+ * {@link javax.enterprise.inject.InjectionException}.
  * 
  * @author David Allen
  */
-public class UnproxyableResolutionException extends javax.enterprise.inject.UnproxyableResolutionException
+public class InjectionException extends javax.enterprise.inject.InjectionException
 {
    private static final long    serialVersionUID = 2L;
 
@@ -34,10 +34,24 @@ public class UnproxyableResolutionException extends javax.enterprise.inject.Unpr
     * 
     * @param throwable The cause of the exception
     */
-   public UnproxyableResolutionException(Throwable throwable)
+   public InjectionException(Throwable throwable)
    {
       super(throwable);
       message = new WeldExceptionMessage(throwable.getLocalizedMessage());
+   }
+
+   /**
+    * Creates a new exception with an arbitrary message and the cause of the
+    * exception. It is not recommended to use this constructor since the message
+    * cannot be localized.
+    * 
+    * @param message The error message
+    * @param throwable The cause of the exception or wrapped throwable
+    */
+   public InjectionException(String message, Throwable throwable)
+   {
+      super(throwable);
+      this.message = new WeldExceptionMessage(message);
    }
 
    /**
@@ -48,7 +62,7 @@ public class UnproxyableResolutionException extends javax.enterprise.inject.Unpr
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> UnproxyableResolutionException(E key, Object... args)
+   public <E extends Enum<?>> InjectionException(E key, Object... args)
    {
       message = new WeldExceptionMessage(key, args);
    }
@@ -64,5 +78,4 @@ public class UnproxyableResolutionException extends javax.enterprise.inject.Unpr
    {
       return message.getAsString();
    }
-
 }

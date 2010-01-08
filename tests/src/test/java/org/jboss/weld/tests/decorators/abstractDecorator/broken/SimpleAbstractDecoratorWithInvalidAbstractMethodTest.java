@@ -20,7 +20,7 @@ package org.jboss.weld.tests.decorators.abstractDecorator.broken;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.ExpectedDeploymentException;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
-import org.jboss.weld.DefinitionException;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 

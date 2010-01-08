@@ -23,9 +23,9 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Abstract base class with functions specific to RI built-in beans

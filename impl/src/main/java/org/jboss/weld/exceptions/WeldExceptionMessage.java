@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld;
+package org.jboss.weld.exceptions;
 
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 

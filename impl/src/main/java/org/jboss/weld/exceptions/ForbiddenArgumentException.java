@@ -15,20 +15,31 @@
  * limitations under the License.
  */
 
-package org.jboss.weld;
+package org.jboss.weld.exceptions;
 
 /**
- * A version of {@link javax.enterprise.inject.CreationException} that supports
- * message localization.
+ * This exception is used when the specification calls for an
+ * {@link java.lang.IllegalArgumentException}.
  * 
  * @author David Allen
  */
-public class CreationException extends javax.enterprise.inject.CreationException
+public class ForbiddenArgumentException extends IllegalArgumentException
 {
 
    private static final long    serialVersionUID = 2L;
 
    private WeldExceptionMessage message;
+
+   /**
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
+    */
+   public ForbiddenArgumentException(Throwable throwable)
+   {
+      super(throwable);
+      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
+   }
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -38,23 +49,8 @@ public class CreationException extends javax.enterprise.inject.CreationException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> CreationException(E key, Object... args)
+   public <E extends Enum<?>> ForbiddenArgumentException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
-   }
-
-   /**
-    * Creates a new exception with the given localized message key, the cause
-    * for this exception and optional arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param throwable The cause for this exception
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> CreationException(E key, Throwable throwable, Object... args)
-   {
-      super(throwable);
       message = new WeldExceptionMessage(key, args);
    }
 

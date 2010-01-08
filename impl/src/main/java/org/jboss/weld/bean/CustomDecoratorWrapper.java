@@ -19,9 +19,9 @@ package org.jboss.weld.bean;
 
 import javax.enterprise.inject.spi.Decorator;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Deployers;
 

@@ -31,9 +31,9 @@ import javassist.util.proxy.MethodHandler;
 
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.weld.InvalidOperationException;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.api.SessionObjectReference;
+import org.jboss.weld.exceptions.InvalidOperationException;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.util.reflection.Reflections;

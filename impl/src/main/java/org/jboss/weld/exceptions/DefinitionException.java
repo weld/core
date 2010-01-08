@@ -14,16 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld;
+package org.jboss.weld.exceptions;
 
 import java.util.List;
 
 /**
- * Thrown if an deployment exception occurs.
+ * Thrown if the definition of a bean is incorrect
  * 
  * @author Pete Muir
  */
-public class DeploymentException extends WeldException
+public class DefinitionException extends WeldException
 {
    private static final long serialVersionUID = 8014646336322875707L;
 
@@ -35,7 +35,7 @@ public class DeploymentException extends WeldException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> DeploymentException(E key, Object... args)
+   public <E extends Enum<?>> DefinitionException(E key, Object... args)
    {
       super(key, args);
    }
@@ -49,9 +49,9 @@ public class DeploymentException extends WeldException
     * @param throwable The cause for this exception
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> DeploymentException(E key, Throwable throwable, Object... args)
+   public <E extends Enum<?>> DefinitionException(E key, Throwable throwable, Object... args)
    {
-      super(key, throwable, args);
+      super(throwable);
    }
 
    /**
@@ -59,11 +59,11 @@ public class DeploymentException extends WeldException
     * 
     * @param throwable The cause of the exception
     */
-   public DeploymentException(Throwable throwable)
+   public DefinitionException(Throwable throwable)
    {
       super(throwable);
    }
-   
+
    /**
     * Creates a new exception based on a list of throwables.  The throwables are not
     * used as the cause, but the message from each throwable is included as the message
@@ -71,8 +71,9 @@ public class DeploymentException extends WeldException
     * 
     * @param errors A list of throwables to use in the message
     */
-   public DeploymentException(List<Throwable> errors)
+   public DefinitionException(List<Throwable> errors)
    {
       super(errors);
    }
+
 }

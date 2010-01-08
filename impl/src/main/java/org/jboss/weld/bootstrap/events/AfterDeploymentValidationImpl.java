@@ -20,9 +20,9 @@ import java.util.Map;
 
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 
 public class AfterDeploymentValidationImpl extends AbstractDeploymentContainerEvent implements AfterDeploymentValidation

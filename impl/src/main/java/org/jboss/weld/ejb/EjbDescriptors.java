@@ -25,10 +25,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.ForbiddenStateException;
-import org.jboss.weld.InvalidOperationException;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.InvalidOperationException;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;

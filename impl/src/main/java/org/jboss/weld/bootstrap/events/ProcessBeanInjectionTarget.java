@@ -3,8 +3,8 @@ package org.jboss.weld.bootstrap.events;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.AbstractClassBean;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 
 public class ProcessBeanInjectionTarget<T> extends AbstractProcessInjectionTarget<T> implements ProcessInjectionTarget<T>

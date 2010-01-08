@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2008, Red Hat, Inc. and/or its affiliates, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,22 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld;
 
-
+package org.jboss.weld.exceptions;
 
 /**
- * Thrown if a simple bean is dependent scoped and injected into a stateful 
- * session bean, into a non-transient field, bean constructor parameter or 
- * initializer method parameter of a bean which declares a passivating scope, or
- * into a parameter of a producer method which declares a passivating scope
+ * An exception used for unsupported operations or invocations of operations
+ * that are invalid in certain contexts.
  * 
- * @author Pete Muir
+ * @author David Allen
  */
-public class UnserializableDependencyException extends DeploymentException
+public class InvalidOperationException extends UnsupportedOperationException
 {
 
-   private static final long serialVersionUID = -6287506607413810688L;
+   private static final long    serialVersionUID = 2L;
+
+   private WeldExceptionMessage message;
+
+   /**
+    * Creates a new exception with no message.  Here the stacktrace serves as the
+    * main information since it has the method which was invoked causing this
+    * exception.
+    */
+   public InvalidOperationException()
+   {
+      super();
+   }
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -39,21 +48,20 @@ public class UnserializableDependencyException extends DeploymentException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> UnserializableDependencyException(E key, Object... args)
+   public <E extends Enum<?>> InvalidOperationException(E key, Object... args)
    {
-      super(key, args);
+      message = new WeldExceptionMessage(key, args);
    }
 
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public UnserializableDependencyException(Throwable throwable)
+   @Override
+   public String getLocalizedMessage()
    {
-      super(throwable);
+      return getMessage();
    }
 
-   
-
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
+   }
 }

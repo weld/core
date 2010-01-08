@@ -30,9 +30,9 @@ import javax.el.MapELResolver;
 import javax.el.ResourceBundleELResolver;
 import javax.el.VariableMapper;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.el.WeldELContextListener;
 import org.jboss.weld.el.WeldExpressionFactory;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 import com.sun.el.ExpressionFactoryImpl;
 import com.sun.el.lang.FunctionMapperImpl;

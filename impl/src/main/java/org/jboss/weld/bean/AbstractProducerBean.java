@@ -53,13 +53,13 @@ import javax.enterprise.inject.spi.Producer;
 import javax.inject.Inject;
 import javax.inject.Scope;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
-import org.jboss.weld.DefinitionException;
-import org.jboss.weld.IllegalProductException;
-import org.jboss.weld.WeldException;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.IllegalProductException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldMember;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Names;

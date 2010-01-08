@@ -20,7 +20,7 @@ import static org.jboss.weld.logging.messages.UtilMessage.XML_DOM_READONLY;
 
 import java.util.Iterator;
 
-import org.jboss.weld.InvalidOperationException;
+import org.jboss.weld.exceptions.InvalidOperationException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 

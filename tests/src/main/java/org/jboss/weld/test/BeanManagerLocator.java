@@ -1,9 +1,9 @@
 package org.jboss.weld.test;
 
 import org.jboss.testharness.impl.runner.servlet.ServletTestRunner;
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.ServletHelper;
 
 public class BeanManagerLocator

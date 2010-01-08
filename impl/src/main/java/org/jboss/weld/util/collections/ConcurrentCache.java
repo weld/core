@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-import org.jboss.weld.ForbiddenStateException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
 
 import com.google.common.collect.ForwardingMap;
 

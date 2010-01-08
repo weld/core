@@ -17,7 +17,7 @@
 
 package org.jboss.weld.context;
 
-import org.jboss.weld.WeldExceptionMessage;
+import org.jboss.weld.exceptions.WeldExceptionMessage;
 
 /**
  * A localized message version of the

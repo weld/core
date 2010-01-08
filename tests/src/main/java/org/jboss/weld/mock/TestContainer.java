@@ -4,8 +4,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Control of the container, used for tests. Wraps up common operations.

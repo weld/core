@@ -24,8 +24,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * @author pmuir

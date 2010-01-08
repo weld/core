@@ -7,7 +7,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 

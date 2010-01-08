@@ -35,12 +35,12 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.InvalidObjectException;
+import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.introspector.ForwardingWeldMethod;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> implements WeldInjectionPoint<T, Method>
 {

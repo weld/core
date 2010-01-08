@@ -19,9 +19,9 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.ForwardingBean;
 import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 

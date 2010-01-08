@@ -32,7 +32,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.weld.ForbiddenStateException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.slf4j.cal10n.LocLogger;
 
 /**

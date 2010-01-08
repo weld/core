@@ -37,11 +37,11 @@ import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
-import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.context.ContextLifecycle;
+import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 import org.slf4j.cal10n.LocLogger;

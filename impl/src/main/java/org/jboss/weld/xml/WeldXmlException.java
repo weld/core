@@ -19,7 +19,7 @@ package org.jboss.weld.xml;
 
 import javax.enterprise.inject.InjectionException;
 
-import org.jboss.weld.WeldExceptionMessage;
+import org.jboss.weld.exceptions.WeldExceptionMessage;
 
 /**
  * Used for exceptions from the Weld XML parser and provides localization

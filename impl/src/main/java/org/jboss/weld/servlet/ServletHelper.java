@@ -22,8 +22,8 @@ import static org.jboss.weld.logging.messages.ServletMessage.CONTEXT_NULL;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * @author pmuir

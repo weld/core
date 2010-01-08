@@ -7,8 +7,8 @@ import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.ProcessProducer;
 import javax.enterprise.inject.spi.Producer;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.AbstractProducerBean;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 
 public class ProcessProducerImpl<X, T> extends AbstractDefinitionContainerEvent implements ProcessProducer<X, T>

@@ -8,9 +8,9 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessSessionBean;
 import javax.enterprise.inject.spi.SessionBeanType;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, SessionBean<Object>> implements ProcessSessionBean<X>
 {

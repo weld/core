@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.enterprise.inject.CreationException;
 
-import org.jboss.weld.WeldException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 class Exceptions

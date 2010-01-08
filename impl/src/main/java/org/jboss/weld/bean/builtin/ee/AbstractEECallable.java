@@ -3,7 +3,7 @@ package org.jboss.weld.bean.builtin.ee;
 import java.io.Serializable;
 import java.util.concurrent.Callable;
 
-import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public abstract class AbstractEECallable<V> implements Callable<V>, Serializable
 {

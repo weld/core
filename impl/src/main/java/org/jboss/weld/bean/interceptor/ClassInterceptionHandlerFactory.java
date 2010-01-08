@@ -24,8 +24,8 @@ import javax.enterprise.context.spi.CreationalContext;
 import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
 import org.jboss.interceptor.proxy.InterceptionHandler;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.DeploymentException;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 /**

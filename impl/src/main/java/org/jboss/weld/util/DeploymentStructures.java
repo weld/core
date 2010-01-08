@@ -4,11 +4,11 @@ import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_BEAN_DE
 
 import java.util.Map;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class DeploymentStructures
 {

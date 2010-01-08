@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.TestContainer;
 import org.jboss.weld.mock.cluster.AbstractClusterTest;
 import org.testng.annotations.Test;

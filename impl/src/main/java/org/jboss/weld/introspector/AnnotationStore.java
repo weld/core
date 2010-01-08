@@ -32,7 +32,7 @@ import java.util.Set;
 
 import javax.inject.Qualifier;
 
-import org.jboss.weld.WeldException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.metadata.TypeStore;

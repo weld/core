@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc. and/or its affiliates, and individual contributors
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,31 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.weld.exceptions;
 
-package org.jboss.weld;
 
 /**
- * Provides message localization service for the
- * {@link javax.enterprise.inject.UnsatisfiedResolutionException}.
  * 
- * @author David Allen
+ * @author Pete Muir
  */
-public class UnsatisfiedResolutionException extends javax.enterprise.inject.UnsatisfiedResolutionException
+public class InconsistentSpecializationException extends DeploymentException
 {
-   private static final long    serialVersionUID = 2L;
 
-   private WeldExceptionMessage message;
-
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public UnsatisfiedResolutionException(Throwable throwable)
-   {
-      super(throwable);
-      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
-   }
+   private static final long serialVersionUID = 4359656880524913555L;
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -48,21 +34,21 @@ public class UnsatisfiedResolutionException extends javax.enterprise.inject.Unsa
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> UnsatisfiedResolutionException(E key, Object... args)
+   public <E extends Enum<?>> InconsistentSpecializationException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      super(key, args);
+   }
+   
+   /**
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
+    */
+   public InconsistentSpecializationException(Throwable throwable)
+   {
+      super(throwable);
    }
 
-   @Override
-   public String getLocalizedMessage()
-   {
-      return getMessage();
-   }
-
-   @Override
-   public String getMessage()
-   {
-      return message.getAsString();
-   }
+   
 
 }

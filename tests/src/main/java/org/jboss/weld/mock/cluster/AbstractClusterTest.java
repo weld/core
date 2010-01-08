@@ -7,10 +7,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.api.BeanStore;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.MockEELifecycle;
 import org.jboss.weld.mock.TestContainer;
 import org.testng.annotations.AfterClass;

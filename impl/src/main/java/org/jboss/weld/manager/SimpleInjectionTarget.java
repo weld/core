@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld;
+package org.jboss.weld.manager;
 
 import static org.jboss.weld.logging.messages.BeanManagerMessage.ERROR_INVOKING_POST_CONSTRUCT;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.ERROR_INVOKING_PRE_DESTROY;
@@ -29,6 +29,9 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;

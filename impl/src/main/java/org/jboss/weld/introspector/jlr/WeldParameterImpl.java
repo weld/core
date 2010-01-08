@@ -24,7 +24,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedCallable;
 
-import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
 import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldCallable;
 import org.jboss.weld.introspector.WeldParameter;

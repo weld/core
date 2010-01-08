@@ -22,8 +22,8 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.ForbiddenStateException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Meta model for the merged stereotype for a bean

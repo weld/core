@@ -33,17 +33,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javassist.util.proxy.ProxyObject;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Decorator;
 import javax.inject.Inject;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bean.proxy.AbstractDecoratorMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ProxyClassConstructorInjectionPointWrapper;
 import org.jboss.weld.injection.WeldInjectionPoint;
@@ -53,6 +50,7 @@ import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.introspector.jlr.WeldConstructorImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Deployers;
 import org.jboss.weld.util.Proxies;
@@ -293,8 +291,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
       {
          ProxyClassConstructorInjectionPointWrapper<T> constructorInjectionPointWrapper = new ProxyClassConstructorInjectionPointWrapper(this, constructorForAbstractDecorator, getConstructor());
          T instance = constructorInjectionPointWrapper.newInstance(manager, ctx);
-         AbstractDecoratorMethodHandler abstractDecoratorMethodHandler = new AbstractDecoratorMethodHandler(annotatedDelegateItem, getDelegateInjectionPoint(), constructorInjectionPointWrapper.getInjectedDelegate());
-         ((ProxyObject)instance).setHandler(abstractDecoratorMethodHandler);
+         Proxies.attachMethodHandler(instance, new AbstractDecoratorMethodHandler(annotatedDelegateItem, getDelegateInjectionPoint(), constructorInjectionPointWrapper.getInjectedDelegate()));
          return instance;
       }
    }

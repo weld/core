@@ -26,8 +26,8 @@ import java.util.Arrays;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.ForbiddenStateException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Common implementation for binding-type-based helpers

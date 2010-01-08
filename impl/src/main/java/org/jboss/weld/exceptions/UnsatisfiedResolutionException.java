@@ -15,29 +15,29 @@
  * limitations under the License.
  */
 
-package org.jboss.weld;
+package org.jboss.weld.exceptions;
 
 /**
- * An exception used for unsupported operations or invocations of operations
- * that are invalid in certain contexts.
+ * Provides message localization service for the
+ * {@link javax.enterprise.inject.UnsatisfiedResolutionException}.
  * 
  * @author David Allen
  */
-public class InvalidOperationException extends UnsupportedOperationException
+public class UnsatisfiedResolutionException extends javax.enterprise.inject.UnsatisfiedResolutionException
 {
-
    private static final long    serialVersionUID = 2L;
 
    private WeldExceptionMessage message;
 
    /**
-    * Creates a new exception with no message.  Here the stacktrace serves as the
-    * main information since it has the method which was invoked causing this
-    * exception.
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
     */
-   public InvalidOperationException()
+   public UnsatisfiedResolutionException(Throwable throwable)
    {
-      super();
+      super(throwable);
+      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
    }
 
    /**
@@ -48,7 +48,7 @@ public class InvalidOperationException extends UnsupportedOperationException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> InvalidOperationException(E key, Object... args)
+   public <E extends Enum<?>> UnsatisfiedResolutionException(E key, Object... args)
    {
       message = new WeldExceptionMessage(key, args);
    }
@@ -64,4 +64,5 @@ public class InvalidOperationException extends UnsupportedOperationException
    {
       return message.getAsString();
    }
+
 }

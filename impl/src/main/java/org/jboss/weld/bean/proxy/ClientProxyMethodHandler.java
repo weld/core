@@ -29,9 +29,9 @@ import javassist.util.proxy.MethodHandler;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;

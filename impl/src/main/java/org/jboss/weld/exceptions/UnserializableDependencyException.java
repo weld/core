@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc. and/or its affiliates, and individual contributors
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,31 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.weld.exceptions;
 
-package org.jboss.weld;
+
 
 /**
- * Provides message localization service for the
- * {@link javax.enterprise.inject.AmbiguousResolutionException}.
+ * Thrown if a simple bean is dependent scoped and injected into a stateful 
+ * session bean, into a non-transient field, bean constructor parameter or 
+ * initializer method parameter of a bean which declares a passivating scope, or
+ * into a parameter of a producer method which declares a passivating scope
  * 
- * @author David Allen
+ * @author Pete Muir
  */
-public class AmbiguousResolutionException extends javax.enterprise.inject.AmbiguousResolutionException
+public class UnserializableDependencyException extends DeploymentException
 {
-   private static final long    serialVersionUID = 2L;
 
-   private WeldExceptionMessage message;
-
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public AmbiguousResolutionException(Throwable throwable)
-   {
-      super(throwable);
-      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
-   }
+   private static final long serialVersionUID = -6287506607413810688L;
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -48,20 +39,21 @@ public class AmbiguousResolutionException extends javax.enterprise.inject.Ambigu
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> AmbiguousResolutionException(E key, Object... args)
+   public <E extends Enum<?>> UnserializableDependencyException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      super(key, args);
    }
 
-   @Override
-   public String getLocalizedMessage()
+   /**
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
+    */
+   public UnserializableDependencyException(Throwable throwable)
    {
-      return getMessage();
+      super(throwable);
    }
 
-   @Override
-   public String getMessage()
-   {
-      return message.getAsString();
-   }
+   
+
 }

@@ -42,14 +42,14 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
 import javax.inject.Qualifier;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 
 /**

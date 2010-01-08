@@ -15,31 +15,20 @@
  * limitations under the License.
  */
 
-package org.jboss.weld;
-
-import java.util.List;
+package org.jboss.weld.exceptions;
 
 /**
- * A general run-time exception used by the JSR-299 reference implementation Weld.
+ * A version of {@link javax.enterprise.inject.CreationException} that supports
+ * message localization.
  * 
  * @author David Allen
  */
-public class WeldException extends RuntimeException
+public class CreationException extends javax.enterprise.inject.CreationException
 {
-   private static final long             serialVersionUID = 2L;
+
+   private static final long    serialVersionUID = 2L;
 
    private WeldExceptionMessage message;
-   
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public WeldException(Throwable throwable)
-   {
-      super(throwable);
-      this.message = new WeldExceptionMessage(throwable.getLocalizedMessage());
-   }
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -49,9 +38,9 @@ public class WeldException extends RuntimeException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> WeldException(E key, Object... args)
+   public <E extends Enum<?>> CreationException(E key, Object... args)
    {
-      this.message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionMessage(key, args);
    }
 
    /**
@@ -63,33 +52,10 @@ public class WeldException extends RuntimeException
     * @param throwable The cause for this exception
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> WeldException(E key, Throwable throwable, Object... args)
+   public <E extends Enum<?>> CreationException(E key, Throwable throwable, Object... args)
    {
       super(throwable);
-      this.message = new WeldExceptionMessage(key, args);
-   }
-
-   /**
-    * Creates a new exception based on a list of throwables.  The throwables are not
-    * used as the cause, but the message from each throwable is included as the message
-    * for this exception.
-    * 
-    * @param errors A list of throwables to use in the message
-    */
-   public WeldException(List<Throwable> errors)
-   {
-      super();
-      StringBuilder errorMessage = new StringBuilder();
-      boolean firstError = true;
-      for (Throwable throwable : errors)
-      {
-         if (!firstError)
-         {
-            errorMessage.append('\n');
-         }
-         errorMessage.append(throwable.getLocalizedMessage());
-      }
-      this.message = new WeldExceptionMessage(errorMessage.toString());
+      message = new WeldExceptionMessage(key, args);
    }
 
    @Override
@@ -103,5 +69,4 @@ public class WeldException extends RuntimeException
    {
       return message.getAsString();
    }
-   
 }

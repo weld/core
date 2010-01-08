@@ -5,8 +5,8 @@ import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.ProcessProducerField;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.ProducerField;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ProcessProducerFieldImpl<X, T> extends AbstractProcessProducerBean<X, T, ProducerField<X, T>> implements ProcessProducerField<X, T>
 {

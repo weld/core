@@ -27,7 +27,7 @@ import java.util.Set;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
-import org.jboss.weld.WeldException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.Arrays2;

@@ -26,9 +26,9 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.event.EventImpl;
 import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableTransformer;
 import org.jboss.weld.util.collections.Arrays2;
 

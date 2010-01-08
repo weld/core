@@ -23,7 +23,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUIL
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.slf4j.cal10n.LocLogger;
 
 public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>

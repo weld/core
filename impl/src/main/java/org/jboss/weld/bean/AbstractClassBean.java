@@ -36,8 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javassist.util.proxy.ProxyObject;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
@@ -56,21 +54,21 @@ import org.jboss.interceptor.model.InterceptionModelBuilder;
 import org.jboss.interceptor.model.InterceptorClassMetadataImpl;
 import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.DefinitionException;
-import org.jboss.weld.DeploymentException;
-import org.jboss.weld.ForbiddenStateException;
-import org.jboss.weld.WeldException;
 import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.SerializableContextualImpl;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
@@ -235,7 +233,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          // temporary fix for decorators - make sure that the instance wrapped by the decorators
          // is the contextual instance
          // TODO - correct the decoration algorithm to avoid the creation of new target class instances
-         ((ProxyObject) proxy).setHandler(new DecoratorProxyMethodHandler(decoratorInstances, decoratedActualInstance.get()));
+         Proxies.attachMethodHandler(proxy, new DecoratorProxyMethodHandler(decoratorInstances, decoratedActualInstance.get()));
          return proxy;
       }
       catch (InstantiationException e)

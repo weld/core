@@ -27,11 +27,11 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.Decorator;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery
 {

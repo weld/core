@@ -21,7 +21,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.ObserverMethod;
 
-import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 

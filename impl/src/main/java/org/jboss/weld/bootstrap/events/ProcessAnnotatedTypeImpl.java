@@ -23,9 +23,9 @@ import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Container lifecycle event for each Java class or interface discovered by

@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Set;
 
-import org.jboss.weld.DefinitionException;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.introspector.WeldAnnotation;
 import org.jboss.weld.logging.messages.MetadataMessage;
 import org.jboss.weld.resources.ClassTransformer;

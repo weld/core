@@ -33,8 +33,8 @@ import java.util.Set;
 import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
-import org.jboss.weld.DefinitionException;
-import org.jboss.weld.WeldException;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.Arrays2;

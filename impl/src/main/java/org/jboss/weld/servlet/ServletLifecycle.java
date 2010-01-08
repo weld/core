@@ -28,11 +28,11 @@ import static org.jboss.weld.servlet.ServletHelper.getModuleBeanManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.weld.conversation.ConversationManager;
+import org.jboss.weld.exceptions.ForbiddenStateException;
 
 /**
  * Implementation of the Weld lifecycle that can react to servlet events

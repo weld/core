@@ -22,7 +22,7 @@ import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.interceptor.proxy.InterceptionHandler;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
-import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 

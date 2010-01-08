@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld;
+package org.jboss.weld.manager;
 
 import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
@@ -73,12 +73,14 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import javax.inject.Qualifier;
 
 import org.jboss.interceptor.registry.InterceptorRegistry;
+import org.jboss.weld.Container;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bean.proxy.ClientProxyProvider;
+import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.AbstractProcessInjectionTarget;
 import org.jboss.weld.context.ContextNotActiveException;
@@ -89,6 +91,13 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
 import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
+import org.jboss.weld.exceptions.AmbiguousResolutionException;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.InjectionException;
+import org.jboss.weld.exceptions.UnproxyableResolutionException;
+import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.manager.api.WeldManager;

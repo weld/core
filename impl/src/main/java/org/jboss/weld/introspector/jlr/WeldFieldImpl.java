@@ -22,7 +22,7 @@ import java.util.Set;
 import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
 import javax.enterprise.inject.spi.AnnotatedField;
 
-import org.jboss.weld.WeldException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldField;

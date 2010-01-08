@@ -11,10 +11,10 @@ import java.util.concurrent.Callable;
 
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.DefinitionException;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.CallableMethodHandler;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
 

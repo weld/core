@@ -15,20 +15,30 @@
  * limitations under the License.
  */
 
-package org.jboss.weld;
+package org.jboss.weld.exceptions;
 
 /**
- * An extended version of {@link java.io.InvalidObjectException} that supports
- * localization.
+ * Provides message localization service for the
+ * {@link javax.enterprise.inject.UnproxyableResolutionException}.
  * 
  * @author David Allen
  */
-public class InvalidObjectException extends java.io.InvalidObjectException
+public class UnproxyableResolutionException extends javax.enterprise.inject.UnproxyableResolutionException
 {
-
    private static final long    serialVersionUID = 2L;
 
    private WeldExceptionMessage message;
+
+   /**
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
+    */
+   public UnproxyableResolutionException(Throwable throwable)
+   {
+      super(throwable);
+      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
+   }
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -38,9 +48,8 @@ public class InvalidObjectException extends java.io.InvalidObjectException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> InvalidObjectException(E key, Object... args)
+   public <E extends Enum<?>> UnproxyableResolutionException(E key, Object... args)
    {
-      super(null);
       message = new WeldExceptionMessage(key, args);
    }
 

@@ -17,11 +17,11 @@
 
 package org.jboss.weld.util;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.ForbiddenStateException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

@@ -27,9 +27,9 @@ import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.naming.spi.ObjectFactory;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 import ch.qos.cal10n.IMessageConveyor;
 

@@ -35,16 +35,16 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.ForbiddenStateException;
-import org.jboss.weld.InvalidObjectException;
-import org.jboss.weld.InvalidOperationException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.exceptions.InvalidOperationException;
 import org.jboss.weld.introspector.ConstructorSignature;
 import org.jboss.weld.introspector.ForwardingWeldParameter;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X> implements WeldInjectionPoint<T, Object>, Serializable
 {

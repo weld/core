@@ -22,7 +22,7 @@ import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ConcurrentCache;
 

@@ -3,9 +3,9 @@ package org.jboss.weld.bootstrap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.ejb.EjbDescriptors;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ExtensionBeanDeployerEnvironment extends BeanDeployerEnvironment
 {

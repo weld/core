@@ -5,8 +5,8 @@ import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.ProcessBean;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.AbstractClassBean;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public abstract class AbstractProcessClassBean<X, B extends AbstractClassBean<X>> extends AbstractDefinitionContainerEvent implements ProcessBean<X>
 {

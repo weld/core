@@ -40,7 +40,7 @@ import javax.inject.Qualifier;
 import javax.inject.Scope;
 import javax.interceptor.InterceptorBinding;
 
-import org.jboss.weld.DefinitionException;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.Arrays2;
 import org.slf4j.cal10n.LocLogger;

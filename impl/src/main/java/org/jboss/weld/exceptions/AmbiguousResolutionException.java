@@ -15,19 +15,30 @@
  * limitations under the License.
  */
 
-package org.jboss.weld;
+package org.jboss.weld.exceptions;
 
 /**
- * This exception is used when the specification calls for an
- * {@link java.lang.IllegalStateException}.
+ * Provides message localization service for the
+ * {@link javax.enterprise.inject.AmbiguousResolutionException}.
  * 
  * @author David Allen
  */
-public class ForbiddenStateException extends IllegalStateException
+public class AmbiguousResolutionException extends javax.enterprise.inject.AmbiguousResolutionException
 {
    private static final long    serialVersionUID = 2L;
 
    private WeldExceptionMessage message;
+
+   /**
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
+    */
+   public AmbiguousResolutionException(Throwable throwable)
+   {
+      super(throwable);
+      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
+   }
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -37,19 +48,9 @@ public class ForbiddenStateException extends IllegalStateException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> ForbiddenStateException(E key, Object... args)
+   public <E extends Enum<?>> AmbiguousResolutionException(E key, Object... args)
    {
       message = new WeldExceptionMessage(key, args);
-   }
-
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public ForbiddenStateException(Throwable cause)
-   {
-      super(cause.getLocalizedMessage(), cause);
    }
 
    @Override

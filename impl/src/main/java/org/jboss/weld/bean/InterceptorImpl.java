@@ -31,10 +31,10 @@ import javax.interceptor.InvocationContext;
 import org.jboss.interceptor.model.InterceptorClassMetadata;
 import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
 import org.jboss.interceptor.registry.InterceptorClassMetadataRegistry;
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.DeploymentException;
-import org.jboss.weld.WeldException;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 
 /**

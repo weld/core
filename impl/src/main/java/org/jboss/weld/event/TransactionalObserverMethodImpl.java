@@ -19,9 +19,9 @@ package org.jboss.weld.event;
 import javax.enterprise.event.TransactionPhase;
 import javax.transaction.Synchronization;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
 /**

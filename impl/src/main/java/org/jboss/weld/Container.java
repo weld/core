@@ -27,8 +27,10 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
 import org.jboss.weld.logging.LoggerFactory;
 import org.jboss.weld.logging.MessageConveyorFactory;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * A Weld application container

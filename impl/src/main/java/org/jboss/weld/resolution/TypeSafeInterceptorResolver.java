@@ -25,8 +25,8 @@ import java.util.TreeSet;
 
 import javax.enterprise.inject.spi.Interceptor;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.InterceptorImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 
 /**

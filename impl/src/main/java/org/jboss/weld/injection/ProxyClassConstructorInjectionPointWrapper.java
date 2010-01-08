@@ -23,8 +23,8 @@ import javax.enterprise.inject.spi.Bean;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.introspector.WeldConstructor;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * A wrapper on a {@link ConstructorInjectionPoint}, to be used if a proxy subclass is instantiated instead of the

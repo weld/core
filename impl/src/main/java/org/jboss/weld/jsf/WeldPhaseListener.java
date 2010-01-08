@@ -37,13 +37,13 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.Container;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.SessionContext;
 import org.jboss.weld.conversation.ConversationImpl;
 import org.jboss.weld.conversation.ConversationManager;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.ConversationBeanStore;
 import org.jboss.weld.servlet.HttpSessionManager;
 import org.slf4j.cal10n.LocLogger;

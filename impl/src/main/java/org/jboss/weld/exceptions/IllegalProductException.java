@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2008, Red Hat, Inc. and/or its affiliates, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,19 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld;
 
+package org.jboss.weld.exceptions;
 
 /**
- * Thrown if an injection point of primitive type resolves to a bean which may
- * be null
+ * An {@link javax.enterprise.inject.IllegalProductException} with support for
+ * localized messages in Weld.
  * 
- * @author Pete Muir
+ * @author David Allen
  */
-public class NullableDependencyException extends DeploymentException
+public class IllegalProductException extends javax.enterprise.inject.IllegalProductException
 {
 
-   private static final long serialVersionUID = 6877485218767005761L;
+   private static final long    serialVersionUID = 2L;
+
+   private WeldExceptionMessage message;
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -36,21 +38,20 @@ public class NullableDependencyException extends DeploymentException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> NullableDependencyException(E key, Object... args)
+   public <E extends Enum<?>> IllegalProductException(E key, Object... args)
    {
-      super(key, args);
-   }
-   
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public NullableDependencyException(Throwable throwable)
-   {
-      super(throwable);
+      message = new WeldExceptionMessage(key, args);
    }
 
-   
+   @Override
+   public String getLocalizedMessage()
+   {
+      return getMessage();
+   }
 
+   @Override
+   public String getMessage()
+   {
+      return message.getAsString();
+   }
 }

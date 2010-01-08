@@ -14,17 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld;
+package org.jboss.weld.exceptions;
 
 
 /**
+ * Thrown if an injection point of primitive type resolves to a bean which may
+ * be null
  * 
  * @author Pete Muir
  */
-public class InconsistentSpecializationException extends DeploymentException
+public class NullableDependencyException extends DeploymentException
 {
 
-   private static final long serialVersionUID = 4359656880524913555L;
+   private static final long serialVersionUID = 6877485218767005761L;
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -34,7 +36,7 @@ public class InconsistentSpecializationException extends DeploymentException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> InconsistentSpecializationException(E key, Object... args)
+   public <E extends Enum<?>> NullableDependencyException(E key, Object... args)
    {
       super(key, args);
    }
@@ -44,7 +46,7 @@ public class InconsistentSpecializationException extends DeploymentException
     * 
     * @param throwable The cause of the exception
     */
-   public InconsistentSpecializationException(Throwable throwable)
+   public NullableDependencyException(Throwable throwable)
    {
       super(throwable);
    }

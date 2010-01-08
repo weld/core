@@ -8,48 +8,16 @@ import static org.jboss.weld.logging.messages.BeanMessage.NULL_INSTANCE;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.concurrent.Callable;
 
-import javassist.tools.reflect.Reflection;
 import javassist.util.proxy.MethodHandler;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.NullInstanceException;
-import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.exceptions.NullInstanceException;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 public class CallableMethodHandler implements MethodHandler, Serializable
 {
-   
-   public static class CallableMethodHandlerCleaner implements Service
-   {
-      
-      private final Collection<CallableMethodHandler> callableMethodHandlers;
-      
-      public CallableMethodHandlerCleaner()
-      {
-         this.callableMethodHandlers = new HashSet<CallableMethodHandler>();
-      }
-      
-      private void add(CallableMethodHandler callableMethodHandler)
-      {
-         this.callableMethodHandlers.add(callableMethodHandler);
-      }
-      
-      public void cleanup()
-      {
-         for (CallableMethodHandler callableMethodHandler : callableMethodHandlers)
-         {
-            callableMethodHandler.cleanup();
-         }
-         callableMethodHandlers.clear();
-      }
-      
-   }
    
    private static final long serialVersionUID = -1348302663981663427L;
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
@@ -61,7 +29,6 @@ public class CallableMethodHandler implements MethodHandler, Serializable
    {
       super();
       this.callable = callable;
-      Container.instance().deploymentServices().get(CallableMethodHandlerCleaner.class).add(this);
    }
 
    public Object invoke(Object self, Method proxiedMethod, Method proceed, Object[] args) throws Throwable

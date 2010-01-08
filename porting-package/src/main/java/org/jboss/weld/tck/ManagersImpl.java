@@ -4,8 +4,8 @@ import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.jsr299.tck.spi.Managers;
-import org.jboss.weld.DefinitionException;
-import org.jboss.weld.DeploymentException;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.test.BeanManagerLocator;
 
 public class ManagersImpl implements Managers

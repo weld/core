@@ -36,10 +36,10 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.inject.Inject;
 
 import org.jboss.interceptor.util.InterceptionUtils;
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.InvalidObjectException;
+import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.introspector.ForwardingWeldField;
 import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> implements WeldInjectionPoint<T, Field>, Serializable
 {

@@ -25,8 +25,8 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Implementation of the event used to notify observers for each observer

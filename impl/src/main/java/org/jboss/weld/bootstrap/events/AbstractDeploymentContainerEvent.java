@@ -18,8 +18,8 @@ package org.jboss.weld.bootstrap.events;
 
 import java.lang.reflect.Type;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.DeploymentException;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * @author pmuir

@@ -24,12 +24,12 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public abstract class AbstractBuiltInBean<T> extends RIBean<T>
 {

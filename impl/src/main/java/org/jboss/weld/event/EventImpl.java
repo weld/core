@@ -32,10 +32,10 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.InvalidObjectException;
 import org.jboss.weld.bean.builtin.AbstractFacade;
+import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.Observers;

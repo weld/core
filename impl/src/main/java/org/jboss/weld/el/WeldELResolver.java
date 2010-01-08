@@ -18,7 +18,7 @@ package org.jboss.weld.el;
 
 import javax.el.ELContext;
 
-import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * @author pmuir

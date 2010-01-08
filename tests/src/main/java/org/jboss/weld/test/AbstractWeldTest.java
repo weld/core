@@ -20,7 +20,7 @@ import javax.servlet.ServletContext;
 
 import org.jboss.testharness.AbstractTest;
 import org.jboss.testharness.impl.runner.servlet.ServletTestRunner;
-import org.jboss.weld.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.el.EL;
 import org.jboss.weld.util.collections.EnumerationList;
 import org.testng.ITestContext;

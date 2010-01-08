@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld;
+package org.jboss.weld.bootstrap;
 
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
@@ -76,9 +76,16 @@ import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.WeldDecorator;
-import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.exceptions.IllegalProductException;
+import org.jboss.weld.exceptions.InconsistentSpecializationException;
+import org.jboss.weld.exceptions.NullableDependencyException;
+import org.jboss.weld.exceptions.UnproxyableResolutionException;
+import org.jboss.weld.exceptions.UnserializableDependencyException;
 import org.jboss.weld.introspector.WeldAnnotated;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.ResolvableWeldClass;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;

@@ -32,8 +32,8 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.interceptor.model.InterceptionModel;
-import org.jboss.weld.ForbiddenArgumentException;
 import org.jboss.weld.ejb.spi.InterceptorBindings;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 
 /**

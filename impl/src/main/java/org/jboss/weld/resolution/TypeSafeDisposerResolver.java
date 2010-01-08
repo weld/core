@@ -19,8 +19,8 @@ package org.jboss.weld.resolution;
 import java.util.Collections;
 import java.util.Set;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.DisposalMethod;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 

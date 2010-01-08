@@ -23,7 +23,7 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
-import org.jboss.weld.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
 import org.jboss.weld.util.el.ForwardingExpressionFactory;
 
 /**

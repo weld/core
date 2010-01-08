@@ -28,7 +28,6 @@ import java.util.Set;
 
 import javax.enterprise.inject.New;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -50,6 +49,7 @@ import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableFactory;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;

@@ -31,10 +31,10 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.ForbiddenArgumentException;
-import org.jboss.weld.ForbiddenStateException;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.slf4j.cal10n.LocLogger;
 

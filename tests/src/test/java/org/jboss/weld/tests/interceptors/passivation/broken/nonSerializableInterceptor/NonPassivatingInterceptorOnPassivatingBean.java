@@ -21,7 +21,7 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.ExpectedDeploymentException;
 import org.jboss.testharness.impl.packaging.IntegrationTest;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
-import org.jboss.weld.DeploymentException;
+import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 

@@ -22,7 +22,6 @@ import java.util.Map;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -31,6 +30,7 @@ import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
 import org.jboss.weld.literal.NormalScopeLiteral;
 import org.jboss.weld.literal.ScopeLiteral;
 import org.jboss.weld.literal.StereotypeLiteral;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery
 {

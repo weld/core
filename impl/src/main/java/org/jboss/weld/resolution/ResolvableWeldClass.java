@@ -34,14 +34,14 @@ import java.util.Set;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
-import org.jboss.weld.BeanManagerImpl;
-import org.jboss.weld.ForbiddenArgumentException;
-import org.jboss.weld.InvalidOperationException;
 import org.jboss.weld.bean.AbstractClassBean;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.InvalidOperationException;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.introspector.jlr.AbstractWeldAnnotated;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.reflection.Reflections;

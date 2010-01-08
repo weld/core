@@ -2,9 +2,9 @@ package org.jboss.weld.tests.unit.deployment.structure.extensions;
 
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.AbstractMockDeployment;
 import org.jboss.weld.mock.MockBeanDeploymentArchive;
 import org.jboss.weld.mock.MockServletLifecycle;

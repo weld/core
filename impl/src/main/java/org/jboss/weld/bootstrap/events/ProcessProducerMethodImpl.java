@@ -6,8 +6,8 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.ProcessProducerMethod;
 
-import org.jboss.weld.BeanManagerImpl;
 import org.jboss.weld.bean.ProducerMethod;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ProcessProducerMethodImpl<X, T> extends AbstractProcessProducerBean<X, T, ProducerMethod<X, T>> implements ProcessProducerMethod<X, T>
 {
