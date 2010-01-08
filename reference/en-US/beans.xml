@@ -367,7 +367,7 @@ class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisti
             We normally annotate a bean <literal>@Alternative</literal> only when there is some other
             implementation of an interface it implements (or of any of its bean types). We can choose between 
             alternatives at deployment time by <emphasis>selecting</emphasis> an alternative in the CDI 
-            deployment descriptor <literal>META-INF/beans.xml</literal> of the JAR or Java EE module that uses 
+            deployment descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE module that uses 
             it. Different modules can specify that they use different alternatives.
          </para>
          
@@ -437,7 +437,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          <para>
             Interceptors are deployment-specific. (We don't need a <literal>TransactionInterceptor</literal> in our
             unit tests!) By default, an interceptor is disabled. We can enable an interceptor using the CDI deployment 
-            descriptor <literal>META-INF/beans.xml</literal> of the JAR or Java EE module. This is also where we
+            descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE module. This is also where we
             specify the interceptor ordering.
          </para>
          
@@ -504,6 +504,16 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          
          </blockquote>
          
+         <note>
+           <para>
+             According to this definition, JPA entities are managed beans. However, entities have their own special
+             lifecycle, state and identity model and are usually instantiated by JPA or using <literal>new</literal>. 
+             Therefore we don't recommend directly injecting an entity class. We especially recommend against assigning
+             a scope other than <literal>@Dependent</literal> to an entity class, since JPA is not able to persist 
+             injected CDI proxies.
+           </para>
+         </note>
+
          <para>The unrestricted set of bean types for a managed bean contains the bean class, every superclass and all 
          interfaces it implements directly or indirectly.</para>
 
@@ -511,7 +521,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          
          <para>Managed beans support the <literal>@PostConstruct</literal> and <literal>@PreDestroy</literal> lifecycle
          callbacks.</para>
-
+         
          <para>
             Session beans are also, technically, managed beans. However, since they have their own special lifecycle and 
             take advantage of additional enterprise services, the CDI specification considers them to be a different
@@ -753,7 +763,9 @@ public class RandomNumberGenerator {
       </section>
    
    </section>
-
+   
+   <!--
+   
    <section id="bean-descriptor">
       <title>The (minimal) bean descriptor</title>
 
@@ -797,8 +809,8 @@ public class RandomNumberGenerator {
             </listitem>
             <listitem>
                <para>
-                  CDI does not define any special kind of module - CDI beans can be deployed in a library JAR, EJB JAR,
-                  WAR, RAR, or JVM classpath directory.
+                  CDI does not define any special kind of module - CDI beans can be deployed in a library jar, EJB jar,
+                  war, rar, or JVM classpath directory.
                </para>
             </listitem>
          </itemizedlist>
@@ -1009,6 +1021,8 @@ public class RandomNumberGenerator {
          </para>
 
       </section>
+      
+      -->
 
    </section>
 
