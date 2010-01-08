@@ -506,8 +506,8 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          
          <note>
            <para>
-             According to this definition, JPA entities are managed beans. However, entities have their own special
-             lifecycle, state and identity model and are usually instantiated by JPA or using <literal>new</literal>. 
+             According to this definition, JPA entities are technically managed beans. However, entities have their own 
+             special lifecycle, state and identity model and are usually instantiated by JPA or using <literal>new</literal>. 
              Therefore we don't recommend directly injecting an entity class. We especially recommend against assigning
              a scope other than <literal>@Dependent</literal> to an entity class, since JPA is not able to persist 
              injected CDI proxies.
@@ -1022,10 +1022,10 @@ public class RandomNumberGenerator {
 
       </section>
       
-      -->
 
    </section>
 
+   -->
 <!--
 vim:et:ts=3:sw=3:tw=120
 -->
