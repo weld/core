@@ -39,8 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.ContextualStoreImpl;
 import org.jboss.weld.ContainerState;
+import org.jboss.weld.ContextualStoreImpl;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
@@ -438,7 +438,7 @@ public class WeldBootstrap implements Bootstrap
    {
       try
       {
-         BeforeShutdownImpl.fire(deploymentManager);
+         BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
       }
       finally
       {

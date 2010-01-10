@@ -16,8 +16,12 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import java.util.Map;
+
 import javax.enterprise.inject.spi.BeforeShutdown;
 
+import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -27,9 +31,17 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class BeforeShutdownImpl extends AbstractContainerEvent implements BeforeShutdown
 {
    
-   public static void fire(BeanManagerImpl beanManager)
+   public static void fire(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      new BeforeShutdownImpl(beanManager).fire();
+      if (beanDeployments == null)
+      {
+         // Shutdown may have been called with an early-failure, before beanDeployments is built
+         new BeforeShutdownImpl(beanManager).fire();
+      }
+      else
+      {
+         new BeforeShutdownImpl(beanManager).fire(beanDeployments);
+      }
    }
    
    public BeforeShutdownImpl(BeanManagerImpl beanManager)
