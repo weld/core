@@ -9,7 +9,7 @@
       <literal>weld-numberguess</literal>, is a web (war) example containing only non-transactional managed beans.
       This example can be run on a wide range of servers, including JBoss AS, GlassFish, Apache Tomcat, Jetty, Google
       App Engine, and any compliant Java EE 6 container. The second example, <literal>weld-translator</literal>, is
-      an enterprise (ear) example that contains session beans. This example must be run on JBoss AS 5.2, Glassfish 3.0 
+      an enterprise (ear) example that contains session beans. This example must be run on JBoss AS 6.0, Glassfish 3.0 
       or any compliant Java EE 6 container.
    </para>
    
@@ -36,7 +36,7 @@
             <para>a supported runtime environment (minimum versions shown)</para>
             <itemizedlist>
                <listitem>
-                  <para>JBoss AS 5.2.0 (currently only nightly builds of JBoss AS 5.2.0.Beta1 are available),</para>
+                  <para>JBoss AS 6.0.0,</para>
                </listitem>
                <listitem>
                   <para>GlassFish 3.0,</para>
@@ -82,9 +82,9 @@
 
       <para>
          To deploy the examples to JBoss AS, you'll need <ulink url="http://jboss.org/jbossas/">JBoss AS
-         5.2.0.Beta1</ulink> or above. If a release of the JBoss AS 5.2 line isn't yet available, you can download a
-         <ulink url="http://hudson.jboss.org/hudson/view/JBoss%20AS/job/JBoss-AS-5.x-sun16/">nightly snapshot</ulink>.
-         The reason JBoss AS 5.2.0.Beta1 or above is required is because it's the first release that has both CDI and
+         6.0.0</ulink> or above. If a release of the JBoss AS 6.0 line isn't yet available, you can download a
+         <ulink url="http://hudson.jboss.org/hudson/view/JBoss%20AS/job/JBoss-AS-6.0.x/">nightly snapshot</ulink>.
+         The reason JBoss AS 6.0.0 or above is required is because it's the first release that has both CDI and
          Bean Validation support built-in, making it close enough to Java EE 6 to run the examples. The good news is
          that there are no additional modifications you have to make to the server. It's ready to go!
       </para>
@@ -96,8 +96,8 @@
          directory, or <literal>JBOSS_HOME</literal>.
       </para>
       
-      <programlisting><![CDATA[$> unzip jboss-5.2.*.zip
-$> mv jboss-5.2.*/ jboss-as-5.2]]></programlisting>
+      <programlisting><![CDATA[$> unzip jboss-6.0.*.zip
+$> mv jboss-6.0.*/ jboss-as-6.0]]></programlisting>
 
       <para>
          In order for the build scripts to know where to deploy the example, you have to tell them where to find your
@@ -106,7 +106,7 @@ $> mv jboss-5.2.*/ jboss-as-5.2]]></programlisting>
          property key <literal>jboss.home</literal>, as follows:
       </para>
 
-      <programlisting><![CDATA[jboss.home=/path/to/jboss-as-5.2]]></programlisting>
+      <programlisting><![CDATA[jboss.home=/path/to/jboss-as-6.0]]></programlisting>
 
       <para>
          You're now ready to deploy your first example!
@@ -124,14 +124,14 @@ $> ant deploy]]></programlisting>
          If you haven't already, start JBoss AS. You can either start JBoss AS from a Linux shell:
       </para>
 
-      <programlisting><![CDATA[$> cd /path/to/jboss-as-5.2
+      <programlisting><![CDATA[$> cd /path/to/jboss-as-6.0
 $> ./bin/run.sh]]></programlisting> 
       
       <para>
          a Windows command window:
       </para>
 
-      <programlisting><![CDATA[$> cd c:\path\to\jboss-as-5.2\bin
+      <programlisting><![CDATA[$> cd c:\path\to\jboss-as-6.0\bin
 $> run]]></programlisting> 
 
       <para>

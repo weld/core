@@ -7,14 +7,14 @@
       <title>Using Weld with JBoss AS</title>
       
       <para>
-         If you are using JBoss AS 5.2, no additional configuration is required to use Weld (or CDI for that matter).
+         If you are using JBoss AS 6.0, no additional configuration is required to use Weld (or CDI for that matter).
          All you need to do is make your application a bean bean archive by adding <literal>META-INF/beans.xml</literal>
          to the classpath or <literal>WEB-INF/beans.xml</literal> to the web root!
       </para>
       
       <para>
          Unfortunately, you can't use Weld with earlier versions of JBoss AS since they are missing key libraries. If
-         you want to learn how to upgrade the built-in support on JBoss AS 5.2, then read on.
+         you want to learn how to upgrade the built-in support on JBoss AS 6.0, then read on.
       </para>
          
       <para>
