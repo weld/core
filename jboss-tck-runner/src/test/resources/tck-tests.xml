@@ -107,6 +107,12 @@
                  <exclude name="testResolveByTypeWithTypeParameter"/>
              </methods>
          </class>
+         <class name="org.jboss.jsr299.tck.tests.policy.PolicyAvailabilityTest">
+            <methods>
+               <exclude name="testProducerPoliciesOnClass" />
+               <exclude name="testProducerPoliciesOnMethodAndField" />
+              </methods>
+         ></class>
       </classes>
    </test>
    
