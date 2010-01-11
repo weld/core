@@ -28,12 +28,7 @@ import org.testng.annotations.Test;
 @Artifact
 public class SameBeanTypeInChildActivityTest extends AbstractWeldTest
 {
-   private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>();
-
-   static
-   {
-      DEFAULT_BINDINGS.add(new DefaultLiteral());
-   }
+   private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
 
    private Bean<?> createDummyBean(BeanManager beanManager)
    {

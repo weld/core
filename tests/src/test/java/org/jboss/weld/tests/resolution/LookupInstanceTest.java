@@ -18,7 +18,7 @@ public class LookupInstanceTest extends AbstractWeldTest
    @Test
    public void testLookupInstance() throws Exception
    {
-      assert createContextualInstance(new TypeLiteral<Instance<List<?>>>(){}.getRawType(), new DefaultLiteral()) == null; 
+      assert createContextualInstance(new TypeLiteral<Instance<List<?>>>(){}.getRawType(), DefaultLiteral.INSTANCE) == null; 
    }
    
 }

@@ -35,12 +35,7 @@ import org.testng.annotations.Test;
 public class ActivitiesTest extends AbstractWeldTest
 {
 
-   private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>();
-
-   static
-   {
-      DEFAULT_BINDINGS.add(new DefaultLiteral());
-   }
+   private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
 
    private Bean<?> createDummyBean(BeanManager beanManager, final Type injectionPointType)
    {
@@ -118,7 +113,7 @@ public class ActivitiesTest extends AbstractWeldTest
 
          public Set<Annotation> getQualifiers()
          {
-            return DEFAULT_BINDINGS;
+            return DEFAULT_QUALIFIERS;
          }
 
          public Member getMember()

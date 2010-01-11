@@ -27,9 +27,8 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
-
-import org.jboss.weld.literal.InjectLiteral;
 
 /**
  * 
@@ -38,7 +37,14 @@ import org.jboss.weld.literal.InjectLiteral;
  */
 public class MockAnnotated implements Annotated
 {
-   private final static Inject INJECT = new InjectLiteral();
+
+   private static class InjectLiteral extends AnnotationLiteral<Inject> implements Inject 
+   {
+      
+      public static final Inject INSTANCE = new InjectLiteral();
+      
+   }
+   
    private Annotated delegate;
    
    public MockAnnotated(Annotated delegate)
@@ -65,14 +71,14 @@ public class MockAnnotated implements Annotated
    {
       if (annotationType == Inject.class)
       {
-         return (T)INJECT;
+         return (T) InjectLiteral.INSTANCE;
       }
       return null;
    }
 
    public Set<Annotation> getAnnotations()
    {
-      return Collections.singleton((Annotation)INJECT);
+      return Collections.singleton((Annotation) InjectLiteral.INSTANCE);
    }
 
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)

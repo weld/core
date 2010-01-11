@@ -23,12 +23,7 @@ import org.testng.annotations.Test;
 public class ManagerTest extends AbstractWeldTest
 {
    
-   private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>();
-   
-   static
-   {
-      DEFAULT_BINDINGS.add(new DefaultLiteral());
-   }
+   private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
    
    private static interface Dummy {}
    
@@ -45,7 +40,7 @@ public class ManagerTest extends AbstractWeldTest
 
       public Set<Annotation> getQualifiers()
       {
-         return DEFAULT_BINDINGS;
+         return DEFAULT_QUALIFIERS;
       }
 
       public Set<InjectionPoint> getInjectionPoints()

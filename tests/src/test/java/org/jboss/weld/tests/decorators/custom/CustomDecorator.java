@@ -145,7 +145,7 @@ public class CustomDecorator implements Decorator<Object>
 
       public Set<Annotation> getQualifiers()
       {
-         return Collections.<Annotation>singleton(new DefaultLiteral());
+         return Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
       }
 
       public Bean<?> getBean()
