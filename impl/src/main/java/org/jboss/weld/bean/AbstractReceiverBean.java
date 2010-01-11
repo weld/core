@@ -23,12 +23,12 @@ import static org.jboss.weld.logging.messages.BeanMessage.CIRCULAR_CALL;
 import java.lang.reflect.Member;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Alternative;
 
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Beans;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -52,6 +52,7 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
    public void initialize(BeanDeployerEnvironment environment)
    {
       super.initialize(environment);
+      initAlternative();
    }
 
    /**
@@ -97,18 +98,7 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
    @Override
    protected void initAlternative()
    {
-      if (getDeclaringBean().isAlternative())
-      {
-         super.alternative = true;
-      }
-      else if (getWeldAnnotated().isAnnotationPresent(Alternative.class))
-      {
-         super.alternative = true;
-      }
-      else if (getMergedStereotypes().isAlternative())
-      {
-         super.alternative = true;
-      }
+      super.alternative = Beans.isAlternative(getWeldAnnotated(), getMergedStereotypes()) || getDeclaringBean().isAlternative();
    }
    
    @Override

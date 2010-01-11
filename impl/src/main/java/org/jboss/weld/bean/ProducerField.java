@@ -70,7 +70,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
       initTypes();
       initQualifiers();
       initStereotypes();
-      initAlternative();
    }
    
    @Override
