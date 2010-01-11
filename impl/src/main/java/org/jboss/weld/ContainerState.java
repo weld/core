@@ -1,7 +1,7 @@
 package org.jboss.weld;
 
 /**
- * Container status
+ * Application container instance state
  * @author pmuir
  *
  */

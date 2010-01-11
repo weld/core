@@ -40,7 +40,6 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
-import org.jboss.weld.ContextualStoreImpl;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
@@ -83,6 +82,7 @@ import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.SingleThreadScheduledExecutorServiceFactory;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
+import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.servlet.HttpSessionManager;
 import org.jboss.weld.servlet.ServletApiAbstraction;
