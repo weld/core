@@ -19,8 +19,13 @@ package org.jboss.weld.introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.List;
+import java.util.Set;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.AnnotatedCallable;
+
+import org.jboss.weld.util.collections.Arrays2;
 
 /**
  * @author pmuir
@@ -28,6 +33,9 @@ import javax.enterprise.inject.spi.AnnotatedCallable;
  */
 public interface WeldCallable<T, X, S extends Member> extends WeldMember<T, X, S>, AnnotatedCallable<X>
 {
+   
+   @SuppressWarnings("unchecked")
+   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = Arrays2.asSet(Disposes.class, Observes.class);
    
    /**
     * Gets the abstracted parameters of the method
@@ -40,10 +48,10 @@ public interface WeldCallable<T, X, S extends Member> extends WeldMember<T, X, S
    /**
     * Gets the list of annotated parameters for a given annotation
     * 
-    * @param metaAnnotationType The annotation to match
+    * @param annotationType The annotation to match
     * @return A set of matching parameter abstractions. Returns an empty list if
     *         there are no matches.
     */
-   public List<WeldParameter<?, X>> getAnnotatedWBParameters(Class<? extends Annotation> metaAnnotationType);
+   public List<WeldParameter<?, X>> getWeldParameters(Class<? extends Annotation> annotationType);
 
 }

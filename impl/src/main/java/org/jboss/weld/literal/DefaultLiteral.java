@@ -24,4 +24,11 @@ import javax.enterprise.util.AnnotationLiteral;
  * 
  * @author Pete Muir
  */
-public class DefaultLiteral extends AnnotationLiteral<Default> implements Default {}
+public class DefaultLiteral extends AnnotationLiteral<Default> implements Default 
+{
+
+   public static final Default INSTANCE = new DefaultLiteral();
+   
+   private DefaultLiteral() {}
+
+}

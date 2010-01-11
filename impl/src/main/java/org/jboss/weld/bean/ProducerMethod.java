@@ -151,11 +151,11 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
     */
    protected void checkProducerMethod()
    {
-      if (getAnnotatedItem().getAnnotatedWBParameters(Observes.class).size() > 0)
+      if (getAnnotatedItem().getWeldParameters(Observes.class).size() > 0)
       {
          throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Observes");
       }
-      else if (getAnnotatedItem().getAnnotatedWBParameters(Disposes.class).size() > 0)
+      else if (getAnnotatedItem().getWeldParameters(Disposes.class).size() > 0)
       {
          throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Disposes");
       }
@@ -276,7 +276,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    @Override
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
-      if (getDeclaringBean().getAnnotatedItem().getWeldSuperclass().getDeclaredWeldMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
+      if (getDeclaringBean().getAnnotatedItem().getWeldSuperclass().getDeclaredWeldMethod(getAnnotatedItem().getJavaMember()) == null)
       {
          throw new DefinitionException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
       }
@@ -285,7 +285,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      WeldMethod<?, ?> superClassMethod = getDeclaringBean().getAnnotatedItem().getWeldSuperclass().getWeldMethod(getAnnotatedItem().getAnnotatedMethod());
+      WeldMethod<?, ?> superClassMethod = getDeclaringBean().getAnnotatedItem().getWeldSuperclass().getWeldMethod(getAnnotatedItem().getJavaMember());
       if (environment.getProducerMethod(superClassMethod) == null)
       {
          throw new ForbiddenStateException(PRODUCER_METHOD_NOT_SPECIALIZING, this);

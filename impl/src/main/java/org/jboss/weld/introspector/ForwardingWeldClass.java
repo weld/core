@@ -26,29 +26,24 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
    @Override
    protected abstract WeldClass<T> delegate();
 
-   public Set<WeldConstructor<T>> getAnnotatedWeldConstructors(Class<? extends Annotation> annotationType)
+   public Set<WeldConstructor<T>> getWeldConstructors(Class<? extends Annotation> annotationType)
    {
-      return delegate().getAnnotatedWeldConstructors(annotationType);
+      return delegate().getWeldConstructors(annotationType);
    }
 
-   public Set<WeldField<?, ?>> getAnnotatedWeldFields(Class<? extends Annotation> annotationType)
+   public Set<WeldField<?, ?>> getWeldFields(Class<? extends Annotation> annotationType)
    {
-      return delegate().getAnnotatedWeldFields(annotationType);
+      return delegate().getWeldFields(annotationType);
    }
 
-   public Set<WeldMethod<?, ?>> getAnnotatedWeldMethods(Class<? extends Annotation> annotationType)
+   public Set<WeldMethod<?, ?>> getWeldMethods(Class<? extends Annotation> annotationType)
    {
-      return delegate().getAnnotatedWeldMethods(annotationType);
+      return delegate().getWeldMethods(annotationType);
    }
 
    public WeldConstructor<T> getNoArgsWeldConstructor()
    {
       return delegate().getNoArgsWeldConstructor();
-   }
-
-   public Set<WeldConstructor<T>> getWeldConstructors()
-   {
-      return delegate().getWeldConstructors();
    }
    
    public Set<WeldMethod<?, ?>> getWeldMethods()
@@ -56,14 +51,14 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
       return delegate().getWeldMethods();
    }
 
-   public Set<WeldField<?, T>> getDeclaredAnnotatedWeldFields(Class<? extends Annotation> annotationType)
+   public Set<WeldField<?, T>> getDeclaredWeldFields(Class<? extends Annotation> annotationType)
    {
-      return delegate().getDeclaredAnnotatedWeldFields(annotationType);
+      return delegate().getDeclaredWeldFields(annotationType);
    }
 
-   public Set<WeldMethod<?, T>> getDeclaredAnnotatedWeldMethods(Class<? extends Annotation> annotationType)
+   public Set<WeldMethod<?, T>> getDeclaredWeldMethods(Class<? extends Annotation> annotationType)
    {
-      return delegate().getDeclaredAnnotatedWeldMethods(annotationType);
+      return delegate().getDeclaredWeldMethods(annotationType);
    }
 
    public Set<WeldMethod<?, T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
@@ -76,11 +71,6 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
       return delegate().getWeldFields();
    }
 
-   public Set<WeldField<?, ?>> getMetaAnnotatedWeldFields(Class<? extends Annotation> metaAnnotationType)
-   {
-      return delegate().getMetaAnnotatedWeldFields(metaAnnotationType);
-   }
-
    @Deprecated
    public WeldMethod<?, ?> getWeldMethod(Method method)
    {
@@ -90,16 +80,6 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
    public <M> WeldMethod<M, ?> getWeldMethod(MethodSignature signature)
    {
       return delegate().getWeldMethod(signature);
-   }
-
-   public Set<WeldMethod<?, ?>> getWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
-   {
-      return delegate().getWeldMethodsWithAnnotatedParameters(annotationType);
-   }
-   
-   public Set<WeldConstructor<?>> getWeldConstructorsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
-   {
-      return delegate().getWeldConstructorsWithAnnotatedParameters(annotationType);
    }
 
    public WeldClass<?> getWeldSuperclass()
@@ -182,6 +162,11 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
    public String getSimpleName()
    {
       return delegate().getSimpleName();
+   }
+   
+   public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
+   {
+      return delegate().getDeclaredMetaAnnotations(metaAnnotationType);
    }
    
 }

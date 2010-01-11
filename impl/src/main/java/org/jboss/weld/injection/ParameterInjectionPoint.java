@@ -49,8 +49,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X> implements WeldInjectionPoint<T, Object>, Serializable
 {
 
-   private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
-
    public static <T, X> ParameterInjectionPoint<T, X> of(Bean<?> declaringBean, WeldParameter<T, X> parameter)
    {
       return new ParameterInjectionPoint<T, X>(declaringBean, parameter);

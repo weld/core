@@ -52,7 +52,6 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
 {
    
    private static final long serialVersionUID = 656782657242515455L;
-   private static final Default DEFAULT = new DefaultLiteral();
 
    public static <E> EventImpl<E> of(InjectionPoint injectionPoint, BeanManagerImpl beanManager)
    {
@@ -64,7 +63,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
       if (!injectionPoint.getAnnotated().isAnnotationPresent(Default.class))
       {
          Set<Annotation> qualifers = new HashSet<Annotation>(injectionPoint.getQualifiers());
-         qualifers.remove(DEFAULT);
+         qualifers.remove(DefaultLiteral.INSTANCE);
          return qualifers.toArray(EMPTY_ANNOTATIONS);
       }
       else

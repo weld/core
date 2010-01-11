@@ -79,7 +79,7 @@ public class ResolvableFactory
          this.bindings = bindings;
          if (bindings.size() == 0)
          {
-            this.bindings.add(new DefaultLiteral());
+            this.bindings.add(DefaultLiteral.INSTANCE);
          }
          this.annotations = new HashMap<Class<? extends Annotation>, Annotation>();
          this.typeClosure = typeClosure;

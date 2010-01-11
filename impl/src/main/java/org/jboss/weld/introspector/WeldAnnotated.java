@@ -18,9 +18,6 @@ package org.jboss.weld.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.NormalScope;
@@ -30,6 +27,8 @@ import javax.inject.Qualifier;
 import javax.inject.Scope;
 import javax.interceptor.InterceptorBinding;
 
+import org.jboss.weld.util.collections.Arrays2;
+
 /**
  * AnnotatedItem provides a uniform access to the annotations on an annotated
  * item defined either in Java or XML
@@ -37,12 +36,21 @@ import javax.interceptor.InterceptorBinding;
  * @author Pete Muir
  * 
  */
+
 public interface WeldAnnotated<T, S> extends Annotated
 {
 
-   // The set of meta-annotations to map
+   /**
+    *  The set of meta-annotations to map
+    */
    @SuppressWarnings("unchecked")
-   public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Qualifier.class, Stereotype.class, Scope.class, NormalScope.class, InterceptorBinding.class));
+   public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = Arrays2.asSet(Qualifier.class, Stereotype.class, Scope.class, NormalScope.class, InterceptorBinding.class);
+   
+   /**
+    * The set of declared meta-annotations to map
+    */
+   @SuppressWarnings("unchecked")
+   public static final Set<Class<? extends Annotation>> MAPPED_DECLARED_METAANNOTATIONS = Arrays2.asSet(Scope.class, NormalScope.class);
 
    /**
     * Gets all annotations which are annotated with the given meta annotation
@@ -53,28 +61,6 @@ public interface WeldAnnotated<T, S> extends Annotated
     *         are no matches.
     */
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
-   
-   public Map<Class<?>, Type> getTypeClosureAsMap();
-
-   /**
-    * Gets all annotations which are declared on this annotated item with the
-    * given meta annotation type
-    * 
-    * @param The meta annotation to match
-    * @return A set of matching meta-annotations. Returns an empty set if there
-    *         are no matches.
-    */
-   public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
-
-   /**
-    * Gets all annotations which are annotated with the given meta annotation
-    * type
-    * 
-    * @param The meta annotation to match
-    * @return An array of matching meta-annotations. Returns an empty array if
-    *         there are no matches.
-    */
-   public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType);
 
    /**
     * Gets the binding types for this element
@@ -106,17 +92,11 @@ public interface WeldAnnotated<T, S> extends Annotated
     * The returned types should have any type parameters resolved to their
     * actual types.
     * 
+    * There is no guarantee this methods executes in O(1) time
+    * 
     * @return the type hierarchy
     */
-   public Set<Type> getInterfaceOnlyFlattenedTypeHierarchy();
-
-   /**
-    * Indicates if an annotation type specified is present
-    * 
-    * @param annotationType The annotation to match
-    * @return True if present, false if not
-    */
-   public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType);
+   public Set<Type> getInterfaceClosure();
 
    /**
     * Gets the type of the element

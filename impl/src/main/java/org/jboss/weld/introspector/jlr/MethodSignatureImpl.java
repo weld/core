@@ -88,7 +88,7 @@ public class MethodSignatureImpl implements MethodSignature
    @Override
    public String toString()
    {
-      return getMethodName() + Arrays.asList(getParameterTypes()).toString().replace('[', '(').replace(']', ')');
+      return new StringBuffer().append("method ").append(getMethodName()).append(Arrays.toString(getParameterTypes()).replace('[', '(').replace(']', ')')).toString();
    }
    
 }

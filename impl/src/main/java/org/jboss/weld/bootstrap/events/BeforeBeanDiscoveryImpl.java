@@ -25,7 +25,7 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.literal.BindingTypeLiteral;
+import org.jboss.weld.literal.QualifierLiteral;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
 import org.jboss.weld.literal.NormalScopeLiteral;
 import org.jboss.weld.literal.ScopeLiteral;
@@ -47,12 +47,12 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
 
    public void addQualifier(Class<? extends Annotation> bindingType)
    {
-      getTypeStore().add(bindingType, new BindingTypeLiteral());
+      getTypeStore().add(bindingType, QualifierLiteral.INSTANCE);
    }
 
    public void addInterceptorBinding(Class<? extends Annotation> bindingType)
    {
-      getTypeStore().add(bindingType, new InterceptorBindingTypeLiteral());
+      getTypeStore().add(bindingType, InterceptorBindingTypeLiteral.INSTANCE);
    }
 
    public void addScope(Class<? extends Annotation> scopeType, boolean normal, boolean passivating)
@@ -63,13 +63,13 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
       }
       else
       {
-         getTypeStore().add(scopeType, new ScopeLiteral());
+         getTypeStore().add(scopeType, ScopeLiteral.INSTANCE);
       }
    }
 
    public void addStereotype(Class<? extends Annotation> stereotype, Annotation... stereotypeDef)
    {
-      getTypeStore().add(stereotype, new StereotypeLiteral());
+      getTypeStore().add(stereotype, StereotypeLiteral.INSTANCE);
       for(Annotation a : stereotypeDef)
       {
          getTypeStore().add(stereotype, a);

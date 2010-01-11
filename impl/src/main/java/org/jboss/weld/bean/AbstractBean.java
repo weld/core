@@ -69,9 +69,6 @@ import org.slf4j.cal10n.LocLogger;
 public abstract class AbstractBean<T, S> extends RIBean<T>
 {
 
-   private static final Annotation ANY_LITERAL = new AnyLiteral();
-   private static final Annotation CURRENT_LITERAL = new DefaultLiteral();
-
    private boolean proxyable;
 
    // Logger
@@ -192,7 +189,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    {
       if (getAnnotatedItem().isAnnotationPresent(Typed.class))
       {
-         this.types = getTypedTypes(getAnnotatedItem().getTypeClosureAsMap(), getAnnotatedItem().getJavaClass(), getAnnotatedItem().getAnnotation(Typed.class));
+         this.types = getTypedTypes(Reflections.buildTypeMap(getAnnotatedItem().getTypeClosure()), getAnnotatedItem().getJavaClass(), getAnnotatedItem().getAnnotation(Typed.class));
       }
       else
       {
@@ -238,17 +235,17 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       if (bindings.size() == 0)
       {
          log.trace(USING_DEFAULT_QUALIFIER, this);
-         this.bindings.add(CURRENT_LITERAL);
+         this.bindings.add(DefaultLiteral.INSTANCE);
       }
       if (bindings.size() == 1)
       {
          if (bindings.iterator().next().annotationType().equals(Named.class))
          {
             log.trace(USING_DEFAULT_QUALIFIER, this);
-            this.bindings.add(CURRENT_LITERAL);
+            this.bindings.add(DefaultLiteral.INSTANCE);
          }
       }
-      this.bindings.add(ANY_LITERAL);
+      this.bindings.add(AnyLiteral.INSTANCE);
    }
 
    protected void initAlternative()

@@ -18,11 +18,9 @@ package org.jboss.weld.bean.builtin;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
@@ -37,8 +35,7 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    private static final Class<Instance<?>> INSTANCE_TYPE = new TypeLiteral<Instance<?>>() {}.getRawType();
    private static final Class<Provider<?>> PROVIDER_TYPE = new TypeLiteral<Provider<?>>() {}.getRawType();
    private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(INSTANCE_TYPE, PROVIDER_TYPE, Object.class);
-   private static final Any ANY = new AnyLiteral();
-   private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(ANY));
+   private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(AnyLiteral.INSTANCE);
    
    public InstanceBean(BeanManagerImpl manager)
    {
@@ -65,7 +62,7 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    @Override
    public Set<Annotation> getQualifiers()
    {
-      return DEFAULT_BINDINGS;
+      return DEFAULT_QUALIFIERS;
    }
 
    @Override

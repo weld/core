@@ -25,9 +25,9 @@ public abstract class ForwardingWeldAnnotation<T extends Annotation> extends For
    @Override
    protected abstract WeldAnnotation<T> delegate();
    
-   public Set<WeldMethod<?, ?>> getAnnotatedMembers(Class<? extends Annotation> annotationType)
+   public Set<WeldMethod<?, ?>> getMembers(Class<? extends Annotation> annotationType)
    {
-      return delegate().getAnnotatedMembers(annotationType);
+      return delegate().getMembers(annotationType);
    }
    
    public Set<WeldMethod<?, ?>> getMembers()

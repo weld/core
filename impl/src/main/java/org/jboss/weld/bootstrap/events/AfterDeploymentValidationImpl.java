@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
+
 import java.util.Map;
 
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
@@ -23,7 +25,6 @@ import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
-
 
 public class AfterDeploymentValidationImpl extends AbstractDeploymentContainerEvent implements AfterDeploymentValidation
 {
@@ -35,7 +36,7 @@ public class AfterDeploymentValidationImpl extends AbstractDeploymentContainerEv
    
    protected AfterDeploymentValidationImpl(BeanManagerImpl beanManager)
    {
-      super(beanManager, AfterDeploymentValidation.class, EMPTY_TYPE_ARRAY);
+      super(beanManager, AfterDeploymentValidation.class, EMPTY_TYPES);
    }
    
    public void addDeploymentProblem(Throwable t)

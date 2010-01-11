@@ -18,6 +18,7 @@ package org.jboss.weld.util;
 
 import static org.jboss.weld.logging.messages.UtilMessage.CANNOT_PROXY_NON_CLASS_TYPE;
 import static org.jboss.weld.logging.messages.UtilMessage.INSTANCE_NOT_A_PROXY;
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_CLASSES;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -48,8 +49,6 @@ public class Proxies
    
    public static class TypeInfo
    {
-
-      private static final Class<?>[] EMPTY_INTERFACES_ARRAY = new Class<?>[0];
 
       private final Set<Class<?>> interfaces;
       private final Set<Class<?>> classes;
@@ -82,7 +81,7 @@ public class Proxies
 
       private Class<?>[] getInterfaces()
       {
-         return interfaces.toArray(EMPTY_INTERFACES_ARRAY);
+         return interfaces.toArray(EMPTY_CLASSES);
       }
 
       public ProxyFactory createProxyFactory()

@@ -16,15 +16,9 @@
  */
 package org.jboss.weld.introspector;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
 /**
@@ -36,8 +30,6 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
  */
 public interface WeldMethod<T, X> extends WeldCallable<T, X, Method>, AnnotatedMethod<X>
 {
-   @SuppressWarnings("unchecked")
-   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, Disposes.class));
 
    /**
     * Get the parameter types as an array
@@ -77,8 +69,6 @@ public interface WeldMethod<T, X> extends WeldCallable<T, X, Method>, AnnotatedM
     * @return true if equivalent
     */
    public boolean isEquivalent(Method method);
-
-   public Method getAnnotatedMethod();
 
    public MethodSignature getSignature();
 

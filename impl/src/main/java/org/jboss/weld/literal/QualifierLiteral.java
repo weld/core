@@ -19,7 +19,11 @@ package org.jboss.weld.literal;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
 
-public class BindingTypeLiteral extends AnnotationLiteral<Qualifier> implements Qualifier
+public class QualifierLiteral extends AnnotationLiteral<Qualifier> implements Qualifier
 {
+   
+   public static final Qualifier INSTANCE = new QualifierLiteral();
+   
+   private QualifierLiteral() {}
    
 }

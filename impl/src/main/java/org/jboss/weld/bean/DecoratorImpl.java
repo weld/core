@@ -134,7 +134,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    protected void initDecoratedTypes()
    {
       this.decoratedTypes = new HashSet<Type>();
-      this.decoratedTypes.addAll(getAnnotatedItem().getInterfaceOnlyFlattenedTypeHierarchy());
+      this.decoratedTypes.addAll(getAnnotatedItem().getInterfaceClosure());
       this.decoratedTypes.remove(Serializable.class);
 
       this.decoratedMethodSignatures = Deployers.getDecoratedMethodSignatures(getManager(), this.decoratedTypes);

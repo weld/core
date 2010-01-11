@@ -22,6 +22,8 @@ import javax.enterprise.util.AnnotationLiteral;
 public class StereotypeLiteral extends AnnotationLiteral<Stereotype> implements Stereotype
 {
    
+   public static final Stereotype INSTANCE = new StereotypeLiteral();
    
+   private StereotypeLiteral() {}
    
 }

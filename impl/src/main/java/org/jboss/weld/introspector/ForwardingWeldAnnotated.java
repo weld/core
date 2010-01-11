@@ -18,7 +18,6 @@ package org.jboss.weld.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -42,16 +41,6 @@ public abstract class ForwardingWeldAnnotated<T, S> extends ForwardingAnnotated<
       return delegate().getMetaAnnotations(metaAnnotationType);
    }
 
-   public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
-   {
-      return delegate().getMetaAnnotationsAsArray(metaAnnotationType);
-   }
-   
-   public Map<Class<?>, Type> getTypeClosureAsMap()
-   {
-      return delegate().getTypeClosureAsMap();
-   }
-
    @Deprecated
    public Set<Annotation> getQualifiers()
    {
@@ -62,11 +51,6 @@ public abstract class ForwardingWeldAnnotated<T, S> extends ForwardingAnnotated<
    public Annotation[] getBindingsAsArray()
    {
       return delegate().getBindingsAsArray();
-   }
-
-   public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
-   {
-      return delegate().getDeclaredMetaAnnotations(metaAnnotationType);
    }
 
    public String getName()
@@ -117,14 +101,9 @@ public abstract class ForwardingWeldAnnotated<T, S> extends ForwardingAnnotated<
    @Override
    protected abstract WeldAnnotated<T, S> delegate();
 
-   public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType)
+   public Set<Type> getInterfaceClosure()
    {
-      return delegate().isDeclaredAnnotationPresent(annotationType);
-   }
-
-   public Set<Type> getInterfaceOnlyFlattenedTypeHierarchy()
-   {
-      return delegate().getInterfaceOnlyFlattenedTypeHierarchy();
+      return delegate().getInterfaceClosure();
    }
 
    public boolean isParameterizedType()

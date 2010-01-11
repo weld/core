@@ -23,11 +23,6 @@ public abstract class ForwardingWeldMember<T, X, S extends Member> extends Forwa
    
    @Override
    protected abstract WeldMember<T, X, S> delegate();
-   
-   public S getJavaMember()
-   {
-      return delegate().getJavaMember();
-   }
 
    public WeldClass<X> getDeclaringType()
    {

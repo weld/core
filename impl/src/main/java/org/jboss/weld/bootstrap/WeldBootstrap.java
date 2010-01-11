@@ -134,9 +134,7 @@ public class WeldBootstrap implements Bootstrap
          {
             
             private  final ServiceRegistry serviceRegistry = new SimpleServiceRegistry();
-            private final Set<Class<?>> beanClasses = (deployment.getServices().contains(ServletServices.class)) 
-                    ? Arrays2.<Class<?>>asSet(ConversationImpl.class, ServletConversationManager.class, NumericConversationIdGenerator.class, HttpSessionManager.class)
-                    : Collections.EMPTY_SET;
+            private final Set<Class<?>> beanClasses = (deployment.getServices().contains(ServletServices.class)) ? Arrays2.<Class<?>> asSet(ConversationImpl.class, ServletConversationManager.class, NumericConversationIdGenerator.class, HttpSessionManager.class) : Collections.<Class<?>>emptySet();
             
             public ServiceRegistry getServices()
             {

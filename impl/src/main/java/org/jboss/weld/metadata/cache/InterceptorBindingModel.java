@@ -78,7 +78,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
 
    protected void initNonBindingTypes()
    {
-      nonBindingTypes = getAnnotatedAnnotation().getAnnotatedMembers(Nonbinding.class);
+      nonBindingTypes = getAnnotatedAnnotation().getMembers(Nonbinding.class);
    }
 
    protected void initInterceptionBindingTypes()

@@ -19,4 +19,11 @@ package org.jboss.weld.literal;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Scope;
 
-public class ScopeLiteral extends AnnotationLiteral<Scope> implements Scope {}
+public class ScopeLiteral extends AnnotationLiteral<Scope> implements Scope 
+{
+
+   public static final Scope INSTANCE = new ScopeLiteral();
+   
+   private ScopeLiteral() {}
+
+}

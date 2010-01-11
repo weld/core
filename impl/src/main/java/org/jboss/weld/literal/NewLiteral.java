@@ -31,5 +31,7 @@ public class NewLiteral extends AnnotationLiteral<New> implements New
    {
       return New.class;
    }
+   
+   public NewLiteral() {}
 
 }

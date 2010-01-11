@@ -64,7 +64,7 @@ public class ObserverFactory
     */
    public static TransactionPhase getTransactionalPhase(WeldMethod<?, ?> observer)
    {
-      WeldParameter<?, ?> parameter = observer.getAnnotatedWBParameters(Observes.class).iterator().next();
+      WeldParameter<?, ?> parameter = observer.getWeldParameters(Observes.class).iterator().next();
       return parameter.getAnnotation(Observes.class).during();
    }
 }

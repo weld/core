@@ -25,16 +25,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldAnnotation;
-import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Names;
+import org.jboss.weld.util.collections.HashSetSupplier;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.SecureReflections;
 
-import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 
@@ -57,14 +55,16 @@ public class WeldAnnotationImpl<T extends Annotation> extends WeldClassImpl<T> i
    // The set of abstracted members
    private final Set<WeldMethod<?, ?>> members;
    
-   private final Map<String, WeldMethod<?, ?>> namedMembers;
-
-   // Cached string representation
-   private final String toString;
-   
    public static <A extends Annotation> WeldAnnotation<A> of(Class<A> annotationType, ClassTransformer classTransformer)
    {
-      return new WeldAnnotationImpl<A>(annotationType, classTransformer);
+      Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
+      annotationMap.putAll(buildAnnotationMap(annotationType.getAnnotations()));
+      annotationMap.putAll(buildAnnotationMap(classTransformer.getTypeStore().get(annotationType)));
+      
+      Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
+      declaredAnnotationMap.putAll(buildAnnotationMap(annotationType.getDeclaredAnnotations()));
+      declaredAnnotationMap.putAll(buildAnnotationMap(classTransformer.getTypeStore().get(annotationType)));
+      return new WeldAnnotationImpl<A>(annotationType, annotationMap, declaredAnnotationMap, classTransformer);
    }
 
    /**
@@ -74,22 +74,12 @@ public class WeldAnnotationImpl<T extends Annotation> extends WeldClassImpl<T> i
     * 
     * @param annotationType The annotation type
     */
-   protected WeldAnnotationImpl(Class<T> annotationType, ClassTransformer classTransformer)
+   protected WeldAnnotationImpl(Class<T> annotationType, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer)
    {
-      super(annotationType, annotationType, null, new HierarchyDiscovery(annotationType).getTypeClosure(), AnnotationStore.of(annotationType, classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore().get(annotationType), classTransformer.getTypeStore()), classTransformer);
+      super(annotationType, annotationType, null, new HierarchyDiscovery(annotationType).getTypeClosure(), annotationMap, declaredAnnotationMap, classTransformer);
       this.clazz = annotationType;
-      this.toString = "class " + Names.classToString(getDelegate());
       members = new HashSet<WeldMethod<?, ?>>();
-      annotatedMembers = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldMethod<?, ?>>>(), new Supplier<Set<WeldMethod<?, ?>>>()
-      {
-   
-          public Set<WeldMethod<?, ?>> get()
-          {
-             return new HashSet<WeldMethod<?, ?>>();
-          }
-         
-      });
-      this.namedMembers = new HashMap<String, WeldMethod<?, ?>>();
+      annotatedMembers = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldMethod<?, ?>>>(), HashSetSupplier.<WeldMethod<?, ?>>instance());
       for (Method member : SecureReflections.getDeclaredMethods(clazz))
       {
          WeldMethod<?, ?> annotatedMethod = WeldMethodImpl.of(member, this, classTransformer);
@@ -98,7 +88,6 @@ public class WeldAnnotationImpl<T extends Annotation> extends WeldClassImpl<T> i
          {
             annotatedMembers.put(annotation.annotationType(), annotatedMethod);
          }
-         namedMembers.put(annotatedMethod.getName(), annotatedMethod);
       }
    }
 
@@ -125,16 +114,11 @@ public class WeldAnnotationImpl<T extends Annotation> extends WeldClassImpl<T> i
     * @return The set of abstracted members with the given annotation type
     *         present. An empty set is returned if no matches are found
     * 
-    * @see org.jboss.weld.introspector.WeldAnnotation#getAnnotatedMembers(Class)
+    * @see org.jboss.weld.introspector.WeldAnnotation#getMembers(Class)
     */
-   public Set<WeldMethod<?, ?>> getAnnotatedMembers(Class<? extends Annotation> annotationType)
+   public Set<WeldMethod<?, ?>> getMembers(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(annotatedMembers.get(annotationType));
-   }
-   
-   public <A> WeldMethod<A, ?> getMember(String memberName, WeldClass<A> expectedType)
-   {
-      return (WeldMethod<A, ?>) namedMembers.get(memberName);
    }
    
    /**
@@ -145,7 +129,7 @@ public class WeldAnnotationImpl<T extends Annotation> extends WeldClassImpl<T> i
    @Override
    public String toString()
    {
-      return toString;
+      return new StringBuilder().append("class ").append(Names.classToString(getDelegate())).toString();
    }
 
    @Override

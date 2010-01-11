@@ -29,6 +29,7 @@ public abstract class ForwardingWeldField<T, X> extends ForwardingWeldMember<T, 
       return delegate().get(instance);
    }
 
+   @Override
    public WeldClass<X> getDeclaringType()
    {
       return delegate().getDeclaringType();
@@ -47,6 +48,11 @@ public abstract class ForwardingWeldField<T, X> extends ForwardingWeldMember<T, 
    public boolean isTransient()
    {
       return delegate().isTransient();
+   }
+   
+   public Field getJavaMember() 
+   {
+      return delegate().getJavaMember();
    }
 
 }

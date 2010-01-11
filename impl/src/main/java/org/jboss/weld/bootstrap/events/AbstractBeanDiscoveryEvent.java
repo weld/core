@@ -16,11 +16,12 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
+
 import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
-import org.jboss.weld.bootstrap.ExtensionBeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -38,7 +39,7 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
    
    public AbstractBeanDiscoveryEvent(BeanManagerImpl beanManager, Type rawType, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Deployment deployment)
    {
-      super(beanManager, rawType, EMPTY_TYPE_ARRAY);
+      super(beanManager, rawType, EMPTY_TYPES);
       this.beanDeployments = beanDeployments;
       this.deployment = deployment;
    }

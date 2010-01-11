@@ -30,7 +30,7 @@ public class ParameterizedTypeImpl implements ParameterizedType
 
    public ParameterizedTypeImpl(Type rawType, Type[] actualTypeArguments, Type ownerType)
    {
-      this.actualTypeArguments = Arrays2.copyOf(actualTypeArguments, actualTypeArguments.length);
+      this.actualTypeArguments = actualTypeArguments;
       this.rawType = rawType;
       this.ownerType = ownerType;
    }

@@ -22,4 +22,8 @@ import javax.interceptor.InterceptorBinding;
 public class InterceptorBindingTypeLiteral extends AnnotationLiteral<InterceptorBinding> implements InterceptorBinding
 {
    
+   public static final InterceptorBinding INSTANCE = new InterceptorBindingTypeLiteral();
+   
+   private InterceptorBindingTypeLiteral() {}
+   
 }

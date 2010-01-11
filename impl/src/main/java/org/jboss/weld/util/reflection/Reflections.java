@@ -59,8 +59,8 @@ public class Reflections
    private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
 
    public static final Type[] EMPTY_TYPES = {};
-
    public static final Annotation[] EMPTY_ANNOTATIONS = {};
+   public static final Class<?>[] EMPTY_CLASSES = new Class<?>[0];
 
    public static Map<Class<?>, Type> buildTypeMap(Set<Type> types)
    {
@@ -77,6 +77,10 @@ public class Reflections
             {
                map.put((Class<?>) ((ParameterizedType) type).getRawType(), type);
             }
+         }
+         else if (type instanceof TypeVariable<?>)
+         {
+            
          }
       }
       return map;
@@ -206,17 +210,6 @@ public class Reflections
    public static boolean isTransient(Member member)
    {
       return Modifier.isTransient(member.getModifiers());
-   }
-
-   /**
-    * Checks if clazz is abstract
-    * 
-    * @param clazz Class to check
-    * @return True if abstract, false otherwise
-    */
-   public static boolean isAbstract(Class<?> clazz)
-   {
-      return Modifier.isAbstract(clazz.getModifiers());
    }
 
    /**

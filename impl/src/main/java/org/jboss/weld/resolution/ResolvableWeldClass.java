@@ -19,6 +19,7 @@ package org.jboss.weld.resolution;
 import static org.jboss.weld.logging.messages.ResolutionMessage.CANNOT_EXTRACT_RAW_TYPE;
 import static org.jboss.weld.logging.messages.ResolutionMessage.CANNOT_EXTRACT_TYPE_INFORMATION;
 import static org.jboss.weld.logging.messages.ResolutionMessage.INVALID_MEMBER_TYPE;
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -27,8 +28,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -38,7 +39,6 @@ import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.exceptions.ForbiddenArgumentException;
 import org.jboss.weld.exceptions.InvalidOperationException;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.introspector.jlr.AbstractWeldAnnotated;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -48,17 +48,11 @@ import org.jboss.weld.util.reflection.Reflections;
 
 public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> implements Resolvable
 {
-
-   private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
-   private static final Set<Annotation> EMPTY_ANNOTATION_SET = Collections.emptySet();
-
    private final Class<T> rawType;
    private final Set<Type> typeClosure;
    private final Type[] actualTypeArguments;
 
    private final String _string;
-
-   private final BeanManagerImpl manager;
 
    public static <T> WeldAnnotated<T, Class<T>> of(TypeLiteral<T> typeLiteral, Annotation[] annotations, BeanManagerImpl manager)
    {
@@ -100,11 +94,9 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
       }
    }
 
-   private ResolvableWeldClass(Type type, AnnotationStore annotationStore, BeanManagerImpl manager)
+   private ResolvableWeldClass(Type type, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, BeanManagerImpl manager)
    {
-      super(annotationStore);
-
-      this.manager = manager;
+      super(annotationMap, declaredAnnotationMap, manager.getServices().get(TypeStore.class));
 
       if (type instanceof ParameterizedType)
       {
@@ -118,13 +110,13 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
             throw new ForbiddenArgumentException(CANNOT_EXTRACT_RAW_TYPE, type);
          }
          this.actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-         this._string = rawType.toString() + "<" + Arrays.asList(actualTypeArguments).toString() + ">; binding types = " + Names.annotationsToString(annotationStore.getBindings());
+         this._string = rawType.toString() + "<" + Arrays.asList(actualTypeArguments).toString() + ">; binding types = " + Names.annotationsToString(getQualifiers());
       }
       else if (type instanceof Class)
       {
          this.rawType = (Class<T>) type;
          this.actualTypeArguments = new Type[0];
-         this._string = rawType.toString() +"; binding types = " + Names.annotationsToString(annotationStore.getBindings());
+         this._string = rawType.toString() +"; binding types = " + Names.annotationsToString(getQualifiers());
       }
       else
       {
@@ -136,12 +128,12 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
 
    private ResolvableWeldClass(Type type, Annotation[] annotations, BeanManagerImpl manager)
    {
-      this(type, AnnotationStore.of(annotations, EMPTY_ANNOTATION_ARRAY, manager.getServices().get(TypeStore.class)), manager);
+      this(type, buildAnnotationMap(annotations), buildAnnotationMap(EMPTY_ANNOTATIONS), manager);
    }
 
    private ResolvableWeldClass(Type type, Set<Annotation>annotations, BeanManagerImpl manager)
    {
-      this(type, AnnotationStore.of(annotations, EMPTY_ANNOTATION_SET, manager.getServices().get(TypeStore.class)), manager);
+      this(type, buildAnnotationMap(annotations), buildAnnotationMap(EMPTY_ANNOTATIONS), manager);
    }
 
    @Override

@@ -173,7 +173,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    
    protected <X> void createProducerMethods(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass)
    {
-      for (WeldMethod<?, X> method : annotatedClass.getDeclaredAnnotatedWeldMethods(Produces.class))
+      for (WeldMethod<?, X> method : annotatedClass.getDeclaredWeldMethods(Produces.class))
       {
          createProducerMethod(declaringBean, method);         
       }
@@ -211,7 +211,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    
    protected <X> void createProducerFields(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass)
    {
-      for (WeldField<?, X> field : annotatedClass.getDeclaredAnnotatedWeldFields(Produces.class))
+      for (WeldField<?, X> field : annotatedClass.getDeclaredWeldFields(Produces.class))
       {
          createProducerField(declaringBean, field);
       }
@@ -306,7 +306,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    
    private static boolean hasSimpleWebBeanConstructor(WeldClass<?> type)
    {
-      return type.getNoArgsWeldConstructor() != null || type.getAnnotatedWeldConstructors(Inject.class).size() > 0;
+      return type.getNoArgsWeldConstructor() != null || type.getWeldConstructors(Inject.class).size() > 0;
    }
       
    public E getEnvironment()

@@ -125,7 +125,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     */
    protected void initNonBindingTypes()
    {
-      nonBindingTypes = getAnnotatedAnnotation().getAnnotatedMembers(Nonbinding.class);
+      nonBindingTypes = getAnnotatedAnnotation().getMembers(Nonbinding.class);
    }
 
    /**

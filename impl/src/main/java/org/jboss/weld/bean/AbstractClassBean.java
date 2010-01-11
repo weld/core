@@ -631,11 +631,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    protected void checkConstructor()
    {
-      if (!constructor.getAnnotatedWBParameters(Disposes.class).isEmpty())
+      if (!constructor.getWeldParameters(Disposes.class).isEmpty())
       {
          throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Disposes", constructor);
       }
-      if (!constructor.getAnnotatedWBParameters(Observes.class).isEmpty())
+      if (!constructor.getWeldParameters(Observes.class).isEmpty())
       {
          throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Observes", constructor);
       }

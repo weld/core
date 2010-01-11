@@ -31,7 +31,6 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
-import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.ConstructorSignature;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
@@ -66,20 +65,15 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
    private final ListMultimap<Class<? extends Annotation>, WeldParameter<?, T>> annotatedParameters;
    
    private final ConstructorSignature signature;
-
-   // Cached string representation
-   private final String toString;
    
    public static <T> WeldConstructor<T> of(Constructor<T> constructor, WeldClass<T> declaringClass, ClassTransformer classTransformer)
    {
-      AnnotationStore annotationStore = AnnotationStore.of(constructor, classTransformer.getTypeStore());
-      return new WeldConstructorImpl<T>(constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass(), null, new HierarchyDiscovery(constructor.getDeclaringClass()).getTypeClosure(), annotationStore, declaringClass, classTransformer);
+      return new WeldConstructorImpl<T>(constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass(), null, new HierarchyDiscovery(constructor.getDeclaringClass()).getTypeClosure(), buildAnnotationMap(constructor.getAnnotations()), buildAnnotationMap(constructor.getDeclaredAnnotations()), declaringClass, classTransformer);
    }
    
    public static <T> WeldConstructor<T> of(AnnotatedConstructor<T> annotatedConstructor,  WeldClass<T> declaringClass, ClassTransformer classTransformer)
    {
-      AnnotationStore annotationStore = AnnotationStore.of(annotatedConstructor.getAnnotations(), annotatedConstructor.getAnnotations(), classTransformer.getTypeStore());
-      return new WeldConstructorImpl<T>(annotatedConstructor.getJavaMember(), annotatedConstructor.getJavaMember().getDeclaringClass(), annotatedConstructor.getBaseType(), annotatedConstructor, annotatedConstructor.getTypeClosure(), annotationStore, declaringClass, classTransformer);
+      return new WeldConstructorImpl<T>(annotatedConstructor.getJavaMember(), annotatedConstructor.getJavaMember().getDeclaringClass(), annotatedConstructor.getBaseType(), annotatedConstructor, annotatedConstructor.getTypeClosure(), buildAnnotationMap(annotatedConstructor.getAnnotations()), buildAnnotationMap(annotatedConstructor.getAnnotations()), declaringClass, classTransformer);
    }
 
    /**
@@ -90,10 +84,9 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
     * @param constructor The constructor method
     * @param declaringClass The declaring class
     */
-   private WeldConstructorImpl(Constructor<T> constructor, final Class<T> rawType, final Type type, AnnotatedConstructor<T> annotatedConstructor, Set<Type> typeClosure, AnnotationStore annotationStore, WeldClass<T> declaringClass, ClassTransformer classTransformer)
+   private WeldConstructorImpl(Constructor<T> constructor, final Class<T> rawType, final Type type, AnnotatedConstructor<T> annotatedConstructor, Set<Type> typeClosure, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, WeldClass<T> declaringClass, ClassTransformer classTransformer)
    {
-      super(annotationStore, constructor, rawType, type, typeClosure, declaringClass);
-      this.toString = new StringBuilder().append("constructor ").append(constructor.toString()).toString();
+      super(annotationMap, declaredAnnotationMap, classTransformer, constructor, rawType, type, typeClosure, declaringClass);
       this.constructor = constructor;
 
       this.parameters = new ArrayList<WeldParameter<?, T>>();
@@ -170,7 +163,10 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
 
             for (Annotation annotation : parameter.getAnnotations())
             {
-               annotatedParameters.put(annotation.annotationType(), parameter);
+               if (MAPPED_PARAMETER_ANNOTATIONS.contains(annotation.annotationType()))
+               {
+                  annotatedParameters.put(annotation.annotationType(), parameter);
+               }
             }
          }
       }
@@ -221,9 +217,9 @@ public Constructor<T> getDelegate()
     * @return A list of matching parameter abstractions. An empty list is
     *         returned if there are no matches.
     * 
-    * @see org.jboss.weld.introspector.WeldConstructor#getAnnotatedWBParameters(Class)
+    * @see org.jboss.weld.introspector.WeldConstructor#getWeldParameters(Class)
     */
-   public List<WeldParameter<?, T>> getAnnotatedWBParameters(Class<? extends Annotation> annotationType)
+   public List<WeldParameter<?, T>> getWeldParameters(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableList(annotatedParameters.get(annotationType));
    }
@@ -284,7 +280,7 @@ public Constructor<T> getDelegate()
    @Override
    public String toString()
    {
-      return toString;
+      return new StringBuilder().append("constructor ").append(constructor.toString()).toString();
    }
    
    public ConstructorSignature getSignature()

@@ -66,8 +66,6 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
 
    }
 
-   private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
-
    private final Bean<?> declaringBean;
    private final WeldMethod<T, X> method;
 

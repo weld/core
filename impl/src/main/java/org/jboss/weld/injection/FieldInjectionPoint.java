@@ -43,8 +43,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 
 public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> implements WeldInjectionPoint<T, Field>, Serializable
 {
-   
-   private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
    private final Bean<?> declaringBean;
    private final WeldField<T, X> field;
@@ -132,13 +130,11 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
    {
       return getBaseType();
    }
-
+   
    public Member getMember()
    {
       return getJavaMember();
    }
-   
-   
    
    // Serialization
    

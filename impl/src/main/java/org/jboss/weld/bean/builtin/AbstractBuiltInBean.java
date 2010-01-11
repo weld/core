@@ -17,9 +17,7 @@
 package org.jboss.weld.bean.builtin;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -30,14 +28,13 @@ import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.collections.Arrays2;
 
 public abstract class AbstractBuiltInBean<T> extends RIBean<T>
 {
    
    private static final String ID_PREFIX = "Built-in";
-   
-   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new DefaultLiteral(), new AnyLiteral() };
-   private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
+   private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet( DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE );
    
    protected AbstractBuiltInBean(String idSuffix, BeanManagerImpl manager)
    {
@@ -53,7 +50,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
    
    public Set<Annotation> getQualifiers()
    {
-      return DEFAULT_BINDING;
+      return DEFAULT_QUALIFIERS;
    }
    
    public Class<? extends Annotation> getScope()

@@ -28,8 +28,6 @@ import javax.enterprise.inject.spi.AnnotatedMember;
 public interface WeldMember<T, X, S extends Member> extends WeldAnnotated<T, S>, AnnotatedMember<X>
 {
 
-   public S getJavaMember();
-
    /**
     * Gets an abstraction of the declaring class
     * 

@@ -37,26 +37,26 @@ abstract class SecureReflectionAccess
    @SuppressWarnings("unchecked")
    public Object run() throws Exception
    {
-      SecurityManager securityManager = System.getSecurityManager();
-      if (securityManager != null)
-      {
-         if (true)
-         {
-            throw new SecurityException("Privileged execution disabled for now to prevent possible leakage, uncomment to play around with it --Nik");
-         }
-         securityManager.checkPermission(new RuntimePermission("weld.reflection"));
-         return AccessController.doPrivileged(new PrivilegedExceptionAction()
-         {
-            public Object run() throws Exception
-            {
-               return work();
-            }
-         });
-      }
-      else
-      {
+//      SecurityManager securityManager = System.getSecurityManager();
+//      if (securityManager != null)
+//      {
+//         if (true)
+//         {
+//            throw new SecurityException("Privileged execution disabled for now to prevent possible leakage, uncomment to play around with it --Nik");
+//         }
+//         securityManager.checkPermission(new RuntimePermission("weld.reflection"));
+//         return AccessController.doPrivileged(new PrivilegedExceptionAction()
+//         {
+//            public Object run() throws Exception
+//            {
+//               return work();
+//            }
+//         });
+//      }
+//      else
+//      {
          return work();
-      }
+//      }
    }
 
    /**

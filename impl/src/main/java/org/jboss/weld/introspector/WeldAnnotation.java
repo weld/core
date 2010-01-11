@@ -40,14 +40,6 @@ public interface WeldAnnotation<T extends Annotation> extends WeldClass<T>
     * @param annotationType The annotation type to match
     * @return A set of abstracted members with the annotation type
     */
-   public Set<WeldMethod<?, ?>> getAnnotatedMembers(Class<? extends Annotation> annotationType);
-
-   /**
-    * Get an annotation member by name
-    * 
-    * @param memberName
-    * @return
-    */
-   public <A> WeldMethod<A, ?> getMember(String memberName, WeldClass<A> expectedType);
+   public Set<WeldMethod<?, ?>> getMembers(Class<? extends Annotation> annotationType);
 
 }

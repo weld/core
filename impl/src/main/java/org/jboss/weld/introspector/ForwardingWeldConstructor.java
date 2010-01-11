@@ -29,9 +29,9 @@ public abstract class ForwardingWeldConstructor<T> extends ForwardingWeldMember<
    @Override
    protected abstract WeldConstructor<T> delegate();
 
-   public List<WeldParameter<?, T>> getAnnotatedWBParameters(Class<? extends Annotation> annotationType)
+   public List<WeldParameter<?, T>> getWeldParameters(Class<? extends Annotation> annotationType)
    {
-      return delegate().getAnnotatedWBParameters(annotationType);
+      return delegate().getWeldParameters(annotationType);
    }
 
    @Override
@@ -58,6 +58,11 @@ public abstract class ForwardingWeldConstructor<T> extends ForwardingWeldMember<
    public List<AnnotatedParameter<T>> getParameters()
    {
       return delegate().getParameters();
+   }
+   
+   public Constructor<T> getJavaMember()
+   {
+      return delegate().getJavaMember();
    }
    
 }

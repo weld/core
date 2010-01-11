@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
+
 import java.util.Map;
 
 import javax.enterprise.inject.spi.BeforeShutdown;
@@ -46,7 +48,7 @@ public class BeforeShutdownImpl extends AbstractContainerEvent implements Before
    
    public BeforeShutdownImpl(BeanManagerImpl beanManager)
    {
-      super(beanManager, BeforeShutdown.class, EMPTY_TYPE_ARRAY);
+      super(beanManager, BeforeShutdown.class, EMPTY_TYPES);
    }
 
 }

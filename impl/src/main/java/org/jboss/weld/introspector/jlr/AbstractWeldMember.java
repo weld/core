@@ -16,15 +16,16 @@
  */
 package org.jboss.weld.introspector.jlr;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.introspector.AnnotationStore;
-import org.jboss.weld.introspector.ForwardingWeldMember;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMember;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -39,21 +40,9 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public abstract class AbstractWeldMember<T, X, S extends Member> extends AbstractWeldAnnotated<T, S> implements WeldMember<T, X, S>
 {
-   
-   static abstract class WrappableForwardingAnnotatedMember<T, X, S extends Member> extends ForwardingWeldMember<T, X, S> implements WrappableAnnotatedItem<T, S>
-   {
-      
-   }
-
-   // The name of the member
-   private final String name;
 
    // Cached string representation
    private String toString;
-   private final boolean _public;
-   private final boolean _private;
-   private final boolean _packagePrivate;
-   private final Package _package;
    private final WeldClass<X> declaringType;
 
    /**
@@ -61,14 +50,9 @@ public abstract class AbstractWeldMember<T, X, S extends Member> extends Abstrac
     * 
     * @param annotationMap The annotation map
     */
-   protected AbstractWeldMember(AnnotationStore annotatedItemHelper, Member member, Class<T> rawType, Type type, Set<Type> typeClosure, WeldClass<X> declaringType)
+   protected AbstractWeldMember(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, Member member, Class<T> rawType, Type type, Set<Type> typeClosure, WeldClass<X> declaringType)
    {
-      super(annotatedItemHelper, rawType, type, typeClosure);
-      name = member.getName();
-      this._public = Modifier.isPublic(member.getModifiers());
-      this._private = Modifier.isPrivate(member.getModifiers());
-      this._packagePrivate = Reflections.isPackagePrivate(member.getModifiers());
-      this._package = member.getDeclaringClass().getPackage();
+      super(annotationMap, declaredAnnotationMap, classTransformer, rawType, type, typeClosure);
       this.declaringType = declaringType;
    }
 
@@ -103,22 +87,22 @@ public abstract class AbstractWeldMember<T, X, S extends Member> extends Abstrac
    
    public boolean isPublic()
    {
-      return _public;
+      return Modifier.isPublic(getJavaMember().getModifiers());
    }
    
    public boolean isPrivate()
    {
-      return _private;
+      return Modifier.isPrivate(getJavaMember().getModifiers());
    }
    
    public boolean isPackagePrivate()
    {
-      return _packagePrivate;
+      return Reflections.isPackagePrivate(getJavaMember().getModifiers());
    }
    
    public Package getPackage()
    {
-      return _package;
+      return getJavaMember().getDeclaringClass().getPackage();
    }
 
    /**
@@ -141,7 +125,7 @@ public abstract class AbstractWeldMember<T, X, S extends Member> extends Abstrac
     */
    public String getName()
    {
-      return name;
+      return getJavaMember().getName();
    }
 
    /**

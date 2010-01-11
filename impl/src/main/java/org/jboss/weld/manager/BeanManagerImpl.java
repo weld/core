@@ -116,11 +116,11 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.collections.CopyOnWriteArrayListSupplier;
+import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.base.Function;
-import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.ListMultimap;
@@ -246,15 +246,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public static BeanManagerImpl newRootManager(String id, ServiceRegistry serviceRegistry)
    {  
-      ListMultimap<Class<? extends Annotation>, Context> contexts = Multimaps.newListMultimap(new ConcurrentHashMap<Class<? extends Annotation>, Collection<Context>>(), new Supplier<List<Context>>() 
-      {
-         
-         public List<Context> get()
-         {
-            return new CopyOnWriteArrayList<Context>();
-         }
-         
-      });
+      ListMultimap<Class<? extends Annotation>, Context> contexts = Multimaps.newListMultimap(new ConcurrentHashMap<Class<? extends Annotation>, Collection<Context>>(), CopyOnWriteArrayListSupplier.<Context>instance());
 
       return new BeanManagerImpl(
             serviceRegistry, 
@@ -435,21 +427,11 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       return new Iterable<T>()
       {
-         
-         private Function<Iterable<T>, Iterator<T>> function = new Function<Iterable<T>, Iterator<T>>()
-         {
-
-            public Iterator<T> apply(Iterable<T> iterable)
-            {
-               return iterable.iterator();
-            }
-            
-         };
 
          public Iterator<T> iterator()
          {
             Set<Iterable<T>> iterable = buildAccessibleClosure(new ArrayList<BeanManagerImpl>(), transform);
-            return Iterators.concat(Iterators.transform(iterable.iterator(), function));
+            return Iterators.concat(Iterators.transform(iterable.iterator(), IterableToIteratorFunction.<T>instance()));
          }
          
       };
@@ -522,7 +504,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       checkBindingTypes(Arrays.asList(bindings));    
       HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(Arrays.asList(bindings));
-      bindingAnnotations.add(new AnyLiteral());
+      bindingAnnotations.add(AnyLiteral.INSTANCE);
       Set<ObserverMethod<? super T>> observers = new HashSet<ObserverMethod<? super T>>();
       Set<ObserverMethod<?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new HierarchyDiscovery(eventType).getTypeClosure(),  bindingAnnotations, null));
       for (ObserverMethod<?> observer : eventObservers)

@@ -63,7 +63,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    
    private void initDisposesParameter()
    {
-      this.disposesParameter = getAnnotatedItem().getAnnotatedWBParameters(Disposes.class).get(0);
+      this.disposesParameter = getAnnotatedItem().getWeldParameters(Disposes.class).get(0);
    }
    
    public WeldParameter<?, X> getDisposesParameter()

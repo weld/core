@@ -69,8 +69,6 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
 
    }
 
-   private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
-
    private final Bean<T> declaringBean;
    private final WeldConstructor<T> constructor;
 

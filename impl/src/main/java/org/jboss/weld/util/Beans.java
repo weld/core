@@ -208,7 +208,7 @@ public class Beans
       {
          Set<FieldInjectionPoint<?, ?>> fields = new HashSet<FieldInjectionPoint<?,?>>();
          injectableFieldsList.add(0, fields);
-         for (WeldField<?, ?> annotatedField : t.getDeclaredAnnotatedWeldFields(Inject.class))
+         for (WeldField<?, ?> annotatedField : t.getDeclaredWeldFields(Inject.class))
          {
             if (!annotatedField.isStatic())
             {
@@ -232,7 +232,7 @@ public class Beans
    
    public static WeldMethod<?, ?> getPostConstruct(WeldClass<?> type)
    {
-      Set<WeldMethod<?, ?>> postConstructMethods = type.getAnnotatedWeldMethods(PostConstruct.class);
+      Set<WeldMethod<?, ?>> postConstructMethods = type.getWeldMethods(PostConstruct.class);
       log.trace(FOUND_POST_CONSTRUCT_METHODS, postConstructMethods, type);
       if (postConstructMethods.size() > 1)
       {
@@ -252,7 +252,7 @@ public class Beans
    
    public static WeldMethod<?, ?> getPreDestroy(WeldClass<?> type)
    {
-      Set<WeldMethod<?, ?>> preDestroyMethods = type.getAnnotatedWeldMethods(PreDestroy.class);
+      Set<WeldMethod<?, ?>> preDestroyMethods = type.getWeldMethods(PreDestroy.class);
       log.trace(FOUND_PRE_DESTROY_METHODS, preDestroyMethods, type);
       if (preDestroyMethods.size() > 1)
       {
@@ -303,7 +303,7 @@ public class Beans
       {
          Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
          Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
-         for (WeldField<?, ?> field : type.getAnnotatedWeldFields(ejbAnnotationType))
+         for (WeldField<?, ?> field : type.getWeldFields(ejbAnnotationType))
          {
             ejbInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
          }
@@ -321,7 +321,7 @@ public class Beans
       {
          Set<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
          Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-         for (WeldField<?, ?> field : type.getAnnotatedWeldFields(persistenceContextAnnotationType))
+         for (WeldField<?, ?> field : type.getWeldFields(persistenceContextAnnotationType))
          {
             jpaInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
          }
@@ -339,7 +339,7 @@ public class Beans
       {
          Set<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
          Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
-         for (WeldField<?, ?> field : type.getAnnotatedWeldFields(persistenceUnitAnnotationType))
+         for (WeldField<?, ?> field : type.getWeldFields(persistenceUnitAnnotationType))
          {
             jpaInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
          }
@@ -357,7 +357,7 @@ public class Beans
       {
          Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
          Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
-         for (WeldField<?, ?> field : type.getAnnotatedWeldFields(resourceAnnotationType))
+         for (WeldField<?, ?> field : type.getWeldFields(resourceAnnotationType))
          {
             resourceInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
          }
@@ -395,11 +395,11 @@ public class Beans
                {
                   throw new DefinitionException(INITIALIZER_CANNOT_BE_PRODUCER, method, type);
                }
-               else if (method.getAnnotatedWBParameters(Disposes.class).size() > 0)
+               else if (method.getWeldParameters(Disposes.class).size() > 0)
                {
                   throw new DefinitionException(INITIALIZER_CANNOT_BE_DISPOSAL_METHOD, method, type);
                }
-               else if (method.getAnnotatedWBParameters(Observes.class).size() > 0)
+               else if (method.getWeldParameters(Observes.class).size() > 0)
                {
                   throw new DefinitionException(INITIALIZER_CANNOT_BE_OBSERVER, method, type);
                }
@@ -666,7 +666,7 @@ public class Beans
    public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<T> declaringBean, WeldClass<T> type)
    {
       ConstructorInjectionPoint<T> constructor = null;
-      Set<WeldConstructor<T>> initializerAnnotatedConstructors = type.getAnnotatedWeldConstructors(Inject.class);
+      Set<WeldConstructor<T>> initializerAnnotatedConstructors = type.getWeldConstructors(Inject.class);
       log.trace(FOUND_INJECTABLE_CONSTRUCTORS, initializerAnnotatedConstructors, type);
       if (initializerAnnotatedConstructors.size() > 1)
       {

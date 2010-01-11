@@ -14,11 +14,8 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 
-
 public abstract class AbstractContainerEvent
 {
-   
-   protected static final Type[] EMPTY_TYPE_ARRAY = new Type[0];
 
    private final List<Throwable> errors;
    private final BeanManagerImpl beanManager;
@@ -66,7 +63,7 @@ public abstract class AbstractContainerEvent
       Type eventType = new ParameterizedTypeImpl(getRawType(), getEmptyTypeArray(), null);
       for (BeanDeployment beanDeployment : beanDeployments.values())
       {
-         observers.addAll((Set) beanDeployment.getBeanManager().resolveObserverMethods(eventType));
+         observers.addAll(beanDeployment.getBeanManager().resolveObserverMethods(eventType));
       }
       for (ObserverMethod<Object> observerMethod : observers)
       {

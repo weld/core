@@ -17,6 +17,7 @@
 package org.jboss.weld.introspector.jlr;
 
 import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_PARAMETER_NAME;
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -25,7 +26,6 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedCallable;
 
 import org.jboss.weld.exceptions.ForbiddenArgumentException;
-import org.jboss.weld.introspector.AnnotationStore;
 import org.jboss.weld.introspector.WeldCallable;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.resources.ClassTransformer;
@@ -43,21 +43,6 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
 public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> implements WeldParameter<T, X>
 {
    
-   private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
-   
-   // The final state
-   private final boolean _final = false;
-   // The static state
-   private final boolean _static = false;
-   private final boolean _public = false;
-   private final boolean _private = false;
-   private final boolean _packagePrivate = false;
-   private final Package _package;
-   private final int position;
-   private final WeldCallable<?, X, ?> declaringMember;
-   
-   private final String toString;
-   
    public static <T, X> WeldParameter<T, X> of(Annotation[] annotations, Class<T> rawType, Type type, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
    {
       return new WeldParameterImpl<T, X>(annotations, rawType, type, new HierarchyDiscovery(type).getTypeClosure(), declaringMember, position, classTransformer);
@@ -65,8 +50,11 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
    
    public static <T, X> WeldParameter<T, X> of(Set<Annotation> annotations, Class<T> rawType, Type type, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
    {
-      return new WeldParameterImpl<T, X>(annotations.toArray(EMPTY_ANNOTATION_ARRAY), rawType, type, new HierarchyDiscovery(type).getTypeClosure(), declaringMember, position, classTransformer);
+      return new WeldParameterImpl<T, X>(annotations.toArray(EMPTY_ANNOTATIONS), rawType, type, new HierarchyDiscovery(type).getTypeClosure(), declaringMember, position, classTransformer);
    }
+   
+   private final int position;
+   private final WeldCallable<?, X, ?> declaringMember;
 
    /**
     * Constructor
@@ -76,11 +64,9 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
     */
    protected WeldParameterImpl(Annotation[] annotations, Class<T> rawType, Type type, Set<Type> typeClosure, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(annotations, annotations, classTransformer.getTypeStore()), rawType, type, typeClosure);
+      super(buildAnnotationMap(annotations), buildAnnotationMap(annotations), classTransformer, rawType, type, typeClosure);
       this.declaringMember = declaringMember;
-      this._package = declaringMember.getPackage();
       this.position = position;
-      this.toString = new StringBuilder().append("parameter ").append(position).append(" of ").append(declaringMember.toString()).toString();
    }
 
    /**
@@ -92,7 +78,7 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
     */
    public boolean isFinal()
    {
-      return _final;
+      return false;
    }
 
    /**
@@ -104,27 +90,27 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
     */
    public boolean isStatic()
    {
-      return _static;
+      return false;
    }
    
    public boolean isPublic()
    {
-      return _public;
+      return false;
    }
    
    public boolean isPrivate()
    {
-      return _private;
+      return false;
    }
    
    public boolean isPackagePrivate()
    {
-      return _packagePrivate;
+      return false;
    }
    
    public Package getPackage()
    {
-      return _package;
+      return declaringMember.getPackage();
    }
 
    /**
@@ -147,7 +133,7 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
    @Override
    public String toString()
    {
-      return toString;
+      return new StringBuilder().append("parameter ").append(position).append(" of ").append(declaringMember.toString()).toString();
    }
 
    public AnnotatedCallable<X> getDeclaringCallable()
