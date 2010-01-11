@@ -19,12 +19,12 @@ public class ProcessProducerFieldImpl<X, T> extends AbstractProcessProducerBean<
    
    public ProcessProducerFieldImpl(BeanManagerImpl beanManager, ProducerField<X, T> bean)
    {
-      super(beanManager, ProcessProducerField.class, new Type[] { bean.getAnnotatedItem().getDeclaringType().getBaseType(), bean.getAnnotatedItem().getBaseType() }, bean);
+      super(beanManager, ProcessProducerField.class, new Type[] { bean.getWeldAnnotated().getDeclaringType().getBaseType(), bean.getWeldAnnotated().getBaseType() }, bean);
    }
 
    public AnnotatedField<X> getAnnotatedProducerField()
    {
-      return getBean().getAnnotatedItem();
+      return getBean().getWeldAnnotated();
    }
 
 }

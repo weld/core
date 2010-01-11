@@ -263,7 +263,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initType()
    {
-      this.type = getAnnotatedItem().getJavaClass();
+      this.type = getWeldAnnotated().getJavaClass();
    }
 
    /**
@@ -280,41 +280,41 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initInitializerMethods()
    {
-      initializerMethods = Beans.getInitializerMethods(this, getAnnotatedItem());
+      initializerMethods = Beans.getInitializerMethods(this, getWeldAnnotated());
       addInjectionPoints(Beans.getParameterInjectionPoints(this, initializerMethods));
    }
 
    @Override
-   protected void initScopeType()
+   protected void initScope()
    {
-      for (WeldClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getWeldSuperclass())
+      for (WeldClass<?> clazz = getWeldAnnotated(); clazz != null; clazz = clazz.getWeldSuperclass())
       {
          Set<Annotation> scopeTypes = new HashSet<Annotation>();
          scopeTypes.addAll(clazz.getDeclaredMetaAnnotations(Scope.class));
          scopeTypes.addAll(clazz.getDeclaredMetaAnnotations(NormalScope.class));
          if (scopeTypes.size() == 1)
          {
-            if (getAnnotatedItem().isAnnotationPresent(scopeTypes.iterator().next().annotationType()))
+            if (getWeldAnnotated().isAnnotationPresent(scopeTypes.iterator().next().annotationType()))
             {
-               this.scopeType = scopeTypes.iterator().next().annotationType();
-               log.trace(USING_SCOPE, scopeType, this);
+               this.scope = scopeTypes.iterator().next().annotationType();
+               log.trace(USING_SCOPE, scope, this);
             }
             break;
          }
          else if (scopeTypes.size() > 1)
          {
-            throw new DefinitionException(ONLY_ONE_SCOPE_ALLOWED, getAnnotatedItem());
+            throw new DefinitionException(ONLY_ONE_SCOPE_ALLOWED, getWeldAnnotated());
          }
       }
 
-      if (this.scopeType == null)
+      if (this.scope == null)
       {
-         initScopeTypeFromStereotype();
+         initScopeFromStereotype();
       }
 
-      if (this.scopeType == null)
+      if (this.scope == null)
       {
-         this.scopeType = Dependent.class;
+         this.scope = Dependent.class;
          log.trace(USING_DEFAULT_SCOPE, this);
       }
    }
@@ -328,7 +328,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
       super.preSpecialize(environment);
-      if (getAnnotatedItem().getWeldSuperclass() == null || getAnnotatedItem().getWeldSuperclass().getJavaClass().equals(Object.class))
+      if (getWeldAnnotated().getWeldSuperclass() == null || getWeldAnnotated().getWeldSuperclass().getJavaClass().equals(Object.class))
       {
          throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
       }
@@ -340,7 +340,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * @return The annotated item
     */
    @Override
-   public WeldClass<T> getAnnotatedItem()
+   public WeldClass<T> getWeldAnnotated()
    {
       return annotatedItem;
    }
@@ -353,7 +353,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    @Override
    protected String getDefaultName()
    {
-      String name = Strings.decapitalize(getAnnotatedItem().getSimpleName());
+      String name = Strings.decapitalize(getWeldAnnotated().getSimpleName());
       return name;
    }
 
@@ -383,7 +383,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initPostConstruct()
    {
-      this.postConstruct = Beans.getPostConstruct(getAnnotatedItem());
+      this.postConstruct = Beans.getPostConstruct(getWeldAnnotated());
    }
 
    /**
@@ -391,7 +391,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initPreDestroy()
    {
-      this.preDestroy = Beans.getPreDestroy(getAnnotatedItem());
+      this.preDestroy = Beans.getPreDestroy(getWeldAnnotated());
    }
 
    /**
@@ -439,53 +439,53 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    protected void initCdiBoundInterceptors()
    {
-      if (manager.getCdiInterceptorsRegistry().getInterceptionModel(getType()) == null)
+      if (beanManager.getCdiInterceptorsRegistry().getInterceptionModel(getType()) == null)
       {
          InterceptionModelBuilder<Class<?>, SerializableContextual<Interceptor<?>, ?>> builder =
                InterceptionModelBuilder.newBuilderFor(getType(), (Class) SerializableContextual.class);
-         Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(manager, getAnnotatedItem().getAnnotations());
+         Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(beanManager, getWeldAnnotated().getAnnotations());
          for (Class<? extends Annotation> annotation : getStereotypes())
          {
-            classBindingAnnotations.addAll(flattenInterceptorBindings(manager, manager.getStereotypeDefinition(annotation)));
+            classBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, beanManager.getStereotypeDefinition(annotation)));
          }
          if (classBindingAnnotations.size() > 0)
          {
-            if (Beans.findInterceptorBindingConflicts(manager, classBindingAnnotations))
+            if (Beans.findInterceptorBindingConflicts(beanManager, classBindingAnnotations))
                throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType());
 
             Annotation[] classBindingAnnotationsArray = classBindingAnnotations.toArray(new Annotation[0]);
 
-            List<Interceptor<?>> resolvedPostConstructInterceptors = manager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray);
+            List<Interceptor<?>> resolvedPostConstructInterceptors = beanManager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray);
             builder.interceptPostConstruct().with(toSerializableContextualArray(resolvedPostConstructInterceptors));
 
-            List<Interceptor<?>> resolvedPreDestroyInterceptors = manager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotationsArray);
+            List<Interceptor<?>> resolvedPreDestroyInterceptors = beanManager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotationsArray);
             builder.interceptPreDestroy().with(toSerializableContextualArray(resolvedPreDestroyInterceptors));
 
-            List<Interceptor<?>> resolvedPrePassivateInterceptors = manager.resolveInterceptors(InterceptionType.PRE_PASSIVATE, classBindingAnnotationsArray);
+            List<Interceptor<?>> resolvedPrePassivateInterceptors = beanManager.resolveInterceptors(InterceptionType.PRE_PASSIVATE, classBindingAnnotationsArray);
             builder.interceptPrePassivate().with(toSerializableContextualArray(resolvedPrePassivateInterceptors));
 
-            List<Interceptor<?>> resolvedPostActivateInterceptors = manager.resolveInterceptors(InterceptionType.POST_ACTIVATE, classBindingAnnotationsArray);
+            List<Interceptor<?>> resolvedPostActivateInterceptors = beanManager.resolveInterceptors(InterceptionType.POST_ACTIVATE, classBindingAnnotationsArray);
             builder.interceptPostActivate().with(toSerializableContextualArray(resolvedPostActivateInterceptors));
 
          }
-         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getAnnotatedItem());
+         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getWeldAnnotated());
          for (WeldMethod<?, ?> method : businessMethods)
          {
             Set<Annotation> methodBindingAnnotations = new HashSet<Annotation>(classBindingAnnotations);
-            methodBindingAnnotations.addAll(flattenInterceptorBindings(manager, method.getAnnotations()));
+            methodBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, method.getAnnotations()));
             if (methodBindingAnnotations.size() > 0)
             {
-               if (Beans.findInterceptorBindingConflicts(manager, classBindingAnnotations))
+               if (Beans.findInterceptorBindingConflicts(beanManager, classBindingAnnotations))
                   throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType() + "." + method.getName() + "()");
 
-               if (method.isAnnotationPresent(manager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
+               if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
                {
-                  List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, methodBindingAnnotations.toArray(new Annotation[]{}));
+                  List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, methodBindingAnnotations.toArray(new Annotation[]{}));
                   builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
                }
                else
                {
-                  List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
+                  List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
                   builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
                }
             }
@@ -494,7 +494,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          // if there is at least one applicable interceptor, register it 
          if (serializableContextualInterceptionModel.getAllInterceptors().size() > 0)
          {
-            manager.getCdiInterceptorsRegistry().registerInterceptionModel(getType(), serializableContextualInterceptionModel);
+            beanManager.getCdiInterceptorsRegistry().registerInterceptionModel(getType(), serializableContextualInterceptionModel);
          }
       }
    }
@@ -560,17 +560,17 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    public boolean hasCdiBoundInterceptors()
    {
-      if (manager.getCdiInterceptorsRegistry().getInterceptionModel(getType()) != null)
-         return manager.getCdiInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
+      if (beanManager.getCdiInterceptorsRegistry().getInterceptionModel(getType()) != null)
+         return beanManager.getCdiInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
       else
          return false;
    }
 
    public boolean hasDirectlyDefinedInterceptors()
    {
-      if (manager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()) != null)
+      if (beanManager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()) != null)
       {
-         return hasSerializationOrInvocationInterceptorMethods || manager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
+         return hasSerializationOrInvocationInterceptorMethods || beanManager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
       }
       else
       {
@@ -580,12 +580,12 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    protected void initDirectlyDefinedInterceptors()
    {
-      if (manager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()) == null && InterceptionUtils.supportsEjb3InterceptorDeclaration())
+      if (beanManager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()) == null && InterceptionUtils.supportsEjb3InterceptorDeclaration())
       {
          InterceptionModelBuilder<Class<?>, Class<?>> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Class.class);
 
          Class<?>[] classDeclaredInterceptors = null;
-         if (getAnnotatedItem().isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
+         if (getWeldAnnotated().isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
          {
             Annotation interceptorsAnnotation = getType().getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass());
             classDeclaredInterceptors = SecureReflections.extractValues(interceptorsAnnotation);
@@ -596,7 +596,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             builder.interceptAll().with(classDeclaredInterceptors);
          }
 
-         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getAnnotatedItem());
+         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getWeldAnnotated());
          for (WeldMethod<?, ?> method : businessMethods)
          {
             boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
@@ -611,7 +611,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             }
             if (methodDeclaredInterceptors != null)
             {
-               if (method.isAnnotationPresent(manager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
+               if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
                   builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
                else
                   builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
@@ -625,7 +625,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
                || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.PRE_PASSIVATE).isEmpty()
                || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.POST_ACTIVATE).isEmpty();
          if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods)
-            manager.getClassDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
+            beanManager.getClassDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
       }
    }
 
@@ -646,7 +646,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initConstructor()
    {
-      this.constructor = Beans.getBeanConstructor(this, getAnnotatedItem());
+      this.constructor = Beans.getBeanConstructor(this, getWeldAnnotated());
       // TODO We loop unecessarily many times here, I want to probably introduce some callback mechanism. PLM.
       addInjectionPoints(Beans.getParameterInjectionPoints(this, constructor));
    }

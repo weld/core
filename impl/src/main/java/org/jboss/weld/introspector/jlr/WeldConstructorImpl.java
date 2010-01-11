@@ -227,7 +227,7 @@ public Constructor<T> getDelegate()
    /**
     * Creates a new instance
     * 
-    * @param manager The Bean manager
+    * @param beanManager The Bean manager
     * @return An instance
     * @throws InvocationTargetException 
     * @throws IllegalAccessException 

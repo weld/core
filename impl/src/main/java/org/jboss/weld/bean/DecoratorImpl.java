@@ -134,7 +134,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    protected void initDecoratedTypes()
    {
       this.decoratedTypes = new HashSet<Type>();
-      this.decoratedTypes.addAll(getAnnotatedItem().getInterfaceClosure());
+      this.decoratedTypes.addAll(getWeldAnnotated().getInterfaceClosure());
       this.decoratedTypes.remove(Serializable.class);
 
       this.decoratedMethodSignatures = Deployers.getDecoratedMethodSignatures(getManager(), this.decoratedTypes);
@@ -207,21 +207,21 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
             }
          }
       }
-      annotatedDelegateItem = WeldClassImpl.of(delegateInjectionPoint.getJavaClass(), manager.getServices().get(ClassTransformer.class));
+      annotatedDelegateItem = WeldClassImpl.of(delegateInjectionPoint.getJavaClass(), beanManager.getServices().get(ClassTransformer.class));
    }
 
    private void checkAbstractMethods()
    {
-      if (getAnnotatedItem().isAbstract())
+      if (getWeldAnnotated().isAbstract())
       {
-         for(WeldMethod<?,?> method: getAnnotatedItem().getWeldMethods())
+         for(WeldMethod<?,?> method: getWeldAnnotated().getWeldMethods())
          {
             if (Reflections.isAbstract(((AnnotatedMethod) method).getJavaMember()))
             {
                MethodSignature methodSignature = method.getSignature();
                if (this.annotatedDelegateItem.getWeldMethod(methodSignature) == null)
                {
-                  throw new DefinitionException(ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE,  method.getSignature(), this, getAnnotatedItem().getName());
+                  throw new DefinitionException(ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE,  method.getSignature(), this, getWeldAnnotated().getName());
                }
             }
          }
@@ -253,11 +253,11 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    protected void initType()
    {
       super.initType();
-      if (getAnnotatedItem().isAbstract())
+      if (getWeldAnnotated().isAbstract())
       {
-         Proxies.TypeInfo typeInfo = Proxies.TypeInfo.of(Collections.singleton(getAnnotatedItem().getJavaClass()));
+         Proxies.TypeInfo typeInfo = Proxies.TypeInfo.of(Collections.singleton(getWeldAnnotated().getJavaClass()));
          Class<T> clazz = Proxies.createProxyClass(null, typeInfo);
-         proxyClassForAbstractDecorators = manager.getServices().get(ClassTransformer.class).loadClass(clazz);
+         proxyClassForAbstractDecorators = beanManager.getServices().get(ClassTransformer.class).loadClass(clazz);
       }
    }
 
@@ -265,12 +265,12 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    protected void initConstructor()
    {
       super.initConstructor();
-      if (getAnnotatedItem().isAbstract())
+      if (getWeldAnnotated().isAbstract())
       {
          constructorForAbstractDecorator = WeldConstructorImpl.of(
                proxyClassForAbstractDecorators.getDeclaredWeldConstructor(getConstructor().getSignature()),
                proxyClassForAbstractDecorators,
-               manager.getServices().get(ClassTransformer.class));
+               beanManager.getServices().get(ClassTransformer.class));
       }
    }
 
@@ -283,14 +283,14 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    @Override
    protected T createInstance(CreationalContext<T> ctx)
    {
-      if (!getAnnotatedItem().isAbstract())
+      if (!getWeldAnnotated().isAbstract())
       {
          return super.createInstance(ctx);
       }
       else
       {
          ProxyClassConstructorInjectionPointWrapper<T> constructorInjectionPointWrapper = new ProxyClassConstructorInjectionPointWrapper(this, constructorForAbstractDecorator, getConstructor());
-         T instance = constructorInjectionPointWrapper.newInstance(manager, ctx);
+         T instance = constructorInjectionPointWrapper.newInstance(beanManager, ctx);
          Proxies.attachMethodHandler(instance, new AbstractDecoratorMethodHandler(annotatedDelegateItem, getDelegateInjectionPoint(), constructorInjectionPointWrapper.getInjectedDelegate()));
          return instance;
       }

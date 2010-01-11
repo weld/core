@@ -65,11 +65,11 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     */
    protected ProducerField(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
-      super(new StringBuilder().append(ProducerField.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(".").append(field.getName()).toString(), declaringBean, manager);
+      super(new StringBuilder().append(ProducerField.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(field.getName()).toString(), declaringBean, manager);
       this.field = field;
       initType();
       initTypes();
-      initBindings();
+      initQualifiers();
       initStereotypes();
       initAlternative();
    }
@@ -90,7 +90,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
 
             public Set<InjectionPoint> getInjectionPoints()
             {
-               return (Set) getAnnotatedInjectionPoints();
+               return (Set) getWeldInjectionPoints();
             }
 
             public T produce(CreationalContext<T> creationalContext)
@@ -119,7 +119,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     * @return The annotated item
     */
    @Override
-   public WeldField<T, X> getAnnotatedItem()
+   public WeldField<T, X> getWeldAnnotated()
    {
       return field;
    }

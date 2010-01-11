@@ -128,7 +128,7 @@ public class BeanDeployerEnvironment
 
    public void addProducerMethod(ProducerMethod<?, ?> bean)
    {
-      producerMethodBeanMap.put(bean.getAnnotatedItem(), bean);
+      producerMethodBeanMap.put(bean.getWeldAnnotated(), bean);
       addAbstractBean(bean);
    }
    
@@ -151,14 +151,14 @@ public class BeanDeployerEnvironment
    {
       if (!(bean instanceof NewBean))
       {
-         classBeanMap.put(bean.getAnnotatedItem(), bean);
+         classBeanMap.put(bean.getWeldAnnotated(), bean);
       }
       addAbstractBean(bean);
    }
    
    public void addManagedBean(ManagedBean<?> bean)
    {
-      newManagedBeanClasses.add(bean.getAnnotatedItem());
+      newManagedBeanClasses.add(bean.getWeldAnnotated());
       addAbstractClassBean(bean);
    }
    

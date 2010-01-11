@@ -161,13 +161,13 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
     */
    protected <T> void createObserversProducersDisposers(AbstractClassBean<T> bean)
    {
-      createProducerMethods(bean, bean.getAnnotatedItem());
-      createProducerFields(bean, bean.getAnnotatedItem());
+      createProducerMethods(bean, bean.getWeldAnnotated());
+      createProducerFields(bean, bean.getWeldAnnotated());
       if (manager.isBeanEnabled(bean))
       {
-         createObserverMethods(bean, bean.getAnnotatedItem());
+         createObserverMethods(bean, bean.getWeldAnnotated());
       }
-      createDisposalMethods(bean, bean.getAnnotatedItem());
+      createDisposalMethods(bean, bean.getWeldAnnotated());
       
    }
    

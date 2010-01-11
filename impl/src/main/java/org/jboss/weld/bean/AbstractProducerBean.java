@@ -105,7 +105,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    }
 
    @Override
-   public abstract WeldMember<T, X, S> getAnnotatedItem();
+   public abstract WeldMember<T, X, S> getWeldAnnotated();
 
    @Override
    // Overriden to provide the class of the bean that declares the producer method/field
@@ -140,12 +140,12 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    {
       try
       {
-         this.type = getAnnotatedItem().getJavaClass();
+         this.type = getWeldAnnotated().getJavaClass();
       }
       catch (ClassCastException e)
       {
          Type type = Beans.getDeclaredBeanType(getClass());
-         throw new WeldException(PRODUCER_CAST_ERROR, e, getAnnotatedItem().getJavaClass(), (type == null ? " unknown " : type));
+         throw new WeldException(PRODUCER_CAST_ERROR, e, getWeldAnnotated().getJavaClass(), (type == null ? " unknown " : type));
       }
    }
 
@@ -154,16 +154,16 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     */
    protected void checkProducerReturnType()
    {
-      if ((getAnnotatedItem().getBaseType() instanceof TypeVariable<?>) || 
-          (getAnnotatedItem().getBaseType() instanceof WildcardType))
+      if ((getWeldAnnotated().getBaseType() instanceof TypeVariable<?>) || 
+          (getWeldAnnotated().getBaseType() instanceof WildcardType))
       {
-         throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, getAnnotatedItem().getBaseType());
+         throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, getWeldAnnotated().getBaseType());
       }
-      for (Type type : getAnnotatedItem().getActualTypeArguments())
+      for (Type type : getWeldAnnotated().getActualTypeArguments())
       {
          if (!(type instanceof Class))
          {
-            throw new DefinitionException(TYPE_PARAMETER_MUST_BE_CONCRETE, this.getAnnotatedItem());
+            throw new DefinitionException(TYPE_PARAMETER_MUST_BE_CONCRETE, this.getWeldAnnotated());
          }
       }
    }
@@ -183,7 +183,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    
    private void initPassivationCapable()
    {
-      if (getAnnotatedItem().isFinal() && !Serializable.class.isAssignableFrom(getAnnotatedItem().getJavaClass()))
+      if (getWeldAnnotated().isFinal() && !Serializable.class.isAssignableFrom(getWeldAnnotated().getJavaClass()))
       {
          this.passivationCapableBean = false;
       }
@@ -208,7 +208,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    @Override
    protected void initAlternative()
    {
-      super.alternative = Beans.isAlternative(getAnnotatedItem(), getMergedStereotypes()) || getDeclaringBean().isAlternative();
+      super.alternative = Beans.isAlternative(getWeldAnnotated(), getMergedStereotypes()) || getDeclaringBean().isAlternative();
    }
 
    @Override
@@ -242,18 +242,18 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       }
       else if (instance != null)
       {
-         boolean passivating = manager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
+         boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
          boolean instanceSerializable = isTypeSerializable(instance.getClass());
          if (passivating && !instanceSerializable)
          {
             throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
          }
-         InjectionPoint injectionPoint = manager.getCurrentInjectionPoint();
+         InjectionPoint injectionPoint = beanManager.getCurrentInjectionPoint();
          if (injectionPoint == null || injectionPoint.equals(DummyInjectionPoint.INSTANCE))
          {
             return;
          }
-         if (!instanceSerializable && Beans.isPassivatingScope(injectionPoint.getBean(), manager))
+         if (!instanceSerializable && Beans.isPassivatingScope(injectionPoint.getBean(), beanManager))
          {
             if (injectionPoint.getMember() instanceof Field)
             {
@@ -296,27 +296,27 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    }
 
    @Override
-   protected void initScopeType()
+   protected void initScope()
    {
       Set<Annotation> scopeAnnotations = new HashSet<Annotation>();
-      scopeAnnotations.addAll(getAnnotatedItem().getMetaAnnotations(Scope.class));
-      scopeAnnotations.addAll(getAnnotatedItem().getMetaAnnotations(NormalScope.class));
+      scopeAnnotations.addAll(getWeldAnnotated().getMetaAnnotations(Scope.class));
+      scopeAnnotations.addAll(getWeldAnnotated().getMetaAnnotations(NormalScope.class));
       if (scopeAnnotations.size() > 1)
       {
          throw new DefinitionException(ONLY_ONE_SCOPE_ALLOWED, getProducer());
       }
       if (scopeAnnotations.size() == 1)
       {
-         this.scopeType = scopeAnnotations.iterator().next().annotationType();
-         log.trace(USING_SCOPE, scopeType, this);
+         this.scope = scopeAnnotations.iterator().next().annotationType();
+         log.trace(USING_SCOPE, scope, this);
          return;
       }
 
-      initScopeTypeFromStereotype();
+      initScopeFromStereotype();
 
-      if (this.scopeType == null)
+      if (this.scope == null)
       {
-         this.scopeType = Dependent.class;
+         this.scope = Dependent.class;
          log.trace(USING_DEFAULT_SCOPE, this);
       }
    }

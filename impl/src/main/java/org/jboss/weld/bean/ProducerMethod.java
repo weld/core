@@ -78,12 +78,12 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
 
    protected ProducerMethod(WeldMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
-      super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, manager);
+      super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, manager);
       this.method = MethodInjectionPoint.of(this, method);
       initType();
       initTypes();
-      initBindings();
-      this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(getClass().getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(getAnnotatedItem().getSignature().toString()).toString();
+      initQualifiers();
+      this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(getClass().getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(getWeldAnnotated().getSignature().toString()).toString();
       initStereotypes();
       initAlternative();
       initProducerMethodInjectableParameters();
@@ -113,7 +113,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
 
             public Set<InjectionPoint> getInjectionPoints()
             {
-               return (Set) getAnnotatedInjectionPoints();
+               return (Set) getWeldInjectionPoints();
             }
 
             public T produce(CreationalContext<T> creationalContext)
@@ -121,11 +121,11 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
                Object receiver = getReceiver(creationalContext);
                if (receiver != null)
                {
-                  return method.invokeOnInstance(receiver, manager, creationalContext, CreationException.class);
+                  return method.invokeOnInstance(receiver, beanManager, creationalContext, CreationException.class);
                }
                else
                {
-                  return method.invoke(receiver, manager, creationalContext, CreationException.class);
+                  return method.invoke(receiver, beanManager, creationalContext, CreationException.class);
                }
             }
             
@@ -151,11 +151,11 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
     */
    protected void checkProducerMethod()
    {
-      if (getAnnotatedItem().getWeldParameters(Observes.class).size() > 0)
+      if (getWeldAnnotated().getWeldParameters(Observes.class).size() > 0)
       {
          throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Observes");
       }
-      else if (getAnnotatedItem().getWeldParameters(Disposes.class).size() > 0)
+      else if (getWeldAnnotated().getWeldParameters(Disposes.class).size() > 0)
       {
          throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Disposes");
       }
@@ -167,7 +167,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
          {
             if (type instanceof Class)
             {
-               if (SecureReflections.methodExists((Class<?>) type, getAnnotatedItem().getName(), getAnnotatedItem().getParameterTypesAsArray()))
+               if (SecureReflections.methodExists((Class<?>) type, getWeldAnnotated().getName(), getWeldAnnotated().getParameterTypesAsArray()))
                {
                   methodDeclaredOnTypes = true;
                   continue;
@@ -219,7 +219,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
     * @return The annotated item
     */
    @Override
-   public WeldMethod<T, X> getAnnotatedItem()
+   public WeldMethod<T, X> getWeldAnnotated()
    {
       return method;
    }
@@ -276,7 +276,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    @Override
    protected void preSpecialize(BeanDeployerEnvironment environment)
    {
-      if (getDeclaringBean().getAnnotatedItem().getWeldSuperclass().getDeclaredWeldMethod(getAnnotatedItem().getJavaMember()) == null)
+      if (getDeclaringBean().getWeldAnnotated().getWeldSuperclass().getDeclaredWeldMethod(getWeldAnnotated().getJavaMember()) == null)
       {
          throw new DefinitionException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
       }
@@ -285,7 +285,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      WeldMethod<?, ?> superClassMethod = getDeclaringBean().getAnnotatedItem().getWeldSuperclass().getWeldMethod(getAnnotatedItem().getJavaMember());
+      WeldMethod<?, ?> superClassMethod = getDeclaringBean().getWeldAnnotated().getWeldSuperclass().getWeldMethod(getWeldAnnotated().getJavaMember());
       if (environment.getProducerMethod(superClassMethod) == null)
       {
          throw new ForbiddenStateException(PRODUCER_METHOD_NOT_SPECIALIZING, this);

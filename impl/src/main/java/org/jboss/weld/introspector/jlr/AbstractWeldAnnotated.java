@@ -272,6 +272,11 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
    {
       return rawType.getTypeParameters().length > 0;
    }
+   
+   public boolean isPrimitive()
+   {
+      return getJavaClass().isPrimitive();
+   }
 
    public Type getBaseType()
    {

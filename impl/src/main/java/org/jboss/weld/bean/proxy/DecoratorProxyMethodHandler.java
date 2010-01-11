@@ -85,7 +85,7 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
             WeldDecorator<?> decorator = (WeldDecorator<?>) beanInstance.getContextual().get();
             if (decorator.getDecoratedMethodSignatures().contains(methodSignature))
             {
-               WeldMethod<?, ?> decoratorMethod = decorator.getAnnotatedItem().getWeldMethod(methodSignature);
+               WeldMethod<?, ?> decoratorMethod = decorator.getWeldAnnotated().getWeldMethod(methodSignature);
                if (decoratorMethod != null)
                {
                   return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);

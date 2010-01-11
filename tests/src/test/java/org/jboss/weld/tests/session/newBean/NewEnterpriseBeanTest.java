@@ -23,6 +23,7 @@ public class NewEnterpriseBeanTest extends AbstractWeldTest
    private static final New NEW_LITERAL = new NewLiteral()
    {
       
+      @Override
       public java.lang.Class<?> value() 
       {
          return WrappedEnterpriseBean.class;
@@ -64,8 +65,8 @@ public class NewEnterpriseBeanTest extends AbstractWeldTest
    public void testNewBeanHasSameInjectedFieldsAsWrappedBean()
    {
       initNewBean();
-      Set<? extends WeldAnnotated<?, ?>> wrappedBeanInjectionPoints = wrappedEnterpriseBean.getAnnotatedInjectionPoints();
-      Set<? extends WeldAnnotated<?, ?>> newBeanInjectionPoints = newEnterpriseBean.getAnnotatedInjectionPoints();
+      Set<? extends WeldAnnotated<?, ?>> wrappedBeanInjectionPoints = wrappedEnterpriseBean.getWeldInjectionPoints();
+      Set<? extends WeldAnnotated<?, ?>> newBeanInjectionPoints = newEnterpriseBean.getWeldInjectionPoints();
       assert wrappedBeanInjectionPoints.equals(newBeanInjectionPoints);
    }
    

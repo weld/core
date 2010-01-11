@@ -125,12 +125,12 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
    
    protected void checkEEResource()
    {
-      EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
-      PersistenceApiAbstraction persistenceApiAbstraction = manager.getServices().get(PersistenceApiAbstraction.class);
-      WSApiAbstraction wsApiAbstraction = manager.getServices().get(WSApiAbstraction.class);
-      if (!(getAnnotatedItem().isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || getAnnotatedItem().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS) || getAnnotatedItem().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || getAnnotatedItem().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)) || getAnnotatedItem().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS))
+      EJBApiAbstraction ejbApiAbstraction = beanManager.getServices().get(EJBApiAbstraction.class);
+      PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
+      WSApiAbstraction wsApiAbstraction = beanManager.getServices().get(WSApiAbstraction.class);
+      if (!(getWeldAnnotated().isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || getWeldAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS) || getWeldAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || getWeldAnnotated().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)) || getWeldAnnotated().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS))
       {
-         throw new ForbiddenStateException(INVALID_RESOURCE_PRODUCER_FIELD, getAnnotatedItem());
+         throw new ForbiddenStateException(INVALID_RESOURCE_PRODUCER_FIELD, getWeldAnnotated());
       }
    }
    
@@ -139,7 +139,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
    {
       try
       {
-         if (Reflections.isFinal(getAnnotatedItem().getJavaClass()) || Serializable.class.isAssignableFrom(getAnnotatedItem().getJavaClass()))
+         if (Reflections.isFinal(getWeldAnnotated().getJavaClass()) || Serializable.class.isAssignableFrom(getWeldAnnotated().getJavaClass()))
          {
             return createUnderlying(creationalContext);
          }

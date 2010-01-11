@@ -52,9 +52,9 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
 
    protected DisposalMethod(BeanManagerImpl manager, WeldMethod<T, X> disposalMethod, AbstractClassBean<X> declaringBean)
    {
-      super(new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getAnnotatedItem().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, manager);
+      super(new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, manager);
       this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
-      initBindings();
+      initQualifiers();
       initType();
       initTypes();
       initStereotypes();
@@ -63,7 +63,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    
    private void initDisposesParameter()
    {
-      this.disposesParameter = getAnnotatedItem().getWeldParameters(Disposes.class).get(0);
+      this.disposesParameter = getWeldAnnotated().getWeldParameters(Disposes.class).get(0);
    }
    
    public WeldParameter<?, X> getDisposesParameter()
@@ -86,7 +86,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    }
 
    @Override
-   public WeldMethod<T, X> getAnnotatedItem()
+   public WeldMethod<T, X> getWeldAnnotated()
    {
       return disposalMethodInjectionPoint;
    }
@@ -97,12 +97,12 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    }
 
    @Override
-   protected void initBindings()
+   protected void initQualifiers()
    {
       // At least 1 parameter exists, already checked in constructor
-      this.bindings = new HashSet<Annotation>();
-      this.bindings.addAll(disposalMethodInjectionPoint.getWeldParameters().get(0).getQualifiers());
-      initDefaultBindings();
+      this.qualifiers = new HashSet<Annotation>();
+      this.qualifiers.addAll(disposalMethodInjectionPoint.getWeldParameters().get(0).getQualifiers());
+      initDefaultQualifiers();
    }
 
    /**
@@ -176,15 +176,15 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
 
    public void invokeDisposeMethod(Object instance)
    {
-      CreationalContext<T> creationalContext = manager.createCreationalContext(this);
+      CreationalContext<T> creationalContext = beanManager.createCreationalContext(this);
       Object receiverInstance = getReceiver(creationalContext);
       if (receiverInstance == null)
       {
-         disposalMethodInjectionPoint.invokeWithSpecialValue(null, Disposes.class, instance, manager, creationalContext, IllegalArgumentException.class);
+         disposalMethodInjectionPoint.invokeWithSpecialValue(null, Disposes.class, instance, beanManager, creationalContext, IllegalArgumentException.class);
       }
       else
       {
-         disposalMethodInjectionPoint.invokeOnInstanceWithSpecialValue(receiverInstance, Disposes.class, instance, manager, creationalContext, IllegalArgumentException.class);
+         disposalMethodInjectionPoint.invokeOnInstanceWithSpecialValue(receiverInstance, Disposes.class, instance, beanManager, creationalContext, IllegalArgumentException.class);
       }
       creationalContext.release();
    }
@@ -259,7 +259,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    }
    
    @Override
-   protected void initScopeType()
+   protected void initScope()
    {
       // Disposal methods aren't scoped
    }

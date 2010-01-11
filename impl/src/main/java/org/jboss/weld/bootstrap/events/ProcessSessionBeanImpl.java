@@ -22,12 +22,12 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
 
    public ProcessSessionBeanImpl(BeanManagerImpl beanManager, SessionBean<Object> bean)
    {
-      super(beanManager, ProcessSessionBean.class, new Type[] { bean.getAnnotatedItem().getBaseType() }, bean);
+      super(beanManager, ProcessSessionBean.class, new Type[] { bean.getWeldAnnotated().getBaseType() }, bean);
    }
 
    public AnnotatedType<X> getAnnotatedSessionBeanClass()
    {
-      return (AnnotatedType<X>) getBean().getAnnotatedItem();
+      return (AnnotatedType<X>) getBean().getWeldAnnotated();
    }
 
    public String getEjbName()
@@ -57,7 +57,7 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
 
    public AnnotatedType<Object> getAnnotatedBeanClass()
    {
-      return getBean().getAnnotatedItem();
+      return getBean().getWeldAnnotated();
    }
 
 }

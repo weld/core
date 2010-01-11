@@ -264,7 +264,7 @@ public class Proxies
          {
             return false;
          }
-         else if (Reflections.isPrimitive(clazz))
+         else if (clazz.isPrimitive())
          {
             return false;
          }

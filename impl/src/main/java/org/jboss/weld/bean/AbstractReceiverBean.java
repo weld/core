@@ -65,7 +65,7 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
       // This is a bit dangerous, as it means that producer methods can end up
       // executing on partially constructed instances. Also, it's not required
       // by the spec...
-      if (getAnnotatedItem().isStatic())
+      if (getWeldAnnotated().isStatic())
       {
          return null;
       }
@@ -76,11 +76,11 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
             WeldCreationalContext<?> creationalContextImpl = (WeldCreationalContext<?>) creationalContext;
             if (creationalContextImpl.containsIncompleteInstance(getDeclaringBean()))
             {
-               log.warn(CIRCULAR_CALL, getAnnotatedItem(), getDeclaringBean());
+               log.warn(CIRCULAR_CALL, getWeldAnnotated(), getDeclaringBean());
                return creationalContextImpl.getIncompleteInstance(getDeclaringBean());
             }
          }
-         return manager.getReference(getDeclaringBean(), Object.class, creationalContext);
+         return beanManager.getReference(getDeclaringBean(), Object.class, creationalContext);
       }
    }
    
@@ -111,7 +111,7 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
       {
          this.policy = true;
       }
-      else if (getAnnotatedItem().isAnnotationPresent(Alternative.class))
+      else if (getWeldAnnotated().isAnnotationPresent(Alternative.class))
       {
          this.policy = true;
       }
@@ -122,6 +122,6 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
    }
    
    @Override
-   public abstract WeldMember<T, ?, S> getAnnotatedItem();
+   public abstract WeldMember<T, ?, S> getWeldAnnotated();
 
 }

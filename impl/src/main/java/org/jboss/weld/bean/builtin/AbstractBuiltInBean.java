@@ -75,7 +75,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
    }
 
    @Override
-   public Set<WeldInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
+   public Set<WeldInjectionPoint<?, ?>> getWeldInjectionPoints()
    {
       return Collections.emptySet();
    }

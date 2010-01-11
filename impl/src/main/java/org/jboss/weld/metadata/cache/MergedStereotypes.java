@@ -99,7 +99,7 @@ public class MergedStereotypes<T, E>
     * 
     * @return The scope types
     */
-   public Set<Annotation> getPossibleScopeTypes()
+   public Set<Annotation> getPossibleScopes()
    {
       return possibleScopeTypes;
    }

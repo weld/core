@@ -158,5 +158,7 @@ public interface WeldAnnotated<T, S> extends Annotated
    public String getName();
 
    public boolean isParameterizedType();
+   
+   public boolean isPrimitive();
 
 }

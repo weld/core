@@ -35,7 +35,7 @@ import org.jboss.weld.introspector.WeldClass;
 public interface WeldDecorator<T> extends Decorator<T>
 {
 
-   public WeldClass<?> getAnnotatedItem();
+   public WeldClass<?> getWeldAnnotated();
 
    public Set<MethodSignature> getDecoratedMethodSignatures();
    

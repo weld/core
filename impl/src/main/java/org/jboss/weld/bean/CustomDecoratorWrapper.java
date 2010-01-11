@@ -17,6 +17,8 @@
 
 package org.jboss.weld.bean;
 
+import java.util.Set;
+
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.introspector.MethodSignature;
@@ -24,8 +26,6 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Deployers;
-
-import java.util.Set;
 
 /**
  * A wrapper for a decorated instance. Allows to enhance custom decorators with metadata
@@ -60,7 +60,7 @@ public class CustomDecoratorWrapper extends ForwardingDecorator<Object> implemen
       return delegate;
    }
 
-   public WeldClass<?> getAnnotatedItem()
+   public WeldClass<?> getWeldAnnotated()
    {
       return annotatedItem;
    }

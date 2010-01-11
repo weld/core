@@ -110,5 +110,10 @@ public abstract class ForwardingWeldAnnotated<T, S> extends ForwardingAnnotated<
    {
       return delegate().isParameterizedType();
    }
+   
+   public boolean isPrimitive()
+   {
+      return delegate().isPrimitive();
+   }
 
 }

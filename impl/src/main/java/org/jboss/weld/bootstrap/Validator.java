@@ -216,7 +216,7 @@ public class Validator implements Service
    {
       for (Decorator<?> decorator : classBean.getDecorators())
       {
-         if (!((WeldDecorator<?>)decorator).getAnnotatedItem().isSerializable())
+         if (!((WeldDecorator<?>)decorator).getWeldAnnotated().isSerializable())
          {
             throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, classBean, decorator);
          }
@@ -272,7 +272,7 @@ public class Validator implements Service
       {
          throw new UnproxyableResolutionException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ij);
       }
-      if (Reflections.isPrimitive(annotatedItem.getJavaClass()) && resolvedBean.isNullable())
+      if (annotatedItem.isPrimitive() && resolvedBean.isNullable())
       {
          throw new NullableDependencyException(INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES, ij);
       }

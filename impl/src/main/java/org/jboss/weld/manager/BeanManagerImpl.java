@@ -724,7 +724,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     * Fires an event object with given event object for given bindings
     * 
     * @param event The event object to pass along
-    * @param bindings The binding types to match
+    * @param qualifiers The binding types to match
     * 
     * @see javax.enterprise.inject.spi.BeanManager#fireEvent(java.lang.Object,
     *      java.lang.annotation.Annotation[])

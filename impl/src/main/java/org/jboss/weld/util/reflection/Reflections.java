@@ -169,17 +169,6 @@ public class Reflections
       return false;
    }
 
-   /**
-    * Checks if type is primitive
-    * 
-    * @param type Type to check
-    * @return True if primitive, false otherwise
-    */
-   public static boolean isPrimitive(Class<?> type)
-   {
-      return type.isPrimitive();
-   }
-
    public static boolean isPackagePrivate(int mod)
    {
       return !(Modifier.isPrivate(mod) || Modifier.isProtected(mod) || Modifier.isPublic(mod));

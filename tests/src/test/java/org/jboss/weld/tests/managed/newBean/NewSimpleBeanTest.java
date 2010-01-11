@@ -63,8 +63,8 @@ public class NewSimpleBeanTest extends AbstractWeldTest
    public void testNewBeanHasSameInjectedFieldsAsWrappedBean()
    {
       initNewBean();
-      Set<? extends WeldAnnotated<?, ?>> wrappedBeanInjectionPoints = wrappedSimpleBean.getAnnotatedInjectionPoints();
-      Set<? extends WeldAnnotated<?, ?>> newBeanInjectionPoints = newSimpleBean.getAnnotatedInjectionPoints();
+      Set<? extends WeldAnnotated<?, ?>> wrappedBeanInjectionPoints = wrappedSimpleBean.getWeldInjectionPoints();
+      Set<? extends WeldAnnotated<?, ?>> newBeanInjectionPoints = newSimpleBean.getWeldInjectionPoints();
       assert wrappedBeanInjectionPoints.equals(newBeanInjectionPoints);
    }
    

@@ -54,7 +54,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
       this.interceptorClassMetadata = InterceptorClassMetadataRegistry.getRegistry().getInterceptorClassMetadata(type.getJavaClass());
       this.serializable = type.isSerializable();
       this.interceptorBindingTypes = new HashSet<Annotation>();
-      interceptorBindingTypes.addAll(flattenInterceptorBindings(manager, getAnnotatedItem().getAnnotations()));
+      interceptorBindingTypes.addAll(flattenInterceptorBindings(manager, getWeldAnnotated().getAnnotations()));
       for (Class<? extends Annotation> annotation : getStereotypes())
       {
          interceptorBindingTypes.addAll(flattenInterceptorBindings(manager, manager.getStereotypeDefinition(annotation)));

@@ -69,44 +69,19 @@ import org.slf4j.cal10n.LocLogger;
 public abstract class AbstractBean<T, S> extends RIBean<T>
 {
 
-   private boolean proxyable;
-
-   // Logger
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
-   // The binding types
-   protected Set<Annotation> bindings;
-   // The name
+   protected Set<Annotation> qualifiers;
    protected String name;
-   // The scope type
-   protected Class<? extends Annotation> scopeType;
-   // The merged stereotypes
+   protected Class<? extends Annotation> scope;
    private MergedStereotypes<T, S> mergedStereotypes;
-   // Is it a policy, either defined by stereotypes or directly?
    protected boolean alternative;
-   // The type
    protected Class<T> type;
-   // The API types
    protected Set<Type> types;
-   // The injection points
    private Set<WeldInjectionPoint<?, ?>> injectionPoints;
    private Set<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
-   
-   // The @New injection points
    private Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
-   
-   // If the type a primitive?
-   private boolean primitive;
-   // The Bean manager
-   protected BeanManagerImpl manager;
-
+   protected BeanManagerImpl beanManager;
    private boolean initialized;
-
-   
-
-   protected boolean isInitialized()
-   {
-      return initialized;
-   }
 
    /**
     * Constructor
@@ -116,7 +91,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    public AbstractBean(String idSuffix, BeanManagerImpl manager)
    {
       super(idSuffix, manager);
-      this.manager = manager;
+      this.beanManager = manager;
       this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
       this.delegateInjectionPoints = new HashSet<WeldInjectionPoint<?,?>>();
       this.newInjectionPoints = new HashSet<WeldInjectionPoint<?,?>>();
@@ -134,18 +109,16 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
          specialize(environment);
          postSpecialize();
       }
-      initDefaultBindings();
-      initPrimitive();
+      initDefaultQualifiers();
       log.trace(CREATING_BEAN, getType());
       initName();
-      initScopeType();
-      initProxyable();
+      initScope();
       checkDelegateInjectionPoints();
    }
    
    protected void initStereotypes()
    {
-      mergedStereotypes = new MergedStereotypes<T, S>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager);
+      mergedStereotypes = new MergedStereotypes<T, S>(getWeldAnnotated().getMetaAnnotations(Stereotype.class), beanManager);
    }
 
    protected void checkDelegateInjectionPoints()
@@ -182,18 +155,15 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       return delegateInjectionPoints;
    }
 
-   /**
-    * Initializes the API types
-    */
    protected void initTypes()
    {
-      if (getAnnotatedItem().isAnnotationPresent(Typed.class))
+      if (getWeldAnnotated().isAnnotationPresent(Typed.class))
       {
-         this.types = getTypedTypes(Reflections.buildTypeMap(getAnnotatedItem().getTypeClosure()), getAnnotatedItem().getJavaClass(), getAnnotatedItem().getAnnotation(Typed.class));
+         this.types = getTypedTypes(Reflections.buildTypeMap(getWeldAnnotated().getTypeClosure()), getWeldAnnotated().getJavaClass(), getWeldAnnotated().getAnnotation(Typed.class));
       }
       else
       {
-         this.types = new HashSet<Type>(getAnnotatedItem().getTypeClosure());
+         this.types = new HashSet<Type>(getWeldAnnotated().getTypeClosure());
          if (getType().isInterface())
          {
             this.types.add(Object.class);
@@ -219,38 +189,35 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       return types;
    }
 
-   /**
-    * Initializes the binding types
-    */
-   protected void initBindings()
+   protected void initQualifiers()
    {
-      this.bindings = new HashSet<Annotation>();
-      this.bindings.addAll(getAnnotatedItem().getMetaAnnotations(Qualifier.class));
-      initDefaultBindings();
-      log.trace(QUALIFIERS_USED, bindings, this);
+      this.qualifiers = new HashSet<Annotation>();
+      this.qualifiers.addAll(getWeldAnnotated().getMetaAnnotations(Qualifier.class));
+      initDefaultQualifiers();
+      log.trace(QUALIFIERS_USED, qualifiers, this);
    }
 
-   protected void initDefaultBindings()
+   protected void initDefaultQualifiers()
    {
-      if (bindings.size() == 0)
+      if (qualifiers.size() == 0)
       {
          log.trace(USING_DEFAULT_QUALIFIER, this);
-         this.bindings.add(DefaultLiteral.INSTANCE);
+         this.qualifiers.add(DefaultLiteral.INSTANCE);
       }
-      if (bindings.size() == 1)
+      if (qualifiers.size() == 1)
       {
-         if (bindings.iterator().next().annotationType().equals(Named.class))
+         if (qualifiers.iterator().next().annotationType().equals(Named.class))
          {
             log.trace(USING_DEFAULT_QUALIFIER, this);
-            this.bindings.add(DefaultLiteral.INSTANCE);
+            this.qualifiers.add(DefaultLiteral.INSTANCE);
          }
       }
-      this.bindings.add(AnyLiteral.INSTANCE);
+      this.qualifiers.add(AnyLiteral.INSTANCE);
    }
 
    protected void initAlternative()
    {
-      this.alternative = Beans.isAlternative(getAnnotatedItem(), getMergedStereotypes());
+      this.alternative = Beans.isAlternative(getWeldAnnotated(), getMergedStereotypes());
    }
 
    /**
@@ -259,9 +226,9 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    protected void initName()
    {
       boolean beanNameDefaulted = false;
-      if (getAnnotatedItem().isAnnotationPresent(Named.class))
+      if (getWeldAnnotated().isAnnotationPresent(Named.class))
       {
-         String javaName = getAnnotatedItem().getAnnotation(Named.class).value();
+         String javaName = getWeldAnnotated().getAnnotation(Named.class).value();
          if ("".equals(javaName))
          {
             beanNameDefaulted = true;
@@ -282,36 +249,20 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       }
    }
 
-   protected void initProxyable()
-   {
-      proxyable = getAnnotatedItem().isProxyable();
-   }
+   protected abstract void initScope();
 
-   /**
-    * Initializes the primitive flag
-    */
-   protected void initPrimitive()
+   protected boolean initScopeFromStereotype()
    {
-      this.primitive = Reflections.isPrimitive(getType());
-   }
-
-   /**
-    * Initializes the scope type
-    */
-   protected abstract void initScopeType();
-
-   protected boolean initScopeTypeFromStereotype()
-   {
-      Set<Annotation> possibleScopeTypes = getMergedStereotypes().getPossibleScopeTypes();
-      if (possibleScopeTypes.size() == 1)
+      Set<Annotation> possibleScopes = getMergedStereotypes().getPossibleScopes();
+      if (possibleScopes.size() == 1)
       {
-         this.scopeType = possibleScopeTypes.iterator().next().annotationType();
-         log.trace(USING_SCOPE_FROM_STEREOTYPE, scopeType, this, getMergedStereotypes());
+         this.scope = possibleScopes.iterator().next().annotationType();
+         log.trace(USING_SCOPE_FROM_STEREOTYPE, scope, this, getMergedStereotypes());
          return true;
       }
-      else if (possibleScopeTypes.size() > 1)
+      else if (possibleScopes.size() > 1)
       {
-         throw new DefinitionException(MULTIPLE_SCOPES_FOUND_FROM_STEREOTYPES, getAnnotatedItem());
+         throw new DefinitionException(MULTIPLE_SCOPES_FOUND_FROM_STEREOTYPES, getWeldAnnotated());
       }
       else
       {
@@ -321,16 +272,16 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
 
    protected void postSpecialize()
    {
-      if (getAnnotatedItem().isAnnotationPresent(Named.class) && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
+      if (getWeldAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getWeldAnnotated().isAnnotationPresent(Named.class))
       {
-         throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getAnnotatedItem());
+         throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getWeldAnnotated());
       }
-      this.bindings.addAll(getSpecializedBean().getQualifiers());
-      if (isSpecializing() && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
+      this.qualifiers.addAll(getSpecializedBean().getQualifiers());
+      if (isSpecializing() && getSpecializedBean().getWeldAnnotated().isAnnotationPresent(Named.class))
       {
          this.name = getSpecializedBean().getName();
       }
-      manager.getSpecializedBeans().put(getSpecializedBean(), this);
+      beanManager.getSpecializedBeans().put(getSpecializedBean(), this);
    }
 
    protected void preSpecialize(BeanDeployerEnvironment environment)
@@ -348,7 +299,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
     *
     * @return The annotated item
     */
-   public abstract WeldAnnotated<T, S> getAnnotatedItem();
+   public abstract WeldAnnotated<T, S> getWeldAnnotated();
 
    /**
     * Gets the binding types
@@ -359,7 +310,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
     */
    public Set<Annotation> getQualifiers()
    {
-      return bindings;
+      return qualifiers;
    }
 
    /**
@@ -373,7 +324,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    public abstract AbstractBean<?, ?> getSpecializedBean();
 
    @Override
-   public Set<WeldInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
+   public Set<WeldInjectionPoint<?, ?>> getWeldInjectionPoints()
    {
       return injectionPoints;
    }
@@ -414,7 +365,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
     */
    public Class<? extends Annotation> getScope()
    {
-      return scopeType;
+      return scope;
    }
 
    /**
@@ -460,13 +411,13 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    @Override
    public boolean isPrimitive()
    {
-      return primitive;
+      return getWeldAnnotated().isPrimitive();
    }
 
    @Override
    public boolean isProxyable()
    {
-      return proxyable;
+      return getWeldAnnotated().isProxyable();
    }
 
    @Override
@@ -488,7 +439,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    @Override
    public boolean isSpecializing()
    {
-      return getAnnotatedItem().isAnnotationPresent(Specializes.class);
+      return getWeldAnnotated().isAnnotationPresent(Specializes.class);
    }
 
    public Set<Class<? extends Annotation>> getStereotypes()
@@ -496,4 +447,9 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       return mergedStereotypes.getStereotypes();
    }
 
+   protected boolean isInitialized()
+   {
+      return initialized;
+   }
+   
 }

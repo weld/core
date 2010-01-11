@@ -124,7 +124,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
       initType();
       this.ejbDescriptor = ejbDescriptor;
       initTypes();
-      initBindings();
+      initQualifiers();
       initConstructor();
    }
 
@@ -177,7 +177,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
 
             public Set<InjectionPoint> getInjectionPoints()
             {
-               return (Set) getAnnotatedInjectionPoints();
+               return (Set) getWeldInjectionPoints();
             }
 
             public T produce(CreationalContext<T> ctx)
@@ -191,7 +191,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
    
    protected T createInstance(CreationalContext<T> ctx) 
    {
-      return getConstructor().newInstance(manager, ctx);
+      return getConstructor().newInstance(beanManager, ctx);
    }
 
    @Override
@@ -203,9 +203,9 @@ public class SessionBean<T> extends AbstractClassBean<T>
       {
          types.putAll(new HierarchyDiscovery(businessInterfaceDescriptor.getInterface()).getTypeMap());
       }
-      if (getAnnotatedItem().isAnnotationPresent(Typed.class))
+      if (getWeldAnnotated().isAnnotationPresent(Typed.class))
       {
-         super.types = getTypedTypes(types, getAnnotatedItem().getJavaClass(), getAnnotatedItem().getAnnotation(Typed.class));
+         super.types = getTypedTypes(types, getWeldAnnotated().getJavaClass(), getWeldAnnotated().getAnnotation(Typed.class));
       }
       else
       {
@@ -258,7 +258,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       super.preSpecialize(environment);
       // We appear to check this twice?
-      if (!environment.getEjbDescriptors().contains(getAnnotatedItem().getWeldSuperclass().getJavaClass()))
+      if (!environment.getEjbDescriptors().contains(getWeldAnnotated().getWeldSuperclass().getJavaClass()))
       {
          throw new DefinitionException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
       }
@@ -267,11 +267,11 @@ public class SessionBean<T> extends AbstractClassBean<T>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      if (environment.getClassBean(getAnnotatedItem().getWeldSuperclass()) == null)
+      if (environment.getClassBean(getWeldAnnotated().getWeldSuperclass()) == null)
       {
          throw new ForbiddenStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
       }
-      AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getWeldSuperclass());
+      AbstractClassBean<?> specializedBean = environment.getClassBean(getWeldAnnotated().getWeldSuperclass());
       if (!(specializedBean instanceof SessionBean<?>))
       {
          throw new ForbiddenStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
@@ -405,7 +405,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
          {
             if (!isMethodExistsOnTypes(method))
             {
-               throw new DefinitionException(OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS, method, getAnnotatedItem());
+               throw new DefinitionException(OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS, method, getWeldAnnotated());
             }
          }
       }
@@ -432,7 +432,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
    
    public SessionObjectReference createReference()
    {
-      return manager.getServices().get(EjbServices.class).resolveEjb(getEjbDescriptor().delegate());
+      return beanManager.getServices().get(EjbServices.class).resolveEjb(getEjbDescriptor().delegate());
    }
 
    @Override
@@ -449,7 +449,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
 
    protected void registerInterceptors()
    {
-      InterceptionModel<Class<?>, SerializableContextual<javax.enterprise.inject.spi.Interceptor<?>, ?>> model = manager.getCdiInterceptorsRegistry().getInterceptionModel(ejbDescriptor.getBeanClass());
+      InterceptionModel<Class<?>, SerializableContextual<javax.enterprise.inject.spi.Interceptor<?>, ?>> model = beanManager.getCdiInterceptorsRegistry().getInterceptionModel(ejbDescriptor.getBeanClass());
       if (model != null)
          getManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor().delegate(), new InterceptorBindingsAdapter(model));
    }
