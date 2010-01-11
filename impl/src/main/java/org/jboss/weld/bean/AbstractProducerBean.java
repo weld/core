@@ -63,7 +63,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.DummyInjectionPoint;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.Names;
 import org.jboss.weld.util.collections.ConcurrentCache;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
@@ -82,19 +81,20 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
 {
    // Logger for messages
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
-   
+
    // Underlying Producer represented by this bean
    private Producer<T> producer;
-   
+
    // Passivation flags
    private boolean passivationCapableBean;
    private boolean passivationCapableDependency;
-   
+
    // Serialization cache for produced types at runtime
    private ConcurrentCache<Class<?>, Boolean> serializationCheckCache;
 
    /**
     * Constructor
+    * 
     * @param declaringBean The declaring bean
     * @param manager The Bean manager
     */
@@ -108,7 +108,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    public abstract WeldMember<T, X, S> getWeldAnnotated();
 
    @Override
-   // Overriden to provide the class of the bean that declares the producer method/field
+   // Overriden to provide the class of the bean that declares the producer
+   // method/field
    public Class<?> getBeanClass()
    {
       return getDeclaringBean().getBeanClass();
@@ -154,14 +155,13 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     */
    protected void checkProducerReturnType()
    {
-      if ((getWeldAnnotated().getBaseType() instanceof TypeVariable<?>) || 
-          (getWeldAnnotated().getBaseType() instanceof WildcardType))
+      if ((getWeldAnnotated().getBaseType() instanceof TypeVariable<?>) || (getWeldAnnotated().getBaseType() instanceof WildcardType))
       {
          throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, getWeldAnnotated().getBaseType());
       }
       for (Type type : getWeldAnnotated().getActualTypeArguments())
       {
-         if (!(type instanceof Class))
+         if (!(type instanceof Class<?>))
          {
             throw new DefinitionException(TYPE_PARAMETER_MUST_BE_CONCRETE, this.getWeldAnnotated());
          }
@@ -180,7 +180,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       initPassivationCapable();
       initAlternative();
    }
-   
+
    private void initPassivationCapable()
    {
       if (getWeldAnnotated().isFinal() && !Serializable.class.isAssignableFrom(getWeldAnnotated().getJavaClass()))
@@ -204,7 +204,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
          this.passivationCapableDependency = false;
       }
    }
-   
+
    @Override
    protected void initAlternative()
    {
@@ -216,13 +216,13 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    {
       return passivationCapableBean;
    }
-   
+
    @Override
    public boolean isPassivationCapableDependency()
    {
       return passivationCapableDependency;
    }
-   
+
    @Override
    public Set<InjectionPoint> getInjectionPoints()
    {
@@ -274,7 +274,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
                   throw new IllegalProductException(NON_SERIALIZABLE_PRODUCER_PARAM_INJECTION_ERROR, this, injectionPoint);
                }
             }
-            else if (injectionPoint.getMember() instanceof Constructor)
+            else if (injectionPoint.getMember() instanceof Constructor<?>)
             {
                throw new IllegalProductException(NON_SERIALIZABLE_CONSTRUCTOR_PARAM_INJECTION_ERROR, this, injectionPoint);
             }
@@ -298,16 +298,16 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    @Override
    protected void initScope()
    {
-      Set<Annotation> scopeAnnotations = new HashSet<Annotation>();
-      scopeAnnotations.addAll(getWeldAnnotated().getMetaAnnotations(Scope.class));
-      scopeAnnotations.addAll(getWeldAnnotated().getMetaAnnotations(NormalScope.class));
-      if (scopeAnnotations.size() > 1)
+      Set<Annotation> scopes = new HashSet<Annotation>();
+      scopes.addAll(getWeldAnnotated().getMetaAnnotations(Scope.class));
+      scopes.addAll(getWeldAnnotated().getMetaAnnotations(NormalScope.class));
+      if (scopes.size() > 1)
       {
          throw new DefinitionException(ONLY_ONE_SCOPE_ALLOWED, getProducer());
       }
-      if (scopeAnnotations.size() == 1)
+      if (scopes.size() == 1)
       {
-         this.scope = scopeAnnotations.iterator().next().annotationType();
+         this.scope = scopes.iterator().next().annotationType();
          log.trace(USING_SCOPE, scope, this);
          return;
       }
@@ -320,9 +320,10 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
          log.trace(USING_DEFAULT_SCOPE, this);
       }
    }
-   
+
    /**
-    * This operation is *not* threadsafe, and should not be called outside bootstrap
+    * This operation is *not* threadsafe, and should not be called outside
+    * bootstrap
     * 
     * @param producer
     */
@@ -330,7 +331,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    {
       this.producer = producer;
    }
-   
+
    public Producer<T> getProducer()
    {
       return producer;
@@ -356,28 +357,6 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             creationalContext.release();
          }
       }
-   }
-
-   /**
-    * Gets a string representation
-    * 
-    * @return The string representation
-    */
-   @Override
-   public String getDescription()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("Annotated " + Names.scopeTypeToString(getScope()));
-      if (getName() == null)
-      {
-         buffer.append("unnamed producer bean");
-      }
-      else
-      {
-         buffer.append("simple producer bean '" + getName() + "'");
-      }
-      buffer.append(" [" + getBeanClass().getName() + "] for class type [" + getType().getName() + "] API types " + getTypes() + ", binding types " + getQualifiers());
-      return buffer.toString();
    }
 
 }
