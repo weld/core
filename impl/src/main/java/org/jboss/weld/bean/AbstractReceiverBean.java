@@ -41,7 +41,6 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
    
    private AbstractClassBean<X> declaringBean;
-   private boolean policy;
 
    public AbstractReceiverBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
@@ -95,29 +94,20 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
       return declaringBean;
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.weld.bean.AbstractBean#isPolicy()
-    */
-   @Override
-   public boolean isAlternative()
-   {
-      return policy;
-   }
-   
    @Override
    protected void initAlternative()
    {
       if (getDeclaringBean().isAlternative())
       {
-         this.policy = true;
+         super.alternative = true;
       }
       else if (getWeldAnnotated().isAnnotationPresent(Alternative.class))
       {
-         this.policy = true;
+         super.alternative = true;
       }
       else if (getMergedStereotypes().isAlternative())
       {
-         this.policy = true;
+         super.alternative = true;
       }
    }
    
