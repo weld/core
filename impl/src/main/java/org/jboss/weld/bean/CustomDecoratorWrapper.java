@@ -33,36 +33,34 @@ import org.jboss.weld.util.Deployers;
  *
  * @author Marius Bogoevici
  */
-public class CustomDecoratorWrapper extends ForwardingDecorator<Object> implements WeldDecorator<Object>
+public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements WeldDecorator<T>
 {
-   private Decorator<Object> delegate;
-   private WeldClass<?> annotatedItem;
+   private Decorator<T> delegate;
+   private WeldClass<T> weldClass;
 
    private Set<MethodSignature> decoratedMethodSignatures;
 
-   public static CustomDecoratorWrapper of(Decorator<?> delegate, BeanManagerImpl beanManager)
+   public static <T> CustomDecoratorWrapper<T> of(Decorator<T> delegate, BeanManagerImpl beanManager)
    {
-      return new CustomDecoratorWrapper((Decorator<Object>) delegate, beanManager);
+      return new CustomDecoratorWrapper<T>(delegate, beanManager);
    }
 
-   private CustomDecoratorWrapper(Decorator<Object> delegate, BeanManagerImpl beanManager)
+   private CustomDecoratorWrapper(Decorator<T> delegate, BeanManagerImpl beanManager)
    {
       this.delegate = delegate;
-      ClassTransformer transformer = beanManager.getServices().get(ClassTransformer.class);
-      Class<?> beanClass = delegate.getBeanClass();
-      this.annotatedItem =  transformer.loadClass(beanClass);
+      this.weldClass =  beanManager.getServices().get(ClassTransformer.class).loadClass((Class<T>) delegate.getBeanClass());
       this.decoratedMethodSignatures = Deployers.getDecoratedMethodSignatures(beanManager, delegate.getDecoratedTypes());
    }
 
    @Override
-   protected Decorator<Object> delegate()
+   protected Decorator<T> delegate()
    {
       return delegate;
    }
 
    public WeldClass<?> getWeldAnnotated()
    {
-      return annotatedItem;
+      return weldClass;
    }
 
    public Set<MethodSignature> getDecoratedMethodSignatures()
