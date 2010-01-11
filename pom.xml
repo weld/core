@@ -54,7 +54,7 @@
       <jsf.version>2.0.0-RC</jsf.version>
       <tomcat.version>6.0.20</tomcat.version>
       <uel.glassfish.version>2.1.2-b04</uel.glassfish.version>
-      <slf4j.version>1.5.9.RC1</slf4j.version>
+      <slf4j.version>1.5.10</slf4j.version>
       <!-- Testing deps -->
       <testng.version>5.10</testng.version>
       <jboss.test.harness.version>1.1.0-CR3</jboss.test.harness.version>
