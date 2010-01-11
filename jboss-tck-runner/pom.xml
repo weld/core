@@ -94,7 +94,7 @@
                <suiteXmlFiles>
                   <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                </suiteXmlFiles>
-               <argLine>-Xmx1024m</argLine>
+               <argLine>-Xmx256m</argLine>
                <forkMode>once</forkMode>
             </configuration>
          </plugin>
