@@ -55,11 +55,8 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
 {
    // The underlying method
    private MethodInjectionPoint<T, X> method;
-
    private DisposalMethod<X, ?> disposalMethodBean;
-
    private ProducerMethod<?, ?> specializedBean;
-
    private final String id;
 
    /**
@@ -164,7 +161,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
          // TODO use annotated item?
          for (Type type : getDeclaringBean().getTypes())
          {
-            if (type instanceof Class)
+            if (type instanceof Class<?>)
             {
                if (SecureReflections.methodExists((Class<?>) type, getWeldAnnotated().getName(), getWeldAnnotated().getParameterTypesAsArray()))
                {

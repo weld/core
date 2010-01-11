@@ -42,11 +42,12 @@ import org.jboss.weld.util.Beans;
  */
 public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 {
+   
    private final InterceptorClassMetadata interceptorClassMetadata;
 
    private final Set<Annotation> interceptorBindingTypes;
    
-   private boolean serializable;
+   private final boolean serializable;
 
    protected InterceptorImpl(WeldClass<T> type, BeanManagerImpl manager)
    {

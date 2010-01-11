@@ -392,7 +392,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       for (Type type : getTypes())
       {
-         if (type instanceof Class)
+         if (type instanceof Class<?>)
          {
             for (Method m : SecureReflections.getMethods((Class<?>) type))
             {
@@ -427,7 +427,9 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       InterceptionModel<Class<?>, SerializableContextual<javax.enterprise.inject.spi.Interceptor<?>, ?>> model = beanManager.getCdiInterceptorsRegistry().getInterceptionModel(ejbDescriptor.getBeanClass());
       if (model != null)
+      {
          getManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor().delegate(), new InterceptorBindingsAdapter(model));
+      }
    }
 }
 
