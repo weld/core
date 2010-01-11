@@ -191,12 +191,12 @@ public abstract class AbstractMapContext extends AbstractContext
    
    protected static <T> Contextual<T> getContextual(String id)
    {
-      return Container.instance().deploymentServices().get(ContextualStore.class).<Contextual<T>, T>getContextual(id);
+      return Container.instance().services().get(ContextualStore.class).<Contextual<T>, T>getContextual(id);
    }
    
    protected static String getId(Contextual<?> contextual)
    {
-      return Container.instance().deploymentServices().get(ContextualStore.class).putIfAbsent(contextual);
+      return Container.instance().services().get(ContextualStore.class).putIfAbsent(contextual);
    }
    
 }

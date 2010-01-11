@@ -175,7 +175,7 @@ public abstract class AbstractConversationManager implements ConversationManager
             longRunningConversation.cancelTermination();
             longRunningConversation.unlock();
          }
-         ConversationContext conversationContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getConversationContext();
+         ConversationContext conversationContext = Container.instance().services().get(ContextLifecycle.class).getConversationContext();
          conversationContext.destroy();
       }
       // If the conversation has been switched from one long
@@ -201,7 +201,7 @@ public abstract class AbstractConversationManager implements ConversationManager
    private Future<?> scheduleForTermination(String cid, long timeout)
    {
       Runnable terminationTask = new TerminationTask(cid);
-      return Container.instance().deploymentServices().get(ScheduledExecutorServiceFactory.class).get().schedule(terminationTask, timeout, TimeUnit.MILLISECONDS);
+      return Container.instance().services().get(ScheduledExecutorServiceFactory.class).get().schedule(terminationTask, timeout, TimeUnit.MILLISECONDS);
    }
 
    /**

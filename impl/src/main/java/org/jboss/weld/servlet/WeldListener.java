@@ -69,14 +69,14 @@ public class WeldListener extends AbstractServletListener
    {
       if (lifecycle == null)
       {
-         this.lifecycle = new ServletLifecycle(Container.instance().deploymentServices().get(ContextLifecycle.class));
+         this.lifecycle = new ServletLifecycle(Container.instance().services().get(ContextLifecycle.class));
       }
       return lifecycle;
    }
    
    private static BeanManagerImpl getBeanManager(ServletContext ctx)
    {
-      BeanDeploymentArchive war = Container.instance().deploymentServices().get(ServletServices.class).getBeanDeploymentArchive(ctx);
+      BeanDeploymentArchive war = Container.instance().services().get(ServletServices.class).getBeanDeploymentArchive(ctx);
       if (war == null)
       {
          throw new ForbiddenStateException(BEAN_DEPLOYMENT_ARCHIVE_MISSING, ctx);
@@ -98,7 +98,7 @@ public class WeldListener extends AbstractServletListener
          log.warn(NOT_STARTING);
          return;
       }
-      if (!Container.instance().deploymentServices().contains(ServletServices.class))
+      if (!Container.instance().services().contains(ServletServices.class))
       {
          throw new ForbiddenStateException(ILLEGAL_USE_OF_WELD_LISTENER);
       }

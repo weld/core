@@ -477,7 +477,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    
    public boolean isNormalScoped()
    {
-      return Container.instance().deploymentServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
+      return Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
    }
    
    public boolean isAlternative()

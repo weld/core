@@ -124,8 +124,8 @@ public class WeldPhaseListener implements PhaseListener
    private void afterRenderResponse(FacesContext facesContext)
    {
       BeanManagerImpl moduleBeanManager = getModuleBeanManager(facesContext);
-      SessionContext sessionContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getSessionContext();
-      ConversationContext conversationContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getConversationContext();
+      SessionContext sessionContext = Container.instance().services().get(ContextLifecycle.class).getSessionContext();
+      ConversationContext conversationContext = Container.instance().services().get(ContextLifecycle.class).getConversationContext();
       if (sessionContext.isActive())
       {
          log.trace(CLEANING_UP_CONVERSATION, "Render Response", "response complete");
@@ -144,7 +144,7 @@ public class WeldPhaseListener implements PhaseListener
    private void afterResponseComplete(FacesContext facesContext, PhaseId phaseId)
    {
       BeanManagerImpl moduleBeanManager = getModuleBeanManager(facesContext);
-      SessionContext sessionContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getSessionContext();
+      SessionContext sessionContext = Container.instance().services().get(ContextLifecycle.class).getSessionContext();
       if (sessionContext.isActive())
       {
          log.trace(CLEANING_UP_CONVERSATION, phaseId, "the response has been marked complete");
@@ -170,7 +170,7 @@ public class WeldPhaseListener implements PhaseListener
       moduleBeanManager.getInstanceByType(ConversationManager.class).beginOrRestoreConversation(getConversationId(facesContext));
       String cid = moduleBeanManager.getInstanceByType(ConversationImpl.class).getUnderlyingId();
       
-      ConversationContext conversationContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getConversationContext();
+      ConversationContext conversationContext = Container.instance().services().get(ContextLifecycle.class).getConversationContext();
       conversationContext.setBeanStore(new ConversationBeanStore(session, cid));
       conversationContext.setActive(true);
    }

@@ -462,7 +462,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       if (bean instanceof PassivationCapable)
       {
-         Container.instance().deploymentServices().get(ContextualStore.class).putIfAbsent(bean);
+         Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
       }
       registerBeanNamespace(bean);
       for (BeanManagerImpl childActivity : childActivities)

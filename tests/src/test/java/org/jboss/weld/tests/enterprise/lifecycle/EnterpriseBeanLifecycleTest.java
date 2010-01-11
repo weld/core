@@ -77,7 +77,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractWeldTest
       GrossStadt frankfurt = getCurrentManager().getInstanceByType(GrossStadt.class);
       Bean<KleinStadt> stadtBean = getBean(KleinStadt.class);
       assert stadtBean != null : "Expected a bean for stateful session bean Kassel";
-      RequestContext requestContext = Container.instance().deploymentServices().get(ContextLifecycle.class).getRequestContext();
+      RequestContext requestContext = Container.instance().services().get(ContextLifecycle.class).getRequestContext();
       CreationalContext<KleinStadt> creationalContext = new MockCreationalContext<KleinStadt>();
       KleinStadt kassel = requestContext.get(stadtBean, creationalContext);
       stadtBean.destroy(kassel, creationalContext);

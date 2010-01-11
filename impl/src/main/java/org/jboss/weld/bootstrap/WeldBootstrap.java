@@ -286,12 +286,12 @@ public class WeldBootstrap implements Bootstrap
          this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices);
          
          Container.initialize(deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
-         Container.instance().setStatus(ContainerState.STARTING);
+         Container.instance().setState(ContainerState.STARTING);
          
          createContexts();
          initializeContexts();
          // Start the application context
-         Container.instance().deploymentServices().get(ContextLifecycle.class).beginApplication(applicationBeanStore);
+         Container.instance().services().get(ContextLifecycle.class).beginApplication(applicationBeanStore);
          this.extensionDeployerEnvironment = new ExtensionBeanDeployerEnvironment(EjbDescriptors.EMPTY, deploymentManager);
          this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment);
          
@@ -379,7 +379,7 @@ public class WeldBootstrap implements Bootstrap
          // Re-read the deployment structure, this will be the physical structure, extensions, classes, and any beans added using addBean outside the physical structure
          beanDeployments = deploymentVisitor.visit();
          Container.instance().putBeanDeployments(beanDeployments);
-         Container.instance().setStatus(ContainerState.INITIALIZED);
+         Container.instance().setState(ContainerState.INITIALIZED);
       }
       return this;
    }
@@ -404,7 +404,7 @@ public class WeldBootstrap implements Bootstrap
       synchronized (this)
       {
          // Register the managers so external requests can handle them
-         Container.instance().setStatus(ContainerState.VALIDATED);
+         Container.instance().setState(ContainerState.VALIDATED);
       }
       return this;
    }
@@ -440,8 +440,8 @@ public class WeldBootstrap implements Bootstrap
       }
       finally
       {
-         Container.instance().setStatus(ContainerState.SHUTDOWN);
-         Container.instance().deploymentServices().get(ContextLifecycle.class).endApplication();
+         Container.instance().setState(ContainerState.SHUTDOWN);
+         Container.instance().services().get(ContextLifecycle.class).endApplication();
       }
    }
    

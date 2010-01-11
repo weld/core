@@ -71,7 +71,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
       {
          if (instance == null)
          {
-            Contextual<T> contextual = Container.instance().deploymentServices().get(ContextualStore.class).<Contextual<T>, T>getContextual(beanId);
+            Contextual<T> contextual = Container.instance().services().get(ContextualStore.class).<Contextual<T>, T>getContextual(beanId);
             if (contextual instanceof EEResourceProducerField<?, ?>)
             {
                @SuppressWarnings("unchecked")

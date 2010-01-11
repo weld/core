@@ -19,7 +19,7 @@ public class CleanableMethodHandler implements MethodHandler, Serializable
    public CleanableMethodHandler(MethodHandler delegate)
    {
       this.delegate = delegate;
-      Container.instance().deploymentServices().get(JavassistCleaner.class).add(this);
+      Container.instance().services().get(JavassistCleaner.class).add(this);
    }
    
    public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable
@@ -35,7 +35,7 @@ public class CleanableMethodHandler implements MethodHandler, Serializable
    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
    {
       in.defaultReadObject();
-      Container.instance().deploymentServices().get(JavassistCleaner.class).add(this);
+      Container.instance().services().get(JavassistCleaner.class).add(this);
    }
 
 }

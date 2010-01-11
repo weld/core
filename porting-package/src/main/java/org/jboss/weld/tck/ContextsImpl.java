@@ -12,7 +12,7 @@ public class ContextsImpl implements Contexts<AbstractContext>
 
    public RequestContext getRequestContext()
    {
-      return Container.instance().deploymentServices().get(ContextLifecycle.class).getRequestContext();
+      return Container.instance().services().get(ContextLifecycle.class).getRequestContext();
    }
 
    public void setActive(AbstractContext context)
@@ -27,7 +27,7 @@ public class ContextsImpl implements Contexts<AbstractContext>
 
    public AbstractContext getDependentContext()
    {
-      return Container.instance().deploymentServices().get(ContextLifecycle.class).getDependentContext();
+      return Container.instance().services().get(ContextLifecycle.class).getDependentContext();
    }
    
    public void destroyContext(AbstractContext context)

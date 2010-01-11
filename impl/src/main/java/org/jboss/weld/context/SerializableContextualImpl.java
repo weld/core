@@ -45,7 +45,7 @@ public class SerializableContextualImpl<C extends Contextual<I>, I> extends Forw
       else
       {
          // otherwise, generate an id (may not be portable between container instances)
-         this.id = Container.instance().deploymentServices().get(ContextualStore.class).putIfAbsent(contextual);
+         this.id = Container.instance().services().get(ContextualStore.class).putIfAbsent(contextual);
       }
       // cache the contextual
       this.cached = contextual;
@@ -68,7 +68,7 @@ public class SerializableContextualImpl<C extends Contextual<I>, I> extends Forw
       }
       else if (id != null)
       {
-         this.cached = Container.instance().deploymentServices().get(ContextualStore.class).<C, I>getContextual(id);
+         this.cached = Container.instance().services().get(ContextualStore.class).<C, I>getContextual(id);
       }
    }
    

@@ -106,7 +106,7 @@ public class ClientProxyProvider
 
          public T call() throws Exception
          {
-            String id = Container.instance().deploymentServices().get(ContextualStore.class).putIfAbsent(bean);
+            String id = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
             if (id == null)
             {
                throw new DefinitionException(BEAN_ID_CREATION_FAILED, bean);

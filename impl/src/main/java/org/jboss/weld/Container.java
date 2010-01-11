@@ -60,7 +60,7 @@ public class Container
    
    public static boolean available()
    {
-      return instance.isSet() && instance() != null && instance().getStatus().isAvailable();
+      return instance.isSet() && instance() != null && instance().getState().isAvailable();
    }
 
    /**
@@ -86,7 +86,7 @@ public class Container
    
    private final ServiceRegistry deploymentServices;
    
-   private ContainerState status = ContainerState.STOPPED;
+   private ContainerState state = ContainerState.STOPPED;
    
    public Container(BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices)
    {
@@ -165,7 +165,7 @@ public class Container
     * 
     * @return the deploymentServices
     */
-   public ServiceRegistry deploymentServices()
+   public ServiceRegistry services()
    {
       return deploymentServices;
    }
@@ -184,14 +184,14 @@ public class Container
       }
    }
    
-   public ContainerState getStatus()
+   public ContainerState getState()
    {
-      return status;
+      return state;
    }
    
-   public void setStatus(ContainerState status)
+   public void setState(ContainerState state)
    {
-      this.status = status;
+      this.state = state;
    }
 
 }

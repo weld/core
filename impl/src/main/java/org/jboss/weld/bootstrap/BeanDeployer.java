@@ -55,7 +55,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
 
    public BeanDeployer addClass(Class<?> clazz)
    {
-      ClassTransformer classTransformer = Container.instance().deploymentServices().get(ClassTransformer.class);
+      ClassTransformer classTransformer = Container.instance().services().get(ClassTransformer.class);
       if (!clazz.isAnnotation() && !clazz.isEnum())
       {
          ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(getManager(), classTransformer.loadClass(clazz));
@@ -76,7 +76,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    
    public BeanDeployer addClass(AnnotatedType<?> clazz)
    {
-      ClassTransformer classTransformer = Container.instance().deploymentServices().get(ClassTransformer.class);
+      ClassTransformer classTransformer = Container.instance().services().get(ClassTransformer.class);
       classes.add(classTransformer.loadClass(clazz));
       return this;
    }

@@ -94,7 +94,7 @@ public class DeferredEventNotification<T> implements Runnable
       
       public void run()
       {
-         Lifecycle lifecycle = Container.instance().deploymentServices().get(ContextLifecycle.class);
+         Lifecycle lifecycle = Container.instance().services().get(ContextLifecycle.class);
          boolean requestActive = lifecycle.isRequestActive();
          BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
          try

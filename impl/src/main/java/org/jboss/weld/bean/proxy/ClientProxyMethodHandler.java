@@ -97,7 +97,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    {
       if (bean == null)
       {
-         bean = Container.instance().deploymentServices().get(ContextualStore.class).<Bean<Object>, Object>getContextual(id);
+         bean = Container.instance().services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(id);
       }
       Object proxiedInstance = getProxiedInstance(bean);
       if (proxiedInstance == null)

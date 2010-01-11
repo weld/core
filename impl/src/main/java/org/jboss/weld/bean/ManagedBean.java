@@ -311,7 +311,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    private void initPassivationCapable()
    {
       this.passivationCapableBean = getAnnotatedItem().isSerializable();
-      if (Container.instance().deploymentServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal())
+      if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal())
       {
          this.passivationCapableDependency = true;
       }

@@ -167,7 +167,7 @@ public class Beans
       }
       else
       {
-         if (Container.instance().deploymentServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal())
+         if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal())
          {
             return true;
          }
@@ -815,7 +815,7 @@ public class Beans
       Set<Annotation> checkedNewQualifiers = new HashSet<Annotation>();
       for (Annotation qualifier : newQualifiers)
       {
-         if (!Container.instance().deploymentServices().get(MetaAnnotationStore.class).getBindingTypeModel(qualifier.annotationType()).isValid())
+         if (!Container.instance().services().get(MetaAnnotationStore.class).getBindingTypeModel(qualifier.annotationType()).isValid())
          {
             throw new ForbiddenArgumentException(ANNOTATION_NOT_QUALIFIER, qualifier);
          }

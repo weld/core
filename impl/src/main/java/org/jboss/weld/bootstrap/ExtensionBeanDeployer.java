@@ -58,7 +58,7 @@ public class ExtensionBeanDeployer
    
    public ExtensionBeanDeployer deployBeans()
    {
-      ClassTransformer classTransformer = Container.instance().deploymentServices().get(ClassTransformer.class);
+      ClassTransformer classTransformer = Container.instance().services().get(ClassTransformer.class);
       for (Extension extension : extensions)
       {
          @SuppressWarnings("unchecked")

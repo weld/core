@@ -44,13 +44,13 @@ public class SessionBeanInterceptor implements Serializable
    @AroundInvoke
    public Object aroundInvoke(InvocationContext invocation) throws Exception
    {
-      if (Container.instance().deploymentServices().get(ContextLifecycle.class).isRequestActive())
+      if (Container.instance().services().get(ContextLifecycle.class).isRequestActive())
       {
          return invocation.proceed();
       }
       else
       {
-         Lifecycle lifecycle = Container.instance().deploymentServices().get(ContextLifecycle.class);
+         Lifecycle lifecycle = Container.instance().services().get(ContextLifecycle.class);
          BeanStore beanStore = new HashMapBeanStore();
          String id = invocation.getTarget().getClass().getName() + "." + invocation.getMethod().getName() + "()";
          lifecycle.beginRequest(id, beanStore);

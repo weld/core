@@ -56,7 +56,7 @@ public class JsfHelper
     */
    public static boolean isPostback(FacesContext facesContext)
    {
-      if (Container.instance().deploymentServices().get(JsfApiAbstraction.class).isApiVersionCompatibleWith(2.0))
+      if (Container.instance().services().get(JsfApiAbstraction.class).isApiVersionCompatibleWith(2.0))
       {
          try
          {

@@ -191,7 +191,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       {
          this.passivationCapableBean = true;
       }
-      if (Container.instance().deploymentServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal())
+      if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal())
       {
          this.passivationCapableDependency = true;
       }
