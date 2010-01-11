@@ -42,7 +42,6 @@ import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Names;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
@@ -243,28 +242,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    public DisposalMethod<X, ?> getDisposalMethod()
    {
       return disposalMethodBean;
-   }
-
-   /**
-    * Gets a string representation
-    * 
-    * @return The string representation
-    */
-   @Override
-   public String getDescription()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append(Names.scopeTypeToString(getScope()));
-      if (getName() == null)
-      {
-         buffer.append("unnamed producer method bean");
-      }
-      else
-      {
-         buffer.append("simple producer method bean '" + getName() + "'");
-      }
-      buffer.append(" [" + getBeanClass().getName() + "] for class type [" + getType().getName() + "] API types " + getTypes() + ", binding types " + getQualifiers());
-      return buffer.toString();
    }
 
    @Override

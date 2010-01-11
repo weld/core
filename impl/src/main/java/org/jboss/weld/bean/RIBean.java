@@ -140,8 +140,5 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
    {
       return id;
    }
-   
-   public abstract String getDescription();
-
 
 }

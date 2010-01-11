@@ -296,13 +296,6 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
       }
    }
 
-   @Override
-   public String getDescription()
-   {
-      // TODO Auto-generated method stub
-      return super.getDescription("decorator");
-   }
-
    public Set<MethodSignature> getDecoratedMethodSignatures()
    {
       return decoratedMethodSignatures;

@@ -29,7 +29,6 @@ import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Names;
 
 /**
  * Represents a producer field
@@ -133,28 +132,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
    protected String getDefaultName()
    {
       return field.getPropertyName();
-   }
-
-   /**
-    * Gets a string representation
-    * 
-    * @return The string representation
-    */
-   @Override
-   public String getDescription()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("Annotated " + Names.scopeTypeToString(getScope()));
-      if (getName() == null)
-      {
-         buffer.append("unnamed producer field bean");
-      }
-      else
-      {
-         buffer.append("simple producer field bean '" + getName() + "'");
-      }
-      buffer.append(" [" + getBeanClass().getName() + "] for class type [" + getType().getName() + "] API types " + getTypes() + ", binding types " + getQualifiers());
-      return buffer.toString();
    }
    
    @Override

@@ -61,7 +61,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.Names;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
@@ -443,35 +442,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       {
          this.specializedBean = (ManagedBean<?>) specializedBean;
       }
-   }
-
-
-   /**
-    * Gets a string representation
-    *
-    * @return The string representation
-    */
-   @Override
-   public String getDescription()
-   {
-      return getDescription("simple bean");
-   }
-
-   protected String getDescription(String beanType)
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append(Names.scopeTypeToString(getScope()));
-      if (getName() == null)
-      {
-         buffer.append("unnamed ").append(beanType);
-      }
-      else
-      {
-         buffer.append(beanType).append(" '" + getName() + "'");
-      }
-      buffer.append(" ").append(getType().getName()).append(", ");
-      buffer.append(" API types = ").append(Names.typesToString(getTypes())).append(", binding types = " + Names.annotationsToString(getQualifiers()));
-      return buffer.toString();
    }
 
    @Override

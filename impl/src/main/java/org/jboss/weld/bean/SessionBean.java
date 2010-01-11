@@ -340,30 +340,6 @@ public class SessionBean<T> extends AbstractClassBean<T>
          throw new DefinitionException(MESSAGE_DRIVEN_BEANS_CANNOT_BE_MANAGED, this);
       }
    }
-
-   /**
-    * Gets a string representation
-    * 
-    * @return The string representation
-    */
-   @Override
-   public String getDescription()
-   {
-      StringBuilder buffer = new StringBuilder();
-      // buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()) +
-      // Names.ejbTypeFromMetaData(getEjbMetaData()));
-      if (getName() == null)
-      {
-         buffer.append(" unnamed enterprise bean");
-      }
-      else
-      {
-         buffer.append(" enterprise bean '" + getName() + "'");
-      }
-      buffer.append(" [" + getType().getName() + "] ");
-      buffer.append("API types " + getTypes() + ", binding types " + getQualifiers());
-      return buffer.toString();
-   }
    
    @Override
    public boolean isPassivationCapableBean()

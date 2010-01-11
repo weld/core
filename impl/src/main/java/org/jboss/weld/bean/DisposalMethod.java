@@ -136,12 +136,6 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    }
 
    @Override
-   public String getDescription()
-   {
-      return disposalMethodInjectionPoint.toString();
-   }
-
-   @Override
    public boolean isNullable()
    {
       // Not relevant
