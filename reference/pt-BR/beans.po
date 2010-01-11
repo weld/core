@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-01-06 12:17+0000\n"
-"PO-Revision-Date: 2010-01-07 14:27-0300\n"
+"PO-Revision-Date: 2010-01-11 17:41-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -1008,7 +1008,7 @@ msgstr ""
 #: beans.xml:419
 #, no-c-format
 msgid "What kinds of classes are beans?"
-msgstr ""
+msgstr "Quais categorias de classes são beans?"
 
 #. Tag: para
 #: beans.xml:421
@@ -1018,12 +1018,15 @@ msgid ""
 "that the whole story? Actually, it's just the beginning. Let's explore the "
 "various kinds of beans that CDI implementations must support out-of-the-box."
 msgstr ""
+"Nós já vimos dois tipos de beans: JavaBeans e EJB session beans. Esta é toda "
+"a história? Na verdade, é apenas o começo. Vamos explorar as várias "
+"categorias de beans que implementações CDI devem suportar sem modificações."
 
 #. Tag: title
 #: beans.xml:428
 #, no-c-format
 msgid "Managed beans"
-msgstr ""
+msgstr "Managed beans"
 
 #. Tag: para
 #: beans.xml:430
@@ -1036,18 +1039,25 @@ msgid ""
 "the specification, the CDI container treats any class that satisfies the "
 "following conditions as a managed bean:"
 msgstr ""
+"Um managed bean é uma classe Java. O ciclo de vida básico e a semântica de "
+"um managed bean são definidos pelo especificação de Managed Beans. Você pode "
+"explicitamente declarar um managed bean anotando a classe do bean com "
+"<literal>@ManagedBean</literal>, mas em CDI você não precisa disto. De "
+"acordo com a especificação, o contêiner CDI trata qualquer classe que "
+"satisfaz as seguintes condições como um managed bean:"
 
 #. Tag: para
 #: beans.xml:441
 #, no-c-format
 msgid "It is not a non-static inner class."
-msgstr ""
+msgstr "Ela não é uma classe interna não-estática."
 
 #. Tag: para
 #: beans.xml:444
 #, no-c-format
 msgid "It is a concrete class, or is annotated <literal>@Decorator</literal>."
 msgstr ""
+"Ela é uma classe concreta, ou é anotada com <literal>@Decorator</literal>."
 
 #. Tag: para
 #: beans.xml:447
@@ -1056,6 +1066,8 @@ msgid ""
 "It is not annotated with an EJB component-defining annotation or declared as "
 "an EJB bean class in <literal>ejb-jar.xml</literal>."
 msgstr ""
+"Ela não é anotada com uma anotação de definição de componente EJB ou "
+"declarada como classe de bean em <literal>ejb-jar.xml</literal>."
 
 #. Tag: para
 #: beans.xml:453
@@ -1064,24 +1076,25 @@ msgid ""
 "It does not implement <literal>javax.enterprise.inject.spi.Extension</"
 "literal>."
 msgstr ""
+"Ela não implementa <literal>javax.enterprise.inject.spi.Extension</literal>."
 
 #. Tag: para
 #: beans.xml:456
 #, no-c-format
 msgid "It has an appropriate constructor&#8212;either:"
-msgstr ""
+msgstr "Ela tem um construtor apropriado&#8212;ou seja:"
 
 #. Tag: para
 #: beans.xml:461
 #, no-c-format
 msgid "the class has a constructor with no parameters, or"
-msgstr ""
+msgstr "a classe possui um construtor sem parâmetros, ou"
 
 #. Tag: para
 #: beans.xml:464
 #, no-c-format
 msgid "the class declares a constructor annotated <literal>@Inject</literal>."
-msgstr ""
+msgstr "a classe declara um construtor anotado com <literal>@Inject</literal>."
 
 #. Tag: para
 #: beans.xml:472
@@ -1091,6 +1104,9 @@ msgid ""
 "class, every superclass and all interfaces it implements directly or "
 "indirectly."
 msgstr ""
+"O conjunto de restrições de tipos de bean para um managed bean contém a "
+"classe do bean, qualquer superclasse e todas as interfaces que ele "
+"implementa diretamente ou indiretamente."
 
 #. Tag: para
 #: beans.xml:475
@@ -1099,6 +1115,8 @@ msgid ""
 "If a managed bean has a public field, it must have the default scope "
 "<literal>@Dependent</literal>."
 msgstr ""
+"Se um managed bean possui um campo público, ele deve ter o escopo padrão "
+"<literal>@Dependent</literal>."
 
 #. Tag: para
 #: beans.xml:477
@@ -1107,6 +1125,8 @@ msgid ""
 "Managed beans support the <literal>@PostConstruct</literal> and "
 "<literal>@PreDestroy</literal> lifecycle callbacks."
 msgstr ""
+"Managed beans suportam as chamadas <literal>@PostConstruct</literal> e "
+"<literal>@PreDestroy</literal> de seu ciclo de vida."
 
 #. Tag: para
 #: beans.xml:480
@@ -1117,12 +1137,16 @@ msgid ""
 "services, the CDI specification considers them to be a different kind of "
 "bean."
 msgstr ""
+"Session beans também são, tecnicamente, managed beans. No entanto, uma vez "
+"que eles possuem seu próprio e específico ciclo de vida e tiram vantagem de "
+"serviços corporativos adicionais, a especificação CDI considera que eles "
+"fazem parte de uma categoria diferente de beans."
 
 #. Tag: title
 #: beans.xml:489
 #, no-c-format
 msgid "Session beans"
-msgstr ""
+msgstr "Session beans"
 
 #. Tag: para
 #: beans.xml:491
@@ -1136,6 +1160,13 @@ msgid ""
 "managed bean, have a managed bean observe an event raised by a session bean, "
 "and so on."
 msgstr ""
+"Session beans pertencem à especificação EJB. Eles possuem um ciclo de vida "
+"específico, gerenciamento de estado e o modelo de concorrência é diferente "
+"de outros beans geernciados e objetos Java não-gerenciados. Mas session "
+"beans participam em CDI apenas como qualquer outro bean. Você pode injetar "
+"um session bean dentro de outro session bean, um managed bean dentro de um "
+"session bean, um session bean dentro de um managed bean, ter um managed bean "
+"observando um evento disparado por um session bean, e assim por diante."
 
 #. Tag: para
 #: beans.xml:500
@@ -1148,6 +1179,12 @@ msgid ""
 "session or message-driven bean, even those which are not contextual "
 "instances."
 msgstr ""
+"Os massage-driven beans e entity beans são por natureza objetos não-"
+"contextuais e não podem ser injetados dentro de outros objetos. No entanto, "
+"message-driven beans podem tirar vantagem de algumas funcionadades CDI, como "
+"injeção de dependência, interceptadores e decoradores. Na verdade, CDI "
+"realizará injeção dentro de qualquer session bean ou message-driven bean, "
+"mesmo aqueles que não são instâncias contextuais."
 
 #. Tag: para
 #: beans.xml:508
@@ -1160,6 +1197,13 @@ msgid ""
 "is a bean type of every session bean. But remote interfaces are "
 "<emphasis>not</emphasis> included in the set of bean types."
 msgstr ""
+"O conjunto irrestrito de tipos de bean para um session bean contém todas as "
+"interfaces locais do bean e suas superinterfaces. Se o session bean possui "
+"uma classe de bean de visão local, o conjunto irrestrito de tipos de bean "
+"contém a classe de bean e todas as superclasses. Além disso, <literal>java."
+"lang.Object</literal> é um tipo de bean de todo session bean. Porém, "
+"interfaces remotas <emphasis>não</emphasis> são incluídas no conjunto de "
+"tipos de bean."
 
 #. Tag: para
 #: beans.xml:516
@@ -1171,6 +1215,11 @@ msgid ""
 "or <literal>@Singleton</literal> declaration. On the other hand, a stateful "
 "session bean may have any scope."
 msgstr ""
+"Não existe razão alguma para declarar explicitamente o escopo de um "
+"stateless session bean ou singleton session bean. O contêiner EJB controla o "
+"ciclo de vida destes beans, de acordo com a semântica da declaração "
+"<literal>@Stateless</literal> ou <literal>@Singleton</literal>. Por outro "
+"lado, um stateful session bean pode possuir qualquer escopo."
 
 #. Tag: para
 #: beans.xml:520
@@ -1184,6 +1233,13 @@ msgid ""
 "<literal>@Dependent</literal>. For beans with other scopes, the application "
 "must let the container destroy the bean."
 msgstr ""
+"Stateful session beans podem definir um <emphasis>método de remoção</"
+"emphasis>, anotado com <literal>@Remove</literal>, que é utilizado pela "
+"aplicação para indicar que uma instância deve ser destruída. No entato, para "
+"uma instância contextual do bean&#8212;uma instância sob o controle de "
+"CDI&#8212;este método só pode ser chamado pela aplicação se o bean possuir o "
+"escopo <literal>@Dependent</literal>. Para beans com outros escopos, a "
+"aplicação deve deixar o contêiner destruir o bean."
 
 #. Tag: para
 #: beans.xml:528
@@ -1192,18 +1248,21 @@ msgid ""
 "So, when should we use a session bean instead of a plain managed bean? "
 "Whenever we need the advanced enterprise services offered by EJB, such as:"
 msgstr ""
+"Então, quando devemos usar um session bean em vez de um simples managed "
+"bean? Sempre que precisar dos serviços corporativos avançados oferecidos por "
+"EJB, tais como:"
 
 #. Tag: para
 #: beans.xml:535
 #, no-c-format
 msgid "method-level transaction management and security,"
-msgstr ""
+msgstr "gerenciamento de transação e segurança em nível de método,"
 
 #. Tag: para
 #: beans.xml:538
 #, no-c-format
 msgid "concurrency management,"
-msgstr ""
+msgstr "gerenciamento de concorrência,"
 
 #. Tag: para
 #: beans.xml:541
@@ -1212,18 +1271,20 @@ msgid ""
 "instance-level passivation for stateful session beans and instance-pooling "
 "for stateless session beans,"
 msgstr ""
+"passivação em nível de instância para stateful session bean e pooling de "
+"instâncias para stateless session beans,"
 
 #. Tag: para
 #: beans.xml:545
 #, no-c-format
 msgid "remote or web service invocation, or"
-msgstr ""
+msgstr "invocação remota ou de serviço web, ou"
 
 #. Tag: para
 #: beans.xml:548
 #, no-c-format
 msgid "timers and asynchronous methods,"
-msgstr ""
+msgstr "temporizadores e métodos assíncronos."
 
 #. Tag: para
 #: beans.xml:552
@@ -1232,6 +1293,8 @@ msgid ""
 "When we don't need any of these things, an ordinary managed bean will serve "
 "just fine."
 msgstr ""
+"Quando não precisamos de nenhuma dessas coisas, um managed bean comum "
+"servirá muito bem."
 
 #. Tag: para
 #: beans.xml:554
@@ -1242,6 +1305,11 @@ msgid ""
 "access. Therefore, the concurrency management provided by EJB 3.1 is "
 "especially useful. Most session and application scoped beans should be EJBs."
 msgstr ""
+"Muitos beans (incluindo qualquer bean <literal>@SessionScoped</literal> ou "
+"<literal>@ApplicationScoped</literal>) estão disponíveis para acesso "
+"concorrente. Portanto, o gerenciamento de concorrência oferecido por EJB 3.1 "
+"é especialmente útil. A maioria dos beans com escopo de sessão e aplicação "
+"devem ser EJBs."
 
 #. Tag: para
 #: beans.xml:560
@@ -1252,6 +1320,10 @@ msgid ""
 "by the EJB stateless/stateful/singleton model, with its support for "
 "passivation and instance pooling."
 msgstr ""
+"Os beans que mantêm referências a recursos muito pesados, ou tiram muito "
+"proveito do estado interno do avançado ciclo de vida gerenciado pelo "
+"contêiner, definido pelo modelo stateless/stateful/singleton de EJB, com seu "
+"suporte a passivação e pooling de instâncias."
 
 #. Tag: para
 #: beans.xml:566
@@ -1261,6 +1333,9 @@ msgid ""
 "method-level security, timers, remote methods or asynchronous methods are "
 "needed."
 msgstr ""
+"Finalmente, normalmente é óbvio quando gerenciamento de transação a nível de "
+"método, segurança a nível de método, temporizadores, métodos remotos ou "
+"métodos assíncronos são utilizados."
 
 #. Tag: para
 #: beans.xml:571
@@ -1274,6 +1349,13 @@ msgid ""
 "annotations: <literal>@Stateless</literal>, <literal>@Stateful</literal> or "
 "<literal>@Singleton</literal>."
 msgstr ""
+"O ponto que estamos tentando determinar é: usar um session bean quando você "
+"precisar dos serviços que ele oferece, não apenas porque você quer usar "
+"injeção de dependência, gerenciamento de ciclo de vida, ou interceptadores. "
+"Java EE 6 fornece um modelo de programação graduado. É normalmente fácil "
+"iniciar com um managed bean habitual e, posteriormente, transformá-lo em um "
+"EJB apenas adicionando uma das seguintes anotações: <literal>@Stateless</"
+"literal>, <literal>@Stateful</literal> ou <literal>@Singleton</literal>."
 
 #. Tag: para
 #: beans.xml:579
@@ -1287,12 +1369,20 @@ msgid ""
 "of obfuscation. And as a general principle, you should be skeptical of folks "
 "who use vaguely defined terminology like \"heavyweight\"."
 msgstr ""
+"Por outro lado, não tenha medo de usar session beans apenas porque você "
+"ouviu seus amigos dizer que eles são \"pesados\". Não é nada mais do que "
+"superstição pensar que alguma coisa é \"mais pesada\" apenas porque é "
+"hospedada nativamente dentro do contêiner Java EE, em vez de um contêiner "
+"proprietário de beans ou um framework de injeção de dependência que executa "
+"como uma camada adicional de ofuscação. E como um princípio geral, você deve "
+"desconfiar de pessoas que usam uma terminologia vagamente definida, como "
+"\"pesado\"."
 
 #. Tag: title
 #: beans.xml:590
 #, no-c-format
 msgid "Producer methods"
-msgstr ""
+msgstr "Métodos produtores"
 
 #. Tag: para
 #: beans.xml:592
@@ -1305,6 +1395,13 @@ msgid ""
 "need to inject an object that is obtained by querying a service or "
 "transactional resource, for example by executing a JPA query?"
 msgstr ""
+"Nem tudo que precisa ser injetado pode ser resumido a uma classe de bean "
+"sendo instanciada pelo contêiner usando <literal>new</literal>. Existe uma "
+"abundância de casos onde precisamos de controle adicional. E se precisamos "
+"decidir em tempo de execução qual implementação de um dado tipo deve ser "
+"instanciado e injetado? E se precisamos injetar um objeto que é obtido ao "
+"consultar um serviço ou um recurso transacional, por exemplo, executando uma "
+"consulta JPA?"
 
 #. Tag: para
 #: beans.xml:600
@@ -1316,6 +1413,11 @@ msgid ""
 "instance exists in the specified context. A producer method lets the "
 "application take full control of the bean instantiation process."
 msgstr ""
+"Um <emphasis>método produtor</emphasis> é um método que age como uma fonte "
+"de instâncias de bean. A própria declaração do método descreve o bean e o "
+"contêiner invoca o método para obter uma instância do bean quando nenhuma "
+"instância existe no contexto especificado. Um método produtor permite que a "
+"aplicação tome o controle total do processo de instanciação do bean."
 
 #. Tag: para
 #: beans.xml:607
@@ -1324,6 +1426,8 @@ msgid ""
 "A producer method is declared by annotating a method of a bean class with "
 "the <literal>@Produces</literal> annotation."
 msgstr ""
+"Um método produtor é declarado anotando um método de uma classe de bean com "
+"a anotação <literal>@Produces</literal>."
 
 #. Tag: programlisting
 #: beans.xml:612
@@ -1365,6 +1469,16 @@ msgid ""
 "according to the JavaBeans property name convention. Now we can get a random "
 "number anywhere:"
 msgstr ""
+"Não podemos escrever uma classe de bean que é ela própria um número "
+"aleatório. Mas podemos certamente escrever um método que retorna um número "
+"aleatório. Ao tornar o método um método produtor, permitimos que o valor de "
+"retorno do método&#8212;neste caso um <literal>Integer</literal>&#8212;seja "
+"injetado. Podemos até mesmo especificar um qualificador&#8212;neste caso "
+"<literal>@Random</literal>, um escopo&#8212;que neste caso é por padrão "
+"<literal>@Dependent</literal>, e um nome EL&#8212;que neste caso é por "
+"padrão <literal>randomNumber</literal> de acordo com a convenção JavaBeans "
+"para nome de propriedades. Agora podemos obter um número aleatório em "
+"qualquer lugar:"
 
 #. Tag: programlisting
 #: beans.xml:623
@@ -1376,7 +1490,7 @@ msgstr "<![CDATA[@Inject @Random int randomNumber;]]>"
 #: beans.xml:625
 #, no-c-format
 msgid "Even in a Unified EL expression:"
-msgstr ""
+msgstr "Até mesmo em uma expressão Unified EL:"
 
 #. Tag: programlisting
 #: beans.xml:629
@@ -1393,12 +1507,17 @@ msgid ""
 "the bean is a session bean, the producer method must be either a business "
 "method of the EJB or a static method of the bean class."
 msgstr ""
+"Um método produtor deve ser um método não-abstrato de uma classe de managed "
+"bean ou de uma classe de session bean. Um método produtor pode ser estático "
+"ou não-estático. Se o bean é um session bean, o método produtor deve ser um "
+"método de negócio do EJB ou um método estático da classe do bean."
 
 #. Tag: para
 #: beans.xml:637
 #, no-c-format
 msgid "The bean types of a producer method depend upon the method return type:"
 msgstr ""
+"Os tipos de bean de um método produtor depende do tipo de retorno do método:"
 
 #. Tag: para
 #: beans.xml:643
@@ -1408,6 +1527,9 @@ msgid ""
 "contains the return type, all interfaces it extends directly or indirectly "
 "and <literal>java.lang.Object</literal>."
 msgstr ""
+"Se o tipo de retorno é uma interface, o conjunto ilimitado de tipos de bean "
+"contém o tipo de retorno, todas as interfaces estendidas direta ou "
+"indiretamente e <literal>java.lang.Object</literal>."
 
 #. Tag: para
 #: beans.xml:649
@@ -1417,6 +1539,9 @@ msgid ""
 "of bean types contains exactly two types: the method return type and "
 "<literal>java.lang.Object</literal>."
 msgstr ""
+"Se um tipo tipo de retorno é primitivo ou é um tipo de array Java, o "
+"conjunto ilimitado de tipos de bean contém exatamente dois tipos: o tipo de "
+"retorno do método e <literal>java.lang.Object</literal>."
 
 #. Tag: para
 #: beans.xml:655
@@ -1426,6 +1551,9 @@ msgid ""
 "the return type, every superclass and all interfaces it implements directly "
 "or indirectly."
 msgstr ""
+"Se o tipo de retorno é uma classe, o conjunto ilimitado de tipos de bean "
+"contém o tipo de retorno, todas superclasses e todas as interfaces "
+"implementadas direta ou indiretamente."
 
 #. Tag: para
 #: beans.xml:662
@@ -1435,6 +1563,9 @@ msgid ""
 "bean that satisfies the type and qualifiers of each parameter and pass it to "
 "the method automatically&#8212;another form of dependency injection."
 msgstr ""
+"Se o método produtor possuir parâmetros, o contêiner buscará por um bean que "
+"satisfaça o tipo e os qualificadores de cada parâmetro e os passará para o "
+"método automaticamente&#8212;uma outra forma de injeção de dependência."
 
 #. Tag: programlisting
 #: beans.xml:668
@@ -1455,12 +1586,14 @@ msgid ""
 "We'll talk much more about producer methods in <xref linkend="
 "\"producermethods\"/>."
 msgstr ""
+"Falaremos mais sobre métodos produtores no <xref linkend=\"producermethods\"/"
+">."
 
 #. Tag: title
 #: beans.xml:675
 #, no-c-format
 msgid "Producer fields"
-msgstr ""
+msgstr "Campos produtores"
 
 #. Tag: para
 #: beans.xml:677
@@ -1471,6 +1604,10 @@ msgid ""
 "with the <literal>@Produces</literal> annotation&#8212;the same annotation "
 "used for producer methods."
 msgstr ""
+"Um <emphasis>campo produtor</emphasis> é uma alternativa mais simples para "
+"um método produtor. Um campo produtor é declarado ao anotar um campo de uma "
+"classe de bean com a anotação <literal>@Produces</literal>&#8212;a mesma "
+"anotação usada pelos métodos produtores."
 
 #. Tag: programlisting
 #: beans.xml:683
@@ -1493,6 +1630,8 @@ msgid ""
 "The rules for determining the bean types of a producer field parallel the "
 "rules for producer methods."
 msgstr ""
+"As regras para determinação dos tipos de bean de um campo produtor "
+"assemelham-se às regras para métodos produtores."
 
 #. Tag: para
 #: beans.xml:689
@@ -1505,6 +1644,12 @@ msgid ""
 "linkend=\"resources\"/>. Because we can't wait to get to work on some "
 "examples."
 msgstr ""
+"Um campo produtor é realmente apenas um atalho que nos permite evitar "
+"escrever um método getter sem utilidade. No entanto, além da conveniência, "
+"campos produtores servem um propósito específico como um adaptador para "
+"injeção no ambiente de componentes Java EE, mas para aprender mais sobre "
+"isto, você terá que aguardar até o <xref linkend=\"resources\"/>. Porque não "
+"podemos esperar para começar a trabalhar em alguns exemplos."
 
 #. Tag: title
 #: beans.xml:701
