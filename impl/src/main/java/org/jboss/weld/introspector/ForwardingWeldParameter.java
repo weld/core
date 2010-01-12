@@ -40,4 +40,9 @@ public abstract class ForwardingWeldParameter<T, X> extends ForwardingWeldAnnota
       return delegate().getDeclaringWeldCallable();
    }
    
+   public WeldClass<X> getDeclaringType()
+   {
+      return delegate().getDeclaringType();
+   }
+   
 }

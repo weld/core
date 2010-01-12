@@ -29,5 +29,7 @@ public interface WeldParameter<T, X> extends WeldAnnotated<T, Object>, Annotated
 {
    
    public WeldCallable<?, X, ?> getDeclaringWeldCallable();
+   
+   public WeldClass<X> getDeclaringType();
 
 }

@@ -27,6 +27,7 @@ import javax.enterprise.inject.spi.AnnotatedCallable;
 
 import org.jboss.weld.exceptions.ForbiddenArgumentException;
 import org.jboss.weld.introspector.WeldCallable;
+import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
@@ -155,6 +156,11 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
    public Object getDelegate()
    {
       return null;
+   }
+   
+   public WeldClass<X> getDeclaringType()
+   {
+      return getDeclaringWeldCallable().getDeclaringType();
    }
    
 }
