@@ -48,7 +48,8 @@ public class ServletConversationManager extends AbstractConversationManager impl
    private static final long CONVERSATION_CONCURRENT_ACCESS_TIMEOUT_IN_MS = 1 * 1000;
    private static final String CONVERSATION_ID_NAME = "cid";
    
-   @Inject Instance<HttpSession> httpSession;
+   @Inject 
+   private Instance<HttpSession> httpSession;
 
    @Override
    public BeanStore getBeanStore(String cid)
