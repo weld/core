@@ -84,7 +84,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
    {
       try
       {
-         return new DirectClassInterceptionHandler(instance, getType()).invoke(ctx.getTarget(), org.jboss.interceptor.model.InterceptionType.valueOf(type.name()), ctx);
+         return new DirectClassInterceptionHandler<T>(instance, getType()).invoke(ctx.getTarget(), org.jboss.interceptor.model.InterceptionType.valueOf(type.name()), ctx);
       } catch (Exception e)
       {
          throw new WeldException(e);

@@ -31,27 +31,27 @@ import org.jboss.weld.util.reflection.SecureReflections;
 /**
  * @author Marius Bogoevici
 */
-public class ClassInterceptionHandlerFactory implements InterceptionHandlerFactory<Class>
+public class ClassInterceptionHandlerFactory<T> implements InterceptionHandlerFactory<Class<T>>
 {
-   private final CreationalContext<?> creationalContext;
+   private final CreationalContext<T> creationalContext;
    private BeanManagerImpl manager;
 
-   public ClassInterceptionHandlerFactory(CreationalContext<?> creationalContext, BeanManagerImpl manager)
+   public ClassInterceptionHandlerFactory(CreationalContext<T> creationalContext, BeanManagerImpl manager)
    {
       this.creationalContext = creationalContext;
       this.manager = manager;
    }
 
-   public InterceptionHandler createFor(Class clazz)
+   public InterceptionHandler createFor(Class<T> clazz)
    {
       try
       {
          // this is not a managed instance - assume no-argument constructor exists
-         Constructor constructor = SecureReflections.getDeclaredConstructor(clazz);
-         Object interceptorInstance = constructor.newInstance();
+         Constructor<T> constructor = (Constructor<T>) SecureReflections.getDeclaredConstructor(clazz);
+         T interceptorInstance = constructor.newInstance();
          // inject
          manager.createInjectionTarget(manager.createAnnotatedType(clazz)).inject(interceptorInstance, creationalContext);
-         return new DirectClassInterceptionHandler(interceptorInstance, clazz);
+         return new DirectClassInterceptionHandler<T>(interceptorInstance, clazz);
       }
       catch (Exception e)
       {

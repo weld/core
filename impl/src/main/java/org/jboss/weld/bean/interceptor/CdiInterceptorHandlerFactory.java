@@ -22,19 +22,19 @@ import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.interceptor.proxy.InterceptionHandler;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
+import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
-import org.jboss.weld.context.SerializableContextualInstanceImpl;
 
 /**
  * @author Marius Bogoevici
 */
-public class CdiInterceptorHandlerFactory implements InterceptionHandlerFactory<SerializableContextual<Interceptor<Object>, Object>>
+public class CdiInterceptorHandlerFactory<T> implements InterceptionHandlerFactory<SerializableContextual<Interceptor<T>, T>>
 {
-   private final CreationalContext creationalContext;
+   private final CreationalContext<T> creationalContext;
    private BeanManagerImpl manager;
 
-   public CdiInterceptorHandlerFactory(CreationalContext creationalContext, BeanManagerImpl manager)
+   public CdiInterceptorHandlerFactory(CreationalContext<T> creationalContext, BeanManagerImpl manager)
    {
       this.creationalContext = creationalContext;
       this.manager = manager;
@@ -45,12 +45,10 @@ public class CdiInterceptorHandlerFactory implements InterceptionHandlerFactory<
       return manager;
    }
 
-   @SuppressWarnings("unchecked")
-   public InterceptionHandler createFor(final SerializableContextual<Interceptor<Object>, Object> serializableContextual)
+   public InterceptionHandler createFor(final SerializableContextual<Interceptor<T>, T> serializableContextual)
    {
-      Object instance = getManager().getReference(serializableContextual.get(), creationalContext, false);
-      return new CdiInterceptorHandler(new SerializableContextualInstanceImpl<Interceptor<Object>, Object>(serializableContextual, instance, creationalContext),
-            serializableContextual.get().getBeanClass());
+      T instance = (T) getManager().getReference(serializableContextual.get(), creationalContext, false);
+      return new CdiInterceptorHandler<T>(new SerializableContextualInstanceImpl<Interceptor<T>, T>(serializableContextual, instance, creationalContext), serializableContextual.get().getBeanClass());
    }
 
 }

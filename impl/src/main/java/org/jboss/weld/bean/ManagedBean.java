@@ -380,9 +380,9 @@ public class ManagedBean<T> extends AbstractClassBean<T>
                DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
                decoratorClass = decoratorBean.getWeldAnnotated();
             }
-            else if (decorator instanceof CustomDecoratorWrapper)
+            else if (decorator instanceof CustomDecoratorWrapper<?>)
             {
-               decoratorClass = ((CustomDecoratorWrapper) decorator).getWeldAnnotated();
+               decoratorClass = ((CustomDecoratorWrapper<?>) decorator).getWeldAnnotated();
             }
             else
             {
@@ -435,7 +435,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
       }
       AbstractClassBean<?> specializedBean = environment.getClassBean(getWeldAnnotated().getWeldSuperclass());
-      if (!(specializedBean instanceof ManagedBean))
+      if (!(specializedBean instanceof ManagedBean<?>))
       {
          throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
       } else
@@ -470,7 +470,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          if (hasCdiBoundInterceptors())
          {
             interceptionRegistries.add(beanManager.getCdiInterceptorsRegistry());
-            interceptionHandlerFactories.add(new CdiInterceptorHandlerFactory(creationalContext, beanManager));
+            interceptionHandlerFactories.add(new CdiInterceptorHandlerFactory<T>(creationalContext, beanManager));
          }
          if (interceptionRegistries.size() > 0)
             instance = new InterceptorProxyCreatorImpl(interceptionRegistries, interceptionHandlerFactories).createProxyFromInstance(instance, getType());

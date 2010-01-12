@@ -60,7 +60,9 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
       this.bindings = new HashSet<Annotation>();
       this.bindings.add(new NewLiteral()
       {
-         
+
+         private static final long serialVersionUID = -6678013994309291500L;
+
          @Override
          public Class<?> value()
          {

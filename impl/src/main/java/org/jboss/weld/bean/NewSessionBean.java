@@ -64,6 +64,8 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
       this.bindings.add(new NewLiteral()
       {
          
+         private static final long serialVersionUID = 3953682907943246693L;
+
          @Override
          public Class<?> value()
          {

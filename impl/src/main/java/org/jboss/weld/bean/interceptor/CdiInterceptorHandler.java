@@ -10,17 +10,20 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 /**
  * @author Marius Bogoevici
  */
-public class CdiInterceptorHandler extends AbstractClassInterceptionHandler implements Serializable
+public class CdiInterceptorHandler<T> extends AbstractClassInterceptionHandler implements Serializable
 {
 
-   private final SerializableContextualInstance<Interceptor<Object>, Object> serializableContextualInstance;
+   private static final long serialVersionUID = -1614068925228599196L;
+   
+   private final SerializableContextualInstance<Interceptor<T>, T> serializableContextualInstance;
 
-   public CdiInterceptorHandler(SerializableContextualInstance<Interceptor<Object>, Object> serializableContextualInstance, Class<?> clazz)
+   public CdiInterceptorHandler(SerializableContextualInstance<Interceptor<T>, T> serializableContextualInstance, Class<?> clazz)
    {
       super(clazz);
       this.serializableContextualInstance = serializableContextualInstance;
    }
 
+   @Override
    public Object getInterceptorInstance()
    {
       return serializableContextualInstance.getInstance();

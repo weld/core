@@ -287,7 +287,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
       }
       else
       {
-         ProxyClassConstructorInjectionPointWrapper<T> constructorInjectionPointWrapper = new ProxyClassConstructorInjectionPointWrapper(this, constructorForAbstractDecorator, getConstructor());
+         ProxyClassConstructorInjectionPointWrapper<T> constructorInjectionPointWrapper = new ProxyClassConstructorInjectionPointWrapper<T>(this, constructorForAbstractDecorator, getConstructor());
          T instance = constructorInjectionPointWrapper.newInstance(beanManager, ctx);
          Proxies.attachMethodHandler(instance, new AbstractDecoratorMethodHandler(annotatedDelegateItem, getDelegateInjectionPoint(), constructorInjectionPointWrapper.getInjectedDelegate()));
          return instance;
