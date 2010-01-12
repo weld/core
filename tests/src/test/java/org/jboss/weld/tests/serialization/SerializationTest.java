@@ -19,7 +19,7 @@ import org.testng.annotations.Test;
 public class SerializationTest extends AbstractWeldTest
 {
    @SuppressWarnings("unchecked")
-   @Test(description="WELD-363")
+   @Test(description="WELD-363", groups = "broken")
    public void testConversationManagerSerializable()
       throws IOException, ClassNotFoundException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException
    {
