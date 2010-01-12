@@ -22,8 +22,6 @@
  */
 package org.jboss.weld.conversation;
 
-import java.io.Serializable;
-
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
@@ -40,7 +38,7 @@ import org.jboss.weld.servlet.ConversationBeanStore;
  * 
  */
 @SessionScoped
-public class ServletConversationManager extends AbstractConversationManager implements Serializable
+public class ServletConversationManager extends AbstractConversationManager
 {
    private static final long serialVersionUID = 1647848566880659085L;
 

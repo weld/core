@@ -35,6 +35,7 @@ import static org.jboss.weld.logging.messages.ConversationMessage.LRC_COUNT;
 import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_TO_RESTORE;
 import static org.jboss.weld.logging.messages.ConversationMessage.UNABLE_TO_RESTORE_CONVERSATION;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -60,8 +61,11 @@ import org.slf4j.cal10n.LocLogger;
  * @author Nicklas Karlsson
  * 
  */
-public abstract class AbstractConversationManager implements ConversationManager
+public abstract class AbstractConversationManager implements ConversationManager, Serializable
 {
+   
+   private static final long serialVersionUID = 8375026855239413267L;
+
    private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
 
    // The current conversation
