@@ -2,12 +2,14 @@ package org.jboss.weld.tests.serialization;
 
 import java.lang.reflect.Field;
 
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Instance;
 
 import org.jboss.weld.conversation.AbstractConversationManager;
 import org.jboss.weld.conversation.ConversationImpl;
 import org.jboss.weld.conversation.ServletConversationManager;
 
+@SessionScoped
 public class TestConversationManager extends ServletConversationManager
 {
 

@@ -12,8 +12,8 @@ import org.testng.annotations.Test;
 @Artifact
 public class SerializationTest extends AbstractWeldTest
 {
-   @SuppressWarnings("unchecked")
-   @Test(description="WELD-363", groups = "broken")
+
+   @Test(description="WELD-363")
    public void testConversationManagerSerializable()
       throws Exception
    {
