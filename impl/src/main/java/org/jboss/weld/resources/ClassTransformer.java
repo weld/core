@@ -18,7 +18,7 @@ package org.jboss.weld.resources;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 
@@ -28,14 +28,116 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.WeldAnnotationImpl;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.metadata.TypeStore;
-import org.jboss.weld.util.collections.ConcurrentCache;
+
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 public class ClassTransformer implements Service
 {
+   
+   private static class TransformTypeToWeldClass implements Function<TypeHolder<?>, WeldClass<?>>
+   {
+      
+      private final ClassTransformer classTransformer;
 
-   private final ConcurrentCache<Type, WeldClass<?>> classes;
-   private final ConcurrentCache<AnnotatedType<?>, WeldClass<?>> annotatedTypes;
-   private final ConcurrentCache<Class<?>, WeldAnnotation<?>> annotations;
+      private TransformTypeToWeldClass(ClassTransformer classTransformer)
+      {
+         this.classTransformer = classTransformer;
+      }
+
+      public WeldClass<?> apply(TypeHolder<?> from)
+      {
+         return WeldClassImpl.of(from.getRawType(), from.getBaseType(), classTransformer);
+      }
+      
+   }
+   
+   private static class TransformClassToWeldAnnotation implements Function<Class<? extends Annotation>, WeldAnnotation<?>>
+   {
+      
+      private final ClassTransformer classTransformer;
+
+      private TransformClassToWeldAnnotation(ClassTransformer classTransformer)
+      {
+         this.classTransformer = classTransformer;
+      }
+
+      public WeldAnnotation<?> apply(Class<? extends Annotation> from)
+      {
+         return WeldAnnotationImpl.of(from, classTransformer);
+      }
+      
+   }
+   
+   private static class TransformAnnotatedTypeToWeldClass implements Function<AnnotatedType<?>, WeldClass<?>>
+   {
+      
+      private final ClassTransformer classTransformer;
+
+      private TransformAnnotatedTypeToWeldClass(ClassTransformer classTransformer)
+      {
+         super();
+         this.classTransformer = classTransformer;
+      }
+
+      public WeldClass<?> apply(AnnotatedType<?> from)
+      {
+         return WeldClassImpl.of(from, classTransformer);
+      }
+      
+   }
+   
+   private static final class TypeHolder<T>
+   {
+      private final Class<T> rawType;
+      private final Type baseType;
+      
+      private TypeHolder(Class<T> rawType, Type baseType)
+      {
+         this.rawType = rawType;
+         this.baseType = baseType;
+      }
+      
+      public Type getBaseType()
+      {
+         return baseType;
+      }
+      
+      public Class<T> getRawType()
+      {
+         return rawType;
+      }
+      
+      @Override
+      public boolean equals(Object obj)
+      {
+         if (obj instanceof TypeHolder<?>)
+         {
+            TypeHolder<?> that = (TypeHolder<?>) obj;
+            return this.getBaseType().equals(that.getBaseType());
+         }
+         else
+         {
+            return false;
+         }
+      }
+      
+      @Override
+      public int hashCode()
+      {
+         return getBaseType().hashCode();
+      }
+      
+      @Override
+      public String toString()
+      {
+         return getBaseType().toString();
+      }
+   }
+
+   private final ConcurrentMap<TypeHolder<?>, WeldClass<?>> classes;
+   private final ConcurrentMap<AnnotatedType<?>, WeldClass<?>> annotatedTypes;
+   private final ConcurrentMap<Class<? extends Annotation>, WeldAnnotation<?>> annotations;
    private final TypeStore typeStore;
 
    /**
@@ -43,62 +145,35 @@ public class ClassTransformer implements Service
     */
    public ClassTransformer(TypeStore typeStore)
    {
-      classes = new ConcurrentCache<Type, WeldClass<?>>();
-      this.annotatedTypes = new ConcurrentCache<AnnotatedType<?>, WeldClass<?>>();
-      annotations = new ConcurrentCache<Class<?>, WeldAnnotation<?>>();
+      MapMaker maker = new MapMaker();
+      this.classes = maker.makeComputingMap(new TransformTypeToWeldClass(this));
+      this.annotatedTypes = maker.makeComputingMap(new TransformAnnotatedTypeToWeldClass(this));
+      this.annotations = maker.makeComputingMap(new TransformClassToWeldAnnotation(this));
       this.typeStore = typeStore;
    }
 
+   @SuppressWarnings("unchecked")
    public <T> WeldClass<T> loadClass(final Class<T> rawType, final Type baseType)
    {
-      return classes.putIfAbsent(baseType, new Callable<WeldClass<T>>()
-      {
-
-         public WeldClass<T> call() throws Exception
-         {
-            return WeldClassImpl.of(rawType, baseType, ClassTransformer.this);
-         }
-
-      });
+      return (WeldClass<T>) classes.get(new TypeHolder<T>(rawType, baseType));
    }
    
+   @SuppressWarnings("unchecked")
    public <T> WeldClass<T> loadClass(final Class<T> clazz)
    {
-      return classes.putIfAbsent(clazz, new Callable<WeldClass<T>>()
-      {
-
-         public WeldClass<T> call() throws Exception
-         {
-            return WeldClassImpl.of(clazz, ClassTransformer.this);
-         }
-
-      });
+      return (WeldClass<T>) classes.get(new TypeHolder<T>(clazz, clazz));
    }
    
+   @SuppressWarnings("unchecked")
    public <T> WeldClass<T> loadClass(final AnnotatedType<T> clazz)
    {
-      return annotatedTypes.putIfAbsent(clazz, new Callable<WeldClass<T>>()
-      {
-
-         public WeldClass<T> call() throws Exception
-         {
-            return WeldClassImpl.of(clazz, ClassTransformer.this);
-         }
-
-      });
+      return (WeldClass<T>) annotatedTypes.get(clazz);
    }
 
+   @SuppressWarnings("unchecked")
    public <T extends Annotation> WeldAnnotation<T> loadAnnotation(final Class<T> clazz)
    {
-      return annotations.putIfAbsent(clazz, new Callable<WeldAnnotation<T>>()
-      {
-         
-         public WeldAnnotation<T> call() throws Exception
-         {
-            return WeldAnnotationImpl.of(clazz, ClassTransformer.this);
-         }
-
-      });
+      return (WeldAnnotation<T>) annotations.get(clazz);
    }
    
    public TypeStore getTypeStore()

@@ -42,7 +42,7 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
@@ -63,9 +63,11 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.DummyInjectionPoint;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.collections.ConcurrentCache;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
+
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 /**
  * The implicit producer bean
@@ -79,6 +81,17 @@ import org.slf4j.cal10n.LocLogger;
  */
 public abstract class AbstractProducerBean<X, T, S extends Member> extends AbstractReceiverBean<X, T, S>
 {
+   
+   private static final Function<Class<?>, Boolean> SERIALIZABLE_CHECK = new Function<Class<?>, Boolean>()
+   {
+
+      public Boolean apply(Class<?> from)
+      {
+         return Reflections.isSerializable(from);
+      }
+      
+   };
+   
    // Logger for messages
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
@@ -90,7 +103,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    private boolean passivationCapableDependency;
 
    // Serialization cache for produced types at runtime
-   private ConcurrentCache<Class<?>, Boolean> serializationCheckCache;
+   private ConcurrentMap<Class<?>, Boolean> serializationCheckCache;
 
    /**
     * Constructor
@@ -101,7 +114,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    public AbstractProducerBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
    {
       super(idSuffix, declaringBean, beanManager);
-      serializationCheckCache = new ConcurrentCache<Class<?>, Boolean>();
+      serializationCheckCache = new MapMaker().makeComputingMap(SERIALIZABLE_CHECK);
    }
 
    @Override
@@ -277,15 +290,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
 
    protected boolean isTypeSerializable(final Class<?> clazz)
    {
-      return serializationCheckCache.putIfAbsent(clazz, new Callable<Boolean>()
-      {
-
-         public Boolean call() throws Exception
-         {
-            return Reflections.isSerializable(clazz);
-         }
-
-      });
+      return serializationCheckCache.get(clazz);
    }
 
    @Override
