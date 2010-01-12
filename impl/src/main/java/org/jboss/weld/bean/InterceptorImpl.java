@@ -48,31 +48,31 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
    private final Set<Annotation> interceptorBindingTypes;
    
    private final boolean serializable;
-
-   protected InterceptorImpl(WeldClass<T> type, BeanManagerImpl manager)
+   
+   public static <T> InterceptorImpl<T> of(WeldClass<T> type, BeanManagerImpl beanManager)
    {
-      super(type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), manager);
+      return new InterceptorImpl<T>(type, beanManager);
+   }
+
+   protected InterceptorImpl(WeldClass<T> type, BeanManagerImpl beanManager)
+   {
+      super(type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager);
       this.interceptorClassMetadata = InterceptorClassMetadataRegistry.getRegistry().getInterceptorClassMetadata(type.getJavaClass());
       this.serializable = type.isSerializable();
       this.interceptorBindingTypes = new HashSet<Annotation>();
-      interceptorBindingTypes.addAll(flattenInterceptorBindings(manager, getWeldAnnotated().getAnnotations()));
+      interceptorBindingTypes.addAll(flattenInterceptorBindings(beanManager, getWeldAnnotated().getAnnotations()));
       for (Class<? extends Annotation> annotation : getStereotypes())
       {
-         interceptorBindingTypes.addAll(flattenInterceptorBindings(manager, manager.getStereotypeDefinition(annotation)));
+         interceptorBindingTypes.addAll(flattenInterceptorBindings(beanManager, beanManager.getStereotypeDefinition(annotation)));
       }
       if (this.interceptorBindingTypes.size() == 0)
       {
          throw new DeploymentException(MISSING_BINDING_ON_INTERCEPTOR, type.getName());
       }
-      if (Beans.findInterceptorBindingConflicts(manager, interceptorBindingTypes))
+      if (Beans.findInterceptorBindingConflicts(beanManager, interceptorBindingTypes))
       {
          throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType());
       }
-   }
-
-   public static <T> InterceptorImpl<T> of(WeldClass<T> type, BeanManagerImpl manager)
-   {
-      return new InterceptorImpl<T>(type, manager);
    }
 
    public Set<Annotation> getInterceptorBindings()

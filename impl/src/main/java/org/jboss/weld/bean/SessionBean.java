@@ -98,13 +98,13 @@ public class SessionBean<T> extends AbstractClassBean<T>
     * 
     * @param <T> The type
     * @param clazz The class
-    * @param manager the current manager
+    * @param beanManager the current manager
     * @return An Enterprise Web Bean
     */
-   public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
+   public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager)
    {
-      WeldClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-      return new SessionBean<T>(type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor) , manager);
+      WeldClass<T> type = beanManager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
+      return new SessionBean<T>(type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor) , beanManager);
    }
 
    protected static String createId(String beanType, InternalEjbDescriptor<?> ejbDescriptor)
@@ -149,12 +149,12 @@ public class SessionBean<T> extends AbstractClassBean<T>
 
             public void inject(final T instance, final CreationalContext<T> ctx)
             {
-               new InjectionContextImpl<T>(getManager(), this, instance)
+               new InjectionContextImpl<T>(getBeanManager(), this, instance)
                {
                   
                   public void proceed()
                   {
-                     Beans.injectFieldsAndInitializers(instance, ctx, getManager(), getInjectableFields(), getInitializerMethods());
+                     Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
                   }
                   
                }.run();
@@ -428,7 +428,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
       InterceptionModel<Class<?>, SerializableContextual<javax.enterprise.inject.spi.Interceptor<?>, ?>> model = beanManager.getCdiInterceptorsRegistry().getInterceptionModel(ejbDescriptor.getBeanClass());
       if (model != null)
       {
-         getManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor().delegate(), new InterceptorBindingsAdapter(model));
+         getBeanManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor().delegate(), new InterceptorBindingsAdapter(model));
       }
    }
 }

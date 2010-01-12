@@ -28,7 +28,7 @@ import org.jboss.weld.util.collections.Arrays2;
 public class BeanManagerBean extends AbstractBuiltInBean<BeanManagerImpl>
 {
    
-   private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, BeanManagerImpl.class, BeanManager.class);
+   private static final Set<Type> TYPES = Arrays2.<Type>asSet( Object.class, BeanManagerImpl.class, BeanManager.class );
    
    public BeanManagerBean(BeanManagerImpl manager)
    {
@@ -37,7 +37,7 @@ public class BeanManagerBean extends AbstractBuiltInBean<BeanManagerImpl>
 
    public BeanManagerImpl create(CreationalContext<BeanManagerImpl> creationalContext)
    {
-      return getManager().getCurrent();
+      return getBeanManager().getCurrent();
    }
 
    @Override

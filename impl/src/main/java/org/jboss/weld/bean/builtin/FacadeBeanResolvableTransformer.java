@@ -38,7 +38,7 @@ import org.jboss.weld.resolution.ResolvableTransformer;
 public class FacadeBeanResolvableTransformer implements ResolvableTransformer
 {
 
-   private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(AnyLiteral.INSTANCE);
+   private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton( AnyLiteral.INSTANCE );
 
    private final Class<?> clazz;
    private final HashSet<Type> types;

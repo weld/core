@@ -64,17 +64,17 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
     * 
     * @param method The underlying method abstraction
     * @param declaringBean The declaring bean abstraction
-    * @param manager the current manager
+    * @param beanManager the current manager
     * @return A producer Web Bean
     */
-   public static <X, T> ProducerMethod<X, T> of(WeldMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   public static <X, T> ProducerMethod<X, T> of(WeldMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
    {
-      return new ProducerMethod<X, T>(method, declaringBean, manager);
+      return new ProducerMethod<X, T>(method, declaringBean, beanManager);
    }
 
-   protected ProducerMethod(WeldMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   protected ProducerMethod(WeldMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
    {
-      super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, manager);
+      super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager);
       this.method = MethodInjectionPoint.of(this, method);
       initType();
       initTypes();

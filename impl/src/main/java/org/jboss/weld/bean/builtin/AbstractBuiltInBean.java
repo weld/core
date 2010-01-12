@@ -36,9 +36,9 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
    private static final String ID_PREFIX = "Built-in";
    private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet( DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE );
    
-   protected AbstractBuiltInBean(String idSuffix, BeanManagerImpl manager)
+   protected AbstractBuiltInBean(String idSuffix, BeanManagerImpl beanManager)
    {
-      super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(idSuffix).toString(), manager);
+      super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(idSuffix).toString(), beanManager);
    }
    
    @Override

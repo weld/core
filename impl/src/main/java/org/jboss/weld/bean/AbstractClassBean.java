@@ -94,19 +94,19 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * Extracts the complete set of interception bindings from a given set of
     * annotations.
     * 
-    * @param manager
+    * @param beanManager
     * @param annotations
     * @return
     */
-   protected static Set<Annotation> flattenInterceptorBindings(BeanManagerImpl manager, Set<Annotation> annotations)
+   protected static Set<Annotation> flattenInterceptorBindings(BeanManagerImpl beanManager, Set<Annotation> annotations)
    {
       Set<Annotation> foundInterceptionBindingTypes = new HashSet<Annotation>();
       for (Annotation annotation : annotations)
       {
-         if (manager.isInterceptorBinding(annotation.annotationType()))
+         if (beanManager.isInterceptorBinding(annotation.annotationType()))
          {
             foundInterceptionBindingTypes.add(annotation);
-            foundInterceptionBindingTypes.addAll(manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
+            foundInterceptionBindingTypes.addAll(beanManager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
          }
       }
       return foundInterceptionBindingTypes;
@@ -158,11 +158,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * Constructor
     * 
     * @param type The type
-    * @param manager The Bean manager
+    * @param beanManager The Bean manager
     */
-   protected AbstractClassBean(WeldClass<T> type, String idSuffix, BeanManagerImpl manager)
+   protected AbstractClassBean(WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager)
    {
-      super(idSuffix, manager);
+      super(idSuffix, beanManager);
       this.annotatedItem = type;
       this.decoratorStackPosition = new ThreadLocal<Integer>()
       {
@@ -214,7 +214,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    public void initDecorators()
    {
-      this.decorators = getManager().resolveDecorators(getTypes(), getQualifiers());
+      this.decorators = getBeanManager().resolveDecorators(getTypes(), getQualifiers());
    }
 
    public boolean hasDecorators()
@@ -245,7 +245,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             Decorator<?> decorator = decorators.get(i);
             decoratorStackPosition.set(++i);
 
-            Object decoratorInstance = getManager().getReference(ip, decorator, creationalContext);
+            Object decoratorInstance = getBeanManager().getReference(ip, decorator, creationalContext);
             decoratorInstances.add(new SerializableContextualInstanceImpl<Decorator<Object>, Object>((Decorator<Object>) decorator, decoratorInstance, null));
 
             ip = Beans.getDelegateInjectionPoint(decorator);

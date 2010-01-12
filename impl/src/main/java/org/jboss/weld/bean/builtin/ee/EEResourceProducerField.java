@@ -145,7 +145,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
          }
          else
          {
-            return Proxies.<T>createProxy(new CallableMethodHandler(new EEResourceCallable<T>(getManager(), this, creationalContext)), TypeInfo.of(getTypes()).add(Serializable.class));
+            return Proxies.<T>createProxy(new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(), this, creationalContext)), TypeInfo.of(getTypes()).add(Serializable.class));
          }
       }
       catch (InstantiationException e)

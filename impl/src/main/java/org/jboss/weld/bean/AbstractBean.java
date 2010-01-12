@@ -86,12 +86,12 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    /**
     * Constructor
     * 
-    * @param manager The Bean manager
+    * @param beanManager The Bean manager
     */
-   public AbstractBean(String idSuffix, BeanManagerImpl manager)
+   public AbstractBean(String idSuffix, BeanManagerImpl beanManager)
    {
-      super(idSuffix, manager);
-      this.beanManager = manager;
+      super(idSuffix, beanManager);
+      this.beanManager = beanManager;
       this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
       this.delegateInjectionPoints = new HashSet<WeldInjectionPoint<?,?>>();
       this.newInjectionPoints = new HashSet<WeldInjectionPoint<?,?>>();

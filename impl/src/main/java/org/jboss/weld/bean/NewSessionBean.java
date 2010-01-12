@@ -40,13 +40,13 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
     * Creates an instance of a NewEnterpriseBean from an annotated class
     * 
     * @param clazz The annotated class
-    * @param manager The Bean manager
+    * @param beanManager The Bean manager
     * @return a new NewEnterpriseBean instance
     */
-   public static <T> NewSessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager)
+   public static <T> NewSessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager)
    {
-      WeldClass<T> type = manager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-      return new NewSessionBean<T>(type, ejbDescriptor, createId(NewSessionBean.class.getSimpleName(), ejbDescriptor), manager);
+      WeldClass<T> type = beanManager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
+      return new NewSessionBean<T>(type, ejbDescriptor, createId(NewSessionBean.class.getSimpleName(), ejbDescriptor), beanManager);
    }
    
    private Set<Annotation> bindings;
@@ -55,11 +55,11 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
     * Protected constructor
     * 
     * @param type An annotated class
-    * @param manager The Bean manager
+    * @param beanManager The Bean manager
     */
-   protected NewSessionBean(final WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager)
+   protected NewSessionBean(final WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl beanManager)
    {
-      super(type, ejbDescriptor, idSuffix, manager);
+      super(type, ejbDescriptor, idSuffix, beanManager);
       this.bindings = new HashSet<Annotation>();
       this.bindings.add(new NewLiteral()
       {

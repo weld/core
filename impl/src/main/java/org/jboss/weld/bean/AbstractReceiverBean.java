@@ -42,9 +42,9 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
    
    private AbstractClassBean<X> declaringBean;
 
-   public AbstractReceiverBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   public AbstractReceiverBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
    {
-      super(idSuffix, manager);
+      super(idSuffix, beanManager);
       this.declaringBean = declaringBean;
    }
    

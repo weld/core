@@ -38,7 +38,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
 
    public T create(CreationalContext<T> creationalContext)
    {
-      InjectionPoint injectionPoint = this.getManager().getCurrentInjectionPoint();
+      InjectionPoint injectionPoint = this.getBeanManager().getCurrentInjectionPoint();
       if (injectionPoint != null)
       {
          return newInstance(injectionPoint);

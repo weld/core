@@ -39,19 +39,19 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
    
    public static final String BEAN_ID_SEPARATOR = "-";
    
-   private final BeanManagerImpl manager;
+   private final BeanManagerImpl beanManager;
    
    private final String id;
 
-   protected RIBean(String idSuffix, BeanManagerImpl manager)
+   protected RIBean(String idSuffix, BeanManagerImpl beanManager)
    {
-      this.manager = manager;
-      this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(BEAN_ID_SEPARATOR).append(manager.getId()).append(BEAN_ID_SEPARATOR).append(idSuffix).toString();
+      this.beanManager = beanManager;
+      this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(BEAN_ID_SEPARATOR).append(beanManager.getId()).append(BEAN_ID_SEPARATOR).append(idSuffix).toString();
    }
 
-   protected BeanManagerImpl getManager()
+   protected BeanManagerImpl getBeanManager()
    {
-      return manager;
+      return beanManager;
    }
 
    public abstract Class<T> getType();

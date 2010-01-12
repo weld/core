@@ -96,11 +96,11 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     * Constructor
     * 
     * @param declaringBean The declaring bean
-    * @param manager The Bean manager
+    * @param beanManager The Bean manager
     */
-   public AbstractProducerBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   public AbstractProducerBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
    {
-      super(idSuffix, declaringBean, manager);
+      super(idSuffix, declaringBean, beanManager);
       serializationCheckCache = new ConcurrentCache<Class<?>, Boolean>();
    }
 

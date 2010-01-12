@@ -23,7 +23,7 @@ public class CallableMethodHandler implements MethodHandler, Serializable
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
    // Can't make this final, need to deallocate on shutdown
-   private Callable<?> callable;
+   private final Callable<?> callable;
    
    public CallableMethodHandler(Callable<?> callable)
    {
@@ -61,11 +61,6 @@ public class CallableMethodHandler implements MethodHandler, Serializable
             throw e;
          }
       }
-   }
-   
-   private void cleanup()
-   {
-      this.callable = null;
    }
 
 }

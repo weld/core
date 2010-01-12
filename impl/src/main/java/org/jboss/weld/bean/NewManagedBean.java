@@ -38,12 +38,12 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
     * Creates an instance of a NewSimpleBean from an annotated class
     * 
     * @param clazz The annotated class
-    * @param manager The Bean manager
+    * @param beanManager The Bean manager
     * @return a new NewSimpleBean instance
     */
-   public static <T> NewManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl manager)
+   public static <T> NewManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl beanManager)
    {
-      return new NewManagedBean<T>(clazz, createId(NewManagedBean.class.getSimpleName(), clazz), manager);
+      return new NewManagedBean<T>(clazz, createId(NewManagedBean.class.getSimpleName(), clazz), beanManager);
    }
    
    private Set<Annotation> bindings;
@@ -52,11 +52,11 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
     * Protected constructor
     * 
     * @param type An annotated class
-    * @param manager The Bean manager
+    * @param beanManager The Bean manager
     */
-   protected NewManagedBean(final WeldClass<T> type, String idSuffix, BeanManagerImpl manager)
+   protected NewManagedBean(final WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager)
    {
-      super(type, idSuffix, manager);
+      super(type, idSuffix, beanManager);
       this.bindings = new HashSet<Annotation>();
       this.bindings.add(new NewLiteral()
       {

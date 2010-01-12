@@ -95,12 +95,12 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     *
     * @param <T> The type
     * @param clazz The class
-    * @param manager the current manager
+    * @param beanManager the current manager
     * @return A Web Bean
     */
-   public static <T> ManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl manager)
+   public static <T> ManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl beanManager)
    {
-      return new ManagedBean<T>(clazz, createId(ManagedBean.class.getSimpleName(), clazz), manager);
+      return new ManagedBean<T>(clazz, createId(ManagedBean.class.getSimpleName(), clazz), beanManager);
    }
    
    protected static String createId(String beanType, WeldClass<?> clazz)
@@ -112,11 +112,11 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     * Constructor
     *
     * @param type The type of the bean
-    * @param manager The Bean manager
+    * @param beanManager The Bean manager
     */
-   protected ManagedBean(WeldClass<T> type, String idSuffix, BeanManagerImpl manager)
+   protected ManagedBean(WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager)
    {
-      super(type, idSuffix, manager);
+      super(type, idSuffix, beanManager);
       initType();
       initTypes();
       initQualifiers();
@@ -144,7 +144,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       {
          throw new ForbiddenStateException(DELEGATE_INJECTION_POINT_NOT_FOUND, decorator);
       }
-      return getManager().replaceOrPushCurrentInjectionPoint(outerDelegateInjectionPoint);
+      return getBeanManager().replaceOrPushCurrentInjectionPoint(outerDelegateInjectionPoint);
    }
 
    /**
@@ -189,13 +189,13 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
             public void inject(final T instance, final CreationalContext<T> ctx)
             {
-               new InjectionContextImpl<T>(getManager(), this, instance)
+               new InjectionContextImpl<T>(getBeanManager(), this, instance)
                {
                   
                   public void proceed()
                   {
-                     Beans.injectEEFields(instance, getManager(), ejbInjectionPoints, persistenceContextInjectionPoints, persistenceUnitInjectionPoints, resourceInjectionPoints);
-                     Beans.injectFieldsAndInitializers(instance, ctx, getManager(), getInjectableFields(), getInitializerMethods());
+                     Beans.injectEEFields(instance, getBeanManager(), ejbInjectionPoints, persistenceContextInjectionPoints, persistenceUnitInjectionPoints, resourceInjectionPoints);
+                     Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
                   }
 
                }.run();
@@ -285,7 +285,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       }
       if (this.passivationCapableBean && hasCdiBoundInterceptors())
       {
-         for (SerializableContextual<Interceptor<?>, ?> interceptor : getManager().getCdiInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors())
+         for (SerializableContextual<Interceptor<?>, ?> interceptor : getBeanManager().getCdiInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors())
          {
             if (!(PassivationCapable.class.isAssignableFrom(interceptor.get().getClass())) || !((InterceptorImpl<?>)interceptor.get()).isSerializable())
             {
@@ -296,7 +296,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       }
       if (this.passivationCapableBean && hasDirectlyDefinedInterceptors())
       {
-         for (Class<?> interceptorClass : getManager().getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors())
+         for (Class<?> interceptorClass : getBeanManager().getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors())
          {
             if (!Reflections.isSerializable(interceptorClass))
             {
@@ -338,9 +338,9 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    private void initEEInjectionPoints()
    {
-      this.ejbInjectionPoints = Beans.getEjbInjectionPoints(this, getWeldAnnotated(), getManager());
-      this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(this, getWeldAnnotated(), getManager());
-      this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(this, getWeldAnnotated(), getManager());
+      this.ejbInjectionPoints = Beans.getEjbInjectionPoints(this, getWeldAnnotated(), getBeanManager());
+      this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(this, getWeldAnnotated(), getBeanManager());
+      this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(this, getWeldAnnotated(), getBeanManager());
       this.resourceInjectionPoints = Beans.getResourceInjectionPoints(this, getWeldAnnotated(), beanManager);
    }
 
@@ -465,7 +465,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          if (hasDirectlyDefinedInterceptors())
          {
             interceptionRegistries.add(beanManager.getClassDeclaredInterceptorsRegistry());
-            interceptionHandlerFactories.add(new ClassInterceptionHandlerFactory(creationalContext, getManager()));
+            interceptionHandlerFactories.add(new ClassInterceptionHandlerFactory(creationalContext, getBeanManager()));
          }
          if (hasCdiBoundInterceptors())
          {

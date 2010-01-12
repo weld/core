@@ -32,9 +32,11 @@ import org.jboss.weld.util.collections.Arrays2;
 
 public class InstanceBean extends AbstractFacadeBean<Instance<?>>
 {
+   @SuppressWarnings("serial")
    private static final Class<Instance<?>> INSTANCE_TYPE = new TypeLiteral<Instance<?>>() {}.getRawType();
+   @SuppressWarnings("serial")
    private static final Class<Provider<?>> PROVIDER_TYPE = new TypeLiteral<Provider<?>>() {}.getRawType();
-   private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(INSTANCE_TYPE, PROVIDER_TYPE, Object.class);
+   private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet( INSTANCE_TYPE, PROVIDER_TYPE, Object.class );
    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(AnyLiteral.INSTANCE);
    
    public InstanceBean(BeanManagerImpl manager)
@@ -68,7 +70,7 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    @Override
    protected Instance<?> newInstance(InjectionPoint injectionPoint)
    {
-      return InstanceImpl.of(injectionPoint, getManager());
+      return InstanceImpl.of(injectionPoint, getBeanManager());
    }
    
    @Override

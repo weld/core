@@ -34,7 +34,7 @@ import org.jboss.weld.util.collections.Arrays2;
 public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint>
 {
    
-   private static final Set<Type> TYPES = Arrays2.<Type>asSet(InjectionPoint.class, Object.class);
+   private static final Set<Type> TYPES = Arrays2.<Type>asSet( InjectionPoint.class, Object.class );
 
    /**
     * Creates an InjectionPoint Web Bean for the injection of the containing bean owning
@@ -52,7 +52,7 @@ public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint>
 
    public InjectionPoint create(CreationalContext<InjectionPoint> creationalContext)
    {
-      return getManager().getCurrentInjectionPoint();
+      return getBeanManager().getCurrentInjectionPoint();
    }
    
    public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) 

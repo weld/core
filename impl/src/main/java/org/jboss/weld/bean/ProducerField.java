@@ -47,12 +47,12 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     * 
     * @param field The underlying method abstraction
     * @param declaringBean The declaring bean abstraction
-    * @param manager the current manager
+    * @param beanManager the current manager
     * @return A producer field
     */
-   public static <X, T> ProducerField<X, T> of(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   public static <X, T> ProducerField<X, T> of(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
    {
-      return new ProducerField<X, T>(field, declaringBean, manager);
+      return new ProducerField<X, T>(field, declaringBean, beanManager);
    }
 
    /**

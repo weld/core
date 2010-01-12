@@ -31,7 +31,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author pmuir
  *
  */
-// TODO Move out of built in
 public class ExtensionBean extends AbstractBuiltInBean<Extension>
 {
    
