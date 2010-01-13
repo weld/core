@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Weld" verbose="0"  >
+<suite name="Weld" verbose="0">
 
    <test name="Weld">
       <method-selectors>
