@@ -89,5 +89,16 @@ public class ExtensionTest extends AbstractWeldTest
       assert !otherObserver.isAllAfterDeploymentValidation(); 
       
    }
+   
+   @Test
+   public void testInjectionTargetWrapped()
+   {
+      getCurrentManager().getInstanceByType(Capercaillie.class);
+      assert Woodland.isPostConstructCalled();
+      assert WoodlandExtension.isInjectCalled();
+      assert WoodlandExtension.isPostConstructCalled();
+      assert WoodlandExtension.isPreDestroyCalled();
+      assert WoodlandExtension.isProduceCalled();
+   }
 
 }
