@@ -11,6 +11,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 
@@ -58,16 +59,27 @@ public abstract class AbstractContainerEvent
    
    protected void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
-      // Collect all observers to remove dupes
-      Set<ObserverMethod<Object>> observers = new HashSet<ObserverMethod<Object>>();
-      Type eventType = new ParameterizedTypeImpl(getRawType(), getEmptyTypeArray(), null);
-      for (BeanDeployment beanDeployment : beanDeployments.values())
+      try
       {
-         observers.addAll(beanDeployment.getBeanManager().resolveObserverMethods(eventType));
+         // Collect all observers to remove dupes
+         Set<ObserverMethod<Object>> observers = new HashSet<ObserverMethod<Object>>();
+         Type eventType = new ParameterizedTypeImpl(getRawType(), getEmptyTypeArray(), null);
+         for (BeanDeployment beanDeployment : beanDeployments.values())
+         {
+            observers.addAll(beanDeployment.getBeanManager().resolveObserverMethods(eventType));
+         }
+         for (ObserverMethod<Object> observerMethod : observers)
+         {
+            observerMethod.notify(this);
+         }
       }
-      for (ObserverMethod<Object> observerMethod : observers)
+      catch (Exception e) 
       {
-         observerMethod.notify(this);
+         getErrors().add(e);
+      }
+      if (!getErrors().isEmpty())
+      {
+         throw new DeploymentException(getErrors());
       }
    }
 
