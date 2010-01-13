@@ -33,7 +33,6 @@ import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
 import org.jboss.weld.exceptions.ForbiddenArgumentException;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
@@ -278,17 +277,6 @@ public class Proxies
          }
       }
    }
-
-   /**
-    * Indicates if an instance is a Javassist proxy
-    * 
-    * @param instance The instance to examine
-    * @return True if proxy, false otherwise
-    */
-   public static boolean isProxy(Object instance)
-   {
-      return instance.getClass().getName().indexOf("_$$_javassist_") > 0;
-   }
    
    public static ProxyFactory attachMethodHandler(ProxyFactory proxyFactory, MethodHandler methodHandler)
    {
@@ -314,30 +302,6 @@ public class Proxies
          throw new ForbiddenArgumentException(INSTANCE_NOT_A_PROXY, instance);
       }
       
-   }
-   
-   public static void clean(Class<?> clazz)
-   {
-      if (!ProxyObject.class.isAssignableFrom(clazz))
-      {
-         throw new ForbiddenArgumentException(INSTANCE_NOT_A_PROXY, clazz);
-      }
-      else
-      {
-         // Clear the default handler
-         try
-         {
-            SecureReflections.getDeclaredField(clazz, DEFAULT_INTERCEPTOR).set(null, null);
-         }
-         catch (IllegalAccessException e)
-         {
-            throw new WeldException(e);
-         }
-         catch (NoSuchFieldException e)
-         {
-            throw new WeldException(e);
-         }
-      }
    }
 
 

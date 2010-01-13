@@ -34,7 +34,7 @@ public class Types
     */
    public static Type boxedType(Type type)
    {
-      if (type instanceof Class)
+      if (type instanceof Class<?>)
       {
          return boxedClass((Class<?>) type);
       }

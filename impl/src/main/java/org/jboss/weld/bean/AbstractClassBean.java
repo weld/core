@@ -29,6 +29,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
 
+import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,7 +75,6 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Strings;
 import org.jboss.weld.util.Proxies.TypeInfo;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
@@ -392,7 +392,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    @Override
    protected String getDefaultName()
    {
-      String name = Strings.decapitalize(getWeldAnnotated().getSimpleName());
+      String name = Introspector.decapitalize(getWeldAnnotated().getSimpleName());
       return name;
    }
 
