@@ -16,7 +16,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractWeldTest
    @Test(description="WELD-290")
    public void testSLSBInjectedIntoPassivatingManagedBean()
    {
-      SimpleBean bean = getCurrentManager().getInstanceByType(SimpleBean.class);
+      SimpleBean bean = getReference(SimpleBean.class);
       assert bean.getMessage().equals("This is my message from my stateless bean");
       
    }

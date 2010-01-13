@@ -19,14 +19,14 @@ public class ExtensionTest extends AbstractWeldTest
    public void testExtensionInjectableAsBean()
    {
       assert SimpleExtension.getInstance() != null;
-      assert getCurrentManager().getInstanceByType(SimpleExtension.class).equals(SimpleExtension.getInstance());
+      assert getReference(SimpleExtension.class).equals(SimpleExtension.getInstance());
    }
    
    @Test(description="WELD-243")
    public void testContainerEventsOnlySentToExtensionBeans()
    {
-      ExtensionObserver extensionObserver = getCurrentManager().getInstanceByType(ExtensionObserver.class);
-      OtherObserver otherObserver = getCurrentManager().getInstanceByType(OtherObserver.class);
+      ExtensionObserver extensionObserver = getReference(ExtensionObserver.class);
+      OtherObserver otherObserver = getReference(OtherObserver.class);
       
       assert extensionObserver.isBeforeBeanDiscovery();
       assert extensionObserver.isAllBeforeBeanDiscovery();
@@ -93,7 +93,7 @@ public class ExtensionTest extends AbstractWeldTest
    @Test
    public void testInjectionTargetWrapped()
    {
-      getCurrentManager().getInstanceByType(Capercaillie.class);
+      getReference(Capercaillie.class);
       assert Woodland.isPostConstructCalled();
       assert WoodlandExtension.isInjectCalled();
       assert WoodlandExtension.isPostConstructCalled();

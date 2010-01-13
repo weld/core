@@ -14,10 +14,10 @@ public class ParameterizedProducerTest extends AbstractWeldTest
    @Test
    public void testParameterizedListInjection()
    {
-      List<String> strings = createContextualInstance(Target.class).getStringList();
+      List<String> strings = getReference(Target.class).getStringList();
       assert strings.size() == 2;
 
-      ParameterizedListInjection item = getCurrentManager().getInstanceByType(ParameterizedListInjection.class);
+      ParameterizedListInjection item = getReference(ParameterizedListInjection.class);
       assert item.getFieldInjection().size() == 2;
       assert item.getValue().size() == 2;
       assert item.getSetterInjection().size() == 2;
@@ -27,10 +27,10 @@ public class ParameterizedProducerTest extends AbstractWeldTest
    @Test
    public void testParameterizedCollectionInjection()
    {
-      Collection<String> strings = createContextualInstance(Target.class).getStrings();
+      Collection<String> strings = getReference(Target.class).getStrings();
       assert strings.size() == 2;
 
-      ParameterizedCollectionInjection item = getCurrentManager().getInstanceByType(ParameterizedCollectionInjection.class);
+      ParameterizedCollectionInjection item = getReference(ParameterizedCollectionInjection.class);
       assert item.getFieldInjection().size() == 2;
       assert item.getValue().size() == 2;
       assert item.getSetterInjection().size() == 2;
@@ -40,10 +40,10 @@ public class ParameterizedProducerTest extends AbstractWeldTest
    @Test
    public void testIntegerCollectionInjection()
    {
-      Collection<Integer> integers = createContextualInstance(Target.class).getIntegers();
+      Collection<Integer> integers = getReference(Target.class).getIntegers();
       assert integers.size() == 4;
 
-      IntegerCollectionInjection item = getCurrentManager().getInstanceByType(IntegerCollectionInjection.class);
+      IntegerCollectionInjection item = getReference(IntegerCollectionInjection.class);
       assert item.getFieldInjection().size() == 4;
       assert item.getValue().size() == 4;
       assert item.getSetterInjection().size() == 4;
@@ -53,14 +53,14 @@ public class ParameterizedProducerTest extends AbstractWeldTest
    @Test
    public void testInstanceList()
    {
-        ListInstance listInstance = getCurrentManager().getInstanceByType(ListInstance.class);
+        ListInstance listInstance = getReference(ListInstance.class);
         assert listInstance.get().isAmbiguous();
    }
    
    @Test
    public void testTypeParameterInstance()
    {
-        ListStringInstance listInstance = getCurrentManager().getInstanceByType(ListStringInstance.class);
+        ListStringInstance listInstance = getReference(ListStringInstance.class);
         assert listInstance.get().size() == 2;
    }
 }

@@ -47,7 +47,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractWeldTest
    @Test(groups = { "enterpriseBeans", "clientProxy", "lifecycle", "integration" })
    public void testCreateSFSB()
    {
-      GrossStadt frankfurt = getCurrentManager().getInstanceByType(GrossStadt.class);
+      GrossStadt frankfurt = getReference(GrossStadt.class);
       Bean<KleinStadt> stadtBean = getBean(KleinStadt.class);
       assert stadtBean != null : "Expected a bean for stateful session bean Kassel";
       CreationalContext<KleinStadt> creationalContext = new MockCreationalContext<KleinStadt>();
@@ -74,7 +74,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractWeldTest
    @Test(groups = { "enterpriseBeans", "clientProxy", "lifecycle", "integration" })
    public void testDestroyRemovesSFSB() throws Exception
    {
-      GrossStadt frankfurt = getCurrentManager().getInstanceByType(GrossStadt.class);
+      GrossStadt frankfurt = getReference(GrossStadt.class);
       Bean<KleinStadt> stadtBean = getBean(KleinStadt.class);
       assert stadtBean != null : "Expected a bean for stateful session bean Kassel";
       RequestContext requestContext = Container.instance().services().get(ContextLifecycle.class).getRequestContext();

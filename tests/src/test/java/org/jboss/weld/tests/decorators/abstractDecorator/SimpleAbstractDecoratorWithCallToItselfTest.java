@@ -35,7 +35,7 @@ public class SimpleAbstractDecoratorWithCallToItselfTest extends AbstractWeldTes
    public void testAbstractDecoratorApplied()
    {
 
-      Window window = getCurrentManager().getInstanceByType(WindowImpl.class);
+      Window window = getReference(WindowImpl.class);
 
       resetAll();
       window.move();

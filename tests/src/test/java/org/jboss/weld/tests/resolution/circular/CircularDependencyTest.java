@@ -11,7 +11,7 @@ public class CircularDependencyTest extends AbstractWeldTest
    @Test
    public void testCircularInjectionOnTwoSimpleDependentBeans() throws Exception
    {
-      getCurrentManager().getInstanceByType(Foo.class).getName();
+      getReference(Foo.class).getName();
       assert Foo.success;
       assert Bar.success;
    }
@@ -19,13 +19,13 @@ public class CircularDependencyTest extends AbstractWeldTest
    @Test
    public void testDependentProducerMethodDeclaredOnDependentBeanWhichInjectsProducedBean() throws Exception
    {
-      getCurrentManager().getInstanceByType(DependentSelfConsumingDependentProducer.class).ping();
+      getReference(DependentSelfConsumingDependentProducer.class).ping();
    }
    
    @Test
    public void testDependentSelfConsumingProducer() throws Exception
    {
-      getCurrentManager().getInstanceByType(Violation.class).ping();
+      getReference(Violation.class).ping();
    }
 
 }

@@ -15,13 +15,9 @@
  * limitations under the License.
  */
 package org.jboss.weld.jsf;
+import static org.jboss.weld.jsf.JsfHelper.getConversationId;
 
-import static org.jboss.weld.jsf.JsfHelper.getModuleBeanManager;
-
-import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.context.FacesContext;
-
-import org.jboss.weld.conversation.ConversationIdName;
 
 /**
  * Helper class for preparing JSF URLs which include the conversation id.
@@ -50,7 +46,7 @@ public class FacesUrlTransformer
 
    public FacesUrlTransformer appendConversationIdIfNecessary(String cid)
    {
-      String cidParamName = getModuleBeanManager(context).getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>(){});
+      String cidParamName = getConversationId(context);
       int queryStringIndex = url.indexOf(QUERY_STRING_DELIMITER);
       // if there is no query string or there is a query string but the cid param is absent, then append it
       if (queryStringIndex < 0 || url.indexOf(cidParamName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0)

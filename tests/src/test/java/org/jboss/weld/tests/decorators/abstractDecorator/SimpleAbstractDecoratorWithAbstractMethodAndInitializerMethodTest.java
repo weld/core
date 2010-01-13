@@ -35,7 +35,7 @@ public class SimpleAbstractDecoratorWithAbstractMethodAndInitializerMethodTest e
    public void testAbstractDecoratorApplied()
    {
 
-      Window window = getCurrentManager().getInstanceByType(WindowImpl.class);
+      Window window = getReference(WindowImpl.class);
 
       resetAll();
       window.draw();

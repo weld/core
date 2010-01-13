@@ -18,7 +18,7 @@ public class ResourceCircularDependencyTest extends AbstractWeldTest
    @Test
    public void testResourceProducerField() throws Exception
    {
-      assert getCurrentManager().getInstanceByType(Baz.class).getFooDb().isOpen();
+      assert getReference(Baz.class).getFooDb().isOpen();
       assert true;
    }
 

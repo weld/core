@@ -8,6 +8,7 @@ import org.jboss.weld.mock.MockBeanDeploymentArchive;
 import org.jboss.weld.mock.MockDeployment;
 import org.jboss.weld.mock.MockServletLifecycle;
 import org.jboss.weld.mock.TestContainer;
+import org.jboss.weld.test.Utils;
 import org.testng.annotations.Test;
 
 public class TransitiveResolutionTest
@@ -116,7 +117,7 @@ public class TransitiveResolutionTest
       assert warBeanManager.getBeans(Foo.class).size() == 1;
       assert ejbJarBeanManager.getBeans(Foo.class).size() == 1;
       assert ejbJarBeanManager.getBeans(Bar.class).size() == 0;
-      Bar bar = warBeanManager.getInstanceByType(Bar.class);
+      Bar bar = Utils.getReference(warBeanManager, Bar.class);
       assert bar.getFoo() != null;
       assert bar.getBeanManager() != null;
       assert bar.getBeanManager().equals(warBeanManager);

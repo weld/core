@@ -9,6 +9,7 @@ import org.jboss.weld.mock.AbstractMockDeployment;
 import org.jboss.weld.mock.MockBeanDeploymentArchive;
 import org.jboss.weld.mock.MockServletLifecycle;
 import org.jboss.weld.mock.TestContainer;
+import org.jboss.weld.test.Utils;
 import org.jboss.weld.util.serviceProvider.PackageServiceLoaderFactory;
 import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.testng.annotations.Test;
@@ -61,7 +62,7 @@ public class NonBdaExtensionTest
       BeanManagerImpl beanManager1 = container.getBeanManager();
       BeanManagerImpl beanManager2 = container.getLifecycle().getBootstrap().getManager(bda2);
       
-      Observer1 observer1 = beanManager1.getInstanceByType(Observer1.class);
+      Observer1 observer1 = Utils.getReference(beanManager1, Observer1.class);
       assert observer1.isBeforeBeanDiscoveryCalled();
       assert observer1.getBeforeBeanDiscoveryBeanManager().equals(beanManager1);
       assert observer1.isAfterBeanDiscoveryCalled();
@@ -74,7 +75,7 @@ public class NonBdaExtensionTest
       // Also check that the accessibility graph has been updated
       assert beanManager1.getBeans(Observer2.class).size() == 1;
       
-      Observer2 observer2 = beanManager2.getInstanceByType(Observer2.class);
+      Observer2 observer2 = Utils.getReference(beanManager2, Observer2.class);
       assert observer2.isBeforeBeanDiscoveryCalled();
       assert observer2.getBeforeBeanDiscoveryBeanManager().equals(beanManager2);
       assert observer2.isAfterBeanDiscoveryCalled();
@@ -129,8 +130,8 @@ public class NonBdaExtensionTest
       // Get the bean manager for bda1 and bda2
       BeanManagerImpl beanManager1 = container.getBeanManager();
       
-      CountingObserver1 observer1 = beanManager1.getInstanceByType(CountingObserver1.class);
-      CountingObserver2 observer2 = beanManager1.getInstanceByType(CountingObserver2.class);
+      CountingObserver1 observer1 = Utils.getReference(beanManager1, CountingObserver1.class);
+      CountingObserver2 observer2 = Utils.getReference(beanManager1, CountingObserver2.class);
       assert observer1.getBeforeBeanDiscovery() == 1;
       assert observer1.getProcessFooManagedBean() == 1;
       assert observer1.getProcessBarManagedBean() == 0;

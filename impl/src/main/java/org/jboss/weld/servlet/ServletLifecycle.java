@@ -23,7 +23,8 @@
 package org.jboss.weld.servlet;
 
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_SCOPE_BEAN_STORE_MISSING;
-import static org.jboss.weld.servlet.ServletHelper.getModuleBeanManager;
+import static org.jboss.weld.servlet.BeanProvider.conversationManager;
+import static org.jboss.weld.servlet.BeanProvider.httpSessionManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -73,7 +74,7 @@ public class ServletLifecycle
     */
    public void endSession(HttpSession session)
    {
-      ConversationManager conversationManager = getModuleBeanManager(session.getServletContext()).getInstanceByType(ConversationManager.class);
+      ConversationManager conversationManager = conversationManager(session.getServletContext());
       if (lifecycle.getSessionContext().isActive())
       {
          conversationManager.destroyAllConversations();
@@ -111,7 +112,7 @@ public class ServletLifecycle
       lifecycle.restoreSession(session == null ? "Inactive session" : session.getId(), sessionBeanStore);
       if (session != null)
       {
-         getModuleBeanManager(session.getServletContext()).getInstanceByType(HttpSessionManager.class).setSession(session);
+         httpSessionManager(session.getServletContext()).setSession(session);
       }
       return sessionBeanStore;
    }
@@ -120,7 +121,7 @@ public class ServletLifecycle
    {
       BeanStore beanStore = new HttpSessionBeanStore(session);
       lifecycle.restoreSession(session.getId(), beanStore);
-      getModuleBeanManager(session.getServletContext()).getInstanceByType(HttpSessionManager.class).setSession(session);
+      httpSessionManager(session.getServletContext()).setSession(session);
       return beanStore;
    }
 

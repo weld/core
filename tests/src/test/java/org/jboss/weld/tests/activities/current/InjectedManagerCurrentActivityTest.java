@@ -60,7 +60,7 @@ public class InjectedManagerCurrentActivityTest extends AbstractWeldTest
       assert getBeans(Cow.class).size() == 1;
       WeldManager childActivity = getCurrentManager().createActivity();
       childActivity.setCurrent(dummyContext.getScope());
-      assert createContextualInstance(Horse.class).getManager().equals(childActivity);
+      assert getReference(Horse.class).getManager().equals(childActivity);
    }
 
 }

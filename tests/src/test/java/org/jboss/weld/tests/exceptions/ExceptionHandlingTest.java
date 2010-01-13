@@ -16,7 +16,7 @@ public class ExceptionHandlingTest extends AbstractWeldTest
    {
       try
       {
-         getCurrentManager().getInstanceByType(Lorry_Broken.class);
+         getReference(Lorry_Broken.class);
       }
       catch (Exception e) 
       {
@@ -33,7 +33,7 @@ public class ExceptionHandlingTest extends AbstractWeldTest
    {
       try
       {
-         getCurrentManager().getInstanceByType(Ship.class, new AnnotationLiteral<Large>() {});
+         getReference(Ship.class, new AnnotationLiteral<Large>() {});
       }
       catch (Exception e) 
       {

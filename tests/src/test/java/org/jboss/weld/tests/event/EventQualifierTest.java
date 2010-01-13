@@ -11,7 +11,7 @@ public class EventQualifierTest extends AbstractWeldTest
    @Test(description="WELD-226")
    public void testDefaultQualifierNotRequired()
    {
-      Bar bar = getCurrentManager().getInstanceByType(Bar.class);
+      Bar bar = getReference(Bar.class);
       bar.fireWithNoQualifiers();
       assert bar.isUnqualifiedObserved();
       assert !bar.isUpdatedObserved();

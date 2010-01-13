@@ -18,6 +18,7 @@ import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.testharness.impl.packaging.Resource;
 import org.jboss.weld.test.AbstractWeldTest;
+import org.jboss.weld.test.Utils;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -32,41 +33,41 @@ public class EEResourceProducerFieldPassivationCapableTest extends AbstractWeldT
    @Test
    public void testResource() throws Throwable
    {
-      UserTransaction userTransaction = getCurrentManager().getInstanceByType(UserTransaction.class, PRODUCED);
-      UserTransaction userTransaction1 = deserialize(serialize(userTransaction));
+      UserTransaction userTransaction = getReference(UserTransaction.class, PRODUCED);
+      UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction));
       assert checkUserTransaction(userTransaction1);
    }
    
    @Test
    public void testEntityManager() throws Throwable
    {
-      EntityManager entityManager = getCurrentManager().getInstanceByType(EntityManager.class, PRODUCED);
-      EntityManager entityManager1 = deserialize(serialize(entityManager));
+      EntityManager entityManager = getReference(EntityManager.class, PRODUCED);
+      EntityManager entityManager1 = Utils.deserialize(Utils.serialize(entityManager));
       assert checkEntityManager(entityManager1);
    }
    
    @Test
    public void testEntityManagerFactory() throws Throwable
    {
-      EntityManagerFactory entityManagerFactory = getCurrentManager().getInstanceByType(EntityManagerFactory.class, PRODUCED);
-      EntityManagerFactory entityManagerFactory1 = deserialize(serialize(entityManagerFactory));
+      EntityManagerFactory entityManagerFactory = getReference(EntityManagerFactory.class, PRODUCED);
+      EntityManagerFactory entityManagerFactory1 = Utils.deserialize(Utils.serialize(entityManagerFactory));
       assert checkEntityManagerFactory(entityManagerFactory1);
    }
    
    @Test
    public void testRemoteEjb() throws Throwable
    {
-      HorseRemote horse = getCurrentManager().getInstanceByType(HorseRemote.class, PRODUCED);
-      HorseRemote horse1 = deserialize(serialize(horse));
+      HorseRemote horse = getReference(HorseRemote.class, PRODUCED);
+      HorseRemote horse1 = Utils.deserialize(Utils.serialize(horse));
       assert checkRemoteEjb(horse1);
    }
    
    @Test
    public void testAllOnBean() throws Throwable
    {
-      EEResourceConsumer consumer = getCurrentManager().getInstanceByType(EEResourceConsumer.class);
+      EEResourceConsumer consumer = getReference(EEResourceConsumer.class);
       consumer.check();
-      EEResourceConsumer consumer1 = deserialize(serialize(consumer));
+      EEResourceConsumer consumer1 = Utils.deserialize(Utils.serialize(consumer));
       consumer1.check();
    }
 

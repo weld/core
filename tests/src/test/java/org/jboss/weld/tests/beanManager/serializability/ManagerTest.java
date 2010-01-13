@@ -16,6 +16,7 @@ import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.AbstractWeldTest;
+import org.jboss.weld.test.Utils;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -99,7 +100,7 @@ public class ManagerTest extends AbstractWeldTest
    public void testRootManagerSerializability() throws Exception
    {
       String rootManagerId = getCurrentManager().getId();
-      BeanManagerImpl deserializedRootManager = (BeanManagerImpl) deserialize(serialize(getCurrentManager()));
+      BeanManagerImpl deserializedRootManager = (BeanManagerImpl) Utils.deserialize(Utils.serialize(getCurrentManager()));
       assert deserializedRootManager.getId().equals(rootManagerId);
       assert getCurrentManager().getBeans(Foo.class).size() == 1;
       assert deserializedRootManager.getBeans(Foo.class).size() == 1;
@@ -113,7 +114,7 @@ public class ManagerTest extends AbstractWeldTest
       Bean<?> dummyBean = new DummyBean();
       childManager.addBean(dummyBean);
       String childManagerId = childManager.getId();
-      BeanManagerImpl deserializedChildManager = (BeanManagerImpl) deserialize(serialize(childManager));
+      BeanManagerImpl deserializedChildManager = (BeanManagerImpl) Utils.deserialize(Utils.serialize(childManager));
       assert deserializedChildManager.getId().equals(childManagerId);
       assert childManager.getBeans(Dummy.class).size() == 1;
       assert deserializedChildManager.getBeans(Dummy.class).size() == 1;

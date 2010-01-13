@@ -36,7 +36,7 @@ public class ScopeTest extends AbstractWeldTest
       assert getReference(specialTempBean).getNumber() == 10;
       assert getReference(uselessTempBean).getNumber() == 11;
       
-      TempConsumer tempConsumer = createContextualInstance(TempConsumer.class);
+      TempConsumer tempConsumer = getReference(TempConsumer.class);
       tempConsumer.getSpecialTemp().setNumber(101);
       tempConsumer.getUselessTemp().setNumber(102);
       

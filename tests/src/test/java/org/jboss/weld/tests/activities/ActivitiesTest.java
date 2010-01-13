@@ -271,7 +271,7 @@ public class ActivitiesTest extends AbstractWeldTest
          }
 
             });
-      createContextualInstance(Field.class).get();
+      getReference(Field.class).get();
    }
 
    @Test

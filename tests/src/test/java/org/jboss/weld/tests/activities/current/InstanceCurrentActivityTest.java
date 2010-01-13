@@ -161,7 +161,7 @@ public class InstanceCurrentActivityTest extends AbstractWeldTest
       BeanManagerImpl childActivity = getCurrentManager().createActivity();
       childActivity.addBean(new Daisy(childActivity));
       childActivity.setCurrent(dummyContext.getScope());
-      assert createContextualInstance(Field.class).get() != null;
+      assert getReference(Field.class).get() != null;
    }
 
 }

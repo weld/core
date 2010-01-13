@@ -31,7 +31,7 @@ public class GenericBeanTest extends AbstractWeldTest
    @Test
    public void testGenericBean()
    {
-      TestBean testBean = getCurrentManager().getInstanceByType(TestBean.class);
+      TestBean testBean = getReference(TestBean.class);
       assert "Hello".equals(testBean.echo("Hello"));
       assert Integer.valueOf(1).equals(testBean.echo(1));
       Subclass subclassInstance = new Subclass();

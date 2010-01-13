@@ -13,7 +13,7 @@ public class ParameterizedTypeScopedTest extends AbstractWeldTest
    @Test
    public void testStringList()
    {
-      List<String> str = createContextualInstance(StringHolder.class).getStrings();
+      List<String> str = getReference(StringHolder.class).getStrings();
       assert str.size() == 2;
    }
 }

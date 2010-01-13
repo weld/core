@@ -30,9 +30,9 @@ public class ContextualReferenceTest extends AbstractWeldTest
 {
    @Test(groups = "broken")
    public void testReferencesEqual() {
-      Sheep sheep = getCurrentManager().getInstanceByType(Sheep.class);
+      Sheep sheep = getReference(Sheep.class);
       sheep.setAge(10);
-      Sheep sheep2 = getCurrentManager().getInstanceByType(Sheep.class);
+      Sheep sheep2 = getReference(Sheep.class);
       assert sheep.getAge() == sheep2.getAge();
       assert sheep.equals(sheep2);
    }

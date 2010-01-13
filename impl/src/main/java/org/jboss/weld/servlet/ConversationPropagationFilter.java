@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.servlet.ServletHelper.getModuleBeanManager;
+import static org.jboss.weld.servlet.BeanProvider.conversation;
+import static org.jboss.weld.servlet.BeanProvider.conversationManager;
 
 import java.io.IOException;
 
-import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -33,9 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import org.jboss.weld.conversation.ConversationIdName;
 import org.jboss.weld.conversation.ConversationImpl;
-import org.jboss.weld.conversation.ConversationManager;
 import org.jboss.weld.jsf.FacesUrlTransformer;
 
 /**
@@ -79,12 +77,11 @@ public class ConversationPropagationFilter implements Filter
          @Override
          public void sendRedirect(String path) throws IOException
          {
-            ConversationImpl conversation = getModuleBeanManager(ctx) .getInstanceByType(ConversationImpl.class);
+            ConversationImpl conversation = conversation(ctx);
             if (!conversation.isTransient())
             {
-               String cidParamName = getModuleBeanManager(ctx).getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>(){});
                path = new FacesUrlTransformer(path, FacesContext.getCurrentInstance()).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversation.getUnderlyingId()).encode();
-               getModuleBeanManager(ctx).getInstanceByType(ConversationManager.class).cleanupConversation();
+               conversationManager(ctx).cleanupConversation();
             }
             super.sendRedirect(path);
          }

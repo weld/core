@@ -10,12 +10,12 @@ public class ExampleTest extends AbstractWeldTest
    @Test
    public void testGameGenerator() throws Exception 
    {
-     Game game1 = getCurrentManager().getInstanceByType(Game.class);
-     Game game2 = getCurrentManager().getInstanceByType(Game.class);
+     Game game1 = getReference(Game.class);
+     Game game2 = getReference(Game.class);
      assert game1!=game2;
      assert game1.getNumber()!=game2.getNumber();
-     Generator gen1 = getCurrentManager().getInstanceByType(Generator.class);
-     Generator gen2 = getCurrentManager().getInstanceByType(Generator.class);
+     Generator gen1 = getReference(Generator.class);
+     Generator gen2 = getReference(Generator.class);
      assert gen1.getRandom()!=null;
      assert gen1.getRandom()==gen2.getRandom();
    }
@@ -24,7 +24,7 @@ public class ExampleTest extends AbstractWeldTest
    public void testSentenceTranslator() throws Exception 
    {
       
-      TextTranslator tt1 = getCurrentManager().getInstanceByType(TextTranslator.class);
+      TextTranslator tt1 = getReference(TextTranslator.class);
       try 
       {
          tt1.translate("hello world");

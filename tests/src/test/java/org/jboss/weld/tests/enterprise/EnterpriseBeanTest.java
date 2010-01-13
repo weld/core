@@ -7,6 +7,7 @@ import org.jboss.testharness.impl.packaging.IntegrationTest;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.weld.test.AbstractWeldTest;
+import org.jboss.weld.test.Utils;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -26,7 +27,7 @@ public class EnterpriseBeanTest extends AbstractWeldTest
    {
       try
       {
-         getCurrentManager().getInstanceByType(Fedora.class).causeRuntimeException();
+         getReference(Fedora.class).causeRuntimeException();
       }
       catch (Throwable t)
       {
@@ -43,11 +44,11 @@ public class EnterpriseBeanTest extends AbstractWeldTest
    {
       try
       {
-         getCurrentManager().getInstanceByType(Fedora.class).causeRuntimeException();
+         getReference(Fedora.class).causeRuntimeException();
       }
       catch (Throwable t) 
       {
-         if (isExceptionInHierarchy(t, BowlerHatException.class))
+         if (Utils.isExceptionInHierarchy(t, BowlerHatException.class))
          {
             return;
          }

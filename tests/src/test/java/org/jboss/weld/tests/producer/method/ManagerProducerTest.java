@@ -11,7 +11,7 @@ public class ManagerProducerTest extends AbstractWeldTest
    public void testInjectManagerProducer()
    {
       ManagerProducer.setInjectionPointInjected(false);
-      getCurrentManager().getInstanceByType(IntInjection.class);
+      getReference(IntInjection.class);
       assert ManagerProducer.isInjectionPointInjected();
    }
 

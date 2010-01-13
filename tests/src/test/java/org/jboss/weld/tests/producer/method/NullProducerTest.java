@@ -11,7 +11,7 @@ public class NullProducerTest extends AbstractWeldTest
    @Test(description="WBRI-276")
    public void testProducerMethodReturnsNull()
    {
-      getCurrentManager().getInstanceByType(Government.class).destabilize();
+      getReference(Government.class).destabilize();
    }
 
 }

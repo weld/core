@@ -33,7 +33,6 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_
 import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_TYPE;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -870,31 +869,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
          WeldAnnotated<?, ?> element = ResolvableWeldClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this);
          Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
          return getReference(injectionPoint, resolvedBean, creationalContext);
-   }
-
-   /**
-    * Returns an instance by API type and binding types
-    * 
-    * @param beanType The API type to match
-    * @param bindings The binding types to match
-    * @return An instance of the bean
-    * 
-    */
-   @Deprecated
-   public <T> T getInstanceByType(Class<T> beanType, Annotation... bindings)
-   {
-      Set<Bean<?>> beans = getBeans(beanType, bindings);
-      Bean<?> bean = resolve(beans);
-      if (bean == null)
-      {
-         throw new UnsatisfiedResolutionException(UNRESOLVABLE_TYPE, beanType, Arrays.toString(bindings)); 
-      }
-      Object reference = getReference(bean, beanType, createCreationalContext(bean));
-      
-      @SuppressWarnings("unchecked")
-      T instance = (T) reference;
-      
-      return instance;
    }
 
    public <T> Bean<T> getBean(WeldAnnotated<T, ?> element, Annotation... bindings)

@@ -49,7 +49,7 @@ public class SimpleEventTest extends AbstractWeldTest
    @Test
    public void testFireEventOnEvent()
    {
-      App app = createContextualInstance(App.class);
+      App app = getReference(App.class);
       
       initFlags();
       

@@ -35,7 +35,7 @@ public class SimpleAbstractDecoratorWithAbstractMethodTest extends AbstractWeldT
    public void testAbstractDecoratorApplied()
    {
 
-      Window window = getCurrentManager().getInstanceByType(WindowImpl.class);
+      Window window = getReference(WindowImpl.class);
 
       resetAll();
       window.draw();

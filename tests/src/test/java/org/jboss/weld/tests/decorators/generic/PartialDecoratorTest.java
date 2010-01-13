@@ -33,7 +33,7 @@ public class PartialDecoratorTest extends AbstractWeldTest
    @Test
    public void testDecoratorDoesNotDecorateOutsideDecoratedTypes()
    {
-      TestBean testBean = getCurrentManager().getInstanceByType(TestBean.class);
+      TestBean testBean = getReference(TestBean.class);
       testBean.invoke();
 
       assert PartialDecorator.decoratedInvoked;

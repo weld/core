@@ -17,7 +17,7 @@ public class StackOverFlowTest extends AbstractWeldTest
    @Test(description="WELD-296")
    public void test()
    {
-      getCurrentManager().getInstanceByType(PaymentService.class, new AnnotationLiteral<SimpleService>() {}).pay("Pete", new BigDecimal(100));
+      getReference(PaymentService.class, new AnnotationLiteral<SimpleService>() {}).pay("Pete", new BigDecimal(100));
    }
 
 }

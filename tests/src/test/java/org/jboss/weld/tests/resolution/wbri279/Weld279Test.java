@@ -31,7 +31,7 @@ public class Weld279Test extends AbstractWeldTest
    @Test(description="WELD-279")
    public void testLookupOfGenericTypeSubclass()
    {
-      assert createContextualInstance(SomeBean.class).getObjectAsString().equals(IntegerFactory.VALUE.toString());
+      assert getReference(SomeBean.class).getObjectAsString().equals(IntegerFactory.VALUE.toString());
    }
 
 }

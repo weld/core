@@ -5,6 +5,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.test.AbstractWeldTest;
+import org.jboss.weld.test.Utils;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -14,11 +15,11 @@ public class InjectionPointTest extends AbstractWeldTest
    @Test(description="WELD-239")
    public void testCorrectInjectionPointUsed()
    {
-      getCurrentManager().getInstanceByType(IntConsumer.class).ping();
+      getReference(IntConsumer.class).ping();
       
       try
       {
-         getCurrentManager().getInstanceByType(DoubleConsumer.class).ping();
+         getReference(DoubleConsumer.class).ping();
       }
       catch (IllegalProductException e)
       {
@@ -29,11 +30,11 @@ public class InjectionPointTest extends AbstractWeldTest
    @Test(description="WELD-316")
    public void testFieldInjectionPointSerializability() throws Throwable
    {
-      getCurrentManager().getInstanceByType(StringConsumer.class).ping();
+      getReference(StringConsumer.class).ping();
       InjectionPoint ip = StringGenerator.getInjectionPoint();
       assert ip != null;
       assert ip.getMember().getName().equals("str");
-      InjectionPoint ip1 = deserialize(serialize(ip));
+      InjectionPoint ip1 = Utils.deserialize(Utils.serialize(ip));
       assert ip1.getMember().getName().equals("str");
    }
 

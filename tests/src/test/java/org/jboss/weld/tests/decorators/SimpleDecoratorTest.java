@@ -17,7 +17,7 @@ public class SimpleDecoratorTest extends AbstractWeldTest
    @Test
    public void testSimpleDecorator()
    {
-      SimpleBean simpleBean = getCurrentManager().getInstanceByType(SimpleBean.class);
+      SimpleBean simpleBean = getReference(SimpleBean.class);
       
       resetDecorators();
       assert simpleBean.echo1(1) == 1;

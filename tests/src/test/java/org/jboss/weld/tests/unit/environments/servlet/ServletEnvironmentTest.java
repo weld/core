@@ -13,6 +13,7 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.MockServletLifecycle;
 import org.jboss.weld.mock.TestContainer;
+import org.jboss.weld.test.Utils;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -46,7 +47,7 @@ public class ServletEnvironmentTest
       Map<Class<?>, Bean<?>> beans = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
-         if (bean instanceof RIBean)
+         if (bean instanceof RIBean<?>)
          {
             beans.put(((RIBean<?>) bean).getType(), bean);
          }
@@ -56,11 +57,11 @@ public class ServletEnvironmentTest
       assert beans.containsKey(SeaBass.class);
       assert beans.containsKey(Sole.class);
       
-      assert beans.get(Tuna.class) instanceof ManagedBean;
-      assert beans.get(Salmon.class) instanceof ManagedBean;
-      assert beans.get(SeaBass.class) instanceof ManagedBean;
-      assert beans.get(Sole.class) instanceof ManagedBean;
-      manager.getInstanceByType(Sole.class, new AnnotationLiteral<Whitefish>() {}).ping();
+      assert beans.get(Tuna.class) instanceof ManagedBean<?>;
+      assert beans.get(Salmon.class) instanceof ManagedBean<?>;
+      assert beans.get(SeaBass.class) instanceof ManagedBean<?>;
+      assert beans.get(Sole.class) instanceof ManagedBean<?>;
+      Utils.getReference(manager, Sole.class, new AnnotationLiteral<Whitefish>() {}).ping();
    }
    
    @Test
@@ -69,7 +70,7 @@ public class ServletEnvironmentTest
       Map<Class<?>, Bean<?>> beans = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
-         if (bean instanceof RIBean)
+         if (bean instanceof RIBean<?>)
          {
             beans.put(((RIBean<?>) bean).getType(), bean);
          }
@@ -77,10 +78,10 @@ public class ServletEnvironmentTest
       assert beans.containsKey(TarantulaProducer.class);
       assert beans.containsKey(Tarantula.class);
       
-      Bean<?> bean = beans.get(TarantulaProducer.class);
+      beans.get(TarantulaProducer.class);
       
-      assert beans.get(TarantulaProducer.class) instanceof ManagedBean;
-      manager.getInstanceByType(Tarantula.class, new AnnotationLiteral<Tame>() {}).ping();
+      assert beans.get(TarantulaProducer.class) instanceof ManagedBean<?>;
+      Utils.getReference(manager, Tarantula.class, new AnnotationLiteral<Tame>() {}).ping();
    }
    
    public void testSingleEnterpriseBean()
@@ -89,14 +90,14 @@ public class ServletEnvironmentTest
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (bean instanceof RIBean)
+         if (bean instanceof RIBean<?>)
          {
             classes.put(((RIBean<?>) bean).getType(), bean);
          }
       }
       assert classes.containsKey(Hound.class);
-      assert classes.get(Hound.class) instanceof ManagedBean;
-      manager.getInstanceByType(HoundLocal.class, new AnnotationLiteral<Tame>() {}).ping();
+      assert classes.get(Hound.class) instanceof ManagedBean<?>;
+      Utils.getReference(manager, HoundLocal.class, new AnnotationLiteral<Tame>() {}).ping();
    }
    
 }

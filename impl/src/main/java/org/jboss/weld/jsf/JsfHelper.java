@@ -21,18 +21,13 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
 import static org.jboss.weld.logging.messages.JsfMessage.IMPROPER_ENVIRONMENT;
 import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
+import static org.jboss.weld.servlet.BeanProvider.conversationIdName;
 
-import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.conversation.ConversationIdName;
 import org.jboss.weld.exceptions.ForbiddenStateException;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.servlet.ServletHelper;
-import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -43,36 +38,8 @@ import org.slf4j.cal10n.LocLogger;
  */
 public class JsfHelper
 {
-   private static final LocLogger log = loggerFactory().getLogger(JSF);
    
-   /**
-    * Checks if the current request is a JSF postback. The JsfApiAbstraction is
-    * consulted to determine if the JSF version is compatible with JSF 2.0. If
-    * so, the {@link FacesContext#isPostback()} convenience method is used
-    * (which is technically an optimized and safer implementation). Otherwise,
-    * the ResponseStateManager is consulted directly.
-    * 
-    * @return true if this request is a JSF postback, false otherwise
-    */
-   public static boolean isPostback(FacesContext facesContext)
-   {
-      if (Container.instance().services().get(JsfApiAbstraction.class).isApiVersionCompatibleWith(2.0))
-      {
-         try
-         {
-            return (Boolean) SecureReflections.invoke(facesContext, "isPostback");
-         }
-         catch (Exception e)
-         {
-            // Sorry, guys ;-) --NIK
-            return false;
-         }
-      }
-      else
-      {
-         return facesContext.getRenderKit().getResponseStateManager().isPostback(facesContext);
-      }
-   }
+   private static final LocLogger log = loggerFactory().getLogger(JSF);
 
    /**
     * Gets the propagated conversation id parameter from the request
@@ -81,8 +48,7 @@ public class JsfHelper
     */
    public static String getConversationIdFromRequest(FacesContext facesContext)
    {
-      BeanManagerImpl moduleBeanManager = JsfHelper.getModuleBeanManager(facesContext);
-      String cidName = moduleBeanManager.getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>(){});
+      String cidName = conversationIdName(getServletContext(facesContext));
       String cid = facesContext.getExternalContext().getRequestParameterMap().get(cidName);
       log.trace(FOUND_CONVERSATION_FROM_REQUEST, cid);
       return cid;
@@ -118,11 +84,11 @@ public class JsfHelper
       }
    }
    
-   public static BeanManagerImpl getModuleBeanManager(FacesContext facesContext)
+   public static ServletContext getServletContext(FacesContext facesContext)
    {
       if (facesContext.getExternalContext().getContext() instanceof ServletContext)
       {
-         return ServletHelper.getModuleBeanManager((ServletContext) facesContext.getExternalContext().getContext());
+         return (ServletContext) facesContext.getExternalContext().getContext();
       }
       else
       {

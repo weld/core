@@ -19,7 +19,7 @@ public class EnterpriseBeanProxyTest extends AbstractWeldTest
    @Test(description="WBRI-109")
    public void testNoInterfaceView() throws Exception
    {
-      Object mouse = getCurrentManager().getInstanceByType(MouseLocal.class);
+      Object mouse = getReference(MouseLocal.class);
       assert mouse instanceof ProxyObject;
       assert mouse instanceof MouseLocal;
    }

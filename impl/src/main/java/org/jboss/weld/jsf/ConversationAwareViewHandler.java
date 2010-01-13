@@ -16,7 +16,8 @@
  */
 package org.jboss.weld.jsf;
 
-import static org.jboss.weld.jsf.JsfHelper.getModuleBeanManager;
+import static org.jboss.weld.jsf.JsfHelper.getServletContext;
+import static org.jboss.weld.servlet.BeanProvider.conversation;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
@@ -67,7 +68,7 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
    public String getActionURL(FacesContext context, String viewId)
    {
       String actionUrl = super.getActionURL(context, viewId);
-      ConversationImpl conversation = getModuleBeanManager(context).getInstanceByType(ConversationImpl.class);  
+      ConversationImpl conversation = conversation(getServletContext(context));  
       if (!conversation.isTransient())
       {
          return new FacesUrlTransformer(actionUrl, context).appendConversationIdIfNecessary(conversation.getUnderlyingId()).getUrl();

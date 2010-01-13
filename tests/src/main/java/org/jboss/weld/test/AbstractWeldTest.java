@@ -1,28 +1,16 @@
 package org.jboss.weld.test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
-import javax.el.ELContext;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.util.TypeLiteral;
 import javax.servlet.ServletContext;
 
 import org.jboss.testharness.AbstractTest;
 import org.jboss.testharness.impl.runner.servlet.ServletTestRunner;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.el.EL;
-import org.jboss.weld.util.collections.EnumerationList;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -66,134 +54,34 @@ public abstract class AbstractWeldTest extends AbstractTest
       super.afterClass();
    }
 
-   /**
-    * Checks if all annotations are in a given set of annotations
-    * 
-    * @param annotations The annotation set
-    * @param annotationTypes The annotations to match
-    * @return True if match, false otherwise
-    */
-   public boolean annotationSetMatches(Set<? extends Annotation> annotations, Class<? extends Annotation>... annotationTypes)
-   {
-      List<Class<? extends Annotation>> annotationTypeList = new ArrayList<Class<? extends Annotation>>();
-      annotationTypeList.addAll(Arrays.asList(annotationTypes));
-      for (Annotation annotation : annotations)
-      {
-         if (annotationTypeList.contains(annotation.annotationType()))
-         {
-            annotationTypeList.remove(annotation.annotationType());
-         }
-         else
-         {
-            return false;
-         }
-      }
-      return annotationTypeList.size() == 0;
-   }
-   
-   public boolean typeSetMatches(Set<Type> types, Type... requiredTypes)
-   {
-      List<Type> typeList = Arrays.asList(requiredTypes);
-      return requiredTypes.length == types.size() && types.containsAll(typeList);
-   }
-
-   protected Iterable<URL> getResources(String name)
-   {
-      if (name.startsWith("/"))
-      {
-         name = name.substring(1);
-      }
-      else
-      {
-         name = getClass().getPackage().getName().replace(".", "/") + "/" + name;
-      }
-      try
-      {
-         return new EnumerationList<URL>(getClass().getClassLoader().getResources(name));
-      }
-      catch (IOException e)
-      {
-         throw new RuntimeException("Error loading resource from classloader" + name, e);
-      }
-   }
-
-   protected byte[] serialize(Object instance) throws IOException
-   {
-      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-      ObjectOutputStream out = new ObjectOutputStream(bytes);
-      out.writeObject(instance);
-      return bytes.toByteArray();
-   }
-
-   protected <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException
-   {
-      ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-      return (T) in.readObject();
-   }
-
    protected BeanManagerImpl getCurrentManager()
    {
       return BeanManagerLocator.INSTANCE.locate();
    }
 
-   public boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException )
-   {
-      while (exception != null)
-      {
-         if (exception.getClass().equals(expectedException))
-         {
-            return true;
-         }
-         exception = exception.getCause();
-      }
-      return false;
-   }
-
    public <T> Bean<T> getBean(Type beanType, Annotation... bindings)
    {
-      Set<Bean<?>> beans = getCurrentManager().getBeans(beanType, bindings);
-      if (beans.size() > 1)
-      {
-         throw new RuntimeException("More than one bean resolved to " + beanType + " with bindings " + Arrays.asList(bindings));
-      }
-      if (beans.size() == 0)
-      {
-         throw new RuntimeException("No beans resolved to " + beanType + " with bindings " + Arrays.asList(bindings));
-      }
-      @SuppressWarnings("unchecked")
-      Bean<T> bean = (Bean<T>) beans.iterator().next();
-      return bean;
+      return Utils.getBean(getCurrentManager(), beanType, bindings);
    }
 
-   @SuppressWarnings("unchecked")
    public <T> Set<Bean<T>> getBeans(Class<T> type, Annotation... bindings)
    {
-      return (Set) getCurrentManager().getBeans(type, bindings);
+      return Utils.getBeans(getCurrentManager(), type, bindings);
    }
 
-   @SuppressWarnings("unchecked")
-   public <T> Set<Bean<T>> getBeans(TypeLiteral<T> type, Annotation... bindings)
+   public <T> T getReference(Class<T> beanType, Annotation... bindings)
    {
-      return (Set)getCurrentManager().getBeans(type.getType(), bindings);
-   }
-
-   @SuppressWarnings("unchecked")
-   public <T> T createContextualInstance(Class<T> beanType, Annotation... bindings)
-   {
-      Bean<?> bean = getBean(beanType, bindings);
-      return (T) getCurrentManager().getReference(bean, beanType, getCurrentManager().createCreationalContext(bean));
+      return Utils.getReference(getCurrentManager(), beanType, bindings);
    }
    
    public <T> T getReference(Bean<T> bean)
    {
-      return (T) getCurrentManager().getReference(bean, bean.getBeanClass(), getCurrentManager().createCreationalContext(bean));
+      return Utils.getReference(getCurrentManager(), bean);
    }
 
-   @SuppressWarnings("unchecked")
    public <T> T evaluateValueExpression(String expression, Class<T> expectedType)
    {
-      ELContext elContext = EL.createELContext(getCurrentManager().getCurrent());
-      return (T) EL.EXPRESSION_FACTORY.createValueExpression(elContext, expression, expectedType).getValue(elContext);
+      return Utils.evaluateValueExpression(getCurrentManager(), expression, expectedType);
    }
    
    protected String getPath(String viewId)

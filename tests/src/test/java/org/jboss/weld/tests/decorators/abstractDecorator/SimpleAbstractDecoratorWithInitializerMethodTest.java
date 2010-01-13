@@ -37,7 +37,7 @@ public class SimpleAbstractDecoratorWithInitializerMethodTest extends AbstractWe
 
       resetAll();
 
-      Window window = getCurrentManager().getInstanceByType(WindowImpl.class);
+      Window window = getReference(WindowImpl.class);
       window.draw();
       assert WindowImpl.drawn;
       assert FrameWithInitializerMethodInjectedDelegate.drawn;

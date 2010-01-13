@@ -24,28 +24,28 @@ package org.jboss.weld.jsf;
 
 import static org.jboss.weld.jsf.JsfHelper.getConversationId;
 import static org.jboss.weld.jsf.JsfHelper.getHttpSession;
-import static org.jboss.weld.jsf.JsfHelper.getModuleBeanManager;
+import static org.jboss.weld.jsf.JsfHelper.getServletContext;
 import static org.jboss.weld.logging.Category.JSF;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATION;
 import static org.jboss.weld.logging.messages.JsfMessage.INITIATING_CONVERSATION;
 import static org.jboss.weld.logging.messages.JsfMessage.SKIPPING_CLEANING_UP_CONVERSATION;
+import static org.jboss.weld.servlet.BeanProvider.conversation;
+import static org.jboss.weld.servlet.BeanProvider.conversationManager;
+import static org.jboss.weld.servlet.BeanProvider.httpSessionManager;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.SessionContext;
-import org.jboss.weld.conversation.ConversationImpl;
-import org.jboss.weld.conversation.ConversationManager;
-import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.ConversationBeanStore;
-import org.jboss.weld.servlet.HttpSessionManager;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -123,13 +123,12 @@ public class WeldPhaseListener implements PhaseListener
     */
    private void afterRenderResponse(FacesContext facesContext)
    {
-      BeanManagerImpl moduleBeanManager = getModuleBeanManager(facesContext);
       SessionContext sessionContext = Container.instance().services().get(ContextLifecycle.class).getSessionContext();
       ConversationContext conversationContext = Container.instance().services().get(ContextLifecycle.class).getConversationContext();
       if (sessionContext.isActive())
       {
          log.trace(CLEANING_UP_CONVERSATION, "Render Response", "response complete");
-         moduleBeanManager.getInstanceByType(ConversationManager.class).cleanupConversation();
+         conversationManager(getServletContext(facesContext)).cleanupConversation();
          conversationContext.setActive(false);
       }
       else
@@ -143,12 +142,11 @@ public class WeldPhaseListener implements PhaseListener
     */
    private void afterResponseComplete(FacesContext facesContext, PhaseId phaseId)
    {
-      BeanManagerImpl moduleBeanManager = getModuleBeanManager(facesContext);
       SessionContext sessionContext = Container.instance().services().get(ContextLifecycle.class).getSessionContext();
       if (sessionContext.isActive())
       {
          log.trace(CLEANING_UP_CONVERSATION, phaseId, "the response has been marked complete");
-         moduleBeanManager.getInstanceByType(ConversationManager.class).cleanupConversation();
+         conversationManager(getServletContext(facesContext)).cleanupConversation();
       }
       else
       {
@@ -164,11 +162,11 @@ public class WeldPhaseListener implements PhaseListener
     */
    private void initiateSessionAndConversation(FacesContext facesContext)
    {
+      ServletContext servletContext = getServletContext(facesContext);
       HttpSession session = getHttpSession(facesContext);
-      BeanManagerImpl moduleBeanManager = getModuleBeanManager(facesContext);
-      moduleBeanManager.getInstanceByType(HttpSessionManager.class).setSession(session);
-      moduleBeanManager.getInstanceByType(ConversationManager.class).beginOrRestoreConversation(getConversationId(facesContext));
-      String cid = moduleBeanManager.getInstanceByType(ConversationImpl.class).getUnderlyingId();
+      httpSessionManager(servletContext).setSession(session);
+      conversationManager(servletContext).beginOrRestoreConversation(getConversationId(facesContext));
+      String cid = conversation(servletContext).getUnderlyingId();
       
       ConversationContext conversationContext = Container.instance().services().get(ContextLifecycle.class).getConversationContext();
       conversationContext.setBeanStore(new ConversationBeanStore(session, cid));
