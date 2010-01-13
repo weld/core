@@ -8,17 +8,16 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.mock.MockEELifecycle;
 import org.jboss.weld.mock.TestContainer;
+import org.jboss.weld.mock.cluster.AbstractClusterTest;
 import org.jboss.weld.mock.cluster.SwitchableSingletonProvider;
 import org.testng.annotations.Test;
 
-public class SwitchableContainerTest
+public class SwitchableContainerTest extends AbstractClusterTest
 {
 
    @Test
    public void test()
    {
-      SingletonProvider.reset();
-      SingletonProvider.initialize(new SwitchableSingletonProvider());
       
       // Bootstrap container 1
       SwitchableSingletonProvider.use(1);
@@ -53,6 +52,9 @@ public class SwitchableContainerTest
       SwitchableSingletonProvider.use(2);
       foo2 = (Foo) beanManager2.getReference(fooBean2, Foo.class, beanManager2.createCreationalContext(fooBean2));
       assert foo2.getName().equals("container 2");
+      SingletonProvider.reset();
+      container1.stopContainer();
+      container2.stopContainer();
       SingletonProvider.reset();
    }
    

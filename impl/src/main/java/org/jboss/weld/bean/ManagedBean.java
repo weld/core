@@ -52,6 +52,7 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
@@ -144,7 +145,18 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       {
          throw new ForbiddenStateException(DELEGATE_INJECTION_POINT_NOT_FOUND, decorator);
       }
-      return getBeanManager().replaceOrPushCurrentInjectionPoint(outerDelegateInjectionPoint);
+      CurrentInjectionPoint currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
+      if (currentInjectionPoint.peek() != null)
+      {
+         InjectionPoint originalInjectionPoint = currentInjectionPoint.pop();
+         currentInjectionPoint.push(outerDelegateInjectionPoint);
+         return originalInjectionPoint;
+      }
+      else
+      {
+         currentInjectionPoint.push(outerDelegateInjectionPoint);
+         return null;
+      }
    }
 
    /**

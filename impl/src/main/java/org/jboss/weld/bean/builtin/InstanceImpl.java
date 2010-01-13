@@ -34,7 +34,9 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableWeldClass;
 import org.jboss.weld.util.Beans;
@@ -68,14 +70,14 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
       // Push in an empty CC to ensure that we don't get the CC of whatever is injecting the bean containing the Instance injection point
       try
       {
-         getBeanManager().pushDummyInjectionPoint();
+         Container.instance().services().get(CurrentInjectionPoint.class).pushDummy();
          @SuppressWarnings("unchecked")
          T instance = (T) getBeanManager().getReference(bean, getType(), getBeanManager().createCreationalContext(bean));
          return instance;
       }
       finally
       {
-         getBeanManager().popDummyInjectionPoint();
+         Container.instance().services().get(CurrentInjectionPoint.class).popDummy();
       }
    }
 

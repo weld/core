@@ -35,6 +35,10 @@ public class NaiveClusterTest extends AbstractClusterTest
       use(2);
       Foo foo2 = (Foo) beanManager2.getReference(fooBean2, Foo.class, beanManager2.createCreationalContext(fooBean2));
       assert foo2.getName().equals("container 1");
+      use(2);
+      container2.stopContainer();
+      use(1);
+      container1.stopContainer();
    }
    
    @Test
@@ -76,6 +80,10 @@ public class NaiveClusterTest extends AbstractClusterTest
       use(1);
       
       assert stable1.getFodder().getAmount() == 11;
+      use(1);
+      container1.stopContainer();
+      use(2);
+      container2.stopContainer();
    }
    
    @Test
@@ -105,6 +113,10 @@ public class NaiveClusterTest extends AbstractClusterTest
       Stable stable2 = (Stable) beanManager2.getReference(stableBean2, Stable.class, beanManager2.createCreationalContext(stableBean2));
       assert stable2.getFodder().getAmount() == stable1.getFodder().getAmount();
       assert stable2.getHorse().getName() == null;
+      use(1);
+      container1.stopContainer();
+      use(2);
+      container2.stopContainer();
    }
    
 }

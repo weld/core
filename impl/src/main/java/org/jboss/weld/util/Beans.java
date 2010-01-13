@@ -90,10 +90,10 @@ import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.BindingTypeModel;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
@@ -495,7 +495,7 @@ public class Beans
    {
       for (Annotation binding : bindings1)
       {
-         BindingTypeModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class).getBindingTypeModel(binding.annotationType());
+         QualifierModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class).getBindingTypeModel(binding.annotationType());
          boolean matchFound = false;
          // TODO Something wrong with annotation proxy hashcode in JDK/AnnotationLiteral hashcode, so always do a full check, don't use contains
          for (Annotation otherBinding : bindings2)
@@ -619,7 +619,7 @@ public class Beans
     * @param beans
     * @return
     */
-   public static <X> boolean isAlternativePresent(Set<Bean<? extends X>> beans)
+   public static boolean isAlternativePresent(Set<Bean<?>> beans)
    {
       for (Bean<?> bean : beans)
       {
@@ -651,7 +651,7 @@ public class Beans
     * @param specializedBeans
     * @return
     */
-   public static <X> boolean isSpecialized(Bean<? extends X> bean, Set<Bean<? extends X>> beans, Map<Contextual<?>, Contextual<?>> specializedBeans)
+   public static boolean isSpecialized(Bean<?> bean, Set<Bean<?>> beans, Map<Contextual<?>, Contextual<?>> specializedBeans)
    {
       if (specializedBeans.containsKey(bean))
       {

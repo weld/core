@@ -27,7 +27,6 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -51,8 +50,6 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
    private final Class<T> rawType;
    private final Set<Type> typeClosure;
    private final Type[] actualTypeArguments;
-
-   private final String _string;
 
    public static <T> WeldAnnotated<T, Class<T>> of(TypeLiteral<T> typeLiteral, Annotation[] annotations, BeanManagerImpl manager)
    {
@@ -101,7 +98,7 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
       if (type instanceof ParameterizedType)
       {
          ParameterizedType parameterizedType = (ParameterizedType) type;
-         if (parameterizedType.getRawType() instanceof Class)
+         if (parameterizedType.getRawType() instanceof Class<?>)
          {
             this.rawType = (Class<T>) parameterizedType.getRawType();
          }
@@ -110,13 +107,11 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
             throw new ForbiddenArgumentException(CANNOT_EXTRACT_RAW_TYPE, type);
          }
          this.actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-         this._string = rawType.toString() + "<" + Arrays.asList(actualTypeArguments).toString() + ">; binding types = " + Names.annotationsToString(getQualifiers());
       }
-      else if (type instanceof Class)
+      else if (type instanceof Class<?>)
       {
          this.rawType = (Class<T>) type;
          this.actualTypeArguments = new Type[0];
-         this._string = rawType.toString() +"; binding types = " + Names.annotationsToString(getQualifiers());
       }
       else
       {
@@ -139,7 +134,7 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
    @Override
    public String toString()
    {
-      return _string;
+      return Names.toString(getJavaClass(), getAnnotations(), getActualTypeArguments());
    }
 
    @Override

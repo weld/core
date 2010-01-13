@@ -18,13 +18,15 @@ package org.jboss.weld.resolution;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.collections.ConcurrentCache;
+
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 /**
  * Implementation of name based bean resolution
@@ -33,14 +35,36 @@ import org.jboss.weld.util.collections.ConcurrentCache;
  */
 public class NameBasedResolver
 {
+   
+   private static class NameToBeanSet implements Function<String, Set<Bean<?>>>
+   {
+
+      private final BeanManagerImpl beanManager;
+      private final Iterable<? extends Bean<?>> allBeans;
+      
+      private NameToBeanSet(BeanManagerImpl beanManager, Iterable<? extends Bean<?>> allBeans)
+      {
+         this.beanManager = beanManager;
+         this.allBeans = allBeans;
+      }
+
+      public Set<Bean<?>> apply(String from)
+      {
+         Set<Bean<?>> matchedBeans = new HashSet<Bean<?>>();
+         for (Bean<?> bean : allBeans)
+         {
+            if ((bean.getName() == null && from == null) || (bean.getName() != null && bean.getName().equals(from)))
+            {
+               matchedBeans.add(bean);
+            }
+         }
+         return Beans.retainEnabledAlternatives(matchedBeans, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes());
+      }
+      
+   }
+   
    // The resolved names
-   private ConcurrentCache<String, Set<Bean<?>>> resolvedNames;
-   
-   // The beans to search
-   private final Iterable<? extends Bean<?>> allBeans;
-   
-   // The Bean manager
-   private final BeanManagerImpl manager;
+   private ConcurrentMap<String, Set<Bean<?>>> resolvedNames;
 
    /**
     * Constructor
@@ -48,9 +72,7 @@ public class NameBasedResolver
     */
    public NameBasedResolver(BeanManagerImpl manager, Iterable<? extends Bean<?>> allBeans)
    {
-      this.manager = manager;
-      this.allBeans = allBeans;
-      this.resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
+      this.resolvedNames = new MapMaker().makeComputingMap(new NameToBeanSet(manager, allBeans));
    }
 
    /**
@@ -59,7 +81,7 @@ public class NameBasedResolver
     */
    public void clear()
    {
-      this.resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
+      this.resolvedNames.clear();
    }
 
    /**
@@ -70,23 +92,7 @@ public class NameBasedResolver
     */
    public Set<Bean<?>> resolve(final String name)
    {
-      return resolvedNames.putIfAbsent(name, new Callable<Set<Bean<?>>>()
-      {
-
-         public Set<Bean<? extends Object>> call() throws Exception
-         {
-            Set<Bean<?>> matchedBeans = new HashSet<Bean<?>>();
-            for (Bean<?> bean : allBeans)
-            {
-               if ((bean.getName() == null && name == null) || (bean.getName() != null && bean.getName().equals(name)))
-               {
-                  matchedBeans.add(bean);
-               }
-            }
-            return Beans.retainEnabledAlternatives(matchedBeans, manager.getEnabledAlternativeClasses(), manager.getEnabledAlternativeStereotypes());
-         }
-
-      });
+      return resolvedNames.get(name);
    }
 
    /**
@@ -101,11 +107,6 @@ public class NameBasedResolver
       buffer.append("Resolver\n");
       buffer.append("Resolved names points: " + resolvedNames.size() + "\n");
       return buffer.toString();
-   }
-
-   protected BeanManagerImpl getManager()
-   {
-      return manager;
    }
 
 }

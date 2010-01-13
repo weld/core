@@ -22,6 +22,7 @@ import static org.jboss.weld.logging.messages.MetadataMessage.NON_BINDING_MEMBER
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.util.Nonbinding;
@@ -30,7 +31,6 @@ import javax.inject.Qualifier;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -41,14 +41,14 @@ import org.slf4j.cal10n.LocLogger;
  * @author Pete Muir
  * 
  */
-public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
+public class QualifierModel<T extends Annotation> extends AnnotationModel<T>
 {
    private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
    
-   private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(Qualifier.class);
+   private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(Qualifier.class);
    
    // The non-binding types
-   private Set<WeldMethod<?, ?>> nonBindingTypes;
+   private Set<WeldMethod<?, ?>> nonBindingMembers;
    
 
    /**
@@ -56,7 +56,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     * 
     * @param type The type
     */
-   public BindingTypeModel(Class<T> type, ClassTransformer transformer)
+   public QualifierModel(Class<T> type, ClassTransformer transformer)
    {
       super(type, transformer);
    }
@@ -68,7 +68,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
    protected void init()
    {
       super.init();
-      initNonBindingTypes();
+      initNonBindingMembers();
       checkArrayAndAnnotationValuedMembers();
    }
 
@@ -79,7 +79,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
    {
       for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers())
       {
-         if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingTypes.contains(annotatedMethod))
+         if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingMembers.contains(annotatedMethod))
          {
             super.valid = false;
             log.debug(NON_BINDING_MEMBER_TYPE, annotatedMethod);
@@ -104,9 +104,9 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     * 
     * @return True if present, false otherwise
     */
-   public boolean hasNonBindingTypes()
+   public boolean hasNonBindingMembers()
    {
-      return nonBindingTypes.size() > 0;
+      return nonBindingMembers.size() > 0;
    }
 
    /**
@@ -115,17 +115,17 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     * @return A set of non-binding types, or an empty set if there are none
     *         present
     */
-   public Set<WeldMethod<?, ?>> getNonBindingTypes()
+   public Set<WeldMethod<?, ?>> getNonBindingMembers()
    {
-      return nonBindingTypes;
+      return nonBindingMembers;
    }
 
    /**
     * Initializes the non-binding types
     */
-   protected void initNonBindingTypes()
+   protected void initNonBindingMembers()
    {
-      nonBindingTypes = getAnnotatedAnnotation().getMembers(Nonbinding.class);
+      nonBindingMembers = getAnnotatedAnnotation().getMembers(Nonbinding.class);
    }
 
    /**
@@ -141,7 +141,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
       {
          for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers())
          {
-            if (!nonBindingTypes.contains(annotatedMethod))
+            if (!nonBindingMembers.contains(annotatedMethod))
             {
                try
                {
@@ -173,14 +173,14 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
    }
 
    /**
-    * Gets a string representation of the binding type model
+    * Gets a string representation of the qualifier model
     * 
     * @return The string representation
     */
    @Override
    public String toString()
    {
-     return (isValid() ? "Valid" : "Invalid") + " binding type model for " + getRawType() + " with non-binding types " + getNonBindingTypes();
+     return (isValid() ? "Valid" : "Invalid") + " qualifer model for " + getRawType() + " with non-binding members " + getNonBindingMembers();
    }
 
 }

@@ -17,9 +17,6 @@
 package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -29,8 +26,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Utility class to produce friendly names e.g. for debugging
@@ -70,6 +65,18 @@ public class Names
       }
       return result.toString();
    }
+   
+   public static String toString(Class<?> rawType, Set<Annotation> annotations, Type[] actualTypeArguments)
+   {
+      if (actualTypeArguments.length > 0)
+      {
+         return new StringBuilder().append(Names.annotationsToString(annotations)).append(" ").append(rawType.getName()).append("<").append(Arrays.asList(actualTypeArguments)).append(">").toString();
+      }
+      else
+      {
+         return new StringBuilder().append(Names.annotationsToString(annotations)).append(" ").append(rawType.getName()).toString();
+      }
+   }
 
    /**
     * Counts item in an iteratble
@@ -85,24 +92,6 @@ public class Names
          count++;
       }
       return count;
-   }
-
-   /**
-    * Converts a list of strings to a String with given delimeter
-    * 
-    * @param list The list
-    * @param delimiter The delimeter
-    * @return The string representation
-    */
-   private static String listToString(List<String> list, String delimiter)
-   {
-      StringBuilder buffer = new StringBuilder();
-      for (String item : list)
-      {
-         buffer.append(item);
-         buffer.append(delimiter);
-      }
-      return buffer.toString();
    }
 
    /**
@@ -164,111 +153,6 @@ public class Names
       }
       return modifiers;
    }
-
-
-
-   /**
-    * Gets a string representation from a field
-    * 
-    * @param field The field
-    * @return The string representation
-    */
-   public static String fieldToString(Field field)
-   {
-      return "  Field " + annotationsToString(field.getAnnotations()) + listToString(parseModifiers(field.getModifiers()), " ") + field.getName();
-   }
-
-   /**
-    * Gets the string representation from a method
-    * 
-    * @param method The method
-    * @return The string representation
-    */
-   public static String methodToString(Method method)
-   {
-      return "  Method " + method.getReturnType().getSimpleName() + " " + annotationsToString(method.getAnnotations()) + listToString(parseModifiers(method.getModifiers()), " ") + method.getName() + "(" + parametersToString(method.getParameterTypes(), method.getParameterAnnotations(), false) + ");\n";
-   }
-
-   /**
-    * Gets a string representation from an annotation
-    * 
-    * @param annotation The annotation
-    * @return The string representation
-    */
-   public static String annotationToString(Annotation annotation)
-   {
-      return "Annotation " + annotationsToString(annotation.annotationType().getAnnotations()) + annotation.annotationType().getSimpleName();
-   }
-
-   /**
-    * Gets a string representation from a method
-    * 
-    * @param constructor The method
-    * @return The string representation
-    */
-   public static String constructorToString(Constructor<?> constructor)
-   {
-      return "  Constructor " + annotationsToString(constructor.getAnnotations()) + listToString(parseModifiers(constructor.getModifiers()), " ") + constructor.getDeclaringClass().getSimpleName() + "(" + parametersToString(constructor.getParameterTypes(), constructor.getParameterAnnotations(), true) + ");\n";
-   }
-
-   /**
-    * Gets a string representation from a list of parameters and their
-    * annotations
-    * 
-    * @param parameterTypes The parameters
-    * @param annotations The annotation map
-    * @return The string representation
-    */
-   private static String parametersToString(Class<?>[] parameterTypes, Annotation[][] annotations, boolean constructor)
-   {
-      StringBuilder buffer = new StringBuilder();
-      int start = constructor ? 1 : 0;
-      for (int i = start; i < parameterTypes.length; i++)
-      {
-         if (i > start)
-         {
-            buffer.append(", ");
-         }
-         buffer.append(annotationsToString(annotations[i]) + typeToString(parameterTypes[i]));
-      }
-      return buffer.toString();
-   }
-
-   /**
-    * Gets a string representation from a type
-    * 
-    * @param clazz The type
-    * @return The string representation
-    */
-   private static String typeToString(Class<?> clazz)
-   {
-      return annotationsToString(clazz.getAnnotations()) + clazz.getSimpleName();
-   }
-
-   /**
-    * Gets a string representation from a class
-    * 
-    * @param clazz The class
-    * @return The string representation
-    */
-   public static String classToString(Class<?> clazz)
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("Class " + typeToString(clazz) + "\n");
-      for (Field field : SecureReflections.getFields(clazz))
-      {
-         buffer.append(fieldToString(field));
-      }
-      for (Constructor<?> constructor : SecureReflections.getConstructors(clazz))
-      {
-         buffer.append(constructorToString(constructor));
-      }
-      for (Method method : SecureReflections.getMethods(clazz))
-      {
-         buffer.append(methodToString(method));
-      }
-      return buffer.toString();
-   }
    
    public static String typesToString(Set<? extends Type> types)
    {
@@ -299,17 +183,15 @@ public class Names
    {
       StringBuilder builder = new StringBuilder();
       int i = 0;
-      builder.append("[");
       for (Annotation annotation : annotations)
       {
          if (i > 0)
          {
-            builder.append(", ");
+            builder.append(" ");
          }
          builder.append("@").append(annotation.annotationType().getSimpleName());
          i++;
       }
-      builder.append("]");
       return builder.toString();
    }
    

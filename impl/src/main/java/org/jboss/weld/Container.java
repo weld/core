@@ -41,7 +41,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class Container
 {
    
-   private final static Singleton<Container> instance;
+   private static Singleton<Container> instance;
    
    static
    {
@@ -95,6 +95,7 @@ public class Container
       this.managers.put(deploymentManager.getId(), deploymentManager);
       this.beanDeploymentArchives = new ConcurrentHashMap<BeanDeploymentArchive, BeanManagerImpl>();
       this.deploymentServices = deploymentServices;
+
    }
 
    /**
@@ -105,13 +106,11 @@ public class Container
    {
       // TODO We should probably cleanup the bean managers for activities?
       managers.clear();
-      
       for (BeanManagerImpl beanManager : beanDeploymentArchives.values())
       {
          beanManager.cleanup();
       }
       beanDeploymentArchives.clear();
-      
       deploymentServices.cleanup();
       deploymentManager.cleanup();
       LoggerFactory.cleanup();

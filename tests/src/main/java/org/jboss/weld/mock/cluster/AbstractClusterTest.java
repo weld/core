@@ -5,9 +5,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 import java.util.Collection;
 
-import org.jboss.weld.bootstrap.api.SingletonProvider;
+import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -19,17 +21,26 @@ import org.testng.annotations.BeforeClass;
 public class AbstractClusterTest
 {
 
+   private Singleton<Container> singleton;
+   
    @BeforeClass
-   public void beforeClass()
+   public void beforeClass() throws Exception
    {
-      SingletonProvider.reset();
-      SingletonProvider.initialize(new SwitchableSingletonProvider());
+      singleton = (Singleton) getInstanceField().get(null);
+      getInstanceField().set(null, new SwitchableSingletonProvider().create(Container.class));
+   }
+   
+   private static Field getInstanceField() throws Exception
+   {
+      Field field = Container.class.getDeclaredField("instance");
+      field.setAccessible(true);
+      return field;
    }
    
    @AfterClass
-   public void afterClass()
+   public void afterClass() throws Exception
    {
-      SingletonProvider.reset();
+      getInstanceField().set(null, singleton);
    }
 
    protected TestContainer bootstrapContainer(int id, Collection<Class<?>> classes)

@@ -32,10 +32,10 @@ import org.jboss.weld.util.Beans;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable,Interceptor<?>>
+public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable, Interceptor<?>>
 {
-   private BeanManagerImpl manager;
 
+   private final BeanManagerImpl manager;
 
    public TypeSafeInterceptorResolver(BeanManagerImpl manager, Iterable<Interceptor<?>> interceptors)
    {
@@ -46,12 +46,8 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
    @Override
    protected boolean matches(InterceptorResolvable resolvable, Interceptor<?> bean)
    {
-      return bean.intercepts(resolvable.getInterceptionType())
-            && bean.getInterceptorBindings().size() > 0
-            && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager())
-            && getManager().getEnabledInterceptorClasses().contains(bean.getBeanClass());
+      return bean.intercepts(resolvable.getInterceptionType()) && bean.getInterceptorBindings().size() > 0 && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager()) && getManager().getEnabledInterceptorClasses().contains(bean.getBeanClass());
    }
-
 
    @Override
    protected Set<Interceptor<?>> sortResult(Set<Interceptor<?>> matchedInterceptors)
@@ -79,7 +75,7 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
    }
 
    @Override
-   protected Iterable<ResolvableTransformer> getTransformers()
+   protected Iterable<ResolvableTransformer<InterceptorResolvable>> getTransformers()
    {
       return Collections.emptySet();
    }

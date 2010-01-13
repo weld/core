@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jboss.weld.manager;
+package org.jboss.weld.injection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;

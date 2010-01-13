@@ -19,18 +19,18 @@ package org.jboss.weld.resolution;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
+
+import javax.enterprise.inject.spi.InterceptionType;
 
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.inject.spi.InterceptionType;
 
 public class ResolvableFactory
 {
@@ -59,7 +59,7 @@ public class ResolvableFactory
       return new ResolvableImpl(new HashSet<Annotation>(Arrays.asList(bindings)), typeClosure, declaringBean);
    }
 
-   public static Resolvable of(InterceptionType interceptionType, Annotation... bindings)
+   public static InterceptorResolvable of(InterceptionType interceptionType, Annotation... bindings)
    {
       return new InterceptorResolvableImpl(new HashSet<Annotation>(Arrays.asList(bindings)), interceptionType );
    }

@@ -19,9 +19,10 @@ package org.jboss.weld.resolution;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentMap;
 
-import org.jboss.weld.util.collections.ConcurrentCache;
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 /**
  * Implementation of type safe bean resolution
@@ -29,34 +30,31 @@ import org.jboss.weld.util.collections.ConcurrentCache;
  * @author Pete Muir
  * @author Marius Bogoevici
  */
-public abstract class TypeSafeResolver<R extends Resolvable,T>
-{
-   private static final long serialVersionUID = 1L;
+public abstract class TypeSafeResolver<R extends Resolvable, T>
+{  
    
-   private static abstract class MatchingResolvable extends ForwardingResolvable
+   private static class Key<R extends Resolvable>
    {
       
-      public static MatchingResolvable of(final Resolvable resolvable)
+      private final R resolvable;
+      
+      private Key(R resolvable)
       {
-         return new MatchingResolvable()
-         {
-
-            @Override
-            protected Resolvable delegate()
-            {
-               return resolvable;
-            }
-
-         };
+         this.resolvable = resolvable;
       }
       
+      public R getResolvable()
+      {
+         return resolvable;
+      }
+
       @Override
       public boolean equals(Object obj)
       {
          if (obj instanceof Resolvable)
          {
             Resolvable that = (Resolvable) obj;
-            return this.getTypeClosure().equals(that.getTypeClosure()) && this.getQualifiers().equals(that.getQualifiers());
+            return this.getResolvable().getTypeClosure().equals(that.getTypeClosure()) && this.getResolvable().getQualifiers().equals(that.getQualifiers());
          }
          else
          {
@@ -64,13 +62,47 @@ public abstract class TypeSafeResolver<R extends Resolvable,T>
          }
       }
       
+      @Override
+      public int hashCode()
+      {
+         int result = 17;
+         result = 31 * result + this.getResolvable().getTypeClosure().hashCode();
+         result = 31 * result + this.getResolvable().getQualifiers().hashCode();
+         return result;
+      }
+      
+      @Override
+      public String toString()
+      {
+         return getResolvable().toString();
+      }
+      
+   }
+   
+   private static class ResolvableToBeanSet<R extends Resolvable, T> implements Function<Key<R>, Set<T>>
+   {
+      
+
+      private final TypeSafeResolver<R, T> resolver;
+
+      private ResolvableToBeanSet(TypeSafeResolver<R, T> resolver)
+      {
+         this.resolver = resolver;
+      }
+
+      public Set<T> apply(Key<R> from)
+      {
+         return resolver.sortResult(resolver.filterResult(resolver.findMatching(from.getResolvable())));
+      }
+      
    }
    
    // The resolved injection points
-   private ConcurrentCache<MatchingResolvable, Set<T>> resolved;
-   
+   private final ConcurrentMap<Key<R>, Set<T>> resolved;
    // The beans to search
-   private final Iterable<? extends T> iterable;
+   private final Iterable<? extends T> allBeans;
+   
+   
 
    /**
     * Constructor
@@ -78,9 +110,8 @@ public abstract class TypeSafeResolver<R extends Resolvable,T>
     */
    public TypeSafeResolver(Iterable<? extends T> allBeans)
    {
-      this.iterable = allBeans;
-      this.resolved = new ConcurrentCache<MatchingResolvable, Set<T>>();
-      
+      this.resolved = new MapMaker().makeComputingMap(new ResolvableToBeanSet<R, T>(this));
+      this.allBeans = allBeans;
    }
 
    /**
@@ -88,46 +119,20 @@ public abstract class TypeSafeResolver<R extends Resolvable,T>
     */
    public void clear()
    {
-      this.resolved = new ConcurrentCache<MatchingResolvable, Set<T>>();
+      this.resolved.clear();
    }
 
    /**
     * Get the possible beans for the given element
     * 
-    * @param key The resolving criteria
+    * @param resolvable The resolving criteria
     * @return An unmodifiable set of matching beans
     */
-   public Set<T> resolve(Resolvable key)
+   public Set<T> resolve(R resolvable)
    {
-      final MatchingResolvable resolvable = MatchingResolvable.of(transform(key));
-      
-      Callable<Set<T>> callable = new Callable<Set<T>>()
-      {
-         public Set<T> call() throws Exception
-         {
-            return sortResult(filterResult(findMatching(resolvable)));
-         }
-
-      };
-      Set<T> beans = resolved.putIfAbsent(resolvable, callable);
-      return Collections.unmodifiableSet(beans);
+      return Collections.unmodifiableSet(resolved.get(new Key<R>(transform(resolvable))));
    }
    
-   protected Resolvable transform(Resolvable resolvable)
-   {
-      for (ResolvableTransformer transformer : getTransformers())
-      {
-         resolvable = transformer.transform(resolvable);
-      }
-      return resolvable;
-   }
-   
-   protected abstract Iterable<ResolvableTransformer> getTransformers();
-   
-   protected abstract Set<T> filterResult(Set<T> matched);
-
-   protected abstract Set<T> sortResult(Set<T> matched);
-
    /**
     * Gets the matching beans for binding criteria from a list of beans
     * 
@@ -136,18 +141,33 @@ public abstract class TypeSafeResolver<R extends Resolvable,T>
     * @param beans The beans to filter
     * @return A set of filtered beans
     */
-   private Set<T> findMatching(MatchingResolvable resolvable)
+   private Set<T> findMatching(R resolvable)
    {
       Set<T> result = new HashSet<T>();
-      for (T bean : iterable)
+      for (T bean : allBeans)
       {
-         if (matches((R)resolvable.delegate(), bean))
+         if (matches(resolvable, bean))
          {
             result.add(bean);
          }
       }
       return result;
    }
+   
+   protected R transform(R resolvable)
+   {
+      for (ResolvableTransformer<R> transformer : getTransformers())
+      {
+         resolvable = transformer.transform(resolvable);
+      }
+      return resolvable;
+   }
+   
+   protected abstract Iterable<ResolvableTransformer<R>> getTransformers();
+   
+   protected abstract Set<T> filterResult(Set<T> matched);
+
+   protected abstract Set<T> sortResult(Set<T> matched);
 
    protected abstract boolean matches(R resolvable, T t);
 

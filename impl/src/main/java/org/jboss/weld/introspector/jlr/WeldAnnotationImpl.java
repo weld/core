@@ -28,7 +28,6 @@ import java.util.Set;
 import org.jboss.weld.introspector.WeldAnnotation;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Names;
 import org.jboss.weld.util.collections.HashSetSupplier;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.SecureReflections;
@@ -129,7 +128,7 @@ public class WeldAnnotationImpl<T extends Annotation> extends WeldClassImpl<T> i
    @Override
    public String toString()
    {
-      return new StringBuilder().append("class ").append(Names.classToString(getDelegate())).toString();
+      return getJavaClass().toString();
    }
 
    @Override

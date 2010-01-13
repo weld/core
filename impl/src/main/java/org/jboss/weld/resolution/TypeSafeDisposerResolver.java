@@ -60,7 +60,7 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, Dispo
    }
 
    @Override
-   protected Iterable<ResolvableTransformer> getTransformers()
+   protected Iterable<ResolvableTransformer<Resolvable>> getTransformers()
    {
       return Collections.emptySet();
    }

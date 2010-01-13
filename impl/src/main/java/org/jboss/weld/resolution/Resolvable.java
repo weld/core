@@ -33,7 +33,7 @@ public interface Resolvable
 {
 
    /**
-    * Get the bindings to use for resolution. @Current will be returned if no
+    * Get the bindings to use for resolution. @Default will be returned if no
     * bindings were specified
     * 
     * @return the bindings

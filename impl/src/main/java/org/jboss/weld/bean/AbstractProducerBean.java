@@ -58,9 +58,10 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalProductException;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.DummyInjectionPoint;
 import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.DummyInjectionPoint;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
@@ -254,7 +255,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
          {
             throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
          }
-         InjectionPoint injectionPoint = beanManager.getCurrentInjectionPoint();
+         InjectionPoint injectionPoint = Container.instance().services().get(CurrentInjectionPoint.class).peek();
          if (injectionPoint == null || injectionPoint.equals(DummyInjectionPoint.INSTANCE))
          {
             return;

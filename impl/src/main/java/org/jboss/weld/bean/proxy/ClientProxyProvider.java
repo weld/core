@@ -21,19 +21,19 @@ import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BE
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 
 import java.io.Serializable;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.logging.messages.BeanMessage;
-import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
-import org.jboss.weld.util.collections.ConcurrentCache;
+
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 /**
  * A proxy pool for holding scope adaptors (client proxies)
@@ -44,21 +44,34 @@ import org.jboss.weld.util.collections.ConcurrentCache;
  */
 public class ClientProxyProvider
 {
-   private static final long serialVersionUID = 9029999149357529341L;
+   
+   private static final Function<Bean<Object>, Object> CREATE_CLIENT_PROXY = new Function<Bean<Object>, Object> ()
+   {
+
+      public Object apply(Bean<Object> from)
+      {
+         String id = Container.instance().services().get(ContextualStore.class).putIfAbsent(from);
+         if (id == null)
+         {
+            throw new DefinitionException(BEAN_ID_CREATION_FAILED, from);
+         }
+         return createClientProxy(from, id);
+      }
+   };
 
    /**
     * A container/cache for previously created proxies
     * 
     * @author Nicklas Karlsson
     */
-   private final ConcurrentCache<Bean<? extends Object>, Object> pool;
+   private final ConcurrentMap<Bean<Object>, Object> pool;
 
    /**
     * Constructor
     */
    public ClientProxyProvider()
    {
-      this.pool = new ConcurrentCache<Bean<? extends Object>, Object>();
+      this.pool = new MapMaker().makeComputingMap(CREATE_CLIENT_PROXY);
    }
 
    /**
@@ -74,11 +87,11 @@ public class ClientProxyProvider
     * @throws InstantiationException When the proxy couldn't be created
     * @throws IllegalAccessException When the proxy couldn't be created
     */
-   private static <T> T createClientProxy(Bean<T> bean, BeanManagerImpl manager, String id) throws RuntimeException
+   private static <T> T createClientProxy(Bean<T> bean, String id) throws RuntimeException
    {
       try
       {
-         return Proxies.<T>createProxy(new ClientProxyMethodHandler(bean, manager, id), TypeInfo.of(bean.getTypes()).add(Serializable.class));
+         return Proxies.<T>createProxy(new ClientProxyMethodHandler(bean, id), TypeInfo.of(bean.getTypes()).add(Serializable.class));
       }
       catch (InstantiationException e)
       {
@@ -99,23 +112,9 @@ public class ClientProxyProvider
     * @param bean The bean to get a proxy to
     * @return the client proxy for the bean
     */
-   public <T> T getClientProxy(final BeanManagerImpl manager, final Bean<T> bean)
+   public <T> T getClientProxy(final Bean<T> bean)
    {
-      T instance = pool.putIfAbsent(bean, new Callable<T>()
-      {
-
-         public T call() throws Exception
-         {
-            String id = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
-            if (id == null)
-            {
-               throw new DefinitionException(BEAN_ID_CREATION_FAILED, bean);
-            }
-            return createClientProxy(bean, manager, id);
-         }
-
-      });
-      return instance;
+      return (T) pool.get(bean);
    }
 
    /**

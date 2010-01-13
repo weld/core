@@ -16,10 +16,9 @@
  */
 package org.jboss.weld.resolution;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -30,8 +29,10 @@ import javax.inject.Provider;
 import org.jboss.weld.bean.builtin.FacadeBeanResolvableTransformer;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.collections.ConcurrentCache;
 import org.jboss.weld.util.reflection.Reflections;
+
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 /**
  * @author pmuir
@@ -44,16 +45,50 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    private static final Class<Provider<?>> PROVIDER_TYPE = new TypeLiteral<Provider<?>>() {}.getRawType();
    private static final Class<Event<?>> EVENT_TYPE = new TypeLiteral<Event<?>>() {}.getRawType();
 
-   private final Set<ResolvableTransformer> transformers;
-   private final BeanManagerImpl manager;
-   private final ConcurrentCache<Set<?>, Set<Bean<?>>> disambiguatedBeans; 
+   private final Set<ResolvableTransformer<Resolvable>> transformers;
+   private final BeanManagerImpl beanManager;
+   private final ConcurrentMap<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans; 
+   
+   public static class BeanDisambiguation implements Function<Set<Bean<?>>, Set<Bean<?>>>
+   {
+      
+      private final BeanManagerImpl beanManager;
 
-   public TypeSafeBeanResolver(BeanManagerImpl manager, Iterable<T> beans)
+      private BeanDisambiguation(BeanManagerImpl beanManager)
+      {
+         this.beanManager = beanManager;
+      }
+
+      public Set<Bean<?>> apply(Set<Bean<?>> from)
+      {
+         if (from.size() > 1)
+         {
+            boolean alternativePresent = Beans.isAlternativePresent(from);
+            Set<Bean<?>> disambiguatedBeans = new HashSet<Bean<?>>();
+            
+            for (Bean<?> bean : from)
+            {
+               if (alternativePresent ? bean.isAlternative() : true && !Beans.isSpecialized(bean, from, beanManager.getSpecializedBeans()))
+               {
+                  disambiguatedBeans.add(bean);
+               }
+            }
+            return disambiguatedBeans;
+         }
+         else
+         {
+            return from;
+         }
+      }
+      
+   }
+
+   public TypeSafeBeanResolver(BeanManagerImpl beanManager, Iterable<T> beans)
    {
       super(beans);
-      this.manager = manager;
-      this.disambiguatedBeans = new ConcurrentCache<Set<?>, Set<Bean<?>>>();
-      transformers = new HashSet<ResolvableTransformer>();
+      this.beanManager = beanManager;
+      this.disambiguatedBeans = new MapMaker().makeComputingMap(new BeanDisambiguation(beanManager));
+      transformers = new HashSet<ResolvableTransformer<Resolvable>>();
       transformers.add(new FacadeBeanResolvableTransformer(EVENT_TYPE));
       transformers.add(new FacadeBeanResolvableTransformer(INSTANCE_TYPE));
       transformers.add(new FacadeBeanResolvableTransformer(PROVIDER_TYPE));
@@ -63,25 +98,25 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    @Override
    protected boolean matches(Resolvable resolvable, T bean)
    {
-      return Reflections.matches(resolvable.getTypeClosure(), bean.getTypes()) && Beans.containsAllBindings(resolvable.getQualifiers(), bean.getQualifiers(), manager);
+      return Reflections.matches(resolvable.getTypeClosure(), bean.getTypes()) && Beans.containsAllBindings(resolvable.getQualifiers(), bean.getQualifiers(), beanManager);
    }
    
    /**
     * @return the manager
     */
-   public BeanManagerImpl getManager()
+   protected BeanManagerImpl getBeanManager()
    {
-      return manager;
+      return beanManager;
    }
    
    @Override
    protected Set<T> filterResult(Set<T> matched)
    {
-      return Beans.retainEnabledAlternatives(matched, manager.getEnabledAlternativeClasses(), manager.getEnabledAlternativeStereotypes());
+      return Beans.retainEnabledAlternatives(matched, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes());
    }
 
    @Override
-   protected Iterable<ResolvableTransformer> getTransformers()
+   protected Iterable<ResolvableTransformer<Resolvable>> getTransformers()
    {
       return transformers;
    }
@@ -92,38 +127,19 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
       return matched;
    }
    
+
+   @SuppressWarnings("unchecked")
    public <X> Set<Bean<? extends X>> resolve(final Set<Bean<? extends X>> beans)
    {
-      return disambiguatedBeans.<Set<Bean<? extends X>>>putIfAbsent(beans, new Callable<Set<Bean<? extends X>>>()
-      {
-
-         public Set<Bean<? extends X>> call() throws Exception
-         {
-            Set<Bean<? extends X>> disambiguatedBeans = beans;
-            if (disambiguatedBeans.size() > 1)
-            {
-               boolean alternativePresent = Beans.isAlternativePresent(disambiguatedBeans);
-               disambiguatedBeans = new HashSet<Bean<? extends X>>();
-               
-               for (Bean<? extends X> bean : beans)
-               {
-                  if (alternativePresent ? bean.isAlternative() : true && !Beans.isSpecialized(bean, beans, manager.getSpecializedBeans()))
-                  {
-                     disambiguatedBeans.add(bean);
-                  }
-               }
-               
-            }
-            return disambiguatedBeans;
-         }
-         
-      });
+      return (Set) disambiguatedBeans.get(beans);
       
    }
    
-   public <X> Set<Bean<? extends X>> resolve(final Collection<Bean<? extends X>> beans)
+   @Override
+   public void clear()
    {
-      return resolve(new HashSet<Bean<? extends X>>(beans));
+      super.clear();
+      //this.disambiguatedBeans.clear();
    }
 
 

@@ -22,6 +22,8 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.Container;
+import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.Arrays2;
 
@@ -52,7 +54,7 @@ public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint>
 
    public InjectionPoint create(CreationalContext<InjectionPoint> creationalContext)
    {
-      return getBeanManager().getCurrentInjectionPoint();
+      return Container.instance().services().get(CurrentInjectionPoint.class).peek();
    }
    
    public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) 

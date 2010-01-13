@@ -30,10 +30,10 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.WeldCreationalContext;
-import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -57,8 +57,6 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    // The bean index in the manager
    private final String id;
 
-   private final BeanManagerImpl manager;
-
    private static final ThreadLocal<WeldCreationalContext<?>> currentCreationalContext = new ThreadLocal<WeldCreationalContext<?>>();
 
    /**
@@ -67,11 +65,10 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
     * @param bean The bean to proxy
     * @param beanIndex The index to the bean in the manager bean list
     */
-   public ClientProxyMethodHandler(Bean<?> bean, BeanManagerImpl manager, String id)
+   public ClientProxyMethodHandler(Bean<?> bean, String id)
    {
       this.bean = bean;
       this.id = id;
-      this.manager = manager;
       log.trace("Created method handler for bean " + bean + " identified as " + id);
    }
 
@@ -128,7 +125,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       boolean outer;
       if (currentCreationalContext.get() == null)
       {
-         creationalContext = manager.createCreationalContext(bean);
+         creationalContext = new CreationalContextImpl<T>(bean);
          currentCreationalContext.set(creationalContext);
          outer = true;
       }
@@ -139,14 +136,14 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       }
       try
       {
-         Context context = manager.getContext(bean.getScope());
+         Context context = Container.instance().deploymentManager().getContext(bean.getScope());
          // Ensure that there is no injection point associated
-         manager.pushDummyInjectionPoint();
+         Container.instance().services().get(CurrentInjectionPoint.class).pushDummy();
          return context.get(bean, creationalContext);
       }
       finally
       {
-         manager.popDummyInjectionPoint();
+         Container.instance().services().get(CurrentInjectionPoint.class).popDummy();
          if (outer)
          {
             currentCreationalContext.remove();

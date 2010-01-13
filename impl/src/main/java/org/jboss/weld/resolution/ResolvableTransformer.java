@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.resolution;
 
-public interface ResolvableTransformer
+public interface ResolvableTransformer<R extends Resolvable>
 {
    
-   public Resolvable transform(Resolvable element);
+   public R transform(R element);
    
 }

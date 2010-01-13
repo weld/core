@@ -71,6 +71,7 @@ import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.ForbiddenArgumentException;
 import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.logging.messages.VersionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -319,6 +320,7 @@ public class WeldBootstrap implements Bootstrap
       services.add(ContextualStore.class, new ContextualStoreImpl());
       services.add(ServiceLoaderFactory.class, new DefaultServiceLoaderFactory());
       services.add(JavassistCleaner.class, new JavassistCleaner());
+      services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
       return services;
    }
    

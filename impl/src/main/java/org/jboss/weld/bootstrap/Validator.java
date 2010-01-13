@@ -94,8 +94,8 @@ import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 
 /**
  * Checks a list of beans for DeploymentExceptions and their subclasses
@@ -322,7 +322,7 @@ public class Validator implements Service
 
    public void validateBeanNames(BeanManagerImpl beanManager)
    {
-      Multimap<String, Bean<?>> namedAccessibleBeans = Multimaps.newSetMultimap(new HashMap<String, Collection<Bean<?>>>(), new Supplier<Set<Bean<?>>>()
+      SetMultimap<String, Bean<?>> namedAccessibleBeans = Multimaps.newSetMultimap(new HashMap<String, Collection<Bean<?>>>(), new Supplier<Set<Bean<?>>>()
       {
 
          public Set<Bean<?>> get()

@@ -16,15 +16,14 @@
  */
 package org.jboss.weld.resolution;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Collections;
 
 import javax.enterprise.inject.spi.Decorator;
 
-import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
@@ -35,7 +34,7 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<Decorator<?>>
 {
-
+   
    public TypeSafeDecoratorResolver(BeanManagerImpl manager, Iterable<Decorator<?>> decorators)
    {
       super(manager, decorators);
@@ -44,7 +43,7 @@ public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<Decorator<?>
    @Override
    protected boolean matches(Resolvable resolvable, Decorator<?> bean)
    {
-      return Reflections.matches(Collections.singleton(bean.getDelegateType()), resolvable.getTypeClosure()) && Beans.containsAllBindings(bean.getDelegateQualifiers(), resolvable.getQualifiers(), getManager()) && getManager().getEnabledDecoratorClasses().contains(bean.getBeanClass());
+      return Reflections.matches(Collections.singleton(bean.getDelegateType()), resolvable.getTypeClosure()) && Beans.containsAllBindings(bean.getDelegateQualifiers(), resolvable.getQualifiers(), getBeanManager()) && getBeanManager().getEnabledDecoratorClasses().contains(bean.getBeanClass());
    }
    
    @Override
@@ -55,7 +54,7 @@ public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<Decorator<?>
          
          public int compare(Decorator<?> o1, Decorator<?> o2)
          {
-            List<Class<?>> enabledDecorators = getManager().getEnabledDecoratorClasses();
+            List<Class<?>> enabledDecorators = getBeanManager().getEnabledDecoratorClasses();
             int p1 = enabledDecorators.indexOf(((Decorator<?>) o1).getBeanClass());
             int p2 = enabledDecorators.indexOf(((Decorator<?>) o2).getBeanClass());
             return p1 - p2;

@@ -48,7 +48,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -96,11 +95,13 @@ import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.jboss.weld.exceptions.InjectionException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
+import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
+import org.jboss.weld.resolution.InterceptorResolvable;
 import org.jboss.weld.resolution.NameBasedResolver;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableFactory;
@@ -188,9 +189,9 @@ public class BeanManagerImpl implements WeldManager, Serializable
     * archives
     */
    private transient final TypeSafeBeanResolver<Bean<?>> beanResolver;
-   private transient final TypeSafeResolver<? extends Resolvable, Decorator<?>> decoratorResolver;
-   private transient final TypeSafeResolver<? extends Resolvable, Interceptor<?>> interceptorResolver;
-   private transient final TypeSafeResolver<? extends Resolvable, ObserverMethod<?>> observerResolver;
+   private transient final TypeSafeResolver<Resolvable, Decorator<?>> decoratorResolver;
+   private transient final TypeSafeResolver<InterceptorResolvable, Interceptor<?>> interceptorResolver;
+   private transient final TypeSafeResolver<Resolvable, ObserverMethod<?>> observerResolver;
    private transient final NameBasedResolver nameBasedResolver;
    private transient final ELResolver weldELResolver;
    private transient Namespace rootNamespace;
@@ -225,12 +226,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    private final AtomicInteger childIds;
    private final String id;
-   
-   /*
-    * Runtime data transfer
-    * *********************
-    */
-   private transient final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
 
    /**
     * Interception model
@@ -396,15 +391,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
       this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
       this.weldELResolver = new WeldELResolver(this);
       this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
-      
-      this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
-      {
-         @Override
-         protected Stack<InjectionPoint> initialValue()
-         {
-            return new Stack<InjectionPoint>();
-         }
-      };
    }
    
    private <T> Set<Iterable<T>> buildAccessibleClosure(Collection<BeanManagerImpl> hierarchy, Transform<T> transform)
@@ -628,14 +614,14 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          if (registerInjectionPoint)
          {
-            currentInjectionPoint.get().push(injectionPoint);
+            Container.instance().services().get(CurrentInjectionPoint.class).push(injectionPoint);
          }
          // TODO Do this properly
          Set<Bean<?>> beans = getBeans(ResolvableWeldClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this));
          Set<Bean<?>> injectableBeans = new HashSet<Bean<?>>();
          for (Bean<?> bean : beans)
          {
-            if (!(bean instanceof Decorator || bean instanceof Interceptor))
+            if (!(bean instanceof Decorator<?> || bean instanceof Interceptor<?>))
             {
                injectableBeans.add(bean);
             }
@@ -646,7 +632,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          if (registerInjectionPoint)
          {
-            currentInjectionPoint.get().pop();
+            Container.instance().services().get(CurrentInjectionPoint.class).pop();
          }
       }
    }
@@ -790,7 +776,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          if (creationalContext != null || getContext(bean.getScope()).get(bean) != null)
          {
-            return clientProxyProvider.getClientProxy(this, bean);
+            return clientProxyProvider.getClientProxy(bean);
          }
          else
          {
@@ -845,7 +831,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          if (registerInjectionPoint)
          {
-            currentInjectionPoint.get().push(injectionPoint);
+            Container.instance().services().get(CurrentInjectionPoint.class).push(injectionPoint);
          }
          if (getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
          {
@@ -873,7 +859,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          if (registerInjectionPoint)
          {
-            currentInjectionPoint.get().pop();
+            Container.instance().services().get(CurrentInjectionPoint.class).pop();
          }
       }
    }
@@ -1081,55 +1067,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
    public ServiceRegistry getServices()
    {
       return services;
-   }
-
-   /**
-    * The injection point being operated on for this thread
-    * 
-    * @return the current injection point
-    */
-   public InjectionPoint getCurrentInjectionPoint()
-   {
-      if (!currentInjectionPoint.get().empty())
-      {
-         return currentInjectionPoint.get().peek();
-      }
-      else
-      {
-         return null;
-      }
-   }
-   
-   /**
-    * Replaces (or adds) the current injection point. If a current injection 
-    * point exists, it will be replaced. If no current injection point exists, 
-    * one will be added.
-    * 
-    * @param injectionPoint the injection point to use
-    * @return the injection point added, or null if non previous existed
-    */
-   public InjectionPoint replaceOrPushCurrentInjectionPoint(InjectionPoint injectionPoint)
-   {
-      InjectionPoint originalInjectionPoint = null;
-      if (!currentInjectionPoint.get().empty())
-      {
-         originalInjectionPoint = currentInjectionPoint.get().pop();
-      }
-      currentInjectionPoint.get().push(injectionPoint);
-      return originalInjectionPoint;
-   }
-   
-   public void pushDummyInjectionPoint()
-   {
-      currentInjectionPoint.get().push(DummyInjectionPoint.INSTANCE);
-   }
-   
-   public void popDummyInjectionPoint()
-   {
-      if (!currentInjectionPoint.get().isEmpty() && DummyInjectionPoint.INSTANCE.equals(currentInjectionPoint.get().peek()))
-      {
-         currentInjectionPoint.get().pop();
-      }
    }
 
    /**
@@ -1350,7 +1287,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
    public void cleanup()
    {
       services.cleanup();
-      this.currentInjectionPoint.remove();
       this.accessibleManagers.clear();
       this.beanResolver.clear();
       this.beans.clear();

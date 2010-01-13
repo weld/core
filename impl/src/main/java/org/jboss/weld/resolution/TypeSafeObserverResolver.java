@@ -61,7 +61,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
    }
 
    @Override
-   protected Iterable<ResolvableTransformer> getTransformers()
+   protected Iterable<ResolvableTransformer<Resolvable>> getTransformers()
    {
       return Collections.emptySet();
    }
