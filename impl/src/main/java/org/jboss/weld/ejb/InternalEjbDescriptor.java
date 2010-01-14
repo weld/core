@@ -19,7 +19,6 @@ package org.jboss.weld.ejb;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
@@ -45,19 +44,14 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> impleme
    public InternalEjbDescriptor(EjbDescriptor<T> ejbDescriptor)
    {
       this.delegate = ejbDescriptor;
-      Iterator<BusinessInterfaceDescriptor<?>> it = ejbDescriptor.getLocalBusinessInterfaces().iterator();
-      if (it.hasNext())
-      {
-         this.objectInterface = it.next().getInterface();
-      }
-      else
-      {
-         this.objectInterface = null;
-      }
+      this.objectInterface = findObjectInterface(ejbDescriptor.getLocalBusinessInterfaces());
       removeMethodSignatures = new ArrayList<MethodSignature>();
-      for (Method method : delegate.getRemoveMethods())
+      if (ejbDescriptor.getRemoveMethods() != null)
       {
-         removeMethodSignatures.add(new MethodSignatureImpl(method));
+         for (Method method : ejbDescriptor.getRemoveMethods())
+         {
+            removeMethodSignatures.add(new MethodSignatureImpl(method));
+         }
       }
    }
    
@@ -75,6 +69,18 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> impleme
    public Collection<MethodSignature> getRemoveMethodSignatures()
    {
       return removeMethodSignatures;
+   }
+   
+   private static Class<?> findObjectInterface(Collection<BusinessInterfaceDescriptor<?>> interfaces)
+   {
+      if (interfaces != null && !interfaces.isEmpty())
+      {
+         return interfaces.iterator().next().getInterface();
+      }
+      else
+      {
+         return null;
+      }
    }
    
 }

@@ -112,7 +112,10 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
       }
       for (InternalEjbDescriptor<?> ejbDescriptor : getEnvironment().getEjbDescriptors())
       {
-         createSessionBean(ejbDescriptor);
+         if (ejbDescriptor.isSingleton() || ejbDescriptor.isStateful() || ejbDescriptor.isStateless())
+         {
+            createSessionBean(ejbDescriptor);
+         }
       }
       
       // Now create the new beans
