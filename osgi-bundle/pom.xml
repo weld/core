@@ -185,7 +185,7 @@
    <scm> 
       <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/osgi-bundle</connection>
       <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/osgi-bundle</developerConnection>
-      <url>http://fisheye.jboss.org/browse/Weld/core/trunk/osgi-bundle</url>
+      <url>http://fisheye.jboss.org/browse/weld/core/trunk/osgi-bundle</url>
    </scm>
    
 </project>
