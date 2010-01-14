@@ -207,10 +207,6 @@ $> ant deploy]]></programlisting>
          visit <ulink url="http://localhost:8080/weld-translator">http://localhost:8080/weld-translator</ulink> to begin
          pseudo-translating.
       </para>
-
-      <para>
-         TODO Insert note about upgrading the Weld deployer that directs reader to section on the JBoss AS environment
-      </para>
    
    </section>
 
