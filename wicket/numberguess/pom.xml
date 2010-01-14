@@ -119,6 +119,7 @@
             <dependency>
                <groupId>org.jboss.weld.servlet</groupId>
                <artifactId>weld-servlet</artifactId>
+               <version>1.0.0-SNAPSHOT</version>
                <scope>runtime</scope>
             </dependency>
 
@@ -179,5 +180,11 @@
    <properties>
       <jetty.http.port>9090</jetty.http.port>
    </properties>
+
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/wicket/numberguess</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/wicket/numberguess</developerConnection>
+     <url>http://fisheye.jboss.org/browse/weld/examples/trunk/wicket/numberguess</url>
+  </scm>
 
 </project>

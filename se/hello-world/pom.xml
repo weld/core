@@ -81,5 +81,10 @@
       </plugins>
    </build>
 
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/se/hello-world</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/se/hello-world</developerConnection>
+     <url>http://fisheye.jboss.org/browse/weld/examples/trunk/se/hello-world</url>
+  </scm>
 
 </project>

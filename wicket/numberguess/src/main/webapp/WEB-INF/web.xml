@@ -16,6 +16,10 @@
          <param-value>org.jboss.weld.examples.wicket.NumberGuessApplication</param-value>
       </init-param>
    </filter>
+   
+   <listener>
+      <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+   </listener>
 
    <filter-mapping>
       <filter-name>Wicket Filter</filter-name>

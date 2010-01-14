@@ -662,5 +662,11 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
       <embedded-tomcat.debug.port>9190</embedded-tomcat.debug.port>
    </properties>
 
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/numberguess</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/jsf/numberguess</developerConnection>
+     <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/numberguess</url>
+  </scm>
+
 </project>
 

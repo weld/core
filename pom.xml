@@ -250,8 +250,8 @@
    <scm>
       <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk</connection>
       <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk</developerConnection>
-      <url>http://fisheye.jboss.org/browse/Weld/build/tags/weld-parent-2/weld-examples-parent</url>
-   </scm>
+     <url>http://fisheye.jboss.org/browse/weld/examples/trunk</url>
+  </scm>
 
    <profiles>
       <profile>
