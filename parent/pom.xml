@@ -170,5 +170,11 @@
       </dependencies>
    </dependencyManagement>
 
+   <scm> 
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/parent</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/parent</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld/core/trunk/parent</url>
+   </scm>
+
 </project>
 

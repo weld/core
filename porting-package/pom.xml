@@ -42,5 +42,11 @@
      </dependency>
       
    </dependencies>
+
+   <scm> 
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/porting-package</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/porting-package</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld/core/trunk/porting-package</url>
+   </scm>
    
 </project>

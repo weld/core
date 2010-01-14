@@ -184,7 +184,7 @@
    <scm>
       <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/bom</connection>
       <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/bom</developerConnection>
-      <url>http://fisheye.jboss.org/browse/Weld/core/bom</url>
+      <url>http://fisheye.jboss.org/browse/Weld/core/trunk/bom</url>
    </scm>
 
 </project>

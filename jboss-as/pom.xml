@@ -18,13 +18,6 @@
    <!-- Minimal metadata -->
    <description>A script to update Weld in JBoss AS</description>
 
-   <!-- SCM and distribution management -->
-   <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk</developerConnection>
-      <url>http://fisheye.jboss.org/browse/Weld</url>
-   </scm>
-
    <properties>
       <weld-deployer.version>6.0.0-SNAPSHOT</weld-deployer.version>
    </properties>
@@ -131,5 +124,11 @@
          </plugin>
       </plugins>
    </build>
+
+   <scm> 
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/jboss-as</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/jboss-as</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld/core/trunk/jboss-as</url>
+   </scm>
 
 </project>

@@ -270,4 +270,11 @@
          </build>
       </profile>
    </profiles>
+
+   <scm> 
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/tests</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/tests</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld/core/trunk/tests</url>
+   </scm>
+
 </project>

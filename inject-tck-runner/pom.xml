@@ -78,4 +78,10 @@
       </plugins>
    </build>
 
+   <scm> 
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/inject-tck-runner</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/inject-tck-runner</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld/core/trunk/inject-tck-runner</url>
+   </scm>
+
 </project>
