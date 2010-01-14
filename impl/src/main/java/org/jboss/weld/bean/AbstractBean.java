@@ -103,6 +103,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
+      initialized = true;
       if (isSpecializing())
       {
          preSpecialize(environment);
