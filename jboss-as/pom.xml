@@ -69,9 +69,9 @@
                   </goals>
                   <configuration>
                      <tasks>
-                        <property file="${project.directory}/local.build.properties" />
-                        <property file="${project.directory}/build.properties" />
-                        <property name="jboss.home" value="${env.JBOSS_HOME}" />s
+                        <property file="${basedir}/local.build.properties" />
+                        <property file="${basedir}/build.properties" />
+                        <property name="jboss.home" value="${env.JBOSS_HOME}" />
                         <delete
                            dir="${jboss.home}/server/default/deployers/weld.deployer"
                            failonerror="false" />
