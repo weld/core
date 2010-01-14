@@ -59,4 +59,11 @@
    
    </dependencies>
 
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/trunk/support</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/trunk/support</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/servlet/trunk/support</url>
+   </scm>
+
+
 </project>
