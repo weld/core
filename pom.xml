@@ -29,7 +29,7 @@
       <testng.version>5.10</testng.version>
       <weld.api.version>1.0</weld.api.version>
       <weld.core.version>1.0.1-SNAPSHOT</weld.core.version>
-      <slf4j.version>1.5.9.RC1</slf4j.version>
+      <slf4j.version>1.5.10</slf4j.version>
    </properties>
    
    <!-- Dependency management, including extra repositories if needed -->
@@ -185,6 +185,13 @@
          </plugin>
       </plugins>
    </build>
+
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/se/trunk</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/se/trunk</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/se/trunk</url>
+   </scm>
+
    
 </project>
 
