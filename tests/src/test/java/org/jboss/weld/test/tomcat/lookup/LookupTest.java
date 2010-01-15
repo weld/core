@@ -8,6 +8,7 @@ import org.jboss.testharness.impl.packaging.IntegrationTest;
 import org.jboss.testharness.impl.packaging.Resource;
 import org.jboss.testharness.impl.packaging.Resources;
 import org.jboss.weld.test.AbstractWeldTest;
+import org.jboss.weld.test.Utils;
 import org.testng.annotations.Test;
 
 @Artifact(addCurrentPackage=false)
@@ -22,15 +23,15 @@ public class LookupTest extends AbstractWeldTest
    @Test
    public void testManagerInJndi() throws Exception 
    {
-      assert getCurrentManager().getInstanceByType(Mouse.class).getManager() != null;
-      assert getCurrentManager().getInstanceByType(Mouse.class).getManager().equals(getCurrentManager());
+      assert Utils.getReference(getCurrentManager(),Mouse.class).getManager() != null;
+      assert Utils.getReference(getCurrentManager(),Mouse.class).getManager().equals(getCurrentManager());
    }
      
    @Test
    public void testResource() throws Exception 
    {
-      assert getCurrentManager().getInstanceByType(Vole.class).getManager() != null;
-      assert getCurrentManager().getInstanceByType(Vole.class).getManager().equals(getCurrentManager());
+      assert Utils.getReference(getCurrentManager(),Vole.class).getManager() != null;
+      assert Utils.getReference(getCurrentManager(),Vole.class).getManager().equals(getCurrentManager());
    }
    
 }
