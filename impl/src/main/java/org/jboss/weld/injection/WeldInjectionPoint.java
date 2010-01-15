@@ -49,7 +49,7 @@ public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<
          return Container.instance().services().get(ContextualStore.class).<Bean<T>, T>getContextual(declaringBeanId);
       }
       
-      protected WeldClass<?> getWeldClass()
+      protected WeldClass<?> getDeclaringWeldClass()
       {
          return Container.instance().services().get(ClassTransformer.class).loadClass(declaringClass);
       }

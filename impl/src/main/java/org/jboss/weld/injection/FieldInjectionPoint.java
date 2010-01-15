@@ -169,14 +169,14 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
          Bean<T> bean = getDeclaringBean();
          if (field == null || bean == null)
          {
-            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, getDeclaringBeanId(), getWeldClass(), fieldName);
+            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), fieldName);
          }
          return FieldInjectionPoint.of(getDeclaringBean(), getWeldField());
       }
       
       protected WeldField<T, ?> getWeldField()
       {
-         return getWeldClass().getDeclaredWeldField(fieldName);
+         return getDeclaringWeldClass().getDeclaredWeldField(fieldName);
       }
       
    }

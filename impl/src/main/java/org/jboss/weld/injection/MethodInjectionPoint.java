@@ -330,14 +330,14 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
          Bean<T> bean = getDeclaringBean();
          if (method == null || bean == null)
          {
-            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_METHOD_ON_DESERIALIZATION, getDeclaringBeanId(), getWeldClass(), signature);
+            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_METHOD_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), signature);
          }
          return MethodInjectionPoint.of(getDeclaringBean(), getWeldMethod());
       }
       
       protected WeldMethod<T, ?> getWeldMethod()
       {
-         return getWeldClass().getDeclaredWeldMethod(signature);
+         return getDeclaringWeldClass().getDeclaredWeldMethod(signature);
       }
       
    }

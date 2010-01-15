@@ -240,21 +240,21 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
          Bean<T> bean = getDeclaringBean();
          if (constructor == null || bean == null)
          {
-            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION, getDeclaringBeanId(), getWeldClass(), signature);
+            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), signature);
          }
          return ConstructorInjectionPoint.of(getDeclaringBean(), getWeldConstructor());
       }
       
       protected WeldConstructor<T> getWeldConstructor()
       {
-         return getWeldClass().getDeclaredWeldConstructor(signature);
+         return getDeclaringWeldClass().getDeclaredWeldConstructor(signature);
       }
       
       @SuppressWarnings("unchecked")
       @Override
-      protected WeldClass<T> getWeldClass()
+      protected WeldClass<T> getDeclaringWeldClass()
       {
-         return (WeldClass<T>) super.getWeldClass();
+         return (WeldClass<T>) super.getDeclaringWeldClass();
       }
       
    }

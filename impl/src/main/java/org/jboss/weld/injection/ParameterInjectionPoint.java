@@ -172,7 +172,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
          Bean<T> bean = getDeclaringBean();
          if (parameter == null || bean == null)
          {
-            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_PARAMETER_ON_DESERIALIZATION, getDeclaringBeanId(), getWeldClass(), methodSignature, parameterPosition);
+            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_PARAMETER_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), methodSignature, parameterPosition);
          }
          return ParameterInjectionPoint.of(getDeclaringBean(), getWeldParameter());
       }
@@ -181,7 +181,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
       {
          if (methodSignature != null)
          {
-            WeldMethod<?, ?> method = getWeldClass().getDeclaredWeldMethod(methodSignature);
+            WeldMethod<?, ?> method = getDeclaringWeldClass().getDeclaredWeldMethod(methodSignature);
             if (method.getParameters().size() > parameterPosition)
             {
                WeldParameter<?, ?> p = method.getWeldParameters().get(parameterPosition);
@@ -198,7 +198,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
          }
          else if (constructorSignature != null)
          {
-            WeldConstructor<?> constructor = getWeldClass().getDeclaredWeldConstructor(constructorSignature);
+            WeldConstructor<?> constructor = getDeclaringWeldClass().getDeclaredWeldConstructor(constructorSignature);
             if (constructor.getParameters().size() > parameterPosition)
             {
                WeldParameter<?, ?> p = constructor.getWeldParameters().get(parameterPosition);
