@@ -91,7 +91,7 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
 
    public void set(Object instance, Object value) throws IllegalArgumentException, IllegalAccessException
    {
-      field.set(instance, value);
+      SecureReflections.ensureFieldAccessible(field).set(instance, value);
    }
 
    public void setOnInstance(Object instance, Object value) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException
@@ -104,7 +104,7 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
    {
       try
       {
-         return (T) getDelegate().get(instance);
+         return (T) SecureReflections.ensureFieldAccessible(getDelegate()).get(instance);
       }
       catch (Exception e)
       {

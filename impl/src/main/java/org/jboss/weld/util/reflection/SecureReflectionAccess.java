@@ -16,11 +16,8 @@
  */
 package org.jboss.weld.util.reflection;
 
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
 import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 
 /**
  * Helper class for doing work in a privileged context under the
@@ -34,7 +31,6 @@ abstract class SecureReflectionAccess
     * @return The value of the operation
     * @throws Exception If the operation failed
     */
-   @SuppressWarnings("unchecked")
    public Object run() throws Exception
    {
 //      SecurityManager securityManager = System.getSecurityManager();
@@ -78,8 +74,7 @@ abstract class SecureReflectionAccess
 
    /**
     * Runs the work and unwraps and NoSuchFieldException from a possible
-    * PrivilegedActionException. Wraps any other exceptions in
-    * RuntimeException
+    * PrivilegedActionException. Wraps any other exceptions in RuntimeException
     * 
     * @return The result of the work (usually a Field)
     * @throws NoSuchFieldException If a field with the specified name is not
@@ -111,12 +106,11 @@ abstract class SecureReflectionAccess
 
    /**
     * Runs the work and unwraps and NoSuchMethodException from a possible
-    * PrivilegedActionException. Wraps any other exceptions in
-    * RuntimeException
+    * PrivilegedActionException. Wraps any other exceptions in RuntimeException
     * 
     * @return The result of the work (usually a Method)
-    * @throws NoSuchMethodException If a method with the specified name is
-    *            not found.
+    * @throws NoSuchMethodException If a method with the specified name is not
+    *            found.
     */
    public Object runAsMethodAccess() throws NoSuchMethodException
    {
@@ -145,22 +139,20 @@ abstract class SecureReflectionAccess
    /**
     * Runs the work and unwraps any IllegalAccessException,
     * IllegalArgumentException or InvocationTargetException from a possible
-    * PrivilegedActionException. Wraps any other exceptions in
-    * RuntimeException
+    * PrivilegedActionException. Wraps any other exceptions in RuntimeException
     * 
     * @return The return value of the method invoked
     * @throws IllegalAccessException If this Method object enforces Java
     *            language access control and the underlying method is
     *            inaccessible.
-    * @throws IllegalArgumentException If the method is an instance method
-    *            and the specified object argument is not an instance of the
-    *            class or interface declaring the underlying method (or of a
-    *            subclass or implementor thereof); if the number of actual
-    *            and formal parameters differ; if an unwrapping conversion
-    *            for primitive arguments fails; or if, after possible
-    *            unwrapping, a parameter value cannot be converted to the
-    *            corresponding formal parameter type by a method invocation
-    *            conversion.
+    * @throws IllegalArgumentException If the method is an instance method and
+    *            the specified object argument is not an instance of the class
+    *            or interface declaring the underlying method (or of a subclass
+    *            or implementor thereof); if the number of actual and formal
+    *            parameters differ; if an unwrapping conversion for primitive
+    *            arguments fails; or if, after possible unwrapping, a parameter
+    *            value cannot be converted to the corresponding formal parameter
+    *            type by a method invocation conversion.
     * @throws InvocationTargetException I the underlying method throws an
     *            exception.
     */
@@ -207,16 +199,15 @@ abstract class SecureReflectionAccess
    /**
     * Runs the work and unwraps any IllegalAccessException,
     * InstantiationException or IllegalAccessException from a possible
-    * PrivilegedActionException. Wraps any other exceptions in
-    * RuntimeException
+    * PrivilegedActionException. Wraps any other exceptions in RuntimeException
     * 
     * @return The result of the work (usually a new instance)
-    * @throws InstantiationException If the class or its nullary constructor
-    *            is not accessible.
-    * @throws IllegalAccessException If this Class represents an abstract
-    *            class, an interface, an array class, a primitive type, or
-    *            void; or if the class has no nullary constructor; or if the
-    *            instantiation fails for some other reason.
+    * @throws InstantiationException If the class or its nullary constructor is
+    *            not accessible.
+    * @throws IllegalAccessException If this Class represents an abstract class,
+    *            an interface, an array class, a primitive type, or void; or if
+    *            the class has no nullary constructor; or if the instantiation
+    *            fails for some other reason.
     */
    public Object runAsInstantiation() throws InstantiationException, IllegalAccessException
    {
@@ -248,38 +239,6 @@ abstract class SecureReflectionAccess
       {
          throw new RuntimeException(e);
       }
-   }
-
-   /**
-    * Makes an list of objects accessible. Must be run from within work() or
-    * another privileged location
-    * 
-    * @param accessibleObjects The objects to manipulate
-    * @return The accessible objects
-    */
-   protected AccessibleObject[] ensureAccessible(AccessibleObject[] accessibleObjects)
-   {
-      for (AccessibleObject accessibleObject : accessibleObjects)
-      {
-         ensureAccessible(accessibleObject);
-      }
-      return accessibleObjects;
-   }
-
-   /**
-    * Makes an object accessible. Must be run from within work() or another
-    * privileged location
-    * 
-    * @param accessibleObjects The object to manipulate
-    * @return The accessible object
-    */
-   protected AccessibleObject ensureAccessible(AccessibleObject accessibleObject)
-   {
-      if (!accessibleObject.isAccessible())
-      {
-         accessibleObject.setAccessible(true);
-      }
-      return accessibleObject;
    }
 
    protected abstract Object work() throws Exception;

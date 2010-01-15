@@ -1,6 +1,8 @@
 package org.jboss.weld.tests.unit.security;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -49,9 +51,23 @@ public class ReflectionTest
    @Test
    public void testFieldAccess()
    {
-      testAllAccessible(SecureReflections.getDeclaredFields(TestObject.class));
+      testAllAccessible(grantAccess(SecureReflections.getDeclaredFields(TestObject.class)));
    }
-
+   
+   private AccessibleObject[] grantAccess(AccessibleObject[] objects) {
+      for (AccessibleObject object : objects)
+      {
+         if (object instanceof Field) {
+            SecureReflections.ensureFieldAccessible((Field) object);
+         } else if (object instanceof Method) {
+            SecureReflections.ensureMethodAccessible((Method) object);
+         } else if (object instanceof Constructor<?>) {
+            SecureReflections.ensureConstructorAccessible((Constructor<?>)object);
+         }
+      }
+      return objects;
+   }
+   
    private void testAllAccessible(AccessibleObject[] objects)
    {
       for (AccessibleObject object : objects)
@@ -102,7 +118,7 @@ public class ReflectionTest
    @Test
    public void testMethodAccess()
    {
-      testAllAccessible(SecureReflections.getDeclaredMethods(TestObject.class));
+      testAllAccessible(grantAccess(SecureReflections.getDeclaredMethods(TestObject.class)));
    }
 
    @Test
@@ -144,7 +160,7 @@ public class ReflectionTest
    @Test
    public void testConstructorAccess()
    {
-      testAllAccessible(SecureReflections.getDeclaredConstructors(TestObject.class));
+      testAllAccessible(grantAccess(SecureReflections.getDeclaredConstructors(TestObject.class)));
    }
 
    @Test

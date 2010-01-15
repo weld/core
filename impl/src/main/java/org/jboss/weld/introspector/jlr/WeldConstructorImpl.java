@@ -39,6 +39,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.ListMultimap;
@@ -238,7 +239,7 @@ public Constructor<T> getDelegate()
     */
    public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
    {
-      return getDelegate().newInstance(parameters);
+      return SecureReflections.ensureConstructorAccessible(getDelegate()).newInstance(parameters);
    }
 
    /**

@@ -19,6 +19,7 @@ package org.jboss.weld.util.reflection;
 import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_VALUES_INACCESSIBLE;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -73,7 +74,7 @@ public class SecureReflections
          @Override
          protected Object work() throws Exception
          {
-            return ensureAccessible(clazz.getDeclaredField(fieldName));
+            return clazz.getDeclaredField(fieldName);
          }
       }.runAsFieldAccess();
    }
@@ -111,7 +112,7 @@ public class SecureReflections
          @Override
          protected Object work() throws Exception
          {
-            return ensureAccessible(clazz.getDeclaredFields());
+            return clazz.getDeclaredFields();
          }
       }.runAndWrap();
    }
@@ -155,7 +156,7 @@ public class SecureReflections
          @Override
          protected Object work() throws Exception
          {
-            return ensureAccessible(clazz.getDeclaredMethod(methodName, parameterTypes));
+            return clazz.getDeclaredMethod(methodName, parameterTypes);
          }
       }.runAsMethodAccess();
    }
@@ -193,7 +194,7 @@ public class SecureReflections
          @Override
          protected Object work() throws Exception
          {
-            return ensureAccessible(clazz.getDeclaredMethods());
+            return clazz.getDeclaredMethods();
          }
       }.runAndWrap();
    }
@@ -235,8 +236,7 @@ public class SecureReflections
          @Override
          protected Object work() throws Exception
          {
-            Constructor<?> constructor = clazz.getDeclaredConstructor(parameterTypes);
-            return clazz == Class.class ? constructor : ensureAccessible(constructor);
+            return clazz.getDeclaredConstructor(parameterTypes);
          }
       }.runAsMethodAccess();
    }
@@ -274,8 +274,7 @@ public class SecureReflections
          @Override
          protected Object work() throws Exception
          {
-            Constructor<?>[] constructors = clazz.getDeclaredConstructors();
-            return clazz == Class.class ? constructors : ensureAccessible(constructors);
+            return clazz.getDeclaredConstructors();
 
          }
       }.runAndWrap();
@@ -301,11 +300,66 @@ public class SecureReflections
          @Override
          protected Object work() throws Exception
          {
-            return ((Method) ensureAccessible(method)).invoke(instance, parameters);
+            return ensureMethodAccessible(method).invoke(instance, parameters);
          }
       }.runAsInvocation();
    }
-   
+
+   /**
+    * Makes a method accessible
+    * 
+    * @param method The method to make accessible
+    * @return The accessible method
+    */
+   public static Method ensureMethodAccessible(final Method method)
+   {
+      return (Method) ensureAccessible(method);
+   }
+
+   /**
+    * Makes a field accessible
+    * 
+    * @param field The field to make accessible
+    * @return The accessible field
+    */
+   public static Field ensureFieldAccessible(final Field field)
+   {
+      return (Field) ensureAccessible(field);
+   }
+
+   /**
+    * Makes a constructor accessible
+    * 
+    * @param constructor The constructor to make accessible
+    * @return The accessible constructor
+    */
+   public static <T> Constructor<T> ensureConstructorAccessible(final Constructor<T> constructor)
+   {
+      return (Constructor<T>) ensureAccessible(constructor);
+   }
+
+   /**
+    * Makes an object accessible.
+    * 
+    * @param accessibleObjects The object to manipulate
+    * @return The accessible object
+    */
+   private static AccessibleObject ensureAccessible(final AccessibleObject accessibleObject)
+   {
+      return (AccessibleObject) new SecureReflectionAccess()
+      {
+         @Override
+         protected Object work() throws Exception
+         {
+            if (!accessibleObject.isAccessible())
+            {
+               accessibleObject.setAccessible(true);
+            }
+            return accessibleObject;
+         }
+      }.runAndWrap();
+   }
+
    /**
     * Invokes a given method with given parameters on an instance
     * 
@@ -318,7 +372,7 @@ public class SecureReflections
     * @throws InvocationTargetException If there was another error invoking the
     *            method
     * @see java.lang.reflect.Method#invoke(Object, Object...)
-    */   
+    */
    public static Object invoke(final Object instance, final String methodName, final Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
    {
       return new SecureReflectionAccess()
@@ -332,7 +386,7 @@ public class SecureReflections
                parameterTypes[i] = parameters[i].getClass();
             }
             Method method = getMethod(instance.getClass(), methodName, parameterTypes);
-            return method.invoke(instance, parameters);
+            return ensureMethodAccessible(method).invoke(instance, parameters);
          }
       }.runAsInvocation();
    }
@@ -371,8 +425,8 @@ public class SecureReflections
    public static Method lookupMethod(Object instance, Method method) throws NoSuchMethodException
    {
       return lookupMethod(instance.getClass(), method.getName(), method.getParameterTypes());
-   }   
-   
+   }
+
    /**
     * Returns a method from the class or any class/interface in the inheritance
     * hierarchy
@@ -424,7 +478,7 @@ public class SecureReflections
    }
 
    /**
-    * Helper class for reading the value of an annotation 
+    * Helper class for reading the value of an annotation
     * 
     * @param annotation The annotation to inspect
     * @return The array of classes
@@ -445,7 +499,7 @@ public class SecureReflections
    /**
     * Checks if a method is found in a class
     * 
-    * @param clazz The class to inspect 
+    * @param clazz The class to inspect
     * @param methodName The name of the method
     * @param parameterTypes The parameter types of the method
     * @return true if method is present, false otherwise
