@@ -25,15 +25,39 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.literal.QualifierLiteral;
+import org.jboss.weld.introspector.ForwardingAnnotatedType;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
 import org.jboss.weld.literal.NormalScopeLiteral;
+import org.jboss.weld.literal.QualifierLiteral;
 import org.jboss.weld.literal.ScopeLiteral;
 import org.jboss.weld.literal.StereotypeLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery
 {
+   
+   private static class ExternalAnnotatedTypeWrapper<X> extends ForwardingAnnotatedType<X> implements ExternalAnnotatedType
+   {
+      
+      public static <X> AnnotatedType<X> of(AnnotatedType<X> annotatedType)
+      {
+         return new ExternalAnnotatedTypeWrapper<X>(annotatedType);
+      }
+      
+      private final AnnotatedType<X> delegate;
+
+      private ExternalAnnotatedTypeWrapper(AnnotatedType<X> delegate)
+      {
+         this.delegate = delegate;
+      }
+      
+      @Override
+      protected AnnotatedType<X> delegate()
+      {
+         return delegate;
+      }
+      
+   }
 
    public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
@@ -78,7 +102,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
 
    public void addAnnotatedType(AnnotatedType<?> type)
    {
-      getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer().addClass(type);
+      getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer().addClass(ExternalAnnotatedTypeWrapper.of(type));
    }
 
 }

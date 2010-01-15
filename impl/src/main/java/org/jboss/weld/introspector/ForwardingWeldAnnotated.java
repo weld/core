@@ -28,7 +28,7 @@ import java.util.Set;
  * @param <T>
  * @param <S>
  */
-public abstract class ForwardingWeldAnnotated<T, S> extends ForwardingAnnotated<T, S> implements WeldAnnotated<T, S>
+public abstract class ForwardingWeldAnnotated<T, S> extends ForwardingAnnotated implements WeldAnnotated<T, S>
 {
 
    public Type[] getActualTypeArguments()

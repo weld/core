@@ -169,4 +169,8 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
       return delegate().getDeclaredMetaAnnotations(metaAnnotationType);
    }
    
+   public boolean isDiscovered()
+   {
+      return delegate().isDiscovered();
+   }
 }

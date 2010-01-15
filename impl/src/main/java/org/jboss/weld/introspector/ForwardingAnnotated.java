@@ -30,7 +30,7 @@ import javax.enterprise.inject.spi.Annotated;
  * @param <T> the base type
  * @param <S> the annotated element type
  */
-public abstract class ForwardingAnnotated<T, S> implements Annotated
+public abstract class ForwardingAnnotated implements Annotated
 {
 
    protected abstract Annotated delegate();

@@ -61,6 +61,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
@@ -101,12 +102,28 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     */
    public static <T> ManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl beanManager)
    {
-      return new ManagedBean<T>(clazz, createId(ManagedBean.class.getSimpleName(), clazz), beanManager);
+      if (clazz.isDiscovered())
+      {
+         return new ManagedBean<T>(clazz, createSimpleId(ManagedBean.class.getSimpleName(), clazz), beanManager);
+      }
+      else
+      {
+         return new ManagedBean<T>(clazz, createId(ManagedBean.class.getSimpleName(), clazz), beanManager);
+      }
    }
    
-   protected static String createId(String beanType, WeldClass<?> clazz)
+   protected static String createSimpleId(String beanType, WeldClass<?> clazz)
    {
       return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(clazz.getBaseType()).toString();
+   }
+
+   /**
+    * create a more complete id for types that have been added through the SPI
+    * to prevent duplicate id's
+    */
+   protected static String createId(String beanType, WeldClass<?> clazz)
+   {
+      return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(AnnotatedTypes.createTypeId(clazz)).toString();
    }
 
    /**

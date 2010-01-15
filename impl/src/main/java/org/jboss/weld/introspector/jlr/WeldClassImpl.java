@@ -37,6 +37,7 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 
+import org.jboss.weld.bootstrap.events.ExternalAnnotatedType;
 import org.jboss.weld.introspector.ConstructorSignature;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
@@ -108,6 +109,8 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    // meta-annotation) of the item
    private final SetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap;
 
+   private final boolean discovered;
+
    public static <T> WeldClass<T> of(Class<T> clazz, ClassTransformer classTransformer)
    {
       return new WeldClassImpl<T>(clazz, clazz, null, new HierarchyDiscovery(clazz).getTypeClosure(), buildAnnotationMap(clazz.getAnnotations()), buildAnnotationMap(clazz.getDeclaredAnnotations()), classTransformer);
@@ -126,6 +129,15 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    protected WeldClassImpl(Class<T> rawType, Type type, AnnotatedType<T> annotatedType, Set<Type> typeClosure, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer)
    {
       super(annotationMap, declaredAnnotationMap, classTransformer, rawType, type, typeClosure);
+
+      if (annotatedType instanceof ExternalAnnotatedType)
+      {
+         discovered = false;
+      }
+      else
+      {
+         discovered = true;
+      }
 
       if (rawType.getSuperclass() != null)
       {
@@ -628,6 +640,11 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
       return Collections.unmodifiableSet(declaredMetaAnnotationMap.get(metaAnnotationType));
+   }
+
+   public boolean isDiscovered()
+   {
+      return discovered;
    }
 
 }

@@ -185,6 +185,8 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
    public boolean isAnonymousClass();
 
    public boolean isSerializable();
+   
+   public boolean isDiscovered();
 
    public <S> S cast(Object object);
 

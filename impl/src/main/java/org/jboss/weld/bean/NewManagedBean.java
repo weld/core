@@ -43,7 +43,14 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
     */
    public static <T> NewManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl beanManager)
    {
-      return new NewManagedBean<T>(clazz, createId(NewManagedBean.class.getSimpleName(), clazz), beanManager);
+      if (clazz.isDiscovered())
+      {
+         return new NewManagedBean<T>(clazz, createSimpleId(NewManagedBean.class.getSimpleName(), clazz), beanManager);
+      }
+      else
+      {
+         return new NewManagedBean<T>(clazz, createId(NewManagedBean.class.getSimpleName(), clazz), beanManager);
+      }
    }
    
    private Set<Annotation> bindings;
