@@ -37,5 +37,11 @@ public class InjectionPointTest extends AbstractWeldTest
       InjectionPoint ip1 = Utils.deserialize(Utils.serialize(ip));
       assert ip1.getMember().getName().equals("str");
    }
+   
+   @Test
+   public void testGetDeclaringType()
+   {
+      assert getReference(GrassyField.class).getCow().getName().equals("daisy");
+   }
 
 }

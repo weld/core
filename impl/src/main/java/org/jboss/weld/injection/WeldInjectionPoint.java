@@ -53,6 +53,11 @@ public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<
       {
          return Container.instance().services().get(ClassTransformer.class).loadClass(declaringClass);
       }
+      
+      protected String getDeclaringBeanId()
+      {
+         return declaringBeanId;
+      }
 
    }
    

@@ -36,6 +36,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.exceptions.InvalidOperationException;
 import org.jboss.weld.introspector.ConstructorSignature;
@@ -43,6 +44,7 @@ import org.jboss.weld.introspector.ForwardingWeldConstructor;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> implements WeldInjectionPoint<T, Constructor<T>>, Serializable
@@ -234,6 +236,12 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
       
       private Object readResolve()
       {
+         WeldConstructor<T> constructor = getWeldConstructor();
+         Bean<T> bean = getDeclaringBean();
+         if (constructor == null || bean == null)
+         {
+            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION, getDeclaringBeanId(), getWeldClass(), signature);
+         }
          return ConstructorInjectionPoint.of(getDeclaringBean(), getWeldConstructor());
       }
       

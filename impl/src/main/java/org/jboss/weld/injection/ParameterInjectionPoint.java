@@ -44,6 +44,7 @@ import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X> implements WeldInjectionPoint<T, Object>, Serializable
@@ -167,6 +168,12 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
       
       private Object readResolve()
       {
+         WeldParameter<T, ?> parameter = getWeldParameter();
+         Bean<T> bean = getDeclaringBean();
+         if (parameter == null || bean == null)
+         {
+            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_PARAMETER_ON_DESERIALIZATION, getDeclaringBeanId(), getWeldClass(), methodSignature, parameterPosition);
+         }
          return ParameterInjectionPoint.of(getDeclaringBean(), getWeldParameter());
       }
       

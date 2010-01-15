@@ -256,14 +256,21 @@ public class ManagedBean<T> extends AbstractClassBean<T>
                   // Without this, the chaining of decorators will fail as the incomplete instance will be resolved
                   ctx.push(instance);
                }
-               InjectionPoint originalInjectionPoint = null;
+               
                if (hasDecorators())
                {
-                  originalInjectionPoint = attachCorrectInjectionPoint();
-               }
-               if (hasDecorators())
-               {
-                  instance = applyDecorators(instance, ctx, originalInjectionPoint);
+                  InjectionPoint originalInjectionPoint = null;
+                  try
+                  {
+                     originalInjectionPoint = attachCorrectInjectionPoint();
+                     instance = applyDecorators(instance, ctx, originalInjectionPoint);
+                     
+                  }
+                  finally
+                  {
+                     Container.instance().services().get(CurrentInjectionPoint.class).pop();
+                     Container.instance().services().get(CurrentInjectionPoint.class).push(originalInjectionPoint);
+                  }
                }
                if (isInterceptionCandidate() && (hasCdiBoundInterceptors() || hasDirectlyDefinedInterceptors()))
                {

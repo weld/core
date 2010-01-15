@@ -36,9 +36,11 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.inject.Inject;
 
 import org.jboss.interceptor.util.InterceptionUtils;
+import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.introspector.ForwardingWeldField;
 import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> implements WeldInjectionPoint<T, Field>, Serializable
@@ -163,6 +165,12 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
       
       private Object readResolve()
       {
+         WeldField<T, ?> field = getWeldField();
+         Bean<T> bean = getDeclaringBean();
+         if (field == null || bean == null)
+         {
+            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, getDeclaringBeanId(), getWeldClass(), fieldName);
+         }
          return FieldInjectionPoint.of(getDeclaringBean(), getWeldField());
       }
       

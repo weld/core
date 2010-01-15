@@ -35,11 +35,13 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.introspector.ForwardingWeldMethod;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> implements WeldInjectionPoint<T, Method>
@@ -324,6 +326,12 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
       
       private Object readResolve()
       {
+         WeldMethod<T, ?> method = getWeldMethod();
+         Bean<T> bean = getDeclaringBean();
+         if (method == null || bean == null)
+         {
+            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_METHOD_ON_DESERIALIZATION, getDeclaringBeanId(), getWeldClass(), signature);
+         }
          return MethodInjectionPoint.of(getDeclaringBean(), getWeldMethod());
       }
       
