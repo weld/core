@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-01-06 12:17+0000\n"
-"PO-Revision-Date: 2009-12-19 18:01-0300\n"
-"Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
+"PO-Revision-Date: 2010-01-15 10:27-0300\n"
+"Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +21,7 @@ msgstr "Exemplo de aplicação web JSF "
 
 #. Tag: para
 #: example.xml:6
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Let's illustrate these ideas with a full example. We're going to implement "
 "user login/logout for an application that uses JSF. First, we'll define a "
@@ -29,14 +29,15 @@ msgid ""
 "with constraints defined using annotations from the Bean Validation "
 "specification:"
 msgstr ""
-"Ilustraremos essas idéias com um exemplo completo. Nós  implementaremos um "
+"Vamos ilustrar essas ideias com um exemplo completo. Nós  implementaremos um "
 "login/logout de usuário de uma aplicação que utiliza JSF. Primeiro, "
-"definiremos um Web Bean que irá armazenar o nome do usuário (username) e a "
-"senha (password) fornecidos durante o login:"
+"definiremos um bean com escopo de solicitação para manter o nome do usuário "
+"(username) e a senha (password) fornecidos durante o login, com as "
+"restrições definidas utilizando anotações da especificação Beans Validation:"
 
 #. Tag: programlisting
 #: example.xml:12
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[@Named @RequestScoped\n"
 "public class Credentials {\n"
@@ -57,23 +58,24 @@ msgstr ""
 "    private String username;\n"
 "    private String password;\n"
 "    \n"
+"    @NotNull @Length(min=3, max=25)\n"
 "    public String getUsername() { return username; }\n"
 "    public void setUsername(String username) { this.username = username; }\n"
 "    \n"
+"    @NotNull @Length(min=6, max=20)\n"
 "    public String getPassword() { return password; }\n"
 "    public void setPassword(String password) { this.password = password; }\n"
 "}]]>"
 
 #. Tag: para
 #: example.xml:14
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "This bean is bound to the login prompt in the following JSF form:"
-msgstr ""
-"Esse Web Bean é vinculado ao prompt de login do seguinte formulário JSF:"
+msgstr "Esse bean é vinculado ao prompt de login no seguinte formulário JSF:"
 
 #. Tag: programlisting
 #: example.xml:16
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[<h:form>\n"
 "   <h:panelGrid columns=\"2\" rendered=\"#{!login.loggedIn}\">\n"
@@ -92,10 +94,12 @@ msgid ""
 msgstr ""
 "<![CDATA[<h:form>\n"
 "   <h:panelGrid columns=\"2\" rendered=\"#{!login.loggedIn}\">\n"
-"      <h:outputLabel for=\"username\">Username:</h:outputLabel>\n"
-"      <h:inputText id=\"username\" value=\"#{credentials.username}\"/>\n"
-"      <h:outputLabel for=\"password\">Password:</h:outputLabel>\n"
-"      <h:inputText id=\"password\" value=\"#{credentials.password}\"/>\n"
+"      <f:validateBean>\n"
+"         <h:outputLabel for=\"username\">Username:</h:outputLabel>\n"
+"         <h:inputText id=\"username\" value=\"#{credentials.username}\"/>\n"
+"         <h:outputLabel for=\"password\">Password:</h:outputLabel>\n"
+"         <h:inputText id=\"password\" value=\"#{credentials.password}\"/>\n"
+"      </f:validateBean>\n"
 "   </h:panelGrid>\n"
 "   <h:commandButton value=\"Login\" action=\"#{login.login}\" rendered=\"#{!"
 "login.loggedIn}\"/>\n"
@@ -107,11 +111,11 @@ msgstr ""
 #: example.xml:18
 #, no-c-format
 msgid "Users are represented by a JPA entity:"
-msgstr ""
+msgstr "Os usuários são representados por uma entidade JPA:"
 
 #. Tag: programlisting
 #: example.xml:22
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[@Entity\n"
 "public class User {\n"
@@ -123,16 +127,14 @@ msgid ""
 "   public String setPassword(String password) { this.password = password; }\n"
 "}]]>"
 msgstr ""
-"<![CDATA[@Named @RequestScoped\n"
-"public class Credentials {\n"
-"    private String username;\n"
-"    private String password;\n"
-"    \n"
-"    public String getUsername() { return username; }\n"
-"    public void setUsername(String username) { this.username = username; }\n"
-"    \n"
-"    public String getPassword() { return password; }\n"
-"    public void setPassword(String password) { this.password = password; }\n"
+"<![CDATA[@Entity\n"
+"public class User {\n"
+"   private @NotNull @Length(min=3, max=25) @Id String username;\n"
+"   private @NotNull @Length(min=6, max=20) String password;\n"
+"   \n"
+"   public String getUsername() { return username; }\n"
+"   public void setUsername(String username) { this.username = username; }\n"
+"   public String setPassword(String password) { this.password = password; }\n"
 "}]]>"
 
 #. Tag: para
@@ -143,18 +145,21 @@ msgid ""
 "file to configure the JPA persistence unit containing <literal>User</"
 "literal>.)"
 msgstr ""
+"(Observe que também vamos precisar de um arquivo <literal>persistence.xml</"
+"literal> para configurar a unidade de persistência JPA contendo a entidade "
+"<literal>User</literal>.)"
 
 #. Tag: para
 #: example.xml:29
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The actual work is done by a session-scoped bean that maintains information "
 "about the currently logged-in user and exposes the <literal>User</literal> "
 "entity to other beans:"
 msgstr ""
-"O verdadeiro trabalho é realizado por um Web Bean em escopo de sessão que "
+"O verdadeiro trabalho é realizado por um bean com escopo de sessão que "
 "mantém informações sobre o atual usuário conectado e expõe a entidade "
-"<literal>User</literal> para outros Web Beans:"
+"<literal>User</literal> para outros beans:"
 
 #. Tag: programlisting
 #: example.xml:34
@@ -243,6 +248,8 @@ msgid ""
 "<literal>@LoggedIn</literal> and <literal>@UserDatabase</literal> are custom "
 "qualifier annotations:"
 msgstr ""
+"<literal>@LoggedIn</literal> e <literal>@UserDatabase</literal> são "
+"anotações de qualificadores personalizados:"
 
 #. Tag: programlisting
 #: example.xml:38
@@ -279,28 +286,32 @@ msgid ""
 "We need an adaptor bean to expose our typesafe <literal>EntityManager</"
 "literal>:"
 msgstr ""
+"Precisamos de um bean adaptador para expor nossa <literal>EntityManager</"
+"literal> typesafe:"
 
 #. Tag: programlisting
 #: example.xml:46
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[class UserDatabaseProducer {\n"
 "   @Produces @UserDatabase @PersistenceContext \n"
 "   static EntityManager userDatabase;\n"
 "}]]>"
 msgstr ""
-"<![CDATA[public class UserDatabaseProducer {\n"
-"   @Produces @UserDatabase @PersistenceContext EntityManager userDatabase;\n"
+"<![CDATA[class UserDatabaseProducer {\n"
+"   @Produces @UserDatabase @PersistenceContext \n"
+"   static EntityManager userDatabase;\n"
 "}]]>"
 
 #. Tag: para
 #: example.xml:48
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Now <literal>DocumentEditor</literal>, or any other bean, can easily inject "
 "the current user:"
 msgstr ""
-"Agora, qualquer outro Web Bean pode facilmente injetar o usuário atual:"
+"Agora, <literal>DocumentEditor</literal> ou qualquer outro bean, pode "
+"facilmente injetar o usuário atual:"
 
 #. Tag: programlisting
 #: example.xml:50
@@ -332,7 +343,7 @@ msgstr ""
 #: example.xml:52
 #, no-c-format
 msgid "Or we can reference the current user in a JSF view:"
-msgstr ""
+msgstr "Ou podemos referenciar o usuário atual em uma visão JSF:"
 
 #. Tag: programlisting
 #: example.xml:54
@@ -348,16 +359,11 @@ msgstr ""
 
 #. Tag: para
 #: example.xml:56
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Hopefully, this example gave you a taste of the CDI programming model. In "
 "the next chapter, we'll explore dependency injection in greater depth."
 msgstr ""
-"Esperamos que esse exemplo tenha dado um gostinho do modelo de programação "
-"com Web Beans. No capítulo seguinte, exploraremos a injeção de dependência "
-"da Web Beans em profundidade."
-
-#~ msgid "Of course, <literal>@LoggedIn</literal> is a binding annotation:"
-#~ msgstr ""
-#~ "Certamente, <literal>@LoggedIn</literal> é uma anotação de binding "
-#~ "(binding annotation):"
+"Esperamos que este exemplo tenha dado um gostinho do modelo de programação "
+"em CDI. No capítulo seguinte, exploraremos a injeção de dependência com "
+"maior profundidade."
