@@ -25,12 +25,14 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.introspector.ForwardingAnnotatedType;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
 import org.jboss.weld.literal.NormalScopeLiteral;
 import org.jboss.weld.literal.QualifierLiteral;
 import org.jboss.weld.literal.ScopeLiteral;
 import org.jboss.weld.literal.StereotypeLiteral;
+import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery
@@ -84,6 +86,10 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
       if (normal)
       {
          getTypeStore().add(scopeType, new NormalScopeLiteral(passivating));
+      }
+      else if (passivating)
+      {
+         throw new DefinitionException(BootstrapMessage.PASSIVATING_NON_NORMAL_SCOPE_ILLEGAL, scopeType);
       }
       else
       {
