@@ -22,11 +22,11 @@ public class BeanManagerLocator
    {
       if (ServletTestRunner.getCurrentServletContext() != null)
       {
-         return ServletHelper.getModuleBeanManager(ServletTestRunner.getCurrentServletContext());
+         return ServletHelper.getModuleBeanManager(ServletTestRunner.getCurrentServletContext()).getCurrent();
       }
       else if (getTestArchive() != null)
       {
-         return Container.instance().beanDeploymentArchives().get(getTestArchive());
+         return Container.instance().beanDeploymentArchives().get(getTestArchive()).getCurrent();
       }
       else
       {

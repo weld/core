@@ -11,38 +11,44 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Reception;
+import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.bean.ForwardingBean;
+import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.AbstractWeldTest;
+import org.jboss.weld.util.collections.Arrays2;
 import org.testng.annotations.Test;
-
 
 /**
  * 
  * Spec version: 20090519
- *
+ * 
  */
 @Artifact
 public class ActivitiesTest extends AbstractWeldTest
 {
 
-   private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
+   private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation> singleton(DefaultLiteral.INSTANCE);
 
    private Bean<?> createDummyBean(BeanManager beanManager, final Type injectionPointType)
    {
       final Set<InjectionPoint> injectionPoints = new HashSet<InjectionPoint>();
       final Set<Type> types = new HashSet<Type>();
       final Set<Annotation> bindings = new HashSet<Annotation>();
-      bindings.add(new AnnotationLiteral<Tame>() {});
+      bindings.add(new AnnotationLiteral<Tame>()
+      {
+      });
       types.add(Object.class);
       final Bean<?> bean = new Bean<Object>()
       {
@@ -192,15 +198,15 @@ public class ActivitiesTest extends AbstractWeldTest
       assert childActivity.getInjectableReference(dummyBean.getInjectionPoints().iterator().next(), childActivity.createCreationalContext(dummyBean)) != null;
    }
 
-//   @Test
-//   public void testObserverBelongingToParentActivityBelongsToChildActivity()
-//   {
-//      assert getCurrentManager().resolveObservers(new NightTime()).size() == 1;
-//      Observer<?> observer = getCurrentManager().resolveObservers(new NightTime()).iterator().next();
-//      BeanManager childActivity = getCurrentManager().createActivity();
-//      assert childActivity.resolveObservers(new NightTime()).size() == 1;
-//      assert childActivity.resolveObservers(new NightTime()).iterator().next().equals(observer);
-//   }
+   @Test
+   public void testObserverBelongingToParentActivityBelongsToChildActivity()
+   {
+      assert getCurrentManager().resolveObserverMethods(new NightTime()).size() == 1;
+      ObserverMethod<?> observer = getCurrentManager().resolveObserverMethods(new NightTime()).iterator().next();
+      BeanManager childActivity = getCurrentManager().createActivity();
+      assert childActivity.resolveObserverMethods(new NightTime()).size() == 1;
+      assert childActivity.resolveObserverMethods(new NightTime()).iterator().next().equals(observer);
+   }
 
    @Test
    public void testObserverBelongingToParentFiresForChildActivity()
@@ -236,10 +242,12 @@ public class ActivitiesTest extends AbstractWeldTest
       BeanManagerImpl childActivity = getCurrentManager().createActivity();
       Bean<?> dummyBean = createDummyBean(childActivity, Cow.class);
       childActivity.addBean(dummyBean);
-      assert getBeans(Object.class, new AnnotationLiteral<Tame>() {}).size() == 0;
+      assert getBeans(Object.class, new AnnotationLiteral<Tame>()
+      {
+      }).size() == 0;
    }
 
-   @Test(expectedExceptions=UnsatisfiedResolutionException.class)
+   @Test(expectedExceptions = UnsatisfiedResolutionException.class)
    public void testInstanceProcessedByParentActivity()
    {
       Context dummyContext = new DummyContext();
@@ -248,9 +256,11 @@ public class ActivitiesTest extends AbstractWeldTest
       final Bean<Cow> bean = getBeans(Cow.class).iterator().next();
       BeanManagerImpl childActivity = getCurrentManager().createActivity();
       final Set<Annotation> bindingTypes = new HashSet<Annotation>();
-      bindingTypes.add(new AnnotationLiteral<Tame>() {});
+      bindingTypes.add(new AnnotationLiteral<Tame>()
+      {
+      });
       childActivity.addBean(new ForwardingBean<Cow>()
-            {
+      {
 
          @Override
          protected Bean<Cow> delegate()
@@ -270,28 +280,52 @@ public class ActivitiesTest extends AbstractWeldTest
             return Collections.emptySet();
          }
 
-            });
+      });
       getReference(Field.class).get();
    }
 
    @Test
    public void testObserverBelongingToChildDoesNotFireForParentActivity()
    {
-      
-//      BeanManager childActivity = getCurrentManager().createActivity();
-//      ObserverMethod<NightTime> observer = new Observer<NightTime>()
-//      {
-//
-//         public boolean notify(NightTime event)
-//         {
-//            assert false;
-//            return false;
-//         }
-//
-//      };
-//      //TODO Fix this test to use an observer method in a child activity
-////      childActivity.addObserver(observer);
-//      getCurrentManager().fireEvent(new NightTime());
+
+      BeanManagerImpl childActivity = getCurrentManager().createActivity();
+      ObserverMethod<NightTime> observer = new ObserverMethod<NightTime>()
+      {
+
+         public void notify(NightTime event)
+         {
+            assert false;
+         }
+
+         public Class<?> getBeanClass()
+         {
+            return NightTime.class;
+         }
+
+         public Set<Annotation> getObservedQualifiers()
+         {
+            return Arrays2.asSet(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE);
+         }
+
+         public Type getObservedType()
+         {
+            return NightTime.class;
+         }
+
+         public Reception getReception()
+         {
+            return Reception.ALWAYS;
+         }
+
+         public TransactionPhase getTransactionPhase()
+         {
+            return TransactionPhase.IN_PROGRESS;
+         }
+
+      };
+      // TODO Fix this test to use an observer method in a child activity
+      childActivity.addObserver(observer);
+      getCurrentManager().fireEvent(new NightTime());
    }
 
 }
