@@ -58,11 +58,11 @@ public class ReflectionTest
       for (AccessibleObject object : objects)
       {
          if (object instanceof Field) {
-            SecureReflections.ensureFieldAccessible((Field) object);
+            SecureReflections.ensureAccessible((Field) object);
          } else if (object instanceof Method) {
-            SecureReflections.ensureMethodAccessible((Method) object);
+            SecureReflections.ensureAccessible((Method) object);
          } else if (object instanceof Constructor<?>) {
-            SecureReflections.ensureConstructorAccessible((Constructor<?>)object);
+            SecureReflections.ensureAccessible((Constructor<?>)object);
          }
       }
       return objects;
