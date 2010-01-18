@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-01-06 12:17+0000\n"
-"PO-Revision-Date: 2009-12-19 18:09-0300\n"
-"Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
+"PO-Revision-Date: 2010-01-18 17:51-0300\n"
+"Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,9 +15,9 @@ msgstr ""
 
 #. Tag: title
 #: injection.xml:4
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Dependency injection and programmatic lookup"
-msgstr "Injeção de Dependências"
+msgstr "Injeção e pesquisa programática de dependências"
 
 #. Tag: para
 #: injection.xml:6
@@ -27,12 +27,15 @@ msgid ""
 "recognized&#8212;is dependency injection; excuse me, <emphasis>typesafe</"
 "emphasis> dependency injection."
 msgstr ""
+"Uma das características mais significativas do CDI&#8212;certamente a mais "
+"reconhecida&#8212;é injeção de dependência; desculpe-me, injeção de "
+"dependência com <emphasis>typesafe</emphasis>."
 
 #. Tag: title
 #: injection.xml:12
 #, no-c-format
 msgid "Injection points"
-msgstr ""
+msgstr "Pontos de injeção"
 
 #. Tag: para
 #: injection.xml:14
@@ -42,12 +45,15 @@ msgid ""
 "that is injected during bean instantiation. Injection can occur via three "
 "different mechanisms."
 msgstr ""
+"A anotação <literal>@Inject</literal> nos permite definir um ponto de "
+"injeção que é injetado durante a instanciação do bean. A injeção pode "
+"ocorrer por meio de três diferentes mecanismos."
 
 #. Tag: para
 #: injection.xml:19
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<emphasis>Bean constructor</emphasis> parameter injection:"
-msgstr "<emphasis>Initializer</emphasis>  injeção por parâmetro de método:"
+msgstr "Injeção por parâmetro no <emphasis>construtor do bean</emphasis>:"
 
 #. Tag: programlisting
 #: injection.xml:23
@@ -79,13 +85,13 @@ msgstr ""
 #: injection.xml:26
 #, no-c-format
 msgid "A bean can only have one injectable constructor."
-msgstr ""
+msgstr "Um bean pode possuir somente um construtor injetável."
 
 #. Tag: para
 #: injection.xml:31
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<emphasis>Initializer method</emphasis> parameter injection:"
-msgstr "<emphasis>Initializer</emphasis>  injeção por parâmetro de método:"
+msgstr "Injeção por parâmetro em <emphasis>método inicializador</emphasis>:"
 
 #. Tag: programlisting
 #: injection.xml:35
@@ -121,6 +127,9 @@ msgid ""
 "the initializer method is not required to be a business method of the "
 "session bean."
 msgstr ""
+"Um bean pode possuir múltiplos métodos inicializadores. Se o bean é um "
+"session bean, o método inicializador não é necessário ser um método de "
+"negócio do session bean."
 
 #. Tag: para
 #: injection.xml:44
@@ -151,56 +160,61 @@ msgid ""
 "Getter and setter methods are not required for field injection to work "
 "(unlike with JSF managed beans)."
 msgstr ""
+"Métodos getter e setter não são necessários para injeção em campo funcionar "
+"(exceto com managed beans do JSF)."
 
 #. Tag: para
 #: injection.xml:56
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Dependency injection always occurs when the bean instance is first "
 "instantiated by the container. Simplifying just a little, things happen in "
 "this order:"
 msgstr ""
-"A injeção de dependências sempre ocorre quando a instância do Web Bean é "
-"instanciada."
+"A injeção de dependências sempre ocorre quando a instância do bean é "
+"instanciada pela primeira vez no contêiner. Simplificando um pouco, as "
+"coisas acontecem nesta ordem:"
 
 #. Tag: para
 #: injection.xml:63
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "First, the container calls the bean constructor (the default constructor or "
 "the one annotated <literal>@Inject</literal>), to obtain an instance of the "
 "bean."
 msgstr ""
-"Em primeiro lugar, a gerenciador do Web Bean chama o construtor do Web Bean "
-"para obter uma instância do Web Bean."
+"Em primeiro lugar, o contêiner chama o construtor do bean (o construtor "
+"padrão ou um anotado com <literal>@Inject</literal>) para obter uma "
+"instância do bean."
 
 #. Tag: para
 #: injection.xml:69
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Next, the container initializes the values of all injected fields of the "
 "bean."
 msgstr ""
-"Em seguida, o gerenciador do Web Bean inicializa os valores de todos os "
-"campos injetados do Web Bean."
+"Em seguida, o contêiner inicializa os valores de todos os campos injetados "
+"do bean."
 
 #. Tag: para
 #: injection.xml:74
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Next, the container calls all initializer methods of bean (the call order is "
 "not portable, don't rely on it)."
 msgstr ""
-"Em seguida, o gerenciador do Web Bean chama todos os métodos do Web Bean."
+"Em seguida, o contêiner chama todos os métodos inicializadores do bean (a "
+"ordem de chamada não é portável, não confie nela)."
 
 #. Tag: para
 #: injection.xml:80
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Finally, the <literal>@PostConstruct</literal> method, if any, is called."
 msgstr ""
-"Finalmente, o método <literal>@PostConstruct</literal> do Web Bean, se for o "
-"caso, é chamado."
+"Finalmente, o método <literal>@PostConstruct</literal>, se for o caso, é "
+"chamado."
 
 #. Tag: para
 #: injection.xml:86
@@ -210,6 +224,9 @@ msgid ""
 "declared by a superclass before initializing injected fields declared by a "
 "subclass.)"
 msgstr ""
+"(A única complicação é que o contêiner pode chamar métodos inicializadores "
+"declarados por uma superclasse antes de inicializar campos injetados "
+"declarados por uma subclasse.)"
 
 #. Tag: para
 #: injection.xml:90
@@ -218,6 +235,8 @@ msgid ""
 "One major advantage of constructor injection is that it allows the bean to "
 "be immutable."
 msgstr ""
+"Uma grande vantagem de injeção em construtores é que isto nos permite que o "
+"bean seja imutável."
 
 #. Tag: para
 #: injection.xml:95
@@ -227,6 +246,9 @@ msgid ""
 "invoked by the container. For instance, parameter injection is supported for "
 "producer methods:"
 msgstr ""
+"CDI também suporta injeção de parâmetro para alguns outros métodos que são "
+"invocados pelo contêiner. Por exemplo, a injeção de parâmetro é suportada em "
+"métodos produtores:"
 
 #. Tag: programlisting
 #: injection.xml:100
@@ -249,12 +271,16 @@ msgid ""
 "observer methods (which we'll meet in <xref linkend=\"events\"/>) and "
 "disposer methods."
 msgstr ""
+"Este é um caso onde a anotação <literal>@Inject</literal> <emphasis>não é</"
+"emphasis> necessária no ponto de injeção. O mesmo é verdade para métodos "
+"observadores (os quais encontraremos no <xref linkend=\"events\"/>) e "
+"métodos destruidores."
 
 #. Tag: title
 #: injection.xml:110
 #, no-c-format
 msgid "What gets injected"
-msgstr ""
+msgstr "Como as injeções são obtidas"
 
 #. Tag: para
 #: injection.xml:112
@@ -268,45 +294,51 @@ msgid ""
 "inform the developer immediately if a bean's dependencies cannot be "
 "satisfied."
 msgstr ""
+"A especificação CDI define um procedimento, chamado de <emphasis>resolução "
+"segura de tipos</emphasis>, que o contêiner segue ao indentificar o bean a "
+"ser injetado em um ponto de injeção. Este algoritmo parece complexo no "
+"início, mas uma vez quq você o entende, é realmente muito intuitivo. A "
+"resolução segura de tipos é realizada durante a inicialização do sistema, o "
+"que significa que o contêiner informará ao desenvolvedor imediatamente se "
+"alguma das dependências de um bean não puder ser satisfeita."
 
 #. Tag: para
 #: injection.xml:120
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The purpose of this algorithm is to allow multiple beans to implement the "
 "same bean type and either:"
 msgstr ""
-"O objetivo deste algoritmo é permitir que vários Web Beans implementem o "
-"mesmo tipo de API e também:"
+"O objetivo deste algoritmo é permitir que múltiplos beans implementem o "
+"mesmo tipo de bean e também:"
 
 #. Tag: para
 #: injection.xml:126
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "allow the client to select which implementation it requires using a "
 "<emphasis>qualifier</emphasis> or"
 msgstr ""
-"permitir que o cliente escolha a implementação que lhe melhor convier "
-"utilizando <emphasis>anotações de binding (binding annotations)</emphasis>,"
+"permitir que o cliente escolha qual implementação ele necessita utilizando "
+"um <emphasis>qualificador</emphasis> ou"
 
 #. Tag: para
 #: injection.xml:131
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "allow the application deployer to select which implementation is appropriate "
 "for a particular deployment, without changes to the client, by enabling or "
 "disabling an <emphasis>alternative</emphasis>, or"
 msgstr ""
-"permitir ao implantador (deployer) da aplicação escolher qual a implentação "
-"é adequada para uma determinada implantação, sem alterações para o cliente, "
-"por ativar ou desativar <emphasis>tipos de implantação (deployment types)</"
-"emphasis>, ou"
+"permitir ao implantador (deployer) da aplicação escolher qual implentação é "
+"adequada para uma determinada implantação, sem alterações para o cliente, ao "
+"ativar ou desativar um <emphasis>alternativo</emphasis>, ou"
 
 #. Tag: para
 #: injection.xml:137
 #, no-c-format
 msgid "allow the beans to be isolated into separate modules."
-msgstr ""
+msgstr "permitir que os beans sejam isolados dentro de módulos separados."
 
 #. Tag: para
 #: injection.xml:143
@@ -317,6 +349,10 @@ msgid ""
 "the simplest possible scenario. When you first start your application, "
 "you'll likely have lots of those."
 msgstr ""
+"Obviamente, se você possui exatamente um bean de um dado tipo, e um ponto de "
+"injeção com este mesmo tipo, então o bean A irá para onde pedir um A. Este é "
+"o cenário mais simples possível. Quando você começar sua aplicação, você "
+"terá provavelmente vários desses."
 
 #. Tag: para
 #: injection.xml:149
@@ -326,12 +362,15 @@ msgid ""
 "determines which bean to inject in more advanced cases. We'll start by "
 "taking a closer look at qualifiers."
 msgstr ""
+"Mas então, as coisas começam a ficar complicadas. Vamos explorar como o "
+"contêiner determina qual bean injetar em casos mais avançados. Nós "
+"iniciaremos dando um olhar mais atento em qualificadores."
 
 #. Tag: title
 #: injection.xml:157
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Qualifier annotations"
-msgstr "Anotações de ligação (binding annotations)"
+msgstr "Anotações de qualificadores"
 
 #. Tag: para
 #: injection.xml:159
@@ -342,6 +381,10 @@ msgid ""
 "qualifier annotation. For example, there might be two implementations of "
 "<literal>PaymentProcessor</literal>:"
 msgstr ""
+"Se temos mais do que um bean que implementa um tipo de bean específico, o "
+"ponto de injeção pode especificar exatamente qual bean deve ser injetado "
+"usando uma anotação de qualificador. Por exemplo, pode haver duas "
+"implementações de <literal>PaymentProcessor</literal>:"
 
 #. Tag: programlisting
 #: injection.xml:165
@@ -373,13 +416,13 @@ msgstr ""
 
 #. Tag: para
 #: injection.xml:169
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Where <literal>@Synchronous</literal> and <literal>@Asynchronous</literal> "
 "are qualifier annotations:"
 msgstr ""
-"Onde <literal>@PayByCheque</literal> e <literal>@PayByCreditCard</literal> "
-"são anotações de binding:"
+"Onde <literal>@Synchronous</literal> e <literal>@Asynchronous</literal> são "
+"anotações de qualificadores:"
 
 #. Tag: programlisting
 #: injection.xml:173
@@ -411,13 +454,13 @@ msgstr ""
 
 #. Tag: para
 #: injection.xml:177
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A client bean developer uses the qualifier annotation to specify exactly "
 "which bean should be injected."
 msgstr ""
-"Um desenvolvedor cliente de um Web Bean utiliza a anotação de binding para "
-"especificar exatamente quais Web Bean devem ser injetados."
+"Um desenvolvedor de um bean cliente utiliza a anotação de qualificador para "
+"especificar exatamente qual bean deve ser injetado."
 
 #. Tag: para
 #: injection.xml:181
@@ -465,9 +508,9 @@ msgstr ""
 
 #. Tag: para
 #: injection.xml:189
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Using constructor injection:"
-msgstr "Ou utilizando injeção de construtor"
+msgstr "Usando injeção no construtor:"
 
 #. Tag: programlisting
 #: injection.xml:191
@@ -496,6 +539,10 @@ msgid ""
 "methods is a good way to have an implementation of a bean type selected at "
 "runtime based on the state of the system:"
 msgstr ""
+"Anotações de qualificadores podem também qualificar argumentos de métodos "
+"produtores, destruidores ou observadores. Combinar argumentos qualificados "
+"com métodos produtores é uma boa forma para ter uma implementação de um tipo "
+"de bean selecionado em tempo de execução com base no estado do sistema:"
 
 #. Tag: programlisting
 #: injection.xml:199
@@ -525,6 +572,9 @@ msgid ""
 "method is not explicitly annotated with a qualifier, the default qualifier, "
 "<literal>@Default</literal>, is assumed."
 msgstr ""
+"Se um campo injetado ou um parâmetro de um construtor de bean ou método "
+"inicializador não é explicitamente anotado com um qualificador, o "
+"qualificador padrão, <literal>@Default</literal>, é assumido."
 
 #. Tag: para
 #: injection.xml:206
@@ -537,16 +587,22 @@ msgid ""
 "implementation. There may be multiple alterative implementations of "
 "<literal>@Asynchronous PaymentProcessor</literal>!"
 msgstr ""
+"Agora, você pode estar pensando, <emphasis>\"Qual a diferença entre usar um "
+"qualificador e apenas especificar a exata classe de implementação que você "
+"deseja?\"</emphasis> É importante entender que um qualificador é como uma "
+"extensão da interface. Ele não cria uma dependência direta para qualquer "
+"implementação em particular. Podem existir várias implementações "
+"alternativas de <literal>@Asynchronous PaymentProcessor</literal>!"
 
 #. Tag: title
 #: injection.xml:216
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The built-in qualifiers <literal>@Default</literal> and <literal>@Any</"
 "literal>"
 msgstr ""
-"Web Beans simples suportam apenas chamadas a <literal>@PostConstruct</"
-"literal> e <literal>@PreDestroy</literal>."
+"Os qualificadores embutidos <literal>@Default</literal> e <literal>@Any</"
+"literal>"
 
 #. Tag: para
 #: injection.xml:218
@@ -560,6 +616,14 @@ msgid ""
 "literal> at an injection point, you suppress the default qualifier, without "
 "otherwise restricting the beans that are eligible for injection."
 msgstr ""
+"Sempre que um bean ou ponto de injeção não declara explicitamente um "
+"qualificador, o contêiner assume o qualificador <literal>@Default</literal>. "
+"Em algum momento, você precisará declarar um ponto de injeção sem "
+"especificar um qualificador. Existe um qualificador para isso também. Todos "
+"os beans possuem o qualificador <literal>@Any</literal>. Portanto, ao "
+"especificar explicitamente <literal>@Any</literal> em um ponto de injeção, "
+"você suprime o qualificador padrão, sem restringir os beans que são "
+"elegíveis para injeção."
 
 #. Tag: para
 #: injection.xml:225
@@ -568,6 +632,8 @@ msgid ""
 "This is especially useful if you want to iterate over all beans with a "
 "certain bean type. For example:"
 msgstr ""
+"Isto é especialmente útil se você quiser iterar sobre todos os beans com um "
+"certo tipo de bean. Por exemplo:"
 
 #. Tag: programlisting
 #: injection.xml:226
@@ -580,12 +646,18 @@ msgid ""
 "   }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Inject \n"
+"void initServices(@Any Instance<Service> services) { \n"
+"   for (Service service: services) {\n"
+"      service.init();\n"
+"   }\n"
+"}]]>"
 
 #. Tag: title
 #: injection.xml:232
 #, no-c-format
 msgid "Qualifiers with members"
-msgstr ""
+msgstr "Qualificadores com membros"
 
 #. Tag: para
 #: injection.xml:234
@@ -597,6 +669,11 @@ msgid ""
 "representing different payment methods, we could aggregate them into a "
 "single annotation with a member:"
 msgstr ""
+"As anotações Java podem possuir membros. Podemos usar membros de anotação "
+"para discriminar melhor um qualificador. Isso impede uma potencial explosão "
+"de novas anotações. Por exemplo, em vez de criar vários qualificadores "
+"representando diferentes métodos de pagamento, podemos agregá-los em uma "
+"única anotação com um membro:"
 
 #. Tag: programlisting
 #: injection.xml:240
@@ -622,6 +699,8 @@ msgstr ""
 msgid ""
 "Then we select one of the possible member values when appling the qualifier:"
 msgstr ""
+"Então selecionamos um dos possíveis valores do membro ao aplicar o "
+"qualificador:"
 
 #. Tag: programlisting
 #: injection.xml:246
@@ -638,10 +717,12 @@ msgid ""
 "We can force the container to ignore a member of a qualifier type by "
 "annotating the member <literal>@Nonbinding</literal>."
 msgstr ""
+"Podemos forçar o contêiner a ignorar um membro de um tipo de qualificador ao "
+"anotar o membro com <literal>@Nonbinding</literal>."
 
 #. Tag: programlisting
 #: injection.xml:253
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[@Qualifier\n"
 "@Retention(RUNTIME)\n"
@@ -656,22 +737,20 @@ msgstr ""
 "@Target({METHOD, FIELD, PARAMETER, TYPE})\n"
 "public @interface PayBy {\n"
 "   PaymentMethod value();\n"
-"   @NonBinding String comment() default \"\";\n"
+"   @Nonbinding String comment() default \"\";\n"
 "}]]>"
 
 #. Tag: title
 #: injection.xml:258
 #, no-c-format
 msgid "Multiple qualifiers"
-msgstr ""
+msgstr "Múltiplos qualificadores"
 
 #. Tag: para
 #: injection.xml:260
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "An injection point may specify multiple qualifiers:"
-msgstr ""
-"Um ponto de injeção pode até mesmo especificar múltiplas anotações de "
-"binding:"
+msgstr "Um ponto de injeção pode especificar múltiplos qualificadores:"
 
 #. Tag: programlisting
 #: injection.xml:264
@@ -685,13 +764,13 @@ msgstr ""
 
 #. Tag: para
 #: injection.xml:266
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Then only a bean which has <emphasis>both</emphasis> qualifier annotations "
 "would be eligible for injection."
 msgstr ""
-"Neste caso, só o Web Bean que tem <emphasis>ambas</emphasis> anotações de "
-"binding são elegíveis para injeção."
+"Neste caso, somente um bean que possua <emphasis>ambas</emphasis> anotações "
+"de qualificador seriam elegíveis para injeção."
 
 #. Tag: programlisting
 #: injection.xml:271
@@ -713,7 +792,7 @@ msgstr ""
 #: injection.xml:276
 #, no-c-format
 msgid "Alternatives"
-msgstr ""
+msgstr "Alternativos"
 
 #. Tag: para
 #: injection.xml:278
@@ -724,6 +803,10 @@ msgid ""
 "implementation of both <literal>@Synchronous PaymentProcessor</literal> and "
 "<literal>@Asynchronous PaymentProcessor</literal>, all in one:"
 msgstr ""
+"Os alternativos são beans cuja implementação é específica para um módulo "
+"cliente ou cenário de implantação específico. Este alternativo define uma "
+"implementação simulada de <literal>@Synchronous PaymentProcessor</literal> e "
+"<literal>@Asynchronous PaymentProcessor</literal>, tudo em um:"
 
 #. Tag: programlisting
 #: injection.xml:282
@@ -748,6 +831,11 @@ msgid ""
 "literal> descriptor of a bean archive to make it available for instantiation "
 "and injection. This activation only applies to the beans in that archive."
 msgstr ""
+"Por padrão, os beans com <literal>@Alternative</literal> estão "
+"desabilitados. Precisamos <emphasis>habilitar</emphasis> um alternativo no "
+"descritor <literal>beans.xml</literal> de um arquivo de bean para torná-lo "
+"disponível para instanciação e injeção. Esta ativação somente se aplica aos "
+"beans neste arquivo."
 
 #. Tag: programlisting
 #: injection.xml:290
@@ -784,12 +872,16 @@ msgid ""
 "among the beans that could be injected. If there is exactly one enabled "
 "alternative, that's the bean that will be injected."
 msgstr ""
+"Quando existe uma dependência ambígua em um ponto de injeção, o contêiner "
+"tenta resolver a ambiguidade pesquisando por um alternativo habilitado entre "
+"os beans que poderiam ser injetados. Se existe exatamente um alternativo "
+"habilitado, este é o bean que será injetado."
 
 #. Tag: title
 #: injection.xml:301
 #, no-c-format
 msgid "Fixing unsatisfied and ambiguous dependencies"
-msgstr ""
+msgstr "Corrigindo dependências não satisfeitas e ambíguas"
 
 #. Tag: para
 #: injection.xml:303
@@ -802,6 +894,13 @@ msgid ""
 "identify exactly one bean to inject. The container will abort deployment, "
 "informing us of the unsatisfied or ambiguous dependency."
 msgstr ""
+"O algoritmo de resolução segura de tipos falha quando, após considerar as "
+"anotações de qualificadores em todos os beans que implementam o tipo de bean "
+"de um ponto de injeção e filtrar os beans desabilitados (beans com "
+"<literal>@Alternative</literal> que não estão explicitamente habilitados), o "
+"contêiner não é capaz de identificar exatamente um bean para injetar. O "
+"contêiner abortará a implantação, nos informando sobre as dependências não "
+"satisfeitas ou ambíguas."
 
 #. Tag: para
 #: injection.xml:310
@@ -810,12 +909,14 @@ msgid ""
 "During the course of your development, you're going to encounter this "
 "situation. Let's learn how to resolve it."
 msgstr ""
+"Durante o progresso de seu desenvolvimento, você vai encontrar essa "
+"situação. Vamos aprender como resolvê-la."
 
 #. Tag: para
 #: injection.xml:314
 #, no-c-format
 msgid "To fix an <emphasis>unsatisfied dependency</emphasis>, either:"
-msgstr ""
+msgstr "Para corrigir uma <emphasis>dependência não satisfeita</emphasis>:"
 
 #. Tag: para
 #: injection.xml:320
@@ -824,6 +925,8 @@ msgid ""
 "create a bean which implements the bean type and has all the qualifier types "
 "of the injection point,"
 msgstr ""
+"crie um bean que implemente o tipo de bean e possua todos os tipos de "
+"qualificador do ponto de injeção,"
 
 #. Tag: para
 #: injection.xml:325
@@ -832,6 +935,8 @@ msgid ""
 "make sure that the bean you already have is in the classpath of the module "
 "with the injection point, or"
 msgstr ""
+"certifique-se que o bean que você já possui esteja no classpath do módulo "
+"com o ponto de injeção, ou"
 
 #. Tag: para
 #: injection.xml:330
@@ -841,12 +946,15 @@ msgid ""
 "the bean type and has the appropriate qualifier types, using <literal>beans."
 "xml</literal>."
 msgstr ""
+"habilite explicitamente um bean <literal>@Alternative</literal> que "
+"implemente o tipo de bean e possua os tipos de qualificador apropriados, "
+"usando <literal>beans.xml</literal>."
 
 #. Tag: para
 #: injection.xml:337
 #, no-c-format
 msgid "To fix an <emphasis>ambiguous dependency</emphasis>, either:"
-msgstr ""
+msgstr "Para corrigir uma <emphasis>dependência ambígua</emphasis>:"
 
 #. Tag: para
 #: injection.xml:343
@@ -855,6 +963,8 @@ msgid ""
 "introduce a qualifier to distinguish between the two implementations of the "
 "bean type,"
 msgstr ""
+"introduza um qualificador para distinguir entre as duas implementações do "
+"tipo de bean,"
 
 #. Tag: para
 #: injection.xml:348
@@ -862,6 +972,7 @@ msgstr ""
 msgid ""
 "disable one of the beans by annotating it <literal>@Alternative</literal>,"
 msgstr ""
+"desabilite um dos beans anotando-o com <literal>@Alternative</literal>,"
 
 #. Tag: para
 #: injection.xml:353
@@ -870,6 +981,8 @@ msgid ""
 "move one of the implementations to a module that is not in the classpath of "
 "the module with the injection point, or"
 msgstr ""
+"mova uma das implementações para um módulo que não está no classpath do "
+"módulo com o ponto de injeção, ou"
 
 #. Tag: para
 #: injection.xml:359
@@ -878,6 +991,8 @@ msgid ""
 "disable one of two <literal>@Alternative</literal> beans that are trying to "
 "occupy the same space, using <literal>beans.xml</literal>."
 msgstr ""
+"desabilite um dos beans <literal>@Alternative</literal> que estão tentando "
+"ocupar o mesmo espaço, usando <literal>beans.xml</literal>."
 
 #. Tag: para
 #: injection.xml:366
@@ -889,12 +1004,17 @@ msgid ""
 "ambigous resolution exception between a raw bean type and a producer method "
 "that returns the same bean type."
 msgstr ""
+"Veja <ulink url=\"http://sfwk.org/Documentation/"
+"HowDoAResolveAnAmbiguousResolutionExceptionBetweenAProducerMethodAndARawType"
+"\">este FAQ</ulink> para instruções passo-a-passo de como resolver uma "
+"exceção de resolução ambígua entre um tipo de bean e um método produtor que "
+"retorna o mesmo tipo de bean."
 
 #. Tag: para
 #: injection.xml:374
 #, no-c-format
 msgid "Just remember: \"There can be only one.\""
-msgstr ""
+msgstr "Apenas lembre-se: \"Só pode haver um.\""
 
 #. Tag: para
 #: injection.xml:377
@@ -904,6 +1024,9 @@ msgid ""
 "injection point, you should change the type of your injection point to "
 "<literal>Instance</literal>, as we'll see in <xref linkend=\"lookup\"/>."
 msgstr ""
+"Por outro lado, se você realmente tem um ponto de injeção opcional ou "
+"multivalorado, você deveria mudar o tipo de seu ponto de injeção para "
+"<literal>Instance</literal>, como veremos na <xref linkend=\"lookup\"/>."
 
 #. Tag: para
 #: injection.xml:382
@@ -912,6 +1035,8 @@ msgid ""
 "Now there's one more issue you need to be aware of when using the dependency "
 "injection service."
 msgstr ""
+"Agora há mais uma questão que você precisa estar ciente quando usar o "
+"serviço de injeção de dependência."
 
 #. Tag: title
 #: injection.xml:389
@@ -921,14 +1046,15 @@ msgstr "Proxies clientes"
 
 #. Tag: para
 #: injection.xml:391
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Clients of an injected bean do not usually hold a direct reference to a bean "
 "instance, unless the bean is a dependent object (scope <literal>@Dependent</"
 "literal>)."
 msgstr ""
-"Clientes de um Web Bean injetado, geralmente não possuem uma referência "
-"direta a uma instância do Web Bean ."
+"Os clientes de um bean injetado não costumam manter uma referência direta "
+"para uma instância do bean, a menos que o bean seja um objeto dependente "
+"(com escopo <literal>@Dependent</literal>)."
 
 #. Tag: para
 #: injection.xml:396
@@ -939,6 +1065,11 @@ msgid ""
 "between many different requests. However, each request should see a "
 "different instance of the request scoped bean&#8212;the current one!"
 msgstr ""
+"Imagine que um bean vinculado ao escopo da aplicação mantenha uma referência "
+"direta para um bean vinculado ao escopo da solicitação. O bean com escopo de "
+"aplicação é compatilhado entre várias solicitações diferentes. No entanto, "
+"cada solicitação deverá ver uma instância diferente do bean com escopo de "
+"solicitação&#8212;a atual!"
 
 #. Tag: para
 #: injection.xml:402
@@ -951,6 +1082,13 @@ msgid ""
 "with the session scoped bean! It can get that reference any time. No need to "
 "hoard it!"
 msgstr ""
+"Agora imagine que um bean vinculado ao escopo da sessão mantenha uma "
+"referência direta para um bean vinculado ao escopo da aplicação. Em algum "
+"momento, o contexto da sessão é serializado para o disco, a fim de usar a "
+"memória de forma mais eficiente. No entanto, a instância do bean com escopo "
+"de aplicação não deve ser serializado junto com o bean de escopo de sessão! "
+"Ele pode obter esta referência a qualquer momento. Não há necessidade de "
+"armazená-lo!"
 
 #. Tag: para
 #: injection.xml:409
@@ -965,6 +1103,14 @@ msgid ""
 "to be serialized to disk without recursively serializing other injected "
 "beans."
 msgstr ""
+"Portanto, a menos que um bean possua o escopo padrão <literal>@Dependent</"
+"literal>, o contêiner deve injetar indiretamente todas as referências para o "
+"bean através de um objeto proxy. Este <emphasis>proxy cliente</emphasis> é "
+"responsável por assegurar que a instância do bean que recebe uma invocação "
+"de método seja a instância que está associada ao contexto atual. O proxy "
+"cliente também permite que beans vinculados a contextos, como o contexto de "
+"sessão, sejam serializados para o disco sem serializar recursivamente outros "
+"beans injetados."
 
 #. Tag: para
 #: injection.xml:417
@@ -976,21 +1122,24 @@ msgid ""
 "<literal>@Dependent</literal>, the container will abort deployment, "
 "informing us of the problem."
 msgstr ""
+"Infelizmente, devido às limitações da linguagem Java, alguns tipos Java não "
+"podem ser feitos proxies pelo contêiner. Se um ponto de injeção declarado "
+"com um destes tipos referencia um bean com qualquer escopo diferente de "
+"<literal>@Dependent</literal>, o contêiner abortará a implantação, nos "
+"informando sobre o problema."
 
 #. Tag: para
 #: injection.xml:423
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The following Java types cannot be proxied by the container:"
-msgstr ""
-"Os seguintes tipos Java não podem ser \"proxied\" pelo gerenciador do Web "
-"Bean:"
+msgstr "Os seguintes tipos Java não podem ser \"proxied\" pelo contêiner:"
 
 #. Tag: para
 #: injection.xml:427
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "classes which don't have a non-private constructor with no parameters, and"
-msgstr "classes que não têm um construtor não privado sem parâmetros, e"
+msgstr "classes que não possuem um construtor não privado sem parâmetros, e"
 
 #. Tag: para
 #: injection.xml:430
@@ -1016,12 +1165,15 @@ msgid ""
 "injection point of type <literal>X</literal> results in an unproxyable "
 "dependency, simply:"
 msgstr ""
+"Geralmente é muito fácil de corrigir um problema de dependência com proxies. "
+"Se um ponto de injeção do tipo <literal>X</literal> resulta em uma "
+"dependência que não pode ser feito um proxy, simplesmente:"
 
 #. Tag: para
 #: injection.xml:446
 #, no-c-format
 msgid "add a constructor with no parameters to <literal>X</literal>,"
-msgstr ""
+msgstr "adicione um construtor sem parâmetros em <literal>X</literal>,"
 
 #. Tag: para
 #: injection.xml:451
@@ -1030,6 +1182,8 @@ msgid ""
 "change the type of the injection point to <literal>Instance&lt;X&gt;</"
 "literal>,"
 msgstr ""
+"modifique o tipo do ponto de injeção para <literal>Instance&lt;X&gt;</"
+"literal>,"
 
 #. Tag: para
 #: injection.xml:456
@@ -1038,6 +1192,8 @@ msgid ""
 "introduce an interface <literal>Y</literal>, implemented by the injected "
 "bean, and change the type of the injection point to <literal>Y</literal>, or"
 msgstr ""
+"introduza uma interface <literal>Y</literal>, implementada pelo bean "
+"injetado, e mude o tipo do ponto de injeção para <literal>Y</literal>, ou"
 
 #. Tag: para
 #: injection.xml:462
@@ -1046,6 +1202,8 @@ msgid ""
 "if all else fails, change the scope of the injected bean to "
 "<literal>@Dependent</literal>."
 msgstr ""
+"se tudo isso falhar, mude o escopo do bean a injetar para "
+"<literal>@Dependent</literal>."
 
 #. Tag: para
 #: injection.xml:469
@@ -1054,6 +1212,8 @@ msgid ""
 "A future release of Weld will likely support a non-standard workaround for "
 "this limitation, using non-portable JVM APIs:"
 msgstr ""
+"Uma versão futura do Weld provavelmente suportará uma solução não padrão "
+"para esta limitação, usando APIs não portáveis da JVM:"
 
 #. Tag: para
 #: injection.xml:476
@@ -1062,6 +1222,8 @@ msgid ""
 "Sun, IcedTea, Mac: <literal>Unsafe.allocateInstance()</literal> (The most "
 "efficient)"
 msgstr ""
+"Sun, IcedTea, Mac: <literal>Unsafe.allocateInstance()</literal> (A mais "
+"eficiente)"
 
 #. Tag: para
 #: injection.xml:481
@@ -1070,18 +1232,20 @@ msgid ""
 "IBM, JRockit: <literal>ReflectionFactory.newConstructorForSerialization()</"
 "literal>"
 msgstr ""
+"IBM, JRockit: <literal>ReflectionFactory.newConstructorForSerialization()</"
+"literal>"
 
 #. Tag: para
 #: injection.xml:487
 #, no-c-format
 msgid "But we didn't get around to implementing this yet."
-msgstr ""
+msgstr "Mas não somos obrigados a implementar isto ainda."
 
 #. Tag: title
 #: injection.xml:496
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Obtaining a contextual instance by programmatic lookup"
-msgstr "Obtendo um Web Bean via lookup programaticamente"
+msgstr "Obtendo uma instância contextual através de pesquisa programática"
 
 #. Tag: para
 #: injection.xml:498
@@ -1090,12 +1254,16 @@ msgid ""
 "In certain situations, injection is not the most convenient way to obtain a "
 "contextual reference. For example, it may not be used when:"
 msgstr ""
+"Em certas situações, injeção não é o meio mais conveniente de obter uma "
+"referência contextual. Por exemplo, não pode ser usada quando:"
 
 #. Tag: para
 #: injection.xml:505
 #, no-c-format
 msgid "the bean type or qualifiers vary dynamically at runtime, or"
 msgstr ""
+"o tipo do bean ou qualificadores variam dinamicamente em tempo de execução, "
+"ou"
 
 #. Tag: para
 #: injection.xml:510
@@ -1104,22 +1272,25 @@ msgid ""
 "depending upon the deployment, there may be no bean which satisfies the type "
 "and qualifiers, or"
 msgstr ""
+"dependendo da implantação, pode haver nenhum bean que satisfaça o tipo e "
+"qualificadores, ou"
 
 #. Tag: para
 #: injection.xml:515
 #, no-c-format
 msgid "we would like to iterate over all beans of a certain type."
 msgstr ""
+"gostaríamos de realizar uma iteração sobre todos os beans de um certo tipo."
 
 #. Tag: para
 #: injection.xml:521
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In these situations, the application may obtain an instance of the interface "
 "<literal>Instance</literal>, parameterized for the bean type, by injection:"
 msgstr ""
-"A aplicação pode obter uma instância da interface <literal>Manager</literal> "
-"por injeção:"
+"Nestas situações, a aplicação pode obter uma instância da interface "
+"<literal>Instance</literal>, parametrizada para o tipo do bean, por injeção:"
 
 #. Tag: programlisting
 #: injection.xml:526
@@ -1134,6 +1305,8 @@ msgid ""
 "The <literal>get()</literal> method of <literal>Instance</literal> produces "
 "a contextual instance of the bean."
 msgstr ""
+"O método <literal>get()</literal> de <literal>Instance</literal> produz uma "
+"instância contextual do bean."
 
 #. Tag: programlisting
 #: injection.xml:532
@@ -1145,29 +1318,30 @@ msgstr "<![CDATA[PaymentProcessor p = paymentProcessorSource.get();]]>"
 #: injection.xml:534
 #, no-c-format
 msgid "Qualifiers can be specified in one of two ways:"
-msgstr ""
+msgstr "Qualificadores podem ser especificados em uma de duas maneiras:"
 
 #. Tag: para
 #: injection.xml:540
 #, no-c-format
 msgid "by annotating the <literal>Instance</literal> injection point, or"
-msgstr ""
+msgstr "anotando o ponto de injeção <literal>Instance</literal>, ou"
 
 #. Tag: para
 #: injection.xml:543
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "by passing qualifiers to the <literal>select()</literal> of <literal>Event</"
 "literal>."
 msgstr ""
-"Web Beans simples suportam apenas chamadas a <literal>@PostConstruct</"
-"literal> e <literal>@PreDestroy</literal>."
+"passando qualificadores para o método <literal>select()</literal> de "
+"<literal>Event</literal>."
 
 #. Tag: para
 #: injection.xml:547
 #, no-c-format
 msgid "Specifying the qualifiers at the injection point is much, much easier:"
 msgstr ""
+"Especificar os qualificadores no ponto de injeção é muito, muito mais fácil:"
 
 #. Tag: programlisting
 #: injection.xml:551
@@ -1186,6 +1360,8 @@ msgid ""
 "Now, the <literal>PaymentProcessor</literal> returned by <literal>get()</"
 "literal> will have the qualifier <literal>@Asynchronous</literal>."
 msgstr ""
+"Agora, o <literal>PaymentProcessor</literal> retornado por <literal>get()</"
+"literal> terá o qualificador <literal>@Asynchronous</literal>."
 
 #. Tag: para
 #: injection.xml:558
@@ -1195,6 +1371,10 @@ msgid ""
 "<literal>@Any</literal> qualifier to the injection point, to suppress the "
 "default qualifier. (All beans have the qualifier <literal>@Any</literal>.)"
 msgstr ""
+"Alternativamente, podemos especificar o qualificador dinamicamente. "
+"Primeiro, adicionamos o qualificador <literal>@Any</literal> no ponto de "
+"injeção, para suprimir o qualificador padrão. (Todos os beans possuem o "
+"qualificador <literal>@Any</literal>.)"
 
 #. Tag: programlisting
 #: injection.xml:563
@@ -1214,6 +1394,12 @@ msgid ""
 "type from scratch. Instead, CDI lets us obtain a qualifier instance by "
 "subclassing the helper class <literal>AnnotationLiteral</literal>."
 msgstr ""
+"Em seguida, precisamos obter uma instância de nosso tipo de qualificador. "
+"Uma vez que anotações são interfaces, não podemos apenas escrever "
+"<literal>new Asynchronous()</literal>. Também é bastante tedioso criar uma "
+"implementação concreta de um tipo de anotação a partir do zero. Em vez "
+"disso, o CDI nos permite obter uma instância do qualificador criando uma "
+"subclasse da classe auxiliar <literal>AnnotationLiteral</literal>."
 
 #. Tag: programlisting
 #: injection.xml:572
@@ -1229,7 +1415,7 @@ msgstr ""
 #: injection.xml:574
 #, no-c-format
 msgid "In some cases, we can use an anonymous class:"
-msgstr ""
+msgstr "E alguns casos, podemos utilizar uma classe anônima:"
 
 #. Tag: programlisting
 #: injection.xml:578
@@ -1247,6 +1433,8 @@ msgstr ""
 msgid ""
 "We can't use an anonymous class to implement a qualifier type with members."
 msgstr ""
+"Não podemos utilizar uma classe anônima para implementar um tipo de "
+"qualificador com membros."
 
 #. Tag: para
 #: injection.xml:586
@@ -1255,6 +1443,8 @@ msgid ""
 "Now, finally, we can pass the qualifier to the <literal>select()</literal> "
 "method of <literal>Instance</literal>."
 msgstr ""
+"Agora, finalmente, podemos passar o qualificador para o método "
+"<literal>select()</literal> de <literal>Instance</literal>."
 
 #. Tag: programlisting
 #: injection.xml:590
@@ -1285,6 +1475,10 @@ msgid ""
 "or injection point into which they are injected in order to be able to do "
 "what they do. For example:"
 msgstr ""
+"Existem certos tipos de objetos dependentes (beans com escopo "
+"<literal>@Dependent</literal>) que precisam saber alguma coisa sobre o "
+"objeto ou ponto de injeção no qual eles são injetados para serem capazes de "
+"fazer o que fazem. Por exemplo:"
 
 #. Tag: para
 #: injection.xml:603
@@ -1293,6 +1487,8 @@ msgid ""
 "The log category for a <literal>Logger</literal> depends upon the class of "
 "the object that owns it."
 msgstr ""
+"A categoria de log para um <literal>Logger</literal> depende da classe do "
+"objeto que a possui."
 
 #. Tag: para
 #: injection.xml:607
@@ -1301,6 +1497,8 @@ msgid ""
 "Injection of a HTTP parameter or header value depends upon what parameter or "
 "header name was specified at the injection point."
 msgstr ""
+"A injeção do valor de um parâmetro ou cabeçalho HTTP depende de qual nome de "
+"parâmetro ou cabeçalho foi especificado no ponto de injeção."
 
 #. Tag: para
 #: injection.xml:611
@@ -1320,6 +1518,9 @@ msgid ""
 "<literal>InjectionPoint</literal> and access metadata relating to the "
 "injection point to which it belongs."
 msgstr ""
+"Um bean com escopo <literal>@Dependent</literal> pode injetar uma instância "
+"de <literal>InjectionPoint</literal> e acessar metadados relacionados com o "
+"ponto de injeção ao qual ele pertence."
 
 #. Tag: para
 #: injection.xml:620
@@ -1328,6 +1529,8 @@ msgid ""
 "Let's look at an example. The following code is verbose, and vulnerable to "
 "refactoring problems:"
 msgstr ""
+"Vejamos um exemplo. O seguinte código é prolixo e vulnerável a problemas de "
+"refatoração:"
 
 #. Tag: programlisting
 #: injection.xml:623
@@ -1342,6 +1545,9 @@ msgid ""
 "This clever little producer method lets you inject a JDK <literal>Logger</"
 "literal> without explicitly specifying the log category:"
 msgstr ""
+"Este método produtor pouco inteligente lhe permite injetar um "
+"<literal>Logger</literal> da JDK sem especificar explicitamente a categoria "
+"de log:"
 
 #. Tag: programlisting
 #: injection.xml:628
@@ -1384,10 +1590,12 @@ msgid ""
 "Not convinced? Then here's a second example. To inject HTTP parameters, we "
 "need to define a qualifier type:"
 msgstr ""
+"Não está convencido? Então aqui está um segundo exemplo. Para injetar "
+"parâmetros HTTP, precisamos definir um tipo de qualificador:"
 
 #. Tag: programlisting
 #: injection.xml:637
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[@BindingType\n"
 "@Retention(RUNTIME)\n"
@@ -1400,7 +1608,7 @@ msgstr ""
 "@Retention(RUNTIME)\n"
 "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
 "public @interface HttpParam {\n"
-"   @NonBinding public String value();\n"
+"   @Nonbinding public String value();\n"
 "}]]>"
 
 #. Tag: para
@@ -1408,6 +1616,8 @@ msgstr ""
 #, no-c-format
 msgid "We would use this qualifier type at injection points as follows:"
 msgstr ""
+"Gostaríamos de usar este tipo de qualificador em pontos de injeção do "
+"seguinte modo:"
 
 #. Tag: programlisting
 #: injection.xml:641
@@ -1427,7 +1637,7 @@ msgstr "O seguinte método produtor faz o trabalho:"
 
 #. Tag: programlisting
 #: injection.xml:645
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[class HttpParams\n"
 "\n"
@@ -1443,8 +1653,8 @@ msgstr ""
 "\n"
 "   @Produces @HttpParam(\"\")\n"
 "   String getParamValue(ServletRequest request, InjectionPoint ip) {\n"
-"      return request.getParameter(ip.getAnnotation(HttpParam.class).value"
-"());\n"
+"      return request.getParameter(ip.getAnnotated().getAnnotation(HttpParam."
+"class).value());\n"
 "   }\n"
 "\n"
 "}]]>"
@@ -1457,6 +1667,9 @@ msgid ""
 "literal> annotation is ignored by the container since it is annotated "
 "<literal>@Nonbinding.</literal>)"
 msgstr ""
+"(Observe que o membro <literal>value()</literal> da anotação "
+"<literal>HttpParam</literal> é ignorado pelo contêiner uma vez que ele está "
+"anotado com <literal>@Nonbinding.</literal>)"
 
 #. Tag: para
 #: injection.xml:650
@@ -1465,10 +1678,12 @@ msgid ""
 "The container provides a built-in bean that implements the "
 "<literal>InjectionPoint</literal> interface:"
 msgstr ""
+"O contêiner fornece um bean embutido que implementa a interface "
+"<literal>InjectionPoint</literal>:"
 
 #. Tag: programlisting
 #: injection.xml:653
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[public interface InjectionPoint { \n"
 "   public Type getType();\n"
@@ -1481,275 +1696,11 @@ msgid ""
 "}]]>"
 msgstr ""
 "<![CDATA[public interface InjectionPoint { \n"
-"   public Object getInstance(); \n"
-"   public Bean<?> getBean(); \n"
-"   public Member getMember(): \n"
-"   public <T extends Annotation> T getAnnotation(Class<T> annotation); \n"
-"   public Set<T extends Annotation> getAnnotations(); \n"
+"   public Type getType();\n"
+"   public Set<Annotation> getQualifiers();\n"
+"   public Bean<?> getBean();\n"
+"   public Member getMember();\n"
+"   public Annotated getAnnotated();\n"
+"   public boolean isDelegate();\n"
+"   public boolean isTransient();\n"
 "}]]>"
-
-#~ msgid ""
-#~ "Web Beans supports three primary mechanisms for dependency injection:"
-#~ msgstr ""
-#~ "Web Beans suporta três principais mecanismos de injeção de dependências:"
-
-#~ msgid "Constructor parameter injection:"
-#~ msgstr "Injeção de parametros no construtor:"
-
-#~ msgid ""
-#~ "Constructor parameter injection is not supported for EJB beans, since the "
-#~ "EJB is instantiated by the EJB container, not the Web Bean manager."
-#~ msgstr ""
-#~ "Injeção de parâmetros no construtor não é suportado em EJB beans, uma vez "
-#~ "que o EJB é instanciado pelo container EJB e não pelo gerenciador do Web "
-#~ "Bean."
-
-#~ msgid "Producer methods also support parameter injection:"
-#~ msgstr "Métodos produtores também suportam injeção de parâmetros:"
-
-#~ msgid ""
-#~ "Finally, observer methods (which we'll meet in <xref linkend=\"events\"/"
-#~ ">), disposal methods and destructor methods all support parameter "
-#~ "injection."
-#~ msgstr ""
-#~ "Por fim, métodos de observação (que iremos detalhar em <xref linkend="
-#~ "\"events\"/>), métodos de disposal e métodos destrutores, todos suportam "
-#~ "injeção de parâmetros."
-
-#~ msgid ""
-#~ "allow one implementation of an API to override another implementation of "
-#~ "the same API at deployment time, without changes to the client, using "
-#~ "<emphasis>deployment type precedence</emphasis>."
-#~ msgstr ""
-#~ "permitir uma implementação de uma API sobrescrever uma outra "
-#~ "implementação da mesma API em tempo de implantação, sem alterações no "
-#~ "cliente, utilizando <emphasis>precedência do tipo de implantação "
-#~ "(deployment type precedence)</emphasis>."
-
-#~ msgid ""
-#~ "Let's explore how the Web Beans manager determines a Web Bean to be "
-#~ "injected."
-#~ msgstr ""
-#~ "Vamos explorer como o gerenciador do Web Beans determina qual o Web Bean "
-#~ "deve ser injetado."
-
-#~ msgid ""
-#~ "<![CDATA[@PayByCreditCard\n"
-#~ "public class CreditCardPaymentProcessor implements PaymentProcessor {\n"
-#~ "    public void process(Payment payment) { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@PayByCreditCard\n"
-#~ "public class CreditCardPaymentProcessor implements PaymentProcessor {\n"
-#~ "    public void process(Payment payment) { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-#~ "@BindingType\n"
-#~ "public @interface PayByCreditCard {}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-#~ "@BindingType\n"
-#~ "public @interface PayByCreditCard {}]]>"
-
-#~ msgid "In which case, the member value is significant:"
-#~ msgstr "Em cada caso, o valor do membro é significante:"
-
-#~ msgid ""
-#~ "<![CDATA[@PayBy(CHEQUE) PaymentProcessor chequePaymentProcessor;\n"
-#~ "@PayBy(CREDIT_CARD) PaymentProcessor creditCardPaymentProcessor;]]>"
-#~ msgstr ""
-#~ "<![CDATA[@PayBy(CHEQUE) PaymentProcessor chequePaymentProcessor;\n"
-#~ "@PayBy(CREDIT_CARD) PaymentProcessor creditCardPaymentProcessor;]]>"
-
-#~ msgid "Combinations of binding annnotations"
-#~ msgstr "Combinações de anotações de binding"
-
-#~ msgid "Binding annotations and producer methods"
-#~ msgstr "Anotações de binding e métodos produtores "
-
-#~ msgid "Even producer methods may specify binding annotations:"
-#~ msgstr "Mesmo métodos produtores podem especificar anotações de binding:"
-
-#~ msgid ""
-#~ "<![CDATA[@Produces \n"
-#~ "@Asynchronous @PayByCheque \n"
-#~ "PaymentProcessor createAsyncPaymentProcessor(@PayByCheque "
-#~ "PaymentProcessor processor) {\n"
-#~ "    return new AsynchronousPaymentProcessor(processor);\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Produces \n"
-#~ "@Asynchronous @PayByCheque \n"
-#~ "PaymentProcessor createAsyncPaymentProcessor(@PayByCheque "
-#~ "PaymentProcessor processor) {\n"
-#~ "    return new AsynchronousPaymentProcessor(processor);\n"
-#~ "}]]>"
-
-#~ msgid "The default binding type"
-#~ msgstr "O tipo padrão de binding"
-
-#~ msgid ""
-#~ "There are two common circumstances in which it is necessary to explicitly "
-#~ "specify <literal>@Current</literal>:"
-#~ msgstr ""
-#~ "Há duas situações comuns nas quais é necessário indicar explicitamente "
-#~ "<literal>@Current</literal>:"
-
-#~ msgid ""
-#~ "on a field, in order to declare it as an injected field with the default "
-#~ "binding type, and"
-#~ msgstr ""
-#~ "em um campo, a fim de declará-lo como um campo injetado com o tipo de "
-#~ "binding padrão, e"
-
-#~ msgid ""
-#~ "on a Web Bean which has another binding type in addition to the default "
-#~ "binding type."
-#~ msgstr ""
-#~ "em um Web Bean, que tem um outro tipo de binding além do tipo padrão de "
-#~ "binding."
-
-#~ msgid "Deployment types"
-#~ msgstr "Tipo de deploy"
-
-#~ msgid ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "  @Target({TYPE, METHOD})\n"
-#~ "  @DeploymentType\n"
-#~ "  public @interface Mock {}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "  @Target({TYPE, METHOD})\n"
-#~ "  @DeploymentType\n"
-#~ "  public @interface Mock {}]]>"
-
-#~ msgid ""
-#~ "Suppose we had some Web Bean that interacted with an external system to "
-#~ "process payments:"
-#~ msgstr ""
-#~ "Suponha que temos alguns Web Beans que interajam com um sistema externo "
-#~ "para processar pagamentos:"
-
-#~ msgid ""
-#~ "<![CDATA[public class ExternalPaymentProcessor {\n"
-#~ "        \n"
-#~ "    public void process(Payment p) {\n"
-#~ "        ...\n"
-#~ "    }\n"
-#~ "    \n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[public class ExternalPaymentProcessor {\n"
-#~ "        \n"
-#~ "    public void process(Payment p) {\n"
-#~ "        ...\n"
-#~ "    }\n"
-#~ "    \n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "Since this Web Bean does not explicitly specify a deployment type, it has "
-#~ "the default deployment type <literal>@Production</literal>."
-#~ msgstr ""
-#~ "Uma vez que esse Web Bean não especifica explicitamente um tipo de "
-#~ "implantação, ele tem o tipo de implantação padrão <literal>@Production</"
-#~ "literal>."
-
-#~ msgid ""
-#~ "<![CDATA[@Mock \n"
-#~ "public class MockPaymentProcessor implements PaymentProcessor {\n"
-#~ "\n"
-#~ "    @Override\n"
-#~ "    public void process(Payment p) {\n"
-#~ "        p.setSuccessful(true);\n"
-#~ "    }\n"
-#~ "\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Mock \n"
-#~ "public class MockPaymentProcessor implements PaymentProcessor {\n"
-#~ "\n"
-#~ "    @Override\n"
-#~ "    public void process(Payment p) {\n"
-#~ "        p.setSuccessful(true);\n"
-#~ "    }\n"
-#~ "\n"
-#~ "}]]>"
-
-#~ msgid "Enabling deployment types"
-#~ msgstr "Ativando tipos de implantação (deployment types)"
-
-#~ msgid ""
-#~ "<![CDATA[<WebBeans>\n"
-#~ "    <Deploy>\n"
-#~ "        <Standard/>\n"
-#~ "        <Production/>\n"
-#~ "        <test:Mock/>\n"
-#~ "    </Deploy>\n"
-#~ "</WebBeans>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<WebBeans>\n"
-#~ "    <Deploy>\n"
-#~ "        <Standard/>\n"
-#~ "        <Production/>\n"
-#~ "        <test:Mock/>\n"
-#~ "    </Deploy>\n"
-#~ "</WebBeans>]]>"
-
-#~ msgid "Deployment type precedence"
-#~ msgstr "Precedencia dos tipos de deploy"
-
-#~ msgid "Example deployment types"
-#~ msgstr "Exemplo de tipos de deploy"
-
-#~ msgid "<![CDATA[@Current Manager manager;]]>"
-#~ msgstr "<![CDATA[@Current Manager manager;]]>"
-
-#~ msgid ""
-#~ "The <literal>Manager</literal> object provides a set of methods for "
-#~ "obtaining a Web Bean instance programatically."
-#~ msgstr ""
-#~ "O objeto <literal>Manager</literal> fornece um conjunto de métodos para a "
-#~ "obtenção de uma instância de um Web Bean programaticamente."
-
-#~ msgid ""
-#~ "<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
-#~ "class);]]>"
-#~ msgstr ""
-#~ "<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
-#~ "class);]]>"
-
-#~ msgid ""
-#~ "<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
-#~ "class, \n"
-#~ "                                               new CreditCardBinding() "
-#~ "{ \n"
-#~ "                                                   public void value() "
-#~ "{ return paymentType; } \n"
-#~ "                                               } );]]>"
-#~ msgstr ""
-#~ "<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
-#~ "class, \n"
-#~ "                                               new CreditCardBinding() "
-#~ "{ \n"
-#~ "                                                   public void value() "
-#~ "{ return paymentType; } \n"
-#~ "                                               } );]]>"
-
-#~ msgid ""
-#~ "Lifecycle callbacks, <literal>@Resource</literal>, <literal>@EJB</"
-#~ "literal> and <literal>@PersistenceContext</literal>"
-#~ msgstr ""
-#~ "Chamadas ao ciclo de vida, <literal>@Resource</literal>, <literal>@EJB</"
-#~ "literal> e <literal>@PersistenceContext</literal>"
-
-#~ msgid ""
-#~ "The <literal>@PostConstruct</literal> callback always occurs after all "
-#~ "dependencies have been injected."
-#~ msgstr ""
-#~ "A chamada ao <literal>@PostConstruct</literal> sempre ocorre após todas "
-#~ "as dependências serem injetadas."
