@@ -46,7 +46,7 @@ public class JsfApiAbstraction extends ApiAbstraction implements Service
       double version = 2.0;
       if (this.FACES_CONTEXT != null)
       {
-         version = SecureReflections.methodExists(FACES_CONTEXT, "isPostback") ? 2.0 : 1.2;
+         version = SecureReflections.isMethodExists(FACES_CONTEXT, "isPostback") ? 2.0 : 1.2;
       }
       MINIMUM_API_VERSION = version;
    }

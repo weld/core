@@ -23,7 +23,7 @@ import java.security.PrivilegedActionException;
  * Helper class for doing work in a privileged context under the
  * "weld.reflection" permission
  */
-abstract class SecureReflectionAccess
+abstract class SecureReflectionAccess<T>
 {
    /**
     * Performs the work and returns the result
@@ -31,7 +31,7 @@ abstract class SecureReflectionAccess
     * @return The value of the operation
     * @throws Exception If the operation failed
     */
-   public Object run() throws Exception
+   public T run() throws Exception
    {
 //      SecurityManager securityManager = System.getSecurityManager();
 //      if (securityManager != null)
@@ -60,7 +60,7 @@ abstract class SecureReflectionAccess
     * 
     * @return The result of the work
     */
-   public Object runAndWrap()
+   public T runAndWrap()
    {
       try
       {
@@ -80,7 +80,7 @@ abstract class SecureReflectionAccess
     * @throws NoSuchFieldException If a field with the specified name is not
     *            found.
     */
-   public Object runAsFieldAccess() throws NoSuchFieldException
+   public T runAsFieldAccess() throws NoSuchFieldException
    {
       try
       {
@@ -112,7 +112,7 @@ abstract class SecureReflectionAccess
     * @throws NoSuchMethodException If a method with the specified name is not
     *            found.
     */
-   public Object runAsMethodAccess() throws NoSuchMethodException
+   public T runAsMethodAccess() throws NoSuchMethodException
    {
       try
       {
@@ -156,7 +156,7 @@ abstract class SecureReflectionAccess
     * @throws InvocationTargetException I the underlying method throws an
     *            exception.
     */
-   public Object runAsInvocation() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+   public T runAsInvocation() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
    {
       try
       {
@@ -180,15 +180,15 @@ abstract class SecureReflectionAccess
       }
       catch (IllegalAccessException e)
       {
-         throw (IllegalAccessException) e;
+         throw e;
       }
       catch (IllegalArgumentException e)
       {
-         throw (IllegalArgumentException) e;
+         throw e;
       }
       catch (InvocationTargetException e)
       {
-         throw (InvocationTargetException) e;
+         throw e;
       }
       catch (Exception e)
       {
@@ -209,7 +209,7 @@ abstract class SecureReflectionAccess
     *            the class has no nullary constructor; or if the instantiation
     *            fails for some other reason.
     */
-   public Object runAsInstantiation() throws InstantiationException, IllegalAccessException
+   public T runAsInstantiation() throws InstantiationException, IllegalAccessException
    {
       try
       {
@@ -229,11 +229,11 @@ abstract class SecureReflectionAccess
       }
       catch (InstantiationException e)
       {
-         throw (InstantiationException) e;
+         throw e;
       }
       catch (IllegalAccessException e)
       {
-         throw (IllegalAccessException) e;
+         throw e;
       }
       catch (Exception e)
       {
@@ -241,6 +241,6 @@ abstract class SecureReflectionAccess
       }
    }
 
-   protected abstract Object work() throws Exception;
+   protected abstract T work() throws Exception;
 
 }

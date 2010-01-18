@@ -239,7 +239,7 @@ public Constructor<T> getDelegate()
     */
    public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
    {
-      return SecureReflections.ensureConstructorAccessible(getDelegate()).newInstance(parameters);
+      return SecureReflections.ensureAccessible(getDelegate()).newInstance(parameters);
    }
 
    /**

@@ -48,7 +48,7 @@ public class ClassInterceptionHandlerFactory<T> implements InterceptionHandlerFa
       {
          // this is not a managed instance - assume no-argument constructor exists
          Constructor<T> constructor = (Constructor<T>) SecureReflections.getDeclaredConstructor(clazz);
-         T interceptorInstance = SecureReflections.ensureConstructorAccessible(constructor).newInstance();
+         T interceptorInstance = SecureReflections.ensureAccessible(constructor).newInstance();
          // inject
          manager.createInjectionTarget(manager.createAnnotatedType(clazz)).inject(interceptorInstance, creationalContext);
          return new DirectClassInterceptionHandler<T>(interceptorInstance, clazz);

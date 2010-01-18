@@ -162,7 +162,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
          {
             if (type instanceof Class<?>)
             {
-               if (SecureReflections.methodExists((Class<?>) type, getWeldAnnotated().getName(), getWeldAnnotated().getParameterTypesAsArray()))
+               if (SecureReflections.isMethodExists((Class<?>) type, getWeldAnnotated().getName(), getWeldAnnotated().getParameterTypesAsArray()))
                {
                   methodDeclaredOnTypes = true;
                   continue;

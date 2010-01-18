@@ -213,7 +213,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
             if (type instanceof Class<?>)
             {
                Class<?> clazz = (Class<?>) type;
-               if (SecureReflections.methodExists(clazz, disposalMethodInjectionPoint.getName(), disposalMethodInjectionPoint.getParameterTypesAsArray()))
+               if (SecureReflections.isMethodExists(clazz, disposalMethodInjectionPoint.getName(), disposalMethodInjectionPoint.getParameterTypesAsArray()))
                {
                   methodDeclaredOnTypes = true;
                   continue;

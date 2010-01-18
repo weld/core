@@ -48,10 +48,10 @@ public class SecureReflections
     */
    public static Field getField(final Class<?> clazz, final String fieldName) throws NoSuchFieldException
    {
-      return (Field) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Field>()
       {
          @Override
-         protected Object work() throws Exception
+         protected Field work() throws Exception
          {
             return clazz.getField(fieldName);
          }
@@ -69,10 +69,10 @@ public class SecureReflections
     */
    public static Field getDeclaredField(final Class<?> clazz, final String fieldName) throws NoSuchFieldException
    {
-      return (Field) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Field>()
       {
          @Override
-         protected Object work() throws Exception
+         protected Field work() throws Exception
          {
             return clazz.getDeclaredField(fieldName);
          }
@@ -88,10 +88,10 @@ public class SecureReflections
     */
    public static Field[] getFields(final Class<?> clazz)
    {
-      return (Field[]) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Field[]>()
       {
          @Override
-         protected Object work() throws Exception
+         protected Field[] work() throws Exception
          {
             return clazz.getFields();
          }
@@ -107,10 +107,10 @@ public class SecureReflections
     */
    public static Field[] getDeclaredFields(final Class<?> clazz)
    {
-      return (Field[]) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Field[]>()
       {
          @Override
-         protected Object work() throws Exception
+         protected Field[] work() throws Exception
          {
             return clazz.getDeclaredFields();
          }
@@ -129,10 +129,10 @@ public class SecureReflections
     */
    public static Method getMethod(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) throws NoSuchMethodException
    {
-      return (Method) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Method>()
       {
          @Override
-         protected Object work() throws Exception
+         protected Method work() throws Exception
          {
             return clazz.getMethod(methodName, parameterTypes);
          }
@@ -151,10 +151,10 @@ public class SecureReflections
     */
    public static Method getDeclaredMethod(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) throws NoSuchMethodException
    {
-      return (Method) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Method>()
       {
          @Override
-         protected Object work() throws Exception
+         protected Method work() throws Exception
          {
             return clazz.getDeclaredMethod(methodName, parameterTypes);
          }
@@ -170,10 +170,10 @@ public class SecureReflections
     */
    public static Method[] getMethods(final Class<?> clazz)
    {
-      return (Method[]) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Method[]>()
       {
          @Override
-         protected Object work() throws Exception
+         protected Method[] work() throws Exception
          {
             return clazz.getMethods();
          }
@@ -189,10 +189,10 @@ public class SecureReflections
     */
    public static Method[] getDeclaredMethods(final Class<?> clazz)
    {
-      return (Method[]) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Method[]>()
       {
          @Override
-         protected Object work() throws Exception
+         protected Method[] work() throws Exception
          {
             return clazz.getDeclaredMethods();
          }
@@ -210,10 +210,10 @@ public class SecureReflections
     */
    public static Constructor<?> getConstructor(final Class<?> clazz, final Class<?>... parameterTypes) throws NoSuchMethodException
    {
-      return (Constructor<?>) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Constructor<?>>()
       {
          @Override
-         protected Object work() throws Exception
+         protected Constructor<?> work() throws Exception
          {
             return clazz.getConstructor(parameterTypes);
          }
@@ -231,10 +231,10 @@ public class SecureReflections
     */
    public static Constructor<?> getDeclaredConstructor(final Class<?> clazz, final Class<?>... parameterTypes) throws NoSuchMethodException
    {
-      return (Constructor<?>) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Constructor<?>>()
       {
          @Override
-         protected Object work() throws Exception
+         protected Constructor<?> work() throws Exception
          {
             return clazz.getDeclaredConstructor(parameterTypes);
          }
@@ -250,10 +250,10 @@ public class SecureReflections
     */
    public static Constructor<?>[] getConstructors(final Class<?> clazz)
    {
-      return (Constructor<?>[]) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Constructor<?>[]>()
       {
          @Override
-         protected Object work() throws Exception
+         protected Constructor<?>[] work() throws Exception
          {
             return clazz.getConstructors();
          }
@@ -269,10 +269,10 @@ public class SecureReflections
     */
    public static Constructor<?>[] getDeclaredConstructors(final Class<?> clazz)
    {
-      return (Constructor<?>[]) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Constructor<?>[]>()
       {
          @Override
-         protected Object work() throws Exception
+         protected Constructor<?>[] work() throws Exception
          {
             return clazz.getDeclaredConstructors();
 
@@ -293,49 +293,23 @@ public class SecureReflections
     *            method
     * @see java.lang.reflect.Method#invoke(Object, Object...)
     */
-   public static Object invoke(final Object instance, final Method method, final Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
+   public static <T> T invoke(final Object instance, final Method method, final Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
    {
-      return new SecureReflectionAccess()
+      return new SecureReflectionAccess<T>()
       {
+
          @Override
-         protected Object work() throws Exception
+         protected T work() throws Exception
          {
-            return ensureMethodAccessible(method).invoke(instance, parameters);
+            Object result = ensureAccessible(method).invoke(instance, parameters);
+
+            @SuppressWarnings("unchecked")
+            T t = (T) result;
+
+            return t;
          }
+
       }.runAsInvocation();
-   }
-
-   /**
-    * Makes a method accessible
-    * 
-    * @param method The method to make accessible
-    * @return The accessible method
-    */
-   public static Method ensureMethodAccessible(final Method method)
-   {
-      return (Method) ensureAccessible(method);
-   }
-
-   /**
-    * Makes a field accessible
-    * 
-    * @param field The field to make accessible
-    * @return The accessible field
-    */
-   public static Field ensureFieldAccessible(final Field field)
-   {
-      return (Field) ensureAccessible(field);
-   }
-
-   /**
-    * Makes a constructor accessible
-    * 
-    * @param constructor The constructor to make accessible
-    * @return The accessible constructor
-    */
-   public static <T> Constructor<T> ensureConstructorAccessible(final Constructor<T> constructor)
-   {
-      return (Constructor<T>) ensureAccessible(constructor);
    }
 
    /**
@@ -344,12 +318,13 @@ public class SecureReflections
     * @param accessibleObjects The object to manipulate
     * @return The accessible object
     */
-   private static AccessibleObject ensureAccessible(final AccessibleObject accessibleObject)
+   public static <T extends AccessibleObject> T ensureAccessible(final T accessibleObject)
    {
-      return (AccessibleObject) new SecureReflectionAccess()
+      return new SecureReflectionAccess<T>()
       {
+
          @Override
-         protected Object work() throws Exception
+         protected T work() throws Exception
          {
             if (!accessibleObject.isAccessible())
             {
@@ -357,6 +332,7 @@ public class SecureReflections
             }
             return accessibleObject;
          }
+
       }.runAndWrap();
    }
 
@@ -373,12 +349,12 @@ public class SecureReflections
     *            method
     * @see java.lang.reflect.Method#invoke(Object, Object...)
     */
-   public static Object invoke(final Object instance, final String methodName, final Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
+   public static <T> T invoke(final Object instance, final String methodName, final Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
    {
-      return new SecureReflectionAccess()
+      return new SecureReflectionAccess<T>()
       {
          @Override
-         protected Object work() throws Exception
+         protected T work() throws Exception
          {
             Class<?>[] parameterTypes = new Class<?>[parameters.length];
             for (int i = 0; i < parameters.length; i++)
@@ -386,7 +362,14 @@ public class SecureReflections
                parameterTypes[i] = parameters[i].getClass();
             }
             Method method = getMethod(instance.getClass(), methodName, parameterTypes);
-            return ensureMethodAccessible(method).invoke(instance, parameters);
+
+            Object result = ensureAccessible(method).invoke(instance, parameters);
+
+            @SuppressWarnings("unchecked")
+            T t = (T) result;
+
+            return t;
+
          }
       }.runAsInvocation();
    }
@@ -439,7 +422,7 @@ public class SecureReflections
     */
    public static Method lookupMethod(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) throws NoSuchMethodException
    {
-      return (Method) new SecureReflectionAccess()
+      return new SecureReflectionAccess<Method>()
       {
 
          private Method lookupMethod(final Class<?> currentClass) throws NoSuchMethodException
@@ -470,7 +453,7 @@ public class SecureReflections
          }
 
          @Override
-         protected Object work() throws Exception
+         protected Method work() throws Exception
          {
             return lookupMethod(clazz);
          }
@@ -487,7 +470,7 @@ public class SecureReflections
    {
       try
       {
-         Class<?>[] valueClasses = (Class<?>[]) invoke(annotation, "value");
+         Class<?>[] valueClasses = invoke(annotation, "value");
          return valueClasses;
       }
       catch (Exception e)
@@ -504,7 +487,7 @@ public class SecureReflections
     * @param parameterTypes The parameter types of the method
     * @return true if method is present, false otherwise
     */
-   public static boolean methodExists(Class<?> clazz, String methodName, Class<?>... parameterTypes)
+   public static boolean isMethodExists(Class<?> clazz, String methodName, Class<?>... parameterTypes)
    {
       try
       {
