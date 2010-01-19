@@ -5,7 +5,6 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
 
-// TODO Expose in SPI
 public class SingleThreadScheduledExecutorServiceFactory implements ScheduledExecutorServiceFactory
 {
 
