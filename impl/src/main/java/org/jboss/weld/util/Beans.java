@@ -567,7 +567,7 @@ public class Beans
     * @param enabledDeploymentTypes The enabled deployment types
     * @return The filtered beans
     */
-   public static <T extends Bean<?>> Set<T> retainEnabledAlternatives(Set<T> beans, Collection<Class<?>> enabledAlternativeClasses, Collection<Class<? extends Annotation>> enabledAlternativeSterotypes)
+   public static <T extends Bean<?>> Set<T> removeDisabledAndSpecializedBeans(Set<T> beans, Collection<Class<?>> enabledAlternativeClasses, Collection<Class<? extends Annotation>> enabledAlternativeSterotypes, Map<Contextual<?>, Contextual<?>> specializedBeans)
    {
       if (beans.size() == 0)
       {
@@ -575,15 +575,15 @@ public class Beans
       }
       else
       {
-         Set<T> enabledBeans = new HashSet<T>();
+         Set<T> result = new HashSet<T>();
          for (T bean : beans)
          {
-            if (isBeanEnabled(bean, enabledAlternativeClasses, enabledAlternativeSterotypes))
+            if (isBeanEnabled(bean, enabledAlternativeClasses, enabledAlternativeSterotypes) && !isSpecialized(bean, beans, specializedBeans))
             {
-               enabledBeans.add(bean);
+               result.add(bean);
             }
          }
-         return enabledBeans;
+         return result;
       }
    }
    
@@ -651,7 +651,7 @@ public class Beans
     * @param specializedBeans
     * @return
     */
-   public static boolean isSpecialized(Bean<?> bean, Set<Bean<?>> beans, Map<Contextual<?>, Contextual<?>> specializedBeans)
+   public static <T extends Bean<?>> boolean isSpecialized(T bean, Set<T> beans, Map<Contextual<?>, Contextual<?>> specializedBeans)
    {
       if (specializedBeans.containsKey(bean))
       {
