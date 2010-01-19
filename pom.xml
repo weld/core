@@ -108,6 +108,7 @@
       <selenium.server.host>localhost</selenium.server.host>
       <selenium.speed>0</selenium.speed>
       <selenium.timeout>30000</selenium.timeout>
+      <selenium.debug>false</selenium.debug>
    </properties>
 
    <!-- Dependency management, including any extra repositories needed -->
@@ -363,6 +364,10 @@
                            <configuration>
                               <background>true</background>
                               <port>${selenium.server.port}</port>
+                              <logOutput>true</logOutput>
+										<logFile>${project.build.directory}/selenium/selenium-server.log</logFile>
+										<browserSideLog>${selenium.debug}</browserSideLog>
+										<debug>${selenium.debug}</debug>
                            </configuration>
                         </execution>
                         <!--
@@ -582,6 +587,10 @@
                            <configuration>
                               <background>true</background>
                               <port>${selenium.server.port}</port>
+                              <logOutput>true</logOutput>
+										<logFile>${project.build.directory}/selenium/selenium-server.log</logFile>
+										<browserSideLog>${selenium.debug}</browserSideLog>
+										<debug>${selenium.debug}</debug>
                            </configuration>
                         </execution>
                         <!--
