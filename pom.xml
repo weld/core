@@ -108,6 +108,7 @@
       <selenium.server.host>localhost</selenium.server.host>
       <selenium.speed>0</selenium.speed>
       <selenium.timeout>30000</selenium.timeout>
+      <firefoxProfileTemplate></firefoxProfileTemplate>
    </properties>
 
    <!-- Dependency management, including any extra repositories needed -->
@@ -580,6 +581,7 @@
                               <goal>start-server</goal>
                            </goals>
                            <configuration>
+										<firefoxProfileTemplate>${firefoxProfileTemplate}</firefoxProfileTemplate>
                               <background>true</background>
                               <port>${selenium.server.port}</port>
                            </configuration>
