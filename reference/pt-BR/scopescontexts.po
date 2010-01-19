@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-01-06 12:17+0000\n"
-"PO-Revision-Date: 2009-12-19 18:06-0300\n"
-"Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
+"PO-Revision-Date: 2010-01-19 13:48-0300\n"
+"Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,44 +21,43 @@ msgstr "Escopos e contextos"
 
 #. Tag: para
 #: scopescontexts.xml:7
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "So far, we've seen a few examples of <emphasis>scope type annotations</"
 "emphasis>. The scope of a bean determines the lifecycle of instances of the "
 "bean. The scope also determines which clients refer to which instances of "
 "the bean. According to the CDI specification, a scope determines:"
 msgstr ""
-" Até agora, vimos alguns exemplos de <emphasis>anotações de tipo de escopo</"
-"emphasis>. O escopo de um Web Bean determina o ciclo de vida das instâncias "
-"do Web Bean. O escopo também determina que clientes se referem a quais "
-"instâncias do Web Bean. De acordo com a  especificação Web Beans, um escopo "
-"determina:"
+"Até agora, vimos alguns exemplos de <emphasis>anotações de tipo de escopo</"
+"emphasis>. O escopo de um bean determina o ciclo de vida das instâncias do "
+"bean. O escopo também determina que clientes se referem a quais instâncias "
+"do bean. De acordo com a  especificação CDI, um escopo determina:"
 
 #. Tag: para
 #: scopescontexts.xml:16
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "When a new instance of any bean with that scope is created"
-msgstr ""
-"Quando uma nova instância de qualquer Web Bean com esse escopo é criada"
+msgstr "Quando uma nova instância de qualquer bean com esse escopo é criada"
 
 #. Tag: para
 #: scopescontexts.xml:19
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "When an existing instance of any bean with that scope is destroyed"
-msgstr "Quando uma instância de qualquer Web Bean com esse escopo é destruída"
+msgstr ""
+"Quando uma instância existente de qualquer bean com esse escopo é destruída"
 
 #. Tag: para
 #: scopescontexts.xml:22
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Which injected references refer to any instance of a bean with that scope"
 msgstr ""
-"Cada referência  injetada refere-se a qualquer instância de um Web Bean com "
+"Quais referências injetadas referem-se a qualquer instância de um bean com "
 "esse escopo"
 
 #. Tag: para
 #: scopescontexts.xml:27
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For example, if we have a session-scoped bean, <literal>CurrentUser</"
 "literal>, all beans that are called in the context of the same "
@@ -67,12 +66,12 @@ msgid ""
 "the first time a <literal>CurrentUser</literal> is needed in that session, "
 "and automatically destroyed when the session ends."
 msgstr ""
-"Por exemplo, se temos um Web Bean de escopo de sessão <literal>CurrentUser</"
-"literal>, todos os Web Beans que são chamados no contexto dele "
-"<literal>HttpSession</literal> verão a mesma instância do "
+"Por exemplo, se temos um bean com escopo de sessão <literal>CurrentUser</"
+"literal>, todos os beans que são chamados no contexto do mesmo "
+"<literal>HttpSession</literal> verão a mesma instância de "
 "<literal>CurrentUser</literal>. Essa instância será criada automaticamente "
 "na primeira vez que um <literal>CurrentUser</literal> for necessário nessa "
-"sessão, e  será automaticamente destruída quando a sessão terminar."
+"sessão, e será automaticamente destruída quando a sessão terminar."
 
 #. Tag: para
 #: scopescontexts.xml:35
@@ -86,6 +85,13 @@ msgid ""
 "The client proxy will get in the way if you try to pass an injected instance "
 "to the JPA <literal>EntityManager</literal>."
 msgstr ""
+"Entidades JPA não se encaixam muito bem nesse modelo. Entidades possuem seu "
+"próprio ciclo de vida e modelo de identidade que não pode ser mapeado "
+"adequadamente para o modelo utilizado em CDI. Portanto, não recomendamos o "
+"tratamento de entidades como beans CDI. Você certamente vai ter problemas se "
+"tentar dar a uma entidade um escopo diferente do escopo padrão "
+"<literal>@Dependent</literal>. O proxy cliente irá atrapalhar se você tentar "
+"passar uma instância injetada para o <literal>EntityManager</literal> do JPA."
 
 #. Tag: title
 #: scopescontexts.xml:45
@@ -95,13 +101,13 @@ msgstr "Tipos de escopo"
 
 #. Tag: para
 #: scopescontexts.xml:47
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CDI features an <emphasis>extensible context model</emphasis>. It's possible "
 "to define new scopes by creating a new scope type annotation:"
 msgstr ""
-"Web Beans possui um <emphasis>modelo extensível de contexto</emphasis>. É "
-"possível definir novos escopos, criando uma nova anotação de tipo de escopo:"
+"CDI possui um <emphasis>modelo extensível de contexto</emphasis>. É possível "
+"definir novos escopos, criando uma nova anotação de tipo de escopo:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:52
@@ -119,7 +125,7 @@ msgstr ""
 
 #. Tag: para
 #: scopescontexts.xml:54
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Of course, that's the easy part of the job. For this scope type to be "
 "useful, we will also need to define a <literal>Context</literal> object that "
@@ -129,20 +135,21 @@ msgid ""
 "of Seam."
 msgstr ""
 "Evidentemente, essa é a parte mais fácil do trabalho. Para esse tipo de "
-"escopo ser útil, nós também precisamos  definir um objeto <literal>Context</"
+"escopo ser útil, nós também precisamos definir um objeto <literal>Context</"
 "literal> que implementa o escopo! Implementar um <literal>Context</literal> "
 "é geralmente uma tarefa muito técnica, destinada apenas ao desenvolvimento "
-"do framework."
+"do framework. Você pode esperar uma implementação do escopo de negócio, por "
+"exemplo, em uma versão futura do Seam."
 
 #. Tag: para
 #: scopescontexts.xml:61
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We can apply a scope type annotation to a bean implementation class to "
 "specify the scope of the bean:"
 msgstr ""
 "Podemos aplicar uma anotação de tipo de escopo a uma classe de implementação "
-"de um Web Bean para especificar o escopo do Web Bean:"
+"de um bean para especificar o escopo do bean:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:65
@@ -156,9 +163,9 @@ msgstr ""
 
 #. Tag: para
 #: scopescontexts.xml:67
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Usually, you'll use one of CDI's built-in scopes."
-msgstr "Normalmente, você usará um dos escopos pré-definidos na Web Bean."
+msgstr "Normalmente, você usará um dos escopos pré-definidos do CDI."
 
 #. Tag: title
 #: scopescontexts.xml:72
@@ -168,9 +175,9 @@ msgstr "Escopos pré-definidos"
 
 #. Tag: para
 #: scopescontexts.xml:74
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "CDI defines four built-in scopes:"
-msgstr "A Web Beans pré-define quatro tipos de escopos:"
+msgstr "CDI possui quatro escopos pré-definidos:"
 
 #. Tag: literal
 #: scopescontexts.xml:78
@@ -198,9 +205,9 @@ msgstr "@ConversationScoped"
 
 #. Tag: para
 #: scopescontexts.xml:91
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "For a web application that uses CDI:"
-msgstr "Para uma aplicação web que utiliza Web Beans:"
+msgstr "Para uma aplicação web que utiliza CDI:"
 
 #. Tag: para
 #: scopescontexts.xml:95
@@ -209,7 +216,7 @@ msgid ""
 "any servlet request has access to active request, session and application "
 "scopes, and, additionally"
 msgstr ""
-"qualquer requisição servlet tem acesso aos escopos de requisição, sessão e "
+"qualquer requisição servlet tem acesso aos escopos de solicitação, sessão e "
 "aplicação ativos, e, adicionalmente"
 
 #. Tag: para
@@ -225,12 +232,14 @@ msgid ""
 "A CDI extension can implement support for the conversation scope in other "
 "web frameworks."
 msgstr ""
+"Uma extensão do CDI pode implementar o suporte para o escopo de conversação "
+"em outros frameworks web."
 
 #. Tag: para
 #: scopescontexts.xml:108
 #, no-c-format
 msgid "The request and application scopes are also active:"
-msgstr "Os escopos de request e aplicação também estão disponíveis:"
+msgstr "Os escopos de solicitação e aplicação também estão disponíveis:"
 
 #. Tag: para
 #: scopescontexts.xml:112
@@ -240,9 +249,9 @@ msgstr "durante invocações de métodos remotos de EJB,"
 
 #. Tag: para
 #: scopescontexts.xml:115
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "during invocations of EJB asynchronous methods,"
-msgstr "durante invocações de métodos remotos de EJB,"
+msgstr "durante invocações de métodos assíncronos de EJB,"
 
 #. Tag: para
 #: scopescontexts.xml:118
@@ -252,15 +261,16 @@ msgstr "durante timeouts de EJB,"
 
 #. Tag: para
 #: scopescontexts.xml:121
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "during message delivery to a message-driven bean,"
-msgstr "durante a entrega de uma mensagem a um mensagem-driven bean, e"
+msgstr "durante a entrega de mensagem a um message-driven bean,"
 
 #. Tag: para
 #: scopescontexts.xml:124
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "during message delivery to a <literal>MessageListener</literal>, and"
-msgstr "durante a entrega de uma mensagem a um mensagem-driven bean, e"
+msgstr ""
+"durante a entrega de mensagem a um <literal>MessageListener</literal>, e"
 
 #. Tag: para
 #: scopescontexts.xml:127
@@ -270,15 +280,15 @@ msgstr "durante a invocação de um web service"
 
 #. Tag: para
 #: scopescontexts.xml:131
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If the application tries to invoke a bean with a scope that does not have an "
 "active context, a <literal>ContextNotActiveException</literal> is thrown by "
 "the container at runtime."
 msgstr ""
-"Se a aplicação tentar invocar um Web Bean com um escopo que não tem um "
+"Se a aplicação tentar invocar um bean com um escopo que não possui um "
 "contexto ativo, uma <literal>ContextNotActiveException</literal> é lançada "
-"pelo gerenciador do Web Bean em tempo de execução."
+"pelo contêiner em tempo de execução."
 
 #. Tag: para
 #: scopescontexts.xml:136
@@ -288,6 +298,9 @@ msgid ""
 "<literal>@ConversationScoped</literal> must be serializable, since the "
 "container passivates the HTTP session from time to time."
 msgstr ""
+"Os managed beans com escopo <literal>@SessionScoped</literal> ou "
+"<literal>@ConversationScoped</literal> devem ser serializáveis, uma vez que "
+"o contêiner mantém a sessão HTTP resguardada ao longo do tempo."
 
 #. Tag: para
 #: scopescontexts.xml:141
@@ -299,7 +312,7 @@ msgid ""
 msgstr ""
 "Três dos quatro escopos pré-definidos devem ser extremamente familiares a "
 "todos os desenvolvedores Java EE, então não vamos perder tempo discutindo-os "
-"aqui. Um dos escopos, porém, é novo."
+"aqui. No entanto, um dos escopos é novo."
 
 #. Tag: title
 #: scopescontexts.xml:149
@@ -309,17 +322,17 @@ msgstr "O escopo de conversação"
 
 #. Tag: para
 #: scopescontexts.xml:151
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The conversation scope is a bit like the traditional session scope in that "
 "it holds state associated with a user of the system, and spans multiple "
 "requests to the server. However, unlike the session scope, the conversation "
 "scope:"
 msgstr ""
-"O escopo de conversação da Web Beans é um parecido com o tradicional escopo "
-"de sessão na medida em que mantém estado associado a um usuário do sistema, "
-"e o mantém durante várias requisições para o servidor. No entanto, ao "
-"contrário do escopo de sessão, o escopo de conversação:"
+"O escopo de conversação é um pouco parecido com o tradicional escopo de "
+"sessão na medida em que mantém estado associado a um usuário do sistema, e o "
+"expande durante várias solicitações ao servidor. No entanto, ao contrário do "
+"escopo de sessão, o escopo de conversação:"
 
 #. Tag: para
 #: scopescontexts.xml:159
@@ -335,35 +348,39 @@ msgid ""
 "application (browsers tend to share domain cookies, and hence the session "
 "cookie, between tabs, so this is not the case for the session scope)."
 msgstr ""
+"mantém estado associado a uma aba específica do navegador web em uma "
+"aplicação JSF (navegadores tendem a compartilhar os cookies do domínio, que "
+"também inclui o cookie de sessão, entre as abas, de modo que este não é o "
+"caso para o escopo de sessão)."
 
 #. Tag: para
 #: scopescontexts.xml:169
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A conversation represents a task&#8212;a unit of work from the point of view "
 "of the user. The conversation context holds state associated with what the "
 "user is currently working on. If the user is doing multiple things at the "
 "same time, there are multiple conversations."
 msgstr ""
-"Uma conversação representa uma tarefa, uma unidade de trabalho do ponto-de-"
-"vista do usuário. O contexto de conversação mantém o estado associado  ao "
-"usuário que estiver utilizando no momento. Se o usuário estiver fazendo "
-"várias coisas ao mesmo tempo, existem várias conversações."
+"Uma conversação representa uma tarefa&#8212;uma unidade de trabalho do ponto-"
+"de-vista do usuário. O contexto de conversação mantém o estado associado com "
+"o que o usuário estiver trabalhando no momento. Se o usuário estiver fazendo "
+"várias coisas ao mesmo tempo, existirão várias conversações."
 
 #. Tag: para
 #: scopescontexts.xml:175
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The conversation context is active during any JSF request. Most "
 "conversations are destroyed at the end of the request. If a conversation "
 "should hold state across multiple requests, it must be explicitly promoted "
 "to a <emphasis>long-running conversation</emphasis>."
 msgstr ""
-"A conversação está ativa durante qualquer requisição JSF. No entanto, a "
-"maioria das coversações é destruída no final da requisição. Se uma "
-"conversação deve manter estado através de múltiplas requisições, deve "
-"explicitamente ser promovida para uma <emphasis>conversação de longa duração "
-"(long-running conversation)</emphasis>."
+"O contexto de conversação fica ativo durante qualquer solicitação JSF. A "
+"maioria das conversações é destruída no final da solicitação. Se uma "
+"conversação deve manter estado através de múltiplas solicitações, ela deve "
+"ser explicitamente promovida a uma <emphasis>conversação de longa duração</"
+"emphasis>."
 
 #. Tag: title
 #: scopescontexts.xml:182
@@ -373,20 +390,19 @@ msgstr "Demarcação de contexto"
 
 #. Tag: para
 #: scopescontexts.xml:184
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CDI provides a built-in bean for controlling the lifecycle of conversations "
 "in a JSF application. This bean may be obtained by injection:"
 msgstr ""
-"Web Beans oferece um Web Bean pré-definido para o controle do ciclo de vida "
-"das conversações em uma aplicação JSF. Esse Web Bean pode ser obtido por "
-"injeção:"
+"CDI oferece um bean pré-definido para o controle do ciclo de vida das "
+"conversações em uma aplicação JSF. Esse bean pode ser obtido por injeção:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:189
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "@Inject Conversation conversation;"
-msgstr "@Current Conversation conversation;"
+msgstr "@Inject Conversation conversation;"
 
 #. Tag: para
 #: scopescontexts.xml:191
@@ -398,20 +414,21 @@ msgid ""
 "for destruction at the end of the current request, call <literal>end()</"
 "literal>."
 msgstr ""
-"Para promover a conversação associada a requisição atual em uma conversação "
-"de longa duração, chame o método <literal>begin()</literal> no código da "
-"aplicação. Para agendar a destruição do atual contexto de conversão de longa "
-"duração no final da requisição atual, chame <literal>end()</literal>."
+"Para promover a conversação associada com a solicitação atual em uma "
+"conversação de longa duração, chame o método <literal>begin()</literal> no "
+"código da aplicação. Para agendar a destruição do atual contexto de "
+"conversão de longa duração no final da solicitação atual, chame <literal>end"
+"()</literal>."
 
 #. Tag: para
 #: scopescontexts.xml:197
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In the following example, a conversation-scoped bean controls the "
 "conversation with which it is associated:"
 msgstr ""
-"No exemplo a seguir, um Web Bean em escopo de conversação controla a "
-"conversação  ao qual estiver associado:"
+"No exemplo a seguir, um bean com escopo de conversação controla a "
+"conversação na qual estiver associado:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:201
@@ -477,14 +494,14 @@ msgstr ""
 
 #. Tag: para
 #: scopescontexts.xml:203
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This bean is able to control its own lifecycle through use of the "
 "<literal>Conversation</literal> API. But some other beans have a lifecycle "
 "which depends completely upon another object."
 msgstr ""
-"Esse Web Bean é capaz de controlar seu próprio ciclo de vida através do uso "
-"da API <literal>Conversation</literal>. Mas alguns outros Web Beans têm um "
+"Este bean é capaz de controlar seu próprio ciclo de vida através do uso da "
+"API <literal>Conversation</literal>. Mas alguns outros beans possuem um "
 "cliclo vida que depende totalmente de um outro objeto."
 
 #. Tag: title
@@ -495,19 +512,20 @@ msgstr "Propagação de conversação"
 
 #. Tag: para
 #: scopescontexts.xml:213
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The conversation context automatically propagates with any JSF faces request "
 "(JSF form submission) or redirect. It does not automatically propagate with "
 "non-faces requests, for example, navigation via a link."
 msgstr ""
-"Contexto de conversação propaga-se automaticamente em qualquer requisição "
-"faces JSF  (formulário de submissão JSF). E não se propaga automaticamente "
-"em requisições não-faces, por exemplo, em  navegação através de um link."
+"O contexto de conversação propaga-se automaticamente em qualquer solicitação "
+"JSF (formulário de submissão JSF) ou redirecionamento. E não se propaga "
+"automaticamente em requisições não JSF, por exemplo, navegação através de um "
+"link."
 
 #. Tag: para
 #: scopescontexts.xml:218
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We can force the conversation to propagate with a non-faces request by "
 "including the unique identifier of the conversation as a request parameter. "
@@ -516,12 +534,12 @@ msgid ""
 "obtained from the <literal>Conversation</literal> object, which has the EL "
 "bean name <literal>conversation</literal>."
 msgstr ""
-"Nós podemos forçar a propagação da conversação em uma requisição não-faces "
+"Nós podemos forçar a propagação da conversação em uma solicitação não JSF "
 "incluindo o identificador único da conversação como um parâmetro da "
-"requisição. A especificação Web Beans reserva o parâmetro denominado "
+"solicitação. A especificação CDI reserva o parâmetro denominado "
 "<literal>cid</literal> para essa utilização. O identificador único da "
 "conversação pode ser obtido a partir do objeto <literal>Conversation</"
-"literal>, que tem o nome Web Bean <literal>conversation</literal>."
+"literal>, que possui o nome de bean <literal>conversation</literal> em EL."
 
 #. Tag: para
 #: scopescontexts.xml:225
@@ -543,7 +561,7 @@ msgstr ""
 #: scopescontexts.xml:231
 #, no-c-format
 msgid "It's probably better to use one of the link components in JSF 2:"
-msgstr ""
+msgstr "É provavelmente melhor usar um dos componentes de link em JSF 2:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:235
@@ -559,29 +577,28 @@ msgstr ""
 
 #. Tag: para
 #: scopescontexts.xml:238
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The conversation context propagates across redirects, making it very easy to "
 "implement the common POST-then-redirect pattern, without resort to fragile "
 "constructs such as a \"flash\" object. The container automatically adds the "
 "conversation id to the redirect URL as a request parameter."
 msgstr ""
-"O gerenciador do Web Bean também é utilizado para propagar conversações em "
-"qualquer redirecionamento, mesmo se a conversação não estiver marcada como "
-"uma conversação de longa duração. Isso torna muito fácil a implementação do "
-"padrão POST-then-redirect, sem ter de recorrer a construções frágeis, como "
-"um objeto \"flash\". Neste caso, o gerenciador do Web Bean automaticamente "
-"adiciona um parâmetro de requisição a URL redirecionada."
+"O contexto da conversação se propaga sobre redirecionamentos, tornando muito "
+"fácil implementar o padrão POST-então-redirecione, sem ter de recorrer a "
+"construções frágeis, como um objeto \"flash\". O contêiner adiciona "
+"automaticamente o identificador da conversação na URL redirecionada como um "
+"parâmetro de solicitação."
 
 #. Tag: title
 #: scopescontexts.xml:248
 #, no-c-format
 msgid "Conversation timeout"
-msgstr "Timeout de conversação"
+msgstr "Tempo limite de conversação"
 
 #. Tag: para
 #: scopescontexts.xml:250
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The container is permitted to destroy a conversation and all state held in "
 "its context at any time in order to conserve resources. A CDI implementation "
@@ -590,24 +607,24 @@ msgid ""
 "inactivity before the conversation is destroyed (as opposed to the amount of "
 "time the conversation is active)."
 msgstr ""
-"O gerenciador do Web Bean pode destruir uma conversação e todos os estados "
-"mantidos em seu contexto, a qualquer momento, a fim de preservar recursos. A "
-"implementação do gerenciador do Web Bean irá normalmente fazer isso, com "
-"base em algum tipo de timeout &#151;  embora isso não seja exigido pela "
-"especificação Web Beans. O timeout é o período de inatividade antes que a "
-"conversação seja destruída."
+"O contêiner pode destruir uma conversação e todo estado mantido em seu "
+"contexto, a qualquer momento, a fim de preservar recursos. A implementação "
+"do CDI irá fazer isso normalmente, com base em algum tipo de tempo limite "
+"(timeout)&#8212;embora isso não seja exigido pela especificação. O tempo "
+"limite é o período de inatividade antes que a conversação seja destruída (em "
+"contraste com a quantidade de tempo que a conversação está ativa)."
 
 #. Tag: para
 #: scopescontexts.xml:257
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <literal>Conversation</literal> object provides a method to set the "
 "timeout. This is a hint to the container, which is free to ignore the "
 "setting."
 msgstr ""
 "O objeto <literal>Conversation</literal> fornece um método para definir o "
-"tempo limite (timeout). Essa é uma sugestão para o gerente do Web Bean, que "
-"é livre para ignorar essa configuração."
+"tempo limite (timeout). Essa é uma sugestão para o contêiner, que está livre "
+"para ignorar essa configuração."
 
 #. Tag: programlisting
 #: scopescontexts.xml:262
@@ -617,22 +634,23 @@ msgstr "conversation.setTimeout(timeoutInMillis);"
 
 #. Tag: title
 #: scopescontexts.xml:269
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The singleton pseudo-scope"
-msgstr "O dependent pseudo-scope"
+msgstr "O pseudo-escopo singleton"
 
 #. Tag: para
 #: scopescontexts.xml:271
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In addition to the four built-in scopes, CDI also supports two "
 "<emphasis>pseudo-scopes</emphasis>. The first is the <emphasis>singleton "
 "pseudo-scope</emphasis>, which we specify using the annotation "
 "<literal>@Singleton</literal>."
 msgstr ""
-"Além dos quatro escopos pré-definidos, Web Beans possui o chamado "
-"<emphasis>dependent pseudo-scope</emphasis>. Esse é o escopo padrão para um "
-"Web Bean que não declare explicitamente um tipo de escopo."
+"Além dos quatro escopos pré-definidos, CDI também suporta dois "
+"<emphasis>pseudo-escopos</emphasis>. O primeiro é o <emphasis>pseudo-escopo "
+"singleton</emphasis>, que especificamos usando a anotação "
+"<literal>@Singleton</literal>."
 
 #. Tag: para
 #: scopescontexts.xml:277
@@ -642,6 +660,9 @@ msgid ""
 "enterprise.context</literal>, the <literal>@Singleton</literal> annotation "
 "is defined in the package <literal>javax.inject</literal>."
 msgstr ""
+"Ao contrário dos outros escopos, os quais pertencem ao pacote <literal>javax."
+"enterprise.context</literal>, a anotação <literal>@Singleton</literal> é "
+"definida no pacote <literal>javax.inject</literal>."
 
 #. Tag: para
 #: scopescontexts.xml:283
@@ -657,6 +678,16 @@ msgid ""
 "scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</"
 "literal>, or any stateful session bean."
 msgstr ""
+"Você pode adivinhar o que \"singleton\" significa aqui. Ele significa que um "
+"bean é instanciado apenas uma vez. Infelizmente, existe um pequeno problema "
+"com este pseudo-escopo. Os beans com escopo <literal>@Singleton</literal> "
+"não possuem um objeto de proxy. Os clientes mantêm uma referência direta "
+"para a instância singleton. Portanto, precisamos considerar o caso de um "
+"cliente que pode ser serializado, por exemplo, qualquer bean com escopo "
+"<literal>@SessionScoped</literal> ou <literal>@ConversationScoped</literal>, "
+"qualquer objeto dependente de um bean com escopo <literal>@SessionScoped</"
+"literal> ou <literal>@ConversationScoped</literal>, ou qualquer bean de "
+"sessão com estado."
 
 #. Tag: para
 #: scopescontexts.xml:292
@@ -668,6 +699,11 @@ msgid ""
 "true singleton, and we may as well have just declared it with the default "
 "scope."
 msgstr ""
+"Agora, se a instância singleton é simples objeto imutável e serializável "
+"como uma string, um número ou uma data, provavelmente não importaremos muito "
+"se ele ficar duplicado na serialização. No entanto, isso faz com que ele "
+"deixe de ser um verdadeiro singleton, e podemos muito bem apenas o declarar "
+"com o escopo padrão."
 
 #. Tag: para
 #: scopescontexts.xml:298
@@ -676,6 +712,8 @@ msgid ""
 "There are several ways to ensure that the singleton bean remains a singleton "
 "when its client gets serialized:"
 msgstr ""
+"Existem várias maneiras para garantir que o bean singleton permaneça como "
+"singleton quando seu cliente se torna serializável."
 
 #. Tag: para
 #: scopescontexts.xml:302
@@ -685,6 +723,9 @@ msgid ""
 "<literal>readReplace()</literal> (as defined by the Java serialization "
 "specification),"
 msgstr ""
+"mandar o bean singleton implementar <literal>writeResolve()</literal> e "
+"<literal>readReplace()</literal> (como definido pela especificação de "
+"serialização Java),"
 
 #. Tag: para
 #: scopescontexts.xml:308
@@ -693,6 +734,8 @@ msgid ""
 "make sure the client keeps only a transient reference to the singleton bean, "
 "or"
 msgstr ""
+"certificar-se que o cliente mantém apenas uma referência transiente para o "
+"bean singleton, ou"
 
 #. Tag: para
 #: scopescontexts.xml:313
@@ -701,6 +744,8 @@ msgid ""
 "give the client a reference of type <literal>Instance&lt;X&gt;</literal> "
 "where <literal>X</literal> is the bean type of the singleton bean."
 msgstr ""
+"dar ao cliente uma referência do tipo <literal>Instance&lt;X&gt;</literal>, "
+"onde <literal>X</literal> é o tipo do bean singleton."
 
 #. Tag: para
 #: scopescontexts.xml:320
@@ -710,33 +755,35 @@ msgid ""
 "literal>, allowing the container to proxy the bean, and take care of "
 "serialization problems automatically."
 msgstr ""
+"Uma quarta e melhor solução é usar <literal>@ApplicationScoped</literal>, "
+"permitindo que o contêiner faça um proxy do bean, e resolva automaticamente "
+"os problemas de serialização."
 
 #. Tag: title
 #: scopescontexts.xml:326
 #, no-c-format
 msgid "The dependent pseudo-scope"
-msgstr "O dependent pseudo-scope"
+msgstr "O pseudo-escopo dependente"
 
 #. Tag: para
 #: scopescontexts.xml:328
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Finally, CDI features the so-called <emphasis>dependent pseudo-scope</"
 "emphasis>. This is the default scope for a bean which does not explicitly "
 "declare a scope type."
 msgstr ""
-"Além dos quatro escopos pré-definidos, Web Beans possui o chamado "
-"<emphasis>dependent pseudo-scope</emphasis>. Esse é o escopo padrão para um "
-"Web Bean que não declare explicitamente um tipo de escopo."
+"Finalmente, CDI possui o assim chamado <emphasis>pseudo-escopo dependente</"
+"emphasis>. Esse é o escopo padrão para um bean que não declare "
+"explicitamente um tipo de escopo."
 
 #. Tag: para
 #: scopescontexts.xml:333
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For example, this bean has the scope type <literal>@Dependent</literal>:"
 msgstr ""
-"Por exemplo, esse Web Bean tem o tipo de escopo <literal>@Dependent</"
-"literal>:"
+"Por exemplo, esse bean possui o tipo de escopo <literal>@Dependent</literal>:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:337
@@ -754,6 +801,11 @@ msgid ""
 "belongs to is created, and destroyed when the object it belongs to is "
 "destroyed."
 msgstr ""
+"Uma instância de um bean dependente nunca é compartilhada entre clientes "
+"diferentes ou pontos de injeção diferentes. Ele é estritamente um "
+"<emphasis>objeto dependente</emphasis> de algum outro objeto. Ele é "
+"instanciado quando o objeto a que ele pertence é criado, e destruído quando "
+"o objeto a que ele pertence é destruído."
 
 #. Tag: para
 #: scopescontexts.xml:345
@@ -763,6 +815,9 @@ msgid ""
 "instance of the bean is instantiated every time the expression is evaluated. "
 "The instance is not reused during any other expression evaluation."
 msgstr ""
+"Se uma expressão Unified EL se refere a um bean dependente pelo seu nome EL, "
+"uma instância do bean é instaciada toda vez que a expressão é avaliada. A "
+"instância não é reutilizada durante qualquer outra avaliação de expressão."
 
 #. Tag: para
 #: scopescontexts.xml:351
@@ -778,6 +833,16 @@ msgid ""
 "from a JSF page, inject it into a different bean, and expose it to EL via a "
 "getter method."
 msgstr ""
+"Se você precisa acessar um bean diretamente pelo nome EL em uma página JSF, "
+"você provavelmente precisa dar a ele um escopo diferente de "
+"<literal>@Dependent</literal>. Caso contrário, qualquer valor que for "
+"definido no bean por uma entrada JSF será perdido imediatamente. É por isso "
+"que CDI possui o estereótipo <literal>@Model</literal>; ele permite que você "
+"dê um nome ao bean e define seu escopo para <literal>@RequestScoped</"
+"literal> de uma só vez. Se você precisa acessar um bean que realmente "
+"<emphasis>necessita</emphasis> possuir o escopo <literal>@Dependent</"
+"literal> a partir de uma página JSF, injete-o dentro de um bean diferente e "
+"exponha-o em EL por meio de um método getter."
 
 #. Tag: para
 #: scopescontexts.xml:361
@@ -786,23 +851,24 @@ msgid ""
 "Beans with scope <literal>@Dependent</literal> don't need a proxy object. "
 "The client holds a direct reference to its instance."
 msgstr ""
+"Os beans com escopo <literal>@Dependent</literal> não precisam de um objeto "
+"de proxy. O cliente mantém uma referência direta para sua instância."
 
 #. Tag: para
 #: scopescontexts.xml:366
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CDI makes it easy to obtain a dependent instance of a bean, even if the bean "
 "is already declared as a bean with some other scope type."
 msgstr ""
-"Web Beans torna fácil a obtenção de uma instância dependente de uma classe "
-"Java ou um EJB, mesmo se a classe ou EJB já tiverem sido declarados como um "
-"Web Bean com outro tipo de escopo."
+"CDI torna fácil a obtenção de uma instância dependente de um bean, mesmo se "
+"o bean já tiver declarado como um bean com algum outro tipo de escopo."
 
 #. Tag: title
 #: scopescontexts.xml:374
 #, no-c-format
 msgid "The <literal>@New</literal> qualifier"
-msgstr "The <literal>@New</literal> qualifier"
+msgstr "O qualificador <literal>@New</literal>"
 
 #. Tag: para
 #: scopescontexts.xml:376
@@ -811,6 +877,8 @@ msgid ""
 "The built-in qualifier <literal>@New</literal> allows us to obtain a "
 "dependent object of a specified class."
 msgstr ""
+"O qualificador pré-definido <literal>@New</literal> nos permite obter um "
+"objeto dependente de uma classe especificada."
 
 #. Tag: programlisting
 #: scopescontexts.xml:380
@@ -825,16 +893,18 @@ msgid ""
 "The class must be a valid managed bean or session bean, but need not be an "
 "enabled bean."
 msgstr ""
+"A classe deve ser um managed bean ou session bean válido, mas não precisa "
+"ser um bean habilitado."
 
 #. Tag: para
 #: scopescontexts.xml:384
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This works even if <literal>Calculator</literal> is <emphasis>already</"
 "emphasis> declared with a different scope type, for example:"
 msgstr ""
-"Isso é verdade mesmo se <literal>Calculator</literal> <emphasis>já</"
-"emphasis> estiver declarado com um tipo de escopo diferente, por exemplo:"
+"Isso funciona mesmo se <literal>Calculator</literal> <emphasis>já</emphasis> "
+"estiver declarado com um tipo de escopo diferente, por exemplo:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:389
@@ -893,53 +963,4 @@ msgid ""
 "the next chapter."
 msgstr ""
 "Essa funcionalidade é particularmente útil em métodos produtores, como "
-"poderemos verificar no próximo capítulo. "
-
-#~ msgid ""
-#~ "holds state associated with a particular web browser tab in a JSF "
-#~ "application."
-#~ msgstr ""
-#~ "mantém o estado associado a uma determinada aba em um navegador web em "
-#~ "uma aplicação JSF."
-
-#~ msgid ""
-#~ "When an injection point of a Web Bean resolves to a dependent Web Bean, a "
-#~ "new instance of the dependent Web Bean is created every time the first "
-#~ "Web Bean is instantiated. Instances of dependent Web Beans are never "
-#~ "shared between different Web Beans or different injection points. They "
-#~ "are <emphasis>dependent objects</emphasis> of some other Web Bean "
-#~ "instance."
-#~ msgstr ""
-#~ "Quando um ponto de injeção num Web Bean resolve para um Web Bean "
-#~ "dependente, uma nova instância do Web Bean dependente é criada a cada vez "
-#~ "que o primeiro Web Bean for instanciado. Instâncias de Web Beans "
-#~ "dependentes nunca são compartilhadas entre diferentes Web Beans ou "
-#~ "diferentes pontos de injeção. Eles são <emphasis>objetos dependentes</"
-#~ "emphasis> de alguma outra instância de Web Bean."
-
-#~ msgid ""
-#~ "Dependent Web Bean instances are destroyed when the instance they depend "
-#~ "upon is destroyed."
-#~ msgstr ""
-#~ "Instâncias de Web Bean dependentes são destruídas quando a instância de "
-#~ "que eles dependem é destruída."
-
-#~ msgid ""
-#~ "The built-in <literal>@New</literal> binding annotation allows "
-#~ "<emphasis>implicit</emphasis> definition of a dependent Web Bean at an "
-#~ "injection point. Suppose we declare the following injected field:"
-#~ msgstr ""
-#~ "A anotação de binding pré-definida <literal>@New</literal> permite a "
-#~ "definição <emphasis>implicita</emphasis> de um Web Bean dependente em um "
-#~ "ponto de injeção. Suponha que nós declaramos o seguinte campo injetado:"
-
-#~ msgid ""
-#~ "Then a Web Bean with scope <literal>@Dependent</literal>, binding type "
-#~ "<literal>@New</literal>, API type <literal>Calculator</literal>, "
-#~ "implementation class <literal>Calculator</literal> and deployment type "
-#~ "<literal>@Standard</literal> is implicitly defined."
-#~ msgstr ""
-#~ "Em seguida, um Web Bean com escopo <literal>@Dependent</literal>, tipo de "
-#~ "binding <literal>@New</literal>, API do tipo <literal>Calculator</"
-#~ "literal>, classe de implementação <literal>Calculator</literal> e tipo de "
-#~ "implantação <literal>@Standard</literal> é definido implicitamente."
+"poderemos verificar no próximo capítulo."
