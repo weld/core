@@ -347,7 +347,7 @@ public class Validator implements Service
 
       for (String name : namedAccessibleBeans.keySet())
       {
-         Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(namedAccessibleBeans.get(name));
+         Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(Beans.removeDisabledAndSpecializedBeans(namedAccessibleBeans.get(name), beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes(), beanManager.getSpecializedBeans()));
          if (resolvedBeans.size() > 1)
          {
             throw new DeploymentException(AMBIGUOUS_EL_NAME, name, resolvedBeans);

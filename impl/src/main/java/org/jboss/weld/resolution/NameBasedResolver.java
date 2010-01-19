@@ -58,7 +58,7 @@ public class NameBasedResolver
                matchedBeans.add(bean);
             }
          }
-         return Beans.retainEnabledAlternatives(matchedBeans, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes());
+         return Beans.removeDisabledAndSpecializedBeans(matchedBeans, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes(), beanManager.getSpecializedBeans());
       }
       
    }

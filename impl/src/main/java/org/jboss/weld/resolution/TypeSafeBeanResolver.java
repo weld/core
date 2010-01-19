@@ -68,7 +68,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
             
             for (Bean<?> bean : from)
             {
-               if (alternativePresent ? bean.isAlternative() : true && !Beans.isSpecialized(bean, from, beanManager.getSpecializedBeans()))
+               if (alternativePresent ? bean.isAlternative() : true)
                {
                   disambiguatedBeans.add(bean);
                }
@@ -112,7 +112,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    @Override
    protected Set<T> filterResult(Set<T> matched)
    {
-      return Beans.retainEnabledAlternatives(matched, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes());
+      return Beans.removeDisabledAndSpecializedBeans(matched, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes(), getBeanManager().getSpecializedBeans());
    }
 
    @Override

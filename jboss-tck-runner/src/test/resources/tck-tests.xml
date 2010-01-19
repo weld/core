@@ -112,7 +112,17 @@
                <exclude name="testProducerPoliciesOnClass" />
                <exclude name="testProducerPoliciesOnMethodAndField" />
               </methods>
-         ></class>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.implementation.simple.lifecycle.SimpleBeanLifecycleTest">
+            <methods>
+               <exclude name="testSpecializedBeanExtendsManagedBean" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.lookup.byname.ResolutionByNameTest">
+            <methods>
+               <exclude name="testAmbiguousELNamesResolved" />
+            </methods>
+         </class>
       </classes>
    </test>
    
