@@ -106,7 +106,13 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
    {
       try
       {
-         delegate().set(declaringInstance, value);
+         Object instanceToInject = declaringInstance;
+         if (!isDelegate())
+         {
+            // if declaringInstance is a proxy, unwrap it
+            instanceToInject = InterceptionUtils.getRawInstance(declaringInstance);
+         }
+         delegate().set(instanceToInject, value);
       }
       catch (IllegalArgumentException e)
       {
