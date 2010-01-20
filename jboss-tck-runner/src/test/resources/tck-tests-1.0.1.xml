@@ -118,6 +118,18 @@
                <exclude name="testInjectionIntoWebServiceEndpoint" />
             </methods>
          </class>
+         <!-- JBAS-7046 -->
+         <class name="org.jboss.jsr299.tck.tests.lookup.injection.enterprise.SessionBeanInjectionTest">
+            <methods>
+               <exclude name="testInjectionOnEJBInterceptor" />
+            </methods>
+         </class>
+         <!-- JBAS-7046 -->
+         <class name="org.jboss.jsr299.tck.tests.context.application.ejb.EJBApplicationContextTest">
+            <methods>
+               <exclude name="testApplicationScopeActiveDuringWebServiceInvocation" />
+            </methods>
+         </class>
          <!-- WELDINT-22 -->
          <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ContainerEventTest">
             <methods>
