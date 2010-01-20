@@ -110,6 +110,13 @@
                               <include name="**/*" />
                            </fileset>
                         </copy>
+                        
+                        <copy
+                           todir="${jboss.home}/server/all/deployers/weld.deployer">
+                           <fileset dir="target/weld.deployer">
+                              <include name="**/*" />
+                           </fileset>
+                        </copy>                        
                      </tasks>
                   </configuration>
                </execution>

@@ -2,7 +2,7 @@
 <project name="JBoss5DeployerInstall" default="update" basedir=".">
 
 	<target name="update" description="Update JBoss 5.x or 6.x for Weld">
-	   <fail message="Use mvn -Pupdate-jboss-as"/>
+	   <fail message="Set JBOSS_HOME environment variable and use mvn -Pupdate-jboss-as"/>
 	</target>
 
 </project>
