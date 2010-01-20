@@ -17,13 +17,6 @@
          
          <!-- Issues in Weld (the RI) -->
          
-         <!-- WELD-395 -->
-         <class name="org.jboss.jsr299.tck.tests.decorators.definition.DecoratorDefinitionTest">
-            <methods>
-               <exclude name="testDecoratorIsManagedBean" />
-            </methods>
-         </class>
-         
          <!-- WELD-393 -->
          <class name="org.jboss.jsr299.tck.interceptors.tests.definition.DefinitionTest">
             <methods>
@@ -31,23 +24,10 @@
             </methods>
          </class>
          
-         <!-- WELD-394 -->
-         <class name="org.jboss.jsr299.tck.tests.context.dependent.DependentContextTest">
-            <methods>
-               <exclude name="testDependentScopedDecoratorsAreDependentObjectsOfBean" />
-            </methods>
-         </class>
-         
          <!-- WELD-390 -->
          <class name="org.jboss.jsr299.tck.interceptors.tests.lifecycleCallback.order.InvocationOrderTest">
             <methods>
                <exclude name="testInvocationOrder" />
-            </methods>
-         </class>
-         <!-- WELD-274 -->
-         <class name="org.jboss.jsr299.tck.tests.decorators.custom.broken.finalBeanClass.CustomDecoratorMatchingBeanWithFinalClassTest">
-            <methods>
-               <exclude name="testCustomDecoratorDecoratingFinalBean" />
             </methods>
          </class>
          <!-- WELD-269 -->
@@ -67,7 +47,7 @@
                <exclude name="testAppliesToFinalMethodOnManagedBeanClass" />
             </methods>
          </class>
-         <!-- WELD-391 -->
+         <!-- WELD-377 -->
          <class name="org.jboss.jsr299.tck.tests.decorators.invocation.EJBDecoratorInvocationTest">
             <methods>
                <exclude name="testEJBDecoratorInvocation" />
