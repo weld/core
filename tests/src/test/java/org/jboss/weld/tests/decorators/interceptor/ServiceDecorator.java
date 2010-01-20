@@ -1,0 +1,52 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright2010, Red Hat, Inc. and/or its affiliates, and individual
+ * contributors by the @authors tag. See the copyright.txt in the
+ * distribution for a full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package org.jboss.weld.tests.decorators.interceptor;
+
+import java.math.BigDecimal;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.decorator.Decorator;
+import javax.decorator.Delegate;
+import javax.inject.Inject;
+
+/**
+ * Secure PaymentService implemented by decator
+ *
+ * @author wayne
+ */
+@Decorator
+class ServiceDecorator implements Service
+{
+
+   @Inject
+   @Delegate
+   private Service service;
+
+   public static int invocationCount = 0;
+
+   public void execute()
+   {
+      invocationCount++;
+      service.execute();
+   }
+}
