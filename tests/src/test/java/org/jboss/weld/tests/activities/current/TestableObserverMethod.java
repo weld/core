@@ -1,4 +1,4 @@
-package org.jboss.weld.tests;
+package org.jboss.weld.tests.activities.current;
 
 import javax.enterprise.inject.spi.ObserverMethod;
 

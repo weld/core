@@ -15,7 +15,6 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.AbstractWeldTest;
-import org.jboss.weld.tests.TestableObserverMethod;
 import org.testng.annotations.Test;
 
 /**
