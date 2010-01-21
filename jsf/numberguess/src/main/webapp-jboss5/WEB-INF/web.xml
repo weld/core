@@ -6,6 +6,8 @@
       http://java.sun.com/xml/ns/javaee
       http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
    
+   ${distributable.flag}
+  
    <display-name>Web Beans Numberguess example</display-name>
    
    <context-param>

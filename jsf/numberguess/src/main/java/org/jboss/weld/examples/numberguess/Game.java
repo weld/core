@@ -97,7 +97,7 @@ public class Game implements Serializable
    
    public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value)
    {
-      if (remainingGuesses <= 1)
+      if (remainingGuesses <= 0)
       {
          FacesMessage message = new FacesMessage("No guesses left!");
          context.addMessage(toValidate.getClientId(context), message);

@@ -109,6 +109,7 @@
       <selenium.speed>0</selenium.speed>
       <selenium.timeout>30000</selenium.timeout>
       <selenium.debug>false</selenium.debug>
+      <application.deploy.timeout>300</application.deploy.timeout>      
    </properties>
 
    <!-- Dependency management, including any extra repositories needed -->
@@ -701,6 +702,226 @@
             </pluginManagement>
          </build>
       </profile>
+      
+      <profile>
+         <id>ftest-jboss-cluster-60</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+         </activation>
+
+         <pluginRepositories>
+            <pluginRepository>
+               <id>repository.codehaus.repository</id>
+               <url>http://repository.codehaus.org/</url>
+               <releases>
+                  <enabled>true</enabled>
+               </releases>
+               <snapshots>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </snapshots>
+            </pluginRepository>
+         </pluginRepositories>
+
+         <properties>
+            <ftest.testsuite>jboss6x-cluster.xml</ftest.testsuite>
+         </properties>
+
+         <dependencies>
+            <dependency>
+               <groupId>org.seleniumhq.selenium.client-drivers</groupId>
+               <artifactId>selenium-java-client-driver</artifactId>
+               <version>${selenium.java.client.version}</version>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+
+         <build>
+            <pluginManagement>
+               <plugins>
+                  <!-- get functional tests from ftest artifact -->
+                  <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-dependency-plugin</artifactId>
+                     <executions>
+                        <execution>
+                           <id>copy-ftest</id>
+                           <phase>process-sources</phase>
+                           <goals>
+                              <goal>copy</goal>
+                           </goals>
+                           <configuration>
+                              <outputDirectory>${project.build.directory}/ftest</outputDirectory>
+                              <stripVersion>true</stripVersion>
+                              <artifactItems>
+                                 <artifactItem>
+                                    <groupId>org.jboss.weld.examples.ftest</groupId>
+                                    <artifactId>${ftest.artifact}</artifactId>
+                                    <overWrite>true</overWrite>
+                                 </artifactItem>
+                              </artifactItems>
+                           </configuration>
+                        </execution>
+                     </executions>
+                  </plugin>
+
+                  <!--  start Selenium server -->
+                  <plugin>
+                     <groupId>org.codehaus.mojo</groupId>
+                     <artifactId>selenium-maven-plugin</artifactId>
+                     <version>${selenium.maven.plugin.version}</version>
+                     <executions>
+                        <execution>
+                           <id>start-selenium</id>
+                           <phase>pre-integration-test</phase>
+                           <goals>
+                              <goal>start-server</goal>
+                           </goals>
+                           <configuration>
+                              <background>true</background>
+                              <port>${selenium.server.port}</port>
+                              <logOutput>true</logOutput>
+										<logFile>${project.build.directory}/selenium/selenium-server.log</logFile>
+										<browserSideLog>${selenium.debug}</browserSideLog>
+										<debug>${selenium.debug}</debug>
+                           </configuration>
+                        </execution>
+                        <!--
+                           this can't be used until plugin sends the
+                           right command, using Ant GET instead
+                        -->
+                        <!--
+                           <execution> <id>stop-selenium</id>
+                           <phase>post-integration-test</phase> <goals>
+                           <goal>stop-server</goal> </goals>
+                           <configuration>
+                           <port>${selenium.server.port}</port>
+                           </configuration> </execution>
+                        -->
+                     </executions>
+                  </plugin>
+
+                  <!-- run functional tests -->
+                  <plugin>
+                     <groupId>org.codehaus.mojo</groupId>
+                     <artifactId>failsafe-maven-plugin</artifactId>
+                     <version>${failsafe.maven.plugin.version}</version>
+                     <configuration>
+                        <testClassesDirectory>${project.build.directory}/ftest</testClassesDirectory>
+                        <suiteXmlFiles>
+                           <suiteXmlFile>src/test/selenium/${ftest.testsuite}</suiteXmlFile>
+                        </suiteXmlFiles>
+                        <argLine>-Xmx748m</argLine>
+                        <forkMode>once</forkMode>
+                        <systemProperties>
+                           <property>
+                              <name>selenium.server.port</name>
+                              <value>${selenium.server.port}</value>
+                           </property>
+                           <property>
+                              <name>selenium.server.host</name>
+                              <value>${selenium.server.host}</value>
+                           </property>
+                           <property>
+                              <name>selenium.browser</name>
+                              <value>${selenium.browser}</value>
+                           </property>
+                           <property>
+                              <name>selenium.browser.url</name>
+                              <value>${selenium.browser.url}</value>
+                           </property>
+                           <property>
+                              <name>selenium.speed</name>
+                              <value>${selenium.speed}</value>
+                           </property>
+                           <property>
+                              <name>selenium.timeout</name>
+                              <value>${selenium.timeout}</value>
+                           </property>
+                           <property>
+                              <name>basedir</name>
+                              <value>${basedir}</value>
+                           </property>
+                           <property>
+                              <name>jboss.config</name>
+                              <value>${jboss.master.configuration}</value>
+                           </property>
+                        </systemProperties>
+                     </configuration>
+                     <executions>
+                        <execution>
+                           <id>integration-test</id>
+                           <phase>integration-test</phase>
+                           <goals>
+                              <goal>integration-test</goal>
+                           </goals>
+                        </execution>
+                        <execution>
+                           <id>verify</id>
+                           <phase>verify</phase>
+                           <goals>
+                              <goal>verify</goal>
+                           </goals>
+                        </execution>
+                     </executions>
+                  </plugin>
+
+
+                  <!-- stop Selenium -->
+                  <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-antrun-plugin</artifactId>
+                     <version>${maven.antrun.plugin.version}</version>
+
+                     <executions>
+						<!-- deploy application to farm directory and waiting for the application to be ready				  -->
+						<execution>
+							<id>farm-example</id>
+							<phase>pre-integration-test</phase>
+							<configuration>
+								<tasks>
+									<property name="url.to.wait" value="http://localhost:8180/${project.build.finalName}"/>												
+									<copy file="${project.build.directory}/${project.build.finalName}.${project.packaging}" todir="${jboss.master.configuration}/farm"/>
+									<echo message="Waiting for application at ${url.to.wait}"/>												
+									<waitfor maxwait="${application.deploy.timeout}" maxwaitunit="second">								
+										<http url="${url.to.wait}" errorsBeginAt="404" />
+									</waitfor>
+								</tasks>
+							</configuration>
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>      
+															               
+						<!-- this ant script runs testng natively -->
+						<execution>
+							<id>stop-selenium</id>
+							<phase>post-integration-test</phase>
+							<configuration>
+								<tasks>
+									<echo message="Undeploying application..."/>
+									<delete file="${jboss.master.configuration}/farm/${project.build.finalName}.${project.packaging}"/>
+								
+									<get taskname="selenium-shutdown"
+										src="http://${selenium.server.host}:${selenium.server.port}/selenium-server/driver/?cmd=shutDownSeleniumServer"
+										ignoreerrors="true"
+										dest="${project.build.directory}/selenium.stop.msg" />
+									<echo taskname="selenium-shutdown"
+										message="DGF Errors during shutdown are expected" />
+								</tasks>
+							</configuration>
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>                        
+                        
+                     </executions>
+                  </plugin>
+               </plugins>
+            </pluginManagement>
+         </build>
+      </profile>
+      
    </profiles>
 </project>
 
