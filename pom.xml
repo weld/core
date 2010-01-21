@@ -13,6 +13,11 @@
 
    <name>Weld Build Aggregator</name>
 
+   <prerequisites>
+      <maven>2.0.10</maven>
+   </prerequisites>
+
+
    <!-- Minimal metadata -->
    <description>The build aggregator for Weld, which takes care of calling the modules which make up Weld</description>
 
