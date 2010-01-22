@@ -20,7 +20,7 @@
     <listeners>
 		<listener class-name="org.jboss.weld.example.common.test.selenium.WeldFunctionalTestListener" />
 	</listeners>
-	<test name="numberguess_cluster_jboss5">
+	<test name="numberguess_cluster_jboss6">
 		<parameter name="example.context.path" value="/weld-numberguess" />
 		<packages>
 			<package name="org.jboss.weld.example.numberguess.clustertest.selenium" />
