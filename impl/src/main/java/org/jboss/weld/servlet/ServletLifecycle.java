@@ -82,8 +82,9 @@ public class ServletLifecycle
       }
       else if (lifecycle.getRequestContext().isActive())
       {
+         BeanStore store = restoreSessionContext(session);
          conversationManager.destroyAllConversations();
-         lifecycle.endSession(session.getId(), restoreSessionContext(session));
+         lifecycle.endSession(session.getId(), store);
       }
       else
       {
