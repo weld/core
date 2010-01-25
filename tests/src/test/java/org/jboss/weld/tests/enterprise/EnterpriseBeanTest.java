@@ -80,4 +80,10 @@ public class EnterpriseBeanTest extends AbstractWeldTest
       assert getReference(Scottish.class).getFeed().equals(feed);
    }
    
+   @Test(description = "WELD-381")
+   public void testGenericEJBWorks()
+   {
+      assert getReference(ResultClient.class).lookupPete().getUsername().equals("pete");
+   }
+   
 }
