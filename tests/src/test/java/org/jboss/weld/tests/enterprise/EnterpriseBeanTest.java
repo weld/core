@@ -86,4 +86,13 @@ public class EnterpriseBeanTest extends AbstractWeldTest
       assert getReference(ResultClient.class).lookupPete().getUsername().equals("pete");
    }
    
+   @Test(description = "WELD-80", groups = "broken")
+   public void testPassivationOfEjbs()
+   {
+      HelloAction action = getReference(HelloAction.class);
+      action.executeRequest();
+      assert action.getHello().equals("hello");
+      assert action.getGoodBye().equals("goodbye");
+   }
+   
 }
