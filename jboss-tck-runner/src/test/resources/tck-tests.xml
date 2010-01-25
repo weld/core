@@ -53,6 +53,12 @@
                <exclude name="testEJBDecoratorInvocation" />
             </methods>
          </class>
+         <!-- WELD-401 -->
+         <class name="org.jboss.jsr299.tck.tests.event.broken.observer.notBusinessMethod.EJBObserverMethodNotBusinessMethodTest">
+            <methods>
+               <exclude name="testObserverMethodOnEnterpriseBeanNotBusinessMethodOrStaticFails" />
+            </methods>
+         </class>
          
          <!-- Issues in JBoss AS -->
          

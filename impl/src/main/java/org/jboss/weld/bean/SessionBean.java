@@ -141,7 +141,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
          initProxyClass();
          checkEJBTypeAllowed();
          checkConflictingRoles();
-         checkObserverMethods();
+         //checkObserverMethods();
          checkScopeAllowed();
          registerInterceptors();
          setInjectionTarget(new InjectionTarget<T>()
@@ -388,7 +388,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
    }
    
    // TODO must be a nicer way to do this!
-   public boolean isMethodExistsOnTypes(WeldMethod<?, ?> method)
+   private boolean isMethodExistsOnTypes(WeldMethod<?, ?> method)
    {
       for (Type type : getTypes())
       {

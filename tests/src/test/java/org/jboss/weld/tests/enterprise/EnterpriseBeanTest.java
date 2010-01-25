@@ -72,4 +72,12 @@ public class EnterpriseBeanTest extends AbstractWeldTest
       assert false : "Expected a BowlerHatException to be in the cause stack";
    }
    
+   @Test(description="WELD-364", groups = "broken")
+   public void testEJBRemoteInterfacesOkForObservers()
+   {
+      Feed feed = new Feed();
+      getCurrentManager().fireEvent(feed);
+      assert getReference(Scottish.class).getFeed().equals(feed);
+   }
+   
 }

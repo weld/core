@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
 public class UnproxyableTest extends AbstractWeldTest
 {
    
-   @Test
+   @Test(groups = "incontainer-broken")
+   //JBoss AS is producing the wrong exception.
    public void test()
    {
       
