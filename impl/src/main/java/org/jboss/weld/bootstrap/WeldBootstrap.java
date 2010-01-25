@@ -63,6 +63,7 @@ import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.SessionContext;
 import org.jboss.weld.context.SingletonContext;
 import org.jboss.weld.context.api.BeanStore;
+import org.jboss.weld.context.beanstore.HashMapBeanStore;
 import org.jboss.weld.conversation.ConversationImpl;
 import org.jboss.weld.conversation.NumericConversationIdGenerator;
 import org.jboss.weld.conversation.ServletConversationManager;
@@ -438,12 +439,23 @@ public class WeldBootstrap implements Bootstrap
    {
       try
       {
-         BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
+         Container.instance().services().get(ContextLifecycle.class).endApplication();
+         try
+         {
+            // Create a fake application context to service this request
+            Container.instance().services().get(ContextLifecycle.class).beginApplication(new HashMapBeanStore());
+            BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
+            Container.instance().services().get(ContextLifecycle.class).endApplication();
+         }
+         finally
+         {
+            
+         }
       }
       finally
       {
          Container.instance().setState(ContainerState.SHUTDOWN);
-         Container.instance().services().get(ContextLifecycle.class).endApplication();
+         Container.instance().cleanup();
       }
    }
    

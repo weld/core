@@ -102,7 +102,7 @@ public class ExtensionTest extends AbstractWeldTest
       assert extensionObserver.isAfterDeploymentValidation();
       assert extensionObserver.isAllAfterDeploymentValidation();
       assert !otherObserver.isAfterDeploymentValidation();
-      assert !otherObserver.isAllAfterDeploymentValidation(); 
+      assert !otherObserver.isAllAfterDeploymentValidation();
       
    }
    

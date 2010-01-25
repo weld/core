@@ -31,7 +31,6 @@ import static org.jboss.weld.logging.messages.ContextMessage.REQUEST_STARTED;
 import static org.jboss.weld.logging.messages.ContextMessage.SESSION_ENDED;
 import static org.jboss.weld.logging.messages.ContextMessage.SESSION_RESTORED;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Lifecycle;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.context.api.BeanStore;
@@ -140,7 +139,6 @@ public class ContextLifecycle implements Lifecycle, Service
       singletonContext.destroy();
       singletonContext.setActive(false);
       singletonContext.setBeanStore(null);
-      Container.instance().cleanup();
    }
    
    public void cleanup() 
