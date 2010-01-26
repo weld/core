@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
 
 import java.util.Map;
@@ -25,6 +27,8 @@ import javax.enterprise.inject.spi.BeforeShutdown;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.slf4j.Logger;
+import org.slf4j.ext.XLogger;
 
 /**
  * @author pmuir
@@ -32,6 +36,9 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class BeforeShutdownImpl extends AbstractContainerEvent implements BeforeShutdown
 {
+   
+   private static final XLogger xLog = loggerFactory().getXLogger(BOOTSTRAP);
+   private static final Logger log = loggerFactory().getLogger(BOOTSTRAP);
    
    public static void fire(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
@@ -49,6 +56,20 @@ public class BeforeShutdownImpl extends AbstractContainerEvent implements Before
    public BeforeShutdownImpl(BeanManagerImpl beanManager)
    {
       super(beanManager, BeforeShutdown.class, EMPTY_TYPES);
+   }
+   
+   @Override
+   protected void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
+   {
+      super.fire(beanDeployments);
+      if (!getErrors().isEmpty())
+      {
+         log.error("Exception(s) thrown during observer of BeforeShutdown");
+         for (Throwable t: getErrors())
+         {
+            log.error("", t);
+         }
+      }
    }
 
 }

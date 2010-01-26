@@ -27,7 +27,6 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 
@@ -92,10 +91,6 @@ public abstract class AbstractContainerEvent
       catch (Exception e) 
       {
          getErrors().add(e);
-      }
-      if (!getErrors().isEmpty())
-      {
-         throw new DeploymentException(getErrors());
       }
    }
 

@@ -17,7 +17,10 @@
 package org.jboss.weld.bootstrap.events;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 
+import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -37,6 +40,16 @@ public abstract class AbstractDeploymentContainerEvent extends AbstractContainer
    protected void fire()
    {
       super.fire();
+      if (!getErrors().isEmpty())
+      {
+         throw new DeploymentException(getErrors());
+      }
+   }
+   
+   @Override
+   protected void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
+   {
+      super.fire(beanDeployments);
       if (!getErrors().isEmpty())
       {
          throw new DeploymentException(getErrors());

@@ -243,15 +243,15 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    protected boolean ignore(T event)
    {
       Class<?> eventType = event.getClass();
-      if (AbstractContainerEvent.class.isAssignableFrom(eventType))
+      // This is a container lifeycle event, ensure we are firing to an extension
+      if (AbstractContainerEvent.class.isAssignableFrom(eventType) && !Extension.class.isAssignableFrom(getBeanClass()))
       {
-         // This is a container lifeycle event, ensure we are firing to an extension
-         if (!Extension.class.isAssignableFrom(getBeanClass()))
-         {
-            return true;
-         }
+         return true;
       }
-      return false;
+      else
+      {
+         return false;
+      }
    }
    
    @Override
