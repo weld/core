@@ -59,6 +59,13 @@
                <exclude name="testObserverMethodOnEnterpriseBeanNotBusinessMethodOrStaticFails" />
             </methods>
          </class>
+
+         <!-- WELD-325 fixed, pending on CDITCK-102 -->.
+         <class name="org.jboss.jsr299.tck.tests.context.dependent.DependentContextTest">
+             <methods>
+                 <exclude name="testDependentScopedInterceptorsAreDependentObjectsOfBean"/>
+             </methods>
+         </class>
          
          <!-- Issues in JBoss AS -->
          

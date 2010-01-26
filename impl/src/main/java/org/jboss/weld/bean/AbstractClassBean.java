@@ -52,7 +52,8 @@ import javax.inject.Scope;
 
 import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.interceptor.model.InterceptionModelBuilder;
-import org.jboss.interceptor.model.InterceptorClassMetadataImpl;
+import org.jboss.interceptor.model.InterceptorClassMetadata;
+import org.jboss.interceptor.registry.InterceptorClassMetadataRegistry;
 import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
@@ -626,7 +627,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             }
          }
          InterceptionModel<Class<?>, Class<?>> interceptionModel = builder.build();
-         InterceptorClassMetadataImpl interceptorClassMetadata = new InterceptorClassMetadataImpl(getType());
+         InterceptorClassMetadata interceptorClassMetadata = InterceptorClassMetadataRegistry.getRegistry().getInterceptorClassMetadata(getType(), true);
          hasSerializationOrInvocationInterceptorMethods = !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_INVOKE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_TIMEOUT).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.PRE_PASSIVATE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.POST_ACTIVATE).isEmpty();
          if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods)
             beanManager.getClassDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());

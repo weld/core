@@ -41,6 +41,7 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.PassivationCapable;
 
+import javassist.util.proxy.MethodHandler;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
 import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
 import org.jboss.interceptor.registry.InterceptorRegistry;
@@ -63,6 +64,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.CleanableMethodHandler;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
@@ -575,7 +577,11 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             interceptionHandlerFactories.add(new CdiInterceptorHandlerFactory<T>(creationalContext, beanManager));
          }
          if (interceptionRegistries.size() > 0)
-            instance = new InterceptorProxyCreatorImpl(interceptionRegistries, interceptionHandlerFactories).createProxyFromInstance(instance, getType());
+         {
+            InterceptorProxyCreatorImpl interceptorProxyCreator = new InterceptorProxyCreatorImpl(interceptionRegistries, interceptionHandlerFactories);
+            MethodHandler methodHandler = new CleanableMethodHandler(interceptorProxyCreator.getMethodHandler(instance, getType()));
+            instance = interceptorProxyCreator.createProxyInstance(InterceptorProxyCreatorImpl.createProxyClassWithHandler(getType(), methodHandler), methodHandler);
+         }
 
       }
       catch (Exception e)
