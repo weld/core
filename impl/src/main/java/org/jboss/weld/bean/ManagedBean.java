@@ -217,36 +217,37 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
       public T produce(final CreationalContext<T> ctx)
       {
-         final T instance = bean.createInstance(ctx);
+         T instance;
          if (!bean.hasDecorators())
          {
             // This should be safe, but needs verification PLM
             // Without this, the chaining of decorators will fail as the
             // incomplete instance will be resolved
+            instance = bean.createInstance(ctx);
             ctx.push(instance);
-         }
-
-         T decoratedInstance = new FixInjectionPoint<T>(bean)
-         {
-
-            @Override
-            protected T work()
-            {
-               if (bean.hasDecorators())
-               {
-                  return bean.applyDecorators(instance, ctx, getOriginalInjectionPoint());
-               }
-               return instance;
-            }
-
-         }.run();
-         if (bean.isInterceptionCandidate() && (bean.hasCdiBoundInterceptors() || bean.hasDirectlyDefinedInterceptors()))
-         {
-            return bean.applyInterceptors(decoratedInstance, ctx);
          }
          else
          {
-            return decoratedInstance;
+            instance = new FixInjectionPoint<T>(bean)
+            {
+               @Override
+               protected T work()
+               {
+                  // for decorated beans, creation should use the fixed injection point
+                  // thus ensuring that the innermost decorator is provided as InjectionPoint
+                  T undecoratedInstance = bean.createInstance(ctx);
+                  return bean.applyDecorators(undecoratedInstance, ctx, getOriginalInjectionPoint());
+               }
+
+            }.run();
+         }
+         if (bean.isInterceptionCandidate() && (bean.hasCdiBoundInterceptors() || bean.hasDirectlyDefinedInterceptors()))
+         {
+            return bean.applyInterceptors(instance, ctx);
+         }
+         else
+         {
+            return instance;
          }
       }
    }

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2010, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -56,7 +56,7 @@ import org.jboss.interceptor.model.InterceptorClassMetadata;
 import org.jboss.interceptor.registry.InterceptorClassMetadataRegistry;
 import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
-import org.jboss.weld.bean.proxy.DecoratorProxyMethodHandler;
+import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.SerializableContextualImpl;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
@@ -140,8 +140,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    // Decorators
    private List<Decorator<?>> decorators;
    private Class<T> proxyClassForDecorators;
-   private final ThreadLocal<Integer> decoratorStackPosition;
-   private final ThreadLocal<T> decoratedActualInstance = new ThreadLocal<T>();
 
    // Interceptors
    private boolean hasSerializationOrInvocationInterceptorMethods;
@@ -165,16 +163,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       super(idSuffix, beanManager);
       this.annotatedItem = type;
-      this.decoratorStackPosition = new ThreadLocal<Integer>()
-      {
-
-         @Override
-         protected Integer initialValue()
-         {
-            return 0;
-         }
-
-      };
       initStereotypes();
       initAlternative();
       initInitializerMethods();
@@ -230,65 +218,18 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint)
    {
-      List<SerializableContextualInstance<Decorator<Object>, Object>> decoratorInstances = new ArrayList<SerializableContextualInstance<Decorator<Object>, Object>>();
-      InjectionPoint ip = originalInjectionPoint;
-      boolean outside = decoratorStackPosition.get().intValue() == 0;
-      if (outside)
-      {
-         decoratedActualInstance.set(instance);
-      }
+      T proxy = null;
+      DecorationHelper<T> decorationHelper = new DecorationHelper(instance, proxyClassForDecorators, beanManager, decorators);
 
-      try
-      {
-         int i = decoratorStackPosition.get();
-         while (i < decorators.size())
-         {
-            Decorator<?> decorator = decorators.get(i);
-            decoratorStackPosition.set(++i);
+      DecorationHelper.getHelperStack().push(decorationHelper);
+      proxy = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
+      decorationHelper = (DecorationHelper<T>) DecorationHelper.getHelperStack().pop();
 
-            Object decoratorInstance = getBeanManager().getReference(ip, decorator, creationalContext);
-            decoratorInstances.add(new SerializableContextualInstanceImpl<Decorator<Object>, Object>((Decorator<Object>) decorator, decoratorInstance, null));
-
-            ip = Beans.getDelegateInjectionPoint(decorator);
-            if (ip == null)
-            {
-               throw new ForbiddenStateException(NON_CONTAINER_DECORATOR, decorator);
-            }
-         }
-      }
-      finally
+      if (proxy == null)
       {
-         if (outside)
-         {
-            decoratorStackPosition.remove();
-         }
+         throw new WeldException(PROXY_INSTANTIATION_FAILED, this);
       }
-      try
-      {
-         T proxy = SecureReflections.newInstance(proxyClassForDecorators);
-         // temporary fix for decorators - make sure that the instance wrapped
-         // by the decorators
-         // is the contextual instance
-         // TODO - correct the decoration algorithm to avoid the creation of new
-         // target class instances
-         Proxies.attachMethodHandler(proxy, new DecoratorProxyMethodHandler(decoratorInstances, decoratedActualInstance.get()));
-         return proxy;
-      }
-      catch (InstantiationException e)
-      {
-         throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
-      }
-      finally
-      {
-         if (outside)
-         {
-            decoratedActualInstance.set(null);
-         }
-      }
+      return proxy;
    }
 
    public List<Decorator<?>> getDecorators()

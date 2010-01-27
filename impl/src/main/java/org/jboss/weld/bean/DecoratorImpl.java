@@ -52,7 +52,7 @@ import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.introspector.jlr.WeldConstructorImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Deployers;
+import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -135,7 +135,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
       this.decoratedTypes.addAll(getWeldAnnotated().getInterfaceClosure());
       this.decoratedTypes.remove(Serializable.class);
 
-      this.decoratedMethodSignatures = Deployers.getDecoratedMethodSignatures(getBeanManager(), this.decoratedTypes);
+      this.decoratedMethodSignatures = Decorators.getDecoratedMethodSignatures(getBeanManager(), this.decoratedTypes);
    }
 
    protected void initDelegateInjectionPoint()

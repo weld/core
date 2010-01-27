@@ -30,12 +30,14 @@ import java.util.Set;
 
 import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
 
+import javax.inject.Inject;
+
 /**
- * Helper class for {@link org.jboss.deployers.spi.deployer.Deployer} inspections.
+ * Helper class for {@link javax.enterprise.inject.spi.Decorator} inspections.
  * 
  * @author Marius Bogoevici
  */
-public class Deployers
+public class Decorators
 {
    public static Set<MethodSignature> getDecoratedMethodSignatures(BeanManagerImpl beanManager, Set<Type> decoratedTypes)
    {

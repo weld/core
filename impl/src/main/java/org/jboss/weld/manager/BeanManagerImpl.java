@@ -76,6 +76,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bean.proxy.ClientProxyProvider;
+import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.AbstractProcessInjectionTarget;
@@ -866,9 +867,16 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
    public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
    {
+      if (!injectionPoint.isDelegate())
+      {
          WeldAnnotated<?, ?> element = ResolvableWeldClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this);
          Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
          return getReference(injectionPoint, resolvedBean, creationalContext);
+      }
+      else
+      {
+         return DecorationHelper.getHelperStack().peek().getNextDelegate(injectionPoint, creationalContext);
+      }
    }
 
    public <T> Bean<T> getBean(WeldAnnotated<T, ?> element, Annotation... bindings)
