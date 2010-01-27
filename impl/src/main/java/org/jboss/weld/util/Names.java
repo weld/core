@@ -223,10 +223,16 @@ public class Names
       if (version != null)
       {
          StringBuilder builder = new StringBuilder();
-         builder.append(version.substring(0, version.indexOf("."))).append(".");
-         version = version.substring(version.indexOf(".") + 1);
-         builder.append(version.substring(0, version.indexOf("."))).append(".");
-         version = version.substring(version.indexOf(".") + 1);
+         if (version.indexOf(".") > 0)
+         {
+            builder.append(version.substring(0, version.indexOf("."))).append(".");
+            version = version.substring(version.indexOf(".") + 1);
+         }
+         if (version.indexOf(".") > 0)
+         {
+            builder.append(version.substring(0, version.indexOf("."))).append(".");
+            version = version.substring(version.indexOf(".") + 1);
+         }
          if (version.indexOf("-") > 0)
          {
             builder.append(version.substring(0, version.indexOf("-"))).append(" (");
