@@ -33,6 +33,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
  * <p>Check what happens when session.invalidate() is called.</p>
@@ -41,15 +42,17 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  *
  */
 @Artifact(addCurrentPackage=false)
-@Classes({User.class, NewUserAction.class})
+@Classes({User.class, NewUserAction.class, Employee.class, SaveAction.class})
 @IntegrationTest(runLocally=true)
 @Resources({
    @Resource(destination=WarArtifactDescriptor.WEB_XML_DESTINATION, source="web.xml"),
    @Resource(destination="view.xhtml", source="view.xhtml"),
+   @Resource(destination="home.xhtml", source="home.xhtml"),
    @Resource(destination="/WEB-INF/faces-config.xml", source="faces-config.xml")
 })
 public class NamedProducerTest extends AbstractWeldTest
 {
+   
    @Test(description = "forum post")
    public void testNamedProducerWorks() throws Exception
    {
@@ -59,6 +62,24 @@ public class NamedProducerTest extends AbstractWeldTest
       HtmlPage page = client.getPage(getPath("/view.jsf"));
       // Check the page rendered ok
       assert getFirstMatchingElement(page, HtmlSubmitInput.class, "saveButton") != null;
+   }
+   
+   @Test(description = "WELD-404")
+   public void testNamedProducerFieldLoosesValues() throws Exception
+   {
+      WebClient client = new WebClient();
+      
+      HtmlPage page = client.getPage(getPath("/home.jsf"));
+      // Check the page rendered ok
+      HtmlSubmitInput saveButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "saveButton");
+      HtmlTextInput employeeFieldName = getFirstMatchingElement(page, HtmlTextInput.class, "employeeFieldName");
+      HtmlTextInput employeeMethodName = getFirstMatchingElement(page, HtmlTextInput.class, "employeeMethodName");
+      assert employeeFieldName != null;
+      assert employeeMethodName != null;
+      assert saveButton != null;
+      employeeFieldName.setValueAttribute("Pete");
+      employeeMethodName.setValueAttribute("Gavin");
+      saveButton.click();
    }
 
    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)

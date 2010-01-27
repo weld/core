@@ -80,7 +80,7 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
                return creationalContextImpl.getIncompleteInstance(getDeclaringBean());
             }
          }
-         return beanManager.getReference(getDeclaringBean(), Object.class, creationalContext);
+         return beanManager.getReference(getDeclaringBean(), creationalContext, true);
       }
    }
    

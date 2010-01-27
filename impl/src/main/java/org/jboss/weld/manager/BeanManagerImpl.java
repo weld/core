@@ -765,14 +765,14 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
    }
    
-   public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext, boolean delegate)
+   public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext, boolean noProxy)
    {
       bean = getMostSpecializedBean(bean);
       if (creationalContext instanceof WeldCreationalContext<?>)
       {
          creationalContext = ((WeldCreationalContext<?>) creationalContext).getCreationalContext(bean);
       }
-      if (!delegate && isProxyRequired(bean))
+      if (!noProxy && isProxyRequired(bean))
       {
          if (creationalContext != null || getContext(bean.getScope()).get(bean) != null)
          {
