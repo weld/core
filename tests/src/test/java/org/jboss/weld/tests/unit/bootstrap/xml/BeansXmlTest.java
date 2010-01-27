@@ -162,6 +162,19 @@ public class BeansXmlTest
    public void testCannotGetDocumentBuilder()
    {
    }
+   /*
+    * https://jira.jboss.org/jira/browse/WELD-362
+    */
+   @Test
+   public void testNonPrettyPrintedXML()
+   {
+      List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
+      List<URL> beansXmls = Arrays.asList(getClass().getResource("nonPrettyPrinted.xml"));
+      TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
+      assert container.getBeanManager().getEnabledAlternativeClasses().size() == 1;
+      assert container.getBeanManager().getEnabledAlternativeClasses().iterator().next() == Alt.class;
+      container.stopContainer();
+   }
 
    @Test
    public void testCannotLoadFile() throws MalformedURLException

@@ -38,13 +38,12 @@ public class NodeListIterator implements Iterator<Node>
 
    public boolean hasNext()
    {
-      return index < nodeList.getLength() - 1;
+      return index < nodeList.getLength();
    }
 
    public Node next()
    {
-      index++;
-      return nodeList.item(index);
+      return nodeList.item(index++);
    }
 
    public void remove()
