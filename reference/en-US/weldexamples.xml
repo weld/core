@@ -465,13 +465,17 @@ public class Game implements Serializable {
                profile. Right-click on the project and select <emphasis>Properties</emphasis>, then select the
                <emphasis>Maven</emphasis> tab in the window that appears. In the form field labeled "Active Maven
                Profiles (comma separated):", type <literal>jetty</literal>. That will enable some extra dependencies
-               that allow the project to compile. You're now ready to develop!
+               that allow the project to compile. Additionally, <emphasis>uncheck</emphasis> the box labeled "Skip Maven
+               compile plugin when processing resources (recommended)". That solves an incompatiblity between the
+               m2eclipse plugin and the Maven enforcer plugin that we use for the Weld project. Now, you're ready to
+               develop!
             </para>
 
             <note>
                <para>
-                  You are also advised to uncheck the box "Skip Maven compiler when processing resources" in the Maven
-                  properties screen because of conflicts with the Maven enforcer plugin.
+                  Be sure to uncheck the box "Skip Maven compile plugin when processing resources (recommended)" in the
+                  Maven properties screen or else the example might not run in Eclipse because beans.xml will be missing
+                  from the classpath!
                </para>
             </note>
 
