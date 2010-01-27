@@ -475,7 +475,9 @@ public class Game implements Serializable {
                <para>
                   Be sure to uncheck the box "Skip Maven compile plugin when processing resources (recommended)" in the
                   Maven properties screen or else the example might not run in Eclipse because beans.xml will be missing
-                  from the classpath!
+                  from the classpath! See the <ulink
+                  url="https://issues.sonatype.org/browse/MNGECLIPSE-768">MNGECLIPSE-768</ulink> issue report for
+                  details.
                </para>
             </note>
 
