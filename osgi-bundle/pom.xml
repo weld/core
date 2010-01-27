@@ -72,13 +72,13 @@
                      org.jboss.weld;
                      org.jboss.weld.bootstrap;
                      org.jboss.weld.introspector;
+                     org.jboss.weld.manager;
                      org.jboss.weld.servlet;
                      org.jboss.interceptor.*;
                      version=${osgi.version},
                      org.jboss.weld.el;
                      version=${osgi.version},
                      org.jboss.weld.jsf;
-                     include:="WeldPhaseListener";
                      version=${osgi.version},
                      javassist.util.proxy;version=${javassist.version}
                  </_exportcontents>
