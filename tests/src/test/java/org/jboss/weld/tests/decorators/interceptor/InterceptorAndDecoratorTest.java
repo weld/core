@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 public class InterceptorAndDecoratorTest extends AbstractWeldTest
 {
 
-   @Test(description="WELD-314", groups = "broken")
+   @Test(description="WELD-314")
    public void test()
    {
       ServiceImpl.invocationCount = 0;

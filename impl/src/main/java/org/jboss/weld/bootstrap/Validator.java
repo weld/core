@@ -263,7 +263,7 @@ public class Validator implements Service
       {
          throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Arrays.toString(bindings));
       }
-      if (resolvedBeans.size() > 1)
+      if (resolvedBeans.size() > 1 && !ij.isDelegate())
       {
          throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Arrays.toString(bindings) + "; Possible dependencies: " + resolvedBeans);
       }
