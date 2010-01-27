@@ -16,12 +16,17 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.IntegrationTest;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.testharness.impl.packaging.jsr299.Extension;
 import org.jboss.weld.test.AbstractWeldTest;
+import org.jboss.weld.test.Utils;
+import org.jboss.weld.tests.extensions.annotatedType.EcoFriendlyWashingMachine.EcoFriendlyWashingMachineLiteral;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -37,6 +42,13 @@ public class AnnotatedTypeExtensionTest extends AbstractWeldTest
       Laundry laundry = getReference(Laundry.class);
       assert laundry.ecoFriendlyWashingMachine != null;
       assert laundry.fastWashingMachine != null;
+   }
+   
+   @Test(description = "WELD-371")
+   public void testAnnotationsAreOverridden()
+   {
+      Bean<WashingMachine> bean = getBean(WashingMachine.class, EcoFriendlyWashingMachineLiteral.INSTANCE);
+      assert Utils.annotationSetMatches(bean.getQualifiers(), Any.class, EcoFriendlyWashingMachine.class);
    }
    
 

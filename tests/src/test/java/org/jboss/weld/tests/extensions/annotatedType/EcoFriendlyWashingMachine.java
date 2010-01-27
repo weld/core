@@ -26,6 +26,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
 
 @Target( { TYPE, METHOD, PARAMETER, FIELD })
@@ -34,5 +35,15 @@ import javax.inject.Qualifier;
 @Qualifier
 public @interface EcoFriendlyWashingMachine
 {
+   
+   @SuppressWarnings("serial")
+   public static class EcoFriendlyWashingMachineLiteral extends AnnotationLiteral<EcoFriendlyWashingMachine> implements EcoFriendlyWashingMachine 
+   {
+      
+      public static final EcoFriendlyWashingMachine INSTANCE = new EcoFriendlyWashingMachineLiteral();
+      
+      private EcoFriendlyWashingMachineLiteral() {}
+      
+   }
 
 }

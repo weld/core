@@ -29,17 +29,11 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.util.AnnotationLiteral;
+
+import org.jboss.weld.tests.extensions.annotatedType.EcoFriendlyWashingMachine.EcoFriendlyWashingMachineLiteral;
 
 public class AnnotatedTypeExtension implements Extension
 {
-   
-   public static class EcoFriendlyWashingMachineLiteral extends AnnotationLiteral<EcoFriendlyWashingMachine> implements EcoFriendlyWashingMachine
-   {
-      
-      public static final EcoFriendlyWashingMachine INSTANCE = new EcoFriendlyWashingMachineLiteral();
-      
-   }
    
    /**
     * Adds an eco friendly wasing machine
