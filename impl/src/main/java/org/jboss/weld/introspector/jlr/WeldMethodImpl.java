@@ -190,10 +190,10 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    @Override
    public boolean equals(Object other)
    {
-      if (other instanceof WeldMethod)
+      if (super.equals(other) && other instanceof WeldMethod)
       {
          WeldMethod<?, ?> that = (WeldMethod<?, ?>) other;
-         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getName().equals(that.getName()) && this.getWeldParameters().equals(that.getWeldParameters());
+         return this.getJavaMember().equals(that.getJavaMember()) && this.getWeldParameters().equals(that.getWeldParameters());
       }
       else
       {

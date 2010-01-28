@@ -47,6 +47,7 @@ import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.collections.HashSetSupplier;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
@@ -363,6 +364,17 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       {
          return transformer.loadClass((Class<X>) member.getDeclaringClass());
       }
+   }
+
+   @Override
+   public boolean equals(Object other)
+   {
+      if (other instanceof WeldClassImpl<?>)
+      {
+         WeldClassImpl<?> that = (WeldClassImpl<?>) other;
+         return AnnotatedTypes.compareAnnotatedTypes(this, that) && this.getActualTypeArguments().length == that.getActualTypeArguments().length && Arrays.equals(this.getActualTypeArguments(), that.getActualTypeArguments());
+      }
+      return false;
    }
 
    /**

@@ -36,6 +36,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.inject.Inject;
 
 import org.jboss.weld.tests.extensions.annotatedType.EcoFriendlyWashingMachine.EcoFriendlyWashingMachineLiteral;
@@ -553,4 +554,10 @@ public class AnnotatedTypeExtension implements Extension
       
       beforeBeanDiscovery.addAnnotatedType(type);
    }
+   
+   public void vetoOriginalTumbleDryer(@Observes ProcessAnnotatedType<TumbleDryer> event)
+   {
+      event.veto();
+   }
+
 }

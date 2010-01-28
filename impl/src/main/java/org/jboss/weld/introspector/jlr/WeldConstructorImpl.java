@@ -270,7 +270,7 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
       if (super.equals(other) && other instanceof WeldConstructor)
       {
          WeldConstructor<?> that = (WeldConstructor<?>) other;
-         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getWeldParameters().equals(that.getWeldParameters());
+         return this.getJavaMember().equals(that.getJavaMember()) && this.getWeldParameters().equals(that.getWeldParameters());
       }
       return false;
    }

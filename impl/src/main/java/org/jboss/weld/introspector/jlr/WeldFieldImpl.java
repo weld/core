@@ -138,10 +138,10 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
    @Override
    public boolean equals(Object other)
    {
-      if (other instanceof WeldField<?, ?>)
+      if (super.equals(other) && other instanceof WeldField<?, ?>)
       {
          WeldField<?, ?> that = (WeldField<?, ?>) other;
-         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getName().equals(that.getName());
+         return this.getJavaMember().equals(that.getJavaMember());
       }
       else
       {
