@@ -26,9 +26,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
@@ -282,7 +285,10 @@ public class AnnotatedTypes
          builder.append('(');
          Method[] declaredMethods = a.annotationType().getDeclaredMethods();
          List<Method> methods = new ArrayList<Method>(declaredMethods.length);
-         // TODO Shouldn't the declared methods be added here?
+         for (Method m : declaredMethods)
+         {
+            methods.add(m);
+         }
          Collections.sort(methods, MethodComparator.INSTANCE);
 
          for (int i = 0; i < methods.size(); ++i)
@@ -385,6 +391,136 @@ public class AnnotatedTypes
       }
       builder.append(")");
       return builder.toString();
+   }
+
+   /**
+    * compares two annotated elemetes to see if they have the same annotations
+    * 
+    * @param a1
+    * @param a2
+    * @return
+    */
+   private static boolean compareAnnotated(Annotated a1, Annotated a2)
+   {
+      return a1.getAnnotations().equals(a2.getAnnotations());
+   }
+
+   /**
+    * compares two annotated elements to see if they have the same annotations
+    * 
+    */
+   private static boolean compareAnnotatedParameters(List<? extends AnnotatedParameter<?>> p1, List<? extends AnnotatedParameter<?>> p2)
+   {
+      if (p1.size() != p2.size())
+      {
+         return false;
+      }
+      for (int i = 0; i < p1.size(); ++i)
+      {
+         if (!compareAnnotated(p1.get(i), p2.get(i)))
+         {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   public static boolean compareAnnotatedField(AnnotatedField<?> f1, AnnotatedField<?> f2)
+   {
+      if (f1.getJavaMember() != f2.getJavaMember())
+      {
+         return false;
+      }
+      return compareAnnotated(f1, f2);
+   }
+
+   public static boolean compareAnnotatedCallable(AnnotatedCallable<?> m1, AnnotatedCallable<?> m2)
+   {
+      if(m1.getJavaMember() != m2.getJavaMember())
+      {
+         return false;
+      }
+      if(!compareAnnotated(m1, m2))
+      {
+         return false;
+      }
+      return compareAnnotatedParameters(m1.getParameters(), m2.getParameters());
+   }
+
+   /**
+    * Compares two annotated types and returns true if they are the same
+    */
+   public static boolean compareAnnotatedTypes(AnnotatedType<?> t1, AnnotatedType<?> t2)
+   {
+      if (t1.getJavaClass() != t2.getJavaClass())
+      {
+         return false;
+      }
+      if (!compareAnnotated(t1, t2))
+      {
+         return false;
+      }
+      Map<Field, AnnotatedField<?>> fields = new HashMap<Field, AnnotatedField<?>>();
+      for (AnnotatedField<?> f : t2.getFields())
+      {
+         fields.put(f.getJavaMember(), f);
+      }
+      for (AnnotatedField<?> f : t1.getFields())
+      {
+         if (fields.containsKey(f.getJavaMember()))
+         {
+            if (!compareAnnotatedField(f, fields.get(f.getJavaMember())))
+            {
+               return false;
+            }
+         }
+         else
+         {
+            return false;
+         }
+      }
+
+      Map<Method, AnnotatedMethod<?>> methods = new HashMap<Method, AnnotatedMethod<?>>();
+      for (AnnotatedMethod<?> f : t2.getMethods())
+      {
+         methods.put(f.getJavaMember(), f);
+      }
+      for (AnnotatedMethod<?> f : t1.getMethods())
+      {
+         if (methods.containsKey(f.getJavaMember()))
+         {
+            if (!compareAnnotatedCallable(f, methods.get(f.getJavaMember())))
+            {
+               return false;
+            }
+         }
+         else
+         {
+            return false;
+         }
+      }
+
+      Map<Constructor<?>, AnnotatedConstructor<?>> constructors = new HashMap<Constructor<?>, AnnotatedConstructor<?>>();
+      for (AnnotatedConstructor<?> f : t2.getConstructors())
+      {
+         constructors.put(f.getJavaMember(), f);
+      }
+      for (AnnotatedConstructor<?> f : t1.getConstructors())
+      {
+         if (constructors.containsKey(f.getJavaMember()))
+         {
+            if (!compareAnnotatedCallable(f, constructors.get(f.getJavaMember())))
+            {
+               return false;
+            }
+         }
+         else
+         {
+            return false;
+         }
+      }
+      return true;
+
    }
 
    public static <X> String createParameterId(AnnotatedParameter<X> annotatedParameter)
