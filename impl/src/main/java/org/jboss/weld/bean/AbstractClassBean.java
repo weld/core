@@ -20,10 +20,8 @@ import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
 import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.ONLY_ONE_SCOPE_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
@@ -59,11 +57,9 @@ import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.SerializableContextualImpl;
-import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
@@ -73,7 +69,6 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
@@ -145,8 +140,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    private boolean hasSerializationOrInvocationInterceptorMethods;
 
    // Bean callback methods
-   private WeldMethod<?, ?> postConstruct;
-   private WeldMethod<?, ?> preDestroy;
+   private List<WeldMethod<?, ? super T>> postConstructMethods;
+   private List<WeldMethod<?, ? super T>> preDestroyMethods;
 
    // Injection target for the bean
    private InjectionTarget<T> injectionTarget;
@@ -361,7 +356,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initPostConstruct()
    {
-      this.postConstruct = Beans.getPostConstruct(getWeldAnnotated());
+      this.postConstructMethods = Beans.getPostConstructMethods(getWeldAnnotated());
    }
 
    /**
@@ -369,7 +364,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initPreDestroy()
    {
-      this.preDestroy = Beans.getPreDestroy(getWeldAnnotated());
+      this.preDestroyMethods = Beans.getPreDestroyMethods(getWeldAnnotated());
    }
 
    /**
@@ -377,9 +372,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * 
     * @return The post-construct method
     */
-   public WeldMethod<?, ?> getPostConstruct()
+   public List<WeldMethod<?, ? super T>> getPostConstruct()
    {
-      return postConstruct;
+      return postConstructMethods;
    }
 
    /**
@@ -387,9 +382,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * 
     * @return The pre-destroy method
     */
-   public WeldMethod<?, ?> getPreDestroy()
+   public List<WeldMethod<?, ? super T>> getPreDestroy()
    {
-      return preDestroy;
+      return preDestroyMethods;
    }
 
    protected abstract boolean isInterceptionCandidate();
@@ -473,33 +468,38 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    protected void defaultPreDestroy(T instance)
    {
-      WeldMethod<?, ?> preDestroy = getPreDestroy();
-      if (preDestroy != null)
+      for (WeldMethod<?, ? super T> method : getPreDestroy())
       {
-         try
+         if (method != null)
          {
-            // note: RI supports injection into @PreDestroy
-            preDestroy.invoke(instance);
-         }
-         catch (Exception e)
-         {
-            throw new WeldException(INVOCATION_ERROR, e, preDestroy, instance);
+            try
+            {
+               // note: RI supports injection into @PreDestroy
+               method.invoke(instance);
+            }
+            catch (Exception e)
+            {
+               throw new WeldException(INVOCATION_ERROR, e, method, instance);
+            }
          }
       }
    }
 
    protected void defaultPostConstruct(T instance)
    {
-      WeldMethod<?, ?> postConstruct = getPostConstruct();
-      if (postConstruct != null)
+      for (WeldMethod<?, ? super T> method : getPostConstruct())
       {
-         try
+         if (method != null)
          {
-            postConstruct.invoke(instance);
-         }
-         catch (Exception e)
-         {
-            throw new WeldException(INVOCATION_ERROR, e, postConstruct, instance);
+            try
+            {
+               // note: RI supports injection into @PreDestroy
+               method.invoke(instance);
+            }
+            catch (Exception e)
+            {
+               throw new WeldException(INVOCATION_ERROR, e, method, instance);
+            }
          }
       }
    }
@@ -562,16 +562,22 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             if (methodDeclaredInterceptors != null)
             {
                if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
+               {
                   builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
+               }
                else
+               {
                   builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
+               }
             }
          }
          InterceptionModel<Class<?>, Class<?>> interceptionModel = builder.build();
          InterceptorClassMetadata interceptorClassMetadata = InterceptorClassMetadataRegistry.getRegistry().getInterceptorClassMetadata(getType(), true);
          hasSerializationOrInvocationInterceptorMethods = !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_INVOKE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_TIMEOUT).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.PRE_PASSIVATE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.POST_ACTIVATE).isEmpty();
          if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods)
+         {
             beanManager.getClassDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
+         }
       }
    }
 

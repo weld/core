@@ -16,10 +16,9 @@
  */
 package org.jboss.weld.manager;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.ERROR_INVOKING_POST_CONSTRUCT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.ERROR_INVOKING_PRE_DESTROY;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.INJECTION_ON_NON_CONTEXTUAL;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.MISSING_BEAN_CONSTRUCTOR_FOUND;
+import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
 
 import java.util.HashSet;
 import java.util.List;
@@ -43,18 +42,18 @@ import org.jboss.weld.util.Beans;
 
 /**
  * @author pmuir
- *
+ * 
  */
 public class SimpleInjectionTarget<T> implements InjectionTarget<T>
 {
- 
+
    private final BeanManagerImpl beanManager;
    private final WeldClass<T> type;
    private final ConstructorInjectionPoint<T> constructor;
    private final List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
    private final List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
-   private final WeldMethod<?, ?> postConstruct;
-   private final WeldMethod<?, ?> preDestroy;
+   private final List<WeldMethod<?, ? super T>> postConstructMethods;
+   private final List<WeldMethod<?, ? super T>> preDestroyMethods;
    private final Set<InjectionPoint> injectionPoints;
    private final Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
    private final Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
@@ -74,7 +73,8 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       }
       catch (Exception e)
       {
-         // this means the bean of a type that cannot be produce()d, but that is non-fatal
+         // this means the bean of a type that cannot be produce()d, but that is
+         // non-fatal
          // unless someone calls produce()
       }
       this.constructor = constructor;
@@ -82,8 +82,8 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       this.injectionPoints.addAll(Beans.getFieldInjectionPoints(null, this.injectableFields));
       this.initializerMethods = Beans.getInitializerMethods(null, type);
       this.injectionPoints.addAll(Beans.getParameterInjectionPoints(null, initializerMethods));
-      this.postConstruct = Beans.getPostConstruct(type);
-      this.preDestroy = Beans.getPreDestroy(type);
+      this.postConstructMethods = Beans.getPostConstructMethods(type);
+      this.preDestroyMethods = Beans.getPreDestroyMethods(type);
       this.ejbInjectionPoints = Beans.getEjbInjectionPoints(null, type, beanManager);
       this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(null, type, beanManager);
       this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(null, type, beanManager);
@@ -110,49 +110,57 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       }
       return constructor.newInstance(beanManager, ctx);
    }
-   
+
    public void inject(final T instance, final CreationalContext<T> ctx)
    {
       new InjectionContextImpl<T>(beanManager, this, instance)
       {
-         
+
          public void proceed()
          {
             Beans.injectEEFields(instance, beanManager, ejbInjectionPoints, persistenceContextInjectionPoints, persistenceUnitInjectionPoints, resourceInjectionPoints);
             Beans.injectFieldsAndInitializers(instance, ctx, beanManager, injectableFields, initializerMethods);
          }
-         
+
       }.run();
 
    }
 
    public void postConstruct(T instance)
    {
-      if (postConstruct == null)
-         return;
-      
-      try
+      for (WeldMethod<?, ? super T> method : postConstructMethods)
       {
-         postConstruct.invoke(instance);
-      }
-      catch (Exception e)
-      {
-         throw new WeldException(ERROR_INVOKING_POST_CONSTRUCT, e, postConstruct);
+         if (method != null)
+         {
+            try
+            {
+               // note: RI supports injection into @PreDestroy
+               method.invoke(instance);
+            }
+            catch (Exception e)
+            {
+               throw new WeldException(INVOCATION_ERROR, e, method, instance);
+            }
+         }
       }
    }
 
    public void preDestroy(T instance)
    {
-      if (preDestroy == null)
-         return;
-      
-      try
+      for (WeldMethod<?, ? super T> method : preDestroyMethods)
       {
-         preDestroy.invoke(instance);
-      }
-      catch (Exception e)
-      {
-         throw new WeldException(ERROR_INVOKING_PRE_DESTROY, e, preDestroy);
+         if (method != null)
+         {
+            try
+            {
+               // note: RI supports injection into @PreDestroy
+               method.invoke(instance);
+            }
+            catch (Exception e)
+            {
+               throw new WeldException(INVOCATION_ERROR, e, method, instance);
+            }
+         }
       }
    }
 

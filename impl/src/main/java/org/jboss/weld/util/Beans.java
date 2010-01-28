@@ -230,46 +230,50 @@ public class Beans
       return injectionPoints;
    }
    
-   public static WeldMethod<?, ?> getPostConstruct(WeldClass<?> type)
+   public static <T> List<WeldMethod<?, ? super T>> getPostConstructMethods(WeldClass<T> type)
    {
-      Set<WeldMethod<?, ?>> postConstructMethods = type.getWeldMethods(PostConstruct.class);
-      log.trace(FOUND_POST_CONSTRUCT_METHODS, postConstructMethods, type);
-      if (postConstructMethods.size() > 1)
+      WeldClass<?> t = type;
+      List<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
+      while (!t.getJavaClass().equals(Object.class))
       {
-         throw new DefinitionException(TOO_MANY_POST_CONSTRUCT_METHODS, type);
+         Set<WeldMethod<?, ? super T>> declaredMethods = (Set) t.getDeclaredWeldMethods(PostConstruct.class);
+         log.trace(FOUND_POST_CONSTRUCT_METHODS, declaredMethods, type);
+         if (declaredMethods.size() > 1)
+         {
+            throw new DefinitionException(TOO_MANY_POST_CONSTRUCT_METHODS, type);
+         }
+         else if (declaredMethods.size() == 1)
+         {
+            WeldMethod<?, ? super T> method = declaredMethods.iterator().next();
+            log.trace(FOUND_ONE_POST_CONSTRUCT_METHOD, method, type);
+            methods.add(0, method);
+         }
+         t = t.getWeldSuperclass();
       }
-      else if (postConstructMethods.size() == 1)
-      {
-         WeldMethod<?, ?> postConstruct = postConstructMethods.iterator().next();
-         log.trace(FOUND_ONE_POST_CONSTRUCT_METHOD, postConstruct, type);
-         return postConstruct;
-      }
-      else
-      {
-         return null;
-      }
+      return methods;
    }
    
-   public static WeldMethod<?, ?> getPreDestroy(WeldClass<?> type)
+   public static <T> List<WeldMethod<?, ? super T>> getPreDestroyMethods(WeldClass<T> type)
    {
-      Set<WeldMethod<?, ?>> preDestroyMethods = type.getWeldMethods(PreDestroy.class);
-      log.trace(FOUND_PRE_DESTROY_METHODS, preDestroyMethods, type);
-      if (preDestroyMethods.size() > 1)
+      WeldClass<?> t = type;
+      List<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
+      while (!t.getJavaClass().equals(Object.class))
       {
-         // TODO actually this is wrong, in EJB you can have @PreDestroy methods
-         // on the superclass, though the CDI spec is silent on the issue
-         throw new DefinitionException(TOO_MANY_PRE_DESTROY_METHODS, type);
+         Set<WeldMethod<?, ? super T>> declaredMethods = (Set) t.getDeclaredWeldMethods(PreDestroy.class);
+         log.trace(FOUND_PRE_DESTROY_METHODS, declaredMethods, type);
+         if (declaredMethods.size() > 1)
+         {
+            throw new DefinitionException(TOO_MANY_PRE_DESTROY_METHODS, type);
+         }
+         else if (declaredMethods.size() == 1)
+         {
+            WeldMethod<?, ? super T> method = declaredMethods.iterator().next();
+            log.trace(FOUND_ONE_PRE_DESTROY_METHOD, method, type);
+            methods.add(0, method);
+         }
+         t = t.getWeldSuperclass();
       }
-      else if (preDestroyMethods.size() == 1)
-      {
-         WeldMethod<?, ?> preDestroy = preDestroyMethods.iterator().next();
-         log.trace(FOUND_ONE_PRE_DESTROY_METHOD, preDestroy, type);
-         return preDestroy;
-      }
-      else
-      {
-         return null;
-      }
+      return methods;
    }
 
    public static List<WeldMethod<?,?>> getInterceptableMethods(WeldClass<?> type)
