@@ -29,6 +29,7 @@ import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.AnnotatedTypes;
 
 /**
  * Represents a producer field
@@ -64,7 +65,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     */
    protected ProducerField(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
-      super(new StringBuilder().append(ProducerField.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(field.getName()).toString(), declaringBean, manager);
+      super(createId(field, declaringBean), declaringBean, manager);
       this.field = field;
       initType();
       initTypes();
@@ -72,6 +73,30 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
       initStereotypes();
    }
    
+   protected static String createId(WeldField<?, ?> field, AbstractClassBean<?> declaringBean)
+   {
+      if (declaringBean.getWeldAnnotated().isDiscovered())
+      {
+         StringBuilder sb = new StringBuilder();
+         sb.append(ProducerField.class.getSimpleName());
+         sb.append(BEAN_ID_SEPARATOR);
+         sb.append(declaringBean.getWeldAnnotated().getName());
+         sb.append(".");
+         sb.append(field.getName());
+         return sb.toString();
+      }
+      else
+      {
+         StringBuilder sb = new StringBuilder();
+         sb.append(ProducerField.class.getSimpleName());
+         sb.append(BEAN_ID_SEPARATOR);
+         sb.append(AnnotatedTypes.createTypeId(declaringBean.getWeldAnnotated()));
+         sb.append(".");
+         sb.append(AnnotatedTypes.createFieldId(field));
+         return sb.toString();
+      }
+   }
+
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {

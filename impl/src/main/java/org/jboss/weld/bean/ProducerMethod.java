@@ -42,6 +42,7 @@ import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
@@ -79,9 +80,34 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
       initType();
       initTypes();
       initQualifiers();
-      this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(getClass().getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(getWeldAnnotated().getSignature().toString()).toString();
+      this.id = createId(method, declaringBean);
       initStereotypes();
       initProducerMethodInjectableParameters();
+   }
+
+   protected String createId(WeldMethod<T, X> method, AbstractClassBean<X> declaringBean)
+   {
+      if (declaringBean.getWeldAnnotated().isDiscovered())
+      {
+         StringBuilder sb = new StringBuilder();
+         sb.append(BEAN_ID_PREFIX);
+         sb.append(ProducerMethod.class.getSimpleName());
+         sb.append(BEAN_ID_SEPARATOR);
+         sb.append(declaringBean.getWeldAnnotated().getName());
+         sb.append(getWeldAnnotated().getSignature().toString());
+         return sb.toString();
+      }
+      else
+      {
+         StringBuilder sb = new StringBuilder();
+         sb.append(BEAN_ID_PREFIX);
+         sb.append(ProducerMethod.class.getSimpleName());
+         sb.append(BEAN_ID_SEPARATOR);
+         sb.append(AnnotatedTypes.createTypeId(declaringBean.getWeldAnnotated()));
+         sb.append(AnnotatedTypes.createCallableId(method));
+         return sb.toString();
+      }
+
    }
 
    /**
