@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javassist.util.proxy.MethodHandler;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Decorator;
@@ -41,7 +43,6 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.PassivationCapable;
 
-import javassist.util.proxy.MethodHandler;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
 import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
 import org.jboss.interceptor.registry.InterceptorRegistry;
@@ -362,10 +363,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          initPreDestroy();
          initEEInjectionPoints();
          initPassivationCapable();
-         if (isInterceptionCandidate())
-         {
-            initDirectlyDefinedInterceptors();
-         }
          setInjectionTarget(new ManagedBeanInjectionTarget<T>(this));
       }
    }

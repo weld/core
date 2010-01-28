@@ -579,6 +579,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             beanManager.getClassDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
          }
       }
+      else
+      {
+         InterceptorClassMetadata interceptorClassMetadata = InterceptorClassMetadataRegistry.getRegistry().getInterceptorClassMetadata(getType(), true);
+         hasSerializationOrInvocationInterceptorMethods = !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_INVOKE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_TIMEOUT).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.PRE_PASSIVATE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.POST_ACTIVATE).isEmpty();
+      }
    }
 
    protected void checkConstructor()
