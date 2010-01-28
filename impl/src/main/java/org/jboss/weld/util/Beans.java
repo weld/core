@@ -672,7 +672,7 @@ public class Beans
       {
          if (initializerAnnotatedConstructors.size() > 1)
          {
-            throw new DefinitionException(AMBIGUOUS_CONSTRUCTOR, type);
+            throw new DefinitionException(AMBIGUOUS_CONSTRUCTOR, type, initializerAnnotatedConstructors);
          }
       }
       else if (initializerAnnotatedConstructors.size() == 1)

@@ -635,5 +635,22 @@ public class Reflections
    {
       return clazz.isPrimitive() || Serializable.class.isAssignableFrom(clazz);
    }
+   
+   @SuppressWarnings("unchecked")
+   public static <T> Class<T> getRawType(Type type)
+   {
+      if (type instanceof Class<?>)
+      {
+         return (Class<T>) type;
+      }
+      else if (type instanceof ParameterizedType)
+      {
+         if (((ParameterizedType) type).getRawType() instanceof Class<?>)
+         {
+            return (Class<T>) ((ParameterizedType) type).getRawType();
+         }
+      }
+      return null;
+   }
 
 }

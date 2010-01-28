@@ -80,14 +80,16 @@ public class WeldException extends RuntimeException
    {
       super();
       StringBuilder errorMessage = new StringBuilder();
-      boolean firstError = true;
+      int i = 0;;
       for (Throwable throwable : errors)
       {
-         if (!firstError)
+         if (i > 0)
          {
             errorMessage.append('\n');
          }
+         errorMessage.append("Exception #").append(i).append(" :");
          errorMessage.append(throwable.getLocalizedMessage());
+         i++;
       }
       this.message = new WeldExceptionMessage(errorMessage.toString());
    }
