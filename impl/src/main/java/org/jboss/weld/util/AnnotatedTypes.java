@@ -207,7 +207,7 @@ public class AnnotatedTypes
 
       builder.append(clazz.getName());
       builder.append(createAnnotationCollectionId(annotations));
-      builder.append("{ ");
+      builder.append("{");
 
       // now deal with the fields
       List<AnnotatedField<? super X>> sortedFields = new ArrayList<AnnotatedField<? super X>>();
@@ -256,7 +256,7 @@ public class AnnotatedTypes
    {
       for (AnnotatedParameter<X> parameter : callable.getParameters())
       {
-         if (parameter.getAnnotations().isEmpty())
+         if (!parameter.getAnnotations().isEmpty())
          {
             return true;
          }
@@ -448,7 +448,7 @@ public class AnnotatedTypes
 
    public static boolean compareAnnotatedField(AnnotatedField<?> f1, AnnotatedField<?> f2)
    {
-      if (f1.getJavaMember().equals(f2.getJavaMember()))
+      if (!f1.getJavaMember().equals(f2.getJavaMember()))
       {
          return false;
       }
@@ -457,7 +457,7 @@ public class AnnotatedTypes
 
    public static boolean compareAnnotatedCallable(AnnotatedCallable<?> m1, AnnotatedCallable<?> m2)
    {
-      if (m1.getJavaMember().equals(m2.getJavaMember()))
+      if (!m1.getJavaMember().equals(m2.getJavaMember()))
       {
          return false;
       }
@@ -473,11 +473,16 @@ public class AnnotatedTypes
     */
    public static boolean compareAnnotatedTypes(AnnotatedType<?> t1, AnnotatedType<?> t2)
    {
-      if (t1.getJavaClass().equals(t2.getJavaClass()))
+      if (!t1.getJavaClass().equals(t2.getJavaClass()))
       {
          return false;
       }
       if (!compareAnnotated(t1, t2))
+      {
+         return false;
+      }
+
+      if (t1.getFields().size() != t2.getFields().size())
       {
          return false;
       }
@@ -501,6 +506,10 @@ public class AnnotatedTypes
          }
       }
 
+      if (t1.getMethods().size() != t2.getMethods().size())
+      {
+         return false;
+      }
       Map<Method, AnnotatedMethod<?>> methods = new HashMap<Method, AnnotatedMethod<?>>();
       for (AnnotatedMethod<?> f : t2.getMethods())
       {
@@ -520,7 +529,10 @@ public class AnnotatedTypes
             return false;
          }
       }
-
+      if (t1.getConstructors().size() != t2.getConstructors().size())
+      {
+         return false;
+      }
       Map<Constructor<?>, AnnotatedConstructor<?>> constructors = new HashMap<Constructor<?>, AnnotatedConstructor<?>>();
       for (AnnotatedConstructor<?> f : t2.getConstructors())
       {

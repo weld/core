@@ -34,19 +34,19 @@ class TestAnnotatedType<X> extends AbstractTestAnnotatedElement implements Annot
       super(clazz, typeAnnotations);
       this.javaClass = clazz;
       this.constructors = new HashSet<AnnotatedConstructor<X>>();
-      for (Constructor<?> c : clazz.getConstructors())
+      for (Constructor<?> c : clazz.getDeclaredConstructors())
       {
          TestAnnotatedConstructor<X> nc = new TestAnnotatedConstructor<X>(this, c, constructorAnnotations.get(c), constructorParameterAnnotations.get(c));
          constructors.add(nc);
       }
       this.methods = new HashSet<AnnotatedMethod<? super X>>();
-      for (Method m : clazz.getMethods())
+      for (Method m : clazz.getDeclaredMethods())
       {
          TestAnnotatedMethod<X> met = new TestAnnotatedMethod<X>(this, m, methodAnnotations.get(m), methodParameterAnnotations.get(m));
          methods.add(met);
       }
       this.fields = new HashSet<AnnotatedField<? super X>>();
-      for (Field f : clazz.getFields())
+      for (Field f : clazz.getDeclaredFields())
       {
          TestAnnotatedField<X> b = new TestAnnotatedField<X>(this, f, fieldAnnotations.get(f));
          fields.add(b);

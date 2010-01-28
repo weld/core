@@ -34,6 +34,7 @@ public class TestAnnotatedTypeBuilder<X>
    public TestAnnotatedTypeBuilder(Class<X> underlying)
    {
       this.underlying = underlying;
+   
    }
 
    public TestAnnotatedTypeBuilder<X> addToClass(Annotation a)
