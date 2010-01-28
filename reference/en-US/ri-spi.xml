@@ -574,10 +574,11 @@
             </term>
             <listitem>
                <para>
-                  If you are integrating Weld into an EJB environment you must register
-                  <literal>org.jboss.weld.ejb.SessionBeanInterceptor</literal> as a EJB interceptor for all EJBs in the
+                  If you are integrating Weld into an EJB environment you must register the <literal>aroundInvoke</literal> method of
+                  <literal>org.jboss.weld.ejb.SessionBeanInterceptor</literal> as a EJB around-invoke interceptor for all EJBs in the
                   application, either automatically, or through user configuration, for each CDI application which
-                  uses enterprise beans.
+                  uses enterprise beans. If you are running in a EJB 3.1 environment, you should register this as an around-timeout
+                  interceptor as well.
                </para>
                <important>
                   <para>
