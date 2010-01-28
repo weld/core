@@ -18,7 +18,6 @@ package org.jboss.weld.ejb;
 
 import java.io.Serializable;
 
-import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.Container;
@@ -41,7 +40,6 @@ public class SessionBeanInterceptor implements Serializable
 {
    private static final long serialVersionUID = 7327757031821596782L;
 
-   @AroundInvoke
    public Object aroundInvoke(InvocationContext invocation) throws Exception
    {
       if (Container.instance().services().get(ContextLifecycle.class).isRequestActive())
