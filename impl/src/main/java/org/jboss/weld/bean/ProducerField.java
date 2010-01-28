@@ -41,7 +41,7 @@ import org.jboss.weld.util.AnnotatedTypes;
 public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
 {
    // The underlying field
-   private WeldField<T, X> field;
+   private WeldField<T, ? super X> field;
    
    /**
     * Creates a producer field
@@ -51,7 +51,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     * @param beanManager the current manager
     * @return A producer field
     */
-   public static <X, T> ProducerField<X, T> of(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
+   public static <X, T> ProducerField<X, T> of(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
    {
       return new ProducerField<X, T>(field, declaringBean, beanManager);
    }
@@ -63,7 +63,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     * @param declaringBean The declaring bean
     * @param manager The Bean manager
     */
-   protected ProducerField(WeldField<T, X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   protected ProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(createId(field, declaringBean), declaringBean, manager);
       this.field = field;
@@ -142,7 +142,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     * @return The annotated item
     */
    @Override
-   public WeldField<T, X> getWeldAnnotated()
+   public WeldField<T, ? super X> getWeldAnnotated()
    {
       return field;
    }

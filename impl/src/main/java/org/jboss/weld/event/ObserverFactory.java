@@ -41,7 +41,7 @@ public class ObserverFactory
     * @param manager The Bean manager
     * @return An observer implementation built from the method abstraction
     */
-   public static <T, X> ObserverMethodImpl<T, X> create(WeldMethod<T, X> method, RIBean<X> declaringBean, BeanManagerImpl manager)
+   public static <T, X> ObserverMethodImpl<T, X> create(WeldMethod<T, ? super X> method, RIBean<X> declaringBean, BeanManagerImpl manager)
    {
       ObserverMethodImpl<T, X> result = null;
       TransactionPhase transactionPhase = getTransactionalPhase(method);

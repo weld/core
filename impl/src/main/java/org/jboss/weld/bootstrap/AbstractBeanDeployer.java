@@ -173,7 +173,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    
    protected <X> void createProducerMethods(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass)
    {
-      for (WeldMethod<?, X> method : annotatedClass.getDeclaredWeldMethods(Produces.class))
+      for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethods(Produces.class))
       {
          createProducerMethod(declaringBean, method);         
       }
@@ -181,21 +181,21 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    
    protected <X> void createDisposalMethods(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass)
    {
-      for (WeldMethod<?, X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class))
+      for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class))
       {
-         DisposalMethod<X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean);
+         DisposalMethod<? super X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean);
          disposalBean.initialize(getEnvironment());
          getEnvironment().addDisposesMethod(disposalBean);
       }
    }
    
-   protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, WeldMethod<T, X> annotatedMethod)
+   protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, WeldMethod<T, ? super X> annotatedMethod)
    {
-      ProducerMethod<X, T> bean = ProducerMethod.of(annotatedMethod, declaringBean, manager);
+      ProducerMethod<? super X, T> bean = ProducerMethod.of(annotatedMethod, declaringBean, manager);
       getEnvironment().addProducerMethod(bean);
    }
    
-   protected <X, T> void createProducerField(AbstractClassBean<X> declaringBean, WeldField<T, X> field)
+   protected <X, T> void createProducerField(AbstractClassBean<X> declaringBean, WeldField<T, ? super X> field)
    {
       ProducerField<X, T> bean;
       if (isEEResourceProducerField(field))
@@ -211,7 +211,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    
    protected <X> void createProducerFields(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass)
    {
-      for (WeldField<?, X> field : annotatedClass.getDeclaredWeldFields(Produces.class))
+      for (WeldField<?, ? super X> field : annotatedClass.getDeclaredWeldFields(Produces.class))
       {
          createProducerField(declaringBean, field);
       }
@@ -219,15 +219,15 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    
    protected <X> void createObserverMethods(RIBean<X> declaringBean, WeldClass<X> annotatedClass)
    {
-      for (WeldMethod<?, X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class))
+      for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class))
       {
          createObserverMethod(declaringBean, method);
       }
    }
    
-   protected <T, X> void createObserverMethod(RIBean<X> declaringBean, WeldMethod<T, X> method)
+   protected <T, X> void createObserverMethod(RIBean<X> declaringBean, WeldMethod<T, ? super X> method)
    {
-      ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, manager);
+      ObserverMethodImpl<T, ? super X> observer = ObserverFactory.create(method, declaringBean, manager);
       getEnvironment().addObserverMethod(observer);
    }
 

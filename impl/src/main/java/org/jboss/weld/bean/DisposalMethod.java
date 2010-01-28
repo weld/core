@@ -46,10 +46,15 @@ import org.jboss.weld.util.reflection.SecureReflections;
 public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
 {
 
-   protected MethodInjectionPoint<T, X> disposalMethodInjectionPoint;
-   private WeldParameter<?, X> disposesParameter;
+   protected MethodInjectionPoint<T, ? super X> disposalMethodInjectionPoint;
+   private WeldParameter<?, ? super X> disposesParameter;
+   
+   public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean)
+   {
+      return new DisposalMethod<X, T>(manager, method, declaringBean);
+   }
 
-   protected DisposalMethod(BeanManagerImpl beanManager, WeldMethod<T, X> disposalMethod, AbstractClassBean<X> declaringBean)
+   protected DisposalMethod(BeanManagerImpl beanManager, WeldMethod<T, ? super X> disposalMethod, AbstractClassBean<X> declaringBean)
    {
       super(new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager);
       this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
@@ -65,7 +70,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
       this.disposesParameter = getWeldAnnotated().getWeldParameters(Disposes.class).get(0);
    }
    
-   public WeldParameter<?, X> getDisposesParameter()
+   public WeldParameter<?, ? super X> getDisposesParameter()
    {
       return disposesParameter;
    }
@@ -85,14 +90,9 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    }
 
    @Override
-   public WeldMethod<T, X> getWeldAnnotated()
+   public WeldMethod<T, ? super X> getWeldAnnotated()
    {
       return disposalMethodInjectionPoint;
-   }
-
-   public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, WeldMethod<T, X> disposalMethod, AbstractClassBean<X> declaringBean)
-   {
-      return new DisposalMethod<X, T>(manager, disposalMethod, declaringBean);
    }
 
    @Override

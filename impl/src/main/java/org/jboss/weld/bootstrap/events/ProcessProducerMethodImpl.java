@@ -41,12 +41,12 @@ public class ProcessProducerMethodImpl<X, T> extends AbstractProcessProducerBean
 
    public AnnotatedParameter<X> getAnnotatedDisposedParameter()
    {
-      return getBean().getDisposalMethod().getDisposesParameter();
+      return (AnnotatedParameter<X>) getBean().getDisposalMethod().getDisposesParameter();
    }
 
    public AnnotatedMethod<X> getAnnotatedProducerMethod()
    {
-      return getBean().getWeldAnnotated();
+      return (AnnotatedMethod<X>) getBean().getWeldAnnotated();
    }
 
    

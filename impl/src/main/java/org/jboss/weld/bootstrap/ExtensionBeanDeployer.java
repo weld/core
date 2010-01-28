@@ -96,13 +96,13 @@ public class ExtensionBeanDeployer
    
    protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldClass<X> annotatedClass, Set<ObserverMethodImpl<?, ?>> observerMethods)
    {
-      for (WeldMethod<?, X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class))
+      for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class))
       {
          createObserverMethod(declaringBean, beanManager, method, observerMethods);
       }
    }
    
-   protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldMethod<T, X> method, Set<ObserverMethodImpl<?, ?>> observerMethods)
+   protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldMethod<T, ? super X> method, Set<ObserverMethodImpl<?, ?>> observerMethods)
    {
       ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager);
       observerMethods.add(observer);

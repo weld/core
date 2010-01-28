@@ -119,7 +119,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
    }
 
    @Override
-   public abstract WeldMember<T, X, S> getWeldAnnotated();
+   public abstract WeldMember<T, ? super X, S> getWeldAnnotated();
 
    @Override
    // Overriden to provide the class of the bean that declares the producer

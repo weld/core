@@ -40,7 +40,7 @@ public class ProcessProducerFieldImpl<X, T> extends AbstractProcessProducerBean<
 
    public AnnotatedField<X> getAnnotatedProducerField()
    {
-      return getBean().getWeldAnnotated();
+      return (AnnotatedField<X>) getBean().getWeldAnnotated();
    }
 
 }

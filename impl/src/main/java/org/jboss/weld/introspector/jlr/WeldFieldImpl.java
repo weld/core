@@ -53,9 +53,9 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
       return new WeldFieldImpl<T, X>(field, (Class<T>) field.getType(), field.getGenericType(), new HierarchyDiscovery(field.getGenericType()).getTypeClosure(), buildAnnotationMap(field.getAnnotations()), buildAnnotationMap(field.getDeclaredAnnotations()), declaringClass, classTransformer);
    }
 
-   public static <T, X> WeldFieldImpl<T, X> of(AnnotatedField<? super X> annotatedField, WeldClass<X> declaringClass, ClassTransformer classTransformer)
+   public static <X> WeldFieldImpl<?, X> of(AnnotatedField<? super X> annotatedField, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      return new WeldFieldImpl<T, X>(annotatedField.getJavaMember(), (Class<T>) annotatedField.getJavaMember().getType(), annotatedField.getBaseType(), annotatedField.getTypeClosure(), buildAnnotationMap(annotatedField.getAnnotations()), buildAnnotationMap(annotatedField.getAnnotations()), declaringClass, classTransformer);
+      return new WeldFieldImpl<Object, X>(annotatedField.getJavaMember(), (Class<Object>) annotatedField.getJavaMember().getType(), annotatedField.getBaseType(), annotatedField.getTypeClosure(), buildAnnotationMap(annotatedField.getAnnotations()), buildAnnotationMap(annotatedField.getAnnotations()), declaringClass, classTransformer);
    }
 
    /**

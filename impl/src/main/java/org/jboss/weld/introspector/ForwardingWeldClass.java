@@ -51,17 +51,17 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
       return delegate().getWeldMethods();
    }
 
-   public Set<WeldField<?, T>> getDeclaredWeldFields(Class<? extends Annotation> annotationType)
+   public Set<WeldField<?, ? super T>> getDeclaredWeldFields(Class<? extends Annotation> annotationType)
    {
       return delegate().getDeclaredWeldFields(annotationType);
    }
 
-   public Set<WeldMethod<?, T>> getDeclaredWeldMethods(Class<? extends Annotation> annotationType)
+   public Set<WeldMethod<?, ? super T>> getDeclaredWeldMethods(Class<? extends Annotation> annotationType)
    {
       return delegate().getDeclaredWeldMethods(annotationType);
    }
 
-   public Set<WeldMethod<?, T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
+   public Set<WeldMethod<?, ? super T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       return delegate().getDeclaredWeldMethodsWithAnnotatedParameters(annotationType);
    }

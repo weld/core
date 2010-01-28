@@ -40,7 +40,7 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
    
    public static <T, X> void fire(BeanManagerImpl beanManager, ObserverMethodImpl<T, X> observer)
    {
-      new ProcessObserverMethodImpl<T, X>(beanManager, observer.getMethod(), observer) {}.fire();
+      new ProcessObserverMethodImpl<T, X>(beanManager, (AnnotatedMethod<X>) observer.getMethod(), observer) {}.fire();
    }
    
    private final AnnotatedMethod<X>   beanMethod;

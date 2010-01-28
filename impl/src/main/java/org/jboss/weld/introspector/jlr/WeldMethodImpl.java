@@ -32,10 +32,12 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.ArrayListSupplier;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
@@ -76,9 +78,9 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       return new WeldMethodImpl<T, X>(method, (Class<T>) method.getReturnType(), method.getGenericReturnType(), new HierarchyDiscovery(method.getGenericReturnType()).getTypeClosure(), null, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getDeclaredAnnotations()), declaringClass, classTransformer);
    }
 
-   public static <T, X> WeldMethodImpl<T, X> of(AnnotatedMethod<T> method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
+   public static <T, X> WeldMethodImpl<T, X> of(AnnotatedMethod<? super X> method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      return new WeldMethodImpl<T, X>(method.getJavaMember(), (Class<T>) method.getJavaMember().getReturnType(), method.getBaseType(), method.getTypeClosure(), method, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getAnnotations()), declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(method.getJavaMember(), Reflections.<T>getRawType(method.getBaseType()), method.getBaseType(), method.getTypeClosure(), method, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getAnnotations()), declaringClass, classTransformer);
    }
 
    /**
@@ -91,56 +93,65 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
     * @param declaringClass The declaring class abstraction
     */
    @SuppressWarnings("unchecked")
-   private WeldMethodImpl(Method method, final Class<T> rawType, final Type type, Set<Type> typeClosure, AnnotatedMethod<T> annotatedMethod, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, WeldClass<X> declaringClass, ClassTransformer classTransformer)
+   private WeldMethodImpl(Method method, final Class<T> rawType, final Type type, Set<Type> typeClosure, AnnotatedMethod<? super X> annotatedMethod, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       super(annotationMap, declaredAnnotationMap, classTransformer, method, rawType, type, typeClosure, declaringClass);
       this.method = method;
       this.parameters = new ArrayList<WeldParameter<?, X>>();
       this.annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldParameter<?, X>>>(), ArrayListSupplier.<WeldParameter<?, X>>instance());
 
-      Map<Integer, AnnotatedParameter<?>> annotatedTypeParameters = new HashMap<Integer, AnnotatedParameter<?>>();
-
-      if (annotatedMethod != null)
+      if (annotatedMethod == null)
       {
-         for (AnnotatedParameter<?> annotated : annotatedMethod.getParameters())
+         for (int i = 0; i < method.getParameterTypes().length; i++)
          {
-            annotatedTypeParameters.put(annotated.getPosition(), annotated);
-         }
-      }
-
-      for (int i = 0; i < method.getParameterTypes().length; i++)
-      {
-         if (method.getParameterAnnotations()[i].length > 0 || annotatedTypeParameters.containsKey(i))
-         {
-            Class<? extends Object> clazz = method.getParameterTypes()[i];
-            Type parametertype = method.getGenericParameterTypes()[i];
-            WeldParameter<?, X> parameter = null;
-            if (annotatedTypeParameters.containsKey(i))
+            if (method.getParameterAnnotations()[i].length > 0)
             {
-               AnnotatedParameter<?> annotatedParameter = annotatedTypeParameters.get(i);
-               parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), clazz, parametertype, this, i, classTransformer);
+               Class<? extends Object> clazz = method.getParameterTypes()[i];
+               Type parametertype = method.getGenericParameterTypes()[i];
+               WeldParameter<?, X> parameter = WeldParameterImpl.of(method.getParameterAnnotations()[i], clazz, parametertype, this, i, classTransformer);
+               this.parameters.add(parameter);
+               for (Annotation annotation : parameter.getAnnotations())
+               {
+                  if (MAPPED_PARAMETER_ANNOTATIONS.contains(annotation.annotationType()))
+                  {
+                     annotatedParameters.put(annotation.annotationType(), parameter);
+                  }
+               }
             }
             else
             {
-               parameter = WeldParameterImpl.of(method.getParameterAnnotations()[i], clazz, parametertype, this, i, classTransformer);
+               Class<? extends Object> clazz = method.getParameterTypes()[i];
+               Type parameterType = method.getGenericParameterTypes()[i];
+               WeldParameter<?, X> parameter = WeldParameterImpl.of(new Annotation[0], (Class<Object>) clazz, parameterType, this, i, classTransformer);
+               this.parameters.add(parameter);
             }
-            this.parameters.add(parameter);
-            for (Annotation annotation : parameter.getAnnotations())
-            {
-               if (MAPPED_PARAMETER_ANNOTATIONS.contains(annotation.annotationType()))
-               {
-                  annotatedParameters.put(annotation.annotationType(), parameter);
-               }
-            }
+         }
+      }
+      else
+      {
+         if (annotatedMethod.getParameters().size() != method.getParameterTypes().length)
+         {
+            throw new DefinitionException(ReflectionMessage.INCORRECT_NUMBER_OF_ANNOTATED_PARAMETERS_METHOD, annotatedMethod.getParameters().size(), annotatedMethod, annotatedMethod.getParameters(), Arrays.asList(method.getParameterTypes()));
          }
          else
          {
-            Class<? extends Object> clazz = method.getParameterTypes()[i];
-            Type parameterType = method.getGenericParameterTypes()[i];
-            WeldParameter<?, X> parameter = WeldParameterImpl.of(new Annotation[0], (Class<Object>) clazz, parameterType, this, i, classTransformer);
-            this.parameters.add(parameter);
+            for (AnnotatedParameter<? super X> annotatedParameter : annotatedMethod.getParameters())
+            {
+               WeldParameter<?, X> parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), Reflections.getRawType(annotatedParameter.getBaseType()), annotatedParameter.getBaseType(), this, annotatedParameter.getPosition(), classTransformer);
+               this.parameters.add(parameter);
+               for (Annotation annotation : parameter.getAnnotations())
+               {
+                  if (MAPPED_PARAMETER_ANNOTATIONS.contains(annotation.annotationType()))
+                  {
+                     annotatedParameters.put(annotation.annotationType(), parameter);
+                  }
+               }
+            }
          }
+         
       }
+
+      
 
       String propertyName = Reflections.getPropertyName(getDelegate());
       if (propertyName == null)

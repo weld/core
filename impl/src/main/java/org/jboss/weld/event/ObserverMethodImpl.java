@@ -48,7 +48,6 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 
@@ -76,7 +75,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    protected BeanManagerImpl manager;
    private final Reception notifyType;
    protected final RIBean<X> declaringBean;
-   protected final MethodInjectionPoint<T, X> observerMethod;
+   protected final MethodInjectionPoint<T, ? super X> observerMethod;
    protected TransactionPhase transactionPhase;
    private final String id;
 
@@ -90,7 +89,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
     * @param declaringBean The observer bean
     * @param manager The Bean manager
     */
-   protected ObserverMethodImpl(final WeldMethod<T, X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
+   protected ObserverMethodImpl(final WeldMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
    {
       this.manager = manager;
       this.declaringBean = declaringBean;
@@ -123,7 +122,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    private void checkObserverMethod()
    {
       // Make sure exactly one and only one parameter is annotated with Observes
-      List<WeldParameter<?, X>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
+      List<?> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
       if (this.notifyType.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class))
       {
          throw new DefinitionException(INVALID_SCOPED_CONDITIONAL_OBSERVER, this);
@@ -133,7 +132,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
          throw new DefinitionException(MULTIPLE_EVENT_PARAMETERS, this);
       }
       // Check for parameters annotated with @Disposes
-      List<WeldParameter<?, X>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
+      List<?> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
       if (disposeParams.size() > 0)
       {
          throw new DefinitionException(INVALID_DISPOSES_PARAMETER, this);
@@ -184,7 +183,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    /**
     * @return the observerMethod
     */
-   public MethodInjectionPoint<T, X> getMethod()
+   public MethodInjectionPoint<T, ? super X> getMethod()
    {
       return observerMethod;
    }

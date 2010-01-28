@@ -55,7 +55,7 @@ import org.jboss.weld.util.reflection.SecureReflections;
 public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
 {
    // The underlying method
-   private MethodInjectionPoint<T, X> method;
+   private MethodInjectionPoint<T, ? super X> method;
    private DisposalMethod<X, ?> disposalMethodBean;
    private ProducerMethod<?, ?> specializedBean;
    private final String id;
@@ -68,12 +68,12 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
     * @param beanManager the current manager
     * @return A producer Web Bean
     */
-   public static <X, T> ProducerMethod<X, T> of(WeldMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
+   public static <X, T> ProducerMethod<X, T> of(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
    {
       return new ProducerMethod<X, T>(method, declaringBean, beanManager);
    }
 
-   protected ProducerMethod(WeldMethod<T, X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
+   protected ProducerMethod(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
    {
       super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager);
       this.method = MethodInjectionPoint.of(this, method);
@@ -85,7 +85,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
       initProducerMethodInjectableParameters();
    }
 
-   protected String createId(WeldMethod<T, X> method, AbstractClassBean<X> declaringBean)
+   protected String createId(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean)
    {
       if (declaringBean.getWeldAnnotated().isDiscovered())
       {
@@ -240,7 +240,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
     * @return The annotated item
     */
    @Override
-   public WeldMethod<T, X> getWeldAnnotated()
+   public WeldMethod<T, ? super X> getWeldAnnotated()
    {
       return method;
    }
