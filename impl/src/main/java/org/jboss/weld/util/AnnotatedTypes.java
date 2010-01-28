@@ -393,6 +393,27 @@ public class AnnotatedTypes
       return builder.toString();
    }
 
+   public static <X> String createParameterId(AnnotatedParameter<X> annotatedParameter)
+   {
+      return createParameterId(annotatedParameter.getBaseType(), annotatedParameter.getAnnotations());
+   }
+
+   public static <X> String createParameterId(Type type, Set<Annotation> annotations)
+   {
+      StringBuilder builder = new StringBuilder();
+      if (type instanceof Class<?>)
+      {
+         Class<?> c = (Class<?>) type;
+         builder.append(c.getName());
+      }
+      else
+      {
+         builder.append(type.toString());
+      }
+      builder.append(createAnnotationCollectionId(annotations));
+      return builder.toString();
+   }
+
    /**
     * compares two annotated elemetes to see if they have the same annotations
     * 
@@ -427,7 +448,7 @@ public class AnnotatedTypes
 
    public static boolean compareAnnotatedField(AnnotatedField<?> f1, AnnotatedField<?> f2)
    {
-      if (f1.getJavaMember() != f2.getJavaMember())
+      if (f1.getJavaMember().equals(f2.getJavaMember()))
       {
          return false;
       }
@@ -436,7 +457,7 @@ public class AnnotatedTypes
 
    public static boolean compareAnnotatedCallable(AnnotatedCallable<?> m1, AnnotatedCallable<?> m2)
    {
-      if(m1.getJavaMember() != m2.getJavaMember())
+      if (m1.getJavaMember().equals(m2.getJavaMember()))
       {
          return false;
       }
@@ -452,7 +473,7 @@ public class AnnotatedTypes
     */
    public static boolean compareAnnotatedTypes(AnnotatedType<?> t1, AnnotatedType<?> t2)
    {
-      if (t1.getJavaClass() != t2.getJavaClass())
+      if (t1.getJavaClass().equals(t2.getJavaClass()))
       {
          return false;
       }
@@ -523,26 +544,6 @@ public class AnnotatedTypes
 
    }
 
-   public static <X> String createParameterId(AnnotatedParameter<X> annotatedParameter)
-   {
-      return createParameterId(annotatedParameter.getBaseType(), annotatedParameter.getAnnotations());
-   }
-
-   public static <X> String createParameterId(Type type, Set<Annotation> annotations)
-   {
-      StringBuilder builder = new StringBuilder();
-      if (type instanceof Class<?>)
-      {
-         Class<?> c = (Class<?>) type;
-         builder.append(c.getName());
-      }
-      else
-      {
-         builder.append(type.toString());
-      }
-      builder.append(createAnnotationCollectionId(annotations));
-      return builder.toString();
-   }
 
    private AnnotatedTypes()
    {
