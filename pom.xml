@@ -89,8 +89,9 @@
    <properties>
       <jsf.version>2.0.0-RC</jsf.version>
       <weld.api.version>1.0</weld.api.version>
-      <weld.core.version>1.0.0</weld.core.version>
-      <weld.extensions.version>1.0.0-CR2</weld.extensions.version>
+      <weld.wicket.version>1.0.1-SNAPSHOT</weld.wicket.version>
+      <weld.se.version>1.0.1-SNAPSHOT</weld.se.version>
+      <weld.servlet.version>1.0.1-SNAPSHOT</weld.servlet.version>
       <jetty.version>6.1.21</jetty.version>
       <uel.glassfish.version>2.1.2-b04</uel.glassfish.version>
       <!-- Testing deps -->
@@ -173,21 +174,19 @@
             <type>pom</type>
             <scope>import</scope>
          </dependency>
-
+         
          <dependency>
             <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-core-bom</artifactId>
-            <version>${weld.core.version}</version>
+            <artifactId>weld-wicket</artifactId>
+            <version>${weld.wicket.version}</version>
             <type>pom</type>
             <scope>import</scope>
          </dependency>
-
+         
          <dependency>
             <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-extensions-bom</artifactId>
-            <version>${weld.extensions.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
+            <artifactId>weld-wicket</artifactId>
+            <version>${weld.wicket.version}</version>
          </dependency>
 
          <dependency>
