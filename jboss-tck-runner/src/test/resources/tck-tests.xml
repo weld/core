@@ -16,43 +16,21 @@
       <classes>
          
          <!-- Issues in Weld (the RI) -->
-         
-         <!-- WELD-393 -->
-         <class name="org.jboss.jsr299.tck.interceptors.tests.definition.DefinitionTest">
-            <methods>
-               <exclude name="testInterceptorMethodDefinedOnTargetClass" />
-            </methods>
-         </class>
-         
-         <!-- WELD-390 -->
+
+         <!-- WELD-390 fixed, but TCK test is broken in 1.0.1-CR1 -->
          <class name="org.jboss.jsr299.tck.interceptors.tests.lifecycleCallback.order.InvocationOrderTest">
             <methods>
                <exclude name="testInvocationOrder" />
             </methods>
          </class>
+          
          <!-- WELD-269 -->
          <class name="org.jboss.jsr299.tck.tests.decorators.custom.CustomDecoratorTest">
             <methods>
                <exclude name="testCustomImplementationOfDecoratorInterface" />
             </methods>
          </class>
-         <!-- WELD-272 -->
-         <class name="org.jboss.jsr299.tck.tests.decorators.definition.broken.finalBeanClass.FinalBeanClassTest">
-            <methods>
-               <exclude name="testAppliesToFinalManagedBeanClass" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.decorators.definition.broken.finalBeanMethod.FinalBeanMethodTest">
-            <methods>
-               <exclude name="testAppliesToFinalMethodOnManagedBeanClass" />
-            </methods>
-         </class>
-         <!-- WELD-377 -->
-         <class name="org.jboss.jsr299.tck.tests.decorators.invocation.EJBDecoratorInvocationTest">
-            <methods>
-               <exclude name="testEJBDecoratorInvocation" />
-            </methods>
-         </class>
+
          <!-- WELD-401 -->
          <class name="org.jboss.jsr299.tck.tests.event.broken.observer.notBusinessMethod.EJBObserverMethodNotBusinessMethodTest">
             <methods>
