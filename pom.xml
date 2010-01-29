@@ -190,6 +190,20 @@
          </dependency>
 
          <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet</artifactId>
+            <version>${weld.servlet.version}</version>
+         </dependency>
+
+
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-se</artifactId>
+            <version>${weld.se.version}</version>
+         </dependency>
+
+
+         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
