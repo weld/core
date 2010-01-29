@@ -366,7 +366,6 @@
                               <background>true</background>
                               <port>${selenium.server.port}</port>
                               <logOutput>true</logOutput>
-										<logFile>${project.build.directory}/selenium/selenium-server.log</logFile>
 										<browserSideLog>${selenium.debug}</browserSideLog>
 										<debug>${selenium.debug}</debug>
                            </configuration>
