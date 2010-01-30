@@ -12,7 +12,6 @@
   </parent>
 
    <name>Weld Core BOM</name>
-   <url>http://www.seamframework.org/Weld</url>
 
    <!-- Minimal project metadata, for more see parent/pom.xml -->
    <description>Weld Core "bill of materials" which can be imported by any project using the Weld implementation of CDI. It provides dependency management for the implementation.</description>
@@ -24,6 +23,7 @@
          <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
       </license>
    </licenses>
+   <url>http://www.seamframework.org/Weld</url>
 
    <developers>
       <developer>

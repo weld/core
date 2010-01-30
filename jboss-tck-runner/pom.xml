@@ -10,6 +10,16 @@
    <artifactId>weld-jboss-tck-runner</artifactId>
    <name>CDI TCK runner for Weld</name>
    <description>Aggregates dependencies and runs the CDI TCK (both standalone and on JBoss AS)</description>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+   <url>http://www.seamframework.org/Weld</url>
+
    
    <dependencies>
       <dependency>
