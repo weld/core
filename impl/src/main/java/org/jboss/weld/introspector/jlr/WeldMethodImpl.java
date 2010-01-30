@@ -80,7 +80,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
 
    public static <T, X> WeldMethodImpl<T, X> of(AnnotatedMethod<? super X> method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      return new WeldMethodImpl<T, X>(method.getJavaMember(), Reflections.<T>getRawType(method.getBaseType()), method.getBaseType(), method.getTypeClosure(), method, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getAnnotations()), declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(method.getJavaMember(), (Class<T>) method.getJavaMember().getReturnType(), method.getBaseType(), method.getTypeClosure(), method, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getAnnotations()), declaringClass, classTransformer);
    }
 
    /**
@@ -137,7 +137,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
          {
             for (AnnotatedParameter<? super X> annotatedParameter : annotatedMethod.getParameters())
             {
-               WeldParameter<?, X> parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), Reflections.getRawType(annotatedParameter.getBaseType()), annotatedParameter.getBaseType(), this, annotatedParameter.getPosition(), classTransformer);
+               WeldParameter<?, X> parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), method.getParameterTypes()[annotatedParameter.getPosition()], annotatedParameter.getBaseType(), this, annotatedParameter.getPosition(), classTransformer);
                this.parameters.add(parameter);
                for (Annotation annotation : parameter.getAnnotations())
                {

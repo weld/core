@@ -77,7 +77,7 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
 
    public static <T> WeldConstructor<T> of(AnnotatedConstructor<T> annotatedConstructor, WeldClass<T> declaringClass, ClassTransformer classTransformer)
    {
-      return new WeldConstructorImpl<T>(annotatedConstructor.getJavaMember(), Reflections.<T>getRawType(annotatedConstructor.getBaseType()), annotatedConstructor.getBaseType(), annotatedConstructor, annotatedConstructor.getTypeClosure(), buildAnnotationMap(annotatedConstructor.getAnnotations()), buildAnnotationMap(annotatedConstructor.getAnnotations()), declaringClass, classTransformer);
+      return new WeldConstructorImpl<T>(annotatedConstructor.getJavaMember(), annotatedConstructor.getJavaMember().getDeclaringClass(), annotatedConstructor.getBaseType(), annotatedConstructor, annotatedConstructor.getTypeClosure(), buildAnnotationMap(annotatedConstructor.getAnnotations()), buildAnnotationMap(annotatedConstructor.getAnnotations()), declaringClass, classTransformer);
    }
 
    /**
@@ -173,7 +173,7 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
          {
             for (AnnotatedParameter<T> annotatedParameter : annotatedConstructor.getParameters())
             {
-               WeldParameter<?, T> parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), Reflections.getRawType(annotatedParameter.getBaseType()), annotatedParameter.getBaseType(), this, annotatedParameter.getPosition(), classTransformer);
+               WeldParameter<?, T> parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), constructor.getParameterTypes()[annotatedParameter.getPosition()], annotatedParameter.getBaseType(), this, annotatedParameter.getPosition(), classTransformer);
                this.parameters.add(parameter);
                for (Annotation annotation : parameter.getAnnotations())
                {
