@@ -2,7 +2,7 @@
    <parent>
       <artifactId>weld-core-parent</artifactId>
       <groupId>org.jboss.weld</groupId>
-      <version>1.0.1-CR1</version>
+      <version>1.0.1-SNAPSHOT</version>
       <relativePath>../parent/pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
@@ -310,9 +310,9 @@
    </profiles>
 
    <scm> 
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/tags/1.0.1-CR1/jboss-tck-runner</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/tags/1.0.1-CR1/jboss-tck-runner</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/core/tags/1.0.1-CR1/jboss-tck-runner</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/jboss-tck-runner</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/jboss-tck-runner</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/core/trunk/jboss-tck-runner</url>
    </scm>
    
 </project>

@@ -2,7 +2,7 @@
    <parent>
       <artifactId>weld-core-parent</artifactId>
       <groupId>org.jboss.weld</groupId>
-      <version>1.0.1-CR1</version>
+      <version>1.0.1-SNAPSHOT</version>
       <relativePath>../parent/pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
@@ -55,9 +55,9 @@
    </dependencies>
 
    <scm> 
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/tags/1.0.1-CR1/porting-package</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/tags/1.0.1-CR1/porting-package</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/core/tags/1.0.1-CR1/porting-package</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/porting-package</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/porting-package</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/core/trunk/porting-package</url>
    </scm>
    
 </project>
