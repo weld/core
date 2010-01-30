@@ -72,6 +72,8 @@
 
    <properties>
       <weld.api.version>1.0</weld.api.version>
+      <!-- Override the API and compile with more recent EL API -->
+      <uel.api.version>2.2</uel.api.version>
       <google.collections.version>1.0</google.collections.version>
       <javassist.version>3.11.0.GA</javassist.version>
       <cdi.tck.version>1.0.1-CR1</cdi.tck.version>
@@ -91,6 +93,13 @@
             <scope>import</scope>
             <type>pom</type>
          </dependency>	
+
+         <!-- Remove when we switch API to 1.1 -->
+         <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+            <version>${uel.api.version}</version>
+         </dependency>
  
          <!-- Remove when we switch the API to 1.1 -->
          <dependency>
