@@ -14,6 +14,12 @@
   </head>
   <body>
    <f:view>
+      <h:form>
+         <h:outputLabel value="Prop:" for="prop"/>
+         <h:inputText value="#{someBean.prop}"  id="prop" />
+         <h:commandButton value="go!" id="go"/>
+      </h:form>
+      <hr/>
       <h:form id="form">
          <h:commandButton action="#{storm.invalidateSession}" value="Invalidate Session" id="invalidateSessionButton"/>
       </h:form>

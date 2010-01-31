@@ -28,25 +28,28 @@ import org.jboss.weld.context.beanstore.NamingScheme;
  * A BeanStore that uses a HTTP session as backing storage
  * 
  * @author Nicklas Karlsson
+ * @author David Allen
  * 
  * @see org.jboss.weld.context.AbstractApplicationContext
  */
 public class HttpSessionBeanStore extends AbstractAttributeBackedBeanStore
 {
-   
+
    private static final NamingScheme NAMING_SCHEME = new NamingScheme(SessionContext.class.getName(), "#");
-   
+
    // The HTTP session context to use as backing map
-   private final HttpSession session;
+   protected HttpSession             session;
 
    /**
-    * Constructor
+    * Attaches this bean store to a session dynamically. This allows the session
+    * to be changed in cases where one session is invalidated and then a
+    * subsequent session is created within the same request.
     * 
-    * @param session The HTTP session
+    * @param session the new HttpSession to use as the backing for this bean
+    *           store
     */
-   public HttpSessionBeanStore(HttpSession session)
+   public void attachToSession(HttpSession session)
    {
-      super();
       this.session = session;
    }
 

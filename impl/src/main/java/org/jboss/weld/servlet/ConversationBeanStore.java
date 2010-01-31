@@ -26,15 +26,15 @@ import org.jboss.weld.context.beanstore.NamingScheme;
  * 
  * @author Nicklas Karlsson
  */
-public class ConversationBeanStore extends HttpSessionBeanStore
+public class ConversationBeanStore extends HttpPassThruSessionBeanStore
 {
    
    private final String cid;
    private final NamingScheme namingScheme;
 
-   public ConversationBeanStore(HttpSession session, String cid)
+   public ConversationBeanStore(HttpSession session, boolean sessionInvalidated, String cid)
    {
-      super(session);
+      attachToSession(session);
       this.cid = cid;
       this.namingScheme = new NamingScheme(ConversationContext.class.getName() + "[" + cid + "]", "#");
    }

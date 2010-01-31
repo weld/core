@@ -45,7 +45,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.SessionContext;
-import org.jboss.weld.servlet.ConversationBeanStore;
+import org.jboss.weld.conversation.AbstractConversationManager;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -165,11 +165,12 @@ public class WeldPhaseListener implements PhaseListener
       ServletContext servletContext = getServletContext(facesContext);
       HttpSession session = getHttpSession(facesContext);
       httpSessionManager(servletContext).setSession(session);
-      conversationManager(servletContext).beginOrRestoreConversation(getConversationId(facesContext));
+      AbstractConversationManager conversationManager = (AbstractConversationManager) conversationManager(servletContext);
+      conversationManager.beginOrRestoreConversation(getConversationId(facesContext));
       String cid = conversation(servletContext).getUnderlyingId();
       
       ConversationContext conversationContext = Container.instance().services().get(ContextLifecycle.class).getConversationContext();
-      conversationContext.setBeanStore(new ConversationBeanStore(session, cid));
+      conversationContext.setBeanStore(conversationManager.getBeanStore(cid));
       conversationContext.setActive(true);
    }
 

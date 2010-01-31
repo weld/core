@@ -25,9 +25,13 @@ public class Storm
 {
    
    @Inject HttpSession session;
+   @Inject SomeBean    someBean;
+   
+   public static final String PROPERTY_VALUE = "some value";
    
    public String invalidateSession()
    {
+      someBean.setProp(PROPERTY_VALUE);
       session.invalidate();
       return "success";
    }

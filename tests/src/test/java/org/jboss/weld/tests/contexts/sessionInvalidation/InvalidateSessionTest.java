@@ -31,6 +31,7 @@ import org.testng.annotations.Test;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
@@ -41,7 +42,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  *
  */
 @Artifact(addCurrentPackage=false)
-@Classes({Storm.class})
+@Classes({Storm.class,SomeBean.class})
 @IntegrationTest(runLocally=true)
 @Resources({
    @Resource(destination=WarArtifactDescriptor.WEB_XML_DESTINATION, source="web.xml"),
@@ -50,15 +51,23 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 })
 public class InvalidateSessionTest extends AbstractWeldTest
 {
-   @Test(description = "WELD-380")
+   @Test(description = "WELD-380, WELD-403")
    public void testInvalidateSessionCalled() throws Exception
    {
       WebClient client = new WebClient();
-      client.setThrowExceptionOnFailingStatusCode(false);
+      client.setThrowExceptionOnFailingStatusCode(true);
       
       HtmlPage page = client.getPage(getPath("/storm.jsf"));
       HtmlSubmitInput invalidateSessionButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "invalidateSessionButton");
       page = invalidateSessionButton.click();
+      HtmlInput inputField = getFirstMatchingElement(page, HtmlInput.class, "prop");
+      assert Storm.PROPERTY_VALUE.equals(inputField.getValueAttribute());
+      
+      // Make another request to verify that the session bean value is not the
+      // one from the previous invalidated session.
+      page = client.getPage(getPath("/storm.jsf"));
+      inputField = getFirstMatchingElement(page, HtmlInput.class, "prop");
+      assert SomeBean.DEFAULT_PROPERTY_VALUE.equals(inputField.getValueAttribute());
    }
 
    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)

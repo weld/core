@@ -48,11 +48,12 @@ public class ServletConversationManager extends AbstractConversationManager
    
    @Inject 
    private Instance<HttpSession> httpSession;
+   private boolean               sessionInvalidated = false;
 
    @Override
    public BeanStore getBeanStore(String cid)
    {
-      return new ConversationBeanStore(httpSession.get(), cid);
+      return new ConversationBeanStore(httpSession.get(), sessionInvalidated, cid);
    }
    
    @Produces
@@ -76,4 +77,8 @@ public class ServletConversationManager extends AbstractConversationManager
       return CONVERSATION_ID_NAME;
    }
    
+   public void invalidateSession()
+   {
+      sessionInvalidated = true;
+   }
 }
