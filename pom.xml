@@ -28,7 +28,7 @@
       <!-- Testing deps -->
       <testng.version>5.10</testng.version>
       <weld.api.version>1.0</weld.api.version>
-      <weld.core.version>1.0.1-SNAPSHOT</weld.core.version>
+      <weld.core.version>1.0.1-CR1</weld.core.version>
       <slf4j.version>1.5.10</slf4j.version>
    </properties>
    
