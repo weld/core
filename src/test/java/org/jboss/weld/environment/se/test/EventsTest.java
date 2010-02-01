@@ -19,6 +19,7 @@ package org.jboss.weld.environment.se.test;
 import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.test.events.Foo;
 import org.testng.annotations.Test;
 
@@ -34,6 +35,8 @@ public class EventsTest
    {
       Foo.reset();
       WeldContainer weld = new Weld().initialize();
+      weld.event().select(ContainerInitialized.class).fire(new ContainerInitialized());
+      assert Foo.isObservedContainerInitialized();
       assert !Foo.isObservedEventTest();
       shutdownManager(weld);
    }
