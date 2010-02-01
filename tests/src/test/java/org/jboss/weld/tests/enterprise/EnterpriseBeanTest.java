@@ -1,4 +1,5 @@
 /*
+
  * JBoss, Home of Professional Open Source
  * Copyright 2010, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -22,6 +23,7 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.IntegrationTest;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
+import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.jboss.weld.test.Utils;
 import org.testng.annotations.Test;
@@ -93,6 +95,15 @@ public class EnterpriseBeanTest extends AbstractWeldTest
       action.executeRequest();
       assert action.getHello().equals("hello");
       assert action.getGoodBye().equals("goodbye");
+   }
+   
+   @Test(description = "Simple test for no-interface views", groups="broken")
+   public void testNoInterfaceView()
+   {
+      Castle castle = getReference(Castle.class);
+      castle.ping();
+      assert castle.isPinged();
+      assert getBean(Castle.class) instanceof SessionBean<?>;
    }
    
 }
