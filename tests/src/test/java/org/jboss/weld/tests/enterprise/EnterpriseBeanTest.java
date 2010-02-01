@@ -23,6 +23,7 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.IntegrationTest;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
+import org.jboss.testharness.impl.packaging.ear.EjbJarXml;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.jboss.weld.test.Utils;
@@ -31,6 +32,7 @@ import org.testng.annotations.Test;
 @Artifact
 @IntegrationTest
 @Packaging(PackagingType.EAR)
+@EjbJarXml("ejb-jar.xml")
 public class EnterpriseBeanTest extends AbstractWeldTest
 {
    

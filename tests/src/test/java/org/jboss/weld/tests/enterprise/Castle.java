@@ -1,8 +1,8 @@
 package org.jboss.weld.tests.enterprise;
 
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 
-@Stateful
+@Stateless
 public class Castle
 {
    
