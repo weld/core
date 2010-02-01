@@ -203,7 +203,7 @@
             </methods>
          </class>
          
-         <!-- JBAS-7666 -->
+         <!-- JBAS-7677 -->
          <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.definition.EnterpriseBeanDefinitionTest">
             <methods>
                <exclude name="testBeanTypesAreLocalInterfacesWithoutWildcardTypesOrTypeVariablesWithSuperInterfaces" />
