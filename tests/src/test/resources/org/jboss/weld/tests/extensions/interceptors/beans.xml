@@ -1,0 +1,6 @@
+<beans>
+    <interceptors>
+        <class>org.jboss.weld.tests.extensions.interceptors.IncrementingInterceptor</class>
+        <class>org.jboss.weld.tests.extensions.interceptors.LifecycleInterceptor</class>
+    </interceptors>
+</beans>
