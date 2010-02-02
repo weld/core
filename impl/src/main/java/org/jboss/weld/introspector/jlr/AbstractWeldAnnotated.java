@@ -23,7 +23,6 @@ import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -204,34 +203,6 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
       this.actualTypeArguments = new Type[0];
       this.typeClosure = null;
       this.proxyable = false;
-   }
-
-   /**
-    * Compares two AbstractAnnotatedItems
-    * 
-    * @param other The other item
-    * @return True if equals, false otherwise
-    */
-   @Override
-   public boolean equals(Object other)
-   {
-      if (other instanceof WeldAnnotated<?, ?>)
-      {
-         WeldAnnotated<?, ?> that = (WeldAnnotated<?, ?>) other;
-         return this.getAnnotations().equals(that.getAnnotations()) && this.getJavaClass().equals(that.getJavaClass()) && this.getActualTypeArguments().length == that.getActualTypeArguments().length && Arrays.equals(this.getActualTypeArguments(), that.getActualTypeArguments());
-      }
-      return false;
-   }
-
-   /**
-    * Gets the hash code of the actual type
-    * 
-    * @return The hash code
-    */
-   @Override
-   public int hashCode()
-   {
-      return getJavaClass().hashCode();
    }
 
    /**

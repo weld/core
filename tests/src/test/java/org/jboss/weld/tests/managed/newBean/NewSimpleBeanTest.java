@@ -26,6 +26,7 @@ import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.test.AbstractWeldTest;
+import org.jboss.weld.util.AnnotatedTypes;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -65,7 +66,7 @@ public class NewSimpleBeanTest extends AbstractWeldTest
    public void testNewBeanHasSameConstructorAsWrappedBean()
    {
       initNewBean();
-      assert wrappedSimpleBean.getConstructor().equals(newSimpleBean.getConstructor());
+      assert AnnotatedTypes.compareAnnotatedCallable(wrappedSimpleBean.getConstructor(), newSimpleBean.getConstructor());
    }
 
    @Test(groups = { "new" })

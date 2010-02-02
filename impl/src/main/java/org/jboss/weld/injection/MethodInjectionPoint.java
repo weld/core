@@ -43,6 +43,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.AnnotatedTypes;
 
 public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> implements WeldInjectionPoint<T, Method>
 {
@@ -80,6 +81,20 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    {
       this.declaringBean = declaringBean;
       this.method = method;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof MethodInjectionPoint<?, ?>)
+      {
+         MethodInjectionPoint<?, ?> ip = (MethodInjectionPoint<?, ?>) obj;
+         if (AnnotatedTypes.compareAnnotatedCallable(method, ip.method))
+         {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override

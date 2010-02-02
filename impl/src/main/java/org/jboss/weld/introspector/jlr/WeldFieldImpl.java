@@ -135,24 +135,4 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
       return new StringBuilder().append("field ").append(getDeclaringType().getName()).append(".").append(field.getName()).toString();
    }
 
-   @Override
-   public boolean equals(Object other)
-   {
-      if (super.equals(other) && other instanceof WeldField<?, ?>)
-      {
-         WeldField<?, ?> that = (WeldField<?, ?>) other;
-         return this.getJavaMember().equals(that.getJavaMember());
-      }
-      else
-      {
-         return false;
-      }
-   }
-
-   @Override
-   public int hashCode()
-   {
-      return getDelegate().hashCode();
-   }
-
 }

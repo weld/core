@@ -67,6 +67,20 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
    }
 
    @Override
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof ParameterInjectionPoint<?, ?>)
+      {
+         ParameterInjectionPoint<?, ?> ip = (ParameterInjectionPoint<?, ?>) obj;
+         if (parameter.getDeclaringWeldCallable().getJavaMember().equals(ip.parameter.getDeclaringWeldCallable().getJavaMember()) && parameter.getAnnotations().equals(ip.parameter.getAnnotations()) && parameter.getPosition() == ip.parameter.getPosition())
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   @Override
    protected WeldParameter<T, X> delegate()
    {
       return parameter;

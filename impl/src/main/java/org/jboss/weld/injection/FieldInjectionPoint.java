@@ -42,6 +42,7 @@ import org.jboss.weld.introspector.ForwardingWeldField;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.AnnotatedTypes;
 
 public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> implements WeldInjectionPoint<T, Field>, Serializable
 {
@@ -61,6 +62,20 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
       this.declaringBean = declaringBean;
       this.field = field;
       this.delegate = isAnnotationPresent(Inject.class) && isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof FieldInjectionPoint<?, ?>)
+      {
+         FieldInjectionPoint<?, ?> ip = (FieldInjectionPoint<?, ?>) obj;
+         if (AnnotatedTypes.compareAnnotatedField(field, ip.field))
+         {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override

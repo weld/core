@@ -187,30 +187,11 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       return Collections.unmodifiableList(annotatedParameters.get(annotationType));
    }
 
-   @Override
-   public boolean equals(Object other)
-   {
-      if (super.equals(other) && other instanceof WeldMethod)
-      {
-         WeldMethod<?, ?> that = (WeldMethod<?, ?>) other;
-         return this.getJavaMember().equals(that.getJavaMember()) && this.getWeldParameters().equals(that.getWeldParameters());
-      }
-      else
-      {
-         return false;
-      }
-   }
-
    public boolean isEquivalent(Method method)
    {
       return this.getDeclaringType().isEquivalent(method.getDeclaringClass()) && this.getName().equals(method.getName()) && Arrays.equals(this.getParameterTypesAsArray(), method.getParameterTypes());
    }
 
-   @Override
-   public int hashCode()
-   {
-      return getDelegate().hashCode();
-   }
 
    public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
    {

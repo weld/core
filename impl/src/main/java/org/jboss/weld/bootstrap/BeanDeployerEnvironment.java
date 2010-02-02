@@ -53,12 +53,13 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableFactory;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.AnnotatedTypes;
 
 public class BeanDeployerEnvironment
 {
 
    private final Map<WeldClass<?>, AbstractClassBean<?>> classBeanMap;
-   private final Map<WeldMethod<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap;
+   private final Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap;
    private final Set<RIBean<?>> beans;
    private final Set<ObserverMethodImpl<?, ?>> observers;
    private final List<DisposalMethod<?, ?>> allDisposalBeans;
@@ -74,7 +75,7 @@ public class BeanDeployerEnvironment
    public BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager)
    {
       this.classBeanMap = new HashMap<WeldClass<?>, AbstractClassBean<?>>();
-      this.producerMethodBeanMap = new HashMap<WeldMethod<?, ?>, ProducerMethod<?, ?>>();
+      this.producerMethodBeanMap = new HashMap<WeldMethodKey<?, ?>, ProducerMethod<?, ?>>();
       this.allDisposalBeans = new ArrayList<DisposalMethod<?, ?>>();
       this.resolvedDisposalBeans = new HashSet<DisposalMethod<?, ?>>();
       this.beans = new HashSet<RIBean<?>>();
@@ -100,13 +101,14 @@ public class BeanDeployerEnvironment
 
    public <X, T> ProducerMethod<X, T> getProducerMethod(WeldMethod<X, T> method)
    {
-      if (!producerMethodBeanMap.containsKey(method))
+      WeldMethodKey<X, T> key = new WeldMethodKey<X, T>(method);
+      if (!producerMethodBeanMap.containsKey(key))
       {
          return null;
       }
       else
       {
-         ProducerMethod<?, ?> bean = producerMethodBeanMap.get(method);
+         ProducerMethod<?, ?> bean = producerMethodBeanMap.get(key);
          bean.initialize(this);
          return (ProducerMethod<X, T>) bean;
       }
@@ -128,7 +130,7 @@ public class BeanDeployerEnvironment
 
    public void addProducerMethod(ProducerMethod<?, ?> bean)
    {
-      producerMethodBeanMap.put(bean.getWeldAnnotated(), bean);
+      producerMethodBeanMap.put(new WeldMethodKey(bean.getWeldAnnotated()), bean);
       addAbstractBean(bean);
    }
    
@@ -288,6 +290,33 @@ public class BeanDeployerEnvironment
       Set<DisposalMethod<X, ?>> beans = (Set) disposalMethodResolver.resolve(ResolvableFactory.of(types, bindings, declaringBean));
       resolvedDisposalBeans.addAll(beans);
       return Collections.unmodifiableSet(beans);
+   }
+
+   private static class WeldMethodKey<T, X>
+   {
+      final WeldMethod meth;
+
+      WeldMethodKey(WeldMethod<T, X> meth)
+      {
+         this.meth = meth;
+      }
+
+      @Override
+      public boolean equals(Object other)
+      {
+         if (other instanceof WeldMethodKey<?, ?>)
+         {
+            WeldMethodKey<?, ?> o = (WeldMethodKey<?, ?>) other;
+            return AnnotatedTypes.compareAnnotatedCallable(meth, o.meth);
+         }
+         return false;
+      }
+
+      @Override
+      public int hashCode()
+      {
+         return meth.getJavaMember().hashCode();
+      }
    }
 
 }

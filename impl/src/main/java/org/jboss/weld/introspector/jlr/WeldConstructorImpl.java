@@ -276,19 +276,6 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
    }
 
    /**
-    * The overridden hashcode
-    * 
-    * Gets the hash code from the delegate
-    * 
-    * @return The hash code
-    */
-   @Override
-   public int hashCode()
-   {
-      return getDelegate().hashCode();
-   }
-
-   /**
     * Gets a string representation of the constructor
     * 
     * @return A string representation

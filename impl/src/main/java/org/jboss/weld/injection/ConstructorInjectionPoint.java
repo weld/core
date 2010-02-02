@@ -46,6 +46,7 @@ import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.AnnotatedTypes;
 
 public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> implements WeldInjectionPoint<T, Constructor<T>>, Serializable
 {
@@ -83,6 +84,20 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
    {
       this.declaringBean = declaringBean;
       this.constructor = constructor;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof ConstructorInjectionPoint<?>)
+      {
+         ConstructorInjectionPoint<?> ip = (ConstructorInjectionPoint<?>) obj;
+         if (AnnotatedTypes.compareAnnotatedCallable(constructor, ip.constructor))
+         {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override
