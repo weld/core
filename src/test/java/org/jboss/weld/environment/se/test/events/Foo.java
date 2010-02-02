@@ -11,10 +11,17 @@ public class Foo
 {
    
    private static boolean observedEventTest;
+   private static boolean observedContainerInitialized;
    
    public static void reset()
    {
       observedEventTest = false;
+      observedContainerInitialized = false;
+   }
+   
+   public static boolean isObservedContainerInitialized()
+   {
+      return observedContainerInitialized;
    }
    
    public static boolean isObservedEventTest()
@@ -29,11 +36,12 @@ public class Foo
    public void start(@Observes ContainerInitialized event, ShutdownManager shutdownManager)
    {
       eventTest.fire(new Bar());
+      observedContainerInitialized = true;
    }
 
    public void observeEventTest(@Observes @EventQualifier2 Bar eventTest)
    {
-      this.observedEventTest = true;
+      observedEventTest = true;
    }
 
 }
