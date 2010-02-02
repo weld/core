@@ -23,8 +23,6 @@
    </interceptors>
    <decorators>
       <class>org.jboss.weld.environment.se.test.decorators.CarDoorAlarm</class>
-      <!-- TODO: enable this when WELD-291 is fixed:
       <class>org.jboss.weld.environment.se.threading.RunnableDecorator</class>
-      -->
    </decorators>
 </beans>

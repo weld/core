@@ -36,7 +36,6 @@ public class EventsTest
       Foo.reset();
       WeldContainer weld = new Weld().initialize();
       weld.event().select(ContainerInitialized.class).fire(new ContainerInitialized());
-      assert Foo.isObservedContainerInitialized();
       assert !Foo.isObservedEventTest();
       shutdownManager(weld);
    }

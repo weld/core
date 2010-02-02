@@ -26,11 +26,10 @@ import javax.inject.Inject;
  * @author Peter Royle
  */
 @Decorator
-public class CarDoorAlarm
+public abstract class CarDoorAlarm implements Door
 {
 
-    @Inject @Delegate
-    CarDoor door;
+    @Inject @Delegate CarDoor door;
     public static boolean alarmActivated = false;
 
     public boolean open()

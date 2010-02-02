@@ -21,7 +21,7 @@ package org.jboss.weld.environment.se.test.decorators;
  *
  * @author Peter Royle
  */
-public class CarDoor extends Door {
+public class CarDoor extends AbstractDoor {
 
     private boolean isWindowOpen = false;
 

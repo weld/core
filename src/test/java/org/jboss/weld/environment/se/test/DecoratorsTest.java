@@ -22,7 +22,7 @@ import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.test.decorators.CarDoor;
-import org.jboss.weld.environment.se.test.decorators.Door;
+import org.jboss.weld.environment.se.test.decorators.AbstractDoor;
 import org.jboss.weld.environment.se.test.decorators.CarDoorAlarm;
 import org.jboss.weld.environment.se.test.decorators.HouseDoor;
 import org.jboss.weld.environment.se.util.WeldManagerUtils;
@@ -39,8 +39,7 @@ public class DecoratorsTest
    /**
     * Test that decorators work as expected in SE.
     */
-   // TODO: enable when WELD-291 is fixed:
-//   @Test
+   @Test
    public void testDecorators()
    {
 
@@ -68,7 +67,7 @@ public class DecoratorsTest
       shutdownManager(weld);
    }
 
-   private void testDoor(Door door)
+   private void testDoor(AbstractDoor door)
    {
       Assert.assertTrue(door.open());
       Assert.assertTrue(door.isOpen());

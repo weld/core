@@ -14,60 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jboss.weld.environment.se.test.decorators;
 
 /**
- * Represents door with a lock.
+ *
  * @author Peter Royle
  */
-public abstract class Door
-{
+public interface Door {
 
-    private boolean isOpen = false;
-    private boolean isLocked = false;
+   boolean close();
 
-    /**
-     * Open and close the door. Can't open a locked door.
-     */
-    public boolean open()
-    {
-        if (!isLocked)
-        {
-            isOpen = true;
-        }
-        return isOpen;
-    }
+   boolean isLocked();
 
-    public boolean close()
-    {
-        isOpen = false;
-        return isOpen;
-    }
+   boolean isOpen();
 
-    public boolean isOpen()
-    {
-        return isOpen;
-    }
+   /**
+    * Lock and unlock the door. Can't lock an open door.
+    */
+   boolean lock();
 
-    /**
-     * Lock and unlock the door. Can't lock an open door.
-     */
-    public boolean lock()
-    {
-        if (!isOpen)
-        {
-            isLocked = true;
-        }
-        return isLocked;
-    }
+   /**
+    * Open and close the door. Can't open a locked door.
+    */
+   boolean open();
 
-    public void unlock()
-    {
-        isLocked = false;
-    }
+   void unlock();
 
-    public boolean isLocked()
-    {
-        return isLocked;
-    }
 }
