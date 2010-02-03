@@ -16,8 +16,8 @@
   <h1>Application Error</h1>
   <p>The following error occurred while processing the request:</p>
   
-  <div id="request">${rain.serverityLevel}</div>
   <div id="conversation">${storm.strength}</div>
+  <div id="request">${rain.severityLevel}</div>
   
   </body>
   </html>

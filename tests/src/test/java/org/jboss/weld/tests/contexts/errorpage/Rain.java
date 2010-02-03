@@ -17,8 +17,10 @@
 package org.jboss.weld.tests.contexts.errorpage;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
 @RequestScoped
+@Named
 public class Rain
 {
    public String getSeverityLevel()

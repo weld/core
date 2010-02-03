@@ -34,6 +34,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlDivision;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
  * <p>This test was mostly developed to test the scenario related to WELD-29.  Essentially
@@ -44,7 +45,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  *
  */
 @Artifact(addCurrentPackage=false)
-@Classes({Storm.class})
+@Classes({Storm.class, Rain.class})
 @IntegrationTest(runLocally=true)
 @Resources({
   @Resource(destination=WarArtifactDescriptor.WEB_XML_DESTINATION, source="web.xml"),
@@ -62,10 +63,12 @@ public class ErrorPageTest extends AbstractWeldTest
       
       HtmlPage page = client.getPage(getPath("/storm.jsf"));
       HtmlSubmitInput disasterButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "disasterButton");
+      HtmlTextInput strength = getFirstMatchingElement(page, HtmlTextInput.class, "stormStrength");
+      strength.setValueAttribute("10");
       page = disasterButton.click();
       assert "Application Error".equals(page.getTitleText());
       HtmlDivision conversationValue = getFirstMatchingElement(page, HtmlDivision.class, "conversation");
-      assert conversationValue.asText().equals("0");
+      assert conversationValue.asText().equals("10");
       HtmlDivision requestValue = getFirstMatchingElement(page, HtmlDivision.class, "request");
       assert requestValue.asText().equals("medium");
    }
