@@ -29,14 +29,12 @@ import org.jboss.weld.context.beanstore.NamingScheme;
 public class ConversationBeanStore extends HttpPassThruSessionBeanStore
 {
    
-   private final String cid;
    private final NamingScheme namingScheme;
 
    public ConversationBeanStore(HttpSession session, boolean sessionInvalidated, String cid)
    {
-      attachToSession(session);
-      this.cid = cid;
       this.namingScheme = new NamingScheme(ConversationContext.class.getName() + "[" + cid + "]", "#");
+      attachToSession(session);
    }
 
    @Override

@@ -33,6 +33,10 @@ public class HttpPassThruOnDemandSessionBeanStore extends HttpPassThruSessionBea
    public HttpPassThruOnDemandSessionBeanStore(HttpServletRequest request)
    {
       this.request = request;
+      if (request.getSession(false) != null)
+      {
+         attachToSession(request.getSession());
+      }
    }
 
    @Override

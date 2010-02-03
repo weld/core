@@ -17,30 +17,44 @@
 
 package org.jboss.weld.servlet;
 
+import static org.jboss.weld.logging.Category.CONTEXT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
+import org.jboss.weld.context.beanstore.HashMapBeanStore;
+import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.util.collections.EnumerationList;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * A BeanStore that maintains Contextuals in a hash map and writes them through
- * to a HttpSession. It also has the capability to reload the hash map from an
- * existing session or to rewrite the map entries into a session.
+ * to a HttpSession. When this BeanStore is attached to a session, it will load
+ * all the existing contextuals from the session within the naming scheme for
+ * this BeanStore.  All read operations are directly against the local map.
  * 
  * @author David Allen
  */
 public class HttpPassThruSessionBeanStore extends HttpSessionBeanStore
 {
 
-   private static final long          serialVersionUID       = 8923580660774253915L;
+   private static final long      serialVersionUID  = 8923580660774253915L;
+   private static final LocLogger log               = loggerFactory().getLogger(CONTEXT);
 
-   private ConcurrentHashMapBeanStore delegateBeanStore      = new ConcurrentHashMapBeanStore();
-   private boolean                    attachedToSession      = false;
-   private boolean                    invalidated            = false;
-   private static final String        SESSION_ATTRIBUTE_NAME = HttpPassThruSessionBeanStore.class.getName() + ".sessionBeanStore";
+   private HashMapBeanStore       delegateBeanStore = new HashMapBeanStore();
+   private boolean                attachedToSession = false;
+   private boolean                invalidated       = false;
+
+   public HttpPassThruSessionBeanStore()
+   {
+      log.trace("New bean store created: " + this);
+   }
 
    /**
     * Attaches this pass-through bean store to the given session.
@@ -50,8 +64,8 @@ public class HttpPassThruSessionBeanStore extends HttpSessionBeanStore
    public void attachToSession(HttpSession session)
    {
       super.attachToSession(session);
-      loadFromSession(session);
       attachedToSession = true;
+      loadFromSession(session);
    }
 
    /**
@@ -72,6 +86,7 @@ public class HttpPassThruSessionBeanStore extends HttpSessionBeanStore
    {
       detachFromSession();
       invalidated = true;
+      log.trace("Bean store " + this + " is invalidated");
    }
 
    /**
@@ -95,23 +110,18 @@ public class HttpPassThruSessionBeanStore extends HttpSessionBeanStore
    }
 
    /**
-    * Loads the map from the given session into this map store, if it already
-    * exists in this session. If it does not already exist, then a new map is
-    * created since the session does not already have any contextuals stored in
-    * it.
+    * Loads the map with all contextuals currently stored in the session for
+    * this bean store.
     * 
     * @param newSession a new HttpSession being attached
     */
    protected void loadFromSession(HttpSession newSession)
    {
-      Object map = newSession.getAttribute(SESSION_ATTRIBUTE_NAME);
-      if (map != null)
+      log.trace("Loading bean store " + this + " map from session " + newSession.getId());
+      for (String id : this.getFilteredAttributeNames())
       {
-         delegateBeanStore = (ConcurrentHashMapBeanStore) map;
-      }
-      else
-      {
-         newSession.setAttribute(SESSION_ATTRIBUTE_NAME, delegateBeanStore);
+         delegateBeanStore.put(id, (ContextualInstance<?>) super.getAttribute(id));
+         log.trace("Added contextual " + super.getAttribute(id) + " under ID " + id);
       }
    }
 
@@ -132,7 +142,14 @@ public class HttpPassThruSessionBeanStore extends HttpSessionBeanStore
    {
       if (attachedToSession && !isInvalidated())
       {
-         super.removeAttribute(key);
+         try
+         {
+            super.removeAttribute(key);
+         }
+         catch (IllegalStateException e)
+         {
+            invalidate();
+         }
       }
       delegateBeanStore.delegate().remove(key);
    }
@@ -143,8 +160,44 @@ public class HttpPassThruSessionBeanStore extends HttpSessionBeanStore
    {
       if (attachedToSession && !isInvalidated())
       {
-         super.setAttribute(key, instance);
+         try
+         {
+            super.setAttribute(key, instance);
+            log.trace("***** Added " + key + " to session " + this.getSession().getId());
+         }
+         catch (IllegalStateException e)
+         {
+            invalidate();
+         }
       }
       delegateBeanStore.put(key, (ContextualInstance<? extends Object>) instance);
+      log.trace("Added instance for key " + key);
    }
+
+   /**
+    * Gets the list of attribute names that is held by the bean store
+    * 
+    * @return The list of attribute names
+    */
+   private List<String> getFilteredAttributeNames()
+   {
+      List<String> attributeNames = new ArrayList<String>();
+      NamingScheme namingScheme = getNamingScheme();
+      try
+      {
+         for (String attributeName : new EnumerationList<String>(super.getAttributeNames()))
+         {
+            if (namingScheme.acceptKey(attributeName))
+            {
+               attributeNames.add(attributeName);
+            }
+         }
+      }
+      catch (IllegalStateException e)
+      {
+         invalidate();
+      }
+      return attributeNames;
+   }
+
 }

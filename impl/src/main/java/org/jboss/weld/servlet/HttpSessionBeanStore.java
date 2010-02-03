@@ -29,7 +29,6 @@ import org.jboss.weld.context.beanstore.NamingScheme;
  * 
  * @author Nicklas Karlsson
  * @author David Allen
- * 
  * @see org.jboss.weld.context.AbstractApplicationContext
  */
 public class HttpSessionBeanStore extends AbstractAttributeBackedBeanStore
@@ -38,7 +37,7 @@ public class HttpSessionBeanStore extends AbstractAttributeBackedBeanStore
    private static final NamingScheme NAMING_SCHEME = new NamingScheme(SessionContext.class.getName(), "#");
 
    // The HTTP session context to use as backing map
-   protected HttpSession             session;
+   private HttpSession               session;
 
    /**
     * Attaches this bean store to a session dynamically. This allows the session
@@ -70,6 +69,11 @@ public class HttpSessionBeanStore extends AbstractAttributeBackedBeanStore
    protected Enumeration<String> getAttributeNames()
    {
       return session.getAttributeNames();
+   }
+
+   protected HttpSession getSession()
+   {
+      return session;
    }
 
    /**
