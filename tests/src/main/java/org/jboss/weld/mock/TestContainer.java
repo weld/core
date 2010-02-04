@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -129,6 +130,10 @@ public class TestContainer
       {
          getLifecycle().beginSession();
       }
+      if (!getLifecycle().isConversationActive())
+      {
+         ((ConversationContext) getLifecycle().getConversationContext()).setActive(true);
+      }
       if (!getLifecycle().isRequestActive())
       {
          getLifecycle().beginRequest();
@@ -145,6 +150,10 @@ public class TestContainer
       if (getLifecycle().isRequestActive())
       {
          getLifecycle().endRequest();
+      }
+      if (getLifecycle().isConversationActive())
+      {
+         ((ConversationContext) getLifecycle().getConversationContext()).setActive(false);
       }
       if (getLifecycle().isSessionActive())
       {

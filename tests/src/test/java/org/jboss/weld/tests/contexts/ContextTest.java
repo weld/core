@@ -16,21 +16,132 @@
  */
 package org.jboss.weld.tests.contexts;
 
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.Conversation;
+
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.IntegrationTest;
+import org.jboss.weld.Container;
+import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 @Artifact
-@IntegrationTest
 public class ContextTest extends AbstractWeldTest
 {
-   // WBRI-155
-   @Test(description="WBRI155", groups="stub")
-   public void testSessionContextActiveForMultipleSimultaneousThreads()
+
+   @Test(description = "WELD-348")
+   public void testCallToConversationWithContextNotActive()
    {
-      // TODO impl
-      assert false;
+      boolean alreadyActive = false;
+      try
+      {
+         alreadyActive = Container.instance().services().get(ContextLifecycle.class).isConversationActive();
+         if (alreadyActive)
+         {
+            Container.instance().services().get(ContextLifecycle.class).getConversationContext().setActive(false);
+         }
+         try
+         {
+            getReference(Conversation.class).getId();
+            assert false;
+         }
+         catch (ContextNotActiveException e) 
+         {
+            // Expected
+         }
+         catch (Exception e) 
+         {
+            assert false;
+         }
+         try
+         {
+            getReference(Conversation.class).getTimeout();
+            assert false;
+         }
+         catch (ContextNotActiveException e) 
+         {
+            // Expected
+         }
+         catch (Exception e) 
+         {
+            assert false;
+         }
+         try
+         {
+            getReference(Conversation.class).begin();
+            assert false;
+         }
+         catch (ContextNotActiveException e) 
+         {
+            // Expected
+         }
+         catch (Exception e) 
+         {
+            assert false;
+         }
+         try
+         {
+            getReference(Conversation.class).begin("foo");
+            assert false;
+         }
+         catch (ContextNotActiveException e) 
+         {
+            // Expected
+         }
+         catch (Exception e) 
+         {
+            assert false;
+         }
+         try
+         {
+            getReference(Conversation.class).end();
+            assert false;
+         }
+         catch (ContextNotActiveException e) 
+         {
+            // Expected
+         }
+         catch (Exception e) 
+         {
+            assert false;
+         }
+         try
+         {
+            getReference(Conversation.class).isTransient();
+            assert false;
+         }
+         catch (ContextNotActiveException e) 
+         {
+            // Expected
+         }
+         catch (Exception e) 
+         {
+            assert false;
+         }
+         try
+         {
+            getReference(Conversation.class).setTimeout(0);
+            assert false;
+         }
+         catch (ContextNotActiveException e) 
+         {
+            // Expected
+         }
+         catch (Exception e) 
+         {
+            assert false;
+         }
+      }
+      finally
+      {
+         if (alreadyActive)
+         {
+            Container.instance().services().get(ContextLifecycle.class).getConversationContext().setActive(true);
+         }
+      }
+      
    }
+   
+   
    
 }

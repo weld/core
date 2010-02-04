@@ -44,8 +44,7 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
          this.deploymentException = new DeploymentException("Error deploying beans", e);
          return false;
       }
-      testContainer.getLifecycle().beginSession();
-      testContainer.getLifecycle().beginRequest();
+      testContainer.ensureRequestActive();
       return true;
    }
 

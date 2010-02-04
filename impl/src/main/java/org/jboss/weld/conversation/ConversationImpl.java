@@ -18,6 +18,7 @@ package org.jboss.weld.conversation;
 
 import static org.jboss.weld.logging.Category.CONVERSATION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
 import static org.jboss.weld.logging.messages.ConversationMessage.BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION;
 import static org.jboss.weld.logging.messages.ConversationMessage.DEMOTED_LRC;
 import static org.jboss.weld.logging.messages.ConversationMessage.END_CALLED_ON_TRANSIENT_CONVERSATION;
@@ -32,6 +33,9 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jboss.weld.Container;
+import org.jboss.weld.context.ContextLifecycle;
+import org.jboss.weld.context.ContextNotActiveException;
 import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.slf4j.cal10n.LocLogger;
 
@@ -66,8 +70,14 @@ public class ConversationImpl implements Conversation, Serializable
    /**
     * Creates a new conversation
     */
-   public ConversationImpl()
+   public ConversationImpl() {}
+   
+   protected void checkConversationActive()
    {
+      if (!Container.instance().services().get(ContextLifecycle.class).getConversationContext().isActive())
+      {
+         throw new ContextNotActiveException(CONTEXT_NOT_ACTIVE, "@ConversationScoped");
+      }
    }
 
    /**
@@ -98,6 +108,7 @@ public class ConversationImpl implements Conversation, Serializable
 
    public void begin()
    {
+      checkConversationActive();
       if (!isTransient())
       {
          throw new ForbiddenStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
@@ -108,6 +119,7 @@ public class ConversationImpl implements Conversation, Serializable
 
    public void begin(String id)
    {
+      checkConversationActive();
       // Store away the (first) change to the conversation ID. If the original
       // conversation was long-running,
       // we might have to place it back for termination once the request is
@@ -122,6 +134,7 @@ public class ConversationImpl implements Conversation, Serializable
 
    public void end()
    {
+      checkConversationActive();
       if (isTransient())
       {
          throw new ForbiddenStateException(END_CALLED_ON_TRANSIENT_CONVERSATION);
@@ -132,6 +145,7 @@ public class ConversationImpl implements Conversation, Serializable
 
    public String getId()
    {
+      checkConversationActive();
       if (!isTransient())
       {
          return id;
@@ -155,11 +169,13 @@ public class ConversationImpl implements Conversation, Serializable
 
    public long getTimeout()
    {
+      checkConversationActive();
       return timeout;
    }
 
    public void setTimeout(long timeout)
    {
+      checkConversationActive();
       this.timeout = timeout;
    }
 
@@ -172,9 +188,9 @@ public class ConversationImpl implements Conversation, Serializable
    public void switchTo(ConversationImpl conversation)
    {
       log.debug(SWITCHED_CONVERSATION, this, conversation);
-      id = conversation.getUnderlyingId();
-      this._transient = conversation.isTransient();
-      timeout = conversation.getTimeout();
+      id = conversation.id;
+      this._transient = conversation._transient;
+      timeout = conversation.timeout;
    }
 
    @Override
@@ -215,6 +231,9 @@ public class ConversationImpl implements Conversation, Serializable
 
    public boolean isTransient()
    {
+      checkConversationActive();
       return _transient;
    }
+   
+   
 }

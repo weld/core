@@ -57,6 +57,42 @@
             </methods>
          </class>
          
+         <!-- CDITCK-109 -->
+         <class name="org.jboss.jsr299.tck.tests.context.conversation.ConversationBeginTest">
+            <methods>
+               <exclude name="testBeginAlreadyLongRunningConversationThrowsException" />
+               <exclude name="testConversationBeginMakesConversationLongRunning" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.context.conversation.ConversationContextTest">
+            <methods>
+               <exclude name="testDefaultConversationIsTransient" />
+               <exclude name="testTransientConversationHasNullId" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.context.conversation.ConversationEndTest">
+            <methods>
+               <exclude name="testConversationEndMakesConversationTransient" />
+               <exclude name="testEndTransientConversationThrowsException" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.context.conversation.ConversationIdSetByApplicationTest">
+            <methods>
+               <exclude name="testConversationIdMayBeSetByApplication" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.context.conversation.ConversationIdSetByContainerTest">
+            <methods>
+               <exclude name="testConversationBeginMakesConversationLongRunning" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.context.conversation.ConversationTimeoutTest">
+            <methods>
+               <exclude name="testConversationHasDefaultTimeout" />
+               <exclude name="testSetConversationTimeoutOverride" />
+            </methods>
+         </class>
+         
          <!-- Issues in Weld (the RI) -->
 
          <!-- WELD-390 fixed, but TCK test is broken in 1.0.1-CR1 -->
