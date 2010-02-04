@@ -50,6 +50,8 @@ import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.interceptor.CdiInterceptorHandlerFactory;
 import org.jboss.weld.bean.interceptor.ClassInterceptionHandlerFactory;
+import org.jboss.weld.bean.interceptor.InterceptionMetadataService;
+import org.jboss.weld.bean.interceptor.WeldClassReference;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -577,8 +579,8 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          if (interceptionRegistries.size() > 0)
          {
             InterceptorProxyCreatorImpl interceptorProxyCreator = new InterceptorProxyCreatorImpl(interceptionRegistries, interceptionHandlerFactories);
-            MethodHandler methodHandler = new CleanableMethodHandler(interceptorProxyCreator.getMethodHandler(instance, getType()));
-            instance = interceptorProxyCreator.createProxyInstance(InterceptorProxyCreatorImpl.createProxyClassWithHandler(getType(), methodHandler), methodHandler);
+            MethodHandler methodHandler = new CleanableMethodHandler(interceptorProxyCreator.createMethodHandler(instance, getType(), getBeanManager().getServices().get(InterceptionMetadataService.class).getInterceptorMetadataRegistry().getInterceptorClassMetadata(WeldClassReference.of(getWeldAnnotated()), true)));
+            instance = interceptorProxyCreator.createProxyInstance(InterceptionUtils.createProxyClassWithHandler(getType(), methodHandler), methodHandler);
          }
 
       }

@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import javax.enterprise.inject.spi.Interceptor;
 
+import org.jboss.interceptor.model.InterceptorMetadata;
 import org.jboss.interceptor.proxy.AbstractClassInterceptionHandler;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 
@@ -33,9 +34,9 @@ public class CdiInterceptorHandler<T> extends AbstractClassInterceptionHandler i
    
    private final SerializableContextualInstance<Interceptor<T>, T> serializableContextualInstance;
 
-   public CdiInterceptorHandler(SerializableContextualInstance<Interceptor<T>, T> serializableContextualInstance, Class<?> clazz)
+   public CdiInterceptorHandler(SerializableContextualInstance<Interceptor<T>, T> serializableContextualInstance, Class<?> clazz, InterceptorMetadata interceptorMetadata)
    {
-      super(clazz);
+      super(interceptorMetadata);
       this.serializableContextualInstance = serializableContextualInstance;
    }
 

@@ -20,6 +20,8 @@ package org.jboss.weld.bean.interceptor;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Interceptor;
 
+import org.jboss.interceptor.model.InterceptorMetadata;
+import org.jboss.interceptor.model.metadata.ReflectiveClassReference;
 import org.jboss.interceptor.proxy.InterceptionHandler;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
@@ -48,7 +50,8 @@ public class CdiInterceptorHandlerFactory<T> implements InterceptionHandlerFacto
    public InterceptionHandler createFor(final SerializableContextual<Interceptor<T>, T> serializableContextual)
    {
       T instance = (T) getManager().getReference(serializableContextual.get(), creationalContext, false);
-      return new CdiInterceptorHandler<T>(new SerializableContextualInstanceImpl<Interceptor<T>, T>(serializableContextual, instance, creationalContext), serializableContextual.get().getBeanClass());
+      InterceptorMetadata interceptionMetadata = getManager().getServices().get(InterceptionMetadataService.class).getInterceptorMetadataRegistry().getInterceptorClassMetadata(ReflectiveClassReference.of(serializableContextual.get().getBeanClass()), false);
+      return new CdiInterceptorHandler<T>(new SerializableContextualInstanceImpl<Interceptor<T>, T>(serializableContextual, instance, creationalContext), serializableContextual.get().getBeanClass(), interceptionMetadata);
    }
 
 }

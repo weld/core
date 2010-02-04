@@ -41,6 +41,7 @@ import javax.enterprise.inject.spi.Extension;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
+import org.jboss.weld.bean.interceptor.InterceptionMetadataService;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Lifecycle;
@@ -321,6 +322,7 @@ public class WeldBootstrap implements Bootstrap
       services.add(ContextualStore.class, new ContextualStoreImpl());
       services.add(ServiceLoaderFactory.class, new DefaultServiceLoaderFactory());
       services.add(JavassistCleaner.class, new JavassistCleaner());
+      services.add(InterceptionMetadataService.class, new InterceptionMetadataService());
       services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
       return services;
    }

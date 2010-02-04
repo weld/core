@@ -43,7 +43,7 @@ import org.testng.annotations.Test;
 @Classes(packages = { "org.jboss.weld.tests.util.annotated" })
 public class InterceptorExtensionTest extends AbstractWeldTest
 {
-   @Test(groups={"broken"})
+   @Test
    public void testInterceptorCalled()
    {
       NumberSource ng = getReference(NumberSource.class);
@@ -51,7 +51,7 @@ public class InterceptorExtensionTest extends AbstractWeldTest
       assert IncrementingInterceptor.isDoAroundCalled();
    }
 
-   @Test(groups={"broken"})
+   @Test
    @SuppressWarnings("unchecked")
    public void testLifecycleInterceptor()
    {

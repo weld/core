@@ -28,9 +28,10 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import org.jboss.interceptor.model.InterceptorClassMetadata;
+import org.jboss.interceptor.model.InterceptorMetadata;
 import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
-import org.jboss.interceptor.registry.InterceptorClassMetadataRegistry;
+import org.jboss.weld.bean.interceptor.InterceptionMetadataService;
+import org.jboss.weld.bean.interceptor.WeldClassReference;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldClass;
@@ -43,7 +44,7 @@ import org.jboss.weld.util.Beans;
 public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 {
    
-   private final InterceptorClassMetadata interceptorClassMetadata;
+   private final InterceptorMetadata interceptorClassMetadata;
 
    private final Set<Annotation> interceptorBindingTypes;
    
@@ -57,7 +58,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
    protected InterceptorImpl(WeldClass<T> type, BeanManagerImpl beanManager)
    {
       super(type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager);
-      this.interceptorClassMetadata = InterceptorClassMetadataRegistry.getRegistry().getInterceptorClassMetadata(type.getJavaClass());
+      this.interceptorClassMetadata = beanManager.getServices().get(InterceptionMetadataService.class).getInterceptorMetadataRegistry().getInterceptorClassMetadata(WeldClassReference.of(type));
       this.serializable = type.isSerializable();
       this.interceptorBindingTypes = new HashSet<Annotation>();
       interceptorBindingTypes.addAll(flattenInterceptorBindings(beanManager, getWeldAnnotated().getAnnotations()));
@@ -84,7 +85,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
    {
       try
       {
-         return new DirectClassInterceptionHandler<T>(instance, getType()).invoke(ctx.getTarget(), org.jboss.interceptor.model.InterceptionType.valueOf(type.name()), ctx);
+         return new DirectClassInterceptionHandler<T>(instance, interceptorClassMetadata).invoke(ctx.getTarget(), org.jboss.interceptor.model.InterceptionType.valueOf(type.name()), ctx);
       } catch (Exception e)
       {
          throw new WeldException(e);

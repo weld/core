@@ -21,6 +21,8 @@ import java.lang.reflect.Constructor;
 
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.interceptor.model.InterceptorMetadata;
+import org.jboss.interceptor.model.metadata.ReflectiveClassReference;
 import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
 import org.jboss.interceptor.proxy.InterceptionHandler;
 import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
@@ -51,7 +53,8 @@ public class ClassInterceptionHandlerFactory<T> implements InterceptionHandlerFa
          T interceptorInstance = SecureReflections.ensureAccessible(constructor).newInstance();
          // inject
          manager.createInjectionTarget(manager.createAnnotatedType(clazz)).inject(interceptorInstance, creationalContext);
-         return new DirectClassInterceptionHandler<T>(interceptorInstance, clazz);
+         InterceptorMetadata interceptionMetadata = manager.getServices().get(InterceptionMetadataService.class).getInterceptorMetadataRegistry().getInterceptorClassMetadata(ReflectiveClassReference.of(clazz), false);
+         return new DirectClassInterceptionHandler<T>(interceptorInstance, interceptionMetadata);
       }
       catch (Exception e)
       {
