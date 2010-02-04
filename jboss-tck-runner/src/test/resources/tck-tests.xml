@@ -45,15 +45,25 @@
             </methods>
          </class>
          
-         <!-- CDITCK-104 -->
+         <!-- CDITCK-104, CDITCK-110 -->
          <class name="org.jboss.jsr299.tck.tests.context.conversation.client.ClientConversationContextTest">
             <methods>
                <exclude name="testConversationPropagationToNonExistentConversationLeadsToTransientConversation" />
             </methods>
          </class>
+         
+         <!-- CDITCK-104 -->
          <class name="org.jboss.jsr299.tck.tests.context.conversation.client.InvalidatingSessionDestroysConversationTest">
             <methods>
                <exclude name="testInvalidatingSessionDestroysConversation" />
+            </methods>
+         </class>
+         
+         <!-- CDITCK-110 -->
+         <class name="org.jboss.jsr299.tck.tests.context.conversation.client.ClientConversationContextTest">
+            <methods>
+               <exclude name="testConversationsDontCrossSessionBoundary1" />
+               <exclude name="testConversationsDontCrossSessionBoundary2" />
             </methods>
          </class>
          
