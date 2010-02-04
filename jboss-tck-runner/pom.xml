@@ -235,6 +235,10 @@
                         <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                      </suiteXmlFiles>
                      <systemProperties>
+								<property>
+									<name>java.io.tmpdir</name>
+									<value>${project.build.outputDirectory}</value>
+								</property>
                         <property>
                            <name>org.jboss.testharness.standalone</name>
                            <value>false</value>
