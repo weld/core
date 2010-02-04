@@ -76,9 +76,13 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
       getTypeStore().add(bindingType, QualifierLiteral.INSTANCE);
    }
 
-   public void addInterceptorBinding(Class<? extends Annotation> bindingType)
+   public void addInterceptorBinding(Class<? extends Annotation> bindingType, Annotation... bindingTypeDef)
    {
       getTypeStore().add(bindingType, InterceptorBindingTypeLiteral.INSTANCE);
+      for(Annotation a : bindingTypeDef)
+      {
+         getTypeStore().add(bindingType, a);
+      }
    }
 
    public void addScope(Class<? extends Annotation> scopeType, boolean normal, boolean passivating)
