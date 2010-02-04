@@ -82,7 +82,7 @@ public class WeldExceptionMessage implements Serializable
          int index = 0;
          for (Object arg : args)
          {
-            messageArguments[index++] = arg.toString();
+            messageArguments[index++] = arg == null ? "null" : arg.toString();
          }
       }
    }
