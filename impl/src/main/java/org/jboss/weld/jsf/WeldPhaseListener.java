@@ -163,15 +163,21 @@ public class WeldPhaseListener implements PhaseListener
    private void initiateSessionAndConversation(FacesContext facesContext)
    {
       ServletContext servletContext = getServletContext(facesContext);
+      AbstractConversationManager conversationManager = (AbstractConversationManager) conversationManager(servletContext);
       HttpSession session = getHttpSession(facesContext);
       httpSessionManager(servletContext).setSession(session);
-      AbstractConversationManager conversationManager = (AbstractConversationManager) conversationManager(servletContext);
-      conversationManager.beginOrRestoreConversation(getConversationId(facesContext));
-      String cid = conversation(servletContext).getUnderlyingId();
-      
-      ConversationContext conversationContext = Container.instance().services().get(ContextLifecycle.class).getConversationContext();
-      conversationContext.setBeanStore(conversationManager.getBeanStore(cid));
-      conversationContext.setActive(true);
+      try
+      {
+         conversationManager.beginOrRestoreConversation(getConversationId(facesContext));
+      }
+      finally
+      {
+         String cid = conversation(servletContext).getUnderlyingId();
+         
+         ConversationContext conversationContext = Container.instance().services().get(ContextLifecycle.class).getConversationContext();
+         conversationContext.setBeanStore(conversationManager.getBeanStore(cid));
+         conversationContext.setActive(true);
+      }
    }
 
    /**

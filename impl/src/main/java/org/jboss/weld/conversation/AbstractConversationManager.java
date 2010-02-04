@@ -49,8 +49,10 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.context.BusyConversationException;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.NonexistentConversationException;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
 import org.slf4j.cal10n.LocLogger;
@@ -102,8 +104,7 @@ public abstract class AbstractConversationManager implements ConversationManager
          // We got an incoming conversation ID but it was not in the map of
          // known ones, nothing to do. Log and return to continue with a
          // transient conversation
-         log.warn(UNABLE_TO_RESTORE_CONVERSATION, cid, "id not known");
-         return;
+         throw new NonexistentConversationException(UNABLE_TO_RESTORE_CONVERSATION, cid, "id not known");
       }
       ConversationEntry resumedConversationEntry = longRunningConversations.get(cid);
       // Try to get a lock to the requested conversation, log and return to
@@ -112,14 +113,13 @@ public abstract class AbstractConversationManager implements ConversationManager
       {
          if (!resumedConversationEntry.lock(concurrentAccessTimeout))
          {
-            return;
+            throw new BusyConversationException(CONVERSATION_LOCK_UNAVAILABLE);
          }
       }
       catch (InterruptedException e)
       {
-         log.debug(CONVERSATION_LOCK_UNAVAILABLE);
          Thread.currentThread().interrupt();
-         return;
+         throw new BusyConversationException(CONVERSATION_LOCK_UNAVAILABLE);
       }
       // If we can't cancel the termination, release the lock, return and
       // continue
@@ -127,6 +127,7 @@ public abstract class AbstractConversationManager implements ConversationManager
       if (!resumedConversationEntry.cancelTermination())
       {
          resumedConversationEntry.unlock();
+         throw new BusyConversationException(CONVERSATION_LOCK_UNAVAILABLE);
       }
       else
       {
