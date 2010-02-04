@@ -259,7 +259,7 @@ public class Validator implements Service
       Annotation[] bindings = ij.getQualifiers().toArray(new Annotation[0]);
       WeldAnnotated<?, ?> annotatedItem = ResolvableWeldClass.of(ij.getType(), bindings, beanManager);
       Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getInjectableBeans(ij));
-      if (resolvedBeans.isEmpty())
+      if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager))
       {
          throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Arrays.toString(bindings));
       }
@@ -267,18 +267,22 @@ public class Validator implements Service
       {
          throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Arrays.toString(bindings) + "; Possible dependencies: " + resolvedBeans);
       }
-      Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
-      if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(ij.getType()))
+      // Account for the case this is disabled decorator
+      if (!resolvedBeans.isEmpty())
       {
-         throw new UnproxyableResolutionException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ij);
-      }
-      if (annotatedItem.isPrimitive() && resolvedBean.isNullable())
-      {
-         throw new NullableDependencyException(INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES, ij);
-      }
-      if (ij.getBean() != null && Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean))
-      {
-         validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+         Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
+         if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(ij.getType()))
+         {
+            throw new UnproxyableResolutionException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ij);
+         }
+         if (annotatedItem.isPrimitive() && resolvedBean.isNullable())
+         {
+            throw new NullableDependencyException(INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES, ij);
+         }
+         if (ij.getBean() != null && Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean))
+         {
+            validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+         }
       }
    }
 
@@ -460,6 +464,25 @@ public class Validator implements Service
          }
       }
 
+   }
+   
+   private static boolean isInjectionPointSatisfied(InjectionPoint ij, Set<?> resolvedBeans, BeanManagerImpl beanManager)
+   {
+      if (ij.getBean() instanceof Decorator<?>)
+      {
+         if (beanManager.getEnabledDecoratorClasses().contains(ij.getBean().getBeanClass()))
+         {
+            return resolvedBeans.size() > 0;
+         }
+         else
+         {
+            return true;
+         }
+      }
+      else
+      {
+         return resolvedBeans.size() > 0;
+      }
    }
 
    public void cleanup()
