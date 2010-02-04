@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.servlet;
 
+import javassist.util.proxy.ProxyFactory;
+import javassist.util.proxy.ProxyFactory.ClassLoaderProvider;
+
 import javax.el.ELContextListener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.jsp.JspApplicationContext;
@@ -124,6 +127,16 @@ public class Listener extends ForwardingServletListener
       
       if (tomcat)
       {
+         // Make Javassist always use the TCCL to load classes
+         ProxyFactory.classLoaderProvider = new ClassLoaderProvider()
+         {
+            
+            public ClassLoader get(ProxyFactory pf)
+            {
+               return Thread.currentThread().getContextClassLoader();
+            }
+            
+         };
          // Try pushing a Tomcat AnnotationProcessor into the servlet context
          try
          {
