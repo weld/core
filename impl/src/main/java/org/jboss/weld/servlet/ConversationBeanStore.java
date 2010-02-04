@@ -34,6 +34,10 @@ public class ConversationBeanStore extends HttpPassThruSessionBeanStore
    public ConversationBeanStore(HttpSession session, boolean sessionInvalidated, String cid)
    {
       this.namingScheme = new NamingScheme(ConversationContext.class.getName() + "[" + cid + "]", "#");
+      if (sessionInvalidated)
+      {
+         invalidate();
+      }
       attachToSession(session);
    }
 

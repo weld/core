@@ -37,7 +37,7 @@ import org.slf4j.cal10n.LocLogger;
  * A BeanStore that maintains Contextuals in a hash map and writes them through
  * to a HttpSession. When this BeanStore is attached to a session, it will load
  * all the existing contextuals from the session within the naming scheme for
- * this BeanStore.  All read operations are directly against the local map.
+ * this BeanStore. All read operations are directly against the local map.
  * 
  * @author David Allen
  */
@@ -118,10 +118,20 @@ public class HttpPassThruSessionBeanStore extends HttpSessionBeanStore
    protected void loadFromSession(HttpSession newSession)
    {
       log.trace("Loading bean store " + this + " map from session " + newSession.getId());
-      for (String id : this.getFilteredAttributeNames())
+      try
       {
-         delegateBeanStore.put(id, (ContextualInstance<?>) super.getAttribute(id));
-         log.trace("Added contextual " + super.getAttribute(id) + " under ID " + id);
+         for (String id : this.getFilteredAttributeNames())
+         {
+            delegateBeanStore.put(id, (ContextualInstance<?>) super.getAttribute(id));
+            log.trace("Added contextual " + super.getAttribute(id) + " under ID " + id);
+         }
+      }
+      catch (IllegalStateException e)
+      {
+         // There's not a lot to do here if the session is invalidated while
+         // loading this map.  These beans will not be destroyed since the
+         // references are lost.
+         delegateBeanStore.clear();
       }
    }
 
