@@ -5,12 +5,12 @@
    <parent>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-parent</artifactId>
-      <version>6</version>
+      <version>9</version>
    </parent>
    <groupId>org.jboss.weld.examples</groupId>
    <artifactId>weld-examples-parent</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.0-SNAPSHOT</version>
+   <version>1.0.1-SNAPSHOT</version>
    <name>Weld Examples</name>
 
    <description>
@@ -88,7 +88,7 @@
 
    <properties>
       <jsf.version>2.0.0-RC</jsf.version>
-      <weld.api.version>1.0</weld.api.version>
+      <weld.api.version>1.0-SP1</weld.api.version>
       <weld.wicket.version>1.0.1-SNAPSHOT</weld.wicket.version>
       <weld.se.version>1.0.1-SNAPSHOT</weld.se.version>
       <weld.servlet.version>1.0.1-SNAPSHOT</weld.servlet.version>
