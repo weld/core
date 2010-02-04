@@ -3,7 +3,7 @@
    <groupId>org.jboss.weld</groupId>
    <artifactId>weld-core-build-aggregator</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.1-SNAPSHOT</version>
+   <version>1.0.1-CR2</version>
 
    <parent>
       <groupId>org.jboss.weld</groupId>
@@ -23,9 +23,9 @@
 
    <!-- SCM and distribution management -->
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk</developerConnection>
-      <url>http://fisheye.jboss.org/browse/Weld</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/tags/1.0.1-CR2</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/tags/1.0.1-CR2</developerConnection>
+      <url>scm:svn:https://svn.jboss.org/repos/weld/core/tags/1.0.1-CR2</url>
    </scm>
 
    <profiles>

@@ -3,7 +3,7 @@
    <groupId>org.jboss.weld</groupId>
    <artifactId>weld-core-bom</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.1-SNAPSHOT</version>
+   <version>1.0.1-CR2</version>
    
    <parent>
       <groupId>org.jboss.weld</groupId>
@@ -176,9 +176,9 @@
 
    <!-- SCM and distribution management -->
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/bom</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/bom</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/core/trunk/bom</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/tags/1.0.1-CR2/bom</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/tags/1.0.1-CR2/bom</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/core/tags/1.0.1-CR2/bom</url>
    </scm>
 
 </project>
