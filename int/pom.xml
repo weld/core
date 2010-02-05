@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <artifactId>weld-servlet-parent</artifactId>
       <groupId>org.jboss.weld.servlet</groupId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.1-CR2</version>
       <relativePath>../pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld.servlet</groupId>
    <artifactId>weld-servlet-int</artifactId>
-   <version>1.0.1-SNAPSHOT</version>
+   <version>1.0.1-CR2</version>
    <packaging>jar</packaging>
    <name>Weld Servlet Integration</name>
    <url>http://www.seamframework.org/Weld</url>
@@ -85,9 +84,9 @@
    </dependencies>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/trunk/int</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/trunk/int</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/servlet/trunk/int</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/tags/1.0.1-CR2/int</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/tags/1.0.1-CR2/int</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/servlet/tags/1.0.1-CR2/int</url>
    </scm>
 
 </project>
