@@ -3,7 +3,7 @@
    <parent>
       <artifactId>weld-examples-parent</artifactId>
       <groupId>org.jboss.weld.examples</groupId>
-      <version>1.0.1-CR2</version>
+      <version>1.0.1-SNAPSHOT</version>
       <relativePath>../../pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
@@ -90,9 +90,9 @@
    </build>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/tags/1.0.1-CR2/se/hello-world</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/tags/1.0.1-CR2/se/hello-world</developerConnection>
-     <url>http://fisheye.jboss.org/browse/weld/examples/tags/1.0.1-CR2/se/hello-world</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/se/hello-world</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/se/hello-world</developerConnection>
+     <url>http://fisheye.jboss.org/browse/weld/examples/trunk/se/hello-world</url>
   </scm>
 
 </project>
