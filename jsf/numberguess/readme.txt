@@ -90,8 +90,6 @@ will launch. You can view the application at the following local URL:
 
 == Using Google App Engine
 
-KNOWN NOT WORKING IN THIS RELEASE
-
 First, set up the Eclipse environment:
 
  mvn clean eclipse:clean eclipse:eclipse -Pgae
