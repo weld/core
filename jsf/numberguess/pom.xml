@@ -23,16 +23,6 @@
       </license>
    </licenses>
 
-   <pluginRepositories>
-      <pluginRepository>
-         <id>codehaus repository</id>
-         <url>http://repository.codehaus.org/</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-      </pluginRepository>
-   </pluginRepositories>
-
    <!-- Common dependencies only -->
    <dependencies>
 

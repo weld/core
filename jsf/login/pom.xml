@@ -14,16 +14,6 @@
    <packaging>war</packaging>
    <name>Weld Examples: Login</name>
 
-   <pluginRepositories>
-      <pluginRepository>
-         <id>codehaus snapshot repository</id>
-         <url>http://snapshots.repository.codehaus.org/</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-      </pluginRepository>
-   </pluginRepositories>
-
    <url>http://www.seamframework.org/Weld</url>
    <licenses>
       <license>

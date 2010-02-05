@@ -34,16 +34,6 @@
       <webapp.directory>src/main/webapp</webapp.directory>
    </properties>
 
-   <pluginRepositories>
-      <pluginRepository>
-         <id>codehaus repository</id>
-         <url>http://repository.codehaus.org/</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-      </pluginRepository>
-   </pluginRepositories>
-
    <dependencies>
 
       <dependency>
