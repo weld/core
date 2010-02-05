@@ -46,7 +46,7 @@ tomcat-maven-plugin configuration in the pom.xml.
 
 You can deploy the packaged archive to Tomcat via HTTP PUT using this command:
 
- mvn package tomcat:deploy -Ptomcat
+ mvn clean package tomcat:deploy -Ptomcat
 
 Then you use this command to undeploy the application:
 

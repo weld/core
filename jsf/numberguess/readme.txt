@@ -56,7 +56,7 @@ tomcat-maven-plugin configuration in the pom.xml.
 You can deploy it as an exploded archive immediately after the war goal is
 finished assembling the exploded structure:
 
- mvn compile war:exploded tomcat:exploded -Ptomcat
+ mvn clean compile war:exploded tomcat:exploded -Ptomcat
 
 Once the application is deployed, you can redeploy it using this command:
 
