@@ -93,6 +93,16 @@ public class Listener extends ForwardingServletListener
    @Override
    public void contextInitialized(ServletContextEvent sce)
    {
+      // Make Javassist always use the TCCL to load classes
+      ProxyFactory.classLoaderProvider = new ClassLoaderProvider()
+      {
+         
+         public ClassLoader get(ProxyFactory pf)
+         {
+            return Thread.currentThread().getContextClassLoader();
+         }
+         
+      };
       BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
       sce.getServletContext().setAttribute(APPLICATION_BEAN_STORE_ATTRIBUTE_NAME, applicationBeanStore);
       
@@ -127,16 +137,6 @@ public class Listener extends ForwardingServletListener
       
       if (tomcat)
       {
-         // Make Javassist always use the TCCL to load classes
-         ProxyFactory.classLoaderProvider = new ClassLoaderProvider()
-         {
-            
-            public ClassLoader get(ProxyFactory pf)
-            {
-               return Thread.currentThread().getContextClassLoader();
-            }
-            
-         };
          // Try pushing a Tomcat AnnotationProcessor into the servlet context
          try
          {
