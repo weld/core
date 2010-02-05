@@ -2,7 +2,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld.servlet</groupId>
    <artifactId>weld-servlet-parent</artifactId>
-   <version>1.0.1-CR2</version>
+   <version>1.0.1-SNAPSHOT</version>
    <packaging>pom</packaging>
    
    <parent>
@@ -200,9 +200,9 @@
    </dependencyManagement>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/tags/1.0.1-CR2</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/tags/1.0.1-CR2</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/servlet/tags/1.0.1-CR2</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/trunk</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/trunk</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/servlet/trunk</url>
    </scm>
 
    

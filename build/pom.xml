@@ -3,12 +3,12 @@
    <parent>
       <artifactId>weld-servlet-parent</artifactId>
       <groupId>org.jboss.weld.servlet</groupId>
-      <version>1.0.1-CR2</version>
+      <version>1.0.1-SNAPSHOT</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld.servlet</groupId>
    <artifactId>weld-servlet</artifactId>
-   <version>1.0.1-CR2</version>
+   <version>1.0.1-SNAPSHOT</version>
    <packaging>jar</packaging>
    <name>Weld Servlet module</name>
    <url>http://www.seamframework.org/Weld</url>
@@ -88,9 +88,9 @@
    </build>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/tags/1.0.1-CR2/build</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/tags/1.0.1-CR2/build</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/servlet/tags/1.0.1-CR2/build</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/trunk/build</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/trunk/build</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/servlet/trunk/build</url>
    </scm>
 
 
