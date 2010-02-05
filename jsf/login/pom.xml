@@ -5,7 +5,7 @@
    <parent>
       <groupId>org.jboss.weld.examples</groupId>
       <artifactId>weld-examples-parent</artifactId>
-      <version>1.0.1-CR2</version>
+      <version>1.0.1-SNAPSHOT</version>
       <relativePath>../../pom.xml</relativePath>
    </parent>
 
@@ -161,9 +161,9 @@
    </profiles>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/tags/1.0.1-CR2/jsf/login</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/tags/1.0.1-CR2/jsf/login</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/examples/tags/1.0.1-CR2/jsf/login</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/login</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/jsf/login</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/login</url>
   </scm>
 
 </project>
