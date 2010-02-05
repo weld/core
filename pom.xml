@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <parent>
       <groupId>org.jboss.weld</groupId>
@@ -10,7 +9,7 @@
    <groupId>org.jboss.weld.examples</groupId>
    <artifactId>weld-examples-parent</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.1-SNAPSHOT</version>
+   <version>1.0.1-CR2</version>
    <name>Weld Examples</name>
 
    <description>
@@ -102,7 +101,7 @@
       <maven.antrun.plugin.version>1.3</maven.antrun.plugin.version>
       <failsafe.maven.plugin.version>2.4.3-alpha-1</failsafe.maven.plugin.version>
       <ant.junit.version>1.6.2</ant.junit.version>
-      <ftest.version.discriminator></ftest.version.discriminator>
+      <ftest.version.discriminator />
       <selenium.browser>*firefoxproxy</selenium.browser>
       <selenium.browser.url>http://localhost:8080</selenium.browser.url>
       <selenium.server.port>14444</selenium.server.port>
@@ -240,9 +239,9 @@
    </build>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk</developerConnection>
-     <url>http://fisheye.jboss.org/browse/weld/examples/trunk</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/tags/1.0.1-CR2</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/tags/1.0.1-CR2</developerConnection>
+     <url>http://fisheye.jboss.org/browse/weld/examples/tags/1.0.1-CR2</url>
   </scm>
 
    <profiles>
@@ -450,12 +449,8 @@
                            <phase>post-integration-test</phase>
                            <configuration>
                               <tasks>
-                                 <get taskname="selenium-shutdown"
-                                    src="http://${selenium.server.host}:${selenium.server.port}/selenium-server/driver/?cmd=shutDownSeleniumServer"
-                                    ignoreerrors="true"
-                                    dest="${project.build.directory}/selenium.stop.msg" />
-                                 <echo taskname="selenium-shutdown"
-                                    message="DGF Errors during shutdown are expected" />
+                                 <get taskname="selenium-shutdown" src="http://${selenium.server.host}:${selenium.server.port}/selenium-server/driver/?cmd=shutDownSeleniumServer" ignoreerrors="true" dest="${project.build.directory}/selenium.stop.msg" />
+                                 <echo taskname="selenium-shutdown" message="DGF Errors during shutdown are expected" />
                               </tasks>
                            </configuration>
                            <goals>
@@ -673,12 +668,8 @@
                            <phase>post-integration-test</phase>
                            <configuration>
                               <tasks>
-                                 <get taskname="selenium-shutdown"
-                                    src="http://${selenium.server.host}:${selenium.server.port}/selenium-server/driver/?cmd=shutDownSeleniumServer"
-                                    ignoreerrors="true"
-                                    dest="${project.build.directory}/selenium.stop.msg" />
-                                 <echo taskname="selenium-shutdown"
-                                    message="DGF Errors during shutdown are expected" />
+                                 <get taskname="selenium-shutdown" src="http://${selenium.server.host}:${selenium.server.port}/selenium-server/driver/?cmd=shutDownSeleniumServer" ignoreerrors="true" dest="${project.build.directory}/selenium.stop.msg" />
+                                 <echo taskname="selenium-shutdown" message="DGF Errors during shutdown are expected" />
                               </tasks>
                            </configuration>
                            <goals>
@@ -869,9 +860,9 @@
 							<phase>pre-integration-test</phase>
 							<configuration>
 								<tasks>
-									<property name="url.to.wait" value="http://localhost:8180/${project.build.finalName}"/>												
-									<copy file="${project.build.directory}/${project.build.finalName}.${project.packaging}" todir="${jboss.master.configuration}/farm"/>
-									<echo message="Waiting for application at ${url.to.wait}"/>												
+									<property name="url.to.wait" value="http://localhost:8180/${project.build.finalName}" />												
+									<copy file="${project.build.directory}/${project.build.finalName}.${project.packaging}" todir="${jboss.master.configuration}/farm" />
+									<echo message="Waiting for application at ${url.to.wait}" />												
 									<waitfor maxwait="${application.deploy.timeout}" maxwaitunit="second">								
 										<http url="${url.to.wait}" errorsBeginAt="404" />
 									</waitfor>
@@ -888,15 +879,11 @@
 							<phase>post-integration-test</phase>
 							<configuration>
 								<tasks>
-									<echo message="Undeploying application..."/>
-									<delete file="${jboss.master.configuration}/farm/${project.build.finalName}.${project.packaging}"/>
+									<echo message="Undeploying application..." />
+									<delete file="${jboss.master.configuration}/farm/${project.build.finalName}.${project.packaging}" />
 								
-									<get taskname="selenium-shutdown"
-										src="http://${selenium.server.host}:${selenium.server.port}/selenium-server/driver/?cmd=shutDownSeleniumServer"
-										ignoreerrors="true"
-										dest="${project.build.directory}/selenium.stop.msg" />
-									<echo taskname="selenium-shutdown"
-										message="DGF Errors during shutdown are expected" />
+									<get taskname="selenium-shutdown" src="http://${selenium.server.host}:${selenium.server.port}/selenium-server/driver/?cmd=shutDownSeleniumServer" ignoreerrors="true" dest="${project.build.directory}/selenium.stop.msg" />
+									<echo taskname="selenium-shutdown" message="DGF Errors during shutdown are expected" />
 								</tasks>
 							</configuration>
 							<goals>

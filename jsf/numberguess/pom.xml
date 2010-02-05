@@ -1,12 +1,11 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
       <groupId>org.jboss.weld.examples</groupId>
       <artifactId>weld-examples-parent</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.1-CR2</version>
       <relativePath>../../pom.xml</relativePath>
    </parent>
 
@@ -70,7 +69,7 @@
          </activation>
          
          <properties>
-         	<distributable.flag></distributable.flag>
+         	<distributable.flag />
          </properties>
          
          <dependencies>
@@ -726,8 +725,7 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
             <artifactId>maven-jetty-plugin</artifactId>
             <configuration>
                <connectors>
-                  <connector
-                     implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                  <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                      <port>${jetty.http.port}</port>
                      <maxIdleTime>3600000</maxIdleTime>
                   </connector>
@@ -773,9 +771,9 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
    </properties>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/numberguess</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/jsf/numberguess</developerConnection>
-     <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/numberguess</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/tags/1.0.1-CR2/jsf/numberguess</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/tags/1.0.1-CR2/jsf/numberguess</developerConnection>
+     <url>http://fisheye.jboss.org/browse/weld/examples/tags/1.0.1-CR2/jsf/numberguess</url>
   </scm>
 
 </project>

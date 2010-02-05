@@ -3,7 +3,7 @@
    <parent>
       <artifactId>weld-examples-parent</artifactId>
       <groupId>org.jboss.weld.examples</groupId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.1-CR2</version>
       <relativePath>../../pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
@@ -91,9 +91,9 @@
    </profiles>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/se/numberguess</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/se/numberguess</developerConnection>
-     <url>http://fisheye.jboss.org/browse/weld/examples/trunk/se/numberguess</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/tags/1.0.1-CR2/se/numberguess</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/tags/1.0.1-CR2/se/numberguess</developerConnection>
+     <url>http://fisheye.jboss.org/browse/weld/examples/tags/1.0.1-CR2/se/numberguess</url>
   </scm>
 
 </project>
