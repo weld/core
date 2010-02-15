@@ -88,7 +88,10 @@
                         <delete
                            dir="${jboss.home}/server/default/deployers/webbeans.deployer"
                            failonerror="false" />
-
+                        <delete
+                           dir="${jboss.home}/server/all/deployers/weld.deployer"
+                           failonerror="false" />
+                           
                         <unzip dest="${project.build.directory}"
                            src="${project.build.directory}/dependency/lib/weld-jboss-int-deployer-assembly.zip" />
 
