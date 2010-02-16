@@ -18,7 +18,6 @@ package org.jboss.weld.resolution;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,38 +29,39 @@ import javax.enterprise.inject.spi.InterceptionType;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class ResolvableFactory
 {
 
-   public static Resolvable of(WeldAnnotated<?, ?> element)
+   public static Resolvable of(WeldAnnotated<?, ?> annotated)
    {
-      if (element instanceof Resolvable)
+      if (annotated instanceof Resolvable)
       {
-         return (Resolvable) element;
+         return (Resolvable) annotated;
       }
       else
       {
          Set<Type> types = new HashSet<Type>();
-         types.add(element.getBaseType());
-         return new ResolvableImpl(element.getQualifiers(), types, null);
+         types.add(annotated.getBaseType());
+         return new ResolvableImpl(types, annotated.getQualifiers(), null);
       }
    }
 
-   public static Resolvable of(Set<Type> typeClosure, Set<Annotation> bindings, AbstractClassBean<?> declaringBean)
+   public static Resolvable of(Set<Type> typeClosure, Set<Annotation> qualifiers, AbstractClassBean<?> declaringBean)
    {
-      return new ResolvableImpl(bindings, typeClosure, declaringBean);
+      return new ResolvableImpl(typeClosure, qualifiers, declaringBean);
    }
 
-   public static Resolvable of(Set<Type> typeClosure, AbstractClassBean<?> declaringBean, Annotation... bindings)
+   public static Resolvable of(Set<Type> typeClosure, Annotation[] qualifiers, AbstractClassBean<?> declaringBean)
    {
-      return new ResolvableImpl(new HashSet<Annotation>(Arrays.asList(bindings)), typeClosure, declaringBean);
+      return new ResolvableImpl(typeClosure, Arrays2.asSet(qualifiers), declaringBean);
    }
 
-   public static InterceptorResolvable of(InterceptionType interceptionType, Annotation... bindings)
+   public static InterceptorResolvable of(InterceptionType interceptionType, Annotation[] qualifiers)
    {
-      return new InterceptorResolvableImpl(new HashSet<Annotation>(Arrays.asList(bindings)), interceptionType );
+      return new InterceptorResolvableImpl(Arrays2.asSet(qualifiers), interceptionType );
    }
 
    private ResolvableFactory() {}
@@ -69,21 +69,21 @@ public class ResolvableFactory
    private static class ResolvableImpl implements Resolvable
    {
 
-      private final Set<Annotation> bindings;
+      private final Set<Annotation> qualifiers;
       private final Map<Class<? extends Annotation>, Annotation> annotations;
       private final Set<Type> typeClosure;
       private final AbstractClassBean<?> declaringBean;
 
-      public ResolvableImpl(Set<Annotation> bindings, Set<Type> typeClosure, AbstractClassBean<?> declaringBean)
+      public ResolvableImpl(Set<Type> typeClosure, Set<Annotation> qualifiers, AbstractClassBean<?> declaringBean)
       {
-         this.bindings = bindings;
-         if (bindings.size() == 0)
+         this.qualifiers = qualifiers;
+         if (qualifiers.size() == 0)
          {
-            this.bindings.add(DefaultLiteral.INSTANCE);
+            this.qualifiers.add(DefaultLiteral.INSTANCE);
          }
          this.annotations = new HashMap<Class<? extends Annotation>, Annotation>();
          this.typeClosure = typeClosure;
-         for (Annotation annotation : bindings)
+         for (Annotation annotation : qualifiers)
          {
             annotations.put(annotation.annotationType(), annotation);
          }
@@ -92,7 +92,7 @@ public class ResolvableFactory
 
       public Set<Annotation> getQualifiers()
       {
-         return bindings;
+         return qualifiers;
       }
 
       public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
@@ -140,7 +140,7 @@ public class ResolvableFactory
 
       private InterceptorResolvableImpl(Set<Annotation> bindings, InterceptionType interceptionType)
       {
-         super(bindings, Collections.singleton((Type)Object.class), null);
+         super(Collections.singleton((Type)Object.class), bindings, null);
          this.interceptionType = interceptionType;
       }
 

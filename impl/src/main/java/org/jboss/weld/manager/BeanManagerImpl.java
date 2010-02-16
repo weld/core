@@ -488,7 +488,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    @SuppressWarnings("unchecked")
    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... bindings)
    {
-      checkBindingTypes(Arrays.asList(bindings));    
+      checkQualifiers(Arrays.asList(bindings));    
       HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(Arrays.asList(bindings));
       bindingAnnotations.add(AnyLiteral.INSTANCE);
       Set<ObserverMethod<? super T>> observers = new HashSet<ObserverMethod<? super T>>();
@@ -500,7 +500,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return observers;
    }
    
-   private void checkBindingTypes(Collection<Annotation> bindings)
+   private void checkQualifiers(Collection<Annotation> bindings)
    {
       HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(bindings);
       for (Annotation annotation : bindings)
@@ -879,9 +879,9 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
    }
 
-   public <T> Bean<T> getBean(WeldAnnotated<T, ?> element, Annotation... bindings)
+   public <T> Bean<T> getBean(WeldAnnotated<T, ?> element, Annotation... qualifiers)
    {
-      Bean<T> bean = (Bean<T>) resolve(getBeans(element, bindings));
+      Bean<T> bean = (Bean<T>) resolve(getBeans(element, qualifiers));
       if (bean == null)
       {
          throw new UnsatisfiedResolutionException(UNRESOLVABLE_ELEMENT, element);
@@ -900,37 +900,27 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return nameBasedResolver.resolve(name);
    }
 
-   /**
-    * Resolves a list of decorators based on API types and binding types
-    * 
-    * @param types The set of API types to match
-    * @param bindings The binding types to match
-    * @return A list of matching decorators
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#resolveDecorators(java.util.Set,
-    *      java.lang.annotation.Annotation[])
-    */
-   public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... bindings)
+   public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... qualifiers)
    {
-      checkResolveDecoratorsArguments(types, Arrays.asList(bindings));
+      checkResolveDecoratorsArguments(types, Arrays.asList(qualifiers));
       // TODO Fix this cast and make the resolver return a list
-      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(ResolvableFactory.of(types, null, bindings)));
+      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(ResolvableFactory.of(types, qualifiers, null)));
    }
    
-   public List<Decorator<?>> resolveDecorators(Set<Type> types, Set<Annotation> bindings)
+   public List<Decorator<?>> resolveDecorators(Set<Type> types, Set<Annotation> qualifiers)
    {
-      checkResolveDecoratorsArguments(types, bindings);
+      checkResolveDecoratorsArguments(types, qualifiers);
       // TODO Fix this cast and make the resolver return a list
-      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(ResolvableFactory.of(types, bindings, null)));
+      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(ResolvableFactory.of(types, qualifiers, null)));
    }
 
-   private void checkResolveDecoratorsArguments(Set<Type> types, Collection<Annotation> bindings)
+   private void checkResolveDecoratorsArguments(Set<Type> types, Collection<Annotation> qualifiers)
    {
       if (types.isEmpty())
       {
          throw new ForbiddenArgumentException(NO_DECORATOR_TYPES);
       }
-      checkBindingTypes(bindings);
+      checkQualifiers(qualifiers);
    }
 
    /**
