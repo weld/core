@@ -16,18 +16,25 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
+
 import java.lang.reflect.Field;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
+import javax.inject.Inject;
 
 import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Represents a producer field
@@ -38,6 +45,8 @@ import org.jboss.weld.util.AnnotatedTypes;
  */
 public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
 {
+   private static final LocLogger log = loggerFactory().getLogger(BEAN);
+   
    // The underlying field
    private WeldField<T, ? super X> field;
    
@@ -53,6 +62,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
    {
       return new ProducerField<X, T>(field, declaringBean, beanManager);
    }
+
 
    /**
     * Constructor
@@ -121,6 +131,16 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
             }
             
          });
+         checkProducerFieldAnnotations();
+      }
+   }
+   
+   
+   protected void checkProducerFieldAnnotations()
+   {
+      if (getWeldAnnotated().isAnnotationPresent(Inject.class))
+      {
+         throw new DefinitionException(INJECTED_FIELD_CANNOT_BE_PRODUCER, getWeldAnnotated(), getWeldAnnotated().getDeclaringType());
       }
    }
    
