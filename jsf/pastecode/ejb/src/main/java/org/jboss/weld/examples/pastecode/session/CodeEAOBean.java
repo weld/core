@@ -1,3 +1,24 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2009, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.jboss.weld.examples.pastecode.session;
 
 import java.security.NoSuchAlgorithmException;
@@ -42,7 +63,11 @@ public class CodeEAOBean implements CodeEAO
    public String addCode(Code code, boolean secured)
    {
       String result;
-      code.setDatetime(Calendar.getInstance().getTime());
+      if (code.getDatetime() == null)
+      {
+         code.setDatetime(Calendar.getInstance().getTime());
+      }
+
       if (code.getUser().trim().isEmpty())
       {
          code.setUser("Anonymous");
@@ -70,7 +95,7 @@ public class CodeEAOBean implements CodeEAO
          result = new Integer(code.getId()).toString();
       }
 
-      //System.out.println("Result: " + result);
+      // System.out.println("Result: " + result);
 
       return result;
    }
@@ -123,7 +148,6 @@ public class CodeEAOBean implements CodeEAO
       return codes;
    }
 
-
    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
    public List<Code> allCodes()
    {
@@ -131,11 +155,11 @@ public class CodeEAOBean implements CodeEAO
       List<Code> codes = q.getResultList();
       return codes;
    }
-   
+
    /**
-    * getting codes from database needs new transaction so that we can
-    * further modify returned Codes without affecting database (when we call
-    * this function from another session bean
+    * getting codes from database needs new transaction so that we can further
+    * modify returned Codes without affecting database (when we call this
+    * function from another session bean
     */
    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
    public List<Code> searchCodes(Code code, int page, QueryInfo info)
@@ -167,7 +191,8 @@ public class CodeEAOBean implements CodeEAO
       {
          SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
          Date date2 = new Date();
-         date2.setTime(code.getDatetime().getTime() + 24 * 60 * 60 * 1000); // +1 day
+         date2.setTime(code.getDatetime().getTime() + 24 * 60 * 60 * 1000); // +1
+         // day
 
          String formattedDate1 = formatter.format(code.getDatetime());
          String formattedDate2 = formatter.format(date2);

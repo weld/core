@@ -6,6 +6,12 @@
     xmlns:s="http://jboss.com/products/seam/taglib">
   
   <ui:composition template="template.xhtml">
+   	<ui:define name="viewMetadata">
+       <f:metadata>
+       		<f:event type="preRenderView" listener="#{database.populate}"/>
+       </f:metadata>      
+    </ui:define> 
+   	
    	<ui:define name="mainarea">
    		<div style="width: 100%; padding: 7px;">
 	   		
