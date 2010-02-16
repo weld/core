@@ -50,7 +50,7 @@ import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resolution.ResolvableFactory;
+import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.AnnotatedTypes;
@@ -282,12 +282,12 @@ public class BeanDeployerEnvironment
     * disposal methods are used. For internal use.
     * 
     * @param apiType The API type to match
-    * @param bindings The binding types to match
+    * @param qualifiers The binding types to match
     * @return The set of matching disposal methods
     */
-   public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> bindings, AbstractClassBean<X> declaringBean)
+   public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> qualifiers, AbstractClassBean<X> declaringBean)
    {
-      Set<DisposalMethod<X, ?>> beans = (Set) disposalMethodResolver.resolve(ResolvableFactory.of(types, bindings, declaringBean));
+      Set<DisposalMethod<X, ?>> beans = (Set) disposalMethodResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).setDeclaringBean(declaringBean).create());
       resolvedDisposalBeans.addAll(beans);
       return Collections.unmodifiableSet(beans);
    }

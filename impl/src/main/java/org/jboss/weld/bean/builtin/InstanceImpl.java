@@ -38,7 +38,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resolution.ResolvableWeldClass;
+import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Names;
 
@@ -65,8 +65,8 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    }
    
    public T get()
-   {
-      Bean<?> bean = getBeanManager().getBean(ResolvableWeldClass.of(getType(), getQualifiers(), getBeanManager()), getQualifiers());
+   {      
+      Bean<?> bean = getBeanManager().getBean(new ResolvableBuilder().setType(getType()).addQualifiers(getQualifiers()).setDeclaringBean(getInjectionPoint().getBean()).create());
       // Push in an empty CC to ensure that we don't get the CC of whatever is injecting the bean containing the Instance injection point
       try
       {

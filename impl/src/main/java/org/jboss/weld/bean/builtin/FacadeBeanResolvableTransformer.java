@@ -70,7 +70,7 @@ public class FacadeBeanResolvableTransformer implements ResolvableTransformer
             }
 
             @Override
-            public Set<Type> getTypeClosure()
+            public Set<Type> getTypes()
             {
                return Collections.unmodifiableSet(types);
             }

@@ -40,12 +40,12 @@ public class Arrays2
       return containsAll(array, values) && array.length == values.length;
    }
 
-   public static <T> Set<T> asSet(T... types)
+   public static <T> Set<T> asSet(T... array)
    {
       Set<T> result = new HashSet<T>();
-      for (T type : types)
+      for (T a : array)
       {
-         result.add(type);
+         result.add(a);
       }
       return result;
    }

@@ -19,11 +19,6 @@ package org.jboss.weld.manager;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_QUALIFIERS;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INVALID_QUALIFIER;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_PROXYABLE;
@@ -38,7 +33,6 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,7 +60,6 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
-import javax.inject.Qualifier;
 
 import org.jboss.interceptor.registry.InterceptorRegistry;
 import org.jboss.weld.Container;
@@ -96,16 +89,15 @@ import org.jboss.weld.exceptions.InjectionException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
 import org.jboss.weld.resolution.InterceptorResolvable;
+import org.jboss.weld.resolution.InterceptorResolvableBuilder;
 import org.jboss.weld.resolution.NameBasedResolver;
 import org.jboss.weld.resolution.Resolvable;
-import org.jboss.weld.resolution.ResolvableFactory;
-import org.jboss.weld.resolution.ResolvableWeldClass;
+import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeBeanResolver;
 import org.jboss.weld.resolution.TypeSafeDecoratorResolver;
 import org.jboss.weld.resolution.TypeSafeInterceptorResolver;
@@ -486,35 +478,9 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
 
    @SuppressWarnings("unchecked")
-   public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... bindings)
+   public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... qualifiers)
    {
-      checkQualifiers(Arrays.asList(bindings));    
-      HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(Arrays.asList(bindings));
-      bindingAnnotations.add(AnyLiteral.INSTANCE);
-      Set<ObserverMethod<? super T>> observers = new HashSet<ObserverMethod<? super T>>();
-      Set<ObserverMethod<?>> eventObservers = observerResolver.resolve(ResolvableFactory.of(new HierarchyDiscovery(eventType).getTypeClosure(),  bindingAnnotations, null));
-      for (ObserverMethod<?> observer : eventObservers)
-      {
-         observers.add((ObserverMethod<T>) observer);
-      }
-      return observers;
-   }
-   
-   private void checkQualifiers(Collection<Annotation> bindings)
-   {
-      HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(bindings);
-      for (Annotation annotation : bindings)
-      {
-         if (!getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotation.annotationType()).isValid())
-         {
-            throw new ForbiddenArgumentException(INVALID_QUALIFIER, annotation);
-         }
-      }
-      if (bindingAnnotations.size() < bindings.size())
-      {
-         throw new ForbiddenArgumentException(DUPLICATE_QUALIFIERS, bindings);
-      }
-
+      return (Set) observerResolver.resolve(new ResolvableBuilder().addTypes(new HierarchyDiscovery(eventType).getTypeClosure()).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create());
    }
 
    /**
@@ -575,39 +541,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
       this.enabledInterceptorClasses = enabledInterceptorClasses;
    }
    
-   public Set<Bean<?>> getBeans(Type beanType, Annotation... bindings)
+   public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers)
    {
-      return getBeans(ResolvableWeldClass.of(beanType, bindings, this), bindings);
-   }
-   
-   public Set<Bean<?>> getBeans(WeldAnnotated<?, ?> element, Annotation... bindings)
-   {
-      for (Annotation annotation : element.getAnnotations())
-      {
-         if (!getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotation.annotationType()).isValid())
-         {
-            throw new ForbiddenArgumentException(INVALID_QUALIFIER, annotation);
-         }
-      }
-//      for (Type type : element.getActualTypeArguments())
-//      {
-//         if (type instanceof WildcardType)
-//         {
-//            throw new IllegalArgumentException("Cannot resolve a type parameterized with a wildcard " + element);
-//         }
-//         if (type instanceof TypeVariable<?>)
-//         {
-//            throw new IllegalArgumentException("Cannot resolve a type parameterized with a type parameter " + element);
-//         }
-//      }
-      if (bindings != null && bindings.length > element.getMetaAnnotations(Qualifier.class).size())
-      {
-         throw new ForbiddenArgumentException(DUPLICATE_QUALIFIERS, Arrays.asList(bindings));
-      }
-      return beanResolver.resolve(ResolvableFactory.of(element));
+      return beanResolver.resolve(new ResolvableBuilder().setType(beanType).addQualifiers(qualifiers).create());
    }
 
-   public Set<Bean<?>> getInjectableBeans(InjectionPoint injectionPoint)
+   public Set<Bean<?>> getBeans(InjectionPoint injectionPoint)
    {
       boolean registerInjectionPoint = !injectionPoint.getType().equals(InjectionPoint.class);
       try
@@ -616,17 +555,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
          {
             Container.instance().services().get(CurrentInjectionPoint.class).push(injectionPoint);
          }
-         // TODO Do this properly
-         Set<Bean<?>> beans = getBeans(ResolvableWeldClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this));
-         Set<Bean<?>> injectableBeans = new HashSet<Bean<?>>();
-         for (Bean<?> bean : beans)
-         {
-            if (!(bean instanceof Decorator<?> || bean instanceof Interceptor<?>))
-            {
-               injectableBeans.add(bean);
-            }
-         }
-         return injectableBeans;
+         return beanResolver.resolve(new ResolvableBuilder().setInjectionPoint(injectionPoint).create());
       }
       finally
       {
@@ -869,8 +798,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       if (!injectionPoint.isDelegate())
       {
-         WeldAnnotated<?, ?> element = ResolvableWeldClass.of(injectionPoint.getType(), injectionPoint.getQualifiers().toArray(new Annotation[0]), this);
-         Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
+         Bean<?> resolvedBean = getBean(new ResolvableBuilder().setInjectionPoint(injectionPoint).create());
          return getReference(injectionPoint, resolvedBean, creationalContext);
       }
       else
@@ -879,12 +807,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
    }
 
-   public <T> Bean<T> getBean(WeldAnnotated<T, ?> element, Annotation... qualifiers)
+   public <T> Bean<T> getBean(Resolvable resolvable)
    {
-      Bean<T> bean = (Bean<T>) resolve(getBeans(element, qualifiers));
+      Bean<T> bean = (Bean<T>) resolve(beanResolver.resolve(resolvable));
       if (bean == null)
       {
-         throw new UnsatisfiedResolutionException(UNRESOLVABLE_ELEMENT, element);
+         throw new UnsatisfiedResolutionException(UNRESOLVABLE_ELEMENT, resolvable);
       }
       
       boolean normalScoped = getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
@@ -902,25 +830,24 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
    public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... qualifiers)
    {
-      checkResolveDecoratorsArguments(types, Arrays.asList(qualifiers));
+      checkResolveDecoratorsArguments(types);
       // TODO Fix this cast and make the resolver return a list
-      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(ResolvableFactory.of(types, qualifiers, null)));
+      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).create()));
    }
    
    public List<Decorator<?>> resolveDecorators(Set<Type> types, Set<Annotation> qualifiers)
    {
-      checkResolveDecoratorsArguments(types, qualifiers);
+      checkResolveDecoratorsArguments(types);
       // TODO Fix this cast and make the resolver return a list
-      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(ResolvableFactory.of(types, qualifiers, null)));
+      return new ArrayList<Decorator<?>>(decoratorResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).create()));
    }
 
-   private void checkResolveDecoratorsArguments(Set<Type> types, Collection<Annotation> qualifiers)
+   private void checkResolveDecoratorsArguments(Set<Type> types)
    {
       if (types.isEmpty())
       {
          throw new ForbiddenArgumentException(NO_DECORATOR_TYPES);
       }
-      checkQualifiers(qualifiers);
    }
 
    /**
@@ -936,18 +863,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings)
    {
-      if (interceptorBindings.length == 0)
-         throw new ForbiddenArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
-      Set<Class<?>> uniqueInterceptorBindings = new HashSet<Class<?>>();
-      for (Annotation interceptorBinding: interceptorBindings)
-      {
-         if (uniqueInterceptorBindings.contains(interceptorBinding.annotationType()))
-            throw new ForbiddenArgumentException(DUPLICATE_INTERCEPTOR_BINDING, interceptorBinding.annotationType());
-         if (!isInterceptorBinding(interceptorBinding.annotationType()))
-            throw new ForbiddenArgumentException(INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE, interceptorBinding.annotationType());
-         uniqueInterceptorBindings.add(interceptorBinding.annotationType());
-      }
-      return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(ResolvableFactory.of(type,interceptorBindings)));
+      return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(new InterceptorResolvableBuilder().setInterceptionType(type).setType(Object.class).addQualifiers(interceptorBindings).create()));
    }
 
    /**

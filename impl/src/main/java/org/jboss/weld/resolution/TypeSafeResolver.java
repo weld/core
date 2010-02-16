@@ -54,7 +54,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
          if (obj instanceof Resolvable)
          {
             Resolvable that = (Resolvable) obj;
-            return this.getResolvable().getTypeClosure().equals(that.getTypeClosure()) && this.getResolvable().getQualifiers().equals(that.getQualifiers());
+            return this.getResolvable().getTypes().equals(that.getTypes()) && this.getResolvable().getQualifiers().equals(that.getQualifiers());
          }
          else
          {
@@ -66,7 +66,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
       public int hashCode()
       {
          int result = 17;
-         result = 31 * result + this.getResolvable().getTypeClosure().hashCode();
+         result = 31 * result + this.getResolvable().getTypes().hashCode();
          result = 31 * result + this.getResolvable().getQualifiers().hashCode();
          return result;
       }

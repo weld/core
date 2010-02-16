@@ -200,7 +200,7 @@ public class Reflections
    {
       return Modifier.isTransient(member.getModifiers());
    }
-
+   
    /**
     * Checks if a method is abstract
     * 
@@ -634,6 +634,12 @@ public class Reflections
    public static boolean isSerializable(Class<?> clazz)
    {
       return clazz.isPrimitive() || Serializable.class.isAssignableFrom(clazz);
+   }
+   
+   public static boolean isPrimitive(Type type)
+   {
+      Class<?> rawType = getRawType(type);
+      return rawType == null ? false : rawType.isPrimitive();
    }
    
    @SuppressWarnings("unchecked")

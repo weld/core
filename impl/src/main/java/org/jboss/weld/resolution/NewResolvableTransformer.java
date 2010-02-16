@@ -103,7 +103,7 @@ public class NewResolvableTransformer implements ResolvableTransformer
                }
                
                @Override
-               public Set<Type> getTypeClosure()
+               public Set<Type> getTypes()
                {
                   return typeClosure;
                }

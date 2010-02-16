@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import org.jboss.weld.bean.AbstractClassBean;
+import javax.enterprise.inject.spi.Bean;
 
 /**
  * Something that is resovable by the resolver. A resolvable is defined by it's
@@ -67,11 +67,11 @@ public interface Resolvable
    public boolean isAssignableTo(Class<?> clazz);
 
    /**
-    * The type closure of this resolvable
+    * The types that this resolvable may be assigned to
     * 
     * @return
     */
-   public Set<Type> getTypeClosure();
+   public Set<Type> getTypes();
 
    /**
     * Get the underlying java class used to generate this resolvable, or null
@@ -85,6 +85,6 @@ public interface Resolvable
     * Get the declaring the injection point, or null if there is none
     * @return
     */
-   public AbstractClassBean<?> getDeclaringBean();
+   public Bean<?> getDeclaringBean();
 
 }

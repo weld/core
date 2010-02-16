@@ -385,7 +385,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
     * 
     * @return The set of API types
     * 
-    * @see org.jboss.weld.bean.BaseBean#getTypeClosure()
+    * @see org.jboss.weld.bean.BaseBean#getTypes()
     */
    public Set<Type> getTypes()
    {

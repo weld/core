@@ -84,10 +84,8 @@ import org.jboss.weld.exceptions.InconsistentSpecializationException;
 import org.jboss.weld.exceptions.NullableDependencyException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnserializableDependencyException;
-import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.resolution.ResolvableWeldClass;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
@@ -180,7 +178,7 @@ public class Validator implements Service
                InjectionTarget<Object> injectionTarget = (InjectionTarget<Object>) beanManager.createInjectionTarget(beanManager.createAnnotatedType(interceptorClass));
                for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints())
                {
-                  Bean<?> resolvedBean = beanManager.resolve(beanManager.getInjectableBeans(injectionPoint));
+                  Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
                   validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
                }
             }
@@ -204,7 +202,7 @@ public class Validator implements Service
                }
                for (InjectionPoint injectionPoint : serializableContextual.get().getInjectionPoints())
                {
-                  Bean<?> resolvedBean = beanManager.resolve(beanManager.getInjectableBeans(injectionPoint));
+                  Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
                   validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
                }
             }
@@ -222,7 +220,7 @@ public class Validator implements Service
          }
          for (InjectionPoint ij : decorator.getInjectionPoints())
          {
-            Bean<?> resolvedBean = beanManager.resolve(beanManager.getInjectableBeans(ij));
+            Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(ij));
             validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
          }
       }
@@ -257,8 +255,7 @@ public class Validator implements Service
       checkFacadeInjectionPoint(ij, Instance.class);
       checkFacadeInjectionPoint(ij, Event.class);
       Annotation[] bindings = ij.getQualifiers().toArray(new Annotation[0]);
-      WeldAnnotated<?, ?> annotatedItem = ResolvableWeldClass.of(ij.getType(), bindings, beanManager);
-      Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getInjectableBeans(ij));
+      Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
       if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager))
       {
          throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Arrays.toString(bindings));
@@ -275,7 +272,7 @@ public class Validator implements Service
          {
             throw new UnproxyableResolutionException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ij);
          }
-         if (annotatedItem.isPrimitive() && resolvedBean.isNullable())
+         if (Reflections.isPrimitive(ij.getType()) && resolvedBean.isNullable())
          {
             throw new NullableDependencyException(INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES, ij);
          }

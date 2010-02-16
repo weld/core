@@ -57,7 +57,7 @@ public class ForwardingInterceptorResolvable implements InterceptorResolvable
       return null;
    }
 
-   public Set<Type> getTypeClosure()
+   public Set<Type> getTypes()
    {
       // TODO Auto-generated method stub
       return null;

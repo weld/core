@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import org.jboss.weld.bean.AbstractClassBean;
+import javax.enterprise.inject.spi.Bean;
 
 public abstract class ForwardingResolvable implements Resolvable
 {
@@ -37,9 +37,9 @@ public abstract class ForwardingResolvable implements Resolvable
       return delegate().isAnnotationPresent(annotationType);
    }
    
-   public Set<Type> getTypeClosure()
+   public Set<Type> getTypes()
    {
-      return delegate().getTypeClosure();
+      return delegate().getTypes();
    }
    
    public boolean isAssignableTo(Class<?> clazz)
@@ -57,7 +57,7 @@ public abstract class ForwardingResolvable implements Resolvable
       return delegate().getJavaClass();
    }
    
-   public AbstractClassBean<?> getDeclaringBean()
+   public Bean<?> getDeclaringBean()
    {
       return delegate().getDeclaringBean();
    }
