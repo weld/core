@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.exceptions.ForbiddenArgumentException;
@@ -50,11 +49,6 @@ public class ResolvableWeldClass<T> extends AbstractWeldAnnotated<T, Class<T>> i
    private final Class<T> rawType;
    private final Set<Type> typeClosure;
    private final Type[] actualTypeArguments;
-
-   public static <T> WeldAnnotated<T, Class<T>> of(TypeLiteral<T> typeLiteral, Annotation[] annotations, BeanManagerImpl manager)
-   {
-      return new ResolvableWeldClass<T>(typeLiteral.getType(), annotations, manager);
-   }
 
    public static <T> WeldAnnotated<T, Class<T>> of(Type type, Annotation[] annotations, BeanManagerImpl manager)
    {
