@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  * @author Dan Allen
  */
 @Artifact(addCurrentPackage = true)
-public class NamedBeanWithBindingTest extends AbstractWeldTest
+public class NamedBeanTest extends AbstractWeldTest
 {
    @Test
    public void testGetNamedBeanWithBinding()
@@ -35,4 +35,11 @@ public class NamedBeanWithBindingTest extends AbstractWeldTest
       NamedBeanWithBinding instance = (NamedBeanWithBinding) getCurrentManager().getReference(bean, Object.class, getCurrentManager().createCreationalContext(bean));
       assert instance != null;
    }
+   
+   @Test(description = "WELD-435", groups = "broken")
+   public void testNamedInjectedFieldUsesFieldName()
+   {
+      assert getReference(NamedBeanConsumer.class).getFoo() != null;
+   }
+   
 }
