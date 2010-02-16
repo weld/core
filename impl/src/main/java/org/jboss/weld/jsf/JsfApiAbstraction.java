@@ -19,7 +19,6 @@ package org.jboss.weld.jsf;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.ApiAbstraction;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Utility class for JSF related components, concepts etc. It can also
@@ -46,12 +45,14 @@ public class JsfApiAbstraction extends ApiAbstraction implements Service
       this.UICOMPONENT_CLASS = classForName("javax.faces.component.UIComponent");
       this.FACES_CONTEXT = classForName("javax.faces.context.FacesContext");
       this.BEHAVIOR_CLASS = classForName("javax.faces.component.behavior.Behavior");
-      double version = 2.0;
-      if (this.FACES_CONTEXT != null)
+      if (this.BEHAVIOR_CLASS.getName().equals("javax.faces.component.behavior.Behavior"))
       {
-         version = SecureReflections.isMethodExists(FACES_CONTEXT, "isPostback") ? 2.0 : 1.2;
+         MINIMUM_API_VERSION = 2.0;
       }
-      MINIMUM_API_VERSION = version;
+      else
+      {
+         MINIMUM_API_VERSION = 1.2;
+      }
    }
    
    public boolean isApiVersionCompatibleWith(double version)
