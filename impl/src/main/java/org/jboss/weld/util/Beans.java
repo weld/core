@@ -30,6 +30,7 @@ import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_NOT_QUALIFI
 import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_DISPOSAL_METHOD;
 import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_OBSERVER;
 import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_PRODUCER;
+import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_METHOD_IS_GENERIC;
 import static org.jboss.weld.logging.messages.UtilMessage.INVALID_QUANTITY_INJECTABLE_FIELDS_AND_INITIALIZER_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.QUALIFIER_ON_FINAL_FIELD;
 import static org.jboss.weld.logging.messages.UtilMessage.REDUNDANT_QUALIFIER;
@@ -406,6 +407,10 @@ public class Beans
                else if (method.getWeldParameters(Observes.class).size() > 0)
                {
                   throw new DefinitionException(INITIALIZER_CANNOT_BE_OBSERVER, method, type);
+               }
+               else if (method.getJavaMember().getTypeParameters().length > 0)
+               {
+                  throw new DefinitionException(INITIALIZER_METHOD_IS_GENERIC, method, type);
                }
                else
                {
