@@ -41,4 +41,10 @@ public class SerializationTest extends AbstractWeldTest
       assert deserializedCMgr.getConversationInstance() != null;
       assert deserializedCMgr.getConversationInstance().get() != null;
    }
+   
+   @Test(description="http://lists.jboss.org/pipermail/weld-dev/2010-February/002265.html")
+   public void testNonSerializableProductInjectedIntoSessionScopedBean()
+   {
+      getReference(FooConsumer.class).ping();
+   }
 }
