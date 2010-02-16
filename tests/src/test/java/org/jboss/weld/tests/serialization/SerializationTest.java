@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.serialization;
 
+import java.io.Serializable;
+
 import javax.enterprise.inject.IllegalProductException;
 
 import org.jboss.testharness.impl.packaging.Artifact;
@@ -44,9 +46,20 @@ public class SerializationTest extends AbstractWeldTest
       assert deserializedCMgr.getConversationInstance().get() != null;
    }
    
-   @Test(description="http://lists.jboss.org/pipermail/weld-dev/2010-February/002265.html", expectedExceptions=IllegalProductException.class)
+   @Test(description="http://lists.jboss.org/pipermail/weld-dev/2010-February/002265.html")
    public void testNonSerializableProductInjectedIntoSessionScopedBean()
    {
-      getReference(LoggerConsumer.class).ping();
+      try
+      {
+         getReference(LoggerConsumer.class).ping();
+      }
+      catch (Exception e) 
+      {
+         // If Logger isn't serializable, we get here 
+         assert e instanceof IllegalProductException;
+         return;
+      }
+      // If Logger is serializable we get here
+      assert getReference(LoggerConsumer.class).getLog() instanceof Serializable;
    }
 }

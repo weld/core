@@ -16,5 +16,10 @@ public class LoggerConsumer implements Serializable
    {
       
    }
+   
+   public Logger getLog()
+   {
+      return log;
+   }
 
 }
