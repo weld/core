@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:s="http://jboss.com/products/seam/taglib">
+  
+  <ui:composition template="template.xhtml">
+     <ui:define name="viewMetadata">
+       <f:metadata>
+       		<f:viewParam name="page" value="#{history.page}"/>
+       		<f:event type="preRenderView" listener="#{history.search}"/>
+       </f:metadata>      
+    </ui:define>    
+  
+  	<ui:define name="themes">
+  	</ui:define>
+
+   	<ui:define name="mainarea">
+   		<div style="width: 100%; padding: 7px;">
+	   		
+	   			<div id="paging" style="width:98%; border-width:0px; background-color:#C1C1E8;"> <!-- height: 40px; -->
+	   		    	<ui:include src="pagination.xhtml"></ui:include>
+	   		    </div>
+	   		    <br/>
+		   		<h:dataTable value="#{history.codes}" var="varcode" width="99%">
+					<h:column>
+		                <div id="searched">
+			                <h:panelGroup >
+			                	<h:outputLabel for="user" value="User: "/>
+			                	<h:outputLink id="user" value="#{  varcode.id}"> <!-- display.jsf?id= -->
+			                		<h:outputText value="#{varcode.user}"></h:outputText>
+			                	</h:outputLink>
+			                </h:panelGroup>
+			                &nbsp;&nbsp;
+			                <h:panelGroup>
+			                	<h:outputLabel for="language" value="Language: "/>
+			                	<h:outputText id="language" value="#{  varcode.language}"></h:outputText>
+			                </h:panelGroup>
+			                &nbsp;&nbsp;
+			                <h:panelGroup>
+			                	<h:outputLabel for="datetime" value="Date: "/>						                			                                
+                              	<h:outputText id="datetime" value="#{  varcode.datetime}">
+                              		<f:convertDateTime type="both" pattern="yyyy-MM-dd HH:mm:ss"/>
+                              	</h:outputText>
+			                </h:panelGroup>
+		                </div>	
+		                <br/>
+		                <h:outputText value="Code (truncated): "/>
+		                <div style="height:100px; width:99%; border: 1px solid #7F7F7F; overflow: auto; padding: 1px;">
+		                	<pre>#{varcode.text}</pre>	
+		                </div>	                
+		                <br/>
+		                &nbsp;<br/>
+                    </h:column>			
+				</h:dataTable>	
+				<br/>
+		                <div id="paging" style="width:98%; border-width:0px; background-color:#C1C1E8;"> <!-- height: 40px; -->
+	   		    			<ui:include src="pagination.xhtml"></ui:include>
+	   		    		</div>
+   		</div>
+   		   		
+   	</ui:define>
+   	
+    <ui:define name="rightmenu">   		
+						
+						<div id="rightmenuhead" style="width:350px;">							
+								<strong>Search:</strong>							
+						</div>
+						
+						<div id="rightmenubody" style="width:350px;">
+																		
+									<h:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">
+											<h:outputLabel for="user" value="User:"></h:outputLabel>
+											<h:inputText id="user" maxlength="30" style="width:97%;" value="#{searchItem.user}"/>
+											<h:outputLabel for="language" value="Language:"></h:outputLabel>
+											<h:inputText id="language" maxlength="30" style="width:97%;" value="#{searchItem.language}"/>
+											<h:outputLabel for="note" value="Note:"></h:outputLabel>
+											<h:inputText id="note" maxlength="30" style="width:97%;" value="#{searchItem.note}"/>
+											<h:outputLabel for="pasteDate" value="Date: "/>
+											<h:inputText value="#{searchItem.datetime}" id="pasteDate"  style="width:97%;" alt="yyyy-mm-dd" title="yyyy-mm-dd"
+															converterMessage="Enter date formatted as yyyy-mm-dd !" >		
+												<f:convertDateTime type="date" pattern="yyyy-MM-dd"/>
+											</h:inputText>
+											<h:outputLabel for="code" value="Code:" style="width:100%;"></h:outputLabel>
+											<h:inputTextarea id="code" maxlength="30" rows="2" style="width:97%;" value="#{searchItem.text}"/>
+									</h:panelGrid>
+									<div style="width:100%;text-align:right;">
+										<h:commandButton value="Search" action="#{history.newSearch}"/>	
+									</div> 		
+									<br/>
+									<h:message for="pasteDate"/> 
+						</div>
+							
+   	</ui:define> 
+    
+  </ui:composition>
+</html>

@@ -1,0 +1,8 @@
+<project basedir="." name="PasteCode Example Build" default="restart">
+	
+	<property name="example.name" value="weld-pastecode" />
+	<property name="type" value="ear" />
+
+	<import file="../../build.xml" />
+	
+</project>
