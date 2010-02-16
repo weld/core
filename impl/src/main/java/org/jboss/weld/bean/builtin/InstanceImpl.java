@@ -66,7 +66,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    
    public T get()
    {      
-      Bean<?> bean = getBeanManager().getBean(new ResolvableBuilder().setType(getType()).addQualifiers(getQualifiers()).setDeclaringBean(getInjectionPoint().getBean()).create());
+      Bean<?> bean = getBeanManager().getBean(new ResolvableBuilder(getType()).addQualifiers(getQualifiers()).setDeclaringBean(getInjectionPoint().getBean()).create());
       // Push in an empty CC to ensure that we don't get the CC of whatever is injecting the bean containing the Instance injection point
       try
       {

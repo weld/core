@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.resolution;
 
-import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -58,12 +57,6 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
    protected Set<ObserverMethod<?>> filterResult(Set<ObserverMethod<?>> matched)
    {
       return matched;
-   }
-
-   @Override
-   protected Iterable<ResolvableTransformer<Resolvable>> getTransformers()
-   {
-      return Collections.emptySet();
    }
 
    @Override

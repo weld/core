@@ -130,7 +130,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
     */
    public Set<T> resolve(R resolvable)
    {
-      return Collections.unmodifiableSet(resolved.get(new Key<R>(transform(resolvable))));
+      return Collections.unmodifiableSet(resolved.get(new Key<R>(resolvable)));
    }
    
    /**
@@ -153,17 +153,6 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
       }
       return result;
    }
-   
-   protected R transform(R resolvable)
-   {
-      for (ResolvableTransformer<R> transformer : getTransformers())
-      {
-         resolvable = transformer.transform(resolvable);
-      }
-      return resolvable;
-   }
-   
-   protected abstract Iterable<ResolvableTransformer<R>> getTransformers();
    
    protected abstract Set<T> filterResult(Set<T> matched);
 

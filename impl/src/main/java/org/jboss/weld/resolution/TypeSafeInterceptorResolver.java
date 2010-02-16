@@ -17,7 +17,6 @@
 
 package org.jboss.weld.resolution;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -72,12 +71,6 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
    protected Set<Interceptor<?>> filterResult(Set<Interceptor<?>> matched)
    {
       return matched;
-   }
-
-   @Override
-   protected Iterable<ResolvableTransformer<InterceptorResolvable>> getTransformers()
-   {
-      return Collections.emptySet();
    }
 
    public BeanManagerImpl getManager()

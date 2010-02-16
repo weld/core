@@ -26,7 +26,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Provider;
 
-import org.jboss.weld.bean.builtin.FacadeBeanResolvableTransformer;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
@@ -45,7 +44,6 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    private static final Class<Provider<?>> PROVIDER_TYPE = new TypeLiteral<Provider<?>>() {}.getRawType();
    private static final Class<Event<?>> EVENT_TYPE = new TypeLiteral<Event<?>>() {}.getRawType();
 
-   private final Set<ResolvableTransformer<Resolvable>> transformers;
    private final BeanManagerImpl beanManager;
    private final ConcurrentMap<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans; 
    
@@ -88,11 +86,6 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
       super(beans);
       this.beanManager = beanManager;
       this.disambiguatedBeans = new MapMaker().makeComputingMap(new BeanDisambiguation(beanManager));
-      transformers = new HashSet<ResolvableTransformer<Resolvable>>();
-      transformers.add(new FacadeBeanResolvableTransformer(EVENT_TYPE));
-      transformers.add(new FacadeBeanResolvableTransformer(INSTANCE_TYPE));
-      transformers.add(new FacadeBeanResolvableTransformer(PROVIDER_TYPE));
-      transformers.add(new NewResolvableTransformer());
    }
 
    @Override
@@ -113,12 +106,6 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    protected Set<T> filterResult(Set<T> matched)
    {
       return Beans.removeDisabledAndSpecializedBeans(matched, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes(), getBeanManager().getSpecializedBeans());
-   }
-
-   @Override
-   protected Iterable<ResolvableTransformer<Resolvable>> getTransformers()
-   {
-      return transformers;
    }
 
    @Override

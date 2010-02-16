@@ -23,17 +23,24 @@ import static org.jboss.weld.logging.messages.ResolutionMessage.CANNOT_EXTRACT_R
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Provider;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -53,45 +60,39 @@ public class ResolvableBuilder
       this.mappedQualifiers = new HashMap<Class<? extends Annotation>, Annotation>();
    }
 
-   public ResolvableBuilder setType(Type type)
+   public ResolvableBuilder(Type type)
    {
-      if (rawType != null)
+      this();
+      if (type != null)
       {
-         throw new IllegalStateException("Cannot change type once set");
+         this.rawType = Reflections.getRawType(type);
+         if (rawType == null)
+         {
+            throw new ForbiddenArgumentException(CANNOT_EXTRACT_RAW_TYPE, type);
+         }
+         this.types.add(type);
       }
-      if (type == null)
-      {
-         throw new IllegalArgumentException("type cannot be null");
-      }
-      this.rawType = Reflections.getRawType(type);
-      if (rawType == null)
-      {
-         throw new ForbiddenArgumentException(CANNOT_EXTRACT_RAW_TYPE, type);
-      }
-      this.types.add(type);
-      return this;
    }
-   
-   public ResolvableBuilder setInjectionPoint(InjectionPoint injectionPoint)
+
+   public ResolvableBuilder(InjectionPoint injectionPoint)
    {
-      setType(injectionPoint.getType());
+      this(injectionPoint.getType());
       addQualifiers(injectionPoint.getQualifiers());
       setDeclaringBean(injectionPoint.getBean());
-      return this;
    }
-   
+
    public ResolvableBuilder setDeclaringBean(Bean<?> declaringBean)
    {
       this.declaringBean = declaringBean;
       return this;
    }
-   
+
    public ResolvableBuilder addType(Type type)
    {
       this.types.add(type);
       return this;
    }
-   
+
    public ResolvableBuilder addTypes(Set<Type> types)
    {
       this.types.addAll(types);
@@ -104,17 +105,64 @@ public class ResolvableBuilder
       {
          this.qualifiers.add(DefaultLiteral.INSTANCE);
       }
+      if (Reflections.isAssignableFrom(Event.class, types))
+      {
+         return createFacade(Event.class);
+      }
+      else if (Reflections.isAssignableFrom(Instance.class, types))
+      {
+         return createFacade(Instance.class);
+      }
+      else if (Reflections.isAssignableFrom(Provider.class, types))
+      {
+         return createFacade(Provider.class);
+      }
+      else
+      {
+         return new ResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean);
+      }
+   }
+
+   private Resolvable createFacade(Class<?> rawType)
+   {
+      Set<Annotation> qualifiers = Collections.<Annotation> singleton(AnyLiteral.INSTANCE);
+      Set<Type> types = Collections.<Type> singleton(rawType);
       return new ResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean);
    }
 
    public ResolvableBuilder addQualifier(Annotation qualifier)
    {
+      // Handle the @New qualifier special case
+      if (qualifier.annotationType().equals(New.class))
+      {
+         New newQualifier = New.class.cast(qualifier);
+         if (newQualifier.value().equals(New.class) && rawType == null)
+         {
+            throw new IllegalStateException("Cannot transform @New when there is no known raw type");
+         }
+         else if (newQualifier.value().equals(New.class))
+         {
+            qualifier = new NewLiteral()
+            {
+
+               private static final long serialVersionUID = 1L;
+
+               @Override
+               public Class<?> value()
+               {
+                  return rawType;
+               }
+
+            };
+         }
+      }
+
       checkQualifier(qualifier);
       this.qualifiers.add(qualifier);
       this.mappedQualifiers.put(qualifier.annotationType(), qualifier);
       return this;
    }
-   
+
    public ResolvableBuilder addQualifierIfAbsent(Annotation qualifier)
    {
       if (!qualifiers.contains(qualifier))
@@ -214,6 +262,5 @@ public class ResolvableBuilder
       }
 
    }
-
 
 }

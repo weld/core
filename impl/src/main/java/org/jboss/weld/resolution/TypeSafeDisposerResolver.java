@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.resolution;
 
-import java.util.Collections;
 import java.util.Set;
 
 import org.jboss.weld.bean.DisposalMethod;
@@ -57,12 +56,6 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, Dispo
    protected Set<DisposalMethod<?, ?>> filterResult(Set<DisposalMethod<?, ?>> matched)
    {
       return matched;
-   }
-
-   @Override
-   protected Iterable<ResolvableTransformer<Resolvable>> getTransformers()
-   {
-      return Collections.emptySet();
    }
 
    @Override

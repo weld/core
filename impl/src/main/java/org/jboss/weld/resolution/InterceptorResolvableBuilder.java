@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InterceptionType;
 
 import org.jboss.weld.Container;
@@ -21,6 +20,16 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 public class InterceptorResolvableBuilder extends ResolvableBuilder
 {
    
+   public InterceptorResolvableBuilder()
+   {
+      super();
+   }
+
+   public InterceptorResolvableBuilder(Type type)
+   {
+      super(type);
+   }
+
    private InterceptionType interceptionType;
    
    @Override
@@ -81,20 +90,6 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder
    public InterceptorResolvableBuilder setDeclaringBean(Bean<?> declaringBean)
    {
       super.setDeclaringBean(declaringBean);
-      return this;
-   }
-   
-   @Override
-   public InterceptorResolvableBuilder setInjectionPoint(InjectionPoint injectionPoint)
-   {
-      super.setInjectionPoint(injectionPoint);
-      return this;
-   }
-   
-   @Override
-   public InterceptorResolvableBuilder setType(Type type)
-   {
-      super.setType(type);
       return this;
    }
    

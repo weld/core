@@ -543,7 +543,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers)
    {
-      return beanResolver.resolve(new ResolvableBuilder().setType(beanType).addQualifiers(qualifiers).create());
+      return beanResolver.resolve(new ResolvableBuilder(beanType).addQualifiers(qualifiers).create());
    }
 
    public Set<Bean<?>> getBeans(InjectionPoint injectionPoint)
@@ -555,7 +555,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
          {
             Container.instance().services().get(CurrentInjectionPoint.class).push(injectionPoint);
          }
-         return beanResolver.resolve(new ResolvableBuilder().setInjectionPoint(injectionPoint).create());
+         return beanResolver.resolve(new ResolvableBuilder(injectionPoint).create());
       }
       finally
       {
@@ -798,7 +798,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       if (!injectionPoint.isDelegate())
       {
-         Bean<?> resolvedBean = getBean(new ResolvableBuilder().setInjectionPoint(injectionPoint).create());
+         Bean<?> resolvedBean = getBean(new ResolvableBuilder(injectionPoint).create());
          return getReference(injectionPoint, resolvedBean, creationalContext);
       }
       else
@@ -863,7 +863,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings)
    {
-      return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(new InterceptorResolvableBuilder().setInterceptionType(type).setType(Object.class).addQualifiers(interceptorBindings).create()));
+      return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(new InterceptorResolvableBuilder(Object.class).setInterceptionType(type).addQualifiers(interceptorBindings).create()));
    }
 
    /**
