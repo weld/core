@@ -2,6 +2,7 @@ package org.jboss.weld.tests.jsf;
 
 import javax.faces.component.behavior.Behavior;
 import javax.faces.context.FacesContext;
+
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.resources.DefaultResourceLoader;
@@ -15,45 +16,56 @@ import org.testng.annotations.Test;
  * @author Dan Allen
  */
 @Artifact
-public class JsfApiAbstractionTest extends AbstractWeldTest {
+public class JsfApiAbstractionTest extends AbstractWeldTest
+{
+   
    @Test
-   public void testDetectsJsf12Version() {
+   public void testDetectsJsf12Version()
+   {
       JsfApiAbstraction abstraction = new JsfApiAbstraction(getResourceLoaderHidingJsf20Classes());
       assert abstraction.MINIMUM_API_VERSION == 1.2;
       assert abstraction.isApiVersionCompatibleWith(2.0) == false;
    }
 
    @Test
-   public void testLoadsJsf12Classes() {
+   public void testLoadsJsf12Classes()
+   {
       JsfApiAbstraction abstraction = new JsfApiAbstraction(getResourceLoaderHidingJsf20Classes());
       assert FacesContext.class.equals(abstraction.FACES_CONTEXT);
       assert Dummy.class.equals(abstraction.BEHAVIOR_CLASS);
    }
 
    @Test
-   public void testDetectsJsf20Version() {
+   public void testDetectsJsf20Version()
+   {
       JsfApiAbstraction abstraction = new JsfApiAbstraction(getResourceLoader());
       assert abstraction.MINIMUM_API_VERSION == 2.0;
       assert abstraction.isApiVersionCompatibleWith(2.0);
    }
 
    @Test
-   public void testLoadsJsf20Classes() {
+   public void testLoadsJsf20Classes()
+   {
       JsfApiAbstraction abstraction = new JsfApiAbstraction(getResourceLoader());
       assert FacesContext.class.equals(abstraction.FACES_CONTEXT);
       assert Behavior.class.equals(abstraction.BEHAVIOR_CLASS);
    }
 
-   private ResourceLoader getResourceLoader() {
+   private ResourceLoader getResourceLoader()
+   {
       return new DefaultResourceLoader();
    }
 
-   private ResourceLoader getResourceLoaderHidingJsf20Classes() {
-      return new DefaultResourceLoader() {
+   private ResourceLoader getResourceLoaderHidingJsf20Classes()
+   {
+      return new DefaultResourceLoader()
+      {
 
          @Override
-         public Class<?> classForName(String name) {
-            if ("javax.faces.component.behavior.Behavior".equals(name)) {
+         public Class<?> classForName(String name)
+         {
+            if ("javax.faces.component.behavior.Behavior".equals(name))
+            {
                throw new ResourceLoadingException("Hidden class");
             }
             return super.classForName(name);
