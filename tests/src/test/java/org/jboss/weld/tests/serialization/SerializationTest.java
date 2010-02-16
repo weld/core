@@ -45,6 +45,6 @@ public class SerializationTest extends AbstractWeldTest
    @Test(description="http://lists.jboss.org/pipermail/weld-dev/2010-February/002265.html")
    public void testNonSerializableProductInjectedIntoSessionScopedBean()
    {
-      getReference(FooConsumer.class).ping();
+      getReference(LoggerConsumer.class).ping();
    }
 }
