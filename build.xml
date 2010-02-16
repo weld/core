@@ -78,7 +78,15 @@
       </maven>
    </target>
 
-   <target name="explode" depends="check.jboss.home, package">
+	<target name="deploy.datasource">
+		<copy todir="${jboss.home}/server/default/deploy" file="${artifact.dir}/../../../${example.name}-ds.xml"/>
+	</target>
+	
+	<target name="undeploy.datasource">
+		<delete file="${jboss.home}/server/default/deploy/${example.name}-ds.xml" failonerror="false" />
+	</target>
+	
+   <target name="explode" depends="check.jboss.home, package, deploy.datasource">
       <mkdir dir="${jboss.home}/server/default/deploy/${example.name}.${type}" />
       <copy todir="${jboss.home}/server/default/deploy/${example.name}.${type}">
          <fileset dir="${artifact.dir}" />
@@ -92,7 +100,7 @@
       </copy>
    </target>
 
-   <target name="deploy" depends="check.jboss.home, package">
+   <target name="deploy" depends="check.jboss.home, package, deploy.datasource">
       <copy todir="${jboss.home}/server/default/deploy/" file="${artifact.target.dir}/${example.name}.${type}" />
       <echo message="The app can be accessed at ${final.url}" />
    </target>
@@ -119,7 +127,7 @@
       <echo message="The app can be accessed at ${jboss.home}" />
    </target>
 
-   <target name="undeploy" depends="check.jboss.home">
+   <target name="undeploy" depends="check.jboss.home, undeploy.datasource">
       <delete dir="${jboss.home}/server/default/deploy/${example.name}.${type}" failonerror="false" />
       <delete file="${jboss.home}/server/default/deploy/${example.name}.${type}" failonerror="false" />
    </target>
