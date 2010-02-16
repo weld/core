@@ -36,6 +36,8 @@ public class JsfApiAbstraction extends ApiAbstraction implements Service
    // JSF FacesContext
    public final Class<?> FACES_CONTEXT;
    
+   public final Class<?> BEHAVIOR_CLASS;
+   
    public final double MINIMUM_API_VERSION;
    
    public JsfApiAbstraction(ResourceLoader resourceLoader)
@@ -43,6 +45,7 @@ public class JsfApiAbstraction extends ApiAbstraction implements Service
       super(resourceLoader);
       this.UICOMPONENT_CLASS = classForName("javax.faces.component.UIComponent");
       this.FACES_CONTEXT = classForName("javax.faces.context.FacesContext");
+      this.BEHAVIOR_CLASS = classForName("javax.faces.component.behavior.Behavior");
       double version = 2.0;
       if (this.FACES_CONTEXT != null)
       {
