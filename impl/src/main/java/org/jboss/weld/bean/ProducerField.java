@@ -16,9 +16,7 @@
  */
 package org.jboss.weld.bean;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -168,12 +166,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
    public boolean isSpecializing()
    {
       return false;
-   }
-
-   @Override
-   public Set<Class<? extends Annotation>> getStereotypes()
-   {
-      return Collections.emptySet();
    }
 
 }

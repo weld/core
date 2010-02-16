@@ -21,10 +21,8 @@ import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_ME
 import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METHODS;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_NOT_SPECIALIZING;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -296,12 +294,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    public String getId()
    {
       return id;
-   }
-
-   @Override
-   public Set<Class<? extends Annotation>> getStereotypes()
-   {
-      return Collections.emptySet();
    }
 
 }
