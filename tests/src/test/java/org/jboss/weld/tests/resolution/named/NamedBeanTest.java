@@ -36,7 +36,7 @@ public class NamedBeanTest extends AbstractWeldTest
       assert instance != null;
    }
    
-   @Test(description = "WELD-435", groups = "broken")
+   @Test(description = "WELD-435")
    public void testNamedInjectedFieldUsesFieldName()
    {
       assert getReference(NamedBeanConsumer.class).getFoo() != null;

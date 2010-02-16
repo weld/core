@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.INVALID_QUALIFI
 import static org.jboss.weld.logging.messages.ResolutionMessage.CANNOT_EXTRACT_RAW_TYPE;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,12 +35,14 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Named;
 import javax.inject.Provider;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.ForbiddenArgumentException;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.reflection.Reflections;
@@ -78,6 +81,18 @@ public class ResolvableBuilder
    {
       this(injectionPoint.getType());
       addQualifiers(injectionPoint.getQualifiers());
+      if (mappedQualifiers.containsKey(Named.class) && injectionPoint.getMember() instanceof Field)
+      {
+         Named named = (Named) mappedQualifiers.get(Named.class);
+         if (named.value().equals(""))
+         {
+            qualifiers.remove(named);
+            // This is field injection point with an @Named qualifier, with no value specified, we need to assume the name of the field is the value
+            named = new NamedLiteral(injectionPoint.getMember().getName());
+            qualifiers.add(named);
+            mappedQualifiers.put(Named.class, named);
+         }
+      }
       setDeclaringBean(injectionPoint.getBean());
    }
 
