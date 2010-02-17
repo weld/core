@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
 import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -40,6 +41,7 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Qualifier;
 
 import org.jboss.weld.bean.RIBean;
@@ -48,6 +50,7 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 
@@ -146,6 +149,13 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       if (this.observerMethod.isAnnotationPresent(Inject.class))
       {
          throw new DefinitionException(INVALID_INITIALIZER, this);
+      }
+      for (WeldParameter<?, ?> parameter : getMethod().getWeldParameters())
+      {
+         if (parameter.isAnnotationPresent(Named.class) && parameter.getAnnotation(Named.class).value().equals(""))
+         {
+            throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, getMethod());
+         }
       }
 
    }

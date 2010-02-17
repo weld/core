@@ -39,12 +39,14 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_W
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_SPECIFIED_TWICE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NEW_WITH_QUALIFIERS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
@@ -66,6 +68,7 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
+import javax.inject.Named;
 
 import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.weld.bean.AbstractClassBean;
@@ -251,6 +254,10 @@ public class Validator implements Service
       if (ij.getType() instanceof TypeVariable<?>)
       {
          throw new DefinitionException(INJECTION_POINT_WITH_TYPE_VARIABLE, ij);
+      }
+      if (!(ij.getMember() instanceof Field) && ij.getAnnotated().isAnnotationPresent(Named.class) && ij.getAnnotated().getAnnotation(Named.class).value().equals(""))
+      {
+         throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, ij);
       }
       checkFacadeInjectionPoint(ij, Instance.class);
       checkFacadeInjectionPoint(ij, Event.class);
