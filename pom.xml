@@ -168,6 +168,13 @@
                   </configuration>
                </execution>
             </executions>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.slf4j:slf4j-simple</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
          </plugin>
       </plugins>
    </build>
