@@ -46,7 +46,9 @@ public class HelloWorld
             System.out.println( "Hello " + argsValidator.getValidParameters().get( 0 ) );
         } else
         {
-            System.out.println( "Please provide just one argument: your first name" );
+           for (String error : argsValidator.getErrors()) {
+              System.out.println( error );
+           }
         }
     }
 
