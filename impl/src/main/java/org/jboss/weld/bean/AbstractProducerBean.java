@@ -288,6 +288,12 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
          }
       }
    }
+   
+   @Override
+   protected void checkType()
+   {
+        
+   }
 
    protected boolean isTypeSerializable(final Class<?> clazz)
    {

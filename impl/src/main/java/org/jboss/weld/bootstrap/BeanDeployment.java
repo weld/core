@@ -18,9 +18,9 @@ package org.jboss.weld.bootstrap;
 
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_ALTERNATIVES;
 import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_DECORATORS;
 import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPTORS;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_ALTERNATIVES;
 
 import java.util.List;
 
@@ -165,7 +165,6 @@ public class BeanDeployment
          if (bean instanceof RIBean<?>)
          {
             ((RIBean<?>) bean).initializeAfterBeanDiscovery();
-            ((RIBean<?>) bean).checkType();
          }
       }
    }

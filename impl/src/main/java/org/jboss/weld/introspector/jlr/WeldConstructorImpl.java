@@ -295,5 +295,10 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
    {
       return Collections.unmodifiableList((List) parameters);
    }
+   
+   public boolean isGeneric()
+   {
+      return getJavaMember().getTypeParameters().length > 0;
+   }
 
 }

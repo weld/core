@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_DESTROY_NULL_BE
 import static org.jboss.weld.logging.messages.BeanMessage.EJB_CANNOT_BE_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.EJB_CANNOT_BE_INTERCEPTOR;
 import static org.jboss.weld.logging.messages.BeanMessage.EJB_NOT_FOUND;
+import static org.jboss.weld.logging.messages.BeanMessage.GENERIC_SESSION_BEAN_MUST_BE_DEPENDENT;
 import static org.jboss.weld.logging.messages.BeanMessage.MESSAGE_DRIVEN_BEANS_CANNOT_BE_MANAGED;
 import static org.jboss.weld.logging.messages.BeanMessage.OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
@@ -42,6 +43,7 @@ import java.util.Set;
 
 import javax.decorator.Decorator;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Typed;
@@ -338,6 +340,15 @@ public class SessionBean<T> extends AbstractClassBean<T>
       if (ejbDescriptor.isMessageDriven())
       {
          throw new DefinitionException(MESSAGE_DRIVEN_BEANS_CANNOT_BE_MANAGED, this);
+      }
+   }
+   
+   @Override
+   protected void checkType()
+   {
+      if (!getScope().equals(Dependent.class) && getWeldAnnotated().isGeneric())
+      {
+         throw new DefinitionException(GENERIC_SESSION_BEAN_MUST_BE_DEPENDENT, this);
       }
    }
    

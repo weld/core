@@ -109,6 +109,11 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
       return false;
    }
    
+   public boolean isGeneric()
+   {
+      return false;
+   }
+   
    public Package getPackage()
    {
       return declaringMember.getPackage();

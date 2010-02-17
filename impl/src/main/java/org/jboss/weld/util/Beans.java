@@ -408,7 +408,7 @@ public class Beans
                {
                   throw new DefinitionException(INITIALIZER_CANNOT_BE_OBSERVER, method, type);
                }
-               else if (method.getJavaMember().getTypeParameters().length > 0)
+               else if (method.isGeneric())
                {
                   throw new DefinitionException(INITIALIZER_METHOD_IS_GENERIC, method, type);
                }

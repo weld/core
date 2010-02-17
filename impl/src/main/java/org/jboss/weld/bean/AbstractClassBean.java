@@ -183,18 +183,12 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    @Override
    public void initializeAfterBeanDiscovery()
    {
-      super.initializeAfterBeanDiscovery();
       initDecorators();
       if (hasDecorators())
       {
          initProxyClassForDecoratedBean();
       }
-   }
-
-   @Override
-   public void checkType()
-   {
-
+      super.initializeAfterBeanDiscovery();
    }
 
    public void initDecorators()

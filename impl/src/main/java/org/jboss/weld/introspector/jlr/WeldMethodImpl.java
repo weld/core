@@ -228,5 +228,10 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    {
       return Collections.unmodifiableList((List) parameters);
    }
+   
+   public boolean isGeneric()
+   {
+      return getJavaMember().getTypeParameters().length > 0;
+   }
 
 }

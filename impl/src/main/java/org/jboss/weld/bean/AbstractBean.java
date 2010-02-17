@@ -130,6 +130,14 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       }
    }
    
+   @Override
+   public void initializeAfterBeanDiscovery()
+   {
+      checkType();
+   }
+   
+   protected abstract void checkType();
+   
    protected void addInjectionPoint(WeldInjectionPoint<?, ?> injectionPoint)
    {
       if (injectionPoint.isAnnotationPresent(Delegate.class))

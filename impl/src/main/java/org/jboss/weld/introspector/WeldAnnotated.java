@@ -119,6 +119,8 @@ public interface WeldAnnotated<T, S> extends Annotated
     * @return True if static, false otherwise
     */
    public boolean isStatic();
+   
+   public boolean isGeneric();
 
    /**
     * Indicates if this AnnotatedItem represents a final element

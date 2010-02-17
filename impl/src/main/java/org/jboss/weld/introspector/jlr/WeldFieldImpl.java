@@ -134,5 +134,10 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
    {
       return new StringBuilder().append("field ").append(getDeclaringType().getName()).append(".").append(field.getName()).toString();
    }
+   
+   public boolean isGeneric()
+   {
+      return false;
+   }
 
 }

@@ -71,16 +71,8 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
     * 
     * @param environment
     */
-   public void initializeAfterBeanDiscovery()
-   {
-      // no-op by default
-   }
-
-    public void checkType()
-    {
-
-    }
-
+   public abstract void initializeAfterBeanDiscovery();
+    
    public abstract boolean isSpecializing();
 
    public boolean isDependent()

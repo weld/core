@@ -600,6 +600,11 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    {
       return Modifier.isFinal(getJavaClass().getModifiers());
    }
+   
+   public boolean isGeneric()
+   {
+      return getJavaClass().getTypeParameters().length > 0;
+   }
 
    /**
     * Gets the name of the type

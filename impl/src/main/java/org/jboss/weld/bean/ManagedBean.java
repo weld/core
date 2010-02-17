@@ -377,7 +377,6 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    @Override
    public void initializeAfterBeanDiscovery()
    {
-      super.initializeAfterBeanDiscovery();
       if (this.passivationCapableBean && this.hasDecorators())
       {
          for (Decorator<?> decorator : this.getDecorators())
@@ -411,6 +410,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             }
          }
       }
+      super.initializeAfterBeanDiscovery();
    }
 
    private void initPassivationCapable()
@@ -454,7 +454,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     * Validates the type
     */
    @Override
-   public void checkType()
+   protected void checkType()
    {
       if (getWeldAnnotated().isAnonymousClass() || (getWeldAnnotated().isMemberClass() && !getWeldAnnotated().isStatic()))
       {

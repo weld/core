@@ -226,6 +226,12 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
          }
       }
    }
+   
+   @Override
+   protected void checkType()
+   {
+      
+   }
 
    @Override
    public Class<T> getType()

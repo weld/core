@@ -47,6 +47,11 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
       // No-op
    }
 
+   @Override
+   public void initializeAfterBeanDiscovery()
+   {
+      // No-op  
+   }
    
    public Set<Annotation> getQualifiers()
    {
