@@ -408,6 +408,43 @@ public class HelloWorld
 
          <section>
 
+            <title>Thread Context</title>
+
+            <para>In contrast to Java EE applications, Java SE applications place no restrictions
+               on developers regarding the creation and usage of threads.
+               Therefore Weld SE provides a custom scope annotation, <literal>@ThreadScoped</literal>,
+               and corresponding context implementation which can be used to bind bean instances
+               to the current thread. It is intended to be used in scenarios where you might otherwise
+               use <literal>ThreadLocal</literal>, and does in fact use
+               <literal>ThreadLocal</literal> under the hood.
+            </para>
+
+            <para>
+               To use the @ThreadScoped annotation you need to enable the <literal>RunnableDecorator</literal>
+               which 'listens' for all executions of <literal>Runnable.run()</literal> and
+               decorates them by setting up the thread context beforehand, bound to
+               the current thread, and destroying the context afterwards.
+            </para>
+
+ <programlisting role="XML"><![CDATA[<beans>
+  <decorators>
+     <decorator>org.jboss.weld.environment.se.threading.RunnableDecorator</decorator>
+  </decorator>
+</beans>]]></programlisting>
+
+            <note>
+               <para>It is not necessary to use @ThreadScoped in all
+                  multithreaded applications. The thread context is not intended 
+                  as a replacement for defining your own application-specific contexts.
+                  It is generally only useful in situtations where you would otherwise
+                  have used ThreadLocal directly, which are typically rare.
+               </para>
+            </note>
+
+        </section>
+
+         <section>
+
             <title>Setting the Classpath</title>
 
             <para>Weld SE comes packaged as a 'shaded' jar which includes the CDI API,
