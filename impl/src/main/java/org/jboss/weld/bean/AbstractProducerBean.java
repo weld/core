@@ -26,8 +26,9 @@ import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_PRODU
 import static org.jboss.weld.logging.messages.BeanMessage.NULL_NOT_ALLOWED_FROM_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.ONLY_ONE_SCOPE_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_CAST_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_WILDCARD_RETURN_TYPE_MUST_BE_DEPENDENT;
 import static org.jboss.weld.logging.messages.BeanMessage.RETURN_TYPE_MUST_BE_CONCRETE;
-import static org.jboss.weld.logging.messages.BeanMessage.TYPE_PARAMETER_MUST_BE_CONCRETE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
 
@@ -172,11 +173,18 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
       {
          throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, getWeldAnnotated().getBaseType());
       }
-      for (Type type : getWeldAnnotated().getActualTypeArguments())
+      else if (getWeldAnnotated().isParameterizedType())
       {
-         if (!(type instanceof Class<?>))
+         for (Type type : getWeldAnnotated().getActualTypeArguments())
          {
-            throw new DefinitionException(TYPE_PARAMETER_MUST_BE_CONCRETE, this.getWeldAnnotated());
+            if (!Dependent.class.equals(getScope()) && type instanceof TypeVariable<?>)
+            {
+               throw new DefinitionException(PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT, getWeldAnnotated());
+            }
+            else if (type instanceof WildcardType)
+            {
+               throw new DefinitionException(PRODUCER_METHOD_WITH_WILDCARD_RETURN_TYPE_MUST_BE_DEPENDENT, getWeldAnnotated());
+            }
          }
       }
    }
