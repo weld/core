@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
+import java.lang.reflect.ParameterizedType;
+
 import javax.enterprise.inject.IllegalProductException;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.testharness.impl.packaging.Artifact;
@@ -58,6 +61,27 @@ public class InjectionPointTest extends AbstractWeldTest
    public void testGetDeclaringType()
    {
       assert getReference(GrassyField.class).getCow().getName().equals("daisy");
+   }
+   
+   @Test(description = "WELD-438")
+   public void testInjectionPointWhenInstanceGetIsUsed() throws Exception
+   {
+      Pig pig = getReference(PigSty.class).getPig();
+      assert pig != null;
+      assert pig.getInjectionPoint().getBean() != null;
+      assert pig.getInjectionPoint().getBean().getBeanClass().equals(PigSty.class);
+      assert pig.getInjectionPoint().getMember().equals(PigSty.class.getDeclaredField("pig"));
+      assert pig.getInjectionPoint().getAnnotated() != null;
+      assert pig.getInjectionPoint().getAnnotated().getBaseType() instanceof ParameterizedType;
+      ParameterizedType parameterizedType = ((ParameterizedType) pig.getInjectionPoint().getAnnotated().getBaseType());
+      assert parameterizedType.getRawType().equals(Instance.class);
+      assert parameterizedType.getActualTypeArguments().length == 1;
+      assert parameterizedType.getActualTypeArguments()[0].equals(Pig.class);
+      assert pig.getInjectionPoint().getAnnotated().isAnnotationPresent(Special.class);
+      assert !pig.getInjectionPoint().getAnnotated().isAnnotationPresent(ExtraSpecial.class);
+      assert Utils.annotationSetMatches(pig.injectionPoint.getQualifiers(), Special.class, ExtraSpecial.class);
+      assert Pig.class.equals(pig.getInjectionPoint().getType());
+      
    }
 
 }

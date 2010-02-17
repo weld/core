@@ -26,44 +26,70 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-public class DummyInjectionPoint implements InjectionPoint
+import org.jboss.weld.util.collections.Arrays2;
+
+public class SimpleInjectionPoint implements InjectionPoint
 {
    
-   public static final DummyInjectionPoint INSTANCE = new DummyInjectionPoint();
+   public static final InjectionPoint EMPTY_INJECTION_POINT = new SimpleInjectionPoint(false, false, Object.class, Collections.<Annotation>emptySet(), null, null, null); 
    
+   private final boolean _transient;
+   private final boolean delegate;
+   private final Type type;
+   private final Set<Annotation> qualifiers;
+   private final Member member;
+   private final Bean<?> bean;
+   private final Annotated annotated;
+   
+   public SimpleInjectionPoint(boolean _transient, boolean delegate, Type type, Set<Annotation> qualifiers, Member member, Bean<?> bean, Annotated annotated)
+   {
+      this._transient = _transient;
+      this.delegate = delegate;
+      this.type = type;
+      this.qualifiers = qualifiers;
+      this.member = member;
+      this.bean = bean;
+      this.annotated = annotated;
+   }
+   
+   public SimpleInjectionPoint(boolean _transient, boolean delegate, Type type, Annotation[] qualifiers, Member member, Bean<?> bean, Annotated annotated)
+   {
+      this(_transient, delegate, type, Arrays2.asSet(qualifiers), member, bean, annotated);
+   }
+
    public boolean isTransient()
    {
-      return true;
+      return _transient;
    }
 
    public boolean isDelegate()
    {
-      return false;
+      return delegate;
    }
 
    public Type getType()
    {
-      return InjectionPoint.class;
+      return type;
    }
 
    public Set<Annotation> getQualifiers()
    {
-      return Collections.emptySet();
+      return qualifiers;
    }
 
    public Member getMember()
    {
-      return null;
+      return member;
    }
 
    public Bean<?> getBean()
    {
-      return null;
+      return bean;
    }
 
    public Annotated getAnnotated()
    {
-      return null;
+      return annotated;
    }
    
 }

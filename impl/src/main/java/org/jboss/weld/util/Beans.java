@@ -124,7 +124,11 @@ public class Beans
     */
    public static boolean isPassivatingScope(Bean<?> bean, BeanManagerImpl manager)
    {
-      if (bean instanceof SessionBean<?>)
+      if (bean == null)
+      {
+         return false;
+      }
+      else if (bean instanceof SessionBean<?>)
       {
          return ((SessionBean<?>) bean).getEjbDescriptor().isStateful();
       }

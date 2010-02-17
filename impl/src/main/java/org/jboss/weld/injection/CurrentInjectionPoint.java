@@ -73,19 +73,6 @@ public class CurrentInjectionPoint implements Service
          return null;
       }
    }
-   
-   public void pushDummy()
-   {
-      currentInjectionPoint.get().push(DummyInjectionPoint.INSTANCE);
-   }
-   
-   public void popDummy()
-   {
-      if (!currentInjectionPoint.get().isEmpty() && DummyInjectionPoint.INSTANCE.equals(currentInjectionPoint.get().peek()))
-      {
-         currentInjectionPoint.get().pop();
-      }
-   }
 
    public void cleanup()
    {

@@ -37,6 +37,7 @@ import javax.enterprise.util.TypeLiteral;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.SimpleInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.util.Beans;
@@ -67,17 +68,18 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    public T get()
    {      
       Bean<?> bean = getBeanManager().getBean(new ResolvableBuilder(getType()).addQualifiers(getQualifiers()).setDeclaringBean(getInjectionPoint().getBean()).create());
-      // Push in an empty CC to ensure that we don't get the CC of whatever is injecting the bean containing the Instance injection point
+      // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the qualifiers and type
+      InjectionPoint ip = new SimpleInjectionPoint(getInjectionPoint().isTransient(), getInjectionPoint().isDelegate(), getType(), getQualifiers(), getInjectionPoint().getMember(), getInjectionPoint().getBean(), getInjectionPoint().getAnnotated());
       try
-      {
-         Container.instance().services().get(CurrentInjectionPoint.class).pushDummy();
+      {   
+         Container.instance().services().get(CurrentInjectionPoint.class).push(ip);
          @SuppressWarnings("unchecked")
          T instance = (T) getBeanManager().getReference(bean, getType(), getBeanManager().createCreationalContext(bean));
          return instance;
       }
       finally
       {
-         Container.instance().services().get(CurrentInjectionPoint.class).popDummy();
+         Container.instance().services().get(CurrentInjectionPoint.class).pop();
       }
    }
 

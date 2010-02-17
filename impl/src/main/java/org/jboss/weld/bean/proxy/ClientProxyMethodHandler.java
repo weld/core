@@ -33,6 +33,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.SimpleInjectionPoint;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
@@ -134,16 +135,16 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
          creationalContext = currentCreationalContext.get().getCreationalContext(bean);
          outer = false;
       }
+      Context context = Container.instance().deploymentManager().getContext(bean.getScope());
       try
       {
-         Context context = Container.instance().deploymentManager().getContext(bean.getScope());
          // Ensure that there is no injection point associated
-         Container.instance().services().get(CurrentInjectionPoint.class).pushDummy();
+         Container.instance().services().get(CurrentInjectionPoint.class).push(SimpleInjectionPoint.EMPTY_INJECTION_POINT);
          return context.get(bean, creationalContext);
       }
       finally
       {
-         Container.instance().services().get(CurrentInjectionPoint.class).popDummy();
+         Container.instance().services().get(CurrentInjectionPoint.class).pop();
          if (outer)
          {
             currentCreationalContext.remove();

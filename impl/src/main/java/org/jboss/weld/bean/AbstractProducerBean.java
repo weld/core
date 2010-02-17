@@ -59,7 +59,6 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalProductException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.injection.DummyInjectionPoint;
 import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -256,34 +255,33 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
          }
          InjectionPoint injectionPoint = Container.instance().services().get(CurrentInjectionPoint.class).peek();
-         if (injectionPoint == null || injectionPoint.equals(DummyInjectionPoint.INSTANCE))
+         if (injectionPoint != null && injectionPoint.getBean() != null)
          {
-            return;
-         }
-         if (!instanceSerializable && Beans.isPassivatingScope(injectionPoint.getBean(), beanManager))
-         {
-            if (injectionPoint.getMember() instanceof Field)
+            if (!instanceSerializable && Beans.isPassivatingScope(injectionPoint.getBean(), beanManager))
             {
-               if (!injectionPoint.isTransient() && instance != null && !instanceSerializable)
+               if (injectionPoint.getMember() instanceof Field)
                {
-                  throw new IllegalProductException(NON_SERIALIZABLE_FIELD_INJECTION_ERROR, this, injectionPoint);
+                  if (!injectionPoint.isTransient() && instance != null && !instanceSerializable)
+                  {
+                     throw new IllegalProductException(NON_SERIALIZABLE_FIELD_INJECTION_ERROR, this, injectionPoint);
+                  }
                }
-            }
-            else if (injectionPoint.getMember() instanceof Method)
-            {
-               Method method = (Method) injectionPoint.getMember();
-               if (method.isAnnotationPresent(Inject.class))
+               else if (injectionPoint.getMember() instanceof Method)
                {
-                  throw new IllegalProductException(NON_SERIALIZABLE_INITIALIZER_PARAM_INJECTION_ERROR, this, injectionPoint);
+                  Method method = (Method) injectionPoint.getMember();
+                  if (method.isAnnotationPresent(Inject.class))
+                  {
+                     throw new IllegalProductException(NON_SERIALIZABLE_INITIALIZER_PARAM_INJECTION_ERROR, this, injectionPoint);
+                  }
+                  if (method.isAnnotationPresent(Produces.class))
+                  {
+                     throw new IllegalProductException(NON_SERIALIZABLE_PRODUCER_PARAM_INJECTION_ERROR, this, injectionPoint);
+                  }
                }
-               if (method.isAnnotationPresent(Produces.class))
+               else if (injectionPoint.getMember() instanceof Constructor<?>)
                {
-                  throw new IllegalProductException(NON_SERIALIZABLE_PRODUCER_PARAM_INJECTION_ERROR, this, injectionPoint);
+                  throw new IllegalProductException(NON_SERIALIZABLE_CONSTRUCTOR_PARAM_INJECTION_ERROR, this, injectionPoint);
                }
-            }
-            else if (injectionPoint.getMember() instanceof Constructor<?>)
-            {
-               throw new IllegalProductException(NON_SERIALIZABLE_CONSTRUCTOR_PARAM_INJECTION_ERROR, this, injectionPoint);
             }
          }
       }
