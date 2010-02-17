@@ -103,6 +103,18 @@
             </methods>
          </class>
          
+         <!-- CDITCK-111 -->
+         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanTest">
+            <methods>
+               <exclude name="testForEachEnterpriseBeanANewBeanExists" />
+               <exclude name="testNewBeanHasNoBeanELName" />
+               <exclude name="testNewBeanHasNoObservers" />
+               <exclude name="testNewBeanHasNoStereotypes" />
+               <exclude name="testNewBeanIsDependentScoped" />
+               <exclude name="testNewBeanIsHasOnlyNewBinding" />
+            </methods>
+         </class>
+         
          <!-- Issues in Weld (the RI) -->
 
          <!-- WELD-390 fixed, but TCK test is broken in 1.0.1-CR1 -->
