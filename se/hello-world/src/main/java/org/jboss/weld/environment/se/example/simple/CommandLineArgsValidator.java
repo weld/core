@@ -47,7 +47,7 @@ public class CommandLineArgsValidator
         if (validParams.size() != 1)
         {
             errors.add( "Please supply just one parameter: your first name" );
-            validParams = Collections.EMPTY_LIST;
+            validParams = Collections.emptyList();
         }
     }
 
