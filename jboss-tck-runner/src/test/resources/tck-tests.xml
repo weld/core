@@ -149,6 +149,13 @@
             </methods>
          </class>
          
+         <!-- CDKTCK-112 -->
+         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.broken.singletonWithConversationScope.SingletonWithConversationScopeTest">
+            <methods>
+               <exclude name="testSingletonWithConversationScopeFails" />
+            </methods>
+         </class>
+         
          
          <!-- Issues in Weld (the RI) -->
 
