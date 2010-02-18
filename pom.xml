@@ -86,7 +86,7 @@
    </modules>
 
    <properties>
-      <jsf.version>2.0.0-RC</jsf.version>
+      <jsf.version>2.0.2-FCS</jsf.version>
       <weld.api.version>1.0-SP1</weld.api.version>
       <weld.wicket.version>1.0.1-CR2</weld.wicket.version>
       <weld.se.version>1.0.1-CR2</weld.se.version>
