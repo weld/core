@@ -140,6 +140,15 @@
             </methods>
          </class>
          
+         <!-- CDITCK-111 -->
+         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanICTest">
+            <methods>
+               <exclude name="testNewBeanHasNoDisposalMethods" />
+               <exclude name="testNewBeanHasNoProducerMethods" />
+               <exclude name="testNewBeanHasSameInitializers" />
+            </methods>
+         </class>
+         
          
          <!-- Issues in Weld (the RI) -->
 
