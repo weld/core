@@ -13,16 +13,6 @@
    <packaging>ear</packaging>
    <name>Weld Examples: PasteCode (ear)</name>
    
-   <pluginRepositories>
-        <pluginRepository>
-            <id>codehaus snapshot repository</id>
-            <url>http://snapshots.repository.codehaus.org/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
-   
    <dependencies>
    
       <dependency>
