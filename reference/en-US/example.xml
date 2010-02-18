@@ -31,7 +31,7 @@ public class Credentials {
          <h:outputLabel for="username">Username:</h:outputLabel>
          <h:inputText id="username" value="#{credentials.username}"/>
          <h:outputLabel for="password">Password:</h:outputLabel>
-         <h:inputText id="password" value="#{credentials.password}"/>
+         <h:inputSecret id="password" value="#{credentials.password}"/>
       </f:validateBean>
    </h:panelGrid>
    <h:commandButton value="Login" action="#{login.login}" rendered="#{!login.loggedIn}"/>
