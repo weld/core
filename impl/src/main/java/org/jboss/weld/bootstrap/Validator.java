@@ -25,6 +25,12 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREF
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_SPECIALIZED_TOO_MANY_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_SPECIFIED_TWICE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_DISPOSER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DISPOSAL_METHODS_WITHOUT_PRODUCER;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_BEAN;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_DEPENDENT_BEAN;
@@ -61,8 +67,10 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
+import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -304,7 +312,8 @@ public class Validator implements Service
 
    public void validateDeployment(BeanManagerImpl manager, BeanDeployerEnvironment environment)
    {
-      validateBeans(manager.getDecorators(), new ArrayList<RIBean<?>>(), manager);
+      validateDecorators(manager.getDecorators(), new ArrayList<RIBean<?>>(), manager);
+      validateInterceptors(manager.getInterceptors());
       validateBeans(manager.getBeans(), new ArrayList<RIBean<?>>(), manager);
       validateEnabledDecoratorClasses(manager);
       validateEnabledInterceptorClasses(manager);
@@ -320,6 +329,61 @@ public class Validator implements Service
          if (bean instanceof RIBean<?>)
          {
             validateRIBean((RIBean<?>) bean, manager, specializedBeans);
+         }
+         else
+         {
+            validateBean(bean, manager);
+         }
+      }
+   }
+
+   public void validateInterceptors(Collection<? extends Interceptor<?>> interceptors)
+   {
+      for (Interceptor<?> interceptor : interceptors)
+      {
+         // TODO: confirm that producer methods, fields and disposers can be only found on Weld interceptors?
+         if (interceptor instanceof InterceptorImpl)
+         {
+            if (!((InterceptorImpl<?>) interceptor).getWeldAnnotated().getWeldMethods(Produces.class).isEmpty())
+            {
+               throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS, interceptor);
+            }
+            if (!((InterceptorImpl<?>) interceptor).getWeldAnnotated().getWeldFields(Produces.class).isEmpty())
+            {
+               throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS, interceptor);
+            }
+            if (!((InterceptorImpl<?>) interceptor).getWeldAnnotated().getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty())
+            {
+               throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS, interceptor);
+            }
+         }
+      }
+   }
+
+   public void validateDecorators(Collection<? extends Decorator<?>> beans, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager)
+   {
+      for (Bean<?> bean : beans)
+      {
+         if (bean instanceof RIBean<?>)
+         {
+            validateRIBean((RIBean<?>) bean, manager, specializedBeans);
+
+            if (bean instanceof WeldDecorator)
+            {
+               if (!((WeldDecorator) bean).getWeldAnnotated().getWeldMethods(Produces.class).isEmpty())
+               {
+                  throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_METHODS, bean);
+               }
+               if (!((WeldDecorator) bean).getWeldAnnotated().getWeldFields(Produces.class).isEmpty())
+               {
+                  throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS, bean);
+               }
+               if (!((WeldDecorator) bean).getWeldAnnotated().getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty())
+               {
+                  throw new DefinitionException(DECORATORS_CANNOT_HAVE_DISPOSER_METHODS, bean);
+               }
+            }
+
          }
          else
          {
