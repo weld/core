@@ -14,35 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.ejb.mdb;
+package org.jboss.weld.tests.ejb.mdb.dummy;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
-import javax.inject.Inject;
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.TextMessage;
 
 @MessageDriven(activationConfig={
       @ActivationConfigProperty(propertyName="destinationType", propertyValue="javax.jms.Queue"),
-      @ActivationConfigProperty(propertyName="destination",     propertyValue="queue/testQueue")
+      @ActivationConfigProperty(propertyName="destination",     propertyValue="queue/DLQ")
   })
 public class MilkMan implements MessageListener
 {
    
-   @Inject Control control;
 
    public void onMessage(Message message)
    {
-      try
-      {
-         control.setMessageDelivered(((TextMessage) message).getText().equals(EJBTest.MESSAGE));
-      }
-      catch (JMSException e)
-      {
-         throw new RuntimeException(e);
-      }
+   
    }
 
 }

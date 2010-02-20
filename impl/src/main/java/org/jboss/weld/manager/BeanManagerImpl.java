@@ -1027,7 +1027,14 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor)
    {
-      return getBean(descriptor).getInjectionTarget();
+      if (descriptor.isMessageDriven())
+      {
+         return createInjectionTarget(createAnnotatedType(descriptor.getBeanClass()));
+      }
+      else
+      {
+         return getBean(descriptor).getInjectionTarget();
+      }
    }
 
    public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean)

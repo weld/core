@@ -14,15 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.ejb.mdb;
-
-import javax.jms.Queue;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueSender;
-import javax.jms.QueueSession;
-import javax.jms.Session;
-import javax.naming.InitialContext;
+package org.jboss.weld.tests.ejb.mdb.dummy;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.IntegrationTest;
@@ -39,19 +31,9 @@ public class EJBTest extends AbstractWeldTest
    
    public static final String MESSAGE = "Hello!";
    
-   @Test(groups="broken")
-   // TODO Need a way to deploy test-destinations-service.xml to JBoss AS
-   public void testMdbUsable() throws Exception
+   @Test
+   public void testMdbDeploys()
    {
-      InitialContext ctx = new InitialContext();
-      QueueConnectionFactory factory = (QueueConnectionFactory) ctx.lookup("ConnectionFactory");
-      QueueConnection connection = factory.createQueueConnection();
-      QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-      Queue queue = (Queue) ctx.lookup("queue/testQueue");
-      QueueSender sender = session.createSender(queue);
-      sender.send(session.createTextMessage(MESSAGE));
-      Thread.sleep(1000);
-      assert getReference(Control.class).isMessageDelivered();
    }
    
 }
