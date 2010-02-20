@@ -28,6 +28,7 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_
 import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
+import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -385,21 +386,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
    }
    
-   private <T> Set<Iterable<T>> buildAccessibleClosure(Collection<BeanManagerImpl> hierarchy, Transform<T> transform)
-   {
-      Set<Iterable<T>> result = new HashSet<Iterable<T>>();
-      hierarchy.add(this);
-      result.add(transform.transform(this));
-      for (BeanManagerImpl beanManager : accessibleManagers)
-      {
-         // Only add if we aren't already in the tree (remove cycles)
-         if (!hierarchy.contains(beanManager))
-         {
-            result.addAll(beanManager.buildAccessibleClosure(new ArrayList<BeanManagerImpl>(hierarchy), transform));
-         }
-      }
-      return result;
-   }
+   
    
    private <T> Iterable<T> createDynamicAccessibleIterable(final Transform<T> transform)
    {
@@ -408,7 +395,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
          public Iterator<T> iterator()
          {
-            Set<Iterable<T>> iterable = buildAccessibleClosure(new ArrayList<BeanManagerImpl>(), transform);
+            Set<Iterable<T>> iterable = buildAccessibleClosure(BeanManagerImpl.this, new ArrayList<BeanManagerImpl>(), transform);
             return Iterators.concat(Iterators.transform(iterable.iterator(), IterableToIteratorFunction.<T>instance()));
          }
          
@@ -417,7 +404,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    private <T> Iterable<T> createStaticAccessibleIterable(final Transform<T> transform)
    {
-      Set<Iterable<T>> iterable = buildAccessibleClosure(new ArrayList<BeanManagerImpl>(), transform);
+      Set<Iterable<T>> iterable = buildAccessibleClosure(this, new ArrayList<BeanManagerImpl>(), transform);
       return Iterables.concat(iterable); 
    }
    
@@ -425,6 +412,11 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       accessibleManagers.add(accessibleBeanManager);
       beanResolver.clear();
+   }
+   
+   public HashSet<BeanManagerImpl> getAccessibleManagers()
+   {
+      return accessibleManagers;
    }
 
    public void addBean(Bean<?> bean)

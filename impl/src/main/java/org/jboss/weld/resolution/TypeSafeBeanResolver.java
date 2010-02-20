@@ -105,7 +105,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    @Override
    protected Set<T> filterResult(Set<T> matched)
    {
-      return Beans.removeDisabledAndSpecializedBeans(matched, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes(), getBeanManager().getSpecializedBeans());
+      return Beans.removeDisabledAndSpecializedBeans(matched, beanManager);
    }
 
    @Override

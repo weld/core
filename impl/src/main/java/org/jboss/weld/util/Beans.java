@@ -54,7 +54,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.decorator.Decorator;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
@@ -91,6 +90,7 @@ import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagers;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -580,7 +580,7 @@ public class Beans
     * @param enabledDeploymentTypes The enabled deployment types
     * @return The filtered beans
     */
-   public static <T extends Bean<?>> Set<T> removeDisabledAndSpecializedBeans(Set<T> beans, Collection<Class<?>> enabledAlternativeClasses, Collection<Class<? extends Annotation>> enabledAlternativeSterotypes, Map<Contextual<?>, Contextual<?>> specializedBeans)
+   public static <T extends Bean<?>> Set<T> removeDisabledAndSpecializedBeans(Set<T> beans, BeanManagerImpl beanManager)
    {
       if (beans.size() == 0)
       {
@@ -591,7 +591,7 @@ public class Beans
          Set<T> result = new HashSet<T>();
          for (T bean : beans)
          {
-            if (isBeanEnabled(bean, enabledAlternativeClasses, enabledAlternativeSterotypes) && !isSpecialized(bean, beans, specializedBeans))
+            if (isBeanEnabled(bean, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes()) && !isSpecialized(bean, beans, beanManager))
             {
                result.add(bean);
             }
@@ -661,16 +661,22 @@ public class Beans
     * 
     * @param bean
     * @param beans
-    * @param specializedBeans
+    * @param allSpecializedBeans
     * @return
     */
-   public static <T extends Bean<?>> boolean isSpecialized(T bean, Set<T> beans, Map<Contextual<?>, Contextual<?>> specializedBeans)
+   public static <T extends Bean<?>> boolean isSpecialized(T bean, Set<T> beans, BeanManagerImpl beanManager)
    {
-      if (specializedBeans.containsKey(bean))
+      for (Iterable<BeanManagerImpl> beanManagers : BeanManagers.getAccessibleClosure(beanManager))
       {
-         if (beans.contains(specializedBeans.get(bean)))
+         for (BeanManagerImpl accessibleBeanManager : beanManagers)
          {
-            return true;
+            if (accessibleBeanManager.getSpecializedBeans().containsKey(bean))
+            {
+               if (beans.contains(accessibleBeanManager.getSpecializedBeans().get(bean)))
+               {
+                  return true;
+               }
+            }  
          }
       }
       return false;
