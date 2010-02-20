@@ -70,6 +70,7 @@
 
                   <_exportcontents>
                      javax.inject;
+                     javax.decorator;
                      javax.enterprise.*;
                      version=${osgi.version},
                      org.jboss.weld.context;
