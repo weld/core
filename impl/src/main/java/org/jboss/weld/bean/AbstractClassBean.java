@@ -523,6 +523,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       }
    }
 
+   public boolean hasInterceptors()
+   {
+      return this.isInterceptionCandidate() && (this.hasCdiBoundInterceptors() || this.hasDirectlyDefinedInterceptors());
+   }
+
    protected void initDirectlyDefinedInterceptors()
    {
       if (beanManager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()) == null && InterceptionUtils.supportsEjb3InterceptorDeclaration())

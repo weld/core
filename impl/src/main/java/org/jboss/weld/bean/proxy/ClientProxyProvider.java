@@ -25,7 +25,9 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -91,7 +93,16 @@ public class ClientProxyProvider
    {
       try
       {
-         return Proxies.<T>createProxy(new ClientProxyMethodHandler(bean, id), TypeInfo.of(bean.getTypes()).add(Serializable.class));
+         TypeInfo typeInfo;
+         if ((bean instanceof AbstractClassBean) && ((AbstractClassBean)bean).hasInterceptors())
+         {
+             typeInfo = TypeInfo.of(bean.getTypes()).add(Serializable.class).add(LifecycleMixin.class);
+         }
+         else
+         {
+             typeInfo = TypeInfo.of(bean.getTypes()).add(Serializable.class);
+         }
+         return Proxies.<T>createProxy(new ClientProxyMethodHandler(bean, id), typeInfo);
       }
       catch (InstantiationException e)
       {

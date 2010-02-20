@@ -186,7 +186,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
       public void postConstruct(T instance)
       {
-         if (bean.isInterceptionCandidate() && (bean.hasCdiBoundInterceptors() || bean.hasDirectlyDefinedInterceptors()))
+         if (bean.hasInterceptors())
          {
             InterceptionUtils.executePostConstruct(instance);
          }
@@ -198,13 +198,13 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
       public void preDestroy(T instance)
       {
-         if (!bean.isInterceptionCandidate() || !(bean.hasCdiBoundInterceptors() || bean.hasDirectlyDefinedInterceptors()))
+         if (bean.hasInterceptors())
          {
-            bean.defaultPreDestroy(instance);
+            InterceptionUtils.executePredestroy(instance);
          }
          else
          {
-            InterceptionUtils.executePredestroy(instance);
+            bean.defaultPreDestroy(instance);
          }
       }
 
@@ -244,7 +244,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
             }.run();
          }
-         if (bean.isInterceptionCandidate() && (bean.hasCdiBoundInterceptors() || bean.hasDirectlyDefinedInterceptors()))
+         if (bean.hasInterceptors())
          {
             return bean.applyInterceptors(instance, ctx);
          }
@@ -253,6 +253,8 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             return instance;
          }
       }
+
+
    }
 
    // Logger
