@@ -1,22 +1,19 @@
-package org.jboss.weld.tests.jsf;
+package org.jboss.weld.tests.unit.jsf;
 
 import javax.faces.component.behavior.Behavior;
 import javax.faces.context.FacesContext;
 
-import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.jboss.weld.test.AbstractWeldTest;
 import org.jboss.weld.util.ApiAbstraction.Dummy;
 import org.testng.annotations.Test;
 
 /**
  * @author Dan Allen
  */
-@Artifact
-public class JsfApiAbstractionTest extends AbstractWeldTest
+public class JsfApiAbstractionTest
 {
    
    @Test
