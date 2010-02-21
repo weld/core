@@ -3,13 +3,13 @@
    <parent>
       <artifactId>weld-servlet-parent</artifactId>
       <groupId>org.jboss.weld.servlet</groupId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.1-Final</version>
       <relativePath>../pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld.servlet</groupId>
    <artifactId>weld-servlet-int</artifactId>
-   <version>1.0.1-SNAPSHOT</version>
+   <version>1.0.1-Final</version>
    <packaging>jar</packaging>
    <name>Weld Servlet Integration</name>
    <url>http://www.seamframework.org/Weld</url>
@@ -84,9 +84,9 @@
    </dependencies>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/trunk/int</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/trunk/int</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/servlet/trunk/int</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/tags/1.0.1-Final/int</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/tags/1.0.1-Final/int</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/servlet/tags/1.0.1-Final/int</url>
    </scm>
 
 </project>

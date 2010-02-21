@@ -3,7 +3,7 @@
    <parent>
       <artifactId>weld-servlet-parent</artifactId>
       <groupId>org.jboss.weld.servlet</groupId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.1-Final</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld.servlet</groupId>
@@ -293,9 +293,9 @@
    </profiles>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/trunk/tests</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/trunk/tests</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/servlet/trunk/tests</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/tags/1.0.1-Final/tests</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/tags/1.0.1-Final/tests</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/servlet/tags/1.0.1-Final/tests</url>
    </scm>
 
 </project>
