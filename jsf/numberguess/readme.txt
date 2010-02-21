@@ -49,7 +49,7 @@ Tomcat plugin to access the manager application, then start Tomcat:
  <user username="admin" password="" roles="manager"/>
 
 To override this username and password, add a <server> with id tomcat in your
-Maven 2 settings.xml file, set the <username> and <password> elements to the
+Maven 2 settings.xml file, set the <username> and <password> elqements to the
 appropriate values and uncomment the <server> element inside the
 tomcat-maven-plugin configuration in the pom.xml.
 
@@ -71,12 +71,18 @@ But likely you want to run one or more build goals first before you redeploy:
 The application is available at the following local URL:
 
  http://localhost:8080/weld-numberguess
+ 
+To undeploy, use:
+
+mvn tomcat:undeploy -Ptomcat
 
 == Launching Jetty embedded from Eclipse
 
 First, set up the Eclipse environment:
 
  mvn clean eclipse:clean eclipse:eclipse -Pjetty-ide
+ 
+and import the project into eclipse
  
 Next, put all the needed resources into the src/main/webapp
 

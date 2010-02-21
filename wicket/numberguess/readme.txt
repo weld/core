@@ -5,6 +5,7 @@ run the app, right-click on Start.java in the project and choose "Run as Java
 Application," which will launch jetty with the example.  Then hit 
 http://localhost:8080/
 
-Make sure to use the jetty profile when building your workspace or running maven goals.
+Make sure to use the jetty profile when building your workspace or running maven goals. 
+If you hit problems with classes not found, make sure to clean the project.
 
 Alternatively, you can deploy to JBoss AS using the build.xml file as usual.
