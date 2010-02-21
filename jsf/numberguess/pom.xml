@@ -5,7 +5,7 @@
    <parent>
       <groupId>org.jboss.weld.examples</groupId>
       <artifactId>weld-examples-parent</artifactId>
-      <version>1.0.1-Final</version>
+      <version>1.0.2-SNAPSHOT</version>
       <relativePath>../../pom.xml</relativePath>
    </parent>
 
@@ -761,9 +761,9 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
    </properties>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/tags/1.0.1-Final/jsf/numberguess</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/tags/1.0.1-Final/jsf/numberguess</developerConnection>
-     <url>http://fisheye.jboss.org/browse/weld/examples/tags/1.0.1-Final/jsf/numberguess</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/numberguess</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/jsf/numberguess</developerConnection>
+     <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/numberguess</url>
   </scm>
 
 </project>

@@ -4,7 +4,7 @@
    <parent>
       <groupId>org.jboss.weld.examples</groupId>
       <artifactId>weld-examples-parent</artifactId>
-      <version>1.0.1-Final</version>
+      <version>1.0.2-SNAPSHOT</version>
       <relativePath>../../pom.xml</relativePath>
    </parent>
    <groupId>org.jboss.weld.examples.jsf.translator</groupId>
@@ -61,9 +61,9 @@
    </build>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/tags/1.0.1-Final/jsf/translator</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/tags/1.0.1-Final/jsf/translator</developerConnection>
-     <url>http://fisheye.jboss.org/browse/weld/examples/tags/1.0.1-Final/jsf/translator</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/translator</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/jsf/translator</developerConnection>
+     <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/translator</url>
   </scm>
 
 </project>
