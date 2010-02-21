@@ -95,14 +95,13 @@
 
                   <configuration>
                      <translations>
-                        <translation>it-IT</translation>
-                        <translation>zh-CN</translation>
-                        <translation>zh-TW</translation>
-                        <translation>es-ES</translation>
-                        <translation>ko-KR</translation>
-
-                        <translation>de-DE</translation>
-                        <translation>pt-BR</translation>
+<!--                        <translation>it-IT</translation>-->
+<!--                        <translation>zh-CN</translation>-->
+<!--                        <translation>zh-TW</translation>-->
+<!--                        <translation>es-ES</translation>-->
+<!--                        <translation>ko-KR</translation>-->
+<!--                        <translation>de-DE</translation>-->
+<!--                        <translation>pt-BR</translation>-->
                      </translations>
                   </configuration>
                </plugin>
