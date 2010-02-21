@@ -31,51 +31,12 @@
       </developer>
    </developers>
 
-   <!-- Dependency management, including extra repositories if needed -->
-   <repositories>
-      <repository>
-         <id>repository.jboss.org</id>
-         <name>JBoss Release Repository</name>
-         <url>http://repository.jboss.org/maven2</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </repository>
-      <repository>
-         <id>snapshots.jboss.org</id>
-         <name>JBoss Snapshots Repository</name>
-         <url>http://snapshots.jboss.org/maven2</url>
-         <releases>
-            <enabled>false</enabled>
-         </releases>
-         <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-         </snapshots>
-      </repository>
-      <repository>
-         <id>oss.sonatype.org/jboss-snapshots</id>
-         <name>JBoss (Nexus) Snapshots Repository</name>
-         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
-         <releases>
-            <enabled>false</enabled>
-         </releases>
-         <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-         </snapshots>
-      </repository>
-   </repositories>
-
    <properties>
       <weld.api.version>1.0-SP1</weld.api.version>
       <!-- Override the API and compile with more recent EL API -->
       <google.collections.version>1.0</google.collections.version>
       <javassist.version>3.11.0.GA</javassist.version>
-      <cdi.tck.version>1.0.1-CR1</cdi.tck.version>
+      <cdi.tck.version>1.0.1-Final</cdi.tck.version>
       <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
       <jboss.interceptor.version>1.0.0-CR11</jboss.interceptor.version>
       <slf4j.version>1.5.10</slf4j.version>

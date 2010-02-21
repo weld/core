@@ -17,168 +17,7 @@
       
          <!-- Issues in the TCK -->
          
-         <!-- CDITCK-103 -->
-         <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ContainerEventTest">
-            <methods>
-               <exclude name="testProcessAnnotatedTypeEventFiredForFilter" />
-               <exclude name="testProcessAnnotatedTypeEventFiredForJsfManagedBean" />
-               <exclude name="testProcessAnnotatedTypeEventFiredForServlet" />
-               <exclude name="testProcessAnnotatedTypeEventFiredForServletListener" />
-               <exclude name="testProcessAnnotatedTypeEventFiredForTagHandler" />
-               <exclude name="testProcessAnnotatedTypeEventFiredForTagLibraryListener" />
-               <exclude name="testProcessInjectionTargetEventFiredForJsfManagedBean" />
-               <exclude name="testProcessInjectionTargetEventFiredForTagHandler" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.InjectionIntoNonContextualComponentTest">
-            <methods>
-               <exclude name="testFilterInitializerMethodCalled" />
-               <exclude name="testInjectionIntoFilter" />
-               <exclude name="testInjectionIntoJSFManagedBean" />
-               <exclude name="testInjectionIntoServlet" />
-               <exclude name="testInjectionIntoServletListener" />
-               <exclude name="testInjectionIntoTagHandler" />
-               <exclude name="testInjectionIntoTagLibraryListener" />
-               <exclude name="testServletInitializerMethodCalled" />
-               <exclude name="testServletListenerInitializerMethodCalled" />
-               <exclude name="testTagLibraryListenerInitializerMethodCalled" />
-            </methods>
-         </class>
-         
-         <!-- CDITCK-104, CDITCK-110 -->
-         <class name="org.jboss.jsr299.tck.tests.context.conversation.client.ClientConversationContextTest">
-            <methods>
-               <exclude name="testConversationPropagationToNonExistentConversationLeadsToTransientConversation" />
-            </methods>
-         </class>
-         
-         <!-- CDITCK-104 -->
-         <class name="org.jboss.jsr299.tck.tests.context.conversation.client.InvalidatingSessionDestroysConversationTest">
-            <methods>
-               <exclude name="testInvalidatingSessionDestroysConversation" />
-            </methods>
-         </class>
-         
-         <!-- CDITCK-110 -->
-         <class name="org.jboss.jsr299.tck.tests.context.conversation.client.ClientConversationContextTest">
-            <methods>
-               <exclude name="testConversationsDontCrossSessionBoundary1" />
-               <exclude name="testConversationsDontCrossSessionBoundary2" />
-            </methods>
-         </class>
-         
-         <!-- CDITCK-109 -->
-         <class name="org.jboss.jsr299.tck.tests.context.conversation.ConversationBeginTest">
-            <methods>
-               <exclude name="testBeginAlreadyLongRunningConversationThrowsException" />
-               <exclude name="testConversationBeginMakesConversationLongRunning" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.context.conversation.ConversationContextTest">
-            <methods>
-               <exclude name="testDefaultConversationIsTransient" />
-               <exclude name="testTransientConversationHasNullId" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.context.conversation.ConversationEndTest">
-            <methods>
-               <exclude name="testConversationEndMakesConversationTransient" />
-               <exclude name="testEndTransientConversationThrowsException" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.context.conversation.ConversationIdSetByApplicationTest">
-            <methods>
-               <exclude name="testConversationIdMayBeSetByApplication" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.context.conversation.ConversationIdSetByContainerTest">
-            <methods>
-               <exclude name="testConversationBeginMakesConversationLongRunning" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.context.conversation.ConversationTimeoutTest">
-            <methods>
-               <exclude name="testConversationHasDefaultTimeout" />
-               <exclude name="testSetConversationTimeoutOverride" />
-            </methods>
-         </class>
-         
-         <!-- CDITCK-111 -->
-         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanTest">
-            <methods>
-               <exclude name="testForEachEnterpriseBeanANewBeanExists" />
-               <exclude name="testNewBeanHasNoBeanELName" />
-               <exclude name="testNewBeanHasNoObservers" />
-               <exclude name="testNewBeanHasNoStereotypes" />
-               <exclude name="testNewBeanIsDependentScoped" />
-               <exclude name="testNewBeanIsHasOnlyNewBinding" />
-            </methods>
-         </class>
-         
-         <!-- CDITCK-108 -->
-         <class name="org.jboss.jsr299.tck.tests.context.application.ejb.EJBApplicationContextTest">
-            <methods>
-               <exclude name="testApplicationScopeActiveDuringCallToEjbTimeoutMethod" />
-
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.context.application.ejb.ApplicationContextSharedTest">
-            <methods>
-               <exclude name="testApplicationContextShared" />
-            </methods>
-         </class>
-         
-         <!-- CDITCK-108 -->
-         <class name="org.jboss.jsr299.tck.tests.context.application.ejb.EJBApplicationContextTest">
-            <methods>
-               <exclude name="testApplicationScopeActiveDuringCallToEjbTimeoutMethod" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.context.application.ejb.ApplicationContextSharedTest">
-            <methods>
-               <exclude name="testApplicationContextShared" />
-            </methods>
-         </class>
-         
-         <!-- CDITCK-111 -->
-         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanICTest">
-            <methods>
-               <exclude name="testNewBeanHasNoDisposalMethods" />
-               <exclude name="testNewBeanHasNoProducerMethods" />
-               <exclude name="testNewBeanHasSameInitializers" />
-            </methods>
-         </class>
-         
-         <!-- CDKTCK-112 -->
-         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.broken.singletonWithConversationScope.SingletonWithConversationScopeTest">
-            <methods>
-               <exclude name="testSingletonWithConversationScopeFails" />
-            </methods>
-         </class>
-         
-         <!-- CDKTCK-112 -->
-         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.broken.singletonWithConversationScope.SingletonWithConversationScopeTest">
-            <methods>
-               <exclude name="testSingletonWithConversationScopeFails" />
-            </methods>
-         </class>
-         
-         
          <!-- Issues in Weld (the RI) -->
-
-         <!-- WELD-390 fixed, but TCK test is broken in 1.0.1-CR1 -->
-         <class name="org.jboss.jsr299.tck.interceptors.tests.lifecycleCallback.order.InvocationOrderTest">
-            <methods>
-               <exclude name="testInvocationOrder" />
-            </methods>
-         </class>
-          
-         <!-- WELD-269 -->
-         <class name="org.jboss.jsr299.tck.tests.decorators.custom.CustomDecoratorTest">
-            <methods>
-               <exclude name="testCustomImplementationOfDecoratorInterface" />
-            </methods>
-         </class>
 
          <!-- WELD-401 -->
          <class name="org.jboss.jsr299.tck.tests.event.broken.observer.notBusinessMethod.EJBObserverMethodNotBusinessMethodTest">
@@ -186,20 +25,13 @@
                <exclude name="testObserverMethodOnEnterpriseBeanNotBusinessMethodOrStaticFails" />
             </methods>
          </class>
-
-         <!-- WELD-325 fixed, pending on CDITCK-102 -->.
-         <class name="org.jboss.jsr299.tck.tests.context.dependent.DependentContextTest">
-             <methods>
-                 <exclude name="testDependentScopedInterceptorsAreDependentObjectsOfBean"/>
-             </methods>
-         </class>
          
          <!-- Issues in JBoss AS -->
          
-         <!-- JBAS-7421 -->
-         <class name="org.jboss.jsr299.tck.interceptors.tests.invocationContext.InvocationContextTest">
+         <!-- WELDINT-49 -->
+         <class name="org.jboss.jsr299.tck.tests.lookup.injectionpoint.broken.not.bean.InjectionPointTest">
             <methods>
-               <exclude name="testGetTimerMethod" />
+               <exclude name="testDefinitionErrorDetected" />
             </methods>
          </class>
          
@@ -264,12 +96,6 @@
                <exclude name="testInjectionOnEJBInterceptor" />
             </methods>
          </class>
-         <!-- JBAS-7046 -->
-         <class name="org.jboss.jsr299.tck.tests.context.application.ejb.EJBApplicationContextTest">
-            <methods>
-               <exclude name="testApplicationScopeActiveDuringWebServiceInvocation" />
-            </methods>
-         </class>
          <!-- WELDINT-22 -->
          <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ContainerEventTest">
             <methods>
@@ -287,12 +113,6 @@
                <exclude name="testInjectionIntoTagHandler" />
             </methods>
          </class>
-         <!-- WELDINT-26 -->
-         <class name="org.jboss.jsr299.tck.tests.lookup.injectionpoint.broken.not.bean.InjectionPointTest">
-            <methods>
-               <exclude name="testDefinitionErrorDetected" />
-            </methods>
-         </class>
          <!-- WELDINT-19 -->
          <class name="org.jboss.jsr299.tck.tests.lookup.manager.jndi.ManagerTest">
             <methods>
@@ -307,28 +127,6 @@
                <exclude name="testQualifierNotDeclaredInheritedIsNotInherited" />
                <exclude name="testQualifierDeclaredInheritedIsIndirectlyInherited" />
                <exclude name="testQualifierNotDeclaredInheritedIsNotIndirectlyInherited" />
-            </methods>
-         </class>
-         
-         <!-- JBAS-7677 -->
-         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.definition.EnterpriseBeanDefinitionTest">
-            <methods>
-               <exclude name="testBeanTypesAreLocalInterfacesWithoutWildcardTypesOrTypeVariablesWithSuperInterfaces" />
-               <exclude name="testBeanWithNamedAnnotation" />
-               <exclude name="testBeanWithQualifiers" />
-               <exclude name="testBeanWithScopeAnnotation" />
-               <exclude name="testBeanWithStereotype" />
-               <exclude name="testDefaultName" />
-               <exclude name="testObjectIsInAPITypes" />
-               <exclude name="testRemoteInterfacesAreNotInAPITypes" />
-               <exclude name="testSingletonWithApplicationScopeOK" />
-               <exclude name="testSingletonWithDependentScopeOK" />
-               <exclude name="testStatelessMustBeDependentScoped" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.definition.EnterpriseBeanViaXmlTest">
-            <methods>
-               <exclude name="testEjbDeclaredInXmlNotSimpleBean" />
             </methods>
          </class>
          
