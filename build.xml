@@ -21,19 +21,17 @@
    <property name="pom.file" value="pom.xml" />
 
    <property name="type" value="war" />
-
-   <condition property="war">
-      <equals arg1="${type}" arg2="war" />
-   </condition>
-   <condition property="ear">
-      <equals arg1="${type}" arg2="ear" />
-   </condition>
-
    <condition property="artifact.target.dir" value="${basedir}/target">
       <equals arg1="${type}" arg2="war" />
    </condition>
    <condition property="artifact.target.dir" value="${basedir}/ear/target">
       <equals arg1="${type}" arg2="ear" />
+   </condition>
+   
+   <property name="ds.file" location="${basedir}/${example.name}-ds.xml" />
+   
+   <condition property="deploy.ds">
+      <available file="${ds.file}"/>
    </condition>
 
    <property name="artifact.dir" value="${artifact.target.dir}/${example.name}" />
@@ -78,12 +76,12 @@
       </maven>
    </target>
 
-	<target name="deploy.datasource">
-		<copy todir="${jboss.home}/server/default/deploy" file="${artifact.dir}/../../../${example.name}-ds.xml"/>
+	<target name="deploy.datasource" if="deploy.ds">
+		<copy todir="${jboss.home}/server/default/deploy" file="${ds.file}" />
 	</target>
 	
-	<target name="undeploy.datasource">
-		<delete file="${jboss.home}/server/default/deploy/${example.name}-ds.xml" failonerror="false" />
+	<target name="undeploy.datasource" if="deploy.ds">
+		<delete file="${jboss.home}/server/default/deploy/${example.name}-ds.xml" />
 	</target>
 	
    <target name="explode" depends="check.jboss.home, package, deploy.datasource">
