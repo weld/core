@@ -4,7 +4,7 @@
 
    <groupId>org.jboss.weld.reference-guide</groupId>
    <artifactId>weld-reference-guide</artifactId>
-   <version>1.0.1-Final</version>
+   <version>1.0.2-SNAPSHOT</version>
    <packaging>jdocbook</packaging>
    <name>Weld Reference Guide</name>
    <url>http://www.seamframework.org/Weld</url>
@@ -114,9 +114,9 @@
 
    <scm>
 
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/doc/tags/1.0.1-Final</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/doc/tags/1.0.1-Final</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/doc/tags/1.0.1-Final</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/doc/trunk/reference</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/doc/trunk/reference</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/doc/trunk/reference</url>
    </scm>
    
 </project>
