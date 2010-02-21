@@ -3,12 +3,12 @@
    <parent>
       <artifactId>weld-servlet-parent</artifactId>
       <groupId>org.jboss.weld.servlet</groupId>
-      <version>1.0.1-Final</version>
+      <version>1.0.2-SNAPSHOT</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld.servlet</groupId>
    <artifactId>weld-tomcat-support</artifactId>
-   <version>1.0.1-Final</version>
+   <version>1.0.2-SNAPSHOT</version>
    <packaging>jar</packaging>
    <name>Weld Servlet Integration: Tomcat Support</name>
    <url>http://www.seamframework.org/Weld</url>
@@ -67,9 +67,9 @@
    </dependencies>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/tags/1.0.1-Final/support</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/tags/1.0.1-Final/support</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/servlet/tags/1.0.1-Final/support</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/trunk/support</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/trunk/support</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/servlet/trunk/support</url>
    </scm>
 
 
