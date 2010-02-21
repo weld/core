@@ -49,8 +49,8 @@ public class JspTest extends AbstractWeldTest
       WebClient client = new WebClient();
       client.setThrowExceptionOnFailingStatusCode(false);
       Page page = client.getPage(getPath("/index.jsp"));
-      assert page.getWebResponse().getStatusCode() == 300;
-      System.out.println(page.getWebResponse().getRequestUrl());
+      assert page.getWebResponse().getStatusCode() == 200;
+      assert page.getWebResponse().getRequestUrl().toString().contains("home.jsf");
    }
 
    @Override

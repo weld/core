@@ -33,6 +33,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.jboss.weld.Container;
+import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.conversation.ConversationImpl;
 import org.jboss.weld.jsf.FacesUrlTransformer;
 
@@ -77,11 +79,14 @@ public class ConversationPropagationFilter implements Filter
          @Override
          public void sendRedirect(String path) throws IOException
          {
-            ConversationImpl conversation = conversation(ctx);
-            if (!conversation.isTransient())
+            if (Container.instance().services().get(ContextLifecycle.class).isConversationActive())
             {
-               path = new FacesUrlTransformer(path, FacesContext.getCurrentInstance()).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversation.getUnderlyingId()).encode();
-               conversationManager(ctx).cleanupConversation();
+               ConversationImpl conversation = conversation(ctx);
+               if (!conversation.isTransient())
+               {
+                  path = new FacesUrlTransformer(path, FacesContext.getCurrentInstance()).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversation.getUnderlyingId()).encode();
+                  conversationManager(ctx).cleanupConversation();
+               }
             }
             super.sendRedirect(path);
          }
