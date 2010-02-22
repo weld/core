@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-01-06 12:17+0000\n"
-"PO-Revision-Date: 2009-12-19 18:01-0300\n"
-"Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
+"PO-Revision-Date: 2010-02-21 17:47-0300\n"
+"Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,7 +17,7 @@ msgstr ""
 #: gettingstarted.xml:5
 #, no-c-format
 msgid "Getting started with Weld"
-msgstr ""
+msgstr "Iniciando com o Weld"
 
 #. Tag: para
 #: gettingstarted.xml:7
@@ -32,6 +32,15 @@ msgid ""
 "an enterprise (EAR) example that contains session beans. This example must "
 "be run on JBoss AS 5.2, Glassfish 3.0 or any compliant Java EE 6 container."
 msgstr ""
+"Weld vem com duas aplicações de exemplo para iniciantes, além de exemplos "
+"mais especializados. O primeiro, <literal>weld-numberguess</literal>, é um "
+"exemplo web (WAR) contendo somente managed beans não-transacionais. Este "
+"exemplo pode ser executado em uma ampla variedade de servidores, incluindo "
+"JBoss AS, GlassFish, Apache Tomcat, Jetty, Google App Engine, e qualquer "
+"contêiner Java EE 6 compatível. O segundo exemplo, <literal>weld-translator</"
+"literal>, é um exemplo corporativo (EAR) que contém beans de sessão. Este "
+"exemplo deve executar no JBoss AS 5.2, GlassFish 3.0 ou qualquer contêiner "
+"Java EE 6 compatível."
 
 #. Tag: para
 #: gettingstarted.xml:16
@@ -40,12 +49,14 @@ msgid ""
 "Both examples use JSF 2.0 as the web framework and, as such, can be found in "
 "the <literal>examples/jsf</literal> directory of the Weld distribution."
 msgstr ""
+"Ambos exemplos usam JSF 2.0 como framework web e podem ser encontrados no "
+"diretório <literal>examples/jsf</literal> da distribuição do Weld."
 
 #. Tag: title
 #: gettingstarted.xml:22
 #, no-c-format
 msgid "Prerequisites"
-msgstr ""
+msgstr "Pré-requisitos"
 
 #. Tag: para
 #: gettingstarted.xml:24
@@ -54,24 +65,26 @@ msgid ""
 "To run the examples with the provided build scripts, you'll need the "
 "following:"
 msgstr ""
+"Para executar os exemplos com os scripts de construção fornecidos, você "
+"precisará dos seguintes itens:"
 
 #. Tag: para
 #: gettingstarted.xml:30
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "the latest release of Weld, which contains the examples"
-msgstr "a última versão da Web Beans,"
+msgstr "a última versão do Weld, a qual contém os exemplos"
 
 #. Tag: para
 #: gettingstarted.xml:33
 #, no-c-format
 msgid "Ant 1.7.0, to build and deploy the examples"
-msgstr ""
+msgstr "Ant 1.7.0, para construir e implantar os exemplos"
 
 #. Tag: para
 #: gettingstarted.xml:36
 #, no-c-format
 msgid "a supported runtime environment (minimum versions shown)"
-msgstr ""
+msgstr "um ambiente de execução suportado (versões mínimas requeridas)"
 
 #. Tag: para
 #: gettingstarted.xml:39
@@ -80,24 +93,26 @@ msgid ""
 "JBoss AS 5.2.0 (currently only nightly builds of JBoss AS 5.2.0.Beta1 are "
 "available),"
 msgstr ""
+"JBoss AS 5.2.0 (atualmente somente construções noturnas do JBoss AS 5.2.0."
+"Beta1 estão disponíveis),"
 
 #. Tag: para
 #: gettingstarted.xml:42
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "GlassFish 3.0,"
-msgstr "Utilizando o GlassFish"
+msgstr "GlassFish 3.0,"
 
 #. Tag: para
 #: gettingstarted.xml:45
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Apache Tomcat 6.0.x (WAR example only), or"
-msgstr "Apache Tomcat 6.0.x, e"
+msgstr "Apache Tomcat 6.0.x (somente com o exemplo WAR), ou"
 
 #. Tag: para
 #: gettingstarted.xml:48
 #, no-c-format
 msgid "Jetty 6.1.x (WAR example only)"
-msgstr ""
+msgstr "Jetty 6.1.x (somente com o exemplo WAR)"
 
 #. Tag: para
 #: gettingstarted.xml:53
@@ -105,6 +120,8 @@ msgstr ""
 msgid ""
 "(optionally) Maven 2.x, to run the examples in an embedded servlet container"
 msgstr ""
+"(opcionalmente) Maven 2.x, para executar os exemplos em um contêiner servlet "
+"embutido"
 
 #. Tag: para
 #: gettingstarted.xml:58
@@ -114,6 +131,10 @@ msgid ""
 "supply a partial installation of Ant which cause the build to fail. If you "
 "encounter problems, verify that ant-nodeps.jar is on the classpath."
 msgstr ""
+"Você precisará de uma instalação completa do Ant 1.7.0. Algumas "
+"distribuições Linux fornecem apenas uma instalação parcial do Ant que faz "
+"com que a construção falhe. Se você tiver problemas, verifique se ant-nodeps."
+"jar está no classpath."
 
 #. Tag: para
 #: gettingstarted.xml:64
@@ -125,6 +146,11 @@ msgid ""
 "Tomcat. You can also deploy the generated artifact (WAR or EAR) to any other "
 "container that supports Java EE 6, such as GlassFish 3."
 msgstr ""
+"Nas próximas seções, você usará o comando do Ant (<literal>ant</literal>) "
+"para invocar o script de construção do Ant em cada exemplo para compilar, "
+"montar e implantar o exemplo no JBoss AS e, para o exemplo WAR, no Apache "
+"Tomcat. Você também pode implantar o artefato produzido (WAR ou EAR) em "
+"qualquer outro contêiner que suporte Java EE 6, como o GlassFish 3."
 
 #. Tag: para
 #: gettingstarted.xml:71
@@ -134,6 +160,9 @@ msgid ""
 "literal>) to compile and assemble the standalone artifact (WAR or EAR) and, "
 "for the WAR example, run it in an embedded container."
 msgstr ""
+"Se você tem o Maven instalado, você pode usar o comando do Maven "
+"(<literal>mvn</literal>) para compilar e montar o artefato autônomo (WAR ou "
+"EAR) e, para o exemplo WAR, executá-lo em um contêiner embutido."
 
 #. Tag: para
 #: gettingstarted.xml:76
@@ -142,12 +171,14 @@ msgid ""
 "The sections below cover the steps for deploying with both Ant and Maven in "
 "detail. Let's start with JBoss AS."
 msgstr ""
+"As seções abaixo cobrem os passos para implantar com Ant e Maven em "
+"detalhes. Vamos iniciar com o JBoss AS."
 
 #. Tag: title
 #: gettingstarted.xml:81
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Deploying to JBoss AS"
-msgstr "Utilizando o JBoss AS 5"
+msgstr "Implantando no JBoss AS"
 
 #. Tag: para
 #: gettingstarted.xml:83
