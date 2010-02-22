@@ -30,8 +30,10 @@ AS by default:
 
  mvn package
 
-Just copy target/weld-pastecode.ear to the JBoss AS deploy directory along with 
-weld-pastecode-ds.xml datasource. 
+Just copy target/weld-pastecode.ear to the JBoss AS deploy directory (since 
+JBoss 6.0.0.M2 to server/all configuration) along with weld-pastecode-ds.xml 
+datasource. 
+
 Open this local URL to access the running application:
 
  http://localhost:8080/weld-pastecode
