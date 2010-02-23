@@ -18,20 +18,25 @@
       </para>
          
       <para>
-         Upgrading the Weld add-on is easy. The Weld distribution has a build that can take care of this task for you in
-         a single command. First, we need to tell Weld where JBoss AS is located. Create a new file named
-         <literal>local.build.properties</literal> in the examples directory of the Weld distribution and assign the
-         path of your JBoss AS installation to the property key <literal>jboss.home</literal>, as follows:
+         If there is a newer release of Weld than what is included in the latest JBoss AS 6 release, upgrading the Weld
+         add-on is easy. The Weld distribution includes a build script that can take care of this task for you in a
+         single command.
+      </para>
+      
+      <para>
+         First, we need to tell Weld where JBoss AS is located. This information is communicated by assigning the
+         <literal>JBOSS_HOME</literal> environment variable. In a bash shell, you can assign the environment variable as
+         follows:
       </para>
 
-      <programlisting><![CDATA[jboss.home=/path/to/jboss-as-5.x]]></programlisting>
+      <programlisting><![CDATA[export JBOSS_HOME=/path/to/jboss-as-6.x]]></programlisting>
 
       <para>
          Now we can install the Weld deployer from the <literal>jboss-as</literal> directory of the Weld distribution:
       </para>
       
       <programlisting>$> cd jboss-as
-$> ant update</programlisting>
+$> mvn -Pupdate-jboss-as</programlisting>
 
       <note>
          <para>
