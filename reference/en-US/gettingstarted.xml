@@ -214,23 +214,21 @@ $> ant deploy]]></programlisting>
       <title>Deploying to GlassFish</title>
 
       <para>
-         Deploying to GlassFish should be easy, right? After all, it's the Java EE 6 reference implementation. Since
-         it's the Java EE 6 reference implementation, that means it also bundles the JSR-299 reference implementation,
-         Weld! So yes, it's very easy.
+         Deploying to GlassFish should be easy and familiar, right? After all, it's the Java EE 6 reference
+         implementation and Weld is the JSR-299 reference implementation, meaning Weld gets bundled with GlassFish.  So
+         yes, it's all quite easy and familiar.
       </para>
 
       <para>
          To deploy the examples to GlassFish, you'll need the final <ulink
-         url="https://glassfish.dev.java.net/">GlassFish V3</ulink> release (the preview release won't do). If the final
-         release isn't yet available, you can download a <ulink
-         url="http://download.java.net/glassfish/v3/promoted/">promoted build</ulink> in the meantime. Select the b69
-         preview release or above that ends in either <literal>-unix.sh</literal> or <literal>-windows.exe</literal> 
-         depending on your platform. After the download is complete, execute the installer. On Linux/Unix, you'll need 
-         to first make the script executable.
+         url="https://glassfish.dev.java.net/downloads/v3-final.html">GlassFish V3</ulink> release. Select the release
+         that ends in either <literal>-unix.sh</literal> or <literal>-windows.exe</literal> depending on your platform.
+         After the download is complete, execute the installer. On Linux/Unix, you'll need to first make the script
+         executable.
       </para>
 
-      <programlisting><![CDATA[$> chmod 755 glassfish-v3-b69-unix.sh
-$> ./glassfish-v3-b69-unix.sh]]></programlisting> 
+      <programlisting><![CDATA[$> chmod 755 glassfish-v3-unix.sh
+$> ./glassfish-v3-unix.sh]]></programlisting> 
 
       <para>
          On Windows you can just click on the executable. Follow the instructions in the installer. It will create a
