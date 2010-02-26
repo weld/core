@@ -254,10 +254,10 @@ $> ant package]]></programlisting>
       </para>
 
       <para>
-         You deploy applications to GlassFish using the <ulink url="http://localhost:4848">GlassFish Admin
+         One way to deploy applications to GlassFish is by using the <ulink url="http://localhost:4848">GlassFish Admin
          Console</ulink>. To get the Admin Console running, you need to start a GlassFish domain, in our case
-         <literal>domain1</literal>. Switch to the <literal>bin</literal> folder in the directory where you 
-         installed GlassFish and execute the following command:
+         <literal>domain1</literal>. Switch to the <literal>bin</literal> folder in the directory where you installed
+         GlassFish and execute the following command:
       </para>
 
       <programlisting><![CDATA[$> asadmin start-domain domain1]]></programlisting> 
@@ -273,6 +273,12 @@ $> ant package]]></programlisting>
          url="http://localhost:7070/weld-translator">http://localhost:7070/weld-translator</ulink>,
          depending on which example you deployed.
       </para>
+
+      <para>
+         Alternatively, you can deploy the application to GlassFish using the asadmin command:
+      </para>
+
+      <programlisting><![CDATA[$> asadmin deploy target/weld-numberguess.war]]></programlisting> 
 
       <para>
          The reason the same artifact can be deployed to both JBoss AS and GlassFish, without any modifications, is
