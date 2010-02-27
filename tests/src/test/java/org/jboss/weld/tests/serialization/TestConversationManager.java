@@ -19,7 +19,6 @@ package org.jboss.weld.tests.serialization;
 import java.lang.reflect.Field;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
 
 import org.jboss.weld.conversation.AbstractConversationManager;
 import org.jboss.weld.conversation.ConversationImpl;
@@ -28,17 +27,13 @@ import org.jboss.weld.conversation.ServletConversationManager;
 @Dependent
 public class TestConversationManager extends ServletConversationManager
 {
-
-   /**
-    * 
-    */
-   private static final long serialVersionUID = 9081670661490776033L;
+   private static final long serialVersionUID = 2;
    
-   public Instance<ConversationImpl> getConversationInstance() throws Exception
+   public ConversationImpl getConversationInstance() throws Exception
    {
-      Field ccField = AbstractConversationManager.class.getDeclaredField("currentConversation");
+      Field ccField = AbstractConversationManager.class.getDeclaredField("conversation");
       ccField.setAccessible(true);
-      return (Instance<ConversationImpl>) ccField.get(this);
+      return (ConversationImpl) ccField.get(this);
    }
 
 }

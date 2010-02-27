@@ -71,7 +71,7 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
       ConversationImpl conversation = conversation(getServletContext(context));  
       if (!conversation.isTransient())
       {
-         return new FacesUrlTransformer(actionUrl, context).appendConversationIdIfNecessary(conversation.getUnderlyingId()).getUrl();
+         return new FacesUrlTransformer(actionUrl, context).appendConversationIdIfNecessary(conversation.getId()).getUrl();
       }
       else
       {

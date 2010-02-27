@@ -1,10 +1,4 @@
 /*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
- * Copyright 2009 Sun Microsystems, Inc. All rights reserved.
- *
- * Use is subject to license terms.
- *
  * JBoss, Home of Professional Open Source
  * Copyright 2008, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -15,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,  
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -30,14 +24,15 @@ import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_S
 import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_TERMINATION_SCHEDULED;
 import static org.jboss.weld.logging.messages.ConversationMessage.DESTROY_ALL_LRC;
 import static org.jboss.weld.logging.messages.ConversationMessage.DESTROY_LRC;
-import static org.jboss.weld.logging.messages.ConversationMessage.DESTROY_TRANSIENT_COVERSATION;
 import static org.jboss.weld.logging.messages.ConversationMessage.LRC_COUNT;
 import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_TO_RESTORE;
 import static org.jboss.weld.logging.messages.ConversationMessage.UNABLE_TO_RESTORE_CONVERSATION;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,7 +40,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.Conversation;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.weld.Container;
@@ -65,53 +59,103 @@ import org.slf4j.cal10n.LocLogger;
  */
 public abstract class AbstractConversationManager implements ConversationManager, Serializable
 {
-   
-   private static final long serialVersionUID = 8375026855239413267L;
+   private static final long serialVersionUID = 1L;
 
    private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
 
-   // The current conversation
-   @Inject
-   private Instance<ConversationImpl> currentConversation;
+   private boolean asynchronous = false;
 
-   // The conversation timeout in milliseconds waiting for access to a blocked
-   // conversation
+   @Inject
+   protected ConversationImpl conversation;
+
+   @Inject
+   private ConversationIdGenerator conversationIdGenerator;
+
    @ConversationConcurrentAccessTimeout
    private long concurrentAccessTimeout;
 
-   // A map of current active long-running conversation entries
-   private Map<String, ConversationEntry> longRunningConversations;
+   private Map<String, ManagedConversation> managedConversations;
 
-   /**
-    * Creates a new conversation manager
-    */
    public AbstractConversationManager()
    {
-      longRunningConversations = new ConcurrentHashMap<String, ConversationEntry>();
+      managedConversations = new ConcurrentHashMap<String, ManagedConversation>();
    }
 
-   public void beginOrRestoreConversation(String cid)
+   public ConversationManager setAsynchronous(boolean asynchronous)
    {
+      if (this.asynchronous == asynchronous)
+      {
+         return this;
+      }
+      if (!managedConversations.isEmpty())
+      {
+         log.warn("Switching modes with non-transient conversations present resets the timeouts");
+      }
+      if (asynchronous)
+      {
+         switchToAsynchronous();
+      }
+      else
+      {
+         switchToNonAsynchronous();
+      }
+      return this;
+   }
+
+   private void switchToNonAsynchronous()
+   {
+      for (ManagedConversation managedConversation : managedConversations.values())
+      {
+         managedConversation.cancelTermination();
+         managedConversation.setTerminationHandle(null);
+         managedConversation.touch();
+      }
+   }
+
+   private void switchToAsynchronous()
+   {
+      for (ManagedConversation managedConversation : managedConversations.values())
+      {
+         managedConversation.setTerminationHandle(scheduleForTermination(managedConversation.getConversation()));
+      }
+   }
+
+   private void destroyExpiredConversations()
+   {
+      for (Iterator<ManagedConversation> i = managedConversations.values().iterator(); i.hasNext();)
+      {
+         ManagedConversation managedConversation = i.next();
+         if (managedConversation.isExpired())
+         {
+            managedConversation.destroy();
+            i.remove();
+         }
+      }
+   }
+
+   public ConversationManager setupConversation(String cid)
+   {
+      if (!asynchronous)
+      {
+         destroyExpiredConversations();
+      }
       if (cid == null)
       {
-         // No incoming conversation ID, nothing to do here, continue with
-         // a transient conversation
          log.trace(NO_CONVERSATION_TO_RESTORE);
-         return;
+         return this;
       }
-      if (!longRunningConversations.containsKey(cid))
+      ManagedConversation resumedManagedConversation = managedConversations.get(cid);
+      if (resumedManagedConversation == null)
       {
-         // We got an incoming conversation ID but it was not in the map of
-         // known ones, nothing to do. Log and return to continue with a
-         // transient conversation
          throw new NonexistentConversationException(UNABLE_TO_RESTORE_CONVERSATION, cid, "id not known");
       }
-      ConversationEntry resumedConversationEntry = longRunningConversations.get(cid);
-      // Try to get a lock to the requested conversation, log and return to
-      // continue with a transient conversation if we fail
+      if (asynchronous && !resumedManagedConversation.cancelTermination())
+      {
+         throw new BusyConversationException(CONVERSATION_LOCK_UNAVAILABLE);
+      }
       try
       {
-         if (!resumedConversationEntry.lock(concurrentAccessTimeout))
+         if (!resumedManagedConversation.lock(concurrentAccessTimeout))
          {
             throw new BusyConversationException(CONVERSATION_LOCK_UNAVAILABLE);
          }
@@ -121,79 +165,82 @@ public abstract class AbstractConversationManager implements ConversationManager
          Thread.currentThread().interrupt();
          throw new BusyConversationException(CONVERSATION_LOCK_UNAVAILABLE);
       }
-      // If we can't cancel the termination, release the lock, return and
-      // continue
-      // with a transient conversation
-      if (!resumedConversationEntry.cancelTermination())
+      String oldConversation = conversation.toString();
+      conversation.switchTo(resumedManagedConversation.getConversation());
+      getConversationContext().loadTransientBeanStore(getBeanStore(cid));
+      log.trace(CONVERSATION_SWITCHED, oldConversation, conversation);
+      return this;
+   }
+
+   private ConversationContext getConversationContext()
+   {
+      return Container.instance().services().get(ContextLifecycle.class).getConversationContext();
+   }
+
+   public ConversationManager teardownConversation()
+   {
+      log.trace(CLEANING_UP_CONVERSATION, conversation);
+      if (conversation.isTransient())
       {
-         resumedConversationEntry.unlock();
-         throw new BusyConversationException(CONVERSATION_LOCK_UNAVAILABLE);
+         endTransientConversation();
+         if (conversation.getResumedId() != null)
+         {
+            handleResumedConversation();
+         }
       }
       else
       {
-         // If all goes well, set the identity of the current conversation to
-         // match the fetched long-running one
-         String oldConversation = currentConversation.toString();
-         currentConversation.get().switchTo(resumedConversationEntry.getConversation());
-         log.trace(CONVERSATION_SWITCHED, oldConversation, currentConversation);
+         endNonTransientConversation();
       }
+      return this;
    }
 
-   // TODO: check that stuff gets terminated when you flip between several
-   // long-running conversations
-   public void cleanupConversation()
+   private void handleResumedConversation()
    {
-      log.trace(CLEANING_UP_CONVERSATION, currentConversation);
-      String cid = currentConversation.get().getUnderlyingId();
-      if (!currentConversation.get().isTransient())
+      ManagedConversation resumedConversation = managedConversations.remove(conversation.getResumedId());
+      if (resumedConversation == null)
       {
-         Future<?> terminationHandle = scheduleForTermination(cid, currentConversation.get().getTimeout());
-         // When the conversation ends, a long-running conversation needs to
-         // start its self-destruct. We can have the case where the conversation
-         // is a previously known conversation (that had it's termination
-         // canceled in the
-         // beginConversation) or the case where we have a completely new
-         // long-running conversation.
-         ConversationEntry longRunningConversation = longRunningConversations.get(cid);
-         if (longRunningConversation != null)
+         return;
+      }
+      resumedConversation.unlock();
+      resumedConversation.destroy();
+   }
+
+   private void endNonTransientConversation()
+   {
+      getConversationContext().saveTransientBeanStore(getBeanStore(conversation.getId()));
+      ManagedConversation oldManagedConversation = managedConversations.get(conversation.getId());
+      if (oldManagedConversation != null)
+      {
+         oldManagedConversation.unlock();
+         if (asynchronous)
          {
-            longRunningConversation.unlock();
-            longRunningConversation.reScheduleTermination(terminationHandle);
+            oldManagedConversation.setTerminationHandle(scheduleForTermination(conversation));
          }
          else
          {
-            ConversationEntry conversationEntry = ConversationEntry.of(getBeanStore(cid), currentConversation.get(), terminationHandle);
-            longRunningConversations.put(cid, conversationEntry);
+            oldManagedConversation.touch();
          }
-         log.trace(CONVERSATION_TERMINATION_SCHEDULED, currentConversation);
-         log.trace(LRC_COUNT, longRunningConversations.size());
       }
       else
       {
-         // If the conversation is not long-running it can be a transient
-         // conversation that has been so from the start or it can be a
-         // long-running conversation that has been demoted during the request
-         log.trace(DESTROY_TRANSIENT_COVERSATION, currentConversation);
-         ConversationEntry longRunningConversation = longRunningConversations.remove(cid);
-         if (longRunningConversation != null)
+         ManagedConversation newManagedConversation = ManagedConversation.of(conversation.unProxy(this), getBeanStore(conversation.getId()));
+         if (asynchronous)
          {
-            longRunningConversation.cancelTermination();
-            longRunningConversation.unlock();
+            log.trace(CONVERSATION_TERMINATION_SCHEDULED, conversation);
+            newManagedConversation.setTerminationHandle(scheduleForTermination(conversation));
          }
-         ConversationContext conversationContext = Container.instance().services().get(ContextLifecycle.class).getConversationContext();
-         conversationContext.destroy();
+         managedConversations.put(conversation.getId(), newManagedConversation);
       }
-      // If the conversation has been switched from one long
-      // running-conversation to another with
-      // Conversation.begin(String), we need to unlock the original conversation
-      // and re-schedule
-      // it for termination
-      String originalCid = currentConversation.get().getOriginalId();
-      ConversationEntry longRunningConversation = originalCid == null ? null : longRunningConversations.get(originalCid);
-      if (longRunningConversation != null)
+      log.trace(LRC_COUNT, managedConversations.size());
+   }
+
+   private void endTransientConversation()
+   {
+      getConversationContext().destroy();
+      if (conversation.getResumedId() != null)
       {
-         longRunningConversation.unlock();
-         longRunningConversation.reScheduleTermination(scheduleForTermination(originalCid, currentConversation.get().getTimeout()));
+         getBeanStore(conversation.getResumedId()).clear();
       }
    }
 
@@ -203,66 +250,88 @@ public abstract class AbstractConversationManager implements ConversationManager
     * @param cid The id of the conversation to terminate
     * @return The asynchronous job handle
     */
-   private Future<?> scheduleForTermination(String cid, long timeout)
+   private Future<?> scheduleForTermination(Conversation conversation)
    {
-      Runnable terminationTask = new TerminationTask(cid);
-      return Container.instance().services().get(ScheduledExecutorServiceFactory.class).get().schedule(terminationTask, timeout, TimeUnit.MILLISECONDS);
+      Runnable terminationTask = new TerminationTask(conversation.getId());
+      return Container.instance().services().get(ScheduledExecutorServiceFactory.class).get().schedule(terminationTask, conversation.getTimeout(), TimeUnit.MILLISECONDS);
    }
 
-   /**
-    * A termination task that destroys the conversation entry
-    * 
-    * @author Nicklas Karlsson
-    * 
-    */
    private class TerminationTask implements Runnable
    {
-      // The conversation ID to terminate
       private String cid;
 
-      /**
-       * Creates a new termination task
-       * 
-       * @param cid The conversation ID
-       */
       public TerminationTask(String cid)
       {
          this.cid = cid;
       }
 
-      /**
-       * Executes the termination
-       */
       public void run()
       {
          log.debug(DESTROY_LRC, cid, "conversation timed out");
-         longRunningConversations.remove(cid).destroy();
-         log.trace(LRC_COUNT, longRunningConversations.size());
+         ManagedConversation managedConversation = managedConversations.remove(cid);
+         if (managedConversation != null)
+         {
+            managedConversation.destroy();
+         }
+         log.trace(LRC_COUNT, managedConversations.size());
       }
    }
 
-   public void destroyAllConversations()
+   public ConversationManager destroyAllConversations()
    {
       log.debug(DESTROY_ALL_LRC, "session ended");
-      log.trace(LRC_COUNT, longRunningConversations.size());
-      for (ConversationEntry conversationEntry : longRunningConversations.values())
+      log.trace(LRC_COUNT, managedConversations.size());
+      for (ManagedConversation managedConversation : managedConversations.values())
       {
-         log.debug(DESTROY_LRC, conversationEntry, "session ended");
-         conversationEntry.destroy();
+         log.debug(DESTROY_LRC, managedConversation, "session ended");
+         managedConversation.destroy();
       }
-      longRunningConversations.clear();
+      managedConversations.clear();
+      return this;
    }
 
    public Set<Conversation> getLongRunningConversations()
    {
       Set<Conversation> conversations = new HashSet<Conversation>();
-      for (ConversationEntry conversationEntry : longRunningConversations.values())
+      for (ManagedConversation managedConversation : managedConversations.values())
       {
-         conversations.add(conversationEntry.getConversation());
+         conversations.add(managedConversation.getConversation());
       }
       return Collections.unmodifiableSet(conversations);
    }
-   
-   public abstract BeanStore getBeanStore(String cid);
+
+   public ConversationManager activateContext()
+   {
+      Container.instance().services().get(ContextLifecycle.class).activateConversationContext();
+      return this;
+   }
+
+   public ConversationManager deactivateContext()
+   {
+      Container.instance().services().get(ContextLifecycle.class).deactivateConversationContext();
+      return this;
+   }
+
+   public String generateConversationId()
+   {
+      return conversationIdGenerator.nextId();
+   }
+
+   public Map<String, Conversation> getConversations()
+   {
+      Map<String, Conversation> conversations = new HashMap<String, Conversation>();
+      for (ManagedConversation entry : managedConversations.values())
+      {
+         conversations.put(entry.getConversation().getId(), entry.getConversation());
+      }
+      return Collections.unmodifiableMap(conversations);
+   }
+
+   public boolean isContextActive()
+   {
+      return getConversationContext().isActive();
+   }
+
+   protected abstract BeanStore getBeanStore(String cid);
 
 }

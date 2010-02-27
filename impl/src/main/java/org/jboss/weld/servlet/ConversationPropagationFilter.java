@@ -84,8 +84,8 @@ public class ConversationPropagationFilter implements Filter
                ConversationImpl conversation = conversation(ctx);
                if (!conversation.isTransient())
                {
-                  path = new FacesUrlTransformer(path, FacesContext.getCurrentInstance()).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversation.getUnderlyingId()).encode();
-                  conversationManager(ctx).cleanupConversation();
+                  path = new FacesUrlTransformer(path, FacesContext.getCurrentInstance()).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversation.getId()).encode();
+                  conversationManager(ctx).teardownConversation();
                }
             }
             super.sendRedirect(path);

@@ -24,6 +24,8 @@ package org.jboss.weld.context;
 
 import javax.enterprise.context.ConversationScoped;
 
+import org.jboss.weld.context.api.BeanStore;
+
 /**
  * The conversation context
  * 
@@ -31,14 +33,28 @@ import javax.enterprise.context.ConversationScoped;
  */
 public class ConversationContext extends AbstractThreadLocalMapContext
 {
-
-   /**
-    * Constructor
-    */
    public ConversationContext()
    {
       super(ConversationScoped.class);
    }
+
+   private void mergeBeanStores(BeanStore from, BeanStore to)
+   {
+      for (String id : from.getContextualIds())
+      {
+         to.put(id, from.get(id));
+      }
+   }
+
+   public void loadTransientBeanStore(BeanStore sourceBeanStore)
+   {
+      mergeBeanStores(sourceBeanStore, getBeanStore());
+   }
+
+   public void saveTransientBeanStore(BeanStore targetBeanStore)
+   {
+      mergeBeanStores(getBeanStore(), targetBeanStore);
+   }   
 
    @Override
    public String toString()

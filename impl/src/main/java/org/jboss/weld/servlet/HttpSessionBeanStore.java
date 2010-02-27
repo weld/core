@@ -37,7 +37,7 @@ public class HttpSessionBeanStore extends AbstractAttributeBackedBeanStore
    private static final NamingScheme NAMING_SCHEME = new NamingScheme(SessionContext.class.getName(), "#");
 
    // The HTTP session context to use as backing map
-   private HttpSession               session;
+   private HttpSession session;
 
    /**
     * Attaches this bean store to a session dynamically. This allows the session

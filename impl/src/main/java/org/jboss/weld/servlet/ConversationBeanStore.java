@@ -19,6 +19,7 @@ package org.jboss.weld.servlet;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 
 /**
@@ -28,10 +29,9 @@ import org.jboss.weld.context.beanstore.NamingScheme;
  */
 public class ConversationBeanStore extends HttpPassThruSessionBeanStore
 {
-   
    private final NamingScheme namingScheme;
 
-   public ConversationBeanStore(HttpSession session, boolean sessionInvalidated, String cid)
+   protected ConversationBeanStore(HttpSession session, boolean sessionInvalidated, String cid)
    {
       this.namingScheme = new NamingScheme(ConversationContext.class.getName() + "[" + cid + "]", "#");
       if (sessionInvalidated)
@@ -45,6 +45,16 @@ public class ConversationBeanStore extends HttpPassThruSessionBeanStore
    protected NamingScheme getNamingScheme()
    {
       return namingScheme;
+   }
+
+   public static BeanStore of(HttpSession httpSession, boolean sessionInvalidated, String cid)
+   {
+      return new ConversationBeanStore(httpSession, sessionInvalidated, cid);
+   }
+
+   public static BeanStore of(HttpSession httpSession, String cid)
+   {
+      return new ConversationBeanStore(httpSession, false, cid);
    }
 
 }

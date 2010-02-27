@@ -44,12 +44,12 @@ import org.slf4j.cal10n.LocLogger;
 public class HttpPassThruSessionBeanStore extends HttpSessionBeanStore
 {
 
-   private static final long      serialVersionUID  = 8923580660774253915L;
-   private static final LocLogger log               = loggerFactory().getLogger(CONTEXT);
+   private static final long serialVersionUID = 8923580660774253915L;
+   private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
-   private HashMapBeanStore       delegateBeanStore = new HashMapBeanStore();
-   private boolean                attachedToSession = false;
-   private boolean                invalidated       = false;
+   private HashMapBeanStore delegateBeanStore = new HashMapBeanStore();
+   private boolean attachedToSession = false;
+   private boolean invalidated = false;
 
    public HttpPassThruSessionBeanStore()
    {
@@ -129,7 +129,7 @@ public class HttpPassThruSessionBeanStore extends HttpSessionBeanStore
       catch (IllegalStateException e)
       {
          // There's not a lot to do here if the session is invalidated while
-         // loading this map.  These beans will not be destroyed since the
+         // loading this map. These beans will not be destroyed since the
          // references are lost.
          delegateBeanStore.clear();
       }

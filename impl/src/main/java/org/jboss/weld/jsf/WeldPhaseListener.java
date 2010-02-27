@@ -23,42 +23,32 @@
 package org.jboss.weld.jsf;
 
 import static org.jboss.weld.jsf.JsfHelper.getConversationId;
-import static org.jboss.weld.jsf.JsfHelper.getHttpSession;
 import static org.jboss.weld.jsf.JsfHelper.getServletContext;
 import static org.jboss.weld.logging.Category.JSF;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATION;
 import static org.jboss.weld.logging.messages.JsfMessage.INITIATING_CONVERSATION;
-import static org.jboss.weld.logging.messages.JsfMessage.SKIPPING_CLEANING_UP_CONVERSATION;
-import static org.jboss.weld.servlet.BeanProvider.conversation;
 import static org.jboss.weld.servlet.BeanProvider.conversationManager;
-import static org.jboss.weld.servlet.BeanProvider.httpSessionManager;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.context.ContextLifecycle;
-import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.context.SessionContext;
-import org.jboss.weld.conversation.AbstractConversationManager;
+import org.jboss.weld.conversation.ConversationManager;
 import org.slf4j.cal10n.LocLogger;
 
 /**
  * <p>
- * A JSF phase listener that initializes aspects of Weld in a more
- * fine-grained, integrated manner than what is possible with a servlet filter.
- * This phase listener works in conjunction with other hooks and callbacks
- * registered with the JSF runtime to help manage the Weld lifecycle.
+ * A JSF phase listener that initializes aspects of Weld in a more fine-grained,
+ * integrated manner than what is possible with a servlet filter. This phase
+ * listener works in conjunction with other hooks and callbacks registered with
+ * the JSF runtime to help manage the Weld lifecycle.
  * </p>
  * 
  * <p>
  * It's expected that over time, this phase listener may take on more work, but
- * for now the work is focused soley on conversation management. The phase
+ * for now the work is focused solely on conversation management. The phase
  * listener restores the long-running conversation if the conversation id token
  * is detected in the request, activates the conversation context in either case
  * (long-running or transient), and finally passivates the conversation after
@@ -70,13 +60,26 @@ import org.slf4j.cal10n.LocLogger;
  */
 public class WeldPhaseListener implements PhaseListener
 {
+   private static final long serialVersionUID = 1L;
+
    private static final LocLogger log = loggerFactory().getLogger(JSF);
 
+   private ConversationManager conversationManager;
+
+   private ConversationManager getConversationManager()
+   {
+      if (conversationManager == null)
+      {
+         conversationManager = conversationManager(getServletContext(FacesContext.getCurrentInstance()));
+      }
+      return conversationManager;
+   }
+
    /**
-    * Execute before every phase in the JSF life cycle. The order this
-    * phase listener executes in relation to other phase listeners is
-    * determined by the ordering of the faces-config.xml descriptors.
-    * This phase listener should take precedence over extensions.
+    * Execute before every phase in the JSF life cycle. The order this phase
+    * listener executes in relation to other phase listeners is determined by
+    * the ordering of the faces-config.xml descriptors. This phase listener
+    * should take precedence over extensions.
     * 
     * @param phaseEvent The phase event
     */
@@ -89,10 +92,10 @@ public class WeldPhaseListener implements PhaseListener
    }
 
    /**
-    * Execute after every phase in the JSF life cycle. The order this
-    * phase listener executes in relation to other phase listeners is
-    * determined by the ordering of the faces-config.xml descriptors.
-    * This phase listener should take precedence over extensions.
+    * Execute after every phase in the JSF life cycle. The order this phase
+    * listener executes in relation to other phase listeners is determined by
+    * the ordering of the faces-config.xml descriptors. This phase listener
+    * should take precedence over extensions.
     * 
     * @param phaseEvent The phase event
     */
@@ -117,24 +120,14 @@ public class WeldPhaseListener implements PhaseListener
       log.trace(INITIATING_CONVERSATION, "Restore View");
       initiateSessionAndConversation(facesContext);
    }
-   
+
    /**
     * Execute after the Render Response phase.
     */
    private void afterRenderResponse(FacesContext facesContext)
    {
-      SessionContext sessionContext = Container.instance().services().get(ContextLifecycle.class).getSessionContext();
-      ConversationContext conversationContext = Container.instance().services().get(ContextLifecycle.class).getConversationContext();
-      if (sessionContext.isActive())
-      {
-         log.trace(CLEANING_UP_CONVERSATION, "Render Response", "response complete");
-         conversationManager(getServletContext(facesContext)).cleanupConversation();
-         conversationContext.setActive(false);
-      }
-      else
-      {
-         log.trace(SKIPPING_CLEANING_UP_CONVERSATION, "Render Response", "session has been terminated");
-      }
+      log.trace(CLEANING_UP_CONVERSATION, "Render Response", "response complete");
+      getConversationManager().teardownConversation();
    }
 
    /**
@@ -142,16 +135,8 @@ public class WeldPhaseListener implements PhaseListener
     */
    private void afterResponseComplete(FacesContext facesContext, PhaseId phaseId)
    {
-      SessionContext sessionContext = Container.instance().services().get(ContextLifecycle.class).getSessionContext();
-      if (sessionContext.isActive())
-      {
-         log.trace(CLEANING_UP_CONVERSATION, phaseId, "the response has been marked complete");
-         conversationManager(getServletContext(facesContext)).cleanupConversation();
-      }
-      else
-      {
-         log.trace(SKIPPING_CLEANING_UP_CONVERSATION, phaseId, "session has been terminated");
-      }
+      log.trace(CLEANING_UP_CONVERSATION, phaseId, "the response has been marked complete");
+      getConversationManager().teardownConversation();
    }
 
    /**
@@ -162,22 +147,7 @@ public class WeldPhaseListener implements PhaseListener
     */
    private void initiateSessionAndConversation(FacesContext facesContext)
    {
-      ServletContext servletContext = getServletContext(facesContext);
-      AbstractConversationManager conversationManager = (AbstractConversationManager) conversationManager(servletContext);
-      HttpSession session = getHttpSession(facesContext);
-      httpSessionManager(servletContext).setSession(session);
-      try
-      {
-         conversationManager.beginOrRestoreConversation(getConversationId(facesContext));
-      }
-      finally
-      {
-         String cid = conversation(servletContext).getUnderlyingId();
-         
-         ConversationContext conversationContext = Container.instance().services().get(ContextLifecycle.class).getConversationContext();
-         conversationContext.setBeanStore(conversationManager.getBeanStore(cid));
-         conversationContext.setActive(true);
-      }
+      getConversationManager().setupConversation(getConversationId(facesContext));
    }
 
    /**

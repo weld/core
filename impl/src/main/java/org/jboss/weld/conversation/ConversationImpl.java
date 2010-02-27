@@ -18,7 +18,6 @@ package org.jboss.weld.conversation;
 
 import static org.jboss.weld.logging.Category.CONVERSATION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
 import static org.jboss.weld.logging.messages.ConversationMessage.BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION;
 import static org.jboss.weld.logging.messages.ConversationMessage.DEMOTED_LRC;
 import static org.jboss.weld.logging.messages.ConversationMessage.END_CALLED_ON_TRANSIENT_CONVERSATION;
@@ -27,15 +26,13 @@ import static org.jboss.weld.logging.messages.ConversationMessage.SWITCHED_CONVE
 
 import java.io.Serializable;
 
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.context.ContextLifecycle;
-import org.jboss.weld.context.ContextNotActiveException;
 import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.slf4j.cal10n.LocLogger;
 
@@ -50,33 +47,30 @@ import org.slf4j.cal10n.LocLogger;
 @Default
 public class ConversationImpl implements Conversation, Serializable
 {
-
-   /**
-    * Eclipse generated UID.
-    */
-   private static final long serialVersionUID = 5262382965141841363L;
+   private static final long serialVersionUID = 1L;
 
    private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
 
-   // The conversation ID
+   @Inject
+   private ConversationManager conversationManager;
+
    private String id;
-   // The original conversation ID (if any)
-   private String originalId;
-   // Is the conversation long-running?
    private boolean _transient = true;
-   // The timeout in milliseconds
    private long timeout;
+   private String resumedId;
 
    /**
     * Creates a new conversation
     */
-   public ConversationImpl() {}
-   
-   protected void checkConversationActive()
+   public ConversationImpl()
    {
-      if (!Container.instance().services().get(ContextLifecycle.class).getConversationContext().isActive())
+   }
+
+   private void checkForActiveConversationContext(String when)
+   {
+      if (!conversationManager.isContextActive())
       {
-         throw new ContextNotActiveException(CONTEXT_NOT_ACTIVE, "@ConversationScoped");
+         throw new ContextNotActiveException("Conversation context not active when calling " + when + " on " + this);
       }
    }
 
@@ -85,11 +79,18 @@ public class ConversationImpl implements Conversation, Serializable
     * 
     * @param conversation The old conversation
     */
-   public ConversationImpl(ConversationImpl conversation)
+   protected ConversationImpl(Conversation conversation, ConversationManager conversationManager)
    {
-      this.id = conversation.getUnderlyingId();
-      this._transient = conversation.isTransient();
-      this.timeout = conversation.getTimeout();
+      id = conversation.getId();
+      _transient = conversation.isTransient();
+      timeout = conversation.getTimeout();
+      // manual injection because of new() usage for unProxy();
+      this.conversationManager = conversationManager;
+   }
+   
+   public static ConversationImpl of(Conversation conversation, ConversationManager conversationManager)
+   {
+      return new ConversationImpl(conversation, conversationManager);
    }
 
    /**
@@ -99,83 +100,66 @@ public class ConversationImpl implements Conversation, Serializable
     * @param timeout The conversation inactivity timeout
     */
    @Inject
-   public void init(ConversationIdGenerator conversationIdGenerator, @ConversationInactivityTimeout long timeout)
+   public void init(@ConversationInactivityTimeout long timeout)
    {
-      this.id = conversationIdGenerator.nextId();
       this.timeout = timeout;
-      this._transient = true;
+      _transient = true;
    }
 
    public void begin()
    {
-      checkConversationActive();
-      if (!isTransient())
+      checkForActiveConversationContext("Conversation.begin()");
+      if (!_transient)
       {
          throw new ForbiddenStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
       }
       log.debug(PROMOTED_TRANSIENT, id);
-      this._transient = false;
+      _transient = false;
+      id = conversationManager.generateConversationId();
    }
 
    public void begin(String id)
    {
-      checkConversationActive();
-      // Store away the (first) change to the conversation ID. If the original
-      // conversation was long-running,
-      // we might have to place it back for termination once the request is
-      // over.
-      if (originalId == null)
+      checkForActiveConversationContext("Conversation.begin(String)");
+      if (!_transient)
       {
-         originalId = id;
+         throw new ForbiddenStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
       }
+      if (conversationManager.getConversations().containsKey(id))
+      {
+         throw new IllegalStateException("Conversation ID " + id + " is already in use");
+      }
+      _transient = false;
       this.id = id;
-      begin();
    }
 
    public void end()
    {
-      checkConversationActive();
-      if (isTransient())
+      checkForActiveConversationContext("Conversation.end()");
+      if (_transient)
       {
          throw new ForbiddenStateException(END_CALLED_ON_TRANSIENT_CONVERSATION);
       }
       log.debug(DEMOTED_LRC, id);
-      this._transient = true;
+      _transient = true;
+      id = null;
    }
 
    public String getId()
    {
-      checkConversationActive();
-      if (!isTransient())
-      {
-         return id;
-      }
-      else
-      {
-         return null;
-      }
-   }
-
-   /**
-    * Get the Conversation Id, regardless of whether the conversation is long
-    * running or transient, needed for internal operations
-    * 
-    * @return the id
-    */
-   public String getUnderlyingId()
-   {
+      checkForActiveConversationContext("Conversation.getId()");
       return id;
    }
 
    public long getTimeout()
    {
-      checkConversationActive();
+      checkForActiveConversationContext("Conversation.getTimeout()");
       return timeout;
    }
 
    public void setTimeout(long timeout)
    {
-      checkConversationActive();
+      checkForActiveConversationContext("Conversation.setTimeout()");
       this.timeout = timeout;
    }
 
@@ -185,28 +169,19 @@ public class ConversationImpl implements Conversation, Serializable
     * @param conversation The new conversation
     * 
     */
-   public void switchTo(ConversationImpl conversation)
+   public void switchTo(Conversation conversation)
    {
       log.debug(SWITCHED_CONVERSATION, this, conversation);
-      id = conversation.id;
-      this._transient = conversation._transient;
-      timeout = conversation.timeout;
+      id = conversation.getId();
+      _transient = conversation.isTransient();
+      timeout = conversation.getTimeout();
+      this.resumedId = id;
    }
 
    @Override
    public String toString()
    {
-      return "ID: " + id + ", transient: " + isTransient() + ", timeout: " + timeout + "ms";
-   }
-
-   /**
-    * Gets the original ID of the conversation
-    * 
-    * @return The id
-    */
-   public String getOriginalId()
-   {
-      return originalId;
+      return "ID: " + id + ", transient: " + _transient + ", timeout: " + timeout + "ms";
    }
 
    @Override
@@ -215,7 +190,7 @@ public class ConversationImpl implements Conversation, Serializable
       if (obj instanceof ConversationImpl)
       {
          ConversationImpl that = (ConversationImpl) obj;
-         return (id == null || that.getUnderlyingId() == null) ? false : id.equals(that.getUnderlyingId());
+         return (id == null || that.getId() == null) ? false : id.equals(that.getId());
       }
       else
       {
@@ -231,9 +206,22 @@ public class ConversationImpl implements Conversation, Serializable
 
    public boolean isTransient()
    {
-      checkConversationActive();
+      checkForActiveConversationContext("Conversation.isTransient()");
       return _transient;
    }
-   
-   
+
+   public void setId(String id)
+   {
+      this.id = id;
+   }
+
+   public String getResumedId()
+   {
+      return resumedId;
+   }
+
+   public ConversationImpl unProxy(ConversationManager conversationManager)
+   {
+      return new ConversationImpl(this, conversationManager);
+   }
 }

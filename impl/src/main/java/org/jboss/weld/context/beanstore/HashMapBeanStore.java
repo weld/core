@@ -21,8 +21,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.context.spi.Contextual;
-
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.api.helpers.AbstractMapBackedBeanStore;
 

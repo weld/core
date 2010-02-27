@@ -48,7 +48,7 @@ public class ServletLifecycle
 
    private final ContextLifecycle lifecycle;
 
-   public static final String     REQUEST_ATTRIBUTE_NAME = ServletLifecycle.class.getName() + ".requestBeanStore";
+   public static final String REQUEST_ATTRIBUTE_NAME = ServletLifecycle.class.getName() + ".requestBeanStore";
 
    /**
     * 

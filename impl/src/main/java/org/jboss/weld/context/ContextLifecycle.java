@@ -35,6 +35,7 @@ import org.jboss.weld.bootstrap.api.Lifecycle;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
+import org.jboss.weld.context.beanstore.HashMapBeanStore;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -88,6 +89,7 @@ public class ContextLifecycle implements Lifecycle, Service
       requestContext.setBeanStore(requestBeanStore);
       requestContext.setActive(true);
       dependentContext.setActive(true);
+      activateConversationContext();
    }
 
    public void endRequest(String id, BeanStore requestBeanStore)
@@ -98,6 +100,7 @@ public class ContextLifecycle implements Lifecycle, Service
       requestContext.destroy();
       requestContext.setActive(false);
       requestContext.setBeanStore(null);
+      deactivateConversationContext();
    }
    
    public boolean isRequestActive()
@@ -179,6 +182,18 @@ public class ContextLifecycle implements Lifecycle, Service
    public DependentContext getDependentContext()
    {
       return dependentContext;
+   }
+
+   public void activateConversationContext()
+   {
+      conversationContext.setActive(true);
+      conversationContext.setBeanStore(new HashMapBeanStore());
+   }
+
+   public void deactivateConversationContext()
+   {
+      conversationContext.setActive(false);
+      conversationContext.setBeanStore(null);
    }
 
 }

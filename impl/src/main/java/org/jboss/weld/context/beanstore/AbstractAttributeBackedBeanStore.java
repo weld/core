@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.util.Names;
 import org.jboss.weld.util.collections.EnumerationList;
 import org.slf4j.cal10n.LocLogger;
 

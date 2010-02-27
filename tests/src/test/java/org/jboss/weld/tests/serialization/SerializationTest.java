@@ -36,14 +36,12 @@ public class SerializationTest extends AbstractWeldTest
       TestConversationManager cMgr = getReference(TestConversationManager.class);
       
       assert cMgr.getConversationInstance() != null;
-      assert cMgr.getConversationInstance().get() != null;
       
       Object deserialized = Utils.deserialize(Utils.serialize(cMgr));
       
       assert deserialized instanceof TestConversationManager;
       TestConversationManager deserializedCMgr = (TestConversationManager) deserialized;
       assert deserializedCMgr.getConversationInstance() != null;
-      assert deserializedCMgr.getConversationInstance().get() != null;
    }
    
    @Test(description="http://lists.jboss.org/pipermail/weld-dev/2010-February/002265.html")
