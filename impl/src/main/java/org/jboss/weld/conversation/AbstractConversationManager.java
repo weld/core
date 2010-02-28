@@ -31,10 +31,8 @@ import static org.jboss.weld.logging.messages.ConversationMessage.UNABLE_TO_REST
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -288,16 +286,6 @@ public abstract class AbstractConversationManager implements ConversationManager
       }
       managedConversations.clear();
       return this;
-   }
-
-   public Set<Conversation> getLongRunningConversations()
-   {
-      Set<Conversation> conversations = new HashSet<Conversation>();
-      for (ManagedConversation managedConversation : managedConversations.values())
-      {
-         conversations.add(managedConversation.getConversation());
-      }
-      return Collections.unmodifiableSet(conversations);
    }
 
    public ConversationManager activateContext()
