@@ -71,7 +71,7 @@ public abstract class AbstractConversationManager implements ConversationManager
    @Inject
    private ConversationIdGenerator conversationIdGenerator;
 
-   @ConversationConcurrentAccessTimeout
+   @Inject @ConversationConcurrentAccessTimeout
    private long concurrentAccessTimeout;
 
    private Map<String, ManagedConversation> managedConversations;
