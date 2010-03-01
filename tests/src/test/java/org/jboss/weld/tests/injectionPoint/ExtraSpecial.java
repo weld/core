@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
- * by the @authors tag. See the copyright.txt in the distribution for a
- * full listing of individual contributors.
+ * Copyright 2010, Red Hat, Inc. and/or its affiliates, and individual
+ * contributors by the @authors tag. See the copyright.txt in the
+ * distribution for a full listing of individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
 
 @Qualifier
@@ -34,13 +33,4 @@ import javax.inject.Qualifier;
 public @interface ExtraSpecial
 {
 
-   static class ExtraSpecialLiteral extends AnnotationLiteral<ExtraSpecial> implements ExtraSpecial
-   {
-      
-      private ExtraSpecialLiteral() {}
-      
-   }
-   
-   public static final ExtraSpecial INSTANCE = new ExtraSpecialLiteral();
-   
 }

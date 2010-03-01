@@ -17,17 +17,13 @@
 
 package org.jboss.weld.tests.injectionPoint;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import javax.enterprise.util.AnnotationLiteral;
 
-public class PigSty
+public class ExtraSpecialLiteral extends AnnotationLiteral<ExtraSpecial> implements ExtraSpecial
 {
-   @Inject @Special Instance<Pig> pig;
-   
-   public Pig getPig()
-   {
-      return pig.select(ExtraSpecialLiteral.INSTANCE).get();
-   }
-   
-}
+    public static final ExtraSpecial INSTANCE = new ExtraSpecialLiteral();
 
+    private ExtraSpecialLiteral() {
+    }
+
+}
