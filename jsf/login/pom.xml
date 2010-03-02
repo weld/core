@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
@@ -43,12 +44,11 @@
          <scope>provided</scope>
       </dependency>
 
-      <!--
-         <dependency> <groupId>org.jboss.el</groupId>
-         <artifactId>jboss-el</artifactId> <exclusions> <exclusion>
-         <groupId>javax.el</groupId> <artifactId>el-api</artifactId>
-         </exclusion> </exclusions> </dependency>
-      -->
+      <dependency>
+         <groupId>javax.persistence</groupId>
+         <artifactId>persistence-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
 
       <dependency>
          <groupId>org.glassfish.web</groupId>
@@ -164,7 +164,7 @@
       <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/login</connection>
       <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/jsf/login</developerConnection>
       <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/login</url>
-  </scm>
+   </scm>
 
 </project>
 
