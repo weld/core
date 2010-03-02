@@ -53,19 +53,15 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-ear-plugin</artifactId>
             <configuration>
-               <generateApplicationXml>true</generateApplicationXml>
-               <applicationXml>${project.build.directory}/application.xml</applicationXml>
                <modules>
                   <webModule>
                      <groupId>org.jboss.weld.examples.jsf.pastecode</groupId>
                      <artifactId>weld-jsf-pastecode-war</artifactId>
-                     <bundleFileName>weld-pastecode.war</bundleFileName>
                      <contextRoot>/weld-pastecode</contextRoot>
                   </webModule>
                   <ejbModule>
 							<groupId>org.jboss.weld.examples.jsf.pastecode</groupId>
 							<artifactId>weld-jsf-pastecode-ejb</artifactId>
-							<bundleFileName>weld-pastecode.jar</bundleFileName>
 						</ejbModule>
                </modules>
             </configuration>
