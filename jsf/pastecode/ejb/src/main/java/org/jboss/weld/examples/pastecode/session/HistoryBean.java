@@ -24,7 +24,7 @@ package org.jboss.weld.examples.pastecode.session;
 import java.util.List;
 import javax.ejb.Stateful;
 import javax.annotation.PostConstruct;
-import org.jboss.weld.examples.pastecode.model.Code;
+import org.jboss.weld.examples.pastecode.model.CodeEntity;
 import javax.inject.Named;
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -44,15 +44,15 @@ public class HistoryBean implements History, Serializable
    private static final long serialVersionUID = 20L;
 
    transient @Inject
-   CodeEAO eao;
+   Code eao;
 
    private QueryInfo info;
 
-   private List<Code> codes;
+   private List<CodeEntity> codes;
 
    private int TRIMMED_TEXT_LEN = 120;
 
-   private Code searchItem;
+   private CodeEntity searchItem;
 
    private int page = 0;
 
@@ -63,28 +63,28 @@ public class HistoryBean implements History, Serializable
    @PostConstruct
    public void initialize()
    {
-      this.searchItem = new Code();
+      this.searchItem = new CodeEntity();
       // this.info = new QueryInfo();
    }
 
-   public List<Code> getCodes()
+   public List<CodeEntity> getCodes()
    {
       return this.codes;
    }
 
-   public void setCodes(List<Code> codes)
+   public void setCodes(List<CodeEntity> codes)
    {
       this.codes = codes;
    }
 
    @Produces
    @Named("searchItem")
-   public Code getSearchItem()
+   public CodeEntity getSearchItem()
    {
       return searchItem;
    }
 
-   public void setSearchItem(Code searchItem)
+   public void setSearchItem(CodeEntity searchItem)
    {
       this.searchItem = searchItem;
    }

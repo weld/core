@@ -11,6 +11,7 @@ are self-contained within the deployment.
 - injecting into POJO, EJB (SFSB), Servlet
 - @ApplicationScoped, @Model, @SessionScoped annotations
 - producer named methods
+- Decorators
 
 This example uses a Maven 2 build. Execute the following command to build the
 EAR. The EAR will be located in the target directory after completion of

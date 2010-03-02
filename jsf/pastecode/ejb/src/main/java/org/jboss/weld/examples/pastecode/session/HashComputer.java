@@ -21,7 +21,7 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import org.jboss.weld.examples.pastecode.model.Code;
+import org.jboss.weld.examples.pastecode.model.CodeEntity;
 import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
 
@@ -31,7 +31,7 @@ public class HashComputer
    {
    }
 
-   public String getHashValue(Code code) throws NoSuchAlgorithmException
+   public String getHashValue(CodeEntity code) throws NoSuchAlgorithmException
    {
       String hashValue;
       MessageDigest md = MessageDigest.getInstance("SHA-1");

@@ -21,31 +21,18 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import java.util.List;
 import javax.ejb.Local;
+import java.util.List;
 import org.jboss.weld.examples.pastecode.model.CodeEntity;
 
 @Local
-public interface History
+public interface Code
 {
-   public List<CodeEntity> getCodes();
+   public String addCode(CodeEntity code, boolean secured);
 
-   public void setCodes(List<CodeEntity> codes);
+   public CodeEntity getCode(String id);
 
-   public CodeEntity getSearchItem();
+   public List<CodeEntity> recentCodes();
 
-   public void setSearchItem(CodeEntity searchItem);
-
-   public String search();
-
-   public String newSearch();
-
-   public void setPage(int page);
-
-   public int getPage();
-
-   public QueryInfo getInfo();
-
-   public void setInfo(QueryInfo info);
-
+   public List<CodeEntity> searchCodes(CodeEntity code, int page, QueryInfo info);
 }

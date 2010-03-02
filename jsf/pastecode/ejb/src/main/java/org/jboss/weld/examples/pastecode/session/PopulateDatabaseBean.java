@@ -31,7 +31,7 @@ import javax.enterprise.inject.Instance;
 import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
 import javax.inject.Inject;
-import org.jboss.weld.examples.pastecode.model.Code;
+import org.jboss.weld.examples.pastecode.model.CodeEntity;
 import com.sun.org.apache.xml.internal.serialize.LineSeparator;
 
 /**
@@ -47,8 +47,8 @@ public class PopulateDatabaseBean
 {
 
    private @Inject
-   Instance<CodeEAO> eaoIn;
-   private CodeEAO eao;
+   Instance<Code> eaoIn;
+   private Code eao;
    private boolean secured = false;
    private static final String file = "data.sql";
    private boolean populated = false;
@@ -74,7 +74,7 @@ public class PopulateDatabaseBean
 
          while (st.countTokens() > 1)
          {
-            Code c = new Code();
+            CodeEntity c = new CodeEntity();
             st.nextToken();
             c.setDatetime(formatter.parse(st.nextToken()));
             st.nextToken();

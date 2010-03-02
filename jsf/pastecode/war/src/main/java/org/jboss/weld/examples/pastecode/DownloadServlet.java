@@ -27,8 +27,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.jboss.weld.examples.pastecode.model.Code;
-import org.jboss.weld.examples.pastecode.session.CodeEAO;
+import org.jboss.weld.examples.pastecode.model.CodeEntity;
+import org.jboss.weld.examples.pastecode.session.Code;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -37,8 +37,8 @@ public class DownloadServlet extends HttpServlet
    private static final long serialVersionUID = 1L;
 
    @Inject
-   Instance<CodeEAO> eaoIn;
-   CodeEAO eao;
+   Instance<Code> eaoIn;
+   Code eao;
 
    public DownloadServlet()
    {
@@ -49,7 +49,7 @@ public class DownloadServlet extends HttpServlet
 
       this.eao = eaoIn.get();
       String id = (String) request.getParameter("id");
-      Code c = eao.getCode(id);
+      CodeEntity c = eao.getCode(id);
       String fileName = c.getUser() + "." + c.getLanguage();
       String txt = c.getText();
 

@@ -31,7 +31,7 @@ import java.util.List;
 @Model
 public class Paster
 {
-   private Code code;
+   private CodeEntity code;
 
    private String codeId;
 
@@ -41,11 +41,9 @@ public class Paster
 
    private boolean secured = false;
 
-   @Inject
-   DataBean data;
+   @Inject DataBean data;
 
-   transient @Inject
-   CodeEAO eao;
+   transient @Inject Code eao;
 
    public Paster()
    {
@@ -54,7 +52,7 @@ public class Paster
    @PostConstruct
    public void postConstruct()
    {
-      this.code = new Code();
+      this.code = new CodeEntity();
       this.theme = "shThemeDefault.css";
    }
 
@@ -67,7 +65,7 @@ public class Paster
    /* used for access from jsf page */
    @Produces
    @Named("code")
-   public Code getPasterCodeInstance()
+   public CodeEntity getPasterCodeInstance()
    {
       return this.code;
    }
@@ -82,7 +80,7 @@ public class Paster
       this.brush = data.getBrush(this.code.getLanguage());
    }
 
-   public List<Code> getCodes()
+   public List<CodeEntity> getCodes()
    {
       return eao.recentCodes();
    }
