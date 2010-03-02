@@ -109,6 +109,7 @@
    </target>
 
    <target name="restart.war" depends="explode" if="war">
+      <touch file="${jboss.home}/server/default/deploy/${example.name}.war" />
       <touch file="${jboss.home}/server/default/deploy/${example.name}.war/WEB-INF/web.xml" />
    </target>
 
@@ -121,8 +122,7 @@
    </target>
 
    <target name="restart" depends="restart.war, restart.ear">
-      <echo message="The app can be accessed at ${final.url}" />
-      <echo message="The app can be accessed at ${jboss.home}" />
+      <echo message="The app was deployed to ${jboss.home}/server/default/deploy/${example.name}.${type} and can be accessed at ${final.url}" />
    </target>
 
    <target name="undeploy" depends="check.jboss.home, undeploy.datasource">
