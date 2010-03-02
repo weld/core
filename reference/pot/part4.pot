@@ -1,57 +1,29 @@
-# SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
+"PO-Revision-Date: 2010-03-02T13:07:18\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
 "MIME-Version: 1.0\n"
-"Content-Type: application/x-xml2pot; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: para
-#: part4.xml:5
 #, no-c-format
-msgid ""
-"The third theme of CDI is <emphasis>integration</emphasis>. We've already "
-"seen how CDI helps integrate EJB and JSF, allowing EJBs to be bound directly "
-"to JSF pages. That's just the beginning. The CDI services are integrated "
-"into the very core of the Java EE platform. Even EJB session beans can take "
-"advantage of the dependency injection, event bus, and contextual lifecycle "
-"management that CDI provides."
+msgid "The third theme of CDI is <emphasis>integration</emphasis>. We've already seen how CDI helps integrate EJB and JSF, allowing EJBs to be bound directly to JSF pages. That's just the beginning. The CDI services are integrated into the very core of the Java EE platform. Even EJB session beans can take advantage of the dependency injection, event bus, and contextual lifecycle management that CDI provides."
 msgstr ""
 
 #. Tag: para
-#: part4.xml:12
 #, no-c-format
-msgid ""
-"CDI is also designed to work in concert with technologies outside of the "
-"platform by providing integration points into the Java EE platform via an "
-"SPI. This SPI positions CDI as the foundation for a new ecosystem of "
-"<emphasis>portable</emphasis> extensions and integration with existing "
-"frameworks and technologies. The CDI services will be able to reach a "
-"diverse collection of technologies, such as business process management "
-"(BPM) engines, existing web frameworks and de facto standard component "
-"models. Of course, The Java EE platform will never be able to standardize "
-"all the interesting technologies that are used in the world of Java "
-"application development, but CDI makes it easier to use the technologies "
-"which are not yet part of the platform seamlessly within the Java EE "
-"environment."
+msgid "CDI is also designed to work in concert with technologies outside of the platform by providing integration points into the Java EE platform via an SPI. This SPI positions CDI as the foundation for a new ecosystem of <emphasis>portable</emphasis> extensions and integration with existing frameworks and technologies. The CDI services will be able to reach a diverse collection of technologies, such as business process management (BPM) engines, existing web frameworks and de facto standard component models. Of course, The Java EE platform will never be able to standardize all the interesting technologies that are used in the world of Java application development, but CDI makes it easier to use the technologies which are not yet part of the platform seamlessly within the Java EE environment."
 msgstr ""
 
 #. Tag: para
-#: part4.xml:23
 #, no-c-format
-msgid ""
-"We're about to see how to take full advantage of the Java EE platform in an "
-"application that uses CDI. We'll also briefly meet a set of SPIs that are "
-"provided to support portable extensions to CDI. You might not ever need to "
-"use these SPIs directly, but don't take them for granted. You will likely be "
-"using them indirectly, every time you use a third-party extension, such as "
-"Seam."
+msgid "We're about to see how to take full advantage of the Java EE platform in an application that uses CDI. We'll also briefly meet a set of SPIs that are provided to support portable extensions to CDI. You might not ever need to use these SPIs directly, but don't take them for granted. You will likely be using them indirectly, every time you use a third-party extension, such as Seam."
 msgstr ""
+

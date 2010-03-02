@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
 "PO-Revision-Date: 2009-01-23 11:16+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -30,13 +30,11 @@ msgstr ""
 "\n"
 
 #. Tag: title
-#: events.xml:4
 #, no-c-format
 msgid "Events"
 msgstr "이벤트 "
 
 #. Tag: para
-#: events.xml:6
 #, no-c-format
 msgid ""
 "Dependency injection enables loose-coupling by allowing the implementation "
@@ -47,7 +45,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: events.xml:13
 #, no-c-format
 msgid ""
 "This basic schema might sound like the familiar observer/observable pattern, "
@@ -55,7 +52,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: events.xml:18
 #, no-c-format
 msgid ""
 "not only are event producers decoupled from observers; observers are "
@@ -65,7 +61,6 @@ msgstr ""
 "전하게 연결 해제됩니다. "
 
 #. Tag: para
-#: events.xml:22
 #, no-c-format
 msgid ""
 "observers can specify a combination of \"selectors\" to narrow the set of "
@@ -74,7 +69,6 @@ msgstr ""
 "옵저버는 \"선택자\" 조합을 지정하여 이벤트 통지 모음의 범위를 좁힙니다. "
 
 #. Tag: para
-#: events.xml:28
 #, fuzzy, no-c-format
 msgid ""
 "observers can be notified immediately, or can specify that delivery of the "
@@ -84,7 +78,6 @@ msgstr ""
 "되도록 지정할 수 있습니다.  "
 
 #. Tag: para
-#: events.xml:35
 #, no-c-format
 msgid ""
 "The CDI event notification facility uses more or less the same typesafe "
@@ -92,13 +85,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: events.xml:39
 #, fuzzy, no-c-format
 msgid "Event payload"
 msgstr "이벤트 생산자 "
 
 #. Tag: para
-#: events.xml:41
 #, no-c-format
 msgid ""
 "The event object carries state from producer to consumer. The event object "
@@ -110,35 +101,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: events.xml:48
 #, no-c-format
 msgid ""
 "An event qualifier is just a normal qualifier, defined using "
 "<literal>@Qualifier</literal>. Here's an example:"
 msgstr ""
 
-#. Tag: programlisting
-#: events.xml:52
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Qualifier\n"
-"@Target({FIELD, PARAMETER})\n"
-"@Retention(RUNTIME)\n"
-"public @interface Updated {}]]>"
-msgstr ""
-"<![CDATA[@BindingType\n"
-"@Target({PARAMETER, FIELD})\n"
-"@Retention(RUNTIME)\n"
-"public @interface Updated { ... }]]>"
-
 #. Tag: title
-#: events.xml:57
 #, no-c-format
 msgid "Event observers"
 msgstr "이벤트 옵저버 "
 
 #. Tag: para
-#: events.xml:59
 #, fuzzy, no-c-format
 msgid ""
 "An <emphasis>observer method</emphasis> is a method of a bean with a "
@@ -147,18 +121,7 @@ msgstr ""
 "<emphasis>옵저버 방식</emphasis>은 매개변수 어노테이션 <literal>@Observes</"
 "literal>를 사용하는 Web Bean 방식입니다. "
 
-#. Tag: programlisting
-#: events.xml:64
-#, no-c-format
-msgid ""
-"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
-"{ ... }]]>"
-msgstr ""
-"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
-"{ ... }]]>"
-
 #. Tag: para
-#: events.xml:66
 #, fuzzy, no-c-format
 msgid ""
 "The annotated parameter is called the <emphasis>event parameter</emphasis>. "
@@ -172,23 +135,12 @@ msgstr ""
 "다. 바인딩 유형이 이벤트 선택자로 사용될 경우, 이를 <emphasis>이벤트 바인딩 "
 "유형</emphasis>이라고 부릅니다.  "
 
-#. Tag: programlisting
-#: events.xml:72 events.xml:240
-#, no-c-format
-msgid ""
-"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-"document) { ... }]]>"
-msgstr ""
-"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-"document) { ... }]]>"
-
 #. Tag: para
-#: events.xml:74
 #, fuzzy, no-c-format
 msgid ""
-"An observer method need not specify any event qualifiers&#8212;in this case "
-"it is interested in <emphasis>all</emphasis> events of a particular type. If "
-"it does specify qualifiers, it's only interested in events which have those "
+"An observer method need not specify any event qualifiers—in this case it is "
+"interested in <emphasis>all</emphasis> events of a particular type. If it "
+"does specify qualifiers, it's only interested in events which have those "
 "qualifiers."
 msgstr ""
 "옵저버 방식은 어떤 이벤트 바인딩도 지정할 필요가 없습니다 &#151; 이러한 경우 "
@@ -197,7 +149,6 @@ msgstr ""
 "게 됩니다.  "
 
 #. Tag: para
-#: events.xml:80
 #, fuzzy, no-c-format
 msgid ""
 "The observer method may have additional parameters, which are injection "
@@ -206,24 +157,12 @@ msgstr ""
 "옵저버 방식은 추가 매개 변수를 갖을 수 있으며, 이는 일반적인 Web Beans 방식 "
 "매개 변수 삽입 시멘틱에 따라 삽입됩니다: "
 
-#. Tag: programlisting
-#: events.xml:84
-#, no-c-format
-msgid ""
-"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-"document, User user) { ... }]]>"
-msgstr ""
-"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-"document, User user) { ... }]]>"
-
 #. Tag: title
-#: events.xml:89
 #, no-c-format
 msgid "Event producers"
 msgstr "이벤트 생산자 "
 
 #. Tag: para
-#: events.xml:91
 #, no-c-format
 msgid ""
 "Event producers fire events using an instance of the parameterized "
@@ -231,14 +170,7 @@ msgid ""
 "obtained by injection:"
 msgstr ""
 
-#. Tag: programlisting
-#: events.xml:96
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Inject @Any Event<Document> documentEvent;]]>"
-msgstr "<![CDATA[@Observable Event<Document> documentEvent]]>"
-
 #. Tag: para
-#: events.xml:98
 #, fuzzy, no-c-format
 msgid ""
 "A producer raises events by calling the <literal>fire()</literal> method of "
@@ -248,20 +180,12 @@ msgstr ""
 "을 호출하여 이벤트를 제기하고, <emphasis>이벤트 객체</emphasis>를 전달합니"
 "다: "
 
-#. Tag: programlisting
-#: events.xml:103
-#, no-c-format
-msgid "<![CDATA[documentEvent.fire(document);]]>"
-msgstr "<![CDATA[documentEvent.fire(document);]]>"
-
 #. Tag: para
-#: events.xml:105
 #, fuzzy, no-c-format
 msgid "This particular event will be delivered to every observer method that:"
 msgstr "이벤트는 모든 옵저버 방식으로 전달됩니다: "
 
 #. Tag: para
-#: events.xml:111
 #, fuzzy, no-c-format
 msgid ""
 "has an event parameter to which the event object (the <literal>Document</"
@@ -269,13 +193,11 @@ msgid ""
 msgstr "이벤트 객체를 할당할 수 있는 이벤트 매개 변수를 갖습니다, "
 
 #. Tag: para
-#: events.xml:115
 #, fuzzy, no-c-format
 msgid "specifies no qualifiers."
 msgstr "이벤트 바인딩 없음을 지정합니다. "
 
 #. Tag: para
-#: events.xml:119
 #, fuzzy, no-c-format
 msgid ""
 "The container simply calls all the observer methods, passing the event "
@@ -289,19 +211,16 @@ msgstr ""
 "에 의해 다시 넘기게 됩니다. "
 
 #. Tag: para
-#: events.xml:125
 #, no-c-format
 msgid "Qualifiers can be applied to an event in one of two ways:"
 msgstr ""
 
 #. Tag: para
-#: events.xml:131
 #, no-c-format
 msgid "by annotating the <literal>Event</literal> injection point, or"
 msgstr ""
 
 #. Tag: para
-#: events.xml:134
 #, no-c-format
 msgid ""
 "by passing qualifiers to the <literal>select()</literal> of <literal>Event</"
@@ -309,19 +228,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: events.xml:138
 #, no-c-format
 msgid "Specifying the qualifiers at the injection point is far simpler:"
 msgstr ""
 
-#. Tag: programlisting
-#: events.xml:142
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Inject @Updated Event<Document> documentUpdatedEvent;]]>"
-msgstr "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
-
 #. Tag: para
-#: events.xml:144
 #, fuzzy, no-c-format
 msgid ""
 "Then, every event fired via this instance of <literal>Event</literal> has "
@@ -332,13 +243,11 @@ msgstr ""
 "션된 이벤트 바인딩을 갖습니다. 이벤트는 모든 옵저버 방식에 전달됩니다:   "
 
 #. Tag: para
-#: events.xml:151
 #, no-c-format
 msgid "has an event parameter to which the event object is assignable, and"
 msgstr "이벤트 객체를 할당할 수 있는 이벤트 매개 변수를 갖습니다, "
 
 #. Tag: para
-#: events.xml:154
 #, fuzzy, no-c-format
 msgid ""
 "does not have any event qualifier <emphasis>except</emphasis> for the event "
@@ -349,7 +258,6 @@ msgstr ""
 "딩 <emphasis>예외 사항</emphasis>을 지정하지 않습니다. "
 
 #. Tag: para
-#: events.xml:161
 #, no-c-format
 msgid ""
 "The downside of annotating the injection point is that we can't specify the "
@@ -359,18 +267,7 @@ msgid ""
 "<literal>Event</literal>."
 msgstr ""
 
-#. Tag: programlisting
-#: events.xml:167
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[documentEvent.select(new AnnotationLiteral<Updated>(){}).fire"
-"(document);]]>"
-msgstr ""
-"<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>()"
-"{} );]]>"
-
 #. Tag: para
-#: events.xml:169
 #, no-c-format
 msgid ""
 "Events can have multiple event qualifiers, assembled using any combination "
@@ -379,13 +276,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: events.xml:178
 #, fuzzy, no-c-format
 msgid "Conditional observer methods"
 msgstr "트랜잭션 옵저버 "
 
 #. Tag: para
-#: events.xml:180
 #, no-c-format
 msgid ""
 "By default, if there is no instance of an observer in the current context, "
@@ -395,25 +290,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: events.xml:186
 #, no-c-format
 msgid ""
 "A conditional observer is specified by adding <literal>receive = IF_EXISTS</"
 "literal> to the <literal>@Observes</literal> annotation."
 msgstr ""
 
-#. Tag: programlisting
-#: events.xml:191
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = IF_EXISTS) "
-"@Updated Document d) { ... }]]>"
-msgstr ""
-"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-"document) { ... }]]>"
-
 #. Tag: para
-#: events.xml:193
 #, no-c-format
 msgid ""
 "A bean with scope <literal>@Dependent</literal> cannot be a conditional "
@@ -421,54 +304,22 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: events.xml:200
 #, fuzzy, no-c-format
 msgid "Event qualifiers with members"
 msgstr "멤버와 이벤트 바인딩    "
 
 #. Tag: para
-#: events.xml:202
 #, fuzzy, no-c-format
 msgid "An event qualifier type may have annotation members:"
 msgstr "이벤트 바인딩 유형은 어노테이션 멤버를 갖을 수 있습니다:  "
 
-#. Tag: programlisting
-#: events.xml:204
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Qualifier\n"
-"@Target({PARAMETER, FIELD})\n"
-"@Retention(RUNTIME)\n"
-"public @interface Role {\n"
-"   RoleType value();\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@BindingType\n"
-"@Target({PARAMETER, FIELD})\n"
-"@Retention(RUNTIME)\n"
-"public @interface Role {\n"
-"    RoleType value();\n"
-"}]]>"
-
 #. Tag: para
-#: events.xml:206
 #, no-c-format
 msgid ""
 "The member value is used to narrow the messages delivered to the observer:"
 msgstr "멤버 값은 옵저버에게 전달되는 메세지의 범위를 좁히는데 사용됩니다:  "
 
-#. Tag: programlisting
-#: events.xml:208
-#, no-c-format
-msgid ""
-"<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
-"{ ... }]]>"
-msgstr ""
-"<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
-"{ ... }]]>"
-
 #. Tag: para
-#: events.xml:210
 #, fuzzy, no-c-format
 msgid ""
 "Event qualifier type members may be specified statically by the event "
@@ -477,14 +328,7 @@ msgstr ""
 "이벤트 바인딩 유형 멤버는 이벤트 통지 삽입 지점에 있는 어노테이션을 통해 이벤"
 "트 생산자에의해 정적으로 지정될 수 있습니다:  "
 
-#. Tag: programlisting
-#: events.xml:215
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;]]>"
-msgstr "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
-
 #. Tag: para
-#: events.xml:217
 #, fuzzy, no-c-format
 msgid ""
 "Alternatively, the value of the event qualifier type member may be "
@@ -495,20 +339,7 @@ msgstr ""
 "정될 수 있습니다. <literal>AnnotationLiteral</literal>의 추상화 하부클래스를 "
 "작성하여 시작합니다: "
 
-#. Tag: programlisting
-#: events.xml:222
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[abstract class RoleBinding \n"
-"   extends AnnotationLiteral<Role> \n"
-"   implements Role {}]]>"
-msgstr ""
-"<![CDATA[abstract class RoleBinding \n"
-"    extends AnnotationLiteral<Role> \n"
-"    implements Role {}]]>"
-
 #. Tag: para
-#: events.xml:224
 #, fuzzy, no-c-format
 msgid ""
 "The event producer passes an instance of this class to <literal>select()</"
@@ -517,45 +348,17 @@ msgstr ""
 "이벤트 생산자는 이러한 클래스의 인스턴스를 <literal>fire()</literal>로 전달합"
 "니다:  "
 
-#. Tag: programlisting
-#: events.xml:226
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[documentEvent.select(new RoleBinding() {\n"
-"   public void value() { return user.getRole(); }\n"
-"}).fire(document);]]>"
-msgstr ""
-"<![CDATA[documentEvent.fire( document, new RoleBinding() { public void value"
-"() { return user.getRole(); } } );]]>"
-
 #. Tag: title
-#: events.xml:231
 #, fuzzy, no-c-format
 msgid "Multiple event qualifiers"
 msgstr "여러 이벤트 바인딩 "
 
 #. Tag: para
-#: events.xml:233
 #, fuzzy, no-c-format
 msgid "Event qualifier types may be combined, for example:"
 msgstr "이벤트 바인딩 유형은 통합할 수 있습니다, 예: "
 
-#. Tag: programlisting
-#: events.xml:235
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Inject @Blog Event<Document> blogEvent;\n"
-"...\n"
-"if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){})."
-"fire(document);]]>"
-msgstr ""
-"<![CDATA[@Observable @Blog Event<Document> blogEvent;\n"
-"...\n"
-"if (document.isBlog()) blogEvent.fire(document, new "
-"AnnotationLiteral<Updated>(){});]]>"
-
 #. Tag: para
-#: events.xml:237
 #, no-c-format
 msgid ""
 "When this event occurs, all of the following observer methods will be "
@@ -563,44 +366,12 @@ msgid ""
 msgstr ""
 "이러한 이벤트가 발생하면, 다음과 같은 옵저버 방식 모두가 통지되게 됩니다: "
 
-#. Tag: programlisting
-#: events.xml:239
-#, no-c-format
-msgid ""
-"<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
-"document) { ... }]]>"
-msgstr ""
-"<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
-"document) { ... }]]>"
-
-#. Tag: programlisting
-#: events.xml:241
-#, no-c-format
-msgid ""
-"<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
-"{ ... }]]>"
-msgstr ""
-"<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
-"{ ... }]]>"
-
-#. Tag: programlisting
-#: events.xml:242
-#, no-c-format
-msgid ""
-"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
-"{ ... }}}]]>"
-msgstr ""
-"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
-"{ ... }}}]]>"
-
 #. Tag: title
-#: events.xml:247
 #, no-c-format
 msgid "Transactional observers"
 msgstr "트랜잭션 옵저버 "
 
 #. Tag: para
-#: events.xml:249
 #, no-c-format
 msgid ""
 "Transactional observers receive their event notifications during the before "
@@ -614,31 +385,18 @@ msgstr ""
 "<literal>Category</literal> 크리를 성공적으로 업데이트했을 경우에만 애플리케"
 "이션 컨텍스트에서 캐시된 쿼리 결과 모음을 새로고침해야 합니다:  "
 
-#. Tag: programlisting
-#: events.xml:256
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public void refreshCategoryTree(@Observes(during = AFTER_SUCCESS) "
-"CategoryUpdateEvent event) { ... }]]>"
-msgstr ""
-"<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Observes "
-"CategoryUpdateEvent event) { ... }]]>"
-
 #. Tag: para
-#: events.xml:258
 #, fuzzy, no-c-format
 msgid "There are five kinds of transactional observers:"
 msgstr "세 가지 종류의 트랜잭션 옵저버가 있습니다:  "
 
 #. Tag: para
-#: events.xml:262
 #, no-c-format
 msgid ""
 "<literal>IN_PROGESS</literal> observers are called immediately (default)"
 msgstr ""
 
 #. Tag: para
-#: events.xml:265
 #, fuzzy, no-c-format
 msgid ""
 "<literal>AFTER_SUCCESS</literal> observers are called during the after "
@@ -649,7 +407,6 @@ msgstr ""
 "<literal>@AfterTransactionSuccess</literal> 옵저버를 호출합니다.        "
 
 #. Tag: para
-#: events.xml:271
 #, fuzzy, no-c-format
 msgid ""
 "<literal>AFTER_FAILURE</literal> observers are called during the after "
@@ -660,7 +417,6 @@ msgstr ""
 "<literal>@AfterTransactionFailure</literal> 옵저버를 호출합니다.   "
 
 #. Tag: para
-#: events.xml:277
 #, fuzzy, no-c-format
 msgid ""
 "<literal>AFTER_COMPLETION</literal> observers are called during the after "
@@ -670,7 +426,6 @@ msgstr ""
 "literal> 옵저버를 호출합니다  "
 
 #. Tag: para
-#: events.xml:283
 #, fuzzy, no-c-format
 msgid ""
 "<literal>BEFORE_COMPLETION</literal> observers are called during the before "
@@ -680,7 +435,6 @@ msgstr ""
 "literal> 옵저버를 호출합니다 "
 
 #. Tag: para
-#: events.xml:290
 #, fuzzy, no-c-format
 msgid ""
 "Transactional observers are very important in a stateful object model "
@@ -690,56 +444,12 @@ msgstr ""
 "이는 단일 원자성 트랜잭션보다 오래 지속되기 때문입니다.    "
 
 #. Tag: para
-#: events.xml:295
 #, no-c-format
 msgid ""
 "Imagine that we have cached a JPA query result set in the application scope:"
 msgstr "애플리케이션 범위에 있는 JPA 쿼리 결과 모음을 캐시했다고 가정합니다:  "
 
-#. Tag: programlisting
-#: events.xml:297
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@ApplicationScoped @Singleton\n"
-"public class Catalog {\n"
-"\n"
-"   @PersistenceContext EntityManager em;\n"
-"    \n"
-"   List<Product> products;\n"
-"\n"
-"   @Produces @Catalog \n"
-"   List<Product> getCatalog() {\n"
-"      if (products==null) {\n"
-"         products = em.createQuery(\"select p from Product p where p.deleted "
-"= false\")\n"
-"            .getResultList();\n"
-"      }\n"
-"      return products;\n"
-"   }\n"
-"    \n"
-"}]]>"
-msgstr ""
-"<![CDATA[@ApplicationScoped @Singleton\n"
-"public class Catalog {\n"
-"\n"
-"    @PersistenceContext EntityManager em;\n"
-"    \n"
-"    List<Product> products;\n"
-"\n"
-"    @Produces @Catalog \n"
-"    List<Product> getCatalog() {\n"
-"        if (products==null) {\n"
-"            products = em.createQuery(\"select p from Product p where p."
-"deleted = false\")\n"
-"                .getResultList();\n"
-"        }\n"
-"        return products;\n"
-"    }\n"
-"    \n"
-"}]]>"
-
 #. Tag: para
-#: events.xml:299
 #, no-c-format
 msgid ""
 "From time to time, a <literal>Product</literal> is created or deleted. When "
@@ -753,7 +463,6 @@ msgstr ""
 "emphasis> 까지 기다리셔야 합니다! "
 
 #. Tag: para
-#: events.xml:305
 #, fuzzy, no-c-format
 msgid ""
 "The bean that creates and deletes <literal>Product</literal>s could raise "
@@ -762,51 +471,7 @@ msgstr ""
 "<literal>Product</literal>를 생성 및 삭제하는 Web Bean은 이벤트를 제기할 수 "
 "있습니다, 예:  "
 
-#. Tag: programlisting
-#: events.xml:309
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Stateless\n"
-"public class ProductManager {\n"
-"   @PersistenceContext EntityManager em;\n"
-"   @Inject @Any Event<Product> productEvent;\n"
-"\n"
-"   public void delete(Product product) {\n"
-"      em.delete(product);\n"
-"      productEvent.select(new AnnotationLiteral<Deleted>(){}).fire"
-"(product);\n"
-"   }\n"
-"    \n"
-"   public void persist(Product product) {\n"
-"      em.persist(product);\n"
-"      productEvent.select(new AnnotationLiteral<Created>(){}).fire"
-"(product);\n"
-"   }\n"
-"   ...\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Stateless\n"
-"public class ProductManager {\n"
-"\n"
-"    @PersistenceContext EntityManager em;\n"
-"    @Observable Event<Product> productEvent;\n"
-"\n"
-"    public void delete(Product product) {\n"
-"        em.delete(product);\n"
-"        productEvent.fire(product, new AnnotationLiteral<Deleted>(){});\n"
-"    }\n"
-"    \n"
-"    public void persist(Product product) {\n"
-"        em.persist(product);\n"
-"        productEvent.fire(product, new AnnotationLiteral<Created>(){});\n"
-"    }\n"
-"    \n"
-"    ...\n"
-"    \n"
-"}]]>"
-
 #. Tag: para
-#: events.xml:311
 #, no-c-format
 msgid ""
 "And now <literal>Catalog</literal> can observe the events after successful "
@@ -815,40 +480,268 @@ msgstr ""
 "<literal>Catalog</literal>는 트랜잭션을 성공적으로 완료한 후에 이벤트를 옵저"
 "버할 수 있습니다: "
 
-#. Tag: programlisting
-#: events.xml:315
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@ApplicationScoped @Singleton\n"
-"public class Catalog {\n"
-"   ...\n"
-"   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product "
-"product) {\n"
-"      products.add(product);\n"
-"   }\n"
-"    \n"
-"   void addProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product "
-"product) {\n"
-"      products.remove(product);\n"
-"   }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@ApplicationScoped @Singleton\n"
-"public class Catalog {\n"
-"\n"
-"    ...\n"
-"    \n"
-"    void addProduct(@AfterTransactionSuccess @Observes @Created Product "
-"product) {\n"
-"        products.add(product);\n"
-"    }\n"
-"    \n"
-"    void addProduct(@AfterTransactionSuccess @Observes @Deleted Product "
-"product) {\n"
-"        products.remove(product);\n"
-"    }\n"
-"    \n"
-"}]]>"
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Qualifier\n"
+#~ "@Target({FIELD, PARAMETER})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Updated {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@BindingType\n"
+#~ "@Target({PARAMETER, FIELD})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Updated { ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+#~ "{ ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+#~ "{ ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document) { ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document, User user) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document, User user) { ... }]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Any Event<Document> documentEvent;]]>"
+#~ msgstr "<![CDATA[@Observable Event<Document> documentEvent]]>"
+
+#~ msgid "<![CDATA[documentEvent.fire(document);]]>"
+#~ msgstr "<![CDATA[documentEvent.fire(document);]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Updated Event<Document> documentUpdatedEvent;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[documentEvent.select(new AnnotationLiteral<Updated>(){}).fire"
+#~ "(document);]]>"
+#~ msgstr ""
+#~ "<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>()"
+#~ "{} );]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = "
+#~ "IF_EXISTS) @Updated Document d) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document) { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Qualifier\n"
+#~ "@Target({PARAMETER, FIELD})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Role {\n"
+#~ "   RoleType value();\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@BindingType\n"
+#~ "@Target({PARAMETER, FIELD})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Role {\n"
+#~ "    RoleType value();\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
+#~ "{ ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
+#~ "{ ... }]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[abstract class RoleBinding \n"
+#~ "   extends AnnotationLiteral<Role> \n"
+#~ "   implements Role {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[abstract class RoleBinding \n"
+#~ "    extends AnnotationLiteral<Role> \n"
+#~ "    implements Role {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[documentEvent.select(new RoleBinding() {\n"
+#~ "   public void value() { return user.getRole(); }\n"
+#~ "}).fire(document);]]>"
+#~ msgstr ""
+#~ "<![CDATA[documentEvent.fire( document, new RoleBinding() { public void "
+#~ "value() { return user.getRole(); } } );]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Inject @Blog Event<Document> blogEvent;\n"
+#~ "...\n"
+#~ "if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>()"
+#~ "{}).fire(document);]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Observable @Blog Event<Document> blogEvent;\n"
+#~ "...\n"
+#~ "if (document.isBlog()) blogEvent.fire(document, new "
+#~ "AnnotationLiteral<Updated>(){});]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
+#~ "document) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
+#~ "document) { ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
+#~ "{ ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
+#~ "{ ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+#~ "{ ... }}}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+#~ "{ ... }}}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public void refreshCategoryTree(@Observes(during = "
+#~ "AFTER_SUCCESS) CategoryUpdateEvent event) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess "
+#~ "@Observes CategoryUpdateEvent event) { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@ApplicationScoped @Singleton\n"
+#~ "public class Catalog {\n"
+#~ "\n"
+#~ "   @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "   List<Product> products;\n"
+#~ "\n"
+#~ "   @Produces @Catalog \n"
+#~ "   List<Product> getCatalog() {\n"
+#~ "      if (products==null) {\n"
+#~ "         products = em.createQuery(\"select p from Product p where p."
+#~ "deleted = false\")\n"
+#~ "            .getResultList();\n"
+#~ "      }\n"
+#~ "      return products;\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ApplicationScoped @Singleton\n"
+#~ "public class Catalog {\n"
+#~ "\n"
+#~ "    @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "    List<Product> products;\n"
+#~ "\n"
+#~ "    @Produces @Catalog \n"
+#~ "    List<Product> getCatalog() {\n"
+#~ "        if (products==null) {\n"
+#~ "            products = em.createQuery(\"select p from Product p where p."
+#~ "deleted = false\")\n"
+#~ "                .getResultList();\n"
+#~ "        }\n"
+#~ "        return products;\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Stateless\n"
+#~ "public class ProductManager {\n"
+#~ "   @PersistenceContext EntityManager em;\n"
+#~ "   @Inject @Any Event<Product> productEvent;\n"
+#~ "\n"
+#~ "   public void delete(Product product) {\n"
+#~ "      em.delete(product);\n"
+#~ "      productEvent.select(new AnnotationLiteral<Deleted>(){}).fire"
+#~ "(product);\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "   public void persist(Product product) {\n"
+#~ "      em.persist(product);\n"
+#~ "      productEvent.select(new AnnotationLiteral<Created>(){}).fire"
+#~ "(product);\n"
+#~ "   }\n"
+#~ "   ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Stateless\n"
+#~ "public class ProductManager {\n"
+#~ "\n"
+#~ "    @PersistenceContext EntityManager em;\n"
+#~ "    @Observable Event<Product> productEvent;\n"
+#~ "\n"
+#~ "    public void delete(Product product) {\n"
+#~ "        em.delete(product);\n"
+#~ "        productEvent.fire(product, new AnnotationLiteral<Deleted>(){});\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    public void persist(Product product) {\n"
+#~ "        em.persist(product);\n"
+#~ "        productEvent.fire(product, new AnnotationLiteral<Created>(){});\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    ...\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@ApplicationScoped @Singleton\n"
+#~ "public class Catalog {\n"
+#~ "   ...\n"
+#~ "   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product "
+#~ "product) {\n"
+#~ "      products.add(product);\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "   void addProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product "
+#~ "product) {\n"
+#~ "      products.remove(product);\n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ApplicationScoped @Singleton\n"
+#~ "public class Catalog {\n"
+#~ "\n"
+#~ "    ...\n"
+#~ "    \n"
+#~ "    void addProduct(@AfterTransactionSuccess @Observes @Created Product "
+#~ "product) {\n"
+#~ "        products.add(product);\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    void addProduct(@AfterTransactionSuccess @Observes @Deleted Product "
+#~ "product) {\n"
+#~ "        products.remove(product);\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
 
 #~ msgid ""
 #~ "The Web Beans event notification facility allows Web Beans to interact in "

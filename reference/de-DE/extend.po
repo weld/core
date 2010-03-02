@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extend\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
 "PO-Revision-Date: 2009-02-14 06:59+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -16,13 +16,11 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: extend.xml:5
 #, no-c-format
 msgid "Portable extensions"
 msgstr ""
 
 #. Tag: para
-#: extend.xml:7
 #, fuzzy, no-c-format
 msgid ""
 "CDI is intended to be a foundation for frameworks, extensions and "
@@ -37,13 +35,11 @@ msgstr ""
 "Designern von Web Beans vorgesehen:"
 
 #. Tag: para
-#: extend.xml:15
 #, no-c-format
 msgid "integration with Business Process Management engines,"
 msgstr "Integration mit Business Process Management Engines,"
 
 #. Tag: para
-#: extend.xml:18
 #, no-c-format
 msgid ""
 "integration with third-party frameworks such as Spring, Seam, GWT or Wicket, "
@@ -53,31 +49,26 @@ msgstr ""
 "Wicket und"
 
 #. Tag: para
-#: extend.xml:23
 #, fuzzy, no-c-format
 msgid "new technology based upon the CDI programming model."
 msgstr "neue, auf dem Web Beans Programmiermodell basierende Technologie."
 
 #. Tag: para
-#: extend.xml:27
 #, no-c-format
 msgid "More formally, according to the spec:"
 msgstr ""
 
 #. Tag: para
-#: extend.xml:32
 #, no-c-format
 msgid "A portable extension may integrate with the container by:"
 msgstr ""
 
 #. Tag: para
-#: extend.xml:35
 #, no-c-format
 msgid "Providing its own beans, interceptors and decorators to the container"
 msgstr ""
 
 #. Tag: para
-#: extend.xml:40
 #, no-c-format
 msgid ""
 "Injecting dependencies into its own objects using the dependency injection "
@@ -85,13 +76,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extend.xml:45
 #, no-c-format
 msgid "Providing a context implementation for a custom scope"
 msgstr ""
 
 #. Tag: para
-#: extend.xml:50
 #, no-c-format
 msgid ""
 "Augmenting or overriding the annotation-based metadata with metadata from "
@@ -99,13 +88,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extend.xml:58
 #, fuzzy, no-c-format
 msgid "Creating an <literal>Extension</literal>"
 msgstr "Die <literal>Bean</literal>-Klasse"
 
 #. Tag: para
-#: extend.xml:60
 #, no-c-format
 msgid ""
 "The first step in creating a portable extension is to write a class that "
@@ -114,14 +101,7 @@ msgid ""
 "service provider architecture."
 msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:66
-#, no-c-format
-msgid "class MyExtension implements Extension { ... }"
-msgstr ""
-
 #. Tag: para
-#: extend.xml:68
 #, no-c-format
 msgid ""
 "Next, we need to register our extension as a service provider by creating a "
@@ -129,14 +109,7 @@ msgid ""
 "literal>, which contains the name of our extension class:"
 msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:74
-#, no-c-format
-msgid "org.mydomain.extension.MyExtension"
-msgstr ""
-
 #. Tag: para
-#: extend.xml:76
 #, no-c-format
 msgid ""
 "An extension is not a bean, exactly, since it is instantiated by the "
@@ -145,18 +118,7 @@ msgid ""
 "process is complete."
 msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:82
-#, no-c-format
-msgid ""
-"@Inject \n"
-"MyBean(MyExtension myExtension) {\n"
-"   myExtension.doSomething();\n"
-"}"
-msgstr ""
-
 #. Tag: para
-#: extend.xml:84
 #, no-c-format
 msgid ""
 "And, like beans, extensions can have observer methods. Usually, the observer "
@@ -164,33 +126,28 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extend.xml:92
 #, no-c-format
 msgid "Container lifecycle events"
 msgstr ""
 
 #. Tag: para
-#: extend.xml:94
 #, no-c-format
 msgid ""
 "During the initialization process, the container fires a series of events, "
 "including:"
 msgstr ""
 
-#. Tag: literal
-#: extend.xml:101
-#, no-c-format
-msgid "BeforeBeanDiscovery"
-msgstr ""
-
-#. Tag: literal
-#: extend.xml:106
-#, no-c-format
-msgid "ProcessAnnotatedType"
-msgstr ""
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>BeforeBeanDiscovery</literal>"
+msgstr "Das <literal>Manager</literal>-Objekt"
 
 #. Tag: para
-#: extend.xml:110
+#, fuzzy, no-c-format
+msgid "<literal>ProcessAnnotatedType</literal>"
+msgstr "Das <literal>Manager</literal>-Objekt"
+
+#. Tag: para
 #, no-c-format
 msgid ""
 "<literal>ProcessInjectionTarget</literal> and <literal>ProcessProducer</"
@@ -198,54 +155,27 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extend.xml:115
 #, no-c-format
 msgid ""
 "<literal>ProcessBean</literal> and <literal>ProcessObserverMethod</literal>"
 msgstr ""
 
-#. Tag: literal
-#: extend.xml:121
-#, no-c-format
-msgid "AfterBeanDiscovery"
-msgstr ""
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>AfterBeanDiscovery</literal>"
+msgstr "Das <literal>Manager</literal>-Objekt"
 
-#. Tag: literal
-#: extend.xml:126
+#. Tag: para
 #, no-c-format
-msgid "AfterDeploymentValidation"
+msgid "<literal>AfterDeploymentValidation</literal>"
 msgstr ""
 
 #. Tag: para
-#: extend.xml:131
 #, no-c-format
 msgid "Extensions may observe these events:"
 msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:135
-#, no-c-format
-msgid ""
-"<![CDATA[class MyExtension implements Extension {\n"
-"   \n"
-"   void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd) {\n"
-"      Logger.global.debug(\"beginning the scanning process\");\n"
-"   }\n"
-"      \n"
-"   <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {\n"
-"      Logger.global.debug(\"scanning type: \" + pat.getAnnotatedType()."
-"getJavaClass().getName());\n"
-"   } \n"
-"\n"
-"   void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {\n"
-"      Logger.global.debug(\"finished the scanning process\");\n"
-"   }\n"
-"   \n"
-"}]]>"
-msgstr ""
-
 #. Tag: para
-#: extend.xml:137
 #, no-c-format
 msgid ""
 "In fact, the extension can do a lot more than just observe. The extension is "
@@ -253,45 +183,19 @@ msgid ""
 "example:"
 msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:142
-#, no-c-format
-msgid ""
-"<![CDATA[class MyExtension implements Extension {\n"
-"      \n"
-"   <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {\n"
-"      //tell the container to ignore the type if it is annotated @Ignore\n"
-"      if ( pat.getAnnotatedType().isAnnotionPresent(Ignore.class) ) pat.veto"
-"();   \n"
-"   } \n"
-"   \n"
-"}]]>"
-msgstr ""
-
 #. Tag: para
-#: extend.xml:144
 #, fuzzy, no-c-format
 msgid "The observer method may inject a <literal>BeanManager</literal>"
 msgstr ""
 "Der zentrale Kern zur Erweiterung von Web Beans ist das <literal>Manager</"
 "literal>-Objekt."
 
-#. Tag: programlisting
-#: extend.xml:148
-#, no-c-format
-msgid ""
-"<![CDATA[<T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> "
-"pat, BeanManager beanManager) { ... }]]>"
-msgstr ""
-
 #. Tag: title
-#: extend.xml:153
 #, fuzzy, no-c-format
 msgid "The <literal>BeanManager</literal> object"
 msgstr "Das <literal>Manager</literal>-Objekt"
 
 #. Tag: para
-#: extend.xml:155
 #, fuzzy, no-c-format
 msgid ""
 "The nerve center for extending CDI is the <literal>BeanManager</literal> "
@@ -302,54 +206,7 @@ msgstr ""
 "und den Erhalt von Web Beans, Interzeptoren, Dekoratoren, Observern und "
 "Kontexten."
 
-#. Tag: programlisting
-#: extend.xml:161
-#, no-c-format
-msgid ""
-"<![CDATA[public interface BeanManager {\n"
-"   public Object getReference(Bean<?> bean, Type beanType, "
-"CreationalContext<?> ctx);\n"
-"   public Object getInjectableReference(InjectionPoint ij, "
-"CreationalContext<?> ctx);\n"
-"   public <T> CreationalContext<T> createCreationalContext(Contextual<T> "
-"contextual);\n"
-"   public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers);\n"
-"   public Set<Bean<?>> getBeans(String name);\n"
-"   public Bean<?> getPassivationCapableBean(String id);\n"
-"   public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans);\n"
-"   public void validate(InjectionPoint injectionPoint);\n"
-"   public void fireEvent(Object event, Annotation... qualifiers);\n"
-"   public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, "
-"Annotation... qualifiers);\n"
-"   public List<Decorator<?>> resolveDecorators(Set<Type> types, "
-"Annotation... qualifiers);\n"
-"   public List<Interceptor<?>> resolveInterceptors(InterceptionType type, "
-"Annotation... interceptorBindings);\n"
-"   public boolean isScope(Class<? extends Annotation> annotationType);\n"
-"   public boolean isNormalScope(Class<? extends Annotation> "
-"annotationType);\n"
-"   public boolean isPassivatingScope(Class<? extends Annotation> "
-"annotationType);\n"
-"   public boolean isQualifier(Class<? extends Annotation> annotationType);\n"
-"   public boolean isInterceptorBinding(Class<? extends Annotation> "
-"annotationType);\n"
-"   public boolean isStereotype(Class<? extends Annotation> annotationType);\n"
-"   public Set<Annotation> getInterceptorBindingDefinition(Class<? extends "
-"Annotation> bindingType);\n"
-"   public Set<Annotation> getStereotypeDefinition(Class<? extends "
-"Annotation> stereotype);\n"
-"   public Context getContext(Class<? extends Annotation> scopeType);\n"
-"   public ELResolver getELResolver();\n"
-"   public ExpressionFactory wrapExpressionFactory(ExpressionFactory "
-"expressionFactory);\n"
-"   public <T> AnnotatedType<T> createAnnotatedType(Class<T> type);\n"
-"   public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> "
-"type);\n"
-"}]]>"
-msgstr ""
-
 #. Tag: para
-#: extend.xml:163
 #, fuzzy, no-c-format
 msgid ""
 "Any bean or other Java EE component which supports injection can obtain an "
@@ -358,14 +215,7 @@ msgstr ""
 "Wir können eine Instanz von <literal>Manager</literal> via Einspeisung "
 "erhalten:"
 
-#. Tag: programlisting
-#: extend.xml:166
-#, fuzzy, no-c-format
-msgid "@Inject BeanManager beanManager;"
-msgstr "@Current Manager Manager"
-
 #. Tag: para
-#: extend.xml:168
 #, no-c-format
 msgid ""
 "Java EE components may obtain an instance of <literal>BeanManager</literal> "
@@ -375,7 +225,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extend.xml:174
 #, fuzzy, no-c-format
 msgid ""
 "Let's study some of the interfaces exposed by the <literal>BeanManager</"
@@ -385,13 +234,11 @@ msgstr ""
 "literal>-Objekt."
 
 #. Tag: title
-#: extend.xml:179
 #, fuzzy, no-c-format
 msgid "The <literal>InjectionTarget</literal> interface"
 msgstr "Das <literal>Context</literal>-Interface"
 
 #. Tag: para
-#: extend.xml:181
 #, no-c-format
 msgid ""
 "The first thing that a framework developer is going to look for in the "
@@ -401,7 +248,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extend.xml:188
 #, no-c-format
 msgid ""
 "We recommend that frameworks let CDI take over the job of actually "
@@ -412,50 +258,12 @@ msgid ""
 "field injection will be supported."
 msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:196
-#, no-c-format
-msgid ""
-"<![CDATA[//get the BeanManager from JNDI\n"
-"BeanManager beanManager = (BeanManager) new InitialContext().lookup(\"java:"
-"comp/BeanManager\");\n"
-"\n"
-"//CDI uses an AnnotatedType object to read the annotations of a class\n"
-"AnnotatedType<SomeFrameworkComponent> type = beanManager.createAnnotatedType"
-"(SomeFrameworkComponent.class);\n"
-"\n"
-"//The extension uses an InjectionTarget to delegate instantiation, "
-"dependency injection \n"
-"//and lifecycle callbacks to the CDI container\n"
-"InjectionTarget<SomeFrameworkComponent> it = beanManager."
-"createInjectionTarget(type);\n"
-"\n"
-"//each instance needs its own CDI CreationalContext\n"
-"CreationalContext ctx = beanManager.createCreationalContext(null);\n"
-"\n"
-"//instantiate the framework component and inject its dependencies\n"
-"SomeFrameworkComponent instance = it.produce(ctx);  //call the constructor\n"
-"it.inject(instance, ctx);  //call initializer methods and perform field "
-"injection\n"
-"it.postConstruct(instance);  //call the @PostConstruct method\n"
-"\n"
-"...\n"
-"\n"
-"//destroy the framework component instance and clean up dependent objects\n"
-"it.preDestroy(instance);  //call the @PreDestroy method\n"
-"it.dispose(instance);  //it is now safe to discard the instance\n"
-"ctx.release();  //clean up dependent objects\n"
-"]]>"
-msgstr ""
-
 #. Tag: title
-#: extend.xml:201
 #, fuzzy, no-c-format
 msgid "The <literal>Bean</literal> interface"
 msgstr "Das <literal>Context</literal>-Interface"
 
 #. Tag: para
-#: extend.xml:203
 #, fuzzy, no-c-format
 msgid ""
 "Instances of the interface <literal>Bean</literal> represent beans. There is "
@@ -470,46 +278,18 @@ msgstr ""
 "registriert."
 
 #. Tag: para
-#: extend.xml:210
 #, no-c-format
 msgid ""
 "The <literal>Bean</literal> interface exposes all the interesting things we "
-"dicussed in <xref linkend=\"bean-anatomy\"/>."
-msgstr ""
-
-#. Tag: programlisting
-#: extend.xml:215
-#, no-c-format
-msgid ""
-"<![CDATA[public interface Bean<T> extends Contextual<T> {\n"
-"   public Set<Type> getTypes();\n"
-"   public Set<Annotation> getQualifiers();\n"
-"   public Class<? extends Annotation> getScope();\n"
-"   public String getName();\n"
-"   public Set<Class<? extends Annotation>> getStereotypes();\n"
-"   public Class<?> getBeanClass();\n"
-"   public boolean isAlternative();\n"
-"   public boolean isNullable();\n"
-"   public Set<InjectionPoint> getInjectionPoints();\n"
-"}]]>"
+"dicussed in <xref linkend=\"bean-anatomy\" />."
 msgstr ""
 
 #. Tag: para
-#: extend.xml:217
 #, no-c-format
 msgid "There's an easy way to find out what beans exist in the application:"
 msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:221
-#, no-c-format
-msgid ""
-"<![CDATA[Set<Bean<?>> allBeans = beanManager.getBeans(Obect.class, new "
-"AnnotationLiteral<Any>() {});]]>"
-msgstr ""
-
 #. Tag: para
-#: extend.xml:223
 #, fuzzy, no-c-format
 msgid ""
 "The <literal>Bean</literal> interface makes it possible for a portable "
@@ -528,13 +308,11 @@ msgstr ""
 "werden."
 
 #. Tag: title
-#: extend.xml:233
 #, fuzzy, no-c-format
 msgid "Registering a <literal>Bean</literal>"
 msgstr "Die <literal>Bean</literal>-Klasse"
 
 #. Tag: para
-#: extend.xml:235
 #, no-c-format
 msgid ""
 "The most common kind of CDI portable extension registers a bean (or beans) "
@@ -542,7 +320,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extend.xml:239
 #, no-c-format
 msgid ""
 "In this example, we make a framework class, <literal>SecurityManager</"
@@ -552,101 +329,7 @@ msgid ""
 "<literal>SecurityManager</literal> instance."
 msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:246
-#, no-c-format
-msgid ""
-"<![CDATA[public class SecurityManagerExtension implements Extension {\n"
-"    \n"
-"    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager "
-"bm) {\n"
-"            \n"
-"        //use this to read annotations of the class\n"
-"        AnnotatedType<SecurityManager> at = bm.createAnnotatedType"
-"(SecurityManager.class); \n"
-"\n"
-"        //use this to instantiate the class and inject dependencies\n"
-"        final InjectionTarget<SecurityManager> it = bm.createInjectionTarget"
-"(at); \n"
-"\n"
-"        abd.addBean( new Bean<SecurityManager>() {\n"
-"\n"
-"            @Override\n"
-"            public Class<?> getBeanClass() {\n"
-"                return SecurityManager.class;\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public Set<InjectionPoint> getInjectionPoints() {\n"
-"                return it.getInjectionPoints();\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public String getName() {\n"
-"                return \"securityManager\";\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public Set<Annotation> getQualifiers() {\n"
-"                Set<Annotation> qualifiers = new HashSet<Annotation>();\n"
-"                qualifiers.add( new AnnotationLiteral<Default>() {} );\n"
-"                qualifiers.add( new AnnotationLiteral<Any>() {} );\n"
-"                return qualifiers;\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public Class<? extends Annotation> getScope() {\n"
-"                return SessionScoped.class;\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public Set<Class<? extends Annotation>> getStereotypes() {\n"
-"                return Collections.emptySet();\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public Set<Type> getTypes() {\n"
-"                Set<Type> types = new HashSet<Type>();\n"
-"                types.add(SecurityManager.class);\n"
-"                types.add(Object.class);\n"
-"                return types;\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public boolean isAlternative() {\n"
-"                return false;\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public boolean isNullable() {\n"
-"                return false;\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public SecurityManager create(CreationalContext<SecurityManager> "
-"ctx) {\n"
-"                SecurityManager instance = it.produce(ctx);\n"
-"                it.inject(instance, ctx);\n"
-"                it.postConstruct(instance);\n"
-"                return instance;\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public void destroy(SecurityManager instance, \n"
-"                                CreationalContext<SecurityManager> ctx) {\n"
-"                it.preDestroy(instance);\n"
-"                it.dispose(instance);\n"
-"                ctx.release();\n"
-"            }\n"
-"            \n"
-"        } );\n"
-"    }\n"
-"    \n"
-"}]]>"
-msgstr ""
-
 #. Tag: para
-#: extend.xml:248
 #, no-c-format
 msgid ""
 "But a portable extension can also mess with beans that are discovered "
@@ -654,13 +337,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extend.xml:255
 #, no-c-format
 msgid "Wrapping an <literal>AnnotatedType</literal>"
 msgstr ""
 
 #. Tag: para
-#: extend.xml:257
 #, no-c-format
 msgid ""
 "One of the most interesting things that an extension class can do is process "
@@ -669,7 +350,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extend.xml:262
 #, no-c-format
 msgid ""
 "Let's start with an example of an extension that provides support for the "
@@ -680,101 +360,7 @@ msgid ""
 "<literal>value()</literal> of the <literal>@Named</literal> annotation."
 msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:270
-#, no-c-format
-msgid ""
-"<![CDATA[public class QualifiedNameExtension implements Extension {\n"
-"\n"
-"    <X> void processAnnotatedType(@Observes ProcessAnnotatedType<X> pat) {\n"
-"\n"
-"        //wrap this to override the annotations of the class\n"
-"        final AnnotatedType<X> at = pat.getAnnotatedType();\n"
-"        \n"
-"        AnnotatedType<X> wrapped = new AnnotatedType<X>() {\n"
-"\n"
-"            @Override\n"
-"            public Set<AnnotatedConstructor<X>> getConstructors() {\n"
-"                return at.getConstructors();\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public Set<AnnotatedField<? super X>> getFields() {\n"
-"                return at.getFields();\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public Class<X> getJavaClass() {\n"
-"                return at.getJavaClass();\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public Set<AnnotatedMethod<? super X>> getMethods() {\n"
-"                return at.getMethods();\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public <T extends Annotation> T getAnnotation(final Class<T> "
-"annType) {\n"
-"                if ( Named.class.equals(annType) ) {\n"
-"                    class NamedLiteral \n"
-"                            extends AnnotationLiteral<Named> \n"
-"                            implements Named {\n"
-"                        @Override\n"
-"                        public String value() {\n"
-"                            Package pkg = at.getClass().getPackage();\n"
-"                            String unqualifiedName = at.getAnnotation(Named."
-"class).value();\n"
-"                            final String qualifiedName;\n"
-"                            if ( pkg.isAnnotationPresent(Named.class) ) {\n"
-"                                qualifiedName = pkg.getAnnotation(Named."
-"class).value() \n"
-"                                      + '.' + unqualifiedName;\n"
-"                            }\n"
-"                            else {\n"
-"                                qualifiedName = unqualifiedName;\n"
-"                            }\n"
-"                            return qualifiedName;\n"
-"                        }\n"
-"                    }\n"
-"                    return (T) new NamedLiteral();\n"
-"                }\n"
-"                else {\n"
-"                    return at.getAnnotation(annType);\n"
-"                }\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public Set<Annotation> getAnnotations() {\n"
-"                return at.getAnnotations();\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public Type getBaseType() {\n"
-"                return at.getBaseType();\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public Set<Type> getTypeClosure() {\n"
-"                return at.getTypeClosure();\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public boolean isAnnotationPresent(Class<? extends Annotation> "
-"annType) {\n"
-"                return at.isAnnotationPresent(annType);\n"
-"            }\n"
-"            \n"
-"        };\n"
-"        \n"
-"        pat.setAnnotatedType(wrapped);\n"
-"    }\n"
-"    \n"
-"}]]>"
-msgstr ""
-
 #. Tag: para
-#: extend.xml:272
 #, no-c-format
 msgid ""
 "Here's a second example, which adds the <literal>@Alternative</literal> "
@@ -782,41 +368,7 @@ msgid ""
 "literal> interface."
 msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:277
-#, no-c-format
-msgid ""
-"<![CDATA[class ServiceAlternativeExtension implements Extension {\n"
-"      \n"
-"   <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {\n"
-"   \n"
-"      final AnnotatedType<T> type = pat.getAnnotatedType();\n"
-"      \n"
-"      if ( Service.class.isAssignableFrom( type.getJavaClass() ) ) {\n"
-"      \n"
-"         //if the class implements Service, make it an @Alternative\n"
-"         AnnotatedType<T> wrapped = new AnnotatedType<T>() {\n"
-"         \n"
-"            @Override\n"
-"            public boolean isAnnotationPresent(Class<? extends Annotation> "
-"annotationType) {\n"
-"               return annotationType.equals(Alternative.class) ? \n"
-"                  true : type.isAnnotationPresent(annotationType);\n"
-"            }\n"
-"            \n"
-"            //remaining methods of AnnotatedType\n"
-"            ...\n"
-"         }\n"
-"         \n"
-"         pat.setAnnotatedType(wrapped);\n"
-"      }\n"
-"   } \n"
-"   \n"
-"}]]>"
-msgstr ""
-
 #. Tag: para
-#: extend.xml:283
 #, no-c-format
 msgid ""
 "The <literal>AnnotatedType</literal> is not the only thing that can be "
@@ -824,13 +376,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extend.xml:288
 #, no-c-format
 msgid "Wrapping an <literal>InjectionTarget</literal>"
 msgstr ""
 
 #. Tag: para
-#: extend.xml:290
 #, no-c-format
 msgid ""
 "The <literal>InjectionTarget</literal> interface exposes operations for "
@@ -842,7 +392,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extend.xml:297
 #, no-c-format
 msgid ""
 "Here's a CDI portable extension that reads values from properties files and "
@@ -854,16 +403,7 @@ msgid ""
 "<literal>Blogger.properties</literal> could contain:"
 msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:305
-#, no-c-format
-msgid ""
-"firstName=Gavin\n"
-"lastName=King"
-msgstr ""
-
 #. Tag: para
-#: extend.xml:307
 #, no-c-format
 msgid ""
 "The portable extension works by wrapping the containers "
@@ -871,121 +411,7 @@ msgid ""
 "<literal>inject()</literal> method."
 msgstr ""
 
-#. Tag: programlisting
-#: extend.xml:310
-#, no-c-format
-msgid ""
-"<![CDATA[public class ConfigExtension implements Extension {\n"
-"\n"
-"        <X> void processInjectionTarget(@Observes ProcessInjectionTarget<X> "
-"pit) {\n"
-"                \n"
-"                //wrap this to intercept the component lifecycle\n"
-"            final InjectionTarget<X> it = pit.getInjectionTarget();\n"
-"            \n"
-"        final Map<Field, Object> configuredValues = new HashMap<Field, "
-"Object>();\n"
-"        \n"
-"        //use this to read annotations of the class and its members\n"
-"        AnnotatedType<X> at = pit.getAnnotatedType();\n"
-"        \n"
-"        //read the properties file\n"
-"        String propsFileName = at.getClass().getSimpleName() + \".properties"
-"\";\n"
-"        InputStream stream = at.getJavaClass().getResourceAsStream"
-"(propsFileName);\n"
-"        if (stream!=null) {\n"
-"            \n"
-"            try {\n"
-"                Properties props = new Properties();\n"
-"                props.load(stream);\n"
-"                for (Map.Entry<Object, Object> property : props.entrySet()) "
-"{\n"
-"                    String fieldName = property.getKey().toString();\n"
-"                    Object value = property.getValue();\n"
-"                    try {\n"
-"                        Field field = at.getJavaClass().getField"
-"(fieldName);\n"
-"                        field.setAccessible(true);\n"
-"                        if ( field.getType().isAssignableFrom( value.getClass"
-"() ) ) {\n"
-"                            configuredValues.put(field, value);\n"
-"                        }\n"
-"                        else {\n"
-"                            //TODO: do type conversion automatically\n"
-"                            pit.addDefinitionError( new InjectionException(\n"
-"                                   \"field is not of type String: \" + "
-"field ) );\n"
-"                        }\n"
-"                    }\n"
-"                    catch (NoSuchFieldException nsfe) {\n"
-"                        pit.addDefinitionError(nsfe);\n"
-"                    }\n"
-"                    finally {\n"
-"                        stream.close();\n"
-"                    }\n"
-"                }\n"
-"            }\n"
-"            catch (IOException ioe) {\n"
-"                pit.addDefinitionError(ioe);\n"
-"            }\n"
-"        }\n"
-"        \n"
-"        InjectionTarget<X> wrapped = new InjectionTarget<X>() {\n"
-"\n"
-"            @Override\n"
-"            public void inject(X instance, CreationalContext<X> ctx) {\n"
-"                it.inject(instance, ctx);\n"
-"                \n"
-"                //set the values onto the new instance of the component\n"
-"                for (Map.Entry<Field, Object> configuredValue: "
-"configuredValues.entrySet()) {\n"
-"                    try {\n"
-"                        configuredValue.getKey().set(instance, "
-"configuredValue.getValue());\n"
-"                    }\n"
-"                    catch (Exception e) {\n"
-"                        throw new InjectionException(e);\n"
-"                    }\n"
-"                }\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public void postConstruct(X instance) {\n"
-"                it.postConstruct(instance);\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public void preDestroy(X instance) {\n"
-"                it.dispose(instance);\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public void dispose(X instance) {\n"
-"                it.dispose(instance);\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public Set<InjectionPoint> getInjectionPoints() {\n"
-"                return it.getInjectionPoints();\n"
-"            }\n"
-"\n"
-"            @Override\n"
-"            public X produce(CreationalContext<X> ctx) {\n"
-"                return it.produce(ctx);\n"
-"            }\n"
-"            \n"
-"        };\n"
-"        \n"
-"        pit.setInjectionTarget(wrapped);\n"
-"        \n"
-"    }\n"
-"    \n"
-"}]]>"
-msgstr ""
-
 #. Tag: para
-#: extend.xml:312
 #, no-c-format
 msgid ""
 "There's a lot more to the portable extension SPI than what we've discussed "
@@ -994,13 +420,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extend.xml:320
 #, no-c-format
 msgid "The <literal>Context</literal> interface"
 msgstr "Das <literal>Context</literal>-Interface"
 
 #. Tag: para
-#: extend.xml:322
 #, fuzzy, no-c-format
 msgid ""
 "The <literal>Context</literal> interface supports addition of new scopes to "
@@ -1010,30 +434,7 @@ msgstr ""
 "Geltungsbereiche zu Web Beans oder die Erweiterung eingebauter "
 "Geltungsbereiche zu neuen Umgebungen."
 
-#. Tag: programlisting
-#: extend.xml:327
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public interface Context {\n"
-"   public Class<? extends Annotation> getScope();\n"
-"   public <T> T get(Contextual<T> contextual, CreationalContext<T> "
-"creationalContext);\n"
-"   public <T> T get(Contextual<T> contextual);\n"
-"   boolean isActive();\n"
-"}]]>"
-msgstr ""
-"public interface Context {\n"
-"    \n"
-"    public Class&lt;? extends Annotation&gt; getScopeType();\n"
-"    \n"
-"    public &lt;T&gt; T get(Bean&lt;T&gt; bean, boolean create);\n"
-"    \n"
-"    boolean isActive();\n"
-"    \n"
-"}"
-
 #. Tag: para
-#: extend.xml:329
 #, fuzzy, no-c-format
 msgid ""
 "For example, we might implement <literal>Context</literal> to add a business "
@@ -1044,6 +445,30 @@ msgstr ""
 "Geltungsbereich eines Business Prozesses zu Web Beans oder Support für den "
 "Konversationsgeltungsbereich einer Wickets verwendenen Anwendung "
 "hinzuzufügen."
+
+#, fuzzy
+#~ msgid "@Inject BeanManager beanManager;"
+#~ msgstr "@Current Manager Manager"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public interface Context {\n"
+#~ "   public Class<? extends Annotation> getScope();\n"
+#~ "   public <T> T get(Contextual<T> contextual, CreationalContext<T> "
+#~ "creationalContext);\n"
+#~ "   public <T> T get(Contextual<T> contextual);\n"
+#~ "   boolean isActive();\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "public interface Context {\n"
+#~ "    \n"
+#~ "    public Class&lt;? extends Annotation&gt; getScopeType();\n"
+#~ "    \n"
+#~ "    public &lt;T&gt; T get(Bean&lt;T&gt; bean, boolean create);\n"
+#~ "    \n"
+#~ "    boolean isActive();\n"
+#~ "    \n"
+#~ "}"
 
 #, fuzzy
 #~ msgid ""

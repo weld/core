@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection "
 "VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-05-22 23:05+0900\n"
 "Last-Translator: TANABE Junnichi <jun@lmns.biz>\n"
 "Language-Team: none\n"
@@ -15,19 +15,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: viewlayers.xml:5
 #, no-c-format
 msgid "Alternative view layers"
 msgstr "代替ビューレイヤ"
 
 #. Tag: title
-#: viewlayers.xml:8
 #, no-c-format
 msgid "Wicket CDI integration"
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:10
 #, no-c-format
 msgid ""
 "Weld provides integration between the Apache Wicket web framework and CDI. "
@@ -37,7 +34,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:16
 #, no-c-format
 msgid ""
 "This section describes some of the utilities provided by the Wicket "
@@ -45,13 +41,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: viewlayers.xml:22
 #, no-c-format
 msgid "The <literal>WebApplication</literal> class"
 msgstr "<literal>WebApplication</literal>クラス"
 
 #. Tag: para
-#: viewlayers.xml:24
 #, fuzzy, no-c-format
 msgid ""
 "Each wicket application must have a <literal>WebApplication</literal> "
@@ -65,7 +59,6 @@ msgstr ""
 "webbeans.wicket.WebBeansApplication</literal> のサブクラスを作るべきです。"
 
 #. Tag: para
-#: viewlayers.xml:31
 #, fuzzy, no-c-format
 msgid ""
 "If you would prefer not to subclass <literal>WeldApplication</literal>, you "
@@ -79,37 +72,16 @@ msgstr ""
 "<literal>WebBeansApplication</literal> のjavadocがこれに詳しく述べています。"
 
 #. Tag: para
-#: viewlayers.xml:38
 #, no-c-format
 msgid "For example:"
 msgstr "例えば、"
 
-#. Tag: programlisting
-#: viewlayers.xml:41
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public class SampleApplication extends WeldApplication {\n"
-"   @Override\n"
-"   public Class getHomePage() {\n"
-"      return HomePage.class;\n"
-"   }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[public class SampleApplication extends WebBeansApplication {\n"
-"   @Override\n"
-"   public Class getHomePage() {\n"
-"      return HomePage.class;\n"
-"   }\n"
-"}]]>"
-
 #. Tag: title
-#: viewlayers.xml:45
 #, no-c-format
 msgid "Conversations with Wicket"
 msgstr "Wicketを使った対話"
 
 #. Tag: para
-#: viewlayers.xml:46
 #, no-c-format
 msgid ""
 "Wicket can also take advantage of the conversation scope from CDI, provided "
@@ -117,7 +89,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:52
 #, no-c-format
 msgid ""
 "Setting up the conversation context at the beginning of a Wicket request, "
@@ -126,7 +97,6 @@ msgstr ""
 "Wicketリクエストの開始時に対話コンテキストを設定し、その後それを破棄すること"
 
 #. Tag: para
-#: viewlayers.xml:58
 #, no-c-format
 msgid ""
 "Storing the id of any long-running conversation in Wicket's metadata when "
@@ -136,7 +106,6 @@ msgstr ""
 "こと"
 
 #. Tag: para
-#: viewlayers.xml:64
 #, no-c-format
 msgid ""
 "Activating the correct long-running conversation based upon which page is "
@@ -144,7 +113,6 @@ msgid ""
 msgstr "ページがアクセスされているときに正しい長期対話を活性化すること"
 
 #. Tag: para
-#: viewlayers.xml:69
 #, no-c-format
 msgid ""
 "Propagating the conversation context for any long-running conversation to "
@@ -152,13 +120,11 @@ msgid ""
 msgstr "対話コンテキストを新しいページへの長期対話に対して伝播すること"
 
 #. Tag: title
-#: viewlayers.xml:76
 #, no-c-format
 msgid "Starting and stopping conversations in Wicket"
 msgstr "Wicketでの対話の開始と終了"
 
 #. Tag: para
-#: viewlayers.xml:77
 #, fuzzy, no-c-format
 msgid ""
 "As in JSF applications, a conversation <emphasis>always</emphasis> exists "
@@ -177,27 +143,12 @@ msgstr ""
 "の場合と同様に達成されます。同じように、対話は <literal>conversation.end()</"
 "literal> を用いて終了されます。"
 
-#. Tag: programlisting
-#: viewlayers.xml:86
-#, no-c-format
-msgid ""
-"<![CDATA[private @Inject Conversation conversation;\n"
-"...\n"
-"// begin a conversation\n"
-"conversation.begin();\n"
-"...\n"
-"// end a conversation\n"
-"conversation.end();]]>"
-msgstr ""
-
 #. Tag: title
-#: viewlayers.xml:91
 #, no-c-format
 msgid "Long running conversation propagation in Wicket"
 msgstr "Wicketでの長期対話の伝播"
 
 #. Tag: para
-#: viewlayers.xml:92
 #, fuzzy, no-c-format
 msgid ""
 "When a conversation is marked as long-running, the id of that conversation "
@@ -225,6 +176,22 @@ msgstr ""
 "ジインスタンスはリダイレクトの後には生成されないので、対話のIDがリクエストパ"
 "ラメータを通して伝播され、そのリダイレクトの後にページメタデータに保存される"
 "ことになります。"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class SampleApplication extends WeldApplication {\n"
+#~ "   @Override\n"
+#~ "   public Class getHomePage() {\n"
+#~ "      return HomePage.class;\n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class SampleApplication extends WebBeansApplication {\n"
+#~ "   @Override\n"
+#~ "   public Class getHomePage() {\n"
+#~ "      return HomePage.class;\n"
+#~ "   }\n"
+#~ "}]]>"
 
 #~ msgid "Using Web Beans with Wicket"
 #~ msgstr "Web BeansをWicketと使用する"

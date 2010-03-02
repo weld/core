@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stereotypes\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-01-13 15:44+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -17,19 +17,16 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: stereotypes.xml:5
 #, no-c-format
 msgid "Stereotypes"
 msgstr "主要探討模板（Stereotypes）"
 
 #. Tag: para
-#: stereotypes.xml:7
 #, no-c-format
 msgid "The CDI specification defines a stereotype as follows:"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:11
 #, fuzzy, no-c-format
 msgid ""
 "In many systems, use of architectural patterns produces a set of recurring "
@@ -42,31 +39,26 @@ msgstr ""
 "的 Web Bean 宣告一些共通 metadata。"
 
 #. Tag: para
-#: stereotypes.xml:17
 #, no-c-format
 msgid "A stereotype encapsulates any combination of:"
 msgstr "主要探討模板包含著下列任意的各種組合："
 
 #. Tag: para
-#: stereotypes.xml:21
 #, fuzzy, no-c-format
 msgid "a default scope, and"
 msgstr "預設的 scope 類型、"
 
 #. Tag: para
-#: stereotypes.xml:24
 #, fuzzy, no-c-format
 msgid "a set of interceptor bindings."
 msgstr "一組攔截器綁定標記。"
 
 #. Tag: para
-#: stereotypes.xml:28
 #, no-c-format
 msgid "A stereotype may also specify that:"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:34
 #, fuzzy, no-c-format
 msgid "all beans with the stereotype have defaulted bean EL names, or that"
 msgstr ""
@@ -74,13 +66,11 @@ msgstr ""
 "名稱。"
 
 #. Tag: para
-#: stereotypes.xml:37
 #, no-c-format
 msgid "all beans with the stereotype are alternatives."
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:41
 #, no-c-format
 msgid ""
 "A bean may declare zero, one or multiple stereotypes. Stereotype annotations "
@@ -88,7 +78,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:48
 #, fuzzy, no-c-format
 msgid ""
 "A stereotype is an annotation, annotated <literal>@Stereotype</literal>, "
@@ -98,39 +87,12 @@ msgstr ""
 "主要探討模板為 Java 標記類型。這個主要探討模板可辨識一些 MVC 架構中的動作 "
 "class："
 
-#. Tag: programlisting
-#: stereotypes.xml:53
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Stereotype\n"
-"@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"...\n"
-"public @interface Action {}]]>"
-msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@Stereotype\n"
-"public @interface Action {}]]>"
-
 #. Tag: para
-#: stereotypes.xml:55
 #, fuzzy, no-c-format
 msgid "We use the stereotype by applying the annotation to a bean."
 msgstr "我們藉由套用標記至 Web Bean 來使用主要探討模板。"
 
-#. Tag: programlisting
-#: stereotypes.xml:59
-#, no-c-format
-msgid ""
-"<![CDATA[@Action \n"
-"public class LoginAction { ... }]]>"
-msgstr ""
-"<![CDATA[@Action \n"
-"public class LoginAction { ... }]]>"
-
 #. Tag: para
-#: stereotypes.xml:61
 #, no-c-format
 msgid ""
 "Of course, we need to apply some other annotations to our stereotype or else "
@@ -138,13 +100,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: stereotypes.xml:66
 #, fuzzy, no-c-format
 msgid "Default scope for a stereotype"
 msgstr "主要探討模板的預設 scope 和建置類型"
 
 #. Tag: para
-#: stereotypes.xml:68
 #, fuzzy, no-c-format
 msgid ""
 "A stereotype may specify a default scope for beans annotated with the "
@@ -153,39 +113,12 @@ msgstr ""
 "主要探討模板亦可指定所有還有該主要探討模板的 Web Bean 都含有預設的 Web Bean "
 "名稱。"
 
-#. Tag: programlisting
-#: stereotypes.xml:72
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@RequestScoped\n"
-"@Stereotype\n"
-"@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"public @interface Action {}]]>"
-msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@Stereotype\n"
-"public @interface Action {}]]>"
-
 #. Tag: para
-#: stereotypes.xml:74
 #, fuzzy, no-c-format
 msgid "A particular action may still override this default if necessary:"
 msgstr "當然，若有必要的話，有個特定的動作也可置換這些預設值："
 
-#. Tag: programlisting
-#: stereotypes.xml:78
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Dependent @Action \n"
-"public class DependentScopedLoginAction { ... }]]>"
-msgstr ""
-"<![CDATA[@Dependent @Mock @Action \n"
-"public class MockLoginAction { ... }]]>"
-
 #. Tag: para
-#: stereotypes.xml:80
 #, no-c-format
 msgid ""
 "Naturally, overriding a single default isn't much use. But remember, "
@@ -193,13 +126,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: stereotypes.xml:88
 #, no-c-format
 msgid "Interceptor bindings for stereotypes"
 msgstr "主要探討模板的攔截器綁定"
 
 #. Tag: para
-#: stereotypes.xml:90
 #, fuzzy, no-c-format
 msgid ""
 "A stereotype may specify a set of interceptor bindings to be inherited by "
@@ -207,29 +138,7 @@ msgid ""
 msgstr ""
 "主要探討模板可指定一組攔截器綁定來被所有含有該主要探討模板的 Web Bean 繼承。"
 
-#. Tag: programlisting
-#: stereotypes.xml:94
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@RequestScoped\n"
-"@Transactional(requiresNew=true)\n"
-"@Secure\n"
-"@Stereotype\n"
-"@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"public @interface Action {}]]>"
-msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@RequestScoped\n"
-"@Transactional(requiresNew=true)\n"
-"@Secure\n"
-"@WebTier\n"
-"@Stereotype\n"
-"public @interface Action {}]]>"
-
 #. Tag: para
-#: stereotypes.xml:96
 #, fuzzy, no-c-format
 msgid ""
 "This helps us get technical concerns, like transactions and security, even "
@@ -237,13 +146,11 @@ msgid ""
 msgstr "這可協助我們減少 business code 中技術上的問題！"
 
 #. Tag: title
-#: stereotypes.xml:103
 #, no-c-format
 msgid "Name defaulting with stereotypes"
 msgstr "主要探討模板的名稱預設"
 
 #. Tag: para
-#: stereotypes.xml:105
 #, fuzzy, no-c-format
 msgid ""
 "We can specify that all beans with a certain stereotype have a defaulted EL "
@@ -255,31 +162,7 @@ msgstr ""
 "功能為完美的 use case。我們只需要新增一個空的 <literal>@Named</literal> 標記"
 "即可："
 
-#. Tag: programlisting
-#: stereotypes.xml:110
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@RequestScoped\n"
-"@Transactional(requiresNew=true)\n"
-"@Secure\n"
-"@Named\n"
-"@Stereotype\n"
-"@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"public @interface Action {}]]>"
-msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@RequestScoped\n"
-"@Transactional(requiresNew=true)\n"
-"@Secure\n"
-"@Named\n"
-"@WebTier\n"
-"@Stereotype\n"
-"public @interface Action {}]]>"
-
 #. Tag: para
-#: stereotypes.xml:112
 #, fuzzy, no-c-format
 msgid ""
 "Now, the <literal>LoginAction</literal> bean will have the defaulted name "
@@ -289,13 +172,11 @@ msgstr ""
 "literal>。"
 
 #. Tag: title
-#: stereotypes.xml:119
 #, fuzzy, no-c-format
 msgid "Alternative stereotypes"
 msgstr "標準主要探討模板"
 
 #. Tag: para
-#: stereotypes.xml:121
 #, no-c-format
 msgid ""
 "A stereotype can indicate that all beans to which it is applied are "
@@ -303,47 +184,19 @@ msgid ""
 "emphasis> lets us classify beans by deployment scenario."
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:126
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Alternative\n"
-"@Stereotype\n"
-"@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"public @interface Mock {}]]>"
-msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"@Stereotype\n"
-"public @interface Action {}]]>"
-
 #. Tag: para
-#: stereotypes.xml:128
 #, no-c-format
 msgid ""
 "We can apply an alternative stereotype to a whole set of beans, and activate "
 "them all with one line of code in <literal>beans.xml</literal>."
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:133
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Mock\n"
-"public class MockLoginAction extends LoginAction { ... }]]>"
-msgstr ""
-"<![CDATA[@Action \n"
-"public class LoginAction { ... }]]>"
-
 #. Tag: title
-#: stereotypes.xml:141
 #, fuzzy, no-c-format
 msgid "Stereotype stacking"
 msgstr "主要探討模板（Stereotypes）"
 
 #. Tag: para
-#: stereotypes.xml:143
 #, no-c-format
 msgid ""
 "This may blow your mind a bit, but stereotypes may declare other "
@@ -354,39 +207,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:150
 #, no-c-format
 msgid ""
 "Here's an example that combines the <literal>@Action</literal> and "
 "<literal>@Auditable</literal> stereotypes:"
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:155
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Auditable\n"
-"@Action\n"
-"@Stereotype\n"
-"@Target(TYPE)\n"
-"@Retention(RUNTIME)\n"
-"public @interface AuditableAction {}]]>"
-msgstr ""
-"<![CDATA[@Named \n"
-"@RequestScoped \n"
-"@Stereotype \n"
-"@Target({TYPE, METHOD}) \n"
-"@Retention(RUNTIME) \n"
-"public @interface Model {} ]]>"
-
 #. Tag: title
-#: stereotypes.xml:160
 #, fuzzy, no-c-format
 msgid "Built-in stereotypes"
 msgstr "標準主要探討模板"
 
 #. Tag: para
-#: stereotypes.xml:162
 #, fuzzy, no-c-format
 msgid ""
 "We've already met two standard stereotypes defined by the CDI specification: "
@@ -396,33 +228,13 @@ msgstr ""
 "<literal>@Interceptor</literal> 與 <literal>@Decorator</literal>。"
 
 #. Tag: para
-#: stereotypes.xml:167
 #, no-c-format
 msgid ""
 "CDI defines one further standard stereotype, <literal>@Model</literal>, "
 "which is expected to be used frequently in web applications:"
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:172
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Named \n"
-"@RequestScoped \n"
-"@Stereotype \n"
-"@Target({TYPE, METHOD}) \n"
-"@Retention(RUNTIME) \n"
-"public @interface Model {}]]>"
-msgstr ""
-"<![CDATA[@Named \n"
-"@RequestScoped \n"
-"@Stereotype \n"
-"@Target({TYPE, METHOD}) \n"
-"@Retention(RUNTIME) \n"
-"public @interface Model {} ]]>"
-
 #. Tag: para
-#: stereotypes.xml:174
 #, fuzzy, no-c-format
 msgid ""
 "Instead of using JSF managed beans, just annotate a bean <literal>@Model</"
@@ -430,6 +242,140 @@ msgid ""
 msgstr ""
 "這個主要探討模板主要用於 JSF。與其使用 JSF 管理的 bean，只要標記一個 "
 "<literal>@Model</literal> Web Bean 然後直接在您的 JSF 頁面中使用它即可。"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "...\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Action \n"
+#~ "public class LoginAction { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Action \n"
+#~ "public class LoginAction { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@RequestScoped\n"
+#~ "@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Dependent @Action \n"
+#~ "public class DependentScopedLoginAction { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Dependent @Mock @Action \n"
+#~ "public class MockLoginAction { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@RequestScoped\n"
+#~ "@Transactional(requiresNew=true)\n"
+#~ "@Secure\n"
+#~ "@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@Transactional(requiresNew=true)\n"
+#~ "@Secure\n"
+#~ "@WebTier\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@RequestScoped\n"
+#~ "@Transactional(requiresNew=true)\n"
+#~ "@Secure\n"
+#~ "@Named\n"
+#~ "@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@Transactional(requiresNew=true)\n"
+#~ "@Secure\n"
+#~ "@Named\n"
+#~ "@WebTier\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Alternative\n"
+#~ "@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "public @interface Mock {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Mock\n"
+#~ "public class MockLoginAction extends LoginAction { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Action \n"
+#~ "public class LoginAction { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Auditable\n"
+#~ "@Action\n"
+#~ "@Stereotype\n"
+#~ "@Target(TYPE)\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface AuditableAction {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Named \n"
+#~ "@RequestScoped \n"
+#~ "@Stereotype \n"
+#~ "@Target({TYPE, METHOD}) \n"
+#~ "@Retention(RUNTIME) \n"
+#~ "public @interface Model {} ]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Named \n"
+#~ "@RequestScoped \n"
+#~ "@Stereotype \n"
+#~ "@Target({TYPE, METHOD}) \n"
+#~ "@Retention(RUNTIME) \n"
+#~ "public @interface Model {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Named \n"
+#~ "@RequestScoped \n"
+#~ "@Stereotype \n"
+#~ "@Target({TYPE, METHOD}) \n"
+#~ "@Retention(RUNTIME) \n"
+#~ "public @interface Model {} ]]>"
 
 #~ msgid "According to the Web Beans specification:"
 #~ msgstr "根據 Web Bean 規格："

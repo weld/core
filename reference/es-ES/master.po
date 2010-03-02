@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-01-19 16:28+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
@@ -17,13 +17,11 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: master.xml:9
 #, no-c-format
 msgid "A note about naming and nomenclature"
 msgstr ""
 
 #. Tag: para
-#: master.xml:10
 #, no-c-format
 msgid ""
 "Shortly before the final draft of JSR-299 was submitted, the specification "
@@ -38,7 +36,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: master.xml:19
 #, no-c-format
 msgid ""
 "You'll also find that some of the functionality that once existed in the "
@@ -48,43 +45,37 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: master.xml:25
 #, no-c-format
 msgid ""
 "Note that this reference guide was started while changes were still being "
 "made to the specification. We've done our best to update it for accuracy. If "
 "you discover a conflict between what is written in this guide and the "
-"specification, the specification is the authority&#8212;assume it is "
-"correct. If you believe you have found an error in the specification, please "
-"report it to the JSR-299 EG."
+"specification, the specification is the authority—assume it is correct. If "
+"you believe you have found an error in the specification, please report it "
+"to the JSR-299 EG."
 msgstr ""
 
 #. Tag: title
-#: master.xml:36
 #, no-c-format
 msgid "Beans"
 msgstr ""
 
 #. Tag: title
-#: master.xml:49
 #, no-c-format
 msgid "Weld, the CDI Reference Implementation"
 msgstr ""
 
 #. Tag: title
-#: master.xml:59
 #, fuzzy, no-c-format
 msgid "Loose coupling with strong typing"
 msgstr "Aprovechar al máximo un tecleado fuerte"
 
 #. Tag: title
-#: master.xml:75
 #, fuzzy, no-c-format
 msgid "CDI and the Java EE ecosystem"
 msgstr "Web Beans en el ecosistema de Java EE"
 
 #. Tag: title
-#: master.xml:87
 #, no-c-format
 msgid "Weld reference"
 msgstr ""

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2010-01-19 13:48-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,13 +14,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: scopescontexts.xml:5
 #, no-c-format
 msgid "Scopes and contexts"
 msgstr "Escopos e contextos"
 
 #. Tag: para
-#: scopescontexts.xml:7
 #, no-c-format
 msgid ""
 "So far, we've seen a few examples of <emphasis>scope type annotations</"
@@ -34,20 +32,17 @@ msgstr ""
 "do bean. De acordo com a  especificação CDI, um escopo determina:"
 
 #. Tag: para
-#: scopescontexts.xml:16
 #, no-c-format
 msgid "When a new instance of any bean with that scope is created"
 msgstr "Quando uma nova instância de qualquer bean com esse escopo é criada"
 
 #. Tag: para
-#: scopescontexts.xml:19
 #, no-c-format
 msgid "When an existing instance of any bean with that scope is destroyed"
 msgstr ""
 "Quando uma instância existente de qualquer bean com esse escopo é destruída"
 
 #. Tag: para
-#: scopescontexts.xml:22
 #, no-c-format
 msgid ""
 "Which injected references refer to any instance of a bean with that scope"
@@ -56,7 +51,6 @@ msgstr ""
 "esse escopo"
 
 #. Tag: para
-#: scopescontexts.xml:27
 #, no-c-format
 msgid ""
 "For example, if we have a session-scoped bean, <literal>CurrentUser</"
@@ -74,7 +68,6 @@ msgstr ""
 "sessão, e será automaticamente destruída quando a sessão terminar."
 
 #. Tag: para
-#: scopescontexts.xml:35
 #, no-c-format
 msgid ""
 "JPA entities aren't a great fit for this model. Entities have their whole "
@@ -94,13 +87,11 @@ msgstr ""
 "passar uma instância injetada para o <literal>EntityManager</literal> do JPA."
 
 #. Tag: title
-#: scopescontexts.xml:45
 #, no-c-format
 msgid "Scope types"
 msgstr "Tipos de escopo"
 
 #. Tag: para
-#: scopescontexts.xml:47
 #, no-c-format
 msgid ""
 "CDI features an <emphasis>extensible context model</emphasis>. It's possible "
@@ -109,22 +100,7 @@ msgstr ""
 "CDI possui um <emphasis>modelo extensível de contexto</emphasis>. É possível "
 "definir novos escopos, criando uma nova anotação de tipo de escopo:"
 
-#. Tag: programlisting
-#: scopescontexts.xml:52
-#, no-c-format
-msgid ""
-"<![CDATA[@ScopeType\n"
-"@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD})\n"
-"public @interface ClusterScoped {}]]>"
-msgstr ""
-"<![CDATA[@ScopeType\n"
-"@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD})\n"
-"public @interface ClusterScoped {}]]>"
-
 #. Tag: para
-#: scopescontexts.xml:54
 #, no-c-format
 msgid ""
 "Of course, that's the easy part of the job. For this scope type to be "
@@ -142,7 +118,6 @@ msgstr ""
 "exemplo, em uma versão futura do Seam."
 
 #. Tag: para
-#: scopescontexts.xml:61
 #, no-c-format
 msgid ""
 "We can apply a scope type annotation to a bean implementation class to "
@@ -151,66 +126,47 @@ msgstr ""
 "Podemos aplicar uma anotação de tipo de escopo a uma classe de implementação "
 "de um bean para especificar o escopo do bean:"
 
-#. Tag: programlisting
-#: scopescontexts.xml:65
-#, no-c-format
-msgid ""
-"<![CDATA[@ClusterScoped\n"
-"public class SecondLevelCache { ... }]]>"
-msgstr ""
-"<![CDATA[@ClusterScoped\n"
-"public class SecondLevelCache { ... }]]>"
-
 #. Tag: para
-#: scopescontexts.xml:67
 #, no-c-format
 msgid "Usually, you'll use one of CDI's built-in scopes."
 msgstr "Normalmente, você usará um dos escopos pré-definidos do CDI."
 
 #. Tag: title
-#: scopescontexts.xml:72
 #, no-c-format
 msgid "Built-in scopes"
 msgstr "Escopos pré-definidos"
 
 #. Tag: para
-#: scopescontexts.xml:74
 #, no-c-format
 msgid "CDI defines four built-in scopes:"
 msgstr "CDI possui quatro escopos pré-definidos:"
 
-#. Tag: literal
-#: scopescontexts.xml:78
-#, no-c-format
-msgid "@RequestScoped"
-msgstr "@RequestScoped"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>@RequestScoped</literal>"
+msgstr "O qualificador <literal>@New</literal>"
 
-#. Tag: literal
-#: scopescontexts.xml:81
-#, no-c-format
-msgid "@SessionScoped"
-msgstr "@SessionScoped"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>@SessionScoped</literal>"
+msgstr "O qualificador <literal>@New</literal>"
 
-#. Tag: literal
-#: scopescontexts.xml:84
-#, no-c-format
-msgid "@ApplicationScoped"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>@ApplicationScoped</literal>"
 msgstr "@ApplicationScoped"
 
-#. Tag: literal
-#: scopescontexts.xml:87
-#, no-c-format
-msgid "@ConversationScoped"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>@ConversationScoped</literal>"
 msgstr "@ConversationScoped"
 
 #. Tag: para
-#: scopescontexts.xml:91
 #, no-c-format
 msgid "For a web application that uses CDI:"
 msgstr "Para uma aplicação web que utiliza CDI:"
 
 #. Tag: para
-#: scopescontexts.xml:95
 #, no-c-format
 msgid ""
 "any servlet request has access to active request, session and application "
@@ -220,13 +176,11 @@ msgstr ""
 "aplicação ativos, e, adicionalmente"
 
 #. Tag: para
-#: scopescontexts.xml:100
 #, no-c-format
 msgid "any JSF request has access to an active conversation scope."
 msgstr "qualquer requisição JSF tem acesso ao escopo de conversação ativo."
 
 #. Tag: para
-#: scopescontexts.xml:105
 #, no-c-format
 msgid ""
 "A CDI extension can implement support for the conversation scope in other "
@@ -236,50 +190,42 @@ msgstr ""
 "em outros frameworks web."
 
 #. Tag: para
-#: scopescontexts.xml:108
 #, no-c-format
 msgid "The request and application scopes are also active:"
 msgstr "Os escopos de solicitação e aplicação também estão disponíveis:"
 
 #. Tag: para
-#: scopescontexts.xml:112
 #, no-c-format
 msgid "during invocations of EJB remote methods,"
 msgstr "durante invocações de métodos remotos de EJB,"
 
 #. Tag: para
-#: scopescontexts.xml:115
 #, no-c-format
 msgid "during invocations of EJB asynchronous methods,"
 msgstr "durante invocações de métodos assíncronos de EJB,"
 
 #. Tag: para
-#: scopescontexts.xml:118
 #, no-c-format
 msgid "during EJB timeouts,"
 msgstr "durante timeouts de EJB,"
 
 #. Tag: para
-#: scopescontexts.xml:121
 #, no-c-format
 msgid "during message delivery to a message-driven bean,"
 msgstr "durante a entrega de mensagem a um message-driven bean,"
 
 #. Tag: para
-#: scopescontexts.xml:124
 #, no-c-format
 msgid "during message delivery to a <literal>MessageListener</literal>, and"
 msgstr ""
 "durante a entrega de mensagem a um <literal>MessageListener</literal>, e"
 
 #. Tag: para
-#: scopescontexts.xml:127
 #, no-c-format
 msgid "during web service invocations."
 msgstr "durante a invocação de um web service"
 
 #. Tag: para
-#: scopescontexts.xml:131
 #, no-c-format
 msgid ""
 "If the application tries to invoke a bean with a scope that does not have an "
@@ -291,7 +237,6 @@ msgstr ""
 "pelo contêiner em tempo de execução."
 
 #. Tag: para
-#: scopescontexts.xml:136
 #, no-c-format
 msgid ""
 "Managed beans with scope <literal>@SessionScoped</literal> or "
@@ -303,7 +248,6 @@ msgstr ""
 "o contêiner mantém a sessão HTTP resguardada ao longo do tempo."
 
 #. Tag: para
-#: scopescontexts.xml:141
 #, no-c-format
 msgid ""
 "Three of the four built-in scopes should be extremely familiar to every Java "
@@ -315,13 +259,11 @@ msgstr ""
 "aqui. No entanto, um dos escopos é novo."
 
 #. Tag: title
-#: scopescontexts.xml:149
 #, no-c-format
 msgid "The conversation scope"
 msgstr "O escopo de conversação"
 
 #. Tag: para
-#: scopescontexts.xml:151
 #, no-c-format
 msgid ""
 "The conversation scope is a bit like the traditional session scope in that "
@@ -335,13 +277,11 @@ msgstr ""
 "escopo de sessão, o escopo de conversação:"
 
 #. Tag: para
-#: scopescontexts.xml:159
 #, no-c-format
 msgid "is demarcated explicitly by the application, and"
 msgstr "é demarcado explicitamente pela aplicação, e"
 
 #. Tag: para
-#: scopescontexts.xml:162
 #, no-c-format
 msgid ""
 "holds state associated with a particular web browser tab in a JSF "
@@ -354,13 +294,12 @@ msgstr ""
 "caso para o escopo de sessão)."
 
 #. Tag: para
-#: scopescontexts.xml:169
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"A conversation represents a task&#8212;a unit of work from the point of view "
-"of the user. The conversation context holds state associated with what the "
-"user is currently working on. If the user is doing multiple things at the "
-"same time, there are multiple conversations."
+"A conversation represents a task—a unit of work from the point of view of "
+"the user. The conversation context holds state associated with what the user "
+"is currently working on. If the user is doing multiple things at the same "
+"time, there are multiple conversations."
 msgstr ""
 "Uma conversação representa uma tarefa&#8212;uma unidade de trabalho do ponto-"
 "de-vista do usuário. O contexto de conversação mantém o estado associado com "
@@ -368,7 +307,6 @@ msgstr ""
 "várias coisas ao mesmo tempo, existirão várias conversações."
 
 #. Tag: para
-#: scopescontexts.xml:175
 #, no-c-format
 msgid ""
 "The conversation context is active during any JSF request. Most "
@@ -383,13 +321,11 @@ msgstr ""
 "emphasis>."
 
 #. Tag: title
-#: scopescontexts.xml:182
 #, no-c-format
 msgid "Conversation demarcation"
 msgstr "Demarcação de contexto"
 
 #. Tag: para
-#: scopescontexts.xml:184
 #, no-c-format
 msgid ""
 "CDI provides a built-in bean for controlling the lifecycle of conversations "
@@ -398,14 +334,7 @@ msgstr ""
 "CDI oferece um bean pré-definido para o controle do ciclo de vida das "
 "conversações em uma aplicação JSF. Esse bean pode ser obtido por injeção:"
 
-#. Tag: programlisting
-#: scopescontexts.xml:189
-#, no-c-format
-msgid "@Inject Conversation conversation;"
-msgstr "@Inject Conversation conversation;"
-
 #. Tag: para
-#: scopescontexts.xml:191
 #, no-c-format
 msgid ""
 "To promote the conversation associated with the current request to a long-"
@@ -421,7 +350,6 @@ msgstr ""
 "()</literal>."
 
 #. Tag: para
-#: scopescontexts.xml:197
 #, no-c-format
 msgid ""
 "In the following example, a conversation-scoped bean controls the "
@@ -430,70 +358,7 @@ msgstr ""
 "No exemplo a seguir, um bean com escopo de conversação controla a "
 "conversação na qual estiver associado:"
 
-#. Tag: programlisting
-#: scopescontexts.xml:201
-#, no-c-format
-msgid ""
-"<![CDATA[@ConversationScoped @Stateful\n"
-"public class OrderBuilder {\n"
-"   private Order order;\n"
-"   private @Inject Conversation conversation;\n"
-"   private @PersistenceContext(type = EXTENDED) EntityManager em;\n"
-"   \n"
-"   @Produces public Order getOrder() {\n"
-"      return order;\n"
-"   }\n"
-"\n"
-"   public Order createOrder() {\n"
-"      order = new Order();\n"
-"      conversation.begin();\n"
-"      return order;\n"
-"   }\n"
-"   \n"
-"   public void addLineItem(Product product, int quantity) {\n"
-"      order.add(new LineItem(product, quantity));\n"
-"   }\n"
-"\n"
-"   public void saveOrder(Order order) {\n"
-"      em.persist(order);\n"
-"      conversation.end();\n"
-"   }\n"
-"   \n"
-"   @Remove\n"
-"   public void destroy() {}\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@ConversationScoped @Stateful\n"
-"public class OrderBuilder {\n"
-"   private Order order;\n"
-"   private @Inject Conversation conversation;\n"
-"   private @PersistenceContext(type = EXTENDED) EntityManager em;\n"
-"   \n"
-"   @Produces public Order getOrder() {\n"
-"      return order;\n"
-"   }\n"
-"\n"
-"   public Order createOrder() {\n"
-"      order = new Order();\n"
-"      conversation.begin();\n"
-"      return order;\n"
-"   }\n"
-"   \n"
-"   public void addLineItem(Product product, int quantity) {\n"
-"      order.add(new LineItem(product, quantity));\n"
-"   }\n"
-"\n"
-"   public void saveOrder(Order order) {\n"
-"      em.persist(order);\n"
-"      conversation.end();\n"
-"   }\n"
-"   \n"
-"   @Remove\n"
-"   public void destroy() {}\n"
-"}]]>"
-
 #. Tag: para
-#: scopescontexts.xml:203
 #, no-c-format
 msgid ""
 "This bean is able to control its own lifecycle through use of the "
@@ -505,13 +370,11 @@ msgstr ""
 "cliclo vida que depende totalmente de um outro objeto."
 
 #. Tag: title
-#: scopescontexts.xml:211
 #, no-c-format
 msgid "Conversation propagation"
 msgstr "Propagação de conversação"
 
 #. Tag: para
-#: scopescontexts.xml:213
 #, no-c-format
 msgid ""
 "The conversation context automatically propagates with any JSF faces request "
@@ -524,7 +387,6 @@ msgstr ""
 "link."
 
 #. Tag: para
-#: scopescontexts.xml:218
 #, no-c-format
 msgid ""
 "We can force the conversation to propagate with a non-faces request by "
@@ -542,41 +404,16 @@ msgstr ""
 "literal>, que possui o nome de bean <literal>conversation</literal> em EL."
 
 #. Tag: para
-#: scopescontexts.xml:225
 #, no-c-format
 msgid "Therefore, the following link propagates the conversation:"
 msgstr "Portanto, o seguinte link propaga a conversação:"
 
-#. Tag: programlisting
-#: scopescontexts.xml:229
-#, no-c-format
-msgid ""
-"<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</a>]]"
-">"
-msgstr ""
-"<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</a>]]"
-">"
-
 #. Tag: para
-#: scopescontexts.xml:231
 #, no-c-format
 msgid "It's probably better to use one of the link components in JSF 2:"
 msgstr "É provavelmente melhor usar um dos componentes de link em JSF 2:"
 
-#. Tag: programlisting
-#: scopescontexts.xml:235
-#, no-c-format
-msgid ""
-"<![CDATA[<h:link outcome=\"/addProduct.xhtml value=\"Add Product\">\n"
-"   <f:param name=\"cid\" value=\"#{conversation.id}\"/>\n"
-"</h:link>]]>"
-msgstr ""
-"<![CDATA[<h:link outcome=\"/addProduct.xhtml value=\"Add Product\">\n"
-"   <f:param name=\"cid\" value=\"#{conversation.id}\"/>\n"
-"</h:link>]]>"
-
 #. Tag: para
-#: scopescontexts.xml:238
 #, no-c-format
 msgid ""
 "The conversation context propagates across redirects, making it very easy to "
@@ -591,21 +428,19 @@ msgstr ""
 "parâmetro de solicitação."
 
 #. Tag: title
-#: scopescontexts.xml:248
 #, no-c-format
 msgid "Conversation timeout"
 msgstr "Tempo limite de conversação"
 
 #. Tag: para
-#: scopescontexts.xml:250
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The container is permitted to destroy a conversation and all state held in "
 "its context at any time in order to conserve resources. A CDI implementation "
-"will normally do this on the basis of some kind of timeout&#8212;though this "
-"is not required by the specification. The timeout is the period of "
-"inactivity before the conversation is destroyed (as opposed to the amount of "
-"time the conversation is active)."
+"will normally do this on the basis of some kind of timeout—though this is "
+"not required by the specification. The timeout is the period of inactivity "
+"before the conversation is destroyed (as opposed to the amount of time the "
+"conversation is active)."
 msgstr ""
 "O contêiner pode destruir uma conversação e todo estado mantido em seu "
 "contexto, a qualquer momento, a fim de preservar recursos. A implementação "
@@ -615,7 +450,6 @@ msgstr ""
 "contraste com a quantidade de tempo que a conversação está ativa)."
 
 #. Tag: para
-#: scopescontexts.xml:257
 #, no-c-format
 msgid ""
 "The <literal>Conversation</literal> object provides a method to set the "
@@ -626,20 +460,12 @@ msgstr ""
 "tempo limite (timeout). Essa é uma sugestão para o contêiner, que está livre "
 "para ignorar essa configuração."
 
-#. Tag: programlisting
-#: scopescontexts.xml:262
-#, no-c-format
-msgid "conversation.setTimeout(timeoutInMillis);"
-msgstr "conversation.setTimeout(timeoutInMillis);"
-
 #. Tag: title
-#: scopescontexts.xml:269
 #, no-c-format
 msgid "The singleton pseudo-scope"
 msgstr "O pseudo-escopo singleton"
 
 #. Tag: para
-#: scopescontexts.xml:271
 #, no-c-format
 msgid ""
 "In addition to the four built-in scopes, CDI also supports two "
@@ -653,7 +479,6 @@ msgstr ""
 "<literal>@Singleton</literal>."
 
 #. Tag: para
-#: scopescontexts.xml:277
 #, no-c-format
 msgid ""
 "Unlike the other scopes, which belong to the package <literal>javax."
@@ -665,7 +490,6 @@ msgstr ""
 "definida no pacote <literal>javax.inject</literal>."
 
 #. Tag: para
-#: scopescontexts.xml:283
 #, no-c-format
 msgid ""
 "You can guess what \"singleton\" means here. It means a bean that is "
@@ -690,7 +514,6 @@ msgstr ""
 "sessão com estado."
 
 #. Tag: para
-#: scopescontexts.xml:292
 #, no-c-format
 msgid ""
 "Now, if the singleton instance is a simple, immutable, serializable object "
@@ -706,7 +529,6 @@ msgstr ""
 "com o escopo padrão."
 
 #. Tag: para
-#: scopescontexts.xml:298
 #, no-c-format
 msgid ""
 "There are several ways to ensure that the singleton bean remains a singleton "
@@ -716,7 +538,6 @@ msgstr ""
 "singleton quando seu cliente se torna serializável."
 
 #. Tag: para
-#: scopescontexts.xml:302
 #, no-c-format
 msgid ""
 "have the singleton bean implement <literal>writeResolve()</literal> and "
@@ -728,7 +549,6 @@ msgstr ""
 "serialização Java),"
 
 #. Tag: para
-#: scopescontexts.xml:308
 #, no-c-format
 msgid ""
 "make sure the client keeps only a transient reference to the singleton bean, "
@@ -738,7 +558,6 @@ msgstr ""
 "bean singleton, ou"
 
 #. Tag: para
-#: scopescontexts.xml:313
 #, no-c-format
 msgid ""
 "give the client a reference of type <literal>Instance&lt;X&gt;</literal> "
@@ -748,7 +567,6 @@ msgstr ""
 "onde <literal>X</literal> é o tipo do bean singleton."
 
 #. Tag: para
-#: scopescontexts.xml:320
 #, no-c-format
 msgid ""
 "A fourth, better solution is to instead use <literal>@ApplicationScoped</"
@@ -760,13 +578,11 @@ msgstr ""
 "os problemas de serialização."
 
 #. Tag: title
-#: scopescontexts.xml:326
 #, no-c-format
 msgid "The dependent pseudo-scope"
 msgstr "O pseudo-escopo dependente"
 
 #. Tag: para
-#: scopescontexts.xml:328
 #, no-c-format
 msgid ""
 "Finally, CDI features the so-called <emphasis>dependent pseudo-scope</"
@@ -778,21 +594,13 @@ msgstr ""
 "explicitamente um tipo de escopo."
 
 #. Tag: para
-#: scopescontexts.xml:333
 #, no-c-format
 msgid ""
 "For example, this bean has the scope type <literal>@Dependent</literal>:"
 msgstr ""
 "Por exemplo, esse bean possui o tipo de escopo <literal>@Dependent</literal>:"
 
-#. Tag: programlisting
-#: scopescontexts.xml:337
-#, no-c-format
-msgid "<![CDATA[public class Calculator { ... }]]>"
-msgstr "<![CDATA[public class Calculator { ... }]]>"
-
 #. Tag: para
-#: scopescontexts.xml:339
 #, no-c-format
 msgid ""
 "An instance of a dependent bean is never shared between different clients or "
@@ -808,7 +616,6 @@ msgstr ""
 "o objeto a que ele pertence é destruído."
 
 #. Tag: para
-#: scopescontexts.xml:345
 #, no-c-format
 msgid ""
 "If a Unified EL expression refers to a dependent bean by EL name, an "
@@ -820,7 +627,6 @@ msgstr ""
 "instância não é reutilizada durante qualquer outra avaliação de expressão."
 
 #. Tag: para
-#: scopescontexts.xml:351
 #, no-c-format
 msgid ""
 "If you need to access a bean directly by EL name in a JSF page, you probably "
@@ -845,7 +651,6 @@ msgstr ""
 "exponha-o em EL por meio de um método getter."
 
 #. Tag: para
-#: scopescontexts.xml:361
 #, no-c-format
 msgid ""
 "Beans with scope <literal>@Dependent</literal> don't need a proxy object. "
@@ -855,7 +660,6 @@ msgstr ""
 "de proxy. O cliente mantém uma referência direta para sua instância."
 
 #. Tag: para
-#: scopescontexts.xml:366
 #, no-c-format
 msgid ""
 "CDI makes it easy to obtain a dependent instance of a bean, even if the bean "
@@ -865,13 +669,11 @@ msgstr ""
 "o bean já tiver declarado como um bean com algum outro tipo de escopo."
 
 #. Tag: title
-#: scopescontexts.xml:374
 #, no-c-format
 msgid "The <literal>@New</literal> qualifier"
 msgstr "O qualificador <literal>@New</literal>"
 
 #. Tag: para
-#: scopescontexts.xml:376
 #, no-c-format
 msgid ""
 "The built-in qualifier <literal>@New</literal> allows us to obtain a "
@@ -880,14 +682,7 @@ msgstr ""
 "O qualificador pré-definido <literal>@New</literal> nos permite obter um "
 "objeto dependente de uma classe especificada."
 
-#. Tag: programlisting
-#: scopescontexts.xml:380
-#, no-c-format
-msgid "<![CDATA[@Inject @New Calculator calculator;]]>"
-msgstr "<![CDATA[@Inject @New Calculator calculator;]]>"
-
 #. Tag: para
-#: scopescontexts.xml:382
 #, no-c-format
 msgid ""
 "The class must be a valid managed bean or session bean, but need not be an "
@@ -897,7 +692,6 @@ msgstr ""
 "ser um bean habilitado."
 
 #. Tag: para
-#: scopescontexts.xml:384
 #, no-c-format
 msgid ""
 "This works even if <literal>Calculator</literal> is <emphasis>already</"
@@ -906,18 +700,7 @@ msgstr ""
 "Isso funciona mesmo se <literal>Calculator</literal> <emphasis>já</emphasis> "
 "estiver declarado com um tipo de escopo diferente, por exemplo:"
 
-#. Tag: programlisting
-#: scopescontexts.xml:389
-#, no-c-format
-msgid ""
-"<![CDATA[@ConversationScoped\n"
-"public class Calculator { ... }]]>"
-msgstr ""
-"<![CDATA[@ConversationScoped\n"
-"public class Calculator { ... }]]>"
-
 #. Tag: para
-#: scopescontexts.xml:391
 #, no-c-format
 msgid ""
 "So the following injected attributes each get a different instance of "
@@ -926,22 +709,7 @@ msgstr ""
 "Portanto, os seguintes atributos injetados obtêm uma instância diferente de "
 "<literal>Calculator</literal>:"
 
-#. Tag: programlisting
-#: scopescontexts.xml:395
-#, no-c-format
-msgid ""
-"<![CDATA[public class PaymentCalc {\n"
-"   @Inject Calculator calculator;\n"
-"   @Inject @New Calculator newCalculator;\n"
-"}]]>"
-msgstr ""
-"<![CDATA[public class PaymentCalc {\n"
-"   @Inject Calculator calculator;\n"
-"   @Inject @New Calculator newCalculator;\n"
-"}]]>"
-
 #. Tag: para
-#: scopescontexts.xml:397
 #, no-c-format
 msgid ""
 "The <literal>calculator</literal> field has a conversation-scoped instance "
@@ -956,7 +724,6 @@ msgstr ""
 "<literal>PaymentCalc</literal>."
 
 #. Tag: para
-#: scopescontexts.xml:403
 #, no-c-format
 msgid ""
 "This feature is particularly useful with producer methods, as we'll see in "
@@ -964,3 +731,132 @@ msgid ""
 msgstr ""
 "Essa funcionalidade é particularmente útil em métodos produtores, como "
 "poderemos verificar no próximo capítulo."
+
+#~ msgid ""
+#~ "<![CDATA[@ScopeType\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target({TYPE, METHOD})\n"
+#~ "public @interface ClusterScoped {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ScopeType\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target({TYPE, METHOD})\n"
+#~ "public @interface ClusterScoped {}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@ClusterScoped\n"
+#~ "public class SecondLevelCache { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ClusterScoped\n"
+#~ "public class SecondLevelCache { ... }]]>"
+
+#~ msgid "@RequestScoped"
+#~ msgstr "@RequestScoped"
+
+#~ msgid "@SessionScoped"
+#~ msgstr "@SessionScoped"
+
+#~ msgid "@Inject Conversation conversation;"
+#~ msgstr "@Inject Conversation conversation;"
+
+#~ msgid ""
+#~ "<![CDATA[@ConversationScoped @Stateful\n"
+#~ "public class OrderBuilder {\n"
+#~ "   private Order order;\n"
+#~ "   private @Inject Conversation conversation;\n"
+#~ "   private @PersistenceContext(type = EXTENDED) EntityManager em;\n"
+#~ "   \n"
+#~ "   @Produces public Order getOrder() {\n"
+#~ "      return order;\n"
+#~ "   }\n"
+#~ "\n"
+#~ "   public Order createOrder() {\n"
+#~ "      order = new Order();\n"
+#~ "      conversation.begin();\n"
+#~ "      return order;\n"
+#~ "   }\n"
+#~ "   \n"
+#~ "   public void addLineItem(Product product, int quantity) {\n"
+#~ "      order.add(new LineItem(product, quantity));\n"
+#~ "   }\n"
+#~ "\n"
+#~ "   public void saveOrder(Order order) {\n"
+#~ "      em.persist(order);\n"
+#~ "      conversation.end();\n"
+#~ "   }\n"
+#~ "   \n"
+#~ "   @Remove\n"
+#~ "   public void destroy() {}\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ConversationScoped @Stateful\n"
+#~ "public class OrderBuilder {\n"
+#~ "   private Order order;\n"
+#~ "   private @Inject Conversation conversation;\n"
+#~ "   private @PersistenceContext(type = EXTENDED) EntityManager em;\n"
+#~ "   \n"
+#~ "   @Produces public Order getOrder() {\n"
+#~ "      return order;\n"
+#~ "   }\n"
+#~ "\n"
+#~ "   public Order createOrder() {\n"
+#~ "      order = new Order();\n"
+#~ "      conversation.begin();\n"
+#~ "      return order;\n"
+#~ "   }\n"
+#~ "   \n"
+#~ "   public void addLineItem(Product product, int quantity) {\n"
+#~ "      order.add(new LineItem(product, quantity));\n"
+#~ "   }\n"
+#~ "\n"
+#~ "   public void saveOrder(Order order) {\n"
+#~ "      em.persist(order);\n"
+#~ "      conversation.end();\n"
+#~ "   }\n"
+#~ "   \n"
+#~ "   @Remove\n"
+#~ "   public void destroy() {}\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</"
+#~ "a>]]>"
+#~ msgstr ""
+#~ "<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</"
+#~ "a>]]>"
+
+#~ msgid ""
+#~ "<![CDATA[<h:link outcome=\"/addProduct.xhtml value=\"Add Product\">\n"
+#~ "   <f:param name=\"cid\" value=\"#{conversation.id}\"/>\n"
+#~ "</h:link>]]>"
+#~ msgstr ""
+#~ "<![CDATA[<h:link outcome=\"/addProduct.xhtml value=\"Add Product\">\n"
+#~ "   <f:param name=\"cid\" value=\"#{conversation.id}\"/>\n"
+#~ "</h:link>]]>"
+
+#~ msgid "conversation.setTimeout(timeoutInMillis);"
+#~ msgstr "conversation.setTimeout(timeoutInMillis);"
+
+#~ msgid "<![CDATA[public class Calculator { ... }]]>"
+#~ msgstr "<![CDATA[public class Calculator { ... }]]>"
+
+#~ msgid "<![CDATA[@Inject @New Calculator calculator;]]>"
+#~ msgstr "<![CDATA[@Inject @New Calculator calculator;]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@ConversationScoped\n"
+#~ "public class Calculator { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ConversationScoped\n"
+#~ "public class Calculator { ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public class PaymentCalc {\n"
+#~ "   @Inject Calculator calculator;\n"
+#~ "   @Inject @New Calculator newCalculator;\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class PaymentCalc {\n"
+#~ "   @Inject Calculator calculator;\n"
+#~ "   @Inject @New Calculator newCalculator;\n"
+#~ "}]]>"

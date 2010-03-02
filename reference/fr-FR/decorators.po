@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
 "PO-Revision-Date: 2009-02-02 22:25+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,13 +14,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: decorators.xml:5
 #, no-c-format
 msgid "Decorators"
 msgstr "Décorateurs"
 
 #. Tag: para
-#: decorators.xml:7
 #, fuzzy, no-c-format
 msgid ""
 "Interceptors are a powerful way to capture and separate concerns which are "
@@ -41,7 +39,6 @@ msgstr ""
 "approprié pour séparer problèmes <emphasis>métiers<emphasis>."
 
 #. Tag: para
-#: decorators.xml:15
 #, fuzzy, no-c-format
 msgid ""
 "The reverse is true of <emphasis>decorators</emphasis>. A decorator "
@@ -63,31 +60,11 @@ msgstr ""
 "problèmes techniques qui peuvent toucher des types très disparates."
 
 #. Tag: para
-#: decorators.xml:24
 #, no-c-format
 msgid "Suppose we have an interface that represents accounts:"
 msgstr "Supposez que nous ayons une interfaces représentant des comptes:"
 
-#. Tag: programlisting
-#: decorators.xml:26
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public interface Account {\n"
-"   public BigDecimal getBalance();\n"
-"   public User getOwner();\n"
-"   public void withdraw(BigDecimal amount);\n"
-"   public void deposit(BigDecimal amount);\n"
-"}]]>"
-msgstr ""
-"<![CDATA[public interface Account {\n"
-"    public BigDecimal getBalance();\n"
-"    public User getOwner();\n"
-"    public void withdraw(BigDecimal amount);\n"
-"    public void deposit(BigDecimal amount);\n"
-"}]]>"
-
 #. Tag: para
-#: decorators.xml:28
 #, fuzzy, no-c-format
 msgid ""
 "Several different beans in our system implement the <literal>Account</"
@@ -102,7 +79,6 @@ msgstr ""
 "d'utilisation idéal d'un décorateur."
 
 #. Tag: para
-#: decorators.xml:34
 #, fuzzy, no-c-format
 msgid ""
 "A decorator is a bean (possibly even an abstract class) that implements the "
@@ -111,74 +87,14 @@ msgstr ""
 "Un décorateur est un simple Web Bean qui implémente le type qu'il décore, et "
 "qui est annoté <literal>@Decorator</literal>."
 
-#. Tag: programlisting
-#: decorators.xml:39
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Decorator\n"
-"public abstract class LargeTransactionDecorator\n"
-"      implements Account {\n"
-"   ...\n"
-"}]]>"
-msgstr ""
-"<![CDATA[<Decorators>\n"
-"    <myapp:LargeTransactionDecorator/>\n"
-"</Decorators>]]>"
-
 #. Tag: para
-#: decorators.xml:41
 #, no-c-format
 msgid ""
 "The decorator implements the methods of the decorated type that it wants to "
 "intercept."
 msgstr ""
 
-#. Tag: programlisting
-#: decorators.xml:45
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Decorator\n"
-"public abstract class LargeTransactionDecorator\n"
-"      implements Account {\n"
-"   @Inject @Delegate @Any Account account;\n"
-"\n"
-"   @PersistenceContext EntityManager em;\n"
-"    \n"
-"   public void withdraw(BigDecimal amount) {\n"
-"      ...\n"
-"   }\n"
-"    \n"
-"   public void deposit(BigDecimal amount);\n"
-"      ...\n"
-"   }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Decorator\n"
-"public abstract class LargeTransactionDecorator \n"
-"        implements Account {\n"
-"    \n"
-"    @Decorates Account account;\n"
-"    \n"
-"    @PersistenceContext EntityManager em;\n"
-"    \n"
-"    public void withdraw(BigDecimal amount) {\n"
-"        account.withdraw(amount);\n"
-"        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
-"            em.persist( new LoggedWithdrawl(amount) );\n"
-"        }\n"
-"    }\n"
-"    \n"
-"    public void deposit(BigDecimal amount);\n"
-"        account.deposit(amount);\n"
-"        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
-"            em.persist( new LoggedDeposit(amount) );\n"
-"        }\n"
-"    }\n"
-"    \n"
-"}]]>"
-
 #. Tag: para
-#: decorators.xml:47
 #, fuzzy, no-c-format
 msgid ""
 "Unlike other beans, a decorator may be an abstract class. Therefore, if "
@@ -191,7 +107,6 @@ msgstr ""
 "d'implémenter cette méthode."
 
 #. Tag: para
-#: decorators.xml:52
 #, fuzzy, no-c-format
 msgid ""
 "Interceptors for a method are called before decorators that apply to the "
@@ -201,13 +116,11 @@ msgstr ""
 "s'appliquent à cette méthode."
 
 #. Tag: title
-#: decorators.xml:57
 #, fuzzy, no-c-format
 msgid "Delegate object"
 msgstr "Attributs de délégation"
 
 #. Tag: para
-#: decorators.xml:59
 #, no-c-format
 msgid ""
 "Decorators have a special injection point, called the <emphasis>delegate "
@@ -217,39 +130,23 @@ msgid ""
 "method parameter or injected field."
 msgstr ""
 
-#. Tag: programlisting
-#: decorators.xml:65
-#, no-c-format
-msgid ""
-"<![CDATA[@Decorator\n"
-"public abstract class LargeTransactionDecorator\n"
-"      implements Account {\n"
-"   @Inject @Delegate @Any Account account;\n"
-"   ...\n"
-"}]]>"
-msgstr ""
-
 #. Tag: para
-#: decorators.xml:67
 #, fuzzy, no-c-format
 msgid "A decorator is bound to any bean which:"
 msgstr "Un décorateur est lié à tout Web Bean qui:"
 
 #. Tag: para
-#: decorators.xml:71
 #, fuzzy, no-c-format
 msgid "has the type of the delegate injection point as a bean type, and"
 msgstr "a le type de l'attribut de délégation comme type d'API, et"
 
 #. Tag: para
-#: decorators.xml:74
 #, fuzzy, no-c-format
 msgid "has all qualifiers that are declared at the delegate injection point."
 msgstr ""
 "a tous les types de liaison qui sont déclarés par l'attribut de délégation."
 
 #. Tag: para
-#: decorators.xml:78
 #, fuzzy, no-c-format
 msgid ""
 "This delegate injection point specifies that the decorator is bound to all "
@@ -258,14 +155,7 @@ msgstr ""
 "L'attribut de délégation spécifie que le décorateur est lié à tous les Web "
 "Beans qui impémentent <literal>Account</literal>:"
 
-#. Tag: programlisting
-#: decorators.xml:83
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Inject @Delegate @Any Account account;]]>"
-msgstr "<![CDATA[@Decorates Account account;]]>"
-
 #. Tag: para
-#: decorators.xml:85
 #, fuzzy, no-c-format
 msgid ""
 "A delegate injection point may specify any number of qualifier annotations. "
@@ -274,14 +164,7 @@ msgstr ""
 "Un attribut de délégation peut spécifier une annotation de liaison. Alors, "
 "le décorateur sera seulement lié à tous les Web Beans ayant la même liaison."
 
-#. Tag: programlisting
-#: decorators.xml:90
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Inject @Delegate @Foreign Account account;]]>"
-msgstr "<![CDATA[@Decorates @Foreign Account account;]]>"
-
 #. Tag: para
-#: decorators.xml:92
 #, fuzzy, no-c-format
 msgid ""
 "The decorator may invoke the delegate object, which has much the same effect "
@@ -293,64 +176,12 @@ msgstr ""
 "que d'appeler <literal>InvocationContext.proceed()</literal> à partir d'un "
 "intercepteur."
 
-#. Tag: programlisting
-#: decorators.xml:98
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Decorator\n"
-"public abstract class LargeTransactionDecorator\n"
-"      implements Account {\n"
-"   @Inject @Delegate @Any Account account;\n"
-"\n"
-"   @PersistenceContext EntityManager em;\n"
-"    \n"
-"   public void withdraw(BigDecimal amount) {\n"
-"      account.withdraw(amount);\n"
-"      if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
-"         em.persist( new LoggedWithdrawl(amount) );\n"
-"      }\n"
-"   }\n"
-"    \n"
-"   public void deposit(BigDecimal amount);\n"
-"      account.deposit(amount);\n"
-"      if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
-"         em.persist( new LoggedDeposit(amount) );\n"
-"      }\n"
-"   }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Decorator\n"
-"public abstract class LargeTransactionDecorator \n"
-"        implements Account {\n"
-"    \n"
-"    @Decorates Account account;\n"
-"    \n"
-"    @PersistenceContext EntityManager em;\n"
-"    \n"
-"    public void withdraw(BigDecimal amount) {\n"
-"        account.withdraw(amount);\n"
-"        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
-"            em.persist( new LoggedWithdrawl(amount) );\n"
-"        }\n"
-"    }\n"
-"    \n"
-"    public void deposit(BigDecimal amount);\n"
-"        account.deposit(amount);\n"
-"        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
-"            em.persist( new LoggedDeposit(amount) );\n"
-"        }\n"
-"    }\n"
-"    \n"
-"}]]>"
-
 #. Tag: title
-#: decorators.xml:103
 #, no-c-format
 msgid "Enabling decorators"
 msgstr "Activation des décorateurs"
 
 #. Tag: para
-#: decorators.xml:105
 #, no-c-format
 msgid ""
 "By default, all decorators are disabled. We need to <emphasis>enable</"
@@ -358,24 +189,7 @@ msgid ""
 "bean archive. This activation only applies to the beans in that archive."
 msgstr ""
 
-#. Tag: programlisting
-#: decorators.xml:111
-#, no-c-format
-msgid ""
-"<![CDATA[<beans\n"
-"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
-"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-"   xsi:schemaLocation=\"\n"
-"      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
-"   <decorators>\n"
-"         <class>org.mycompany.myapp.LargeTransactionDecorator</class>\n"
-"   </decorators>\n"
-"</beans>]]>"
-msgstr ""
-
 #. Tag: para
-#: decorators.xml:113
 #, fuzzy, no-c-format
 msgid ""
 "This declaration serves the same purpose for decorators that the "
@@ -385,7 +199,6 @@ msgstr ""
 "<literal>&lt;Interceptors&gt;</literal> pour les intercepteurs:"
 
 #. Tag: para
-#: decorators.xml:120
 #, no-c-format
 msgid ""
 "it enables us to specify a total ordering for all decorators in our system, "
@@ -395,12 +208,137 @@ msgstr ""
 "notre système, assurant un comportement déterministe, et"
 
 #. Tag: para
-#: decorators.xml:126
 #, no-c-format
 msgid "it lets us enable or disable decorator classes at deployment time."
 msgstr ""
 "cela nous permet d'activer ou désactiver les classes de décorateurs au "
 "moment du déploiement."
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public interface Account {\n"
+#~ "   public BigDecimal getBalance();\n"
+#~ "   public User getOwner();\n"
+#~ "   public void withdraw(BigDecimal amount);\n"
+#~ "   public void deposit(BigDecimal amount);\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public interface Account {\n"
+#~ "    public BigDecimal getBalance();\n"
+#~ "    public User getOwner();\n"
+#~ "    public void withdraw(BigDecimal amount);\n"
+#~ "    public void deposit(BigDecimal amount);\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Decorator\n"
+#~ "public abstract class LargeTransactionDecorator\n"
+#~ "      implements Account {\n"
+#~ "   ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[<Decorators>\n"
+#~ "    <myapp:LargeTransactionDecorator/>\n"
+#~ "</Decorators>]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Decorator\n"
+#~ "public abstract class LargeTransactionDecorator\n"
+#~ "      implements Account {\n"
+#~ "   @Inject @Delegate @Any Account account;\n"
+#~ "\n"
+#~ "   @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "   public void withdraw(BigDecimal amount) {\n"
+#~ "      ...\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "   public void deposit(BigDecimal amount);\n"
+#~ "      ...\n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Decorator\n"
+#~ "public abstract class LargeTransactionDecorator \n"
+#~ "        implements Account {\n"
+#~ "    \n"
+#~ "    @Decorates Account account;\n"
+#~ "    \n"
+#~ "    @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "    public void withdraw(BigDecimal amount) {\n"
+#~ "        account.withdraw(amount);\n"
+#~ "        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+#~ "            em.persist( new LoggedWithdrawl(amount) );\n"
+#~ "        }\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    public void deposit(BigDecimal amount);\n"
+#~ "        account.deposit(amount);\n"
+#~ "        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+#~ "            em.persist( new LoggedDeposit(amount) );\n"
+#~ "        }\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Delegate @Any Account account;]]>"
+#~ msgstr "<![CDATA[@Decorates Account account;]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Delegate @Foreign Account account;]]>"
+#~ msgstr "<![CDATA[@Decorates @Foreign Account account;]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Decorator\n"
+#~ "public abstract class LargeTransactionDecorator\n"
+#~ "      implements Account {\n"
+#~ "   @Inject @Delegate @Any Account account;\n"
+#~ "\n"
+#~ "   @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "   public void withdraw(BigDecimal amount) {\n"
+#~ "      account.withdraw(amount);\n"
+#~ "      if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+#~ "         em.persist( new LoggedWithdrawl(amount) );\n"
+#~ "      }\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "   public void deposit(BigDecimal amount);\n"
+#~ "      account.deposit(amount);\n"
+#~ "      if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+#~ "         em.persist( new LoggedDeposit(amount) );\n"
+#~ "      }\n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Decorator\n"
+#~ "public abstract class LargeTransactionDecorator \n"
+#~ "        implements Account {\n"
+#~ "    \n"
+#~ "    @Decorates Account account;\n"
+#~ "    \n"
+#~ "    @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "    public void withdraw(BigDecimal amount) {\n"
+#~ "        account.withdraw(amount);\n"
+#~ "        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+#~ "            em.persist( new LoggedWithdrawl(amount) );\n"
+#~ "        }\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    public void deposit(BigDecimal amount);\n"
+#~ "        account.deposit(amount);\n"
+#~ "        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+#~ "            em.persist( new LoggedDeposit(amount) );\n"
+#~ "        }\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
 
 #~ msgid ""
 #~ "All decorators have a <emphasis>delegate attribute</emphasis>. The type "

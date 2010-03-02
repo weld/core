@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-12-25 16:09-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,7 +14,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: para
-#: part2.xml:5
 #, no-c-format
 msgid ""
 "Weld, the JSR-299 Reference Implementation (RI), is being developed as part "
@@ -32,7 +31,6 @@ msgstr ""
 "como obter e compilar o código podem ser encontradas na mesmo página."
 
 #. Tag: para
-#: part2.xml:12
 #, no-c-format
 msgid ""
 "Weld provides a complete SPI allowing Java EE containers such as JBoss AS "
@@ -46,7 +44,6 @@ msgstr ""
 "SE."
 
 #. Tag: para
-#: part2.xml:18
 #, no-c-format
 msgid ""
 "Weld comes with an extensive library of examples, which are a great starting "
@@ -54,4 +51,3 @@ msgid ""
 msgstr ""
 "Weld vem com uma extensiva biblioteca de exemplos, os quais são um grande "
 "ponto de partida para aprender CDI."
-

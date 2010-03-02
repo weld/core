@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection "
 "VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
 "PO-Revision-Date: 2009-11-23 21:21+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
@@ -15,13 +15,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: extensions.xml:8
 #, no-c-format
 msgid "CDI extensions available as part of Weld"
 msgstr "Estensioni CDI disponibili come parte di Weld"
 
 #. Tag: para
-#: extensions.xml:11
 #, no-c-format
 msgid "These modules are usable on any JSR-299 implementation, not just Weld!"
 msgstr ""
@@ -29,13 +27,11 @@ msgstr ""
 "solo Weld!"
 
 #. Tag: title
-#: extensions.xml:17
 #, no-c-format
 msgid "Weld Logger"
 msgstr "Weld Logger"
 
 #. Tag: para
-#: extensions.xml:19
 #, fuzzy, no-c-format
 msgid ""
 "Adding logging to your application is now even easier with simple injection "
@@ -49,38 +45,7 @@ msgstr ""
 "log.Log con <emphasis>@Logger</emphasis> ed un oggetto logger appropriato "
 "verrà iniettato in una qualsiasi istanza del bean."
 
-#. Tag: programlisting
-#: extensions.xml:25
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[import org.slf4j.Logger;\n"
-"import javax.inject.Inject;\n"
-"\n"
-"public class Checkout {\n"
-"   private @Inject Logger log;\n"
-"\n"
-"   public void invoiceItems() {\n"
-"      ShoppingCart cart;\n"
-"      ...\n"
-"      log.debug(\"Items invoiced for {}\", cart);\n"
-"   }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[import org.jboss.weld.annotation.Logger;\n"
-"import org.jboss.weld.log.Log;\n"
-"\n"
-"public class Checkout {\n"
-"   private @Inject @Logger Log log;\n"
-"\n"
-"   public void invoiceItems() {\n"
-"      ShoppingCart cart;\n"
-"      ...\n"
-"      log.debug(\"Items invoiced for {0}\", cart);\n"
-"   }\n"
-"}]]>"
-
 #. Tag: para
-#: extensions.xml:27
 #, no-c-format
 msgid ""
 "The example shows how objects can be interpolated into a message. If you use "
@@ -90,7 +55,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extensions.xml:34
 #, fuzzy, no-c-format
 msgid ""
 "You can add Weld logging to your project by including weld-logger.jar, sl4j-"
@@ -104,7 +68,6 @@ msgstr ""
 "webbeans-logger</literal>."
 
 #. Tag: para
-#: extensions.xml:39
 #, fuzzy, no-c-format
 msgid ""
 "If you are using Weld as your JSR-299 implementation, there's no need to "
@@ -112,6 +75,34 @@ msgid ""
 msgstr ""
 "Se si usa Web Beans come implementazione JSR-299, non c'è alcun bisogno di "
 "includere <literal>webbeans-logging.jar</literal> poiché lo è già."
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[import org.slf4j.Logger;\n"
+#~ "import javax.inject.Inject;\n"
+#~ "\n"
+#~ "public class Checkout {\n"
+#~ "   private @Inject Logger log;\n"
+#~ "\n"
+#~ "   public void invoiceItems() {\n"
+#~ "      ShoppingCart cart;\n"
+#~ "      ...\n"
+#~ "      log.debug(\"Items invoiced for {}\", cart);\n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[import org.jboss.weld.annotation.Logger;\n"
+#~ "import org.jboss.weld.log.Log;\n"
+#~ "\n"
+#~ "public class Checkout {\n"
+#~ "   private @Inject @Logger Log log;\n"
+#~ "\n"
+#~ "   public void invoiceItems() {\n"
+#~ "      ShoppingCart cart;\n"
+#~ "      ...\n"
+#~ "      log.debug(\"Items invoiced for {0}\", cart);\n"
+#~ "   }\n"
+#~ "}]]>"
 
 #, fuzzy
 #~ msgid ""

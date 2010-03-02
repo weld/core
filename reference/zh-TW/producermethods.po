@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: producermethods\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-01-16 12:31+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -17,13 +17,11 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: producermethods.xml:5
 #, no-c-format
 msgid "Producer methods"
 msgstr "Producer method"
 
 #. Tag: para
-#: producermethods.xml:7
 #, fuzzy, no-c-format
 msgid ""
 "Producer methods let us overcome certain limitations that arise when a "
@@ -37,31 +35,26 @@ msgstr ""
 "提及第二個方式。）"
 
 #. Tag: para
-#: producermethods.xml:14
 #, no-c-format
 msgid "According to the spec:"
 msgstr "根據規格："
 
 #. Tag: para
-#: producermethods.xml:18
 #, no-c-format
 msgid "A producer method acts as a source of objects to be injected, where:"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:22
 #, no-c-format
 msgid "the objects to be injected are not required to be instances of beans,"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:25
 #, no-c-format
 msgid "the concrete type of the objects to be injected may vary at runtime or"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:28
 #, no-c-format
 msgid ""
 "the objects require some custom initialization that is not performed by the "
@@ -69,25 +62,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:36
 #, fuzzy, no-c-format
 msgid "For example, producer methods let us:"
 msgstr "producer method 的 scope"
 
 #. Tag: para
-#: producermethods.xml:40
 #, no-c-format
 msgid "expose a JPA entity as a bean,"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:43
 #, no-c-format
 msgid "expose any JDK class as a bean,"
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:46
 #, no-c-format
 msgid ""
 "define multiple beans, with different scopes or initialization, for the same "
@@ -95,13 +84,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:51
 #, no-c-format
 msgid "vary the implementation of a bean type at runtime."
 msgstr ""
 
 #. Tag: para
-#: producermethods.xml:55
 #, no-c-format
 msgid ""
 "In particular, producer methods let us use runtime polymorphism with CDI. As "
@@ -110,55 +97,12 @@ msgid ""
 "is fixed. A producer method has no such limitation:"
 msgstr ""
 
-#. Tag: programlisting
-#: producermethods.xml:61
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@SessionScoped\n"
-"public class Preferences implements Serializable {\n"
-"   private PaymentStrategyType paymentStrategy;\n"
-"   ...\n"
-"   @Produces @Preferred \n"
-"   public PaymentStrategy getPaymentStrategy() {\n"
-"       switch (paymentStrategy) {\n"
-"           case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
-"           case CHECK: return new CheckPaymentStrategy();\n"
-"           case PAYPAL: return new PayPalPaymentStrategy();\n"
-"           default: return null;\n"
-"       } \n"
-"   }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Produces @Preferred @SessionScoped\n"
-"public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,\n"
-"                                          ChequePaymentStrategy cps,\n"
-"                                          PayPalPaymentStrategy ppps) {\n"
-"    switch (paymentStrategy) {\n"
-"        case CREDIT_CARD: return ccps;\n"
-"        case CHEQUE: return cps;\n"
-"        case PAYPAL: return ppps;\n"
-"        default: return null;\n"
-"    } \n"
-"}]]>"
-
 #. Tag: para
-#: producermethods.xml:63
 #, no-c-format
 msgid "Consider an injection point:"
 msgstr ""
 
-#. Tag: programlisting
-#: producermethods.xml:65
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Inject @Preferred PaymentStrategy paymentStrategy;]]>"
-msgstr ""
-"<![CDATA[@Produces @Preferred @SessionScoped\n"
-"public PaymentStrategy getPaymentStrategy() {\n"
-"    ...\n"
-"}]]>"
-
 #. Tag: para
-#: producermethods.xml:67
 #, no-c-format
 msgid ""
 "This injection point has the same type and qualifier annotations as the "
@@ -168,13 +112,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: producermethods.xml:74
 #, no-c-format
 msgid "Scope of a producer method"
 msgstr "producer method 的 scope"
 
 #. Tag: para
-#: producermethods.xml:76
 #, fuzzy, no-c-format
 msgid ""
 "The scope of the producer method defaults to <literal>@Dependent</literal>, "
@@ -190,7 +132,6 @@ msgstr ""
 "現。"
 
 #. Tag: para
-#: producermethods.xml:83
 #, no-c-format
 msgid ""
 "To change this behavior, we can add a <literal>@SessionScoped</literal> "
@@ -199,22 +140,7 @@ msgstr ""
 "若要更改此特性，我們可將 <literal>@SessionScoped</literal> 這個標記附加至 "
 "method。"
 
-#. Tag: programlisting
-#: producermethods.xml:87
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Produces @Preferred @SessionScoped\n"
-"public PaymentStrategy getPaymentStrategy() {\n"
-"   ...\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Produces @Preferred @SessionScoped\n"
-"public PaymentStrategy getPaymentStrategy() {\n"
-"    ...\n"
-"}]]>"
-
 #. Tag: para
-#: producermethods.xml:89
 #, no-c-format
 msgid ""
 "Now, when the producer method is called, the returned "
@@ -226,7 +152,6 @@ msgstr ""
 "調用。"
 
 #. Tag: para
-#: producermethods.xml:95
 #, no-c-format
 msgid ""
 "A producer method does <emphasis>not</emphasis> inherit the scope of the "
@@ -239,13 +164,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: producermethods.xml:107
 #, no-c-format
 msgid "Injection into producer methods"
 msgstr "注入 producer method"
 
 #. Tag: para
-#: producermethods.xml:109
 #, no-c-format
 msgid ""
 "There's one potential problem with the code above. The implementations of "
@@ -260,7 +183,6 @@ msgstr ""
 "攔截器。"
 
 #. Tag: para
-#: producermethods.xml:116
 #, fuzzy, no-c-format
 msgid ""
 "If this isn't what we want, we can use dependency injection into the "
@@ -269,36 +191,7 @@ msgstr ""
 "若這不是我們所想要的，我們可使用依賴注入至 producer method 之中來取得 Web "
 "Bean 的 instance："
 
-#. Tag: programlisting
-#: producermethods.xml:121
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Produces @Preferred @SessionScoped\n"
-"public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,\n"
-"                                          CheckPaymentStrategy cps,\n"
-"                                          PayPalPaymentStrategy ppps) {\n"
-"   switch (paymentStrategy) {\n"
-"      case CREDIT_CARD: return ccps;\n"
-"      case CHEQUE: return cps;\n"
-"      case PAYPAL: return ppps;\n"
-"      default: return null;\n"
-"   } \n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Produces @Preferred @SessionScoped\n"
-"public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,\n"
-"                                          ChequePaymentStrategy cps,\n"
-"                                          PayPalPaymentStrategy ppps) {\n"
-"    switch (paymentStrategy) {\n"
-"        case CREDIT_CARD: return ccps;\n"
-"        case CHEQUE: return cps;\n"
-"        case PAYPAL: return ppps;\n"
-"        default: return null;\n"
-"    } \n"
-"}]]>"
-
 #. Tag: para
-#: producermethods.xml:123
 #, fuzzy, no-c-format
 msgid ""
 "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-"
@@ -319,7 +212,6 @@ msgstr ""
 "外小心！"
 
 #. Tag: para
-#: producermethods.xml:132
 #, fuzzy, no-c-format
 msgid ""
 "There's at least three ways we could go about fixing this bug. We could "
@@ -334,7 +226,6 @@ msgstr ""
 "<literal>@Dependent</literal> 或 <literal>@RequestScoped</literal>。"
 
 #. Tag: para
-#: producermethods.xml:139
 #, fuzzy, no-c-format
 msgid ""
 "But a more common solution is to use the special <literal>@New</literal> "
@@ -342,51 +233,16 @@ msgid ""
 msgstr "不過較普遍的解決方式就是使用特殊的 <literal>@New</literal> 綁定標記。"
 
 #. Tag: title
-#: producermethods.xml:144
 #, no-c-format
 msgid "Use of <literal>@New</literal> with producer methods"
 msgstr "使用 <literal>@New</literal> 和 producer method"
 
 #. Tag: para
-#: producermethods.xml:146
 #, no-c-format
 msgid "Consider the following producer method:"
 msgstr "考慮下列 producer method："
 
-#. Tag: programlisting
-#: producermethods.xml:148
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Produces @Preferred @SessionScoped\n"
-"public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy "
-"ccps,\n"
-"                                          @New CheckPaymentStrategy cps,\n"
-"                                          @New PayPalPaymentStrategy ppps) "
-"{\n"
-"   switch (paymentStrategy) {\n"
-"      case CREDIT_CARD: return ccps;\n"
-"      case CHEQUE: return cps;\n"
-"      case PAYPAL: return ppps;\n"
-"      default: return null;\n"
-"   } \n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Produces @Preferred @SessionScoped\n"
-"public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy "
-"ccps,\n"
-"                                          @New ChequePaymentStrategy cps,\n"
-"                                          @New PayPalPaymentStrategy ppps) "
-"{\n"
-"    switch (paymentStrategy) {\n"
-"        case CREDIT_CARD: return ccps;\n"
-"        case CHEQUE: return cps;\n"
-"        case PAYPAL: return ppps;\n"
-"        default: return null;\n"
-"    } \n"
-"}]]>"
-
 #. Tag: para
-#: producermethods.xml:150
 #, no-c-format
 msgid ""
 "Then a new <emphasis>dependent</emphasis> instance of "
@@ -403,47 +259,25 @@ msgstr ""
 "件不會被毀掉。"
 
 #. Tag: title
-#: producermethods.xml:160
 #, fuzzy, no-c-format
 msgid "Disposer methods"
 msgstr "Producer method"
 
 #. Tag: para
-#: producermethods.xml:162
 #, no-c-format
 msgid ""
 "Some producer methods return objects that require explicit destruction. For "
 "example, somebody needs to close this JDBC connection:"
 msgstr ""
 
-#. Tag: programlisting
-#: producermethods.xml:167
-#, no-c-format
-msgid ""
-"<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
-"   return createConnection(user.getId(), user.getPassword());\n"
-"}]]>"
-msgstr ""
-
 #. Tag: para
-#: producermethods.xml:169
 #, no-c-format
 msgid ""
 "Destruction can be performed by a matching <emphasis>disposer method</"
 "emphasis>, defined by the same class as the producer method:"
 msgstr ""
 
-#. Tag: programlisting
-#: producermethods.xml:172
-#, no-c-format
-msgid ""
-"<![CDATA[void close(@Disposes Connection connection) {\n"
-"   connection.close();\n"
-"}]]>"
-msgstr ""
-
 #. Tag: para
-#: producermethods.xml:174
 #, no-c-format
 msgid ""
 "The disposer method must have at least one parameter, annotated "
@@ -455,6 +289,115 @@ msgid ""
 "satisfies the type and qualifiers of each parameter and pass it to the "
 "method automatically."
 msgstr ""
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@SessionScoped\n"
+#~ "public class Preferences implements Serializable {\n"
+#~ "   private PaymentStrategyType paymentStrategy;\n"
+#~ "   ...\n"
+#~ "   @Produces @Preferred \n"
+#~ "   public PaymentStrategy getPaymentStrategy() {\n"
+#~ "       switch (paymentStrategy) {\n"
+#~ "           case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
+#~ "           case CHECK: return new CheckPaymentStrategy();\n"
+#~ "           case PAYPAL: return new PayPalPaymentStrategy();\n"
+#~ "           default: return null;\n"
+#~ "       } \n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy "
+#~ "ccps,\n"
+#~ "                                          ChequePaymentStrategy cps,\n"
+#~ "                                          PayPalPaymentStrategy ppps) {\n"
+#~ "    switch (paymentStrategy) {\n"
+#~ "        case CREDIT_CARD: return ccps;\n"
+#~ "        case CHEQUE: return cps;\n"
+#~ "        case PAYPAL: return ppps;\n"
+#~ "        default: return null;\n"
+#~ "    } \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Preferred PaymentStrategy paymentStrategy;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy() {\n"
+#~ "    ...\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy() {\n"
+#~ "   ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy() {\n"
+#~ "    ...\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy "
+#~ "ccps,\n"
+#~ "                                          CheckPaymentStrategy cps,\n"
+#~ "                                          PayPalPaymentStrategy ppps) {\n"
+#~ "   switch (paymentStrategy) {\n"
+#~ "      case CREDIT_CARD: return ccps;\n"
+#~ "      case CHEQUE: return cps;\n"
+#~ "      case PAYPAL: return ppps;\n"
+#~ "      default: return null;\n"
+#~ "   } \n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy "
+#~ "ccps,\n"
+#~ "                                          ChequePaymentStrategy cps,\n"
+#~ "                                          PayPalPaymentStrategy ppps) {\n"
+#~ "    switch (paymentStrategy) {\n"
+#~ "        case CREDIT_CARD: return ccps;\n"
+#~ "        case CHEQUE: return cps;\n"
+#~ "        case PAYPAL: return ppps;\n"
+#~ "        default: return null;\n"
+#~ "    } \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy "
+#~ "ccps,\n"
+#~ "                                          @New CheckPaymentStrategy cps,\n"
+#~ "                                          @New PayPalPaymentStrategy "
+#~ "ppps) {\n"
+#~ "   switch (paymentStrategy) {\n"
+#~ "      case CREDIT_CARD: return ccps;\n"
+#~ "      case CHEQUE: return cps;\n"
+#~ "      case PAYPAL: return ppps;\n"
+#~ "      default: return null;\n"
+#~ "   } \n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy "
+#~ "ccps,\n"
+#~ "                                          @New ChequePaymentStrategy "
+#~ "cps,\n"
+#~ "                                          @New PayPalPaymentStrategy "
+#~ "ppps) {\n"
+#~ "    switch (paymentStrategy) {\n"
+#~ "        case CREDIT_CARD: return ccps;\n"
+#~ "        case CHEQUE: return cps;\n"
+#~ "        case PAYPAL: return ppps;\n"
+#~ "        default: return null;\n"
+#~ "    } \n"
+#~ "}]]>"
 
 #~ msgid ""
 #~ "<blockquote> <para>A Web Beans producer method acts as a source of "

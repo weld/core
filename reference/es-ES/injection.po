@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
 "PO-Revision-Date: 2009-01-19 15:18+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
@@ -17,28 +17,24 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: injection.xml:4
 #, fuzzy, no-c-format
 msgid "Dependency injection and programmatic lookup"
 msgstr "Inyección de dependencia"
 
 #. Tag: para
-#: injection.xml:6
 #, no-c-format
 msgid ""
-"One of the most significant features of CDI&#8212;certainly the most "
-"recognized&#8212;is dependency injection; excuse me, <emphasis>typesafe</"
-"emphasis> dependency injection."
+"One of the most significant features of CDI—certainly the most recognized—is "
+"dependency injection; excuse me, <emphasis>typesafe</emphasis> dependency "
+"injection."
 msgstr ""
 
 #. Tag: title
-#: injection.xml:12
 #, no-c-format
 msgid "Injection points"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:14
 #, no-c-format
 msgid ""
 "The <literal>@Inject</literal> annotation lets us define an injection point "
@@ -47,77 +43,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:19
 #, fuzzy, no-c-format
 msgid "<emphasis>Bean constructor</emphasis> parameter injection:"
 msgstr "Inyección de parámetro del método <emphasis>Inicializador</emphasis>:"
 
-#. Tag: programlisting
-#: injection.xml:23
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public class Checkout {\n"
-"        \n"
-"   private final ShoppingCart cart;\n"
-"    \n"
-"   @Inject\n"
-"   public Checkout(ShoppingCart cart) {\n"
-"      this.cart = cart;\n"
-"   }\n"
-"\n"
-"}]]>"
-msgstr ""
-"<![CDATA[public class Checkout {\n"
-"        \n"
-"    private final ShoppingCart cart;\n"
-"    \n"
-"    @Initializer\n"
-"    public Checkout(ShoppingCart cart) {\n"
-"        this.cart = cart;\n"
-"    }\n"
-"\n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:26
 #, no-c-format
 msgid "A bean can only have one injectable constructor."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:31
 #, fuzzy, no-c-format
 msgid "<emphasis>Initializer method</emphasis> parameter injection:"
 msgstr "Inyección de parámetro del método <emphasis>Inicializador</emphasis>:"
 
-#. Tag: programlisting
-#: injection.xml:35
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public class Checkout {\n"
-"        \n"
-"   private ShoppingCart cart;\n"
-"\n"
-"   @Inject\n"
-"   void setShoppingCart(ShoppingCart cart) {\n"
-"      this.cart = cart;\n"
-"   }\n"
-"    \n"
-"}]]>"
-msgstr ""
-"<![CDATA[public class Checkout {\n"
-"        \n"
-"    private ShoppingCart cart;\n"
-"\n"
-"    @Initializer \n"
-"    void setShoppingCart(ShoppingCart cart) {\n"
-"        this.cart = cart;\n"
-"    }\n"
-"    \n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:38
 #, no-c-format
 msgid ""
 "A bean can have multiple initializer methods. If the bean is a session bean, "
@@ -126,29 +66,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:44
 #, no-c-format
 msgid "And direct field injection:"
 msgstr "E inyección directa de campo:"
 
-#. Tag: programlisting
-#: injection.xml:48
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public class Checkout {\n"
-"\n"
-"   private @Inject ShoppingCart cart;\n"
-"    \n"
-"}]]>"
-msgstr ""
-"<![CDATA[public class Checkout {\n"
-"\n"
-"    private @Current ShoppingCart cart;\n"
-"    \n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:51
 #, no-c-format
 msgid ""
 "Getter and setter methods are not required for field injection to work "
@@ -156,7 +78,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:56
 #, fuzzy, no-c-format
 msgid ""
 "Dependency injection always occurs when the bean instance is first "
@@ -167,7 +88,6 @@ msgstr ""
 "Bean es instanciada primero:"
 
 #. Tag: para
-#: injection.xml:63
 #, fuzzy, no-c-format
 msgid ""
 "First, the container calls the bean constructor (the default constructor or "
@@ -178,7 +98,6 @@ msgstr ""
 "obtener una instancia del Web Bean."
 
 #. Tag: para
-#: injection.xml:69
 #, fuzzy, no-c-format
 msgid ""
 "Next, the container initializes the values of all injected fields of the "
@@ -188,7 +107,6 @@ msgstr ""
 "inyectados del Web Bean."
 
 #. Tag: para
-#: injection.xml:74
 #, fuzzy, no-c-format
 msgid ""
 "Next, the container calls all initializer methods of bean (the call order is "
@@ -198,7 +116,6 @@ msgstr ""
 "inicializadores del Web Bean."
 
 #. Tag: para
-#: injection.xml:80
 #, fuzzy, no-c-format
 msgid ""
 "Finally, the <literal>@PostConstruct</literal> method, if any, is called."
@@ -207,7 +124,6 @@ msgstr ""
 "literal>, si existe."
 
 #. Tag: para
-#: injection.xml:86
 #, no-c-format
 msgid ""
 "(The only complication is that the container might call initializer methods "
@@ -216,7 +132,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:90
 #, no-c-format
 msgid ""
 "One major advantage of constructor injection is that it allows the bean to "
@@ -224,7 +139,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:95
 #, no-c-format
 msgid ""
 "CDI also supports parameter injection for some other methods that are "
@@ -232,36 +146,21 @@ msgid ""
 "producer methods:"
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:100
-#, no-c-format
-msgid ""
-"<![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {\n"
-"    return new Checkout(cart);\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {\n"
-"    return new Checkout(cart);\n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:102
 #, no-c-format
 msgid ""
 "This is a case where the <literal>@Inject</literal> annotation <emphasis>is "
 "not</emphasis> required at the injection point. The same is true for "
-"observer methods (which we'll meet in <xref linkend=\"events\"/>) and "
+"observer methods (which we'll meet in <xref linkend=\"events\" />) and "
 "disposer methods."
 msgstr ""
 
 #. Tag: title
-#: injection.xml:110
 #, no-c-format
 msgid "What gets injected"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:112
 #, fuzzy, no-c-format
 msgid ""
 "The CDI specification defines a procedure, called <emphasis>typesafe "
@@ -284,7 +183,6 @@ msgstr ""
 "<literal>AmbiguousDependencyException</literal>."
 
 #. Tag: para
-#: injection.xml:120
 #, fuzzy, no-c-format
 msgid ""
 "The purpose of this algorithm is to allow multiple beans to implement the "
@@ -294,7 +192,6 @@ msgstr ""
 "el mismo tipo API ya sea:"
 
 #. Tag: para
-#: injection.xml:126
 #, fuzzy, no-c-format
 msgid ""
 "allow the client to select which implementation it requires using a "
@@ -304,7 +201,6 @@ msgstr ""
 "<emphasis>anotaciones de enlace</emphasis>,"
 
 #. Tag: para
-#: injection.xml:131
 #, fuzzy, no-c-format
 msgid ""
 "allow the application deployer to select which implementation is appropriate "
@@ -316,13 +212,11 @@ msgstr ""
 "inhabilitando los <emphasis>tipos de despliegue</emphasis>, o"
 
 #. Tag: para
-#: injection.xml:137
 #, no-c-format
 msgid "allow the beans to be isolated into separate modules."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:143
 #, no-c-format
 msgid ""
 "Obviously, if you have exactly one bean of a given type, and an injection "
@@ -332,7 +226,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:149
 #, no-c-format
 msgid ""
 "But then, things start to get complicated. Let's explore how the container "
@@ -341,13 +234,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: injection.xml:157
 #, fuzzy, no-c-format
 msgid "Qualifier annotations"
 msgstr "Anotaciones de Enlace"
 
 #. Tag: para
-#: injection.xml:159
 #, fuzzy, no-c-format
 msgid ""
 "If we have more than one bean that implements a particular bean type, the "
@@ -360,36 +251,7 @@ msgstr ""
 "mediante una anotación de enlace. Por ejemplo, deberían haber dos "
 "aplicaciones del <literal>PaymentProcessor</literal>:"
 
-#. Tag: programlisting
-#: injection.xml:165
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Synchronous\n"
-"public class SynchronousPaymentProcessor implements PaymentProcessor {\n"
-"   public void process(Payment payment) { ... }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@PayByCheque\n"
-"public class ChequePaymentProcessor implements PaymentProcessor {\n"
-"    public void process(Payment payment) { ... }\n"
-"}]]>"
-
-#. Tag: programlisting
-#: injection.xml:167
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Asynchronous\n"
-"public class AsynchronousPaymentProcessor implements PaymentProcessor {\n"
-"   public void process(Payment payment) { ... }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@PayByCheque\n"
-"public class ChequePaymentProcessor implements PaymentProcessor {\n"
-"    public void process(Payment payment) { ... }\n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:169
 #, fuzzy, no-c-format
 msgid ""
 "Where <literal>@Synchronous</literal> and <literal>@Asynchronous</literal> "
@@ -398,36 +260,7 @@ msgstr ""
 "Donde <literal>@PayByCheque</literal> y <literal>@PayByCreditCard</literal> "
 "son anotaciones de enlace:"
 
-#. Tag: programlisting
-#: injection.xml:173
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Qualifier\n"
-"@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-"public @interface Synchronous {}]]>"
-msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-"@BindingType\n"
-"public @interface PayByCheque {}]]>"
-
-#. Tag: programlisting
-#: injection.xml:175
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Qualifier\n"
-"@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-"public @interface Asynchronous {}]]>"
-msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-"@BindingType\n"
-"public @interface PayByCheque {}]]>"
-
 #. Tag: para
-#: injection.xml:177
 #, fuzzy, no-c-format
 msgid ""
 "A client bean developer uses the qualifier annotation to specify exactly "
@@ -437,76 +270,21 @@ msgstr ""
 "especificar exactamente el Web Bean que debe inyectarse."
 
 #. Tag: para
-#: injection.xml:181
 #, no-c-format
 msgid "Using field injection:"
 msgstr "Uso de inyección de campo:"
 
-#. Tag: programlisting
-#: injection.xml:183
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Inject @Synchronous PaymentProcessor syncPaymentProcessor;\n"
-"@Inject @Asynchronous PaymentProcessor asyncPaymentProcessor;]]>"
-msgstr ""
-"<![CDATA[@PayByCheque PaymentProcessor chequePaymentProcessor;\n"
-"@PayByCreditCard PaymentProcessor creditCardPaymentProcessor;]]>"
-
 #. Tag: para
-#: injection.xml:185
 #, no-c-format
 msgid "Using initializer method injection:"
 msgstr "Uso de inyección de método inicializador:"
 
-#. Tag: programlisting
-#: injection.xml:187
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Inject\n"
-"public void setPaymentProcessors(@Synchronous PaymentProcessor "
-"syncPaymentProcessor, \n"
-"                                 @Asynchronous PaymentProcessor "
-"asyncPaymentProcessor) {\n"
-"   this.syncPaymentProcessor = syncPaymentProcessor;\n"
-"   this.asyncPaymentProcessor = asyncPaymentProcessor;\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Initializer\n"
-"public void setPaymentProcessors(@PayByCheque PaymentProcessor "
-"chequePaymentProcessor, \n"
-"                                 @PayByCreditCard PaymentProcessor "
-"creditCardPaymentProcessor) {\n"
-"   this.chequePaymentProcessor = chequePaymentProcessor;\n"
-"   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:189
 #, fuzzy, no-c-format
 msgid "Using constructor injection:"
 msgstr "O uso de inyección de constructor:"
 
-#. Tag: programlisting
-#: injection.xml:191
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Inject\n"
-"public Checkout(@Synchronous PaymentProcessor syncPaymentProcessor, \n"
-"                @Asynchronous PaymentProcessor asyncPaymentProcessor) {\n"
-"   this.syncPaymentProcessor = syncPaymentProcessor;\n"
-"   this.asyncPaymentProcessor = asyncPaymentProcessor;\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Initializer\n"
-"public Checkout(@PayByCheque PaymentProcessor chequePaymentProcessor, \n"
-"                @PayByCreditCard PaymentProcessor "
-"creditCardPaymentProcessor) {\n"
-"   this.chequePaymentProcessor = chequePaymentProcessor;\n"
-"   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:193
 #, no-c-format
 msgid ""
 "Qualifier annotations can also qualify method arguments of producer, "
@@ -515,29 +293,7 @@ msgid ""
 "runtime based on the state of the system:"
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:199
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Produces\n"
-"PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor "
-"syncPaymentProcessor,\n"
-"                                     @Asynchronous PaymentProcessor "
-"asyncPaymentProcessor) {\n"
-"   return isSynchronous() ? syncPaymentProcessor : asyncPaymentProcessor;\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Initializer\n"
-"public void setPaymentProcessors(@PayByCheque PaymentProcessor "
-"chequePaymentProcessor, \n"
-"                                 @PayByCreditCard PaymentProcessor "
-"creditCardPaymentProcessor) {\n"
-"   this.chequePaymentProcessor = chequePaymentProcessor;\n"
-"   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:201
 #, no-c-format
 msgid ""
 "If an injected field or a parameter of a bean constructor or initializer "
@@ -546,7 +302,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:206
 #, no-c-format
 msgid ""
 "Now, you may be thinking, <emphasis>\"What's the different between using a "
@@ -558,7 +313,6 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: injection.xml:216
 #, fuzzy, no-c-format
 msgid ""
 "The built-in qualifiers <literal>@Default</literal> and <literal>@Any</"
@@ -568,7 +322,6 @@ msgstr ""
 "<literal>@PostConstruct</literal> y <literal>@PreDestroy</literal>."
 
 #. Tag: para
-#: injection.xml:218
 #, no-c-format
 msgid ""
 "Whenever a bean or injection point does not explicitly declare a qualifier, "
@@ -581,33 +334,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:225
 #, no-c-format
 msgid ""
 "This is especially useful if you want to iterate over all beans with a "
 "certain bean type. For example:"
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:226
-#, no-c-format
-msgid ""
-"<![CDATA[@Inject \n"
-"void initServices(@Any Instance<Service> services) { \n"
-"   for (Service service: services) {\n"
-"      service.init();\n"
-"   }\n"
-"}]]>"
-msgstr ""
-
 #. Tag: title
-#: injection.xml:232
 #, no-c-format
 msgid "Qualifiers with members"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:234
 #, no-c-format
 msgid ""
 "Java annotations can have members. We can use annotation members to further "
@@ -617,41 +355,13 @@ msgid ""
 "single annotation with a member:"
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:240
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Qualifier\n"
-"@Retention(RUNTIME)\n"
-"@Target({METHOD, FIELD, PARAMETER, TYPE})\n"
-"public @interface PayBy {\n"
-"   PaymentMethod value();\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-"@BindingType\n"
-"public @interface PayBy {\n"
-"    PaymentType value();\n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:242
 #, no-c-format
 msgid ""
 "Then we select one of the possible member values when appling the qualifier:"
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:246
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[private @Inject @PayBy(CHECK) PaymentProcessor checkPayment;]]>"
-msgstr ""
-"<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
-
 #. Tag: para
-#: injection.xml:248
 #, fuzzy, no-c-format
 msgid ""
 "We can force the container to ignore a member of a qualifier type by "
@@ -661,50 +371,19 @@ msgstr ""
 "tipo de anotación de enlace anotando al miembro <literal>@NonBinding</"
 "literal>."
 
-#. Tag: programlisting
-#: injection.xml:253
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Qualifier\n"
-"@Retention(RUNTIME)\n"
-"@Target({METHOD, FIELD, PARAMETER, TYPE})\n"
-"public @interface PayBy {\n"
-"   PaymentMethod value();\n"
-"   @Nonbinding String comment() default \"\";\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@BindingType\n"
-"@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-"public @interface HttpParam {\n"
-"   @NonBinding public String value();\n"
-"}]]>"
-
 #. Tag: title
-#: injection.xml:258
 #, no-c-format
 msgid "Multiple qualifiers"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:260
 #, fuzzy, no-c-format
 msgid "An injection point may specify multiple qualifiers:"
 msgstr ""
 "Un punto de inyección puede incluso especificar múltiples anotaciones de "
 "enlace:"
 
-#. Tag: programlisting
-#: injection.xml:264
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Inject @Synchronous @Reliable PaymentProcessor "
-"syncPaymentProcessor;]]>"
-msgstr ""
-"<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
-
 #. Tag: para
-#: injection.xml:266
 #, fuzzy, no-c-format
 msgid ""
 "Then only a bean which has <emphasis>both</emphasis> qualifier annotations "
@@ -713,29 +392,12 @@ msgstr ""
 "En este caso, sólo el Web Bean que tiene <emphasis>ambas</emphasis> "
 "anotaciones de enlace sería elegible para inyección."
 
-#. Tag: programlisting
-#: injection.xml:271
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Synchronous @Reliable\n"
-"public class SynchronousReliablePaymentProcessor implements PaymentProcessor "
-"{\n"
-"   public void process(Payment payment) { ... }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@PayByCheque\n"
-"public class ChequePaymentProcessor implements PaymentProcessor {\n"
-"    public void process(Payment payment) { ... }\n"
-"}]]>"
-
 #. Tag: title
-#: injection.xml:276
 #, no-c-format
 msgid "Alternatives"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:278
 #, no-c-format
 msgid ""
 "Alternatives are beans whose implementation is specific to a particular "
@@ -744,22 +406,7 @@ msgid ""
 "<literal>@Asynchronous PaymentProcessor</literal>, all in one:"
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:282
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Alternative @Synchronous @Asynchronous\n"
-"public class MockPaymentProcessor implements PaymentProcessor {\n"
-"   public void process(Payment payment) { ... }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@PayByCheque\n"
-"public class ChequePaymentProcessor implements PaymentProcessor {\n"
-"    public void process(Payment payment) { ... }\n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:284
 #, no-c-format
 msgid ""
 "By default, <literal>@Alternative</literal> beans are disabled. We need to "
@@ -768,24 +415,7 @@ msgid ""
 "and injection. This activation only applies to the beans in that archive."
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:290
-#, no-c-format
-msgid ""
-"<![CDATA[<beans\n"
-"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
-"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-"   xsi:schemaLocation=\"\n"
-"      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
-"   <alternatives>\n"
-"         <class>org.mycompany.mock.MockPaymentProcessor</class>\n"
-"   </alternatives>\n"
-"</beans>]]>"
-msgstr ""
-
 #. Tag: para
-#: injection.xml:292
 #, no-c-format
 msgid ""
 "When an ambiguous dependency exists at an injection point, the container "
@@ -795,13 +425,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: injection.xml:301
 #, fuzzy, no-c-format
 msgid "Fixing unsatisfied and ambiguous dependencies"
 msgstr "Corregir dependencias insatisfechas"
 
 #. Tag: para
-#: injection.xml:303
 #, fuzzy, no-c-format
 msgid ""
 "The typesafe resolution algorithm fails when, after considering the "
@@ -817,7 +445,6 @@ msgstr ""
 "Bean no puede identificar con precisión un Web Bean para inyectar."
 
 #. Tag: para
-#: injection.xml:310
 #, no-c-format
 msgid ""
 "During the course of your development, you're going to encounter this "
@@ -825,13 +452,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:314
 #, no-c-format
 msgid "To fix an <emphasis>unsatisfied dependency</emphasis>, either:"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:320
 #, no-c-format
 msgid ""
 "create a bean which implements the bean type and has all the qualifier types "
@@ -839,7 +464,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:325
 #, no-c-format
 msgid ""
 "make sure that the bean you already have is in the classpath of the module "
@@ -847,7 +471,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:330
 #, no-c-format
 msgid ""
 "explicitly enable an <literal>@Alternative</literal> bean that implements "
@@ -856,13 +479,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:337
 #, no-c-format
 msgid "To fix an <emphasis>ambiguous dependency</emphasis>, either:"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:343
 #, no-c-format
 msgid ""
 "introduce a qualifier to distinguish between the two implementations of the "
@@ -870,14 +491,12 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:348
 #, no-c-format
 msgid ""
 "disable one of the beans by annotating it <literal>@Alternative</literal>,"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:353
 #, no-c-format
 msgid ""
 "move one of the implementations to a module that is not in the classpath of "
@@ -885,7 +504,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:359
 #, no-c-format
 msgid ""
 "disable one of two <literal>@Alternative</literal> beans that are trying to "
@@ -893,7 +511,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:366
 #, no-c-format
 msgid ""
 "See <ulink url=\"http://sfwk.org/Documentation/"
@@ -904,22 +521,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:374
 #, no-c-format
 msgid "Just remember: \"There can be only one.\""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:377
 #, no-c-format
 msgid ""
 "On the other hand, if you really do have an optional or multivalued "
 "injection point, you should change the type of your injection point to "
-"<literal>Instance</literal>, as we'll see in <xref linkend=\"lookup\"/>."
+"<literal>Instance</literal>, as we'll see in <xref linkend=\"lookup\" />."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:382
 #, fuzzy, no-c-format
 msgid ""
 "Now there's one more issue you need to be aware of when using the dependency "
@@ -929,13 +543,11 @@ msgstr ""
 "Web Beans."
 
 #. Tag: title
-#: injection.xml:389
 #, no-c-format
 msgid "Client proxies"
 msgstr "Los proxy de cliente"
 
 #. Tag: para
-#: injection.xml:391
 #, fuzzy, no-c-format
 msgid ""
 "Clients of an injected bean do not usually hold a direct reference to a bean "
@@ -946,13 +558,12 @@ msgstr ""
 "directa a una instancia de Web Bean."
 
 #. Tag: para
-#: injection.xml:396
 #, fuzzy, no-c-format
 msgid ""
 "Imagine that a bean bound to the application scope held a direct reference "
 "to a bean bound to the request scope. The application-scoped bean is shared "
 "between many different requests. However, each request should see a "
-"different instance of the request scoped bean&#8212;the current one!"
+"different instance of the request scoped bean—the current one!"
 msgstr ""
 "Imagine que un Web Bean vinculado al ámbito de aplicación mantiene una "
 "referencia directa a un Web Bean vinculado al ámbito de petición. La "
@@ -961,7 +572,6 @@ msgstr ""
 "la petición en el ámbito de WebBean!"
 
 #. Tag: para
-#: injection.xml:402
 #, fuzzy, no-c-format
 msgid ""
 "Now imagine that a bean bound to the session scope holds a direct reference "
@@ -979,7 +589,6 @@ msgstr ""
 "sesión en el ámbito de Web Bean!"
 
 #. Tag: para
-#: injection.xml:409
 #, fuzzy, no-c-format
 msgid ""
 "Therefore, unless a bean has the default scope <literal>@Dependent</"
@@ -1002,7 +611,6 @@ msgstr ""
 "recursivo a otros Web Beans inyectados."
 
 #. Tag: para
-#: injection.xml:417
 #, fuzzy, no-c-format
 msgid ""
 "Unfortunately, due to limitations of the Java language, some Java types "
@@ -1018,7 +626,6 @@ msgstr ""
 "proxy al tipo de un punto de inyección."
 
 #. Tag: para
-#: injection.xml:423
 #, fuzzy, no-c-format
 msgid "The following Java types cannot be proxied by the container:"
 msgstr ""
@@ -1026,14 +633,12 @@ msgstr ""
 "de Java:"
 
 #. Tag: para
-#: injection.xml:427
 #, fuzzy, no-c-format
 msgid ""
 "classes which don't have a non-private constructor with no parameters, and"
 msgstr "las clases que no tienen un constructor no-privado sin parámetros y "
 
 #. Tag: para
-#: injection.xml:430
 #, no-c-format
 msgid ""
 "classes which are declared <literal>final</literal> or have a "
@@ -1043,13 +648,11 @@ msgstr ""
 "<literal>final</literal>,"
 
 #. Tag: para
-#: injection.xml:435
 #, no-c-format
 msgid "arrays and primitive types."
 msgstr "matrices y tipos primarios."
 
 #. Tag: para
-#: injection.xml:439
 #, no-c-format
 msgid ""
 "It's usually very easy to fix an unproxyable dependency problem. If an "
@@ -1058,13 +661,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:446
 #, no-c-format
 msgid "add a constructor with no parameters to <literal>X</literal>,"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:451
 #, no-c-format
 msgid ""
 "change the type of the injection point to <literal>Instance&lt;X&gt;</"
@@ -1072,7 +673,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:456
 #, no-c-format
 msgid ""
 "introduce an interface <literal>Y</literal>, implemented by the injected "
@@ -1080,7 +680,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:462
 #, no-c-format
 msgid ""
 "if all else fails, change the scope of the injected bean to "
@@ -1088,7 +687,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:469
 #, no-c-format
 msgid ""
 "A future release of Weld will likely support a non-standard workaround for "
@@ -1096,7 +694,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:476
 #, no-c-format
 msgid ""
 "Sun, IcedTea, Mac: <literal>Unsafe.allocateInstance()</literal> (The most "
@@ -1104,7 +701,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:481
 #, no-c-format
 msgid ""
 "IBM, JRockit: <literal>ReflectionFactory.newConstructorForSerialization()</"
@@ -1112,19 +708,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:487
 #, no-c-format
 msgid "But we didn't get around to implementing this yet."
 msgstr ""
 
 #. Tag: title
-#: injection.xml:496
 #, fuzzy, no-c-format
 msgid "Obtaining a contextual instance by programmatic lookup"
 msgstr "Obtención de un Web Bean por búsqueda programática"
 
 #. Tag: para
-#: injection.xml:498
 #, no-c-format
 msgid ""
 "In certain situations, injection is not the most convenient way to obtain a "
@@ -1132,13 +725,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:505
 #, no-c-format
 msgid "the bean type or qualifiers vary dynamically at runtime, or"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:510
 #, no-c-format
 msgid ""
 "depending upon the deployment, there may be no bean which satisfies the type "
@@ -1146,13 +737,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:515
 #, no-c-format
 msgid "we would like to iterate over all beans of a certain type."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:521
 #, fuzzy, no-c-format
 msgid ""
 "In these situations, the application may obtain an instance of the interface "
@@ -1161,14 +750,7 @@ msgstr ""
 "La aplicación puede obtener una instancia de la interfaz <literal>Manager</"
 "literal> a través de inyección:"
 
-#. Tag: programlisting
-#: injection.xml:526
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Inject Instance<PaymentProcessor> paymentProcessorSource;]]>"
-msgstr "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
-
 #. Tag: para
-#: injection.xml:528
 #, fuzzy, no-c-format
 msgid ""
 "The <literal>get()</literal> method of <literal>Instance</literal> produces "
@@ -1177,26 +759,17 @@ msgstr ""
 "Tipos de despliegue <literal>@Mock</literal> y <literal>@Staging</literal> "
 "para pruebas"
 
-#. Tag: programlisting
-#: injection.xml:532
-#, fuzzy, no-c-format
-msgid "<![CDATA[PaymentProcessor p = paymentProcessorSource.get();]]>"
-msgstr "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
-
 #. Tag: para
-#: injection.xml:534
 #, no-c-format
 msgid "Qualifiers can be specified in one of two ways:"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:540
 #, no-c-format
 msgid "by annotating the <literal>Instance</literal> injection point, or"
 msgstr ""
 
 #. Tag: para
-#: injection.xml:543
 #, fuzzy, no-c-format
 msgid ""
 "by passing qualifiers to the <literal>select()</literal> of <literal>Event</"
@@ -1206,22 +779,11 @@ msgstr ""
 "<literal>@PostConstruct</literal> y <literal>@PreDestroy</literal>."
 
 #. Tag: para
-#: injection.xml:547
 #, no-c-format
 msgid "Specifying the qualifiers at the injection point is much, much easier:"
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:551
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Inject @Asynchronous Instance<PaymentProcessor> "
-"paymentProcessorSource;]]>"
-msgstr ""
-"<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
-
 #. Tag: para
-#: injection.xml:553
 #, no-c-format
 msgid ""
 "Now, the <literal>PaymentProcessor</literal> returned by <literal>get()</"
@@ -1229,7 +791,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: injection.xml:558
 #, no-c-format
 msgid ""
 "Alternatively, we can specify the qualifier dynamically. First, we add the "
@@ -1237,15 +798,7 @@ msgid ""
 "default qualifier. (All beans have the qualifier <literal>@Any</literal>.)"
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:563
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]>"
-msgstr "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
-
 #. Tag: para
-#: injection.xml:565
 #, no-c-format
 msgid ""
 "Next, we need to obtain an instance of our qualifier type. Since annotatons "
@@ -1255,68 +808,30 @@ msgid ""
 "subclassing the helper class <literal>AnnotationLiteral</literal>."
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:572
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[abstract class AsynchronousQualifier\n"
-"extends AnnotationLiteral<Asynchronous> implements Asynchronous {}]]>"
-msgstr ""
-"<![CDATA[abstract class CreditCardBinding \n"
-"    extends AnnotationLiteral<CreditCard> \n"
-"    implements CreditCard {}]]>"
-
 #. Tag: para
-#: injection.xml:574
 #, no-c-format
 msgid "In some cases, we can use an anonymous class:"
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:578
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[PaymentProcessor p = paymentProcessorSource\n"
-"   .select(new AnnotationLiteral<Asynchronous>() {});]]>"
-msgstr ""
-"<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
-"class, \n"
-"                                               new "
-"AnnotationLiteral<CreditCard>(){});]]>"
-
 #. Tag: para
-#: injection.xml:581
 #, no-c-format
 msgid ""
 "We can't use an anonymous class to implement a qualifier type with members."
 msgstr ""
 
 #. Tag: para
-#: injection.xml:586
 #, no-c-format
 msgid ""
 "Now, finally, we can pass the qualifier to the <literal>select()</literal> "
 "method of <literal>Instance</literal>."
 msgstr ""
 
-#. Tag: programlisting
-#: injection.xml:590
-#, no-c-format
-msgid ""
-"<![CDATA[Annotation qualifier = synchronously ?\n"
-"      new SynchronousQualifier() : new AsynchronousQualifier();\n"
-"PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process"
-"(payment);]]>"
-msgstr ""
-
 #. Tag: title
-#: injection.xml:595
 #, no-c-format
 msgid "The <literal>InjectionPoint</literal> object"
 msgstr "El objeto <literal>InjectionPoint</literal>"
 
 #. Tag: para
-#: injection.xml:597
 #, fuzzy, no-c-format
 msgid ""
 "There are certain kinds of dependent objects (beans with scope "
@@ -1330,7 +845,6 @@ msgstr ""
 "ejemplo:"
 
 #. Tag: para
-#: injection.xml:603
 #, no-c-format
 msgid ""
 "The log category for a <literal>Logger</literal> depends upon the class of "
@@ -1340,7 +854,6 @@ msgstr ""
 "clase de objeto que lo posea."
 
 #. Tag: para
-#: injection.xml:607
 #, no-c-format
 msgid ""
 "Injection of a HTTP parameter or header value depends upon what parameter or "
@@ -1350,7 +863,6 @@ msgstr ""
 "parámetro o del nombre de encabezado especificado en el punto de inyección."
 
 #. Tag: para
-#: injection.xml:611
 #, no-c-format
 msgid ""
 "Injection of the result of an EL expression evaluation depends upon the "
@@ -1360,7 +872,6 @@ msgstr ""
 "expresión que fue especificada en el punto de inyección."
 
 #. Tag: para
-#: injection.xml:616
 #, fuzzy, no-c-format
 msgid ""
 "A bean with scope <literal>@Dependent</literal> may inject an instance of "
@@ -1372,7 +883,6 @@ msgstr ""
 "relativos al punto de inyección al que pertenezca."
 
 #. Tag: para
-#: injection.xml:620
 #, no-c-format
 msgid ""
 "Let's look at an example. The following code is verbose, and vulnerable to "
@@ -1381,14 +891,7 @@ msgstr ""
 "Veamos un ejemplo. El código siguiente es detallado, y vulnerable a "
 "problemas de refactorización:"
 
-#. Tag: programlisting
-#: injection.xml:623
-#, no-c-format
-msgid "<![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]>"
-msgstr "<![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]>"
-
 #. Tag: para
-#: injection.xml:625
 #, no-c-format
 msgid ""
 "This clever little producer method lets you inject a JDK <literal>Logger</"
@@ -1397,42 +900,12 @@ msgstr ""
 "Este método inteligente de productor permite inyectar un <literal>Logger</"
 "literal> JDK sin especificar explícitamente la categoría de registro:"
 
-#. Tag: programlisting
-#: injection.xml:628
-#, no-c-format
-msgid ""
-"<![CDATA[class LogFactory {\n"
-"\n"
-"   @Produces Logger createLogger(InjectionPoint injectionPoint) { \n"
-"      return Logger.getLogger(injectionPoint.getMember().getDeclaringClass()."
-"getName()); \n"
-"   }\n"
-"\n"
-"}]]>"
-msgstr ""
-"<![CDATA[class LogFactory {\n"
-"\n"
-"   @Produces Logger createLogger(InjectionPoint injectionPoint) { \n"
-"      return Logger.getLogger(injectionPoint.getMember().getDeclaringClass()."
-"getName()); \n"
-"   }\n"
-"\n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:630
 #, no-c-format
 msgid "We can now write:"
 msgstr "Ahora podemos escribir:"
 
-#. Tag: programlisting
-#: injection.xml:632
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Inject Logger log;]]>"
-msgstr "<![CDATA[@Current Logger log;]]>"
-
 #. Tag: para
-#: injection.xml:634
 #, fuzzy, no-c-format
 msgid ""
 "Not convinced? Then here's a second example. To inject HTTP parameters, we "
@@ -1441,74 +914,19 @@ msgstr ""
 "¿No está convencido? Entonces, veamos un segundo ejemplo. Para inyectar "
 "parámetros, necesitamos definir el tipo de vinculación:"
 
-#. Tag: programlisting
-#: injection.xml:637
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@BindingType\n"
-"@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-"public @interface HttpParam {\n"
-"   @Nonbinding public String value();\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@BindingType\n"
-"@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-"public @interface HttpParam {\n"
-"   @NonBinding public String value();\n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:639
 #, fuzzy, no-c-format
 msgid "We would use this qualifier type at injection points as follows:"
 msgstr ""
 "Utilizaríamos este tipo de enlace en puntos de inyección, como a "
 "continuación:"
 
-#. Tag: programlisting
-#: injection.xml:641
-#, no-c-format
-msgid ""
-"<![CDATA[@HttpParam(\"username\") String username;\n"
-"@HttpParam(\"password\") String password;]]>"
-msgstr ""
-"<![CDATA[@HttpParam(\"username\") String username;\n"
-"@HttpParam(\"password\") String password;]]>"
-
 #. Tag: para
-#: injection.xml:643
 #, no-c-format
 msgid "The following producer method does the work:"
 msgstr "El siguiente método de productor sí funciona:"
 
-#. Tag: programlisting
-#: injection.xml:645
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[class HttpParams\n"
-"\n"
-"   @Produces @HttpParam(\"\")\n"
-"   String getParamValue(ServletRequest request, InjectionPoint ip) {\n"
-"      return request.getParameter(ip.getAnnotated().getAnnotation(HttpParam."
-"class).value());\n"
-"   }\n"
-"\n"
-"}]]>"
-msgstr ""
-"<![CDATA[class HttpParams\n"
-"\n"
-"   @Produces @HttpParam(\"\")\n"
-"   String getParamValue(ServletRequest request, InjectionPoint ip) {\n"
-"      return request.getParameter(ip.getAnnotation(HttpParam.class).value"
-"());\n"
-"   }\n"
-"\n"
-"}]]>"
-
 #. Tag: para
-#: injection.xml:647
 #, fuzzy, no-c-format
 msgid ""
 "(Note that the <literal>value()</literal> member of the <literal>HttpParam</"
@@ -1520,7 +938,6 @@ msgstr ""
 "porque está anotado como <literal>@NonBinding.</literal>)"
 
 #. Tag: para
-#: injection.xml:650
 #, fuzzy, no-c-format
 msgid ""
 "The container provides a built-in bean that implements the "
@@ -1529,27 +946,392 @@ msgstr ""
 "El administrador de Web Bean proporciona un Web Bean incorporado que "
 "implementa la interfaz <literal>InjectionPoint</literal>:"
 
-#. Tag: programlisting
-#: injection.xml:653
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public interface InjectionPoint { \n"
-"   public Type getType();\n"
-"   public Set<Annotation> getQualifiers();\n"
-"   public Bean<?> getBean();\n"
-"   public Member getMember();\n"
-"   public Annotated getAnnotated();\n"
-"   public boolean isDelegate();\n"
-"   public boolean isTransient();\n"
-"}]]>"
-msgstr ""
-"<![CDATA[public interface InjectionPoint { \n"
-"   public Object getInstance(); \n"
-"   public Bean<?> getBean(); \n"
-"   public Member getMember(): \n"
-"   public <T extends Annotation> T getAnnotation(Class<T> annotation); \n"
-"   public Set<T extends Annotation> getAnnotations(); \n"
-"}]]>"
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class Checkout {\n"
+#~ "        \n"
+#~ "   private final ShoppingCart cart;\n"
+#~ "    \n"
+#~ "   @Inject\n"
+#~ "   public Checkout(ShoppingCart cart) {\n"
+#~ "      this.cart = cart;\n"
+#~ "   }\n"
+#~ "\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class Checkout {\n"
+#~ "        \n"
+#~ "    private final ShoppingCart cart;\n"
+#~ "    \n"
+#~ "    @Initializer\n"
+#~ "    public Checkout(ShoppingCart cart) {\n"
+#~ "        this.cart = cart;\n"
+#~ "    }\n"
+#~ "\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class Checkout {\n"
+#~ "        \n"
+#~ "   private ShoppingCart cart;\n"
+#~ "\n"
+#~ "   @Inject\n"
+#~ "   void setShoppingCart(ShoppingCart cart) {\n"
+#~ "      this.cart = cart;\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class Checkout {\n"
+#~ "        \n"
+#~ "    private ShoppingCart cart;\n"
+#~ "\n"
+#~ "    @Initializer \n"
+#~ "    void setShoppingCart(ShoppingCart cart) {\n"
+#~ "        this.cart = cart;\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class Checkout {\n"
+#~ "\n"
+#~ "   private @Inject ShoppingCart cart;\n"
+#~ "    \n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class Checkout {\n"
+#~ "\n"
+#~ "    private @Current ShoppingCart cart;\n"
+#~ "    \n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {\n"
+#~ "    return new Checkout(cart);\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {\n"
+#~ "    return new Checkout(cart);\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Synchronous\n"
+#~ "public class SynchronousPaymentProcessor implements PaymentProcessor {\n"
+#~ "   public void process(Payment payment) { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@PayByCheque\n"
+#~ "public class ChequePaymentProcessor implements PaymentProcessor {\n"
+#~ "    public void process(Payment payment) { ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Asynchronous\n"
+#~ "public class AsynchronousPaymentProcessor implements PaymentProcessor {\n"
+#~ "   public void process(Payment payment) { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@PayByCheque\n"
+#~ "public class ChequePaymentProcessor implements PaymentProcessor {\n"
+#~ "    public void process(Payment payment) { ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Qualifier\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+#~ "public @interface Synchronous {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+#~ "@BindingType\n"
+#~ "public @interface PayByCheque {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Qualifier\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+#~ "public @interface Asynchronous {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+#~ "@BindingType\n"
+#~ "public @interface PayByCheque {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Inject @Synchronous PaymentProcessor syncPaymentProcessor;\n"
+#~ "@Inject @Asynchronous PaymentProcessor asyncPaymentProcessor;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@PayByCheque PaymentProcessor chequePaymentProcessor;\n"
+#~ "@PayByCreditCard PaymentProcessor creditCardPaymentProcessor;]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Inject\n"
+#~ "public void setPaymentProcessors(@Synchronous PaymentProcessor "
+#~ "syncPaymentProcessor, \n"
+#~ "                                 @Asynchronous PaymentProcessor "
+#~ "asyncPaymentProcessor) {\n"
+#~ "   this.syncPaymentProcessor = syncPaymentProcessor;\n"
+#~ "   this.asyncPaymentProcessor = asyncPaymentProcessor;\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Initializer\n"
+#~ "public void setPaymentProcessors(@PayByCheque PaymentProcessor "
+#~ "chequePaymentProcessor, \n"
+#~ "                                 @PayByCreditCard PaymentProcessor "
+#~ "creditCardPaymentProcessor) {\n"
+#~ "   this.chequePaymentProcessor = chequePaymentProcessor;\n"
+#~ "   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Inject\n"
+#~ "public Checkout(@Synchronous PaymentProcessor syncPaymentProcessor, \n"
+#~ "                @Asynchronous PaymentProcessor asyncPaymentProcessor) {\n"
+#~ "   this.syncPaymentProcessor = syncPaymentProcessor;\n"
+#~ "   this.asyncPaymentProcessor = asyncPaymentProcessor;\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Initializer\n"
+#~ "public Checkout(@PayByCheque PaymentProcessor chequePaymentProcessor, \n"
+#~ "                @PayByCreditCard PaymentProcessor "
+#~ "creditCardPaymentProcessor) {\n"
+#~ "   this.chequePaymentProcessor = chequePaymentProcessor;\n"
+#~ "   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Produces\n"
+#~ "PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor "
+#~ "syncPaymentProcessor,\n"
+#~ "                                     @Asynchronous PaymentProcessor "
+#~ "asyncPaymentProcessor) {\n"
+#~ "   return isSynchronous() ? syncPaymentProcessor : "
+#~ "asyncPaymentProcessor;\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Initializer\n"
+#~ "public void setPaymentProcessors(@PayByCheque PaymentProcessor "
+#~ "chequePaymentProcessor, \n"
+#~ "                                 @PayByCreditCard PaymentProcessor "
+#~ "creditCardPaymentProcessor) {\n"
+#~ "   this.chequePaymentProcessor = chequePaymentProcessor;\n"
+#~ "   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Qualifier\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target({METHOD, FIELD, PARAMETER, TYPE})\n"
+#~ "public @interface PayBy {\n"
+#~ "   PaymentMethod value();\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+#~ "@BindingType\n"
+#~ "public @interface PayBy {\n"
+#~ "    PaymentType value();\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[private @Inject @PayBy(CHECK) PaymentProcessor checkPayment;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Qualifier\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target({METHOD, FIELD, PARAMETER, TYPE})\n"
+#~ "public @interface PayBy {\n"
+#~ "   PaymentMethod value();\n"
+#~ "   @Nonbinding String comment() default \"\";\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@BindingType\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+#~ "public @interface HttpParam {\n"
+#~ "   @NonBinding public String value();\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Inject @Synchronous @Reliable PaymentProcessor "
+#~ "syncPaymentProcessor;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Synchronous @Reliable\n"
+#~ "public class SynchronousReliablePaymentProcessor implements "
+#~ "PaymentProcessor {\n"
+#~ "   public void process(Payment payment) { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@PayByCheque\n"
+#~ "public class ChequePaymentProcessor implements PaymentProcessor {\n"
+#~ "    public void process(Payment payment) { ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Alternative @Synchronous @Asynchronous\n"
+#~ "public class MockPaymentProcessor implements PaymentProcessor {\n"
+#~ "   public void process(Payment payment) { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@PayByCheque\n"
+#~ "public class ChequePaymentProcessor implements PaymentProcessor {\n"
+#~ "    public void process(Payment payment) { ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Inject Instance<PaymentProcessor> paymentProcessorSource;]]>"
+#~ msgstr "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[PaymentProcessor p = paymentProcessorSource.get();]]>"
+#~ msgstr "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Inject @Asynchronous Instance<PaymentProcessor> "
+#~ "paymentProcessorSource;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]"
+#~ ">"
+#~ msgstr "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[abstract class AsynchronousQualifier\n"
+#~ "extends AnnotationLiteral<Asynchronous> implements Asynchronous {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[abstract class CreditCardBinding \n"
+#~ "    extends AnnotationLiteral<CreditCard> \n"
+#~ "    implements CreditCard {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[PaymentProcessor p = paymentProcessorSource\n"
+#~ "   .select(new AnnotationLiteral<Asynchronous>() {});]]>"
+#~ msgstr ""
+#~ "<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
+#~ "class, \n"
+#~ "                                               new "
+#~ "AnnotationLiteral<CreditCard>(){});]]>"
+
+#~ msgid "<![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]>"
+#~ msgstr "<![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]>"
+
+#~ msgid ""
+#~ "<![CDATA[class LogFactory {\n"
+#~ "\n"
+#~ "   @Produces Logger createLogger(InjectionPoint injectionPoint) { \n"
+#~ "      return Logger.getLogger(injectionPoint.getMember().getDeclaringClass"
+#~ "().getName()); \n"
+#~ "   }\n"
+#~ "\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[class LogFactory {\n"
+#~ "\n"
+#~ "   @Produces Logger createLogger(InjectionPoint injectionPoint) { \n"
+#~ "      return Logger.getLogger(injectionPoint.getMember().getDeclaringClass"
+#~ "().getName()); \n"
+#~ "   }\n"
+#~ "\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject Logger log;]]>"
+#~ msgstr "<![CDATA[@Current Logger log;]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@BindingType\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+#~ "public @interface HttpParam {\n"
+#~ "   @Nonbinding public String value();\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@BindingType\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+#~ "public @interface HttpParam {\n"
+#~ "   @NonBinding public String value();\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@HttpParam(\"username\") String username;\n"
+#~ "@HttpParam(\"password\") String password;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@HttpParam(\"username\") String username;\n"
+#~ "@HttpParam(\"password\") String password;]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[class HttpParams\n"
+#~ "\n"
+#~ "   @Produces @HttpParam(\"\")\n"
+#~ "   String getParamValue(ServletRequest request, InjectionPoint ip) {\n"
+#~ "      return request.getParameter(ip.getAnnotated().getAnnotation"
+#~ "(HttpParam.class).value());\n"
+#~ "   }\n"
+#~ "\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[class HttpParams\n"
+#~ "\n"
+#~ "   @Produces @HttpParam(\"\")\n"
+#~ "   String getParamValue(ServletRequest request, InjectionPoint ip) {\n"
+#~ "      return request.getParameter(ip.getAnnotation(HttpParam.class).value"
+#~ "());\n"
+#~ "   }\n"
+#~ "\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public interface InjectionPoint { \n"
+#~ "   public Type getType();\n"
+#~ "   public Set<Annotation> getQualifiers();\n"
+#~ "   public Bean<?> getBean();\n"
+#~ "   public Member getMember();\n"
+#~ "   public Annotated getAnnotated();\n"
+#~ "   public boolean isDelegate();\n"
+#~ "   public boolean isTransient();\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public interface InjectionPoint { \n"
+#~ "   public Object getInstance(); \n"
+#~ "   public Bean<?> getBean(); \n"
+#~ "   public Member getMember(): \n"
+#~ "   public <T extends Annotation> T getAnnotation(Class<T> annotation); \n"
+#~ "   public Set<T extends Annotation> getAnnotations(); \n"
+#~ "}]]>"
 
 #, fuzzy
 #~ msgid ""

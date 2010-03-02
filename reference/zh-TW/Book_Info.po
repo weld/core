@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Book_Info\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
 "PO-Revision-Date: 2009-01-08 09:34+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -17,13 +17,11 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: Book_Info.xml:4
 #, no-c-format
 msgid "Weld - JSR-299 Reference Implementation"
 msgstr ""
 
 #. Tag: subtitle
-#: Book_Info.xml:5
 #, fuzzy, no-c-format
 msgid ""
 "JSR-299: The new Java standard for dependency injection and contextual "

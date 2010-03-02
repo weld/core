@@ -1,412 +1,164 @@
-# SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
+"PO-Revision-Date: 2010-03-02T13:07:17\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
 "MIME-Version: 1.0\n"
-"Content-Type: application/x-xml2pot; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: ee.xml:4
 #, no-c-format
 msgid "Java EE integration"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:6
 #, no-c-format
-msgid ""
-"CDI is fully integrated into the Java EE environment. Beans have access to "
-"Java EE resources and JPA persistence contexts. They may be used in Unified "
-"EL expressions in JSF and JSP pages. They may even be injected into other "
-"platform components, such as servlets and message-driven Beans, which are "
-"not beans themselves."
+msgid "CDI is fully integrated into the Java EE environment. Beans have access to Java EE resources and JPA persistence contexts. They may be used in Unified EL expressions in JSF and JSP pages. They may even be injected into other platform components, such as servlets and message-driven Beans, which are not beans themselves."
 msgstr ""
 
 #. Tag: title
-#: ee.xml:13
 #, no-c-format
 msgid "Built-in beans"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:15
 #, no-c-format
-msgid ""
-"In the Java EE environment, the container provides the following built-in "
-"beans, all with the qualifier <literal>@Default</literal>:"
+msgid "In the Java EE environment, the container provides the following built-in beans, all with the qualifier <literal>@Default</literal>:"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:22
 #, no-c-format
 msgid "the current JTA <literal>UserTransaction</literal>,"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:27
 #, no-c-format
-msgid ""
-"a <literal>Principal</literal> representing the current caller identity,"
+msgid "a <literal>Principal</literal> representing the current caller identity,"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:32
 #, no-c-format
-msgid ""
-"the default <ulink url=\"http://jcp.org/en/jsr/detail?id=303\">Bean "
-"Validation</ulink> <literal>ValidationFactory</literal>, and"
+msgid "the default <ulink url=\"http://jcp.org/en/jsr/detail?id=303\">Bean Validation</ulink> <literal>ValidationFactory</literal>, and"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:38
 #, no-c-format
-msgid ""
-"a <literal>Validator</literal> for the default <literal>ValidationFactory</"
-"literal>."
+msgid "a <literal>Validator</literal> for the default <literal>ValidationFactory</literal>."
 msgstr ""
 
 #. Tag: para
-#: ee.xml:45
 #, no-c-format
-msgid ""
-"The CDI specification does not require the servlet context objects, "
-"<literal>HttpServletRequest</literal>, <literal>HttpSession</literal> and "
-"<literal>ServletContext</literal> to be exposed as injectable beans. If you "
-"really want to be able to inject these objects, it's easy to create a "
-"portable extension to expose them as beans. However, we recommend that "
-"direct access to these objects be limited to servlets, servlet filters and "
-"servlet event listeners, where they may be obtained in the usual way as "
-"defined by the Java Servlets spec. The <literal>FacesContext</literal> is "
-"also not injectable. You can get at it by calling <literal>FacesContext."
-"getCurrentInstance()</literal>."
+msgid "The CDI specification does not require the servlet context objects, <literal>HttpServletRequest</literal>, <literal>HttpSession</literal> and <literal>ServletContext</literal> to be exposed as injectable beans. If you really want to be able to inject these objects, it's easy to create a portable extension to expose them as beans. However, we recommend that direct access to these objects be limited to servlets, servlet filters and servlet event listeners, where they may be obtained in the usual way as defined by the Java Servlets spec. The <literal>FacesContext</literal> is also not injectable. You can get at it by calling <literal>FacesContext.getCurrentInstance()</literal>."
 msgstr ""
 
 #. Tag: para
-#: ee.xml:57
 #, no-c-format
-msgid ""
-"Oh, you <emphasis>really</emphasis> want to inject the "
-"<literal>FacesContext</literal>? Alright then, try this producer method:"
-msgstr ""
-
-#. Tag: programlisting
-#: ee.xml:61
-#, no-c-format
-msgid ""
-"<![CDATA[class FacesContextProducer {\n"
-"   @Produces @RequestScoped FacesContext getFacesContext() {\n"
-"      return FacesContext.getCurrentInstance();\n"
-"   }\n"
-"}]]>"
+msgid "Oh, you <emphasis>really</emphasis> want to inject the <literal>FacesContext</literal>? Alright then, try this producer method:"
 msgstr ""
 
 #. Tag: title
-#: ee.xml:67
 #, no-c-format
 msgid "Injecting Java EE resources into a bean"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:69
 #, no-c-format
-msgid ""
-"All managed beans may take advantage of Java EE component environment "
-"injection using <literal>@Resource</literal>, <literal>@EJB</literal>, "
-"<literal>@PersistenceContext</literal>, <literal>@PeristenceUnit</literal> "
-"and <literal>@WebServiceRef</literal>. We've already seen a couple of "
-"examples of this, though we didn't pay much attention at the time:"
-msgstr ""
-
-#. Tag: programlisting
-#: ee.xml:76
-#, no-c-format
-msgid ""
-"<![CDATA[@Transactional @Interceptor\n"
-"public class TransactionInterceptor {\n"
-"   @Resource UserTransaction transaction;\n"
-"\n"
-"   @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
-"throws Exception { ... }\n"
-"}]]>"
-msgstr ""
-
-#. Tag: programlisting
-#: ee.xml:78
-#, no-c-format
-msgid ""
-"<![CDATA[@SessionScoped\n"
-"public class Login implements Serializable {\n"
-"   @Inject Credentials credentials;\n"
-"   @PersistenceContext EntityManager userDatabase;\n"
-"    ...\n"
-"}]]>"
+msgid "All managed beans may take advantage of Java EE component environment injection using <literal>@Resource</literal>, <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PeristenceUnit</literal> and <literal>@WebServiceRef</literal>. We've already seen a couple of examples of this, though we didn't pay much attention at the time:"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:80
 #, no-c-format
-msgid ""
-"The Java EE <literal>@PostConstruct</literal> and <literal>@PreDestroy</"
-"literal> callbacks are also supported for all managed beans. The "
-"<literal>@PostConstruct</literal> method is called after <emphasis>all</"
-"emphasis> injection has been performed."
+msgid "The Java EE <literal>@PostConstruct</literal> and <literal>@PreDestroy</literal> callbacks are also supported for all managed beans. The <literal>@PostConstruct</literal> method is called after <emphasis>all</emphasis> injection has been performed."
 msgstr ""
 
 #. Tag: para
-#: ee.xml:86
 #, no-c-format
-msgid ""
-"Of course, we advise that component environment injection be used to define "
-"CDI resources, and that typesafe injection be used in application code."
+msgid "Of course, we advise that component environment injection be used to define CDI resources, and that typesafe injection be used in application code."
 msgstr ""
 
 #. Tag: title
-#: ee.xml:94
 #, no-c-format
 msgid "Calling a bean from a servlet"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:96
 #, no-c-format
-msgid ""
-"It's easy to use a bean from a servlet in Java EE 6. Simply inject the bean "
-"using field or initializer method injection."
-msgstr ""
-
-#. Tag: programlisting
-#: ee.xml:101
-#, no-c-format
-msgid ""
-"<![CDATA[public class Login extends HttpServlet {\n"
-"   @Inject Credentials credentials;\n"
-"   @Inject Login login;\n"
-"\n"
-"   @Override\n"
-"   public void service(HttpServletRequest request, HttpServletResponse "
-"response)\n"
-"      throws ServletException, IOException {\n"
-"      credentials.setUsername(request.getParameter(\"username\")):\n"
-"      credentials.setPassword(request.getParameter(\"password\")):\n"
-"      login.login();\n"
-"      if ( login.isLoggedIn() ) {\n"
-"         response.sendRedirect(\"/home.jsp\");\n"
-"      }\n"
-"      else {\n"
-"         response.sendRedirect(\"/loginError.jsp\");\n"
-"      }\n"
-"   }\n"
-"            \n"
-"}]]>"
+msgid "It's easy to use a bean from a servlet in Java EE 6. Simply inject the bean using field or initializer method injection."
 msgstr ""
 
 #. Tag: para
-#: ee.xml:103
 #, no-c-format
-msgid ""
-"Since instances of servlets are shared across all incoming threads, the bean "
-"client proxy takes care of routing method invocations from the servlet to "
-"the correct instances of <literal>Credentials</literal> and <literal>Login</"
-"literal> for the current request and HTTP session."
+msgid "Since instances of servlets are shared across all incoming threads, the bean client proxy takes care of routing method invocations from the servlet to the correct instances of <literal>Credentials</literal> and <literal>Login</literal> for the current request and HTTP session."
 msgstr ""
 
 #. Tag: title
-#: ee.xml:112
 #, no-c-format
 msgid "Calling a bean from a message-driven bean"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:114
 #, no-c-format
-msgid ""
-"CDI injection applies to all EJBs, even when they aren't managed beans. In "
-"particular, you can use CDI injection in message-driven beans, which are by "
-"nature not contextual objects."
+msgid "CDI injection applies to all EJBs, even when they aren't managed beans. In particular, you can use CDI injection in message-driven beans, which are by nature not contextual objects."
 msgstr ""
 
 #. Tag: para
-#: ee.xml:119
 #, no-c-format
 msgid "You can even use CDI interceptor bindings for message-driven Beans."
 msgstr ""
 
-#. Tag: programlisting
-#: ee.xml:121
+#. Tag: para
 #, no-c-format
-msgid ""
-"<![CDATA[@Transactional @MessageDriven\n"
-"public class ProcessOrder implements MessageListener {\n"
-"   @Inject Inventory inventory;\n"
-"   @PersistenceContext EntityManager em;\n"
-"\n"
-"   public void onMessage(Message message) {\n"
-"      ...\n"
-"   }\n"
-"}]]>"
+msgid "Please note that there is no session or conversation context available when a message is delivered to a message-driven bean. Only <literal>@RequestScoped</literal> and <literal>@ApplicationScoped</literal> beans are available."
 msgstr ""
 
 #. Tag: para
-#: ee.xml:123
-#, no-c-format
-msgid ""
-"Please note that there is no session or conversation context available when "
-"a message is delivered to a message-driven bean. Only "
-"<literal>@RequestScoped</literal> and <literal>@ApplicationScoped</literal> "
-"beans are available."
-msgstr ""
-
-#. Tag: para
-#: ee.xml:129
 #, no-c-format
 msgid "But how about beans which <emphasis>send</emphasis> JMS messages?"
 msgstr ""
 
 #. Tag: title
-#: ee.xml:136
 #, no-c-format
 msgid "JMS endpoints"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:138
 #, no-c-format
-msgid ""
-"Sending messages using JMS can be quite complex, because of the number of "
-"different objects you need to deal with. For queues we have <literal>Queue</"
-"literal>, <literal>QueueConnectionFactory</literal>, "
-"<literal>QueueConnection</literal>, <literal>QueueSession</literal> and "
-"<literal>QueueSender</literal>. For topics we have <literal>Topic</literal>, "
-"<literal>TopicConnectionFactory</literal>, <literal>TopicConnection</"
-"literal>, <literal>TopicSession</literal> and <literal>TopicPublisher</"
-"literal>. Each of these objects has its own lifecycle and threading model "
-"that we need to worry about."
+msgid "Sending messages using JMS can be quite complex, because of the number of different objects you need to deal with. For queues we have <literal>Queue</literal>, <literal>QueueConnectionFactory</literal>, <literal>QueueConnection</literal>, <literal>QueueSession</literal> and <literal>QueueSender</literal>. For topics we have <literal>Topic</literal>, <literal>TopicConnectionFactory</literal>, <literal>TopicConnection</literal>, <literal>TopicSession</literal> and <literal>TopicPublisher</literal>. Each of these objects has its own lifecycle and threading model that we need to worry about."
 msgstr ""
 
 #. Tag: para
-#: ee.xml:147
 #, no-c-format
-msgid ""
-"You can use producer fields and methods to prepare all of these resources "
-"for injection into a bean:"
-msgstr ""
-
-#. Tag: programlisting
-#: ee.xml:151
-#, no-c-format
-msgid ""
-"<![CDATA[public class OrderResources {\n"
-"   @Resource(name=\"jms/ConnectionFactory\")\n"
-"   private ConnectionFactory connectionFactory;\n"
-"  \n"
-"   @Resource(name=\"jms/OrderQueue\")\n"
-"   private Queue orderQueue;\n"
-"  \n"
-"   @Produces @OrderConnection\n"
-"   public Connection createOrderConnection() throws JMSException {\n"
-"    return connectionFactory.createConnection();\n"
-"   }\n"
-"  \n"
-"   public void closeOrderConnection(@Disposes @OrderConnection Connection "
-"connection)\n"
-"         throws JMSException {\n"
-"      connection.close();\n"
-"   }\n"
-"  \n"
-"   @Produces @OrderSession\n"
-"   public Session createOrderSession(@OrderConnection Connection "
-"connection)\n"
-"         throws JMSException {\n"
-"      return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);\n"
-"   }\n"
-"  \n"
-"   public void closeOrderSession(@Disposes @OrderSession Session session)\n"
-"         throws JMSException {\n"
-"      session.close();\n"
-"   }\n"
-"  \n"
-"   @Produces @OrderMessageProducer\n"
-"   public MessageProducer createOrderMessageProducer(@OrderSession Session "
-"session)\n"
-"         throws JMSException {\n"
-"      return session.createProducer(orderQueue);\n"
-"   }\n"
-"  \n"
-"   public void closeOrderMessageProducer(@Disposes @OrderMessageProducer "
-"MessageProducer producer)\n"
-"         throws JMSException {\n"
-"      producer.close();\n"
-"   }\n"
-"}]]>"
+msgid "You can use producer fields and methods to prepare all of these resources for injection into a bean:"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:153
 #, no-c-format
-msgid ""
-"In this example, we can just inject the prepared <literal>MessageProducer</"
-"literal>, <literal>Connection</literal> or <literal>QueueSession</literal>:"
-msgstr ""
-
-#. Tag: programlisting
-#: ee.xml:158
-#, no-c-format
-msgid ""
-"<![CDATA[@Inject Order order;\n"
-"@Inject @OrderMessageProducer MessageProducer producer;\n"
-"@Inject @OrderSession QueueSession orderSession;\n"
-"\n"
-"public void sendMessage() {\n"
-"   MapMessage msg = orderSession.createMapMessage();\n"
-"   msg.setLong(\"orderId\", order.getId());\n"
-"   ...\n"
-"   producer.send(msg);\n"
-"}]]>"
+msgid "In this example, we can just inject the prepared <literal>MessageProducer</literal>, <literal>Connection</literal> or <literal>QueueSession</literal>:"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:164
 #, no-c-format
-msgid ""
-"The lifecycle of the injected JMS objects is completely controlled by the "
-"container."
+msgid "The lifecycle of the injected JMS objects is completely controlled by the container."
 msgstr ""
 
 #. Tag: title
-#: ee.xml:171
 #, no-c-format
 msgid "Packaging and deployment"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:173
 #, no-c-format
-msgid ""
-"CDI doesn't define any special deployment archive. You can package beans in "
-"JARs, EJB-JARs or WARs&#8212;any deployment location in the application "
-"classpath. However, the archive must be a \"bean archive\". That means each "
-"archive that contains beans <emphasis>must</emphasis> include a file named "
-"<literal>beans.xml</literal> in the <literal>META-INF</literal> directory of "
-"the classpath or <literal>WEB-INF</literal> directory of the web root (for "
-"WAR archives). The file may be empty. Beans deployed in archives that do not "
-"have a <literal>beans.xml</literal> file will not be available for use in "
-"the application."
+msgid "CDI doesn't define any special deployment archive. You can package beans in jars, ejb jars or wars—any deployment location in the application classpath. However, the archive must be a \"bean archive\". That means each archive that contains beans <emphasis>must</emphasis> include a file named <literal>beans.xml</literal> in the <literal>META-INF</literal> directory of the classpath or <literal>WEB-INF</literal> directory of the web root (for war archives). The file may be empty. Beans deployed in archives that do not have a <literal>beans.xml</literal> file will not be available for use in the application."
 msgstr ""
 
 #. Tag: para
-#: ee.xml:182
 #, no-c-format
-msgid ""
-"In an embeddable EJB container, beans may be deployed in any location in "
-"which EJBs may be deployed. Again, each location must contain a "
-"<literal>beans.xml</literal> file."
+msgid "In an embeddable EJB container, beans may be deployed in any location in which EJBs may be deployed. Again, each location must contain a <literal>beans.xml</literal> file."
 msgstr ""
+

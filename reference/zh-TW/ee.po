@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
 "PO-Revision-Date: 2009-01-15 12:12+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -17,13 +17,11 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: ee.xml:4
 #, no-c-format
 msgid "Java EE integration"
 msgstr "Java EE 整合"
 
 #. Tag: para
-#: ee.xml:6
 #, fuzzy, no-c-format
 msgid ""
 "CDI is fully integrated into the Java EE environment. Beans have access to "
@@ -38,13 +36,11 @@ msgstr ""
 "Beans）。"
 
 #. Tag: title
-#: ee.xml:13
 #, no-c-format
 msgid "Built-in beans"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:15
 #, no-c-format
 msgid ""
 "In the Java EE environment, the container provides the following built-in "
@@ -52,20 +48,17 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ee.xml:22
 #, no-c-format
 msgid "the current JTA <literal>UserTransaction</literal>,"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:27
 #, no-c-format
 msgid ""
 "a <literal>Principal</literal> representing the current caller identity,"
 msgstr ""
 
 #. Tag: para
-#: ee.xml:32
 #, no-c-format
 msgid ""
 "the default <ulink url=\"http://jcp.org/en/jsr/detail?id=303\">Bean "
@@ -73,7 +66,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ee.xml:38
 #, no-c-format
 msgid ""
 "a <literal>Validator</literal> for the default <literal>ValidationFactory</"
@@ -81,7 +73,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ee.xml:45
 #, no-c-format
 msgid ""
 "The CDI specification does not require the servlet context objects, "
@@ -97,32 +88,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ee.xml:57
 #, no-c-format
 msgid ""
 "Oh, you <emphasis>really</emphasis> want to inject the "
 "<literal>FacesContext</literal>? Alright then, try this producer method:"
 msgstr ""
 
-#. Tag: programlisting
-#: ee.xml:61
-#, no-c-format
-msgid ""
-"<![CDATA[class FacesContextProducer {\n"
-"   @Produces @RequestScoped FacesContext getFacesContext() {\n"
-"      return FacesContext.getCurrentInstance();\n"
-"   }\n"
-"}]]>"
-msgstr ""
-
 #. Tag: title
-#: ee.xml:67
 #, fuzzy, no-c-format
 msgid "Injecting Java EE resources into a bean"
 msgstr "將 Java EE 資源注入 Web Bean 中"
 
 #. Tag: para
-#: ee.xml:69
 #, fuzzy, no-c-format
 msgid ""
 "All managed beans may take advantage of Java EE component environment "
@@ -136,51 +113,7 @@ msgstr ""
 "用 Java 依賴注入（dependency injection）。我們早已見過了這方面的範例，不過當"
 "時我們並未詳細討論到："
 
-#. Tag: programlisting
-#: ee.xml:76
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Transactional @Interceptor\n"
-"public class TransactionInterceptor {\n"
-"   @Resource UserTransaction transaction;\n"
-"\n"
-"   @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
-"throws Exception { ... }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Transactional @Interceptor\n"
-"public class TransactionInterceptor {\n"
-"\n"
-"    @Resource Transaction transaction;\n"
-"\n"
-"    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
-"{ ... }\n"
-"    \n"
-"}]]>"
-
-#. Tag: programlisting
-#: ee.xml:78
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@SessionScoped\n"
-"public class Login implements Serializable {\n"
-"   @Inject Credentials credentials;\n"
-"   @PersistenceContext EntityManager userDatabase;\n"
-"    ...\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@SessionScoped\n"
-"public class Login {\n"
-"\n"
-"    @Current Credentials credentials;\n"
-"    @PersistenceContext EntityManager userDatabase;\n"
-"    \n"
-"    ...\n"
-"\n"
-"}]]>"
-
 #. Tag: para
-#: ee.xml:80
 #, fuzzy, no-c-format
 msgid ""
 "The Java EE <literal>@PostConstruct</literal> and <literal>@PreDestroy</"
@@ -193,7 +126,6 @@ msgstr ""
 "literal> 這個 method 會在<emphasis>所有</emphasis>注入被進行後才會被調用。"
 
 #. Tag: para
-#: ee.xml:86
 #, no-c-format
 msgid ""
 "Of course, we advise that component environment injection be used to define "
@@ -201,13 +133,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ee.xml:94
 #, fuzzy, no-c-format
 msgid "Calling a bean from a servlet"
 msgstr "透過一個 Servlet 來調用 Web Bean"
 
 #. Tag: para
-#: ee.xml:96
 #, fuzzy, no-c-format
 msgid ""
 "It's easy to use a bean from a servlet in Java EE 6. Simply inject the bean "
@@ -216,55 +146,7 @@ msgstr ""
 "在 Java EE 6 中透過 Servlet 來使用 Web Bean 相當地簡單。只要使用 Web Bean 欄"
 "位或是 initializer method 注入來注入 Web Bean 即可。"
 
-#. Tag: programlisting
-#: ee.xml:101
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public class Login extends HttpServlet {\n"
-"   @Inject Credentials credentials;\n"
-"   @Inject Login login;\n"
-"\n"
-"   @Override\n"
-"   public void service(HttpServletRequest request, HttpServletResponse "
-"response)\n"
-"      throws ServletException, IOException {\n"
-"      credentials.setUsername(request.getParameter(\"username\")):\n"
-"      credentials.setPassword(request.getParameter(\"password\")):\n"
-"      login.login();\n"
-"      if ( login.isLoggedIn() ) {\n"
-"         response.sendRedirect(\"/home.jsp\");\n"
-"      }\n"
-"      else {\n"
-"         response.sendRedirect(\"/loginError.jsp\");\n"
-"      }\n"
-"   }\n"
-"            \n"
-"}]]>"
-msgstr ""
-"public class Login extends HttpServlet {\n"
-"\n"
-"    @Current Credentials credentials;\n"
-"    @Current Login login;\n"
-"\n"
-"    @Override\n"
-"    public void service(HttpServletRequest request, HttpServletResponse "
-"response)\n"
-"        throws ServletException, IOException {\n"
-"        credentials.setUsername( request.getAttribute(\"username\") ):\n"
-"        credentials.setPassword( request.getAttribute(\"password\") ):\n"
-"        login.login();\n"
-"        if ( login.isLoggedIn() ) {\n"
-"            response.sendRedirect(\"/home.jsp\");\n"
-"        }\n"
-"        else {\n"
-"            response.sendRedirect(\"/loginError.jsp\");\n"
-"        }\n"
-"    }\n"
-"            \n"
-"}"
-
 #. Tag: para
-#: ee.xml:103
 #, fuzzy, no-c-format
 msgid ""
 "Since instances of servlets are shared across all incoming threads, the bean "
@@ -277,13 +159,11 @@ msgstr ""
 "routing method 調用。"
 
 #. Tag: title
-#: ee.xml:112
 #, fuzzy, no-c-format
 msgid "Calling a bean from a message-driven bean"
 msgstr "透過訊息導向的 Bean 來調用 Web Bean"
 
 #. Tag: para
-#: ee.xml:114
 #, no-c-format
 msgid ""
 "CDI injection applies to all EJBs, even when they aren't managed beans. In "
@@ -292,39 +172,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ee.xml:119
 #, fuzzy, no-c-format
 msgid "You can even use CDI interceptor bindings for message-driven Beans."
 msgstr "針對於訊息導向的 Bean，您甚至可使用 Web Bean 攔截器綁定。"
 
-#. Tag: programlisting
-#: ee.xml:121
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Transactional @MessageDriven\n"
-"public class ProcessOrder implements MessageListener {\n"
-"   @Inject Inventory inventory;\n"
-"   @PersistenceContext EntityManager em;\n"
-"\n"
-"   public void onMessage(Message message) {\n"
-"      ...\n"
-"   }\n"
-"}]]>"
-msgstr ""
-"@Transactional @MessageDriven\n"
-"public class ProcessOrder implements MessageListener {\n"
-"\n"
-"    @Current Inventory inventory;\n"
-"    @PersistenceContext EntityManager em;\n"
-"\n"
-"    public void onMessage(Message message) {\n"
-"        ...\n"
-"    }\n"
-"            \n"
-"}"
-
 #. Tag: para
-#: ee.xml:123
 #, fuzzy, no-c-format
 msgid ""
 "Please note that there is no session or conversation context available when "
@@ -338,19 +190,16 @@ msgstr ""
 "Web Bean 可使用。"
 
 #. Tag: para
-#: ee.xml:129
 #, no-c-format
 msgid "But how about beans which <emphasis>send</emphasis> JMS messages?"
 msgstr ""
 
 #. Tag: title
-#: ee.xml:136
 #, no-c-format
 msgid "JMS endpoints"
 msgstr "JMS 端點"
 
 #. Tag: para
-#: ee.xml:138
 #, no-c-format
 msgid ""
 "Sending messages using JMS can be quite complex, because of the number of "
@@ -373,96 +222,20 @@ msgstr ""
 "己各別的生命週期和執行緒模型（threading model）。"
 
 #. Tag: para
-#: ee.xml:147
 #, no-c-format
 msgid ""
 "You can use producer fields and methods to prepare all of these resources "
 "for injection into a bean:"
 msgstr ""
 
-#. Tag: programlisting
-#: ee.xml:151
-#, no-c-format
-msgid ""
-"<![CDATA[public class OrderResources {\n"
-"   @Resource(name=\"jms/ConnectionFactory\")\n"
-"   private ConnectionFactory connectionFactory;\n"
-"  \n"
-"   @Resource(name=\"jms/OrderQueue\")\n"
-"   private Queue orderQueue;\n"
-"  \n"
-"   @Produces @OrderConnection\n"
-"   public Connection createOrderConnection() throws JMSException {\n"
-"    return connectionFactory.createConnection();\n"
-"   }\n"
-"  \n"
-"   public void closeOrderConnection(@Disposes @OrderConnection Connection "
-"connection)\n"
-"         throws JMSException {\n"
-"      connection.close();\n"
-"   }\n"
-"  \n"
-"   @Produces @OrderSession\n"
-"   public Session createOrderSession(@OrderConnection Connection "
-"connection)\n"
-"         throws JMSException {\n"
-"      return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);\n"
-"   }\n"
-"  \n"
-"   public void closeOrderSession(@Disposes @OrderSession Session session)\n"
-"         throws JMSException {\n"
-"      session.close();\n"
-"   }\n"
-"  \n"
-"   @Produces @OrderMessageProducer\n"
-"   public MessageProducer createOrderMessageProducer(@OrderSession Session "
-"session)\n"
-"         throws JMSException {\n"
-"      return session.createProducer(orderQueue);\n"
-"   }\n"
-"  \n"
-"   public void closeOrderMessageProducer(@Disposes @OrderMessageProducer "
-"MessageProducer producer)\n"
-"         throws JMSException {\n"
-"      producer.close();\n"
-"   }\n"
-"}]]>"
-msgstr ""
-
 #. Tag: para
-#: ee.xml:153
 #, no-c-format
 msgid ""
 "In this example, we can just inject the prepared <literal>MessageProducer</"
 "literal>, <literal>Connection</literal> or <literal>QueueSession</literal>:"
 msgstr ""
 
-#. Tag: programlisting
-#: ee.xml:158
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Inject Order order;\n"
-"@Inject @OrderMessageProducer MessageProducer producer;\n"
-"@Inject @OrderSession QueueSession orderSession;\n"
-"\n"
-"public void sendMessage() {\n"
-"   MapMessage msg = orderSession.createMapMessage();\n"
-"   msg.setLong(\"orderId\", order.getId());\n"
-"   ...\n"
-"   producer.send(msg);\n"
-"}]]>"
-msgstr ""
-"@OrderProcessor QueueSender orderSender;\n"
-"@OrderProcessor QueueSession orderSession;\n"
-"\n"
-"public void sendMessage() {\n"
-"    MapMessage msg = orderSession.createMapMessage();\n"
-"    ...\n"
-"    orderSender.send(msg);\n"
-"}"
-
 #. Tag: para
-#: ee.xml:164
 #, fuzzy, no-c-format
 msgid ""
 "The lifecycle of the injected JMS objects is completely controlled by the "
@@ -470,22 +243,20 @@ msgid ""
 msgstr "被注入的 JMS 物件的生命週期完全由 Web Bean 管理員所控制。"
 
 #. Tag: title
-#: ee.xml:171
 #, no-c-format
 msgid "Packaging and deployment"
 msgstr "封裝和建置"
 
 #. Tag: para
-#: ee.xml:173
 #, fuzzy, no-c-format
 msgid ""
 "CDI doesn't define any special deployment archive. You can package beans in "
-"JARs, EJB-JARs or WARs&#8212;any deployment location in the application "
-"classpath. However, the archive must be a \"bean archive\". That means each "
-"archive that contains beans <emphasis>must</emphasis> include a file named "
+"jars, ejb jars or wars—any deployment location in the application classpath. "
+"However, the archive must be a \"bean archive\". That means each archive "
+"that contains beans <emphasis>must</emphasis> include a file named "
 "<literal>beans.xml</literal> in the <literal>META-INF</literal> directory of "
 "the classpath or <literal>WEB-INF</literal> directory of the web root (for "
-"WAR archives). The file may be empty. Beans deployed in archives that do not "
+"war archives). The file may be empty. Beans deployed in archives that do not "
 "have a <literal>beans.xml</literal> file will not be available for use in "
 "the application."
 msgstr ""
@@ -497,7 +268,6 @@ msgstr ""
 "archive 中的 Web Bean 將無法使用於應用程式中。"
 
 #. Tag: para
-#: ee.xml:182
 #, fuzzy, no-c-format
 msgid ""
 "In an embeddable EJB container, beans may be deployed in any location in "
@@ -507,6 +277,136 @@ msgstr ""
 "對於 Java SE 的執行來說，Web Bean 可被建置於任何位置上，同時 EJB 亦可被建置來"
 "讓可崁入的 EJB Lite container 執行。再次強調，各個位置都必須包含著一個 "
 "<literal>web-beans.xml</literal> 檔案。"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Transactional @Interceptor\n"
+#~ "public class TransactionInterceptor {\n"
+#~ "   @Resource UserTransaction transaction;\n"
+#~ "\n"
+#~ "   @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+#~ "throws Exception { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Transactional @Interceptor\n"
+#~ "public class TransactionInterceptor {\n"
+#~ "\n"
+#~ "    @Resource Transaction transaction;\n"
+#~ "\n"
+#~ "    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+#~ "{ ... }\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@SessionScoped\n"
+#~ "public class Login implements Serializable {\n"
+#~ "   @Inject Credentials credentials;\n"
+#~ "   @PersistenceContext EntityManager userDatabase;\n"
+#~ "    ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@SessionScoped\n"
+#~ "public class Login {\n"
+#~ "\n"
+#~ "    @Current Credentials credentials;\n"
+#~ "    @PersistenceContext EntityManager userDatabase;\n"
+#~ "    \n"
+#~ "    ...\n"
+#~ "\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class Login extends HttpServlet {\n"
+#~ "   @Inject Credentials credentials;\n"
+#~ "   @Inject Login login;\n"
+#~ "\n"
+#~ "   @Override\n"
+#~ "   public void service(HttpServletRequest request, HttpServletResponse "
+#~ "response)\n"
+#~ "      throws ServletException, IOException {\n"
+#~ "      credentials.setUsername(request.getParameter(\"username\")):\n"
+#~ "      credentials.setPassword(request.getParameter(\"password\")):\n"
+#~ "      login.login();\n"
+#~ "      if ( login.isLoggedIn() ) {\n"
+#~ "         response.sendRedirect(\"/home.jsp\");\n"
+#~ "      }\n"
+#~ "      else {\n"
+#~ "         response.sendRedirect(\"/loginError.jsp\");\n"
+#~ "      }\n"
+#~ "   }\n"
+#~ "            \n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "public class Login extends HttpServlet {\n"
+#~ "\n"
+#~ "    @Current Credentials credentials;\n"
+#~ "    @Current Login login;\n"
+#~ "\n"
+#~ "    @Override\n"
+#~ "    public void service(HttpServletRequest request, HttpServletResponse "
+#~ "response)\n"
+#~ "        throws ServletException, IOException {\n"
+#~ "        credentials.setUsername( request.getAttribute(\"username\") ):\n"
+#~ "        credentials.setPassword( request.getAttribute(\"password\") ):\n"
+#~ "        login.login();\n"
+#~ "        if ( login.isLoggedIn() ) {\n"
+#~ "            response.sendRedirect(\"/home.jsp\");\n"
+#~ "        }\n"
+#~ "        else {\n"
+#~ "            response.sendRedirect(\"/loginError.jsp\");\n"
+#~ "        }\n"
+#~ "    }\n"
+#~ "            \n"
+#~ "}"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Transactional @MessageDriven\n"
+#~ "public class ProcessOrder implements MessageListener {\n"
+#~ "   @Inject Inventory inventory;\n"
+#~ "   @PersistenceContext EntityManager em;\n"
+#~ "\n"
+#~ "   public void onMessage(Message message) {\n"
+#~ "      ...\n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "@Transactional @MessageDriven\n"
+#~ "public class ProcessOrder implements MessageListener {\n"
+#~ "\n"
+#~ "    @Current Inventory inventory;\n"
+#~ "    @PersistenceContext EntityManager em;\n"
+#~ "\n"
+#~ "    public void onMessage(Message message) {\n"
+#~ "        ...\n"
+#~ "    }\n"
+#~ "            \n"
+#~ "}"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Inject Order order;\n"
+#~ "@Inject @OrderMessageProducer MessageProducer producer;\n"
+#~ "@Inject @OrderSession QueueSession orderSession;\n"
+#~ "\n"
+#~ "public void sendMessage() {\n"
+#~ "   MapMessage msg = orderSession.createMapMessage();\n"
+#~ "   msg.setLong(\"orderId\", order.getId());\n"
+#~ "   ...\n"
+#~ "   producer.send(msg);\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "@OrderProcessor QueueSender orderSender;\n"
+#~ "@OrderProcessor QueueSession orderSession;\n"
+#~ "\n"
+#~ "public void sendMessage() {\n"
+#~ "    MapMessage msg = orderSession.createMapMessage();\n"
+#~ "    ...\n"
+#~ "    orderSender.send(msg);\n"
+#~ "}"
 
 #~ msgid ""
 #~ "There is one restriction to be aware of here: <literal>@PersistenceContext"

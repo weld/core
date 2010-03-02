@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2008-12-19 20:26+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -14,19 +14,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: stereotypes.xml:5
 #, no-c-format
 msgid "Stereotypes"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:7
 #, no-c-format
 msgid "The CDI specification defines a stereotype as follows:"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:11
 #, no-c-format
 msgid ""
 "In many systems, use of architectural patterns produces a set of recurring "
@@ -36,43 +33,36 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:17
 #, no-c-format
 msgid "A stereotype encapsulates any combination of:"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:21
 #, no-c-format
 msgid "a default scope, and"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:24
 #, no-c-format
 msgid "a set of interceptor bindings."
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:28
 #, no-c-format
 msgid "A stereotype may also specify that:"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:34
 #, no-c-format
 msgid "all beans with the stereotype have defaulted bean EL names, or that"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:37
 #, no-c-format
 msgid "all beans with the stereotype are alternatives."
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:41
 #, no-c-format
 msgid ""
 "A bean may declare zero, one or multiple stereotypes. Stereotype annotations "
@@ -80,7 +70,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:48
 #, no-c-format
 msgid ""
 "A stereotype is an annotation, annotated <literal>@Stereotype</literal>, "
@@ -88,33 +77,12 @@ msgid ""
 "stereotype identifies action classes in some MVC framework:"
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:53
-#, no-c-format
-msgid ""
-"<![CDATA[@Stereotype\n"
-"@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"...\n"
-"public @interface Action {}]]>"
-msgstr ""
-
 #. Tag: para
-#: stereotypes.xml:55
 #, no-c-format
 msgid "We use the stereotype by applying the annotation to a bean."
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:59
-#, no-c-format
-msgid ""
-"<![CDATA[@Action \n"
-"public class LoginAction { ... }]]>"
-msgstr ""
-
 #. Tag: para
-#: stereotypes.xml:61
 #, no-c-format
 msgid ""
 "Of course, we need to apply some other annotations to our stereotype or else "
@@ -122,46 +90,23 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: stereotypes.xml:66
 #, no-c-format
 msgid "Default scope for a stereotype"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:68
 #, no-c-format
 msgid ""
 "A stereotype may specify a default scope for beans annotated with the "
 "stereotype. For example:"
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:72
-#, no-c-format
-msgid ""
-"<![CDATA[@RequestScoped\n"
-"@Stereotype\n"
-"@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"public @interface Action {}]]>"
-msgstr ""
-
 #. Tag: para
-#: stereotypes.xml:74
 #, no-c-format
 msgid "A particular action may still override this default if necessary:"
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:78
-#, no-c-format
-msgid ""
-"<![CDATA[@Dependent @Action \n"
-"public class DependentScopedLoginAction { ... }]]>"
-msgstr ""
-
 #. Tag: para
-#: stereotypes.xml:80
 #, no-c-format
 msgid ""
 "Naturally, overriding a single default isn't much use. But remember, "
@@ -169,34 +114,18 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: stereotypes.xml:88
 #, no-c-format
 msgid "Interceptor bindings for stereotypes"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:90
 #, no-c-format
 msgid ""
 "A stereotype may specify a set of interceptor bindings to be inherited by "
 "all beans with that stereotype."
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:94
-#, no-c-format
-msgid ""
-"<![CDATA[@RequestScoped\n"
-"@Transactional(requiresNew=true)\n"
-"@Secure\n"
-"@Stereotype\n"
-"@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"public @interface Action {}]]>"
-msgstr ""
-
 #. Tag: para
-#: stereotypes.xml:96
 #, no-c-format
 msgid ""
 "This helps us get technical concerns, like transactions and security, even "
@@ -204,13 +133,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: stereotypes.xml:103
 #, no-c-format
 msgid "Name defaulting with stereotypes"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:105
 #, no-c-format
 msgid ""
 "We can specify that all beans with a certain stereotype have a defaulted EL "
@@ -218,22 +145,7 @@ msgid ""
 "is add an empty <literal>@Named</literal> annotation:"
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:110
-#, no-c-format
-msgid ""
-"<![CDATA[@RequestScoped\n"
-"@Transactional(requiresNew=true)\n"
-"@Secure\n"
-"@Named\n"
-"@Stereotype\n"
-"@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"public @interface Action {}]]>"
-msgstr ""
-
 #. Tag: para
-#: stereotypes.xml:112
 #, no-c-format
 msgid ""
 "Now, the <literal>LoginAction</literal> bean will have the defaulted name "
@@ -241,13 +153,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: stereotypes.xml:119
 #, no-c-format
 msgid "Alternative stereotypes"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:121
 #, no-c-format
 msgid ""
 "A stereotype can indicate that all beans to which it is applied are "
@@ -255,41 +165,19 @@ msgid ""
 "emphasis> lets us classify beans by deployment scenario."
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:126
-#, no-c-format
-msgid ""
-"<![CDATA[@Alternative\n"
-"@Stereotype\n"
-"@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"public @interface Mock {}]]>"
-msgstr ""
-
 #. Tag: para
-#: stereotypes.xml:128
 #, no-c-format
 msgid ""
 "We can apply an alternative stereotype to a whole set of beans, and activate "
 "them all with one line of code in <literal>beans.xml</literal>."
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:133
-#, no-c-format
-msgid ""
-"<![CDATA[@Mock\n"
-"public class MockLoginAction extends LoginAction { ... }]]>"
-msgstr ""
-
 #. Tag: title
-#: stereotypes.xml:141
 #, no-c-format
 msgid "Stereotype stacking"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:143
 #, no-c-format
 msgid ""
 "This may blow your mind a bit, but stereotypes may declare other "
@@ -300,33 +188,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:150
 #, no-c-format
 msgid ""
 "Here's an example that combines the <literal>@Action</literal> and "
 "<literal>@Auditable</literal> stereotypes:"
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:155
-#, no-c-format
-msgid ""
-"<![CDATA[@Auditable\n"
-"@Action\n"
-"@Stereotype\n"
-"@Target(TYPE)\n"
-"@Retention(RUNTIME)\n"
-"public @interface AuditableAction {}]]>"
-msgstr ""
-
 #. Tag: title
-#: stereotypes.xml:160
 #, no-c-format
 msgid "Built-in stereotypes"
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:162
 #, no-c-format
 msgid ""
 "We've already met two standard stereotypes defined by the CDI specification: "
@@ -334,27 +207,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: stereotypes.xml:167
 #, no-c-format
 msgid ""
 "CDI defines one further standard stereotype, <literal>@Model</literal>, "
 "which is expected to be used frequently in web applications:"
 msgstr ""
 
-#. Tag: programlisting
-#: stereotypes.xml:172
-#, no-c-format
-msgid ""
-"<![CDATA[@Named \n"
-"@RequestScoped \n"
-"@Stereotype \n"
-"@Target({TYPE, METHOD}) \n"
-"@Retention(RUNTIME) \n"
-"public @interface Model {}]]>"
-msgstr ""
-
 #. Tag: para
-#: stereotypes.xml:174
 #, no-c-format
 msgid ""
 "Instead of using JSF managed beans, just annotate a bean <literal>@Model</"

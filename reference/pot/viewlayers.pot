@@ -1,191 +1,104 @@
-# SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
+"PO-Revision-Date: 2010-03-02T13:07:18\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
 "MIME-Version: 1.0\n"
-"Content-Type: application/x-xml2pot; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: viewlayers.xml:5
 #, no-c-format
 msgid "Alternative view layers"
 msgstr ""
 
 #. Tag: title
-#: viewlayers.xml:8
 #, no-c-format
 msgid "Wicket CDI integration"
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:10
 #, no-c-format
-msgid ""
-"Weld provides integration between the Apache Wicket web framework and CDI. "
-"This functionality is provided by the <literal>weld-wicket</literal> "
-"extension module, which naturally must be on the classpath of the Wicket "
-"application."
+msgid "Weld provides integration between the Apache Wicket web framework and CDI. This functionality is provided by the <literal>weld-wicket</literal> extension module, which naturally must be on the classpath of the Wicket application."
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:16
 #, no-c-format
-msgid ""
-"This section describes some of the utilities provided by the Wicket "
-"extension module to support the CDI integration."
+msgid "This section describes some of the utilities provided by the Wicket extension module to support the CDI integration."
 msgstr ""
 
 #. Tag: title
-#: viewlayers.xml:22
 #, no-c-format
 msgid "The <literal>WebApplication</literal> class"
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:24
 #, no-c-format
-msgid ""
-"Each wicket application must have a <literal>WebApplication</literal> "
-"subclass; Weld provides, for your utility, a subclass of this which sets up "
-"the Wicket CDI integration. You should subclass <literal>org.jboss.weld."
-"wicket.WeldApplication</literal>."
+msgid "Each wicket application must have a <literal>WebApplication</literal> subclass; Weld provides, for your utility, a subclass of this which sets up the Wicket CDI integration. You should subclass <literal>org.jboss.weld.wicket.WeldApplication</literal>."
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:31
 #, no-c-format
-msgid ""
-"If you would prefer not to subclass <literal>WeldApplication</literal>, you "
-"can manually add a (small!) number of overrides and listeners to your own "
-"<literal>WebApplication</literal> subclass. The JavaDocs of "
-"<literal>WeldApplication</literal>detail this."
+msgid "If you would prefer not to subclass <literal>WeldApplication</literal>, you can manually add a (small!) number of overrides and listeners to your own <literal>WebApplication</literal> subclass. The JavaDocs of <literal>WeldApplication</literal>detail this."
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:38
 #, no-c-format
 msgid "For example:"
 msgstr ""
 
-#. Tag: programlisting
-#: viewlayers.xml:41
-#, no-c-format
-msgid ""
-"<![CDATA[public class SampleApplication extends WeldApplication {\n"
-"   @Override\n"
-"   public Class getHomePage() {\n"
-"      return HomePage.class;\n"
-"   }\n"
-"}]]>"
-msgstr ""
-
 #. Tag: title
-#: viewlayers.xml:45
 #, no-c-format
 msgid "Conversations with Wicket"
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:46
 #, no-c-format
-msgid ""
-"Wicket can also take advantage of the conversation scope from CDI, provided "
-"by the Wicket extension module. This module takes care of:"
+msgid "Wicket can also take advantage of the conversation scope from CDI, provided by the Wicket extension module. This module takes care of:"
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:52
 #, no-c-format
-msgid ""
-"Setting up the conversation context at the beginning of a Wicket request, "
-"and tearing it down afterwards"
+msgid "Setting up the conversation context at the beginning of a Wicket request, and tearing it down afterwards"
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:58
 #, no-c-format
-msgid ""
-"Storing the id of any long-running conversation in Wicket's metadata when "
-"the page response is complete"
+msgid "Storing the id of any long-running conversation in Wicket's metadata when the page response is complete"
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:64
 #, no-c-format
-msgid ""
-"Activating the correct long-running conversation based upon which page is "
-"being accessed"
+msgid "Activating the correct long-running conversation based upon which page is being accessed"
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:69
 #, no-c-format
-msgid ""
-"Propagating the conversation context for any long-running conversation to "
-"new pages"
+msgid "Propagating the conversation context for any long-running conversation to new pages"
 msgstr ""
 
 #. Tag: title
-#: viewlayers.xml:76
 #, no-c-format
 msgid "Starting and stopping conversations in Wicket"
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:77
 #, no-c-format
-msgid ""
-"As in JSF applications, a conversation <emphasis>always</emphasis> exists "
-"for any request to Wicket, but its lifetime is only that of the current "
-"request unless it is marked as <emphasis>long-running</emphasis>. The "
-"boundaries of a long-running conversation are controlled in the same way as "
-"in JSF applications, by injecting the <literal>Conversation</literal> "
-"instance and invoking either the <literal>begin()</literal> or <literal>end()"
-"</literal> methods:"
-msgstr ""
-
-#. Tag: programlisting
-#: viewlayers.xml:86
-#, no-c-format
-msgid ""
-"<![CDATA[private @Inject Conversation conversation;\n"
-"...\n"
-"// begin a conversation\n"
-"conversation.begin();\n"
-"...\n"
-"// end a conversation\n"
-"conversation.end();]]>"
+msgid "As in JSF applications, a conversation <emphasis>always</emphasis> exists for any request to Wicket, but its lifetime is only that of the current request unless it is marked as <emphasis>long-running</emphasis>. The boundaries of a long-running conversation are controlled in the same way as in JSF applications, by injecting the <literal>Conversation</literal> instance and invoking either the <literal>begin()</literal> or <literal>end()</literal> methods:"
 msgstr ""
 
 #. Tag: title
-#: viewlayers.xml:91
 #, no-c-format
 msgid "Long running conversation propagation in Wicket"
 msgstr ""
 
 #. Tag: para
-#: viewlayers.xml:92
 #, no-c-format
-msgid ""
-"When a conversation is marked as long-running, the id of that conversation "
-"will be stored in Wicket's metadata for the current page. If a new page is "
-"created and set as the response target through <literal>setResponsePage()</"
-"literal>, this new page will also participate in this conversation. This "
-"occurs for both directly instantiated pages (<literal>setResponsePage(new "
-"OtherPage())</literal>), as well as for bookmarkable pages created with "
-"<literal>setResponsePage(OtherPage.class)</literal> where <literal>OtherPage."
-"class</literal> is mounted as bookmarkable from your "
-"<literal>WebApplication</literal> subclass (or through annotations). In the "
-"latter case, because the new page instance is not created until after a "
-"redirect, the conversation id will be propagated through a request "
-"parameter, and then stored in page metadata after the redirect."
+msgid "When a conversation is marked as long-running, the id of that conversation will be stored in Wicket's metadata for the current page. If a new page is created and set as the response target through <literal>setResponsePage()</literal>, this new page will also participate in this conversation. This occurs for both directly instantiated pages (<literal>setResponsePage(new OtherPage())</literal>), as well as for bookmarkable pages created with <literal>setResponsePage(OtherPage.class)</literal> where <literal>OtherPage.class</literal> is mounted as bookmarkable from your <literal>WebApplication</literal> subclass (or through annotations). In the latter case, because the new page instance is not created until after a redirect, the conversation id will be propagated through a request parameter, and then stored in page metadata after the redirect."
 msgstr ""
+

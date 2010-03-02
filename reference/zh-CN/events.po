@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
 "PO-Revision-Date: 2009-02-16 11:17+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,13 +14,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: events.xml:4
 #, no-c-format
 msgid "Events"
 msgstr "事件"
 
 #. Tag: para
-#: events.xml:6
 #, no-c-format
 msgid ""
 "Dependency injection enables loose-coupling by allowing the implementation "
@@ -31,7 +29,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: events.xml:13
 #, no-c-format
 msgid ""
 "This basic schema might sound like the familiar observer/observable pattern, "
@@ -39,7 +36,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: events.xml:18
 #, no-c-format
 msgid ""
 "not only are event producers decoupled from observers; observers are "
@@ -47,7 +43,6 @@ msgid ""
 msgstr "不仅是事件产生者和观察者解耦；观察者和产生者也完全解耦，"
 
 #. Tag: para
-#: events.xml:22
 #, no-c-format
 msgid ""
 "observers can specify a combination of \"selectors\" to narrow the set of "
@@ -55,7 +50,6 @@ msgid ""
 msgstr "观察者可以指定一个\"选择器\"组合来限定接受的事件通知，并且"
 
 #. Tag: para
-#: events.xml:28
 #, fuzzy, no-c-format
 msgid ""
 "observers can be notified immediately, or can specify that delivery of the "
@@ -63,7 +57,6 @@ msgid ""
 msgstr "观察者可以即刻被通知，也可以指定只有当前事务结束后再发送事件通知。"
 
 #. Tag: para
-#: events.xml:35
 #, no-c-format
 msgid ""
 "The CDI event notification facility uses more or less the same typesafe "
@@ -71,13 +64,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: events.xml:39
 #, fuzzy, no-c-format
 msgid "Event payload"
 msgstr "事件生产者"
 
 #. Tag: para
-#: events.xml:41
 #, no-c-format
 msgid ""
 "The event object carries state from producer to consumer. The event object "
@@ -89,35 +80,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: events.xml:48
 #, no-c-format
 msgid ""
 "An event qualifier is just a normal qualifier, defined using "
 "<literal>@Qualifier</literal>. Here's an example:"
 msgstr ""
 
-#. Tag: programlisting
-#: events.xml:52
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Qualifier\n"
-"@Target({FIELD, PARAMETER})\n"
-"@Retention(RUNTIME)\n"
-"public @interface Updated {}]]>"
-msgstr ""
-"<![CDATA[@BindingType\n"
-"@Target({PARAMETER, FIELD})\n"
-"@Retention(RUNTIME)\n"
-"public @interface Updated { ... }]]>"
-
 #. Tag: title
-#: events.xml:57
 #, no-c-format
 msgid "Event observers"
 msgstr "事件观察者"
 
 #. Tag: para
-#: events.xml:59
 #, fuzzy, no-c-format
 msgid ""
 "An <emphasis>observer method</emphasis> is a method of a bean with a "
@@ -126,18 +100,7 @@ msgstr ""
 "一个 <emphasis>观察者方法</emphasis>是一个在Web Bean中的方法，该方法有一个用"
 "<literal>@Observes</literal>注释的参数。 "
 
-#. Tag: programlisting
-#: events.xml:64
-#, no-c-format
-msgid ""
-"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
-"{ ... }]]>"
-msgstr ""
-"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
-"{ ... }]]>"
-
 #. Tag: para
-#: events.xml:66
 #, fuzzy, no-c-format
 msgid ""
 "The annotated parameter is called the <emphasis>event parameter</emphasis>. "
@@ -150,23 +113,12 @@ msgstr ""
 "是Web Beans绑定类型的实例。当一个绑定类型作为事件选择器时，它也被称为一个"
 "<emphasis>事件绑定类型</emphasis>。"
 
-#. Tag: programlisting
-#: events.xml:72 events.xml:240
-#, no-c-format
-msgid ""
-"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-"document) { ... }]]>"
-msgstr ""
-"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-"document) { ... }]]>"
-
 #. Tag: para
-#: events.xml:74
 #, fuzzy, no-c-format
 msgid ""
-"An observer method need not specify any event qualifiers&#8212;in this case "
-"it is interested in <emphasis>all</emphasis> events of a particular type. If "
-"it does specify qualifiers, it's only interested in events which have those "
+"An observer method need not specify any event qualifiers—in this case it is "
+"interested in <emphasis>all</emphasis> events of a particular type. If it "
+"does specify qualifiers, it's only interested in events which have those "
 "qualifiers."
 msgstr ""
 "一个观察者方法无须指定一个事件绑定 &#151; 在这种情况下，它对一个特定类型的 "
@@ -174,7 +126,6 @@ msgstr ""
 "它只对那些有事件绑定的事件感兴趣（观察）。"
 
 #. Tag: para
-#: events.xml:80
 #, fuzzy, no-c-format
 msgid ""
 "The observer method may have additional parameters, which are injection "
@@ -182,24 +133,12 @@ msgid ""
 msgstr ""
 "观察者方法可以有其他的参数，它们可以按照普通的Web Beans方法参数注入语法注入："
 
-#. Tag: programlisting
-#: events.xml:84
-#, no-c-format
-msgid ""
-"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-"document, User user) { ... }]]>"
-msgstr ""
-"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-"document, User user) { ... }]]>"
-
 #. Tag: title
-#: events.xml:89
 #, no-c-format
 msgid "Event producers"
 msgstr "事件生产者"
 
 #. Tag: para
-#: events.xml:91
 #, no-c-format
 msgid ""
 "Event producers fire events using an instance of the parameterized "
@@ -207,14 +146,7 @@ msgid ""
 "obtained by injection:"
 msgstr ""
 
-#. Tag: programlisting
-#: events.xml:96
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Inject @Any Event<Document> documentEvent;]]>"
-msgstr "<![CDATA[@Observable Event<Document> documentEvent]]>"
-
 #. Tag: para
-#: events.xml:98
 #, fuzzy, no-c-format
 msgid ""
 "A producer raises events by calling the <literal>fire()</literal> method of "
@@ -223,20 +155,12 @@ msgstr ""
 "一个生产者通过调用 <literal>Event</literal> 接口的 <literal>fire()</literal> "
 "方法来触发事件，传递一个 <emphasis>事件对象</emphasis> ："
 
-#. Tag: programlisting
-#: events.xml:103
-#, no-c-format
-msgid "<![CDATA[documentEvent.fire(document);]]>"
-msgstr "<![CDATA[documentEvent.fire(document);]]>"
-
 #. Tag: para
-#: events.xml:105
 #, fuzzy, no-c-format
 msgid "This particular event will be delivered to every observer method that:"
 msgstr "事件将被发送给每个符合下面条件的观察者方法："
 
 #. Tag: para
-#: events.xml:111
 #, fuzzy, no-c-format
 msgid ""
 "has an event parameter to which the event object (the <literal>Document</"
@@ -244,13 +168,11 @@ msgid ""
 msgstr "有一个事件参数可以赋给事件对象，并且"
 
 #. Tag: para
-#: events.xml:115
 #, fuzzy, no-c-format
 msgid "specifies no qualifiers."
 msgstr "没有指定事件绑定"
 
 #. Tag: para
-#: events.xml:119
 #, fuzzy, no-c-format
 msgid ""
 "The container simply calls all the observer methods, passing the event "
@@ -263,19 +185,16 @@ msgstr ""
 "literal> 方法再次抛出这个异常。"
 
 #. Tag: para
-#: events.xml:125
 #, no-c-format
 msgid "Qualifiers can be applied to an event in one of two ways:"
 msgstr ""
 
 #. Tag: para
-#: events.xml:131
 #, no-c-format
 msgid "by annotating the <literal>Event</literal> injection point, or"
 msgstr ""
 
 #. Tag: para
-#: events.xml:134
 #, no-c-format
 msgid ""
 "by passing qualifiers to the <literal>select()</literal> of <literal>Event</"
@@ -283,19 +202,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: events.xml:138
 #, no-c-format
 msgid "Specifying the qualifiers at the injection point is far simpler:"
 msgstr ""
 
-#. Tag: programlisting
-#: events.xml:142
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Inject @Updated Event<Document> documentUpdatedEvent;]]>"
-msgstr "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
-
 #. Tag: para
-#: events.xml:144
 #, fuzzy, no-c-format
 msgid ""
 "Then, every event fired via this instance of <literal>Event</literal> has "
@@ -306,13 +217,11 @@ msgstr ""
 "件将被发送给每个符合下面条件的观察者方法："
 
 #. Tag: para
-#: events.xml:151
 #, no-c-format
 msgid "has an event parameter to which the event object is assignable, and"
 msgstr "有一个事件参数可以赋给事件对象，并且"
 
 #. Tag: para
-#: events.xml:154
 #, fuzzy, no-c-format
 msgid ""
 "does not have any event qualifier <emphasis>except</emphasis> for the event "
@@ -322,7 +231,6 @@ msgstr ""
 "除了传递给<literal>fire()</literal>方法的事件绑定之外，没有指定任何事件绑定。"
 
 #. Tag: para
-#: events.xml:161
 #, no-c-format
 msgid ""
 "The downside of annotating the injection point is that we can't specify the "
@@ -332,18 +240,7 @@ msgid ""
 "<literal>Event</literal>."
 msgstr ""
 
-#. Tag: programlisting
-#: events.xml:167
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[documentEvent.select(new AnnotationLiteral<Updated>(){}).fire"
-"(document);]]>"
-msgstr ""
-"<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>()"
-"{} );]]>"
-
 #. Tag: para
-#: events.xml:169
 #, no-c-format
 msgid ""
 "Events can have multiple event qualifiers, assembled using any combination "
@@ -352,13 +249,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: events.xml:178
 #, fuzzy, no-c-format
 msgid "Conditional observer methods"
 msgstr "事务性的观察者"
 
 #. Tag: para
-#: events.xml:180
 #, no-c-format
 msgid ""
 "By default, if there is no instance of an observer in the current context, "
@@ -368,25 +263,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: events.xml:186
 #, no-c-format
 msgid ""
 "A conditional observer is specified by adding <literal>receive = IF_EXISTS</"
 "literal> to the <literal>@Observes</literal> annotation."
 msgstr ""
 
-#. Tag: programlisting
-#: events.xml:191
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = IF_EXISTS) "
-"@Updated Document d) { ... }]]>"
-msgstr ""
-"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-"document) { ... }]]>"
-
 #. Tag: para
-#: events.xml:193
 #, no-c-format
 msgid ""
 "A bean with scope <literal>@Dependent</literal> cannot be a conditional "
@@ -394,54 +277,22 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: events.xml:200
 #, fuzzy, no-c-format
 msgid "Event qualifiers with members"
 msgstr "事件绑定成员"
 
 #. Tag: para
-#: events.xml:202
 #, fuzzy, no-c-format
 msgid "An event qualifier type may have annotation members:"
 msgstr "一个事件绑定类型可以有注释成员："
 
-#. Tag: programlisting
-#: events.xml:204
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Qualifier\n"
-"@Target({PARAMETER, FIELD})\n"
-"@Retention(RUNTIME)\n"
-"public @interface Role {\n"
-"   RoleType value();\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@BindingType\n"
-"@Target({PARAMETER, FIELD})\n"
-"@Retention(RUNTIME)\n"
-"public @interface Role {\n"
-"    RoleType value();\n"
-"}]]>"
-
 #. Tag: para
-#: events.xml:206
 #, no-c-format
 msgid ""
 "The member value is used to narrow the messages delivered to the observer:"
 msgstr "成员值用来限制发送给观察者的消息："
 
-#. Tag: programlisting
-#: events.xml:208
-#, no-c-format
-msgid ""
-"<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
-"{ ... }]]>"
-msgstr ""
-"<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
-"{ ... }]]>"
-
 #. Tag: para
-#: events.xml:210
 #, fuzzy, no-c-format
 msgid ""
 "Event qualifier type members may be specified statically by the event "
@@ -450,14 +301,7 @@ msgstr ""
 "事件绑定类型成员可以通过事件产生者静态地指定，通过在事件通知者注入点使用注"
 "释："
 
-#. Tag: programlisting
-#: events.xml:215
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;]]>"
-msgstr "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
-
 #. Tag: para
-#: events.xml:217
 #, fuzzy, no-c-format
 msgid ""
 "Alternatively, the value of the event qualifier type member may be "
@@ -467,109 +311,36 @@ msgstr ""
 "或者事件绑定类型成员的值也可以由事件产生者动态地决定。我们先写一个 "
 "<literal>AnnotationLiteral</literal> 的抽象子类："
 
-#. Tag: programlisting
-#: events.xml:222
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[abstract class RoleBinding \n"
-"   extends AnnotationLiteral<Role> \n"
-"   implements Role {}]]>"
-msgstr ""
-"<![CDATA[abstract class RoleBinding \n"
-"    extends AnnotationLiteral<Role> \n"
-"    implements Role {}]]>"
-
 #. Tag: para
-#: events.xml:224
 #, fuzzy, no-c-format
 msgid ""
 "The event producer passes an instance of this class to <literal>select()</"
 "literal>:"
 msgstr "事件产生者将一个这个类的实例传递给 <literal>fire()</literal> ："
 
-#. Tag: programlisting
-#: events.xml:226
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[documentEvent.select(new RoleBinding() {\n"
-"   public void value() { return user.getRole(); }\n"
-"}).fire(document);]]>"
-msgstr ""
-"<![CDATA[documentEvent.fire( document, new RoleBinding() { public void value"
-"() { return user.getRole(); } } );]]>"
-
 #. Tag: title
-#: events.xml:231
 #, fuzzy, no-c-format
 msgid "Multiple event qualifiers"
 msgstr "多个事件绑定"
 
 #. Tag: para
-#: events.xml:233
 #, fuzzy, no-c-format
 msgid "Event qualifier types may be combined, for example:"
 msgstr "事件绑定类型可以组合，例如："
 
-#. Tag: programlisting
-#: events.xml:235
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Inject @Blog Event<Document> blogEvent;\n"
-"...\n"
-"if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){})."
-"fire(document);]]>"
-msgstr ""
-"<![CDATA[@Observable @Blog Event<Document> blogEvent;\n"
-"...\n"
-"if (document.isBlog()) blogEvent.fire(document, new "
-"AnnotationLiteral<Updated>(){});]]>"
-
 #. Tag: para
-#: events.xml:237
 #, no-c-format
 msgid ""
 "When this event occurs, all of the following observer methods will be "
 "notified:"
 msgstr "当这个事件发生时，下列所有观察者方法都会被通知："
 
-#. Tag: programlisting
-#: events.xml:239
-#, no-c-format
-msgid ""
-"<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
-"document) { ... }]]>"
-msgstr ""
-"<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
-"document) { ... }]]>"
-
-#. Tag: programlisting
-#: events.xml:241
-#, no-c-format
-msgid ""
-"<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
-"{ ... }]]>"
-msgstr ""
-"<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
-"{ ... }]]>"
-
-#. Tag: programlisting
-#: events.xml:242
-#, no-c-format
-msgid ""
-"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
-"{ ... }}}]]>"
-msgstr ""
-"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
-"{ ... }}}]]>"
-
 #. Tag: title
-#: events.xml:247
 #, no-c-format
 msgid "Transactional observers"
 msgstr "事务性的观察者"
 
 #. Tag: para
-#: events.xml:249
 #, no-c-format
 msgid ""
 "Transactional observers receive their event notifications during the before "
@@ -582,31 +353,18 @@ msgstr ""
 "观察者方法需要刷新在应用上下文中缓存的查询结果集，但只有在事务成果地更新了 "
 "<literal>Category</literal> 树之后才能发生："
 
-#. Tag: programlisting
-#: events.xml:256
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public void refreshCategoryTree(@Observes(during = AFTER_SUCCESS) "
-"CategoryUpdateEvent event) { ... }]]>"
-msgstr ""
-"<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Observes "
-"CategoryUpdateEvent event) { ... }]]>"
-
 #. Tag: para
-#: events.xml:258
 #, fuzzy, no-c-format
 msgid "There are five kinds of transactional observers:"
 msgstr "我们有三种事务性观察者："
 
 #. Tag: para
-#: events.xml:262
 #, no-c-format
 msgid ""
 "<literal>IN_PROGESS</literal> observers are called immediately (default)"
 msgstr ""
 
 #. Tag: para
-#: events.xml:265
 #, fuzzy, no-c-format
 msgid ""
 "<literal>AFTER_SUCCESS</literal> observers are called during the after "
@@ -617,7 +375,6 @@ msgstr ""
 "用。"
 
 #. Tag: para
-#: events.xml:271
 #, fuzzy, no-c-format
 msgid ""
 "<literal>AFTER_FAILURE</literal> observers are called during the after "
@@ -627,7 +384,6 @@ msgstr ""
 "<literal>@AfterTransactionFailure</literal> 观察者仅仅在事务失败之后被调用。"
 
 #. Tag: para
-#: events.xml:277
 #, fuzzy, no-c-format
 msgid ""
 "<literal>AFTER_COMPLETION</literal> observers are called during the after "
@@ -637,7 +393,6 @@ msgstr ""
 "用。"
 
 #. Tag: para
-#: events.xml:283
 #, fuzzy, no-c-format
 msgid ""
 "<literal>BEFORE_COMPLETION</literal> observers are called during the before "
@@ -647,7 +402,6 @@ msgstr ""
 "用。"
 
 #. Tag: para
-#: events.xml:290
 #, fuzzy, no-c-format
 msgid ""
 "Transactional observers are very important in a stateful object model "
@@ -657,56 +411,12 @@ msgstr ""
 "一个单一的原子事务所保留的时间更长。"
 
 #. Tag: para
-#: events.xml:295
 #, no-c-format
 msgid ""
 "Imagine that we have cached a JPA query result set in the application scope:"
 msgstr "设想一下我们已经在应用范围内缓存了一个JPA的查询结果集："
 
-#. Tag: programlisting
-#: events.xml:297
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@ApplicationScoped @Singleton\n"
-"public class Catalog {\n"
-"\n"
-"   @PersistenceContext EntityManager em;\n"
-"    \n"
-"   List<Product> products;\n"
-"\n"
-"   @Produces @Catalog \n"
-"   List<Product> getCatalog() {\n"
-"      if (products==null) {\n"
-"         products = em.createQuery(\"select p from Product p where p.deleted "
-"= false\")\n"
-"            .getResultList();\n"
-"      }\n"
-"      return products;\n"
-"   }\n"
-"    \n"
-"}]]>"
-msgstr ""
-"<![CDATA[@ApplicationScoped @Singleton\n"
-"public class Catalog {\n"
-"\n"
-"    @PersistenceContext EntityManager em;\n"
-"    \n"
-"    List<Product> products;\n"
-"\n"
-"    @Produces @Catalog \n"
-"    List<Product> getCatalog() {\n"
-"        if (products==null) {\n"
-"            products = em.createQuery(\"select p from Product p where p."
-"deleted = false\")\n"
-"                .getResultList();\n"
-"        }\n"
-"        return products;\n"
-"    }\n"
-"    \n"
-"}]]>"
-
 #. Tag: para
-#: events.xml:299
 #, no-c-format
 msgid ""
 "From time to time, a <literal>Product</literal> is created or deleted. When "
@@ -719,98 +429,281 @@ msgstr ""
 "之后</emphasis>才能处理刷新。"
 
 #. Tag: para
-#: events.xml:305
 #, fuzzy, no-c-format
 msgid ""
 "The bean that creates and deletes <literal>Product</literal>s could raise "
 "events, for example:"
 msgstr "创建或者删除 <literal>Product</literal> 的Web Bean应该触发事件，例如："
 
-#. Tag: programlisting
-#: events.xml:309
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Stateless\n"
-"public class ProductManager {\n"
-"   @PersistenceContext EntityManager em;\n"
-"   @Inject @Any Event<Product> productEvent;\n"
-"\n"
-"   public void delete(Product product) {\n"
-"      em.delete(product);\n"
-"      productEvent.select(new AnnotationLiteral<Deleted>(){}).fire"
-"(product);\n"
-"   }\n"
-"    \n"
-"   public void persist(Product product) {\n"
-"      em.persist(product);\n"
-"      productEvent.select(new AnnotationLiteral<Created>(){}).fire"
-"(product);\n"
-"   }\n"
-"   ...\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Stateless\n"
-"public class ProductManager {\n"
-"\n"
-"    @PersistenceContext EntityManager em;\n"
-"    @Observable Event<Product> productEvent;\n"
-"\n"
-"    public void delete(Product product) {\n"
-"        em.delete(product);\n"
-"        productEvent.fire(product, new AnnotationLiteral<Deleted>(){});\n"
-"    }\n"
-"    \n"
-"    public void persist(Product product) {\n"
-"        em.persist(product);\n"
-"        productEvent.fire(product, new AnnotationLiteral<Created>(){});\n"
-"    }\n"
-"    \n"
-"    ...\n"
-"    \n"
-"}]]>"
-
 #. Tag: para
-#: events.xml:311
 #, no-c-format
 msgid ""
 "And now <literal>Catalog</literal> can observe the events after successful "
 "completion of the transaction:"
 msgstr "现在 <literal>Catalog</literal> 能够观察到事务成功完成之后触发的事件："
 
-#. Tag: programlisting
-#: events.xml:315
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@ApplicationScoped @Singleton\n"
-"public class Catalog {\n"
-"   ...\n"
-"   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product "
-"product) {\n"
-"      products.add(product);\n"
-"   }\n"
-"    \n"
-"   void addProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product "
-"product) {\n"
-"      products.remove(product);\n"
-"   }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@ApplicationScoped @Singleton\n"
-"public class Catalog {\n"
-"\n"
-"    ...\n"
-"    \n"
-"    void addProduct(@AfterTransactionSuccess @Observes @Created Product "
-"product) {\n"
-"        products.add(product);\n"
-"    }\n"
-"    \n"
-"    void addProduct(@AfterTransactionSuccess @Observes @Deleted Product "
-"product) {\n"
-"        products.remove(product);\n"
-"    }\n"
-"    \n"
-"}]]>"
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Qualifier\n"
+#~ "@Target({FIELD, PARAMETER})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Updated {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@BindingType\n"
+#~ "@Target({PARAMETER, FIELD})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Updated { ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+#~ "{ ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+#~ "{ ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document) { ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document, User user) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document, User user) { ... }]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Any Event<Document> documentEvent;]]>"
+#~ msgstr "<![CDATA[@Observable Event<Document> documentEvent]]>"
+
+#~ msgid "<![CDATA[documentEvent.fire(document);]]>"
+#~ msgstr "<![CDATA[documentEvent.fire(document);]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Updated Event<Document> documentUpdatedEvent;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[documentEvent.select(new AnnotationLiteral<Updated>(){}).fire"
+#~ "(document);]]>"
+#~ msgstr ""
+#~ "<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>()"
+#~ "{} );]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = "
+#~ "IF_EXISTS) @Updated Document d) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document) { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Qualifier\n"
+#~ "@Target({PARAMETER, FIELD})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Role {\n"
+#~ "   RoleType value();\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@BindingType\n"
+#~ "@Target({PARAMETER, FIELD})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Role {\n"
+#~ "    RoleType value();\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
+#~ "{ ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
+#~ "{ ... }]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[abstract class RoleBinding \n"
+#~ "   extends AnnotationLiteral<Role> \n"
+#~ "   implements Role {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[abstract class RoleBinding \n"
+#~ "    extends AnnotationLiteral<Role> \n"
+#~ "    implements Role {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[documentEvent.select(new RoleBinding() {\n"
+#~ "   public void value() { return user.getRole(); }\n"
+#~ "}).fire(document);]]>"
+#~ msgstr ""
+#~ "<![CDATA[documentEvent.fire( document, new RoleBinding() { public void "
+#~ "value() { return user.getRole(); } } );]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Inject @Blog Event<Document> blogEvent;\n"
+#~ "...\n"
+#~ "if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>()"
+#~ "{}).fire(document);]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Observable @Blog Event<Document> blogEvent;\n"
+#~ "...\n"
+#~ "if (document.isBlog()) blogEvent.fire(document, new "
+#~ "AnnotationLiteral<Updated>(){});]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
+#~ "document) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
+#~ "document) { ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
+#~ "{ ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
+#~ "{ ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+#~ "{ ... }}}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+#~ "{ ... }}}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public void refreshCategoryTree(@Observes(during = "
+#~ "AFTER_SUCCESS) CategoryUpdateEvent event) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess "
+#~ "@Observes CategoryUpdateEvent event) { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@ApplicationScoped @Singleton\n"
+#~ "public class Catalog {\n"
+#~ "\n"
+#~ "   @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "   List<Product> products;\n"
+#~ "\n"
+#~ "   @Produces @Catalog \n"
+#~ "   List<Product> getCatalog() {\n"
+#~ "      if (products==null) {\n"
+#~ "         products = em.createQuery(\"select p from Product p where p."
+#~ "deleted = false\")\n"
+#~ "            .getResultList();\n"
+#~ "      }\n"
+#~ "      return products;\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ApplicationScoped @Singleton\n"
+#~ "public class Catalog {\n"
+#~ "\n"
+#~ "    @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "    List<Product> products;\n"
+#~ "\n"
+#~ "    @Produces @Catalog \n"
+#~ "    List<Product> getCatalog() {\n"
+#~ "        if (products==null) {\n"
+#~ "            products = em.createQuery(\"select p from Product p where p."
+#~ "deleted = false\")\n"
+#~ "                .getResultList();\n"
+#~ "        }\n"
+#~ "        return products;\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Stateless\n"
+#~ "public class ProductManager {\n"
+#~ "   @PersistenceContext EntityManager em;\n"
+#~ "   @Inject @Any Event<Product> productEvent;\n"
+#~ "\n"
+#~ "   public void delete(Product product) {\n"
+#~ "      em.delete(product);\n"
+#~ "      productEvent.select(new AnnotationLiteral<Deleted>(){}).fire"
+#~ "(product);\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "   public void persist(Product product) {\n"
+#~ "      em.persist(product);\n"
+#~ "      productEvent.select(new AnnotationLiteral<Created>(){}).fire"
+#~ "(product);\n"
+#~ "   }\n"
+#~ "   ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Stateless\n"
+#~ "public class ProductManager {\n"
+#~ "\n"
+#~ "    @PersistenceContext EntityManager em;\n"
+#~ "    @Observable Event<Product> productEvent;\n"
+#~ "\n"
+#~ "    public void delete(Product product) {\n"
+#~ "        em.delete(product);\n"
+#~ "        productEvent.fire(product, new AnnotationLiteral<Deleted>(){});\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    public void persist(Product product) {\n"
+#~ "        em.persist(product);\n"
+#~ "        productEvent.fire(product, new AnnotationLiteral<Created>(){});\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    ...\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@ApplicationScoped @Singleton\n"
+#~ "public class Catalog {\n"
+#~ "   ...\n"
+#~ "   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product "
+#~ "product) {\n"
+#~ "      products.add(product);\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "   void addProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product "
+#~ "product) {\n"
+#~ "      products.remove(product);\n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ApplicationScoped @Singleton\n"
+#~ "public class Catalog {\n"
+#~ "\n"
+#~ "    ...\n"
+#~ "    \n"
+#~ "    void addProduct(@AfterTransactionSuccess @Observes @Created Product "
+#~ "product) {\n"
+#~ "        products.add(product);\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    void addProduct(@AfterTransactionSuccess @Observes @Deleted Product "
+#~ "product) {\n"
+#~ "        products.remove(product);\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
 
 #~ msgid ""
 #~ "The Web Beans event notification facility allows Web Beans to interact in "

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scopescontexts\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-01-20 16:49+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -17,13 +17,11 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: scopescontexts.xml:5
 #, no-c-format
 msgid "Scopes and contexts"
 msgstr "Scope 與 context"
 
 #. Tag: para
-#: scopescontexts.xml:7
 #, fuzzy, no-c-format
 msgid ""
 "So far, we've seen a few examples of <emphasis>scope type annotations</"
@@ -37,26 +35,22 @@ msgstr ""
 "instance。根據 Web Bean 規格，scope 可決定："
 
 #. Tag: para
-#: scopescontexts.xml:16
 #, fuzzy, no-c-format
 msgid "When a new instance of any bean with that scope is created"
 msgstr "任何含有該 scope 的 Web Bean 的新 instance 應何時被建立"
 
 #. Tag: para
-#: scopescontexts.xml:19
 #, fuzzy, no-c-format
 msgid "When an existing instance of any bean with that scope is destroyed"
 msgstr "任何含有該 scope 的 Web Bean 的現有 instance 應何時被刪除"
 
 #. Tag: para
-#: scopescontexts.xml:22
 #, fuzzy, no-c-format
 msgid ""
 "Which injected references refer to any instance of a bean with that scope"
 msgstr "哪個被注入的參照代表含有該 scope 的 Web Bean 的任何 instance"
 
 #. Tag: para
-#: scopescontexts.xml:27
 #, fuzzy, no-c-format
 msgid ""
 "For example, if we have a session-scoped bean, <literal>CurrentUser</"
@@ -73,7 +67,6 @@ msgstr ""
 "就會自動地被建立，並且在這個 session 結束時被自動地刪除掉。"
 
 #. Tag: para
-#: scopescontexts.xml:35
 #, no-c-format
 msgid ""
 "JPA entities aren't a great fit for this model. Entities have their whole "
@@ -86,13 +79,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: scopescontexts.xml:45
 #, no-c-format
 msgid "Scope types"
 msgstr "Scope type"
 
 #. Tag: para
-#: scopescontexts.xml:47
 #, fuzzy, no-c-format
 msgid ""
 "CDI features an <emphasis>extensible context model</emphasis>. It's possible "
@@ -101,22 +92,7 @@ msgstr ""
 "Web Bean 含有著一個 <emphasis>extensible context model（可延伸的 context 模"
 "型）</emphasis>。您可藉由建立新的 scope 類型標記來定義新的 scope："
 
-#. Tag: programlisting
-#: scopescontexts.xml:52
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@ScopeType\n"
-"@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD})\n"
-"public @interface ClusterScoped {}]]>"
-msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD})\n"
-"@ScopeType\n"
-"public @interface ClusterScoped {}]]>"
-
 #. Tag: para
-#: scopescontexts.xml:54
 #, fuzzy, no-c-format
 msgid ""
 "Of course, that's the easy part of the job. For this scope type to be "
@@ -132,7 +108,6 @@ msgstr ""
 "（framework development）上。"
 
 #. Tag: para
-#: scopescontexts.xml:61
 #, fuzzy, no-c-format
 msgid ""
 "We can apply a scope type annotation to a bean implementation class to "
@@ -141,66 +116,47 @@ msgstr ""
 "我們可套用一個 scope 類型標記至一個 Web Bean 實做 class 來指定 Web Bean 的 "
 "scope："
 
-#. Tag: programlisting
-#: scopescontexts.xml:65
-#, no-c-format
-msgid ""
-"<![CDATA[@ClusterScoped\n"
-"public class SecondLevelCache { ... }]]>"
-msgstr ""
-"<![CDATA[@ClusterScoped\n"
-"public class SecondLevelCache { ... }]]>"
-
 #. Tag: para
-#: scopescontexts.xml:67
 #, fuzzy, no-c-format
 msgid "Usually, you'll use one of CDI's built-in scopes."
 msgstr "您通常會使用到其中一個 Web Bean 的內建 scope。"
 
 #. Tag: title
-#: scopescontexts.xml:72
 #, no-c-format
 msgid "Built-in scopes"
 msgstr "內建 scope"
 
 #. Tag: para
-#: scopescontexts.xml:74
 #, fuzzy, no-c-format
 msgid "CDI defines four built-in scopes:"
 msgstr "Web Bean 定義了四個內建的 scope："
 
-#. Tag: literal
-#: scopescontexts.xml:78
-#, no-c-format
-msgid "@RequestScoped"
-msgstr "@RequestScoped"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>@RequestScoped</literal>"
+msgstr "<literal>@New</literal> 標記"
 
-#. Tag: literal
-#: scopescontexts.xml:81
-#, no-c-format
-msgid "@SessionScoped"
-msgstr "@SessionScoped"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>@SessionScoped</literal>"
+msgstr "<literal>@New</literal> 標記"
 
-#. Tag: literal
-#: scopescontexts.xml:84
-#, no-c-format
-msgid "@ApplicationScoped"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>@ApplicationScoped</literal>"
 msgstr "@ApplicationScoped"
 
-#. Tag: literal
-#: scopescontexts.xml:87
-#, no-c-format
-msgid "@ConversationScoped"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>@ConversationScoped</literal>"
 msgstr "@ConversationScoped"
 
 #. Tag: para
-#: scopescontexts.xml:91
 #, fuzzy, no-c-format
 msgid "For a web application that uses CDI:"
 msgstr "使用 Web Bean 的網站應用程式："
 
 #. Tag: para
-#: scopescontexts.xml:95
 #, no-c-format
 msgid ""
 "any servlet request has access to active request, session and application "
@@ -209,13 +165,11 @@ msgstr ""
 "任何 servlet 請求都可存取 active request、session 和應用程式 scope，另外"
 
 #. Tag: para
-#: scopescontexts.xml:100
 #, no-c-format
 msgid "any JSF request has access to an active conversation scope."
 msgstr "任何 JSF 請求也都能存取一個現行的 conversation scope。"
 
 #. Tag: para
-#: scopescontexts.xml:105
 #, no-c-format
 msgid ""
 "A CDI extension can implement support for the conversation scope in other "
@@ -223,49 +177,41 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:108
 #, no-c-format
 msgid "The request and application scopes are also active:"
 msgstr "請求和應用程式 scope 在下列情況中會是有效的："
 
 #. Tag: para
-#: scopescontexts.xml:112
 #, no-c-format
 msgid "during invocations of EJB remote methods,"
 msgstr "當調用 EJB 的遠端 method 時、"
 
 #. Tag: para
-#: scopescontexts.xml:115
 #, fuzzy, no-c-format
 msgid "during invocations of EJB asynchronous methods,"
 msgstr "當調用 EJB 的遠端 method 時、"
 
 #. Tag: para
-#: scopescontexts.xml:118
 #, no-c-format
 msgid "during EJB timeouts,"
 msgstr "當 EJB 逾時時、"
 
 #. Tag: para
-#: scopescontexts.xml:121
 #, fuzzy, no-c-format
 msgid "during message delivery to a message-driven bean,"
 msgstr "當訊息傳送給訊息導向的 bean 時，以及"
 
 #. Tag: para
-#: scopescontexts.xml:124
 #, fuzzy, no-c-format
 msgid "during message delivery to a <literal>MessageListener</literal>, and"
 msgstr "當訊息傳送給訊息導向的 bean 時，以及"
 
 #. Tag: para
-#: scopescontexts.xml:127
 #, no-c-format
 msgid "during web service invocations."
 msgstr "當進行網路服務調用時。"
 
 #. Tag: para
-#: scopescontexts.xml:131
 #, fuzzy, no-c-format
 msgid ""
 "If the application tries to invoke a bean with a scope that does not have an "
@@ -277,7 +223,6 @@ msgstr ""
 "literal>。"
 
 #. Tag: para
-#: scopescontexts.xml:136
 #, no-c-format
 msgid ""
 "Managed beans with scope <literal>@SessionScoped</literal> or "
@@ -286,7 +231,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:141
 #, no-c-format
 msgid ""
 "Three of the four built-in scopes should be extremely familiar to every Java "
@@ -297,13 +241,11 @@ msgstr ""
 "我們將不花時間在此討論它們。不過在這之中有個 scope 則是新的。"
 
 #. Tag: title
-#: scopescontexts.xml:149
 #, no-c-format
 msgid "The conversation scope"
 msgstr "conversation scope"
 
 #. Tag: para
-#: scopescontexts.xml:151
 #, fuzzy, no-c-format
 msgid ""
 "The conversation scope is a bit like the traditional session scope in that "
@@ -316,13 +258,11 @@ msgstr ""
 "scope 不同的地方在於："
 
 #. Tag: para
-#: scopescontexts.xml:159
 #, no-c-format
 msgid "is demarcated explicitly by the application, and"
 msgstr "conversation scope 已被應用程式明確區分，並且"
 
 #. Tag: para
-#: scopescontexts.xml:162
 #, no-c-format
 msgid ""
 "holds state associated with a particular web browser tab in a JSF "
@@ -331,20 +271,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:169
 #, fuzzy, no-c-format
 msgid ""
-"A conversation represents a task&#8212;a unit of work from the point of view "
-"of the user. The conversation context holds state associated with what the "
-"user is currently working on. If the user is doing multiple things at the "
-"same time, there are multiple conversations."
+"A conversation represents a task—a unit of work from the point of view of "
+"the user. The conversation context holds state associated with what the user "
+"is currently working on. If the user is doing multiple things at the same "
+"time, there are multiple conversations."
 msgstr ""
 "Conversation（對話）代表一項工作，從用戶角度來看是項工作的單位。conversation "
 "的 context 持有和用戶目前工作相關的狀態。若用戶同時間一次進行多項工作的話，那"
 "就會有多個 conversation。"
 
 #. Tag: para
-#: scopescontexts.xml:175
 #, fuzzy, no-c-format
 msgid ""
 "The conversation context is active during any JSF request. Most "
@@ -357,13 +295,11 @@ msgstr ""
 "狀態，它便需要被明確地轉為 <emphasis>long-running conversation</emphasis>。"
 
 #. Tag: title
-#: scopescontexts.xml:182
 #, no-c-format
 msgid "Conversation demarcation"
 msgstr "Conversation demarcation（對話區分）"
 
 #. Tag: para
-#: scopescontexts.xml:184
 #, fuzzy, no-c-format
 msgid ""
 "CDI provides a built-in bean for controlling the lifecycle of conversations "
@@ -372,14 +308,7 @@ msgstr ""
 "Web Bean 提供了一個內建的 Web Bean，它可被用來在 JSF 應用程式中控制 "
 "conversation 的生命週期。這個 Web Bean 能透過注入下列來取得："
 
-#. Tag: programlisting
-#: scopescontexts.xml:189
-#, fuzzy, no-c-format
-msgid "@Inject Conversation conversation;"
-msgstr "@Current Conversation conversation;"
-
 #. Tag: para
-#: scopescontexts.xml:191
 #, no-c-format
 msgid ""
 "To promote the conversation associated with the current request to a long-"
@@ -394,7 +323,6 @@ msgstr ""
 "()</literal>。"
 
 #. Tag: para
-#: scopescontexts.xml:197
 #, fuzzy, no-c-format
 msgid ""
 "In the following example, a conversation-scoped bean controls the "
@@ -403,72 +331,7 @@ msgstr ""
 "在下列範例中，有個 conversation-scoped 的 Web Bean 會控制和它關聯的 "
 "conversation："
 
-#. Tag: programlisting
-#: scopescontexts.xml:201
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@ConversationScoped @Stateful\n"
-"public class OrderBuilder {\n"
-"   private Order order;\n"
-"   private @Inject Conversation conversation;\n"
-"   private @PersistenceContext(type = EXTENDED) EntityManager em;\n"
-"   \n"
-"   @Produces public Order getOrder() {\n"
-"      return order;\n"
-"   }\n"
-"\n"
-"   public Order createOrder() {\n"
-"      order = new Order();\n"
-"      conversation.begin();\n"
-"      return order;\n"
-"   }\n"
-"   \n"
-"   public void addLineItem(Product product, int quantity) {\n"
-"      order.add(new LineItem(product, quantity));\n"
-"   }\n"
-"\n"
-"   public void saveOrder(Order order) {\n"
-"      em.persist(order);\n"
-"      conversation.end();\n"
-"   }\n"
-"   \n"
-"   @Remove\n"
-"   public void destroy() {}\n"
-"}]]>"
-msgstr ""
-"@ConversationScoped @Stateful\n"
-"public class OrderBuilder {\n"
-"\n"
-"    private Order order;\n"
-"    private @Current Conversation conversation;\n"
-"    private @PersistenceContext(type=EXTENDED) EntityManager em;\n"
-"    \n"
-"    @Produces public Order getOrder() {\n"
-"        return order;\n"
-"    }\n"
-"\n"
-"    public Order createOrder() {\n"
-"        order = new Order();\n"
-"        conversation.begin();\n"
-"        return order;\n"
-"    }\n"
-"    \n"
-"    public void addLineItem(Product product, int quantity) {\n"
-"        order.add( new LineItem(product, quantity) );\n"
-"    }\n"
-"\n"
-"    public void saveOrder(Order order) {\n"
-"        em.persist(order);\n"
-"        conversation.end();\n"
-"    }\n"
-"    \n"
-"    @Remove\n"
-"    public void destroy() {}\n"
-"    \n"
-"}"
-
 #. Tag: para
-#: scopescontexts.xml:203
 #, fuzzy, no-c-format
 msgid ""
 "This bean is able to control its own lifecycle through use of the "
@@ -479,13 +342,11 @@ msgstr ""
 "生命週期。不過有些其它 Web Bean 的生命週期完全取決於另一個物件。"
 
 #. Tag: title
-#: scopescontexts.xml:211
 #, no-c-format
 msgid "Conversation propagation"
 msgstr "Conversation propagation（傳播）"
 
 #. Tag: para
-#: scopescontexts.xml:213
 #, fuzzy, no-c-format
 msgid ""
 "The conversation context automatically propagates with any JSF faces request "
@@ -496,7 +357,6 @@ msgstr ""
 "傳播。它不會隨著 non-face 的請求（例如透過連結來瀏覽）自動地傳播。"
 
 #. Tag: para
-#: scopescontexts.xml:218
 #, fuzzy, no-c-format
 msgid ""
 "We can force the conversation to propagate with a non-faces request by "
@@ -513,38 +373,16 @@ msgstr ""
 "為 <literal>conversation</literal>。"
 
 #. Tag: para
-#: scopescontexts.xml:225
 #, no-c-format
 msgid "Therefore, the following link propagates the conversation:"
 msgstr "因此，下列連結會傳播 conversation："
 
-#. Tag: programlisting
-#: scopescontexts.xml:229
-#, no-c-format
-msgid ""
-"<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</a>]]"
-">"
-msgstr ""
-"<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</a>]]"
-">"
-
 #. Tag: para
-#: scopescontexts.xml:231
 #, no-c-format
 msgid "It's probably better to use one of the link components in JSF 2:"
 msgstr ""
 
-#. Tag: programlisting
-#: scopescontexts.xml:235
-#, no-c-format
-msgid ""
-"<![CDATA[<h:link outcome=\"/addProduct.xhtml value=\"Add Product\">\n"
-"   <f:param name=\"cid\" value=\"#{conversation.id}\"/>\n"
-"</h:link>]]>"
-msgstr ""
-
 #. Tag: para
-#: scopescontexts.xml:238
 #, fuzzy, no-c-format
 msgid ""
 "The conversation context propagates across redirects, making it very easy to "
@@ -558,21 +396,19 @@ msgstr ""
 "況下，Web Bean 管理員會自動地新增一個請求參數至重定向 URL。"
 
 #. Tag: title
-#: scopescontexts.xml:248
 #, no-c-format
 msgid "Conversation timeout"
 msgstr "Conversation timeout（逾時）"
 
 #. Tag: para
-#: scopescontexts.xml:250
 #, fuzzy, no-c-format
 msgid ""
 "The container is permitted to destroy a conversation and all state held in "
 "its context at any time in order to conserve resources. A CDI implementation "
-"will normally do this on the basis of some kind of timeout&#8212;though this "
-"is not required by the specification. The timeout is the period of "
-"inactivity before the conversation is destroyed (as opposed to the amount of "
-"time the conversation is active)."
+"will normally do this on the basis of some kind of timeout—though this is "
+"not required by the specification. The timeout is the period of inactivity "
+"before the conversation is destroyed (as opposed to the amount of time the "
+"conversation is active)."
 msgstr ""
 "Web Bean 管理員能夠隨時隨地刪除它 context 中的 conversation 以及所有狀態以保"
 "留資源。一個 Web Bean 管理員實做一般會利用某種形式的 timeout 來這麼作 &#151; "
@@ -580,7 +416,6 @@ msgstr ""
 "經過的休止狀態時間。"
 
 #. Tag: para
-#: scopescontexts.xml:257
 #, fuzzy, no-c-format
 msgid ""
 "The <literal>Conversation</literal> object provides a method to set the "
@@ -590,20 +425,12 @@ msgstr ""
 "<literal>Conversation</literal> 這個物件提供了一個能設置 timeout 的 method。"
 "這是個給 Web Bean 管理員的提示，您可忽略該設定。"
 
-#. Tag: programlisting
-#: scopescontexts.xml:262
-#, no-c-format
-msgid "conversation.setTimeout(timeoutInMillis);"
-msgstr "conversation.setTimeout(timeoutInMillis);"
-
 #. Tag: title
-#: scopescontexts.xml:269
 #, fuzzy, no-c-format
 msgid "The singleton pseudo-scope"
 msgstr "dependent pseudo-scope"
 
 #. Tag: para
-#: scopescontexts.xml:271
 #, fuzzy, no-c-format
 msgid ""
 "In addition to the four built-in scopes, CDI also supports two "
@@ -616,7 +443,6 @@ msgstr ""
 "scope。"
 
 #. Tag: para
-#: scopescontexts.xml:277
 #, no-c-format
 msgid ""
 "Unlike the other scopes, which belong to the package <literal>javax."
@@ -625,7 +451,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:283
 #, no-c-format
 msgid ""
 "You can guess what \"singleton\" means here. It means a bean that is "
@@ -640,7 +465,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:292
 #, no-c-format
 msgid ""
 "Now, if the singleton instance is a simple, immutable, serializable object "
@@ -651,7 +475,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:298
 #, no-c-format
 msgid ""
 "There are several ways to ensure that the singleton bean remains a singleton "
@@ -659,7 +482,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:302
 #, no-c-format
 msgid ""
 "have the singleton bean implement <literal>writeResolve()</literal> and "
@@ -668,7 +490,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:308
 #, no-c-format
 msgid ""
 "make sure the client keeps only a transient reference to the singleton bean, "
@@ -676,7 +497,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:313
 #, no-c-format
 msgid ""
 "give the client a reference of type <literal>Instance&lt;X&gt;</literal> "
@@ -684,7 +504,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:320
 #, no-c-format
 msgid ""
 "A fourth, better solution is to instead use <literal>@ApplicationScoped</"
@@ -693,13 +512,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: scopescontexts.xml:326
 #, no-c-format
 msgid "The dependent pseudo-scope"
 msgstr "dependent pseudo-scope"
 
 #. Tag: para
-#: scopescontexts.xml:328
 #, fuzzy, no-c-format
 msgid ""
 "Finally, CDI features the so-called <emphasis>dependent pseudo-scope</"
@@ -711,20 +528,12 @@ msgstr ""
 "scope。"
 
 #. Tag: para
-#: scopescontexts.xml:333
 #, fuzzy, no-c-format
 msgid ""
 "For example, this bean has the scope type <literal>@Dependent</literal>:"
 msgstr "比方說，這個 Web Bean 的 scope 類型為 <literal>@Dependent</literal>："
 
-#. Tag: programlisting
-#: scopescontexts.xml:337
-#, no-c-format
-msgid "<![CDATA[public class Calculator { ... }]]>"
-msgstr "<![CDATA[public class Calculator { ... }]]>"
-
 #. Tag: para
-#: scopescontexts.xml:339
 #, no-c-format
 msgid ""
 "An instance of a dependent bean is never shared between different clients or "
@@ -735,7 +544,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:345
 #, no-c-format
 msgid ""
 "If a Unified EL expression refers to a dependent bean by EL name, an "
@@ -744,7 +552,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:351
 #, no-c-format
 msgid ""
 "If you need to access a bean directly by EL name in a JSF page, you probably "
@@ -759,7 +566,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:361
 #, no-c-format
 msgid ""
 "Beans with scope <literal>@Dependent</literal> don't need a proxy object. "
@@ -767,7 +573,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:366
 #, fuzzy, no-c-format
 msgid ""
 "CDI makes it easy to obtain a dependent instance of a bean, even if the bean "
@@ -777,27 +582,18 @@ msgstr ""
 "該 class 或是 EJB bean 已被宣告為一個含有其牠 scope 類型的 Web Bean。"
 
 #. Tag: title
-#: scopescontexts.xml:374
 #, fuzzy, no-c-format
 msgid "The <literal>@New</literal> qualifier"
 msgstr "<literal>@New</literal> 標記"
 
 #. Tag: para
-#: scopescontexts.xml:376
 #, no-c-format
 msgid ""
 "The built-in qualifier <literal>@New</literal> allows us to obtain a "
 "dependent object of a specified class."
 msgstr ""
 
-#. Tag: programlisting
-#: scopescontexts.xml:380
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Inject @New Calculator calculator;]]>"
-msgstr "<![CDATA[@New Calculator calculator;]]>"
-
 #. Tag: para
-#: scopescontexts.xml:382
 #, no-c-format
 msgid ""
 "The class must be a valid managed bean or session bean, but need not be an "
@@ -805,7 +601,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:384
 #, fuzzy, no-c-format
 msgid ""
 "This works even if <literal>Calculator</literal> is <emphasis>already</"
@@ -814,18 +609,7 @@ msgstr ""
 "就算 <literal>Calculator</literal> <emphasis>已經</emphasis>被宣告為不同 "
 "scope type，這還是有效的，比方說："
 
-#. Tag: programlisting
-#: scopescontexts.xml:389
-#, no-c-format
-msgid ""
-"<![CDATA[@ConversationScoped\n"
-"public class Calculator { ... }]]>"
-msgstr ""
-"<![CDATA[@ConversationScoped\n"
-"public class Calculator { ... }]]>"
-
 #. Tag: para
-#: scopescontexts.xml:391
 #, no-c-format
 msgid ""
 "So the following injected attributes each get a different instance of "
@@ -834,24 +618,7 @@ msgstr ""
 "因此下列已注入的屬性都會各得到一個 <literal>Calculator</literal> 的不同 "
 "instance："
 
-#. Tag: programlisting
-#: scopescontexts.xml:395
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public class PaymentCalc {\n"
-"   @Inject Calculator calculator;\n"
-"   @Inject @New Calculator newCalculator;\n"
-"}]]>"
-msgstr ""
-"<![CDATA[public class PaymentCalc {\n"
-"\n"
-"    @Current Calculator calculator;\n"
-"    @New Calculator newCalculator;\n"
-"\n"
-"}]]>"
-
 #. Tag: para
-#: scopescontexts.xml:397
 #, no-c-format
 msgid ""
 "The <literal>calculator</literal> field has a conversation-scoped instance "
@@ -865,13 +632,141 @@ msgstr ""
 "週期取決於擁有它的 <literal>PaymentCalc</literal>。"
 
 #. Tag: para
-#: scopescontexts.xml:403
 #, no-c-format
 msgid ""
 "This feature is particularly useful with producer methods, as we'll see in "
 "the next chapter."
 msgstr ""
 "這項功能對於 producer method 來講特別有幫助，我們將在下個章節中討論到。"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@ScopeType\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target({TYPE, METHOD})\n"
+#~ "public @interface ClusterScoped {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target({TYPE, METHOD})\n"
+#~ "@ScopeType\n"
+#~ "public @interface ClusterScoped {}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@ClusterScoped\n"
+#~ "public class SecondLevelCache { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ClusterScoped\n"
+#~ "public class SecondLevelCache { ... }]]>"
+
+#~ msgid "@RequestScoped"
+#~ msgstr "@RequestScoped"
+
+#~ msgid "@SessionScoped"
+#~ msgstr "@SessionScoped"
+
+#, fuzzy
+#~ msgid "@Inject Conversation conversation;"
+#~ msgstr "@Current Conversation conversation;"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@ConversationScoped @Stateful\n"
+#~ "public class OrderBuilder {\n"
+#~ "   private Order order;\n"
+#~ "   private @Inject Conversation conversation;\n"
+#~ "   private @PersistenceContext(type = EXTENDED) EntityManager em;\n"
+#~ "   \n"
+#~ "   @Produces public Order getOrder() {\n"
+#~ "      return order;\n"
+#~ "   }\n"
+#~ "\n"
+#~ "   public Order createOrder() {\n"
+#~ "      order = new Order();\n"
+#~ "      conversation.begin();\n"
+#~ "      return order;\n"
+#~ "   }\n"
+#~ "   \n"
+#~ "   public void addLineItem(Product product, int quantity) {\n"
+#~ "      order.add(new LineItem(product, quantity));\n"
+#~ "   }\n"
+#~ "\n"
+#~ "   public void saveOrder(Order order) {\n"
+#~ "      em.persist(order);\n"
+#~ "      conversation.end();\n"
+#~ "   }\n"
+#~ "   \n"
+#~ "   @Remove\n"
+#~ "   public void destroy() {}\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "@ConversationScoped @Stateful\n"
+#~ "public class OrderBuilder {\n"
+#~ "\n"
+#~ "    private Order order;\n"
+#~ "    private @Current Conversation conversation;\n"
+#~ "    private @PersistenceContext(type=EXTENDED) EntityManager em;\n"
+#~ "    \n"
+#~ "    @Produces public Order getOrder() {\n"
+#~ "        return order;\n"
+#~ "    }\n"
+#~ "\n"
+#~ "    public Order createOrder() {\n"
+#~ "        order = new Order();\n"
+#~ "        conversation.begin();\n"
+#~ "        return order;\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    public void addLineItem(Product product, int quantity) {\n"
+#~ "        order.add( new LineItem(product, quantity) );\n"
+#~ "    }\n"
+#~ "\n"
+#~ "    public void saveOrder(Order order) {\n"
+#~ "        em.persist(order);\n"
+#~ "        conversation.end();\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    @Remove\n"
+#~ "    public void destroy() {}\n"
+#~ "    \n"
+#~ "}"
+
+#~ msgid ""
+#~ "<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</"
+#~ "a>]]>"
+#~ msgstr ""
+#~ "<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</"
+#~ "a>]]>"
+
+#~ msgid "conversation.setTimeout(timeoutInMillis);"
+#~ msgstr "conversation.setTimeout(timeoutInMillis);"
+
+#~ msgid "<![CDATA[public class Calculator { ... }]]>"
+#~ msgstr "<![CDATA[public class Calculator { ... }]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @New Calculator calculator;]]>"
+#~ msgstr "<![CDATA[@New Calculator calculator;]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@ConversationScoped\n"
+#~ "public class Calculator { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ConversationScoped\n"
+#~ "public class Calculator { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class PaymentCalc {\n"
+#~ "   @Inject Calculator calculator;\n"
+#~ "   @Inject @New Calculator newCalculator;\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class PaymentCalc {\n"
+#~ "\n"
+#~ "    @Current Calculator calculator;\n"
+#~ "    @New Calculator newCalculator;\n"
+#~ "\n"
+#~ "}]]>"
 
 #~ msgid ""
 #~ "holds state associated with a particular web browser tab in a JSF "

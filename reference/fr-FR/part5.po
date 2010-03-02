@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection "
 "VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-03-28 17:09+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -15,7 +15,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: para
-#: part5.xml:5
 #, no-c-format
 msgid ""
 "Weld is the reference implementation of JSR-299, and is used by JBoss AS and "
@@ -27,7 +26,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part5.xml:12
 #, no-c-format
 msgid ""
 "Some of the extensions in Weld are portable across JSR-299 implementations "
@@ -37,12 +35,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part5.xml:18
 #, no-c-format
 msgid ""
 "If you want to get started quickly using Weld (and, in turn, CDI) with JBoss "
 "AS, GlassFish or Tomcat and experiment with one of the examples, take a look "
-"at <xref linkend=\"gettingstarted\"/>. Otherwise read on for a exhaustive "
+"at <xref linkend=\"gettingstarted\" />. Otherwise read on for a exhaustive "
 "discussion of using Weld in all the environments and application servers it "
 "supports and the Weld extensions."
 msgstr ""

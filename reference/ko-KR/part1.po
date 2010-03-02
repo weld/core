@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: part1\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-01-27 10:42+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -23,7 +23,6 @@ msgstr ""
 "\n"
 
 #. Tag: para
-#: part1.xml:14
 #, fuzzy, no-c-format
 msgid ""
 "The <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299</ulink> "
@@ -39,7 +38,6 @@ msgstr ""
 "Web Beans는 다음과 같은 서비스를 제공합니다:  "
 
 #. Tag: para
-#: part1.xml:23
 #, fuzzy, no-c-format
 msgid ""
 "an improved lifecycle for stateful objects, bound to well-defined "
@@ -49,7 +47,6 @@ msgstr ""
 "의 수명 주기 개선   "
 
 #. Tag: para
-#: part1.xml:28
 #, no-c-format
 msgid "a typesafe approach to <emphasis>dependency injection</emphasis>,"
 msgstr ""
@@ -57,14 +54,12 @@ msgstr ""
 "(typesafe) 접근  "
 
 #. Tag: para
-#: part1.xml:33
 #, fuzzy, no-c-format
 msgid ""
 "object interaction via an <emphasis>event notification facility</emphasis>,"
 msgstr "<emphasis>이벤트 통지</emphasis> 기능을 통한 상호작용 "
 
 #. Tag: para
-#: part1.xml:38
 #, fuzzy, no-c-format
 msgid ""
 "a better approach to binding <emphasis>interceptors</emphasis> to objects, "
@@ -76,7 +71,6 @@ msgstr ""
 "로, 비지니스 문제 해결을 위해 보다 적절하게 사용  "
 
 #. Tag: para
-#: part1.xml:45
 #, no-c-format
 msgid ""
 "an <emphasis>SPI</emphasis> for developing portable extensions to the "
@@ -84,22 +78,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:51
 #, no-c-format
 msgid ""
 "The CDI services are a core aspect of the Java EE platform and include full "
 "support for Java EE modularity and the Java EE component architecture. But "
 "the specification does not limit the use of CDI to the Java EE environment. "
 "In the Java SE environment, the services might be provided by a standalone "
-"CDI implementation like Weld (see <xref linkend=\"weld-se\"/>), or even by a "
-"container that also implements the subset of EJB defined for embedded usage "
-"by the EJB 3.1 specification. CDI is especially useful in the context of web "
-"application development, but the problems it solves are general development "
-"concerns and it is therefore applicable to a wide variety of application."
+"CDI implementation like Weld (see <xref linkend=\"weld-se\" />), or even by "
+"a container that also implements the subset of EJB defined for embedded "
+"usage by the EJB 3.1 specification. CDI is especially useful in the context "
+"of web application development, but the problems it solves are general "
+"development concerns and it is therefore applicable to a wide variety of "
+"application."
 msgstr ""
 
 #. Tag: para
-#: part1.xml:61
 #, no-c-format
 msgid ""
 "An object bound to a lifecycle context is called a bean. CDI includes built-"
@@ -108,19 +101,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:68
 #, no-c-format
 msgid "managed beans, and"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:71
 #, no-c-format
 msgid "EJB session beans."
 msgstr ""
 
 #. Tag: para
-#: part1.xml:75
 #, no-c-format
 msgid ""
 "Both managed beans and EJB session beans may inject other beans. But some "
@@ -130,37 +120,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:83
 #, no-c-format
 msgid "message-driven beans,"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:86
 #, no-c-format
 msgid "interceptors,"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:89
 #, no-c-format
 msgid "servlets, servlet filters and servlet event listeners,"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:92
 #, no-c-format
 msgid "JAX-WS service endpoints and handlers, and"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:95
 #, no-c-format
 msgid "JSP tag handlers and tag library event listeners."
 msgstr ""
 
 #. Tag: para
-#: part1.xml:99
 #, fuzzy, no-c-format
 msgid ""
 "CDI relieves the user of an unfamiliar API of the need to answer the "
@@ -170,44 +154,37 @@ msgstr ""
 "는 것에서 생소한 API 사용자를 보호합니다:   "
 
 #. Tag: para
-#: part1.xml:105
 #, fuzzy, no-c-format
 msgid "What is the lifecycle of this object?"
 msgstr "이러한 객체의 수명 주기는 무엇입니까? "
 
 #. Tag: para
-#: part1.xml:108
 #, fuzzy, no-c-format
 msgid "How many simultaneous clients can it have?"
 msgstr "얼마나 많은 클라이언트가 이를 동시에 갖을 수 있습니까?       "
 
 #. Tag: para
-#: part1.xml:111
 #, fuzzy, no-c-format
 msgid "Is it multithreaded?"
 msgstr "이는 멀티스레드됩니까? "
 
 #. Tag: para
-#: part1.xml:114
 #, no-c-format
 msgid "How do I get access to it from a client?"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:117
 #, fuzzy, no-c-format
 msgid "Do I need to explicitly destroy it?"
 msgstr "이를 명시적으로 삭제해야 합니까? "
 
 #. Tag: para
-#: part1.xml:120
 #, fuzzy, no-c-format
 msgid ""
 "Where should I keep the reference to it when I'm not currently using it?"
 msgstr "직접 사용하지 않을 경우 참조 사항을 어디에 보관해야 합니까? "
 
 #. Tag: para
-#: part1.xml:125
 #, fuzzy, no-c-format
 msgid ""
 "How can I define an alternative implementation, so that the implementation "
@@ -217,13 +194,11 @@ msgstr ""
 "까요?     "
 
 #. Tag: para
-#: part1.xml:131
 #, fuzzy, no-c-format
 msgid "How should I go about sharing this object between other objects?"
 msgstr "어떻게 하면 다른 개체 사이에서 이러한 개체를 공유할 수 있을까요? "
 
 #. Tag: para
-#: part1.xml:137
 #, no-c-format
 msgid ""
 "CDI is more than a framework. It's a whole, rich programming model. The "
@@ -232,7 +207,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:142
 #, fuzzy, no-c-format
 msgid ""
 "A bean specifies only the type and semantics of other beans it depends upon. "
@@ -249,7 +223,6 @@ msgstr ""
 "에 따라 달라질 수 있습니다.        "
 
 #. Tag: para
-#: part1.xml:149
 #, fuzzy, no-c-format
 msgid ""
 "Events, interceptors and decorators enhance the loose-coupling inherent in "
@@ -259,7 +232,6 @@ msgstr ""
 "하는 (loose-coupling)</emphasis> 기능을 강화합니다:  "
 
 #. Tag: para
-#: part1.xml:155
 #, no-c-format
 msgid ""
 "<emphasis>event notifications</emphasis> decouple event producers from event "
@@ -269,7 +241,6 @@ msgstr ""
 "해제합니다  "
 
 #. Tag: para
-#: part1.xml:159
 #, no-c-format
 msgid ""
 "<emphasis>interceptors</emphasis> decouple technical concerns from business "
@@ -279,7 +250,6 @@ msgstr ""
 "해제합니다   "
 
 #. Tag: para
-#: part1.xml:163
 #, no-c-format
 msgid ""
 "<emphasis>decorators</emphasis> allow business concerns to be "
@@ -287,7 +257,6 @@ msgid ""
 msgstr "<emphasis>데코레이터</emphasis>는 비지니스 문제를 구분하게 합니다. "
 
 #. Tag: para
-#: part1.xml:168
 #, fuzzy, no-c-format
 msgid ""
 "What's even more powerful (and comforting) is that CDI provides all these "
@@ -309,7 +278,6 @@ msgstr ""
 "인터셉터, 데코레이터 및 이벤트 소비자를 함께 묶습니다.     "
 
 #. Tag: para
-#: part1.xml:177
 #, no-c-format
 msgid ""
 "But CDI isn't a restrictive programming model. It doesn't tell you how you "
@@ -319,7 +287,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:183
 #, fuzzy, no-c-format
 msgid ""
 "CDI even provides a comprehensive SPI, allowing other kinds of object "
@@ -332,7 +299,6 @@ msgstr ""
 "의 장점을 취하고 다른 종류의 Web Bean과 상호 작용합니다.        "
 
 #. Tag: para
-#: part1.xml:189
 #, fuzzy, no-c-format
 msgid ""
 "CDI was influenced by a number of existing Java frameworks, including Seam, "
@@ -349,7 +315,6 @@ msgstr ""
 "중심, Guice 보다 더 웹 및 엔터프라이즈-애플리케이션 사용 가능   "
 
 #. Tag: para
-#: part1.xml:197
 #, no-c-format
 msgid ""
 "Finally, CDI is a <ulink url=\"http://jcp.org\">Java Community Process</"

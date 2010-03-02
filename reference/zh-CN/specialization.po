@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-03-13 16:32+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,13 +14,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: specialization.xml:5
 #, no-c-format
 msgid "Specialization, inheritance and alternatives"
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:7
 #, no-c-format
 msgid ""
 "When you first start developing with CDI, you'll likely be dealing only with "
@@ -35,7 +33,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:16
 #, no-c-format
 msgid ""
 "The CDI specification recognizes two distinct scenarios in which one bean "
@@ -43,7 +40,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:23
 #, no-c-format
 msgid ""
 "The second bean <emphasis>specializes</emphasis> the first bean in certain "
@@ -52,7 +48,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:29
 #, no-c-format
 msgid ""
 "The second bean is simply reusing the Java implementation, and otherwise "
@@ -61,7 +56,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:37
 #, no-c-format
 msgid ""
 "The second case is the default assumed by CDI. It's possible to have two "
@@ -71,7 +65,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:43
 #, no-c-format
 msgid ""
 "The first case is the exception, and also requires more care. In any given "
@@ -83,13 +76,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: specialization.xml:51
 #, no-c-format
 msgid "Using alternative stereotypes"
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:53
 #, fuzzy, no-c-format
 msgid ""
 "CDI lets you <emphasis>override</emphasis> the implementation of a bean type "
@@ -101,23 +92,7 @@ msgstr ""
 "emphasis> 一个API实现。例如，下面的企业级Web Bean在生产环境下使提供一个"
 "<literal>PaymentProcessor</literal>接口的实现："
 
-#. Tag: programlisting
-#: specialization.xml:59
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public class DefaultPaymentProcessor \n"
-"      implements PaymentProcessor {\n"
-"   ...\n"
-"}]]>"
-msgstr ""
-"@CreditCard @Stateless\n"
-"public class CreditCardPaymentProcessor \n"
-"        implements PaymentProcessor {\n"
-"    ...\n"
-"}"
-
 #. Tag: para
-#: specialization.xml:61
 #, fuzzy, no-c-format
 msgid ""
 "But in our staging environment, we don't really want to submit payments to "
@@ -127,46 +102,12 @@ msgstr ""
 "但在我们的阶段开发环境中，我们可以使用一个不同的Web Bean来重载这个"
 "<literal>PaymentProcessor</literal> 实现："
 
-#. Tag: programlisting
-#: specialization.xml:66
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public @Alternative\n"
-"class StagingPaymentProcessor \n"
-"      implements PaymentProcessor {\n"
-"   ...\n"
-"}]]>"
-msgstr ""
-"@CreditCard @Stateless\n"
-"public class CreditCardPaymentProcessor \n"
-"        implements PaymentProcessor {\n"
-"    ...\n"
-"}"
-
 #. Tag: para
-#: specialization.xml:68
 #, no-c-format
-msgid "<para>or</para>"
+msgid "or"
 msgstr ""
-
-#. Tag: programlisting
-#: specialization.xml:70
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public @Alternative\n"
-"class StagingPaymentProcessor \n"
-"      extends DefaultPaymentProcessor {\n"
-"   ...\n"
-"}]]>"
-msgstr ""
-"@Stateless @Staging @Specializes\n"
-"public class StagingCreditCardPaymentProcessor \n"
-"        extends CreditCardPaymentProcessor {\n"
-"    ...\n"
-"}"
 
 #. Tag: para
-#: specialization.xml:72
 #, no-c-format
 msgid ""
 "We've already seen how we can enable this alternative by listing its class "
@@ -174,7 +115,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:77
 #, no-c-format
 msgid ""
 "But suppose we have many alternatives in the staging environment. It would "
@@ -184,67 +124,21 @@ msgid ""
 "this level of indirection pays off. First, we create the stereotype:"
 msgstr ""
 
-#. Tag: programlisting
-#: specialization.xml:84
-#, no-c-format
-msgid ""
-"<![CDATA[@Alternative\n"
-"@Stereotype\n"
-"@Retention(RUNTIME)\n"
-"@Target(TYPE)\n"
-"public @interface Staging {}]]>"
-msgstr ""
-
 #. Tag: para
-#: specialization.xml:86
 #, no-c-format
 msgid ""
 "Then we replace the <literal>@Alternative</literal> annotation on our bean "
 "with <literal>@Staging</literal>:"
 msgstr ""
 
-#. Tag: programlisting
-#: specialization.xml:90
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Staging\n"
-"public class StagingPaymentProcessor \n"
-"      implements PaymentProcessor {\n"
-"   ...\n"
-"}]]>"
-msgstr ""
-"@CreditCard @Stateless @Staging\n"
-"public class StagingCreditCardPaymentProcessor \n"
-"        implements PaymentProcessor {\n"
-"    ...\n"
-"}"
-
 #. Tag: para
-#: specialization.xml:92
 #, no-c-format
 msgid ""
 "Finally, we activate the <literal>@Staging</literal> stereotype in the "
 "<literal>beans.xml</literal> descriptor:"
 msgstr ""
 
-#. Tag: programlisting
-#: specialization.xml:96
-#, no-c-format
-msgid ""
-"<![CDATA[<beans\n"
-"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
-"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-"   xsi:schemaLocation=\"\n"
-"      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
-"   <alternatives>\n"
-"         <stereotype>org.mycompany.myapp.Staging</stereotype>\n"
-"   </alternatives>\n"
-"</beans>]]>"
-msgstr ""
-
 #. Tag: para
-#: specialization.xml:98
 #, no-c-format
 msgid ""
 "Now, no matter how many staging beans we have, they will all be enabled at "
@@ -252,13 +146,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: specialization.xml:105
 #, no-c-format
 msgid "A minor problem with alternatives"
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:107
 #, no-c-format
 msgid ""
 "When we enable an alternative, does that mean the default implementation is "
@@ -267,15 +159,7 @@ msgid ""
 "not, you could still inject the default implementation."
 msgstr ""
 
-#. Tag: programlisting
-#: specialization.xml:113
-#, no-c-format
-msgid ""
-"<![CDATA[@Inject @LargeTransaction PaymentProcessor paymentProcessor;]]>"
-msgstr ""
-
 #. Tag: para
-#: specialization.xml:115
 #, no-c-format
 msgid ""
 "So we haven't completely replaced the default implementation in this "
@@ -288,7 +172,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:123
 #, fuzzy, no-c-format
 msgid ""
 "CDI provides a special feature, called <emphasis>specialization</emphasis>, "
@@ -301,13 +184,11 @@ msgstr ""
 "感激它提供的特殊的安全性。"
 
 #. Tag: title
-#: specialization.xml:132
 #, no-c-format
 msgid "Using specialization"
 msgstr "使用特化"
 
 #. Tag: para
-#: specialization.xml:134
 #, no-c-format
 msgid ""
 "When the goal is to replace one bean implementation with a second, to help "
@@ -315,13 +196,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:141
 #, no-c-format
 msgid "directly extend the bean class of the second bean, or"
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:146
 #, no-c-format
 msgid ""
 "directly override the producer method, in the case that the second bean is a "
@@ -329,30 +208,12 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:152
 #, fuzzy, no-c-format
 msgid ""
 "explicitly declare that it <emphasis>specializes</emphasis> the second bean:"
 msgstr "我们称更高优先级的Web Bean<emphasis>特化</emphasis>了它的超类。"
 
-#. Tag: programlisting
-#: specialization.xml:154
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Alternative @Specializes\n"
-"public class MockCreditCardPaymentProcessor \n"
-"      extends CreditCardPaymentProcessor {\n"
-"   ...\n"
-"}]]>"
-msgstr ""
-"@Stateless @Staging @Specializes\n"
-"public class StagingCreditCardPaymentProcessor \n"
-"        extends CreditCardPaymentProcessor {\n"
-"    ...\n"
-"}"
-
 #. Tag: para
-#: specialization.xml:156
 #, no-c-format
 msgid ""
 "When an enabled bean specializes another bean, the other bean is never "
@@ -361,7 +222,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:161
 #, no-c-format
 msgid ""
 "So why does specialization work, and what does it have to do with "
@@ -369,7 +229,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:165
 #, no-c-format
 msgid ""
 "Since we're informing the container that our alternative bean is meant to "
@@ -381,13 +240,81 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: specialization.xml:172
 #, no-c-format
 msgid ""
 "Furthermore, if the default implementation declares a bean EL name using "
 "<literal>@Named</literal>, the name is inherited by the specialized "
 "alternative bean."
 msgstr ""
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class DefaultPaymentProcessor \n"
+#~ "      implements PaymentProcessor {\n"
+#~ "   ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "@CreditCard @Stateless\n"
+#~ "public class CreditCardPaymentProcessor \n"
+#~ "        implements PaymentProcessor {\n"
+#~ "    ...\n"
+#~ "}"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public @Alternative\n"
+#~ "class StagingPaymentProcessor \n"
+#~ "      implements PaymentProcessor {\n"
+#~ "   ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "@CreditCard @Stateless\n"
+#~ "public class CreditCardPaymentProcessor \n"
+#~ "        implements PaymentProcessor {\n"
+#~ "    ...\n"
+#~ "}"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public @Alternative\n"
+#~ "class StagingPaymentProcessor \n"
+#~ "      extends DefaultPaymentProcessor {\n"
+#~ "   ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "@Stateless @Staging @Specializes\n"
+#~ "public class StagingCreditCardPaymentProcessor \n"
+#~ "        extends CreditCardPaymentProcessor {\n"
+#~ "    ...\n"
+#~ "}"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Staging\n"
+#~ "public class StagingPaymentProcessor \n"
+#~ "      implements PaymentProcessor {\n"
+#~ "   ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "@CreditCard @Stateless @Staging\n"
+#~ "public class StagingCreditCardPaymentProcessor \n"
+#~ "        implements PaymentProcessor {\n"
+#~ "    ...\n"
+#~ "}"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Alternative @Specializes\n"
+#~ "public class MockCreditCardPaymentProcessor \n"
+#~ "      extends CreditCardPaymentProcessor {\n"
+#~ "   ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "@Stateless @Staging @Specializes\n"
+#~ "public class StagingCreditCardPaymentProcessor \n"
+#~ "        extends CreditCardPaymentProcessor {\n"
+#~ "    ...\n"
+#~ "}"
 
 #~ msgid "Specialization"
 #~ msgstr "特化"

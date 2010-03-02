@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-02-22 13:52+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -16,13 +16,11 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: intro.xml:4
 #, no-c-format
 msgid "Introduction"
 msgstr ""
 
 #. Tag: para
-#: intro.xml:6
 #, fuzzy, no-c-format
 msgid ""
 "So you're keen to get started writing your first bean? Or perhaps you're "
@@ -39,13 +37,11 @@ msgstr ""
 "Sie je geschrieben haben."
 
 #. Tag: title
-#: intro.xml:13
 #, fuzzy, no-c-format
 msgid "What is a bean?"
 msgstr "Was ist ein Web Bean?"
 
 #. Tag: para
-#: intro.xml:15
 #, no-c-format
 msgid ""
 "A bean is exactly what you think it is. Only now, it has a true identity in "
@@ -53,7 +49,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: intro.xml:19
 #, no-c-format
 msgid ""
 "Prior to Java EE 6, there was no clear definition of the term \"bean\" in "
@@ -66,7 +61,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: intro.xml:27
 #, no-c-format
 msgid ""
 "Java EE 6 finally lays down that common definition in the Managed Beans "
@@ -80,14 +74,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: intro.xml:36
 #, no-c-format
 msgid ""
 "With very few exceptions, almost every concrete Java class that has a "
 "constructor with no parameters (or a constructor designated with the "
 "annotation <literal>@Inject</literal>) is a bean. This includes every "
 "JavaBean and every EJB session bean. If you've already got some JavaBeans or "
-"session beans lying around, they're already beans&#8212;you won't need any "
+"session beans lying around, they're already beans—you won't need any "
 "additional special metadata. There's just little one thing you need to do "
 "before you can start injecting them into stuff: you need to put them in an "
 "archive (a jar, or a Java EE module such as a war or EJB jar) that contains "
@@ -95,33 +88,29 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: intro.xml:45
 #, no-c-format
 msgid ""
 "The JavaBeans and EJBs you've been writing every day, up until now, have not "
 "been able to take advantage of the new services defined by the CDI "
-"specification. But you'll be able to use every one of them with CDI&#8212;"
-"allowing the container to create and destroy instances of your beans and "
-"associate them with a designated context, injecting them into other beans, "
-"using them in EL expressions, specializing them with qualifier annotations, "
-"even adding interceptors and decorators to them&#8212;without modifying your "
-"existing code. At most, you'll need to add some annotations."
+"specification. But you'll be able to use every one of them with CDI—allowing "
+"the container to create and destroy instances of your beans and associate "
+"them with a designated context, injecting them into other beans, using them "
+"in EL expressions, specializing them with qualifier annotations, even adding "
+"interceptors and decorators to them—without modifying your existing code. At "
+"most, you'll need to add some annotations."
 msgstr ""
 
 #. Tag: para
-#: intro.xml:54
 #, no-c-format
 msgid "Now let's see how to create your first bean that actually uses CDI."
 msgstr ""
 
 #. Tag: title
-#: intro.xml:61
 #, no-c-format
 msgid "Getting our feet wet"
 msgstr ""
 
 #. Tag: para
-#: intro.xml:63
 #, fuzzy, no-c-format
 msgid ""
 "Suppose that we have two existing Java classes that we've been using for "
@@ -132,20 +121,7 @@ msgstr ""
 "verschiedenen Anwendungen verwendet wurden. Die erste Klasse parst einen "
 "String in eine Liste von Sätzen:"
 
-#. Tag: programlisting
-#: intro.xml:68
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public class SentenceParser {\n"
-"   public List<String> parse(String text) { ... }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[public class SentenceParser {\n"
-"    public List<String> parse(String text) { ... }\n"
-"}]]>"
-
 #. Tag: para
-#: intro.xml:70
 #, no-c-format
 msgid ""
 "The second existing class is a stateless session bean front-end for an "
@@ -156,42 +132,12 @@ msgstr ""
 "\"stateless Session Beans\" für ein externes System, das in der Lage ist "
 "Sätze von einer Sprache in eine andere zu übersetzen:"
 
-#. Tag: programlisting
-#: intro.xml:75
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Stateless\n"
-"public class SentenceTranslator implements Translator {\n"
-"   public String translate(String sentence) { ... }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Stateless\n"
-"public class SentenceTranslator implements Translator {\n"
-"    public String translate(String sentence) { ... }\n"
-"}]]>"
-
 #. Tag: para
-#: intro.xml:77
 #, fuzzy, no-c-format
 msgid "Where <literal>Translator</literal> is the EJB local interface:"
 msgstr "Wo <literal>Translator</literal> das lokale Interface ist:"
 
-#. Tag: programlisting
-#: intro.xml:79
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Local\n"
-"public interface Translator {\n"
-"   public String translate(String sentence);\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Local\n"
-"public interface Translator {\n"
-"    public String translate(String sentence);\n"
-"}]]>"
-
 #. Tag: para
-#: intro.xml:81
 #, fuzzy, no-c-format
 msgid ""
 "Unfortunately, we don't have a class that translates whole text documents. "
@@ -200,54 +146,7 @@ msgstr ""
 "Leider besitzen wir keine bereits bestehende Klasse die ganze Textdokumente "
 "übersetzt. Schreiben wir also ein Web Bean, das diesen Job übernimmt:"
 
-#. Tag: programlisting
-#: intro.xml:85
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[public class TextTranslator {\n"
-"   private SentenceParser sentenceParser;\n"
-"   private Translator sentenceTranslator;\n"
-"    \n"
-"   @Inject\n"
-"   TextTranslator(SentenceParser sentenceParser, Translator "
-"sentenceTranslator) {\n"
-"      this.sentenceParser = sentenceParser;\n"
-"      this.sentenceTranslator = sentenceTranslator;\n"
-"   }\n"
-"    \n"
-"   public String translate(String text) {\n"
-"      StringBuilder sb = new StringBuilder();\n"
-"      for (String sentence: sentenceParser.parse(text)) {\n"
-"          sb.append(sentenceTranslator.translate(sentence));\n"
-"      }\n"
-"      return sb.toString();\n"
-"   }\n"
-"}]]>"
-msgstr ""
-"<![CDATA[public class TextTranslator {\n"
-"    \n"
-"    private SentenceParser sentenceParser;\n"
-"    private Translator sentenceTranslator;\n"
-"    \n"
-"    @Initializer\n"
-"    TextTranslator(SentenceParser sentenceParser, Translator "
-"sentenceTranslator) {\n"
-"        this.sentenceParser = sentenceParser;\n"
-"        this.sentenceTranslator = sentenceTranslator;\n"
-"    }\n"
-"    \n"
-"    public String translate(String text) {\n"
-"        StringBuilder sb = new StringBuilder();\n"
-"        for (String sentence: sentenceParser.parse(text)) {\n"
-"            sb.append(sentenceTranslator.translate(sentence));\n"
-"        }\n"
-"        return sb.toString();\n"
-"    }\n"
-"    \n"
-"}]]>"
-
 #. Tag: para
-#: intro.xml:87
 #, fuzzy, no-c-format
 msgid ""
 "But wait! <literal>TextTranslator</literal> does not have a constructor with "
@@ -262,7 +161,6 @@ msgstr ""
 "Konstruktor besitzt."
 
 #. Tag: para
-#: intro.xml:93
 #, fuzzy, no-c-format
 msgid ""
 "As you've guessed, the <literal>@Inject</literal> annotation has something "
@@ -280,7 +178,6 @@ msgstr ""
 "Konstruktors oder der Methode ein."
 
 #. Tag: para
-#: intro.xml:100
 #, no-c-format
 msgid ""
 "We may obtain an instance of <literal>TextTranslator</literal> by injecting "
@@ -291,7 +188,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: intro.xml:107
 #, no-c-format
 msgid ""
 "Let's create a UI controller bean that uses field injection to obtain an "
@@ -299,44 +195,12 @@ msgid ""
 "entered by a user:"
 msgstr ""
 
-#. Tag: programlisting
-#: intro.xml:116
-#, no-c-format
-msgid ""
-"<![CDATA[@Named @RequestScoped\n"
-"public class TranslateController {\n"
-"   @Inject TextTranslator textTranslator;\n"
-"\n"
-"   private String inputText;\n"
-"   private String translation;\n"
-"\n"
-"   // JSF action method, perhaps\n"
-"   public void translate() {\n"
-"      translation = textTranslator.translate(inputText); \n"
-"   }\n"
-"\n"
-"   public String getInputText() {\n"
-"      return inputText;\n"
-"   }\n"
-"\n"
-"   public void setInputText(String text) {\n"
-"      this.inputText = text;\n"
-"   }\n"
-"\n"
-"   public String getTranslation() {\n"
-"      return translation;\n"
-"   }\n"
-"}]]>"
-msgstr ""
-
 #. Tag: para
-#: intro.xml:119
 #, fuzzy, no-c-format
 msgid "Field injection of <literal>TextTranslator</literal> instance"
 msgstr "Wo <literal>Translator</literal> das lokale Interface ist:"
 
 #. Tag: para
-#: intro.xml:127
 #, no-c-format
 msgid ""
 "Notice the controller bean is request-scoped and named. Since this "
@@ -347,7 +211,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: intro.xml:135
 #, fuzzy, no-c-format
 msgid ""
 "Alternatively, we may obtain an instance of <literal>TextTranslator</"
@@ -357,23 +220,7 @@ msgstr ""
 "Wir erhalten eine Instanz von <literal>TextTranslator</literal> durch dessen "
 "Einspeisung in ein Web Bean, Servlet oder EJB:"
 
-#. Tag: programlisting
-#: intro.xml:140
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@Inject Instance<TextTranslator> textTranslatorInstance;\n"
-"...\n"
-"public void translate() {\n"
-"   textTranslatorInstance.get().translate(inputText);\n"
-"}]]>"
-msgstr ""
-"<![CDATA[@Initializer\n"
-"public setTextTranslator(TextTranslator textTranslator) {\n"
-"    this.textTranslator = textTranslator;\n"
-"}]]>"
-
 #. Tag: para
-#: intro.xml:142
 #, no-c-format
 msgid ""
 "Notice that it isn't necessary to create a getter or setter method to inject "
@@ -384,17 +231,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: intro.xml:148
 #, fuzzy, no-c-format
 msgid ""
 "At system initialization time, the container must validate that exactly one "
 "bean exists which satisfies each injection point. In our example, if no "
-"implementation of <literal>Translator</literal> is available&#8212;if the "
-"<literal>SentenceTranslator</literal> EJB was not deployed&#8212;the "
-"container would inform us of an <emphasis>unsatisfied dependency</emphasis>. "
-"If more than one implementation of <literal>Translator</literal> were "
-"available, the container would inform us of the <emphasis>ambiguous "
-"dependency</emphasis>."
+"implementation of <literal>Translator</literal> is available—if the "
+"<literal>SentenceTranslator</literal> EJB was not deployed—the container "
+"would inform us of an <emphasis>unsatisfied dependency</emphasis>. If more "
+"than one implementation of <literal>Translator</literal> were available, the "
+"container would inform us of the <emphasis>ambiguous dependency</emphasis>."
 msgstr ""
 "Zum Zeitpunkt der Systeminitialisierung muss der Web Bean Manager "
 "validieren, dass genau ein Web Bean existiert, das jedem Einspeisungspunkt "
@@ -407,7 +252,6 @@ msgstr ""
 "<literal>AmbiguousDependencyException</literal> melden."
 
 #. Tag: para
-#: intro.xml:156
 #, no-c-format
 msgid ""
 "Before we get too deep in the details, let's pause and examine a bean's "
@@ -415,6 +259,97 @@ msgid ""
 "identity? Instead of just giving examples of beans, we're going to define "
 "what <emphasis>makes</emphasis> something a bean."
 msgstr ""
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class SentenceParser {\n"
+#~ "   public List<String> parse(String text) { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class SentenceParser {\n"
+#~ "    public List<String> parse(String text) { ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Stateless\n"
+#~ "public class SentenceTranslator implements Translator {\n"
+#~ "   public String translate(String sentence) { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Stateless\n"
+#~ "public class SentenceTranslator implements Translator {\n"
+#~ "    public String translate(String sentence) { ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Local\n"
+#~ "public interface Translator {\n"
+#~ "   public String translate(String sentence);\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Local\n"
+#~ "public interface Translator {\n"
+#~ "    public String translate(String sentence);\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class TextTranslator {\n"
+#~ "   private SentenceParser sentenceParser;\n"
+#~ "   private Translator sentenceTranslator;\n"
+#~ "    \n"
+#~ "   @Inject\n"
+#~ "   TextTranslator(SentenceParser sentenceParser, Translator "
+#~ "sentenceTranslator) {\n"
+#~ "      this.sentenceParser = sentenceParser;\n"
+#~ "      this.sentenceTranslator = sentenceTranslator;\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "   public String translate(String text) {\n"
+#~ "      StringBuilder sb = new StringBuilder();\n"
+#~ "      for (String sentence: sentenceParser.parse(text)) {\n"
+#~ "          sb.append(sentenceTranslator.translate(sentence));\n"
+#~ "      }\n"
+#~ "      return sb.toString();\n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class TextTranslator {\n"
+#~ "    \n"
+#~ "    private SentenceParser sentenceParser;\n"
+#~ "    private Translator sentenceTranslator;\n"
+#~ "    \n"
+#~ "    @Initializer\n"
+#~ "    TextTranslator(SentenceParser sentenceParser, Translator "
+#~ "sentenceTranslator) {\n"
+#~ "        this.sentenceParser = sentenceParser;\n"
+#~ "        this.sentenceTranslator = sentenceTranslator;\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    public String translate(String text) {\n"
+#~ "        StringBuilder sb = new StringBuilder();\n"
+#~ "        for (String sentence: sentenceParser.parse(text)) {\n"
+#~ "            sb.append(sentenceTranslator.translate(sentence));\n"
+#~ "        }\n"
+#~ "        return sb.toString();\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Inject Instance<TextTranslator> textTranslatorInstance;\n"
+#~ "...\n"
+#~ "public void translate() {\n"
+#~ "   textTranslatorInstance.get().translate(inputText);\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Initializer\n"
+#~ "public setTextTranslator(TextTranslator textTranslator) {\n"
+#~ "    this.textTranslator = textTranslator;\n"
+#~ "}]]>"
 
 #~ msgid "Getting started with Web Beans"
 #~ msgstr "Erste Schritte mit Web Beans"

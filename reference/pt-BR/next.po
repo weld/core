@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-12-19 17:59-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -14,13 +14,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: next.xml:4
 #, no-c-format
 msgid "Next steps"
 msgstr "Próximos passos"
 
 #. Tag: para
-#: next.xml:6
 #, no-c-format
 msgid ""
 "Because CDI is so new, there's not yet a lot of information available "
@@ -33,7 +31,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: next.xml:14
 #, fuzzy, no-c-format
 msgid ""
 "The CDI reference implementation, Weld, is being developed at the <ulink url="
@@ -53,7 +50,6 @@ msgstr ""
 "melhor fonte de informação sobre o futuro da CDI, Weld e Seam."
 
 #. Tag: para
-#: next.xml:22
 #, no-c-format
 msgid ""
 "We encourage you to follow the <ulink url=\"https://lists.jboss.org/mailman/"
@@ -63,7 +59,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: next.xml:28
 #, no-c-format
 msgid ""
 "We are eager to find volunteers to help revise, proofread or translate this "
@@ -72,7 +67,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: next.xml:35
 #, no-c-format
 msgid ""
 "Checkout source from <ulink url=\"http://anonsvn.jboss.org/repos/weld/doc/"
@@ -80,18 +74,7 @@ msgid ""
 "ulink> using SVN"
 msgstr ""
 
-#. Tag: programlisting
-#: next.xml:40
-#, no-c-format
-msgid ""
-"<![CDATA[$> svn co http://anonsvn.jboss.org/repos/weld/doc/trunk/reference "
-"weld-reference]]>"
-msgstr ""
-"<![CDATA[$> svn co http://anonsvn.jboss.org/repos/weld/doc/trunk/reference "
-"weld-reference]]>"
-
 #. Tag: para
-#: next.xml:43
 #, no-c-format
 msgid ""
 "Edit the <literal>pom.xml</literal> file in the root of the checkout and "
@@ -100,19 +83,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: next.xml:49
 #, no-c-format
 msgid "Build using Maven 2"
 msgstr ""
 
-#. Tag: programlisting
-#: next.xml:52
-#, no-c-format
-msgid "<![CDATA[$> mvn]]>"
-msgstr "<![CDATA[$> mvn]]>"
-
 #. Tag: para
-#: next.xml:54
 #, no-c-format
 msgid ""
 "If you experience an out of memory error, try setting this environment "
@@ -120,7 +95,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: next.xml:61
 #, no-c-format
 msgid ""
 "The PDF version of the reference guide will appear the current directory. "
@@ -129,10 +103,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: next.xml:66
 #, no-c-format
 msgid "We look forward to your participation!"
 msgstr ""
+
+#~ msgid ""
+#~ "<![CDATA[$> svn co http://anonsvn.jboss.org/repos/weld/doc/trunk/"
+#~ "reference weld-reference]]>"
+#~ msgstr ""
+#~ "<![CDATA[$> svn co http://anonsvn.jboss.org/repos/weld/doc/trunk/"
+#~ "reference weld-reference]]>"
+
+#~ msgid "<![CDATA[$> mvn]]>"
+#~ msgstr "<![CDATA[$> mvn]]>"
 
 #~ msgid ""
 #~ "Because Web Beans is so new, there's not yet a lot of information "

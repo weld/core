@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2008-12-22 10:45+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,7 +14,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: para
-#: part1.xml:14
 #, fuzzy, no-c-format
 msgid ""
 "The <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299</ulink> "
@@ -29,7 +28,6 @@ msgstr ""
 "提供了："
 
 #. Tag: para
-#: part1.xml:23
 #, fuzzy, no-c-format
 msgid ""
 "an improved lifecycle for stateful objects, bound to well-defined "
@@ -39,20 +37,17 @@ msgstr ""
 "生命周期，"
 
 #. Tag: para
-#: part1.xml:28
 #, no-c-format
 msgid "a typesafe approach to <emphasis>dependency injection</emphasis>,"
 msgstr "一个类型安全的<emphasis>依赖注入</emphasis>方法,"
 
 #. Tag: para
-#: part1.xml:33
 #, fuzzy, no-c-format
 msgid ""
 "object interaction via an <emphasis>event notification facility</emphasis>,"
 msgstr "通过 <emphasis>事件通知</emphasis> 机制实现的交互，并且"
 
 #. Tag: para
-#: part1.xml:38
 #, fuzzy, no-c-format
 msgid ""
 "a better approach to binding <emphasis>interceptors</emphasis> to objects, "
@@ -64,7 +59,6 @@ msgstr ""
 "务问题。"
 
 #. Tag: para
-#: part1.xml:45
 #, no-c-format
 msgid ""
 "an <emphasis>SPI</emphasis> for developing portable extensions to the "
@@ -72,22 +66,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:51
 #, no-c-format
 msgid ""
 "The CDI services are a core aspect of the Java EE platform and include full "
 "support for Java EE modularity and the Java EE component architecture. But "
 "the specification does not limit the use of CDI to the Java EE environment. "
 "In the Java SE environment, the services might be provided by a standalone "
-"CDI implementation like Weld (see <xref linkend=\"weld-se\"/>), or even by a "
-"container that also implements the subset of EJB defined for embedded usage "
-"by the EJB 3.1 specification. CDI is especially useful in the context of web "
-"application development, but the problems it solves are general development "
-"concerns and it is therefore applicable to a wide variety of application."
+"CDI implementation like Weld (see <xref linkend=\"weld-se\" />), or even by "
+"a container that also implements the subset of EJB defined for embedded "
+"usage by the EJB 3.1 specification. CDI is especially useful in the context "
+"of web application development, but the problems it solves are general "
+"development concerns and it is therefore applicable to a wide variety of "
+"application."
 msgstr ""
 
 #. Tag: para
-#: part1.xml:61
 #, no-c-format
 msgid ""
 "An object bound to a lifecycle context is called a bean. CDI includes built-"
@@ -96,19 +89,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:68
 #, no-c-format
 msgid "managed beans, and"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:71
 #, no-c-format
 msgid "EJB session beans."
 msgstr ""
 
 #. Tag: para
-#: part1.xml:75
 #, no-c-format
 msgid ""
 "Both managed beans and EJB session beans may inject other beans. But some "
@@ -118,37 +108,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:83
 #, no-c-format
 msgid "message-driven beans,"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:86
 #, no-c-format
 msgid "interceptors,"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:89
 #, no-c-format
 msgid "servlets, servlet filters and servlet event listeners,"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:92
 #, no-c-format
 msgid "JAX-WS service endpoints and handlers, and"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:95
 #, no-c-format
 msgid "JSP tag handlers and tag library event listeners."
 msgstr ""
 
 #. Tag: para
-#: part1.xml:99
 #, fuzzy, no-c-format
 msgid ""
 "CDI relieves the user of an unfamiliar API of the need to answer the "
@@ -158,44 +142,37 @@ msgstr ""
 "下列问题所浪费时间："
 
 #. Tag: para
-#: part1.xml:105
 #, fuzzy, no-c-format
 msgid "What is the lifecycle of this object?"
 msgstr "这个对象的生命周期是什么？"
 
 #. Tag: para
-#: part1.xml:108
 #, fuzzy, no-c-format
 msgid "How many simultaneous clients can it have?"
 msgstr "它能够有多少个并发的客户端"
 
 #. Tag: para
-#: part1.xml:111
 #, fuzzy, no-c-format
 msgid "Is it multithreaded?"
 msgstr "它是多线程的么？"
 
 #. Tag: para
-#: part1.xml:114
 #, no-c-format
 msgid "How do I get access to it from a client?"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:117
 #, fuzzy, no-c-format
 msgid "Do I need to explicitly destroy it?"
 msgstr "我需要显式地销毁它么？"
 
 #. Tag: para
-#: part1.xml:120
 #, fuzzy, no-c-format
 msgid ""
 "Where should I keep the reference to it when I'm not currently using it?"
 msgstr "当我不再直接使用它的时候，我需要将它的引用保存到哪里？"
 
 #. Tag: para
-#: part1.xml:125
 #, fuzzy, no-c-format
 msgid ""
 "How can I define an alternative implementation, so that the implementation "
@@ -203,13 +180,11 @@ msgid ""
 msgstr "我如何才能添加一个间接层，以便在部署的时候可以更换这个对象的不同实现？"
 
 #. Tag: para
-#: part1.xml:131
 #, fuzzy, no-c-format
 msgid "How should I go about sharing this object between other objects?"
 msgstr "我应该如何在其他对象中共享这个对象？"
 
 #. Tag: para
-#: part1.xml:137
 #, no-c-format
 msgid ""
 "CDI is more than a framework. It's a whole, rich programming model. The "
@@ -218,7 +193,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:142
 #, fuzzy, no-c-format
 msgid ""
 "A bean specifies only the type and semantics of other beans it depends upon. "
@@ -234,7 +208,6 @@ msgstr ""
 "署场景而更改，却丝毫不影响任何客户端。"
 
 #. Tag: para
-#: part1.xml:149
 #, fuzzy, no-c-format
 msgid ""
 "Events, interceptors and decorators enhance the loose-coupling inherent in "
@@ -243,7 +216,6 @@ msgstr ""
 "事件，拦截器和装饰器增强了这个模型固有的<emphasis>松耦合</emphasis>特性："
 
 #. Tag: para
-#: part1.xml:155
 #, no-c-format
 msgid ""
 "<emphasis>event notifications</emphasis> decouple event producers from event "
@@ -251,7 +223,6 @@ msgid ""
 msgstr "<emphasis>事件通知</emphasis>将事件的消费者和事件的产生者解耦，"
 
 #. Tag: para
-#: part1.xml:159
 #, no-c-format
 msgid ""
 "<emphasis>interceptors</emphasis> decouple technical concerns from business "
@@ -259,7 +230,6 @@ msgid ""
 msgstr "<emphasis>拦截器</emphasis>将技术关注点从业务逻辑中解耦，并且"
 
 #. Tag: para
-#: part1.xml:163
 #, no-c-format
 msgid ""
 "<emphasis>decorators</emphasis> allow business concerns to be "
@@ -267,7 +237,6 @@ msgid ""
 msgstr "<emphasis>装饰器</emphasis>允许开发者划分业务关注点。"
 
 #. Tag: para
-#: part1.xml:168
 #, fuzzy, no-c-format
 msgid ""
 "What's even more powerful (and comforting) is that CDI provides all these "
@@ -287,7 +256,6 @@ msgstr ""
 "依赖以及拦截器，装饰器和事件消费者关联在一起。"
 
 #. Tag: para
-#: part1.xml:177
 #, no-c-format
 msgid ""
 "But CDI isn't a restrictive programming model. It doesn't tell you how you "
@@ -297,7 +265,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:183
 #, fuzzy, no-c-format
 msgid ""
 "CDI even provides a comprehensive SPI, allowing other kinds of object "
@@ -310,7 +277,6 @@ msgstr ""
 "Bean交互。"
 
 #. Tag: para
-#: part1.xml:189
 #, fuzzy, no-c-format
 msgid ""
 "CDI was influenced by a number of existing Java frameworks, including Seam, "
@@ -326,7 +292,6 @@ msgstr ""
 "用更少的XML, 比Guice更加具备Web和企业应用的能力。"
 
 #. Tag: para
-#: part1.xml:197
 #, no-c-format
 msgid ""
 "Finally, CDI is a <ulink url=\"http://jcp.org\">Java Community Process</"

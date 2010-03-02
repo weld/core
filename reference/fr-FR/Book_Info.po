@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
 "PO-Revision-Date: 2009-02-02 22:05+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,13 +14,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: Book_Info.xml:4
 #, no-c-format
 msgid "Weld - JSR-299 Reference Implementation"
 msgstr ""
 
 #. Tag: subtitle
-#: Book_Info.xml:5
 #, fuzzy, no-c-format
 msgid ""
 "JSR-299: The new Java standard for dependency injection and contextual "

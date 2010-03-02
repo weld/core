@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
 "PO-Revision-Date: 2009-02-02 22:03+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
@@ -13,107 +13,123 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Tag: author
-#: Author_Group.xml:5
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Gavin</firstname> <surname>King</surname>"
-msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+msgid "Gavin"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:8
 #, no-c-format
 msgid "JSR-299: Contexts and Dependency Injection Lead"
 msgstr ""
 
-#. Tag: author
-#: Author_Group.xml:14
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
-msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+msgid "Pete"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:17
 #, no-c-format
 msgid "Weld (JSR-299 RI) Lead"
 msgstr ""
 
-#. Tag: author
-#: Author_Group.xml:24
-#, fuzzy, no-c-format
-msgid "<firstname>Dan</firstname> <surname>Allen</surname>"
-msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
-
-#. Tag: author
-#: Author_Group.xml:31
-#, fuzzy, no-c-format
-msgid "<firstname>David</firstname> <surname>Allen</surname>"
-msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
-
-#. Tag: othercredit
-#: Author_Group.xml:35
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
-msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
+msgid "Dan"
+msgstr ""
+
+#. Tag: firstname
+#, no-c-format
+msgid "David"
+msgstr ""
+
+#. Tag: firstname
+#, no-c-format
+msgid "Nicola"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:38 Author_Group.xml:67
 #, no-c-format
 msgid "Italian Translation"
 msgstr "Traduction italienne"
 
-#. Tag: othercredit
-#: Author_Group.xml:40
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
-msgstr "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
+msgid "Gladys"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:43
 #, no-c-format
 msgid "Spanish Translation"
 msgstr "Traduction espagnole"
 
-#. Tag: othercredit
-#: Author_Group.xml:48
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
-msgstr "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
+msgid "Eun-Ju"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:51
 #, no-c-format
 msgid "Korean Translation"
 msgstr "Traduction coréenne"
 
-#. Tag: othercredit
-#: Author_Group.xml:56
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Terry</firstname> <surname>Chuang</surname>"
-msgstr "<firstname>Terry</firstname> <surname>Chuang</surname>"
+msgid "Terry"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:59
 #, no-c-format
 msgid "Traditional Chinese Translation"
 msgstr "Traduction en chinois traditionnel"
 
-#. Tag: othercredit
-#: Author_Group.xml:64
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
-msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+msgid "Francesco"
+msgstr ""
 
-#. Tag: othercredit
-#: Author_Group.xml:69
-#, fuzzy, no-c-format
-msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
-msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+#. Tag: firstname
+#, no-c-format
+msgid "Sean"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:72
 #, fuzzy, no-c-format
 msgid "Simplified Chinese Translation"
 msgstr "Traduction en chinois traditionnel"
+
+#~ msgid "<firstname>Gavin</firstname> <surname>King</surname>"
+#~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+
+#~ msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
+#~ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+
+#, fuzzy
+#~ msgid "<firstname>Dan</firstname> <surname>Allen</surname>"
+#~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+
+#, fuzzy
+#~ msgid "<firstname>David</firstname> <surname>Allen</surname>"
+#~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+
+#~ msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
+#~ msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
+
+#~ msgid "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
+#~ msgstr "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
+
+#~ msgid "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
+#~ msgstr "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
+
+#~ msgid "<firstname>Terry</firstname> <surname>Chuang</surname>"
+#~ msgstr "<firstname>Terry</firstname> <surname>Chuang</surname>"
+
+#~ msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+#~ msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+
+#, fuzzy
+#~ msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
+#~ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 
 #~ msgid ""
 #~ "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat "

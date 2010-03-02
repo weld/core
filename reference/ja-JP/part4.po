@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-04-25 00:28+0900\n"
 "Last-Translator: tagawaman <karlgotch1924.2007@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,7 +14,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: para
-#: part4.xml:5
 #, no-c-format
 msgid ""
 "The third theme of CDI is <emphasis>integration</emphasis>. We've already "
@@ -26,7 +25,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part4.xml:12
 #, fuzzy, no-c-format
 msgid ""
 "CDI is also designed to work in concert with technologies outside of the "
@@ -52,7 +50,6 @@ msgstr ""
 "へ、その技術をより簡単に使えるようにしてくれます。"
 
 #. Tag: para
-#: part4.xml:23
 #, fuzzy, no-c-format
 msgid ""
 "We're about to see how to take full advantage of the Java EE platform in an "

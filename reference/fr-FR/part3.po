@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-02-07 15:15+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,7 +14,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: para
-#: part3.xml:5
 #, no-c-format
 msgid ""
 "The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've "
@@ -22,19 +21,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part3.xml:12
 #, no-c-format
 msgid "<emphasis>alternatives</emphasis> enable deployment time polymorphism,"
 msgstr ""
 
 #. Tag: para
-#: part3.xml:17
 #, no-c-format
 msgid "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
 msgstr ""
 
 #. Tag: para
-#: part3.xml:21
 #, no-c-format
 msgid ""
 "<emphasis>contextual lifecycle management</emphasis> decouples bean "
@@ -42,7 +38,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part3.xml:27
 #, no-c-format
 msgid ""
 "These techniques serve to enable loose coupling of client and server. The "
@@ -52,7 +47,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part3.xml:33
 #, no-c-format
 msgid ""
 "Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system "
@@ -64,7 +58,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part3.xml:40
 #, no-c-format
 msgid ""
 "CDI provides three extra important facilities that further the goal of loose "
@@ -72,7 +65,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part3.xml:46
 #, no-c-format
 msgid ""
 "<emphasis>interceptors</emphasis> decouple technical concerns from business "
@@ -80,7 +72,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part3.xml:51
 #, no-c-format
 msgid ""
 "<emphasis>decorators</emphasis> may be used to decouple some business "
@@ -88,7 +79,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part3.xml:56
 #, no-c-format
 msgid ""
 "<emphasis>event notifications</emphasis> decouple event producers from event "
@@ -96,7 +86,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part3.xml:62
 #, fuzzy, no-c-format
 msgid ""
 "The second major theme of CDI is <emphasis>strong typing</emphasis>. The "
@@ -111,13 +100,12 @@ msgstr ""
 "typesafe qui peuvent être validées par le compilateur."
 
 #. Tag: para
-#: part3.xml:68
 #, fuzzy, no-c-format
 msgid ""
 "You don't see string-based identifiers in CDI code, not because the "
-"framework is hiding them from you using clever defaulting rules&#8212;so-"
-"called \"configuration by convention\"&#8212;but because there are simply no "
-"strings there to begin with!"
+"framework is hiding them from you using clever defaulting rules—so-called "
+"\"configuration by convention\"—but because there are simply no strings "
+"there to begin with!"
 msgstr ""
 "Vous ne voyez pas d'identifiants basés sur des chaînes de caractères dans un "
 "code Web Bean, pas parce que le framework vous les cache en utilisant des "
@@ -126,7 +114,6 @@ msgstr ""
 "pour commencer!"
 
 #. Tag: para
-#: part3.xml:74
 #, no-c-format
 msgid ""
 "The obvious benefit of this approach is that <emphasis>any</emphasis> IDE "
@@ -144,7 +131,6 @@ msgstr ""
 "d'élever le niveau sémantique de votre code."
 
 #. Tag: para
-#: part3.xml:81
 #, fuzzy, no-c-format
 msgid ""
 "CDI encourages you develop annotations that model concepts, for example,"
@@ -153,61 +139,51 @@ msgstr ""
 "des concepts, par exemple,"
 
 #. Tag: para
-#: part3.xml:87
 #, no-c-format
 msgid "<literal>@Asynchronous</literal>,"
 msgstr "<literal>@Asynchronous</literal>,"
 
 #. Tag: para
-#: part3.xml:90
 #, no-c-format
 msgid "<literal>@Mock</literal>,"
 msgstr "<literal>@Mock</literal>,"
 
 #. Tag: para
-#: part3.xml:93
 #, no-c-format
 msgid "<literal>@Secure</literal> or"
 msgstr "<literal>@Secure</literal> or"
 
 #. Tag: para
-#: part3.xml:96
 #, no-c-format
 msgid "<literal>@Updated</literal>,"
 msgstr "<literal>@Updated</literal>,"
 
 #. Tag: para
-#: part3.xml:100
 #, no-c-format
 msgid "instead of using compound names like"
 msgstr "au lieu d'utiliser des noms composés comme"
 
 #. Tag: para
-#: part3.xml:104
 #, no-c-format
 msgid "<literal>asyncPaymentProcessor</literal>,"
 msgstr "<literal>asyncPaymentProcessor</literal>,"
 
 #. Tag: para
-#: part3.xml:107
 #, no-c-format
 msgid "<literal>mockPaymentProcessor</literal>,"
 msgstr "<literal>mockPaymentProcessor</literal>,"
 
 #. Tag: para
-#: part3.xml:110
 #, no-c-format
 msgid "<literal>SecurityInterceptor</literal> or"
 msgstr "<literal>SecurityInterceptor</literal> or"
 
 #. Tag: para
-#: part3.xml:113
 #, no-c-format
 msgid "<literal>DocumentUpdatedEvent</literal>."
 msgstr "<literal>DocumentUpdatedEvent</literal>."
 
 #. Tag: para
-#: part3.xml:117
 #, no-c-format
 msgid ""
 "The annotations are reusable. They help describe common qualities of "
@@ -222,7 +198,6 @@ msgstr ""
 "compréhensible."
 
 #. Tag: para
-#: part3.xml:123
 #, fuzzy, no-c-format
 msgid ""
 "CDI <emphasis>stereotypes</emphasis> take this idea a step further. A "
@@ -239,7 +214,6 @@ msgstr ""
 "déploiement, etc, dans un seul paquetage réutilisable."
 
 #. Tag: para
-#: part3.xml:138
 #, fuzzy, no-c-format
 msgid ""
 "We're now ready to meet some more advanced features of CDI. Bear in mind "

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
 "PO-Revision-Date: 2009-12-19 18:07-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -14,13 +14,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: dependencies.xml:5
 #, no-c-format
 msgid "Weld project dependencies"
 msgstr ""
 
 #. Tag: para
-#: dependencies.xml:7
 #, no-c-format
 msgid ""
 "This section lists compile-time and runtime dependencies for Weld. This list "
@@ -30,105 +28,88 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: dependencies.xml:13
 #, no-c-format
 msgid "Artifacts coming from Sun"
 msgstr ""
 
 #. Tag: para
-#: dependencies.xml:21 dependencies.xml:110
 #, no-c-format
 msgid "Artifact"
 msgstr ""
 
 #. Tag: para
-#: dependencies.xml:24 dependencies.xml:113
 #, no-c-format
 msgid "Scope"
 msgstr ""
 
-#. Tag: literal
-#: dependencies.xml:33
-#, no-c-format
-msgid "javax.ejb:ejb-api:3.1"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>javax.ejb:ejb-api:3.1</literal>"
 msgstr "javax.ejb:ejb-api:3.1"
 
 #. Tag: para
-#: dependencies.xml:36 dependencies.xml:44 dependencies.xml:52
-#: dependencies.xml:60 dependencies.xml:68 dependencies.xml:76
-#: dependencies.xml:128
 #, no-c-format
 msgid "compile"
 msgstr ""
 
-#. Tag: literal
-#: dependencies.xml:41
-#, no-c-format
-msgid "javax.faces:jsf-api:2.0"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>javax.faces:jsf-api:2.0</literal>"
 msgstr "javax.faces:jsf-api:2.0"
 
-#. Tag: literal
-#: dependencies.xml:49
-#, no-c-format
-msgid "javax.el:el-api:2.1"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>javax.el:el-api:2.1</literal>"
 msgstr "javax.el:el-api:2.1"
 
-#. Tag: literal
-#: dependencies.xml:57
-#, no-c-format
-msgid "javax.persistence:persistence-api:2.0"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>javax.persistence:persistence-api:2.0</literal>"
 msgstr "javax.persistence:persistence-api:2.0"
 
-#. Tag: literal
-#: dependencies.xml:65
-#, no-c-format
-msgid "javax.servlet:servlet-api:3.0"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>javax.servlet:servlet-api:3.0</literal>"
 msgstr "javax.servlet:servlet-api:3.0"
 
-#. Tag: literal
-#: dependencies.xml:73
-#, no-c-format
-msgid "javax.interceptor:interceptor-api:1.1"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>javax.interceptor:interceptor-api:1.1</literal>"
 msgstr "javax.interceptor:interceptor-api:1.1"
 
-#. Tag: literal
-#: dependencies.xml:81
-#, no-c-format
-msgid "org.glasfish.web:el-impl:2.1.2"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>org.glasfish.web:el-impl:2.1.2</literal>"
 msgstr "org.glasfish.web:el-impl:2.1.2"
 
 #. Tag: para
-#: dependencies.xml:84 dependencies.xml:92
 #, no-c-format
 msgid "runtime"
 msgstr ""
 
-#. Tag: literal
-#: dependencies.xml:89
-#, no-c-format
-msgid "javax.faces:jsf-impl:2.0.x"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>javax.faces:jsf-impl:2.0.x</literal>"
 msgstr "javax.faces:jsf-impl:2.0.x"
 
 #. Tag: title
-#: dependencies.xml:101
 #, no-c-format
 msgid "Artifacts coming from Hibernate"
 msgstr ""
 
 #. Tag: para
-#: dependencies.xml:116
 #, no-c-format
 msgid "Notes"
 msgstr ""
 
-#. Tag: literal
-#: dependencies.xml:125
-#, no-c-format
-msgid "javax.validation:validation-api"
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<literal>javax.validation:validation-api</literal>"
 msgstr "javax.validation:validation-api"
 
-#. Tag: ulink
-#: dependencies.xml:131
+#. Tag: para
 #, no-c-format
-msgid "BVAL-193"
+msgid ""
+"<ulink url=\"http://opensource.atlassian.com/projects/hibernate/browse/BVAL-"
+"193\">BVAL-193</ulink>"
 msgstr ""

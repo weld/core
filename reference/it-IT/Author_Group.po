@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-11-11 15:00+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
 "PO-Revision-Date: 2009-11-23 21:11+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
@@ -13,123 +13,137 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Tag: author
-#: Author_Group.xml:5
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Gavin</firstname> <surname>King</surname>"
-msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+msgid "Gavin"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:8
 #, no-c-format
 msgid "JSR-299: Contexts and Dependency Injection Lead"
 msgstr "JSR-299: Contexts and Dependency Injection Lead"
 
-#. Tag: author
-#: Author_Group.xml:14
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
-msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+msgid "Pete"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:17
 #, no-c-format
 msgid "Weld (JSR-299 RI) Lead"
 msgstr "Weld (JSR-299 RI) Lead"
 
-#. Tag: author
-#: Author_Group.xml:24
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Dan</firstname> <surname>Allen</surname>"
-msgstr "<firstname>Dan</firstname> <surname>Allen</surname>"
+msgid "Dan"
+msgstr ""
 
-#. Tag: author
-#: Author_Group.xml:31
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>David</firstname> <surname>Allen</surname>"
-msgstr "<firstname>David</firstname> <surname>Allen</surname>"
+msgid "David"
+msgstr ""
 
-#. Tag: othercredit
-#: Author_Group.xml:35
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
-msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
+msgid "Nicola"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:38
-#: Author_Group.xml:67
 #, no-c-format
 msgid "Italian Translation"
 msgstr "Traduzione italiana"
 
-#. Tag: othercredit
-#: Author_Group.xml:40
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
-msgstr "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
+msgid "Gladys"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:43
 #, no-c-format
 msgid "Spanish Translation"
 msgstr "Traduzione spagnola"
 
-#. Tag: othercredit
-#: Author_Group.xml:48
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
-msgstr "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
+msgid "Eun-Ju"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:51
 #, no-c-format
 msgid "Korean Translation"
 msgstr "Traduzione coreana"
 
-#. Tag: othercredit
-#: Author_Group.xml:56
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Terry</firstname> <surname>Chuang</surname>"
-msgstr "<firstname>Terry</firstname> <surname>Chuang</surname>"
+msgid "Terry"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:59
 #, no-c-format
 msgid "Traditional Chinese Translation"
 msgstr "Traduzione cinese (tradizionale)"
 
-#. Tag: othercredit
-#: Author_Group.xml:64
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
-msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+msgid "Francesco"
+msgstr ""
 
-#. Tag: othercredit
-#: Author_Group.xml:69
+#. Tag: firstname
 #, no-c-format
-msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
-msgstr "<firstname>Sean</firstname> <surname>Wu</surname>"
+msgid "Sean"
+msgstr ""
 
 #. Tag: contrib
-#: Author_Group.xml:72
 #, no-c-format
 msgid "Simplified Chinese Translation"
 msgstr "Traduzione cinese semplificato"
 
+#~ msgid "<firstname>Gavin</firstname> <surname>King</surname>"
+#~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+
+#~ msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
+#~ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+
+#~ msgid "<firstname>Dan</firstname> <surname>Allen</surname>"
+#~ msgstr "<firstname>Dan</firstname> <surname>Allen</surname>"
+
+#~ msgid "<firstname>David</firstname> <surname>Allen</surname>"
+#~ msgstr "<firstname>David</firstname> <surname>Allen</surname>"
+
+#~ msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
+#~ msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
+
+#~ msgid "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
+#~ msgstr "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
+
+#~ msgid "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
+#~ msgstr "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
+
+#~ msgid "<firstname>Terry</firstname> <surname>Chuang</surname>"
+#~ msgstr "<firstname>Terry</firstname> <surname>Chuang</surname>"
+
+#~ msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+#~ msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+
+#~ msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
+#~ msgstr "<firstname>Sean</firstname> <surname>Wu</surname>"
+
 #~ msgid ""
 #~ "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat "
 #~ "Middleware LLC</orgname>"
 #~ msgstr ""
 #~ "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat "
 #~ "Middleware LLC</orgname>"
+
 #~ msgid ""
 #~ "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
 #~ "<orgname>Red Hat Middleware LLC</orgname>"
 #~ msgstr ""
 #~ "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
 #~ "<orgname>Red Hat Middleware LLC</orgname>"
+
 #~ msgid "Red Hat Middleware LLC"
 #~ msgstr "Red Hat Middleware LLC"
+
 #~ msgid "Kava Community"
 #~ msgstr "Kava Community"
-

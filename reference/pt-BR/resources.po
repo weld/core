@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-12-19 18:06-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -14,13 +14,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: resources.xml:5
 #, no-c-format
 msgid "Java EE component environment resources"
 msgstr ""
 
 #. Tag: para
-#: resources.xml:7
 #, no-c-format
 msgid ""
 "Java EE 5 already introduced some limited support for dependency injection, "
@@ -30,7 +28,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: resources.xml:13
 #, no-c-format
 msgid ""
 "Naturally, there is now a slight mismatch with the new style of dependency "
@@ -44,7 +41,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: resources.xml:22
 #, no-c-format
 msgid ""
 "Fields have a duality in that they can both be the target of Java EE "
@@ -57,13 +53,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: resources.xml:31
 #, no-c-format
 msgid "Defining a resource"
 msgstr ""
 
 #. Tag: para
-#: resources.xml:33
 #, no-c-format
 msgid ""
 "The CDI specification uses the term <emphasis>resource</emphasis> to refer, "
@@ -72,7 +66,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: resources.xml:38
 #, no-c-format
 msgid ""
 "JDBC <literal>Datasource</literal>s, JMS <literal>Queue</literal>s, "
@@ -82,7 +75,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: resources.xml:43
 #, no-c-format
 msgid ""
 "JPA <literal>EntityManager</literal>s and <literal>EntityManagerFactory</"
@@ -90,19 +82,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: resources.xml:46
 #, no-c-format
 msgid "remote EJBs, and"
 msgstr ""
 
 #. Tag: para
-#: resources.xml:49
 #, no-c-format
 msgid "web services"
 msgstr ""
 
 #. Tag: para
-#: resources.xml:53
 #, no-c-format
 msgid ""
 "We declare a resource by annotating a producer field with a component "
@@ -111,72 +100,17 @@ msgid ""
 "<literal>@PersistenceUnit</literal> or <literal>@WebServiceRef</literal>."
 msgstr ""
 
-#. Tag: programlisting
-#: resources.xml:57
-#, no-c-format
-msgid ""
-"<![CDATA[@Produces @WebServiceRef(lookup=\"java:app/service/Catalog\")\n"
-"Catalog catalog;]]>"
-msgstr ""
-"<![CDATA[@Produces @WebServiceRef(lookup=\"java:app/service/Catalog\")\n"
-"Catalog catalog;]]>"
-
-#. Tag: programlisting
-#: resources.xml:59
-#, no-c-format
-msgid ""
-"<![CDATA[@Produces @Resource(lookup=\"java:global/env/jdbc/CustomerDatasource"
-"\") \n"
-"@CustomerDatabase Datasource customerDatabase;]]>"
-msgstr ""
-"<![CDATA[@Produces @Resource(lookup=\"java:global/env/jdbc/CustomerDatasource"
-"\") \n"
-"@CustomerDatabase Datasource customerDatabase;]]>"
-
-#. Tag: programlisting
-#: resources.xml:61
-#, no-c-format
-msgid ""
-"<![CDATA[@Produces @PersistenceContext(unitName=\"CustomerDatabase\")\n"
-"@CustomerDatabase EntityManager customerDatabasePersistenceContext;]]>"
-msgstr ""
-"<![CDATA[@Produces @PersistenceContext(unitName=\"CustomerDatabase\")\n"
-"@CustomerDatabase EntityManager customerDatabasePersistenceContext;]]>"
-
-#. Tag: programlisting
-#: resources.xml:63
-#, no-c-format
-msgid ""
-"<![CDATA[@Produces @PersistenceUnit(unitName=\"CustomerDatabase\") \n"
-"@CustomerDatabase EntityManagerFactory customerDatabasePersistenceUnit;]]>"
-msgstr ""
-"<![CDATA[@Produces @PersistenceUnit(unitName=\"CustomerDatabase\") \n"
-"@CustomerDatabase EntityManagerFactory customerDatabasePersistenceUnit;]]>"
-
-#. Tag: programlisting
-#: resources.xml:65
-#, no-c-format
-msgid ""
-"<![CDATA[@Produces @EJB(ejbLink=\"../their.jar#PaymentService\") \n"
-"PaymentService paymentService;]]>"
-msgstr ""
-"<![CDATA[@Produces @EJB(ejbLink=\"../their.jar#PaymentService\") \n"
-"PaymentService paymentService;]]>"
-
 #. Tag: para
-#: resources.xml:67
 #, no-c-format
 msgid "The field may be static (but not final)."
 msgstr ""
 
 #. Tag: para
-#: resources.xml:69
 #, no-c-format
 msgid "A resource declaration really contains two pieces of information:"
 msgstr ""
 
 #. Tag: para
-#: resources.xml:73
 #, no-c-format
 msgid ""
 "the JNDI name, EJB link, persistence unit name, or other metadata needed to "
@@ -184,7 +118,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: resources.xml:77
 #, no-c-format
 msgid ""
 "the type and qualifiers that we will use to inject the reference into our "
@@ -192,7 +125,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: resources.xml:82
 #, no-c-format
 msgid ""
 "It might feel strange to be declaring resources in Java code. Isn't this "
@@ -202,57 +134,16 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: resources.xml:90
 #, no-c-format
 msgid "Typesafe resource injection"
 msgstr ""
 
 #. Tag: para
-#: resources.xml:92
 #, no-c-format
 msgid "These resources can now be injected in the usual way."
 msgstr ""
 
-#. Tag: programlisting
-#: resources.xml:96
-#, no-c-format
-msgid "<![CDATA[@Inject Catalog catalog;]]>"
-msgstr "<![CDATA[@Inject Catalog catalog;]]>"
-
-#. Tag: programlisting
-#: resources.xml:97
-#, no-c-format
-msgid "<![CDATA[@Inject @CustomerDatabase Datasource customerDatabase;]]>"
-msgstr "<![CDATA[@Inject @CustomerDatabase Datasource customerDatabase;]]>"
-
-#. Tag: programlisting
-#: resources.xml:98
-#, no-c-format
-msgid ""
-"<![CDATA[@Inject @CustomerDatabase EntityManager "
-"customerDatabaseEntityManager;]]>"
-msgstr ""
-"<![CDATA[@Inject @CustomerDatabase EntityManager "
-"customerDatabaseEntityManager;]]>"
-
-#. Tag: programlisting
-#: resources.xml:99
-#, no-c-format
-msgid ""
-"<![CDATA[@Inject @CustomerDatabase EntityManagerFactory "
-"customerDatabaseEntityManagerFactory;]]>"
-msgstr ""
-"<![CDATA[@Inject @CustomerDatabase EntityManagerFactory "
-"customerDatabaseEntityManagerFactory;]]>"
-
-#. Tag: programlisting
-#: resources.xml:100
-#, no-c-format
-msgid "<![CDATA[@Inject PaymentService paymentService;]]>"
-msgstr "<![CDATA[@Inject PaymentService paymentService;]]>"
-
 #. Tag: para
-#: resources.xml:102
 #, no-c-format
 msgid ""
 "The bean type and qualifiers of the resource are determined by the producer "
@@ -260,7 +151,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: resources.xml:106
 #, no-c-format
 msgid ""
 "It might seem like a pain to have to write these extra producer field "
@@ -271,26 +161,72 @@ msgid ""
 "and more typesafe to write"
 msgstr ""
 
-#. Tag: programlisting
-#: resources.xml:113
-#, no-c-format
-msgid "@Inject @CustomerDatabase EntityManager"
-msgstr ""
-
 #. Tag: para
-#: resources.xml:115
 #, no-c-format
 msgid "instead of"
 msgstr ""
 
-#. Tag: programlisting
-#: resources.xml:117
-#, no-c-format
-msgid "@PersistenceContext(unitName=\"CustomerDatabase\") EntityManager"
-msgstr ""
-
 #. Tag: para
-#: resources.xml:119
 #, no-c-format
 msgid "all over the place?"
 msgstr ""
+
+#~ msgid ""
+#~ "<![CDATA[@Produces @WebServiceRef(lookup=\"java:app/service/Catalog\")\n"
+#~ "Catalog catalog;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @WebServiceRef(lookup=\"java:app/service/Catalog\")\n"
+#~ "Catalog catalog;]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Produces @Resource(lookup=\"java:global/env/jdbc/"
+#~ "CustomerDatasource\") \n"
+#~ "@CustomerDatabase Datasource customerDatabase;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @Resource(lookup=\"java:global/env/jdbc/"
+#~ "CustomerDatasource\") \n"
+#~ "@CustomerDatabase Datasource customerDatabase;]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Produces @PersistenceContext(unitName=\"CustomerDatabase\")\n"
+#~ "@CustomerDatabase EntityManager customerDatabasePersistenceContext;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @PersistenceContext(unitName=\"CustomerDatabase\")\n"
+#~ "@CustomerDatabase EntityManager customerDatabasePersistenceContext;]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Produces @PersistenceUnit(unitName=\"CustomerDatabase\") \n"
+#~ "@CustomerDatabase EntityManagerFactory customerDatabasePersistenceUnit;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @PersistenceUnit(unitName=\"CustomerDatabase\") \n"
+#~ "@CustomerDatabase EntityManagerFactory customerDatabasePersistenceUnit;]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Produces @EJB(ejbLink=\"../their.jar#PaymentService\") \n"
+#~ "PaymentService paymentService;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @EJB(ejbLink=\"../their.jar#PaymentService\") \n"
+#~ "PaymentService paymentService;]]>"
+
+#~ msgid "<![CDATA[@Inject Catalog catalog;]]>"
+#~ msgstr "<![CDATA[@Inject Catalog catalog;]]>"
+
+#~ msgid "<![CDATA[@Inject @CustomerDatabase Datasource customerDatabase;]]>"
+#~ msgstr "<![CDATA[@Inject @CustomerDatabase Datasource customerDatabase;]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Inject @CustomerDatabase EntityManager "
+#~ "customerDatabaseEntityManager;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Inject @CustomerDatabase EntityManager "
+#~ "customerDatabaseEntityManager;]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Inject @CustomerDatabase EntityManagerFactory "
+#~ "customerDatabaseEntityManagerFactory;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Inject @CustomerDatabase EntityManagerFactory "
+#~ "customerDatabaseEntityManagerFactory;]]>"
+
+#~ msgid "<![CDATA[@Inject PaymentService paymentService;]]>"
+#~ msgstr "<![CDATA[@Inject PaymentService paymentService;]]>"

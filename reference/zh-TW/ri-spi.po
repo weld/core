@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2009-01-20 11:43+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -17,13 +17,11 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: ri-spi.xml:4
 #, fuzzy, no-c-format
 msgid "Integrating Weld into other environments"
 msgstr "將 Web Bean RI 整合入其它環境中"
 
 #. Tag: para
-#: ri-spi.xml:6
 #, no-c-format
 msgid ""
 "If you want to use Weld in another environment, you will need to provide "
@@ -32,13 +30,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:12
 #, fuzzy, no-c-format
 msgid "Enterprise Services"
 msgstr "資源載入"
 
 #. Tag: para
-#: ri-spi.xml:13
 #, no-c-format
 msgid ""
 "If you just want to use managed beans, and not take advantage of enterprise "
@@ -50,7 +46,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:21
 #, no-c-format
 msgid ""
 "All SPIs and APIs described have extensive JavaDoc, which spell out the "
@@ -58,13 +53,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:27
 #, fuzzy, no-c-format
 msgid "The Weld SPI"
 msgstr "Web Beans RI SPI"
 
 #. Tag: para
-#: ri-spi.xml:29
 #, fuzzy, no-c-format
 msgid ""
 "The Weld SPI is located in the <literal>weld-spi</literal> module, and "
@@ -77,7 +70,6 @@ msgstr ""
 "特性，您則需要其它 SPI。"
 
 #. Tag: para
-#: ri-spi.xml:35
 #, no-c-format
 msgid ""
 "All interfaces in the SPI support the decorator pattern and provide a "
@@ -88,7 +80,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:41
 #, no-c-format
 msgid ""
 "Weld supports multiple environments. An environment is defined by an "
@@ -102,7 +93,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:50
 #, no-c-format
 msgid ""
 "Weld uses a generic-typed service registry to allow services to be "
@@ -111,18 +101,16 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:56
 #, no-c-format
 msgid "Deployment structure"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:58
 #, no-c-format
 msgid ""
 "An application is often comprised of a number of modules. For example, a "
 "Java EE deployment may contain a number of EJB modules (containing business "
-"logic) and WAR modules (containing the user interface). A container may "
+"logic) and war modules (containing the user interface). A container may "
 "enforce certain <emphasis>accessibility</emphasis> rules which limit the "
 "visibility of classes between modules. CDI allows these same rules to apply "
 "to bean and observer method resolution. As the accessibility rules vary "
@@ -132,13 +120,12 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:67
 #, no-c-format
 msgid ""
 "The CDI specification discusses <emphasis>Bean Deployment Archives</"
-"emphasis> (BDAs)&#8212;archives which are marked as containing beans which "
-"should be deployed to the CDI container, and made available for injection "
-"and resolution. Weld reuses this description of <emphasis>Bean Deployment "
+"emphasis> (BDAs)—archives which are marked as containing beans which should "
+"be deployed to the CDI container, and made available for injection and "
+"resolution. Weld reuses this description of <emphasis>Bean Deployment "
 "Archives</emphasis> in its deployment structure SPI. Each deployment exposes "
 "the BDAs which it contains; each BDA may also reference other which it can "
 "access. Together, the transitive closure of this graph forms the beans which "
@@ -146,7 +133,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:76
 #, no-c-format
 msgid ""
 "To describe the deployment structure to Weld, the container should provide "
@@ -160,7 +146,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:85
 #, no-c-format
 msgid ""
 "As programmatically described beans may result in additional BDAs being "
@@ -170,13 +155,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:92
 #, no-c-format
 msgid "Virtual BDAs"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:93
 #, no-c-format
 msgid ""
 "In a strict container, each BDA might have to explicitly specify which other "
@@ -187,7 +170,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:100
 #, no-c-format
 msgid ""
 "A container, might, for example, use a flat accessibility structure for the "
@@ -196,11 +178,10 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:106
 #, no-c-format
 msgid ""
 "<literal>BeanDeploymentArchive</literal> provides three methods which allow "
-"it's contents to be discovered by Weld&#8212;<literal>BeanDeploymentArchive."
+"it's contents to be discovered by Weld—<literal>BeanDeploymentArchive."
 "getBeanClasses()</literal> must return all the classes in the BDA, "
 "<literal>BeanDeploymentArchive.getBeansXml()</literal> must return all the "
 "deployment descriptors in the archive, and <literal>BeanDeploymentArchive."
@@ -209,7 +190,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:114
 #, no-c-format
 msgid ""
 "BDA X may also reference another BDA Y whose beans can be resolved by, and "
@@ -220,13 +200,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:122
 #, no-c-format
 msgid "Matching the classloader structure for the deployment"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:124
 #, no-c-format
 msgid ""
 "In practice, you can regard the deployment structure represented by "
@@ -237,7 +215,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:132
 #, no-c-format
 msgid ""
 "To specify the directly accessible BDAs, the container should provide an "
@@ -246,7 +223,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:138
 #, no-c-format
 msgid ""
 "Weld allows the container to describe a circular graph, and will convert a "
@@ -254,7 +230,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:144
 #, no-c-format
 msgid ""
 "Certain services are provided for the whole deployment, whilst some are "
@@ -264,13 +239,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:153
 #, no-c-format
 msgid "EJB descriptors"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:155
 #, no-c-format
 msgid ""
 "Weld delegates EJB 3 bean discovery to the container so that it doesn't "
@@ -279,7 +252,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:160
 #, fuzzy, no-c-format
 msgid ""
 "The <literal>EjbDescriptor</literal> should return the relevant metadata as "
@@ -292,13 +264,11 @@ msgstr ""
 "EJB instance 的 interface class 以及 jndi 名稱）。"
 
 #. Tag: title
-#: ri-spi.xml:169
 #, no-c-format
 msgid "EE resource injection and resolution services"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:171
 #, no-c-format
 msgid ""
 "All the EE resource services are per-BDA services, and may be provided using "
@@ -307,37 +277,33 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:176
 #, no-c-format
 msgid ""
 "The integrator may choose to provide all EE resource injection services "
 "themselves, using another library or framework. In this case the integrator "
 "should use the <literal>EE</literal> environment, and implement the <xref "
-"linkend=\"injection.services\"/> SPI."
+"linkend=\"injection.services\" /> SPI."
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:182
 #, no-c-format
 msgid ""
 "Alternatively, the integrator may choose to use CDI to provide EE resource "
 "injection. In this case, the <literal>EE_INJECT</literal> environment should "
 "be used, and the integrator should implement the <xref linkend=\"ejb."
-"services.resolution\"/>, <xref linkend=\"resource.services\"/> and <xref "
-"linkend=\"jpa.services\"/>."
+"services.resolution\" />, <xref linkend=\"resource.services\" /> and <xref "
+"linkend=\"jpa.services\" />."
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:189
 #, no-c-format
 msgid ""
 "CDI only provides annotation-based EE resource injection; if you wish to "
 "provide deployment descriptor (e.g. <literal>ejb-jar.xml</literal>) "
-"injection, you must use <xref linkend=\"injection.services\"/>."
+"injection, you must use <xref linkend=\"injection.services\" />."
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:195
 #, no-c-format
 msgid ""
 "If the container performs EE resource injection, the injected resources must "
@@ -346,7 +312,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:201
 #, no-c-format
 msgid ""
 "If you use a non-EE environment then you may implement any of the EE service "
@@ -355,49 +320,43 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:210
 #, no-c-format
 msgid "EJB services"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:212
 #, no-c-format
 msgid "EJB services are split between two interfaces which are both per-BDA."
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:216
 #, no-c-format
 msgid ""
 "<literal>EJBServices</literal> is used to resolve local EJBs used to back "
 "session beans, and must always be provided in an EE environment. "
 "<literal>EJBServices.resolveEjb(EjbDescriptor ejbDescriptor)</literal> "
-"returns a wrapper&#8212;<literal>SessionObjectReference</literal>&#8212;"
-"around the EJB reference. This wrapper allows Weld to request a reference "
-"that implements the given business interface, and, in the case of SFSBs, "
-"both request the removal of the EJB from the container and query whether the "
-"EJB has been previously removed."
+"returns a wrapper—<literal>SessionObjectReference</literal>—around the EJB "
+"reference. This wrapper allows Weld to request a reference that implements "
+"the given business interface, and, in the case of SFSBs, both request the "
+"removal of the EJB from the container and query whether the EJB has been "
+"previously removed."
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:225
 #, no-c-format
 msgid ""
 "<literal>EJBResolutionServices.resolveEjb(InjectionPoint ij)</literal> "
 "allows the resolution of <literal>@EJB</literal> (for injection into managed "
 "beans). This service is not required if the implementation of <xref linkend="
-"\"injection.services\"/> takes care of <literal>@EJB</literal> injection."
+"\"injection.services\" /> takes care of <literal>@EJB</literal> injection."
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:234
 #, no-c-format
 msgid "JPA services"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:236
 #, no-c-format
 msgid ""
 "Just as EJB resolution is delegated to the container, resolution of "
@@ -407,23 +366,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:242
 #, no-c-format
 msgid ""
 "To allow JPA integration, the <literal>JpaServices</literal> interface "
 "should be implemented. This service is not required if the implementation of "
-"<xref linkend=\"injection.services\"/> takes care of "
+"<xref linkend=\"injection.services\" /> takes care of "
 "<literal>@PersistenceContext</literal> injection."
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:251
 #, no-c-format
 msgid "Transaction Services"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:253
 #, no-c-format
 msgid ""
 "Weld delegates JTA activities to the container. The SPI provides a couple "
@@ -432,7 +388,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:258
 #, no-c-format
 msgid ""
 "Any <literal>javax.transaction.Synchronization</literal> implementation may "
@@ -442,7 +397,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:264
 #, no-c-format
 msgid ""
 "To make it easier to determine whether or not a transaction is currently "
@@ -452,30 +406,26 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:272
 #, fuzzy, no-c-format
 msgid "Resource Services"
 msgstr "資源載入"
 
 #. Tag: para
-#: ri-spi.xml:274
 #, no-c-format
 msgid ""
 "The resolution of <literal>@Resource</literal> (for injection into managed "
 "beans) is delegated to the container. You must provide an implementation of "
 "<literal>ResourceServices</literal> which provides these operations. This "
 "service is not required if the implementation of <xref linkend=\"injection."
-"services\"/> takes care of <literal>@Resource</literal> injection."
+"services\" /> takes care of <literal>@Resource</literal> injection."
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:283
 #, fuzzy, no-c-format
 msgid "Injection Services"
 msgstr "資源載入"
 
 #. Tag: para
-#: ri-spi.xml:285
 #, no-c-format
 msgid ""
 "An integrator may wish to use <literal>InjectionServices</literal> to "
@@ -486,7 +436,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:291
 #, no-c-format
 msgid ""
 "<literal>InjectionServices</literal> provides a very simple contract, the "
@@ -497,7 +446,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:298
 #, no-c-format
 msgid ""
 "The <literal>InjectionContext</literal> can be used to discover additional "
@@ -508,13 +456,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:307
 #, fuzzy, no-c-format
 msgid "Security Services"
 msgstr "資源載入"
 
 #. Tag: para
-#: ri-spi.xml:309
 #, no-c-format
 msgid ""
 "In order to obtain the <literal>Principal</literal> representing the current "
@@ -523,13 +469,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:317
 #, no-c-format
 msgid "Bean Validation Services"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:319
 #, no-c-format
 msgid ""
 "In order to obtain the default <literal>ValidatorFactory</literal> for the "
@@ -538,13 +482,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:327
 #, no-c-format
 msgid "Identifying the BDA being addressed"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:329
 #, no-c-format
 msgid ""
 "When a client makes a request to an application which uses Weld, the request "
@@ -555,43 +497,39 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:337
 #, no-c-format
 msgid ""
-"Most Servlet contains use a classloader-per-WAR, this may provide a good way "
+"Most Servlet contains use a classloader-per-war, this may provide a good way "
 "to identify the BDA in use for web requests."
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:343
 #, no-c-format
 msgid ""
 "When Weld needs to identify the BDA, it will use one of these services, "
 "depending on what is servicing the request:"
 msgstr ""
 
-#. Tag: literal
-#: ri-spi.xml:350
+#. Tag: term
 #, no-c-format
-msgid "ServletServices.getBeanDeploymentArchive(ServletContext ctx)"
+msgid ""
+"<literal>ServletServices.getBeanDeploymentArchive(ServletContext ctx)</"
+"literal>"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:352
 #, no-c-format
 msgid ""
-"Identify the WAR in use. The <literal>ServletContext</literal> is provided "
+"Identify the war in use. The <literal>ServletContext</literal> is provided "
 "for additional context."
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:362
 #, no-c-format
 msgid "The bean store"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:364
 #, no-c-format
 msgid ""
 "Weld uses a map like structure to store bean instances - <literal>org.jboss."
@@ -600,13 +538,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:372
 #, no-c-format
 msgid "The application context"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:374
 #, no-c-format
 msgid ""
 "Weld expects the Application Server or other container to provide the "
@@ -616,13 +552,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:383
 #, no-c-format
 msgid "Initialization and shutdown"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:384
 #, no-c-format
 msgid ""
 "The <literal>org.jboss.weld.bootstrap.api.Bootstrap</literal> interface "
@@ -633,7 +567,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:391
 #, no-c-format
 msgid ""
 "The bootstrap is split into phases, container initialization, bean "
@@ -644,7 +577,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:398
 #, no-c-format
 msgid ""
 "To initialize the container, you call <literal>Bootstrap.startInitialization"
@@ -656,7 +588,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:405
 #, no-c-format
 msgid ""
 "Having called <literal>startInitialization()</literal>, the "
@@ -665,7 +596,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:410
 #, no-c-format
 msgid ""
 "To deploy the discovered beans, call <literal>Bootstrap.deployBeans()</"
@@ -673,7 +603,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:414
 #, no-c-format
 msgid ""
 "To validate the deployed beans, call <literal>Bootstrap.validateBeans()</"
@@ -681,7 +610,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:418
 #, no-c-format
 msgid ""
 "To place the container into a state where it can service requests, call "
@@ -689,7 +617,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:423
 #, no-c-format
 msgid ""
 "To shutdown the container you call <literal>Bootstrap.shutdown()</literal>. "
@@ -697,13 +624,11 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:431
 #, no-c-format
 msgid "Resource loading"
 msgstr "資源載入"
 
 #. Tag: para
-#: ri-spi.xml:433
 #, fuzzy, no-c-format
 msgid ""
 "Weld needs to load classes and resources from the classpath at various "
@@ -718,13 +643,11 @@ msgstr ""
 "literal>："
 
 #. Tag: title
-#: ri-spi.xml:445
 #, no-c-format
 msgid "The contract with the container"
 msgstr "與 container 的合同"
 
 #. Tag: para
-#: ri-spi.xml:447
 #, fuzzy, no-c-format
 msgid ""
 "There are a number of requirements that Weld places on the container for "
@@ -732,13 +655,11 @@ msgid ""
 msgstr "Web Bean RI 對於 container 有些需求以便達到 API 實做之外的正確的功能。"
 
 #. Tag: term
-#: ri-spi.xml:454
 #, no-c-format
 msgid "Classloader isolation"
 msgstr "Classloader 隔離"
 
 #. Tag: para
-#: ri-spi.xml:458
 #, fuzzy, no-c-format
 msgid ""
 "If you are integrating Weld into an environment that supports deployment of "
@@ -749,13 +670,11 @@ msgstr ""
 "Web Bean 應用程式透過自動的方式，或是透過用戶配置來啟用 classloader 隔離。"
 
 #. Tag: term
-#: ri-spi.xml:466
 #, no-c-format
 msgid "Servlet"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:470
 #, fuzzy, no-c-format
 msgid ""
 "If you are integrating Weld into a Servlet environment you must register "
@@ -768,7 +687,6 @@ msgstr ""
 "webbeans.servlet.WebBeansListener</literal> 註冊為一個 Servlet listener，"
 
 #. Tag: para
-#: ri-spi.xml:475
 #, no-c-format
 msgid ""
 "You must ensure that that <literal>WeldListener.contextInitialized()</"
@@ -777,13 +695,11 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:482
 #, no-c-format
-msgid "<term>JSF</term>"
+msgid "JSF"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:487
 #, fuzzy, no-c-format
 msgid ""
 "If you are integrating Weld into a JSF environment you must register "
@@ -794,7 +710,6 @@ msgstr ""
 "webbeans.servlet.WebBeansListener</literal> 註冊為一個 Servlet listener，"
 
 #. Tag: para
-#: ri-spi.xml:492
 #, fuzzy, no-c-format
 msgid ""
 "If you are integrating Weld into a JSF environment you must register "
@@ -806,7 +721,6 @@ msgstr ""
 "webbeans.servlet.WebBeansListener</literal> 註冊為一個 Servlet listener，"
 
 #. Tag: para
-#: ri-spi.xml:497
 #, fuzzy, no-c-format
 msgid ""
 "If you are integrating Weld into a JSF environment you must register "
@@ -818,7 +732,6 @@ msgstr ""
 "webbeans.servlet.WebBeansListener</literal> 註冊為一個 Servlet listener，"
 
 #. Tag: para
-#: ri-spi.xml:502
 #, no-c-format
 msgid ""
 "If you are integrating Weld into a JSF environment you must obtain the bean "
@@ -830,7 +743,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:509
 #, no-c-format
 msgid ""
 "If you are integrating Weld into a JSF environment you must obtain the bean "
@@ -840,7 +752,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:516 ri-spi.xml:562
 #, no-c-format
 msgid ""
 "There are a number of ways you can obtain the bean manager for the module. "
@@ -850,7 +761,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:523
 #, fuzzy, no-c-format
 msgid ""
 "If you are integrating Weld into a JSF environment you must register "
@@ -864,19 +774,16 @@ msgstr ""
 "webbeans.servlet.WebBeansListener</literal> 註冊為一個 Servlet listener，"
 
 #. Tag: para
-#: ri-spi.xml:531
 #, no-c-format
 msgid "Weld only supports JSF 1.2 and above."
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:538
 #, no-c-format
-msgid "<term>JSP</term>"
+msgid "JSP"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:543
 #, fuzzy, no-c-format
 msgid ""
 "If you are integrating Weld into a JSP environment you must register "
@@ -888,7 +795,6 @@ msgstr ""
 "webbeans.servlet.WebBeansListener</literal> 註冊為一個 Servlet listener，"
 
 #. Tag: para
-#: ri-spi.xml:548
 #, no-c-format
 msgid ""
 "If you are integrating Weld into a JSP environment you must obtain the bean "
@@ -899,7 +805,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:555
 #, no-c-format
 msgid ""
 "If you are integrating Weld into a JSP environment you must obtain the bean "
@@ -909,20 +814,20 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:572
 #, no-c-format
 msgid "Session Bean Interceptor"
 msgstr "Session Bean 攔截器"
 
 #. Tag: para
-#: ri-spi.xml:576
 #, fuzzy, no-c-format
 msgid ""
-"If you are integrating Weld into an EJB environment you must register "
-"<literal>org.jboss.weld.ejb.SessionBeanInterceptor</literal> as a EJB "
-"interceptor for all EJBs in the application, either automatically, or "
-"through user configuration, for each CDI application which uses enterprise "
-"beans."
+"If you are integrating Weld into an EJB environment you must register the "
+"<literal>aroundInvoke</literal> method of <literal>org.jboss.weld.ejb."
+"SessionBeanInterceptor</literal> as a EJB around-invoke interceptor for all "
+"EJBs in the application, either automatically, or through user "
+"configuration, for each CDI application which uses enterprise beans. If you "
+"are running in a EJB 3.1 environment, you should register this as an around-"
+"timeout interceptor as well."
 msgstr ""
 "若您要將 Web Bean 整合入一個 EJB 環境中，您就必須針對於各個使用 enterprise "
 "bean 的 Web Bean 應用程式來為應用程式中的所有 EJB 透過自動的方式，或是透過用"
@@ -930,7 +835,6 @@ msgstr ""
 "註冊為一個 EJB 攔截器。"
 
 #. Tag: para
-#: ri-spi.xml:583
 #, no-c-format
 msgid ""
 "You must register the <literal>SessionBeanInterceptor</literal> as the inner "
@@ -938,13 +842,11 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:591
 #, fuzzy, no-c-format
 msgid "The <literal>weld-core.jar</literal>"
 msgstr "<literal>webbeans-ri.jar</literal>"
 
 #. Tag: para
-#: ri-spi.xml:595
 #, no-c-format
 msgid ""
 "Weld can reside on an isolated classloader, or on a shared classloader. If "
@@ -956,7 +858,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:601
 #, no-c-format
 msgid ""
 "You can provide your own implementation of <literal>Singleton</literal> and "
@@ -965,7 +866,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:606
 #, no-c-format
 msgid ""
 "Weld also provides an implementation of Thread Context Classloader per "
@@ -973,13 +873,11 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:613
 #, no-c-format
 msgid "Binding the manager in JNDI"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:617
 #, no-c-format
 msgid ""
 "You should bind the bean manager for the bean deployment archive into JNDI "
@@ -990,13 +888,11 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:627
 #, no-c-format
 msgid "Performing CDI injection on Java EE component classes"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:631
 #, no-c-format
 msgid ""
 "The CDI specification requires the container to provide injection into non-"
@@ -1008,7 +904,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:639
 #, no-c-format
 msgid ""
 "The CDI specification also requires that a <literal>ProcessInjectionTarget</"
@@ -1019,7 +914,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:646
 #, no-c-format
 msgid ""
 "To help the integrator, Weld provides <literal>WeldManager."
@@ -1027,36 +921,7 @@ msgid ""
 "<literal>InjectionTarget</literal> to use."
 msgstr ""
 
-#. Tag: programlisting
-#: ri-spi.xml:651
-#, no-c-format
-msgid ""
-"<![CDATA[// Fire ProcessInjectionTarget, returning the InjectionTarget\n"
-"// to use\n"
-"InjectionTarget it = weldBeanManager.fireProcessInjectionTarget(clazz);\n"
-"\n"
-"// Per instance required, create the creational context\n"
-"CreationalContext<?> cc = beanManager.createCreationalContext(null);\n"
-"\n"
-"// Produce the instance, performing any constructor injection required\n"
-"Object instance = it.produce();\n"
-"\n"
-"// Perform injection and call initializers\n"
-"it.inject(instance, cc);\n"
-"\n"
-"// Call the post-construct callback\n"
-"it.postConstruct(instance);\n"
-"\n"
-"// Call the pre-destroy callback\n"
-"it.preDestroy(instance);\n"
-"\n"
-"// Clean up the instance\n"
-"it.dispose();\n"
-"cc.release();]]>"
-msgstr ""
-
 #. Tag: para
-#: ri-spi.xml:652
 #, no-c-format
 msgid ""
 "The container may intersperse other operations between these calls. Further, "
@@ -1065,49 +930,12 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:656
 #, no-c-format
 msgid ""
 "When performing injections on EJBs you must use the Weld-defined SPI, "
 "<literal>WeldManager</literal>. Furthermore, you must perform this operation "
 "on the correct bean manager for the bean deployment archive containing the "
 "EJB."
-msgstr ""
-
-#. Tag: programlisting
-#: ri-spi.xml:661
-#, no-c-format
-msgid ""
-"<![CDATA[// Obtain the EjbDescriptor for the EJB\n"
-"// You may choose to use this utility method to get the descriptor\n"
-"EjbDescriptor<?> ejbDescriptor = beanManager.getEjbDescriptor(ejbName);\n"
-"\n"
-"// Get an the Bean object\n"
-"Bean<?> bean = beanManager.getBean(ejbDescriptor);\n"
-"\n"
-"// Create the injection target\n"
-"InjectionTarget it = deploymentBeanManager.createInjectionTarget"
-"(ejbDescriptor);\n"
-"\n"
-"// Per instance required, create the creational context\n"
-"CreationalContext<?> cc = deploymentBeanManager.createCreationalContext"
-"(bean);\n"
-"\n"
-"// Perform injection and call initializers\n"
-"it.inject(instance, cc);\n"
-"\n"
-"// You may choose to have CDI call the post construct and pre destroy\n"
-"// lifecycle callbacks\n"
-"\n"
-"// Call the post-construct callback\n"
-"it.postConstruct(instance);\n"
-"\n"
-"// Call the pre-destroy callback\n"
-"it.preDestroy(instance);\n"
-"\n"
-"// Clean up the instance\n"
-"it.dispose();\n"
-"cc.release();]]>"
 msgstr ""
 
 #, fuzzy

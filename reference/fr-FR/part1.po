@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-01-06 12:17+0000\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
 "PO-Revision-Date: 2008-12-19 20:26+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -14,7 +14,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: para
-#: part1.xml:14
 #, no-c-format
 msgid ""
 "The <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299</ulink> "
@@ -25,7 +24,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:23
 #, no-c-format
 msgid ""
 "an improved lifecycle for stateful objects, bound to well-defined "
@@ -33,20 +31,17 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:28
 #, no-c-format
 msgid "a typesafe approach to <emphasis>dependency injection</emphasis>,"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:33
 #, no-c-format
 msgid ""
 "object interaction via an <emphasis>event notification facility</emphasis>,"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:38
 #, no-c-format
 msgid ""
 "a better approach to binding <emphasis>interceptors</emphasis> to objects, "
@@ -55,7 +50,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:45
 #, no-c-format
 msgid ""
 "an <emphasis>SPI</emphasis> for developing portable extensions to the "
@@ -63,22 +57,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:51
 #, no-c-format
 msgid ""
 "The CDI services are a core aspect of the Java EE platform and include full "
 "support for Java EE modularity and the Java EE component architecture. But "
 "the specification does not limit the use of CDI to the Java EE environment. "
 "In the Java SE environment, the services might be provided by a standalone "
-"CDI implementation like Weld (see <xref linkend=\"weld-se\"/>), or even by a "
-"container that also implements the subset of EJB defined for embedded usage "
-"by the EJB 3.1 specification. CDI is especially useful in the context of web "
-"application development, but the problems it solves are general development "
-"concerns and it is therefore applicable to a wide variety of application."
+"CDI implementation like Weld (see <xref linkend=\"weld-se\" />), or even by "
+"a container that also implements the subset of EJB defined for embedded "
+"usage by the EJB 3.1 specification. CDI is especially useful in the context "
+"of web application development, but the problems it solves are general "
+"development concerns and it is therefore applicable to a wide variety of "
+"application."
 msgstr ""
 
 #. Tag: para
-#: part1.xml:61
 #, no-c-format
 msgid ""
 "An object bound to a lifecycle context is called a bean. CDI includes built-"
@@ -87,19 +80,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:68
 #, no-c-format
 msgid "managed beans, and"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:71
 #, no-c-format
 msgid "EJB session beans."
 msgstr ""
 
 #. Tag: para
-#: part1.xml:75
 #, no-c-format
 msgid ""
 "Both managed beans and EJB session beans may inject other beans. But some "
@@ -109,37 +99,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:83
 #, no-c-format
 msgid "message-driven beans,"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:86
 #, no-c-format
 msgid "interceptors,"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:89
 #, no-c-format
 msgid "servlets, servlet filters and servlet event listeners,"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:92
 #, no-c-format
 msgid "JAX-WS service endpoints and handlers, and"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:95
 #, no-c-format
 msgid "JSP tag handlers and tag library event listeners."
 msgstr ""
 
 #. Tag: para
-#: part1.xml:99
 #, no-c-format
 msgid ""
 "CDI relieves the user of an unfamiliar API of the need to answer the "
@@ -147,44 +131,37 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:105
 #, no-c-format
 msgid "What is the lifecycle of this object?"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:108
 #, no-c-format
 msgid "How many simultaneous clients can it have?"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:111
 #, no-c-format
 msgid "Is it multithreaded?"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:114
 #, no-c-format
 msgid "How do I get access to it from a client?"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:117
 #, no-c-format
 msgid "Do I need to explicitly destroy it?"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:120
 #, no-c-format
 msgid ""
 "Where should I keep the reference to it when I'm not currently using it?"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:125
 #, no-c-format
 msgid ""
 "How can I define an alternative implementation, so that the implementation "
@@ -192,13 +169,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:131
 #, no-c-format
 msgid "How should I go about sharing this object between other objects?"
 msgstr ""
 
 #. Tag: para
-#: part1.xml:137
 #, no-c-format
 msgid ""
 "CDI is more than a framework. It's a whole, rich programming model. The "
@@ -207,7 +182,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:142
 #, no-c-format
 msgid ""
 "A bean specifies only the type and semantics of other beans it depends upon. "
@@ -219,7 +193,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:149
 #, no-c-format
 msgid ""
 "Events, interceptors and decorators enhance the loose-coupling inherent in "
@@ -227,7 +200,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:155
 #, no-c-format
 msgid ""
 "<emphasis>event notifications</emphasis> decouple event producers from event "
@@ -235,7 +207,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:159
 #, no-c-format
 msgid ""
 "<emphasis>interceptors</emphasis> decouple technical concerns from business "
@@ -243,7 +214,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:163
 #, no-c-format
 msgid ""
 "<emphasis>decorators</emphasis> allow business concerns to be "
@@ -251,7 +221,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:168
 #, no-c-format
 msgid ""
 "What's even more powerful (and comforting) is that CDI provides all these "
@@ -266,7 +235,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:177
 #, no-c-format
 msgid ""
 "But CDI isn't a restrictive programming model. It doesn't tell you how you "
@@ -276,7 +244,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:183
 #, no-c-format
 msgid ""
 "CDI even provides a comprehensive SPI, allowing other kinds of object "
@@ -286,7 +253,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:189
 #, no-c-format
 msgid ""
 "CDI was influenced by a number of existing Java frameworks, including Seam, "
@@ -299,7 +265,6 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: part1.xml:197
 #, no-c-format
 msgid ""
 "Finally, CDI is a <ulink url=\"http://jcp.org\">Java Community Process</"
