@@ -1,42 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
-  <display-name>Weld PasteCode example</display-name>
-  <distributable/>
-  <context-param>
-    <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
-    <param-value>.xhtml</param-value>
-  </context-param>
-  <session-config>
-    <session-timeout>10</session-timeout>
-  </session-config>
-  <servlet>
-    <servlet-name>Faces Servlet</servlet-name>
-    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Faces Servlet</servlet-name>
-    <url-pattern>*.jsf</url-pattern>
-    <url-pattern>/faces/*</url-pattern>
-  </servlet-mapping>
-  <filter>
-    <filter-name>UrlRewriteFilter</filter-name>
-    <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>UrlRewriteFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-    <dispatcher>REQUEST</dispatcher>
-    <dispatcher>FORWARD</dispatcher>
-  </filter-mapping>
-  <servlet>
-    <description></description>
-    <display-name>DownloadServlet</display-name>
-    <servlet-name>DownloadServlet</servlet-name>
-    <servlet-class>org.jboss.weld.examples.pastecode.DownloadServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DownloadServlet</servlet-name>
-    <url-pattern>/download</url-pattern>
-  </servlet-mapping>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+   version="2.5">
+   
+   <display-name>Weld PasteCode example</display-name>
+<!--   <distributable />-->
+   
+   <context-param>
+      <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+      <param-value>.xhtml</param-value>
+   </context-param>
+   
+   <session-config>
+      <session-timeout>10</session-timeout>
+   </session-config>
+   
+   <servlet>
+      <servlet-name>Faces Servlet</servlet-name>
+      <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+   </servlet>
+   
+   <servlet-mapping>
+      <servlet-name>Faces Servlet</servlet-name>
+      <url-pattern>*.jsf</url-pattern>
+      <url-pattern>/faces/*</url-pattern>
+   </servlet-mapping>
+   
+   <filter>
+      <filter-name>UrlRewriteFilter</filter-name>
+      <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+   </filter>
+   
+   <filter-mapping>
+      <filter-name>UrlRewriteFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+      <dispatcher>REQUEST</dispatcher>
+      <dispatcher>FORWARD</dispatcher>
+   </filter-mapping>
+   
+   <servlet>
+      <description></description>
+      <display-name>DownloadServlet</display-name>
+      <servlet-name>DownloadServlet</servlet-name>
+      <servlet-class>org.jboss.weld.examples.pastecode.DownloadServlet</servlet-class>
+   </servlet>
+   
+   <servlet-mapping>
+      <servlet-name>DownloadServlet</servlet-name>
+      <url-pattern>/download</url-pattern>
+   </servlet-mapping>
+   
 </web-app>
