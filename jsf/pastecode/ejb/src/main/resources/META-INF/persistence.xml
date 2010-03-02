@@ -8,14 +8,7 @@
       <jta-data-source>java:/pastecodeDatasource</jta-data-source>
       <properties>
          <property name="hibernate.hbm2ddl.auto" value="create-drop"/> <!-- create-drop  update-->
-         <property name="hibernate.cache.use_query_cache" value="true"/>
          <property name="hibernate.show_sql" value="false"/>
-
-         <property name="hibernate.cache.provider_class" 
-                   value="org.hibernate.cache.HashtableCacheProvider"/>
-         
-         <property name="jboss.entity.manager.factory.jndi.name"
-                   value="java:/pastecodeEntityManagerFactory" />
       </properties>
    </persistence-unit>
 </persistence>
