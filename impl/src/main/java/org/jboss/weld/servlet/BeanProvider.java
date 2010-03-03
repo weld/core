@@ -24,7 +24,7 @@ import javax.servlet.ServletContext;
 
 import org.jboss.weld.conversation.ConversationIdName;
 import org.jboss.weld.conversation.ConversationImpl;
-import org.jboss.weld.conversation.ConversationManager;
+import org.jboss.weld.conversation.ConversationManager2;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class BeanProvider
@@ -39,11 +39,11 @@ public class BeanProvider
       
    }
    
-   public static ConversationManager conversationManager(ServletContext servletContext)
+   public static ConversationManager2 conversationManager(ServletContext servletContext)
    {
       BeanManagerImpl beanManager = getModuleBeanManager(servletContext);
-      Bean<?> bean = beanManager.resolve(beanManager.getBeans(ConversationManager.class));
-      return (ConversationManager) beanManager.getReference(bean, ConversationManager.class, beanManager.createCreationalContext(bean));
+      Bean<?> bean = beanManager.resolve(beanManager.getBeans(ConversationManager2.class));
+      return (ConversationManager2) beanManager.getReference(bean, ConversationManager2.class, beanManager.createCreationalContext(bean));
    }
    
    public static HttpSessionManager httpSessionManager(ServletContext servletContext)

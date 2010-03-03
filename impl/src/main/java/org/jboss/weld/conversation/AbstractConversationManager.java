@@ -55,7 +55,7 @@ import org.slf4j.cal10n.LocLogger;
  * @author Nicklas Karlsson
  * 
  */
-public abstract class AbstractConversationManager implements ConversationManager, Serializable
+public abstract class AbstractConversationManager implements ConversationManager2, Serializable
 {
    private static final long serialVersionUID = 1L;
 
@@ -69,7 +69,8 @@ public abstract class AbstractConversationManager implements ConversationManager
    @Inject
    private ConversationIdGenerator conversationIdGenerator;
 
-   @Inject @ConversationConcurrentAccessTimeout
+   @Inject
+   @ConversationConcurrentAccessTimeout
    private long concurrentAccessTimeout;
 
    private Map<String, ManagedConversation> managedConversations;
@@ -79,7 +80,7 @@ public abstract class AbstractConversationManager implements ConversationManager
       managedConversations = new ConcurrentHashMap<String, ManagedConversation>();
    }
 
-   public ConversationManager setAsynchronous(boolean asynchronous)
+   public ConversationManager2 setAsynchronous(boolean asynchronous)
    {
       if (this.asynchronous == asynchronous)
       {
@@ -131,7 +132,7 @@ public abstract class AbstractConversationManager implements ConversationManager
       }
    }
 
-   public ConversationManager setupConversation(String cid)
+   public ConversationManager2 setupConversation(String cid)
    {
       if (!asynchronous)
       {
@@ -175,7 +176,7 @@ public abstract class AbstractConversationManager implements ConversationManager
       return Container.instance().services().get(ContextLifecycle.class).getConversationContext();
    }
 
-   public ConversationManager teardownConversation()
+   public ConversationManager2 teardownConversation()
    {
       log.trace(CLEANING_UP_CONVERSATION, conversation);
       if (conversation.isTransient())
@@ -275,10 +276,15 @@ public abstract class AbstractConversationManager implements ConversationManager
       }
    }
 
-   public ConversationManager destroyAllConversations()
+   public ConversationManager2 destroyAllConversations()
    {
       log.debug(DESTROY_ALL_LRC, "session ended");
       log.trace(LRC_COUNT, managedConversations.size());
+      if (conversation.getResumedId() != null)
+      {
+         // Already destroyed when context destroyed
+         managedConversations.remove(conversation.getResumedId());
+      }
       for (ManagedConversation managedConversation : managedConversations.values())
       {
          log.debug(DESTROY_LRC, managedConversation, "session ended");
@@ -288,15 +294,16 @@ public abstract class AbstractConversationManager implements ConversationManager
       return this;
    }
 
-   public ConversationManager activateContext()
+   public ConversationManager2 setupContext()
    {
-      Container.instance().services().get(ContextLifecycle.class).activateConversationContext();
+      Container.instance().services().get(ContextLifecycle.class).setupConversationContext();
       return this;
    }
 
-   public ConversationManager deactivateContext()
+   public ConversationManager2 teardownContext()
    {
-      Container.instance().services().get(ContextLifecycle.class).deactivateConversationContext();
+      Container.instance().services().get(ContextLifecycle.class).teardownConversationContext();
+      destroyAllConversations();
       return this;
    }
 

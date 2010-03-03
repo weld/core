@@ -35,7 +35,7 @@ import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
-import org.jboss.weld.conversation.ConversationManager;
+import org.jboss.weld.conversation.ConversationManager2;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -64,9 +64,9 @@ public class WeldPhaseListener implements PhaseListener
 
    private static final LocLogger log = loggerFactory().getLogger(JSF);
 
-   private ConversationManager conversationManager;
+   private ConversationManager2 conversationManager;
 
-   private ConversationManager getConversationManager()
+   private ConversationManager2 getConversationManager()
    {
       if (conversationManager == null)
       {

@@ -127,9 +127,7 @@ public class ManagedConversation
       {
          cancelTermination();
       }
-      ConversationContext terminationContext = new ConversationContext();
-      terminationContext.setBeanStore(beanStore);
-      terminationContext.destroy();
+      ConversationContext.destroyBeanStore(beanStore);
    }
 
    /**

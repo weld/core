@@ -20,7 +20,7 @@ import java.util.Map;
 
 import javax.enterprise.context.Conversation;
 
-public interface ConversationManager
+public interface ConversationManager2
 {
    /**
     * Checks the state of the conversation context
@@ -30,22 +30,22 @@ public interface ConversationManager
    public abstract boolean isContextActive();
    
    /**
-    * Activates the conversation context
+    * Sets up and activates the conversation context
     * 
     * @return The conversation manager
     * 
     * @throws IllegalStateException if the context is already active
     */   
-   public abstract ConversationManager activateContext();
+   public abstract ConversationManager2 setupContext();
    
    /**
-    * Deactivates the conversation context
+    * Destroys the conversations and deactivates the conversation context
     * 
     * @return The conversation manager
     * 
     * @throws IllegalStateException if the context is already deactive
     */   
-   public abstract ConversationManager deactivateContext();
+   public abstract ConversationManager2 teardownContext();
 
    /**
     * Resumes a long running conversation. If the cid is null, nothing is done and the current
@@ -59,7 +59,7 @@ public interface ConversationManager
     * @throws IllegalStateException if the conversation context is not active
     */
    
-   public abstract ConversationManager setupConversation(String cid);
+   public abstract ConversationManager2 setupConversation(String cid);
    
    /**
     * Destroys the current conversation if it's transient. Stores it for conversation 
@@ -68,7 +68,7 @@ public interface ConversationManager
     * @return The conversation manager
     * @throws IllegalStateException if the conversation context is not active
     */
-   public abstract ConversationManager teardownConversation();
+   public abstract ConversationManager2 teardownConversation();
    
    /**
     * Gets the current non-transient conversations
@@ -86,11 +86,4 @@ public interface ConversationManager
     */   
    public abstract String generateConversationId();
  
-   /**
-    * Destroys all non-transient conversations
-    * 
-    * @return The conversation manager
-    */
-   public abstract ConversationManager destroyAllConversations();
-   
 }

@@ -22,6 +22,7 @@
  */
 package org.jboss.weld.context;
 
+import static org.jboss.weld.jsf.JsfHelper.getServletContext;
 import static org.jboss.weld.logging.Category.CONTEXT;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ContextMessage.APPLICATION_ENDED;
@@ -30,6 +31,9 @@ import static org.jboss.weld.logging.messages.ContextMessage.REQUEST_ENDED;
 import static org.jboss.weld.logging.messages.ContextMessage.REQUEST_STARTED;
 import static org.jboss.weld.logging.messages.ContextMessage.SESSION_ENDED;
 import static org.jboss.weld.logging.messages.ContextMessage.SESSION_RESTORED;
+import static org.jboss.weld.servlet.BeanProvider.conversationManager;
+
+import javax.faces.context.FacesContext;
 
 import org.jboss.weld.bootstrap.api.Lifecycle;
 import org.jboss.weld.bootstrap.api.Service;
@@ -39,15 +43,15 @@ import org.jboss.weld.context.beanstore.HashMapBeanStore;
 import org.slf4j.cal10n.LocLogger;
 
 /**
- * An implementation of the Weld lifecycle that supports restoring
- * and destroying all the built in contexts
+ * An implementation of the Weld lifecycle that supports restoring and
+ * destroying all the built in contexts
  * 
  * @author Pete Muir
  * 
  */
 public class ContextLifecycle implements Lifecycle, Service
 {
-   
+
    private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
    private final AbstractApplicationContext applicationContext;
@@ -56,7 +60,7 @@ public class ContextLifecycle implements Lifecycle, Service
    private final ConversationContext conversationContext;
    private final RequestContext requestContext;
    private final DependentContext dependentContext;
-   
+
    public ContextLifecycle(AbstractApplicationContext applicationContext, AbstractApplicationContext singletonContext, SessionContext sessionContext, ConversationContext conversationContext, RequestContext requestContext, DependentContext dependentContext)
    {
       this.applicationContext = applicationContext;
@@ -70,26 +74,22 @@ public class ContextLifecycle implements Lifecycle, Service
    public void restoreSession(String id, BeanStore sessionBeanStore)
    {
       log.trace(SESSION_RESTORED, id);
-      sessionContext.setBeanStore(sessionBeanStore);
-      sessionContext.setActive(true);
+      setupContext(sessionContext, sessionBeanStore);
    }
 
    public void endSession(String id, BeanStore sessionBeanStore)
    {
       log.trace(SESSION_ENDED, id);
-      sessionContext.setActive(true);
-      sessionContext.destroy();
-      sessionContext.setBeanStore(null);
-      sessionContext.setActive(false);
+      teardownContext(sessionContext);
+      conversationManager(getServletContext(FacesContext.getCurrentInstance())).teardownContext();
    }
 
    public void beginRequest(String id, BeanStore requestBeanStore)
    {
       log.trace(REQUEST_STARTED, id);
-      requestContext.setBeanStore(requestBeanStore);
-      requestContext.setActive(true);
       dependentContext.setActive(true);
-      activateConversationContext();
+      setupContext(requestContext, requestBeanStore);
+      setupConversationContext();
    }
 
    public void endRequest(String id, BeanStore requestBeanStore)
@@ -97,54 +97,46 @@ public class ContextLifecycle implements Lifecycle, Service
       log.trace(REQUEST_ENDED, id);
       requestContext.setBeanStore(requestBeanStore);
       dependentContext.setActive(false);
-      requestContext.destroy();
-      requestContext.setActive(false);
-      requestContext.setBeanStore(null);
-      deactivateConversationContext();
+      teardownContext(requestContext);
+      conversationContext.setBeanStore(null);
+      conversationContext.setActive(false);
    }
-   
+
    public boolean isRequestActive()
    {
       return singletonContext.isActive() && applicationContext.isActive() && requestContext.isActive() && dependentContext.isActive();
    }
-   
+
    public boolean isApplicationActive()
    {
       return singletonContext.isActive() && applicationContext.isActive() && dependentContext.isActive();
    }
-   
+
    public boolean isConversationActive()
    {
       return singletonContext.isActive() && applicationContext.isActive() && sessionContext.isActive() && conversationContext.isActive() && dependentContext.isActive();
    }
-   
-   public boolean isSessionActive() 
+
+   public boolean isSessionActive()
    {
       return singletonContext.isActive() && applicationContext.isActive() && sessionContext.isActive() && dependentContext.isActive();
    }
-   
 
    public void beginApplication(BeanStore applicationBeanStore)
    {
       log.trace(APPLICATION_STARTED, "");
-      applicationContext.setBeanStore(applicationBeanStore);
-      applicationContext.setActive(true);
-      singletonContext.setBeanStore(new ConcurrentHashMapBeanStore());
-      singletonContext.setActive(true);
+      setupContext(applicationContext, applicationBeanStore);
+      setupContext(singletonContext, new ConcurrentHashMapBeanStore());
    }
-   
+
    public void endApplication()
    {
       log.trace(APPLICATION_ENDED, "");
-      applicationContext.destroy();
-      applicationContext.setActive(false);
-      applicationContext.setBeanStore(null);
-      singletonContext.destroy();
-      singletonContext.setActive(false);
-      singletonContext.setBeanStore(null);
+      teardownContext(applicationContext);
+      teardownContext(singletonContext);
    }
-   
-   public void cleanup() 
+
+   public void cleanup()
    {
       dependentContext.cleanup();
       requestContext.cleanup();
@@ -153,47 +145,73 @@ public class ContextLifecycle implements Lifecycle, Service
       singletonContext.cleanup();
       applicationContext.cleanup();
    }
-   
+
    public AbstractApplicationContext getApplicationContext()
    {
       return applicationContext;
    }
-   
+
    public AbstractApplicationContext getSingletonContext()
    {
       return singletonContext;
    }
-   
+
    public SessionContext getSessionContext()
    {
       return sessionContext;
    }
-   
+
    public ConversationContext getConversationContext()
    {
       return conversationContext;
    }
-   
+
    public RequestContext getRequestContext()
    {
       return requestContext;
    }
-   
+
    public DependentContext getDependentContext()
    {
       return dependentContext;
    }
 
-   public void activateConversationContext()
+   public void setupConversationContext()
    {
-      conversationContext.setActive(true);
-      conversationContext.setBeanStore(new HashMapBeanStore());
+      setupContext(conversationContext, new HashMapBeanStore());
    }
 
-   public void deactivateConversationContext()
+   public void teardownConversationContext()
    {
-      conversationContext.setActive(false);
-      conversationContext.setBeanStore(null);
+      teardownContext(conversationContext);
    }
+
+   private void setupContext(AbstractThreadLocalMapContext context, BeanStore beanStore)
+   {
+      context.setBeanStore(beanStore);
+      context.setActive(true);
+   }
+
+   private void setupContext(AbstractApplicationContext context, BeanStore beanStore)
+   {
+      context.setBeanStore(beanStore);
+      context.setActive(true);
+   }
+   
+   private void teardownContext(AbstractThreadLocalMapContext context)
+   {
+      context.setActive(true);
+      context.destroy();
+      context.setBeanStore(null);
+      context.setActive(false);
+   }
+   
+   private void teardownContext(AbstractApplicationContext context)
+   {
+      context.setActive(true);
+      context.destroy();
+      context.setBeanStore(null);
+      context.setActive(false);
+   }   
 
 }

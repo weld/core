@@ -52,7 +52,7 @@ public class ConversationImpl implements Conversation, Serializable
    private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
 
    @Inject
-   private ConversationManager conversationManager;
+   private ConversationManager2 conversationManager;
 
    private String id;
    private boolean _transient = true;
@@ -79,7 +79,7 @@ public class ConversationImpl implements Conversation, Serializable
     * 
     * @param conversation The old conversation
     */
-   protected ConversationImpl(Conversation conversation, ConversationManager conversationManager)
+   protected ConversationImpl(Conversation conversation, ConversationManager2 conversationManager)
    {
       id = conversation.getId();
       _transient = conversation.isTransient();
@@ -88,7 +88,7 @@ public class ConversationImpl implements Conversation, Serializable
       this.conversationManager = conversationManager;
    }
    
-   public static ConversationImpl of(Conversation conversation, ConversationManager conversationManager)
+   public static ConversationImpl of(Conversation conversation, ConversationManager2 conversationManager)
    {
       return new ConversationImpl(conversation, conversationManager);
    }
@@ -220,7 +220,7 @@ public class ConversationImpl implements Conversation, Serializable
       return resumedId;
    }
 
-   public ConversationImpl unProxy(ConversationManager conversationManager)
+   public ConversationImpl unProxy(ConversationManager2 conversationManager)
    {
       return new ConversationImpl(this, conversationManager);
    }

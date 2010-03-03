@@ -63,5 +63,12 @@ public class ConversationContext extends AbstractThreadLocalMapContext
       String beanStoreInfo = getBeanStore() == null ? "" : getBeanStore().toString();
       return active + "conversation context " + beanStoreInfo;
    }
+
+   public static void destroyBeanStore(BeanStore beanStore)
+   {
+      ConversationContext terminatorContext = new ConversationContext();
+      terminatorContext.setBeanStore(beanStore);
+      terminatorContext.destroy();
+   }
    
 }
