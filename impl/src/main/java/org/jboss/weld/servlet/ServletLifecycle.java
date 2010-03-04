@@ -22,10 +22,12 @@
  */
 package org.jboss.weld.servlet;
 
+import static org.jboss.weld.jsf.JsfHelper.getServletContext;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_SCOPE_BEAN_STORE_MISSING;
 import static org.jboss.weld.servlet.BeanProvider.conversationManager;
 import static org.jboss.weld.servlet.BeanProvider.httpSessionManager;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -93,11 +95,9 @@ public class ServletLifecycle
             // at the end of the request.
             beanStore.invalidate();
             conversationManager.invalidateSession();
-            conversationManager.destroyAllConversations();
          }
          else
          {
-            conversationManager.destroyAllConversations();
             lifecycle.endSession(session.getId(), beanStore);
          }
       }
@@ -113,7 +113,6 @@ public class ServletLifecycle
 
          lifecycle.beginRequest("endSession-" + session.getId(), mockRequest);
          BeanStore sessionBeanStore = restoreSessionContext(session);
-         conversationManager.destroyAllConversations();
          lifecycle.endSession(session.getId(), sessionBeanStore);
          lifecycle.endRequest("endSession-" + session.getId(), mockRequest);
       }
@@ -130,7 +129,7 @@ public class ServletLifecycle
    protected BeanStore restoreSessionContext(HttpServletRequest request)
    {
       HttpPassThruSessionBeanStore sessionBeanStore = new HttpPassThruOnDemandSessionBeanStore(request);
-      HttpSession session = request.getSession(false);
+      HttpSession session = request.getSession(true);
       lifecycle.restoreSession(session == null ? "Inactive session" : session.getId(), sessionBeanStore);
       if (session != null)
       {
@@ -174,6 +173,14 @@ public class ServletLifecycle
    {
       if (request.getAttribute(REQUEST_ATTRIBUTE_NAME) != null)
       {
+         HttpPassThruSessionBeanStore sessionBeanStore = (HttpPassThruSessionBeanStore) lifecycle.getSessionContext().getBeanStore();
+         if ((sessionBeanStore != null) && (sessionBeanStore.isInvalidated()))
+         {
+            conversationManager(request.getSession().getServletContext()).teardownContext();
+            lifecycle.endSession(request.getRequestedSessionId(), sessionBeanStore);
+         }
+         lifecycle.getSessionContext().setActive(false);
+         lifecycle.getSessionContext().setBeanStore(null);
          BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
          if (beanStore == null)
          {
@@ -181,13 +188,6 @@ public class ServletLifecycle
          }
          lifecycle.endRequest(request.getRequestURI(), beanStore);
          request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
-         HttpPassThruSessionBeanStore sessionBeanStore = (HttpPassThruSessionBeanStore) lifecycle.getSessionContext().getBeanStore();
-         if ((sessionBeanStore != null) && (sessionBeanStore.isInvalidated()))
-         {
-            lifecycle.endSession(request.getRequestedSessionId(), sessionBeanStore);
-         }
-         lifecycle.getSessionContext().setActive(false);
-         lifecycle.getSessionContext().setBeanStore(null);
       }
    }
 

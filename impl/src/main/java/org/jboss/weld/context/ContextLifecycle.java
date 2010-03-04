@@ -22,7 +22,6 @@
  */
 package org.jboss.weld.context;
 
-import static org.jboss.weld.jsf.JsfHelper.getServletContext;
 import static org.jboss.weld.logging.Category.CONTEXT;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ContextMessage.APPLICATION_ENDED;
@@ -31,9 +30,6 @@ import static org.jboss.weld.logging.messages.ContextMessage.REQUEST_ENDED;
 import static org.jboss.weld.logging.messages.ContextMessage.REQUEST_STARTED;
 import static org.jboss.weld.logging.messages.ContextMessage.SESSION_ENDED;
 import static org.jboss.weld.logging.messages.ContextMessage.SESSION_RESTORED;
-import static org.jboss.weld.servlet.BeanProvider.conversationManager;
-
-import javax.faces.context.FacesContext;
 
 import org.jboss.weld.bootstrap.api.Lifecycle;
 import org.jboss.weld.bootstrap.api.Service;
@@ -81,7 +77,6 @@ public class ContextLifecycle implements Lifecycle, Service
    {
       log.trace(SESSION_ENDED, id);
       teardownContext(sessionContext);
-      conversationManager(getServletContext(FacesContext.getCurrentInstance())).teardownContext();
    }
 
    public void beginRequest(String id, BeanStore requestBeanStore)
