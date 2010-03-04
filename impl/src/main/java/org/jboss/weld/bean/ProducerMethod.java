@@ -148,7 +148,11 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
                }
             }
             
-            
+            @Override
+            public String toString() 
+            {
+              return method.toString();
+            }
             
          });
       }

@@ -131,6 +131,12 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
                return field.get(InterceptionUtils.getRawInstance(getReceiver(creationalContext)));
             }
             
+            @Override
+            public String toString() 
+            {
+              return field.toString();
+            }
+            
          });
          checkProducerField();
       }
