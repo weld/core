@@ -265,6 +265,15 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       return bean;
    }
    
+   protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> ejbDescriptor, WeldClass<T> weldClass)
+   {
+      // TODO Don't create enterprise bean if it has no local interfaces!
+      SessionBean<T> bean = SessionBean.of(ejbDescriptor, manager, weldClass);
+      getEnvironment().addSessionBean(bean);
+      createObserversProducersDisposers(bean);
+      return bean;
+   }
+
    protected <T> void createNewSessionBean(InternalEjbDescriptor<T> ejbDescriptor)
    {
       getEnvironment().addSessionBean(NewSessionBean.of(ejbDescriptor, manager));

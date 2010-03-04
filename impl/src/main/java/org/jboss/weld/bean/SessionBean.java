@@ -72,6 +72,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
@@ -106,12 +107,38 @@ public class SessionBean<T> extends AbstractClassBean<T>
    public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager)
    {
       WeldClass<T> type = beanManager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-      return new SessionBean<T>(type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor) , beanManager);
+      return new SessionBean<T>(type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor, type), beanManager);
+   }
+
+   /**
+    * Creates a simple, annotation defined Enterprise Web Bean using the annotations specified on type
+    * 
+    * @param <T> The type
+    * @param clazz The class
+    * @param beanManager the current manager
+    * @param type the AnnotatedType to use
+    * @return An Enterprise Web Bean
+    */
+   public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, WeldClass<T> type)
+   {
+      return new SessionBean<T>(type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor, type), beanManager);
    }
 
    protected static String createId(String beanType, InternalEjbDescriptor<?> ejbDescriptor)
    {
       return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).toString();
+   }
+
+   protected static String createId(String beanType, InternalEjbDescriptor<?> ejbDescriptor, WeldClass<?> type)
+   {
+      if (type.isDiscovered())
+      {
+         return createId(beanType, ejbDescriptor);
+      }
+      else
+      {
+         return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).append(AnnotatedTypes.createTypeId(type)).toString();
+      }
    }
    
    /**

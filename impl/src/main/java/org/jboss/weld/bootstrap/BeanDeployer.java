@@ -34,6 +34,9 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 /**
  * @author pmuir
  *
@@ -92,6 +95,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
 
    public BeanDeployer createBeans()
    {
+      Multimap<Class<?>, WeldClass<?>> otherWeldClasses = HashMultimap.create();
       for (WeldClass<?> clazz : classes)
       {
          boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(clazz.getJavaClass()) && isTypeManagedBeanOrDecoratorOrInterceptor(clazz);
@@ -109,12 +113,26 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
          {
             createManagedBean(clazz);
          }
+         else
+         {
+            otherWeldClasses.put(clazz.getJavaClass(), clazz);
+         }
       }
       for (InternalEjbDescriptor<?> ejbDescriptor : getEnvironment().getEjbDescriptors())
       {
          if (ejbDescriptor.isSingleton() || ejbDescriptor.isStateful() || ejbDescriptor.isStateless())
          {
-            createSessionBean(ejbDescriptor);
+            if (otherWeldClasses.containsKey(ejbDescriptor.getBeanClass()))
+            {
+               for (WeldClass<?> c : otherWeldClasses.get(ejbDescriptor.getBeanClass()))
+               {
+                  createSessionBean(ejbDescriptor, (WeldClass) c);
+               }
+            }
+            else
+            {
+               createSessionBean(ejbDescriptor);
+            }
          }
       }
       
