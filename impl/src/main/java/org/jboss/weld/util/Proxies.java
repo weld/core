@@ -83,9 +83,13 @@ public class Proxies
          return interfaces.toArray(EMPTY_CLASSES);
       }
 
+      /**
+       * @return
+       */
       public ProxyFactory createProxyFactory()
       {
          ProxyFactory proxyFactory = new ProxyFactory();
+         ProxyFactory.useCache = false;
          Class<?> superClass = getSuperClass();
          if(superClass != null && superClass != Object.class)
          {

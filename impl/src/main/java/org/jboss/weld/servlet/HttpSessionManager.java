@@ -17,7 +17,6 @@
 package org.jboss.weld.servlet;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpSession;
 
 @RequestScoped
@@ -30,8 +29,6 @@ public class HttpSessionManager
       this.session = session;
    }
 
-   @Produces
-   @RequestScoped
    public HttpSession getSession()
    {
       return session;

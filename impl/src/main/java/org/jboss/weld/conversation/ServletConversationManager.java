@@ -25,6 +25,7 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.servlet.ConversationBeanStore;
+import org.jboss.weld.servlet.HttpSessionManager;
 
 @SessionScoped
 public class ServletConversationManager extends AbstractConversationManager implements Serializable
@@ -38,7 +39,7 @@ public class ServletConversationManager extends AbstractConversationManager impl
    private boolean sessionInvalidated;
 
    @Inject
-   private HttpSession httpSession;
+   private HttpSessionManager httpSessionManager;
    
    @Produces
    @ConversationInactivityTimeout
@@ -64,6 +65,7 @@ public class ServletConversationManager extends AbstractConversationManager impl
    @Override
    protected BeanStore getBeanStore(String cid)
    {
+      HttpSession httpSession = httpSessionManager.getSession();
       return ConversationBeanStore.of(httpSession, sessionInvalidated, cid);
    }
 

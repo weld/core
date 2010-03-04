@@ -21,6 +21,9 @@ import javax.servlet.http.HttpSession;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.exceptions.ForbiddenArgumentException;
+
+import static org.jboss.weld.logging.messages.ConversationMessage.NULL_HTTP_SESSION;
 
 /**
  * A HTTP session backed bean store for the conversational scope
@@ -33,6 +36,10 @@ public class ConversationBeanStore extends HttpPassThruSessionBeanStore
 
    protected ConversationBeanStore(HttpSession session, boolean sessionInvalidated, String cid)
    {
+      if (session == null)
+      {
+         throw new ForbiddenArgumentException(NULL_HTTP_SESSION);
+      }
       this.namingScheme = new NamingScheme(ConversationContext.class.getName() + "[" + cid + "]", "#");
       if (sessionInvalidated)
       {
