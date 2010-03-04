@@ -93,11 +93,6 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
     */
    public Object invoke(Object self, Method proxiedMethod, Method proceed, Object[] args) throws Throwable
    {
-      // FIXME: Temporary fix until we have serializable method filters
-      if (proxiedMethod.getName().equals("finalize"))
-      {
-         return null;
-      }
       if (bean == null)
       {
          bean = Container.instance().services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(id);

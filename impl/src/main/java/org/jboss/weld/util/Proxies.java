@@ -54,7 +54,7 @@ public class Proxies
 
       public boolean isHandled(Method m)
       {
-         return m.getName().equals("finalize");
+         return !m.getName().equals("finalize");
       }
       
    }
@@ -103,9 +103,8 @@ public class Proxies
       public ProxyFactory createProxyFactory()
       {
          ProxyFactory proxyFactory = new ProxyFactory();
-         ProxyFactory.useCache = false;
-//       FIXME: Check for calls to "finalize" in ClientProxyMethodHandler until serialization stuff is sorted out         
-//         proxyFactory.setFilter(new IgnoreFinalizeMethodFilter());
+         ProxyFactory.useCache = false;         
+         proxyFactory.setFilter(new IgnoreFinalizeMethodFilter());
          Class<?> superClass = getSuperClass();
          if(superClass != null && superClass != Object.class)
          {
