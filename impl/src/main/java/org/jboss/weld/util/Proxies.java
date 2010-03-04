@@ -20,6 +20,7 @@ import static org.jboss.weld.logging.messages.UtilMessage.CANNOT_PROXY_NON_CLASS
 import static org.jboss.weld.logging.messages.UtilMessage.INSTANCE_NOT_A_PROXY;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_CLASSES;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -48,7 +49,7 @@ import org.jboss.weld.util.reflection.SecureReflections;
 public class Proxies
 {
    
-   private static class IgnoreFinalizeMethodFilter implements MethodFilter
+   private static class IgnoreFinalizeMethodFilter implements MethodFilter, Serializable
    {
 
       public boolean isHandled(Method m)
@@ -103,7 +104,8 @@ public class Proxies
       {
          ProxyFactory proxyFactory = new ProxyFactory();
          ProxyFactory.useCache = false;
-         proxyFactory.setFilter(new IgnoreFinalizeMethodFilter());
+//       FIXME: Check for calls to "finalize" in ClientProxyMethodHandler until serialization stuff is sorted out         
+//         proxyFactory.setFilter(new IgnoreFinalizeMethodFilter());
          Class<?> superClass = getSuperClass();
          if(superClass != null && superClass != Object.class)
          {
