@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.messages.UtilMessage.INSTANCE_NOT_A_PROXY;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_CLASSES;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -28,6 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javassist.util.proxy.MethodFilter;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
@@ -45,6 +47,17 @@ import org.jboss.weld.util.reflection.SecureReflections;
  */
 public class Proxies
 {
+   
+   private static class IgnoreFinalizeMethodFilter implements MethodFilter
+   {
+
+      public boolean isHandled(Method m)
+      {
+         return m.getName().equals("finalize");
+      }
+      
+   }
+   
    
    public static class TypeInfo
    {
@@ -90,6 +103,7 @@ public class Proxies
       {
          ProxyFactory proxyFactory = new ProxyFactory();
          ProxyFactory.useCache = false;
+         proxyFactory.setFilter(new IgnoreFinalizeMethodFilter());
          Class<?> superClass = getSuperClass();
          if(superClass != null && superClass != Object.class)
          {

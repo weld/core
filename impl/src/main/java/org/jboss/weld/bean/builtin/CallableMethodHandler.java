@@ -49,11 +49,6 @@ public class CallableMethodHandler implements MethodHandler, Serializable
 
    public Object invoke(Object self, Method proxiedMethod, Method proceed, Object[] args) throws Throwable
    {
-      // Ignore calls to finalize
-      if ("finalize".equals(proxiedMethod.getName()))
-      {
-         return null;
-      }
       Object instance = callable.call();
       if (instance == null)
       {
