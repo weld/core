@@ -22,12 +22,10 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.jsf.JsfHelper.getServletContext;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_SCOPE_BEAN_STORE_MISSING;
 import static org.jboss.weld.servlet.BeanProvider.conversationManager;
 import static org.jboss.weld.servlet.BeanProvider.httpSessionManager;
 
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -52,8 +50,11 @@ public class ServletLifecycle
 
    public static final String REQUEST_ATTRIBUTE_NAME = ServletLifecycle.class.getName() + ".requestBeanStore";
 
+
    /**
+    * Constructor
     * 
+    * @param lifecycle The lifecycle to work against
     */
    public ServletLifecycle(ContextLifecycle lifecycle)
    {
@@ -149,7 +150,7 @@ public class ServletLifecycle
    }
 
    /**
-    * Begins a HTTP request Sets the session into the session context
+    * Begins a HTTP request. Sets the session into the session context
     * 
     * @param request The request
     */
@@ -171,24 +172,38 @@ public class ServletLifecycle
     */
    public void endRequest(HttpServletRequest request)
    {
-      if (request.getAttribute(REQUEST_ATTRIBUTE_NAME) != null)
+      if (request.getAttribute(REQUEST_ATTRIBUTE_NAME) == null)
       {
-         HttpPassThruSessionBeanStore sessionBeanStore = (HttpPassThruSessionBeanStore) lifecycle.getSessionContext().getBeanStore();
-         if ((sessionBeanStore != null) && (sessionBeanStore.isInvalidated()))
-         {
-            conversationManager(request.getSession().getServletContext()).teardownContext();
-            lifecycle.endSession(request.getRequestedSessionId(), sessionBeanStore);
-         }
-         lifecycle.getSessionContext().setActive(false);
-         lifecycle.getSessionContext().setBeanStore(null);
-         BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
-         if (beanStore == null)
-         {
-            throw new ForbiddenStateException(REQUEST_SCOPE_BEAN_STORE_MISSING);
-         }
-         lifecycle.endRequest(request.getRequestURI(), beanStore);
-         request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
+         return;
       }
+      teardownSession(request);
+      teardownRequest(request);
+      lifecycle.getConversationContext().setBeanStore(null);
+      lifecycle.getConversationContext().setActive(false);
+   }
+   
+   private void teardownSession(HttpServletRequest request)
+   {
+      HttpPassThruSessionBeanStore sessionBeanStore = (HttpPassThruSessionBeanStore) lifecycle.getSessionContext().getBeanStore();
+      if ((sessionBeanStore != null) && (sessionBeanStore.isInvalidated()))
+      {
+         conversationManager(request.getSession().getServletContext()).teardownContext();
+         lifecycle.endSession(request.getRequestedSessionId(), sessionBeanStore);
+      }
+      lifecycle.getSessionContext().setActive(false);
+      lifecycle.getSessionContext().setBeanStore(null);
+      
+   }
+   
+   private void teardownRequest(HttpServletRequest request)
+   {
+      BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+      if (beanStore == null)
+      {
+         throw new ForbiddenStateException(REQUEST_SCOPE_BEAN_STORE_MISSING);
+      }
+      lifecycle.endRequest(request.getRequestURI(), beanStore);
+      request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
    }
 
 }
