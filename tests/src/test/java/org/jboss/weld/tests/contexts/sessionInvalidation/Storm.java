@@ -18,13 +18,14 @@ package org.jboss.weld.tests.contexts.sessionInvalidation;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpSession;
+
+import org.jboss.weld.servlet.HttpSessionManager;
 
 @Named
 public class Storm
 {
    
-   @Inject HttpSession session;
+   @Inject HttpSessionManager sessionManager;
    @Inject SomeBean    someBean;
    
    public static final String PROPERTY_VALUE = "some value";
@@ -32,7 +33,7 @@ public class Storm
    public String invalidateSession()
    {
       someBean.setProp(PROPERTY_VALUE);
-      session.invalidate();
+      sessionManager.getSession().invalidate();
       return "success";
    }
    

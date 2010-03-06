@@ -27,6 +27,7 @@ import static org.jboss.weld.logging.messages.ConversationMessage.DESTROY_LRC;
 import static org.jboss.weld.logging.messages.ConversationMessage.LRC_COUNT;
 import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_TO_RESTORE;
 import static org.jboss.weld.logging.messages.ConversationMessage.UNABLE_TO_RESTORE_CONVERSATION;
+import static org.jboss.weld.logging.messages.ConversationMessage.SWITCHING_MODE_RESETS_TIMEOUTS;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -88,7 +89,7 @@ public abstract class AbstractConversationManager implements ConversationManager
       }
       if (!managedConversations.isEmpty())
       {
-         log.warn("Switching modes with non-transient conversations present resets the timeouts");
+         log.warn(SWITCHING_MODE_RESETS_TIMEOUTS);
       }
       if (asynchronous)
       {
@@ -276,7 +277,7 @@ public abstract class AbstractConversationManager implements ConversationManager
       }
    }
 
-   public ConversationManager2 destroyAllConversations()
+   public ConversationManager2 destroyBackgroundConversations()
    {
       log.debug(DESTROY_ALL_LRC, "session ended");
       log.trace(LRC_COUNT, managedConversations.size());
@@ -303,7 +304,7 @@ public abstract class AbstractConversationManager implements ConversationManager
    public ConversationManager2 teardownContext()
    {
       Container.instance().services().get(ContextLifecycle.class).teardownConversationContext();
-      destroyAllConversations();
+      destroyBackgroundConversations();
       return this;
    }
 

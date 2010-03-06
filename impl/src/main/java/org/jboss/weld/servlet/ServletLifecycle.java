@@ -22,12 +22,10 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.jsf.JsfHelper.getServletContext;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_SCOPE_BEAN_STORE_MISSING;
 import static org.jboss.weld.servlet.BeanProvider.conversationManager;
 import static org.jboss.weld.servlet.BeanProvider.httpSessionManager;
 
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -107,7 +105,7 @@ public class ServletLifecycle
       else if (lifecycle.getRequestContext().isActive())
       {
          BeanStore store = restoreSessionContext(session);
-         conversationManager.destroyAllConversations();
+         conversationManager.destroyBackgroundConversations();
          lifecycle.endSession(session.getId(), store);
       }
       else
@@ -182,8 +180,8 @@ public class ServletLifecycle
             conversationManager(sessionBeanStore.getServletContext()).teardownContext();
             lifecycle.endSession(request.getRequestedSessionId(), sessionBeanStore);
          }
-         lifecycle.getSessionContext().setActive(false);
          lifecycle.getSessionContext().setBeanStore(null);
+         lifecycle.getSessionContext().setActive(false);
          BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
          if (beanStore == null)
          {
