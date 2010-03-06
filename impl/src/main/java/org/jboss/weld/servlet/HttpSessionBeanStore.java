@@ -18,6 +18,7 @@ package org.jboss.weld.servlet;
 
 import java.util.Enumeration;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.context.SessionContext;
@@ -36,8 +37,10 @@ public class HttpSessionBeanStore extends AbstractAttributeBackedBeanStore
 
    private static final NamingScheme NAMING_SCHEME = new NamingScheme(SessionContext.class.getName(), "#");
 
-   // The HTTP session context to use as backing map
+   // The HTTP session to use as backing map
    private HttpSession session;
+   // The ServletContext associated with the session
+   private ServletContext servletContext;
 
    /**
     * Attaches this bean store to a session dynamically. This allows the session
@@ -50,6 +53,7 @@ public class HttpSessionBeanStore extends AbstractAttributeBackedBeanStore
    public void attachToSession(HttpSession session)
    {
       this.session = session;
+      this.servletContext = session.getServletContext();
    }
 
    /**
@@ -98,6 +102,11 @@ public class HttpSessionBeanStore extends AbstractAttributeBackedBeanStore
    protected NamingScheme getNamingScheme()
    {
       return NAMING_SCHEME;
+   }
+
+   public ServletContext getServletContext()
+   {
+      return servletContext;
    }
 
 }
