@@ -172,24 +172,38 @@ public class ServletLifecycle
     */
    public void endRequest(HttpServletRequest request)
    {
-      if (request.getAttribute(REQUEST_ATTRIBUTE_NAME) != null)
+      if (request.getAttribute(REQUEST_ATTRIBUTE_NAME) == null)
       {
-         HttpPassThruSessionBeanStore sessionBeanStore = (HttpPassThruSessionBeanStore) lifecycle.getSessionContext().getBeanStore();
-         if ((sessionBeanStore != null) && (sessionBeanStore.isInvalidated()))
-         {
-            conversationManager(sessionBeanStore.getServletContext()).teardownContext();
-            lifecycle.endSession(request.getRequestedSessionId(), sessionBeanStore);
-         }
-         lifecycle.getSessionContext().setBeanStore(null);
-         lifecycle.getSessionContext().setActive(false);
-         BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
-         if (beanStore == null)
-         {
-            throw new ForbiddenStateException(REQUEST_SCOPE_BEAN_STORE_MISSING);
-         }
-         lifecycle.endRequest(request.getRequestURI(), beanStore);
-         request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
+         return;
       }
+      teardownSession(request);
+      teardownRequest(request);
+      lifecycle.getConversationContext().setBeanStore(null);
+      lifecycle.getConversationContext().setActive(false);
+   }
+   
+   private void teardownSession(HttpServletRequest request)
+   {
+      HttpPassThruSessionBeanStore sessionBeanStore = (HttpPassThruSessionBeanStore) lifecycle.getSessionContext().getBeanStore();
+      if ((sessionBeanStore != null) && (sessionBeanStore.isInvalidated()))
+      {
+         conversationManager(sessionBeanStore.getServletContext()).teardownContext();
+         lifecycle.endSession(request.getRequestedSessionId(), sessionBeanStore);
+      }
+      lifecycle.getSessionContext().setActive(false);
+      lifecycle.getSessionContext().setBeanStore(null);
+      
+   }
+   
+   private void teardownRequest(HttpServletRequest request)
+   {
+      BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+      if (beanStore == null)
+      {
+         throw new ForbiddenStateException(REQUEST_SCOPE_BEAN_STORE_MISSING);
+      }
+      lifecycle.endRequest(request.getRequestURI(), beanStore);
+      request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
    }
 
 }
