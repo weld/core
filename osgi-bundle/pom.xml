@@ -76,6 +76,7 @@
                      org.jboss.weld.context;
                      org.jboss.weld.ejb;
                      org.jboss.weld.bean;
+                     org.jboss.weld.bean.builtin;
                      org.jboss.weld.bean.proxy;
                      org.jboss.weld.*.api.*;
                      org.jboss.weld.*.spi.*;
