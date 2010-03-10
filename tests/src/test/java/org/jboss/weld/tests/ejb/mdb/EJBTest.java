@@ -52,6 +52,7 @@ public class EJBTest extends AbstractWeldTest
       sender.send(session.createTextMessage(MESSAGE));
       Thread.sleep(1000);
       assert getReference(Control.class).isMessageDelivered();
+      assert getReference(Control.class).isContextSet();
    }
    
 }

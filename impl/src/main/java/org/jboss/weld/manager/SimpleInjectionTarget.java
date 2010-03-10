@@ -47,18 +47,18 @@ import org.jboss.weld.util.Beans;
 public class SimpleInjectionTarget<T> implements InjectionTarget<T>
 {
 
-   private final BeanManagerImpl beanManager;
+   protected final BeanManagerImpl beanManager;
    private final WeldClass<T> type;
    private final ConstructorInjectionPoint<T> constructor;
-   private final List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
-   private final List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
+   protected final List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
+   protected final List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
    private final List<WeldMethod<?, ? super T>> postConstructMethods;
    private final List<WeldMethod<?, ? super T>> preDestroyMethods;
    private final Set<InjectionPoint> injectionPoints;
-   private final Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
-   private final Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
-   private final Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
-   private final Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
+   protected final Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
+   protected final Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
+   protected final Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
+   protected final Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
 
    public SimpleInjectionTarget(WeldClass<T> type, BeanManagerImpl beanManager)
    {

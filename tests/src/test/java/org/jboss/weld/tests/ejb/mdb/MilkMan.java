@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.ejb.mdb;
 
+import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
+import javax.ejb.MessageDrivenContext;
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -32,11 +34,15 @@ public class MilkMan implements MessageListener
 {
    
    @Inject Control control;
+   
+   @Resource
+   private MessageDrivenContext context;
 
    public void onMessage(Message message)
    {
       try
       {
+         control.setContext(context);
          control.setMessageDelivered(((TextMessage) message).getText().equals(EJBTest.MESSAGE));
       }
       catch (JMSException e)
