@@ -21,7 +21,6 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACT
 import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_PROXYABLE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_DECORATOR_TYPES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
@@ -810,7 +809,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       boolean normalScoped = getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
       if (normalScoped && !Beans.isBeanProxyable(bean))
       {
-         throw new UnproxyableResolutionException(NOT_PROXYABLE, bean);
+         throw Proxies.getUnproxyableTypesException(bean.getTypes());
       }
       return bean;
    }

@@ -18,6 +18,12 @@ package org.jboss.weld.util;
 
 import static org.jboss.weld.logging.messages.UtilMessage.CANNOT_PROXY_NON_CLASS_TYPE;
 import static org.jboss.weld.logging.messages.UtilMessage.INSTANCE_NOT_A_PROXY;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_ARRAY_TYPE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_FINAL_TYPE_OR_METHOD;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_NO_CONSTRUCTOR;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIMITIVE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIVATE_CONSTRUCTOR;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_UNKNOWN;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_CLASSES;
 
 import java.io.Serializable;
@@ -36,6 +42,7 @@ import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
 import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
@@ -58,7 +65,6 @@ public class Proxies
       }
       
    }
-   
    
    public static class TypeInfo
    {
@@ -215,19 +221,24 @@ public class Proxies
     */
    public static boolean isTypeProxyable(Type type)
    {
+      return getUnproxyableTypeException(type) == null;
+   }
+   
+   public static UnproxyableResolutionException getUnproxyableTypeException(Type type)
+   {
       if (type instanceof Class<?>)
       {
-         return isClassProxyable((Class<?>) type);
+         return getUnproxyableClassException((Class<?>) type);
       }
       else if (type instanceof ParameterizedType)
       {
          Type rawType = ((ParameterizedType) type).getRawType();
          if (rawType instanceof Class<?>)
          {
-            return isClassProxyable((Class<?>) rawType);
+            return getUnproxyableClassException((Class<?>) rawType);
          }
       }
-      return false;
+      return new UnproxyableResolutionException(NOT_PROXYABLE_UNKNOWN, type);
    }
    
 
@@ -239,25 +250,31 @@ public class Proxies
     */
    public static boolean isTypesProxyable(Iterable<? extends Type> types)
    {
+      return getUnproxyableTypesException(types) == null;
+   }
+
+   public static UnproxyableResolutionException getUnproxyableTypesException(Iterable<? extends Type> types)
+   {
       for (Type apiType : types)
       {
          if (Object.class.equals(apiType))
          {
             continue;
          }
-         if (!isTypeProxyable(apiType))
+         UnproxyableResolutionException e = getUnproxyableTypeException(apiType);
+         if (e != null)
          {
-            return false;
+            return e;
          }
       }
-      return true;
+      return null;
    }
-      
-   private static boolean isClassProxyable(Class<?> clazz)
+   
+   private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz)
    {
       if (clazz.isInterface())
       {
-         return true;
+         return null;
       }
       else
       {
@@ -268,31 +285,31 @@ public class Proxies
          }
          catch (NoSuchMethodException e)
          {
-            return false;
+            return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz);
          }
          if (constructor == null)
          {
-            return false;
+            return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz);
          }
          else if (Modifier.isPrivate(constructor.getModifiers()))
          {
-            return false;
+            return new UnproxyableResolutionException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, clazz, constructor);
          }
          else if (Reflections.isTypeOrAnyMethodFinal(clazz))
          {
-            return false;
+            return new UnproxyableResolutionException(NOT_PROXYABLE_FINAL_TYPE_OR_METHOD, clazz, Reflections.getFinalMethodOrType(clazz));
          }
          else if (clazz.isPrimitive())
          {
-            return false;
+            return new UnproxyableResolutionException(NOT_PROXYABLE_PRIMITIVE, clazz);
          }
          else if (Reflections.isArrayType(clazz))
          {
-            return false;
+            return new UnproxyableResolutionException(NOT_PROXYABLE_ARRAY_TYPE, clazz);
          }
          else
          {
-            return true;
+            return null;
          }
       }
    }

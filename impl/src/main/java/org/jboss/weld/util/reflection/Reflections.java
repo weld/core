@@ -155,18 +155,23 @@ public class Reflections
     */
    public static boolean isTypeOrAnyMethodFinal(Class<?> type)
    {
+      return getFinalMethodOrType(type) != null;
+   }
+   
+   public static Object getFinalMethodOrType(Class<?> type) 
+   {
       if (isFinal(type))
       {
-         return true;
+         return type;
       }
       for (Method method : type.getDeclaredMethods())
       {
          if (isFinal(method))
          {
-            return true;
+            return method;
          }
       }
-      return false;
+      return null;      
    }
 
    public static boolean isPackagePrivate(int mod)
