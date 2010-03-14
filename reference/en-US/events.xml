@@ -364,7 +364,7 @@ public class Catalog {
       products.add(product);
    }
     
-   void addProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product product) {
+   void removeProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product product) {
       products.remove(product);
    }
 }]]></programlisting>

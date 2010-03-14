@@ -743,14 +743,18 @@ public @interface HttpParam {
 <programlisting role="JAVA"><![CDATA[class HttpParams
 
    @Produces @HttpParam("")
-   String getParamValue(ServletRequest request, InjectionPoint ip) {
+   String getParamValue(InjectionPoint ip) {
+      ServletRequest request = (ServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
       return request.getParameter(ip.getAnnotated().getAnnotation(HttpParam.class).value());
    }
 
 }]]></programlisting>
 
-  <para>(Note that the <literal>value()</literal> member of the <literal>HttpParam</literal>
-  annotation is ignored by the container since it is annotated <literal>@Nonbinding.</literal>)</para>
+  <para>Note that acquiring of the request in this example is JSF-centric. For a more generic solution
+  you could write your own prodcuer for the request and have it injected as a method parameter.</para>
+
+  <para>Note also that the <literal>value()</literal> member of the <literal>HttpParam</literal>
+  annotation is ignored by the container since it is annotated <literal>@Nonbinding.</literal></para>
 
   <para>The container provides a built-in bean that implements the <literal>InjectionPoint</literal> 
   interface:</para>
