@@ -17,6 +17,8 @@
 
 package org.jboss.weld.tests.contexts.sessionInvalidation;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +31,7 @@ import org.jboss.testharness.impl.packaging.war.WarArtifactDescriptor;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -70,6 +73,15 @@ public class InvalidateSessionTest extends AbstractWeldTest
       assert SomeBean.DEFAULT_PROPERTY_VALUE.equals(inputField.getValueAttribute());
    }
 
+   @Test(description="WELD-461")
+   public void testNoDoubleDestructionOnExternalRedirect() throws Exception
+   {
+	   WebClient client = new WebClient();
+	   HtmlPage page = client.getPage(getPath("/storm.jsf"));
+	   HtmlSubmitInput button = getFirstMatchingElement(page, HtmlSubmitInput.class, "redirectButton");
+	   button.click();
+   }
+   
    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)
    {
      Set<T> result = new HashSet<T>();

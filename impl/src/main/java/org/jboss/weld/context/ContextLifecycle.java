@@ -195,6 +195,10 @@ public class ContextLifecycle implements Lifecycle, Service
    
    private void teardownContext(AbstractThreadLocalMapContext context)
    {
+	  if (context.getBeanStore() == null) 
+	  {
+		  return;
+	  }
       context.setActive(true);
       context.destroy();
       context.setBeanStore(null);

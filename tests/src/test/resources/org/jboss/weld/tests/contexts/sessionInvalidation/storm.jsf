@@ -22,6 +22,7 @@
       <hr/>
       <h:form id="form">
          <h:commandButton action="#{storm.invalidateSession}" value="Invalidate Session" id="invalidateSessionButton"/>
+         <h:commandButton action="#{storm.redirect}" value="Invalidate Session" id="redirectButton"/>
       </h:form>
    </f:view>
   </body>

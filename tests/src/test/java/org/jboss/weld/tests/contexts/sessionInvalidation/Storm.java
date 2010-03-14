@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.contexts.sessionInvalidation;
 
+import java.io.IOException;
+
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -37,5 +40,7 @@ public class Storm
       return "success";
    }
    
-   
+   public void redirect() throws IOException {
+	   FacesContext.getCurrentInstance().getExternalContext().redirect("storm.jsf");
+   }
 }
