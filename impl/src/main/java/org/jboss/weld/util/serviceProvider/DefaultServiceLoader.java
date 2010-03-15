@@ -40,6 +40,8 @@ import org.jboss.weld.exceptions.InvalidOperationException;
 import org.jboss.weld.util.collections.EnumerationList;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLogger.Level;
 
 /**
  * This class handles looking up service providers on the class path. It
@@ -60,7 +62,8 @@ import org.slf4j.cal10n.LocLogger;
 public class DefaultServiceLoader<S> implements Iterable<S>
 {
    private static LocLogger log = loggerFactory().getLogger(UTIL);
-
+   private static XLogger logX = loggerFactory().getXLogger(UTIL);
+   
    private static final String SERVICES = "META-INF/services";
 
    /**
@@ -204,7 +207,8 @@ public class DefaultServiceLoader<S> implements Iterable<S>
       }
       catch (IOException e)
       {
-         throw new ForbiddenStateException(COULD_NOT_READ_SERVICES_FILE, serviceFile, e);
+         logX.throwing(Level.ERROR, e);
+         throw new ForbiddenStateException(COULD_NOT_READ_SERVICES_FILE, serviceFile);
       }
       finally
       {
@@ -251,10 +255,12 @@ public class DefaultServiceLoader<S> implements Iterable<S>
       }
       catch (ClassNotFoundException e)
       {
+         logX.throwing(Level.ERROR, e);
          throw new ForbiddenStateException(EXTENSION_CLASS_NOT_FOUND, serviceClassName);
       }
       catch (ClassCastException e)
       {
+         logX.throwing(Level.ERROR, e);
          throw new ForbiddenStateException(DECLARED_EXTENSION_DOES_NOT_IMPLEMENT_EXTENSION, serviceClassName);
       }
       return serviceClass;
@@ -269,6 +275,7 @@ public class DefaultServiceLoader<S> implements Iterable<S>
       }
       catch (Exception e)
       {
+         logX.throwing(Level.ERROR, e);
          throw new ForbiddenStateException(SECURITY_EXCEPTION_SCANNING, serviceClass, e);
       }
    }
