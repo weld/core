@@ -16,26 +16,30 @@
  */
 package org.jboss.weld.util.serviceProvider;
 
+import static org.jboss.weld.logging.Category.UTIL;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.UtilMessage.COULD_NOT_READ_SERVICES_FILE;
+import static org.jboss.weld.logging.messages.UtilMessage.COULD_NOT_READ_SERVICES_LIST;
 import static org.jboss.weld.logging.messages.UtilMessage.DECLARED_EXTENSION_DOES_NOT_IMPLEMENT_EXTENSION;
+import static org.jboss.weld.logging.messages.UtilMessage.EXTENSION_CLASS_NOT_FOUND;
+import static org.jboss.weld.logging.messages.UtilMessage.SECURITY_EXCEPTION_SCANNING;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Enumeration;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.weld.exceptions.ForbiddenStateException;
 import org.jboss.weld.exceptions.InvalidOperationException;
+import org.jboss.weld.util.collections.EnumerationList;
 import org.jboss.weld.util.reflection.SecureReflections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLoggerFactory;
-import org.slf4j.ext.XLogger.Level;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * This class handles looking up service providers on the class path. It
@@ -51,12 +55,11 @@ import org.slf4j.ext.XLogger.Level;
  * 
  * @author Pete Muir
  * @author <a href="mailto:dev@avalon.apache.org">Avalon Development Team</a>
+ * @author Nicklas Karlsson
  */
 public class DefaultServiceLoader<S> implements Iterable<S>
 {
-   
-   private static Logger log = LoggerFactory.getLogger(DefaultServiceLoader.class);
-   private static XLogger xLog = XLoggerFactory.getXLogger(DefaultServiceLoader.class);
+   private static LocLogger log = loggerFactory().getLogger(UTIL);
 
    private static final String SERVICES = "META-INF/services";
 
@@ -80,12 +83,12 @@ public class DefaultServiceLoader<S> implements Iterable<S>
    {
       return load(SERVICES, service, Thread.currentThread().getContextClassLoader());
    }
-   
+
    public static <S> DefaultServiceLoader<S> load(String directoryName, Class<S> service)
    {
       return load(directoryName, service, Thread.currentThread().getContextClassLoader());
    }
-   
+
    public static <S> DefaultServiceLoader<S> load(String directoryName, Class<S> service, ClassLoader loader)
    {
       if (loader == null)
@@ -134,11 +137,11 @@ public class DefaultServiceLoader<S> implements Iterable<S>
    {
       throw new InvalidOperationException();
    }
-   
+
    private final String serviceFile;
    private Class<S> expectedType;
    private final ClassLoader loader;
-   
+
    private Set<S> providers;
 
    private DefaultServiceLoader(String prefix, Class<S> service, ClassLoader loader)
@@ -147,7 +150,7 @@ public class DefaultServiceLoader<S> implements Iterable<S>
       this.serviceFile = prefix + "/" + service.getName();
       this.expectedType = service;
    }
-   
+
    /**
     * Clear this loader's provider cache so that all providers will be reloaded.
     * 
@@ -161,106 +164,114 @@ public class DefaultServiceLoader<S> implements Iterable<S>
    public void reload()
    {
       providers = new HashSet<S>();
-      Enumeration<URL> enumeration = null;
-      boolean errorOccurred = false;
 
+      for (URL serviceFile : loadServiceFiles())
+      {
+         loadServiceFile(serviceFile);
+      }
+   }
+
+   @SuppressWarnings("unchecked")
+   private List<URL> loadServiceFiles()
+   {
       try
       {
-         enumeration = loader.getResources(serviceFile);
+         return new EnumerationList(loader.getResources(serviceFile));
       }
-      catch (IOException ioe)
+      catch (IOException e)
       {
-         errorOccurred = true;
+         log.warn(COULD_NOT_READ_SERVICES_LIST, serviceFile, e);
+         return Collections.emptyList();
       }
+   }
 
-      if (!errorOccurred)
+   private void loadServiceFile(URL serviceFile)
+   {
+      InputStream is = null;
+      try
       {
-         while (enumeration.hasMoreElements())
+         is = serviceFile.openStream();
+         BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+         String serviceClassName = null;
+         while ((serviceClassName = reader.readLine()) != null)
+         {
+            serviceClassName = trim(serviceClassName);
+            if (serviceClassName.length() > 0)
+            {
+               loadService(serviceClassName);
+            }
+         }
+      }
+      catch (IOException e)
+      {
+         throw new ForbiddenStateException(COULD_NOT_READ_SERVICES_FILE, serviceFile, e);
+      }
+      finally
+      {
+         if (is != null)
          {
             try
             {
-               final URL url = enumeration.nextElement();
-               final InputStream is = url.openStream();
-               final BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-
-               String line = reader.readLine();
-               while (null != line)
-               {
-                  try
-                  {
-                     final int comment = line.indexOf('#');
-
-                     if (comment > -1)
-                     {
-                        line = line.substring(0, comment);
-                     }
-
-                     line.trim();
-
-                     if (line.length() > 0)
-                     {
-                        try
-                        {
-                           Class<?> clazz = loader.loadClass(line);
-                           Class<? extends S> serviceClass;
-                           try
-                           {
-                              serviceClass = clazz.asSubclass(expectedType);
-                           }
-                           catch (ClassCastException e)
-                           {
-                              throw new ForbiddenStateException(DECLARED_EXTENSION_DOES_NOT_IMPLEMENT_EXTENSION, line);
-                           }
-                           Object object = SecureReflections.ensureAccessible(SecureReflections.getDeclaredConstructor(serviceClass)).newInstance();
-                           
-                           @SuppressWarnings("unchecked")
-                           S instance = (S) object;
-                           
-                           providers.add(instance);
-                        }
-                        catch (NoClassDefFoundError e)
-                        {
-                           log.warn("Error loading line", line);
-                           xLog.throwing(Level.DEBUG, e);
-                           throw e;
-                        }
-                        catch (InstantiationException e)
-                        {
-                           log.warn("Error loading line", line);
-                           xLog.throwing(Level.DEBUG, e);
-                           throw e;
-                        }
-                        catch (IllegalAccessException e)
-                        {
-                           log.warn("Error loading line", line);
-                           xLog.throwing(Level.DEBUG, e);
-                           throw e;
-                        }
-                        catch (NoSuchMethodException e) 
-                        {
-                           log.warn("Error loading line", line);
-                           xLog.throwing(Level.DEBUG, e);
-                           throw e;
-                        }
-                     }
-                  }
-                  catch (Exception e)
-                  {
-                     // try next line
-                  }
-
-                  line = reader.readLine();
-               }
+               is.close();
             }
-            catch (Exception e)
+            catch (IOException e)
             {
-               // try the next file
+               log.warn(COULD_NOT_READ_SERVICES_FILE, serviceFile, e);
             }
          }
       }
    }
-   
-   
+
+   private String trim(String line)
+   {
+      final int comment = line.indexOf('#');
+
+      if (comment > -1)
+      {
+         line = line.substring(0, comment);
+      }
+      return line.trim();
+   }
+
+   private void loadService(String serviceClassName)
+   {
+      Class<? extends S> serviceClass = loadClass(serviceClassName);
+      S serviceInstance = prepareInstance(serviceClass);
+      providers.add(serviceInstance);
+   }
+
+   private Class<? extends S> loadClass(String serviceClassName)
+   {
+      Class<?> clazz = null;
+      Class<? extends S> serviceClass = null;
+      try
+      {
+         clazz = loader.loadClass(serviceClassName);
+         serviceClass = clazz.asSubclass(expectedType);
+      }
+      catch (ClassNotFoundException e)
+      {
+         throw new ForbiddenStateException(EXTENSION_CLASS_NOT_FOUND, serviceClassName);
+      }
+      catch (ClassCastException e)
+      {
+         throw new ForbiddenStateException(DECLARED_EXTENSION_DOES_NOT_IMPLEMENT_EXTENSION, serviceClassName);
+      }
+      return serviceClass;
+   }
+
+   @SuppressWarnings("unchecked")
+   private S prepareInstance(Class<? extends S> serviceClass)
+   {
+      try
+      {
+         return (S) SecureReflections.ensureAccessible(SecureReflections.getDeclaredConstructor(serviceClass)).newInstance();
+      }
+      catch (Exception e)
+      {
+         throw new ForbiddenStateException(SECURITY_EXCEPTION_SCANNING, serviceClass, e);
+      }
+   }
 
    /**
     * Lazily loads the available providers of this loader's service.
@@ -317,5 +328,4 @@ public class DefaultServiceLoader<S> implements Iterable<S>
    {
       return "Services for " + serviceFile;
    }
-
 }
