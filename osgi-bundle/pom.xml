@@ -83,6 +83,7 @@
                      org.jboss.weld.conversation;
                      org.jboss.weld;
                      org.jboss.weld.bootstrap;
+                     org.jboss.weld.injection;
                      org.jboss.weld.introspector;
                      org.jboss.weld.manager;
                      org.jboss.weld.servlet;
