@@ -17,10 +17,7 @@
 
 package org.jboss.weld.logging.messages;
 
-import java.lang.reflect.Modifier;
-
 import org.jboss.weld.logging.MessageId;
-import org.jboss.weld.util.reflection.Reflections;
 
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
@@ -40,7 +37,6 @@ import ch.qos.cal10n.LocaleData;
  */
 public enum ValidatorMessage
 {
-//   @MessageId("001400") NOT_PROXYABLE,
    @MessageId("001401") BEAN_SPECIALIZED_TOO_MANY_TIMES,
    @MessageId("001402") PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR,
    @MessageId("001403") PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR,
@@ -79,5 +75,6 @@ public enum ValidatorMessage
    @MessageId("001436") NOT_PROXYABLE_PRIVATE_CONSTRUCTOR,
    @MessageId("001437") NOT_PROXYABLE_FINAL_TYPE_OR_METHOD,
    @MessageId("001438") NOT_PROXYABLE_PRIMITIVE,
-   @MessageId("001439") NOT_PROXYABLE_ARRAY_TYPE;   
+   @MessageId("001439") NOT_PROXYABLE_ARRAY_TYPE,
+   @MessageId("001440") SCOPE_ANNOTATION_ON_INJECTION_POINT;
 }

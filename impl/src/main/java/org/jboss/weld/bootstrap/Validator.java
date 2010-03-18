@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED;
@@ -64,6 +67,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Disposes;
@@ -76,6 +80,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Named;
+import javax.inject.Scope;
 
 import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.weld.bean.AbstractClassBean;
@@ -100,6 +105,7 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Reflections;
+import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
@@ -114,6 +120,8 @@ import com.google.common.collect.SetMultimap;
 public class Validator implements Service
 {
 
+   private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);   
+   
    private void validateBean(Bean<?> bean, BeanManagerImpl beanManager)
    {
       for (InjectionPoint ij : bean.getInjectionPoints())
@@ -206,7 +214,7 @@ public class Validator implements Service
          {
             for (SerializableContextual<Interceptor<?>, ?> serializableContextual : interceptors)
             {
-               if (!((InterceptorImpl<?>)serializableContextual.get()).isSerializable())
+               if (!((InterceptorImpl<?>) serializableContextual.get()).isSerializable())
                {
                   throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, serializableContextual.get());
                }
@@ -224,7 +232,7 @@ public class Validator implements Service
    {
       for (Decorator<?> decorator : classBean.getDecorators())
       {
-         if (!((WeldDecorator<?>)decorator).getWeldAnnotated().isSerializable())
+         if (!((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable())
          {
             throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, classBean, decorator);
          }
@@ -266,6 +274,7 @@ public class Validator implements Service
       {
          throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, ij);
       }
+      checkScopeAnnotations(ij, beanManager.getServices().get(MetaAnnotationStore.class));
       checkFacadeInjectionPoint(ij, Instance.class);
       checkFacadeInjectionPoint(ij, Event.class);
       Annotation[] bindings = ij.getQualifiers().toArray(new Annotation[0]);
@@ -295,6 +304,23 @@ public class Validator implements Service
             validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
          }
       }
+   }
+
+   private void checkScopeAnnotations(InjectionPoint ij, MetaAnnotationStore metaAnnotationStore)
+   {
+      for (Annotation annotation : ij.getAnnotated().getAnnotations())
+      {
+         if (hasScopeMetaAnnotation(annotation))
+         {
+            log.warn(SCOPE_ANNOTATION_ON_INJECTION_POINT, annotation, ij);
+         }
+      }
+   }
+
+   private boolean hasScopeMetaAnnotation(Annotation annotation)
+   {
+      Class<? extends Annotation> annotationType = annotation.annotationType();
+      return annotationType.isAnnotationPresent(Scope.class) || annotationType.isAnnotationPresent(NormalScope.class);
    }
 
    public void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager)
@@ -340,7 +366,8 @@ public class Validator implements Service
    {
       for (Interceptor<?> interceptor : interceptors)
       {
-         // TODO: confirm that producer methods, fields and disposers can be only found on Weld interceptors?
+         // TODO: confirm that producer methods, fields and disposers can be
+         // only found on Weld interceptors?
          if (interceptor instanceof InterceptorImpl)
          {
             if (!((InterceptorImpl<?>) interceptor).getWeldAnnotated().getWeldMethods(Produces.class).isEmpty())
@@ -532,7 +559,7 @@ public class Validator implements Service
       }
 
    }
-   
+
    private static boolean isInjectionPointSatisfied(InjectionPoint ij, Set<?> resolvedBeans, BeanManagerImpl beanManager)
    {
       if (ij.getBean() instanceof Decorator<?>)
