@@ -120,8 +120,8 @@ import com.google.common.collect.SetMultimap;
 public class Validator implements Service
 {
 
-   private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);   
-   
+   private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
+
    private void validateBean(Bean<?> bean, BeanManagerImpl beanManager)
    {
       for (InjectionPoint ij : bean.getInjectionPoints())
@@ -274,7 +274,11 @@ public class Validator implements Service
       {
          throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, ij);
       }
-      checkScopeAnnotations(ij, beanManager.getServices().get(MetaAnnotationStore.class));
+      boolean newBean = (ij.getBean() instanceof NewManagedBean<?>) || (ij.getBean() instanceof NewSessionBean<?>);
+      if (!newBean)
+      {
+         checkScopeAnnotations(ij, beanManager.getServices().get(MetaAnnotationStore.class));
+      }
       checkFacadeInjectionPoint(ij, Instance.class);
       checkFacadeInjectionPoint(ij, Event.class);
       Annotation[] bindings = ij.getQualifiers().toArray(new Annotation[0]);
@@ -368,7 +372,7 @@ public class Validator implements Service
       {
          // TODO: confirm that producer methods, fields and disposers can be
          // only found on Weld interceptors?
-         if (interceptor instanceof InterceptorImpl)
+         if (interceptor instanceof InterceptorImpl<?>)
          {
             if (!((InterceptorImpl<?>) interceptor).getWeldAnnotated().getWeldMethods(Produces.class).isEmpty())
             {
@@ -394,17 +398,17 @@ public class Validator implements Service
          {
             validateRIBean((RIBean<?>) bean, manager, specializedBeans);
 
-            if (bean instanceof WeldDecorator)
+            if (bean instanceof WeldDecorator<?>)
             {
-               if (!((WeldDecorator) bean).getWeldAnnotated().getWeldMethods(Produces.class).isEmpty())
+               if (!((WeldDecorator<?>) bean).getWeldAnnotated().getWeldMethods(Produces.class).isEmpty())
                {
                   throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_METHODS, bean);
                }
-               if (!((WeldDecorator) bean).getWeldAnnotated().getWeldFields(Produces.class).isEmpty())
+               if (!((WeldDecorator<?>) bean).getWeldAnnotated().getWeldFields(Produces.class).isEmpty())
                {
                   throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS, bean);
                }
-               if (!((WeldDecorator) bean).getWeldAnnotated().getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty())
+               if (!((WeldDecorator<?>) bean).getWeldAnnotated().getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty())
                {
                   throw new DefinitionException(DECORATORS_CANNOT_HAVE_DISPOSER_METHODS, bean);
                }
