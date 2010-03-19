@@ -18,55 +18,60 @@ package org.jboss.weld.servlet;
 
 import static org.jboss.weld.servlet.ServletHelper.getModuleBeanManager;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.servlet.ServletContext;
 
 import org.jboss.weld.conversation.ConversationIdName;
 import org.jboss.weld.conversation.ConversationImpl;
 import org.jboss.weld.conversation.ConversationManager2;
-import org.jboss.weld.manager.BeanManagerImpl;
 
 public class BeanProvider
 {
 
    private static class ConversationIdNameLiteral extends AnnotationLiteral<ConversationIdName> implements ConversationIdName
    {
-      
       public static final ConversationIdName INSTANCE = new ConversationIdNameLiteral();
-      
-      private ConversationIdNameLiteral() {}
-      
+
+      private ConversationIdNameLiteral()
+      {
+      }
    }
-   
+
+   @SuppressWarnings("unchecked")
+   private static <T> T getReference(ServletContext servletContext, Type type, Annotation... qualifiers)
+   {
+      BeanManager beanManager = getModuleBeanManager(servletContext);
+      Bean<? extends Object> bean = beanManager.resolve(beanManager.getBeans(type, qualifiers));
+      return (T) beanManager.getReference(bean, type, beanManager.createCreationalContext(bean));
+   }
+
    public static ConversationManager2 conversationManager(ServletContext servletContext)
    {
-      BeanManagerImpl beanManager = getModuleBeanManager(servletContext);
-      Bean<?> bean = beanManager.resolve(beanManager.getBeans(ConversationManager2.class));
-      return (ConversationManager2) beanManager.getReference(bean, ConversationManager2.class, beanManager.createCreationalContext(bean));
+      return getReference(servletContext, ConversationManager2.class);
    }
-   
+
    public static HttpSessionManager httpSessionManager(ServletContext servletContext)
    {
-      BeanManagerImpl beanManager = getModuleBeanManager(servletContext);
-      Bean<?> bean = beanManager.resolve(beanManager.getBeans(HttpSessionManager.class));
-      return (HttpSessionManager) beanManager.getReference(bean, HttpSessionManager.class, beanManager.createCreationalContext(bean));
+      return getReference(servletContext, HttpSessionManager.class);
    }
-   
+
    public static ConversationImpl conversation(ServletContext servletContext)
    {
-      BeanManagerImpl beanManager = getModuleBeanManager(servletContext);
-      Bean<?> bean = beanManager.resolve(beanManager.getBeans(ConversationImpl.class));
-      return (ConversationImpl) beanManager.getReference(bean, ConversationImpl.class, beanManager.createCreationalContext(bean));
+      return getReference(servletContext, ConversationImpl.class);
    }
-   
+
    public static String conversationIdName(ServletContext servletContext)
    {
-      BeanManagerImpl beanManager = getModuleBeanManager(servletContext);
-      Bean<?> bean = beanManager.resolve(beanManager.getBeans(String.class, ConversationIdNameLiteral.INSTANCE));
-      return (String) beanManager.getReference(bean, String.class, beanManager.createCreationalContext(bean));
+      return getReference(servletContext, String.class, ConversationIdNameLiteral.INSTANCE);
    }
-   
-   private BeanProvider() {}
-   
+
+   private BeanProvider()
+   {
+   }
+
 }
