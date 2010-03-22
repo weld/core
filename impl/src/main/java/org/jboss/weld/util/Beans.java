@@ -209,7 +209,7 @@ public class Beans
    {
       List<Set<FieldInjectionPoint<?, ?>>> injectableFieldsList = new ArrayList<Set<FieldInjectionPoint<?, ?>>>();
       WeldClass<?> t = type;
-      while (!t.getJavaClass().equals(Object.class))
+      while (t != null && !t.getJavaClass().equals(Object.class))
       {
          Set<FieldInjectionPoint<?, ?>> fields = new HashSet<FieldInjectionPoint<?,?>>();
          injectableFieldsList.add(0, fields);
@@ -392,7 +392,7 @@ public class Beans
          
       });
       WeldClass<?> t = type;
-      while (!t.getJavaClass().equals(Object.class))
+      while (t != null && !t.getJavaClass().equals(Object.class))
       {
          Set<MethodInjectionPoint<?, ?>> initializerMethods = new HashSet<MethodInjectionPoint<?,?>>();
          initializerMethodsList.add(0, initializerMethods);
