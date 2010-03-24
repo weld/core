@@ -17,6 +17,7 @@
 package org.jboss.weld.util;
 
 import static org.jboss.weld.logging.messages.UtilMessage.CANNOT_PROXY_NON_CLASS_TYPE;
+import static org.jboss.weld.logging.messages.ReflectionMessage.METHODHANDLER_SET_FAILED;
 import static org.jboss.weld.logging.messages.UtilMessage.INSTANCE_NOT_A_PROXY;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_ARRAY_TYPE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_FINAL_TYPE_OR_METHOD;
@@ -43,8 +44,10 @@ import javassist.util.proxy.ProxyObject;
 
 import org.jboss.weld.exceptions.ForbiddenArgumentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
+import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 
 /**
  * Utilties for working with Javassist proxies
@@ -55,17 +58,18 @@ import org.jboss.weld.util.reflection.SecureReflections;
  */
 public class Proxies
 {
-   
+
    private static class IgnoreFinalizeMethodFilter implements MethodFilter, Serializable
    {
+      private static final long serialVersionUID = 1L;
 
       public boolean isHandled(Method m)
       {
          return !m.getName().equals("finalize");
       }
-      
+
    }
-   
+
    public static class TypeInfo
    {
 
@@ -109,10 +113,10 @@ public class Proxies
       public ProxyFactory createProxyFactory()
       {
          ProxyFactory proxyFactory = new ProxyFactory();
-         ProxyFactory.useCache = false;         
+         ProxyFactory.useCache = false;
          proxyFactory.setFilter(new IgnoreFinalizeMethodFilter());
          Class<?> superClass = getSuperClass();
-         if(superClass != null && superClass != Object.class)
+         if (superClass != null && superClass != Object.class)
          {
             proxyFactory.setSuperclass(superClass);
          }
@@ -136,7 +140,7 @@ public class Proxies
          }
          else if (type instanceof ParameterizedType)
          {
-            add(((ParameterizedType)type).getRawType());
+            add(((ParameterizedType) type).getRawType());
          }
          else
          {
@@ -154,16 +158,14 @@ public class Proxies
          }
          return typeInfo;
       }
-      
+
       public static TypeInfo create()
       {
          return new TypeInfo();
       }
 
    }
-   
-   private static final String DEFAULT_INTERCEPTOR = "default_interceptor";
-   
+
    /**
     * Create a proxy with a handler, registering the proxy for cleanup
     * 
@@ -176,9 +178,32 @@ public class Proxies
     */
    public static <T> T createProxy(MethodHandler methodHandler, TypeInfo typeInfo) throws IllegalAccessException, InstantiationException
    {
-      return SecureReflections.newInstance(Proxies.<T>createProxyClass(methodHandler, typeInfo));
+      if (InstantiatorFactory.useInstantiators())
+      {
+         Class<T> proxyClass = Proxies.<T> createProxyClass(methodHandler, typeInfo);
+         T instance = SecureReflections.newUnsafeInstance(proxyClass);
+         setMethodHandler(proxyClass, instance, methodHandler);
+         return instance;
+      }
+      else
+      {
+         return SecureReflections.newInstance(Proxies.<T> createProxyClass(methodHandler, typeInfo));
+      }
    }
-   
+
+   private static <T> void setMethodHandler(Class<T> clazz, T instance, MethodHandler methodHandler)
+   {
+      try
+      {
+         Method setter = SecureReflections.getDeclaredMethod(clazz, "setHandler", MethodHandler.class);
+         SecureReflections.invoke(instance, setter, methodHandler);
+      }
+      catch (Exception e)
+      {
+         throw new WeldException(METHODHANDLER_SET_FAILED, e, clazz);
+      }
+   }
+
    /**
     * Create a proxy class
     * 
@@ -192,7 +217,7 @@ public class Proxies
    {
       return createProxyClass(null, typeInfo);
    }
-   
+
    /**
     * Create a proxy class
     * 
@@ -207,7 +232,7 @@ public class Proxies
    {
       ProxyFactory proxyFactory = typeInfo.createProxyFactory();
       attachMethodHandler(proxyFactory, methodHandler);
-      
+
       @SuppressWarnings("unchecked")
       Class<T> clazz = proxyFactory.createClass();
       return clazz;
@@ -223,7 +248,7 @@ public class Proxies
    {
       return getUnproxyableTypeException(type) == null;
    }
-   
+
    public static UnproxyableResolutionException getUnproxyableTypeException(Type type)
    {
       if (type instanceof Class<?>)
@@ -240,7 +265,6 @@ public class Proxies
       }
       return new UnproxyableResolutionException(NOT_PROXYABLE_UNKNOWN, type);
    }
-   
 
    /**
     * Indicates if a set of types are all proxyable
@@ -269,51 +293,55 @@ public class Proxies
       }
       return null;
    }
-   
+
    private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz)
    {
       if (clazz.isInterface())
       {
          return null;
       }
-      else
+      Constructor<?> constructor = null;
+      try
       {
-         Constructor<?> constructor = null;
-         try
-         {
-            constructor = SecureReflections.getDeclaredConstructor(clazz);
-         }
-         catch (NoSuchMethodException e)
-         {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz);
-         }
-         if (constructor == null)
+         constructor = SecureReflections.getDeclaredConstructor(clazz);
+      }
+      catch (NoSuchMethodException e)
+      {
+         if (!InstantiatorFactory.useInstantiators())
          {
             return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz);
-         }
-         else if (Modifier.isPrivate(constructor.getModifiers()))
-         {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, clazz, constructor);
-         }
-         else if (Reflections.isTypeOrAnyMethodFinal(clazz))
-         {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_FINAL_TYPE_OR_METHOD, clazz, Reflections.getFinalMethodOrType(clazz));
-         }
-         else if (clazz.isPrimitive())
-         {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_PRIMITIVE, clazz);
-         }
-         else if (Reflections.isArrayType(clazz))
-         {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_ARRAY_TYPE, clazz);
          }
          else
          {
             return null;
          }
       }
+      if (constructor == null)
+      {
+         return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz);
+      }
+      else if (Modifier.isPrivate(constructor.getModifiers()))
+      {
+         return new UnproxyableResolutionException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, clazz, constructor);
+      }
+      else if (Reflections.isTypeOrAnyMethodFinal(clazz))
+      {
+         return new UnproxyableResolutionException(NOT_PROXYABLE_FINAL_TYPE_OR_METHOD, clazz, Reflections.getFinalMethodOrType(clazz));
+      }
+      else if (clazz.isPrimitive())
+      {
+         return new UnproxyableResolutionException(NOT_PROXYABLE_PRIMITIVE, clazz);
+      }
+      else if (Reflections.isArrayType(clazz))
+      {
+         return new UnproxyableResolutionException(NOT_PROXYABLE_ARRAY_TYPE, clazz);
+      }
+      else
+      {
+         return null;
+      }
    }
-   
+
    public static ProxyFactory attachMethodHandler(ProxyFactory proxyFactory, MethodHandler methodHandler)
    {
       if (methodHandler != null)
@@ -322,7 +350,7 @@ public class Proxies
       }
       return proxyFactory;
    }
-   
+
    public static <T> T attachMethodHandler(T instance, MethodHandler methodHandler)
    {
       if (instance instanceof ProxyObject)
@@ -337,8 +365,7 @@ public class Proxies
       {
          throw new ForbiddenArgumentException(INSTANCE_NOT_A_PROXY, instance);
       }
-      
-   }
 
+   }
 
 }

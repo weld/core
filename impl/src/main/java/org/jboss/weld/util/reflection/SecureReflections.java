@@ -26,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 
 /**
  * 
@@ -393,6 +394,29 @@ public class SecureReflections
          protected Object work() throws Exception
          {
             return clazz.newInstance();
+         }
+      }.runAsInstantiation();
+   }
+
+   /**
+    * Creates a new instance of a class using unportable methods, if available
+    * 
+    * @param <T> The type of the instance
+    * @param clazz The class to construct from
+    * @return The new instance
+    * @throws InstantiationException If the instance could not be create
+    * @throws IllegalAccessException If there was an illegal access attempt
+    * @see java.lang.Class#newInstance()
+    */
+   @SuppressWarnings("unchecked")
+   public static <T> T newUnsafeInstance(final Class<T> clazz) throws InstantiationException, IllegalAccessException
+   {
+      return (T) new SecureReflectionAccess()
+      {
+         @Override
+         protected Object work() throws Exception
+         {
+            return InstantiatorFactory.getInstantiator().instantiate(clazz);
          }
       }.runAsInstantiation();
    }

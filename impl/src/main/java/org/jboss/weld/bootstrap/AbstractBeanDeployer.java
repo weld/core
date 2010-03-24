@@ -66,6 +66,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
 
@@ -302,7 +303,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
              !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(javaClass) && 
              !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(javaClass) && 
              !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(javaClass) && 
-             hasSimpleWebBeanConstructor(clazz);
+             (hasSimpleWebBeanConstructor(clazz) || InstantiatorFactory.useInstantiators());
    }
    
    protected boolean isEEResourceProducerField(WeldField<?, ?> field)
