@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
 
 import org.jboss.weld.bean.AbstractBean;
@@ -88,12 +90,12 @@ public class BeanDeployerEnvironment
       this.newManagedBeanClasses = new HashSet<WeldClass<?>>();
       this.newSessionBeanDescriptors = new HashSet<InternalEjbDescriptor<?>>();
    }
-   
+
    public Set<WeldClass<?>> getNewManagedBeanClasses()
    {
       return newManagedBeanClasses;
    }
-   
+
    public Set<InternalEjbDescriptor<?>> getNewSessionBeanDescriptors()
    {
       return newSessionBeanDescriptors;
@@ -113,7 +115,7 @@ public class BeanDeployerEnvironment
          return (ProducerMethod<X, T>) bean;
       }
    }
-   
+
    public AbstractClassBean<?> getClassBean(WeldClass<?> clazz)
    {
       if (!classBeanMap.containsKey(clazz))
@@ -133,22 +135,22 @@ public class BeanDeployerEnvironment
       producerMethodBeanMap.put(new WeldMethodKey(bean.getWeldAnnotated()), bean);
       addAbstractBean(bean);
    }
-   
+
    public void addProducerField(ProducerField<?, ?> bean)
    {
       addAbstractBean(bean);
    }
-   
+
    public void addExtension(ExtensionBean bean)
    {
       beans.add(bean);
    }
-   
+
    public void addBuiltInBean(AbstractBuiltInBean<?> bean)
    {
       beans.add(bean);
    }
-   
+
    protected void addAbstractClassBean(AbstractClassBean<?> bean)
    {
       if (!(bean instanceof NewBean))
@@ -157,29 +159,29 @@ public class BeanDeployerEnvironment
       }
       addAbstractBean(bean);
    }
-   
+
    public void addManagedBean(ManagedBean<?> bean)
    {
       newManagedBeanClasses.add(bean.getWeldAnnotated());
       addAbstractClassBean(bean);
    }
-   
+
    public void addSessionBean(SessionBean<?> bean)
    {
       newSessionBeanDescriptors.add(bean.getEjbDescriptor());
       addAbstractClassBean(bean);
    }
-   
+
    public void addNewManagedBean(NewManagedBean<?> bean)
    {
       beans.add(bean);
    }
-   
+
    public void addNewSessionBean(NewSessionBean<?> bean)
    {
       beans.add(bean);
    }
-   
+
    protected void addAbstractBean(AbstractBean<?, ?> bean)
    {
       addNewBeansFromInjectionPoints(bean);
@@ -195,29 +197,33 @@ public class BeanDeployerEnvironment
    {
       interceptors.add(bean);
    }
-   
+
    public void addDisposesMethod(DisposalMethod<?, ?> bean)
    {
       allDisposalBeans.add(bean);
       addNewBeansFromInjectionPoints(bean);
    }
-   
+
    public void addObserverMethod(ObserverMethodImpl<?, ?> observer)
    {
       this.observers.add(observer);
       addNewBeansFromInjectionPoints(observer.getNewInjectionPoints());
    }
-   
-   
+
    private void addNewBeansFromInjectionPoints(AbstractBean<?, ?> bean)
    {
       addNewBeansFromInjectionPoints(bean.getNewInjectionPoints());
    }
-   
+
    private void addNewBeansFromInjectionPoints(Set<WeldInjectionPoint<?, ?>> newInjectionPoints)
    {
       for (WeldInjectionPoint<?, ?> injectionPoint : newInjectionPoints)
       {
+         // FIXME: better check
+         if (injectionPoint.getJavaClass() == Instance.class || injectionPoint.getJavaClass() == Event.class)
+         {
+            continue;
+         }
          New _new = injectionPoint.getAnnotation(New.class);
          if (_new.value().equals(New.class))
          {
@@ -227,10 +233,10 @@ public class BeanDeployerEnvironment
          {
             addNewBeanFromInjecitonPoint(_new.value(), _new.value());
          }
-         
+
       }
    }
-   
+
    private void addNewBeanFromInjecitonPoint(Class<?> rawType, Type baseType)
    {
       if (getEjbDescriptors().contains(rawType))
@@ -247,7 +253,7 @@ public class BeanDeployerEnvironment
    {
       return Collections.unmodifiableSet(beans);
    }
-   
+
    public Set<DecoratorImpl<?>> getDecorators()
    {
       return Collections.unmodifiableSet(decorators);
@@ -263,7 +269,6 @@ public class BeanDeployerEnvironment
       return Collections.unmodifiableSet(observers);
    }
 
-
    public Set<DisposalMethod<?, ?>> getUnresolvedDisposalBeans()
    {
       Set<DisposalMethod<?, ?>> beans = new HashSet<DisposalMethod<?, ?>>(allDisposalBeans);
@@ -275,7 +280,7 @@ public class BeanDeployerEnvironment
    {
       return ejbDescriptors;
    }
-   
+
    /**
     * Resolve the disposal method for the given producer method. Any resolved
     * beans will be marked as such for the purpose of validating that all
