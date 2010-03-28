@@ -17,6 +17,9 @@
 package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ import java.util.regex.Pattern;
  * Utility class to produce friendly names e.g. for debugging
  * 
  * @author Pete Muir
+ * @author Nicklas Karlsson
  * 
  */
 public class Names
@@ -65,17 +69,35 @@ public class Names
       }
       return result.toString();
    }
-   
-   public static String toString(Class<?> rawType, Set<Annotation> annotations, Type[] actualTypeArguments)
+
+   public static String classToString(Class<?> rawType, Set<Annotation> annotations, Type[] actualTypeArguments)
    {
-      if (actualTypeArguments.length > 0)
-      {
-         return new StringBuilder().append(Names.annotationsToString(annotations)).append(" ").append(rawType.getName()).append("<").append(Arrays.asList(actualTypeArguments)).append(">").toString();
-      }
-      else
-      {
-         return new StringBuilder().append(Names.annotationsToString(annotations)).append(" ").append(rawType.getName()).toString();
-      }
+      return new NamesStringBuilder("class").add(modifiersToString(rawType.getModifiers())).add(annotationsToString(annotations)).add(rawType.getName()).add(typesToString(actualTypeArguments)).toString();
+   }
+
+   public static String fieldToString(Field field, Set<Annotation> annotations, Type[] actualTypeArguments)
+   {
+      return new NamesStringBuilder("field in " + field.getDeclaringClass().getName()).add(modifiersToString(field.getModifiers())).add(annotationsToString(annotations)).add(field.getType().getName()).add(typesToString(actualTypeArguments)).add(field.getName()).toString();
+   }
+
+   public static String methodToString(Method method, Set<Annotation> annotations, Type[] actualTypeArguments, List<?> parameters)
+   {
+      return new NamesStringBuilder("method in " + method.getDeclaringClass().getName()).add(modifiersToString(method.getModifiers())).add(annotationsToString(annotations)).add(method.getName()).add(typesToString(actualTypeArguments)).add(parametersToString(parameters)).toString();
+   }
+
+   private static String parametersToString(List<?> parameters)
+   {
+      return "(" + iterableToString(parameters, ", ") + ")";
+   }
+
+   public static String constructorToString(Constructor<?> constructor, Set<Annotation> annotations, Type[] actualTypeArguments, List<?> parameters)
+   {
+      return new NamesStringBuilder("constructor for " + constructor.getDeclaringClass().getName()).add(modifiersToString(constructor.getModifiers())).add(annotationsToString(annotations)).add(constructor.getName()).add(typesToString(actualTypeArguments)).add(parametersToString(parameters)).toString();
+   }
+
+   public static String parameterToString(Class<?> rawType, Set<Annotation> annotations, Type[] actualTypeArguments)
+   {
+      return new NamesStringBuilder().add(modifiersToString(rawType.getModifiers())).add(annotationsToString(annotations)).add(rawType.getName()).add(typesToString(actualTypeArguments)).toString();
    }
 
    /**
@@ -92,6 +114,27 @@ public class Names
          count++;
       }
       return count;
+   }
+
+   private static String modifiersToString(int modifiers)
+   {
+      return iterableToString(parseModifiers(modifiers), " ");
+   }
+
+   private static String iterableToString(Iterable<?> items, String delimiter)
+   {
+      StringBuffer stringBuffer = new StringBuffer();
+      int i = 0;
+      for (Object item : items)
+      {
+         if (i > 0)
+         {
+            stringBuffer.append(delimiter);
+         }
+         stringBuffer.append(item);
+         i++;
+      }
+      return stringBuffer.toString();
    }
 
    /**
@@ -153,13 +196,17 @@ public class Names
       }
       return modifiers;
    }
-   
-   public static String typesToString(Set<? extends Type> types)
+
+   public static String typesToString(Type[] actualTypeArguments)
    {
+      if (actualTypeArguments.length == 0)
+      {
+         return "";
+      }
       StringBuilder buffer = new StringBuilder();
       int i = 0;
-      buffer.append("[");
-      for (Type type : types)
+      buffer.append("<");
+      for (Type type : actualTypeArguments)
       {
          if (i > 0)
          {
@@ -175,26 +222,21 @@ public class Names
          }
          i++;
       }
-      buffer.append("]");
+      buffer.append(">");
       return buffer.toString();
    }
-   
+
    public static String annotationsToString(Iterable<Annotation> annotations)
    {
       StringBuilder builder = new StringBuilder();
-      int i = 0;
       for (Annotation annotation : annotations)
       {
-         if (i > 0)
-         {
-            builder.append(" ");
-         }
+         builder.append(" ");
          builder.append("@").append(annotation.annotationType().getSimpleName());
-         i++;
       }
-      return builder.toString();
+      return builder.toString().trim();
    }
-   
+
    /**
     * Gets a string representation from an array of annotations
     * 
@@ -205,7 +247,7 @@ public class Names
    {
       return annotationsToString(Arrays.asList(annotations));
    }
-   
+
    public static String version(Package pkg)
    {
       if (pkg == null)
@@ -217,9 +259,9 @@ public class Names
          return version(pkg.getImplementationVersion());
       }
    }
-   
+
    public static String version(String version)
-   {  
+   {
       if (version != null)
       {
          StringBuilder builder = new StringBuilder();
@@ -245,7 +287,7 @@ public class Names
          }
          else
          {
-            builder.append(version);              
+            builder.append(version);
          }
          return builder.toString();
       }

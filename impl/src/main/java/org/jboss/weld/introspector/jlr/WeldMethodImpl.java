@@ -39,6 +39,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.Names;
 import org.jboss.weld.util.collections.ArrayListSupplier;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
@@ -216,7 +217,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    @Override
    public String toString()
    {
-      return new StringBuilder().append(method.toString()).toString();
+      return Names.methodToString(getDelegate(), getAnnotations(), getActualTypeArguments(), getParameters());
    }
 
    public MethodSignature getSignature()

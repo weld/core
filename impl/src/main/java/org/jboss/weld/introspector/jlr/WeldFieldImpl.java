@@ -30,6 +30,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.Names;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.SecureReflections;
 
@@ -132,7 +133,7 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
    @Override
    public String toString()
    {
-      return new StringBuilder().append("field ").append(getDeclaringType().getName()).append(".").append(field.getName()).toString();
+      return Names.fieldToString(getDelegate(), getAnnotations(), getActualTypeArguments());
    }
    
    public boolean isGeneric()

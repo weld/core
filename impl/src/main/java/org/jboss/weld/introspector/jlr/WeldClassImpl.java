@@ -564,7 +564,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    @Override
    public String toString()
    {
-      return Names.toString(getJavaClass(), getAnnotations(), getActualTypeArguments());
+      return Names.classToString(getJavaClass(), getAnnotations(), getActualTypeArguments());
    }
 
    public String getSimpleName()
