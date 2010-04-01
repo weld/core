@@ -162,6 +162,7 @@ public class ServletLifecycle
          request.setAttribute(REQUEST_ATTRIBUTE_NAME, beanStore);
          lifecycle.beginRequest(request.getRequestURI(), beanStore);
          restoreSessionContext(request);
+         conversationManager(request.getSession().getServletContext()).setupConversation(request.getParameter("cid"));
       }
    }
 
@@ -176,10 +177,12 @@ public class ServletLifecycle
       {
          return;
       }
-      teardownSession(request);
+      
+      conversationManager(request.getSession().getServletContext()).teardownConversation();
       teardownRequest(request);
       lifecycle.getConversationContext().setBeanStore(null);
       lifecycle.getConversationContext().setActive(false);
+      teardownSession(request);
    }
    
    private void teardownSession(HttpServletRequest request)

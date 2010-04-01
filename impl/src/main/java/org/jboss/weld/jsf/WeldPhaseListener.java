@@ -118,7 +118,7 @@ public class WeldPhaseListener implements PhaseListener
    private void beforeRestoreView(FacesContext facesContext)
    {
       log.trace(INITIATING_CONVERSATION, "Restore View");
-      initiateSessionAndConversation(facesContext);
+      //initiateSessionAndConversation(facesContext);
    }
 
    /**
@@ -127,7 +127,7 @@ public class WeldPhaseListener implements PhaseListener
    private void afterRenderResponse(FacesContext facesContext)
    {
       log.trace(CLEANING_UP_CONVERSATION, "Render Response", "response complete");
-      getConversationManager().teardownConversation();
+      //getConversationManager().teardownConversation();
    }
 
    /**
@@ -136,7 +136,7 @@ public class WeldPhaseListener implements PhaseListener
    private void afterResponseComplete(FacesContext facesContext, PhaseId phaseId)
    {
       log.trace(CLEANING_UP_CONVERSATION, phaseId, "the response has been marked complete");
-      getConversationManager().teardownConversation();
+      //getConversationManager().teardownConversation();
    }
 
    /**
