@@ -26,7 +26,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 /**
  * 
  * @author Nicklas Karlsson
- *
+ * 
  */
 public class EnabledClasses
 {
@@ -61,15 +61,19 @@ public class EnabledClasses
    private void processAlternatives(List<BeansXmlElement> alternativesElements)
    {
       Collection<Class<?>> classes = getClassesInElements(alternativesElements);
-      for (Class<?> clazz : classes) {
-         if (clazz.isAnnotation()) {
+      for (Class<?> clazz : classes)
+      {
+         if (clazz.isAnnotation())
+         {
             enabledAlternativeStereotypes.add(clazz.asSubclass(Annotation.class));
-         } else {
+         }
+         else
+         {
             enabledAlternativeClasses.add(clazz);
          }
       }
    }
-   
+
    private Collection<Class<?>> getClassesInElements(List<BeansXmlElement> elements)
    {
       List<Class<?>> classes = new ArrayList<Class<?>>();
