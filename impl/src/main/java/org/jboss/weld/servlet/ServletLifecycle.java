@@ -26,6 +26,7 @@ import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_SCOPE_BEAN_
 import static org.jboss.weld.servlet.BeanProvider.conversationManager;
 import static org.jboss.weld.servlet.BeanProvider.httpSessionManager;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -177,8 +178,8 @@ public class ServletLifecycle
       {
          return;
       }
-      
-      conversationManager(request.getSession().getServletContext()).teardownConversation();
+      HttpPassThruSessionBeanStore sessionBeanStore = (HttpPassThruSessionBeanStore) lifecycle.getSessionContext().getBeanStore();  
+      conversationManager(sessionBeanStore.getServletContext()).teardownConversation();
       teardownRequest(request);
       lifecycle.getConversationContext().setBeanStore(null);
       lifecycle.getConversationContext().setActive(false);
