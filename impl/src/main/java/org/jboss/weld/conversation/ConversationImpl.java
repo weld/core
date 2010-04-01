@@ -94,7 +94,8 @@ public class ConversationImpl implements Conversation, Serializable
    }
 
    /**
-    * Initializes a new conversation
+    * Initializes a new conversation. The timeout value is only applied if
+    * the local value is currently unset (0).
     * 
     * @param conversationIdGenerator The conversation ID generator
     * @param timeout The conversation inactivity timeout
@@ -102,7 +103,10 @@ public class ConversationImpl implements Conversation, Serializable
    @Inject
    public void init(@ConversationInactivityTimeout long timeout)
    {
-      this.timeout = timeout;
+      if (this.timeout == 0) 
+      {
+         this.timeout = timeout;
+      }
       _transient = true;
    }
 
