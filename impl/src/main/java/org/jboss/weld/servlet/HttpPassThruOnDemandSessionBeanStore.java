@@ -30,7 +30,7 @@ public class HttpPassThruOnDemandSessionBeanStore extends HttpPassThruSessionBea
 {
    private final HttpServletRequest request;
 
-   public HttpPassThruOnDemandSessionBeanStore(HttpServletRequest request)
+   protected HttpPassThruOnDemandSessionBeanStore(HttpServletRequest request)
    {
       this.request = request;
       if (request.getSession(false) != null)
@@ -47,5 +47,10 @@ public class HttpPassThruOnDemandSessionBeanStore extends HttpPassThruSessionBea
          attachToSession(request.getSession(true));
       }
       super.setAttribute(key, instance);
+   }
+
+   public static HttpPassThruSessionBeanStore of(HttpServletRequest request)
+   {
+      return new HttpPassThruOnDemandSessionBeanStore(request);
    }
 }

@@ -64,9 +64,9 @@ public class ScopeTest extends AbstractWeldTest
       newRequest();
       
       assert tempConsumer.getSpecialTemp().getNumber() == 10;
-      assert tempConsumer.getUselessTemp().getNumber() == 102;
+      assert tempConsumer.getUselessTemp().getNumber() == 11;
       assert getReference(specialTempBean).getNumber() == 10;
-      assert getReference(uselessTempBean).getNumber() == 102;
+      assert getReference(uselessTempBean).getNumber() == 11;
    }
    
    private void newRequest()

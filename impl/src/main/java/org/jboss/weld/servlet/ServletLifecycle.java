@@ -38,7 +38,8 @@ import org.jboss.weld.exceptions.ForbiddenStateException;
 
 /**
  * Implementation of the Weld lifecycle that can react to servlet events and
- * drives the Session, Conversation and Request (for Servlet requests) lifecycle
+ * drives the Servlet based lifecycles of the Session, Conversation and Request
+ * contexts
  * 
  * @author Pete Muir
  * @author Nicklas Karlsson
@@ -46,11 +47,32 @@ import org.jboss.weld.exceptions.ForbiddenStateException;
  */
 public class ServletLifecycle
 {
-
    private final ContextLifecycle lifecycle;
 
-   public static final String REQUEST_ATTRIBUTE_NAME = ServletLifecycle.class.getName() + ".requestBeanStore";
+   private static class RequestBeanStoreCache
+   {
+      private static final String REQUEST_ATTRIBUTE_NAME = ServletLifecycle.class.getName() + ".requestBeanStore";
 
+      public static void clear(HttpServletRequest request)
+      {
+         request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
+      }
+
+      public static BeanStore get(HttpServletRequest request)
+      {
+         return (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+      }
+
+      public static void set(HttpServletRequest request, BeanStore requestBeanStore)
+      {
+         request.setAttribute(REQUEST_ATTRIBUTE_NAME, requestBeanStore);
+      }
+
+      public static boolean isSet(HttpServletRequest request)
+      {
+         return get(request) != null;
+      }
+   }
 
    /**
     * Constructor
@@ -63,62 +85,20 @@ public class ServletLifecycle
    }
 
    /**
-    * Begins a session
+    * Begins a HTTP request. Sets the session into the session context
     * 
-    * @param session The HTTP session
+    * @param request The request
     */
-   public void beginSession(HttpSession session)
+   public void beginRequest(HttpServletRequest request)
    {
-      HttpPassThruSessionBeanStore beanStore = (HttpPassThruSessionBeanStore) lifecycle.getSessionContext().getBeanStore();
-      if (beanStore == null)
+      if (!RequestBeanStoreCache.isSet(request))
       {
-         restoreSessionContext(session);
+         BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
+         RequestBeanStoreCache.set(request, requestBeanStore);
+         lifecycle.beginRequest(request.getRequestURI(), requestBeanStore);
+         restoreSessionContext(request);
+         restoreConversationContext(request);
       }
-      else
-      {
-         beanStore.attachToSession(session);
-      }
-   }
-
-   /**
-    * Ends a session, setting up a mock request if necessary
-    * 
-    * @param session The HTTP session
-    */
-   public void endSession(HttpSession session)
-   {
-      ServletConversationManager conversationManager = (ServletConversationManager) conversationManager(session.getServletContext());
-      if (lifecycle.getSessionContext().isActive())
-      {
-         HttpPassThruSessionBeanStore beanStore = (HttpPassThruSessionBeanStore) lifecycle.getSessionContext().getBeanStore();
-         if (lifecycle.getRequestContext().isActive())
-         {
-            // Probably invalidated during request. This will be terminated
-            // at the end of the request.
-            beanStore.invalidate();
-            conversationManager.invalidateSession();
-         }
-         else
-         {
-            lifecycle.endSession(session.getId(), beanStore);
-         }
-      }
-      else if (lifecycle.getRequestContext().isActive())
-      {
-         BeanStore store = restoreSessionContext(session);
-         conversationManager.destroyBackgroundConversations();
-         lifecycle.endSession(session.getId(), store);
-      }
-      else
-      {
-         BeanStore mockRequest = new ConcurrentHashMapBeanStore();
-
-         lifecycle.beginRequest("endSession-" + session.getId(), mockRequest);
-         BeanStore sessionBeanStore = restoreSessionContext(session);
-         lifecycle.endSession(session.getId(), sessionBeanStore);
-         lifecycle.endRequest("endSession-" + session.getId(), mockRequest);
-      }
-
    }
 
    /**
@@ -130,9 +110,10 @@ public class ServletLifecycle
     */
    protected BeanStore restoreSessionContext(HttpServletRequest request)
    {
-      HttpPassThruSessionBeanStore sessionBeanStore = new HttpPassThruOnDemandSessionBeanStore(request);
+      HttpPassThruSessionBeanStore sessionBeanStore = HttpPassThruOnDemandSessionBeanStore.of(request);
       HttpSession session = request.getSession(true);
-      lifecycle.restoreSession(session == null ? "Inactive session" : session.getId(), sessionBeanStore);
+      String sessionId = session == null ? "Inactive session" : session.getId();
+      lifecycle.restoreSession(sessionId, sessionBeanStore);
       if (session != null)
       {
          sessionBeanStore.attachToSession(session);
@@ -141,30 +122,48 @@ public class ServletLifecycle
       return sessionBeanStore;
    }
 
-   protected BeanStore restoreSessionContext(HttpSession session)
+   private void restoreConversationContext(HttpServletRequest request)
    {
-      HttpPassThruSessionBeanStore beanStore = new HttpPassThruSessionBeanStore();
-      beanStore.attachToSession(session);
-      lifecycle.restoreSession(session.getId(), beanStore);
-      httpSessionManager(session.getServletContext()).setSession(session);
-      return beanStore;
+      // FIXME: HC "cid"
+      conversationManager(request.getSession().getServletContext()).setupConversation(request.getParameter("cid"));
    }
 
    /**
-    * Begins a HTTP request. Sets the session into the session context
+    * Begins a session
     * 
-    * @param request The request
+    * @param session The HTTP session
     */
-   public void beginRequest(HttpServletRequest request)
+   public void beginSession(HttpSession session)
    {
-      if (request.getAttribute(REQUEST_ATTRIBUTE_NAME) == null)
+      HttpPassThruSessionBeanStore beanStore = getSessionBeanStore();
+      if (beanStore == null)
       {
-         BeanStore beanStore = new ConcurrentHashMapBeanStore();
-         request.setAttribute(REQUEST_ATTRIBUTE_NAME, beanStore);
-         lifecycle.beginRequest(request.getRequestURI(), beanStore);
-         restoreSessionContext(request);
-         conversationManager(request.getSession().getServletContext()).setupConversation(request.getParameter("cid"));
+         restoreSessionContext(session);
       }
+      else
+      {
+         beanStore.attachToSession(session);
+      }
+   }
+
+   private HttpPassThruSessionBeanStore getSessionBeanStore()
+   {
+      return (HttpPassThruSessionBeanStore) lifecycle.getSessionContext().getBeanStore();
+   }
+
+   protected BeanStore restoreSessionContext(HttpSession session)
+   {
+      String sessionId = session.getId();
+      HttpPassThruSessionBeanStore beanStore = new HttpPassThruSessionBeanStore();
+      beanStore.attachToSession(session);
+      lifecycle.restoreSession(sessionId, beanStore);
+      cacheSession(session);
+      return beanStore;
+   }
+
+   private void cacheSession(HttpSession session)
+   {
+      httpSessionManager(session.getServletContext()).setSession(session);
    }
 
    /**
@@ -174,40 +173,111 @@ public class ServletLifecycle
     */
    public void endRequest(HttpServletRequest request)
    {
-      if (request.getAttribute(REQUEST_ATTRIBUTE_NAME) == null)
+      if (!RequestBeanStoreCache.isSet(request))
       {
          return;
       }
-      HttpPassThruSessionBeanStore sessionBeanStore = (HttpPassThruSessionBeanStore) lifecycle.getSessionContext().getBeanStore();  
-      conversationManager(sessionBeanStore.getServletContext()).teardownConversation();
       teardownRequest(request);
-      lifecycle.getConversationContext().setBeanStore(null);
-      lifecycle.getConversationContext().setActive(false);
+      teardownConversation();
       teardownSession(request);
    }
-   
-   private void teardownSession(HttpServletRequest request)
-   {
-      HttpPassThruSessionBeanStore sessionBeanStore = (HttpPassThruSessionBeanStore) lifecycle.getSessionContext().getBeanStore();
-      if ((sessionBeanStore != null) && (sessionBeanStore.isInvalidated()))
-      {
-         conversationManager(sessionBeanStore.getServletContext()).teardownContext();
-         lifecycle.endSession(request.getRequestedSessionId(), sessionBeanStore);
-      }
-      lifecycle.getSessionContext().setActive(false);
-      lifecycle.getSessionContext().setBeanStore(null);
-      
-   }
-   
+
    private void teardownRequest(HttpServletRequest request)
    {
-      BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+      BeanStore beanStore = RequestBeanStoreCache.get(request);
       if (beanStore == null)
       {
          throw new ForbiddenStateException(REQUEST_SCOPE_BEAN_STORE_MISSING);
       }
       lifecycle.endRequest(request.getRequestURI(), beanStore);
-      request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
+      RequestBeanStoreCache.clear(request);
+   }
+
+   private void teardownConversation()
+   {
+      conversationManager(getServletContext()).teardownConversation();
+   }
+
+   private ServletContext getServletContext()
+   {
+      return getSessionBeanStore().getServletContext();
+   }
+
+   private void teardownSession(HttpServletRequest request)
+   {
+      HttpPassThruSessionBeanStore sessionBeanStore = getSessionBeanStore();
+      if (isSessionBeanStoreInvalid(sessionBeanStore))
+      {
+         conversationManager(getServletContext()).teardownContext();
+         lifecycle.endSession(request.getRequestedSessionId(), sessionBeanStore);
+      }
+      lifecycle.deactivateSessionContext();
+   }
+
+   private boolean isSessionBeanStoreInvalid(HttpPassThruSessionBeanStore sessionBeanStore)
+   {
+      return sessionBeanStore != null && sessionBeanStore.isInvalidated();
+   }
+
+   /**
+    * Ends a session, setting up a mock request if necessary
+    * 
+    * @param session The HTTP session
+    */
+   public void endSession(HttpSession session)
+   {
+      if (lifecycle.isSessionContextActive())
+      {
+         activeSessionTermination(session);
+      }
+      else if (lifecycle.isRequestContextActive())
+      {
+         activeRequestTermination(session);
+      }
+      else
+      {
+         mockedSessionTermination(session);
+      }
+   }
+
+   private void activeRequestTermination(HttpSession session)
+   {
+      String sessionId = session.getId();
+      BeanStore store = restoreSessionContext(session);
+      getServletConversationManager().destroyBackgroundConversations();
+      lifecycle.endSession(sessionId, store);
+   }
+
+   private ServletConversationManager getServletConversationManager()
+   {
+      return (ServletConversationManager) conversationManager(getServletContext());
+   }
+
+   private void activeSessionTermination(HttpSession session)
+   {
+      String sessionId = session.getId();
+      HttpPassThruSessionBeanStore beanStore = getSessionBeanStore();
+      if (lifecycle.isRequestContextActive())
+      {
+         // Probably invalidated during request. This will be terminated
+         // at the end of the request.
+         beanStore.invalidate();
+         getServletConversationManager().invalidateSession();
+      }
+      else
+      {
+         lifecycle.endSession(sessionId, beanStore);
+      }
+   }
+
+   private void mockedSessionTermination(HttpSession session)
+   {
+      String sessionId = session.getId();
+      BeanStore mockRequest = new ConcurrentHashMapBeanStore();
+      lifecycle.beginRequest("endSession-" + sessionId, mockRequest);
+      BeanStore sessionBeanStore = restoreSessionContext(session);
+      lifecycle.endSession(session.getId(), sessionBeanStore);
+      lifecycle.endRequest("endSession-" + sessionId, mockRequest);
    }
 
 }

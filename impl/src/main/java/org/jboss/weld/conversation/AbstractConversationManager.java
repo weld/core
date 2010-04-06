@@ -167,7 +167,7 @@ public abstract class AbstractConversationManager implements ConversationManager
       }
       String oldConversation = conversation.toString();
       conversation.switchTo(resumedManagedConversation.getConversation());
-      getConversationContext().loadTransientBeanStore(getBeanStore(cid));
+      getContextLifeCycle().restoreConversation(cid, getBeanStore(cid));
       log.trace(CONVERSATION_SWITCHED, oldConversation, conversation);
       return this;
    }
@@ -297,15 +297,20 @@ public abstract class AbstractConversationManager implements ConversationManager
 
    public ConversationManager2 setupContext()
    {
-      Container.instance().services().get(ContextLifecycle.class).setupConversationContext();
+      getContextLifeCycle().setupConversationContext();
       return this;
    }
 
    public ConversationManager2 teardownContext()
    {
-      Container.instance().services().get(ContextLifecycle.class).teardownConversationContext();
+      getContextLifeCycle().teardownConversationContext();
       destroyBackgroundConversations();
       return this;
+   }
+
+   private ContextLifecycle getContextLifeCycle()
+   {
+      return Container.instance().services().get(ContextLifecycle.class);
    }
 
    public String generateConversationId()
