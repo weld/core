@@ -177,9 +177,9 @@ public class ServletLifecycle
       {
          return;
       }
-      teardownRequest(request);
       teardownConversation();
       teardownSession(request);
+      teardownRequest(request);
    }
 
    private void teardownRequest(HttpServletRequest request)

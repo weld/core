@@ -26,11 +26,11 @@ import static org.jboss.weld.logging.Category.CONTEXT;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ContextMessage.APPLICATION_ENDED;
 import static org.jboss.weld.logging.messages.ContextMessage.APPLICATION_STARTED;
+import static org.jboss.weld.logging.messages.ContextMessage.CONVERSATION_RESTORED;
 import static org.jboss.weld.logging.messages.ContextMessage.REQUEST_ENDED;
 import static org.jboss.weld.logging.messages.ContextMessage.REQUEST_STARTED;
 import static org.jboss.weld.logging.messages.ContextMessage.SESSION_ENDED;
 import static org.jboss.weld.logging.messages.ContextMessage.SESSION_RESTORED;
-import static org.jboss.weld.logging.messages.ContextMessage.CONVERSATION_RESTORED;
 
 import org.jboss.weld.bootstrap.api.Lifecycle;
 import org.jboss.weld.bootstrap.api.Service;
@@ -196,12 +196,13 @@ public class ContextLifecycle implements Lifecycle, Service
 
    private void activateConversationContext()
    {
-      activateContext(conversationContext, new ConcurrentHashMapBeanStore());
+      activateContext(conversationContext, new HashMapBeanStore());
    }
 
    private void activateSessionContext()
    {
-      activateContext(sessionContext, new ConcurrentHashMapBeanStore());
+//      activateContext(sessionContext, new HttpPassThruSessionBeanStore());
+      sessionContext.setActive(true);
    }
 
    public void endApplication()
@@ -270,7 +271,6 @@ public class ContextLifecycle implements Lifecycle, Service
    public void endSession(String id, BeanStore sessionBeanStore)
    {
       log.trace(SESSION_ENDED, id);
-      destroyConversationContext();
       destroySessionContext(sessionBeanStore);
    }
 

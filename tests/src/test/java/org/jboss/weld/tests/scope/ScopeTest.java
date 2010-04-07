@@ -73,6 +73,7 @@ public class ScopeTest extends AbstractWeldTest
    {
       ContextLifecycle lifecycle = Container.instance().services().get(ContextLifecycle.class);
       lifecycle.endRequest("test", lifecycle.getRequestContext().getBeanStore());
+      lifecycle.restoreSession("test", new HashMapBeanStore());
       lifecycle.beginRequest("test", new HashMapBeanStore());
    }
 
