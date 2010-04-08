@@ -23,14 +23,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.api.BeanStore;
+import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.context.beanstore.HashMapBeanStore;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.MockEELifecycle;
 import org.jboss.weld.mock.TestContainer;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
@@ -38,21 +46,21 @@ public class AbstractClusterTest
 {
 
    private Singleton<Container> singleton;
-   
+
    @BeforeClass
    public void beforeClass() throws Exception
    {
       singleton = (Singleton) getInstanceField().get(null);
       getInstanceField().set(null, new SwitchableSingletonProvider().create(Container.class));
    }
-   
+
    private static Field getInstanceField() throws Exception
    {
       Field field = Container.class.getDeclaredField("instance");
       field.setAccessible(true);
       return field;
    }
-   
+
    @AfterClass
    public void afterClass() throws Exception
    {
@@ -63,26 +71,48 @@ public class AbstractClusterTest
    {
       // Bootstrap container
       SwitchableSingletonProvider.use(id);
-      
+
       TestContainer container = new TestContainer(new MockEELifecycle(), classes, null);
       container.startContainer();
       container.ensureRequestActive();
-      
+
       return container;
    }
-   
+
    protected void use(int id)
    {
       SwitchableSingletonProvider.use(id);
    }
 
+   private Map<String, ContextualInstance<?>> getContextualInstances(BeanStore beanStore)
+   {
+      Map<String, ContextualInstance<?>> instances = new HashMap<String, ContextualInstance<?>>();
+      for (String id : beanStore.getContextualIds())
+      {
+         instances.put(id, beanStore.get(id));
+      }
+      return instances;
+   }
+
+   private BeanStore setContextualInstances(Map<String, ContextualInstance<?>> instances)
+   {
+      BeanStore beanStore = new HashMapBeanStore();
+      for (Map.Entry<String, ContextualInstance<?>> i : instances.entrySet())
+      {
+         beanStore.put(i.getKey(), i.getValue());
+      }
+      return beanStore;
+   }
+
+   @SuppressWarnings("unchecked")
    protected void replicateSession(int fromId, BeanManagerImpl fromBeanManager, int toId, BeanManagerImpl toBeanManager) throws Exception
    {
       // Mimic replicating the session
       BeanStore sessionBeanStore = fromBeanManager.getServices().get(ContextLifecycle.class).getSessionContext().getBeanStore();
-      byte[] bytes = serialize(sessionBeanStore);
+      Map<String, ContextualInstance<?>> contextuals = getContextualInstances(sessionBeanStore);
+      byte[] bytes = serialize(contextuals);
       use(toId);
-      BeanStore replicatedSessionBeanStore = (BeanStore) deserialize(bytes);
+      BeanStore replicatedSessionBeanStore = setContextualInstances((Map<String, ContextualInstance<?>>) deserialize(bytes));
       toBeanManager.getServices().get(ContextLifecycle.class).getSessionContext().setBeanStore(replicatedSessionBeanStore);
       use(fromId);
    }

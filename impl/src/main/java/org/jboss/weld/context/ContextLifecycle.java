@@ -37,6 +37,7 @@ import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.weld.context.beanstore.HashMapBeanStore;
+import org.jboss.weld.servlet.HttpPassThruSessionBeanStore;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -201,8 +202,7 @@ public class ContextLifecycle implements Lifecycle, Service
 
    private void activateSessionContext()
    {
-//      activateContext(sessionContext, new HttpPassThruSessionBeanStore());
-      sessionContext.setActive(true);
+      activateContext(sessionContext, new HttpPassThruSessionBeanStore());
    }
 
    public void endApplication()

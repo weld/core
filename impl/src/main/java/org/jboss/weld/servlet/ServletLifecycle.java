@@ -91,14 +91,15 @@ public class ServletLifecycle
     */
    public void beginRequest(HttpServletRequest request)
    {
-      if (!RequestBeanStoreCache.isSet(request))
+      if (RequestBeanStoreCache.isSet(request))
       {
-         BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
-         RequestBeanStoreCache.set(request, requestBeanStore);
-         lifecycle.beginRequest(request.getRequestURI(), requestBeanStore);
-         restoreSessionContext(request);
-         restoreConversationContext(request);
+         return;
       }
+      BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
+      RequestBeanStoreCache.set(request, requestBeanStore);
+      lifecycle.beginRequest(request.getRequestURI(), requestBeanStore);
+      restoreSessionContext(request);
+      restoreConversationContext(request);
    }
 
    /**
@@ -111,7 +112,7 @@ public class ServletLifecycle
    protected BeanStore restoreSessionContext(HttpServletRequest request)
    {
       HttpPassThruSessionBeanStore sessionBeanStore = HttpPassThruOnDemandSessionBeanStore.of(request);
-      HttpSession session = request.getSession(true);
+      HttpSession session = request.getSession();
       String sessionId = session == null ? "Inactive session" : session.getId();
       lifecycle.restoreSession(sessionId, sessionBeanStore);
       if (session != null)
