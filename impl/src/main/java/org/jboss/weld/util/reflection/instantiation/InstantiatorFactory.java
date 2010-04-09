@@ -19,7 +19,9 @@ package org.jboss.weld.util.reflection.instantiation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * A factory class for obtaining the first available instantiator
@@ -31,6 +33,7 @@ import org.jboss.weld.bootstrap.api.Service;
 public class InstantiatorFactory implements Service
 {
    private static Instantiator availableInstantiator;
+   private static boolean enabled;
 
    private static final List<Instantiator> instantiators = new ArrayList<Instantiator>()
    {
@@ -50,6 +53,7 @@ public class InstantiatorFactory implements Service
             break;
          }
       }
+      enabled = Container.instance().services().get(ResourceLoader.class).getResource("META-INF/org.jboss.weld.enableUnsafeProxies") != null;
    }
 
    public static Instantiator getInstantiator()
@@ -59,7 +63,7 @@ public class InstantiatorFactory implements Service
    
    public static boolean useInstantiators() 
    {
-      return "true".equals(System.getProperty("org.jboss.weld.instantiators"));
+      return enabled;
    }
 
    public void cleanup()
