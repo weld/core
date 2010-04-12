@@ -238,8 +238,11 @@ public class Validator implements Service
          }
          for (InjectionPoint ij : decorator.getInjectionPoints())
          {
-            Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(ij));
-            validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+            if (!ij.isDelegate())
+            {
+               Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(ij));
+               validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+            }
          }
       }
    }
