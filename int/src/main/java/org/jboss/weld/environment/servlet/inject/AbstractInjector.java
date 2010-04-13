@@ -32,10 +32,6 @@ import java.util.WeakHashMap;
 /**
  * Provides support for Weld injection into servlets, servlet filters etc.
  *
- * Used to wrap the Weld classes (WeldManager) so that they are not seen from tomcat-support.
- * tomcat-support thus does not depend on Weld, which is deployed within the war and may be
- * deployed several times (within several wars) in a single servlet container.
- *
  * @author Pete Muir
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
  */
