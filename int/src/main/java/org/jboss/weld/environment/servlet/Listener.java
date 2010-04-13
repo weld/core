@@ -28,6 +28,7 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
+import org.jboss.weld.environment.jetty.JettyWeldInjector;
 import org.jboss.weld.environment.servlet.deployment.ServletDeployment;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
 import org.jboss.weld.environment.servlet.services.ServletServicesImpl;
@@ -52,11 +53,13 @@ public class Listener extends ForwardingServletListener
    private static final String WELD_LISTENER_CLASS_NAME = "org.jboss.weld.servlet.WeldListener";
    private static final String APPLICATION_BEAN_STORE_ATTRIBUTE_NAME = Listener.class.getName() + ".applicationBeanStore";
    private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
-   
+   private static final String JETTY_REQUIRED_CLASS_NAME = "org.mortbay.jetty.servlet.ServletHandler";
+   public  static final String INJECTOR_ATTRIBUTE_NAME = "org.jboss.weld.environment.jetty.JettyWeldInjector";
+
    private final transient Bootstrap bootstrap;
    private final transient ServletListener weldListener;
    private WeldManager manager;
-   
+
    public Listener()
    {
       try
@@ -87,6 +90,12 @@ public class Listener extends ForwardingServletListener
          sce.getServletContext().removeAttribute(WeldAnnotationProcessor.class.getName());
       }
       catch (IllegalArgumentException e) {}
+      try
+      {
+         Reflections.classForName(JETTY_REQUIRED_CLASS_NAME);
+         sce.getServletContext().removeAttribute(INJECTOR_ATTRIBUTE_NAME);
+      }
+      catch (IllegalArgumentException ignore) {}
       super.contextDestroyed(sce);
    }
 
@@ -123,7 +132,7 @@ public class Listener extends ForwardingServletListener
       
       bootstrap.startContainer(Environments.SERVLET, deployment, applicationBeanStore).startInitialization();
       manager = bootstrap.getManager(deployment.getWebAppBeanDeploymentArchive());
-      
+
       boolean tomcat = true;
       try
       {
@@ -131,10 +140,9 @@ public class Listener extends ForwardingServletListener
       }
       catch (IllegalArgumentException e)
       {
-         log.info("JSR-299 injection will not be available in Servlets, Filters etc. This facility is only available in Tomcat");
          tomcat = false;
       }
-      
+
       if (tomcat)
       {
          // Try pushing a Tomcat AnnotationProcessor into the servlet context
@@ -143,11 +151,42 @@ public class Listener extends ForwardingServletListener
             Class<?> clazz = Reflections.classForName(WeldAnnotationProcessor.class.getName());
             Object annotationProcessor = clazz.getConstructor(WeldManager.class).newInstance(manager);
             sce.getServletContext().setAttribute(WeldAnnotationProcessor.class.getName(), annotationProcessor);
+            log.info("Tomcat 6 detected, JSR-299 injection will be available in Servlets, Filters etc.");
          }
          catch (Exception e)
          {
             log.error("Unable to create Tomcat AnnotationProcessor. JSR-299 injection will not be available in Servlets, Filters etc.", e);
          }
+      }
+
+      boolean jetty = true;
+      try
+      {
+         Reflections.classForName(JETTY_REQUIRED_CLASS_NAME);
+      }
+      catch (IllegalArgumentException e)
+      {
+         jetty = false;
+      }
+
+      if (jetty)
+      {
+         // Try pushing a Jetty Injector into the servlet context
+         try
+         {
+            Class<?> clazz = Reflections.classForName(JettyWeldInjector.class.getName());
+            Object injector = clazz.getConstructor(WeldManager.class).newInstance(manager);
+            sce.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, injector);
+            log.info("Jetty detected, JSR-299 injection will be available in Servlets, Filters etc.");
+         }
+         catch (Exception e)
+         {
+            log.error("Unable to create JettyWeldInjector. JSR-299 injection will not be available in Servlets, Filters etc.", e);
+         }
+      }
+
+      if (!tomcat && !jetty) {
+         log.info("No supported servlet container detected, JSR-299 injection will NOT be available in Servlets, Filters etc.");
       }
 
       // Push the manager into the servlet context so we can access in JSF
@@ -171,11 +210,11 @@ public class Listener extends ForwardingServletListener
       bootstrap.deployBeans().validateBeans().endInitialization();
       super.contextInitialized(sce);
    }
-   
+
    @Override
    protected ServletListener delegate()
    {
       return weldListener;
    }
-   
+
 }
