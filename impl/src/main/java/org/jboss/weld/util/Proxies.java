@@ -326,7 +326,7 @@ public class Proxies
       }
       else if (Reflections.isTypeOrAnyMethodFinal(clazz))
       {
-         return new UnproxyableResolutionException(NOT_PROXYABLE_FINAL_TYPE_OR_METHOD, clazz, Reflections.getFinalMethodOrType(clazz));
+         return new UnproxyableResolutionException(NOT_PROXYABLE_FINAL_TYPE_OR_METHOD, clazz, Reflections.getNonPrivateFinalMethodOrType(clazz));
       }
       else if (clazz.isPrimitive())
       {

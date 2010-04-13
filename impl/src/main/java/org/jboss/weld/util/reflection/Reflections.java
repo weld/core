@@ -148,6 +148,17 @@ public class Reflections
    }
 
    /**
+    * Checks if member is private
+    *
+    * @param member The member to check
+    * @return True if final, false otherwise
+    */
+   public static boolean isPrivate(Member member)
+   {
+      return Modifier.isPrivate(member.getModifiers());
+   }
+
+   /**
     * Checks if type or member is final
     * 
     * @param type Type or member
@@ -155,10 +166,10 @@ public class Reflections
     */
    public static boolean isTypeOrAnyMethodFinal(Class<?> type)
    {
-      return getFinalMethodOrType(type) != null;
+      return getNonPrivateFinalMethodOrType(type) != null;
    }
    
-   public static Object getFinalMethodOrType(Class<?> type) 
+   public static Object getNonPrivateFinalMethodOrType(Class<?> type)
    {
       if (isFinal(type))
       {
@@ -166,7 +177,7 @@ public class Reflections
       }
       for (Method method : type.getDeclaredMethods())
       {
-         if (isFinal(method))
+         if (isFinal(method) && !isPrivate(method))
          {
             return method;
          }

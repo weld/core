@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 public class ProxiabilityTest extends AbstractWeldTest
 {
 
-   @Test(description = "https://jira.jboss.org/jira/browse/WELD-477", groups="broken")
+   @Test(description = "https://jira.jboss.org/jira/browse/WELD-477")
    public void testClassWithPrivateFinalMethodsProxyable()
    {
        InjectedClass injectedClassInstance = getReference(InjectedClass.class);
