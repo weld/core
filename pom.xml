@@ -24,7 +24,6 @@
    <modules>
       <module>int</module>
       <module>build</module>
-      <module>support</module>
       <module>tests</module>
    </modules>
    
