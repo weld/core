@@ -33,7 +33,7 @@ import org.jboss.weld.environment.servlet.deployment.ServletDeployment;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
 import org.jboss.weld.environment.servlet.services.ServletServicesImpl;
 import org.jboss.weld.environment.servlet.util.Reflections;
-import org.jboss.weld.environment.tomcat.WeldAnnotationProcessor;
+import org.jboss.weld.environment.tomcat.WeldForwardingAnnotationProcessor;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.servlet.api.ServletListener;
@@ -87,9 +87,9 @@ public class Listener extends ForwardingServletListener
       try
       {
          Reflections.classForName("org.apache.AnnotationProcessor");
-         sce.getServletContext().removeAttribute(WeldAnnotationProcessor.class.getName());
+         WeldForwardingAnnotationProcessor.restoreAnnotationProcessor(sce);
       }
-      catch (IllegalArgumentException e) {}
+      catch (IllegalArgumentException ignore) {}
       try
       {
          Reflections.classForName(JETTY_REQUIRED_CLASS_NAME);
@@ -145,17 +145,14 @@ public class Listener extends ForwardingServletListener
 
       if (tomcat)
       {
-         // Try pushing a Tomcat AnnotationProcessor into the servlet context
          try
          {
-            Class<?> clazz = Reflections.classForName(WeldAnnotationProcessor.class.getName());
-            Object annotationProcessor = clazz.getConstructor(WeldManager.class).newInstance(manager);
-            sce.getServletContext().setAttribute(WeldAnnotationProcessor.class.getName(), annotationProcessor);
+            WeldForwardingAnnotationProcessor.replaceAnnotationProcessor(sce, manager);
             log.info("Tomcat 6 detected, JSR-299 injection will be available in Servlets, Filters etc.");
          }
          catch (Exception e)
          {
-            log.error("Unable to create Tomcat AnnotationProcessor. JSR-299 injection will not be available in Servlets, Filters etc.", e);
+            log.error("Unable to replace Tomcat AnnotationProcessor. JSR-299 injection will not be available in Servlets, Filters etc.", e);
          }
       }
 
