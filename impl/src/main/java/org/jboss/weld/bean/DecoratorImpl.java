@@ -178,7 +178,9 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
 
    protected void checkDelegateType()
    {
-      for (Type decoratedType : getDecoratedTypes())
+      Set<Type> mostSpecificDecoratedTypes = new HashSet<Type>(Arrays.asList(getWeldAnnotated().getJavaClass().getGenericInterfaces()));
+      mostSpecificDecoratedTypes.remove(Serializable.class);
+      for (Type decoratedType : mostSpecificDecoratedTypes)
       {
          if (decoratedType instanceof Class<?>)
          {

@@ -21,6 +21,7 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
 import org.jboss.weld.test.AbstractWeldTest;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -31,8 +32,13 @@ import org.testng.annotations.Test;
 public class ExtendDecoratorTest extends AbstractWeldTest
 {
 
-   @Test(groups = "broken")
-   public void testExtendedDecoratorDeploys()
+   @Test
+   public void testExtendedDecorator()
    {
+      ExtendsDecorated instance = getReference(ExtendsDecorated.class);
+
+      String result = instance.decoratedEcho("hello");
+      Assert.assertEquals(result, "decorated-hello-decorated");
+
    }
 }
