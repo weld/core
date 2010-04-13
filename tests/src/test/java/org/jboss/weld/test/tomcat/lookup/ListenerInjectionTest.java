@@ -38,7 +38,6 @@ public class ListenerInjectionTest extends AbstractWeldTest
    @BeforeClass
    public void beforeClass() throws Throwable
    {
-      log.info("To run the servlet listener injection test you must add tomcat-support.jar to $CATALINA_BASE/lib");
       super.beforeClass();
    }
 

@@ -37,7 +37,6 @@ public class FilterInjectionTest extends AbstractWeldTest
    @BeforeClass
    public void beforeClass() throws Throwable
    {
-      log.info("To run the servlet filter injection test you must add tomcat-support.jar to $CATALINA_BASE/lib");
       super.beforeClass();
    }
 
