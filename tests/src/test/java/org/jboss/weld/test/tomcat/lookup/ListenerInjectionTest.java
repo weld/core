@@ -13,10 +13,6 @@ import org.jboss.testharness.impl.packaging.IntegrationTest;
 import org.jboss.testharness.impl.packaging.Resource;
 import org.jboss.testharness.impl.packaging.Resources;
 import org.jboss.weld.test.AbstractWeldTest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 @Artifact(addCurrentPackage=false)
 @IntegrationTest(runLocally=true)
@@ -31,17 +27,6 @@ import org.testng.annotations.Test;
 })
 public class ListenerInjectionTest extends AbstractWeldTest
 {
-
-   private static final Logger log = LoggerFactory.getLogger(ListenerInjectionTest.class);
-
-   @Override
-   @BeforeClass
-   public void beforeClass() throws Throwable
-   {
-      super.beforeClass();
-   }
-
-
    // This test currently fails showing that injection into Listeners doesn't
    // work in Tomcat standalone.
 //   @Test
