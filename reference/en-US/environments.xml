@@ -174,13 +174,9 @@ $> mvn -Pupdate-jboss-as</programlisting>
          </para>
       
          <para>
-            Weld also supports Servlet injection in Tomcat. To enable this, place the
-            <literal>weld-tomcat-support.jar</literal> in <literal>$TOMCAT_HOME/lib</literal>, and add the following to
-            <literal>META-INF/context.xml</literal>:
+            Weld also supports Servlet injection in Tomcat 6.
          </para>
-      
-         <programlisting role="XML"><![CDATA[<Listener className="org.jboss.weld.environment.tomcat.WeldLifecycleListener"/>]]></programlisting>
-         
+
       </section>
 
       <section>
@@ -219,8 +215,17 @@ $> mvn -Pupdate-jboss-as</programlisting>
          </para>
 
          <para>
-            Weld does not currently support Servlet injection in Jetty.
+            Weld also supports Servlet injection in Jetty 6. To enable this, add the file
+            <literal>META-INF/jetty-web.xml</literal> with the following content to your war:
          </para>
+
+         <programlisting role="XML"><![CDATA[<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN"
+   "http://jetty.mortbay.org/configure.dtd">
+<Configure id="webAppCtx" class="org.mortbay.jetty.webapp.WebAppContext">
+   <Call class="org.jboss.weld.environment.jetty.WeldServletHandler" name="process">
+      <Arg><Ref id="webAppCtx"/></Arg>
+   </Call>
+</Configure>]]></programlisting>
 
       </section>
 
