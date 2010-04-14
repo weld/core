@@ -13,7 +13,7 @@ import org.jboss.ejb3.annotation.CacheConfig;
 @CacheConfig(idleTimeoutSeconds=1)
 public class HelloBean implements IHelloBean
 {
-   @Resource(mappedName = "java:app/BeanManager")
+   @Resource(mappedName = "java:comp/BeanManager")
    private BeanManager beanManager;
 
    public String sayHello()
