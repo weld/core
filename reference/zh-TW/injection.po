@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-03-02T13:07:17\n"
+"POT-Creation-Date: 2010-04-14T10:16:01\n"
 "PO-Revision-Date: 2009-01-19 16:05+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -887,11 +887,19 @@ msgid "The following producer method does the work:"
 msgstr "下列 producer method 可完成此工作："
 
 #. Tag: para
+#, no-c-format
+msgid ""
+"Note that acquiring of the request in this example is JSF-centric. For a "
+"more generic solution you could write your own prodcuer for the request and "
+"have it injected as a method parameter."
+msgstr ""
+
+#. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-"(Note that the <literal>value()</literal> member of the <literal>HttpParam</"
-"literal> annotation is ignored by the container since it is annotated "
-"<literal>@Nonbinding.</literal>)"
+"Note also that the <literal>value()</literal> member of the "
+"<literal>HttpParam</literal> annotation is ignored by the container since it "
+"is annotated <literal>@Nonbinding.</literal>"
 msgstr ""
 "（請注意，<literal>HttpParam</literal> 標記的 <literal>value()</literal> 成員"
 "已被 Web Bean 管理員忽略掉，因為它已被標記為 <literal>@NonBinding.</"

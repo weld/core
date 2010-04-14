@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-03-02T13:07:17\n"
+"POT-Creation-Date: 2010-04-14T10:16:01\n"
 "PO-Revision-Date: 2009-01-23 17:37+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -919,11 +919,19 @@ msgid "The following producer method does the work:"
 msgstr "다음의 생산자 방식은 다음과 같이 작업합니다:  "
 
 #. Tag: para
+#, no-c-format
+msgid ""
+"Note that acquiring of the request in this example is JSF-centric. For a "
+"more generic solution you could write your own prodcuer for the request and "
+"have it injected as a method parameter."
+msgstr ""
+
+#. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-"(Note that the <literal>value()</literal> member of the <literal>HttpParam</"
-"literal> annotation is ignored by the container since it is annotated "
-"<literal>@Nonbinding.</literal>)"
+"Note also that the <literal>value()</literal> member of the "
+"<literal>HttpParam</literal> annotation is ignored by the container since it "
+"is annotated <literal>@Nonbinding.</literal>"
 msgstr ""
 "<literal>HttpParam</literal> 어노테이션의 <literal>value()</literal> 멤버는"
 "<literal>@NonBinding.</literal>을 어노테이션하므로 Web Bean 관리자에 의해 무"

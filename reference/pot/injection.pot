@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-03-02T13:07:17\n"
-"PO-Revision-Date: 2010-03-02T13:07:17\n"
+"POT-Creation-Date: 2010-04-14T10:16:01\n"
+"PO-Revision-Date: 2010-04-14T10:16:01\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -589,7 +589,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "(Note that the <literal>value()</literal> member of the <literal>HttpParam</literal> annotation is ignored by the container since it is annotated <literal>@Nonbinding.</literal>)"
+msgid "Note that acquiring of the request in this example is JSF-centric. For a more generic solution you could write your own prodcuer for the request and have it injected as a method parameter."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Note also that the <literal>value()</literal> member of the <literal>HttpParam</literal> annotation is ignored by the container since it is annotated <literal>@Nonbinding.</literal>"
 msgstr ""
 
 #. Tag: para
