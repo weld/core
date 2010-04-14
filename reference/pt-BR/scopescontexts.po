@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-03-02T13:07:18\n"
-"PO-Revision-Date: 2010-01-19 13:48-0300\n"
+"PO-Revision-Date: 2010-04-14 17:27-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -142,24 +142,24 @@ msgid "CDI defines four built-in scopes:"
 msgstr "CDI possui quatro escopos pré-definidos:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>@RequestScoped</literal>"
-msgstr "O qualificador <literal>@New</literal>"
+msgstr "<literal>@RequestScoped</literal>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>@SessionScoped</literal>"
-msgstr "O qualificador <literal>@New</literal>"
+msgstr "<literal>@SessionScoped</literal>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>@ApplicationScoped</literal>"
-msgstr "@ApplicationScoped"
+msgstr "<literal>@ApplicationScoped</literal>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>@ConversationScoped</literal>"
-msgstr "@ConversationScoped"
+msgstr "<literal>@ConversationScoped</literal>"
 
 #. Tag: para
 #, no-c-format
@@ -294,16 +294,16 @@ msgstr ""
 "caso para o escopo de sessão)."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A conversation represents a task—a unit of work from the point of view of "
 "the user. The conversation context holds state associated with what the user "
 "is currently working on. If the user is doing multiple things at the same "
 "time, there are multiple conversations."
 msgstr ""
-"Uma conversação representa uma tarefa&#8212;uma unidade de trabalho do ponto-"
-"de-vista do usuário. O contexto de conversação mantém o estado associado com "
-"o que o usuário estiver trabalhando no momento. Se o usuário estiver fazendo "
+"Uma conversação representa uma tarefa—uma unidade de trabalho do ponto-de-"
+"vista do usuário. O contexto de conversação mantém o estado associado com o "
+"que o usuário estiver trabalhando no momento. Se o usuário estiver fazendo "
 "várias coisas ao mesmo tempo, existirão várias conversações."
 
 #. Tag: para
@@ -433,7 +433,7 @@ msgid "Conversation timeout"
 msgstr "Tempo limite de conversação"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The container is permitted to destroy a conversation and all state held in "
 "its context at any time in order to conserve resources. A CDI implementation "
@@ -445,8 +445,8 @@ msgstr ""
 "O contêiner pode destruir uma conversação e todo estado mantido em seu "
 "contexto, a qualquer momento, a fim de preservar recursos. A implementação "
 "do CDI irá fazer isso normalmente, com base em algum tipo de tempo limite "
-"(timeout)&#8212;embora isso não seja exigido pela especificação. O tempo "
-"limite é o período de inatividade antes que a conversação seja destruída (em "
+"(timeout)—embora isso não seja exigido pela especificação. O tempo limite é "
+"o período de inatividade antes que a conversação seja destruída (em "
 "contraste com a quantidade de tempo que a conversação está ativa)."
 
 #. Tag: para

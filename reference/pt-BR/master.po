@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-03-02T13:07:18\n"
-"PO-Revision-Date: 2009-12-22 10:51-0300\n"
+"PO-Revision-Date: 2010-04-14 14:08-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -55,7 +55,7 @@ msgstr ""
 "projeto Weld, e talvez em outras implementações."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Note that this reference guide was started while changes were still being "
 "made to the specification. We've done our best to update it for accuracy. If "
@@ -67,9 +67,9 @@ msgstr ""
 "Note que este guia de referência foi iniciado enquanto mudanças ainda eram "
 "realizadas na especificação. Nós fizemos o nosso melhor para atualizá-lo "
 "precisamente. Se você descobrir um conflito entre o que está escrito neste "
-"guia e a especificação, a especificação é a fonte oficial&#8212;assuma ela "
-"como correta. Se você acredita ter encontrado um erro na especificação, por "
-"favor reporte-o para o JSR-299 EG."
+"guia e a especificação, a especificação é a fonte oficial—assuma ela como "
+"correta. Se você acredita ter encontrado um erro na especificação, por favor "
+"reporte-o para o JSR-299 EG."
 
 #. Tag: title
 #, no-c-format

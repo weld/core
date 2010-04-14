@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-03-02T13:07:18\n"
-"PO-Revision-Date: 2009-12-23 11:57-0300\n"
+"PO-Revision-Date: 2010-04-14 14:18-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -90,7 +90,7 @@ msgstr ""
 "enxuto que está alinhado através da plataforma Java EE."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "With very few exceptions, almost every concrete Java class that has a "
 "constructor with no parameters (or a constructor designated with the "
@@ -106,14 +106,14 @@ msgstr ""
 "construtor com nenhum parâmetro (ou um construtor designado com a anotação "
 "<literal>@Inject</literal>) é um bean. Isso inclui qualquer JavaBean e "
 "qualquer EJB session bean. Se você já possui alguns JavaBeans ou session "
-"beans, eles já são beans&#8212;você não vai precisar de qualquer metadado "
-"especial adicional. Há apenas uma pequena coisa que você precisa fazer antes "
-"de começar a injetá-los dentro das coisas: você precisa colocá-los em um "
+"beans, eles já são beans—você não vai precisar de qualquer metadado especial "
+"adicional. Há apenas uma pequena coisa que você precisa fazer antes de "
+"começar a injetá-los dentro das coisas: você precisa colocá-los em um "
 "arquivo (um jar ou um módulo Java EE, como um war ou um jar EJB) que contém "
 "um arquivo indicador especial: <literal>META-INF/beans.xml</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The JavaBeans and EJBs you've been writing every day, up until now, have not "
 "been able to take advantage of the new services defined by the CDI "
@@ -126,12 +126,12 @@ msgid ""
 msgstr ""
 "Os JavaBeans e EJBs que você tem escrito todo dia, até agora, não foram "
 "capazes de tirar proveito dos novos serviços definidos pela especificação "
-"CDI. Mas você será capaz de usar cada um deles com CDI&#8212;permitindo que "
-"o contêiner crie e destrua instâncias de seus beans e associando-os a um "
+"CDI. Mas você será capaz de usar cada um deles com CDI—permitindo que o "
+"contêiner crie e destrua instâncias de seus beans e associando-os a um "
 "contexto designado, injetando-os dentro de outros beans, usando-os em "
 "expressões EL, especializando-os com anotações qualificadoras, até "
-"adicionando interceptadores e decoradores para eles&#8212;sem modificar seu "
-"código existente. No máximo, você precisará adicionar algumas anotações."
+"adicionando interceptadores e decoradores para eles—sem modificar seu código "
+"existente. No máximo, você precisará adicionar algumas anotações."
 
 #. Tag: para
 #, no-c-format
@@ -282,7 +282,7 @@ msgstr ""
 "que é injetado."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "At system initialization time, the container must validate that exactly one "
 "bean exists which satisfies each injection point. In our example, if no "
@@ -294,12 +294,12 @@ msgid ""
 msgstr ""
 "Durante a inicialização do sistema, o contêiner deve validar que existe "
 "exatamente um bean que satisfaça cada ponto de injeção. Em nosso exemplo, se "
-"nenhuma implementação de <literal>Translator</literal> está disponível&#8212;"
-"se o EJB <literal>SentenceTranslator</literal> não foi implantado&#8212;o "
-"contêiner iria nos informar sobre uma <emphasis>dependência não satisfeita</"
-"emphasis>. Se mais de uma implementação de <literal>Translator</literal> "
-"estivessem disponíveis, o contêiner iria nos informar sobre a "
-"<emphasis>dependência ambígua</emphasis>."
+"nenhuma implementação de <literal>Translator</literal> está disponível—se o "
+"EJB <literal>SentenceTranslator</literal> não foi implantado—o contêiner "
+"iria nos informar sobre uma <emphasis>dependência não satisfeita</emphasis>. "
+"Se mais de uma implementação de <literal>Translator</literal> estivessem "
+"disponíveis, o contêiner iria nos informar sobre a <emphasis>dependência "
+"ambígua</emphasis>."
 
 #. Tag: para
 #, no-c-format

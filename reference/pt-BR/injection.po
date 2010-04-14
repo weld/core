@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-04-14T10:16:01\n"
-"PO-Revision-Date: 2010-01-18 17:51-0300\n"
+"PO-Revision-Date: 2010-04-14 17:23-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -19,15 +19,15 @@ msgid "Dependency injection and programmatic lookup"
 msgstr "Injeção e pesquisa programática de dependências"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "One of the most significant features of CDI—certainly the most recognized—is "
 "dependency injection; excuse me, <emphasis>typesafe</emphasis> dependency "
 "injection."
 msgstr ""
-"Uma das características mais significativas do CDI&#8212;certamente a mais "
-"reconhecida&#8212;é injeção de dependência; desculpe-me, injeção de "
-"dependência com <emphasis>typesafe</emphasis>."
+"Uma das características mais significativas do CDI—certamente a mais "
+"reconhecida—é injeção de dependência; desculpe-me, injeção de dependência "
+"com <emphasis>typesafe</emphasis>."
 
 #. Tag: title
 #, no-c-format
@@ -165,7 +165,7 @@ msgstr ""
 "métodos produtores:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This is a case where the <literal>@Inject</literal> annotation <emphasis>is "
 "not</emphasis> required at the injection point. The same is true for "
@@ -174,7 +174,7 @@ msgid ""
 msgstr ""
 "Este é um caso onde a anotação <literal>@Inject</literal> <emphasis>não é</"
 "emphasis> necessária no ponto de injeção. O mesmo é verdade para métodos "
-"observadores (os quais encontraremos no <xref linkend=\"events\"/>) e "
+"observadores (os quais encontraremos no <xref linkend=\"events\" />) e "
 "métodos destruidores."
 
 #. Tag: title
@@ -616,7 +616,7 @@ msgid "Just remember: \"There can be only one.\""
 msgstr "Apenas lembre-se: \"Só pode haver um.\""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "On the other hand, if you really do have an optional or multivalued "
 "injection point, you should change the type of your injection point to "
@@ -624,7 +624,7 @@ msgid ""
 msgstr ""
 "Por outro lado, se você realmente tem um ponto de injeção opcional ou "
 "multivalorado, você deveria mudar o tipo de seu ponto de injeção para "
-"<literal>Instance</literal>, como veremos na <xref linkend=\"lookup\"/>."
+"<literal>Instance</literal>, como veremos na <xref linkend=\"lookup\" />."
 
 #. Tag: para
 #, no-c-format
@@ -652,7 +652,7 @@ msgstr ""
 "(com escopo <literal>@Dependent</literal>)."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Imagine that a bean bound to the application scope held a direct reference "
 "to a bean bound to the request scope. The application-scoped bean is shared "
@@ -663,7 +663,7 @@ msgstr ""
 "direta para um bean vinculado ao escopo da solicitação. O bean com escopo de "
 "aplicação é compatilhado entre várias solicitações diferentes. No entanto, "
 "cada solicitação deverá ver uma instância diferente do bean com escopo de "
-"solicitação&#8212;a atual!"
+"solicitação—a atual!"
 
 #. Tag: para
 #, no-c-format
@@ -1065,17 +1065,20 @@ msgid ""
 "more generic solution you could write your own prodcuer for the request and "
 "have it injected as a method parameter."
 msgstr ""
+"Observe que a aquisição da solicitação neste exemplo é centrada em JSF. Para "
+"uma solução mais genérica você pode escrever seu próprio produtor para a "
+"solicitação e a injetar como um parâmetro do método."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Note also that the <literal>value()</literal> member of the "
 "<literal>HttpParam</literal> annotation is ignored by the container since it "
 "is annotated <literal>@Nonbinding.</literal>"
 msgstr ""
-"(Observe que o membro <literal>value()</literal> da anotação "
+"Observe que o membro <literal>value()</literal> da anotação "
 "<literal>HttpParam</literal> é ignorado pelo contêiner uma vez que ele está "
-"anotado com <literal>@Nonbinding.</literal>)"
+"anotado com <literal>@Nonbinding.</literal>"
 
 #. Tag: para
 #, no-c-format

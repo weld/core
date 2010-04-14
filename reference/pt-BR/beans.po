@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-03-02T13:07:17\n"
-"PO-Revision-Date: 2010-01-11 17:41-0300\n"
+"PO-Revision-Date: 2010-04-14 15:37-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -135,7 +135,7 @@ msgid "their lifecycles are completely decoupled"
 msgstr "seus ciclos de vida são completamente desacoplados"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We can replace one bean with another different bean that implements the same "
 "interface and has a different lifecycle (a different scope) without "
@@ -147,19 +147,19 @@ msgstr ""
 "interface e tem um ciclo de vida diferente (um escopo diferente) sem afetar "
 "a outra implementação do bean. Na verdade, CDI define um mecanismo simples "
 "para sobrepor implementações de bean em tempo de implantação, como veremos "
-"na <xref linkend=\"alternatives\"/>."
+"na <xref linkend=\"alternatives\" />."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Note that not all clients of a bean are beans themselves. Other objects such "
 "as servlets or message-driven beans—which are by nature not injectable, "
 "contextual objects—may also obtain references to beans by injection."
 msgstr ""
 "Note que nem todos os clientes de um bean são eles próprios também beans. "
-"Outros objetos como servlets ou message-driven beans&#8212;que são por "
-"natureza objetos não injetáveis e não contextuais &#8212;podem também obter "
-"referências para beans por meio de injeção."
+"Outros objetos como servlets ou message-driven beans—que são por natureza "
+"objetos não injetáveis e não contextuais—podem também obter referências para "
+"beans por meio de injeção."
 
 #. Tag: title
 #, no-c-format
@@ -296,6 +296,12 @@ msgid ""
 "you define a <emphasis>resource</emphasis>, which we'll meet in <xref "
 "linkend=\"resources\" />."
 msgstr ""
+"Os tipos de bean de um session bean incluem suas interfaces locais e a "
+"classe de visão local do bean (se houver). As interfaces remotas do EJB não "
+"são consideradas tipos de bean de um session bean. Você não pode injetar um "
+"EJB usando sua interface remota, a menos que você defina um "
+"<emphasis>recurso</emphasis>, o qual vamos abordar no <xref linkend="
+"\"resources\" />."
 
 #. Tag: para
 #, no-c-format
@@ -433,7 +439,7 @@ msgstr ""
 "qualificador padrão, <literal>@Default</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "That's not quite the end of the story. CDI also defines a simple "
 "<emphasis>resolution rule</emphasis> that helps the container decide what to "
@@ -443,7 +449,7 @@ msgstr ""
 "Esse não é bem o fim da história. CDI também define uma simples "
 "<emphasis>regra de resolução</emphasis> que ajuda o contêiner decidir o que "
 "fazer se houver mais de um bean que satisfaz um contrato específico. Vamos "
-"entrar em mais detalhes no <xref linkend=\"injection\"/>."
+"entrar em mais detalhes no <xref linkend=\"injection\" />."
 
 #. Tag: title
 #, no-c-format
@@ -515,10 +521,10 @@ msgstr ""
 "vida deste objeto."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\" />."
 msgstr ""
-"Nós falaremos mais sobre escopos no <xref linkend=\"scopescontexts\"/>."
+"Nós falaremos mais sobre escopos no <xref linkend=\"scopescontexts\" />."
 
 #. Tag: title
 #, no-c-format
@@ -606,7 +612,7 @@ msgstr ""
 "anotação <literal>@Alternative</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We normally annotate a bean <literal>@Alternative</literal> only when there "
 "is some other implementation of an interface it implements (or of any of its "
@@ -621,16 +627,16 @@ msgstr ""
 "(ou de qualquer de seus tipos de bean). Podemos escolher entre as "
 "alternativas no momento da implantação <emphasis>selecionando</emphasis> uma "
 "alternativa no descritor de implantação do CDI <literal>META-INF/beans.xml</"
-"literal> dentro do JAR ou módulo Java EE que utiliza-o. Diferentes módulos "
-"podem especificar que eles usam diferentes alternativas."
+"literal> dentro do jar ou módulo Java EE que utiliza-o. Diferentes módulos "
+"podem especificar que eles usam diferentes alternativos."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We cover alternatives in more detail in <xref linkend=\"alternatives\" />."
 msgstr ""
 "Nós cobriremos os alternativos em mais detalhes na <xref linkend="
-"\"alternatives\"/>."
+"\"alternatives\" />."
 
 #. Tag: title
 #, no-c-format
@@ -735,7 +741,7 @@ msgstr ""
 "<literal>TransactionInterceptor</literal> não sabem nada sobre o outro."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Interceptors are deployment-specific. (We don't need a "
 "<literal>TransactionInterceptor</literal> in our unit tests!) By default, an "
@@ -746,17 +752,18 @@ msgstr ""
 "Interceptadores são específicos de implantação. (Não precisamos de um "
 "<literal>TransactionInterceptor</literal> em nossos testes de unidade!) Por "
 "padrão, um interceptador está disabilitado. Podemos habilitar um "
-"interceptador usando o descritor de implantação do CDI <literal>META-INF/"
-"beans.xml</literal> do JAR ou módulo Java EE."
+"interceptador usando o descritor de implantação CDI <literal>META-INF/beans."
+"xml</literal> do jar ou módulo Java EE. Este descritor também é onde "
+"especificamos a ordem dos interceptadores."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We'll discuss interceptors, and their cousins, decorators, in <xref linkend="
 "\"interceptors\" /> and <xref linkend=\"decorators\" />."
 msgstr ""
 "Discutiremos sobre interceptadores, e seus primos decoradores, no <xref "
-"linkend=\"interceptors\"/> e <xref linkend=\"decorators\"/>."
+"linkend=\"interceptors\" /> e <xref linkend=\"decorators\" />."
 
 #. Tag: title
 #, no-c-format
@@ -825,9 +832,9 @@ msgstr ""
 "Ela não implementa <literal>javax.enterprise.inject.spi.Extension</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "It has an appropriate constructor—either:"
-msgstr "Ela tem um construtor apropriado&#8212;ou seja:"
+msgstr "Ela tem um construtor apropriado—ou seja:"
 
 #. Tag: para
 #, no-c-format
@@ -850,6 +857,13 @@ msgid ""
 "<literal>@Dependent</literal> to an entity class, since JPA is not able to "
 "persist injected CDI proxies."
 msgstr ""
+"De acordo com esta definição, entidades JPA são tecnicamente managed beans. "
+"No entanto, as entidades possuem ciclo de vida, estado e modelo de "
+"identidade próprios e especiais, e são usualmente instanciadas por JPA ou "
+"utilizando <literal>new</literal>. Portanto, não recomendamos injetar uma "
+"classe de entidade diretamente. Recomendamos especialmente não atribuir um "
+"escopo que não seja <literal>@Dependent</literal> em uma classe de entidade, "
+"uma vez que JPA não é capaz de persistir proxies injetados por CDI."
 
 #. Tag: para
 #, no-c-format
@@ -968,7 +982,7 @@ msgstr ""
 "lado, um stateful session bean pode possuir qualquer escopo."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Stateful session beans may define a <emphasis>remove method</emphasis>, "
 "annotated <literal>@Remove</literal>, that is used by the application to "
@@ -981,10 +995,10 @@ msgstr ""
 "Stateful session beans podem definir um <emphasis>método de remoção</"
 "emphasis>, anotado com <literal>@Remove</literal>, que é utilizado pela "
 "aplicação para indicar que uma instância deve ser destruída. No entato, para "
-"uma instância contextual do bean&#8212;uma instância sob o controle de "
-"CDI&#8212;este método só pode ser chamado pela aplicação se o bean possuir o "
-"escopo <literal>@Dependent</literal>. Para beans com outros escopos, a "
-"aplicação deve deixar o contêiner destruir o bean."
+"uma instância contextual do bean—uma instância sob o controle de CDI—este "
+"método só pode ser chamado pela aplicação se o bean possuir o escopo "
+"<literal>@Dependent</literal>. Para beans com outros escopos, a aplicação "
+"deve deixar o contêiner destruir o bean."
 
 #. Tag: para
 #, no-c-format
@@ -1159,7 +1173,7 @@ msgstr ""
 "a anotação <literal>@Produces</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We can't write a bean class that is itself a random number. But we can "
 "certainly write a method that returns a random number. By making the method "
@@ -1173,13 +1187,12 @@ msgstr ""
 "Não podemos escrever uma classe de bean que é ela própria um número "
 "aleatório. Mas podemos certamente escrever um método que retorna um número "
 "aleatório. Ao tornar o método um método produtor, permitimos que o valor de "
-"retorno do método&#8212;neste caso um <literal>Integer</literal>&#8212;seja "
-"injetado. Podemos até mesmo especificar um qualificador&#8212;neste caso "
-"<literal>@Random</literal>, um escopo&#8212;que neste caso é por padrão "
-"<literal>@Dependent</literal>, e um nome EL&#8212;que neste caso é por "
-"padrão <literal>randomNumber</literal> de acordo com a convenção JavaBeans "
-"para nome de propriedades. Agora podemos obter um número aleatório em "
-"qualquer lugar:"
+"retorno do método—neste caso um <literal>Integer</literal>—seja injetado. "
+"Podemos até mesmo especificar um qualificador—neste caso <literal>@Random</"
+"literal>, um escopo—que neste caso é por padrão <literal>@Dependent</"
+"literal>, e um nome EL—que neste caso é por padrão <literal>randomNumber</"
+"literal> de acordo com a convenção JavaBeans para nome de propriedades. "
+"Agora podemos obter um número aleatório em qualquer lugar:"
 
 #. Tag: para
 #, no-c-format
@@ -1239,19 +1252,19 @@ msgstr ""
 "implementadas direta ou indiretamente."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Producer methods and fields may have a primitive bean type. For the purpose "
 "of resolving dependencies, primitive types are considered to be identical to "
 "their corresponding wrapper types in <literal>java.lang</literal>."
 msgstr ""
-"A maioria dos tipos de bean você pode provavelmente descobrir. Uma pegadinha "
-"são os tipos primitivos. Todos os tipos primitivos são assumidos como "
+"Os métodos e campos produtores podem ter um tipo primitivo como bean. Para o "
+"propósito de resolver dependências, tipos primitivos são considerados "
 "idênticos aos seus correspondentes tipos adaptadores em <literal>java.lang</"
 "literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If the producer method has method parameters, the container will look for a "
 "bean that satisfies the type and qualifiers of each parameter and pass it to "
@@ -1259,16 +1272,16 @@ msgid ""
 msgstr ""
 "Se o método produtor possuir parâmetros, o contêiner buscará por um bean que "
 "satisfaça o tipo e os qualificadores de cada parâmetro e os passará para o "
-"método automaticamente&#8212;uma outra forma de injeção de dependência."
+"método automaticamente—uma outra forma de injeção de dependência."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We'll talk much more about producer methods in <xref linkend="
 "\"producermethods\" />."
 msgstr ""
-"Falaremos mais sobre métodos produtores no <xref linkend=\"producermethods\"/"
-">."
+"Falaremos mais sobre métodos produtores no <xref linkend=\"producermethods"
+"\" />."
 
 #. Tag: title
 #, no-c-format
@@ -1276,7 +1289,7 @@ msgid "Producer fields"
 msgstr "Campos produtores"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A <emphasis>producer field</emphasis> is a simpler alternative to a producer "
 "method. A producer field is declared by annotating a field of a bean class "
@@ -1285,8 +1298,8 @@ msgid ""
 msgstr ""
 "Um <emphasis>campo produtor</emphasis> é uma alternativa mais simples para "
 "um método produtor. Um campo produtor é declarado ao anotar um campo de uma "
-"classe de bean com a anotação <literal>@Produces</literal>&#8212;a mesma "
-"anotação usada pelos métodos produtores."
+"classe de bean com a anotação <literal>@Produces</literal>—a mesma anotação "
+"usada pelos métodos produtores."
 
 #. Tag: para
 #, no-c-format
@@ -1298,7 +1311,7 @@ msgstr ""
 "assemelham-se às regras para métodos produtores."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A producer field is really just a shortcut that lets us avoid writing a "
 "useless getter method. However, in addition to convenience, producer fields "
@@ -1311,8 +1324,8 @@ msgstr ""
 "escrever um método getter sem utilidade. No entanto, além da conveniência, "
 "campos produtores servem um propósito específico como um adaptador para "
 "injeção no ambiente de componentes Java EE, mas para aprender mais sobre "
-"isto, você terá que aguardar até o <xref linkend=\"resources\"/>. Porque não "
-"podemos esperar para começar a trabalhar em alguns exemplos."
+"isto, você terá que aguardar até o <xref linkend=\"resources\" />. Porque "
+"não podemos esperar para começar a trabalhar em alguns exemplos."
 
 #~ msgid ""
 #~ "<![CDATA[public class BookShop \n"
