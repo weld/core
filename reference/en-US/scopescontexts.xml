@@ -263,7 +263,7 @@ public class OrderBuilder {
             It's probably better to use one of the link components in JSF 2:
          </para>
 
-         <programlisting role="XML"><![CDATA[<h:link outcome="/addProduct.xhtml value="Add Product">
+         <programlisting role="XML"><![CDATA[<h:link outcome="/addProduct.xhtml" value="Add Product">
    <f:param name="cid" value="#{conversation.id}"/>
 </h:link>]]></programlisting>
          
