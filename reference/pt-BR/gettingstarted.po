@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-03-02T13:07:17\n"
-"PO-Revision-Date: 2010-04-15 10:20-0300\n"
+"PO-Revision-Date: 2010-04-15 22:27-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -225,7 +225,7 @@ msgid ""
 "execute the Ant <literal>deploy</literal> target:"
 msgstr ""
 "Vá para o diretório <literal>examples/jsf/numberguess</literal> e execute o "
-"Ant no alvo <literal>deploy</literal>:"
+"alvo <literal>deploy</literal> no Ant:"
 
 #. Tag: para
 #, no-c-format
@@ -517,6 +517,9 @@ msgid ""
 "However, you can use CDI in a servlet container like Tomcat by embedding a "
 "standalone CDI implementation such as Weld."
 msgstr ""
+"Os contêineres servlet não são requeridos para suportar serviços Java EE "
+"como CDI. No entanto, você pode usar CDI em um contêiner servlet, como o "
+"Tomcat, incorporando uma implementação standalone de CDI, como o Weld."
 
 #. Tag: para
 #, no-c-format
@@ -527,6 +530,11 @@ msgid ""
 "container. (But you don't get enterprise features such as session beans and "
 "container-managed transactions.)"
 msgstr ""
+"O Weld vem com um servlet listener que inicializa o ambiente CDI, registra o "
+"<literal>BeanManager</literal> no JNDI e oferece injeção dentro de servlets. "
+"Basicamente, ele simula um pouco do trabalho realizado pelo contêiner Java "
+"EE. (Mas você não terá funcionalidades corporativas como session beans e "
+"transações gerenciadas pelo contêiner.)"
 
 #. Tag: para
 #, no-c-format
@@ -535,9 +543,10 @@ msgid ""
 "need to download Tomcat 6.0.18 or later from <ulink url=\"http://tomcat."
 "apache.org/download-60.cgi\">tomcat.apache.org</ulink> and extract it."
 msgstr ""
-"Vamos Depois, faça o download do Tomcat 6.0.18 ou posterior em <ulink url="
-"\"http://tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink>, e "
-"descompacte-o. Por exemplo"
+"Vamos colocar a extensão servlet do Weld parar rodar no Apache Tomcat. "
+"Primeiro você precisará baixar o Tomcat 6.0.18 ou posterior em <ulink url="
+"\"http://tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink>, e o "
+"descompactar."
 
 #. Tag: para
 #, no-c-format
@@ -548,11 +557,17 @@ msgid ""
 "approach doesn't require that you have Maven installed, so we'll start "
 "there. If you want to use Maven, you can just skip ahead."
 msgstr ""
+"Você possui duas opções para implantar a aplicação no Tomcat. Você pode "
+"implantá-la publicando o artefato no diretório de implantação automática "
+"usando o Ant ou você pode implantar no servidor por meio HTTP usando um "
+"plugin do Maven. A abordagem do Ant não requer que você tenha o Maven "
+"instalado, por isso começaremos por aí. Se você quer usar o Maven, você pode "
+"simplesmente pular esta seção."
 
 #. Tag: title
 #, no-c-format
 msgid "Deploying with Ant"
-msgstr ""
+msgstr "Implantando com o Ant"
 
 #. Tag: para
 #, no-c-format
@@ -564,6 +579,13 @@ msgid ""
 "file, do so now. Then assign the path of your Tomcat installation to the "
 "property key <literal>tomcat.home</literal>."
 msgstr ""
+"Para que o Ant coloque o artefato no diretório de implantação automática do "
+"Tomcat, ele precisa saber onde a instalação do Tomcat está localizada. "
+"Novamente, precisamos definir uma propriedade no arquivo <literal>local."
+"build.properties</literal> dentro do diretório de exemplos do Weld obtido. "
+"Se você ainda não tiver criado este arquivo, faça isso agora. Em seguida, "
+"atribua o caminho de sua instalação do Tomcat na propriedade <literal>tomcat."
+"home</literal>."
 
 #. Tag: para
 #, no-c-format
@@ -576,6 +598,8 @@ msgid ""
 "Change to the <literal>examples/jsf/numberguess</literal> directory again "
 "and run the Ant <literal>deploy</literal> target for Tomcat:"
 msgstr ""
+"Mude para o diretório <literal>examples/jsf/numberguess</literal> novamente "
+"e execute o alvo <literal>deploy</literal> no Ant para o Tomcat:"
 
 #. Tag: para
 #, no-c-format
@@ -584,6 +608,9 @@ msgid ""
 "undeploy the archive in either exploded or packaged format. They are the "
 "same target names used for JBoss AS, prefixed with \"tomcat.\"."
 msgstr ""
+"O script de contrução do Ant inclui alvos adicionais para o Tomcat implantar "
+"e desimplantar o arquivo no formato explodido ou empacotado. Eles possuem os "
+"mesmos nomes usados nos alvos do JBoss AS, prefixados com \"tomcat.\"."
 
 #. Tag: para
 #, no-c-format
@@ -623,6 +650,8 @@ msgid ""
 "If you haven't already, start Tomcat. You can either start Tomcat from a "
 "Linux shell:"
 msgstr ""
+"Se você já não estiver, inicie o Tomcat. Você pode também iniciar o Tomcat a "
+"partir de um shell Linux:"
 
 #. Tag: para
 #, no-c-format
@@ -633,11 +662,16 @@ msgid ""
 "localhost:8080/weld-numberguess\">http://localhost:8080/weld-numberguess</"
 "ulink>!"
 msgstr ""
+"Aguarde uns poucos segundos para a aplicação ser implantada (ou o servidor "
+"de aplicação iniciar) e veja se você pode calcular a abordagem mais "
+"eficiente para apontar o número aleatório na URL local <ulink url=\"http://"
+"localhost:8080/weld-numberguess\">http://localhost:8080/weld-numberguess</"
+"ulink>!"
 
 #. Tag: title
 #, no-c-format
 msgid "Deploying with Maven"
-msgstr ""
+msgstr "Implantando com o Maven"
 
 #. Tag: para
 #, no-c-format
@@ -647,6 +681,11 @@ msgid ""
 "Of course, you'll first need to make sure that you have Maven installed on "
 "your path, similar to how you setup Ant."
 msgstr ""
+"Você também pode implantar a aplicação no Tomcat usando o Maven. Esta seção "
+"é um pouco mais avançada, portanto pule-a, a não ser que você esteja ansioso "
+"para usar o Maven nativamente. Claro, primeiro você precisará ter certeza "
+"que possui o Maven instalado em seu caminho, similar à forma que você "
+"configurou o Ant."
 
 #. Tag: para
 #, no-c-format
@@ -658,6 +697,12 @@ msgid ""
 "literal> file in the example directory has information about how to modify "
 "the Maven settings to accommodate a different setup."
 msgstr ""
+"O plugin do Maven comunica com o Tomcat via HTTP, de modo que não importa "
+"onde você instalou o Tomcat. No entanto, a configuração do plugin assume que "
+"você está rodando o Tomcat com sua configuração padrão, como localhost e na "
+"porta <literal>8080</literal>. O arquivo <literal>readme.txt</literal> no "
+"diretório do exemplo possui informações sobre como modificar as "
+"configurações do Maven para acomodar uma configuração diferente."
 
 #. Tag: para
 #, no-c-format
@@ -666,6 +711,9 @@ msgid ""
 "tomcat-users.xml</literal> file in your Tomcat installation and add the "
 "following line:"
 msgstr ""
+"Para permitir que o Maven comunique com o Tomcat via HTTP, edite o arquivo "
+"<literal>conf/tomcat-users.xml</literal> em sua instalação do Tomcat e "
+"adicione a seguinte linha:"
 
 #. Tag: para
 #, no-c-format
@@ -673,12 +721,16 @@ msgid ""
 "Restart Tomcat. You can now deploy the application to Tomcat with Maven "
 "using this command:"
 msgstr ""
+"Reinicie o Tomcat. Agora você pode implantar a aplicação no Tomcat com o "
+"Maven usando este comando:"
 
 #. Tag: para
 #, no-c-format
 msgid ""
 "Once the application is deployed, you can redeploy it using this command:"
 msgstr ""
+"Uma vez que a aplicação está implantada, você pode reimplantá-la usando este "
+"comando:"
 
 #. Tag: para
 #, no-c-format
@@ -687,6 +739,9 @@ msgid ""
 "literal> profile defined in the Maven POM (<literal>pom.xml</literal>). "
 "Among other things, this profile activates the Tomcat plugin."
 msgstr ""
+"O argumento <literal>-Ptomcat</literal> ativa o profile <literal>tomcat</"
+"literal> definido no Maven POM (<literal>pom.xml</literal>). Entre outras "
+"coisas, este profile ativa o plugin do Tomcat."
 
 #. Tag: para
 #, no-c-format
@@ -694,6 +749,8 @@ msgid ""
 "Rather than shipping the container off to a standalone Tomcat installation, "
 "you can also execute the application in an embedded Tomcat 6 container:"
 msgstr ""
+"Ao invés de enviar o contêiner para uma instalação standalone do Tomcat, "
+"você também pode executar a aplicação em um contêiner embutido do Tomcat 6:"
 
 #. Tag: para
 #, no-c-format
@@ -704,6 +761,12 @@ msgid ""
 "redeploy (depending on the plugin configuration). If you make a change to a "
 "classpath resource, you need to execute a build:"
 msgstr ""
+"A vantagem de utilizar o servidor embutido é que as mudanças nos ativos em "
+"<literal>src/main/webapp</literal> entrar em vigor imediatamente. Se uma "
+"mudança em um arquivo de configuração da webapp é realizada, a aplicação "
+"pode automaticamente ser reimplantada (dependendo da configuração do "
+"plugin). Se você fizer uma alteração em um recurso do classpath, você "
+"precisa executar uma recompilação:"
 
 #. Tag: para
 #, no-c-format
@@ -712,6 +775,9 @@ msgid ""
 "the example, which are documented in the example's <literal>readme.txt</"
 "literal> file."
 msgstr ""
+"Existem muitos outros goals do Maven que você pode usar se estiver "
+"dissecando o exemplo, o qual está documentado no arquivo <literal>readme."
+"txt</literal> do exemplo."
 
 #. Tag: title
 #, no-c-format
