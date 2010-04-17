@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-03-02T13:07:17\n"
-"PO-Revision-Date: 2010-04-15 22:27-0300\n"
+"PO-Revision-Date: 2010-04-16 21:53-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgid ""
 "an enterprise (ear) example that contains session beans. This example must "
 "be run on JBoss AS 6.0, Glassfish 3.0 or any compliant Java EE 6 container."
 msgstr ""
-"Weld vem com duas aplicações de exemplo de partida, além de exemplos mais "
+"Weld vem com duas aplicações como exemplos de partida, além de exemplos mais "
 "especializados. O primeiro, <literal>weld-numberguess</literal>, é um "
 "exemplo web (war) contendo somente managed beans não-transacionais. Este "
 "exemplo pode ser executado em uma ampla variedade de servidores, incluindo "
@@ -543,7 +543,7 @@ msgid ""
 "need to download Tomcat 6.0.18 or later from <ulink url=\"http://tomcat."
 "apache.org/download-60.cgi\">tomcat.apache.org</ulink> and extract it."
 msgstr ""
-"Vamos colocar a extensão servlet do Weld parar rodar no Apache Tomcat. "
+"Vamos colocar a extensão servlet do Weld para rodar no Apache Tomcat. "
 "Primeiro você precisará baixar o Tomcat 6.0.18 ou posterior em <ulink url="
 "\"http://tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink>, e o "
 "descompactar."
@@ -559,10 +559,10 @@ msgid ""
 msgstr ""
 "Você possui duas opções para implantar a aplicação no Tomcat. Você pode "
 "implantá-la publicando o artefato no diretório de implantação automática "
-"usando o Ant ou você pode implantar no servidor por meio HTTP usando um "
-"plugin do Maven. A abordagem do Ant não requer que você tenha o Maven "
-"instalado, por isso começaremos por aí. Se você quer usar o Maven, você pode "
-"simplesmente pular esta seção."
+"usando o Ant ou você pode implantar no servidor via HTTP usando um plugin do "
+"Maven. A abordagem do Ant não requer que você tenha o Maven instalado, por "
+"isso começaremos por aí. Se você quer usar o Maven, você pode simplesmente "
+"pular esta seção."
 
 #. Tag: title
 #, no-c-format
@@ -782,7 +782,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Deploying to Jetty"
-msgstr ""
+msgstr "Implantando no Jetty"
 
 #. Tag: para
 #, no-c-format
@@ -793,6 +793,11 @@ msgid ""
 "only the <literal>weld-numberguess</literal> example is configured for Jetty "
 "support at the time of writing."
 msgstr ""
+"O suporte ao Jetty nos exemplos é uma adição mais recente. Já que o Jetty é "
+"tradicionalmente usado com o Maven, não existem alvos do Ant para ele. Você "
+"deve invocar o Maven diretamente para implantar os exemplos no Jetty sem "
+"fazer mais nada. Além disso, somente o exemplo <literal>weld-numberguess</"
+"literal> está configurado para suportar o Jetty neste momento."
 
 #. Tag: para
 #, no-c-format
@@ -802,6 +807,10 @@ msgid ""
 "worry. We'll still go over everything that you need to know again in this "
 "section."
 msgstr ""
+"Se você leu toda a seção do Tomcat até o fim, então você está pronto para "
+"seguir. A execução do Maven assemelha-se à implantação embutida do Tomcat. "
+"Se não, não fique preocupado. Nós ainda iremos abordar tudo que você precisa "
+"saber novamente nesta seção."
 
 #. Tag: para
 #, no-c-format
@@ -813,6 +822,12 @@ msgid ""
 "(<literal>mvn</literal>) on your path. The rest will be downloaded from the "
 "internet when the build is run."
 msgstr ""
+"O Maven POM (<literal>pom.xml</literal>) inclui um profile nomeado "
+"<literal>jetty</literal> que ativa o plugin Maven Jetty, que você pode usar "
+"para iniciar o Jetty no modo embutido e implantar a aplicação devidamente. "
+"Você não precisa de mais nada instalado, exceto ter o comando do Maven "
+"(<literal>mvn</literal>) em seu caminho. O restante será baixado da internet "
+"quando a construção for executada."
 
 #. Tag: para
 #, no-c-format
@@ -822,6 +837,10 @@ msgid ""
 "Maven war plugin followed by the <literal>run</literal> goal of the Maven "
 "Jetty plugin with the <literal>jetty</literal> profile enabled, as follows:"
 msgstr ""
+"Para rodar o exemplo <literal>weld-numberguess</literal> no Jetty, vá para o "
+"diretório do exemplo e execute o goal <literal>inplace</literal> do plugin "
+"Maven war seguido pelo goal <literal>run</literal> do plugin Maven Jetty com "
+"o profile <literal>jetty</literal> habilitado, como a seguir:"
 
 #. Tag: para
 #, no-c-format
@@ -832,6 +851,12 @@ msgid ""
 "localhost:9090/weld-numberguess</ulink>. The port is defined in the Maven "
 "Jetty plugin configuration within the <literal>jetty</literal> profile."
 msgstr ""
+"A saída do log do Jetty será mostrada no console. Uma vez que o Jetty tenha "
+"reportado a implantação da aplicação, você pode acessá-la através da "
+"seguinte URL: <ulink url=\"http://localhost:9090/weld-numberguess\">http://"
+"localhost:9090/weld-numberguess</ulink>. A porta está definida nas "
+"configurações do plugin Maven Jetty dentro do profile <literal>jetty</"
+"literal>."
 
 #. Tag: para
 #, no-c-format
@@ -844,6 +869,13 @@ msgid ""
 "goal of the Maven war plugin, again with the <literal>jetty</literal> "
 "profile enabled."
 msgstr ""
+"Qualquer mudança nos recursos em <literal>src/main/webapp</literal> entra em "
+"vigor imediatamente. Se uma mudança em um arquivo de configuração da webapp "
+"é realizada, a aplicação pode ser reimplantada automaticamente. O "
+"comportamento de reimplantação pode ser sintonizado na configuração do "
+"plugin. Se você fizer uma mudança em um recurso do, você precisará executar "
+"um build e o goal <literal>inplace</literal> do plugin Maven war, novamente "
+"com o profile <literal>jetty</literal> habilitado."
 
 #. Tag: para
 #, no-c-format
@@ -855,6 +887,12 @@ msgid ""
 "excluding them from the packaged war and cleaning them during the Maven "
 "clean phase."
 msgstr ""
+"O goal <literal>war:inplace</literal> copia as classes e jars compilados "
+"dentro de <literal>src/main/webapp</literal>, nos diretórios <literal>WEB-"
+"INF/classes</literal> e <literal>WEB-INF/lib</literal>, respectivamente, "
+"misturando arquivos fontes e compilados. No entanto, o build resolve estes "
+"arquivos temporários excluindo-os do war empacotado ou limpando-os durante a "
+"fase clean do Maven."
 
 #. Tag: para
 #, no-c-format
@@ -864,6 +902,10 @@ msgid ""
 "described above. Your other option is to start the Jetty container from a "
 "Java application."
 msgstr ""
+"Você tem duas opções se quiser rodar o exemplo no Jetty a partir da IDE. "
+"Você pode instalar o plugin <ulink url=\"http://m2eclipse.sonatype.org/"
+"\">m2eclispe</ulink> e executar os goals como descrito acima. Sua outra "
+"opção é iniciar o contêiner Jetty a partir de uma aplicação Java."
 
 #. Tag: para
 #, no-c-format
@@ -876,6 +918,8 @@ msgid ""
 "Next, assemble all the necessary resources under <literal>src/main/webapp</"
 "literal>:"
 msgstr ""
+"Em seguida, monte todos os recursos necessários em <literal>src/main/webapp</"
+"literal>:"
 
 #. Tag: para
 #, no-c-format
@@ -888,6 +932,13 @@ msgid ""
 "\">http://localhost:8080</ulink>. Pay particular attention to the port in "
 "the URL and the lack of a trailing context path."
 msgstr ""
+"Agora você está pronto para rodar o servidor no Eclipse. Importe o projeto "
+"para seu workspace do Eclipse usando \"Import Existing Project into Workspace"
+"\". Então, encontre a start class em <literal>src/jetty/java</literal> e "
+"execute seu método main como uma Java Application. O Jetty será executado. "
+"Você pode ver a aplicação através da seguinte URL: <ulink url=\"http://"
+"localhost:8080\">http://localhost:8080</ulink>. Preste atenção especial na "
+"porta presente na URL e a ausência de um caminho de contexto à direita."
 
 #. Tag: para
 #, no-c-format
@@ -896,6 +947,9 @@ msgid ""
 "your choice, you probably want to know a little bit about how they actually "
 "work."
 msgstr ""
+"Agora que você possui as aplicações de partida implantadas no servidor de "
+"sua escolha, provavelmente vai querer saber um pouco sobre como eles "
+"realmente funcionam."
 
 #~ msgid ""
 #~ "JBoss AS 5.2.0 (currently only nightly builds of JBoss AS 5.2.0.Beta1 are "
