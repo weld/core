@@ -63,7 +63,7 @@ public class DefaultServiceLoader<S> implements Iterable<S>
 {
    private static LocLogger log = loggerFactory().getLogger(UTIL);
    private static XLogger logX = loggerFactory().getXLogger(UTIL);
-   
+
    private static final String SERVICES = "META-INF/services";
 
    /**
@@ -240,8 +240,15 @@ public class DefaultServiceLoader<S> implements Iterable<S>
    private void loadService(String serviceClassName)
    {
       Class<? extends S> serviceClass = loadClass(serviceClassName);
-      S serviceInstance = prepareInstance(serviceClass);
-      providers.add(serviceInstance);
+      S serviceInstance = null;
+      if (serviceClass != null)
+      {
+         serviceInstance = prepareInstance(serviceClass);
+      }
+      if (serviceInstance != null)
+      {
+         providers.add(serviceInstance);
+      }
    }
 
    private Class<? extends S> loadClass(String serviceClassName)
@@ -255,13 +262,11 @@ public class DefaultServiceLoader<S> implements Iterable<S>
       }
       catch (ClassNotFoundException e)
       {
-         logX.throwing(Level.ERROR, e);
-         throw new ForbiddenStateException(EXTENSION_CLASS_NOT_FOUND, serviceClassName);
+         log.warn(EXTENSION_CLASS_NOT_FOUND, serviceClassName);
       }
       catch (ClassCastException e)
       {
-         logX.throwing(Level.ERROR, e);
-         throw new ForbiddenStateException(DECLARED_EXTENSION_DOES_NOT_IMPLEMENT_EXTENSION, serviceClassName);
+         log.warn(DECLARED_EXTENSION_DOES_NOT_IMPLEMENT_EXTENSION, serviceClassName);
       }
       return serviceClass;
    }
@@ -275,9 +280,9 @@ public class DefaultServiceLoader<S> implements Iterable<S>
       }
       catch (Exception e)
       {
-         logX.throwing(Level.ERROR, e);
-         throw new ForbiddenStateException(SECURITY_EXCEPTION_SCANNING, serviceClass, e);
+         log.warn(SECURITY_EXCEPTION_SCANNING, serviceClass.getName());
       }
+      return null;
    }
 
    /**
