@@ -102,6 +102,25 @@ public class Proxies
          return superclass;
       }
 
+      public Class<?> getSuperInterface()
+      {
+         if (interfaces.isEmpty())
+         {
+            return null;
+         }
+         Iterator<Class<?>> it = interfaces.iterator();
+         Class<?> superclass = it.next();
+         while (it.hasNext())
+         {
+            Class<?> clazz = it.next();
+            if (superclass.isAssignableFrom(clazz))
+            {
+               superclass = clazz;
+            }
+         }
+         return superclass;
+      }
+
       private Class<?>[] getInterfaces()
       {
          return interfaces.toArray(EMPTY_CLASSES);
@@ -164,78 +183,6 @@ public class Proxies
          return new TypeInfo();
       }
 
-   }
-
-   /**
-    * Create a proxy with a handler, registering the proxy for cleanup
-    * 
-    * @param <T>
-    * @param methodHandler
-    * @param typeInfo
-    * @return
-    * @throws IllegalAccessException
-    * @throws InstantiationException
-    */
-   public static <T> T createProxy(MethodHandler methodHandler, TypeInfo typeInfo) throws IllegalAccessException, InstantiationException
-   {
-      if (InstantiatorFactory.useInstantiators())
-      {
-         Class<T> proxyClass = Proxies.<T> createProxyClass(methodHandler, typeInfo);
-         T instance = SecureReflections.newUnsafeInstance(proxyClass);
-         setMethodHandler(proxyClass, instance, methodHandler);
-         return instance;
-      }
-      else
-      {
-         return SecureReflections.newInstance(Proxies.<T> createProxyClass(methodHandler, typeInfo));
-      }
-   }
-
-   private static <T> void setMethodHandler(Class<T> clazz, T instance, MethodHandler methodHandler)
-   {
-      try
-      {
-         Method setter = SecureReflections.getDeclaredMethod(clazz, "setHandler", MethodHandler.class);
-         SecureReflections.invoke(instance, setter, methodHandler);
-      }
-      catch (Exception e)
-      {
-         throw new WeldException(METHODHANDLER_SET_FAILED, e, clazz);
-      }
-   }
-
-   /**
-    * Create a proxy class
-    * 
-    * You will need to manually register the proxy instances for cleanup
-    * 
-    * @param <T>
-    * @param typeInfo
-    * @return
-    */
-   public static <T> Class<T> createProxyClass(TypeInfo typeInfo)
-   {
-      return createProxyClass(null, typeInfo);
-   }
-
-   /**
-    * Create a proxy class
-    * 
-    * You will need to manually register the proxy instances for cleanup
-    * 
-    * @param <T>
-    * @param methodHandler
-    * @param typeInfo
-    * @return
-    */
-   public static <T> Class<T> createProxyClass(MethodHandler methodHandler, TypeInfo typeInfo)
-   {
-      ProxyFactory proxyFactory = typeInfo.createProxyFactory();
-      attachMethodHandler(proxyFactory, methodHandler);
-
-      @SuppressWarnings("unchecked")
-      Class<T> clazz = proxyFactory.createClass();
-      return clazz;
    }
 
    /**
@@ -341,31 +288,4 @@ public class Proxies
          return null;
       }
    }
-
-   public static ProxyFactory attachMethodHandler(ProxyFactory proxyFactory, MethodHandler methodHandler)
-   {
-      if (methodHandler != null)
-      {
-         proxyFactory.setHandler(new CleanableMethodHandler(methodHandler));
-      }
-      return proxyFactory;
-   }
-
-   public static <T> T attachMethodHandler(T instance, MethodHandler methodHandler)
-   {
-      if (instance instanceof ProxyObject)
-      {
-         if (methodHandler != null)
-         {
-            ((ProxyObject) instance).setHandler(new CleanableMethodHandler(methodHandler));
-         }
-         return instance;
-      }
-      else
-      {
-         throw new ForbiddenArgumentException(INSTANCE_NOT_A_PROXY, instance);
-      }
-
-   }
-
 }

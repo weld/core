@@ -18,8 +18,6 @@ package org.jboss.weld.bean.builtin.ee;
 
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 
 import java.io.Serializable;
 
@@ -30,34 +28,32 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.builtin.CallableMethodHandler;
+import org.jboss.weld.bean.proxy.BeanInstance;
+import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
+import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.ForbiddenStateException;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Proxies.TypeInfo;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 
 /**
  * @author pmuir
- *
  */
 public class EEResourceProducerField<X, T> extends ProducerField<X, T>
 {
-   
-   
+
    private static class EEResourceCallable<T> extends AbstractEECallable<T>
    {
-      
-      private static final long serialVersionUID = 6287931036073200963L;
-      
-      private final String beanId;
-      private transient T instance;
+
+      private static final long          serialVersionUID = 6287931036073200963L;
+
+      private final String               beanId;
+      private transient T                instance;
       private final CreationalContext<T> creationalContext;
 
       public EEResourceCallable(BeanManagerImpl beanManager, ProducerField<?, T> producerField, CreationalContext<T> creationalContext)
@@ -71,12 +67,12 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
       {
          if (instance == null)
          {
-            Contextual<T> contextual = Container.instance().services().get(ContextualStore.class).<Contextual<T>, T>getContextual(beanId);
+            Contextual<T> contextual = Container.instance().services().get(ContextualStore.class).<Contextual<T>, T> getContextual(beanId);
             if (contextual instanceof EEResourceProducerField<?, ?>)
             {
                @SuppressWarnings("unchecked")
                EEResourceProducerField<?, T> bean = (EEResourceProducerField<?, T>) contextual;
-               
+
                this.instance = bean.createUnderlying(creationalContext);
             }
             else
@@ -86,15 +82,15 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
          }
          return instance;
       }
-      
+
       @Override
       public String toString()
       {
          return beanId;
       }
-      
+
    }
-   
+
    /**
     * Creates an EE resource producer field
     * 
@@ -112,7 +108,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
    {
       super(field, declaringBean, manager);
    }
-   
+
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
@@ -122,7 +118,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
          checkEEResource();
       }
    }
-   
+
    protected void checkEEResource()
    {
       EJBApiAbstraction ejbApiAbstraction = beanManager.getServices().get(EJBApiAbstraction.class);
@@ -133,31 +129,21 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
          throw new ForbiddenStateException(INVALID_RESOURCE_PRODUCER_FIELD, getWeldAnnotated());
       }
    }
-   
+
    @Override
    public T create(CreationalContext<T> creationalContext)
    {
-      try
+      if (Reflections.isFinal(getWeldAnnotated().getJavaClass()) || Serializable.class.isAssignableFrom(getWeldAnnotated().getJavaClass()))
       {
-         if (Reflections.isFinal(getWeldAnnotated().getJavaClass()) || Serializable.class.isAssignableFrom(getWeldAnnotated().getJavaClass()))
-         {
-            return createUnderlying(creationalContext);
-         }
-         else
-         {
-            return Proxies.<T>createProxy(new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(), this, creationalContext)), TypeInfo.of(getTypes()).add(Serializable.class));
-         }
+         return createUnderlying(creationalContext);
       }
-      catch (InstantiationException e)
+      else
       {
-         throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
+         BeanInstance proxyBeanInstance = new EnterpriseTargetBeanInstance(getTypes(), new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(), this, creationalContext)));
+         return new ProxyFactory<T>(proxyBeanInstance).create(proxyBeanInstance);
       }
    }
-   
+
    /**
     * Access to the underlying producer field
     */
@@ -165,12 +151,11 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
    {
       return super.create(creationalContext);
    }
-   
+
    @Override
    public boolean isPassivationCapableBean()
    {
       return true;
    }
-
 
 }

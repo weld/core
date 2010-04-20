@@ -91,7 +91,6 @@ import org.jboss.weld.servlet.HttpSessionManager;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
-import org.jboss.weld.util.JavassistCleaner;
 import org.jboss.weld.util.Names;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.serviceProvider.DefaultServiceLoaderFactory;
@@ -321,7 +320,6 @@ public class WeldBootstrap implements Bootstrap
       services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
       services.add(ContextualStore.class, new ContextualStoreImpl());
       services.add(ServiceLoaderFactory.class, new DefaultServiceLoaderFactory());
-      services.add(JavassistCleaner.class, new JavassistCleaner());
       services.add(InterceptionMetadataService.class, new InterceptionMetadataService());
       services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
       return services;

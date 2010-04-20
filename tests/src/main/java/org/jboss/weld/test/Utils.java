@@ -35,6 +35,7 @@ import javax.el.ELContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.util.TypeLiteral;
 
+import org.jboss.weld.bean.proxy.Proxy;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.el.EL;
@@ -169,4 +170,8 @@ public class Utils
       return (T) EL.EXPRESSION_FACTORY.createValueExpression(elContext, expression, expectedType).getValue(elContext);
    }
 
+   public static boolean isProxy(Object proxy)
+   {
+      return proxy instanceof Proxy;
+   }
 }

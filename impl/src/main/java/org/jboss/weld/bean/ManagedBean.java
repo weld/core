@@ -52,6 +52,8 @@ import org.jboss.weld.bean.interceptor.CdiInterceptorHandlerFactory;
 import org.jboss.weld.bean.interceptor.ClassInterceptionHandlerFactory;
 import org.jboss.weld.bean.interceptor.InterceptionMetadataService;
 import org.jboss.weld.bean.interceptor.WeldClassReference;
+import org.jboss.weld.bean.proxy.ProxyFactory;
+import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -67,7 +69,6 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.CleanableMethodHandler;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
@@ -581,8 +582,10 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          if (interceptionRegistries.size() > 0)
          {
             InterceptorProxyCreatorImpl interceptorProxyCreator = new InterceptorProxyCreatorImpl(interceptionRegistries, interceptionHandlerFactories);
-            MethodHandler methodHandler = new CleanableMethodHandler(interceptorProxyCreator.createMethodHandler(instance, getType(), getBeanManager().getServices().get(InterceptionMetadataService.class).getInterceptorMetadataRegistry().getInterceptorClassMetadata(WeldClassReference.of(getWeldAnnotated()), true)));
-            instance = interceptorProxyCreator.createProxyInstance(InterceptionUtils.createProxyClassWithHandler(getType(), methodHandler), methodHandler);
+            MethodHandler methodHandler = interceptorProxyCreator.createMethodHandler(instance, getType(), getBeanManager().getServices().get(InterceptionMetadataService.class).getInterceptorMetadataRegistry().getInterceptorClassMetadata(WeldClassReference.of(getWeldAnnotated()), true));
+            TargetBeanInstance targetInstance = new TargetBeanInstance(this, instance);
+            targetInstance.setInterceptorsHandler(methodHandler);
+            instance = new ProxyFactory<T>(targetInstance).create(targetInstance);
          }
 
       }

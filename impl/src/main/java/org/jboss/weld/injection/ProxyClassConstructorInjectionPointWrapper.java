@@ -39,8 +39,6 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
 {
    private ConstructorInjectionPoint<T> originalConstructorInjectionPoint;
 
-   private Object injectedDelegate;
-
    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, WeldConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint)
    {
       super(declaringBean, weldConstructor);
@@ -51,32 +49,5 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
    public List<ParameterInjectionPoint<?, T>> getWeldParameters()
    {
       return originalConstructorInjectionPoint.getWeldParameters();
-   }
-
-   @Override
-   protected Object[] getParameterValues(List<ParameterInjectionPoint<?, T>> parameters, Object specialVal, Class<? extends Annotation> specialParam, BeanManagerImpl manager, CreationalContext<?> creationalContext)
-   {
-      Object[] parameterValues = super.getParameterValues(parameters, specialVal, specialParam, manager, creationalContext);
-      if (parameters.size() > 0)
-      {
-         for (ParameterInjectionPoint<?, T> parameterInjectionPoint: parameters)
-         {
-            if (parameterInjectionPoint.isDelegate())
-            {
-               this.injectedDelegate = parameterValues[parameterInjectionPoint.getPosition()];
-            }
-         }
-      }
-      return parameterValues;
-   }
-
-   /**
-    * The delegate injected during the constructed process, if any
-    *
-    * @return
-    */
-   public Object getInjectedDelegate()
-   {
-      return injectedDelegate;
    }
 }

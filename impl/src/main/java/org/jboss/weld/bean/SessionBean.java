@@ -30,7 +30,6 @@ import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_S
 import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_STATELESS_SESSION_BEAN;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -55,7 +54,10 @@ import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.EnterpriseBeanProxyMethodHandler;
+import org.jboss.weld.bean.proxy.EnterpriseProxyFactory;
+import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.Marker;
+import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.api.SessionObjectReference;
@@ -74,8 +76,6 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Proxies.TypeInfo;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.SecureReflections;
 
@@ -245,7 +245,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
 
    protected void initProxyClass()
    {
-      this.proxyClass = Proxies.createProxyClass(TypeInfo.of(getTypes()).add(EnterpriseBeanInstance.class).add(Serializable.class));
+      this.proxyClass = new EnterpriseProxyFactory<T>(getWeldAnnotated().getJavaClass()).getProxyClass();
    }
 
    /**
@@ -322,7 +322,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
       {
          T instance = SecureReflections.newInstance(proxyClass);
          creationalContext.push(instance);
-         Proxies.attachMethodHandler(instance, new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, creationalContext));
+         ProxyFactory.setBeanInstance(instance, new EnterpriseTargetBeanInstance(getWeldAnnotated().getJavaClass(), new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, creationalContext)));
          if (hasDecorators())
          {
             instance = applyDecorators(instance, creationalContext, null);

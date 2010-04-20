@@ -47,7 +47,9 @@ public class DecorationHelper<T>
       }
    };
 
-   private Class<T> proxyClassForDecorator;
+   private final Class<T> proxyClassForDecorator;
+
+   private final TargetBeanInstance targetBeanInstance;
 
    private T originalInstance;
 
@@ -59,9 +61,11 @@ public class DecorationHelper<T>
 
    List<Decorator<?>> decorators;
 
-   public DecorationHelper(T originalInstance, Class<T> proxyClassForDecorator, BeanManagerImpl beanManager, List<Decorator<?>> decorators)
+   @SuppressWarnings("unchecked")
+   public DecorationHelper(TargetBeanInstance originalInstance, Class<T> proxyClassForDecorator, BeanManagerImpl beanManager, List<Decorator<?>> decorators)
    {
-      this.originalInstance = originalInstance;
+      this.originalInstance = (T) originalInstance.getInstance();
+      this.targetBeanInstance = originalInstance;
       this.beanManager = beanManager;
       this.decorators = new LinkedList<Decorator<?>>(decorators);
       this.proxyClassForDecorator = proxyClassForDecorator;
@@ -92,7 +96,9 @@ public class DecorationHelper<T>
          try
          {
             T proxy = SecureReflections.newInstance(proxyClassForDecorator);
-            Proxies.attachMethodHandler(proxy, createMethodHandler(injectionPoint, creationalContext, (Decorator<Object>) decorators.get(counter++)));
+            TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
+            newTargetBeanInstance.setInterceptorsHandler(createMethodHandler(injectionPoint, creationalContext, (Decorator<Object>) decorators.get(counter++)));
+            ProxyFactory.setBeanInstance(proxy, newTargetBeanInstance);
             previousDelegate = proxy;
             return proxy;
          }

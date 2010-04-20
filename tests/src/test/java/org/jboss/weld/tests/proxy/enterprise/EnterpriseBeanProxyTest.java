@@ -22,6 +22,7 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.weld.test.AbstractWeldTest;
+import org.jboss.weld.test.Utils;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -36,7 +37,7 @@ public class EnterpriseBeanProxyTest extends AbstractWeldTest
    public void testNoInterfaceView() throws Exception
    {
       Object mouse = getReference(MouseLocal.class);
-      assert mouse instanceof ProxyObject;
+      assert Utils.isProxy(mouse);
       assert mouse instanceof MouseLocal;
    }
    

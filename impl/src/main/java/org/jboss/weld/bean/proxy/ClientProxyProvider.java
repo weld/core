@@ -17,22 +17,14 @@
 package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_ID_CREATION_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 
-import java.io.Serializable;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.Container;
-import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Proxies.TypeInfo;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
@@ -91,27 +83,29 @@ public class ClientProxyProvider
     */
    private static <T> T createClientProxy(Bean<T> bean, String id) throws RuntimeException
    {
-      try
-      {
-         TypeInfo typeInfo;
-         if ((bean instanceof AbstractClassBean) && ((AbstractClassBean)bean).hasInterceptors())
-         {
-             typeInfo = TypeInfo.of(bean.getTypes()).add(Serializable.class).add(LifecycleMixin.class);
-         }
-         else
-         {
-             typeInfo = TypeInfo.of(bean.getTypes()).add(Serializable.class);
-         }
-         return Proxies.<T>createProxy(new ClientProxyMethodHandler(bean, id), typeInfo);
-      }
-      catch (InstantiationException e)
-      {
-         throw new WeldException(PROXY_INSTANTIATION_FAILED, e, bean);
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, bean);
-      }
+      ContextBeanInstance<T> beanInstance = new ContextBeanInstance<T>(bean, id);
+      return new ProxyFactory<T>(beanInstance).create(beanInstance);
+//      try
+//      {
+//         TypeInfo typeInfo;
+//         if ((bean instanceof AbstractClassBean) && ((AbstractClassBean)bean).hasInterceptors())
+//         {
+//             typeInfo = TypeInfo.of(bean.getTypes()).add(Serializable.class).add(LifecycleMixin.class);
+//         }
+//         else
+//         {
+//             typeInfo = TypeInfo.of(bean.getTypes()).add(Serializable.class);
+//         }
+//         return Proxies.<T>createProxy(new ClientProxyMethodHandler(bean, id), typeInfo);
+//      }
+//      catch (InstantiationException e)
+//      {
+//         throw new WeldException(PROXY_INSTANTIATION_FAILED, e, bean);
+//      }
+//      catch (IllegalAccessException e)
+//      {
+//         throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, bean);
+//      }
    }
 
    /**
@@ -123,6 +117,7 @@ public class ClientProxyProvider
     * @param bean The bean to get a proxy to
     * @return the client proxy for the bean
     */
+   @SuppressWarnings("unchecked")
    public <T> T getClientProxy(final Bean<T> bean)
    {
       return (T) pool.get(bean);
