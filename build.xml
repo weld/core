@@ -27,6 +27,14 @@
    <condition property="artifact.target.dir" value="${basedir}/ear/target">
       <equals arg1="${type}" arg2="ear" />
    </condition>
+   <condition property="war">
+      <equals arg1="${type}" arg2="war" />
+   </condition>
+   <condition property="ear">
+      <equals arg1="${type}" arg2="ear" />
+   </condition>
+
+
    
    <property name="ds.file" location="${basedir}/${example.name}-ds.xml" />
    
@@ -109,7 +117,6 @@
    </target>
 
    <target name="restart.war" depends="explode" if="war">
-      <touch file="${jboss.home}/server/default/deploy/${example.name}.war" />
       <touch file="${jboss.home}/server/default/deploy/${example.name}.war/WEB-INF/web.xml" />
    </target>
 
