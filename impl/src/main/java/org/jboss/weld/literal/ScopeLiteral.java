@@ -19,6 +19,11 @@ package org.jboss.weld.literal;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Scope;
 
+/**
+ * Annotation literal for {@link Scope}?
+ * 
+ * @author Pete Muir
+ */
 public class ScopeLiteral extends AnnotationLiteral<Scope> implements Scope 
 {
 

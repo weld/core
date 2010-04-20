@@ -19,6 +19,11 @@ package org.jboss.weld.literal;
 import javax.enterprise.inject.Stereotype;
 import javax.enterprise.util.AnnotationLiteral;
 
+/**
+ * Annotation literal for {@link Stereotype}?
+ * 
+ * @author Pete Muir
+ */
 public class StereotypeLiteral extends AnnotationLiteral<Stereotype> implements Stereotype
 {
    

@@ -19,6 +19,11 @@ package org.jboss.weld.literal;
 import javax.enterprise.inject.Any;
 import javax.enterprise.util.AnnotationLiteral;
 
+/**
+ * Annotation literal for {@link Any}?
+ * 
+ * @author Pete Muir
+ */
 public class AnyLiteral extends AnnotationLiteral<Any> implements Any
 {
    

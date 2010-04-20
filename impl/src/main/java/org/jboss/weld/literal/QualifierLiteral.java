@@ -19,6 +19,11 @@ package org.jboss.weld.literal;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
 
+/**
+ * Annotation literal for {@link Qualifier}?
+ * 
+ * @author Pete Muir
+ */
 public class QualifierLiteral extends AnnotationLiteral<Qualifier> implements Qualifier
 {
    

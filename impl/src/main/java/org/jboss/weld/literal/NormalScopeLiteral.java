@@ -19,6 +19,11 @@ package org.jboss.weld.literal;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.util.AnnotationLiteral;
 
+/**
+ * Annotation literal for {@link NormalScope}?
+ * 
+ * @author Pete Muir
+ */
 public class NormalScopeLiteral extends AnnotationLiteral<NormalScope> implements NormalScope
 {
    

@@ -19,6 +19,11 @@ package org.jboss.weld.literal;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.interceptor.InterceptorBinding;
 
+/**
+ * Annotation literal for {@link InterceptorBinding}?
+ * 
+ * @author Pete Muir
+ */
 public class InterceptorBindingTypeLiteral extends AnnotationLiteral<InterceptorBinding> implements InterceptorBinding
 {
    

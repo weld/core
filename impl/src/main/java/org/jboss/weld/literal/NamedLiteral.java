@@ -20,7 +20,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Named;
 
 /**
- * Annotation literal for @Current
+ * Annotation literal for {@link Named}?
  * 
  * @author Pete Muir
  */
