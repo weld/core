@@ -60,9 +60,9 @@ public class ProxyFactory<T>
 
    protected final Class<?>            beanType;
    protected final ArrayList<Class<?>> additionalInterfaces = new ArrayList<Class<?>>();
-   protected ClassLoader               classLoader;
-   protected ProtectionDomain          protectionDomain;
-   protected ClassPool                 classPool;
+   protected final ClassLoader               classLoader;
+   protected final ProtectionDomain          protectionDomain;
+   protected final ClassPool                 classPool;
 
    /**
     * Creates a new proxy factory from any type of BeanInstance. This bean
@@ -73,8 +73,7 @@ public class ProxyFactory<T>
     */
    public ProxyFactory(BeanInstance beanInstance)
    {
-      this.beanType = beanInstance.getInstanceType();
-      init();
+      this(beanInstance.getInstanceType());
    }
 
    /**
@@ -82,26 +81,21 @@ public class ProxyFactory<T>
     * 
     * @param proxiedBeanType the super-class for this proxy class
     */
-   public ProxyFactory(Class<T> proxiedBeanType)
+   public ProxyFactory(Class<?> proxiedBeanType)
    {
       this.beanType = proxiedBeanType;
-      init();
-   }
-
-   /**
-    * Initializes the proxy factory.
-    */
-   private void init()
-   {
-      classLoader = beanType.getClassLoader();
-      protectionDomain = beanType.getProtectionDomain();
       if (beanType.getName().startsWith("java."))
       {
-         classLoader = this.getClass().getClassLoader();
-         protectionDomain = this.getClass().getProtectionDomain();
+         this.classLoader = this.getClass().getClassLoader();
+         this.protectionDomain = this.getClass().getProtectionDomain();
       }
-      classPool = new ClassPool();
-      classPool.appendClassPath(new ClassloaderClassPath(classLoader));
+      else
+      {
+         this.classLoader = beanType.getClassLoader();
+         this.protectionDomain = beanType.getProtectionDomain();
+      }
+      this.classPool = new ClassPool();
+      this.classPool.appendClassPath(new ClassloaderClassPath(classLoader));
       addDefaultAdditionalInterfaces();
    }
 
