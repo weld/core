@@ -84,7 +84,7 @@ public class ProxyFactory<T>
    public ProxyFactory(Class<?> proxiedBeanType)
    {
       this.beanType = proxiedBeanType;
-      if (beanType.getName().startsWith("java."))
+      if (beanType.getName().startsWith("java"))
       {
          this.classLoader = this.getClass().getClassLoader();
          this.protectionDomain = this.getClass().getProtectionDomain();
@@ -148,7 +148,7 @@ public class ProxyFactory<T>
    public Class<T> getProxyClass()
    {
       String proxyClassName = beanType.getName() + "_$$_Weld" + getProxyNameSuffix();
-      if (proxyClassName.startsWith("java."))
+      if (proxyClassName.startsWith("java"))
       {
          proxyClassName = proxyClassName.replaceFirst("java", "org.jboss.weld");
       }
