@@ -17,7 +17,6 @@
 
 package org.jboss.weld.bean.proxy.util;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -47,13 +46,13 @@ public class ClassloaderClassPath implements ClassPath
 
    public URL find(String classname)
    {
-      String resourceName = classname.replace('.', File.separatorChar) + ".class";
+      String resourceName = classname.replace('.', '/') + ".class";
       return classLoader.getResource(resourceName);
    }
 
    public InputStream openClassfile(String classname) throws NotFoundException
    {
-      String resourceName = classname.replace('.', File.separatorChar) + ".class";
+      String resourceName = classname.replace('.', '/') + ".class";
       return classLoader.getResourceAsStream(resourceName);
    }
 
