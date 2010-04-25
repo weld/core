@@ -97,12 +97,14 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       for (DecoratorImpl<?> bean : getEnvironment().getDecorators())
       {
          bean.initialize(getEnvironment());
+         ProcessBeanImpl.fire(getManager(), bean);
          manager.addDecorator(bean);
          log.debug(FOUND_DECORATOR, bean);
       }
       for (InterceptorImpl<?> bean: getEnvironment().getInterceptors())
       {
          bean.initialize(getEnvironment());
+         ProcessBeanImpl.fire(getManager(), bean);
          manager.addInterceptor(bean);
          log.debug(FOUND_INTERCEPTOR, bean);
       }
