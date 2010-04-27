@@ -79,12 +79,8 @@ public class EnterpriseBeanLifecycleTest extends AbstractWeldTest
       assert anotherStadtInstance != stadtInstance : "create() should not return same bean as before";
       
       // Verify that the instance returned is a proxy by checking for all local interfaces
-      Class<?>[] classes = stadtInstance.getClass().getInterfaces();
-      List<Class<?>> classesList = Arrays.asList(classes);
-      Set<Class<?>> interfaces = new HashSet<Class<?>>(classesList);
-      
-      assert interfaces.contains(KleinStadt.class);
-      assert interfaces.contains(SchoeneStadt.class);
+      assert stadtInstance instanceof KleinStadt;
+      assert stadtInstance instanceof SchoeneStadt;
    }
 
    @Test(groups = { "enterpriseBeans", "clientProxy", "lifecycle", "integration" })
