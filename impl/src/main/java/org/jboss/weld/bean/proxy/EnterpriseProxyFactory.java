@@ -19,7 +19,9 @@ package org.jboss.weld.bean.proxy;
 
 import javassist.CtClass;
 import javassist.CtConstructor;
+import javassist.CtMethod;
 import javassist.CtNewConstructor;
+import javassist.CtNewMethod;
 
 import org.jboss.weld.exceptions.WeldException;
 
@@ -42,10 +44,8 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
    public EnterpriseProxyFactory(Class<T> proxiedBeanType)
    {
       super(proxiedBeanType);
-      addInterface(EnterpriseBeanInstance.class);
    }
 
-   // Not sure this is a useful approach, but non-default constructors are problematic (DRA)
    @Override
    protected void addConstructors(CtClass proxyClassType)
    {
@@ -54,7 +54,7 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
          CtClass baseType = classPool.get(beanType.getName());
          for (CtConstructor constructor : baseType.getConstructors())
          {
-            proxyClassType.addConstructor(CtNewConstructor.copy(constructor, proxyClassType, null));
+            proxyClassType.addConstructor(CtNewConstructor.make(constructor.getParameterTypes(), constructor.getExceptionTypes(), proxyClassType));
          }
       }
       catch (Exception e)
@@ -69,4 +69,26 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
       return PROXY_SUFFIX;
    }
 
+   @Override
+   protected void addSpecialMethods(CtClass proxyClassType)
+   {
+      super.addSpecialMethods(proxyClassType);
+      
+      // Add methods for the EnterpriseBeanInstance interface
+      try
+      {
+         CtClass enterpriseBeanInstanceInterface = classPool.get(EnterpriseBeanInstance.class.getName());
+         proxyClassType.addInterface(enterpriseBeanInstanceInterface);
+         for (CtMethod method : enterpriseBeanInstanceInterface.getDeclaredMethods())
+         {
+            log.trace("Adding method " + method.getLongName());
+            proxyClassType.addMethod(CtNewMethod.make(method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), createSpecialInterfaceBody(method, EnterpriseBeanInstance.class), proxyClassType));
+         }
+      }
+      catch (Exception e)
+      {
+         throw new WeldException(e);
+      }
+      
+   }
 }

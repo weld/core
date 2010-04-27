@@ -381,7 +381,12 @@ public class ProxyFactory<T>
       }
    }
 
-   private void addSpecialMethods(CtClass proxyClassType)
+   /**
+    * Adds methods requiring special implementations rather than just delegation.
+    * 
+    * @param proxyClassType the Javassist class description for the proxy type
+    */
+   protected void addSpecialMethods(CtClass proxyClassType)
    {
       try
       {
@@ -394,7 +399,7 @@ public class ProxyFactory<T>
          for (CtMethod method : lifecycleMixinClass.getDeclaredMethods())
          {
             log.trace("Adding method " + method.getLongName());
-            proxyClassType.addMethod(CtNewMethod.make(method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), createLifecycleBody(method), proxyClassType));
+            proxyClassType.addMethod(CtNewMethod.make(method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), createSpecialInterfaceBody(method, LifecycleMixin.class), proxyClassType));
          }
          CtClass targetInstanceProxyClass = classPool.get(TargetInstanceProxy.class.getName());
          CtMethod getInstanceMethod = targetInstanceProxyClass.getDeclaredMethod("getTargetInstance");
@@ -409,18 +414,19 @@ public class ProxyFactory<T>
    }
 
    /**
-    * Creates the method body code for lifecycle methods which forward the calls
-    * directly to the bean instance.
+    * Creates the method body code for methods which forward the calls
+    * directly to the bean instance.  These methods are not considered
+    * to be implemented by any superclass of the proxy.
     * 
-    * @param method a lifecycle method
+    * @param method a method
     * @return code for the body of the method to be compiled
     * @throws NotFoundException if any of the parameter types are not found
     */
-   private String createLifecycleBody(CtMethod method) throws NotFoundException
+   protected String createSpecialInterfaceBody(CtMethod method, Class<?> interfaceClazz) throws NotFoundException
    {
       StringBuilder bodyString = new StringBuilder();
       bodyString.append("{ beanInstance.invoke(");
-      bodyString.append(LifecycleMixin.class.getName());
+      bodyString.append(interfaceClazz.getName());
       bodyString.append(".class.getDeclaredMethod(\"");
       bodyString.append(method.getName());
       bodyString.append("\", ");
