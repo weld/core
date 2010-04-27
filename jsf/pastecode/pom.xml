@@ -4,12 +4,11 @@
    <parent>
       <groupId>org.jboss.weld.examples</groupId>
       <artifactId>weld-examples-parent</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.2-SNAPSHOT</version>
       <relativePath>../../pom.xml</relativePath>
    </parent>
    <groupId>org.jboss.weld.examples.jsf.pastecode</groupId>
    <artifactId>weld-jsf-pastecode-parent</artifactId>
-   <version>1.0.1-SNAPSHOT</version>
    <packaging>pom</packaging>
    <name>Weld Examples: PasteCode (parent)</name>
 

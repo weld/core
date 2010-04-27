@@ -5,12 +5,11 @@
    <parent>
       <groupId>org.jboss.weld.examples.jsf.pastecode</groupId>
       <artifactId>weld-jsf-pastecode-parent</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.2-SNAPSHOT</version>
    </parent>
    
    <groupId>org.jboss.weld.examples.jsf.pastecode</groupId>
    <artifactId>weld-jsf-pastecode-ejb</artifactId>
-   <version>1.0.1-SNAPSHOT</version>
    <packaging>ejb</packaging>
    <name>Weld Examples: PasteCode (ejb)</name>
    
