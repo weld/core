@@ -139,6 +139,7 @@ public class URLScanner extends AbstractScanner
       {
          log.trace("archive: " + file);
 
+         String archiveUrl = "jar:" + file.toURI().toURL().toExternalForm() + "!/";
          ZipFile zip = new ZipFile(file);
          Enumeration<? extends ZipEntry> entries = zip.entries();
 
@@ -146,7 +147,7 @@ public class URLScanner extends AbstractScanner
          {
             ZipEntry entry = entries.nextElement();
             String name = entry.getName();
-            handle(name, getClassLoader().getResource(name));
+            handle(name, new URL(archiveUrl + name));
          }
       }
       catch (ZipException e)
