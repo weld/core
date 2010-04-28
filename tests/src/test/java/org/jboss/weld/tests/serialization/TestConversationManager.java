@@ -18,13 +18,11 @@ package org.jboss.weld.tests.serialization;
 
 import java.lang.reflect.Field;
 
-import javax.enterprise.context.Dependent;
-
 import org.jboss.weld.conversation.AbstractConversationManager;
 import org.jboss.weld.conversation.ConversationImpl;
 import org.jboss.weld.conversation.ServletConversationManager;
 
-@Dependent
+@Mock
 public class TestConversationManager extends ServletConversationManager
 {
    private static final long serialVersionUID = 2;

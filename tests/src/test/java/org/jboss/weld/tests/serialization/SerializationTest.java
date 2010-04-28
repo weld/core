@@ -19,6 +19,7 @@ package org.jboss.weld.tests.serialization;
 import java.io.Serializable;
 
 import javax.enterprise.inject.IllegalProductException;
+import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.test.AbstractWeldTest;
@@ -33,7 +34,9 @@ public class SerializationTest extends AbstractWeldTest
    public void testConversationManagerSerializable()
       throws Exception
    {
-      TestConversationManager cMgr = getReference(TestConversationManager.class);
+      TestConversationManager cMgr = getReference(TestConversationManager.class, new AnnotationLiteral<Mock>()
+      {
+      });
       
       assert cMgr.getConversationInstance() != null;
       
