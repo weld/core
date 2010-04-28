@@ -28,9 +28,9 @@ import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.CtConstructor;
 import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewConstructor;
@@ -242,8 +242,8 @@ public class ProxyFactory<T>
    }
 
    /**
-    * Adds a public default constructor to the proxy class for ease of
-    * instantiating it.
+    * Adds a constructor for the proxy for each constructor declared
+    * by the base bean type.
     * 
     * @param proxyClassType the Javassist class for the proxy
     */
@@ -251,9 +251,20 @@ public class ProxyFactory<T>
    {
       try
       {
-         proxyClassType.addConstructor(CtNewConstructor.defaultConstructor(proxyClassType));
+         CtClass baseType = classPool.get(beanType.getName());
+         if (baseType.isInterface())
+         {
+            proxyClassType.addConstructor(CtNewConstructor.defaultConstructor(proxyClassType));
+         }
+         else
+         {
+            for (CtConstructor constructor : baseType.getConstructors())
+            {
+               proxyClassType.addConstructor(CtNewConstructor.make(constructor.getParameterTypes(), constructor.getExceptionTypes(), proxyClassType));
+            }
+         }
       }
-      catch (CannotCompileException e)
+      catch (Exception e)
       {
          throw new WeldException(e);
       }

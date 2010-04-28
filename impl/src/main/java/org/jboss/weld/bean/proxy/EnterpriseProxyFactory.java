@@ -47,23 +47,6 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
    }
 
    @Override
-   protected void addConstructors(CtClass proxyClassType)
-   {
-      try
-      {
-         CtClass baseType = classPool.get(beanType.getName());
-         for (CtConstructor constructor : baseType.getConstructors())
-         {
-            proxyClassType.addConstructor(CtNewConstructor.make(constructor.getParameterTypes(), constructor.getExceptionTypes(), proxyClassType));
-         }
-      }
-      catch (Exception e)
-      {
-         throw new WeldException(e);
-      }
-   }
-
-   @Override
    protected String getProxyNameSuffix()
    {
       return PROXY_SUFFIX;
