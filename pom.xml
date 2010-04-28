@@ -182,7 +182,6 @@
             <configuration>
                <archive>
                   <manifest>
-                     <addClasspath>true</addClasspath>
                      <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
                   </manifest>
                </archive>
