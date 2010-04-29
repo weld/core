@@ -39,9 +39,11 @@ import javassist.NotFoundException;
 
 import org.jboss.interceptor.proxy.LifecycleMixin;
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.util.ClassloaderClassPath;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.serialization.spi.ProxyServices;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -84,16 +86,8 @@ public class ProxyFactory<T>
    public ProxyFactory(Class<?> proxiedBeanType)
    {
       this.beanType = proxiedBeanType;
-      if (beanType.getName().startsWith("java"))
-      {
-         this.classLoader = this.getClass().getClassLoader();
-         this.protectionDomain = this.getClass().getProtectionDomain();
-      }
-      else
-      {
-         this.classLoader = beanType.getClassLoader();
-         this.protectionDomain = beanType.getProtectionDomain();
-      }
+      this.classLoader = Container.instance().services().get(ProxyServices.class).getClassLoader(beanType);
+      this.protectionDomain = Container.instance().services().get(ProxyServices.class).getProtectionDomain(beanType);
       this.classPool = new ClassPool();
       this.classPool.appendClassPath(new ClassloaderClassPath(classLoader));
       addDefaultAdditionalInterfaces();
