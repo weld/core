@@ -42,6 +42,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.interceptor.InterceptionMetadataService;
+import org.jboss.weld.bean.proxy.util.SimpleProxyServices;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Lifecycle;
@@ -87,6 +88,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.servlet.HttpSessionManager;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.servlet.api.ServletServices;
@@ -230,7 +232,6 @@ public class WeldBootstrap implements Bootstrap
    private Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
    private Environment environment;
    private Deployment deployment;
-   private ExtensionBeanDeployerEnvironment extensionDeployerEnvironment;
    private DeploymentVisitor deploymentVisitor;
  
    public Bootstrap startContainer(Environment environment, Deployment deployment, BeanStore applicationBeanStore)
@@ -248,6 +249,10 @@ public class WeldBootstrap implements Bootstrap
          if (!deployment.getServices().contains(ScheduledExecutorServiceFactory.class))
          {
             deployment.getServices().add(ScheduledExecutorServiceFactory.class, new SingleThreadScheduledExecutorServiceFactory());
+         }
+         if (!deployment.getServices().contains(ProxyServices.class))
+         {
+            deployment.getServices().add(ProxyServices.class, new SimpleProxyServices());
          }
          
          verifyServices(deployment.getServices(), environment.getRequiredDeploymentServices());
@@ -294,7 +299,7 @@ public class WeldBootstrap implements Bootstrap
          initializeContexts();
          // Start the application context
          Container.instance().services().get(ContextLifecycle.class).beginApplication(applicationBeanStore);
-         this.extensionDeployerEnvironment = new ExtensionBeanDeployerEnvironment(EjbDescriptors.EMPTY, deploymentManager);
+         new ExtensionBeanDeployerEnvironment(EjbDescriptors.EMPTY, deploymentManager);
          this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment);
          
          // Read the deployment structure, this will be the physical structure as caused by the presence of beans.xml
