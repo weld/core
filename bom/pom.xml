@@ -32,7 +32,7 @@
    </developers>
 
    <properties>
-      <weld.api.version>1.0-SP1</weld.api.version>
+      <weld.api.version>1.0-SNAPSHOT</weld.api.version>
       <!-- Override the API and compile with more recent EL API -->
       <google.collections.version>1.0</google.collections.version>
       <javassist.version>3.11.0.GA</javassist.version>
