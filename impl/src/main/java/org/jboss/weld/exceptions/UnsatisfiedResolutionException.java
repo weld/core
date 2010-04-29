@@ -37,7 +37,7 @@ public class UnsatisfiedResolutionException extends javax.enterprise.inject.Unsa
    public UnsatisfiedResolutionException(Throwable throwable)
    {
       super(throwable);
-      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
+      message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
    }
 
    /**
@@ -50,7 +50,7 @@ public class UnsatisfiedResolutionException extends javax.enterprise.inject.Unsa
     */
    public <E extends Enum<?>> UnsatisfiedResolutionException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    @Override

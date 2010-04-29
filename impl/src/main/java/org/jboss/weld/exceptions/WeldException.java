@@ -38,7 +38,7 @@ public class WeldException extends RuntimeException
    public WeldException(Throwable throwable)
    {
       super(throwable);
-      this.message = new WeldExceptionMessage(throwable.getLocalizedMessage());
+      this.message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
    }
 
    /**
@@ -51,7 +51,7 @@ public class WeldException extends RuntimeException
     */
    public <E extends Enum<?>> WeldException(E key, Object... args)
    {
-      this.message = new WeldExceptionMessage(key, args);
+      this.message = new WeldExceptionKeyMessage(key, args);
    }
 
    /**
@@ -66,7 +66,7 @@ public class WeldException extends RuntimeException
    public <E extends Enum<?>> WeldException(E key, Throwable throwable, Object... args)
    {
       super(throwable);
-      this.message = new WeldExceptionMessage(key, args);
+      this.message = new WeldExceptionKeyMessage(key, args);
    }
 
    /**
@@ -79,19 +79,7 @@ public class WeldException extends RuntimeException
    public WeldException(List<Throwable> errors)
    {
       super();
-      StringBuilder errorMessage = new StringBuilder();
-      int i = 0;;
-      for (Throwable throwable : errors)
-      {
-         if (i > 0)
-         {
-            errorMessage.append('\n');
-         }
-         errorMessage.append("Exception #").append(i).append(" :");
-         errorMessage.append(throwable.getLocalizedMessage());
-         i++;
-      }
-      this.message = new WeldExceptionMessage(errorMessage.toString());
+      this.message = new WeldExceptionListMessage(errors);
    }
 
    @Override

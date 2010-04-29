@@ -37,7 +37,7 @@ public class UnproxyableResolutionException extends javax.enterprise.inject.Unpr
    public UnproxyableResolutionException(Throwable throwable)
    {
       super(throwable);
-      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
+      message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
    }
 
    /**
@@ -50,7 +50,7 @@ public class UnproxyableResolutionException extends javax.enterprise.inject.Unpr
     */
    public <E extends Enum<?>> UnproxyableResolutionException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    @Override

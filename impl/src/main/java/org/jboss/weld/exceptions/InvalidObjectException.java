@@ -41,7 +41,7 @@ public class InvalidObjectException extends java.io.InvalidObjectException
    public <E extends Enum<?>> InvalidObjectException(E key, Object... args)
    {
       super(null);
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    @Override

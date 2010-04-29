@@ -39,7 +39,7 @@ public class ForbiddenStateException extends IllegalStateException
     */
    public <E extends Enum<?>> ForbiddenStateException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    /**

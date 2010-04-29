@@ -40,7 +40,7 @@ public class IllegalProductException extends javax.enterprise.inject.IllegalProd
     */
    public <E extends Enum<?>> IllegalProductException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    @Override

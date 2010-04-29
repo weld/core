@@ -50,7 +50,7 @@ public class InvalidOperationException extends UnsupportedOperationException
     */
    public <E extends Enum<?>> InvalidOperationException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    @Override

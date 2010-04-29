@@ -38,7 +38,7 @@ public class ForbiddenArgumentException extends IllegalArgumentException
    public ForbiddenArgumentException(Throwable throwable)
    {
       super(throwable);
-      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
+      message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
    }
 
    /**
@@ -51,7 +51,7 @@ public class ForbiddenArgumentException extends IllegalArgumentException
     */
    public <E extends Enum<?>> ForbiddenArgumentException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    @Override

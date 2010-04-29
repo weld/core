@@ -37,7 +37,7 @@ public class InjectionException extends javax.enterprise.inject.InjectionExcepti
    public InjectionException(Throwable throwable)
    {
       super(throwable);
-      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
+      message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
    }
 
    /**
@@ -51,7 +51,7 @@ public class InjectionException extends javax.enterprise.inject.InjectionExcepti
    public InjectionException(String message, Throwable throwable)
    {
       super(throwable);
-      this.message = new WeldExceptionMessage(message);
+      this.message = new WeldExceptionStringMessage(message);
    }
 
    /**
@@ -64,7 +64,7 @@ public class InjectionException extends javax.enterprise.inject.InjectionExcepti
     */
    public <E extends Enum<?>> InjectionException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    @Override

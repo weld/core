@@ -37,7 +37,7 @@ public class AmbiguousResolutionException extends javax.enterprise.inject.Ambigu
    public AmbiguousResolutionException(Throwable throwable)
    {
       super(throwable);
-      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
+      message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
    }
 
    /**
@@ -50,7 +50,7 @@ public class AmbiguousResolutionException extends javax.enterprise.inject.Ambigu
     */
    public <E extends Enum<?>> AmbiguousResolutionException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    @Override

@@ -40,7 +40,7 @@ public class CreationException extends javax.enterprise.inject.CreationException
     */
    public <E extends Enum<?>> CreationException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    /**
@@ -55,7 +55,7 @@ public class CreationException extends javax.enterprise.inject.CreationException
    public <E extends Enum<?>> CreationException(E key, Throwable throwable, Object... args)
    {
       super(throwable);
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    @Override

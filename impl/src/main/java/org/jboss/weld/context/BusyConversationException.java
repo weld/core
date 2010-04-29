@@ -17,6 +17,7 @@
 
 package org.jboss.weld.context;
 
+import org.jboss.weld.exceptions.WeldExceptionKeyMessage;
 import org.jboss.weld.exceptions.WeldExceptionMessage;
 
 /**
@@ -39,7 +40,7 @@ public class BusyConversationException extends javax.enterprise.context.BusyConv
 
    public <E extends Enum<?>> BusyConversationException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    @Override

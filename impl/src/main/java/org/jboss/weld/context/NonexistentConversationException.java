@@ -17,6 +17,7 @@
 
 package org.jboss.weld.context;
 
+import org.jboss.weld.exceptions.WeldExceptionKeyMessage;
 import org.jboss.weld.exceptions.WeldExceptionMessage;
 
 /**
@@ -39,7 +40,7 @@ public class NonexistentConversationException extends javax.enterprise.context.N
 
    public <E extends Enum<?>> NonexistentConversationException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    @Override

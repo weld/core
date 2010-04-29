@@ -19,7 +19,9 @@ package org.jboss.weld.xml;
 
 import javax.enterprise.inject.InjectionException;
 
+import org.jboss.weld.exceptions.WeldExceptionKeyMessage;
 import org.jboss.weld.exceptions.WeldExceptionMessage;
+import org.jboss.weld.exceptions.WeldExceptionStringMessage;
 
 /**
  * Used for exceptions from the Weld XML parser and provides localization
@@ -37,12 +39,12 @@ public class WeldXmlException extends InjectionException
    public WeldXmlException(Throwable throwable)
    {
       super(throwable);
-      message = new WeldExceptionMessage(throwable.getLocalizedMessage());
+      message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
    }
 
    public <E extends Enum<?>> WeldXmlException(E key, Object... args)
    {
-      message = new WeldExceptionMessage(key, args);
+      message = new WeldExceptionKeyMessage(key, args);
    }
 
    @Override
