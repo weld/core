@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-03-02T13:07:17\n"
+"POT-Creation-Date: 2010-05-01T13:53:42\n"
 "PO-Revision-Date: 2010-01-07 10:22-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
@@ -19,15 +19,15 @@ msgid "Decorators"
 msgstr "Decoradores"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Interceptors are a powerful way to capture and separate concerns which are "
 "<emphasis>orthogonal</emphasis> to the application (and type system). Any "
 "interceptor is able to intercept invocations of any Java type. This makes "
 "them perfect for solving technical concerns such as transaction management, "
 "security and call logging. However, by nature, interceptors are unaware of "
-"the actual semantics of the events they intercept. Thus, interceptors aren't "
-"an appropriate tool for separating business-related concerns."
+"the actual semantics of the events they intercept. Thus, interceptors "
+"aren&#39;t an appropriate tool for separating business-related concerns."
 msgstr ""
 "Interceptadores são um meio poderoso para capturar e separar preocupações "
 "<emphasis>ortogonais</emphasis> para a aplicação (e sistema de tipos). "
@@ -39,17 +39,18 @@ msgstr ""
 "separação de questões relacionadas a negócios."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The reverse is true of <emphasis>decorators</emphasis>. A decorator "
 "intercepts invocations only for a certain Java interface, and is therefore "
 "aware of all the semantics attached to that interface. Since decorators "
 "directly implement operations with business semantics, it makes them the "
 "perfect tool for modeling some kinds of business concerns. It also means "
-"that a decorator doesn't have the generality of an interceptor. Decorators "
-"aren't able to solve technical concerns that cut across many disparate "
-"types. Interceptors and decorators, though similar in many ways, are "
-"complementary. Let's look at some cases where decorators fit the bill."
+"that a decorator doesn&#39;t have the generality of an interceptor. "
+"Decorators aren&#39;t able to solve technical concerns that cut across many "
+"disparate types. Interceptors and decorators, though similar in many ways, "
+"are complementary. Let&#39;s look at some cases where decorators fit the "
+"bill."
 msgstr ""
 "O contrário é verdadeiro para <emphasis>decoradores</emphasis>. Um decorador "
 "intercepta invocações apenas para uma determinada interface Java e, "
@@ -101,11 +102,12 @@ msgstr ""
 "interceptar."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Unlike other beans, a decorator may be an abstract class. Therefore, if "
-"there's nothing special the decorator needs to do for a particular method of "
-"the decorated interface, you don't need to implement that method."
+"there&#39;s nothing special the decorator needs to do for a particular "
+"method of the decorated interface, you don&#39;t need to implement that "
+"method."
 msgstr ""
 "Ao contrário de outros beans, um decorador pode ser uma classe abstrata. "
 "Portanto, se não há nada de especial que o decorador precisa fazer para um "
@@ -208,10 +210,11 @@ msgstr ""
 "beans neste arquivo."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "This declaration serves the same purpose for decorators that the "
-"<literal>&lt;interceptors&gt;</literal> declaration serves for interceptors:"
+"<literal>&#60;interceptors&#62;</literal> declaration serves for "
+"interceptors:"
 msgstr ""
 "Essa declaração tem o mesmo propósito para decoradores que a declaração "
 "<literal>&lt;interceptors&gt;</literal> tem para os interceptadores:"

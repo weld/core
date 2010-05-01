@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-03-02T13:07:18\n"
+"POT-Creation-Date: 2010-05-01T13:53:43\n"
 "PO-Revision-Date: 2008-12-25 22:17+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
@@ -94,7 +94,7 @@ msgstr "Lo stereotipo viene impiegato applicando l'annotazione al Web Bean."
 #, no-c-format
 msgid ""
 "Of course, we need to apply some other annotations to our stereotype or else "
-"it wouldn't be adding much value."
+"it wouldn&#39;t be adding much value."
 msgstr ""
 
 #. Tag: title
@@ -121,7 +121,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Naturally, overriding a single default isn't much use. But remember, "
+"Naturally, overriding a single default isn&#39;t much use. But remember, "
 "stereotypes can define more than just the default scope."
 msgstr ""
 
@@ -203,8 +203,8 @@ msgstr "Stereotipi"
 #, no-c-format
 msgid ""
 "This may blow your mind a bit, but stereotypes may declare other "
-"stereotypes, which we'll call <emphasis>stereotype stacking</emphasis>. You "
-"may want to do this if you have two distinct stereotypes which are "
+"stereotypes, which we&#39;ll call <emphasis>stereotype stacking</emphasis>. "
+"You may want to do this if you have two distinct stereotypes which are "
 "meaningful on their own, but in other situation may be meaningful when "
 "combined."
 msgstr ""
@@ -212,7 +212,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Here's an example that combines the <literal>@Action</literal> and "
+"Here&#39;s an example that combines the <literal>@Action</literal> and "
 "<literal>@Auditable</literal> stereotypes:"
 msgstr ""
 
@@ -224,8 +224,9 @@ msgstr "Stereotipi standard"
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-"We've already met two standard stereotypes defined by the CDI specification: "
-"<literal>@Interceptor</literal> and <literal>@Decorator</literal>."
+"We&#39;ve already met two standard stereotypes defined by the CDI "
+"specification: <literal>@Interceptor</literal> and <literal>@Decorator</"
+"literal>."
 msgstr ""
 "Si sono già visti due stereotipi standard definiti dalla specifica Web Bean: "
 "<literal>@Interceptor</literal> e <literal>@Decorator</literal>."

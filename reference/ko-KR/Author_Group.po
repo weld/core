@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Author_Group\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-03-02T13:07:17\n"
+"POT-Creation-Date: 2010-05-01T13:53:42\n"
 "PO-Revision-Date: 2009-01-08 10:32+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -19,19 +19,9 @@ msgstr ""
 "\n"
 "\n"
 
-#. Tag: firstname
-#, no-c-format
-msgid "Gavin"
-msgstr ""
-
 #. Tag: contrib
 #, no-c-format
 msgid "JSR-299: Contexts and Dependency Injection Lead"
-msgstr ""
-
-#. Tag: firstname
-#, no-c-format
-msgid "Pete"
 msgstr ""
 
 #. Tag: contrib
@@ -39,65 +29,25 @@ msgstr ""
 msgid "Weld (JSR-299 RI) Lead"
 msgstr ""
 
-#. Tag: firstname
-#, no-c-format
-msgid "Dan"
-msgstr ""
-
-#. Tag: firstname
-#, no-c-format
-msgid "David"
-msgstr ""
-
-#. Tag: firstname
-#, no-c-format
-msgid "Nicola"
-msgstr ""
-
 #. Tag: contrib
 #, no-c-format
 msgid "Italian Translation"
 msgstr "이탈리아어 번역 "
-
-#. Tag: firstname
-#, no-c-format
-msgid "Gladys"
-msgstr ""
 
 #. Tag: contrib
 #, fuzzy, no-c-format
 msgid "Spanish Translation"
 msgstr "이탈리아어 번역 "
 
-#. Tag: firstname
-#, no-c-format
-msgid "Eun-Ju"
-msgstr ""
-
 #. Tag: contrib
 #, fuzzy, no-c-format
 msgid "Korean Translation"
 msgstr "이탈리아어 번역 "
 
-#. Tag: firstname
-#, no-c-format
-msgid "Terry"
-msgstr ""
-
 #. Tag: contrib
 #, fuzzy, no-c-format
 msgid "Traditional Chinese Translation"
 msgstr "이탈리아어 번역 "
-
-#. Tag: firstname
-#, no-c-format
-msgid "Francesco"
-msgstr ""
-
-#. Tag: firstname
-#, no-c-format
-msgid "Sean"
-msgstr ""
 
 #. Tag: contrib
 #, fuzzy, no-c-format

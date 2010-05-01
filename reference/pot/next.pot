@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-04-14T10:16:01\n"
-"PO-Revision-Date: 2010-04-14T10:16:01\n"
+"POT-Creation-Date: 2010-05-01T14:44:09\n"
+"PO-Revision-Date: 2010-05-01T14:44:09\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -19,12 +19,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Because CDI is so new, there's not yet a lot of information available online. That will change over time. Regardless, the CDI specification remains the authority for information on CDI. The spec is less than 100 pages and is quite readable (don't worry, it's not like your Blu-ray player manual). Of course, it covers many details we've skipped over here. The spec is available on the <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299 page</ulink> at the JCP website."
+msgid "Because CDI is so new, there&#39;s not yet a lot of information available online. That will change over time. Regardless, the CDI specification remains the authority for information on CDI. The spec is less than 100 pages and is quite readable (don&#39;t worry, it&#39;s not like your Blu-ray player manual). Of course, it covers many details we&#39;ve skipped over here. The spec is available on the <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299 page</ulink> at the JCP website."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI reference implementation, Weld, is being developed at the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. The RI development team and the CDI spec lead blog at <ulink url=\"http://in.relation.to\">in.relation.to</ulink>. This guide was originally based on a series of blog entries published there while the specification was being developed. It's probably the best source of information about the future of CDI, Weld and Seam."
+msgid "The CDI reference implementation, Weld, is being developed at the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. The RI development team and the CDI spec lead blog at <ulink url=\"http://in.relation.to\">in.relation.to</ulink>. This guide was originally based on a series of blog entries published there while the specification was being developed. It&#39;s probably the best source of information about the future of CDI, Weld and Seam."
 msgstr ""
 
 #. Tag: para
@@ -44,7 +44,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Edit the <literal>pom.xml</literal> file in the root of the checkout and remove the \"<literal>-SNAPSHOT</literal>\" from the version element (so you don't have to build other Weld modules)."
+msgid "Edit the <literal>pom.xml</literal> file in the root of the checkout and remove the &#34;<literal>-SNAPSHOT</literal>&#34; from the version element (so you don&#39;t have to build other Weld modules)."
 msgstr ""
 
 #. Tag: para

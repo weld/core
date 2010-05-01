@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-04-14T10:16:01\n"
+"POT-Creation-Date: 2010-05-01T14:44:09\n"
 "PO-Revision-Date: 2009-02-05 00:00+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
@@ -111,7 +111,7 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "Next, the container calls all initializer methods of bean (the call order is "
-"not portable, don't rely on it)."
+"not portable, don&#39;t rely on it)."
 msgstr ""
 "Puis, le gestionnaire de Web Bean appelle toutes les méthodes "
 "d'initalisation du Web Bean."
@@ -152,7 +152,7 @@ msgstr ""
 msgid ""
 "This is a case where the <literal>@Inject</literal> annotation <emphasis>is "
 "not</emphasis> required at the injection point. The same is true for "
-"observer methods (which we'll meet in <xref linkend=\"events\" />) and "
+"observer methods (which we&#39;ll meet in <xref linkend=\"events\" />) and "
 "disposer methods."
 msgstr ""
 
@@ -167,9 +167,9 @@ msgid ""
 "The CDI specification defines a procedure, called <emphasis>typesafe "
 "resolution</emphasis>, that the container follows when identifying the bean "
 "to inject to an injection point. This algorithm looks complex at first, but "
-"once you understand it, it's really quite intuitive. Typesafe resolution is "
-"performed at system initialization time, which means that the container will "
-"inform the developer immediately if a bean's dependencies cannot be "
+"once you understand it, it&#39;s really quite intuitive. Typesafe resolution "
+"is performed at system initialization time, which means that the container "
+"will inform the developer immediately if a bean&#39;s dependencies cannot be "
 "satisfied."
 msgstr ""
 "La spécification Web Beans définie une procédure, appelée "
@@ -222,17 +222,17 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Obviously, if you have exactly one bean of a given type, and an injection "
-"point with that same type, then bean A is going to go into slot A. That's "
-"the simplest possible scenario. When you first start your application, "
-"you'll likely have lots of those."
+"point with that same type, then bean A is going to go into slot A. That&#39;"
+"s the simplest possible scenario. When you first start your application, "
+"you&#39;ll likely have lots of those."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"But then, things start to get complicated. Let's explore how the container "
-"determines which bean to inject in more advanced cases. We'll start by "
-"taking a closer look at qualifiers."
+"But then, things start to get complicated. Let&#39;s explore how the "
+"container determines which bean to inject in more advanced cases. We&#39;ll "
+"start by taking a closer look at qualifiers."
 msgstr ""
 
 #. Tag: title
@@ -306,12 +306,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Now, you may be thinking, <emphasis>\"What's the different between using a "
-"qualifier and just specifying the exact implementation class you want?\"</"
-"emphasis> It's important to understand that a qualifier is like an extension "
-"of the interface. It does not create a direct dependency to any particular "
-"implementation. There may be multiple alterative implementations of "
-"<literal>@Asynchronous PaymentProcessor</literal>!"
+"Now, you may be thinking, <emphasis>&#34;What&#39;s the different between "
+"using a qualifier and just specifying the exact implementation class you "
+"want?&#34;</emphasis> It&#39;s important to understand that a qualifier is "
+"like an extension of the interface. It does not create a direct dependency "
+"to any particular implementation. There may be multiple alterative "
+"implementations of <literal>@Asynchronous PaymentProcessor</literal>!"
 msgstr ""
 
 #. Tag: title
@@ -326,11 +326,12 @@ msgstr ""
 msgid ""
 "Whenever a bean or injection point does not explicitly declare a qualifier, "
 "the container assumes the qualifier <literal>@Default</literal>. From time "
-"to time, you'll need to decare an injection point without specifying a "
-"qualifier. There's a qualifier for that too. All beans have the qualifier "
-"<literal>@Any</literal>. Therefore, by explicitly specifying <literal>@Any</"
-"literal> at an injection point, you suppress the default qualifier, without "
-"otherwise restricting the beans that are eligible for injection."
+"to time, you&#39;ll need to decare an injection point without specifying a "
+"qualifier. There&#39;s a qualifier for that too. All beans have the "
+"qualifier <literal>@Any</literal>. Therefore, by explicitly specifying "
+"<literal>@Any</literal> at an injection point, you suppress the default "
+"qualifier, without otherwise restricting the beans that are eligible for "
+"injection."
 msgstr ""
 
 #. Tag: para
@@ -419,7 +420,7 @@ msgid ""
 "When an ambiguous dependency exists at an injection point, the container "
 "attempts to resolve the ambiguity by looking for an enabled alternative "
 "among the beans that could be injected. If there is exactly one enabled "
-"alternative, that's the bean that will be injected."
+"alternative, that&#39;s the bean that will be injected."
 msgstr ""
 
 #. Tag: title
@@ -445,8 +446,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"During the course of your development, you're going to encounter this "
-"situation. Let's learn how to resolve it."
+"During the course of your development, you&#39;re going to encounter this "
+"situation. Let&#39;s learn how to resolve it."
 msgstr ""
 
 #. Tag: para
@@ -520,7 +521,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Just remember: \"There can be only one.\""
+msgid "Just remember: &#34;There can be only one.&#34;"
 msgstr ""
 
 #. Tag: para
@@ -528,14 +529,14 @@ msgstr ""
 msgid ""
 "On the other hand, if you really do have an optional or multivalued "
 "injection point, you should change the type of your injection point to "
-"<literal>Instance</literal>, as we'll see in <xref linkend=\"lookup\" />."
+"<literal>Instance</literal>, as we&#39;ll see in <xref linkend=\"lookup\" />."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid ""
-"Now there's one more issue you need to be aware of when using the dependency "
-"injection service."
+"Now there&#39;s one more issue you need to be aware of when using the "
+"dependency injection service."
 msgstr ""
 
 #. Tag: title
@@ -602,7 +603,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"classes which don't have a non-private constructor with no parameters, and"
+"classes which don&#39;t have a non-private constructor with no parameters, "
+"and"
 msgstr ""
 
 #. Tag: para
@@ -620,7 +622,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"It's usually very easy to fix an unproxyable dependency problem. If an "
+"It&#39;s usually very easy to fix an unproxyable dependency problem. If an "
 "injection point of type <literal>X</literal> results in an unproxyable "
 "dependency, simply:"
 msgstr ""
@@ -633,7 +635,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"change the type of the injection point to <literal>Instance&lt;X&gt;</"
+"change the type of the injection point to <literal>Instance&#60;X&#62;</"
 "literal>,"
 msgstr ""
 
@@ -674,7 +676,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "But we didn't get around to implementing this yet."
+msgid "But we didn&#39;t get around to implementing this yet."
 msgstr ""
 
 #. Tag: title
@@ -763,10 +765,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Next, we need to obtain an instance of our qualifier type. Since annotatons "
-"are interfaces, we can't just write <literal>new Asynchronous()</literal>. "
-"It's also quite tedious to create a concrete implementation of an annotation "
-"type from scratch. Instead, CDI lets us obtain a qualifier instance by "
-"subclassing the helper class <literal>AnnotationLiteral</literal>."
+"are interfaces, we can&#39;t just write <literal>new Asynchronous()</"
+"literal>. It&#39;s also quite tedious to create a concrete implementation of "
+"an annotation type from scratch. Instead, CDI lets us obtain a qualifier "
+"instance by subclassing the helper class <literal>AnnotationLiteral</"
+"literal>."
 msgstr ""
 
 #. Tag: para
@@ -777,7 +780,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"We can't use an anonymous class to implement a qualifier type with members."
+"We can&#39;t use an anonymous class to implement a qualifier type with "
+"members."
 msgstr ""
 
 #. Tag: para
@@ -833,8 +837,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Let's look at an example. The following code is verbose, and vulnerable to "
-"refactoring problems:"
+"Let&#39;s look at an example. The following code is verbose, and vulnerable "
+"to refactoring problems:"
 msgstr ""
 
 #. Tag: para
@@ -852,8 +856,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Not convinced? Then here's a second example. To inject HTTP parameters, we "
-"need to define a qualifier type:"
+"Not convinced? Then here&#39;s a second example. To inject HTTP parameters, "
+"we need to define a qualifier type:"
 msgstr ""
 
 #. Tag: para

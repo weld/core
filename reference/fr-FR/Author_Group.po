@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-03-02T13:07:17\n"
+"POT-Creation-Date: 2010-05-01T13:53:42\n"
 "PO-Revision-Date: 2009-02-02 22:03+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
@@ -13,19 +13,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Tag: firstname
-#, no-c-format
-msgid "Gavin"
-msgstr ""
-
 #. Tag: contrib
 #, no-c-format
 msgid "JSR-299: Contexts and Dependency Injection Lead"
-msgstr ""
-
-#. Tag: firstname
-#, no-c-format
-msgid "Pete"
 msgstr ""
 
 #. Tag: contrib
@@ -33,65 +23,25 @@ msgstr ""
 msgid "Weld (JSR-299 RI) Lead"
 msgstr ""
 
-#. Tag: firstname
-#, no-c-format
-msgid "Dan"
-msgstr ""
-
-#. Tag: firstname
-#, no-c-format
-msgid "David"
-msgstr ""
-
-#. Tag: firstname
-#, no-c-format
-msgid "Nicola"
-msgstr ""
-
 #. Tag: contrib
 #, no-c-format
 msgid "Italian Translation"
 msgstr "Traduction italienne"
-
-#. Tag: firstname
-#, no-c-format
-msgid "Gladys"
-msgstr ""
 
 #. Tag: contrib
 #, no-c-format
 msgid "Spanish Translation"
 msgstr "Traduction espagnole"
 
-#. Tag: firstname
-#, no-c-format
-msgid "Eun-Ju"
-msgstr ""
-
 #. Tag: contrib
 #, no-c-format
 msgid "Korean Translation"
 msgstr "Traduction coréenne"
 
-#. Tag: firstname
-#, no-c-format
-msgid "Terry"
-msgstr ""
-
 #. Tag: contrib
 #, no-c-format
 msgid "Traditional Chinese Translation"
 msgstr "Traduction en chinois traditionnel"
-
-#. Tag: firstname
-#, no-c-format
-msgid "Francesco"
-msgstr ""
-
-#. Tag: firstname
-#, no-c-format
-msgid "Sean"
-msgstr ""
 
 #. Tag: contrib
 #, fuzzy, no-c-format

@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-04-14T10:16:01\n"
-"PO-Revision-Date: 2010-04-14T10:16:01\n"
+"POT-Creation-Date: 2010-05-01T14:44:09\n"
+"PO-Revision-Date: 2010-05-01T14:44:09\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving loose coupling:"
+msgid "The first major theme of CDI is <emphasis>loose coupling</emphasis>. We&#39;ve already seen three means of achieving loose coupling:"
 msgstr ""
 
 #. Tag: para
@@ -69,7 +69,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You don't see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules—so-called \"configuration by convention\"—but because there are simply no strings there to begin with!"
+msgid "You don&#39;t see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules—so-called &#34;configuration by convention&#34;—but because there are simply no strings there to begin with!"
 msgstr ""
 
 #. Tag: para
@@ -139,6 +139,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We're now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don't ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you'll come to appreciate their power."
+msgid "We&#39;re now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don&#39;t ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you&#39;ll come to appreciate their power."
 msgstr ""
 

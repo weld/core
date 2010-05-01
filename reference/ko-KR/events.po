@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-03-02T13:07:17\n"
+"POT-Creation-Date: 2010-05-01T13:53:42\n"
 "PO-Revision-Date: 2009-01-23 11:16+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -61,10 +61,10 @@ msgstr ""
 "전하게 연결 해제됩니다. "
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"observers can specify a combination of \"selectors\" to narrow the set of "
-"event notifications they will receive, and"
+"observers can specify a combination of &#34;selectors&#34; to narrow the set "
+"of event notifications they will receive, and"
 msgstr ""
 "옵저버는 \"선택자\" 조합을 지정하여 이벤트 통지 모음의 범위를 좁힙니다. "
 
@@ -81,7 +81,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The CDI event notification facility uses more or less the same typesafe "
-"approach that we've already seen with the dependency injection service."
+"approach that we&#39;ve already seen with the dependency injection service."
 msgstr ""
 
 #. Tag: title
@@ -104,7 +104,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "An event qualifier is just a normal qualifier, defined using "
-"<literal>@Qualifier</literal>. Here's an example:"
+"<literal>@Qualifier</literal>. Here&#39;s an example:"
 msgstr ""
 
 #. Tag: title
@@ -140,7 +140,7 @@ msgstr ""
 msgid ""
 "An observer method need not specify any event qualifiers—in this case it is "
 "interested in <emphasis>all</emphasis> events of a particular type. If it "
-"does specify qualifiers, it's only interested in events which have those "
+"does specify qualifiers, it&#39;s only interested in events which have those "
 "qualifiers."
 msgstr ""
 "옵저버 방식은 어떤 이벤트 바인딩도 지정할 필요가 없습니다 &#151; 이러한 경우 "
@@ -260,8 +260,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"The downside of annotating the injection point is that we can't specify the "
-"qualifier dynamically. CDI lets us obtain a qualifier instance by "
+"The downside of annotating the injection point is that we can&#39;t specify "
+"the qualifier dynamically. CDI lets us obtain a qualifier instance by "
 "subclassing the helper class <literal>AnnotationLiteral</literal>. That way, "
 "we can pass the qualifier to the <literal>select()</literal> method of "
 "<literal>Event</literal>."
@@ -285,8 +285,8 @@ msgstr "트랜잭션 옵저버 "
 msgid ""
 "By default, if there is no instance of an observer in the current context, "
 "the container will instantiate the observer in order to deliver an event to "
-"it. This behavior isn't always desirable. We may want to deliver events only "
-"to instances of the observer that already exist in the current contexts."
+"it. This behavior isn&#39;t always desirable. We may want to deliver events "
+"only to instances of the observer that already exist in the current contexts."
 msgstr ""
 
 #. Tag: para

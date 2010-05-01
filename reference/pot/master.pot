@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-04-14T10:16:01\n"
-"PO-Revision-Date: 2010-04-14T10:16:01\n"
+"POT-Creation-Date: 2010-05-01T14:44:09\n"
+"PO-Revision-Date: 2010-05-01T14:44:09\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -19,17 +19,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Shortly before the final draft of JSR-299 was submitted, the specification changed its name from \"Web Beans\" to \"Java Contexts and Dependency Injection for the Java EE platform\", abbreviated CDI. For a brief period after the renaming, the reference implementation adopted the name \"Web Beans\". However, this ended up causing more confusion than it solved and Red Hat decided to change the name of the reference implementation to \"Weld\". You may still find other documentation, blogs, forum posts, etc. that use the old nomenclature. Please update any references you can. The naming game is over."
+msgid "Shortly before the final draft of JSR-299 was submitted, the specification changed its name from &#34;Web Beans&#34; to &#34;Java Contexts and Dependency Injection for the Java EE platform&#34;, abbreviated CDI. For a brief period after the renaming, the reference implementation adopted the name &#34;Web Beans&#34;. However, this ended up causing more confusion than it solved and Red Hat decided to change the name of the reference implementation to &#34;Weld&#34;. You may still find other documentation, blogs, forum posts, etc. that use the old nomenclature. Please update any references you can. The naming game is over."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You'll also find that some of the functionality that once existed in the specification is now missing, such as defining beans in XML. These features will be available as portable extensions for CDI in the Weld project, and perhaps other implementations."
+msgid "You&#39;ll also find that some of the functionality that once existed in the specification is now missing, such as defining beans in XML. These features will be available as portable extensions for CDI in the Weld project, and perhaps other implementations."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Note that this reference guide was started while changes were still being made to the specification. We've done our best to update it for accuracy. If you discover a conflict between what is written in this guide and the specification, the specification is the authority—assume it is correct. If you believe you have found an error in the specification, please report it to the JSR-299 EG."
+msgid "Note that this reference guide was started while changes were still being made to the specification. We&#39;ve done our best to update it for accuracy. If you discover a conflict between what is written in this guide and the specification, the specification is the authority—assume it is correct. If you believe you have found an error in the specification, please report it to the JSR-299 EG."
 msgstr ""
 
 #. Tag: title

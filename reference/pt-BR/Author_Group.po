@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-03-02T13:07:17\n"
+"POT-Creation-Date: 2010-05-01T14:44:09\n"
 "PO-Revision-Date: 2010-04-14 18:46-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
@@ -13,90 +13,70 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Tag: firstname
-#, no-c-format
-msgid "Gavin"
-msgstr "Gavin"
-
 #. Tag: contrib
 #, no-c-format
 msgid "JSR-299: Contexts and Dependency Injection Lead"
 msgstr "Líder da JSR-299:  Contextos e Injeção de Dependência"
-
-#. Tag: firstname
-#, no-c-format
-msgid "Pete"
-msgstr "Pete"
 
 #. Tag: contrib
 #, no-c-format
 msgid "Weld (JSR-299 RI) Lead"
 msgstr "Líder do Weld (Implementação de Referência da JSR-299)"
 
-#. Tag: firstname
-#, no-c-format
-msgid "Dan"
-msgstr "Dan"
-
-#. Tag: firstname
-#, no-c-format
-msgid "David"
-msgstr "David"
-
-#. Tag: firstname
-#, no-c-format
-msgid "Nicola"
-msgstr "Nicola"
-
 #. Tag: contrib
 #, no-c-format
 msgid "Italian Translation"
 msgstr "Italian Translation"
-
-#. Tag: firstname
-#, no-c-format
-msgid "Gladys"
-msgstr "Gladys"
 
 #. Tag: contrib
 #, no-c-format
 msgid "Spanish Translation"
 msgstr "Spanish Translation"
 
-#. Tag: firstname
-#, no-c-format
-msgid "Eun-Ju"
-msgstr "Eun-Ju"
-
 #. Tag: contrib
 #, no-c-format
 msgid "Korean Translation"
 msgstr "Korean Translation"
-
-#. Tag: firstname
-#, no-c-format
-msgid "Terry"
-msgstr "Terry"
 
 #. Tag: contrib
 #, no-c-format
 msgid "Traditional Chinese Translation"
 msgstr "Traditional Chinese Translation"
 
-#. Tag: firstname
-#, no-c-format
-msgid "Francesco"
-msgstr "Francesco"
-
-#. Tag: firstname
-#, no-c-format
-msgid "Sean"
-msgstr "Sean"
-
 #. Tag: contrib
 #, no-c-format
 msgid "Simplified Chinese Translation"
 msgstr "Simplified Chinese Translation"
+
+#~ msgid "Gavin"
+#~ msgstr "Gavin"
+
+#~ msgid "Pete"
+#~ msgstr "Pete"
+
+#~ msgid "Dan"
+#~ msgstr "Dan"
+
+#~ msgid "David"
+#~ msgstr "David"
+
+#~ msgid "Nicola"
+#~ msgstr "Nicola"
+
+#~ msgid "Gladys"
+#~ msgstr "Gladys"
+
+#~ msgid "Eun-Ju"
+#~ msgstr "Eun-Ju"
+
+#~ msgid "Terry"
+#~ msgstr "Terry"
+
+#~ msgid "Francesco"
+#~ msgstr "Francesco"
+
+#~ msgid "Sean"
+#~ msgstr "Sean"
 
 #~ msgid "<firstname>Gavin</firstname> <surname>King</surname>"
 #~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"

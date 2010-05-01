@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-03-02T13:07:17\n"
+"POT-Creation-Date: 2010-05-01T13:53:42\n"
 "PO-Revision-Date: 2008-12-20 16:41+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
@@ -94,8 +94,8 @@ msgstr "La classe <literal>Bean</literal>"
 msgid ""
 "The first step in creating a portable extension is to write a class that "
 "implements <literal>Extension</literal>. This marker interface does not "
-"define any methods, but it's needed to satisfy the requirements of Java SE's "
-"service provider architecture."
+"define any methods, but it&#39;s needed to satisfy the requirements of Java "
+"SE&#39;s service provider architecture."
 msgstr ""
 
 #. Tag: para
@@ -176,8 +176,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "In fact, the extension can do a lot more than just observe. The extension is "
-"permitted to modify the container's metamodel and more. Here's a very simple "
-"example:"
+"permitted to modify the container&#39;s metamodel and more. Here&#39;s a "
+"very simple example:"
 msgstr ""
 
 #. Tag: para
@@ -223,7 +223,7 @@ msgstr ""
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-"Let's study some of the interfaces exposed by the <literal>BeanManager</"
+"Let&#39;s study some of the interfaces exposed by the <literal>BeanManager</"
 "literal>."
 msgstr ""
 "Il nervo centrale per l'estensione di Web Beans è l'oggetto "
@@ -281,7 +281,8 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There's an easy way to find out what beans exist in the application:"
+msgid ""
+"There&#39;s an easy way to find out what beans exist in the application:"
 msgstr ""
 
 #. Tag: para
@@ -317,9 +318,9 @@ msgstr ""
 msgid ""
 "In this example, we make a framework class, <literal>SecurityManager</"
 "literal> available for injection. To make things a bit more interesting, "
-"we're going to delegate back to the container's <literal>InjectionTarget</"
-"literal> to perform instantiation and injection upon the "
-"<literal>SecurityManager</literal> instance."
+"we&#39;re going to delegate back to the container&#39;s "
+"<literal>InjectionTarget</literal> to perform instantiation and injection "
+"upon the <literal>SecurityManager</literal> instance."
 msgstr ""
 
 #. Tag: para
@@ -345,8 +346,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Let's start with an example of an extension that provides support for the "
-"use of <literal>@Named</literal> at the package level. The package-level "
+"Let&#39;s start with an example of an extension that provides support for "
+"the use of <literal>@Named</literal> at the package level. The package-level "
 "name is used to qualify the EL names of all beans defined in that package. "
 "The portable extension uses the <literal>ProcessAnnotatedType</literal> "
 "event to wrap the <literal>AnnotatedType</literal> object and override the "
@@ -356,7 +357,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Here's a second example, which adds the <literal>@Alternative</literal> "
+"Here&#39;s a second example, which adds the <literal>@Alternative</literal> "
 "annotation to any class which implements a certain <literal>Service</"
 "literal> interface."
 msgstr ""
@@ -387,12 +388,12 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Here's a CDI portable extension that reads values from properties files and "
-"configures fields of Java EE components, including servlets, EJBs, managed "
-"beans, interceptors and more. In this example, properties for a class such "
-"as <literal>org.mydomain.blog.Blogger</literal> go in a resource named "
-"<literal>org/mydomain/blog/Blogger.properties</literal>, and the name of a "
-"property must match the name of the field to be configured. So "
+"Here&#39;s a CDI portable extension that reads values from properties files "
+"and configures fields of Java EE components, including servlets, EJBs, "
+"managed beans, interceptors and more. In this example, properties for a "
+"class such as <literal>org.mydomain.blog.Blogger</literal> go in a resource "
+"named <literal>org/mydomain/blog/Blogger.properties</literal>, and the name "
+"of a property must match the name of the field to be configured. So "
 "<literal>Blogger.properties</literal> could contain:"
 msgstr ""
 
@@ -407,9 +408,9 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"There's a lot more to the portable extension SPI than what we've discussed "
-"here. Check out the CDI spec or Javadoc for more information. For now, we'll "
-"just mention one more extension point."
+"There&#39;s a lot more to the portable extension SPI than what we&#39;ve "
+"discussed here. Check out the CDI spec or Javadoc for more information. For "
+"now, we&#39;ll just mention one more extension point."
 msgstr ""
 
 #. Tag: title
