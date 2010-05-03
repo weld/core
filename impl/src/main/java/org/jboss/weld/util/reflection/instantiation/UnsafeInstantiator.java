@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 import static org.jboss.weld.logging.messages.ReflectionMessage.UNSAFE_INSTANTIATION_FAILED;
 
@@ -43,7 +44,7 @@ public class UnsafeInstantiator implements Instantiator
       {
          Class<?> unsafe = Class.forName(REFLECTION_CLASS_NAME);
          Field accessor = unsafe.getDeclaredField("theUnsafe");
-         accessor.setAccessible(true);
+         SecureReflections.ensureAccessible(accessor);
          unsafeInstance = accessor.get(null);
          allocateInstanceMethod = unsafe.getDeclaredMethod("allocateInstance", Class.class);
       }
