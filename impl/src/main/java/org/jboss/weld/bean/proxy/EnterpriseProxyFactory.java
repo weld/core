@@ -34,7 +34,7 @@ import org.jboss.weld.exceptions.WeldException;
  */
 public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
 {
-   private static final String PROXY_SUFFIX = "EnterpriseProxy";
+   public static final String PROXY_SUFFIX = "EnterpriseProxy";
 
    /**
     * Produces a factory for a specific bean implementation.

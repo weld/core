@@ -17,25 +17,26 @@
 
 package org.jboss.weld.bean.proxy.util;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
 
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.serialization.spi.ProxyServices;
 
 /**
  * A default implementation of the {@link ProxyServices} which simply use the
- * corresponding information from the proxy type.  An exception is made for
- * {@code java.*} and {@code javax.*} packages which are often associated
- * with the system classloader and a more privileged ProtectionDomain.
+ * corresponding information from the proxy type. An exception is made for
+ * {@code java.*} and {@code javax.*} packages which are often associated with
+ * the system classloader and a more privileged ProtectionDomain.
  * 
  * @author David Allen
- *
  */
 public class SimpleProxyServices implements ProxyServices
 {
 
-   /* (non-Javadoc)
-    * @see org.jboss.weld.serialization.spi.ProxyServices#getClassLoader(java.lang.Class)
-    */
    public ClassLoader getClassLoader(Class<?> type)
    {
       if (type.getName().startsWith("java"))
@@ -48,9 +49,6 @@ public class SimpleProxyServices implements ProxyServices
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.jboss.weld.serialization.spi.ProxyServices#getProtectionDomain(java.lang.Class)
-    */
    public ProtectionDomain getProtectionDomain(Class<?> type)
    {
       if (type.getName().startsWith("java"))
@@ -63,13 +61,35 @@ public class SimpleProxyServices implements ProxyServices
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.jboss.weld.bootstrap.api.Service#cleanup()
-    */
    public void cleanup()
    {
       // This implementation requires no cleanup
 
+   }
+
+   public Object wrapForSerialization(Object proxyObject)
+   {
+      // Simply use our own replacement object for proxies
+      return new SerializableProxy(proxyObject);
+   }
+
+   public Class<?> loadProxySuperClass(final String className)
+   {
+      try
+      {
+         return (Class<?>) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
+         {
+            public Object run() throws Exception
+            {
+               ClassLoader cl = Thread.currentThread().getContextClassLoader();
+               return Class.forName(className, true, cl);
+            }
+         });
+      }
+      catch (PrivilegedActionException pae)
+      {
+         throw new WeldException(BeanMessage.CANNOT_LOAD_CLASS, className, pae.getException());
+      }
    }
 
 }

@@ -36,16 +36,16 @@ import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 
 /**
- * This special proxy factory is mostly used for abstract decorators.  When
- * a delegate field is injected, the abstract methods directly invoke the
- * corresponding method on the delegate.  All other cases forward the calls
- * to the {@link BeanInstance} for further processing.
+ * This special proxy factory is mostly used for abstract decorators. When a
+ * delegate field is injected, the abstract methods directly invoke the
+ * corresponding method on the delegate. All other cases forward the calls to
+ * the {@link BeanInstance} for further processing.
  * 
  * @author David Allen
  */
 public class DecoratorProxyFactory<T> extends ProxyFactory<T>
 {
-   private static final String            PROXY_SUFFIX = "DecoratorProxy";
+   public static final String             PROXY_SUFFIX = "DecoratorProxy";
    private final WeldInjectionPoint<?, ?> delegateInjectionPoint;
    private final CtClass                  delegateClass;
    private final Field                    delegateField;
