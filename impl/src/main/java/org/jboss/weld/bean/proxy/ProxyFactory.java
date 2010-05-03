@@ -309,7 +309,7 @@ public class ProxyFactory<T>
     * Adds special serialization code be providing a writeReplace() method on
     * the proxy.  This method when first called will substitute the proxy
     * object with an instance of {@link org.jboss.weld.proxy.util.SerializableProxy}.
-    * Subsequent calls will receive the proxy object itself permitting the substitute
+    * The next call will receive the proxy object itself permitting the substitute
     * object to serialize the proxy.
     * 
     * @param proxyClassType the Javassist class for the proxy class
@@ -319,13 +319,14 @@ public class ProxyFactory<T>
       try
       {
          // Create a two phase writeReplace where the first call uses a
-         // replacement object and subsequent calls get the proxy object.
+         // replacement object and the subsequent call get the proxy object.
          CtClass exception = classPool.get(ObjectStreamException.class.getName());
          CtClass objectClass = classPool.get(Object.class.getName());
          String writeReplaceBody = "{ " + 
-         " if (firstSerializationPhaseComplete)" +
+         " if (firstSerializationPhaseComplete) {" +
+         "    firstSerializationPhaseComplete = true; " +
          "    return $0; " +
-         " else {" +
+         " } else {" +
          " firstSerializationPhaseComplete = true; " +
          " return ((org.jboss.weld.serialization.spi.ProxyServices)org.jboss.weld.Container.instance().services().get(org.jboss.weld.serialization.spi.ProxyServices.class)).wrapForSerialization($0);" +
          " } }";
