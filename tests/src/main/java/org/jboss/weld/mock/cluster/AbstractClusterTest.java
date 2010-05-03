@@ -24,10 +24,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Singleton;
@@ -36,9 +33,8 @@ import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.HashMapBeanStore;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.mock.MockEELifecycle;
 import org.jboss.weld.mock.TestContainer;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.serialization.spi.ProxyServices;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
@@ -47,6 +43,7 @@ public class AbstractClusterTest
 
    private Singleton<Container> singleton;
 
+   @SuppressWarnings("unchecked")
    @BeforeClass
    public void beforeClass() throws Exception
    {
@@ -72,7 +69,7 @@ public class AbstractClusterTest
       // Bootstrap container
       SwitchableSingletonProvider.use(id);
 
-      TestContainer container = new TestContainer(new MockEELifecycle(), classes, null);
+      TestContainer container = new TestContainer(new SwitchableMockEELifecycle(), classes, null);
       container.startContainer();
       container.ensureRequestActive();
 
@@ -131,4 +128,8 @@ public class AbstractClusterTest
       return in.readObject();
    }
 
+   protected void useNewClassLoader(ClassLoader parentClassLoader)
+   {
+      ((SwitchableCLProxyServices)Container.instance().services().get(ProxyServices.class)).useNewClassLoader(parentClassLoader);
+   }
 }

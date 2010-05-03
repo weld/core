@@ -22,6 +22,8 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
@@ -324,13 +326,21 @@ public class ProxyFactory<T>
          CtClass objectClass = classPool.get(Object.class.getName());
          String writeReplaceBody = "{ " + 
          " if (firstSerializationPhaseComplete) {" +
-         "    firstSerializationPhaseComplete = true; " +
+         "    firstSerializationPhaseComplete = false; " +
          "    return $0; " +
          " } else {" +
          " firstSerializationPhaseComplete = true; " +
          " return ((org.jboss.weld.serialization.spi.ProxyServices)org.jboss.weld.Container.instance().services().get(org.jboss.weld.serialization.spi.ProxyServices.class)).wrapForSerialization($0);" +
          " } }";
          proxyClassType.addMethod(CtNewMethod.make(objectClass, "writeReplace", null, new CtClass[] { exception }, writeReplaceBody, proxyClassType));
+         
+         // Also add a static method that can be used to deserialize a proxy object.
+         // This causes the OO input stream to use the class loader from this class.
+         CtClass objectInputStreamClass = classPool.get(ObjectInputStream.class.getName());
+         CtClass cnfe = classPool.get(ClassNotFoundException.class.getName());
+         CtClass ioe = classPool.get(IOException.class.getName());
+         String deserializeProxyBody = "{ return $1.readObject(); }";
+         proxyClassType.addMethod(CtNewMethod.make(Modifier.STATIC | Modifier.PUBLIC, objectClass, "deserializeProxy", new CtClass[]{objectInputStreamClass}, new CtClass[]{cnfe, ioe}, deserializeProxyBody, proxyClassType));
       }
       catch (Exception e)
       {

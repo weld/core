@@ -17,6 +17,9 @@
 
 package org.jboss.weld.bean.proxy.util;
 
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_DESERIALIZATION_FAILURE;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,15 +29,15 @@ import java.io.Serializable;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.exceptions.ForbiddenStateException;
-import org.jboss.weld.logging.messages.BeanMessage;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.serialization.spi.ProxyServices;
 
 /**
- * A wrapper mostly for client proxies which provides header information
- * useful to generate the client proxy class in a VM before the proxy
- * object is deserialized.  Only client proxies really need this
- * extra step for serialization and deserialization since the other
- * proxy classes are generated during bean archive deployment.
+ * A wrapper mostly for client proxies which provides header information useful
+ * to generate the client proxy class in a VM before the proxy object is
+ * deserialized. Only client proxies really need this extra step for
+ * serialization and deserialization since the other proxy classes are generated
+ * during bean archive deployment.
  * 
  * @author David Allen
  */
@@ -44,17 +47,17 @@ public class SerializableProxy implements Serializable
    private static final long serialVersionUID = -7682006876407447753L;
 
    // Information required to generate client proxy classes
-   private final String proxyClassName;
-   private final String proxySuperClassName;
+   private final String      proxyClassName;
+   private final String      proxySuperClassName;
 
    // The wrapped proxy object not serialized by default actions
-   private transient Object proxyObject;
+   private transient Object  proxyObject;
 
    public SerializableProxy(Object proxyObject)
    {
       if (!ProxyFactory.isProxy(proxyObject))
       {
-         throw new ForbiddenStateException(BeanMessage.PROXY_REQUIRED);
+         throw new ForbiddenStateException(PROXY_REQUIRED);
       }
       this.proxyClassName = proxyObject.getClass().getName();
       this.proxySuperClassName = proxyObject.getClass().getSuperclass().getName();
@@ -62,9 +65,9 @@ public class SerializableProxy implements Serializable
    }
 
    /**
-    * Writes this object to the stream and also appends the serialization of
-    * the proxy object afterwards.  This allows this wrapper to later recover
-    * the proxy class before trying to deserialize the proxy object.
+    * Writes this object to the stream and also appends the serialization of the
+    * proxy object afterwards. This allows this wrapper to later recover the
+    * proxy class before trying to deserialize the proxy object.
     * 
     * @param out the output stream of objects
     * @throws IOException
@@ -91,11 +94,24 @@ public class SerializableProxy implements Serializable
       // Must use another OO stream per writeObject() above
       ObjectInputStream in2 = new ObjectInputStream(in);
       Class<?> proxyBeanType = Container.instance().services().get(ProxyServices.class).loadProxySuperClass(proxySuperClassName);
+      Class<?> proxyClass = null;
       if (proxyClassName.endsWith(ProxyFactory.PROXY_SUFFIX))
       {
-         generateClientProxyClass(proxyBeanType);
+         proxyClass = generateClientProxyClass(proxyBeanType);
       }
-      proxyObject = in2.readObject();
+      else
+      {
+         // All other proxy classes always exist where a Weld container was deployed
+         proxyClass = Container.instance().services().get(ProxyServices.class).getClassLoader(proxyBeanType).loadClass(proxyClassName);
+      }
+      try
+      {
+         proxyObject = proxyClass.getDeclaredMethod("deserializeProxy", ObjectInputStream.class).invoke(null, in2);
+      }
+      catch (Exception e)
+      {
+         throw new WeldException(PROXY_DESERIALIZATION_FAILURE, e);
+      }
    }
 
    /**
@@ -108,9 +124,9 @@ public class SerializableProxy implements Serializable
    {
       return proxyObject;
    }
-   
-   private <T> void generateClientProxyClass(Class<T> beanType)
+
+   private <T> Class<?> generateClientProxyClass(Class<T> beanType)
    {
-      new ProxyFactory<T>(beanType).getProxyClass();
+      return new ProxyFactory<T>(beanType).getProxyClass();
    }
 }

@@ -30,6 +30,7 @@ import ch.qos.cal10n.LocaleData;
  * Log messages for Beans.
  * 
  * Message IDs: 000000 - 000099
+ *              001500 - 001599
  * 
  */
 public enum BeanMessage
@@ -133,6 +134,7 @@ public enum BeanMessage
    @MessageId("000096") PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC,
    @MessageId("000097") PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT,
    @MessageId("000098") PRODUCER_METHOD_WITH_WILDCARD_RETURN_TYPE_MUST_BE_DEPENDENT,
-   @MessageId("000099") CANNOT_LOAD_CLASS;
+   @MessageId("000099") CANNOT_LOAD_CLASS,
+   @MessageId("001500") PROXY_DESERIALIZATION_FAILURE;
    
 }
