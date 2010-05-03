@@ -18,6 +18,7 @@
 package org.jboss.weld.bean.proxy.util;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
@@ -39,14 +40,24 @@ public class SimpleProxyServices implements ProxyServices
 
    public ClassLoader getClassLoader(Class<?> type)
    {
-      if (type.getName().startsWith("java"))
-      {
-         return this.getClass().getClassLoader();
+      SecurityManager sm = System.getSecurityManager();
+      if (sm != null) {
+          return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+              public ClassLoader run() {
+                  return Thread.currentThread().getContextClassLoader();
+              }
+          });
+      } else {
+          return Thread.currentThread().getContextClassLoader();
       }
-      else
-      {
-         return type.getClassLoader();
-      }
+//      if (type.getName().startsWith("java"))
+//      {
+//         return this.getClass().getClassLoader();
+//      }
+//      else
+//      {
+//         return type.getClassLoader();
+//      }
    }
 
    public ProtectionDomain getProtectionDomain(Class<?> type)
@@ -81,7 +92,8 @@ public class SimpleProxyServices implements ProxyServices
          {
             public Object run() throws Exception
             {
-               ClassLoader cl = Thread.currentThread().getContextClassLoader();
+               //ClassLoader cl = Thread.currentThread().getContextClassLoader();
+               ClassLoader cl = getClassLoader(this.getClass());
                return Class.forName(className, true, cl);
             }
          });
