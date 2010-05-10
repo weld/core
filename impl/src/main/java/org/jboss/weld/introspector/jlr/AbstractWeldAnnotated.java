@@ -42,9 +42,11 @@ import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.HashSetSupplier;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
-import com.google.common.collect.BiMap;
+import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
+import com.google.common.collect.MutableClassToInstanceMap;
 import com.google.common.collect.SetMultimap;
 
 /**
@@ -100,7 +102,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
    }
    
    
-   protected static void addMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Annotation[] metaAnnotations, boolean declared)
+   protected static void addMetaAnnotations(Multimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Annotation[] metaAnnotations, boolean declared)
    {
       for (Annotation metaAnnotation : metaAnnotations)
       {
@@ -108,7 +110,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
       }
    }
    
-   protected static void addMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Iterable<Annotation> metaAnnotations, boolean declared)
+   protected static void addMetaAnnotations(Multimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Iterable<Annotation> metaAnnotations, boolean declared)
    {
       for (Annotation metaAnnotation : metaAnnotations)
       {
@@ -116,7 +118,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
       }
    }
    
-   private static void addMetaAnnotation(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Class<? extends Annotation> metaAnnotationType, boolean declared)
+   private static void addMetaAnnotation(Multimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Class<? extends Annotation> metaAnnotationType, boolean declared)
    {
       // Only map meta-annotations we are interested in
       if (declared ? MAPPED_DECLARED_METAANNOTATIONS.contains(metaAnnotationType) : MAPPED_METAANNOTATIONS.contains(metaAnnotationType))
@@ -126,7 +128,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
    }
    
    // The annotation map (annotation type -> annotation) of the item
-   private final BiMap<Class<? extends Annotation>, Annotation> annotationMap;
+   private final Map<Class<? extends Annotation>, Annotation> annotationMap;
    // The meta-annotation map (annotation type -> set of annotations containing
    // meta-annotation) of the item
    private final SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap;
@@ -152,13 +154,12 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
       {
          throw new WeldException(ANNOTATION_MAP_NULL);
       }
-      this.annotationMap = HashBiMap.create(annotationMap.size());
+      this.annotationMap = annotationMap;
       this.metaAnnotationMap = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<Annotation>>(), HashSetSupplier.<Annotation>instance());
       for (Annotation annotation : annotationMap.values())
       {
          addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations(), false);
          addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getTypeStore().get(annotation.annotationType()), false);
-         this.annotationMap.put(annotation.annotationType(), annotation);
       }
       
       if (declaredAnnotationMap == null)
@@ -185,13 +186,12 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
       {
          throw new WeldException(ANNOTATION_MAP_NULL);
       }
-      this.annotationMap = HashBiMap.create(annotationMap.size());
+      this.annotationMap = annotationMap;
       this.metaAnnotationMap = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<Annotation>>(), HashSetSupplier.<Annotation>instance());
       for (Annotation annotation : annotationMap.values())
       {
          addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations(), false);
          addMetaAnnotations(metaAnnotationMap, annotation, typeStore.get(annotation.annotationType()), false);
-         this.annotationMap.put(annotation.annotationType(), annotation);
       }
       
       if (declaredAnnotationMap == null)
@@ -261,7 +261,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
    
    public Set<Annotation> getAnnotations()
    {
-      return Collections.unmodifiableSet(annotationMap.values());
+      return Collections.unmodifiableSet(new HashSet<Annotation>(annotationMap.values()));
    }
 
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)

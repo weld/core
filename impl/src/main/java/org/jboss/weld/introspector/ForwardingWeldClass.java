@@ -18,6 +18,7 @@ package org.jboss.weld.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Set;
 
 public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, Class<T>> implements WeldClass<T>
@@ -26,17 +27,17 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
    @Override
    protected abstract WeldClass<T> delegate();
 
-   public Set<WeldConstructor<T>> getWeldConstructors(Class<? extends Annotation> annotationType)
+   public Collection<WeldConstructor<T>> getWeldConstructors(Class<? extends Annotation> annotationType)
    {
       return delegate().getWeldConstructors(annotationType);
    }
 
-   public Set<WeldField<?, ?>> getWeldFields(Class<? extends Annotation> annotationType)
+   public Collection<WeldField<?, ?>> getWeldFields(Class<? extends Annotation> annotationType)
    {
       return delegate().getWeldFields(annotationType);
    }
 
-   public Set<WeldMethod<?, ?>> getWeldMethods(Class<? extends Annotation> annotationType)
+   public Collection<WeldMethod<?, ?>> getWeldMethods(Class<? extends Annotation> annotationType)
    {
       return delegate().getWeldMethods(annotationType);
    }
@@ -46,27 +47,27 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
       return delegate().getNoArgsWeldConstructor();
    }
    
-   public Set<WeldMethod<?, ?>> getWeldMethods()
+   public Collection<WeldMethod<?, ?>> getWeldMethods()
    {
       return delegate().getWeldMethods();
    }
 
-   public Set<WeldField<?, ? super T>> getDeclaredWeldFields(Class<? extends Annotation> annotationType)
+   public Collection<WeldField<?, ? super T>> getDeclaredWeldFields(Class<? extends Annotation> annotationType)
    {
       return delegate().getDeclaredWeldFields(annotationType);
    }
 
-   public Set<WeldMethod<?, ? super T>> getDeclaredWeldMethods(Class<? extends Annotation> annotationType)
+   public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethods(Class<? extends Annotation> annotationType)
    {
       return delegate().getDeclaredWeldMethods(annotationType);
    }
 
-   public Set<WeldMethod<?, ? super T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
+   public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       return delegate().getDeclaredWeldMethodsWithAnnotatedParameters(annotationType);
    }
 
-   public Set<WeldField<?, ?>> getWeldFields()
+   public Collection<WeldField<?, ?>> getWeldFields()
    {
       return delegate().getWeldFields();
    }
@@ -164,7 +165,7 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
       return delegate().getSimpleName();
    }
    
-   public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
+   public Collection<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
       return delegate().getDeclaredMetaAnnotations(metaAnnotationType);
    }

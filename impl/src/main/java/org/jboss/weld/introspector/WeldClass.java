@@ -18,6 +18,7 @@ package org.jboss.weld.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -36,21 +37,21 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * 
     * @return A set of abstracted fields
     */
-   public Set<WeldField<?, ?>> getWeldFields();
+   public Collection<WeldField<?, ?>> getWeldFields();
    
    /**
     * Gets all fields on the type
     * 
     * @return A set of abstracted fields
     */
-   public Set<WeldMethod<?, ?>> getWeldMethods();
+   public Collection<WeldMethod<?, ?>> getWeldMethods();
    
    /**
     * Gets all fields on the type
     * 
     * @return A set of abstracted fields
     */
-   public Set<WeldMethod<?, ?>> getDeclaredWeldMethods();
+   public Collection<WeldMethod<?, ?>> getDeclaredWeldMethods();
 
    /**
     * Get a field by name
@@ -69,7 +70,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * @return A set of abstracted fields with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WeldField<?, ?>> getWeldFields(Class<? extends Annotation> annotationType);
+   public Collection<WeldField<?, ?>> getWeldFields(Class<? extends Annotation> annotationType);
 
    /**
     * Gets all fields which are annotated with the given annotation type on this
@@ -79,7 +80,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * @return A set of abstracted fields with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WeldField<?, ? super T>> getDeclaredWeldFields(Class<? extends Annotation> annotationType);
+   public Collection<WeldField<?, ? super T>> getDeclaredWeldFields(Class<? extends Annotation> annotationType);
 
    /**
     * Gets all constructors which are annotated with annotationType
@@ -88,7 +89,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * @return A set of abstracted fields with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WeldConstructor<T>> getWeldConstructors(Class<? extends Annotation> annotationType);
+   public Collection<WeldConstructor<T>> getWeldConstructors(Class<? extends Annotation> annotationType);
 
    /**
     * Gets the no-args constructor
@@ -112,7 +113,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WeldMethod<?, ?>> getWeldMethods(Class<? extends Annotation> annotationType);
+   public Collection<WeldMethod<?, ?>> getWeldMethods(Class<? extends Annotation> annotationType);
 
    /**
     * Gets all methods annotated with annotationType
@@ -121,7 +122,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WeldMethod<?, ? super T>> getDeclaredWeldMethods(Class<? extends Annotation> annotationType);
+   public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethods(Class<? extends Annotation> annotationType);
 
    /**
     * Find the annotated method for a given methodDescriptor
@@ -163,7 +164,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<WeldMethod<?, ? super T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+   public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
 
    /**
     * Gets the superclass.
@@ -210,6 +211,6 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * @return A set of matching meta-annotations. Returns an empty set if there
     *         are no matches.
     */
-   public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
+   public Collection<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
 
 }

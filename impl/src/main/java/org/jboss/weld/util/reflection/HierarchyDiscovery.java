@@ -22,6 +22,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.security.AccessControlException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,9 +54,10 @@ public class HierarchyDiscovery
       {
          init();
       }
-      return types.keySet();
+      // Return an independent set with no ties to the BiMap used
+      return new HashSet<Type>(types.keySet());
    }
-   
+
    public Map<Class<?>, Type> getTypeMap()
    {
       if (types == null)
@@ -64,7 +66,7 @@ public class HierarchyDiscovery
       }
       return types.inverse();
    }
-   
+
    private void init()
    {
       this.types = HashBiMap.create();

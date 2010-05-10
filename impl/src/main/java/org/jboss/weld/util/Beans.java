@@ -241,7 +241,7 @@ public class Beans
       List<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
       while (!t.getJavaClass().equals(Object.class))
       {
-         Set<WeldMethod<?, ? super T>> declaredMethods = (Set) t.getDeclaredWeldMethods(PostConstruct.class);
+         Collection<WeldMethod<?, ? super T>> declaredMethods = (Collection) t.getDeclaredWeldMethods(PostConstruct.class);
          log.trace(FOUND_POST_CONSTRUCT_METHODS, declaredMethods, type);
          if (declaredMethods.size() > 1)
          {
@@ -264,7 +264,7 @@ public class Beans
       List<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
       while (!t.getJavaClass().equals(Object.class))
       {
-         Set<WeldMethod<?, ? super T>> declaredMethods = (Set) t.getDeclaredWeldMethods(PreDestroy.class);
+         Collection<WeldMethod<?, ? super T>> declaredMethods = (Collection) t.getDeclaredWeldMethods(PreDestroy.class);
          log.trace(FOUND_PRE_DESTROY_METHODS, declaredMethods, type);
          if (declaredMethods.size() > 1)
          {
@@ -685,7 +685,7 @@ public class Beans
    public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<T> declaringBean, WeldClass<T> type)
    {
       ConstructorInjectionPoint<T> constructor = null;
-      Set<WeldConstructor<T>> initializerAnnotatedConstructors = type.getWeldConstructors(Inject.class);
+      Collection<WeldConstructor<T>> initializerAnnotatedConstructors = type.getWeldConstructors(Inject.class);
       log.trace(FOUND_INJECTABLE_CONSTRUCTORS, initializerAnnotatedConstructors, type);
       if (initializerAnnotatedConstructors.size() > 1)
       {

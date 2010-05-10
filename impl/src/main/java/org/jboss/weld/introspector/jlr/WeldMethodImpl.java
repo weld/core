@@ -22,9 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,13 +38,11 @@ import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Names;
-import org.jboss.weld.util.collections.ArrayListSupplier;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimaps;
+import com.google.common.collect.ArrayListMultimap;
 
 /**
  * Represents an annotated method
@@ -64,10 +60,10 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    private final Method method;
 
    // The abstracted parameters
-   private final List<WeldParameter<?, X>> parameters;
+   private final ArrayList<WeldParameter<?, X>> parameters;
    // A mapping from annotation type to parameter abstraction with that
    // annotation present
-   private final ListMultimap<Class<? extends Annotation>, WeldParameter<?, X>> annotatedParameters;
+   private final ArrayListMultimap<Class<? extends Annotation>, WeldParameter<?, X>> annotatedParameters;
 
    // The property name
    private final String propertyName;
@@ -99,7 +95,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       super(annotationMap, declaredAnnotationMap, classTransformer, method, rawType, type, typeClosure, declaringClass);
       this.method = method;
       this.parameters = new ArrayList<WeldParameter<?, X>>();
-      this.annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldParameter<?, X>>>(), ArrayListSupplier.<WeldParameter<?, X>>instance());
+      this.annotatedParameters = ArrayListMultimap.<Class<? extends Annotation>, WeldParameter<?, X>> create();
 
       if (annotatedMethod == null)
       {
@@ -151,8 +147,9 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
          }
          
       }
+      this.parameters.trimToSize();
+      this.annotatedParameters.trimToSize();
 
-      
 
       String propertyName = Reflections.getPropertyName(getDelegate());
       if (propertyName == null)

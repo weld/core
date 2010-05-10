@@ -217,7 +217,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
             }
          }
       }
-      annotatedDelegateItem = WeldClassImpl.of(delegateInjectionPoint.getJavaClass(), beanManager.getServices().get(ClassTransformer.class));
+      annotatedDelegateItem = beanManager.getServices().get(ClassTransformer.class).loadClass(delegateInjectionPoint.getJavaClass());
    }
 
    private void checkAbstractMethods()
