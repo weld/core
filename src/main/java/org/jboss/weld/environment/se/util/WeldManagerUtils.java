@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.BeanManager;
 /**
  * 
  * @author Peter Royle
+ * @deprecated This should be replaced with usages of Weld.instance()
  */
 public class WeldManagerUtils
 {
