@@ -54,7 +54,8 @@ public class WeldExceptionListMessage implements WeldExceptionMessage, Serializa
 
    private void generateMessage()
    {
-      PrintWriter messageBuffer = new PrintWriter(new StringWriter());
+      StringWriter writer = new StringWriter();
+      PrintWriter messageBuffer = new PrintWriter(writer);
       messageBuffer.print("Exception List with ");
       messageBuffer.print(causes.size());
       messageBuffer.print(" exceptions:\n");
@@ -66,6 +67,8 @@ public class WeldExceptionListMessage implements WeldExceptionMessage, Serializa
          messageBuffer.print(" :\n");
          throwable.printStackTrace(messageBuffer);
       }
+      messageBuffer.flush();
+      message = writer.toString();
    }
 
 }
