@@ -83,10 +83,13 @@
                      org.jboss.weld.conversation;
                      org.jboss.weld;
                      org.jboss.weld.bootstrap;
+                     org.jboss.weld.event;
                      org.jboss.weld.injection;
                      org.jboss.weld.introspector;
+                     org.jboss.weld.introspector.jlr;
                      org.jboss.weld.manager;
                      org.jboss.weld.servlet;
+                     org.jboss.weld.util;
                      org.jboss.interceptor.*;
                      version=${osgi.version},
                      org.jboss.weld.el;
