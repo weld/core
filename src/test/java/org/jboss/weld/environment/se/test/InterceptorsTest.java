@@ -24,7 +24,6 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.test.beans.InterceptorTestBean;
 import org.jboss.weld.environment.se.test.interceptors.AggregatingInterceptor;
 import org.jboss.weld.environment.se.test.interceptors.RecordingInterceptor;
-import org.jboss.weld.environment.se.util.WeldManagerUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -44,7 +43,7 @@ public class InterceptorsTest
       WeldContainer weld = new Weld().initialize();
       BeanManager manager = weld.getBeanManager();
 
-      InterceptorTestBean intTestBean = WeldManagerUtils.getInstanceByType(manager, InterceptorTestBean.class);
+      InterceptorTestBean intTestBean = weld.instance().select(InterceptorTestBean.class).get();
       Assert.assertNotNull(intTestBean);
 
       intTestBean.doSomethingRecorded();

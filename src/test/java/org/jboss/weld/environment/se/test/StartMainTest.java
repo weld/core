@@ -26,7 +26,6 @@ import org.jboss.weld.environment.se.test.beans.InitObserverTestBean;
 import org.jboss.weld.environment.se.test.beans.MainTestBean;
 import org.jboss.weld.environment.se.test.beans.ObserverTestBean;
 import org.jboss.weld.environment.se.test.beans.ParametersTestBean;
-import org.jboss.weld.environment.se.util.WeldManagerUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -53,7 +52,7 @@ public class StartMainTest
       WeldContainer weld = new StartMain(args).go();
       BeanManager manager = weld.getBeanManager();
 
-      MainTestBean mainTestBean = WeldManagerUtils.getInstanceByType(manager, MainTestBean.class);
+      MainTestBean mainTestBean = weld.instance().select(MainTestBean.class).get();
       Assert.assertNotNull(mainTestBean);
 
       ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();
@@ -79,7 +78,7 @@ public class StartMainTest
       WeldContainer weld = new StartMain(ARGS_EMPTY).go();
       BeanManager manager = weld.getBeanManager();
 
-      MainTestBean mainTestBean = WeldManagerUtils.getInstanceByType(manager, MainTestBean.class);
+      MainTestBean mainTestBean = weld.instance().select(MainTestBean.class).get();
       Assert.assertNotNull(mainTestBean);
 
       ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();

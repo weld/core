@@ -25,7 +25,6 @@ import org.jboss.weld.environment.se.test.decorators.CarDoor;
 import org.jboss.weld.environment.se.test.decorators.AbstractDoor;
 import org.jboss.weld.environment.se.test.decorators.CarDoorAlarm;
 import org.jboss.weld.environment.se.test.decorators.HouseDoor;
-import org.jboss.weld.environment.se.util.WeldManagerUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -46,7 +45,7 @@ public class DecoratorsTest
       WeldContainer weld = new Weld().initialize();
       BeanManager manager = weld.getBeanManager();
 
-      CarDoor carDoor = WeldManagerUtils.getInstanceByType(manager, CarDoor.class);
+      CarDoor carDoor = weld.instance().select(CarDoor.class).get();
       Assert.assertNotNull(carDoor);
 
       // the car door is alarmed
@@ -55,7 +54,7 @@ public class DecoratorsTest
       testDoor(carDoor);
       Assert.assertTrue(CarDoorAlarm.alarmActivated);
 
-      HouseDoor houseDoor = WeldManagerUtils.getInstanceByType(manager, HouseDoor.class);
+      HouseDoor houseDoor = weld.instance().select(HouseDoor.class).get();
       Assert.assertNotNull(carDoor);
 
       // the house door is not alarmed
