@@ -48,6 +48,7 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Names;
+import org.jboss.weld.util.collections.ImmutableArraySet;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
@@ -673,25 +674,25 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    @SuppressWarnings("unchecked")
    public Set<AnnotatedConstructor<T>> getConstructors()
    {
-      return new HashSet(constructors);
+      return new ImmutableArraySet(constructors);
    }
 
    @SuppressWarnings("unchecked")
    public Set<AnnotatedField<? super T>> getFields()
    {
-      return new HashSet(fields);
+      return new ImmutableArraySet(fields);
    }
 
    @SuppressWarnings("unchecked")
    public Set<AnnotatedMethod<? super T>> getMethods()
    {
-      return new HashSet(methods);
+      return new ImmutableArraySet(methods);
    }
 
    @SuppressWarnings("unchecked")
    public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return Collections.unmodifiableSet(new HashSet(declaredMetaAnnotationMap.get(metaAnnotationType)));
+      return new ImmutableArraySet(declaredMetaAnnotationMap.get(metaAnnotationType));
    }
 
    public boolean isDiscovered()

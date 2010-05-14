@@ -55,6 +55,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.collections.ImmutableArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -115,6 +116,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       initName();
       initScope();
       checkDelegateInjectionPoints();
+      this.qualifiers = new ImmutableArraySet<Annotation>(qualifiers);
    }
    
    protected void initStereotypes()
@@ -168,14 +170,17 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    {
       if (getWeldAnnotated().isAnnotationPresent(Typed.class))
       {
-         this.types = getTypedTypes(Reflections.buildTypeMap(getWeldAnnotated().getTypeClosure()), getWeldAnnotated().getJavaClass(), getWeldAnnotated().getAnnotation(Typed.class));
+         this.types = new ImmutableArraySet<Type>(getTypedTypes(Reflections.buildTypeMap(getWeldAnnotated().getTypeClosure()), getWeldAnnotated().getJavaClass(), getWeldAnnotated().getAnnotation(Typed.class)));
       }
       else
       {
-         this.types = new HashSet<Type>(getWeldAnnotated().getTypeClosure());
          if (getType().isInterface())
          {
-            this.types.add(Object.class);
+            this.types = new ImmutableArraySet<Type>(getWeldAnnotated().getTypeClosure(), Object.class);
+         }
+         else
+         {
+            this.types = new ImmutableArraySet<Type>(getWeldAnnotated().getTypeClosure());
          }
       }
    }
@@ -201,7 +206,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    protected void initQualifiers()
    {
       this.qualifiers = new HashSet<Annotation>();
-      this.qualifiers.addAll(getWeldAnnotated().getMetaAnnotations(Qualifier.class));
+      qualifiers.addAll(getWeldAnnotated().getMetaAnnotations(Qualifier.class));
       initDefaultQualifiers();
       log.trace(QUALIFIERS_USED, qualifiers, this);
    }

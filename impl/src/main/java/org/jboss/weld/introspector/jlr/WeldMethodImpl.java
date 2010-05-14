@@ -94,8 +94,8 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    {
       super(annotationMap, declaredAnnotationMap, classTransformer, method, rawType, type, typeClosure, declaringClass);
       this.method = method;
-      this.parameters = new ArrayList<WeldParameter<?, X>>();
-      this.annotatedParameters = ArrayListMultimap.<Class<? extends Annotation>, WeldParameter<?, X>> create();
+      this.parameters = new ArrayList<WeldParameter<?, X>>(method.getParameterTypes().length);
+      this.annotatedParameters = ArrayListMultimap.<Class<? extends Annotation>, WeldParameter<?, X>> create(2, method.getParameterTypes().length);
 
       if (annotatedMethod == null)
       {
