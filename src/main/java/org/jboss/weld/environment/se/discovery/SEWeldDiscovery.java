@@ -21,8 +21,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.jboss.weld.bootstrap.spi.Deployment;
 
-import org.jboss.weld.environment.se.util.Reflections;
+import org.jboss.weld.resources.DefaultResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * The means by which beans are discovered on the classpath. This will only
@@ -35,14 +37,16 @@ import org.jboss.weld.environment.se.util.Reflections;
 public abstract class SEWeldDiscovery
 {
 
+   private ResourceLoader resourceLoader;
+   private final Deployment deployment;
    private final Set<Class<?>> wbClasses;
    private final Set<URL> wbUrls;
 
-   public SEWeldDiscovery()
+   public SEWeldDiscovery(Deployment deployment)
    {
+      this.deployment = deployment;
       this.wbClasses = new HashSet<Class<?>>();
       this.wbUrls = new HashSet<URL>();
-      scan();
    }
 
    public Iterable<Class<?>> discoverWeldClasses()
@@ -65,10 +69,23 @@ public abstract class SEWeldDiscovery
       return wbUrls;
    }
 
-   private void scan()
+   public void scan()
    {
-      Scanner scanner = new URLScanner(Reflections.getClassLoader(), this);
+      Scanner scanner = new URLScanner(resourceLoader(), this);
       scanner.scanResources(new String[] { "META-INF/beans.xml" });
    }
 
+   public synchronized ResourceLoader resourceLoader() {
+      if (this.resourceLoader == null)
+      {
+         ResourceLoader aResourceLoader = deployment.getServices().get(ResourceLoader.class);
+         if (aResourceLoader == null)
+         {
+            aResourceLoader = new DefaultResourceLoader();
+         }
+         this.resourceLoader = aResourceLoader;
+      }
+      return this.resourceLoader;
+   }
+   
 }

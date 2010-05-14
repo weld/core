@@ -24,6 +24,7 @@ import java.util.List;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 
 /**
@@ -39,12 +40,22 @@ public class SEBeanDeploymentArchive implements BeanDeploymentArchive
    private final SEWeldDiscovery wbDiscovery;
    private final ServiceRegistry serviceRegistry;
 
-   public SEBeanDeploymentArchive()
+   /**
+    * @param deployment Used to gain access to the ResourceLoader, in case one is defined.
+    */
+   public SEBeanDeploymentArchive(Deployment deployment)
    {
-      wbDiscovery = new SEWeldDiscovery()
+      this.wbDiscovery = new SEWeldDiscovery(deployment) 
       {
       };
-      serviceRegistry = new SimpleServiceRegistry();
+      this.serviceRegistry = new SimpleServiceRegistry();
+   }
+
+   /**
+    * Perform the class scanning.
+    */
+   public void scan() {
+      wbDiscovery.scan();
    }
 
    /**

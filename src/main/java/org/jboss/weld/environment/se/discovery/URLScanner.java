@@ -22,12 +22,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +47,9 @@ public class URLScanner extends AbstractScanner
 {
    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
 
-   public URLScanner(ClassLoader classLoader, SEWeldDiscovery webBeanDiscovery)
+   public URLScanner(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
    {
-      super(classLoader, webBeanDiscovery);
+      super(resourceLoader, webBeanDiscovery);
    }
 
    public void scanDirectories(File[] directories)
@@ -66,11 +68,11 @@ public class URLScanner extends AbstractScanner
       {
          try
          {
-            Enumeration<URL> urlEnum = getClassLoader().getResources(resourceName);
+            Collection<URL> urlEnum = getResourceLoader().getResources(resourceName);
 
-            while (urlEnum.hasMoreElements())
+            for (URL url : urlEnum)
             {
-               String urlPath = urlEnum.nextElement().getFile();
+               String urlPath = url.getFile();
                urlPath = URLDecoder.decode(urlPath, "UTF-8");
 
                if (urlPath.startsWith("file:"))

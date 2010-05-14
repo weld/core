@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.weld.environment.se.beans.InstanceManager;
@@ -69,9 +70,12 @@ public class Weld
    public WeldContainer initialize()
    {
 
-      SEWeldDeployment deployment = new SEWeldDeployment()
+      SEWeldDeployment deployment = new SEWeldDeployment() 
       {
       };
+      configureDeployment(deployment);
+      deployment.scan();
+
       bootstrap.startContainer(Environments.SE, deployment, this.applicationBeanStore);
       final BeanDeploymentArchive mainBeanDepArch = deployment.getBeanDeploymentArchives().get(0);
       this.manager = bootstrap.getManager(mainBeanDepArch);
@@ -85,6 +89,24 @@ public class Weld
 
       return new WeldContainer(instanceManager, manager);
 
+   }
+
+   /**
+    * Clients can subclass and override this method to customise the deployment
+    * before weld boots up. For example, to add a custom ResourceLoader, you would
+    * subclass Weld like so:
+    * <code>
+    * public class MyWeld extends Weld {
+    *    @Override
+    *    protected void configureDeployment(Deployment deployment) {
+    *       deployment.getServices().add(ResourceLoader.class, new OSGIResourceLoader());
+    *    }
+    * }
+    * </code>
+    * @param deployment
+    */
+   protected void configureDeployment(Deployment deployment)
+   {
    }
 
    /**

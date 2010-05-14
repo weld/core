@@ -29,14 +29,21 @@ import org.jboss.weld.bootstrap.spi.Deployment;
  */
 public abstract class SEWeldDeployment implements Deployment
 {
-   private final BeanDeploymentArchive beanDeploymentArchive;
+   private final SEBeanDeploymentArchive beanDeploymentArchive;
    private final List<BeanDeploymentArchive> archInCollection;
 
    public SEWeldDeployment()
    {
-      this.beanDeploymentArchive = new SEBeanDeploymentArchive();
+      this.beanDeploymentArchive = new SEBeanDeploymentArchive(this);
       this.archInCollection = new ArrayList<BeanDeploymentArchive>(1);
       this.archInCollection.add(this.beanDeploymentArchive);
+   }
+
+   /**
+    * Perform the class scanning.
+    */
+   public void scan() {
+      this.beanDeploymentArchive.scan();
    }
 
    /**

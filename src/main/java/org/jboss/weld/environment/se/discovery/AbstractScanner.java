@@ -17,6 +17,7 @@
 package org.jboss.weld.environment.se.discovery;
 
 import java.net.URL;
+import org.jboss.weld.resources.spi.ResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,12 +33,12 @@ public abstract class AbstractScanner implements Scanner
 {
 
    private static final Logger log = LoggerFactory.getLogger(Scanner.class);
-   private final ClassLoader classLoader;
+   private final ResourceLoader resourceLoader;
    private final SEWeldDiscovery webBeanDiscovery;
 
-   public AbstractScanner(ClassLoader classLoader, SEWeldDiscovery webBeanDiscovery)
+   public AbstractScanner(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
    {
-      this.classLoader = classLoader;
+      this.resourceLoader = resourceLoader;
       this.webBeanDiscovery = webBeanDiscovery;
    }
 
@@ -48,13 +49,9 @@ public abstract class AbstractScanner implements Scanner
          String className = filenameToClassname(name);
          try
          {
-            webBeanDiscovery.getWbClasses().add(getClassLoader().loadClass(className));
+            webBeanDiscovery.getWbClasses().add(getResourceLoader().classForName(className));
          }
          catch (NoClassDefFoundError e)
-         {
-            log.error("Error loading " + name, e);
-         }
-         catch (ClassNotFoundException e)
          {
             log.error("Error loading " + name, e);
          }
@@ -65,9 +62,9 @@ public abstract class AbstractScanner implements Scanner
       }
    }
 
-   public ClassLoader getClassLoader()
+   public ResourceLoader getResourceLoader()
    {
-      return classLoader;
+      return resourceLoader;
    }
 
    /**
