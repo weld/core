@@ -25,9 +25,10 @@ import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.discovery.SEWeldDeployment;
-import org.jboss.weld.environment.se.util.Reflections;
 import org.jboss.weld.environment.se.util.WeldManagerUtils;
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.resources.DefaultResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * An alternative means of booting WeldContainer form an arbitrary main method within an
@@ -46,20 +47,12 @@ public class Weld
 {
 
    private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
-   private final Bootstrap bootstrap;
-   private final BeanStore applicationBeanStore;
+   private Bootstrap bootstrap;
+   private BeanStore applicationBeanStore;
    private WeldManager manager;
 
    public Weld()
    {
-      try
-      {
-         bootstrap = Reflections.newInstance(BOOTSTRAP_IMPL_CLASS_NAME, Bootstrap.class);
-      } catch (Exception e)
-      {
-         throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", e);
-      }
-      this.applicationBeanStore = new ConcurrentHashMapBeanStore();
    }
 
    /**
@@ -70,10 +63,20 @@ public class Weld
    public WeldContainer initialize()
    {
 
-      SEWeldDeployment deployment = new SEWeldDeployment() 
+      this.applicationBeanStore = new ConcurrentHashMapBeanStore();
+      SEWeldDeployment deployment = initDeployment();
+
+      try
       {
-      };
-      configureDeployment(deployment);
+         bootstrap = (Bootstrap) deployment.getServices().get(ResourceLoader.class).classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
+      } catch (InstantiationException ex)
+      {
+         throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
+      } catch (IllegalAccessException ex)
+      {
+         throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
+      }
+
       deployment.scan();
 
       bootstrap.startContainer(Environments.SE, deployment, this.applicationBeanStore);
@@ -89,6 +92,20 @@ public class Weld
 
       return new WeldContainer(instanceManager, manager);
 
+   }
+
+   private SEWeldDeployment initDeployment()
+   {
+      SEWeldDeployment deployment = new SEWeldDeployment()
+      {
+      };
+      configureDeployment(deployment);
+      // configure a ResourceLoader if one hasn't been already
+      if (deployment.getServices().get(ResourceLoader.class) == null)
+      {
+         deployment.getServices().add(ResourceLoader.class, new DefaultResourceLoader());
+      }
+      return deployment;
    }
 
    /**

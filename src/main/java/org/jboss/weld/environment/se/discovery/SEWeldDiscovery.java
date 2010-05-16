@@ -21,9 +21,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.jboss.weld.bootstrap.spi.Deployment;
 
-import org.jboss.weld.resources.DefaultResourceLoader;
+import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
@@ -37,7 +36,6 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 public abstract class SEWeldDiscovery
 {
 
-   private ResourceLoader resourceLoader;
    private final Deployment deployment;
    private final Set<Class<?>> wbClasses;
    private final Set<URL> wbUrls;
@@ -71,21 +69,8 @@ public abstract class SEWeldDiscovery
 
    public void scan()
    {
-      Scanner scanner = new URLScanner(resourceLoader(), this);
+      Scanner scanner = new URLScanner(deployment.getServices().get(ResourceLoader.class), this);
       scanner.scanResources(new String[] { "META-INF/beans.xml" });
-   }
-
-   public synchronized ResourceLoader resourceLoader() {
-      if (this.resourceLoader == null)
-      {
-         ResourceLoader aResourceLoader = deployment.getServices().get(ResourceLoader.class);
-         if (aResourceLoader == null)
-         {
-            aResourceLoader = new DefaultResourceLoader();
-         }
-         this.resourceLoader = aResourceLoader;
-      }
-      return this.resourceLoader;
    }
    
 }
