@@ -24,7 +24,10 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.weld.environment.se.beans.InstanceManager;
+import org.jboss.weld.environment.se.discovery.SEBeanDeploymentArchive;
 import org.jboss.weld.environment.se.discovery.SEWeldDeployment;
+import org.jboss.weld.environment.se.discovery.SEWeldDiscovery;
+import org.jboss.weld.environment.se.discovery.URLScanner;
 import org.jboss.weld.environment.se.util.WeldManagerUtils;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.resources.DefaultResourceLoader;
@@ -50,6 +53,8 @@ public class Weld
    private Bootstrap bootstrap;
    private BeanStore applicationBeanStore;
    private WeldManager manager;
+   private SEWeldDiscovery discovery;
+   private SEBeanDeploymentArchive beanDeploymentArchive;
 
    public Weld()
    {
@@ -77,7 +82,13 @@ public class Weld
          throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
       }
 
-      deployment.scan();
+      final ResourceLoader resourceLoader = deployment.getServices().get(ResourceLoader.class);
+      URLScanner scanner = new URLScanner(resourceLoader, discovery);
+      configureClassHandlers(scanner, resourceLoader, discovery);
+      scanner.scanResources(new String[]
+              {
+                 "META-INF/beans.xml"
+              });
 
       bootstrap.startContainer(Environments.SE, deployment, this.applicationBeanStore);
       final BeanDeploymentArchive mainBeanDepArch = deployment.getBeanDeploymentArchives().get(0);
@@ -94,11 +105,28 @@ public class Weld
 
    }
 
+   /**
+    * Clients can subclass and override this method to add custom class handlers
+    * before weld boots up. For example, to set a custom class handler for OSGi bundles,
+    * you would subclass Weld like so:
+    * <code>
+    * public class MyWeld extends Weld {
+    *    @Override
+    *    public void configureClassHandlers(URLScanner scanner, ResourceLoader resourceLoader, SEWeldDiscovery discovery)
+    *       scanner.setClassHandler("bundle", new MyOSGiClassHandler(bundleClassLoader));
+    *    }
+    * }
+    * </code>
+    */
+   public void configureClassHandlers(URLScanner scanner, ResourceLoader resourceLoader, SEWeldDiscovery discovery)
+   {
+   }
+
    private SEWeldDeployment initDeployment()
    {
-      SEWeldDeployment deployment = new SEWeldDeployment()
-      {
-      };
+      discovery = new SEWeldDiscovery();
+      beanDeploymentArchive = new SEBeanDeploymentArchive(discovery);
+      SEWeldDeployment deployment = new SEWeldDeployment(beanDeploymentArchive);
       configureDeployment(deployment);
       // configure a ResourceLoader if one hasn't been already
       if (deployment.getServices().get(ResourceLoader.class) == null)

@@ -14,27 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.discovery;
+package org.jboss.weld.environment.se.discovery.handlers;
 
+import org.jboss.weld.environment.se.discovery.SEWeldDiscovery;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  *
  * @author Peter Royle
  */
-public abstract class AbstractScanner implements Scanner
+public abstract class AbstractClassHandler implements ClassHandler
 {
 
    private final ResourceLoader resourceLoader;
    private final SEWeldDiscovery weldDiscovery;
 
-   public AbstractScanner(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
+   public AbstractClassHandler(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
    {
       this.resourceLoader = resourceLoader;
       this.weldDiscovery = webBeanDiscovery;
    }
 
-
+   /**
+    * @return the resourceLoader
+    */
    public ResourceLoader getResourceLoader()
    {
       return resourceLoader;
@@ -43,9 +46,9 @@ public abstract class AbstractScanner implements Scanner
    /**
     * @return the webBeanDiscovery
     */
-   public SEWeldDiscovery getWebBeanDiscovery()
+   public SEWeldDiscovery getWeldDiscovery()
    {
       return weldDiscovery;
    }
-
+   
 }

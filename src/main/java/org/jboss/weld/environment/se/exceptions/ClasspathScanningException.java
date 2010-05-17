@@ -14,38 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.discovery;
-
-import org.jboss.weld.resources.spi.ResourceLoader;
+package org.jboss.weld.environment.se.exceptions;
 
 /**
- *
  * @author Peter Royle
  */
-public abstract class AbstractScanner implements Scanner
-{
+public class ClasspathScanningException extends RuntimeException {
 
-   private final ResourceLoader resourceLoader;
-   private final SEWeldDiscovery weldDiscovery;
-
-   public AbstractScanner(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
-   {
-      this.resourceLoader = resourceLoader;
-      this.weldDiscovery = webBeanDiscovery;
-   }
+    /**
+     * Creates a new instance of <code>ClasspathScanningException</code> without detail message.
+     */
+    public ClasspathScanningException() {
+    }
 
 
-   public ResourceLoader getResourceLoader()
-   {
-      return resourceLoader;
-   }
-
-   /**
-    * @return the webBeanDiscovery
-    */
-   public SEWeldDiscovery getWebBeanDiscovery()
-   {
-      return weldDiscovery;
-   }
-
+    /**
+     * Constructs an instance of <code>ClasspathScanningException</code> with the specified detail message.
+     * @param msg the detail message.
+     */
+    public ClasspathScanningException(String msg) {
+        super(msg);
+    }
 }

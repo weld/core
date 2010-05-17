@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * The means by which beans are discovered on the classpath. This will only
@@ -33,16 +31,14 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  * @author Pete Muir
  * @author Ales Justin
  */
-public abstract class SEWeldDiscovery
+public class SEWeldDiscovery
 {
 
-   private final Deployment deployment;
    private final Set<Class<?>> wbClasses;
    private final Set<URL> wbUrls;
 
-   public SEWeldDiscovery(Deployment deployment)
+   public SEWeldDiscovery()
    {
-      this.deployment = deployment;
       this.wbClasses = new HashSet<Class<?>>();
       this.wbUrls = new HashSet<URL>();
    }
@@ -67,10 +63,4 @@ public abstract class SEWeldDiscovery
       return wbUrls;
    }
 
-   public void scan()
-   {
-      Scanner scanner = new URLScanner(deployment.getServices().get(ResourceLoader.class), this);
-      scanner.scanResources(new String[] { "META-INF/beans.xml" });
-   }
-   
 }

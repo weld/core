@@ -16,19 +16,19 @@
  */
 package org.jboss.weld.environment.se.discovery;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
+import java.util.HashMap;
+import java.util.Map;
+import org.jboss.weld.environment.se.discovery.handlers.ClassHandler;
+import org.jboss.weld.environment.se.discovery.handlers.FileSystemClassHandler;
+import org.jboss.weld.environment.se.exceptions.ClasspathScanningException;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 import org.slf4j.Logger;
@@ -41,162 +41,91 @@ import org.slf4j.LoggerFactory;
  * @author Gavin King
  * @author Norman Richards
  * @author Pete Muir
+ * @author Peter Royle
  * 
  */
 public class URLScanner extends AbstractScanner
 {
+
+   private static final String FILE = "file";
+   private static final String JAR = "jar";
+   private final Map<String, ClassHandler> classHandlers = new HashMap<String, ClassHandler>();
    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
 
-   public URLScanner(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
+   public URLScanner(ResourceLoader resourceLoader, SEWeldDiscovery weldDiscovery)
    {
-      super(resourceLoader, webBeanDiscovery);
+      super(resourceLoader, weldDiscovery);
+      ClassHandler fileSysHandler = new FileSystemClassHandler(resourceLoader, weldDiscovery);
+      classHandlers.put(FILE, fileSysHandler);
+      classHandlers.put(JAR, fileSysHandler);
+   }
+
+   public void setClassHandler(String type, ClassHandler handler)
+   {
+      classHandlers.put(type, handler);
    }
 
    public void scanDirectories(File[] directories)
    {
       for (File directory : directories)
       {
-         handleDirectory(directory, null);
+         // can only use a file-based scanner to scan directories
+         classHandlers.get(FILE).handleDirectory(directory);
       }
    }
 
    public void scanResources(String[] resources)
    {
-      Set<String> paths = new HashSet<String>();
-
+      Multimap<String, String> paths = HashMultimap.create();
       for (String resourceName : resources)
       {
-         try
+         // grab all the URLs for this resource
+         Collection<URL> urlEnum = getResourceLoader().getResources(resourceName);
+         for (URL url : urlEnum)
          {
-            Collection<URL> urlEnum = getResourceLoader().getResources(resourceName);
 
-            for (URL url : urlEnum)
-            {
-               String urlPath = url.getFile();
-               urlPath = URLDecoder.decode(urlPath, "UTF-8");
-
-               if (urlPath.startsWith("file:"))
-               {
-                  urlPath = urlPath.substring(5);
-               }
-
-               if (urlPath.indexOf('!') > 0)
-               {
-                  urlPath = urlPath.substring(0, urlPath.indexOf('!'));
-               }
-               else
-               {
-                  File dirOrArchive = new File(urlPath);
-
-                  if ((resourceName != null) && (resourceName.lastIndexOf('/') > 0))
-                  {
-                     // for META-INF/components.xml
-                     dirOrArchive = dirOrArchive.getParentFile();
-                  }
-
-                  urlPath = dirOrArchive.getParent();
-               }
-
-               paths.add(urlPath);
-            }
-         }
-         catch (IOException ioe)
-         {
-            log.warn("could not read: " + resourceName, ioe);
-         }
-      }
-
-      handle(paths);
-   }
-
-   protected void handle(Set<String> paths)
-   {
-      for (String urlPath : paths)
-      {
-         try
-         {
-            log.trace("scanning: " + urlPath);
-
-            File file = new File(urlPath);
-
-            if (file.isDirectory())
-            {
-               handleDirectory(file, null);
-            }
-            else
-            {
-               handleArchiveByFile(file);
-            }
-         }
-         catch (IOException ioe)
-         {
-            log.warn("could not read entries", ioe);
-         }
-      }
-   }
-
-   private void handleArchiveByFile(File file) throws IOException
-   {
-      try
-      {
-         log.trace("archive: " + file);
-
-         String archiveUrl = "jar:" + file.toURI().toURL().toExternalForm() + "!/";
-         ZipFile zip = new ZipFile(file);
-         Enumeration<? extends ZipEntry> entries = zip.entries();
-
-         while (entries.hasMoreElements())
-         {
-            ZipEntry entry = entries.nextElement();
-            String name = entry.getName();
-            handle(name, new URL(archiveUrl + name));
-         }
-      }
-      catch (ZipException e)
-      {
-         throw new RuntimeException("Error handling file " + file, e);
-      }
-   }
-
-   private void handleDirectory(File file, String path)
-   {
-      handleDirectory(file, path, new File[0]);
-   }
-
-   private void handleDirectory(File file, String path, File[] excludedDirectories)
-   {
-      for (File excludedDirectory : excludedDirectories)
-      {
-         if (file.equals(excludedDirectory))
-         {
-            log.trace("skipping excluded directory: " + file);
-
-            return;
-         }
-      }
-
-      log.trace("handling directory: " + file);
-
-      for (File child : file.listFiles())
-      {
-         String newPath = (path == null) ? child.getName() : (path + '/' + child.getName());
-
-         if (child.isDirectory())
-         {
-            handleDirectory(child, newPath, excludedDirectories);
-         }
-         else
-         {
+            String urlPath;
             try
             {
-               handle(newPath, child.toURI().toURL());
-            }
-            catch (MalformedURLException e)
+               urlPath = URLDecoder.decode(url.toExternalForm(), "UTF-8");
+            } catch (UnsupportedEncodingException ex)
             {
-               log.error("Error loading file " + newPath);
+               throw new ClasspathScanningException("Error decoding URL using UTF-8");
             }
+            String urlType = "file";
+            int colonIndex = urlPath.indexOf(":");
+            if (colonIndex != -1)
+            {
+               urlType = urlPath.substring(0, colonIndex);
+            }
+
+            // hack for /META-INF/beans.xml
+            if (urlPath.indexOf('!') == -1)
+            {
+               File dirOrArchive = new File(urlPath);
+               if ((resourceName != null) && (resourceName.lastIndexOf('/') > 0))
+               {
+                  dirOrArchive = dirOrArchive.getParentFile();
+               }
+               urlPath = dirOrArchive.getParent();
+            }
+
+            log.debug("URL Type: " + urlType);
+
+            paths.put(urlType, urlPath);
+         }
+      }
+      for (String urlType : paths.keySet())
+      {
+         Collection<String> urlPaths = paths.get(urlType);
+         ClassHandler handler = classHandlers.get(urlType);
+         if (handler == null)
+         {
+            throw new ClasspathScanningException("No handler defined for URL type: " + urlType);
+         } else
+         {
+            handler.handle(urlPaths);
          }
       }
    }
-
 }
