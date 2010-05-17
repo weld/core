@@ -113,7 +113,7 @@ public class Weld
     * public class MyWeld extends Weld {
     *    @Override
     *    public void configureURLHandlers(URLScanner scanner, ResourceLoader resourceLoader, SEWeldDiscovery discovery)
-    *       scanner.setURLHandler("bundle", new MyOSGiURLHandler(bundleClassLoader));
+    *       scanner.setURLHandler("bundle", new MyOSGiURLHandler(resourceLoader, discovery));
     *    }
     * }
     * </code>
