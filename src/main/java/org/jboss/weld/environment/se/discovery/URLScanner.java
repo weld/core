@@ -26,8 +26,8 @@ import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.jboss.weld.environment.se.discovery.handlers.ClassHandler;
-import org.jboss.weld.environment.se.discovery.handlers.FileSystemClassHandler;
+import org.jboss.weld.environment.se.discovery.handlers.URLHandler;
+import org.jboss.weld.environment.se.discovery.handlers.FileSystemURLHandler;
 import org.jboss.weld.environment.se.exceptions.ClasspathScanningException;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
@@ -49,18 +49,18 @@ public class URLScanner extends AbstractScanner
 
    private static final String FILE = "file";
    private static final String JAR = "jar";
-   private final Map<String, ClassHandler> classHandlers = new HashMap<String, ClassHandler>();
+   private final Map<String, URLHandler> classHandlers = new HashMap<String, URLHandler>();
    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
 
    public URLScanner(ResourceLoader resourceLoader, SEWeldDiscovery weldDiscovery)
    {
       super(resourceLoader, weldDiscovery);
-      ClassHandler fileSysHandler = new FileSystemClassHandler(resourceLoader, weldDiscovery);
+      URLHandler fileSysHandler = new FileSystemURLHandler(resourceLoader, weldDiscovery);
       classHandlers.put(FILE, fileSysHandler);
       classHandlers.put(JAR, fileSysHandler);
    }
 
-   public void setClassHandler(String type, ClassHandler handler)
+   public void setClassHandler(String type, URLHandler handler)
    {
       classHandlers.put(type, handler);
    }
@@ -118,7 +118,7 @@ public class URLScanner extends AbstractScanner
       for (String urlType : paths.keySet())
       {
          Collection<String> urlPaths = paths.get(urlType);
-         ClassHandler handler = classHandlers.get(urlType);
+         URLHandler handler = classHandlers.get(urlType);
          if (handler == null)
          {
             throw new ClasspathScanningException("No handler defined for URL type: " + urlType);

@@ -23,13 +23,13 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  *
  * @author Peter Royle
  */
-public abstract class AbstractClassHandler implements ClassHandler
+public abstract class AbstractURLHandler implements URLHandler
 {
 
    private final ResourceLoader resourceLoader;
    private final SEWeldDiscovery weldDiscovery;
 
-   public AbstractClassHandler(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
+   public AbstractURLHandler(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
    {
       this.resourceLoader = resourceLoader;
       this.weldDiscovery = webBeanDiscovery;

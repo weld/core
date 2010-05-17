@@ -39,12 +39,12 @@ import org.slf4j.LoggerFactory;
  * @author Pete Muir
  * 
  */
-public class FileSystemClassHandler extends AbstractClassHandler
+public class FileSystemURLHandler extends AbstractURLHandler
 {
 
-   private static final Logger log = LoggerFactory.getLogger(FileSystemClassHandler.class);
+   private static final Logger log = LoggerFactory.getLogger(FileSystemURLHandler.class);
 
-   public FileSystemClassHandler(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
+   public FileSystemURLHandler(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
    {
       super(resourceLoader, webBeanDiscovery);
    }
@@ -55,7 +55,7 @@ public class FileSystemClassHandler extends AbstractClassHandler
       {
          try
          {
-            FileSystemClassHandler.log.trace("scanning: " + urlPath);
+            FileSystemURLHandler.log.trace("scanning: " + urlPath);
 
             if (urlPath.startsWith("file:"))
             {
@@ -76,7 +76,7 @@ public class FileSystemClassHandler extends AbstractClassHandler
             }
          } catch (IOException ioe)
          {
-            FileSystemClassHandler.log.warn("could not read entries", ioe);
+            FileSystemURLHandler.log.warn("could not read entries", ioe);
          }
       }
    }
