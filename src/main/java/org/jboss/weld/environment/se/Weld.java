@@ -84,7 +84,7 @@ public class Weld
 
       final ResourceLoader resourceLoader = deployment.getServices().get(ResourceLoader.class);
       URLScanner scanner = new URLScanner(resourceLoader, discovery);
-      configureClassHandlers(scanner, resourceLoader, discovery);
+      configureURLHandlers(scanner, resourceLoader, discovery);
       scanner.scanResources(new String[]
               {
                  "META-INF/beans.xml"
@@ -106,19 +106,19 @@ public class Weld
    }
 
    /**
-    * Clients can subclass and override this method to add custom class handlers
-    * before weld boots up. For example, to set a custom class handler for OSGi bundles,
+    * Clients can subclass and override this method to add custom URL handlers
+    * before weld boots up. For example, to set a custom URL handler for OSGi bundles,
     * you would subclass Weld like so:
     * <code>
     * public class MyWeld extends Weld {
     *    @Override
-    *    public void configureClassHandlers(URLScanner scanner, ResourceLoader resourceLoader, SEWeldDiscovery discovery)
-    *       scanner.setClassHandler("bundle", new MyOSGiClassHandler(bundleClassLoader));
+    *    public void configureURLHandlers(URLScanner scanner, ResourceLoader resourceLoader, SEWeldDiscovery discovery)
+    *       scanner.setURLHandler("bundle", new MyOSGiURLHandler(bundleClassLoader));
     *    }
     * }
     * </code>
     */
-   public void configureClassHandlers(URLScanner scanner, ResourceLoader resourceLoader, SEWeldDiscovery discovery)
+   public void configureURLHandlers(URLScanner scanner, ResourceLoader resourceLoader, SEWeldDiscovery discovery)
    {
    }
 

@@ -49,20 +49,20 @@ public class URLScanner extends AbstractScanner
 
    private static final String FILE = "file";
    private static final String JAR = "jar";
-   private final Map<String, URLHandler> classHandlers = new HashMap<String, URLHandler>();
+   private final Map<String, URLHandler> urlHandlers = new HashMap<String, URLHandler>();
    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
 
    public URLScanner(ResourceLoader resourceLoader, SEWeldDiscovery weldDiscovery)
    {
       super(resourceLoader, weldDiscovery);
       URLHandler fileSysHandler = new FileSystemURLHandler(resourceLoader, weldDiscovery);
-      classHandlers.put(FILE, fileSysHandler);
-      classHandlers.put(JAR, fileSysHandler);
+      urlHandlers.put(FILE, fileSysHandler);
+      urlHandlers.put(JAR, fileSysHandler);
    }
 
-   public void setClassHandler(String type, URLHandler handler)
+   public void setURLHandler(String type, URLHandler handler)
    {
-      classHandlers.put(type, handler);
+      urlHandlers.put(type, handler);
    }
 
    public void scanDirectories(File[] directories)
@@ -70,7 +70,7 @@ public class URLScanner extends AbstractScanner
       for (File directory : directories)
       {
          // can only use a file-based scanner to scan directories
-         classHandlers.get(FILE).handleDirectory(directory);
+         urlHandlers.get(FILE).handleDirectory(directory);
       }
    }
 
@@ -118,7 +118,7 @@ public class URLScanner extends AbstractScanner
       for (String urlType : paths.keySet())
       {
          Collection<String> urlPaths = paths.get(urlType);
-         URLHandler handler = classHandlers.get(urlType);
+         URLHandler handler = urlHandlers.get(urlType);
          if (handler == null)
          {
             throw new ClasspathScanningException("No handler defined for URL type: " + urlType);
