@@ -84,14 +84,9 @@ public class URLScanner extends AbstractScanner
          for (URL url : urlEnum)
          {
 
-            String urlPath;
-            try
-            {
-               urlPath = URLDecoder.decode(url.toExternalForm(), "UTF-8");
-            } catch (UnsupportedEncodingException ex)
-            {
-               throw new ClasspathScanningException("Error decoding URL using UTF-8");
-            }
+            String urlPath = url.toExternalForm();
+
+            // determin resource type (eg: jar, file, bundle)
             String urlType = "file";
             int colonIndex = urlPath.indexOf(":");
             if (colonIndex != -1)
@@ -99,20 +94,39 @@ public class URLScanner extends AbstractScanner
                urlType = urlPath.substring(0, colonIndex);
             }
 
-            // hack for /META-INF/beans.xml
-            if (urlPath.indexOf('!') == -1)
+            // Extra built-in support for simple file-based resources
+            if ("file".equals(urlType) || "jar".equals(urlType))
             {
-               File dirOrArchive = new File(urlPath);
-               if ((resourceName != null) && (resourceName.lastIndexOf('/') > 0))
+               // switch to using getPath() instead of toExternalForm()
+               urlPath = url.getPath();
+
+               if (urlPath.indexOf('!') > 0)
                {
-                  dirOrArchive = dirOrArchive.getParentFile();
+                  urlPath = urlPath.substring(0, urlPath.indexOf('!'));
+               } else
+               {
+                  // hack for /META-INF/beans.xml
+                  File dirOrArchive = new File(urlPath);
+                  if ((resourceName != null) && (resourceName.lastIndexOf('/') > 0))
+                  {
+                     dirOrArchive = dirOrArchive.getParentFile();
+                  }
+                  urlPath = dirOrArchive.getParent();
                }
-               urlPath = dirOrArchive.getParent();
+            }
+
+            try
+            {
+               urlPath = URLDecoder.decode(urlPath, "UTF-8");
+            } catch (UnsupportedEncodingException ex)
+            {
+               throw new ClasspathScanningException("Error decoding URL using UTF-8");
             }
 
             log.debug("URL Type: " + urlType);
 
             paths.put(urlType, urlPath);
+
          }
       }
       for (String urlType : paths.keySet())
