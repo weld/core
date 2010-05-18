@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.environment.se.discovery.handlers;
 
-import java.io.File;
 import java.util.Collection;
 
 /**
@@ -26,7 +25,5 @@ import java.util.Collection;
 public interface URLHandler {
 
    void handle(Collection<String> paths);
-
-   void handleDirectory(File file);
 
 }

@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.environment.se.discovery;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -26,13 +24,16 @@ import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.jboss.weld.environment.se.discovery.handlers.URLHandler;
+
 import org.jboss.weld.environment.se.discovery.handlers.FileSystemURLHandler;
+import org.jboss.weld.environment.se.discovery.handlers.URLHandler;
 import org.jboss.weld.environment.se.exceptions.ClasspathScanningException;
 import org.jboss.weld.resources.spi.ResourceLoader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Implementation of {@link Scanner} which can scan a {@link URLClassLoader}
@@ -63,15 +64,6 @@ public class URLScanner extends AbstractScanner
    public void setURLHandler(String type, URLHandler handler)
    {
       urlHandlers.put(type, handler);
-   }
-
-   public void scanDirectories(File[] directories)
-   {
-      for (File directory : directories)
-      {
-         // can only use a file-based scanner to scan directories
-         urlHandlers.get(FILE).handleDirectory(directory);
-      }
    }
 
    public void scanResources(String[] resources)

@@ -25,6 +25,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
 import org.jboss.weld.environment.se.discovery.SEWeldDiscovery;
 import org.jboss.weld.environment.se.discovery.Scanner;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -101,11 +102,6 @@ public class FileSystemURLHandler extends AbstractURLHandler
       {
          throw new RuntimeException("Error handling file " + file, e);
       }
-   }
-
-   public void handleDirectory(File file)
-   {
-      handleDirectory(file, null);
    }
 
    protected void handleDirectory(File file, String path)
