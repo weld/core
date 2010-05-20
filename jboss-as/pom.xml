@@ -62,7 +62,7 @@
                      <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                      <overWriteSnapshots>true</overWriteSnapshots>
                      <stripVersion>true</stripVersion>
-                     <includeArtifactIds>cdi-api,weld-api,weld-core,weld-jboss-int-deployer-assembly</includeArtifactIds>
+                     <includeArtifactIds>cdi-api,weld-api,weld-core,weld-spi,weld-jboss-int-deployer-assembly</includeArtifactIds>
                   </configuration>
                </execution>
             </executions>
@@ -101,6 +101,14 @@
                               <include name="weld-core.jar" />
                            </fileset>
                         </copy>
+
+                        <copy todir="target/weld.deployer/"
+                           overwrite="true">
+                           <fileset dir="target/dependency/lib">
+                              <include name="weld-spi.jar" />
+                           </fileset>
+                        </copy>
+
 
                         <copy todir="${jboss.home}/client"
                            overwrite="true">
