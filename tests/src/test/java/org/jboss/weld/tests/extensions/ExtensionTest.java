@@ -34,8 +34,7 @@ public class ExtensionTest extends AbstractWeldTest
    @Test(description="WELD-234")
    public void testExtensionInjectableAsBean()
    {
-      assert SimpleExtension.getInstance() != null;
-      assert getReference(SimpleExtension.class).equals(SimpleExtension.getInstance());
+      assert getReference(SimpleExtension.class).isObservedBeforeBeanDiscovery();
    }
    
    @Test(description="WELD-243")

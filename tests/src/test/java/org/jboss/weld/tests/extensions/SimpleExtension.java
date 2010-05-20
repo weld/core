@@ -24,17 +24,17 @@ import javax.enterprise.inject.spi.Extension;
 
 public class SimpleExtension implements Extension
 {
-   
-   private static SimpleExtension instance;
+
+   private static boolean observedBeforeBeanDiscovery;
    
    public void observe(@Observes BeforeBeanDiscovery event)
    {
-      SimpleExtension.instance = this;
+      observedBeforeBeanDiscovery = true;
    }
    
-   public static SimpleExtension getInstance()
+   public static boolean isObservedBeforeBeanDiscovery()
    {
-      return instance;
+      return observedBeforeBeanDiscovery;
    }
    
    public void observeBeforeShutdown(@Observes BeforeShutdown beforeShutdown, BeanManager beanManager)
