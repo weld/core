@@ -30,7 +30,7 @@ public class ProxyTest extends AbstractWeldTest
    public void testImplementationClassImplementsSerializable()
    {
       Bean<?> bean = getCurrentManager().resolve(getCurrentManager().getBeans("foo"));
-      getCurrentManager().getReference(bean, Object.class, getCurrentManager().createCreationalContext(bean));
+      assert getCurrentManager().getReference(bean, Object.class, getCurrentManager().createCreationalContext(bean)) != null;
    }
    
 }
