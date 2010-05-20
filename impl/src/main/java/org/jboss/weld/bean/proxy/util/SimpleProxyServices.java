@@ -38,26 +38,36 @@ import org.jboss.weld.serialization.spi.ProxyServices;
 public class SimpleProxyServices implements ProxyServices
 {
 
-   public ClassLoader getClassLoader(Class<?> type)
+   public ClassLoader getClassLoader(final Class<?> type)
    {
       SecurityManager sm = System.getSecurityManager();
-      if (sm != null) {
-          return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-              public ClassLoader run() {
-                  return Thread.currentThread().getContextClassLoader();
-              }
-          });
-      } else {
-          return Thread.currentThread().getContextClassLoader();
+      if (sm != null)
+      {
+         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
+         {
+            public ClassLoader run()
+            {
+               return _getClassLoader(type);
+            }
+         });
       }
-//      if (type.getName().startsWith("java"))
-//      {
-//         return this.getClass().getClassLoader();
-//      }
-//      else
-//      {
-//         return type.getClassLoader();
-//      }
+      else
+      {
+         return _getClassLoader(type);
+      }      
+   }
+
+   private ClassLoader _getClassLoader(Class<?> type)
+   {
+      // return Thread.currentThread().getContextClassLoader();
+      if (type.getName().startsWith("java"))
+      {
+         return this.getClass().getClassLoader();
+      }
+      else
+      {
+         return type.getClassLoader();
+      }
    }
 
    public ProtectionDomain getProtectionDomain(Class<?> type)
@@ -92,7 +102,8 @@ public class SimpleProxyServices implements ProxyServices
          {
             public Object run() throws Exception
             {
-               //ClassLoader cl = Thread.currentThread().getContextClassLoader();
+               // ClassLoader cl =
+               // Thread.currentThread().getContextClassLoader();
                ClassLoader cl = getClassLoader(this.getClass());
                return Class.forName(className, true, cl);
             }
