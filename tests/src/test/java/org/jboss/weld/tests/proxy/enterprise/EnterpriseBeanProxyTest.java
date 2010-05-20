@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.proxy.enterprise;
 
-import javassist.util.proxy.ProxyObject;
-
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
@@ -36,9 +34,9 @@ public class EnterpriseBeanProxyTest extends AbstractWeldTest
    @Test(description="WBRI-109")
    public void testNoInterfaceView() throws Exception
    {
-      Object mouse = getReference(MouseLocal.class);
+      Object mouse = getReference(Mouse.class);
       assert Utils.isProxy(mouse);
-      assert mouse instanceof MouseLocal;
+      assert mouse instanceof Mouse;
    }
    
 }
