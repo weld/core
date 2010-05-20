@@ -47,6 +47,8 @@ import org.jboss.weld.bean.proxy.util.ClassloaderClassPath;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.serialization.spi.ProxyServices;
+import org.jboss.weld.util.reflection.SecureReflections;
+import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -89,6 +91,7 @@ public class ProxyFactory<T>
    public ProxyFactory(Class<?> proxiedBeanType)
    {
       this.beanType = proxiedBeanType;
+      ClassLoader originalClassLoader = proxiedBeanType.getClassLoader();
       this.classLoader = Container.instance().services().get(ProxyServices.class).getClassLoader(beanType);
       this.protectionDomain = Container.instance().services().get(ProxyServices.class).getProtectionDomain(beanType);
       this.classPool = new ClassPool();
@@ -122,7 +125,14 @@ public class ProxyFactory<T>
       Class<T> proxyClass = getProxyClass();
       try
       {
-         proxy = proxyClass.newInstance();
+         if (InstantiatorFactory.useInstantiators())
+         {
+            proxy = SecureReflections.newUnsafeInstance(proxyClass);
+         }
+         else
+         {
+            proxy = SecureReflections.newInstance(proxyClass);
+         }
       }
       catch (InstantiationException e)
       {
