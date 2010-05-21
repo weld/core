@@ -17,6 +17,22 @@
       
          <!-- Issues in the TCK -->
          
+         <!-- CDITCK-162 -->
+         <class name="org.jboss.jsr299.tck.tests.implementation.simple.resource.resource.InjectionOfResourceTest">
+            <methods>
+               <exclude name="testInjectionOfResource" />
+               <exclude name="testProduceResourceProxy" />
+            </methods>
+         </class>
+         
+         <!-- CDITCK-163 -->
+         <class name="org.jboss.jsr299.tck.tests.context.session.SessionContextTest">
+            <methods>
+               <exclude name="testSessionContextDestroyedWhenHttpSessionInvalidated" />
+               <exclude name="testSessionContextDestroyedWhenHttpSessionTimesOut" />
+            </methods>
+         </class>
+         
          <!-- Issues in Weld (the RI) -->
 
          <!-- WELD-401 -->
