@@ -28,10 +28,11 @@ import org.testng.annotations.Test;
 public class EnterpriseBeanProxyTest extends AbstractWeldTest
 {
    
-   /**
+   /*
     * <a href="https://jira.jboss.org/jira/browse/WBRI-109">WBRI-109</a>
     */
-   @Test(description="WBRI-109")
+   // Broken due to WELDINT-45
+   @Test(description="WBRI-109", groups = "broken")
    public void testNoInterfaceView() throws Exception
    {
       Object mouse = getReference(Mouse.class);
