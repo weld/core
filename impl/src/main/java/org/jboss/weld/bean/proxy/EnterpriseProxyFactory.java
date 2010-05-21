@@ -17,13 +17,15 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.lang.reflect.Type;
+import java.util.Set;
+
 import javassist.CtClass;
-import javassist.CtConstructor;
 import javassist.CtMethod;
-import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * This factory produces proxies specific for enterprise beans, in particular
@@ -41,9 +43,18 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
     * 
     * @param proxiedBeanType the actual enterprise bean
     */
-   public EnterpriseProxyFactory(Class<T> proxiedBeanType)
+   public EnterpriseProxyFactory(Class<T> proxiedBeanType, Set<Type> localBusinessInterfaces)
    {
       super(proxiedBeanType);
+      for (Type type : localBusinessInterfaces)
+      {
+         Class<?> c = Reflections.getRawType(type);
+         // Ignore no-interface views, they are dealt with proxiedBeanType (pending redesign)
+         if (c.isInterface())
+         {
+            addInterface(c);
+         }
+      }
    }
 
    @Override
