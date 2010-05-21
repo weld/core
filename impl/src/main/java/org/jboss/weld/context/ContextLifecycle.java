@@ -325,9 +325,15 @@ public class ContextLifecycle implements Lifecycle, Service
       activateConversationContext();
    }
 
+   /**
+    * Tear down the conversation context. If the context is already destroyed, does nothing
+    */
    public void teardownConversationContext()
    {
-      destroyConversationContext();
+      if (getConversationContext().getBeanStore() != null)
+      {
+         destroyConversationContext();
+      }
    }
 
    public boolean isSessionContextActive()

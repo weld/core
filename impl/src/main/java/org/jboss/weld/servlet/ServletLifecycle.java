@@ -197,6 +197,10 @@ public class ServletLifecycle
    private void teardownConversation()
    {
       conversationManager(getServletContext()).teardownConversation();
+      if (isSessionBeanStoreInvalid(getSessionBeanStore()))
+      {
+         conversationManager(getServletContext()).teardownContext();
+      }
    }
 
    private ServletContext getServletContext()
@@ -209,7 +213,6 @@ public class ServletLifecycle
       HttpPassThruSessionBeanStore sessionBeanStore = getSessionBeanStore();
       if (isSessionBeanStoreInvalid(sessionBeanStore))
       {
-         conversationManager(getServletContext()).teardownContext();
          lifecycle.endSession(request.getRequestedSessionId(), sessionBeanStore);
       }
       lifecycle.deactivateSessionContext();
