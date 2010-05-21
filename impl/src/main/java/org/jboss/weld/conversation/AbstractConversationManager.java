@@ -26,8 +26,8 @@ import static org.jboss.weld.logging.messages.ConversationMessage.DESTROY_ALL_LR
 import static org.jboss.weld.logging.messages.ConversationMessage.DESTROY_LRC;
 import static org.jboss.weld.logging.messages.ConversationMessage.LRC_COUNT;
 import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_TO_RESTORE;
-import static org.jboss.weld.logging.messages.ConversationMessage.UNABLE_TO_RESTORE_CONVERSATION;
 import static org.jboss.weld.logging.messages.ConversationMessage.SWITCHING_MODE_RESETS_TIMEOUTS;
+import static org.jboss.weld.logging.messages.ConversationMessage.UNABLE_TO_RESTORE_CONVERSATION;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -237,7 +237,7 @@ public abstract class AbstractConversationManager implements ConversationManager
 
    private void endTransientConversation()
    {
-      getConversationContext().destroy();
+      getContextLifeCycle().teardownConversationContext();
       if (conversation.getResumedId() != null)
       {
          getBeanStore(conversation.getResumedId()).clear();
