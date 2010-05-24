@@ -65,11 +65,11 @@ public class ProxyFactory<T>
    // Default proxy class name suffix
    public static final String          PROXY_SUFFIX         = "Proxy";
 
-   protected final Class<?>            beanType;
-   protected final ArrayList<Class<?>> additionalInterfaces = new ArrayList<Class<?>>();
-   protected final ClassLoader         classLoader;
-   protected final ProtectionDomain    protectionDomain;
-   protected final ClassPool           classPool;
+   private final Class<?>            beanType;
+   private final ArrayList<Class<?>> additionalInterfaces = new ArrayList<Class<?>>();
+   private final ClassLoader         classLoader;
+   private final ProtectionDomain    protectionDomain;
+   private final ClassPool           classPool;
 
    /**
     * Creates a new proxy factory from any type of BeanInstance. This bean
@@ -318,7 +318,7 @@ public class ProxyFactory<T>
    }
 
    /**
-    * Adds special serialization code be providing a writeReplace() method on
+    * Adds special serialization code by providing a writeReplace() method on
     * the proxy.  This method when first called will substitute the proxy
     * object with an instance of {@link org.jboss.weld.proxy.util.SerializableProxy}.
     * The next call will receive the proxy object itself permitting the substitute
@@ -513,6 +513,16 @@ public class ProxyFactory<T>
       bodyString.append("), $args); }");
 
       return bodyString.toString();
+   }
+
+   public ClassPool getClassPool()
+   {
+      return classPool;
+   }
+
+   public Class<?> getBeanType()
+   {
+      return beanType;
    }
 
 }

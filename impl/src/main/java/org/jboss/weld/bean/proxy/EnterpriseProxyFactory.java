@@ -71,7 +71,7 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
       // Add methods for the EnterpriseBeanInstance interface
       try
       {
-         CtClass enterpriseBeanInstanceInterface = classPool.get(EnterpriseBeanInstance.class.getName());
+         CtClass enterpriseBeanInstanceInterface = getClassPool().get(EnterpriseBeanInstance.class.getName());
          proxyClassType.addInterface(enterpriseBeanInstanceInterface);
          for (CtMethod method : enterpriseBeanInstanceInterface.getDeclaredMethods())
          {

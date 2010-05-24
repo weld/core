@@ -56,7 +56,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
       this.delegateInjectionPoint = delegateInjectionPoint;
       try
       {
-         delegateClass = classPool.get(((Class<?>) delegateInjectionPoint.getBaseType()).getName());
+         delegateClass = getClassPool().get(((Class<?>) delegateInjectionPoint.getBaseType()).getName());
       }
       catch (NotFoundException e)
       {
@@ -77,7 +77,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
    {
       try
       {
-         CtClass baseType = classPool.get(beanType.getName());
+         CtClass baseType = getClassPool().get(getBeanType().getName());
          for (CtConstructor constructor : baseType.getConstructors())
          {
             int delegateInjectionPosition = getDelegateInjectionPosition(constructor);

@@ -52,6 +52,7 @@ public class SerializableProxy implements Serializable
 
    // The wrapped proxy object not serialized by default actions
    private transient Object  proxyObject;
+   private transient boolean writeProxy;
 
    public SerializableProxy(Object proxyObject)
    {
@@ -75,9 +76,8 @@ public class SerializableProxy implements Serializable
    private void writeObject(ObjectOutputStream out) throws IOException
    {
       out.defaultWriteObject();
-      // Must use another OO stream since the proxy was replaced in the original
-      ObjectOutputStream out2 = new ObjectOutputStream(out);
-      out2.writeObject(proxyObject);
+      writeProxy = true;
+      out.writeUnshared(this);
    }
 
    /**
@@ -91,8 +91,6 @@ public class SerializableProxy implements Serializable
    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
    {
       in.defaultReadObject();
-      // Must use another OO stream per writeObject() above
-      ObjectInputStream in2 = new ObjectInputStream(in);
       Class<?> proxyBeanType = Container.instance().services().get(ProxyServices.class).loadProxySuperClass(proxySuperClassName);
       Class<?> proxyClass = null;
       if (proxyClassName.endsWith(ProxyFactory.PROXY_SUFFIX))
@@ -106,7 +104,7 @@ public class SerializableProxy implements Serializable
       }
       try
       {
-         proxyObject = proxyClass.getDeclaredMethod("deserializeProxy", ObjectInputStream.class).invoke(null, in2);
+         proxyObject = proxyClass.getDeclaredMethod("deserializeProxy", ObjectInputStream.class).invoke(null, in);
       }
       catch (Exception e)
       {
@@ -123,6 +121,11 @@ public class SerializableProxy implements Serializable
    Object readResolve() throws ObjectStreamException
    {
       return proxyObject;
+   }
+
+   Object writeReplace() throws ObjectStreamException
+   {
+      return writeProxy ? proxyObject : this;
    }
 
    private <T> Class<?> generateClientProxyClass(Class<T> beanType)
