@@ -91,7 +91,6 @@ public class ProxyFactory<T>
    public ProxyFactory(Class<?> proxiedBeanType)
    {
       this.beanType = proxiedBeanType;
-      ClassLoader originalClassLoader = proxiedBeanType.getClassLoader();
       this.classLoader = Container.instance().services().get(ProxyServices.class).getClassLoader(beanType);
       this.protectionDomain = Container.instance().services().get(ProxyServices.class).getProtectionDomain(beanType);
       this.classPool = new ClassPool();
