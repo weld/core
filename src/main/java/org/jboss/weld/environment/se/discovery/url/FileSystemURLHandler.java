@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.discovery.handlers;
+package org.jboss.weld.environment.se.discovery.url;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,30 +27,28 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
-import org.jboss.weld.environment.se.discovery.Scanner;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract base class for {@link Scanner} providing common functionality
- * 
  * This class provides file-system orientated scanning
  * 
  * @author Pete Muir
  * 
  */
-public class FileSystemURLHandler extends AbstractURLHandler
+public class FileSystemURLHandler
 {
 
    private static final Logger log = LoggerFactory.getLogger(FileSystemURLHandler.class);
+   private final ResourceLoader resourceLoader;
 
-   public FileSystemURLHandler(ResourceLoader resourceLoader, WeldSEBeanDeploymentArchive webBeanDiscovery)
+   public FileSystemURLHandler(ResourceLoader resourceLoader)
    {
-      super(resourceLoader, webBeanDiscovery);
+      this.resourceLoader = resourceLoader;
    }
 
-   public void handle(Collection<String> paths)
+   public void handle(Collection<String> paths, WeldSEBeanDeploymentArchive beanDeploymentArchive)
    {
       for (String urlPath : paths)
       {
@@ -70,19 +68,21 @@ public class FileSystemURLHandler extends AbstractURLHandler
             File file = new File(urlPath);
             if (file.isDirectory())
             {
-               handleDirectory(file, null);
-            } else
-            {
-               handleArchiveByFile(file);
+               handleDirectory(file, null, beanDeploymentArchive);
             }
-         } catch (IOException ioe)
+            else
+            {
+               handleArchiveByFile(file, beanDeploymentArchive);
+            }
+         }
+         catch (IOException ioe)
          {
             FileSystemURLHandler.log.warn("could not read entries", ioe);
          }
       }
    }
 
-   private void handleArchiveByFile(File file) throws IOException
+   private void handleArchiveByFile(File file, WeldSEBeanDeploymentArchive beanDeploymentArchive) throws IOException
    {
       try
       {
@@ -96,20 +96,21 @@ public class FileSystemURLHandler extends AbstractURLHandler
          {
             ZipEntry entry = entries.nextElement();
             String name = entry.getName();
-            handle(name, new URL(archiveUrl + name));
+            handle(name, new URL(archiveUrl + name), beanDeploymentArchive);
          }
-      } catch (ZipException e)
+      }
+      catch (ZipException e)
       {
          throw new RuntimeException("Error handling file " + file, e);
       }
    }
 
-   protected void handleDirectory(File file, String path)
+   protected void handleDirectory(File file, String path, WeldSEBeanDeploymentArchive beanDeploymentArchive)
    {
-      handleDirectory(file, path, new File[0]);
+      handleDirectory(file, path, new File[0], beanDeploymentArchive);
    }
 
-   private void handleDirectory(File file, String path, File[] excludedDirectories)
+   private void handleDirectory(File file, String path, File[] excludedDirectories, WeldSEBeanDeploymentArchive beanDeploymentArchive)
    {
       for (File excludedDirectory : excludedDirectories)
       {
@@ -129,13 +130,15 @@ public class FileSystemURLHandler extends AbstractURLHandler
 
          if (child.isDirectory())
          {
-            handleDirectory(child, newPath, excludedDirectories);
-         } else
+            handleDirectory(child, newPath, excludedDirectories, beanDeploymentArchive);
+         }
+         else
          {
             try
             {
-               handle(newPath, child.toURI().toURL());
-            } catch (MalformedURLException e)
+               handle(newPath, child.toURI().toURL(), beanDeploymentArchive);
+            }
+            catch (MalformedURLException e)
             {
                log.error("Error loading file " + newPath);
             }
@@ -143,22 +146,32 @@ public class FileSystemURLHandler extends AbstractURLHandler
       }
    }
 
-   protected void handle(String name, URL url)
+   protected void handle(String name, URL url, WeldSEBeanDeploymentArchive beanDeploymentArchive)
    {
       if (name.endsWith(".class"))
       {
          String className = filenameToClassname(name);
          try
          {
-            getWeldDiscovery().getBeanClasses().add(getResourceLoader().classForName(className));
-         } catch (NoClassDefFoundError e)
+            beanDeploymentArchive.getBeanClasses().add(getResourceLoader().classForName(className));
+         }
+         catch (NoClassDefFoundError e)
          {
             log.error("Error loading " + name, e);
          }
-      } else if (name.endsWith("beans.xml"))
-      {
-         getWeldDiscovery().getUrls().add(url);
       }
+      else if (name.endsWith("beans.xml"))
+      {
+         beanDeploymentArchive.getUrls().add(url);
+      }
+   }
+
+   /**
+    * @return the resourceLoader
+    */
+   public ResourceLoader getResourceLoader()
+   {
+      return resourceLoader;
    }
 
    /**

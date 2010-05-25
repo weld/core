@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.se.discovery;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -28,40 +28,42 @@ import org.jboss.weld.bootstrap.spi.Deployment;
  * 
  * @author Peter Royle
  */
-public class NewSEWeldDeployment implements Deployment
+public class WeldSEDeployment implements Deployment
 {
 
-   final List<BeanDeploymentArchive> beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>();
-   final ServiceRegistry serviceRegistry = new SimpleServiceRegistry();
+   public static final String[] RESOURCES = { "META-INF/beans.xml" };
 
-   public NewSEWeldDeployment()
+   private final ServiceRegistry serviceRegistry;
+   private final Scanner scanner;
+
+   public WeldSEDeployment(Scanner scanner)
    {
+      this.serviceRegistry = new SimpleServiceRegistry();
+      this.scanner = scanner;
+   }
+   
+   public Scanner getScanner()
+   {
+      return scanner;
    }
 
-   /**
-    * {@inheritDoc}
-    * 
-    * @return A collection containing the singular logical BeanDeploymentArchive
-    *         consisting of all Bean classes and beans.xml descriptors in the
-    *         current classpath.
+   /* 
+    * Returns collection containing the singular logical BeanDeploymentArchive
+    * consisting of all Bean classes and beans.xml descriptors in the current
+    * classpath.
     */
    public List<BeanDeploymentArchive> getBeanDeploymentArchives()
    {
-      return beanDeploymentArchives;
+      return scanner.getBeanDeploymentArchives();
    }
 
-   /**
-    * {@inheritDoc}
-    */
    public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
    {
-      // TODO (PR) (WELDSE-26): This is just a hack. What do we really need to do here?
-      return beanDeploymentArchives.get(0);
+      return scanner.getBeanDeploymentArchive(beanClass);
    }
 
    public ServiceRegistry getServices()
    {
-      // TODO (PR) (WELDSE-26): Do I need to aggregate all services from all bean archives?
       return serviceRegistry;
    }
 

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -42,7 +43,7 @@ public class WeldSEBeanDeploymentArchive implements BeanDeploymentArchive
    private final Collection<URL> weldUrls;
    private final ServiceRegistry serviceRegistry;
    private final List<BeanDeploymentArchive> beanDeploymentArchives;
-   private String id;
+   private final String id;
 
    public WeldSEBeanDeploymentArchive(String id)
    {
@@ -85,14 +86,6 @@ public class WeldSEBeanDeploymentArchive implements BeanDeploymentArchive
    public String getId()
    {
       return this.id;
-   }
-
-   /**
-    * @param id the id to set
-    */
-   public void setId(String id)
-   {
-      this.id = id;
    }
 
    public ServiceRegistry getServices()

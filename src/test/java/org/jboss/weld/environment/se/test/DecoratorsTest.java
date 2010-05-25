@@ -16,13 +16,11 @@
  */
 package org.jboss.weld.environment.se.test;
 
-import javax.enterprise.inject.spi.BeanManager;
-
 import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.environment.se.test.decorators.CarDoor;
 import org.jboss.weld.environment.se.test.decorators.AbstractDoor;
+import org.jboss.weld.environment.se.test.decorators.CarDoor;
 import org.jboss.weld.environment.se.test.decorators.CarDoorAlarm;
 import org.jboss.weld.environment.se.test.decorators.HouseDoor;
 import org.testng.Assert;
@@ -41,9 +39,7 @@ public class DecoratorsTest
    @Test
    public void testDecorators()
    {
-
       WeldContainer weld = new Weld().initialize();
-      BeanManager manager = weld.getBeanManager();
 
       CarDoor carDoor = weld.instance().select(CarDoor.class).get();
       Assert.assertNotNull(carDoor);

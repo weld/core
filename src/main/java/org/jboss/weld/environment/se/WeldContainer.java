@@ -19,6 +19,8 @@ package org.jboss.weld.environment.se;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
 import org.jboss.weld.environment.se.beans.InstanceManager;
 
 /**
@@ -39,6 +41,7 @@ public class WeldContainer
    private final InstanceManager instanceManager;
    private final BeanManager beanManager;
 
+   @Inject
    protected WeldContainer(InstanceManager instanceManager, BeanManager beanManager)
    {
       this.instanceManager = instanceManager;

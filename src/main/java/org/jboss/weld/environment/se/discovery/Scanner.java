@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.environment.se.discovery;
 
+import java.util.List;
+
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
- * The Scanner is used to find resources to be processed by Seam
- * 
- * The processing is done by {@link DeploymentHandler}s
+ * The Scanner is used to find resources to be processed by Weld SE
  * 
  * @author Pete Muir
  * 
@@ -29,10 +32,15 @@ public interface Scanner
 {
 
    /**
-    * Scan for structures which contain any of the given resources in their root
-    * 
-    * @param resources The resources to scan for
+    * Scan for structures which should be deployed by Weld. For example,
+    * scanning for META-INF/beans.xml should return a graph of
+    * {@link BeanDeploymentArchive}s, representing their accessibility. For more
+    * on deployment structures see {@link Deployment}. 
     */
-   public void scanResources(String[] resources);
+   public void scan(ResourceLoader resourceLoader);   
+
+   public BeanDeploymentArchive getBeanDeploymentArchive(Class<?> clazz);
+
+   public List<BeanDeploymentArchive> getBeanDeploymentArchives();
 
 }

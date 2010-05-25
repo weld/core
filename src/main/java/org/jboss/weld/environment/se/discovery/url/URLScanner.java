@@ -14,26 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.discovery;
+package org.jboss.weld.environment.se.discovery.url;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 
-import org.jboss.weld.environment.se.discovery.handlers.FileSystemURLHandler;
-import org.jboss.weld.environment.se.discovery.handlers.URLHandler;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.environment.se.discovery.Scanner;
+import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
 import org.jboss.weld.environment.se.exceptions.ClasspathScanningException;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 
 /**
  * Implementation of {@link Scanner} which can scan a {@link URLClassLoader}
@@ -45,34 +44,27 @@ import com.google.common.collect.Multimap;
  * @author Peter Royle
  * 
  */
-public class URLScanner extends AbstractScanner
+public class URLScanner implements Scanner
 {
 
-   private static final String FILE = "file";
-   private static final String JAR = "jar";
-   private final Map<String, URLHandler> urlHandlers = new HashMap<String, URLHandler>();
    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
+   private final WeldSEBeanDeploymentArchive beanDeploymentArchive;
+   private final String[] resources;
 
-   public URLScanner(ResourceLoader resourceLoader, WeldSEBeanDeploymentArchive weldDiscovery)
+   public URLScanner(String... resources)
    {
-      super(resourceLoader, weldDiscovery);
-      URLHandler fileSysHandler = new FileSystemURLHandler(resourceLoader, weldDiscovery);
-      urlHandlers.put(FILE, fileSysHandler);
-      urlHandlers.put(JAR, fileSysHandler);
+      this.beanDeploymentArchive = new WeldSEBeanDeploymentArchive("weld-se");
+      this.resources = resources;
    }
 
-   public void setURLHandler(String type, URLHandler handler)
+   public void scan(ResourceLoader resourceLoader)
    {
-      urlHandlers.put(type, handler);
-   }
-
-   public void scanResources(String[] resources)
-   {
-      Multimap<String, String> paths = HashMultimap.create();
+      FileSystemURLHandler handler = new FileSystemURLHandler(resourceLoader);
+      Collection<String> paths = new ArrayList<String>();
       for (String resourceName : resources)
       {
          // grab all the URLs for this resource
-         Collection<URL> urlEnum = getResourceLoader().getResources(resourceName);
+         Collection<URL> urlEnum = resourceLoader.getResources(resourceName);
          for (URL url : urlEnum)
          {
 
@@ -95,7 +87,8 @@ public class URLScanner extends AbstractScanner
                if (urlPath.indexOf('!') > 0)
                {
                   urlPath = urlPath.substring(0, urlPath.indexOf('!'));
-               } else
+               }
+               else
                {
                   // hack for /META-INF/beans.xml
                   File dirOrArchive = new File(urlPath);
@@ -110,28 +103,27 @@ public class URLScanner extends AbstractScanner
             try
             {
                urlPath = URLDecoder.decode(urlPath, "UTF-8");
-            } catch (UnsupportedEncodingException ex)
+            }
+            catch (UnsupportedEncodingException ex)
             {
                throw new ClasspathScanningException("Error decoding URL using UTF-8");
             }
 
             log.debug("URL Type: " + urlType);
 
-            paths.put(urlType, urlPath);
-
+            paths.add(urlPath);
          }
+         handler.handle(paths, beanDeploymentArchive);
       }
-      for (String urlType : paths.keySet())
-      {
-         Collection<String> urlPaths = paths.get(urlType);
-         URLHandler handler = urlHandlers.get(urlType);
-         if (handler == null)
-         {
-            throw new ClasspathScanningException("No handler defined for URL type: " + urlType);
-         } else
-         {
-            handler.handle(urlPaths);
-         }
-      }
+   }
+   
+   public BeanDeploymentArchive getBeanDeploymentArchive(Class<?> clazz)
+   {
+      return beanDeploymentArchive;
+   }
+   
+   public List<BeanDeploymentArchive> getBeanDeploymentArchives()
+   {
+      return Collections.<BeanDeploymentArchive>singletonList(beanDeploymentArchive);
    }
 }

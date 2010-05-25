@@ -16,44 +16,44 @@
  */
 package org.jboss.weld.environment.se;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
-import org.jboss.weld.environment.se.beans.InstanceManager;
-import org.jboss.weld.environment.se.discovery.NewSEWeldDeployment;
-import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
-import org.jboss.weld.environment.se.discovery.URLScanner;
-import org.jboss.weld.environment.se.util.WeldManagerUtils;
-import org.jboss.weld.manager.api.WeldManager;
-import org.jboss.weld.resources.DefaultResourceLoader;
+import org.jboss.weld.environment.se.discovery.WeldSEDeployment;
+import org.jboss.weld.environment.se.discovery.url.URLScanner;
+import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
- * An alternative means of booting WeldContainer form an arbitrary main method within an
- * SE application, <em>without</em> using the built-in ContainerInitialized event.
- * Typical usage of this API looks like this:
- * <code>
+ * An alternative means of booting WeldContainer form an arbitrary main method
+ * within an SE application, <em>without</em> using the built-in
+ * ContainerInitialized event. Typical usage of this API looks like this: <code>
  * WeldContainer weld = new Weld().initialize();
  * weld.instance().select(Foo.class).get();
  * weld.event().select(Bar.class).fire(new Bar());
  * weld.shutdown();
  * </code>
- *
+ * 
  * @author Peter Royle
  */
 public class Weld
 {
 
-   private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
-   private WeldManager manager;
+   protected static final String[] RESOURCES = { "META-INF/beans.xml" };
 
-   public Weld()
-   {
-   }
+   private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
+
+   private ShutdownManager shutdownManager;
 
    /**
     * Boots Weld and creates and returns a WeldContainer instance, through which
@@ -64,74 +64,69 @@ public class Weld
    {
 
       BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
-      Deployment deployment = createDeployment();
+      WeldSEDeployment deployment = createDeployment();
 
       Bootstrap bootstrap = null;
       try
       {
          bootstrap = (Bootstrap) deployment.getServices().get(ResourceLoader.class).classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
-      } catch (InstantiationException ex)
+      }
+      catch (InstantiationException ex)
       {
          throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
-      } catch (IllegalAccessException ex)
+      }
+      catch (IllegalAccessException ex)
       {
          throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
       }
 
-      BeanDeploymentArchive discovery = discoverBeansAndResources(deployment);
-      // transfer discovered classes and resources to the deployment in a single BeanDeploymentArchive
-      deployment.getBeanDeploymentArchives().add(discovery);
-
+      
+      // Kick off the scan
+      deployment.getScanner().scan(deployment.getServices().get(ResourceLoader.class));
+      
+      // Set up the container
       bootstrap.startContainer(Environments.SE, deployment, applicationBeanStore);
-      final BeanDeploymentArchive mainBeanDepArch = deployment.getBeanDeploymentArchives().iterator().next();
-      this.manager = bootstrap.getManager(mainBeanDepArch);
+      
+      // Start the container
       bootstrap.startInitialization();
       bootstrap.deployBeans();
-      WeldManagerUtils.getInstanceByType(manager, ShutdownManager.class).setBootstrap(bootstrap);
+      getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(ShutdownManager.class)), ShutdownManager.class).setBootstrap(bootstrap);
       bootstrap.validateBeans();
       bootstrap.endInitialization();
 
-      InstanceManager instanceManager = WeldManagerUtils.getInstanceByType(manager, InstanceManager.class);
+      // Set up the ShutdownManager for later
+      this.shutdownManager = getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(ShutdownManager.class)), ShutdownManager.class);
 
-      return new WeldContainer(instanceManager, manager);
-
-   }
-
-   /*
-    * Users can subclass and override this method to customise the classes and
-    * resources that Weld finds when it boots up. 
-    */
-   protected BeanDeploymentArchive discoverBeansAndResources(Deployment deployment)
-   {
-      WeldSEBeanDeploymentArchive discovery = new WeldSEBeanDeploymentArchive("weld-se-main-archive");
-      final ResourceLoader resourceLoader = deployment.getServices().get(ResourceLoader.class);
-      URLScanner scanner = new URLScanner(resourceLoader, discovery);
-      scanner.scanResources(new String[]
-              {
-                 "META-INF/beans.xml"
-              });
-      return discovery;
+      return getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(WeldContainer.class)), WeldContainer.class);
    }
 
    /**
     * Users can subclass and override this method to customise the deployment
-    * before weld boots up. For example, to add a custom ResourceLoader, you would
-    * subclass Weld like so:
-    * <code>
+    * before weld boots up. For example, to add a custom ResourceLoader, you
+    * would subclass Weld like so: <code>
     * public class MyWeld extends Weld {
-    *    @Override
-    *    protected void createDeployment() {
-    *       Deployment myDeployment = new MyDeployment();
-    *       deployment.getServices().add(ResourceLoader.class, new OSGIResourceLoader());
-    *    }
-    * }
-    * </code>
+    * 
+    * @Override protected WeldSEDeployment createDeployment() { WeldSEDeployment
+    *           myDeployment = super.createDeployment();
+    *           deployment.getServices().add(ResourceLoader.class, new
+    *           OSGIResourceLoader()); } } </code>
     */
-   private Deployment createDeployment()
+   protected WeldSEDeployment createDeployment()
    {
-      NewSEWeldDeployment deployment = new NewSEWeldDeployment();
-      deployment.getServices().add(ResourceLoader.class, new DefaultResourceLoader());
+      WeldSEDeployment deployment = new WeldSEDeployment(new URLScanner(RESOURCES));
+      deployment.getServices().add(ResourceLoader.class, new WeldSEResourceLoader());
       return deployment;
+   }
+   
+   protected <T> T getInstanceByType(BeanManager manager, Class<T> type, Annotation... bindings)
+   {
+      final Bean<?> bean = manager.resolve(manager.getBeans(type));
+      if (bean == null)
+      {
+         throw new UnsatisfiedResolutionException("Unable to resolve a bean for " + type + " with bindings " + Arrays.asList(bindings));
+      }
+      CreationalContext<?> cc = manager.createCreationalContext(bean);
+      return type.cast(manager.getReference(bean, type, cc));
    }
 
    /**
@@ -139,6 +134,6 @@ public class Weld
     */
    public void shutdown()
    {
-      WeldManagerUtils.getInstanceByType(manager, ShutdownManager.class).shutdown();
+      shutdownManager.shutdown();
    }
 }
