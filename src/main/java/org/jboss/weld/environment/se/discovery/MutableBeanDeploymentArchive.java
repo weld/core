@@ -19,77 +19,53 @@ package org.jboss.weld.environment.se.discovery;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.bootstrap.spi.Deployment;
 
 /**
- * A deployment archive to registering classes and resources found in bean
- * archives on the classpath.
+ * A mutable implementation of {@link BeanDeploymentArchive} which can have
+ * classes and beans.xml resources added to it by calling
+ * <code>getBeanClasses.add()</code> and <code>getBeansXml().add()</code>
+ * respectively.
  * 
- * @author Peter Royle
+ * If you are building a complex deployment structure, you can also associate
+ * accessible {@link BeanDeploymentArchive}s by calling
+ * <code>getBeanDeploymentArchives().add()</code>. See {@link Deployment} for
+ * more detailed information on creating deployment structures.
+ * 
  * @author Pete Muir
- * @author Ales Justin
+ * 
  */
-public class WeldSEBeanDeploymentArchive implements BeanDeploymentArchive
+public class MutableBeanDeploymentArchive extends AbstractWeldSEBeanDeploymentArchive
 {
 
-   private final Collection<Class<?>> weldClasses;
-   private final Collection<URL> weldUrls;
-   private final ServiceRegistry serviceRegistry;
+   private final Collection<Class<?>> beanClasses;
+   private final Collection<URL> beansXml;
    private final List<BeanDeploymentArchive> beanDeploymentArchives;
-   private final String id;
 
-   public WeldSEBeanDeploymentArchive(String id)
+   public MutableBeanDeploymentArchive(String id)
    {
-      this.id = id;
-      this.weldClasses = new HashSet<Class<?>>();
-      this.weldUrls = new HashSet<URL>();
-      this.serviceRegistry = new SimpleServiceRegistry();
+      super(id);
+      this.beanClasses = new HashSet<Class<?>>();
+      this.beansXml = new HashSet<URL>();
       this.beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>();
-   }
-
-   /**
-    * This is an alias for getBeansXml(), to make adding resources other than
-    * beans.xml more natural.
-    */
-   public Collection<URL> getUrls()
-   {
-      return weldUrls;
    }
 
    public Collection<Class<?>> getBeanClasses()
    {
-      return weldClasses;
+      return beanClasses;
    }
 
    public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
    {
-      return this.beanDeploymentArchives;
+      return beanDeploymentArchives;
    }
 
    public Collection<URL> getBeansXml()
    {
-      return weldUrls;
-   }
-
-   public Collection<EjbDescriptor<?>> getEjbs()
-   {
-      return Collections.EMPTY_SET;
-   }
-
-   public String getId()
-   {
-      return this.id;
-   }
-
-   public ServiceRegistry getServices()
-   {
-      return this.serviceRegistry;
+      return beansXml;
    }
 }

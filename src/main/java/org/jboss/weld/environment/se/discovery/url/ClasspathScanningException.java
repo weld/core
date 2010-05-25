@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.exceptions;
+package org.jboss.weld.environment.se.discovery.url;
 
 /**
  * @author Peter Royle

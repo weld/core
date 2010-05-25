@@ -26,7 +26,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
+import org.jboss.weld.environment.se.discovery.MutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class FileSystemURLHandler
       this.resourceLoader = resourceLoader;
    }
 
-   public void handle(Collection<String> paths, WeldSEBeanDeploymentArchive beanDeploymentArchive)
+   public void handle(Collection<String> paths, MutableBeanDeploymentArchive beanDeploymentArchive)
    {
       for (String urlPath : paths)
       {
@@ -82,7 +82,7 @@ public class FileSystemURLHandler
       }
    }
 
-   private void handleArchiveByFile(File file, WeldSEBeanDeploymentArchive beanDeploymentArchive) throws IOException
+   private void handleArchiveByFile(File file, MutableBeanDeploymentArchive beanDeploymentArchive) throws IOException
    {
       try
       {
@@ -105,12 +105,12 @@ public class FileSystemURLHandler
       }
    }
 
-   protected void handleDirectory(File file, String path, WeldSEBeanDeploymentArchive beanDeploymentArchive)
+   protected void handleDirectory(File file, String path, MutableBeanDeploymentArchive beanDeploymentArchive)
    {
       handleDirectory(file, path, new File[0], beanDeploymentArchive);
    }
 
-   private void handleDirectory(File file, String path, File[] excludedDirectories, WeldSEBeanDeploymentArchive beanDeploymentArchive)
+   private void handleDirectory(File file, String path, File[] excludedDirectories, MutableBeanDeploymentArchive beanDeploymentArchive)
    {
       for (File excludedDirectory : excludedDirectories)
       {
@@ -146,7 +146,7 @@ public class FileSystemURLHandler
       }
    }
 
-   protected void handle(String name, URL url, WeldSEBeanDeploymentArchive beanDeploymentArchive)
+   protected void handle(String name, URL url, MutableBeanDeploymentArchive beanDeploymentArchive)
    {
       if (name.endsWith(".class"))
       {
@@ -162,7 +162,7 @@ public class FileSystemURLHandler
       }
       else if (name.endsWith("beans.xml"))
       {
-         beanDeploymentArchive.getUrls().add(url);
+         beanDeploymentArchive.getBeansXml().add(url);
       }
    }
 

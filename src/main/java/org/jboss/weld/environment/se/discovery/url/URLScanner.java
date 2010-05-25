@@ -23,13 +23,9 @@ import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.environment.se.discovery.Scanner;
-import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
-import org.jboss.weld.environment.se.exceptions.ClasspathScanningException;
+import org.jboss.weld.environment.se.discovery.MutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,22 +40,23 @@ import org.slf4j.LoggerFactory;
  * @author Peter Royle
  * 
  */
-public class URLScanner implements Scanner
+public class URLScanner
 {
 
    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
-   private final WeldSEBeanDeploymentArchive beanDeploymentArchive;
    private final String[] resources;
+   private final ResourceLoader resourceLoader;
 
-   public URLScanner(String... resources)
+   public URLScanner(ResourceLoader resourceLoader, String... resources)
    {
-      this.beanDeploymentArchive = new WeldSEBeanDeploymentArchive("weld-se");
       this.resources = resources;
+      this.resourceLoader = resourceLoader;
    }
 
-   public void scan(ResourceLoader resourceLoader)
+   public BeanDeploymentArchive scan()
    {
       FileSystemURLHandler handler = new FileSystemURLHandler(resourceLoader);
+      MutableBeanDeploymentArchive beanDeploymentArchive = new MutableBeanDeploymentArchive("classpath");
       Collection<String> paths = new ArrayList<String>();
       for (String resourceName : resources)
       {
@@ -115,15 +112,7 @@ public class URLScanner implements Scanner
          }
          handler.handle(paths, beanDeploymentArchive);
       }
-   }
-   
-   public BeanDeploymentArchive getBeanDeploymentArchive(Class<?> clazz)
-   {
       return beanDeploymentArchive;
    }
    
-   public List<BeanDeploymentArchive> getBeanDeploymentArchives()
-   {
-      return Collections.<BeanDeploymentArchive>singletonList(beanDeploymentArchive);
-   }
 }

@@ -14,33 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.discovery;
+package org.jboss.weld.environment.se.discovery.url;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
- * The Scanner is used to find resources to be processed by Weld SE
+ * Weld Deployment for Java SE environment.
  * 
- * @author Pete Muir
- * 
+ * @author Peter Royle
  */
-public interface Scanner
-{
+public class WeldSEUrlDeployment extends AbstractWeldSEDeployment
+{ 
 
-   /**
-    * Scan for structures which should be deployed by Weld. For example,
-    * scanning for META-INF/beans.xml should return a graph of
-    * {@link BeanDeploymentArchive}s, representing their accessibility. For more
-    * on deployment structures see {@link Deployment}. 
-    */
-   public void scan(ResourceLoader resourceLoader);   
+   private final BeanDeploymentArchive beanDeploymentArchive;
+   
+   public WeldSEUrlDeployment(ResourceLoader resourceLoader)
+   {
+      getServices().add(ResourceLoader.class, resourceLoader);
+      this.beanDeploymentArchive = new URLScanner(resourceLoader, RESOURCES).scan();
+   }
 
-   public BeanDeploymentArchive getBeanDeploymentArchive(Class<?> clazz);
+   public List<BeanDeploymentArchive> getBeanDeploymentArchives()
+   {
+      return Collections.singletonList(beanDeploymentArchive);
+   }
 
-   public List<BeanDeploymentArchive> getBeanDeploymentArchives();
+   public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
+   {
+      return beanDeploymentArchive;
+   }
 
 }
