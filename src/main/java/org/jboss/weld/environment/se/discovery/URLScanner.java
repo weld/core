@@ -53,7 +53,7 @@ public class URLScanner extends AbstractScanner
    private final Map<String, URLHandler> urlHandlers = new HashMap<String, URLHandler>();
    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
 
-   public URLScanner(ResourceLoader resourceLoader, SEWeldDiscovery weldDiscovery)
+   public URLScanner(ResourceLoader resourceLoader, WeldSEBeanDeploymentArchive weldDiscovery)
    {
       super(resourceLoader, weldDiscovery);
       URLHandler fileSysHandler = new FileSystemURLHandler(resourceLoader, weldDiscovery);

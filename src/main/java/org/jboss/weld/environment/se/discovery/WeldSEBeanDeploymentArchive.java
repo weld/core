@@ -17,80 +17,86 @@
 package org.jboss.weld.environment.se.discovery;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 
 /**
- * A Java SE implementation of BeanDeploymentArchive. It is essentially an
- * adaptor from the SEWeldDiscovery to the BeanDeploymentArchive interface.
- * It returns, in a single logical archive, all Bean classes and beans.xml
- * descriptors. It always returns an empty collection of EJBs.
+ * A deployment archive to registering classes and resources found in bean
+ * archives on the classpath.
  * 
  * @author Peter Royle
+ * @author Pete Muir
+ * @author Ales Justin
  */
-public class SEBeanDeploymentArchive implements BeanDeploymentArchive
+public class WeldSEBeanDeploymentArchive implements BeanDeploymentArchive
 {
-   private final SEWeldDiscovery wbDiscovery;
-   private final ServiceRegistry serviceRegistry;
 
-   /**
-    * @param deployment Used to gain access to the ResourceLoader, in case one is defined.
-    */
-   public SEBeanDeploymentArchive(SEWeldDiscovery discovery)
+   private final Collection<Class<?>> weldClasses;
+   private final Collection<URL> weldUrls;
+   private final ServiceRegistry serviceRegistry;
+   private final List<BeanDeploymentArchive> beanDeploymentArchives;
+   private String id;
+
+   public WeldSEBeanDeploymentArchive(String id)
    {
-      this.wbDiscovery = discovery;
-      {
-      };
+      this.id = id;
+      this.weldClasses = new HashSet<Class<?>>();
+      this.weldUrls = new HashSet<URL>();
       this.serviceRegistry = new SimpleServiceRegistry();
+      this.beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>();
    }
 
    /**
-    * @return a collection of all Bean classes on the classpath.
+    * This is an alias for getBeansXml(), to make adding resources other than
+    * beans.xml more natural.
     */
+   public Collection<URL> getUrls()
+   {
+      return weldUrls;
+   }
+
    public Collection<Class<?>> getBeanClasses()
    {
-      return wbDiscovery.getWbClasses();
+      return weldClasses;
    }
 
-   /**
-    * @return an empty collection, since this instance is the only logical
-    *         archive for the current SE classloader.
-    */
-   public List<BeanDeploymentArchive> getBeanDeploymentArchives()
+   public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
    {
-      return Collections.EMPTY_LIST;
+      return this.beanDeploymentArchives;
    }
 
-   /**
-    * @return all beans.xml decriptors found on the classpath.
-    */
    public Collection<URL> getBeansXml()
    {
-      return wbDiscovery.discoverWeldXml();
+      return weldUrls;
    }
 
-   /**
-    * @return an empty collection since there are no EJBs in Java SE.
-    */
    public Collection<EjbDescriptor<?>> getEjbs()
    {
       return Collections.EMPTY_SET;
+   }
+
+   public String getId()
+   {
+      return this.id;
+   }
+
+   /**
+    * @param id the id to set
+    */
+   public void setId(String id)
+   {
+      this.id = id;
    }
 
    public ServiceRegistry getServices()
    {
       return this.serviceRegistry;
    }
-   
-   public String getId()
-   {
-      return "se-module";
-   }
-
 }

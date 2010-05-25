@@ -26,7 +26,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import org.jboss.weld.environment.se.discovery.SEWeldDiscovery;
+import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
 import org.jboss.weld.environment.se.discovery.Scanner;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class FileSystemURLHandler extends AbstractURLHandler
 
    private static final Logger log = LoggerFactory.getLogger(FileSystemURLHandler.class);
 
-   public FileSystemURLHandler(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
+   public FileSystemURLHandler(ResourceLoader resourceLoader, WeldSEBeanDeploymentArchive webBeanDiscovery)
    {
       super(resourceLoader, webBeanDiscovery);
    }
@@ -150,14 +150,14 @@ public class FileSystemURLHandler extends AbstractURLHandler
          String className = filenameToClassname(name);
          try
          {
-            getWeldDiscovery().getWbClasses().add(getResourceLoader().classForName(className));
+            getWeldDiscovery().getBeanClasses().add(getResourceLoader().classForName(className));
          } catch (NoClassDefFoundError e)
          {
             log.error("Error loading " + name, e);
          }
       } else if (name.endsWith("beans.xml"))
       {
-         getWeldDiscovery().getWbUrls().add(url);
+         getWeldDiscovery().getUrls().add(url);
       }
    }
 

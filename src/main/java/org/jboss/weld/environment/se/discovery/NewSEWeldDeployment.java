@@ -19,6 +19,7 @@ package org.jboss.weld.environment.se.discovery;
 import java.util.ArrayList;
 import java.util.List;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 
@@ -27,16 +28,14 @@ import org.jboss.weld.bootstrap.spi.Deployment;
  * 
  * @author Peter Royle
  */
-public class SEWeldDeployment implements Deployment
+public class NewSEWeldDeployment implements Deployment
 {
-   private final SEBeanDeploymentArchive beanDeploymentArchive;
-   private final List<BeanDeploymentArchive> archInCollection;
 
-   public SEWeldDeployment(SEBeanDeploymentArchive beanDeploymentArchive)
+   final List<BeanDeploymentArchive> beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>();
+   final ServiceRegistry serviceRegistry = new SimpleServiceRegistry();
+
+   public NewSEWeldDeployment()
    {
-      this.beanDeploymentArchive = beanDeploymentArchive;
-      this.archInCollection = new ArrayList<BeanDeploymentArchive>(1);
-      this.archInCollection.add(this.beanDeploymentArchive);
    }
 
    /**
@@ -48,22 +47,22 @@ public class SEWeldDeployment implements Deployment
     */
    public List<BeanDeploymentArchive> getBeanDeploymentArchives()
    {
-      return this.archInCollection;
+      return beanDeploymentArchives;
    }
 
    /**
     * {@inheritDoc}
-    * 
-    * @return The singular logical BeanDeploymentArchive consisting of all which
-    *         contains all Beans classes.
     */
    public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
    {
-      return this.beanDeploymentArchive;
+      // TODO (PR) (WELDSE-26): This is just a hack. What do we really need to do here?
+      return beanDeploymentArchives.get(0);
    }
 
    public ServiceRegistry getServices()
    {
-      return this.beanDeploymentArchive.getServices();
+      // TODO (PR) (WELDSE-26): Do I need to aggregate all services from all bean archives?
+      return serviceRegistry;
    }
+
 }

@@ -26,9 +26,9 @@ public abstract class AbstractScanner implements Scanner
 {
 
    private final ResourceLoader resourceLoader;
-   private final SEWeldDiscovery weldDiscovery;
+   private final WeldSEBeanDeploymentArchive weldDiscovery;
 
-   public AbstractScanner(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
+   public AbstractScanner(ResourceLoader resourceLoader, WeldSEBeanDeploymentArchive webBeanDiscovery)
    {
       this.resourceLoader = resourceLoader;
       this.weldDiscovery = webBeanDiscovery;
@@ -43,7 +43,7 @@ public abstract class AbstractScanner implements Scanner
    /**
     * @return the webBeanDiscovery
     */
-   public SEWeldDiscovery getWebBeanDiscovery()
+   public WeldSEBeanDeploymentArchive getWebBeanDiscovery()
    {
       return weldDiscovery;
    }

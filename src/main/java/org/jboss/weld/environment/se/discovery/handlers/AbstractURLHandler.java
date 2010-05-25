@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.discovery.handlers;
 
-import org.jboss.weld.environment.se.discovery.SEWeldDiscovery;
+import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
@@ -27,9 +27,9 @@ public abstract class AbstractURLHandler implements URLHandler
 {
 
    private final ResourceLoader resourceLoader;
-   private final SEWeldDiscovery weldDiscovery;
+   private final WeldSEBeanDeploymentArchive weldDiscovery;
 
-   public AbstractURLHandler(ResourceLoader resourceLoader, SEWeldDiscovery webBeanDiscovery)
+   public AbstractURLHandler(ResourceLoader resourceLoader, WeldSEBeanDeploymentArchive webBeanDiscovery)
    {
       this.resourceLoader = resourceLoader;
       this.weldDiscovery = webBeanDiscovery;
@@ -46,7 +46,7 @@ public abstract class AbstractURLHandler implements URLHandler
    /**
     * @return the webBeanDiscovery
     */
-   public SEWeldDiscovery getWeldDiscovery()
+   public WeldSEBeanDeploymentArchive getWeldDiscovery()
    {
       return weldDiscovery;
    }

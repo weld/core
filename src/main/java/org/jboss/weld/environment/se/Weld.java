@@ -24,9 +24,8 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.weld.environment.se.beans.InstanceManager;
-import org.jboss.weld.environment.se.discovery.SEBeanDeploymentArchive;
-import org.jboss.weld.environment.se.discovery.SEWeldDeployment;
-import org.jboss.weld.environment.se.discovery.SEWeldDiscovery;
+import org.jboss.weld.environment.se.discovery.NewSEWeldDeployment;
+import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
 import org.jboss.weld.environment.se.discovery.URLScanner;
 import org.jboss.weld.environment.se.util.WeldManagerUtils;
 import org.jboss.weld.manager.api.WeldManager;
@@ -50,11 +49,7 @@ public class Weld
 {
 
    private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
-   private Bootstrap bootstrap;
-   private BeanStore applicationBeanStore;
    private WeldManager manager;
-   private SEWeldDiscovery discovery;
-   private SEBeanDeploymentArchive beanDeploymentArchive;
 
    public Weld()
    {
@@ -62,15 +57,16 @@ public class Weld
 
    /**
     * Boots Weld and creates and returns a WeldContainer instance, through which
-    * beans and events can be accesed.
+    * beans and events can be accessed.
     */
    @PostConstruct
    public WeldContainer initialize()
    {
 
-      this.applicationBeanStore = new ConcurrentHashMapBeanStore();
-      SEWeldDeployment deployment = initDeployment();
+      BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
+      Deployment deployment = createDeployment();
 
+      Bootstrap bootstrap = null;
       try
       {
          bootstrap = (Bootstrap) deployment.getServices().get(ResourceLoader.class).classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
@@ -82,16 +78,12 @@ public class Weld
          throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
       }
 
-      final ResourceLoader resourceLoader = deployment.getServices().get(ResourceLoader.class);
-      URLScanner scanner = new URLScanner(resourceLoader, discovery);
-      configureURLHandlers(scanner, resourceLoader, discovery);
-      scanner.scanResources(new String[]
-              {
-                 "META-INF/beans.xml"
-              });
+      BeanDeploymentArchive discovery = discoverBeansAndResources(deployment);
+      // transfer discovered classes and resources to the deployment in a single BeanDeploymentArchive
+      deployment.getBeanDeploymentArchives().add(discovery);
 
-      bootstrap.startContainer(Environments.SE, deployment, this.applicationBeanStore);
-      final BeanDeploymentArchive mainBeanDepArch = deployment.getBeanDeploymentArchives().get(0);
+      bootstrap.startContainer(Environments.SE, deployment, applicationBeanStore);
+      final BeanDeploymentArchive mainBeanDepArch = deployment.getBeanDeploymentArchives().iterator().next();
       this.manager = bootstrap.getManager(mainBeanDepArch);
       bootstrap.startInitialization();
       bootstrap.deployBeans();
@@ -105,53 +97,41 @@ public class Weld
 
    }
 
-   /**
-    * Clients can subclass and override this method to add custom URL handlers
-    * before weld boots up. For example, to set a custom URL handler for OSGi bundles,
-    * you would subclass Weld like so:
-    * <code>
-    * public class MyWeld extends Weld {
-    *    @Override
-    *    public void configureURLHandlers(URLScanner scanner, ResourceLoader resourceLoader, SEWeldDiscovery discovery)
-    *       scanner.setURLHandler("bundle", new MyOSGiURLHandler(resourceLoader, discovery));
-    *    }
-    * }
-    * </code>
+   /*
+    * Users can subclass and override this method to customise the classes and
+    * resources that Weld finds when it boots up. 
     */
-   public void configureURLHandlers(URLScanner scanner, ResourceLoader resourceLoader, SEWeldDiscovery discovery)
+   protected BeanDeploymentArchive discoverBeansAndResources(Deployment deployment)
    {
-   }
-
-   private SEWeldDeployment initDeployment()
-   {
-      discovery = new SEWeldDiscovery();
-      beanDeploymentArchive = new SEBeanDeploymentArchive(discovery);
-      SEWeldDeployment deployment = new SEWeldDeployment(beanDeploymentArchive);
-      configureDeployment(deployment);
-      // configure a ResourceLoader if one hasn't been already
-      if (deployment.getServices().get(ResourceLoader.class) == null)
-      {
-         deployment.getServices().add(ResourceLoader.class, new DefaultResourceLoader());
-      }
-      return deployment;
+      WeldSEBeanDeploymentArchive discovery = new WeldSEBeanDeploymentArchive("weld-se-main-archive");
+      final ResourceLoader resourceLoader = deployment.getServices().get(ResourceLoader.class);
+      URLScanner scanner = new URLScanner(resourceLoader, discovery);
+      scanner.scanResources(new String[]
+              {
+                 "META-INF/beans.xml"
+              });
+      return discovery;
    }
 
    /**
-    * Clients can subclass and override this method to customise the deployment
+    * Users can subclass and override this method to customise the deployment
     * before weld boots up. For example, to add a custom ResourceLoader, you would
     * subclass Weld like so:
     * <code>
     * public class MyWeld extends Weld {
     *    @Override
-    *    protected void configureDeployment(Deployment deployment) {
+    *    protected void createDeployment() {
+    *       Deployment myDeployment = new MyDeployment();
     *       deployment.getServices().add(ResourceLoader.class, new OSGIResourceLoader());
     *    }
     * }
     * </code>
-    * @param deployment
     */
-   protected void configureDeployment(Deployment deployment)
+   private Deployment createDeployment()
    {
+      NewSEWeldDeployment deployment = new NewSEWeldDeployment();
+      deployment.getServices().add(ResourceLoader.class, new DefaultResourceLoader());
+      return deployment;
    }
 
    /**
