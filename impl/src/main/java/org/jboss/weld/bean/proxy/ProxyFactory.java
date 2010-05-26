@@ -27,9 +27,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.security.ProtectionDomain;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -47,6 +49,9 @@ import org.jboss.weld.bean.proxy.util.ClassloaderClassPath;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.serialization.spi.ProxyServices;
+import org.jboss.weld.util.Proxies.TypeInfo;
+import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.slf4j.cal10n.LocLogger;
@@ -61,41 +66,55 @@ import org.slf4j.cal10n.LocLogger;
 public class ProxyFactory<T>
 {
    // The log provider
-   protected static final LocLogger    log                  = loggerFactory().getLogger(BEAN);
+   protected static final LocLogger log                  = loggerFactory().getLogger(BEAN);
    // Default proxy class name suffix
-   public static final String          PROXY_SUFFIX         = "Proxy";
+   public static final String       PROXY_SUFFIX         = "Proxy";
 
-   private final Class<?>            beanType;
-   private final ArrayList<Class<?>> additionalInterfaces = new ArrayList<Class<?>>();
-   private final ClassLoader         classLoader;
-   private final ProtectionDomain    protectionDomain;
-   private final ClassPool           classPool;
-
-   /**
-    * Creates a new proxy factory from any type of BeanInstance. This bean
-    * instance is only used for initialization information and is not associated
-    * with this factory once created.
-    * 
-    * @param instance a bean instance that will be used with the proxy
-    */
-   public ProxyFactory(BeanInstance beanInstance)
-   {
-      this(beanInstance.getInstanceType());
-   }
+   private final Class<?>           beanType;
+   private final Set<Class<?>>      additionalInterfaces = new HashSet<Class<?>>();
+   private final ClassLoader        classLoader;
+   private final ProtectionDomain   protectionDomain;
+   private final ClassPool          classPool;
+   private final String             baseProxyName;
 
    /**
     * Creates a new proxy factory with only the type of proxy specified.
     * 
     * @param proxiedBeanType the super-class for this proxy class
     */
-   public ProxyFactory(Class<?> proxiedBeanType)
+   public ProxyFactory(Class<?> proxiedBeanType, Set<Type> businessInterfaces)
    {
-      this.beanType = proxiedBeanType;
-      this.classLoader = Container.instance().services().get(ProxyServices.class).getClassLoader(beanType);
+      for (Type type : businessInterfaces)
+      {
+         Class<?> c = Reflections.getRawType(type);
+         // Ignore no-interface views, they are dealt with proxiedBeanType
+         // (pending redesign)
+         if (c.isInterface())
+         {
+            addInterface(c);
+         }
+      }
+      Class<?> superClass = TypeInfo.of(businessInterfaces).getSuperClass();
+      superClass = superClass == null ? Object.class : superClass;
+      if (superClass.equals(Object.class))
+      {
+         if (additionalInterfaces.isEmpty())
+         {
+            // No interface beans must use the bean impl as superclass
+            superClass = proxiedBeanType;
+         }
+         this.classLoader = Container.instance().services().get(ProxyServices.class).getClassLoader(proxiedBeanType);         
+      }
+      else
+      {
+         this.classLoader = Container.instance().services().get(ProxyServices.class).getClassLoader(superClass);
+      }
+      this.beanType = superClass;
       this.protectionDomain = Container.instance().services().get(ProxyServices.class).getProtectionDomain(beanType);
       this.classPool = new ClassPool();
       this.classPool.appendClassPath(new ClassloaderClassPath(classLoader));
       addDefaultAdditionalInterfaces();
+      baseProxyName = proxiedBeanType.getName();
    }
 
    /**
@@ -153,7 +172,7 @@ public class ProxyFactory<T>
    @SuppressWarnings("unchecked")
    public Class<T> getProxyClass()
    {
-      String proxyClassName = beanType.getName() + "_$$_Weld" + getProxyNameSuffix();
+      String proxyClassName = getBaseProxyName() + "_$$_Weld" + getProxyNameSuffix();
       if (proxyClassName.startsWith("java"))
       {
          proxyClassName = proxyClassName.replaceFirst("java", "org.jboss.weld");
@@ -178,6 +197,16 @@ public class ProxyFactory<T>
          }
       }
       return proxyClass;
+   }
+
+   /**
+    * Returns the package and base name for the proxy class.
+    * 
+    * @return base name without suffixes
+    */
+   protected String getBaseProxyName()
+   {
+      return baseProxyName;
    }
 
    /**
@@ -227,6 +256,13 @@ public class ProxyFactory<T>
    @SuppressWarnings("unchecked")
    private Class<T> createProxyClass(String proxyClassName) throws Exception
    {
+      ArraySet<Class<?>> specialInterfaces = new ArraySet<Class<?>>(3);
+      specialInterfaces.add(Proxy.class);
+      specialInterfaces.add(LifecycleMixin.class);
+      specialInterfaces.add(TargetInstanceProxy.class);
+      // Remove special interfaces from main set (deserialization scenario)
+      additionalInterfaces.removeAll(specialInterfaces);
+
       CtClass instanceType = classPool.get(beanType.getName());
       CtClass proxyClassType = null;
       if (instanceType.isInterface())
@@ -249,9 +285,10 @@ public class ProxyFactory<T>
       addMethods(proxyClassType);
 
       // Additional interfaces whose methods require special handling
-      proxyClassType.addInterface(classPool.get(Proxy.class.getName()));
-      proxyClassType.addInterface(classPool.get(LifecycleMixin.class.getName()));
-      proxyClassType.addInterface(classPool.get(TargetInstanceProxy.class.getName()));
+      for (Class<?> specialInterface : specialInterfaces)
+      {
+         proxyClassType.addInterface(classPool.get(specialInterface.getName()));
+      }
 
       Class<T> proxyClass = proxyClassType.toClass(classLoader, protectionDomain);
       proxyClassType.detach();
@@ -318,10 +355,10 @@ public class ProxyFactory<T>
 
    /**
     * Adds special serialization code by providing a writeReplace() method on
-    * the proxy.  This method when first called will substitute the proxy
-    * object with an instance of {@link org.jboss.weld.proxy.util.SerializableProxy}.
-    * The next call will receive the proxy object itself permitting the substitute
-    * object to serialize the proxy.
+    * the proxy. This method when first called will substitute the proxy object
+    * with an instance of {@link org.jboss.weld.proxy.util.SerializableProxy}.
+    * The next call will receive the proxy object itself permitting the
+    * substitute object to serialize the proxy.
     * 
     * @param proxyClassType the Javassist class for the proxy class
     */
@@ -333,23 +370,18 @@ public class ProxyFactory<T>
          // replacement object and the subsequent call get the proxy object.
          CtClass exception = classPool.get(ObjectStreamException.class.getName());
          CtClass objectClass = classPool.get(Object.class.getName());
-         String writeReplaceBody = "{ " + 
-         " if (firstSerializationPhaseComplete) {" +
-         "    firstSerializationPhaseComplete = false; " +
-         "    return $0; " +
-         " } else {" +
-         " firstSerializationPhaseComplete = true; " +
-         " return ((org.jboss.weld.serialization.spi.ProxyServices)org.jboss.weld.Container.instance().services().get(org.jboss.weld.serialization.spi.ProxyServices.class)).wrapForSerialization($0);" +
-         " } }";
+         String writeReplaceBody = "{ " + " if (firstSerializationPhaseComplete) {" + "    firstSerializationPhaseComplete = false; " + "    return $0; " + " } else {" + " firstSerializationPhaseComplete = true; " + " return ((org.jboss.weld.serialization.spi.ProxyServices)org.jboss.weld.Container.instance().services().get(org.jboss.weld.serialization.spi.ProxyServices.class)).wrapForSerialization($0);" + " } }";
          proxyClassType.addMethod(CtNewMethod.make(objectClass, "writeReplace", null, new CtClass[] { exception }, writeReplaceBody, proxyClassType));
-         
-         // Also add a static method that can be used to deserialize a proxy object.
-         // This causes the OO input stream to use the class loader from this class.
+
+         // Also add a static method that can be used to deserialize a proxy
+         // object.
+         // This causes the OO input stream to use the class loader from this
+         // class.
          CtClass objectInputStreamClass = classPool.get(ObjectInputStream.class.getName());
          CtClass cnfe = classPool.get(ClassNotFoundException.class.getName());
          CtClass ioe = classPool.get(IOException.class.getName());
          String deserializeProxyBody = "{ return $1.readObject(); }";
-         proxyClassType.addMethod(CtNewMethod.make(Modifier.STATIC | Modifier.PUBLIC, objectClass, "deserializeProxy", new CtClass[]{objectInputStreamClass}, new CtClass[]{cnfe, ioe}, deserializeProxyBody, proxyClassType));
+         proxyClassType.addMethod(CtNewMethod.make(Modifier.STATIC | Modifier.PUBLIC, objectClass, "deserializeProxy", new CtClass[] { objectInputStreamClass }, new CtClass[] { cnfe, ioe }, deserializeProxyBody, proxyClassType));
       }
       catch (Exception e)
       {
@@ -402,14 +434,14 @@ public class ProxyFactory<T>
       }
 
       bodyString.append("beanInstance.invoke(");
+      bodyString.append(method.getDeclaringClass().getName());
       if (Modifier.isPublic(method.getModifiers()))
       {
-         bodyString.append("beanInstance.getInstanceType().getMethod(\"");
+         bodyString.append(".class.getMethod(\"");
          log.trace("Using getMethod in proxy for method " + method.getLongName());
       }
       else
       {
-         bodyString.append(method.getDeclaringClass().getName());
          bodyString.append(".class.getDeclaredMethod(\"");
          log.trace("Using getDeclaredMethod in proxy for method " + method.getLongName());
       }

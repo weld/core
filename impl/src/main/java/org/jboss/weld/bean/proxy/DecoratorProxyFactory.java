@@ -20,6 +20,7 @@ package org.jboss.weld.bean.proxy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 
 import javassist.CtClass;
 import javassist.CtConstructor;
@@ -52,7 +53,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
 
    public DecoratorProxyFactory(Class<T> proxyType, WeldInjectionPoint<?, ?> delegateInjectionPoint)
    {
-      super(proxyType);
+      super(proxyType, Collections.EMPTY_SET);
       this.delegateInjectionPoint = delegateInjectionPoint;
       try
       {

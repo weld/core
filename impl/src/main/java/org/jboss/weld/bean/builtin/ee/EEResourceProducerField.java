@@ -140,7 +140,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
       else
       {
          BeanInstance proxyBeanInstance = new EnterpriseTargetBeanInstance(getTypes(), new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(), this, creationalContext)));
-         return new ProxyFactory<T>(proxyBeanInstance).create(proxyBeanInstance);
+         return new ProxyFactory<T>(getType(), getTypes()).create(proxyBeanInstance);
       }
    }
 

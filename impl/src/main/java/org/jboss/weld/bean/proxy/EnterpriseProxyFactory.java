@@ -25,19 +25,16 @@ import javassist.CtMethod;
 import javassist.CtNewMethod;
 
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * This factory produces proxies specific for enterprise beans, in particular
- * session beans.  It adds the interface {@link EnterpriseBeanInstance} to
- * each proxy class.
+ * This factory produces client proxies specific for enterprise beans, in
+ * particular session beans. It adds the interface
+ * {@link EnterpriseBeanInstance} on the proxy.
  * 
  * @author David Allen
  */
 public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
 {
-   public static final String PROXY_SUFFIX = "EnterpriseProxy";
-
    /**
     * Produces a factory for a specific bean implementation.
     * 
@@ -45,29 +42,14 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
     */
    public EnterpriseProxyFactory(Class<T> proxiedBeanType, Set<Type> localBusinessInterfaces)
    {
-      super(proxiedBeanType);
-      for (Type type : localBusinessInterfaces)
-      {
-         Class<?> c = Reflections.getRawType(type);
-         // Ignore no-interface views, they are dealt with proxiedBeanType (pending redesign)
-         if (c.isInterface())
-         {
-            addInterface(c);
-         }
-      }
-   }
-
-   @Override
-   protected String getProxyNameSuffix()
-   {
-      return PROXY_SUFFIX;
+      super(proxiedBeanType, localBusinessInterfaces);
    }
 
    @Override
    protected void addSpecialMethods(CtClass proxyClassType)
    {
       super.addSpecialMethods(proxyClassType);
-      
+
       // Add methods for the EnterpriseBeanInstance interface
       try
       {
@@ -83,6 +65,6 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
       {
          throw new WeldException(e);
       }
-      
+
    }
 }

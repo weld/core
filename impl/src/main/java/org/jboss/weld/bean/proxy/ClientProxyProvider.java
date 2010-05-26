@@ -84,28 +84,7 @@ public class ClientProxyProvider
    private static <T> T createClientProxy(Bean<T> bean, String id) throws RuntimeException
    {
       ContextBeanInstance<T> beanInstance = new ContextBeanInstance<T>(bean, id);
-      return new ProxyFactory<T>(beanInstance).create(beanInstance);
-//      try
-//      {
-//         TypeInfo typeInfo;
-//         if ((bean instanceof AbstractClassBean) && ((AbstractClassBean)bean).hasInterceptors())
-//         {
-//             typeInfo = TypeInfo.of(bean.getTypes()).add(Serializable.class).add(LifecycleMixin.class);
-//         }
-//         else
-//         {
-//             typeInfo = TypeInfo.of(bean.getTypes()).add(Serializable.class);
-//         }
-//         return Proxies.<T>createProxy(new ClientProxyMethodHandler(bean, id), typeInfo);
-//      }
-//      catch (InstantiationException e)
-//      {
-//         throw new WeldException(PROXY_INSTANTIATION_FAILED, e, bean);
-//      }
-//      catch (IllegalAccessException e)
-//      {
-//         throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, bean);
-//      }
+      return new ProxyFactory<T>(bean.getBeanClass(), bean.getTypes()).create(beanInstance);
    }
 
    /**
