@@ -37,6 +37,7 @@ public class SecurityTest
       field.setAccessible(true);
       assert field.isAccessible();
       assert !SecurityTest.class.getDeclaredField("foo").isAccessible();
+      assert SecurityTest.class.getDeclaredField("foo") != SecurityTest.class.getDeclaredField("foo");
    }
 
 }
