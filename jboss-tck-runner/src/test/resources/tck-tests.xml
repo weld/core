@@ -158,6 +158,13 @@
             </methods>
          </class>
          
+         <!-- WELDINT-63 -->
+         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle.EnterpriseBeanLifecycleTest">
+            <methods>
+               <exclude name="testSerializeSFSB" />
+            </methods>
+         </class>
+         
       </classes>
    </test>
    
