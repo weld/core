@@ -23,6 +23,9 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOP
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_DECORATOR_TYPES;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_TYPE_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_CREATIONAL_CONTEXT_ARGUMENT;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
@@ -727,6 +730,18 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
    public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> creationalContext)
    {
+      if (bean == null)
+      {
+         throw new ForbiddenArgumentException(NULL_BEAN_ARGUMENT);
+      }
+      if (beanType == null)
+      {
+         throw new ForbiddenArgumentException(NULL_BEAN_TYPE_ARGUMENT);
+      }
+      if (creationalContext == null)
+      {
+         throw new ForbiddenArgumentException(NULL_CREATIONAL_CONTEXT_ARGUMENT);
+      }
       if (!Reflections.isAssignableFrom(bean.getTypes(), beanType))
       {
          throw new ForbiddenArgumentException(SPECIFIED_TYPE_NOT_BEAN_TYPE, beanType, bean );
