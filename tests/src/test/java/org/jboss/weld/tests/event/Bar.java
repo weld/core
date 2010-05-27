@@ -72,7 +72,7 @@ public class Bar
       unqualifiedObserved = true;
    }
 
-   public void onUpdatedEvent(@Observes @Updated String event)
+   private void onUpdatedEvent(@Observes @Updated String event)
    {
       updatedObserved = true;
    }
