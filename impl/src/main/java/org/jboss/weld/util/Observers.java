@@ -23,7 +23,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
@@ -47,13 +47,13 @@ public class Observers
       }
       else
       {
-         throw new ForbiddenArgumentException(EVENT_TYPE_NOT_ALLOWED, resolvedType);
+         throw new IllegalArgumentException(EVENT_TYPE_NOT_ALLOWED, resolvedType);
       }
       for (Type type : types)
       {
          if (type instanceof TypeVariable<?>)
          {
-            throw new ForbiddenArgumentException(TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE, resolvedType);
+            throw new IllegalArgumentException(TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE, resolvedType);
          }
       }
    }

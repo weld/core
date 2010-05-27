@@ -19,6 +19,7 @@ package org.jboss.weld.conversation;
 import static org.jboss.weld.logging.Category.CONVERSATION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ConversationMessage.BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION;
+import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_ID_ALREADY_IN_USE;
 import static org.jboss.weld.logging.messages.ConversationMessage.DEMOTED_LRC;
 import static org.jboss.weld.logging.messages.ConversationMessage.END_CALLED_ON_TRANSIENT_CONVERSATION;
 import static org.jboss.weld.logging.messages.ConversationMessage.PROMOTED_TRANSIENT;
@@ -33,7 +34,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -115,7 +116,7 @@ public class ConversationImpl implements Conversation, Serializable
       checkForActiveConversationContext("Conversation.begin()");
       if (!_transient)
       {
-         throw new ForbiddenStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
+         throw new IllegalStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
       }
       log.debug(PROMOTED_TRANSIENT, id);
       _transient = false;
@@ -127,11 +128,11 @@ public class ConversationImpl implements Conversation, Serializable
       checkForActiveConversationContext("Conversation.begin(String)");
       if (!_transient)
       {
-         throw new ForbiddenStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
+         throw new IllegalStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
       }
       if (conversationManager.getConversations().containsKey(id))
       {
-         throw new IllegalStateException("Conversation ID " + id + " is already in use");
+         throw new IllegalStateException(CONVERSATION_ID_ALREADY_IN_USE, id);
       }
       _transient = false;
       this.id = id;
@@ -142,7 +143,7 @@ public class ConversationImpl implements Conversation, Serializable
       checkForActiveConversationContext("Conversation.end()");
       if (_transient)
       {
-         throw new ForbiddenStateException(END_CALLED_ON_TRANSIENT_CONVERSATION);
+         throw new IllegalStateException(END_CALLED_ON_TRANSIENT_CONVERSATION);
       }
       log.debug(DEMOTED_LRC, id);
       _transient = true;

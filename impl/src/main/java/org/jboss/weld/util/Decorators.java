@@ -17,7 +17,7 @@
 
 package org.jboss.weld.util;
 
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
@@ -66,6 +66,6 @@ public class Decorators
       {
          return (WeldClass<?>) beanManager.createAnnotatedType((Class<?>) ((ParameterizedType) type).getRawType());
       }
-      throw new ForbiddenStateException(UNABLE_TO_PROCESS, type);
+      throw new IllegalStateException(UNABLE_TO_PROCESS, type);
    }
 }

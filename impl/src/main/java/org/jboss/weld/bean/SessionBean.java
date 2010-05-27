@@ -65,8 +65,8 @@ import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.exceptions.CreationException;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.introspector.WeldClass;
@@ -298,12 +298,12 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       if (environment.getClassBean(getWeldAnnotated().getWeldSuperclass()) == null)
       {
-         throw new ForbiddenStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
+         throw new IllegalStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
       }
       AbstractClassBean<?> specializedBean = environment.getClassBean(getWeldAnnotated().getWeldSuperclass());
       if (!(specializedBean instanceof SessionBean<?>))
       {
-         throw new ForbiddenStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
+         throw new IllegalStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
       }
       else
       {
@@ -348,11 +348,11 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       if (instance == null)
       {
-         throw new ForbiddenArgumentException(CANNOT_DESTROY_NULL_BEAN, this);
+         throw new IllegalArgumentException(CANNOT_DESTROY_NULL_BEAN, this);
       }
       if (!(instance instanceof EnterpriseBeanInstance))
       {
-         throw new ForbiddenArgumentException(CANNOT_DESTROY_ENTERPRISE_BEAN_NOT_CREATED, instance);
+         throw new IllegalArgumentException(CANNOT_DESTROY_ENTERPRISE_BEAN_NOT_CREATED, instance);
       }
       EnterpriseBeanInstance enterpriseBeanInstance = (EnterpriseBeanInstance) instance;
       enterpriseBeanInstance.destroy(Marker.INSTANCE, this, creationalContext);

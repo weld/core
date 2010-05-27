@@ -25,7 +25,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedCallable;
 
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.introspector.WeldCallable;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldParameter;
@@ -129,7 +129,7 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
     */
    public String getName()
    {
-      throw new ForbiddenArgumentException(UNABLE_TO_GET_PARAMETER_NAME);
+      throw new IllegalArgumentException(UNABLE_TO_GET_PARAMETER_NAME);
    }
 
    /**

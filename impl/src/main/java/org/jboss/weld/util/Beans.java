@@ -72,7 +72,7 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
@@ -795,7 +795,7 @@ public class Beans
    {
       if (injectableFields.size() != initializerMethods.size())
       {
-         throw new ForbiddenArgumentException(INVALID_QUANTITY_INJECTABLE_FIELDS_AND_INITIALIZER_METHODS, injectableFields, initializerMethods);  
+         throw new IllegalArgumentException(INVALID_QUANTITY_INJECTABLE_FIELDS_AND_INITIALIZER_METHODS, injectableFields, initializerMethods);  
       }
       for (int i = 0; i < injectableFields.size(); i++)
       {
@@ -836,11 +836,11 @@ public class Beans
       {
          if (!Container.instance().services().get(MetaAnnotationStore.class).getBindingTypeModel(qualifier.annotationType()).isValid())
          {
-            throw new ForbiddenArgumentException(ANNOTATION_NOT_QUALIFIER, qualifier);
+            throw new IllegalArgumentException(ANNOTATION_NOT_QUALIFIER, qualifier);
          }
          if (checkedNewQualifiers.contains(qualifier))
          {
-            throw new ForbiddenArgumentException(REDUNDANT_QUALIFIER, qualifier, Arrays.asList(newQualifiers));
+            throw new IllegalArgumentException(REDUNDANT_QUALIFIER, qualifier, Arrays.asList(newQualifiers));
          }
          checkedNewQualifiers.add(qualifier);
       }

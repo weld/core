@@ -18,7 +18,7 @@ package org.jboss.weld.context.beanstore;
 
 import static org.jboss.weld.logging.messages.ContextMessage.DELIMITER_IN_PREFIX;
 
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 
 
 
@@ -36,7 +36,7 @@ public class NamingScheme
    {
       if (prefix.indexOf(delimiter) >= 0)
       {
-         throw new ForbiddenArgumentException(DELIMITER_IN_PREFIX, delimiter, prefix);
+         throw new IllegalArgumentException(DELIMITER_IN_PREFIX, delimiter, prefix);
       }
       this.prefix = prefix;
       this.delimiter = delimiter;

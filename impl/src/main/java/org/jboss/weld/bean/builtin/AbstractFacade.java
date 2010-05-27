@@ -26,7 +26,7 @@ import java.util.Arrays;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -48,7 +48,7 @@ public abstract class AbstractFacade<T, X>
       }
       else
       {
-         throw new ForbiddenStateException(TYPE_PARAMETER_MUST_BE_CONCRETE, injectionPoint);
+         throw new IllegalStateException(TYPE_PARAMETER_MUST_BE_CONCRETE, injectionPoint);
       }
    }
 

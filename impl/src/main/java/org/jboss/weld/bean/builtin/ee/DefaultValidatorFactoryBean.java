@@ -20,7 +20,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.VALIDATION_SERVICE_NOT
 
 import javax.validation.ValidatorFactory;
 
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.validation.spi.ValidationServices;
 
@@ -49,7 +49,7 @@ public class DefaultValidatorFactoryBean extends AbstractEEBean<ValidatorFactory
          }
          else
          {
-            throw new ForbiddenStateException(VALIDATION_SERVICE_NOT_AVAILABLE);
+            throw new IllegalStateException(VALIDATION_SERVICE_NOT_AVAILABLE);
          }
       }
       

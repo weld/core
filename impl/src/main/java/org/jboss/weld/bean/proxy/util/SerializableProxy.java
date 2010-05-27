@@ -31,7 +31,7 @@ import java.util.Set;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.ProxyFactory;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.util.collections.ArraySet;
@@ -63,7 +63,7 @@ public class SerializableProxy implements Serializable
    {
       if (!ProxyFactory.isProxy(proxyObject))
       {
-         throw new ForbiddenStateException(PROXY_REQUIRED);
+         throw new IllegalStateException(PROXY_REQUIRED);
       }
       this.proxyClassName = proxyObject.getClass().getName();
       this.proxySuperClassName = proxyObject.getClass().getSuperclass().getName();

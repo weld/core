@@ -18,12 +18,12 @@
 package org.jboss.weld.exceptions;
 
 /**
- * An exception used for unsupported operations or invocations of operations
- * that are invalid in certain contexts.
+ * An {@link java.lang.UnsupportedOperationException} with support for
+ * localized messages in Weld.
  * 
  * @author David Allen
  */
-public class InvalidOperationException extends UnsupportedOperationException
+public class UnsupportedOperationException extends java.lang.UnsupportedOperationException
 {
 
    private static final long    serialVersionUID = 2L;
@@ -35,7 +35,7 @@ public class InvalidOperationException extends UnsupportedOperationException
     * main information since it has the method which was invoked causing this
     * exception.
     */
-   public InvalidOperationException()
+   public UnsupportedOperationException()
    {
       super();
    }
@@ -48,7 +48,7 @@ public class InvalidOperationException extends UnsupportedOperationException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> InvalidOperationException(E key, Object... args)
+   public <E extends Enum<?>> UnsupportedOperationException(E key, Object... args)
    {
       message = new WeldExceptionKeyMessage(key, args);
    }

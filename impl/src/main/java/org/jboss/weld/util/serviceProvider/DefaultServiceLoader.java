@@ -35,8 +35,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.weld.exceptions.ForbiddenStateException;
-import org.jboss.weld.exceptions.InvalidOperationException;
+import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.util.collections.EnumerationList;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
@@ -138,7 +138,7 @@ public class DefaultServiceLoader<S> implements Iterable<S>
     */
    public static <S> DefaultServiceLoader<S> loadInstalled(Class<S> service)
    {
-      throw new InvalidOperationException();
+      throw new UnsupportedOperationException();
    }
 
    private final String serviceFile;
@@ -208,7 +208,7 @@ public class DefaultServiceLoader<S> implements Iterable<S>
       catch (IOException e)
       {
          logX.throwing(Level.ERROR, e);
-         throw new ForbiddenStateException(COULD_NOT_READ_SERVICES_FILE, serviceFile);
+         throw new IllegalStateException(COULD_NOT_READ_SERVICES_FILE, serviceFile);
       }
       finally
       {

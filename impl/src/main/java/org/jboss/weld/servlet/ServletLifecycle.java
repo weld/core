@@ -34,7 +34,7 @@ import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.weld.conversation.ServletConversationManager;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 
 /**
  * Implementation of the Weld lifecycle that can react to servlet events and
@@ -188,7 +188,7 @@ public class ServletLifecycle
       BeanStore beanStore = RequestBeanStoreCache.get(request);
       if (beanStore == null)
       {
-         throw new ForbiddenStateException(REQUEST_SCOPE_BEAN_STORE_MISSING);
+         throw new IllegalStateException(REQUEST_SCOPE_BEAN_STORE_MISSING);
       }
       lifecycle.endRequest(request.getRequestURI(), beanStore);
       RequestBeanStoreCache.clear(request);

@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
@@ -118,7 +118,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
       Set<String> ejbs = ejbByClass.get(beanClass);
       if (ejbs.size() > 0)
       {
-         throw new ForbiddenStateException(TOO_MANY_EJBS_FOR_CLASS, beanClass, ejbs);
+         throw new IllegalStateException(TOO_MANY_EJBS_FOR_CLASS, beanClass, ejbs);
       }
       else if (ejbs.size() == 0)
       {

@@ -36,9 +36,9 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.exceptions.InvalidOperationException;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.introspector.ConstructorSignature;
 import org.jboss.weld.introspector.ForwardingWeldConstructor;
 import org.jboss.weld.introspector.WeldClass;
@@ -166,7 +166,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
 
    public void inject(Object declaringInstance, Object value)
    {
-      throw new InvalidOperationException();
+      throw new UnsupportedOperationException();
    }
 
    /**
@@ -255,7 +255,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
          Bean<T> bean = getDeclaringBean();
          if (constructor == null || bean == null)
          {
-            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), signature);
+            throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), signature);
          }
          return ConstructorInjectionPoint.of(getDeclaringBean(), getWeldConstructor());
       }

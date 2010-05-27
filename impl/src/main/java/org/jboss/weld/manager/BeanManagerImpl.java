@@ -86,8 +86,8 @@ import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.exceptions.AmbiguousResolutionException;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InjectionException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
@@ -682,7 +682,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       if (activeContexts.size() > 1)
       {
-         throw new ForbiddenStateException(DUPLICATE_ACTIVE_CONTEXTS, scopeType.getName());
+         throw new IllegalStateException(DUPLICATE_ACTIVE_CONTEXTS, scopeType.getName());
       }
       return activeContexts.iterator().next();
 
@@ -732,19 +732,19 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       if (bean == null)
       {
-         throw new ForbiddenArgumentException(NULL_BEAN_ARGUMENT);
+         throw new IllegalArgumentException(NULL_BEAN_ARGUMENT);
       }
       if (beanType == null)
       {
-         throw new ForbiddenArgumentException(NULL_BEAN_TYPE_ARGUMENT);
+         throw new IllegalArgumentException(NULL_BEAN_TYPE_ARGUMENT);
       }
       if (creationalContext == null)
       {
-         throw new ForbiddenArgumentException(NULL_CREATIONAL_CONTEXT_ARGUMENT);
+         throw new IllegalArgumentException(NULL_CREATIONAL_CONTEXT_ARGUMENT);
       }
       if (!Reflections.isAssignableFrom(bean.getTypes(), beanType))
       {
-         throw new ForbiddenArgumentException(SPECIFIED_TYPE_NOT_BEAN_TYPE, beanType, bean );
+         throw new IllegalArgumentException(SPECIFIED_TYPE_NOT_BEAN_TYPE, beanType, bean );
       }
       return getReference(bean, creationalContext, false);
    }
@@ -852,7 +852,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       if (types.isEmpty())
       {
-         throw new ForbiddenArgumentException(NO_DECORATOR_TYPES);
+         throw new IllegalArgumentException(NO_DECORATOR_TYPES);
       }
    }
 
@@ -931,7 +931,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       if (!getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).isNormal())
       {
-         throw new ForbiddenArgumentException(NON_NORMAL_SCOPE, scopeType);
+         throw new IllegalArgumentException(NON_NORMAL_SCOPE, scopeType);
       }
       currentActivities.add(new CurrentActivity(getContext(scopeType), this));
       return this;
@@ -955,7 +955,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          return activeCurrentActivities.get(0).getManager();
       }
-      throw new ForbiddenStateException(TOO_MANY_ACTIVITIES, currentActivities);
+      throw new IllegalStateException(TOO_MANY_ACTIVITIES, currentActivities);
    }
 
    public ServiceRegistry getServices()
@@ -1090,7 +1090,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       else
       {
-         throw new ForbiddenArgumentException(NOT_INTERCEPTOR_BINDING_TYPE, bindingType);
+         throw new IllegalArgumentException(NOT_INTERCEPTOR_BINDING_TYPE, bindingType);
       }
    }
 
@@ -1107,7 +1107,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       else
       {
-         throw new ForbiddenArgumentException(NOT_STEREOTYPE, stereotype);
+         throw new IllegalArgumentException(NOT_STEREOTYPE, stereotype);
       }
    }
 

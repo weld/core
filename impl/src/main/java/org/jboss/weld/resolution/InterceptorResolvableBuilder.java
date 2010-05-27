@@ -30,7 +30,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InterceptionType;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 
 public class InterceptorResolvableBuilder extends ResolvableBuilder
@@ -53,11 +53,11 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder
    {
       if (!Container.instance().services().get(MetaAnnotationStore.class).getInterceptorBindingModel(qualifier.annotationType()).isValid())
       {
-         throw new ForbiddenArgumentException(INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE, qualifier);
+         throw new IllegalArgumentException(INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE, qualifier);
       }
       if (qualifiers.contains(qualifier))
       {
-         throw new ForbiddenArgumentException(DUPLICATE_INTERCEPTOR_BINDING, Arrays.asList(qualifiers));
+         throw new IllegalArgumentException(DUPLICATE_INTERCEPTOR_BINDING, Arrays.asList(qualifiers));
       }
    }
    
@@ -114,7 +114,7 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder
    {
       if (qualifiers.size() == 0)
       {
-         throw new ForbiddenArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
+         throw new IllegalArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
       }
       return new InterceptorResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean, interceptionType);
    }

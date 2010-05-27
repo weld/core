@@ -20,7 +20,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.SECURITY_SERVICES_NOT_
 
 import java.security.Principal;
 
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.spi.SecurityServices;
 
@@ -49,7 +49,7 @@ public class PrincipalBean extends AbstractEEBean<Principal>
          }
          else
          {
-            throw new ForbiddenStateException(SECURITY_SERVICES_NOT_AVAILABLE);
+            throw new IllegalStateException(SECURITY_SERVICES_NOT_AVAILABLE);
          }
       }
       

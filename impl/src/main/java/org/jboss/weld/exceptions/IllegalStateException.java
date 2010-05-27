@@ -18,28 +18,16 @@
 package org.jboss.weld.exceptions;
 
 /**
- * This exception is used when the specification calls for an
- * {@link java.lang.IllegalArgumentException}.
+ * An {@link java.lang.IllegalStateException} with support for
+ * localized messages in Weld.
  * 
  * @author David Allen
  */
-public class ForbiddenArgumentException extends IllegalArgumentException
+public class IllegalStateException extends java.lang.IllegalStateException
 {
-
    private static final long    serialVersionUID = 2L;
 
    private WeldExceptionMessage message;
-
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public ForbiddenArgumentException(Throwable throwable)
-   {
-      super(throwable);
-      message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
-   }
 
    /**
     * Creates a new exception with the given localized message key and optional
@@ -49,9 +37,19 @@ public class ForbiddenArgumentException extends IllegalArgumentException
     * @param key The localized message to use
     * @param args Optional arguments to insert into the message
     */
-   public <E extends Enum<?>> ForbiddenArgumentException(E key, Object... args)
+   public <E extends Enum<?>> IllegalStateException(E key, Object... args)
    {
       message = new WeldExceptionKeyMessage(key, args);
+   }
+
+   /**
+    * Creates a new exception with the given cause.
+    * 
+    * @param throwable The cause of the exception
+    */
+   public IllegalStateException(Throwable cause)
+   {
+      super(cause.getLocalizedMessage(), cause);
    }
 
    @Override

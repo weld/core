@@ -23,7 +23,7 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.util.el.ForwardingExpressionFactory;
 
 /**
@@ -39,7 +39,7 @@ public class WeldExpressionFactory extends ForwardingExpressionFactory
    {
       if (expressionFactory == null)
       {
-         throw new ForbiddenArgumentException(NULL_EXPRESSION_FACTORY);
+         throw new IllegalArgumentException(NULL_EXPRESSION_FACTORY);
       }
       this.delegate = expressionFactory;
    }

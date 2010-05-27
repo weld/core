@@ -22,7 +22,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -69,7 +69,7 @@ public class MergedStereotypes<T, E>
          StereotypeModel<?> stereotype = manager.getServices().get(MetaAnnotationStore.class).getStereotype(stereotypeAnnotation.annotationType());
          if (stereotype == null)
          {
-            throw new ForbiddenStateException(STEREOTYPE_NOT_REGISTERED, stereotypeAnnotation);
+            throw new IllegalStateException(STEREOTYPE_NOT_REGISTERED, stereotypeAnnotation);
          }
          if (stereotype.isAlternative())
          {

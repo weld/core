@@ -72,8 +72,8 @@ import org.jboss.weld.conversation.ServletConversationManager;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.logging.messages.VersionMessage;
@@ -195,7 +195,7 @@ public class WeldBootstrap implements Bootstrap
          // Check the id is not null
          if (beanDeploymentArchive.getId() == null)
          {
-            throw new ForbiddenArgumentException(DEPLOYMENT_ARCHIVE_NULL, beanDeploymentArchive);
+            throw new IllegalArgumentException(DEPLOYMENT_ARCHIVE_NULL, beanDeploymentArchive);
          }
          
          BeanDeployment parent = managerAwareBeanDeploymentArchives.get(beanDeploymentArchive);
@@ -240,7 +240,7 @@ public class WeldBootstrap implements Bootstrap
       {
          if (deployment == null)
          {
-            throw new ForbiddenArgumentException(DEPLOYMENT_REQUIRED);
+            throw new IllegalArgumentException(DEPLOYMENT_REQUIRED);
          }
          if (!deployment.getServices().contains(ResourceLoader.class))
          {
@@ -276,7 +276,7 @@ public class WeldBootstrap implements Bootstrap
 //         }
          if (applicationBeanStore == null)
          {
-            throw new ForbiddenStateException(BEAN_STORE_MISSING);
+            throw new IllegalStateException(BEAN_STORE_MISSING);
          }
          
          this.deployment = deployment;
@@ -348,7 +348,7 @@ public class WeldBootstrap implements Bootstrap
       {
          if (deploymentManager == null)
          {
-            throw new ForbiddenStateException(MANAGER_NOT_INITIALIZED);
+            throw new IllegalStateException(MANAGER_NOT_INITIALIZED);
          }
          
          ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, beanDeployments);
@@ -470,7 +470,7 @@ public class WeldBootstrap implements Bootstrap
       {
          if (!services.contains(serviceType))
          {
-            throw new ForbiddenStateException(UNSPECIFIED_REQUIRED_SERVICE, serviceType.getName());
+            throw new IllegalStateException(UNSPECIFIED_REQUIRED_SERVICE, serviceType.getName());
          }
       }
    }

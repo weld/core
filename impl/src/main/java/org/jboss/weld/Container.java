@@ -27,7 +27,7 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.logging.LoggerFactory;
 import org.jboss.weld.logging.MessageConveyorFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -153,7 +153,7 @@ public class Container
       String id = manager.getId();
       if (manager.getId() == null)
       {
-         throw new ForbiddenArgumentException(NULL_BEAN_MANAGER_ID, manager);
+         throw new IllegalArgumentException(NULL_BEAN_MANAGER_ID, manager);
       }
       managers.put(id, manager);
       return id;

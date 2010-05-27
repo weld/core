@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -63,7 +63,7 @@ public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEven
    {
       if (type == null)
       {
-         throw new ForbiddenArgumentException(ANNOTATION_TYPE_NULL, this);
+         throw new IllegalArgumentException(ANNOTATION_TYPE_NULL, this);
       }
       this.annotatedType = type;
    }

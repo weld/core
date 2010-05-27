@@ -27,7 +27,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -92,7 +92,7 @@ public class JsfHelper
       }
       else
       {
-         throw new ForbiddenStateException(IMPROPER_ENVIRONMENT);
+         throw new IllegalStateException(IMPROPER_ENVIRONMENT);
       }
    }
 

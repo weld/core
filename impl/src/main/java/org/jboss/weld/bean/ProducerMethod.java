@@ -34,7 +34,7 @@ import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
@@ -289,7 +289,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
       WeldMethod<?, ?> superClassMethod = getDeclaringBean().getWeldAnnotated().getWeldSuperclass().getWeldMethod(getWeldAnnotated().getJavaMember());
       if (environment.getProducerMethod(superClassMethod) == null)
       {
-         throw new ForbiddenStateException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
+         throw new IllegalStateException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
       }
       this.specializedBean = environment.getProducerMethod(superClassMethod);
    }

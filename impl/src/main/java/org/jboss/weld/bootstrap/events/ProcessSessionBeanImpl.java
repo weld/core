@@ -25,7 +25,7 @@ import javax.enterprise.inject.spi.ProcessSessionBean;
 import javax.enterprise.inject.spi.SessionBeanType;
 
 import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, SessionBean<Object>> implements ProcessSessionBean<X>
@@ -67,7 +67,7 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
       }
       else
       {
-         throw new ForbiddenStateException(BEAN_TYPE_NOT_EJB, getBean());
+         throw new IllegalStateException(BEAN_TYPE_NOT_EJB, getBean());
       }
    }
 

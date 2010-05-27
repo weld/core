@@ -20,7 +20,7 @@ import static org.jboss.weld.logging.messages.UtilMessage.XML_DOM_READONLY;
 
 import java.util.Iterator;
 
-import org.jboss.weld.exceptions.InvalidOperationException;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -48,7 +48,7 @@ public class NodeListIterator implements Iterator<Node>
 
    public void remove()
    {
-      throw new InvalidOperationException(XML_DOM_READONLY);
+      throw new UnsupportedOperationException(XML_DOM_READONLY);
    }
    
 }

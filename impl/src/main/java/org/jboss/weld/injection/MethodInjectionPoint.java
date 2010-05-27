@@ -35,7 +35,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.introspector.ForwardingWeldMethod;
 import org.jboss.weld.introspector.MethodSignature;
@@ -345,7 +345,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
          Bean<T> bean = getDeclaringBean();
          if (method == null || bean == null)
          {
-            throw new ForbiddenStateException(ReflectionMessage.UNABLE_TO_GET_METHOD_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), signature);
+            throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_METHOD_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), signature);
          }
          return MethodInjectionPoint.of(getDeclaringBean(), getWeldMethod());
       }

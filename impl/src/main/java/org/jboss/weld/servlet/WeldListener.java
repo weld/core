@@ -42,7 +42,7 @@ import javax.servlet.http.HttpSessionEvent;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.context.ContextLifecycle;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
@@ -79,12 +79,12 @@ public class WeldListener extends AbstractServletListener
       BeanDeploymentArchive war = Container.instance().services().get(ServletServices.class).getBeanDeploymentArchive(ctx);
       if (war == null)
       {
-         throw new ForbiddenStateException(BEAN_DEPLOYMENT_ARCHIVE_MISSING, ctx);
+         throw new IllegalStateException(BEAN_DEPLOYMENT_ARCHIVE_MISSING, ctx);
       }
       BeanManagerImpl beanManager = Container.instance().beanDeploymentArchives().get(war);
       if (beanManager == null)
       {
-         throw new ForbiddenStateException(BEAN_MANAGER_FOR_ARCHIVE_NOT_FOUND, ctx, war);
+         throw new IllegalStateException(BEAN_MANAGER_FOR_ARCHIVE_NOT_FOUND, ctx, war);
       }
       return beanManager;
    }
@@ -100,7 +100,7 @@ public class WeldListener extends AbstractServletListener
       }
       if (!Container.instance().services().contains(ServletServices.class))
       {
-         throw new ForbiddenStateException(ILLEGAL_USE_OF_WELD_LISTENER);
+         throw new IllegalStateException(ILLEGAL_USE_OF_WELD_LISTENER);
       }
       sce.getServletContext().setAttribute(BeanManager.class.getName(), getBeanManager(sce.getServletContext()));
    }
@@ -160,7 +160,7 @@ public class WeldListener extends AbstractServletListener
          }
          else
          {
-            throw new ForbiddenStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
+            throw new IllegalStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
          }
       }
    }
@@ -183,7 +183,7 @@ public class WeldListener extends AbstractServletListener
          }
          else
          {
-            throw new ForbiddenStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
+            throw new IllegalStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
          }
       }
    }

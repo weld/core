@@ -33,7 +33,7 @@ import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.ejb.EJBApiAbstraction;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
@@ -77,7 +77,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
             }
             else
             {
-               throw new ForbiddenStateException(BEAN_NOT_EE_RESOURCE_PRODUCER, contextual);
+               throw new IllegalStateException(BEAN_NOT_EE_RESOURCE_PRODUCER, contextual);
             }
          }
          return instance;
@@ -126,7 +126,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
       WSApiAbstraction wsApiAbstraction = beanManager.getServices().get(WSApiAbstraction.class);
       if (!(getWeldAnnotated().isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || getWeldAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS) || getWeldAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || getWeldAnnotated().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)) || getWeldAnnotated().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS))
       {
-         throw new ForbiddenStateException(INVALID_RESOURCE_PRODUCER_FIELD, getWeldAnnotated());
+         throw new IllegalStateException(INVALID_RESOURCE_PRODUCER_FIELD, getWeldAnnotated());
       }
    }
 

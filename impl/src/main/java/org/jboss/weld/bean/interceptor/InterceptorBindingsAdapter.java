@@ -33,7 +33,7 @@ import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.interceptor.model.InterceptionModel;
 import org.jboss.weld.ejb.spi.InterceptorBindings;
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 
 /**
@@ -48,7 +48,7 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
    {
       if (interceptionModel == null)
       {
-         throw new ForbiddenArgumentException(INTERCEPTION_MODEL_NULL);
+         throw new IllegalArgumentException(INTERCEPTION_MODEL_NULL);
       }
       this.interceptionModel = interceptionModel;
    }
@@ -63,19 +63,19 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
    {
       if (interceptionType == null)
       {
-         throw new ForbiddenArgumentException(INTERCEPTION_TYPE_NULL);
+         throw new IllegalArgumentException(INTERCEPTION_TYPE_NULL);
       }
 
       if (method == null)
       {
-         throw new ForbiddenArgumentException(METHOD_NULL);
+         throw new IllegalArgumentException(METHOD_NULL);
       }
 
       org.jboss.interceptor.model.InterceptionType internalInterceptionType = org.jboss.interceptor.model.InterceptionType.valueOf(interceptionType.name());
 
       if (internalInterceptionType.isLifecycleCallback())
       {
-         throw new ForbiddenArgumentException(INTERCEPTION_TYPE_LIFECYCLE, interceptionType.name());
+         throw new IllegalArgumentException(INTERCEPTION_TYPE_LIFECYCLE, interceptionType.name());
       }
 
       return toInterceptorList(interceptionModel.getInterceptors(internalInterceptionType, method));
@@ -86,14 +86,14 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
    {
       if (interceptionType == null)
       {
-         throw new ForbiddenArgumentException(INTERCEPTION_TYPE_NULL);
+         throw new IllegalArgumentException(INTERCEPTION_TYPE_NULL);
       }
 
       org.jboss.interceptor.model.InterceptionType internalInterceptionType = org.jboss.interceptor.model.InterceptionType.valueOf(interceptionType.name());
 
       if (!internalInterceptionType.isLifecycleCallback())
       {
-         throw new ForbiddenArgumentException(INTERCEPTION_TYPE_NOT_LIFECYCLE, interceptionType.name());
+         throw new IllegalArgumentException(INTERCEPTION_TYPE_NOT_LIFECYCLE, interceptionType.name());
       }
 
       return toInterceptorList(interceptionModel.getInterceptors(internalInterceptionType, null));

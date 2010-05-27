@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.jboss.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
 import org.jboss.weld.bean.WeldDecorator;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
@@ -99,7 +99,7 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
       }
       else
       {
-         throw new ForbiddenStateException(UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR, beanInstance.getContextual().get());
+         throw new IllegalStateException(UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR, beanInstance.getContextual().get());
       }
 
       return SecureReflections.invoke(getTargetInstance(), method, args);

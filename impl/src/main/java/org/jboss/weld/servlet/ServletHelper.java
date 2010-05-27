@@ -22,7 +22,7 @@ import static org.jboss.weld.logging.messages.ServletMessage.CONTEXT_NULL;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
 
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -36,12 +36,12 @@ public class ServletHelper
    {
       if (ctx == null)
       {
-         throw new ForbiddenArgumentException(CONTEXT_NULL);
+         throw new IllegalArgumentException(CONTEXT_NULL);
       }
       BeanManagerImpl beanManagerImpl = (BeanManagerImpl) ctx.getAttribute(BeanManager.class.getName());
       if (beanManagerImpl == null)
       {
-         throw new ForbiddenArgumentException(BEAN_MANAGER_NOT_FOUND, ctx);
+         throw new IllegalArgumentException(BEAN_MANAGER_NOT_FOUND, ctx);
       }
       else
       {

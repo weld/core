@@ -39,7 +39,7 @@ import javax.inject.Named;
 import javax.inject.Provider;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.NamedLiteral;
@@ -71,7 +71,7 @@ public class ResolvableBuilder
          this.rawType = Reflections.getRawType(type);
          if (rawType == null)
          {
-            throw new ForbiddenArgumentException(CANNOT_EXTRACT_RAW_TYPE, type);
+            throw new IllegalArgumentException(CANNOT_EXTRACT_RAW_TYPE, type);
          }
          this.types.add(type);
       }
@@ -209,11 +209,11 @@ public class ResolvableBuilder
    {
       if (!Container.instance().services().get(MetaAnnotationStore.class).getBindingTypeModel(qualifier.annotationType()).isValid())
       {
-         throw new ForbiddenArgumentException(INVALID_QUALIFIER, qualifier);
+         throw new IllegalArgumentException(INVALID_QUALIFIER, qualifier);
       }
       if (qualifiers.contains(qualifier))
       {
-         throw new ForbiddenArgumentException(DUPLICATE_QUALIFIERS, Arrays.asList(qualifiers));
+         throw new IllegalArgumentException(DUPLICATE_QUALIFIERS, Arrays.asList(qualifiers));
       }
    }
 

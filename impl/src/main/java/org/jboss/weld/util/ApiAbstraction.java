@@ -20,7 +20,7 @@ import static org.jboss.weld.logging.messages.UtilMessage.CLASS_NOT_ENUM;
 
 import java.lang.annotation.Annotation;
 
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.reflection.SecureReflections;
@@ -116,7 +116,7 @@ public class ApiAbstraction
    {
       if (!clazz.isEnum())
       {
-         throw new ForbiddenArgumentException(CLASS_NOT_ENUM, clazz);
+         throw new IllegalArgumentException(CLASS_NOT_ENUM, clazz);
       }
       try
       {

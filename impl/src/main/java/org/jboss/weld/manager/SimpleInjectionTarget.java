@@ -29,7 +29,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
@@ -106,7 +106,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
          // try again so the correct DefinitionException is thrown
          Beans.getBeanConstructor(null, type);
          // should not be reached
-         throw new ForbiddenStateException(MISSING_BEAN_CONSTRUCTOR_FOUND);
+         throw new IllegalStateException(MISSING_BEAN_CONSTRUCTOR_FOUND);
       }
       return constructor.newInstance(beanManager, ctx);
    }

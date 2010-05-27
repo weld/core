@@ -42,7 +42,7 @@ import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.reflection.Reflections;
@@ -163,7 +163,7 @@ public class Proxies
          }
          else
          {
-            throw new ForbiddenArgumentException(CANNOT_PROXY_NON_CLASS_TYPE, type);
+            throw new IllegalArgumentException(CANNOT_PROXY_NON_CLASS_TYPE, type);
          }
          return this;
       }

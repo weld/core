@@ -33,7 +33,7 @@ import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.api.SessionObjectReference;
-import org.jboss.weld.exceptions.InvalidOperationException;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.util.reflection.Reflections;
@@ -116,7 +116,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
          MethodSignature methodSignature = new MethodSignatureImpl(method);
          if (removeMethodSignatures.contains(methodSignature))
          {
-            throw new InvalidOperationException(INVALID_REMOVE_METHOD_INVOCATION, method);
+            throw new UnsupportedOperationException(INVALID_REMOVE_METHOD_INVOCATION, method);
          }
       }
       Class<?> businessInterface = getBusinessInterface(method);

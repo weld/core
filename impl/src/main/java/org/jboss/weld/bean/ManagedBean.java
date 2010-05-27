@@ -57,7 +57,7 @@ import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.WeldInjectionPoint;
@@ -106,7 +106,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             InjectionPoint outerDelegateInjectionPoint = Beans.getDelegateInjectionPoint(decorator);
             if (outerDelegateInjectionPoint == null)
             {
-               throw new ForbiddenStateException(DELEGATE_INJECTION_POINT_NOT_FOUND, decorator);
+               throw new IllegalStateException(DELEGATE_INJECTION_POINT_NOT_FOUND, decorator);
             }
             CurrentInjectionPoint currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
             if (currentInjectionPoint.peek() != null)
@@ -492,7 +492,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             }
             else
             {
-               throw new ForbiddenStateException(NON_CONTAINER_DECORATOR, decorator);
+               throw new IllegalStateException(NON_CONTAINER_DECORATOR, decorator);
             }
 
             for (WeldMethod<?, ?> decoratorMethod : decoratorClass.getWeldMethods())

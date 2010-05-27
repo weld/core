@@ -33,8 +33,8 @@ import javax.enterprise.context.spi.CreationalContext;
 import org.jboss.weld.Container;
 import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.exceptions.ForbiddenArgumentException;
-import org.jboss.weld.exceptions.ForbiddenStateException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.slf4j.cal10n.LocLogger;
 
@@ -87,7 +87,7 @@ public abstract class AbstractMapContext extends AbstractContext
       }
       if (contextual == null)
       {
-         throw new ForbiddenArgumentException(CONTEXTUAL_IS_NULL);
+         throw new IllegalArgumentException(CONTEXTUAL_IS_NULL);
       }
       String id = getId(contextual);
       ContextualInstance<T> beanInstance = getBeanStore().get(id);
@@ -140,7 +140,7 @@ public abstract class AbstractMapContext extends AbstractContext
    {
       if (getBeanStore() == null)
       {
-         throw new ForbiddenStateException(NO_BEAN_STORE_AVAILABLE, this);
+         throw new IllegalStateException(NO_BEAN_STORE_AVAILABLE, this);
       }
       ContextualInstance<T> beanInstance = getBeanStore().get(id);
       beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
@@ -156,7 +156,7 @@ public abstract class AbstractMapContext extends AbstractContext
       log.trace(CONTEXT_CLEARED, this);
       if (getBeanStore() == null)
       {
-         throw new ForbiddenStateException(NO_BEAN_STORE_AVAILABLE, this);
+         throw new IllegalStateException(NO_BEAN_STORE_AVAILABLE, this);
       }
       for (String id : getBeanStore().getContextualIds())
       {
