@@ -8,7 +8,7 @@
    <parent>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-parent</artifactId>
-      <version>9</version>
+      <version>10-SNAPSHOT</version>
   </parent>
 
    <name>Weld Core BOM</name>
@@ -127,7 +127,7 @@
          </dependency>
   
          <dependency>
-             <groupId>ch.qos</groupId>
+             <groupId>ch.qos.cal10n</groupId>
              <artifactId>cal10n-api</artifactId>
              <version>${cal10n.version}</version>
          </dependency>
