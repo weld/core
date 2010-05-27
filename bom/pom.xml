@@ -36,7 +36,7 @@
       <!-- Override the API and compile with more recent EL API -->
       <google.collections.version>1.0</google.collections.version>
       <javassist.version>3.11.0.GA</javassist.version>
-      <cdi.tck.version>1.0.1-Final</cdi.tck.version>
+      <cdi.tck.version>1.0.2.CR1</cdi.tck.version>
       <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
       <jboss.interceptor.version>1.0.0-CR11</jboss.interceptor.version>
       <slf4j.version>1.5.10</slf4j.version>
