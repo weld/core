@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 public class ObserverInjectionTest extends AbstractWeldTest
 {
 
-   @Test(description="WELD-535", groups="broken")
+   @Test(description="WELD-535")
    public void testInjectionHappens()
    {
       SampleObserver sampleObserver = getReference(SampleObserver.class);

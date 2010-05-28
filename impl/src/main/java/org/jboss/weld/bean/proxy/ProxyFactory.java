@@ -402,6 +402,20 @@ public class ProxyFactory<T>
                proxyClassType.addMethod(CtNewMethod.make(method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), createInterceptorBody(method), proxyClassType));
             }
          }
+         // Also add all private methods from the class hierarchy
+         CtClass superClass = proxyClassType.getSuperclass();
+         while (!superClass.getName().equals("java.lang.Object"))
+         {
+            for (CtMethod method : superClass.getDeclaredMethods())
+            {
+               if (Modifier.isPrivate(method.getModifiers()) && !method.getDeclaringClass().getName().equals("java.lang.Object"))
+               {
+                  log.trace("Adding method " + method.getLongName());
+                  proxyClassType.addMethod(CtNewMethod.make(method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), createInterceptorBody(method), proxyClassType));
+               }
+            }
+            superClass = superClass.getSuperclass();
+         }
       }
       catch (Exception e)
       {

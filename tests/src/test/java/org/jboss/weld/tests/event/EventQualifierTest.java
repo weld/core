@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
 public class EventQualifierTest extends AbstractWeldTest
 {
    
-   @Test(description="WELD-226", groups="broken")
+   @Test(description="WELD-226")
    public void testDefaultQualifierNotRequired()
    {
       Bar bar = getReference(Bar.class);
