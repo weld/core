@@ -48,12 +48,15 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Names;
+import org.jboss.weld.util.collections.ArraySetSupplier;
 import org.jboss.weld.util.collections.ImmutableArraySet;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 
 /**
  * Represents an annotated class
@@ -120,7 +123,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
 
    // The meta-annotation map (annotation type -> set of annotations containing
    // meta-annotation) of the item
-   private final ArrayListMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap;
+   private final SetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap;
 
    private final boolean discovered;
 
@@ -352,13 +355,14 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       this.declaredAnnotatedMethods.trimToSize();
       this.declaredMethodsByAnnotatedParameters.trimToSize();
 
-      this.declaredMetaAnnotationMap = ArrayListMultimap.<Class<? extends Annotation>, Annotation> create();
+      this.declaredMetaAnnotationMap = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<Annotation>>(), ArraySetSupplier.<Annotation>instance());
       for (Annotation declaredAnnotation : declaredAnnotationMap.values())
       {
          addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, declaredAnnotation.annotationType().getAnnotations(), true);
          addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, classTransformer.getTypeStore().get(declaredAnnotation.annotationType()), true);
          this.declaredMetaAnnotationMap.put(declaredAnnotation.annotationType(), declaredAnnotation);
       }
+      ArraySetSupplier.trimSetsToSize(declaredMetaAnnotationMap);
    }
 
    @SuppressWarnings("unchecked")

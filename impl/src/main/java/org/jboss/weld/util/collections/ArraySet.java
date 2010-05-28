@@ -146,6 +146,11 @@ public class ArraySet<E> implements Set<E>, Serializable
       return elements.toArray(a);
    }
 
+   public void trimToSize()
+   {
+      elements.trimToSize();
+   }
+
    // Needed to provide set equals semantics
    @Override
    public boolean equals(Object obj)
