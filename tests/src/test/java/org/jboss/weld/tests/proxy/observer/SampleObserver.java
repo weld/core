@@ -1,10 +1,11 @@
-package org.jboss.weld.tests.event;
+package org.jboss.weld.tests.proxy.observer;
 
 import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+
 
 @SessionScoped
 public class SampleObserver implements Serializable
@@ -18,7 +19,7 @@ public class SampleObserver implements Serializable
    private boolean injectionAndObservationOccured;
 
    @SuppressWarnings("unused")
-   private void observes(@Observes final Baz baz)
+   private void observes(@Observes Baz baz)
    {
       injectionAndObservationOccured = qux != null;
    }

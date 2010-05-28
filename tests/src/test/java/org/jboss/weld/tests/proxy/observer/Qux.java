@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.event;
+package org.jboss.weld.tests.proxy.observer;
 
 import java.io.Serializable;
 
