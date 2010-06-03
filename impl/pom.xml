@@ -202,8 +202,9 @@
                   </dependencies>
                   <configuration>
                      <effort>Max</effort>
-                     <threshold>Default</threshold>
+                     <threshold>Low</threshold>
                      <xmlOutput>true</xmlOutput>
+                     <failOnError>false</failOnError>
                   </configuration>
                   <executions>
                      <execution>
