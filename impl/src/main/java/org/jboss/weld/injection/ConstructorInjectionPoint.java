@@ -99,6 +99,12 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
       }
       return false;
    }
+   
+   @Override
+   public int hashCode()
+   {
+      return constructor.hashCode();
+   }
 
    @Override
    protected WeldConstructor<T> delegate()

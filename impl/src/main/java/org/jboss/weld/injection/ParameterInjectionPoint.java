@@ -79,6 +79,12 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
       }
       return false;
    }
+   
+   @Override
+   public int hashCode()
+   {
+      return parameter.hashCode();
+   }
 
    @Override
    protected WeldParameter<T, X> delegate()

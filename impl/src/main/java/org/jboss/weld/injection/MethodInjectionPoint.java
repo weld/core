@@ -96,6 +96,12 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
       }
       return false;
    }
+   
+   @Override
+   public int hashCode()
+   {
+      return method.hashCode();
+   }
 
    @Override
    protected WeldMethod<T, X> delegate()

@@ -77,6 +77,12 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
       }
       return false;
    }
+   
+   @Override
+   public int hashCode()
+   {
+      return field.hashCode();
+   }
 
    @Override
    protected WeldField<T, X> delegate()
