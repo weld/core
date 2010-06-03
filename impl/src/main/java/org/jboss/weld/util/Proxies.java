@@ -17,19 +17,14 @@
 package org.jboss.weld.util;
 
 import static org.jboss.weld.logging.messages.UtilMessage.CANNOT_PROXY_NON_CLASS_TYPE;
-import static org.jboss.weld.logging.messages.ReflectionMessage.METHODHANDLER_SET_FAILED;
-import static org.jboss.weld.logging.messages.UtilMessage.INSTANCE_NOT_A_PROXY;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_ARRAY_TYPE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_FINAL_TYPE_OR_METHOD;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_NO_CONSTRUCTOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIMITIVE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIVATE_CONSTRUCTOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_UNKNOWN;
-import static org.jboss.weld.util.reflection.Reflections.EMPTY_CLASSES;
 
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -37,14 +32,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javassist.util.proxy.MethodFilter;
-import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.ProxyFactory;
-import javassist.util.proxy.ProxyObject;
-
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
@@ -58,17 +47,6 @@ import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
  */
 public class Proxies
 {
-
-   private static class IgnoreFinalizeMethodFilter implements MethodFilter, Serializable
-   {
-      private static final long serialVersionUID = 1L;
-
-      public boolean isHandled(Method m)
-      {
-         return !m.getName().equals("finalize");
-      }
-
-   }
 
    public static class TypeInfo
    {
@@ -119,28 +97,6 @@ public class Proxies
             }
          }
          return superclass;
-      }
-
-      private Class<?>[] getInterfaces()
-      {
-         return interfaces.toArray(EMPTY_CLASSES);
-      }
-
-      /**
-       * @return
-       */
-      public ProxyFactory createProxyFactory()
-      {
-         ProxyFactory proxyFactory = new ProxyFactory();
-         ProxyFactory.useCache = false;
-         proxyFactory.setFilter(new IgnoreFinalizeMethodFilter());
-         Class<?> superClass = getSuperClass();
-         if (superClass != null && superClass != Object.class)
-         {
-            proxyFactory.setSuperclass(superClass);
-         }
-         proxyFactory.setInterfaces(getInterfaces());
-         return proxyFactory;
       }
 
       public TypeInfo add(Type type)
