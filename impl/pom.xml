@@ -168,31 +168,6 @@
                </execution>
             </executions>
          </plugin>
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
-            <version>2.3.1</version>
-            <dependencies>
-               <dependency>
-                  <groupId>org.slf4j</groupId>
-                  <artifactId>slf4j-simple</artifactId>
-                  <version>${slf4j.version}</version>
-               </dependency>
-            </dependencies>
-            <configuration>
-               <effort>Max</effort>
-               <threshold>Default</threshold>
-               <xmlOutput>true</xmlOutput>
-               <skip>true</skip>
-            </configuration>
-            <executions>
-               <execution>
-                  <goals>
-                     <goal>check</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
 
       </plugins>
    </build>
@@ -209,6 +184,37 @@
                <artifactId>jaxws-api</artifactId>
             </dependency>
          </dependencies>
+      </profile>
+      <profile>
+         <id>findbugs</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>findbugs-maven-plugin</artifactId>
+                  <version>2.3.1</version>
+                  <dependencies>
+                     <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                        <version>${slf4j.version}</version>
+                     </dependency>
+                  </dependencies>
+                  <configuration>
+                     <effort>Max</effort>
+                     <threshold>Default</threshold>
+                     <xmlOutput>true</xmlOutput>
+                  </configuration>
+                  <executions>
+                     <execution>
+                        <goals>
+                           <goal>check</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
       </profile>
    </profiles>
 
