@@ -159,7 +159,7 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
                {
                   parameterType = clazz;
                }
-               WeldParameter<?, T> parameter = WeldParameterImpl.of(new Annotation[0], (Class<Object>) clazz, parameterType, this, i, classTransformer);
+               WeldParameter<?, T> parameter = WeldParameterImpl.of(new Annotation[0], clazz, parameterType, this, i, classTransformer);
                this.parameters.add(parameter);
             }
          }
@@ -185,7 +185,7 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
                }
             }
          }
-         
+
       }
       this.signature = new ConstructorSignatureImpl(this);
    }
@@ -268,12 +268,21 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
    public boolean equals(Object other)
    {
 
-      if (super.equals(other) && other instanceof WeldConstructor)
+      if (super.equals(other) && other instanceof WeldConstructor<?>)
       {
          WeldConstructor<?> that = (WeldConstructor<?>) other;
          return this.getJavaMember().equals(that.getJavaMember()) && this.getWeldParameters().equals(that.getWeldParameters());
       }
       return false;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      int hash = 1;
+      hash = hash * 31 + getJavaMember().hashCode();
+      hash = hash * 31 + getWeldParameters().hashCode();
+      return hash;
    }
 
    /**
@@ -294,9 +303,9 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
 
    public List<AnnotatedParameter<T>> getParameters()
    {
-      return Collections.unmodifiableList((List) parameters);
+      return Collections.<AnnotatedParameter<T>> unmodifiableList(parameters);
    }
-   
+
    public boolean isGeneric()
    {
       return getJavaMember().getTypeParameters().length > 0;

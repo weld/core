@@ -237,6 +237,12 @@ public class ImmutableArraySet<E> implements Set<E>
       }
       return false;
    }
+   
+   @Override
+   public int hashCode()
+   {
+      return elements.hashCode();
+   }
 
    @Override
    public String toString()

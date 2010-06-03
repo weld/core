@@ -17,14 +17,12 @@
 
 package org.jboss.weld.injection;
 
-import javax.decorator.Decorator;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import java.lang.annotation.Annotation;
 import java.util.List;
 
+import javax.decorator.Decorator;
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.weld.introspector.WeldConstructor;
-import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * A wrapper on a {@link ConstructorInjectionPoint}, to be used if a proxy subclass is instantiated instead of the

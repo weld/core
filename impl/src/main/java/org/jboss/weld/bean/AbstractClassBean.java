@@ -134,7 +134,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    // Decorators
    private List<Decorator<?>> decorators;
-   private Class<T> proxyClassForDecorators;
 
    // Interceptors
    private boolean hasSerializationOrInvocationInterceptorMethods;
@@ -205,7 +204,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
       DecorationHelper.getHelperStack().push(decorationHelper);
       proxy = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
-      decorationHelper = (DecorationHelper<T>) DecorationHelper.getHelperStack().pop();
+      DecorationHelper.getHelperStack().pop();
 
       if (proxy == null)
       {

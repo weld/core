@@ -189,6 +189,12 @@ public class ArraySet<E> implements Set<E>, Serializable
       }
       return false;
    }
+   
+   @Override
+   public int hashCode()
+   {
+      return elements.hashCode();
+   }
 
    @Override
    public String toString()

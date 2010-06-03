@@ -144,7 +144,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
                }
                else
                {
-                  return method.invoke(receiver, beanManager, creationalContext, CreationException.class);
+                  return method.invoke(null, beanManager, creationalContext, CreationException.class);
                }
             }
             
