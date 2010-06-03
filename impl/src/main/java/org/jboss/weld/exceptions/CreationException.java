@@ -17,12 +17,15 @@
 
 package org.jboss.weld.exceptions;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * A version of {@link javax.enterprise.inject.CreationException} that supports
  * message localization.
  * 
  * @author David Allen
  */
+@SuppressWarnings(value="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification="Workaround for exception classes poor i8ln support")
 public class CreationException extends javax.enterprise.inject.CreationException
 {
 

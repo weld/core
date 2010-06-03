@@ -39,6 +39,8 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Class that can take an AnnotatedType and return a unique string
  * representation of that type
@@ -52,6 +54,7 @@ public class AnnotatedTypes
     * Does the first stage of comparing AnnoatedCallables, however it cannot
     * compare the method parameters
     */
+   @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
    private static class AnnotatedCallableComparator<T> implements Comparator<AnnotatedCallable<? super T>>
    {
 
@@ -74,6 +77,7 @@ public class AnnotatedTypes
 
    }
 
+   @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
    private static class AnnotatedMethodComparator<T> implements Comparator<AnnotatedMethod<? super T>>
    {
 
@@ -106,6 +110,7 @@ public class AnnotatedTypes
 
    }
 
+   @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
    private static class AnnotatedConstructorComparator<T> implements Comparator<AnnotatedConstructor<? super T>>
    {
 
@@ -138,6 +143,7 @@ public class AnnotatedTypes
 
    }
 
+   @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
    private static class AnnotatedFieldComparator<T> implements Comparator<AnnotatedField<? super T>>
    {
 
@@ -157,6 +163,7 @@ public class AnnotatedTypes
 
    }
 
+   @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
    private static class AnnotationComparator implements Comparator<Annotation>
    {
 
@@ -168,6 +175,7 @@ public class AnnotatedTypes
       }
    }
 
+   @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
    private static class MethodComparator implements Comparator<Method>
    {
       

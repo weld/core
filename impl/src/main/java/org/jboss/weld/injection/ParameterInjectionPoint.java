@@ -47,6 +47,8 @@ import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X> implements WeldInjectionPoint<T, Object>, Serializable
 {
 
@@ -55,6 +57,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
       return new ParameterInjectionPoint<T, X>(declaringBean, parameter);
    }
 
+   @SuppressWarnings(value="SE_BAD_FIELD", justification="If the bean is not serializable, we won't ever try to serialize the injection point")
    private final Bean<?> declaringBean;
    private final WeldParameter<T, X> parameter;
    private final boolean delegate;

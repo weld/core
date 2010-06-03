@@ -44,9 +44,12 @@ import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> implements WeldInjectionPoint<T, Field>, Serializable
 {
 
+   @SuppressWarnings(value="SE_BAD_FIELD", justification="If the bean is not serializable, we won't ever try to serialize the injection point")
    private final Bean<?> declaringBean;
    private final WeldField<T, X> field;
    private final boolean delegate;

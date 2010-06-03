@@ -16,8 +16,9 @@
  */
 package org.jboss.weld.util.reflection.instantiation;
 
-import java.lang.reflect.Constructor;
 import static org.jboss.weld.logging.messages.ReflectionMessage.REFLECTIONFACTORY_INSTANTIATION_FAILED;
+
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import org.jboss.weld.exceptions.WeldException;
@@ -46,6 +47,7 @@ public class ReflectionFactoryInstantiator implements Instantiator
       }
       catch (Exception e)
       {
+         // TODO Catch explicit subclasses
          // OK to fail
       }
    }

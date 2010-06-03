@@ -23,13 +23,16 @@ import java.util.Map;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreationalContext<T>, Serializable
 {
 
    private static final long serialVersionUID = 7375854583908262422L;
    
-   // Only needed for creation, by the time it's serialized we don't need it
+   @SuppressWarnings(value="SE_TRANSIENT_FIELD_NOT_RESTORED", justification="Not needed after initial creation")
    private final transient Map<Contextual<?>, Object> incompleteInstances;
+   @SuppressWarnings(value="SE_TRANSIENT_FIELD_NOT_RESTORED", justification="Not needed after initial creation")
    private final transient Contextual<T> contextual;
    
    private final DependentInstancesStore dependentInstancesStore;

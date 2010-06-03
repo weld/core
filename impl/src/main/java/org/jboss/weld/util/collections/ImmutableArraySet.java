@@ -241,7 +241,7 @@ public class ImmutableArraySet<E> implements Set<E>
    @Override
    public int hashCode()
    {
-      return elements.hashCode();
+      return Arrays.hashCode(elements);
    }
 
    @Override

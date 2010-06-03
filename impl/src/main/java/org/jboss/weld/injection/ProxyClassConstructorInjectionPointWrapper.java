@@ -33,6 +33,8 @@ import org.jboss.weld.introspector.WeldConstructor;
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
+// TODO Needs equals/hashcode
+// TODO Would be clearer to make this either a wrapper or not
 public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorInjectionPoint<T>
 {
    private ConstructorInjectionPoint<T> originalConstructorInjectionPoint;

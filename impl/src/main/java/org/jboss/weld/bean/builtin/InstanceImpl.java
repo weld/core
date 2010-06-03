@@ -50,6 +50,7 @@ import org.jboss.weld.util.Names;
  * 
  * @param <T>
  */
+@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SE_NO_SUITABLE_CONSTRUCTOR", justification="Uses SerializationProxy")
 public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements Instance<T>, Serializable
 {
 

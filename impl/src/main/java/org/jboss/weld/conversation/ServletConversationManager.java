@@ -27,6 +27,8 @@ import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.servlet.ConversationBeanStore;
 import org.jboss.weld.servlet.HttpSessionManager;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 @SessionScoped
 public class ServletConversationManager extends AbstractConversationManager implements Serializable
 {
@@ -39,6 +41,7 @@ public class ServletConversationManager extends AbstractConversationManager impl
    private boolean sessionInvalidated;
 
    @Inject
+   @SuppressWarnings(value="SE_BAD_FIELD", justification="Injected field")
    private HttpSessionManager httpSessionManager;
    
    @Produces

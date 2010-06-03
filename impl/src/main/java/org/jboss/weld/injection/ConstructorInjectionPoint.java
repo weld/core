@@ -48,6 +48,8 @@ import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> implements WeldInjectionPoint<T, Constructor<T>>, Serializable
 {
 
@@ -72,6 +74,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
 
    }
 
+   @SuppressWarnings(value="SE_BAD_FIELD", justification="If the bean is not serializable, we won't ever try to serialize the injection point")
    private final Bean<T> declaringBean;
    private final WeldConstructor<T> constructor;
 

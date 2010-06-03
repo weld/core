@@ -17,12 +17,15 @@
 
 package org.jboss.weld.exceptions;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * An {@link java.lang.IllegalArgumentException} with support for
  * localized messages in Weld.
  * 
  * @author David Allen
  */
+@SuppressWarnings(value="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification="Workaround for exception classes poor i8ln support")
 public class IllegalArgumentException extends java.lang.IllegalArgumentException
 {
 

@@ -48,6 +48,7 @@ import org.jboss.weld.util.Observers;
  * @param <T> The type of event being wrapped
  * @see javax.enterprise.event.Event
  */
+@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SE_NO_SUITABLE_CONSTRUCTOR", justification="Uses SerializationProxy")
 public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T>, Serializable
 {
    

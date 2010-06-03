@@ -17,12 +17,15 @@
 
 package org.jboss.weld.exceptions;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * An extended version of {@link java.io.InvalidObjectException} that supports
  * localization.
  * 
  * @author David Allen
  */
+@SuppressWarnings(value="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification="Workaround for exception classes poor i8ln support")
 public class InvalidObjectException extends java.io.InvalidObjectException
 {
 

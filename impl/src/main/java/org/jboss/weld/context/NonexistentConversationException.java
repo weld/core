@@ -20,12 +20,15 @@ package org.jboss.weld.context;
 import org.jboss.weld.exceptions.WeldExceptionKeyMessage;
 import org.jboss.weld.exceptions.WeldExceptionMessage;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * A localized message version of the
  * {@link javax.enterprise.context.NonexistentConversationException}.
  * 
  * @author David Allen
  */
+@SuppressWarnings(value="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification="Workaround for exception classes poor i8ln support")
 public class NonexistentConversationException extends javax.enterprise.context.NonexistentConversationException
 {
 
