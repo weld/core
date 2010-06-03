@@ -335,13 +335,16 @@ public class WeldBootstrap implements Bootstrap
 
    public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive)
    {
-      if (beanDeployments.containsKey(beanDeploymentArchive))
+      synchronized (this)
       {
-         return beanDeployments.get(beanDeploymentArchive).getBeanManager();
-      }
-      else
-      {
-         return null;
+         if (beanDeployments.containsKey(beanDeploymentArchive))
+         {
+            return beanDeployments.get(beanDeploymentArchive).getBeanManager();
+         }
+         else
+         {
+            return null;
+         }
       }
    }
 

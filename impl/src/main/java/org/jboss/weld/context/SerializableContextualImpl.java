@@ -24,6 +24,8 @@ import org.jboss.weld.Container;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * A serializable version of contextual that knows how to restore the
  * original bean if necessary
@@ -44,7 +46,7 @@ public class SerializableContextualImpl<C extends Contextual<I>, I> extends Forw
 
    // A directly serializable contextual
    private C serialiazable;
-   
+   @SuppressWarnings(value="SE_TRANSIENT_FIELD_NOT_RESTORED", justification="A cache which is lazily loaded")
    // A cached, transient version of the contextual
    private transient C cached;
    

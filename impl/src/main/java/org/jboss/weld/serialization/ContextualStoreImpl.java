@@ -24,35 +24,35 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.PassivationCapable;
 
+import org.jboss.weld.context.SerializableContextualImpl;
+import org.jboss.weld.context.SerializableContextualInstanceImpl;
+import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 
-import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
-import org.jboss.weld.context.SerializableContextualImpl;
-import org.jboss.weld.context.SerializableContextualInstanceImpl;
-
 /**
  * Implementation of {@link org.jboss.weld.serialization.spi.ContextualStore}
- *
+ * 
  * @author Pete Muir
- *
+ * 
  */
 public class ContextualStoreImpl implements ContextualStore
 {
-   
+
    private static final String GENERATED_ID_PREFIX = ContextualStoreImpl.class.getName();
-   
+
    // The map containing container-local contextuals
    private final BiMap<Contextual<?>, String> contextuals;
-   
+
    // The map containing passivation capable contextuals
    private final ConcurrentMap<String, Contextual<?>> passivationCapableContextuals;
-   
+
    private final AtomicInteger idGenerator;
-   
+
    public ContextualStoreImpl()
    {
       this.idGenerator = new AtomicInteger(0);
@@ -82,15 +82,16 @@ public class ContextualStoreImpl implements ContextualStore
          return (C) passivationCapableContextuals.get(id);
       }
    }
-   
+
    /**
-    * Add a contextual (if not already present) to the store, and return
-    * it's id. If the contextual is passivation capable, it's id will
-    * be used, otherwise an id will be generated
+    * Add a contextual (if not already present) to the store, and return it's
+    * id. If the contextual is passivation capable, it's id will be used,
+    * otherwise an id will be generated
     * 
     * @param contextual the contexutal to add
     * @return the current id for the contextual
     */
+   @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="RV_RETURN_VALUE_OF_PUTIFABSENT_IGNORED", justification="Using non-standard semantics of putIfAbsent")
    public String putIfAbsent(Contextual<?> contextual)
    {
       if (contextual instanceof PassivationCapable)

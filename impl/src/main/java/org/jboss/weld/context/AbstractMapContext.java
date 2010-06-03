@@ -38,6 +38,8 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.slf4j.cal10n.LocLogger;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Base for the Context implementations. Delegates calls to the abstract
  * getBeanStorage and getActive to allow for different implementations (storage
@@ -75,6 +77,7 @@ public abstract class AbstractMapContext extends AbstractContext
     * 
     * @see javax.enterprise.context.spi.Context#get(BaseBean, boolean)
     */
+   @SuppressWarnings(value="UL_UNRELEASED_LOCK", justification="False positive from FindBugs")
    public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext)
    {
       if (!isActive())
@@ -102,6 +105,7 @@ public abstract class AbstractMapContext extends AbstractContext
          {
             if (needCreationLock)
             {
+               
                creationLock.lock();
                beanInstance = getBeanStore().get(id);
                if (beanInstance != null)

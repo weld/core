@@ -26,7 +26,6 @@ import static org.jboss.weld.logging.messages.UtilMessage.SECURITY_EXCEPTION_SCA
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Collections;
@@ -190,11 +189,10 @@ public class DefaultServiceLoader<S> implements Iterable<S>
 
    private void loadServiceFile(URL serviceFile)
    {
-      InputStream is = null;
+      BufferedReader reader = null;
       try
       {
-         is = serviceFile.openStream();
-         BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+         reader = new BufferedReader(new InputStreamReader(serviceFile.openStream(), "UTF-8"));
          String serviceClassName = null;
          while ((serviceClassName = reader.readLine()) != null)
          {
@@ -212,11 +210,11 @@ public class DefaultServiceLoader<S> implements Iterable<S>
       }
       finally
       {
-         if (is != null)
+         if (reader != null)
          {
             try
             {
-               is.close();
+               reader.close();
             }
             catch (IOException e)
             {
