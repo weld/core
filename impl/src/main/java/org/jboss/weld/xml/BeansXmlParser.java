@@ -22,9 +22,7 @@ import static org.jboss.weld.logging.messages.XmlMessage.PARSING_ERROR;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.net.URL;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -47,35 +45,14 @@ public class BeansXmlParser
    
    private final Iterable<URL> beansXmls;
    private final ResourceLoader resourceLoader;
-   private EnabledClasses enabledClasses = null;
 
-   public List<Class<?>> getEnabledAlternativeClasses()
+   public BeansXmlParser(ResourceLoader resourceLoader, Iterable<URL> beansXmls)
    {
-      return enabledClasses.getEnabledAlternativeClasses();
-   }
-
-   public List<Class<? extends Annotation>> getEnabledAlternativeStereotypes()
-   {
-      return enabledClasses.getEnabledAlternativeStereotypes();
-   }
-
-   public List<Class<?>> getEnabledDecoratorClasses()
-   {
-      return enabledClasses.getEnabledDecoratorClasses();
-   }
-
-   public List<Class<?>> getEnabledInterceptorClasses()
-   {
-      return enabledClasses.getEnabledInterceptorClasses();
-   }
-
-   public BeansXmlParser(ResourceLoader resourceLoader, Iterable<URL> beansXml)
-   {
-      this.beansXmls = beansXml;
+      this.beansXmls = beansXmls;
       this.resourceLoader = resourceLoader;
    }
 
-   public void parse()
+   public EnabledClasses parse()
    {
       DocumentBuilder documentBuilder = createDocumentBuilder();
       MergedElements mergedElements = new MergedElements();
@@ -96,7 +73,7 @@ public class BeansXmlParser
          }
          
       }
-      enabledClasses = EnabledClasses.of(mergedElements, resourceLoader);
+      return new EnabledClasses(resourceLoader, mergedElements);
    }
 
    private Document loadDocument(DocumentBuilder documentBuilder, URL beansXml)

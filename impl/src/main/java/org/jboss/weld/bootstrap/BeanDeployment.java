@@ -70,7 +70,10 @@ public class BeanDeployment
       ServiceRegistry services = new SimpleServiceRegistry();
       services.addAll(deploymentServices.entrySet());
       services.addAll(beanDeploymentArchive.getServices().entrySet());
-      this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
+      this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services, new BeansXmlParser(services.get(ResourceLoader.class), beanDeploymentArchive.getBeansXml()).parse());
+      log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes());
+      log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabledDecoratorClasses());
+      log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabledInterceptorClasses());
       if (beanManager.getServices().contains(EjbServices.class))
       {
          // Must populate EJB cache first, as we need it to detect whether a
@@ -81,8 +84,6 @@ public class BeanDeployment
       
       // Must at the Manager bean straight away, as it can be injected during startup!
       beanManager.addBean(new BeanManagerBean(beanManager));
-      
-      parseBeansXml();
    }
    
    public BeanManagerImpl getBeanManager()
@@ -98,33 +99,6 @@ public class BeanDeployment
    public BeanDeploymentArchive getBeanDeploymentArchive()
    {
       return beanDeploymentArchive;
-   }
-   
-   
-   private void parseBeansXml()
-   {
-      BeansXmlParser parser = new BeansXmlParser(beanManager.getServices().get(ResourceLoader.class), getBeanDeploymentArchive().getBeansXml());
-      parser.parse();
-      
-      if (parser.getEnabledAlternativeClasses() != null)
-      {
-         beanManager.setEnabledAlternativeClasses(parser.getEnabledAlternativeClasses());
-      }
-      if (parser.getEnabledAlternativeStereotypes() != null)
-      {
-         beanManager.setEnabledAlternativeStereotypes(parser.getEnabledAlternativeStereotypes());
-      }
-      if (parser.getEnabledDecoratorClasses() != null)
-      {
-         beanManager.setEnabledDecoratorClasses(parser.getEnabledDecoratorClasses());
-      }
-      if (parser.getEnabledInterceptorClasses() != null)
-      {
-         beanManager.setEnabledInterceptorClasses(parser.getEnabledInterceptorClasses());
-      }
-      log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes());
-      log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabledDecoratorClasses());
-      log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabledInterceptorClasses());
    }
    
    // TODO Move class stuff into startContainer phase

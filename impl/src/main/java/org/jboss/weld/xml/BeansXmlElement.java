@@ -34,10 +34,10 @@ import org.w3c.dom.Text;
  * @author Nicklas Karlsson
  * 
  */
-public class BeansXmlElement
+class BeansXmlElement
 {
-   private URL file;
-   private Element element;
+   private final URL file;
+   private final Element element;
 
    BeansXmlElement(URL file, Element element)
    {

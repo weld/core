@@ -98,6 +98,7 @@ import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.serviceProvider.DefaultServiceLoaderFactory;
 import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.jboss.weld.ws.WSApiAbstraction;
+import org.jboss.weld.xml.EnabledClasses;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -291,7 +292,7 @@ public class WeldBootstrap implements Bootstrap
          deploymentServices.add(TypeStore.class, implementationServices.get(TypeStore.class));
 
          this.environment = environment;
-         this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices);
+         this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices, new EnabledClasses());
 
          Container.initialize(deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
          Container.instance().setState(ContainerState.STARTING);

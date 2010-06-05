@@ -116,6 +116,7 @@ import org.jboss.weld.util.collections.CopyOnWriteArrayListSupplier;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.xml.EnabledClasses;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
@@ -168,10 +169,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     * archive accessibility, and the configuration for this bean deployment
     * archive
     */
-   private transient Collection<Class<?>> enabledAlternativeClasses;
-   private transient Collection<Class<? extends Annotation>> enabledAlternativeStereotypes;
-   private transient List<Class<?>> enabledDecoratorClasses;
-   private transient List<Class<?>> enabledInterceptorClasses;
+   private transient final EnabledClasses enabledClasses;
    private transient final Set<CurrentActivity> currentActivities;   
 
    /*
@@ -234,7 +232,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     * @param serviceRegistry
     * @return
     */
-   public static BeanManagerImpl newRootManager(String id, ServiceRegistry serviceRegistry)
+   public static BeanManagerImpl newRootManager(String id, ServiceRegistry serviceRegistry, EnabledClasses enabledClasses)
    {  
       ListMultimap<Class<? extends Annotation>, Context> contexts = Multimaps.newListMultimap(new ConcurrentHashMap<Class<? extends Annotation>, Collection<Context>>(), CopyOnWriteArrayListSupplier.<Context>instance());
 
@@ -251,10 +249,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             contexts, 
             new CopyOnWriteArraySet<CurrentActivity>(), 
             new HashMap<Contextual<?>, Contextual<?>>(), 
-            new ArrayList<Class<?>>(),
-            new ArrayList<Class<? extends Annotation>>(),
-            new ArrayList<Class<?>>(),
-            new ArrayList<Class<?>>(), 
+            enabledClasses,
             id,
             new AtomicInteger());
    }
@@ -265,7 +260,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     * @param serviceRegistry
     * @return
     */
-   public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services)
+   public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services, EnabledClasses enabledClasses)
    {  
       return new BeanManagerImpl(
             services, 
@@ -280,10 +275,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             rootManager.getContexts(), 
             new CopyOnWriteArraySet<CurrentActivity>(), 
             new HashMap<Contextual<?>, Contextual<?>>(), 
-            new ArrayList<Class<?>>(),
-            new ArrayList<Class<? extends Annotation>>(),
-            new ArrayList<Class<?>>(),
-            new ArrayList<Class<?>>(),
+            enabledClasses,
             id,
             new AtomicInteger());
    }
@@ -319,10 +311,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             parentManager.getContexts(), 
             parentManager.getCurrentActivities(), 
             parentManager.getSpecializedBeans(),
-            parentManager.getEnabledAlternativeClasses(),
-            parentManager.getEnabledAlternativeStereotypes(),
-            parentManager.getEnabledDecoratorClasses(),
-            parentManager.getEnabledInterceptorClasses(),
+            parentManager.getEnabledClasses(),
             new StringBuilder().append(parentManager.getChildIds().incrementAndGet()).toString(),
             parentManager.getChildIds());
    }
@@ -346,10 +335,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
          ListMultimap<Class<? extends Annotation>, Context> contexts, 
          Set<CurrentActivity> currentActivities, 
          Map<Contextual<?>, Contextual<?>> specializedBeans, 
-         Collection<Class<?>> enabledAlternativeClasses,
-         Collection<Class<? extends Annotation>> enabledAlternativeStereotypes,
-         List<Class<?>> enabledDecoratorClasses,
-         List<Class<?>> enabledInterceptorClasses,
+         EnabledClasses enabledClasses,
          String id,
          AtomicInteger childIds)
    {
@@ -364,10 +350,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       this.currentActivities = currentActivities;
       this.specializedBeans = specializedBeans;
       this.observers = observers;
-      this.enabledAlternativeClasses = enabledAlternativeClasses;
-      this.enabledAlternativeStereotypes = enabledAlternativeStereotypes;
-      setEnabledDecoratorClasses(enabledDecoratorClasses);
-      setEnabledInterceptorClasses(enabledInterceptorClasses);
+      this.enabledClasses = enabledClasses;
       this.namespaces = namespaces;
       this.id = id;
       this.childIds = new AtomicInteger();
@@ -483,7 +466,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public Collection<Class<?>> getEnabledAlternativeClasses()
    {
-      return Collections.unmodifiableCollection(enabledAlternativeClasses);
+      return getEnabledClasses().getEnabledAlternativeClasses();
    }
    
    /**
@@ -491,7 +474,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public Collection<Class<? extends Annotation>> getEnabledAlternativeStereotypes()
    {
-      return Collections.unmodifiableCollection(enabledAlternativeStereotypes);
+      return getEnabledClasses().getEnabledAlternativeStereotypes();
+   }
+   
+   private EnabledClasses getEnabledClasses()
+   {
+      return enabledClasses;
    }
    
    public boolean isBeanEnabled(Bean<?> bean)
@@ -504,7 +492,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public List<Class<?>> getEnabledDecoratorClasses()
    {
-      return Collections.unmodifiableList(enabledDecoratorClasses);
+      return getEnabledClasses().getEnabledDecoratorClasses();
    }
    
    /**
@@ -512,27 +500,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public List<Class<?>> getEnabledInterceptorClasses()
    {
-      return Collections.unmodifiableList(enabledInterceptorClasses);
-   }
-
-   public void setEnabledAlternativeClasses(Collection<Class<?>> enabledAlternativeClasses)
-   {
-      this.enabledAlternativeClasses = enabledAlternativeClasses;
-   }
-   
-   public void setEnabledAlternativeStereotypes(Collection<Class<? extends Annotation>> enabledAlternativeSterotypes)
-   {
-      this.enabledAlternativeStereotypes = enabledAlternativeSterotypes;
-   }
-   
-   public void setEnabledDecoratorClasses(List<Class<?>> enabledDecoratorClasses)
-   {
-      this.enabledDecoratorClasses = enabledDecoratorClasses;
-   }
-   
-   public void setEnabledInterceptorClasses(List<Class<?>> enabledInterceptorClasses)
-   {
-      this.enabledInterceptorClasses = enabledInterceptorClasses;
+      return getEnabledClasses().getEnabledInterceptorClasses();
    }
    
    public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers)
@@ -1202,10 +1170,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
       this.currentActivities.clear();
       this.decoratorResolver.clear();
       this.decorators.clear();
-      this.enabledDecoratorClasses.clear();
-      this.enabledInterceptorClasses.clear();
-      this.enabledAlternativeClasses.clear();
-      this.enabledAlternativeStereotypes.clear();
       this.enterpriseBeans.clear();
       this.interceptorResolver.clear();
       this.interceptors.clear();

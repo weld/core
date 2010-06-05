@@ -18,7 +18,7 @@ package org.jboss.weld.xml;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -30,77 +30,64 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public class EnabledClasses
 {
-   private List<Class<? extends Annotation>> enabledAlternativeStereotypes;
-   private List<Class<?>> enabledAlternativeClasses;
-   private List<Class<?>> enabledDecoratorClasses;
-   private List<Class<?>> enabledInterceptorClasses;
-   private ResourceLoader resourceLoader;
+   
+   private final List<Class<? extends Annotation>> enabledAlternativeStereotypes;
+   private final List<Class<?>> enabledAlternativeClasses;
+   private final List<Class<?>> enabledDecoratorClasses;
+   private final List<Class<?>> enabledInterceptorClasses;
 
-   private EnabledClasses(MergedElements beanXmlElements, ResourceLoader resourceLoader)
+   public EnabledClasses()
    {
-      enabledAlternativeStereotypes = new ArrayList<Class<? extends Annotation>>();
-      enabledAlternativeClasses = new ArrayList<Class<?>>();
-      enabledDecoratorClasses = new ArrayList<Class<?>>();
-      enabledInterceptorClasses = new ArrayList<Class<?>>();
-      this.resourceLoader = resourceLoader;
-      process(beanXmlElements);
+      this.enabledAlternativeClasses = new ArrayList<Class<?>>();
+      this.enabledAlternativeStereotypes = new ArrayList<Class<? extends Annotation>>();
+      this.enabledDecoratorClasses = new ArrayList<Class<?>>();
+      this.enabledInterceptorClasses = new ArrayList<Class<?>>();
    }
-
-   public static EnabledClasses of(MergedElements beanXmlElements, ResourceLoader resourceLoader)
+   
+   EnabledClasses(ResourceLoader resourceLoader, MergedElements beanXmlElements)
    {
-      return new EnabledClasses(beanXmlElements, resourceLoader);
-   }
-
-   private void process(MergedElements beanXmlElements)
-   {
-      processAlternatives(beanXmlElements.getAlternativesElements());
-      enabledDecoratorClasses.addAll(getClassesInElements(beanXmlElements.getDecoratorsElements()));
-      enabledInterceptorClasses.addAll(getClassesInElements(beanXmlElements.getInterceptorsElements()));
-   }
-
-   private void processAlternatives(List<BeansXmlElement> alternativesElements)
-   {
-      Collection<Class<?>> classes = getClassesInElements(alternativesElements);
-      for (Class<?> clazz : classes)
+      this();
+      for (BeansXmlElement element : beanXmlElements.getAlternativesElements())
       {
-         if (clazz.isAnnotation())
+         for (Class<?> clazz : element.getClasses(resourceLoader))
          {
-            enabledAlternativeStereotypes.add(clazz.asSubclass(Annotation.class));
-         }
-         else
-         {
-            enabledAlternativeClasses.add(clazz);
+            if (clazz.isAnnotation())
+            {
+               this.enabledAlternativeStereotypes.add(clazz.asSubclass(Annotation.class));
+            }
+            else
+            {
+               this.enabledAlternativeClasses.add(clazz);
+            }
          }
       }
-   }
-
-   private Collection<Class<?>> getClassesInElements(List<BeansXmlElement> elements)
-   {
-      List<Class<?>> classes = new ArrayList<Class<?>>();
-      for (BeansXmlElement element : elements)
+      for (BeansXmlElement element : beanXmlElements.getDecoratorsElements())
       {
-         classes.addAll(element.getClasses(resourceLoader));
+         this.enabledDecoratorClasses.addAll(element.getClasses(resourceLoader));
       }
-      return classes;
+      for (BeansXmlElement element : beanXmlElements.getInterceptorsElements())
+      {
+         this.enabledInterceptorClasses.addAll(element.getClasses(resourceLoader));
+      }
    }
 
    public List<Class<? extends Annotation>> getEnabledAlternativeStereotypes()
    {
-      return enabledAlternativeStereotypes;
+      return Collections.unmodifiableList(enabledAlternativeStereotypes);
    }
 
    public List<Class<?>> getEnabledAlternativeClasses()
    {
-      return enabledAlternativeClasses;
+      return Collections.unmodifiableList(enabledAlternativeClasses);
    }
 
    public List<Class<?>> getEnabledDecoratorClasses()
    {
-      return enabledDecoratorClasses;
+      return Collections.unmodifiableList(enabledDecoratorClasses);
    }
 
    public List<Class<?>> getEnabledInterceptorClasses()
    {
-      return enabledInterceptorClasses;
+      return Collections.unmodifiableList(enabledInterceptorClasses);
    }
 }

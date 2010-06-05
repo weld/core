@@ -22,6 +22,7 @@ import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_INTERCEPTORS;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jboss.weld.logging.messages.XmlMessage;
@@ -34,11 +35,18 @@ import org.w3c.dom.NodeList;
  * @author Nicklas Karlsson
  * 
  */
-public class MergedElements
+class MergedElements
 {
-   private List<BeansXmlElement> alternativesElements = new ArrayList<BeansXmlElement>();
-   private List<BeansXmlElement> decoratorsElements = new ArrayList<BeansXmlElement>();
-   private List<BeansXmlElement> interceptorsElements = new ArrayList<BeansXmlElement>();
+   private List<BeansXmlElement> alternativesElements;
+   private List<BeansXmlElement> decoratorsElements;
+   private List<BeansXmlElement> interceptorsElements;
+   
+   public MergedElements()
+   {
+      this.alternativesElements = new ArrayList<BeansXmlElement>();
+      this.decoratorsElements = new ArrayList<BeansXmlElement>();
+      this.interceptorsElements = new ArrayList<BeansXmlElement>();
+   }
 
 
    public void merge(URL url, Document beansXmlDocument, String namespace)
@@ -68,17 +76,17 @@ public class MergedElements
    
    public List<BeansXmlElement> getAlternativesElements()
    {
-      return alternativesElements;
+      return Collections.unmodifiableList(alternativesElements);
    }
 
    public List<BeansXmlElement> getDecoratorsElements()
    {
-      return decoratorsElements;
+      return Collections.unmodifiableList(decoratorsElements);
    }
 
    public List<BeansXmlElement> getInterceptorsElements()
    {
-      return interceptorsElements;
+      return Collections.unmodifiableList(interceptorsElements);
    }
 
 }
