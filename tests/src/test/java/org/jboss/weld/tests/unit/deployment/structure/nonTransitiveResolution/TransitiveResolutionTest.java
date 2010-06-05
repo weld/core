@@ -49,9 +49,9 @@ public class TransitiveResolutionTest
          BeanManagerImpl warBeanManager = container.getBeanManager();
          BeanManagerImpl jar1BeanManager = container.getLifecycle().getBootstrap().getManager(jar1);         
          BeanManagerImpl jar2BeanManager = container.getLifecycle().getBootstrap().getManager(jar2);
-         assert warBeanManager.getEnabledAlternativeClasses().isEmpty();
-         assert !jar1BeanManager.getEnabledAlternativeClasses().isEmpty();
-         assert jar2BeanManager.getEnabledAlternativeClasses().isEmpty();
+         assert warBeanManager.getEnabledClasses().getAlternativeClasses().isEmpty();
+         assert !jar1BeanManager.getEnabledClasses().getAlternativeClasses().isEmpty();
+         assert jar2BeanManager.getEnabledClasses().getAlternativeClasses().isEmpty();
       }
       finally
       {
@@ -82,9 +82,9 @@ public class TransitiveResolutionTest
          BeanManagerImpl warBeanManager = container.getBeanManager();
          BeanManagerImpl jar1BeanManager = container.getLifecycle().getBootstrap().getManager(jar1);         
          BeanManagerImpl jar2BeanManager = container.getLifecycle().getBootstrap().getManager(jar2);
-         assert warBeanManager.getEnabledAlternativeClasses().isEmpty();
-         assert !jar1BeanManager.getEnabledAlternativeClasses().isEmpty();
-         assert !jar2BeanManager.getEnabledAlternativeClasses().isEmpty();
+         assert warBeanManager.getEnabledClasses().getAlternativeClasses().isEmpty();
+         assert !jar1BeanManager.getEnabledClasses().getAlternativeClasses().isEmpty();
+         assert !jar2BeanManager.getEnabledClasses().getAlternativeClasses().isEmpty();
       }
       finally
       {

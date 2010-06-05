@@ -31,12 +31,12 @@ import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.EnabledClasses;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.xml.EnabledClasses;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

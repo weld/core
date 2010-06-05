@@ -116,7 +116,6 @@ import org.jboss.weld.util.collections.CopyOnWriteArrayListSupplier;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.xml.EnabledClasses;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
@@ -466,41 +465,22 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public Collection<Class<?>> getEnabledAlternativeClasses()
    {
-      return getEnabledClasses().getEnabledAlternativeClasses();
+      return getEnabledClasses().getAlternativeClasses();
    }
    
    /**
-    * @return the enabled alternative stereotypes
+    * Enabled Alternatives, Interceptors and Decorators
+    * 
+    * @return
     */
-   public Collection<Class<? extends Annotation>> getEnabledAlternativeStereotypes()
-   {
-      return getEnabledClasses().getEnabledAlternativeStereotypes();
-   }
-   
-   private EnabledClasses getEnabledClasses()
+   public EnabledClasses getEnabledClasses()
    {
       return enabledClasses;
    }
    
    public boolean isBeanEnabled(Bean<?> bean)
    {
-      return Beans.isBeanEnabled(bean, getEnabledAlternativeClasses(), getEnabledAlternativeStereotypes());   
-   }
-
-   /**
-    * @return the enabledDecoratorClasses
-    */
-   public List<Class<?>> getEnabledDecoratorClasses()
-   {
-      return getEnabledClasses().getEnabledDecoratorClasses();
-   }
-   
-   /**
-    * @return the enabledInterceptorClasses
-    */
-   public List<Class<?>> getEnabledInterceptorClasses()
-   {
-      return getEnabledClasses().getEnabledInterceptorClasses();
+      return Beans.isBeanEnabled(bean, getEnabledClasses().getAlternativeClasses(), getEnabledClasses().getAlternativeStereotypes());   
    }
    
    public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers)
@@ -860,7 +840,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Manager\n");
-      buffer.append("Enabled alternatives: " + getEnabledAlternativeClasses() + " " + getEnabledAlternativeStereotypes() + "\n");
+      buffer.append("Enabled alternatives: " + getEnabledClasses().getAlternativeClasses() + " " + getEnabledClasses().getAlternativeStereotypes() + "\n");
       buffer.append("Registered contexts: " + contexts.keySet() + "\n");
       buffer.append("Registered beans: " + getBeans().size() + "\n");
       buffer.append("Specialized beans: " + specializedBeans.size() + "\n");

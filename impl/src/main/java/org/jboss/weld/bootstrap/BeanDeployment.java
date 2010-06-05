@@ -71,9 +71,9 @@ public class BeanDeployment
       services.addAll(deploymentServices.entrySet());
       services.addAll(beanDeploymentArchive.getServices().entrySet());
       this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services, new BeansXmlParser(services.get(ResourceLoader.class), beanDeploymentArchive.getBeansXml()).parse());
-      log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes());
-      log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabledDecoratorClasses());
-      log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabledInterceptorClasses());
+      log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabledClasses().getAlternativeClasses(), beanManager.getEnabledClasses().getAlternativeStereotypes());
+      log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabledClasses().getDecorators());
+      log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabledClasses().getInterceptors());
       if (beanManager.getServices().contains(EjbServices.class))
       {
          // Must populate EJB cache first, as we need it to detect whether a

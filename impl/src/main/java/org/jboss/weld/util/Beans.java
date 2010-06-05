@@ -591,7 +591,7 @@ public class Beans
          Set<T> result = new HashSet<T>();
          for (T bean : beans)
          {
-            if (isBeanEnabled(bean, beanManager.getEnabledAlternativeClasses(), beanManager.getEnabledAlternativeStereotypes()) && !isSpecialized(bean, beans, beanManager))
+            if (isBeanEnabled(bean, beanManager.getEnabledClasses().getAlternativeClasses(), beanManager.getEnabledClasses().getAlternativeStereotypes()) && !isSpecialized(bean, beans, beanManager))
             {
                result.add(bean);
             }

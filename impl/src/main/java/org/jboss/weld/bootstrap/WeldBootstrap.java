@@ -78,6 +78,7 @@ import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.logging.messages.VersionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.EnabledClasses;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
@@ -98,7 +99,6 @@ import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.serviceProvider.DefaultServiceLoaderFactory;
 import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.jboss.weld.ws.WSApiAbstraction;
-import org.jboss.weld.xml.EnabledClasses;
 import org.slf4j.cal10n.LocLogger;
 
 /**

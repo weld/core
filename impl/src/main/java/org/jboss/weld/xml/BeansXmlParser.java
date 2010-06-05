@@ -22,12 +22,16 @@ import static org.jboss.weld.logging.messages.XmlMessage.PARSING_ERROR;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.jboss.weld.manager.EnabledClasses;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -73,7 +77,33 @@ public class BeansXmlParser
          }
          
       }
-      return new EnabledClasses(resourceLoader, mergedElements);
+      List<Class<?>> enabledAlternativeClasses = new ArrayList<Class<?>>();
+      List<Class<? extends Annotation>> enabledAlternativeStereotypes = new ArrayList<Class<? extends Annotation>>();
+      List<Class<?>> enabledDecoratorClasses = new ArrayList<Class<?>>();
+      List<Class<?>> enabledInterceptorClasses = new ArrayList<Class<?>>();
+      for (BeansXmlElement element : mergedElements.getAlternativesElements())
+      {
+         for (Class<?> clazz : element.getClasses(resourceLoader))
+         {
+            if (clazz.isAnnotation())
+            {
+               enabledAlternativeStereotypes.add(clazz.asSubclass(Annotation.class));
+            }
+            else
+            {
+               enabledAlternativeClasses.add(clazz);
+            }
+         }
+      }
+      for (BeansXmlElement element : mergedElements.getDecoratorsElements())
+      {
+         enabledDecoratorClasses.addAll(element.getClasses(resourceLoader));
+      }
+      for (BeansXmlElement element : mergedElements.getInterceptorsElements())
+      {
+         enabledInterceptorClasses.addAll(element.getClasses(resourceLoader));
+      }
+      return new EnabledClasses(enabledAlternativeStereotypes, enabledAlternativeClasses, enabledDecoratorClasses, enabledInterceptorClasses);
    }
 
    private Document loadDocument(DocumentBuilder documentBuilder, URL beansXml)

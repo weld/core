@@ -18,7 +18,6 @@ package org.jboss.weld.bootstrap;
 
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED;
@@ -52,6 +51,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTI
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN;
 import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR;
+import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -471,9 +471,9 @@ public class Validator implements Service
       {
          interceptorBeanClasses.add(interceptor.getBeanClass());
       }
-      for (Class<?> enabledInterceptorClass : beanManager.getEnabledInterceptorClasses())
+      for (Class<?> enabledInterceptorClass : beanManager.getEnabledClasses().getInterceptors())
       {
-         if (beanManager.getEnabledInterceptorClasses().indexOf(enabledInterceptorClass) < beanManager.getEnabledInterceptorClasses().lastIndexOf(enabledInterceptorClass))
+         if (beanManager.getEnabledClasses().getInterceptors().indexOf(enabledInterceptorClass) < beanManager.getEnabledClasses().getInterceptors().lastIndexOf(enabledInterceptorClass))
          {
             throw new DeploymentException(INTERCEPTOR_SPECIFIED_TWICE, enabledInterceptorClass + " specified twice");
          }
@@ -492,9 +492,9 @@ public class Validator implements Service
       {
          decoratorBeanClasses.add(bean.getBeanClass());
       }
-      for (Class<?> clazz : beanManager.getEnabledDecoratorClasses())
+      for (Class<?> clazz : beanManager.getEnabledClasses().getDecorators())
       {
-         if (beanManager.getEnabledDecoratorClasses().indexOf(clazz) < beanManager.getEnabledDecoratorClasses().lastIndexOf(clazz))
+         if (beanManager.getEnabledClasses().getDecorators().indexOf(clazz) < beanManager.getEnabledClasses().getDecorators().lastIndexOf(clazz))
          {
             throw new DeploymentException(DECORATOR_SPECIFIED_TWICE, clazz);
          }
@@ -508,7 +508,7 @@ public class Validator implements Service
    private void validateEnabledAlternatives(BeanManagerImpl beanManager)
    {
       List<Class<?>> seenAlternatives = new ArrayList<Class<?>>();
-      for (Class<? extends Annotation> stereotype : beanManager.getEnabledAlternativeStereotypes())
+      for (Class<? extends Annotation> stereotype : beanManager.getEnabledClasses().getAlternativeStereotypes())
       {
          if (!stereotype.isAnnotationPresent(Alternative.class))
          {
@@ -520,7 +520,7 @@ public class Validator implements Service
          }
          seenAlternatives.add(stereotype);
       }
-      for (Class<?> clazz : beanManager.getEnabledAlternativeClasses())
+      for (Class<?> clazz : beanManager.getEnabledClasses().getAlternativeClasses())
       {
          if (!clazz.isAnnotationPresent(Alternative.class))
          {
@@ -571,7 +571,7 @@ public class Validator implements Service
    {
       if (ij.getBean() instanceof Decorator<?>)
       {
-         if (beanManager.getEnabledDecoratorClasses().contains(ij.getBean().getBeanClass()))
+         if (beanManager.getEnabledClasses().getDecorators().contains(ij.getBean().getBeanClass()))
          {
             return resolvedBeans.size() > 0;
          }

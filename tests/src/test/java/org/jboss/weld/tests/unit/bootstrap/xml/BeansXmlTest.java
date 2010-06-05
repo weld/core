@@ -110,8 +110,8 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("alternative.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      assert container.getBeanManager().getEnabledAlternativeClasses().size() == 1;
-      assert container.getBeanManager().getEnabledAlternativeClasses().iterator().next() == Alt.class;
+      assert container.getBeanManager().getEnabledClasses().getAlternativeClasses().size() == 1;
+      assert container.getBeanManager().getEnabledClasses().getAlternativeClasses().iterator().next() == Alt.class;
       container.stopContainer();
    }
 
@@ -121,8 +121,8 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("decorator.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      assert container.getBeanManager().getEnabledDecoratorClasses().size() == 1;
-      assert container.getBeanManager().getEnabledDecoratorClasses().iterator().next() == Dec.class;
+      assert container.getBeanManager().getEnabledClasses().getDecorators().size() == 1;
+      assert container.getBeanManager().getEnabledClasses().getDecorators().iterator().next() == Dec.class;
       container.stopContainer();
    }
 
@@ -132,8 +132,8 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("interceptor.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      assert container.getBeanManager().getEnabledInterceptorClasses().size() == 1;
-      assert container.getBeanManager().getEnabledInterceptorClasses().iterator().next() == Int.class;
+      assert container.getBeanManager().getEnabledClasses().getInterceptors().size() == 1;
+      assert container.getBeanManager().getEnabledClasses().getInterceptors().iterator().next() == Int.class;
       container.stopContainer();
    }
 
@@ -143,12 +143,12 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("alternative.xml"), getClass().getResource("decorator.xml"), getClass().getResource("interceptor.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      assert container.getBeanManager().getEnabledAlternativeClasses().size() == 1;
-      assert container.getBeanManager().getEnabledAlternativeClasses().iterator().next() == Alt.class;
-      assert container.getBeanManager().getEnabledInterceptorClasses().size() == 1;
-      assert container.getBeanManager().getEnabledInterceptorClasses().iterator().next() == Int.class;
-      assert container.getBeanManager().getEnabledDecoratorClasses().size() == 1;
-      assert container.getBeanManager().getEnabledDecoratorClasses().iterator().next() == Dec.class;
+      assert container.getBeanManager().getEnabledClasses().getAlternativeClasses().size() == 1;
+      assert container.getBeanManager().getEnabledClasses().getAlternativeClasses().iterator().next() == Alt.class;
+      assert container.getBeanManager().getEnabledClasses().getInterceptors().size() == 1;
+      assert container.getBeanManager().getEnabledClasses().getInterceptors().iterator().next() == Int.class;
+      assert container.getBeanManager().getEnabledClasses().getDecorators().size() == 1;
+      assert container.getBeanManager().getEnabledClasses().getDecorators().iterator().next() == Dec.class;
       container.stopContainer();
    }
 
@@ -165,8 +165,8 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("namespaced.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      assert container.getBeanManager().getEnabledAlternativeClasses().size() == 1;
-      assert container.getBeanManager().getEnabledAlternativeClasses().iterator().next() == Alt.class;
+      assert container.getBeanManager().getEnabledClasses().getAlternativeClasses().size() == 1;
+      assert container.getBeanManager().getEnabledClasses().getAlternativeClasses().iterator().next() == Alt.class;
       container.stopContainer();
    }
    
@@ -177,8 +177,8 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("nonDefaultNamespaced.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      assert container.getBeanManager().getEnabledAlternativeClasses().size() == 1;
-      assert container.getBeanManager().getEnabledAlternativeClasses().iterator().next() == Alt.class;
+      assert container.getBeanManager().getEnabledClasses().getAlternativeClasses().size() == 1;
+      assert container.getBeanManager().getEnabledClasses().getAlternativeClasses().iterator().next() == Alt.class;
       container.stopContainer();
    }
 
@@ -191,8 +191,8 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("nonPrettyPrinted.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      assert container.getBeanManager().getEnabledAlternativeClasses().size() == 1;
-      assert container.getBeanManager().getEnabledAlternativeClasses().iterator().next() == Alt.class;
+      assert container.getBeanManager().getEnabledClasses().getAlternativeClasses().size() == 1;
+      assert container.getBeanManager().getEnabledClasses().getAlternativeClasses().iterator().next() == Alt.class;
       container.stopContainer();
    }
 
