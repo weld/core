@@ -42,6 +42,9 @@ import org.xml.sax.SAXException;
  */
 public class BeansXmlParser
 {
+   
+   public static final String NAMESPACE = "http://java.sun.com/xml/ns/javaee";
+   
    private final Iterable<URL> beansXmls;
    private final ResourceLoader resourceLoader;
    private EnabledClasses enabledClasses = null;
@@ -74,7 +77,7 @@ public class BeansXmlParser
 
    public void parse()
    {
-      DocumentBuilder documentBuilder = getDocumentBuilder();
+      DocumentBuilder documentBuilder = createDocumentBuilder();
       MergedElements mergedElements = new MergedElements();
       for (URL beansXml : beansXmls)
       {
@@ -82,13 +85,21 @@ public class BeansXmlParser
          {
             continue;
          }
-         Document document = getDocument(documentBuilder, beansXml);
-         mergedElements.merge(beansXml, document);
+         Document document = loadDocument(documentBuilder, beansXml);
+         if (document.getNamespaceURI() == null)
+         {
+            mergedElements.merge(beansXml, document, "*");
+         }
+         else
+         {
+            mergedElements.merge(beansXml, document, NAMESPACE);
+         }
+         
       }
       enabledClasses = EnabledClasses.of(mergedElements, resourceLoader);
    }
 
-   private Document getDocument(DocumentBuilder documentBuilder, URL beansXml)
+   private Document loadDocument(DocumentBuilder documentBuilder, URL beansXml)
    {
       Document document;
       InputStream in = null;
@@ -151,11 +162,13 @@ public class BeansXmlParser
       }
    }
 
-   private DocumentBuilder getDocumentBuilder()
+   private DocumentBuilder createDocumentBuilder()
    {
       try
       {
-         return DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+         factory.setNamespaceAware(true);
+         return factory.newDocumentBuilder();
       }
       catch (ParserConfigurationException e)
       {

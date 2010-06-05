@@ -41,25 +41,25 @@ public class MergedElements
    private List<BeansXmlElement> interceptorsElements = new ArrayList<BeansXmlElement>();
 
 
-   public void merge(URL url, Document beansXmlDocument)
+   public void merge(URL url, Document beansXmlDocument, String namespace)
    {
       Element documentElement = beansXmlDocument.getDocumentElement();
-      alternativesElements.addAll(getNamedElement(url, documentElement, "alternatives", MULTIPLE_ALTERNATIVES));
-      interceptorsElements.addAll(getNamedElement(url, documentElement, "interceptors", MULTIPLE_INTERCEPTORS));
-      decoratorsElements.addAll(getNamedElement(url, documentElement, "decorators", MULTIPLE_DECORATORS));
+      alternativesElements.addAll(findNamedElement(url, documentElement, namespace, "alternatives", MULTIPLE_ALTERNATIVES));
+      interceptorsElements.addAll(findNamedElement(url, documentElement, namespace, "interceptors", MULTIPLE_INTERCEPTORS));
+      decoratorsElements.addAll(findNamedElement(url, documentElement, namespace, "decorators", MULTIPLE_DECORATORS));
    }
 
-   private List<BeansXmlElement> getNamedElement(URL url, Element beans, String name, XmlMessage multipleViolationMessage)
+   private List<BeansXmlElement> findNamedElement(URL url, Element beans, String namespace, String name, XmlMessage multipleViolationMessage)
    {
       List<BeansXmlElement> elements = new ArrayList<BeansXmlElement>();
-      NodeList nodeList = beans.getElementsByTagName(name);
+      NodeList nodeList = beans.getElementsByTagNameNS(namespace, name);
       if (nodeList.getLength() > 1)
       {
          throw new WeldXmlException(multipleViolationMessage);
       }
       else if (nodeList.getLength() == 1)
       {
-         BeansXmlElement element = BeansXmlElement.of(url, nodeList.item(0));
+         BeansXmlElement element = new BeansXmlElement(url, (Element) nodeList.item(0));
          elements.add(element);
       }
       return elements;

@@ -39,7 +39,7 @@ public class BeansXmlElement
    private URL file;
    private Element element;
 
-   private BeansXmlElement(URL file, Element element)
+   BeansXmlElement(URL file, Element element)
    {
       super();
       this.file = file;
@@ -57,11 +57,6 @@ public class BeansXmlElement
          }
       }
       return null;
-   }
-
-   public static BeansXmlElement of(URL file, Node element)
-   {
-      return new BeansXmlElement(file, (Element) element);
    }
 
    public List<Class<?>> getClasses(ResourceLoader resourceLoader)
