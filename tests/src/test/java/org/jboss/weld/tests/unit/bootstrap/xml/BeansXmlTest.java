@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 @SuppressWarnings("unchecked")
 public class BeansXmlTest
 {
-   private class FailedDeployment
+   private static class FailedDeployment
    {
       private List<Class<?>> beans = Collections.emptyList();
       private List<URL> beansXml = Collections.emptyList();
@@ -60,7 +60,7 @@ public class BeansXmlTest
 
       public void runAndExpect(WeldXmlException expected)
       {
-         String errorCode = expected.getMessage().substring(0, 12);
+         String errorCode = expected.getMessage().substring(0, 11);
          try
          {
             run();
@@ -77,35 +77,35 @@ public class BeansXmlTest
 
    }
 
-   private void testWithBeansXmlAndExpectException(String beansXml, WeldXmlException e)
+   private static void checkWithBeansXmlAndExpectException(String beansXml, WeldXmlException e)
    {
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, Plain.class, IntBind.class);
-      List<URL> beansXmls = Arrays.asList(getClass().getResource(beansXml));
+      List<URL> beansXmls = Arrays.asList(BeansXmlTest.class.getResource(beansXml));
       new FailedDeployment(beans, beansXmls).runAndExpect(e);
    }
 
    // Multiple XML blocks
 
    @Test
-   public void multipleAlternativeBlocksFail()
+   public void testMultipleAlternativeBlocksFail()
    {
-      testWithBeansXmlAndExpectException("multipleAlternativeBlocks.xml", new WeldXmlException(XmlMessage.MULTIPLE_ALTERNATIVES));
+      checkWithBeansXmlAndExpectException("multipleAlternativeBlocks.xml", new WeldXmlException(XmlMessage.MULTIPLE_ALTERNATIVES));
    }
 
    @Test
-   public void multipleDecoratorBlocksFail()
+   public void testMultipleDecoratorBlocksFail()
    {
-      testWithBeansXmlAndExpectException("multipleDecoratorBlocks.xml", new WeldXmlException(XmlMessage.MULTIPLE_DECORATORS));
+      checkWithBeansXmlAndExpectException("multipleDecoratorBlocks.xml", new WeldXmlException(XmlMessage.MULTIPLE_DECORATORS));
    }
 
    @Test
-   public void multipleInterceptorBlocksFail()
+   public void testMultipleInterceptorBlocksFail()
    {
-      testWithBeansXmlAndExpectException("multipleInterceptorsBlocks.xml", new WeldXmlException(XmlMessage.MULTIPLE_INTERCEPTORS));
+      checkWithBeansXmlAndExpectException("multipleInterceptorsBlocks.xml", new WeldXmlException(XmlMessage.MULTIPLE_INTERCEPTORS));
    }
 
    @Test
-   public void alternativesEnabled()
+   public void testAlternativesEnabled()
    {
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("alternative.xml"));
@@ -116,7 +116,7 @@ public class BeansXmlTest
    }
 
    @Test
-   public void decoratorsEnabled()
+   public void testDecoratorsEnabled()
    {
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("decorator.xml"));
@@ -127,7 +127,7 @@ public class BeansXmlTest
    }
 
    @Test
-   public void interceptorsEnabled()
+   public void testInterceptorsEnabled()
    {
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("interceptor.xml"));
@@ -155,13 +155,33 @@ public class BeansXmlTest
    @Test
    public void testBeansXmlDoesntExist()
    {
-      testWithBeansXmlAndExpectException("nope.xml", new WeldXmlException(XmlMessage.LOAD_ERROR));
+      checkWithBeansXmlAndExpectException("nope.xml", new WeldXmlException(XmlMessage.LOAD_ERROR));
+   }
+   
+   // WELD-467
+   @Test
+   public void testNamespacedBeansXml()
+   {
+      List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
+      List<URL> beansXmls = Arrays.asList(getClass().getResource("namespaced.xml"));
+      TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
+      assert container.getBeanManager().getEnabledAlternativeClasses().size() == 1;
+      assert container.getBeanManager().getEnabledAlternativeClasses().iterator().next() == Alt.class;
+      container.stopContainer();
+   }
+   
+   // WELD-467
+   @Test
+   public void testNotDefaultNamespacedBeansXml()
+   {
+      List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
+      List<URL> beansXmls = Arrays.asList(getClass().getResource("nonDefaultNamespaced.xml"));
+      TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
+      assert container.getBeanManager().getEnabledAlternativeClasses().size() == 1;
+      assert container.getBeanManager().getEnabledAlternativeClasses().iterator().next() == Alt.class;
+      container.stopContainer();
    }
 
-   @Test(groups="stub")
-   public void testCannotGetDocumentBuilder()
-   {
-   }
    /*
     * https://jira.jboss.org/jira/browse/WELD-362
     */
@@ -186,13 +206,13 @@ public class BeansXmlTest
    @Test
    public void testParsingError()
    {
-      testWithBeansXmlAndExpectException("unparseable.xml", new WeldXmlException(XmlMessage.PARSING_ERROR));
+      checkWithBeansXmlAndExpectException("unparseable.xml", new WeldXmlException(XmlMessage.PARSING_ERROR));
    }
 
    @Test
    public void testCannotLoadClass()
    {
-      testWithBeansXmlAndExpectException("unloadable.xml", new WeldXmlException(XmlMessage.CANNOT_LOAD_CLASS));
+      checkWithBeansXmlAndExpectException("unloadable.xml", new WeldXmlException(XmlMessage.CANNOT_LOAD_CLASS));
    }
 
 }
