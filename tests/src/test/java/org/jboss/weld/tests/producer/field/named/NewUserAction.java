@@ -33,4 +33,6 @@ public class NewUserAction
    {
       System.out.println("new user's name: " + newUser.getName());
    }
+   
+   public boolean ping() { return true; }
 }

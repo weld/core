@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2008, Red Hat, Inc. and/or its affiliates, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -9,50 +9,34 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,  
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jboss.weld.tests.producer.method;
 
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Model;
-import javax.enterprise.inject.Produces;
+import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.weld.test.AbstractWeldTest;
+import org.testng.annotations.Test;
 
 /**
- * @author pmuir
+ * Simple test which invokes a method directly on a normal scoped producer
+ * bean to ensure that it's proxy is for that bean and not the product
+ * of a producer method.
+ * 
+ * @author David Allen
  *
  */
-@Model
-public class FooProducer
+@Artifact
+public class ProducerBeanInvocationTest extends AbstractWeldTest
 {
-
-   @Produces Foo getFoo()
+   @Test
+   // WELD-546
+   public void test()
    {
-      return new Foo("foo!");
+      FooProducer fooProducer = this.getReference(FooProducer.class);
+      assert fooProducer.ping();
    }
-   
-   private static boolean disposed;
-   
-   public static void reset()
-   {
-      disposed = false;
-   }
-   
-   public void disposeFoo(@Disposes Foo foo)
-   {
-      disposed = true;
-   }
-   
-   /**
-    * @return the disposed
-    */
-   public static boolean isDisposed()
-   {
-      return disposed;
-   }
-   
-   public boolean ping() { return true; }
-   
 }
