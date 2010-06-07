@@ -17,6 +17,8 @@
 
 package org.jboss.weld.tests.producer.method;
 
+import javax.enterprise.util.AnnotationLiteral;
+
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
@@ -36,7 +38,11 @@ public class ProducerBeanInvocationTest extends AbstractWeldTest
    // WELD-546
    public void test()
    {
-      FooProducer fooProducer = this.getReference(FooProducer.class);
-      assert fooProducer.ping();
+      Qux bar = getReference(Qux.class);
+      assert bar.getBar().equals("qux");
+      QuxProducer producer = getReference(QuxProducer.class);
+      assert producer.ping();
+      Qux bazBar = getReference(Qux.class, new AnnotationLiteral<Baz>(){});
+      assert bazBar.getBar().equals("baz");
    }
 }

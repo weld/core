@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.producer.field.named;
+package org.jboss.weld.tests.producer.field;
+
+import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.weld.test.AbstractWeldTest;
@@ -36,7 +38,11 @@ public class ProducerBeanInvocationTest extends AbstractWeldTest
    // WELD-546
    public void test()
    {
-      NewUserAction userAction = this.getReference(NewUserAction.class);
-      assert userAction.ping();
+      Qux bar = getReference(Qux.class);
+      assert bar.getBar().equals("qux");
+      QuxProducer producer = getReference(QuxProducer.class);
+      assert producer.ping();
+      Qux bazBar = getReference(Qux.class, new AnnotationLiteral<Baz>(){});
+      assert bazBar.getBar().equals("baz");
    }
 }

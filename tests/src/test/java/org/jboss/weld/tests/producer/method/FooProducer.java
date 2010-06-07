@@ -17,14 +17,12 @@
 package org.jboss.weld.tests.producer.method;
 
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
 
 /**
  * @author pmuir
  *
  */
-@Model
 public class FooProducer
 {
 
@@ -52,7 +50,5 @@ public class FooProducer
    {
       return disposed;
    }
-   
-   public boolean ping() { return true; }
    
 }
