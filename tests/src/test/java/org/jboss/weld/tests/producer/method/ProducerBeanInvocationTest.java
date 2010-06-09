@@ -34,7 +34,7 @@ import org.testng.annotations.Test;
 @Artifact
 public class ProducerBeanInvocationTest extends AbstractWeldTest
 {
-   @Test(groups = "broken")
+   @Test
    // WELD-546
    public void test()
    {
