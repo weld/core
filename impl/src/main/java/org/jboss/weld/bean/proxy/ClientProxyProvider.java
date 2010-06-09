@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.util.Proxies.TypeInfo;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
@@ -84,7 +85,8 @@ public class ClientProxyProvider
    private static <T> T createClientProxy(Bean<T> bean, String id) throws RuntimeException
    {
       ContextBeanInstance<T> beanInstance = new ContextBeanInstance<T>(bean, id);
-      return new ProxyFactory<T>(bean.getBeanClass(), bean.getTypes()).create(beanInstance);
+      TypeInfo typeInfo = TypeInfo.of(bean.getTypes());
+      return new ProxyFactory<T>(typeInfo.getSuperClass(), bean.getTypes()).create(beanInstance);
    }
 
    /**

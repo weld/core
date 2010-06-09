@@ -82,7 +82,7 @@ public class ProxyFactory<T>
     * 
     * @param proxiedBeanType the super-class for this proxy class
     */
-   public ProxyFactory(Class<?> proxiedBeanType, Set<Type> businessInterfaces)
+   public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> businessInterfaces)
    {
       for (Type type : businessInterfaces)
       {
@@ -94,7 +94,8 @@ public class ProxyFactory<T>
             addInterface(c);
          }
       }
-      Class<?> superClass = TypeInfo.of(businessInterfaces).getSuperClass();
+      TypeInfo typeInfo = TypeInfo.of(businessInterfaces);
+      Class<?> superClass = typeInfo.getSuperClass();
       superClass = superClass == null ? Object.class : superClass;
       if (superClass.equals(Object.class))
       {
@@ -114,7 +115,22 @@ public class ProxyFactory<T>
       this.classPool = new ClassPool();
       this.classPool.appendClassPath(new ClassloaderClassPath(classLoader));
       addDefaultAdditionalInterfaces();
-      baseProxyName = proxiedBeanType.getName();
+      if (proxiedBeanType.equals(Object.class))
+      {
+         Class<?> superInterface = typeInfo.getSuperInterface();
+         if (superInterface == null)
+         {
+            throw new IllegalArgumentException("Proxied bean type cannot be java.lang.Object without an interface");
+         }
+         else
+         {
+            baseProxyName = superInterface.getName();
+         }
+      }
+      else
+      {
+         baseProxyName = proxiedBeanType.getName();
+      }
    }
 
    /**
