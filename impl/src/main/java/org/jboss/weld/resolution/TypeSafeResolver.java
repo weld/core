@@ -51,10 +51,11 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
       @Override
       public boolean equals(Object obj)
       {
-         if (obj instanceof Resolvable)
+         if (obj instanceof Key)
          {
-            Resolvable that = (Resolvable) obj;
-            return this.getResolvable().getTypes().equals(that.getTypes()) && this.getResolvable().getQualifiers().equals(that.getQualifiers());
+            Key that = (Key) obj;
+            return that.getResolvable().getClass().equals(this.getResolvable().getClass())
+                  && that.getResolvable().isEqualTo(that.getResolvable());
          }
          else
          {
@@ -65,10 +66,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
       @Override
       public int hashCode()
       {
-         int result = 17;
-         result = 31 * result + this.getResolvable().getTypes().hashCode();
-         result = 31 * result + this.getResolvable().getQualifiers().hashCode();
-         return result;
+         return this.getResolvable().hashCode();
       }
       
       @Override

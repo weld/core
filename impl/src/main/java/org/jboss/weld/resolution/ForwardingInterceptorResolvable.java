@@ -75,4 +75,13 @@ public class ForwardingInterceptorResolvable implements InterceptorResolvable
       return false;
    }
 
+   public int getHashCode()
+   {
+      return hashCode();
+   }
+
+   public boolean isEqualTo(Resolvable r)
+   {
+      return equals(r);
+   }
 }

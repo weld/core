@@ -87,4 +87,18 @@ public interface Resolvable
     */
    public Bean<?> getDeclaringBean();
 
+   /**
+    * Force the Resolvable to implement its own comparison strategy
+    * (thus subclasses can be compared differently)
+    * @param r
+    * @return
+    */
+   public boolean isEqualTo(Resolvable r);
+
+   /**
+    * Force the Resolvable to implement
+    * @return
+    */
+   public int getHashCode();
+
 }

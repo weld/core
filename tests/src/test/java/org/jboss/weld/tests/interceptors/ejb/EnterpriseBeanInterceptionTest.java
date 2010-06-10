@@ -41,7 +41,7 @@ public class EnterpriseBeanInterceptionTest extends AbstractWeldTest
 {
 
    @Test(groups = { "interceptors", "incontainer-broken"})
-   public void ls() throws Exception
+   public void testInterceptors() throws Exception
    {
       SessionBean<Ball> ballSessionBean = (SessionBean<Ball>)getCurrentManager().getBeans(Ball.class).iterator().next();
       InterceptorBindings interceptorBindings = new InterceptorBindingsAdapter(getCurrentManager().getCdiInterceptorsRegistry().getInterceptionModel(ballSessionBean.getType()));

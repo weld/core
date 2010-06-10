@@ -276,6 +276,20 @@ public class ResolvableBuilder
          return "Types: " + getTypes() + "; Bindings: " + getQualifiers();
       }
 
+      public int getHashCode()
+      {
+         int result = 17;
+         result = 31 * result + this.getTypes().hashCode();
+         result = 31 * result + this.getQualifiers().hashCode();
+         return result;
+      }
+
+      public boolean isEqualTo(Resolvable r)
+      {
+         return this.getTypes().equals(r.getTypes())
+               &&  this.getQualifiers().equals(r.getQualifiers());         
+
+      }
    }
 
 }

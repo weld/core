@@ -135,6 +135,18 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder
          return interceptionType;
       }
 
+      public int getHashCode()
+      {
+         return 31*super.getHashCode()
+               + this.getInterceptionType().hashCode();
+      }
+
+      public boolean isEqualTo(Resolvable r)
+      {
+         return super.isEqualTo(r)
+               && r instanceof InterceptorResolvable
+               && this.getInterceptionType().equals(((InterceptorResolvable)r).getInterceptionType());
+      }
    }
 
 }
