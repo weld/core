@@ -77,8 +77,12 @@
       <!-- Testing deps -->
       <testng.version>5.10</testng.version>
       <jboss.test.harness.version>1.1.0-CR5</jboss.test.harness.version>
+      <jboss.arquillian.version>1.0.0.Alpha2</jboss.arquillian.version>
+      <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
+      <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
+      <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
       <apache.httpclient.version>3.1</apache.httpclient.version>
-      <junit.version>4.7</junit.version>
+      <junit.version>4.8.1</junit.version>
       <htmlunit.version>2.4</htmlunit.version>
    </properties>
 
@@ -129,6 +133,48 @@
             <groupId>org.jboss.test-harness</groupId>
             <artifactId>jboss-test-harness-tomcat</artifactId>
             <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-junit</artifactId>
+            <version>${jboss.arquillian.version}</version>
+         </dependency>
+	
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-weld-embedded</artifactId>
+            <version>${jboss.arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jbossas-local-60</artifactId>
+            <version>${jboss.arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jbossas-remote-60</artifactId>
+            <version>${jboss.arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId> 
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId> 
+            <version>${jboss.spec.servlet.version}</version> 
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.metadata</groupId> 
+            <artifactId>jboss-metadata</artifactId> 
+            <version>${jboss.metadata.version}</version> 
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-mdr</artifactId>
+            <version>${jboss.mdr.version}</version>
          </dependency>
 
          <dependency>

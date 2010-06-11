@@ -50,6 +50,7 @@
             <module>parent</module>
             <module>impl</module>
             <module>tests</module>
+            <module>tests-arquillian</module>
             <module>porting-package</module>
             <module>inject-tck-runner</module>
             <module>jboss-tck-runner</module>
@@ -63,6 +64,7 @@
             <module>parent</module>
             <module>impl</module>
             <module>tests</module>
+            <module>tests-arquillian</module>
             <module>porting-package</module>
             <module>inject-tck-runner</module>
             <module>jboss-tck-runner</module>
