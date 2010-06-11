@@ -1,0 +1,276 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>weld-core-parent</artifactId>
+      <groupId>org.jboss.weld</groupId>
+      <version>1.0.2-SNAPSHOT</version>
+      <relativePath>../parent/pom.xml</relativePath>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-core-test-arquillian</artifactId>
+   <name>Weld Core Tests Arquillian</name>
+   <description>Tests for Weld, not including the CDI and AtInject TCKs</description>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+   <url>http://www.seamframework.org/Weld</url>
+
+
+   <dependencies>
+
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <scope>provided</scope> <!-- should be test, but we need junit for compiling AbstractClusterTest -->
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.arquillian</groupId>
+         <artifactId>arquillian-junit</artifactId>
+         <scope>provided</scope><!-- should be test, but we need shrinkwrap-impl for compiling BeanArchive -->
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.spec.javax.servlet</groupId> 
+         <artifactId>jboss-servlet-api_3.0_spec</artifactId> 
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.metadata</groupId> 
+         <artifactId>jboss-metadata</artifactId> 
+      </dependency>
+
+      <dependency>
+      	<groupId>org.jboss</groupId>
+      	<artifactId>jboss-mdr</artifactId>
+      	<scope>test</scope>
+      </dependency>
+ 
+ 
+      <dependency>
+         <groupId>javax.el</groupId>
+         <artifactId>el-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.glassfish.web</groupId>
+         <artifactId>el-impl</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>servlet-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-spi</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.spec.javax.interceptor</groupId>
+         <artifactId>jboss-interceptors-api_1.1_spec</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.interceptor</groupId>
+         <artifactId>jboss-interceptor</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.ejb3</groupId>
+         <artifactId>jboss-ejb3-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-simple</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.transaction</groupId>
+         <artifactId>jta</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.persistence</groupId>
+         <artifactId>persistence-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.validation</groupId>
+         <artifactId>validation-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.faces</groupId>
+         <artifactId>jsf-api</artifactId>
+         <!-- override for testing compatibility w/ JSF 2.0 -->
+         <version>2.0.2-FCS</version>
+      </dependency>
+
+      <dependency>
+         <groupId>net.sourceforge.htmlunit</groupId>
+         <artifactId>htmlunit</artifactId>
+      </dependency>
+
+   </dependencies>
+
+   <build>
+      <defaultGoal>test</defaultGoal>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>generate-test-report</id>
+                  <phase>test</phase>
+                  <goals>
+                     <goal>report-only</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>
+               <outputName>test-report</outputName>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <test>org.jboss.weld.tests.NormalSuite</test>
+               <!-- 
+               	Set parallel none to force a more modern JUnitCore provider that understands Suites, 
+               	http://old.nabble.com/Maven-Surefire-and-newer-junit-features-td28539796.html 
+               -->
+               <parallel>none</parallel>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+   <profiles>
+      <profile>
+         <id>defualt</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.arquillian.container</groupId>
+               <artifactId>arquillian-weld-embedded</artifactId>
+               <scope>test</scope>
+            </dependency>
+      	</dependencies>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <test>org.jboss.weld.tests.NormalSuite</test>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      <profile>
+         <id>incontainer</id>
+         <activation>
+            <property>
+               <name>incontainer</name>
+            </property>
+         </activation>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.arquillian.container</groupId>
+               <artifactId>arquillian-jbossas-remote-60</artifactId>
+               <scope>test</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.jbossas</groupId>
+               <artifactId>jboss-as-client</artifactId>
+               <version>6.0.0.20100429-M3</version>
+               <type>pom</type>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <test>org.jboss.weld.tests.IntegrationSuite</test>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+<!-- 
+      <profile>
+         <id>write-artifacts-to-disk</id>
+         <activation>
+            <property>
+               <name>dumpArtifacts</name>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>exec-maven-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>generate-test-artifacts</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                           <goal>java</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <mainClass>org.jboss.testharness.api.TCK</mainClass>
+                     <classpathScope>test</classpathScope>
+                     <systemProperties>
+                        <systemProperty>
+                           <key>dumpArtifacts</key>
+                           <value>true</value>
+                        </systemProperty>
+                        <systemProperty>
+                           <key>org.jboss.testharness.outputDirectory</key>
+                           <value>target/test-artifacts</value>
+                        </systemProperty>
+                        <systemProperty>
+                           <key>org.jboss.testharness.libraryDirectory</key>
+                           <value>target/dependency/lib</value>
+                        </systemProperty>
+                     </systemProperties>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+-->
+   </profiles>
+
+   <scm> 
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/tests-arquillian</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/tests-arquillian</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/core/trunk/tests-arquillian</url>
+   </scm>
+
+</project>
