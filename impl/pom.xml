@@ -129,48 +129,7 @@
          <optional>true</optional>
       </dependency>
 
-
    </dependencies>
-
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>ch.qos.cal10n.plugins</groupId>
-            <artifactId>maven-cal10n-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>verify-messages</id>
-                  <phase>verify</phase>
-                  <goals>
-                     <goal>verify</goal>
-                  </goals>
-                  <configuration>
-                     <enumTypes>
-                        <!-- list every enum type you would like to see checked -->
-                        <enumType>org.jboss.weld.logging.messages.BeanManagerMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.BeanMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.BootstrapMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.ContextMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.ConversationMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.ElMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.EventMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.JsfMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.MetadataMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.ReflectionMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.ResolutionMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.ServletMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.UtilMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.ValidatorMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.VersionMessage</enumType>
-                        <enumType>org.jboss.weld.logging.messages.XmlMessage</enumType>
-                     </enumTypes>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
-
-      </plugins>
-   </build>
 
    <profiles>
       <profile>
@@ -184,6 +143,53 @@
                <artifactId>jaxws-api</artifactId>
             </dependency>
          </dependencies>
+      </profile>
+      <profile>
+         <id>cal10n-verify</id>
+         <activation>
+            <property>
+               <name>cal10n-verify</name>
+               <value>!false</value>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>ch.qos.cal10n.plugins</groupId>
+                  <artifactId>maven-cal10n-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>verify-messages</id>
+                        <phase>verify</phase>
+                        <goals>
+                           <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                           <enumTypes>
+                              <!-- list every enum type you would like to see checked -->
+                              <enumType>org.jboss.weld.logging.messages.BeanManagerMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.BeanMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.BootstrapMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ContextMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ConversationMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ElMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.EventMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.JsfMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.MetadataMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ReflectionMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ResolutionMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ServletMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.UtilMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ValidatorMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.VersionMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.XmlMessage</enumType>
+                           </enumTypes>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
       </profile>
       <profile>
          <id>findbugs</id>
