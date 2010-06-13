@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
@@ -31,11 +32,11 @@ public class AlternativesTest
    public static Archive<?> deploy() 
    {
       return ShrinkWrap.create("test.jar", BeanArchive.class)
-         .stereotype(Test.class)
+         .stereotype(TestAlternative.class)
          .addPackage(Alternatives2Test.class.getPackage());
    }
 
-   @org.junit.Test
+   @Test
    public void testAlternativesOnProducers(Consumer consumer)
    {
       Assert.assertEquals("Test", consumer.getFoo().getName());

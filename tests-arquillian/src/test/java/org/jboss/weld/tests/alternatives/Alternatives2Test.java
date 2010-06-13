@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
@@ -37,7 +38,7 @@ public class Alternatives2Test
          .as(JavaArchive.class);
    }
 
-   @org.junit.Test
+   @Test
    public void testAlternativesOnProducers(Consumer consumer)
    {
       Assert.assertEquals("Normal", consumer.getFoo().getName());

@@ -21,7 +21,7 @@ import javax.enterprise.inject.Produces;
 public class Producer
 {
    
-   @Produces @Test 
+   @Produces @TestAlternative 
    public Foo getFoo() 
    {
       return new Foo("Test");
