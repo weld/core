@@ -27,7 +27,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +42,8 @@ public class DeclaringTypeTest
    @Deployment
    public static Archive<?> deploy()
    {
-      return ShrinkWrap.create("test.jar", BeanArchive.class).addPackage(DeclaringTypeTest.class.getPackage()).as(JavaArchive.class);
+      return ShrinkWrap.create("test.jar", BeanArchive.class)
+      .addPackage(DeclaringTypeTest.class.getPackage());
    }
 
    @Inject
