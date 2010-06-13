@@ -41,16 +41,14 @@ public class DeclaringTypeTest
 {
 
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
-      return ShrinkWrap.create("test.jar", BeanArchive.class)
-         .addPackage(DeclaringTypeTest.class.getPackage())
-         .as(JavaArchive.class);
+      return ShrinkWrap.create("test.jar", BeanArchive.class).addPackage(DeclaringTypeTest.class.getPackage()).as(JavaArchive.class);
    }
 
    @Inject
    private BeanManager beanManager;
-   
+
    @Test
    public void testInheritance()
    {
@@ -61,14 +59,8 @@ public class DeclaringTypeTest
       {
          if (field.getJavaMember().getName().equals("parent"))
          {
-            Assert.assertEquals(Parent.class, field.getJavaMember().getDeclaringClass()); // OK
-                                                                                          // -
-                                                                                          // Returns
-                                                                                          // Parent
-            Assert.assertEquals(Parent.class, field.getDeclaringType().getJavaClass()); // FAIL
-                                                                                        // -
-                                                                                        // Returns
-                                                                                        // Child
+            Assert.assertEquals(Parent.class, field.getJavaMember().getDeclaringClass()); // OK - Returns Parent
+            Assert.assertEquals(Parent.class, field.getDeclaringType().getJavaClass()); // FAIL - Returns Child
          }
          else
          {
@@ -81,14 +73,8 @@ public class DeclaringTypeTest
       {
          if (method.getJavaMember().getName().equals("parentMethod"))
          {
-            Assert.assertEquals(Parent.class, method.getJavaMember().getDeclaringClass()); // OK
-                                                                                           // -
-                                                                                           // /Returns
-                                                                                           // Parent
-            Assert.assertEquals(Parent.class, method.getDeclaringType().getJavaClass()); // FAIL
-                                                                                         // -
-                                                                                         // Returns
-                                                                                         // Child
+            Assert.assertEquals(Parent.class, method.getJavaMember().getDeclaringClass()); // OK - Returns Parent
+            Assert.assertEquals(Parent.class, method.getDeclaringType().getJavaClass()); // FAIL - Returns Child
          }
          else
          {
