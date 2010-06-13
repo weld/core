@@ -29,7 +29,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,8 +45,7 @@ public class AnnotatedTypeDecoratorTest
    public static Archive<?> deploy() 
    {
       return ShrinkWrap.create("test.jar", BeanArchive.class)
-         .addPackage(AnnotatedTypeDecoratorTest.class.getPackage())
-         .as(JavaArchive.class);
+         .addPackage(AnnotatedTypeDecoratorTest.class.getPackage());
    }
    
    @Inject
