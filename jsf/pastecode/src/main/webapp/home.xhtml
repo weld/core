@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:s="http://jboss.com/products/seam/taglib">
+  
+  <ui:composition template="template.xhtml">
+   	<ui:define name="viewMetadata">
+       <f:metadata>
+       		<f:event type="preRenderView" listener="#{database.populate}"/>
+       </f:metadata>      
+    </ui:define> 
+   	
+   	<ui:define name="mainarea">
+   		<div style="width: 100%; padding: 7px;">
+	   		
+		   		<h:panelGrid columns="3" style="width: 100%">
+		   			<h:panelGroup>
+		   				<h:outputLabel for="user" value="Your nick: "/>   		
+						<h:inputText id="user" maxlength="30" size="30" value="#{code.user}"/>
+		   			</h:panelGroup>
+		   			
+		   			<h:panelGroup>
+		   				<h:outputLabel for="language" value="Language: "/>   
+		   				<h:selectOneMenu id="language" value="#{code.language}">		
+		   					<f:selectItems value="#{dataBean.languageItems}"/>
+			   			</h:selectOneMenu>
+			   		</h:panelGroup>	
+			   		<h:panelGroup style="text-align:right;">			   				   			
+		   				<h:outputLabel for="secured" value="Private: "/>   
+		   				<h:selectBooleanCheckbox id="secured" value="#{paster.secured}"/>
+		   			</h:panelGroup>
+		   		</h:panelGrid>
+		   		<h:outputLabel for="text" value="Code: "/>
+		   		<h:inputTextarea id="text" style="width: 98%" cols="17" rows="18" value="#{code.text}"/>
+		   		&nbsp;
+		   		<h:outputLabel for="note" value="Note: (optional) "/> 
+		   		<h:inputTextarea style="width: 98%" cols="17" rows="4" id="note" value="#{code.note}"/>
+		   		<div style="width: 98%; text-align:right;">
+		   			<h:outputLabel for="send" value="Paste code: "/>
+		   			<h:commandButton action="#{paster.paste}" id="send" value="      Send      "/>		   			
+		   		</div>
+	   		
+   		</div>
+   	</ui:define>
+   	
+   <ui:define name="rightmenu">
+   		<ui:include src="rightMenuDefault.xhtml"/>
+   </ui:define>
+    
+  </ui:composition>
+  
+</html>

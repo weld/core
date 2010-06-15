@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:s="http://jboss.com/products/seam/taglib">
+  
+  <ui:composition template="template.xhtml">
+   	
+  <ui:define name="mainarea">
+	<div style="width: 100%; padding: 7px;">
+		<div id="paging" style="width:98%; border-width:0px; background-color:#C1C1E8;text-align:center;"> <!-- height: 40px; -->
+	   		    	<strong>Useful Information</strong>
+	   	</div>
+	   	<br/>
+	   	<strong>Paste Code:</strong><br/>
+	   	<ul>
+	   	 <li>Enter your nick - This is optional, if it is not entered the code will be listed under "Anonymous" user</li>
+	   	 <li>Choose a language of your code - This way you can define formatting of code after submitting the form</li>
+	   	 <li>Choose if this code is private - When this option is chosen the application will generate a hash value of your code and will provide you with
+	   	 a unique link (something like http://localhost:8080/weld-pastecode/582ad4b5ed409ec8b81c6e33ee8b72377890bc86). Furthemore your code will not be
+	   	 listed in the right panel and cannot even be found through a search capability. </li>
+	   	 <li>Enter your code and a note you would like to send with the code</li>
+	   	 <li>Submit the form and forward the resulting link</li>  
+	   	</ul>
+	   	
+	   	<strong>Search Code:</strong><br/>
+	   	<ul>
+	   		<li>Go to a history page - Now you can see all the posts with pagination</li>
+	   		<li>Enter data for searching - You can combine all the data together.</li>
+	   	</ul>
+	   		   	
+	   	<strong>Weld Features Covered:</strong><br/>
+	   	
+	   	<ul>
+	   		<li>Injecting into POJO, EJB (SFSB), Servlet</li>
+	   		<li>Annotations @ApplicationScoped, @Model, @SessionScoped et al.</li>
+	   		<li>Producer named methods</li>
+	   		<li>Decorators - This feature is used to log transactions during which a code larger than 65kB is stored to a database</li>
+	   	</ul>
+	   	<br/><br/><strong>Enjoy work with WELD !</strong>
+	   			 
+	</div>
+  </ui:define>
+   	
+  <ui:define name="rightmenu">
+	<ui:include src="rightMenuDefault.xhtml"/>
+  </ui:define>
+    
+  </ui:composition>
+  
+</html>
+
