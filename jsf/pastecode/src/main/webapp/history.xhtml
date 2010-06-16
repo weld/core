@@ -68,9 +68,12 @@
 			<h:outputLabel for="user" value="User:"></h:outputLabel>
 			<h:inputText id="user" maxlength="30" style="width:97%;"
 				value="#{codeFragmentPrototype.user}" />
-			<h:outputLabel for="language" value="Language:"></h:outputLabel>
-			<h:inputText id="language" maxlength="30" style="width:97%;"
-				value="#{codeFragmentPrototype.language}" />
+			<h:outputLabel for="language" value="Language:" />
+			<h:selectOneMenu id="language" value="#{codeFragmentPrototype.language}">
+			   <f:selectItem itemLabel="Any" itemValue="" />
+				<f:selectItems value="#{languages}" var="language"
+					itemLabel="#{language.name}" itemValue="#{language}" />
+			</h:selectOneMenu>
 			<h:outputLabel for="note" value="Note:"></h:outputLabel>
 			<h:inputText id="note" maxlength="30" style="width:97%;"
 				value="#{codeFragmentPrototype.note}" />
