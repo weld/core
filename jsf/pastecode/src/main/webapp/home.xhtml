@@ -32,7 +32,7 @@
 		   				<h:selectBooleanCheckbox id="secured" value="#{pasteWindow.privateFragment}"/>
 		   			</h:panelGroup>
 		   		</h:panelGrid>
-		   		<h:outputLabel for="text" value="Code: "/>
+		   		<h:outputLabel for="text" value="Code: "/><h:message for="text" style="color: red" />
 		   		<h:inputTextarea id="text" style="width: 98%" cols="17" rows="18" value="#{pasteWindow.codeFragment.text}"/>
 		   		&nbsp;
 		   		<h:outputLabel for="note" value="Note: (optional) "/> 

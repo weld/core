@@ -47,7 +47,7 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
    // The number of code fragments to display per page
    private static int PAGE_SIZE = 2;
 
-   @PersistenceContext(unitName = "pastecodeDatabase")
+   @PersistenceContext
    private EntityManager entityManager;
 
    @Inject

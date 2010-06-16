@@ -38,6 +38,7 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 
 /**
  * The entity class for the pasted code "fragment". This is the main entity
@@ -69,6 +70,7 @@ public class CodeFragment
    private String note;
 
    @Lob
+   @Size(min=1, message="Must enter some text!")
    private String text;
 
    private String user;
@@ -77,13 +79,6 @@ public class CodeFragment
 
    @OneToMany(mappedBy = "codeFragment", cascade = CascadeType.REMOVE)
    List<AccessLog> largeCodeFragmentAccessLog;
-
-   public CodeFragment()
-   {
-      this.note = "";
-      this.text = "";
-      this.user = "";
-   }
 
    public int getId()
    {
