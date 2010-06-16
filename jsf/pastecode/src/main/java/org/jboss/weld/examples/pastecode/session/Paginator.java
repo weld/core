@@ -24,9 +24,9 @@ package org.jboss.weld.examples.pastecode.session;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QueryInfo
+public class Paginator
 {
-   
+
    private int recordsCount = 0;
    private int pagesCount = 0;
    private int numLinks = 8;
@@ -96,7 +96,7 @@ public class QueryInfo
 
    public void setBoundedIndexes(int startIndex, int endIndex)
    {
-      this.indexes = new ArrayList(endIndex - startIndex);
+      this.indexes = new ArrayList<Integer>(endIndex - startIndex);
       for (int i = startIndex; i <= endIndex; i++)
       {
          this.indexes.add(new Integer(i));

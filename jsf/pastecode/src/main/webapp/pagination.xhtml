@@ -6,22 +6,22 @@
 
 	<ui:composition>
 	
-		<h:panelGroup rendered="#{history.info.pagesCount gt 1}">
+		<h:panelGroup rendered="#{history.paginator.pagesCount gt 1}">
 		<div id="paging" style="width:99%;text-align:center;">
 				
-				<a href="history.jsf?page=#{(history.info.page-1)>=0?(history.info.page-1):0}" style="text-decoration:none;">
+				<a href="history.jsf?page=#{(history.paginator.page-1)>=0?(history.paginator.page-1):0}" style="text-decoration:none;">
 					<span id="edgelink">&lt;&lt;</span>
 				</a>
 				&nbsp;
 				
-				<ui:repeat var="page" value="#{history.info.indexes}">
+				<ui:repeat var="page" value="#{history.paginator.indexes}">
     				<a href="history.jsf?page=#{page}" style="text-decoration:none;">
-    					<span id="normallink" style="width:23px;display: inline-block;}">#{(history.info.page eq page)?'(':''}#{page+1}#{(history.info.page eq page)?')':''}</span>
+    					<span id="normallink" style="width:23px;display: inline-block;}">#{(history.paginator.page eq page)?'(':''}#{page+1}#{(history.paginator.page eq page)?')':''}</span>
     				</a>
 				</ui:repeat>
 				
 				&nbsp;
-				<a href="history.jsf?page=#{(history.info.page+1)>history.info.pagesCount?history.info.pagesCount:(history.info.page+1)}" style="text-decoration:none;">
+				<a href="history.jsf?page=#{(history.paginator.page+1)>history.paginator.pagesCount?history.paginator.pagesCount:(history.paginator.page+1)}" style="text-decoration:none;">
 					<span id="edgelink">&gt;&gt;</span>
 				</a>
 				

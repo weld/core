@@ -36,5 +36,5 @@ public interface CodeFragmentManager
 
    public List<CodeFragment> getRecentCodeFragments();
 
-   public List<CodeFragment> searchCodeFragments(CodeFragment code, int page, QueryInfo info);
+   public List<CodeFragment> searchCodeFragments(CodeFragment code, int page, Paginator info);
 }

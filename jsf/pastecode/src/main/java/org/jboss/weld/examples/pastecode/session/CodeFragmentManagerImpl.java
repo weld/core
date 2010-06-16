@@ -28,8 +28,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -156,14 +154,7 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       return codes;
    }
 
-   /**
-    * getting codes from database needs new transaction so that we can further
-    * modify returned Codes without affecting database (when we call this
-    * function from another session bean
-    */
-   
-   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-   public List<CodeFragment> searchCodeFragments(CodeFragment code, int page, QueryInfo info)
+   public List<CodeFragment> searchCodeFragments(CodeFragment code, int page, Paginator paginator)
    {
       StringBuilder sb = new StringBuilder();
 
@@ -213,9 +204,9 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       @SuppressWarnings("unchecked")
       List<CodeFragment> codes = q.getResultList();
 
-      info.setPage(page);
-      info.setRecordsCount(allRecords);
-      info.setPagesCount(allRecords / PAGE_SIZE);
+      paginator.setPage(page);
+      paginator.setRecordsCount(allRecords);
+      paginator.setPagesCount(allRecords / PAGE_SIZE);
 
       return codes;
    }

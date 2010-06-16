@@ -50,7 +50,7 @@ public class History implements Serializable
    @Inject
    private CodeFragmentManager codeFragmentManager;
 
-   private QueryInfo info;
+   private Paginator paginator;
 
    private List<CodeFragment> codes;
 
@@ -85,12 +85,12 @@ public class History implements Serializable
    // Do the search, called as a "page action"
    public String search()
    {
-      this.info = new QueryInfo();
+      this.paginator = new Paginator();
       this.codes = null;
       
       // Perform a seach
       
-      this.codes = codeFragmentManager.searchCodeFragments(this.codeFragmentPrototype, this.page, this.info);
+      this.codes = codeFragmentManager.searchCodeFragments(this.codeFragmentPrototype, this.page, this.paginator);
 
       for (int i = 0; i != this.codes.size(); i++)
       {
@@ -110,13 +110,13 @@ public class History implements Serializable
       this.page = page;
    }
 
-   public QueryInfo getInfo()
+   public Paginator getPaginator()
    {
-      return info;
+      return paginator;
    }
 
-   public void setInfo(QueryInfo info)
+   public void setPaginator(Paginator paginator)
    {
-      this.info = info;
+      this.paginator = paginator;
    }
 }
