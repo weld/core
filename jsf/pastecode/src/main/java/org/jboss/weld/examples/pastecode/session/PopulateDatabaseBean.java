@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -53,9 +52,7 @@ public class PopulateDatabaseBean
    private static final String DATA_FILE_NAME = "data.sql";
 
    @Inject
-   private Instance<CodeFragmentManager> eaoIn;
-   private CodeFragmentManager eao;
-   private boolean secured;
+   private CodeFragmentManager codeFragmentManager;
    
    private boolean populated;
 
@@ -66,8 +63,6 @@ public class PopulateDatabaseBean
       {
          return;
       }
-
-      eao = eaoIn.get();
 
       try
       {
@@ -89,9 +84,8 @@ public class PopulateDatabaseBean
             st.nextToken();
             c.setText(st.nextToken());
 
-            eao.addCodeFragment(c, secured);
+            codeFragmentManager.addCodeFragment(c, false);
          }
-
       }
       catch (Exception e)
       {
@@ -106,14 +100,14 @@ public class PopulateDatabaseBean
       InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
       BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-      String radek;
-      StringBuffer sb = new StringBuffer();
+      String line;
+      StringBuilder sb = new StringBuilder();
 
-      while ((radek = br.readLine()) != null)
+      while ((line = br.readLine()) != null)
       {
-         sb.append(radek).append("\n");
+         sb.append(line).append("\n");
       }
 
-      return new String(sb);
+      return sb.toString();
    }
 }
