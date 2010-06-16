@@ -19,5 +19,10 @@
          <to-view-id>/history.xhtml?page=#{history.page}</to-view-id>
       </navigation-case>
    </navigation-rule>
+   
+   <converter>
+      <converter-for-class>org.jboss.weld.examples.pastecode.model.Language</converter-for-class>
+      <converter-class>org.jboss.weld.examples.pastecode.jsf.LanguageConverter</converter-class>
+   </converter>
 
 </faces-config>
