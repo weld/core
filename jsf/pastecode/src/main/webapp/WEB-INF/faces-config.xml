@@ -8,8 +8,8 @@
    <navigation-rule>
       <from-view-id>/home.xhtml</from-view-id>
       <navigation-case>
-         <from-action>#{paster.paste}</from-action>
-         <to-view-id>/#{paster.codeId}</to-view-id>
+         <from-action>#{pasteWindow.send}</from-action>
+         <to-view-id>/#{pasteWindow.codeFragmentId}</to-view-id>
          <redirect />
       </navigation-case>
    </navigation-rule>

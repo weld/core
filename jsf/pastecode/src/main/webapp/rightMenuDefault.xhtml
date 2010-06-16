@@ -9,10 +9,10 @@
 			<div class="recentPastes">
 			  <div class="recentPastesHeader">Recent pastes</div>
 			
-			  <ui:repeat value="#{paster.codes}" var="varcode">
+			  <ui:repeat value="#{recentCodeFragments}" var="codeFragment">
 			    <div class="recentPaste">
-          	<h:outputLink id="user" value="#{varcode.id}">#{varcode.user}</h:outputLink>
-          	<span class="recentPasteLang">#{varcode.language}</span><span> | </span>#{varcode.friendlyDate}
+          	<h:outputLink id="user" value="#{codeFragment.id}">#{codeFragment.user}</h:outputLink>
+          	<span class="recentPasteLang">#{codeFragment.language.name}</span><span> | </span>#{codeFragment.friendlyDate}
           </div>		    
 			  </ui:repeat>
 

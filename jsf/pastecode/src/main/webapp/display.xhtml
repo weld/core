@@ -8,8 +8,10 @@
   <ui:composition template="template.xhtml">
      <ui:define name="viewMetadata">
        <f:metadata>
-         <f:viewParam name="id" value="#{paster.codeId}"/>
-         <f:event type="preRenderView" listener="#{paster.loadCode}"/>
+         <!-- Bind the id to the pasteWindow, this allows us to load the correct fragment -->
+         <f:viewParam name="id" value="#{pasteWindow.codeFragmentId}"/>
+         <!-- Ask for the fragment to be loaded -->
+         <f:event type="preRenderView" listener="#{pasteWindow.loadCodeFragment}"/>
        </f:metadata>      
     </ui:define>    
   
@@ -36,15 +38,15 @@
 
 		   			<h:panelGroup>
 		   				<h:outputLabel for="user" value="User: "/>   		
-						<h:outputText id="user" maxlength="30" size="30" value="#{code.user}"/>
+						<h:outputText id="user" maxlength="30" size="30" value="#{pasteWindow.codeFragment.user}"/>
 		   			</h:panelGroup>
 
 		   			<h:panelGroup>
 		   				<h:outputLabel for="theme" value="Choose theme: "/>   
-		   				<h:selectOneMenu id="theme" value="#{paster.theme}" onchange="chooseStyle(this.value);"> <!-- this.form.submit() -->		
+		   				<h:selectOneMenu id="theme" value="#{pasteWindow.theme}" onchange="chooseStyle(this.value);"> <!-- this.form.submit() -->		
 		   					<f:selectItems value="#{themes}" var="theme" itemLabel="#{theme.name}" itemValue="#{theme.name}" />
 			   			</h:selectOneMenu>
-			   			<a href="download?id=#{code.hash == null ? code.id : code.hash}" style="text-decoration: none;"><input type="button" value="Download file" /></a>
+			   			<a href="download?id=#{pasteWindow.codeFragment.hash == null ? pasteWindow.codeFragment.id : pasteWindow.codeFragment.hash}" style="text-decoration: none;"><input type="button" value="Download file" /></a>
 		   			</h:panelGroup>
 
 		   			<h:panelGroup style="text-align:right;">			   				   			
@@ -56,13 +58,13 @@
 		   		
 		   		<h:outputText value="Pasted code: "/>
 		   		<div id="codearea" style="width:99%; border: 1px solid #7F7F7F; height:450px; overflow:scroll;">			   		
-			   			<pre class="brush: #{paster.brush}">#{code.text}</pre>	
+			   			<pre class="brush: #{pasteWindow.codeFragment.language.brush}">#{pasteWindow.codeFragment.text}</pre>	
 		   		</div>
 		   		
 		   		&nbsp;<br/>
 		   		<h:outputLabel for="note" value="Note: "/>
 		   		<div >		   			 
-		   			<h:outputText id="note" value="#{code.note}"/>		   			
+		   			<h:outputText id="note" value="#{pasteWindow.codeFragment.note}"/>		   			
 		   		</div>
    		</div>
    	</ui:define>

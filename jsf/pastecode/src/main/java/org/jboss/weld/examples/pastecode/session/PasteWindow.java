@@ -21,104 +21,87 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import java.util.List;
-
 import javax.ejb.EJBException;
 import javax.enterprise.inject.Model;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
+/**
+ * PasteWindow holds the code fragment and other selections when a code fragment is viewed and entered
+ *
+ */
 @Model
-public class Paster
+public class PasteWindow
 {
-   private CodeFragment code;
+   private CodeFragment codeFragment;
 
-   private String codeId;
-
-   private String brush;
+   private String codeFragmentId;
 
    private Theme theme;
 
-   private boolean secured = false;
+   private boolean privateFragment;
 
    @Inject
    private CodeFragmentManager codeFragmentManager;
 
-   public Paster()
+   public PasteWindow()
    {
-      this.code = new CodeFragment();
+      this.codeFragment = new CodeFragment();
       this.theme = Theme.DEFAULT;
    }
 
-   public String paste()
+   // The send method is called when we hit the Send button
+   public String send()
    {
-      this.codeId = codeFragmentManager.addCodeFragment(code, secured);
+      codeFragmentManager.addCodeFragment(codeFragment, privateFragment);
       return "success";
    }
 
-   /* used for access from jsf page */
-   @Produces
-   @Named("code")
-   public CodeFragment getPasterCodeInstance()
+   // loadCodeFragment is a view action called to load the code fragment from
+   // the database when requested for viewing
+   public void loadCodeFragment()
    {
-      return this.code;
-   }
+      this.codeFragment = codeFragmentManager.getCodeFragment(codeFragmentId);
 
-   public void loadCode()
-   {
-      this.code = codeFragmentManager.getCodeFragment(codeId);
-
-      if (this.code == null)
+      if (this.codeFragment == null)
+      {
          throw new EJBException("Could not read entity with given id value");
-
-      this.brush = this.code.getLanguage().getBrush();
+      }
    }
 
-   public List<CodeFragment> getCodes()
+   public CodeFragment getCodeFragment()
    {
-      return codeFragmentManager.getRecentCodeFragments();
+      return codeFragment;
    }
 
-   public String getCodeId()
+   public String getCodeFragmentId()
    {
-      return codeId;
+      return codeFragmentId;
    }
 
-   public void setCodeId(String codeId)
+   public void setCodeFragmentId(String codeFragmentId)
    {
-      this.codeId = codeId;
+      this.codeFragmentId = codeFragmentId;
    }
 
    public Theme getTheme()
    {
       return theme;
    }
-   
+
    public void setTheme(Theme theme)
    {
       this.theme = theme;
    }
-   
-   public String getBrush()
+
+   public boolean isPrivateFragment()
    {
-      return brush;
+      return privateFragment;
    }
 
-   public void setBrush(String brush)
+   public void setPrivateFragment(boolean privateFragment)
    {
-      this.brush = brush;
-   }
-
-   public boolean isSecured()
-   {
-      return secured;
-   }
-
-   public void setSecured(boolean secured)
-   {
-      this.secured = secured;
+      this.privateFragment = privateFragment;
    }
 }
