@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
@@ -35,22 +34,21 @@ public class ThemeManager
 {
      
    // The supported themes
-   private final List<String> THEMES = new ArrayList<String>();
+   private final List<String> themes;
       
-   @SuppressWarnings("unused")
-   @PostConstruct
-   private void populateThemes()
+   public ThemeManager()
    {
+      this.themes = new ArrayList<String>();
       for (Theme theme : Theme.values())
       {
-         THEMES.add(theme.getName());
+         this.themes.add(theme.getName());
       }
    }
    
    @Produces @Named
    public List<String> getThemes()
    {
-      return Collections.unmodifiableList(THEMES);
+      return Collections.unmodifiableList(themes);
    }
    
 }
