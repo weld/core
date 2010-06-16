@@ -28,14 +28,4 @@
     <dispatcher>REQUEST</dispatcher>
     <dispatcher>FORWARD</dispatcher>
   </filter-mapping>
-  <servlet>
-    <description></description>
-    <display-name>DownloadServlet</display-name>
-    <servlet-name>DownloadServlet</servlet-name>
-    <servlet-class>org.jboss.weld.examples.pastecode.servlets.DownloadServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DownloadServlet</servlet-name>
-    <url-pattern>/download</url-pattern>
-  </servlet-mapping>
 </web-app>

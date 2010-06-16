@@ -23,10 +23,10 @@ package org.jboss.weld.examples.pastecode.servlets;
 
 import java.io.IOException;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,25 +34,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 import org.jboss.weld.examples.pastecode.session.CodeFragmentManager;
 
+@WebServlet("/download")
 public class DownloadServlet extends HttpServlet
 {
    private static final long serialVersionUID = 1L;
 
    @Inject
-   Instance<CodeFragmentManager> eaoIn;
-   CodeFragmentManager eao;
-
-   public DownloadServlet()
-   {
-   }
+   private CodeFragmentManager codeFragmentManager;
 
    @Override
    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
    {
-
-      this.eao = eaoIn.get();
       String id = request.getParameter("id");
-      CodeFragment c = eao.getCodeFragment(id);
+      CodeFragment c = codeFragmentManager.getCodeFragment(id);
       String fileName = c.getUser() + "." + c.getLanguage();
       String txt = c.getText();
 
