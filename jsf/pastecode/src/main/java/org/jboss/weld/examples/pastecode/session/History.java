@@ -24,6 +24,7 @@ package org.jboss.weld.examples.pastecode.session;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -37,7 +38,7 @@ import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
 @SessionScoped
 @Named("history")
-//TODO @Stateful
+@Stateful
 public class History implements Serializable
 {
 
