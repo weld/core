@@ -46,20 +46,20 @@ import org.jboss.weld.examples.pastecode.model.Language;
 // TODO Make into an EJB Singleton which executes at startup
 @ApplicationScoped
 @Named("database")
+//TODO @Singleton @Startup
 public class PopulateDatabaseBean
 {
+   
+   private static final String DATA_FILE_NAME = "data.sql";
 
    @Inject
    private Instance<CodeFragmentManager> eaoIn;
    private CodeFragmentManager eao;
-   private boolean secured = false;
-   private static final String file = "data.sql";
-   private boolean populated = false;
+   private boolean secured;
+   
+   private boolean populated;
 
-   public PopulateDatabaseBean()
-   {
-   }
-
+   // TODO @PostConstruct
    public void populate()
    {
       if (populated)
@@ -71,7 +71,7 @@ public class PopulateDatabaseBean
 
       try
       {
-         String fileContent = readFileData(file);
+         String fileContent = readFileData(DATA_FILE_NAME);
          StringTokenizer st = new StringTokenizer(fileContent, "'");
          SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -95,7 +95,7 @@ public class PopulateDatabaseBean
       }
       catch (Exception e)
       {
-         System.err.println("Unable to read all records from " + file + " file");
+         System.err.println("Unable to read all records from " + DATA_FILE_NAME + " file");
       }
 
       populated = true;
