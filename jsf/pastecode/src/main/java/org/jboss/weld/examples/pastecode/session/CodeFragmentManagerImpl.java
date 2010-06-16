@@ -145,7 +145,7 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
    @Produces @Named
    public List<CodeFragment> getRecentCodeFragments()
    {
-      Query query = entityManager.createQuery("SELECT c FROM CodeFragment c WHERE hash=null ORDER BY datetime DESC ");
+      Query query = entityManager.createQuery("SELECT c FROM CodeFragment c WHERE c.hash=null ORDER BY datetime DESC ");
       query.setMaxResults(MAX_RECENT_FRAGMENTS);
 
       @SuppressWarnings("unchecked")
@@ -156,28 +156,23 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
 
    public List<CodeFragment> searchCodeFragments(CodeFragment code, int page, Paginator paginator)
    {
-      StringBuilder sb = new StringBuilder();
-
-      String delim = "";
+      StringBuilder sb = new StringBuilder().append("SELECT c FROM CodeFragment c WHERE c.hash=null");
+      
       if (!code.getUser().trim().equals(""))
       {
-         sb.append("c.user = \'" + code.getUser().trim().toLowerCase() + "\'");
-         delim = " AND";
+         sb.append(" AND c.user = \'").append(code.getUser().trim().toLowerCase()).append("\'");
       }
       if (code.getLanguage() != null)
       {
-         sb.append(delim).append(" c.language = \'" + code.getLanguage().name() + "\'");
-         delim = " AND";
+         sb.append(" AND c.language = \'").append(code.getLanguage().name()).append(("\'"));
       }
       if (!code.getNote().trim().equals(""))
       {
-         sb.append(delim).append(" c.note LIKE \'%" + code.getNote().trim().toLowerCase() + "%\'");
-         delim = " AND";
+         sb.append(" AND c.note LIKE \'%").append(code.getNote().trim().toLowerCase()).append("%\'");
       }
       if (!code.getText().trim().equals(""))
       {
-         sb.append(delim).append(" c.text LIKE \'%" + code.getText().toLowerCase() + "%\'");
-         delim = " AND";
+         sb.append(" AND c.text LIKE \'%").append(code.getText().toLowerCase()).append("%\'");
       }
       if (code.getDatetime() != null)
       {
@@ -189,15 +184,13 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
          String formattedDate1 = formatter.format(code.getDatetime());
          String formattedDate2 = formatter.format(date2);
 
-         sb.append(delim).append(" c.datetime between \'" + formattedDate1 + "\' and \'" + formattedDate2 + "\'");
-         delim = " AND";
+         sb.append(" AND c.datetime between \'").append(formattedDate1).append("\' and \'").append(formattedDate2).append("\'");
       }
-
-      if (sb.toString().length() == 0)
-         sb.append("1 = \'1\'");
-
-      Query q = entityManager.createQuery("SELECT c FROM CodeFragment c WHERE hash=null AND " + sb.toString() + " ORDER BY datetime DESC");
-      int allRecords = q.getResultList().size();
+      sb.append(" ORDER BY datetime DESC");
+      String queryString = sb.toString();
+      
+      Query q = entityManager.createQuery(queryString);
+      
       q.setFirstResult(page * PAGE_SIZE);
       q.setMaxResults(PAGE_SIZE);
       
@@ -205,8 +198,8 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       List<CodeFragment> codes = q.getResultList();
 
       paginator.setPage(page);
-      paginator.setRecordsCount(allRecords);
-      paginator.setPagesCount(allRecords / PAGE_SIZE);
+      paginator.setRecordsCount(codes.size());
+      paginator.setPagesCount(codes.size() / PAGE_SIZE);
 
       return codes;
    }
