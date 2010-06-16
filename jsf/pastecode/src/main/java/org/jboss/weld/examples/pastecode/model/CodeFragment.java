@@ -23,6 +23,7 @@ package org.jboss.weld.examples.pastecode.model;
 
 import static javax.persistence.GenerationType.AUTO;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +46,13 @@ import javax.persistence.TemporalType;
 @Entity
 public class CodeFragment
 {
+
+   private static final long MS_PER_SECOND = 1000;
+   private static final long MS_PER_MINUTE = 60 * MS_PER_SECOND;
+   private static final long MS_PER_HOUR = 60 * MS_PER_MINUTE;
+   private static final long MS_PER_DAY = 24 * MS_PER_HOUR;
+
+   private static final SimpleDateFormat df = new SimpleDateFormat("d MMM");
 
    @Id
    @GeneratedValue(strategy = AUTO)
@@ -105,6 +113,60 @@ public class CodeFragment
    public void setDatetime(Date datetime)
    {
       this.datetime = datetime;
+   }
+
+   public String getFriendlyDate()
+   {
+      if (getDatetime() == null)
+         return "unknown";
+
+      Date now = new Date();
+
+      long age = now.getTime() - getDatetime().getTime();
+
+      long days = (long) Math.floor(age / MS_PER_DAY);
+      age -= (days * MS_PER_DAY);
+      long hours = (long) Math.floor(age / MS_PER_HOUR);
+      age -= (hours * MS_PER_HOUR);
+      long minutes = (long) Math.floor(age / MS_PER_MINUTE);
+
+      if (days < 7)
+      {
+         StringBuilder sb = new StringBuilder();
+
+         if (days > 0)
+         {
+            sb.append(days);
+            sb.append(days > 1 ? " days " : " day ");
+         }
+
+         if (hours > 0)
+         {
+            sb.append(hours);
+            sb.append(hours > 1 ? " hrs " : " hr ");
+         }
+
+         if (minutes > 0)
+         {
+            sb.append(minutes);
+            sb.append(minutes > 1 ? " minutes " : " minute ");
+         }
+
+         if (hours == 0 && minutes == 0)
+         {
+            sb.append("just now");
+         }
+         else
+         {
+            sb.append("ago");
+         }
+
+         return sb.toString();
+      }
+      else
+      {
+         return df.format(getDatetime());
+      }
    }
 
    public Language getLanguage()
