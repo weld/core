@@ -731,24 +731,6 @@ filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.2.5.jar|appengine-api-labs-1.2.5.
             </configuration>
          </plugin>
 
-         <plugin>
-            <groupId>org.twdata.maven</groupId>
-            <artifactId>maven-cli-plugin</artifactId>
-            <configuration>
-               <userAliases>
-                  <runjetty>compile
-                     org.apache.maven.plugins:maven-war-plugin:inplace
-                     org.mortbay.jetty:maven-jetty-plugin:run</runjetty>
-                  <runtomcat>compile
-                     org.apache.maven.plugins:maven-war-plugin:inplace
-                     org.codehaus.mojo:tomcat-maven-plugin:run</runtomcat>
-                  <explode>compile
-                     org.apache.maven.plugins:maven-war-plugin:inplace
-                     -o</explode>
-               </userAliases>
-            </configuration>
-         </plugin>
-
       </plugins>
    </build>
 
