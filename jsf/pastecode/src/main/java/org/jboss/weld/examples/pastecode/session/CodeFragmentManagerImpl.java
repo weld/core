@@ -24,45 +24,38 @@ package org.jboss.weld.examples.pastecode.session;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import javax.annotation.Resource;
-import javax.ejb.EJBContext;
-import javax.ejb.EJBException;
+import java.util.Date;
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.*;
-import org.jboss.weld.examples.pastecode.model.CodeEntity;
-import javax.inject.*;
-import java.util.*;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
-/**
- * Session Bean implementation class CodeEAOBean
- */
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
+
 @Stateless
-@Named("codeEAOBean")
-public class CodeBean implements Code
+public class CodeFragmentManagerImpl implements CodeFragmentManager
 {
 
-   @PersistenceContext(unitName = "pastecodeDatabase")
-   private EntityManager em;
+   // The number of code fragments to return in our recentCodeFragments query
+   private static int MAX_RECENT_FRAGMENTS = 7;
 
-   @Resource
-   EJBContext ctx;
+   // The number of code fragments to display per page
+   private static int PAGE_SIZE = 2;
+
+   @PersistenceContext(unitName = "pastecodeDatabase")
+   private EntityManager entityManager;
 
    @Inject
-   private HashComputer hashComp;
+   private HashComputer hashComputer;
 
-   private int MAX_CODES = 7;
-
-   private int PAGE_SIZE = 2;
-
-   public CodeBean()
+   public String addCodeFragment(CodeFragment code, boolean privateFragment)
    {
-   }
-
-   public String addCode(CodeEntity code, boolean secured)
-   {
-      String result;
+      // Set the defaults
       if (code.getDatetime() == null)
       {
          code.setDatetime(Calendar.getInstance().getTime());
@@ -73,15 +66,15 @@ public class CodeBean implements Code
          code.setUser("Anonymous");
       }
 
-      /* compute hash value and return it if secured flag has been set */
-      if (secured)
+      // compute hash value and return it if private flag has been set
+      if (privateFragment)
       {
          try
          {
-            String hashValue = hashComp.getHashValue(code);
+            String hashValue = hashComputer.getHashValue(code);
             code.setHash(hashValue);
-            result = hashValue;
-            em.persist(code);
+            entityManager.persist(code);
+            return hashValue;
          }
          catch (NoSuchAlgorithmException e)
          {
@@ -89,62 +82,74 @@ public class CodeBean implements Code
             return null;
          }
       }
+      // just return a non-hashed id
       else
       {
-         em.persist(code);
-         result = new Integer(code.getId()).toString();
+         entityManager.persist(code);
+         return new Integer(code.getId()).toString();
       }
-
-      // System.out.println("Result: " + result);
-
-      return result;
    }
 
-   public CodeEntity getCode(String id)
+   public CodeFragment getCodeFragment(String id)
    {
-      boolean secured = true;
+      // If it's not an integer, it's a hash!
+      if (!isInteger(id))
+      {
+         Query query = entityManager.createQuery("SELECT c FROM CodeFragment c WHERE hash = :hash");
+         query.setParameter("hash", id);
 
-      try
-      {
-         Integer.parseInt(id);
-         secured = false; /*
-                           * if it is possible to convert to number -> not
-                           * secured, otherwise -> secured
-                           */
-      }
-      catch (NumberFormatException e)
-      {
-      }
+         @SuppressWarnings("unchecked")
+         List<CodeFragment> fragments = query.getResultList();
 
-      if (secured)
-      {
-         Query q = em.createQuery("SELECT c FROM CodeEntity c WHERE hash = :hash");
-         q.setParameter("hash", id);
-         return (CodeEntity) q.getSingleResult();
+         if (fragments.size() == 0)
+         {
+            throw new RuntimeException("No such fragment!");
+         }
+         else
+         {
+            return fragments.get(0);
+         }
       }
       else
       {
-         CodeEntity c = em.find(CodeEntity.class, Integer.parseInt(id));
-         /*
-          * if somebody is trying to guess Id of secured code paste he cannot
-          * pass
-          */
+         CodeFragment c = entityManager.find(CodeFragment.class, Integer.parseInt(id));
+         if (c == null)
+         {
+            throw new RuntimeException("No such fragment!");
+         }
+         // If no hash was set, then this is not a private fragment, return it!
          if (c.getHash() == null)
          {
             return c;
          }
          else
          {
-            throw new EJBException("Access denied");
+            throw new RuntimeException("Access denied!");
          }
       }
    }
 
-   public List<CodeEntity> recentCodes()
+   private static boolean isInteger(String string)
    {
-      Query q = em.createQuery("SELECT c FROM CodeEntity c WHERE hash=null ORDER BY datetime DESC ");
-      q.setMaxResults(MAX_CODES);
-      List<CodeEntity> codes = q.getResultList();
+      try
+      {
+         Integer.parseInt(string);
+         return true;
+      }
+      catch (NumberFormatException e)
+      {
+         return false;
+      }
+   }
+
+   public List<CodeFragment> getRecentCodeFragments()
+   {
+      Query query = entityManager.createQuery("SELECT c FROM CodeFragment c WHERE hash=null ORDER BY datetime DESC ");
+      query.setMaxResults(MAX_RECENT_FRAGMENTS);
+
+      @SuppressWarnings("unchecked")
+      List<CodeFragment> codes = query.getResultList();
+
       return codes;
    }
 
@@ -154,7 +159,7 @@ public class CodeBean implements Code
     * function from another session bean
     */
    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-   public List<CodeEntity> searchCodes(CodeEntity code, int page, QueryInfo info)
+   public List<CodeFragment> searchCodeFragments(CodeFragment code, int page, QueryInfo info)
    {
       StringBuilder sb = new StringBuilder();
 
@@ -164,9 +169,9 @@ public class CodeBean implements Code
          sb.append("c.user = \'" + code.getUser().trim().toLowerCase() + "\'");
          delim = " AND";
       }
-      if (!code.getLanguage().trim().equals(""))
+      if (code.getLanguage() != null)
       {
-         sb.append(delim).append(" c.language = \'" + code.getLanguage().trim().toLowerCase() + "\'");
+         sb.append(delim).append(" c.language = \'" + code.getLanguage().name() + "\'");
          delim = " AND";
       }
       if (!code.getNote().trim().equals(""))
@@ -196,11 +201,11 @@ public class CodeBean implements Code
       if (sb.toString().length() == 0)
          sb.append("1 = \'1\'");
 
-      Query q = em.createQuery("SELECT c FROM CodeEntity c WHERE hash=null AND " + sb.toString() + " ORDER BY datetime DESC");
+      Query q = entityManager.createQuery("SELECT c FROM CodeFragment c WHERE hash=null AND " + sb.toString() + " ORDER BY datetime DESC");
       int allRecords = q.getResultList().size();
       q.setFirstResult(page * PAGE_SIZE);
       q.setMaxResults(PAGE_SIZE);
-      List<CodeEntity> codes = q.getResultList();
+      List<CodeFragment> codes = q.getResultList();
 
       info.setPage(page);
       info.setRecordsCount(allRecords);

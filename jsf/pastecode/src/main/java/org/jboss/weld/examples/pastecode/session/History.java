@@ -21,15 +21,15 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import java.util.List;
-import javax.ejb.Stateful;
-import javax.annotation.PostConstruct;
-import org.jboss.weld.examples.pastecode.model.CodeEntity;
-import javax.inject.Named;
-import javax.inject.Inject;
 import java.io.Serializable;
+import java.util.List;
+
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
 /**
  * Session Bean implementation class HistoryBean
@@ -37,69 +37,59 @@ import javax.enterprise.inject.Produces;
 
 @SessionScoped
 @Named("history")
-@Stateful
+//TODO @Stateful
 public class History implements Serializable
 {
 
    private static final long serialVersionUID = 20L;
+   
+   // The max length of the snippet we show
+   private static int TRIMMED_TEXT_LEN = 120;
 
-   transient @Inject
-   Code eao;
+   @Inject
+   private CodeFragmentManager codeFragmentManager;
 
    private QueryInfo info;
 
-   private List<CodeEntity> codes;
+   private List<CodeFragment> codes;
 
-   private int TRIMMED_TEXT_LEN = 120;
-
-   private CodeEntity searchItem;
+   // The Search we are conducting
+   private final CodeFragment codeFragmentPrototype;
 
    private int page = 0;
 
    public History()
    {
+      this.codeFragmentPrototype = new CodeFragment();
    }
 
-   @PostConstruct
-   public void initialize()
-   {
-      this.searchItem = new CodeEntity();
-      // this.info = new QueryInfo();
-   }
-
-   public List<CodeEntity> getCodes()
+   public List<CodeFragment> getCodes()
    {
       return this.codes;
    }
 
-   public void setCodes(List<CodeEntity> codes)
+   @Produces @Named
+   public CodeFragment getCodeFragmentPrototype()
    {
-      this.codes = codes;
+      return codeFragmentPrototype;
    }
 
-   @Produces
-   @Named("searchItem")
-   public CodeEntity getSearchItem()
-   {
-      return searchItem;
-   }
-
-   public void setSearchItem(CodeEntity searchItem)
-   {
-      this.searchItem = searchItem;
-   }
-
+   //Start a *new* search!
    public String newSearch()
    {
       this.page = 0;
       return "history";
    }
 
+   // Do the search, called as a "page action"
    public String search()
    {
       this.info = new QueryInfo();
       this.codes = null;
-      this.codes = eao.searchCodes(this.searchItem, this.page, this.info);
+      
+      // Perform a seach
+      
+      this.codes = codeFragmentManager.searchCodeFragments(this.codeFragmentPrototype, this.page, this.info);
 
       for (int i = 0; i != this.codes.size(); i++)
       {

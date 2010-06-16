@@ -21,17 +21,21 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import javax.inject.*;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
-import javax.enterprise.inject.*;
-import org.jboss.weld.examples.pastecode.model.*;
-import java.util.List;
+import javax.enterprise.inject.Model;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
 @Model
 public class Paster
 {
-   private CodeEntity code;
+   private CodeFragment code;
 
    private String codeId;
 
@@ -41,9 +45,9 @@ public class Paster
 
    private boolean secured = false;
 
-   @Inject Data data;
+   @Inject LanguageManager data;
 
-   transient @Inject Code eao;
+   transient @Inject CodeFragmentManager eao;
 
    public Paster()
    {
@@ -52,37 +56,37 @@ public class Paster
    @PostConstruct
    public void postConstruct()
    {
-      this.code = new CodeEntity();
+      this.code = new CodeFragment();
       this.theme = "shThemeDefault.css";
    }
 
    public String paste()
    {
-      this.codeId = eao.addCode(code, secured);
+      this.codeId = eao.addCodeFragment(code, secured);
       return "success";
    }
 
    /* used for access from jsf page */
    @Produces
    @Named("code")
-   public CodeEntity getPasterCodeInstance()
+   public CodeFragment getPasterCodeInstance()
    {
       return this.code;
    }
 
    public void loadCode()
    {
-      this.code = eao.getCode(codeId);
+      this.code = eao.getCodeFragment(codeId);
 
       if (this.code == null)
          throw new EJBException("Could not read entity with given id value");
 
-      this.brush = data.getBrush(this.code.getLanguage());
+      this.brush = this.code.getLanguage().getBrush();
    }
 
-   public List<CodeEntity> getCodes()
+   public List<CodeFragment> getCodes()
    {
-      return eao.recentCodes();
+      return eao.getRecentCodeFragments();
    }
 
    public String getCodeId()

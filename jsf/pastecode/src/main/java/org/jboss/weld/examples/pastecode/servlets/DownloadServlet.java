@@ -21,35 +21,38 @@
  */
 package org.jboss.weld.examples.pastecode.servlets;
 
-import java.io.*;
+import java.io.IOException;
+
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.jboss.weld.examples.pastecode.model.CodeEntity;
-import org.jboss.weld.examples.pastecode.session.Code;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
+import org.jboss.weld.examples.pastecode.session.CodeFragmentManager;
 
 public class DownloadServlet extends HttpServlet
 {
    private static final long serialVersionUID = 1L;
 
    @Inject
-   Instance<Code> eaoIn;
-   Code eao;
+   Instance<CodeFragmentManager> eaoIn;
+   CodeFragmentManager eao;
 
    public DownloadServlet()
    {
    }
 
+   @Override
    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
    {
 
       this.eao = eaoIn.get();
-      String id = (String) request.getParameter("id");
-      CodeEntity c = eao.getCode(id);
+      String id = request.getParameter("id");
+      CodeFragment c = eao.getCodeFragment(id);
       String fileName = c.getUser() + "." + c.getLanguage();
       String txt = c.getText();
 

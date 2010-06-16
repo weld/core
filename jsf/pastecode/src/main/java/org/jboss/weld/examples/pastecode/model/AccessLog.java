@@ -21,30 +21,39 @@
  */
 package org.jboss.weld.examples.pastecode.model;
 
-import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.GenerationType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import static javax.persistence.GenerationType.AUTO;
+
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 @Entity
-@Table(name = "largecodelog")
-public class LargeCodeLog implements Serializable
+public class AccessLog
 {
-   private static final long serialVersionUID = 1L;
+   
+   @Id @GeneratedValue(strategy = AUTO)
    private int id;
+   
+   @Temporal(TemporalType.TIMESTAMP)
    private Date datetime;
-   private int codeId;   
+   
+   @ManyToOne
+   private CodeFragment codeFragment;
+   
    private String access;
    
-   @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "id")
+   public AccessLog(CodeFragment codeFragment, Date dateTime, String access)
+   {
+      this.codeFragment = codeFragment;
+      this.datetime = dateTime;
+      this.access = access;
+   }
+   
    public int getId()
    {
       return id;
@@ -55,21 +64,14 @@ public class LargeCodeLog implements Serializable
       this.id = id;
    }
 
-   public LargeCodeLog(int codeId, Date dateTime, String access)
+   public CodeFragment getCodeFragment()
    {
-      this.codeId = codeId;
-      this.datetime = dateTime;
-      this.access = access;
+      return codeFragment;
    }
 
-   public int getCodeId()
+   public void setCodeFragment(CodeFragment codeFragment)
    {
-      return codeId;
-   }
-
-   public void setCodeId(int codeId)
-   {
-      this.codeId = codeId;
+      this.codeFragment = codeFragment;
    }
 
    public String getAccess()
@@ -82,8 +84,6 @@ public class LargeCodeLog implements Serializable
       this.access = access;
    }
 
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(name = "datetime")
    public Date getDatetime()
    {
       return this.datetime;

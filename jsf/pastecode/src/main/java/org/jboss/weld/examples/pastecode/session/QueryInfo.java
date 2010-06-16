@@ -21,11 +21,12 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class QueryInfo
 {
+   
    private int recordsCount = 0;
    private int pagesCount = 0;
    private int numLinks = 8;

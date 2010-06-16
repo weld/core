@@ -21,16 +21,36 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import org.jboss.weld.examples.pastecode.model.CodeEntity;
 
-public interface Code
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
+
+@ApplicationScoped
+public class ThemeManager
 {
-   public String addCode(CodeEntity code, boolean secured);
-
-   public CodeEntity getCode(String id);
-
-   public List<CodeEntity> recentCodes();
-
-   public List<CodeEntity> searchCodes(CodeEntity code, int page, QueryInfo info);
+     
+   // The supported themes
+   private final List<String> THEMES = new ArrayList<String>();
+      
+   @SuppressWarnings("unused")
+   @PostConstruct
+   private void populateThemes()
+   {
+      for (Theme theme : Theme.values())
+      {
+         THEMES.add(theme.getName());
+      }
+   }
+   
+   @Produces @Named
+   public List<String> getThemes()
+   {
+      return Collections.unmodifiableList(THEMES);
+   }
+   
 }

@@ -21,18 +21,20 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import javax.enterprise.inject.Instance;
 import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import org.jboss.weld.examples.pastecode.model.CodeEntity;
-import com.sun.org.apache.xml.internal.serialize.LineSeparator;
+import javax.inject.Named;
+
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
+import org.jboss.weld.examples.pastecode.model.Language;
 
 /**
  * This bean only populates database with preformatted data. This is due to need
@@ -41,14 +43,15 @@ import com.sun.org.apache.xml.internal.serialize.LineSeparator;
  * external database to run this example.
  * 
  */
+// TODO Make into an EJB Singleton which executes at startup
 @ApplicationScoped
 @Named("database")
 public class PopulateDatabaseBean
 {
 
-   private @Inject
-   Instance<Code> eaoIn;
-   private Code eao;
+   @Inject
+   private Instance<CodeFragmentManager> eaoIn;
+   private CodeFragmentManager eao;
    private boolean secured = false;
    private static final String file = "data.sql";
    private boolean populated = false;
@@ -74,11 +77,11 @@ public class PopulateDatabaseBean
 
          while (st.countTokens() > 1)
          {
-            CodeEntity c = new CodeEntity();
+            CodeFragment c = new CodeFragment();
             st.nextToken();
             c.setDatetime(formatter.parse(st.nextToken()));
             st.nextToken();
-            c.setLanguage(st.nextToken());
+            c.setLanguage(Language.valueOf(st.nextToken()));
             st.nextToken();
             c.setNote(st.nextToken());
             st.nextToken();
@@ -86,7 +89,7 @@ public class PopulateDatabaseBean
             st.nextToken();
             c.setText(st.nextToken());
 
-            eao.addCode(c, secured);
+            eao.addCodeFragment(c, secured);
          }
 
       }
@@ -108,7 +111,7 @@ public class PopulateDatabaseBean
 
       while ((radek = br.readLine()) != null)
       {
-         sb.append(radek).append(LineSeparator.Web);
+         sb.append(radek).append("\n");
       }
 
       return new String(sb);

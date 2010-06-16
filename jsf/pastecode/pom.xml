@@ -1,74 +1,80 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
-   
+
    <parent>
       <groupId>org.jboss.weld.examples</groupId>
       <artifactId>weld-examples-parent</artifactId>
       <version>1.0.2-SNAPSHOT</version>
       <relativePath>../../pom.xml</relativePath>
    </parent>
-   
+
    <groupId>org.jboss.weld.examples.jsf.pastecode</groupId>
    <artifactId>weld-jsf-pastecode</artifactId>
    <packaging>war</packaging>
    <name>Weld Examples: PasteCode</name>
-   
+
    <dependencies>
-   
+
       <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
          <scope>test</scope>
          <classifier>jdk15</classifier>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.faces</groupId>
          <artifactId>jsf-api</artifactId>
          <scope>provided</scope>
       </dependency>
-      
+
       <dependency>
          <groupId>org.tuckey</groupId>
          <artifactId>urlrewritefilter</artifactId>
          <version>3.1.0</version>
          <scope>compile</scope>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.servlet</groupId>
          <artifactId>servlet-api</artifactId>
          <version>2.5</version>
          <scope>provided</scope>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.enterprise</groupId>
          <artifactId>cdi-api</artifactId>
          <scope>provided</scope>
       </dependency>
-      
+
       <dependency>
          <groupId>javax.persistence</groupId>
          <artifactId>persistence-api</artifactId>
          <scope>provided</scope>
       </dependency>
-      
+
       <dependency>
          <groupId>org.jboss.ejb3</groupId>
-         <artifactId>jboss-ejb3_1</artifactId>
-         <version>1.0.8-alpha-1</version>
+         <artifactId>jboss-ejb3-api</artifactId>
          <scope>provided</scope>
       </dependency>
-      
+
+      <dependency>
+         <groupId>javax.annotation</groupId>
+         <artifactId>jsr250-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+
       <dependency>
          <groupId>javax.transaction</groupId>
          <artifactId>jta</artifactId>
          <version>1.1</version>
          <scope>provided</scope>
       </dependency>
-      
+
       <dependency>
          <groupId>org.glassfish.web</groupId>
          <artifactId>el-impl</artifactId>
@@ -79,49 +85,51 @@
             </exclusion>
          </exclusions>
       </dependency>
-      
+
    </dependencies>
-   
+
    <build>
       <finalName>weld-pastecode</finalName>
-         <plugins>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-war-plugin</artifactId>
-               <configuration>
-                  <warSourceExcludes>WEB-INF/classes/**,WEB-INF/lib/**</warSourceExcludes>
-               </configuration>
-            </plugin>
-            <plugin>
-               <groupId>com.pyx4j</groupId>
-               <artifactId>maven-junction-plugin</artifactId>
-               <executions>
-                  <execution>
-                     <id>unlink</id>
-                     <phase>clean</phase>
-                     <goals>
-                        <goal>unlink</goal>
-                     </goals>
-                  </execution>
-               </executions>
-               <configuration>
-                  <links>
-                     <!-- link src/main/webapp -> war/ for IDEs -->
-                     <link>
-                        <dst>${basedir}/war</dst>
-                        <src>${basedir}/src/main/webapp</src>
-                     </link>
-                  </links>
-               </configuration>
-            </plugin>
-         </plugins>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+               <warSourceExcludes>WEB-INF/classes/**,WEB-INF/lib/**</warSourceExcludes>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>com.pyx4j</groupId>
+            <artifactId>maven-junction-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>unlink</id>
+                  <phase>clean</phase>
+                  <goals>
+                     <goal>unlink</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <links>
+                  <!-- link src/main/webapp -> war/ for IDEs -->
+                  <link>
+                     <dst>${basedir}/war</dst>
+                     <src>${basedir}/src/main/webapp</src>
+                  </link>
+               </links>
+            </configuration>
+         </plugin>
+      </plugins>
    </build>
-   
-   <!-- <scm>
+
+   <!--
+      <scm>
       <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/pastecode</connection>
       <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/jsf/pastecode</developerConnection>
-     <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/pastecode</url>
-  </scm>  -->
-   
+      <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/pastecode</url>
+      </scm>
+   -->
+
 </project>
 

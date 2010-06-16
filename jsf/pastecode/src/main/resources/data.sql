@@ -1,14 +1,14 @@
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (1, '2010-01-01 01:01:01', 'css', ' ', 'martin',
+insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (1, '2010-01-01 01:01:01', 'CSS', ' ', 'martin',
 'div {
    min-height: 500px;
    height:auto !important;
    height: 500px;
 }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (2, '2009-01-02 01:01:01', 'css', ' ', 'peter',
+insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (2, '2009-01-02 01:01:01', 'CSS', ' ', 'peter',
 'div {
    height: expression( this.scrollHeight < 501 ? "500px" : "auto" );
 }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (3, '2009-02-02 01:01:01', 'css', ' ', 'peter',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (3, '2009-02-02 01:01:01', 'CSS', ' ', 'peter',
 'a.GlobalOrangeButton span {
 background: transparent url(http://media-sprout.com/tutorials/web/CSSSprit-SlideButton/images/button_left_orange.png) no-repeat 0 0;
 display: block;
@@ -17,19 +17,19 @@ padding: 7px 0 5px 18px;
 color: #fff;
 }
 ');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (4, '2009-02-02 01:01:01', 'js', ' ', 'john',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (4, '2009-02-02 01:01:01', 'JAVASCRIPT', ' ', 'john',
 'var newPathname = "";
 for ( i = 0; i pathArray.length; i++ ) {
   newPathname += "/";
   newPathname += pathArray[i];
 }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (5, '2009-02-03 01:01:01', 'js', ' ', 'graham',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (5, '2009-02-03 01:01:01', 'JAVASCRIPT', ' ', 'graham',
 '<script type="text/javascript">
 <!--
     function toggle_visibility(id) {
        var e = document.getElementById(id);
 ');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (6, '2009-02-04 01:01:01', 'js', ' ', 'martin',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (6, '2009-02-04 01:01:01', 'JAVASCRIPT', ' ', 'martin',
 'var myArray = ["one", "two", "three"];
 
 // console.log( myArray ) => ["one", "two", "three"]
@@ -37,7 +37,7 @@ insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (6, '2009-02-
 myArray.length = 0;
 
 // console.log( myArray ) => []');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (7, '2009-02-04 01:01:01', 'js', ' ', 'crazyman',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (7, '2009-02-04 01:01:01', 'JAVASCRIPT', ' ', 'crazyman',
 'function randRange(data) {
        var newTime = data[Math.floor(data.length * Math.random())];
        return newTime;
@@ -52,7 +52,7 @@ function toggleSomething() {
        clearInterval(timer);
        timer = setInterval(toggleSomething, randRange(timeArray));
 ');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (8, '2009-02-05 01:01:01', 'java', ' ', 'peter',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (8, '2009-02-05 01:01:01', 'JAVA', ' ', 'peter',
 'public List<code> recentcodes()
     {
     	Query q = em.createQuery("SELECT c FROM code c WHERE hash=null ORDER BY datetime DESC ");
@@ -60,12 +60,12 @@ insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (8, '2009-02-
     	List<code> codes = q.getResultList();    	    	
     	return codes;
     }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (9, '2009-02-05 01:01:01', 'java', ' ', 'graham',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (9, '2009-02-05 01:01:01', 'JAVA', ' ', 'graham',
 ' private void startOperation() throws HibernateException {
         session = HibernateFactory.openSession();
         tx = session.beginTransaction();
     }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (10, '2009-01-06 01:01:01', 'java', ' ', 'martin',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (10, '2009-01-06 01:01:01', 'JAVA', ' ', 'martin',
 'public List findAll() throws DataAccessLayerException{
         List events = null;
         try {
@@ -81,7 +81,7 @@ insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (10, '2009-01
         return events;
     }
 ');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (11, '2009-02-06 01:01:01', 'java', ' ', 'crazyman',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (11, '2009-02-06 01:01:01', 'JAVA', ' ', 'crazyman',
 'public Event find(Long id) throws DataAccessLayerException {
         Event event = null;
         try {
@@ -95,7 +95,7 @@ insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (11, '2009-02
         }
         return event;
     }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (12, '2009-01-07 01:01:01', 'java', ' ', 'graham',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (12, '2009-01-07 01:01:01', 'JAVA', ' ', 'graham',
 ' public void delete(Event event) throws DataAccessLayerException {
         try {
             startOperation();
@@ -107,7 +107,7 @@ insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (12, '2009-01
             HibernateFactory.close(session);
         }
     }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (13, '2009-01-08 01:01:01', 'java', ' ', 'peter',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (13, '2009-01-08 01:01:01', 'JAVA', ' ', 'peter',
 'public void create(Event event) throws DataAccessLayerException {
         try {
             startOperation();
@@ -119,7 +119,7 @@ insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (13, '2009-01
             HibernateFactory.close(session);
         }
     }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (14, '2009-01-09 01:01:01', 'php', ' ', 'martin',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (14, '2009-01-09 01:01:01', 'PHP', ' ', 'martin',
 'function build_calendar($month,$year,$dateArray) {
 
      // Create array containing abbreviations of days of week.
@@ -131,12 +131,12 @@ insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (14, '2009-01
      // How many days does this month contain?
      $numberDays = date(t,$firstDayOfMonth);
 }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (15, '2009-01-10 01:01:01', 'php', ' ', 'john',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (15, '2009-01-10 01:01:01', 'PHP', ' ', 'john',
 'if ( !empty($_SERVER[HTTP_X_REQUESTED_WITH]) && strtolower($_SERVER[HTTP_X_REQUESTED_WITH]) == xmlhttprequest )
 {
        # Ex. check the query and serve requested data
 }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (16, '2009-01-11 01:01:01', 'php', ' ', 'graham',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (16, '2009-01-11 01:01:01', 'PHP', ' ', 'graham',
 '<?php
 
 function getTwitterStatus($userid){
@@ -154,11 +154,11 @@ $xml = simplexml_load_file($url) or die("could not connect");
 getTwitterStatus("kenrick1991");
 
 ?>');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (17, '2009-01-11 01:01:01', 'php', ' ', 'peter',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (17, '2009-01-11 01:01:01', 'PHP', ' ', 'peter',
 '<?php
   header( Location: http://www.yoursite.com/new_page.html ) ;
 ?>');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (18, '2009-01-12 01:01:01', 'php', ' ', 'martin',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (18, '2009-01-12 01:01:01', 'PHP', ' ', 'martin',
 'function findexts ($filename) {
 
        $filename = strtolower($filename) ;
@@ -172,14 +172,14 @@ insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (18, '2009-01
        return $exts;
 
 }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (19, '2009-01-12 01:01:01', 'php', ' ', 'graham',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (19, '2009-01-12 01:01:01', 'PHP', ' ', 'graham',
 'function fileRead($file){
    $lines = file($file);
    foreach ($lines as $line_num => $line) {
       echo  $line,  </br>;
    }
 }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (20, '2009-02-12 01:01:01', 'java', ' ', 'peter',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (20, '2009-02-12 01:01:01', 'JAVA', ' ', 'peter',
 'import java.util.*;
 
 import org.hibernate.*;
@@ -210,7 +210,7 @@ public class Main {
   }
   
 }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (21, '2009-02-16 01:01:01', 'java', ' ', 'crazyman',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (21, '2009-02-16 01:01:01', 'JAVA', ' ', 'crazyman',
 'import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.JComboBox;
@@ -248,7 +248,7 @@ public class DropModeON {
           return true;
         }
       }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (22, '2009-02-15 01:01:01', 'java', ' ', 'martin',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (22, '2009-02-15 01:01:01', 'JAVA', ' ', 'martin',
 '@Entity
 public class Address {
     @Id
@@ -306,7 +306,7 @@ public class Address {
     }
 
 }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (23, '2009-02-18 01:01:01', 'java', ' ', 'graham',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (23, '2009-02-18 01:01:01', 'JAVA', ' ', 'graham',
 'import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -328,7 +328,7 @@ public class ProfessorService {
   }
 
 }');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (24, '2009-02-19 01:01:01', 'java', ' ', 'crazyman',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (24, '2009-02-19 01:01:01', 'JAVA', ' ', 'crazyman',
 '@Entity
 public class Department {
   @Id
@@ -358,7 +358,7 @@ public class Department {
   }
 }
 ');
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (25, '2009-02-01 01:01:01', 'java', ' ', 'graham',
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (25, '2009-02-01 01:01:01', 'JAVA', ' ', 'graham',
 'import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -404,7 +404,7 @@ public class JPAUtil {
   }
 }');
 
-insert into code (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (26, '2009-02-01 01:01:01', 'java', 'Some note', 'martin', 
+insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (26, '2009-02-01 01:01:01', 'JAVA', 'Some note', 'martin', 
 'package org.jboss.weld.examples.pastie.session;
 
 import java.util.List;

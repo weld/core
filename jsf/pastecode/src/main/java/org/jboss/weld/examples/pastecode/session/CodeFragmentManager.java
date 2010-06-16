@@ -21,48 +21,20 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.List;
+
+import javax.ejb.Local;
 
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
-// TODO @Stateless
-public class HashComputer
+@Local
+public interface CodeFragmentManager
 {
+   public String addCodeFragment(CodeFragment code, boolean privateFragment);
 
-   public String getHashValue(CodeFragment code) throws NoSuchAlgorithmException
-   {
-      String hashValue;
-      MessageDigest md = MessageDigest.getInstance("SHA-1");
-      String combinedValue = code.getText() + code.getDatetime();
-      md.update(combinedValue.getBytes());
-      hashValue = asHex(md.digest());
-      return hashValue;
-   }
+   public CodeFragment getCodeFragment(String id);
 
-   private String asHex(byte buf[])
-   {
-      StringBuilder strBuf = new StringBuilder(buf.length * 2);
+   public List<CodeFragment> getRecentCodeFragments();
 
-      // make sure it contains a letter!
-      strBuf.append("h");
-      
-      for (int i = 0; i < buf.length; i++)
-      {
-         if ((buf[i] & 0xff) < 0x10)
-         {
-            strBuf.append("0");
-            strBuf.append(Long.toString(buf[i] & 0xff, 16));
-         }
-      }
-      if (strBuf.length() <= 6)
-      {
-         while (strBuf.length() <= 6)
-         {
-            strBuf.append("0");
-         }
-      }
-      return strBuf.toString().substring(0, 6);
-   }
-
+   public List<CodeFragment> searchCodeFragments(CodeFragment code, int page, QueryInfo info);
 }

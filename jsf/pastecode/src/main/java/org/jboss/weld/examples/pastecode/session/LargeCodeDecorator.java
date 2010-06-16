@@ -22,6 +22,7 @@
 package org.jboss.weld.examples.pastecode.session;
 
 import java.util.Date;
+
 import javax.annotation.Resource;
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
@@ -31,9 +32,10 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.jboss.weld.examples.pastecode.model.CodeEntity;
-import org.jboss.weld.examples.pastecode.model.LargeCodeLog;
 import javax.transaction.UserTransaction;
+
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
+import org.jboss.weld.examples.pastecode.model.AccessLog;
 
 /**
  * This Decorator performs logging of information about large
@@ -47,10 +49,10 @@ import javax.transaction.UserTransaction;
  */
 @Decorator
 @TransactionManagement(TransactionManagementType.BEAN)
-public abstract class LargeCodeDecorator implements Code
+public abstract class LargeCodeDecorator implements CodeFragmentManager
 {
    /* injecting Delagation point - mandatory */
-   @Inject @Delegate @Any Code eao; 
+   @Inject @Delegate @Any CodeFragmentManager eao; 
 
    @PersistenceContext(unitName = "pastecodeDatabase")
    private EntityManager em;
@@ -59,10 +61,10 @@ public abstract class LargeCodeDecorator implements Code
    
    private long LARGE_CODE = 65536;
    
-   public String addCode(CodeEntity code, boolean secured)
+   public String addCodeFragment(CodeFragment code, boolean secured)
    {
       
-      String codeId = eao.addCode(code, secured);
+      String codeId = eao.addCodeFragment(code, secured);
       
       if (code.getText().length() > LARGE_CODE)
       {
@@ -70,7 +72,7 @@ public abstract class LargeCodeDecorator implements Code
          {
             ut.begin();
             em.joinTransaction();
-            em.persist(new LargeCodeLog(code.getId(), code.getDatetime(), "w")); //writing large code
+            em.persist(new AccessLog(code, code.getDatetime(), "w")); //writing large code
             ut.commit();
          }
          catch(Exception e)
@@ -89,9 +91,9 @@ public abstract class LargeCodeDecorator implements Code
       return codeId;
    }
 
-   public CodeEntity getCode(String id)
+   public CodeFragment getCodeFragment(String id)
    {
-      CodeEntity code = eao.getCode(id);
+      CodeFragment code = eao.getCodeFragment(id);
       
       if (code.getText().length() > LARGE_CODE)
       {
@@ -99,7 +101,7 @@ public abstract class LargeCodeDecorator implements Code
          {
             ut.begin();
             em.joinTransaction();
-            em.persist(new LargeCodeLog(code.getId(), new Date(), "r")); //reading large code
+            em.persist(new AccessLog(code, new Date(), "r")); //reading large code
             ut.commit();
          }
          catch(Exception e)

@@ -42,7 +42,7 @@
 		   			<h:panelGroup>
 		   				<h:outputLabel for="theme" value="Choose theme: "/>   
 		   				<h:selectOneMenu id="theme" value="#{paster.theme}" onchange="chooseStyle(this.value);"> <!-- this.form.submit() -->		
-		   					<f:selectItems value="#{dataBean.themeItems}"/>
+		   					<f:selectItems value="#{themes}"/>
 			   			</h:selectOneMenu>
 			   			<a href="download?id=#{code.hash == null ? code.id : code.hash}" style="text-decoration: none;"><input type="button" value="Download file" /></a>
 		   			</h:panelGroup>
