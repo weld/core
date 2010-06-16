@@ -158,6 +158,7 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
     * modify returned Codes without affecting database (when we call this
     * function from another session bean
     */
+   
    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
    public List<CodeFragment> searchCodeFragments(CodeFragment code, int page, QueryInfo info)
    {
@@ -205,6 +206,8 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       int allRecords = q.getResultList().size();
       q.setFirstResult(page * PAGE_SIZE);
       q.setMaxResults(PAGE_SIZE);
+      
+      @SuppressWarnings("unchecked")
       List<CodeFragment> codes = q.getResultList();
 
       info.setPage(page);
