@@ -83,6 +83,7 @@ public class CodeFragment
       this.note = "";
       this.text = "";
       this.user = "";
+      this.language = Language.TEXT;
    }
 
    public int getId()
