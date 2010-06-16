@@ -2,6 +2,8 @@
 <faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+   
+   <name>weldpastecode</name>
 
    <navigation-rule>
       <from-view-id>/home.xhtml</from-view-id>
