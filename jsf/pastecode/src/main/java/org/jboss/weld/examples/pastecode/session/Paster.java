@@ -23,7 +23,6 @@ package org.jboss.weld.examples.pastecode.session;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
 import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
@@ -41,28 +40,22 @@ public class Paster
 
    private String brush;
 
-   private String theme;
+   private Theme theme;
 
    private boolean secured = false;
 
-   @Inject LanguageManager data;
-
-   transient @Inject CodeFragmentManager eao;
+   @Inject
+   private CodeFragmentManager codeFragmentManager;
 
    public Paster()
    {
-   }
-
-   @PostConstruct
-   public void postConstruct()
-   {
       this.code = new CodeFragment();
-      this.theme = "shThemeDefault.css";
+      this.theme = Theme.DEFAULT;
    }
 
    public String paste()
    {
-      this.codeId = eao.addCodeFragment(code, secured);
+      this.codeId = codeFragmentManager.addCodeFragment(code, secured);
       return "success";
    }
 
@@ -76,7 +69,7 @@ public class Paster
 
    public void loadCode()
    {
-      this.code = eao.getCodeFragment(codeId);
+      this.code = codeFragmentManager.getCodeFragment(codeId);
 
       if (this.code == null)
          throw new EJBException("Could not read entity with given id value");
@@ -86,7 +79,7 @@ public class Paster
 
    public List<CodeFragment> getCodes()
    {
-      return eao.getRecentCodeFragments();
+      return codeFragmentManager.getRecentCodeFragments();
    }
 
    public String getCodeId()
@@ -99,16 +92,16 @@ public class Paster
       this.codeId = codeId;
    }
 
-   public String getTheme()
+   public Theme getTheme()
    {
       return theme;
    }
-
-   public void setTheme(String theme)
+   
+   public void setTheme(Theme theme)
    {
       this.theme = theme;
    }
-
+   
    public String getBrush()
    {
       return brush;

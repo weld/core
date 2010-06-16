@@ -21,7 +21,7 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,19 +34,15 @@ public class ThemeManager
 {
      
    // The supported themes
-   private final List<String> themes;
+   private final List<Theme> themes;
       
    public ThemeManager()
    {
-      this.themes = new ArrayList<String>();
-      for (Theme theme : Theme.values())
-      {
-         this.themes.add(theme.getName());
-      }
+      this.themes = Arrays.asList(Theme.values());
    }
    
    @Produces @Named
-   public List<String> getThemes()
+   public List<Theme> getThemes()
    {
       return Collections.unmodifiableList(themes);
    }
