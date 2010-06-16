@@ -22,6 +22,8 @@
 package org.jboss.weld.examples.pastecode.servlets;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -38,6 +40,9 @@ import org.jboss.weld.examples.pastecode.session.CodeFragmentManager;
 public class DownloadServlet extends HttpServlet
 {
    private static final long serialVersionUID = 1L;
+   
+   @Inject
+   private Logger log;
 
    @Inject
    private CodeFragmentManager codeFragmentManager;
@@ -61,7 +66,7 @@ public class DownloadServlet extends HttpServlet
       }
       catch (Exception e)
       {
-         e.printStackTrace();
+         log.log(Level.WARNING, "Error processing file for download", e);
       }
       finally
       {

@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Produces;
@@ -40,6 +41,8 @@ import org.jboss.weld.examples.pastecode.model.CodeFragment;
 @Stateless
 public class CodeFragmentManagerImpl implements CodeFragmentManager
 {
+   
+   @Inject Logger log;
 
    // The number of code fragments to return in our recentCodeFragments query
    private static int MAX_RECENT_FRAGMENTS = 7;
@@ -74,6 +77,7 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
             String hashValue = hashComputer.getHashValue(code);
             code.setHash(hashValue);
             entityManager.persist(code);
+            log.info("Added private pastecode: " + hashValue);
             return hashValue;
          }
          catch (NoSuchAlgorithmException e)
@@ -86,6 +90,9 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       else
       {
          entityManager.persist(code);
+         // Make sure we have the latest version (with the generated id!)
+         entityManager.refresh(code);
+         log.info("Added pastecode: " + code.getId());
          return new Integer(code.getId()).toString();
       }
    }

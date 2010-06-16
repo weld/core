@@ -8,7 +8,7 @@
    <navigation-rule>
       <from-view-id>/home.xhtml</from-view-id>
       <navigation-case>
-         <from-action>#{pasteWindow.send}</from-action>
+         <from-outcome>success</from-outcome>
          <to-view-id>/#{pasteWindow.codeFragmentId}</to-view-id>
          <redirect />
       </navigation-case>

@@ -27,6 +27,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -48,6 +50,8 @@ import org.jboss.weld.examples.pastecode.model.Language;
 //TODO @Singleton @Startup
 public class PopulateDatabaseBean
 {
+   
+   @Inject Logger log;
    
    private static final String DATA_FILE_NAME = "data.sql";
 
@@ -89,9 +93,10 @@ public class PopulateDatabaseBean
       }
       catch (Exception e)
       {
-         System.err.println("Unable to read all records from " + DATA_FILE_NAME + " file");
+         log.log(Level.WARNING, "Unable to read all records from " + DATA_FILE_NAME + " file");
       }
 
+      log.info("Successfully imported data!");
       populated = true;
    }
 

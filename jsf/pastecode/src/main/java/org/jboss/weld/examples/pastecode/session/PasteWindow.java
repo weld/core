@@ -54,7 +54,7 @@ public class PasteWindow
    // The send method is called when we hit the Send button
    public String send()
    {
-      codeFragmentManager.addCodeFragment(codeFragment, privateFragment);
+      codeFragmentId = codeFragmentManager.addCodeFragment(codeFragment, privateFragment);
       return "success";
    }
 
