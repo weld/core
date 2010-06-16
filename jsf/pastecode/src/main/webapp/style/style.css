@@ -2,7 +2,8 @@ body {
 	margin: 0px;
 	padding: 0px;
 	border-width: 0px;
-	background-color: #FFFFFF;
+	background-color: #cccccc;
+	font-family:trebuchet MS, Lucida Sans Unicode, Lucida Sans, Sans-Serif;
 }
 
 table {
@@ -52,17 +53,6 @@ div#footer {
 	text-align: center;
 }
 
-div#rightmenuhead {
-	background-color:#C1C1E8;
-	border-color:#8784C6;
-	border-width:1px;
-	padding:2px;
-}
-
-div#rightmenubody {
-	padding:2px;
-}
-
 span#menuitem {
 	margin: 2px;
 	padding-left: 7px;
@@ -100,6 +90,46 @@ span#normallink {
 }
 
 
+/** Recent pastes styles */
+
+div.recentPastes {
+  width: 230px;
+  background-color: #ffffff;
+  padding: 0px;
+  border: 0px;
+}
+
+div.recentPastesHeader {
+  background-color: #bbbbbb;
+  color: #000000;
+  font-weight: bold;
+  padding: 4px;
+  border: 0px;
+}
+
+div.recentPaste {
+  border-bottom: 1px dotted #aaaaaa;
+  border-left: 0px;
+  border-right: 0px;
+  color: #aaaaaa;
+  padding: 2px;
+}
+
+div.recentPaste a, div.recentPaste a:visited {
+  color: #ff0000;
+  text-decoration: none;  
+  display: block;
+}
+
+div.recentPaste a:hover {
+  color: #aaaaaa;
+  text-decoration: none;  
+  display: block;
+}
+
+span.recentPasteLang {
+  color: #000000;
+}
 
 
 

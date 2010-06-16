@@ -5,36 +5,17 @@
       xmlns:ui="http://java.sun.com/jsf/facelets">
 
 	<ui:composition>
-	
-			<div id="rightmenuhead" style="width:230px;">							
-				<strong>Last Pastes:</strong>							
-			</div>
 			
-			<div id="rightmenubody" style="width:230px;">
-				<h:dataTable value="#{paster.codes}" var="varcode">
-					<h:column>
-		                <h:panelGroup>
-		                	<h:outputLabel for="user" value="User: "/>
-		                	<h:outputLink id="user" value="#{  varcode.id}"> <!-- display.jsf?id= -->
-		                		<h:outputText value="#{varcode.user}"></h:outputText>
-		                	</h:outputLink>
-		                </h:panelGroup>
-		                <br/>
-		                <h:panelGroup>
-		                	<h:outputLabel for="datetime" value="Date: "/>						                			                                
-                              	<h:outputText id="datetime" value="#{  varcode.datetime}">
-                              		 <f:convertDateTime type="both" pattern="yyyy-MM-dd HH:mm:ss"/>
-                              	</h:outputText>
-		                </h:panelGroup>						                
-		                <br/>
-		                <h:panelGroup>
-		                	<h:outputLabel for="language" value="Language: "/>
-		                	<h:outputText id="language" value="#{  varcode.language}"></h:outputText>
-		                </h:panelGroup>
-		                <br/>
-		                &nbsp;<br/>
-                    </h:column>			
-				</h:dataTable>		
+			<div class="recentPastes">
+			  <div class="recentPastesHeader">Recent pastes</div>
+			
+			  <ui:repeat value="#{paster.codes}" var="varcode">
+			    <div class="recentPaste">
+          	<h:outputLink id="user" value="#{varcode.id}">#{varcode.user}</h:outputLink>
+          	<span class="recentPasteLang">#{varcode.language}</span><span> | </span>#{varcode.friendlyDate}
+          </div>		    
+			  </ui:repeat>
+
 			</div>
 			
 	</ui:composition>
