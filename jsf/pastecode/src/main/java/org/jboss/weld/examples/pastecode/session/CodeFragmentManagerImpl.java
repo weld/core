@@ -46,14 +46,15 @@ import org.jboss.weld.examples.pastecode.model.CodeFragment_;
 @Stateless
 public class CodeFragmentManagerImpl implements CodeFragmentManager
 {
-   
-   @Inject Logger log;
 
    // The number of code fragments to return in our recentCodeFragments query
    private static int MAX_RECENT_FRAGMENTS = 7;
 
    // The number of code fragments to display per page
    private static int PAGE_SIZE = 2;
+   
+   @Inject 
+   private Logger log;
 
    @PersistenceContext
    private EntityManager entityManager;

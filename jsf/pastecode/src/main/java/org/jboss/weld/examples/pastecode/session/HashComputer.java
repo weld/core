@@ -24,9 +24,11 @@ package org.jboss.weld.examples.pastecode.session;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.ejb.Stateless;
+
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
-// TODO @Stateless
+@Stateless
 public class HashComputer
 {
 

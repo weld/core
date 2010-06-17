@@ -33,7 +33,7 @@
 
    	<ui:define name="mainarea">
 	   	<div class="contentHeader">
-	   	  Posted by #{pasteWindow.codeFragment.user} on #{pasteWindow.codeFragment.friendlyDate}
+	   	  Posted by #{pasteWindow.codeFragment.user} <h:outputText value="on" rendered="#{pasteWindow.codeFragment.friendlyDate != 'just now'}" /> #{pasteWindow.codeFragment.friendlyDate}
 	   	  <div style="float:right">
   	  	  <a href="download?id=#{pasteWindow.codeFragment.hash == null ? pasteWindow.codeFragment.id : pasteWindow.codeFragment.hash}" style="text-decoration: none;">DOWNLOAD</a>
   	  	</div>
