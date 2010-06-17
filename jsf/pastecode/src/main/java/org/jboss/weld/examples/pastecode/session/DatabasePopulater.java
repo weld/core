@@ -48,7 +48,7 @@ import org.jboss.weld.examples.pastecode.model.Language;
 @ApplicationScoped
 @Named("database")
 //TODO @Singleton @Startup
-public class PopulateDatabaseBean
+public class DatabasePopulater
 {
    
    @Inject Logger log;
@@ -98,6 +98,11 @@ public class PopulateDatabaseBean
 
       log.info("Successfully imported data!");
       populated = true;
+   }
+   
+   public boolean isPopulated()
+   {
+      return populated;
    }
 
    private String readFileData(String fileName) throws IOException

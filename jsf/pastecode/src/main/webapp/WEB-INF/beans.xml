@@ -10,7 +10,7 @@
       http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
       
       <decorators>
-      	<class>org.jboss.weld.examples.pastecode.session.LargeCodeDecorator</class>
+      	<class>org.jboss.weld.examples.pastecode.session.FloodingDecorator</class>
       </decorators>
       
 </beans>
