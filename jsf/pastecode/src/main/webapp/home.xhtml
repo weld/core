@@ -26,21 +26,23 @@
 			</div>
 
       <div class="formRow">
-			  <h:outputLabel for="user" value="Name / title"/>   		
-			  <h:inputText id="user" maxlength="30" size="30" value="#{pasteWindow.codeFragment.user}"/>
-			</div>
-
-      <div class="formRow">
   	    <h:outputLabel for="secured" value="Exposure"/>
   	    <h:selectOneMenu id="exposure" value="#{pasteWindow.privateFragment}">
   	      <f:selectItem itemValue="#{true}" itemLabel="Private"/>
   	      <f:selectItem itemValue="#{false}" itemLabel="Public"/>
   	    </h:selectOneMenu>
 	    </div>
+	    
+      <div class="formRow">
+			  <h:outputLabel for="user" value="Name / title"/>   		
+			  <h:inputText id="user" maxlength="30" size="30" value="#{pasteWindow.codeFragment.user}"/>
+			</div>
 
 	   	<div class="formButtons">
-	   		<h:commandButton action="#{pasteWindow.send}" id="send" value="      Send      "/>
+	   		<h:commandButton action="#{pasteWindow.send}" id="send" image="img/submit.png"/>
 	   	</div>
+	   	
+	   	<br style="clear:both"/>
 	   		
    	</ui:define>
    	

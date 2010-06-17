@@ -75,6 +75,7 @@ div#topseparator {
 div#main {
   clear: both;
   padding: 2px;
+  margin-left: 4px;
 }
 
 div#content {
@@ -97,16 +98,16 @@ div.contentHeader {
   margin: 8px 4px 8px 4px;
 }
 
+/* General form styles */
+
 .pastecode {
   width: 98%;
   height: 260px;
   margin-left: 4px;
-  background-color: #fcfcfc;
+  background-color: #fafafc;
+	border: 1px solid #cccccc;
 	overflow: auto;
-	border: 1px solid #7f7f7f;   
 }
-
-/* General form styles */
 
 div.formRow {
   padding: 3px 4px 3px 2px;  
@@ -120,11 +121,17 @@ div.formRow label {
 }
 
 div.formRow input[type='text'] {
-  width: 220px;
+  width: 210px;
+  background-color: #fafafc;
+	border: 1px solid #cccccc;  
+	padding: 4px;
 }
 
-div.formRow input[type='text'].wide {
-  width: 440px;
+div.formRow select {
+  width: 220px;
+  background-color: #fafafc;
+	border: 1px solid #cccccc;  
+	padding: 4px;	
 }
 
 div.formButtons {
