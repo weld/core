@@ -9,11 +9,11 @@
    	
   <ui:define name="mainarea">
 	<div style="width: 100%; padding: 7px;">
-		<div id="paging" style="width:98%; border-width:0px; background-color:#C1C1E8;text-align:center;"> <!-- height: 40px; -->
-	   		    	<strong>Useful Information</strong>
-	   	</div>
-	   	<br/>
-	   	<strong>Paste Code:</strong><br/>
+		
+	   	<div class="contentHeader">Useful Information</div>
+	   	
+	   	<h3>Paste Code:</h3>
+	   	
 	   	<ul>
 	   	 <li>Enter your nick - this is optional, if omitted, your paste will be anonymous</li>
 	   	 <li>Choose the language of your code - this allows syntax highlighting</li>
@@ -24,13 +24,13 @@
 	   	 <li>Submit the form!</li>  
 	   	</ul>
 	   	
-	   	<strong>Search Pastes:</strong><br/>
+	   	<h3>Search Pastes:</h3>
 	   	<ul>
 	   		<li>Go to a history page - now you can see all the posts with pagination</li>
 	   		<li>You can narrow down the pastes by using the search form</li>
 	   	</ul>
 	   		   	
-	   	<strong>Weld Features Covered:</strong><br/>
+	   	<h3>Weld Features Covered:</h3>
 	   	
 	   	<ul>
 	   		<li>Injection into POJO, EJBs and Servlets</li>
@@ -39,13 +39,15 @@
 	   		<li>JPA access</li>
 	   		<li>Decorators</li>
 	   	</ul>
-	   	<br/><br/><strong>Enjoy work with Weld!</strong>
+	   	<br/><br/>
+	   	
+	   	<strong>Enjoy working with Weld!</strong>
 	   			 
 	</div>
   </ui:define>
    	
   <ui:define name="rightmenu">
-	<ui:include src="rightMenuDefault.xhtml"/>
+	  <ui:include src="rightMenuDefault.xhtml"/>
   </ui:define>
     
   </ui:composition>
