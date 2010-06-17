@@ -81,7 +81,7 @@ public class DatabasePopulater
             st.nextToken();
             c.setLanguage(Language.valueOf(st.nextToken()));
             st.nextToken();
-            c.setNote(st.nextToken());
+            st.nextToken();
             st.nextToken();
             c.setUser(st.nextToken());
             st.nextToken();

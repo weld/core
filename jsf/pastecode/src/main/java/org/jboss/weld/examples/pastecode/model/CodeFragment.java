@@ -25,9 +25,7 @@ import static javax.persistence.GenerationType.AUTO;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -35,7 +33,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
@@ -67,18 +64,12 @@ public class CodeFragment
    private Language language;
 
    @Lob
-   private String note;
-
-   @Lob
    @Size(min=1, message="Must enter some text!")
    private String text;
 
    private String user;
 
    private String hash;
-
-   @OneToMany(mappedBy = "codeFragment", cascade = CascadeType.REMOVE)
-   List<AccessLog> largeCodeFragmentAccessLog;
 
    public int getId()
    {
@@ -174,16 +165,6 @@ public class CodeFragment
       this.language = language;
    }
 
-   public String getNote()
-   {
-      return this.note;
-   }
-
-   public void setNote(String note)
-   {
-      this.note = note;
-   }
-
    public String getText()
    {
       return this.text;
@@ -202,15 +183,5 @@ public class CodeFragment
    public void setUser(String user)
    {
       this.user = user;
-   }
-
-   public List<AccessLog> getLargeCodeFragmentAccessLog()
-   {
-      return largeCodeFragmentAccessLog;
-   }
-
-   public void setLargeCodeFragmentAccessLog(List<AccessLog> largeCodeFragmentAccessLog)
-   {
-      this.largeCodeFragmentAccessLog = largeCodeFragmentAccessLog;
    }
 }

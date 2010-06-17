@@ -22,8 +22,9 @@
 package org.jboss.weld.examples.pastecode.session;
 
 import javax.ejb.EJBException;
-import javax.enterprise.inject.Model;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
@@ -31,7 +32,8 @@ import org.jboss.weld.examples.pastecode.model.CodeFragment;
  * PasteWindow holds the code fragment and other selections when a code fragment is viewed and entered
  *
  */
-@Model
+@Named
+@RequestScoped
 public class PasteWindow
 {
    private CodeFragment codeFragment;

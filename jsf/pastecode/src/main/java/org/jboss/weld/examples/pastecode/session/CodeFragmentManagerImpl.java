@@ -192,10 +192,6 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       {
          predicates.add( builder.equal(root.get(CodeFragment_.language), codeFragment.getLanguage()) );
       }
-      if (!isEmpty(codeFragment.getNote()))
-      {
-         predicates.add( builder.like(root.get(CodeFragment_.note), codeFragment.getNote().toLowerCase()) );
-      }
       if (!isEmpty(codeFragment.getText()))
       {
          predicates.add( builder.like(root.get(CodeFragment_.text), codeFragment.getText().toLowerCase()) );
