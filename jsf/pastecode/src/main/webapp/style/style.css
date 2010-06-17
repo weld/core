@@ -98,6 +98,11 @@ div.contentHeader {
   margin: 8px 4px 8px 4px;
 }
 
+div.contentHeader a, div.contentHeader a:visited, div.contentHeader a:hover {
+  font-weight: normal;
+  color: #ff0000;
+}
+
 /* General form styles */
 
 .pastecode {
@@ -111,7 +116,7 @@ div.contentHeader {
 
 div.formRow {
   padding: 3px 4px 3px 2px;  
-  clear: both;
+/*  clear: both;*/
 }
 
 div.formRow label {

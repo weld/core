@@ -32,41 +32,27 @@
   	</ui:define>
 
    	<ui:define name="mainarea">
-   		<div style="width: 100%; padding: 7px;">
-	   		    
-		   		<h:panelGrid columns="3" style="width: 80%; margin: 0px; padding: 0px;">
+	   	<div class="contentHeader">
+	   	  Posted by #{pasteWindow.codeFragment.user} on #{pasteWindow.codeFragment.friendlyDate}
+	   	  <div style="float:right">
+  	  	  <a href="download?id=#{pasteWindow.codeFragment.hash == null ? pasteWindow.codeFragment.id : pasteWindow.codeFragment.hash}" style="text-decoration: none;">DOWNLOAD</a>
+  	  	</div>
+	   	</div>
 
-		   			<h:panelGroup>
-		   				<h:outputLabel for="user" value="User: "/>   		
-						<h:outputText id="user" maxlength="30" size="30" value="#{pasteWindow.codeFragment.user}"/>
-		   			</h:panelGroup>
-
-		   			<h:panelGroup>
-		   				<h:outputLabel for="theme" value="Choose theme: "/>   
-		   				<h:selectOneMenu id="theme" value="#{pasteWindow.theme}" onchange="chooseStyle(this.value);"> <!-- this.form.submit() -->		
-		   					<f:selectItems value="#{themes}" var="theme" itemLabel="#{theme.name}" itemValue="#{theme.name}" />
-			   			</h:selectOneMenu>
-			   			<a href="download?id=#{pasteWindow.codeFragment.hash == null ? pasteWindow.codeFragment.id : pasteWindow.codeFragment.hash}" style="text-decoration: none;"><input type="button" value="Download file" /></a>
-		   			</h:panelGroup>
-
-		   			<h:panelGroup style="text-align:right;">			   				   			
-		   				<h:outputLabel for="unwrap" value="Unwrap code: "/>   
-		   				<h:selectBooleanCheckbox id="unwrap" onchange="unwrap('codearea');"/>
-		   			</h:panelGroup>
-
-		   		</h:panelGrid>
+      <div class="formRow">   		   		    
+  			<h:outputLabel for="theme" value="Choose theme: "/>   
+		   	<h:selectOneMenu id="theme" value="#{pasteWindow.theme}" onchange="chooseStyle(this.value);"> <!-- this.form.submit() -->		
+		   	  <f:selectItems value="#{themes}" var="theme" itemLabel="#{theme.name}" itemValue="#{theme.name}" />
+			  </h:selectOneMenu>
+			</div>
+			  
+			<!--h:outputLabel for="unwrap" value="Unwrap code: "/>   
+			<h:selectBooleanCheckbox id="unwrap" onchange="unwrap('codearea');"/-->
 		   		
-		   		<h:outputText value="Pasted code: "/>
-		   		<div id="codearea" style="width:99%; border: 1px solid #7F7F7F; height:450px; overflow:scroll;">			   		
-			   			<pre class="brush: #{pasteWindow.codeFragment.language.brush}">#{pasteWindow.codeFragment.text}</pre>	
-		   		</div>
-		   		
-		   		&nbsp;<br/>
-		   		<h:outputLabel for="note" value="Note: "/>
-		   		<div >		   			 
-		   			<h:outputText id="note" value="#{pasteWindow.codeFragment.note}"/>		   			
-		   		</div>
+   		<div id="codearea" style="width:99%; border: 1px solid #7F7F7F; height:450px; overflow:scroll;">			   		
+   			<pre class="brush: #{pasteWindow.codeFragment.language.brush}">#{pasteWindow.codeFragment.text}</pre>	
    		</div>
+		   		
    	</ui:define>
    	
     <ui:define name="rightmenu">
