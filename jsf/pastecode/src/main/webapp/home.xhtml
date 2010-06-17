@@ -13,36 +13,35 @@
     </ui:define> 
    	
    	<ui:define name="mainarea">
-   		<div style="width: 100%; padding: 7px;">
+	   			   		
+	   	<div class="contentHeader">Poste a new PasteCode</div>
 	   		
-		   		<h:panelGrid columns="3" style="width: 100%">
-		   			<h:panelGroup>
-		   				<h:outputLabel for="user" value="Your nick: "/>   		
-						<h:inputText id="user" maxlength="30" size="30" value="#{pasteWindow.codeFragment.user}"/>
-		   			</h:panelGroup>
-		   			
-		   			<h:panelGroup>
-		   				<h:outputLabel for="language" value="Language: "/>   
-		   				<h:selectOneMenu id="language" value="#{pasteWindow.codeFragment.language}">		
-		   					<f:selectItems value="#{languages}" var="language" itemLabel="#{language.name}" itemValue="#{language}" />
-			   			</h:selectOneMenu>
-			   		</h:panelGroup>	
-			   		<h:panelGroup style="text-align:right;">			   				   			
-		   				<h:outputLabel for="secured" value="Private: "/>   
-		   				<h:selectBooleanCheckbox id="secured" value="#{pasteWindow.privateFragment}"/>
-		   			</h:panelGroup>
-		   		</h:panelGrid>
-		   		<h:outputLabel for="text" value="Code: "/><h:message for="text" style="color: red" />
-		   		<h:inputTextarea id="text" style="width: 98%" cols="17" rows="18" value="#{pasteWindow.codeFragment.text}"/>
-		   		&nbsp;
-		   		<h:outputLabel for="note" value="Note: (optional) "/> 
-		   		<h:inputTextarea style="width: 98%" cols="17" rows="4" id="note" value="#{pasteWindow.codeFragment.note}"/>
-		   		<div style="width: 98%; text-align:right;">
-		   			<h:outputLabel for="send" value="Paste code: "/>
-		   			<h:commandButton action="#{pasteWindow.send}" id="send" value="      Send      "/>		   			
-		   		</div>
+	   	<h:inputTextarea id="text" styleClass="pastecode" value="#{pasteWindow.codeFragment.text}"/>
+
+      <div class="formRow">
+			  <h:outputLabel for="language" value="Syntax highlighting"/>   
+			  <h:selectOneMenu id="language" value="#{pasteWindow.codeFragment.language}">		
+      		<f:selectItems value="#{languages}" var="language" itemLabel="#{language.name}" itemValue="#{language}" />
+			  </h:selectOneMenu>
+			</div>
+
+      <div class="formRow">
+			  <h:outputLabel for="user" value="Name / title"/>   		
+			  <h:inputText id="user" maxlength="30" size="30" value="#{pasteWindow.codeFragment.user}"/>
+			</div>
+
+      <div class="formRow">
+  	    <h:outputLabel for="secured" value="Exposure"/>
+  	    <h:selectOneMenu id="exposure" value="#{pasteWindow.privateFragment}">
+  	      <f:selectItem itemValue="#{true}" itemLabel="Private"/>
+  	      <f:selectItem itemValue="#{false}" itemLabel="Public"/>
+  	    </h:selectOneMenu>
+	    </div>
+
+	   	<div class="formButtons">
+	   		<h:commandButton action="#{pasteWindow.send}" id="send" value="      Send      "/>
+	   	</div>
 	   		
-   		</div>
    	</ui:define>
    	
    <ui:define name="rightmenu">

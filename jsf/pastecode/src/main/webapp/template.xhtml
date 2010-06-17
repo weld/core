@@ -38,39 +38,20 @@
 
 <div id="topseparator"></div>
 
-<div style="clear:both">
-<table width="100%" cellspacing="10" style="width:100%;">
-	<tr valign="top">
-		<!-- **************** MAIN AREA **************** -->
-		<td width="100%">
-			<table width="100%" cellpadding="10" cellspacing="0" bgcolor="#E9E9F8" bordercolor="#8784C6" border="1">
-				<tr valign="top">
-					<td bordercolor="#E9E9F8">
+<div id="main">
 
-						<ui:insert name="mainarea">
-							Main Area
-						</ui:insert>
+  <div id="rightmenu">
+	  <ui:insert name="rightmenu">
+		  Menu right
+	  </ui:insert>
+	</div>
+	
+  <div id="content">
+	  <ui:insert name="mainarea">
+		  Main Area
+	  </ui:insert>
+	</div>
 
-						<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;
-					</td>					
-				</tr>
-			</table>		
-		</td>	
-		
-		<!-- **************** MENU RIGHT **************** -->
-		<td>
-			<table bgcolor="#E9E9F8">
-				<tr valign="top">
-					<td bordercolor="#E9E9F8" >
-						<ui:insert name="rightmenu">
-							Menu right
-						</ui:insert>
-					</td>
-				</tr>
-			</table>
-		</td>	
-	</tr>
-</table>
 </div>
 
 </h:form>
