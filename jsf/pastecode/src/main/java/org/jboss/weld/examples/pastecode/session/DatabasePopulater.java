@@ -44,10 +44,9 @@ import org.jboss.weld.examples.pastecode.model.Language;
  * external database to run this example.
  * 
  */
-// TODO Make into an EJB Singleton which executes at startup
 @ApplicationScoped
 @Named("database")
-//TODO @Singleton @Startup
+// TODO @Singleton @Startup
 public class DatabasePopulater
 {
    
