@@ -23,30 +23,22 @@
 <ui:insert name="myscripts"/>
 
 <div id="header">
-	
-	<table height="100%" >
-		<tr valign="middle">
-			<td>
-				<div style="padding-left:20px;padding-right:20px;border-width:0px;"><h2>PasteCode</h2></div>
-		    	<!-- <img id="logo" src="img/logotransparent2.png" alt="Obrazek" width="230" height="65" style="border-width:0px;"/> -->
-		
-			</td>
-			<td>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			</td>
-			<td>
-				<a href="home.jsf" style="text-decoration:none;"><span id="menuitem">New</span></a>
-				<a href="history.jsf" style="text-decoration:none;"><span id="menuitem">History</span></a>
-				<a href="help.jsf" style="text-decoration:none;"><span id="menuitem">Help</span></a>
-			</td>
-		</tr>
-	</table>
+  <div id="headerImage"></div>
+  
+  <div class="divider"></div>
+  <div class="menuitem"><a href="home.jsf">new</a></div>
+  <div class="divider"></div>
+  <div class="menuitem"><a href="history.jsf">history</a></div>
+  <div class="divider"></div>    
+	<div class="menuitem"><a href="help.jsf">help</a></div>
+  <div class="divider"></div>    
+  
+  <div id="poweredby"></div>
 </div>
 
-<div id="topseparator">
-</div>
+<div id="topseparator"></div>
 
-<div id="main">
+<div style="clear:both">
 <table width="100%" cellspacing="10" style="width:100%;">
 	<tr valign="top">
 		<!-- **************** MAIN AREA **************** -->
@@ -79,15 +71,6 @@
 		</td>	
 	</tr>
 </table>
-</div>
-
-
-<div id="bottomseparator"/>
-
-<div id="footer">
-	<ui:insert name="footer">
-		Powered by Weld, the Reference Implementation for Contexts and Dependency Injection for Java EE
-	</ui:insert>
 </div>
 
 </h:form>

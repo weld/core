@@ -6,6 +6,62 @@ body {
 	font-family:trebuchet MS, Lucida Sans Unicode, Lucida Sans, Sans-Serif;
 }
 
+div#header {
+	height:60px;
+	background: url(../img/header_bg.png) top left repeat-x;
+	margin: 0px;
+	padding: 0px;
+}
+
+div#headerImage {
+  margin-top: 8px;
+  margin-left: 6px;
+  margin-right: 24px;
+  width: 223px;
+  height: 42px;
+  float: left;
+  background: url(../img/pastecode.png) top left no-repeat;
+}
+
+div.divider {
+  float: left;
+  width: 2px;
+  height: 60px;
+  margin-left: 4px;
+  margin-right: 4px;  
+  background: url(../img/divider.png) top left no-repeat;
+}
+
+div.menuitem {
+  float: left;
+  margin-left: 4px;
+  margin-right: 4px;
+  padding-top: 18px;  
+  height: 100%;
+}
+
+div.menuitem a, div.menuitem a:visited {
+  margin-left: 8px;
+  margin-right: 8px;  
+  color: #ffffff;
+  text-decoration: none;
+}
+
+div.menuitem a:hover {
+  margin-left: 8px;
+  margin-right: 8px;  
+  color: #f6ae00;
+}
+
+div#poweredby {
+  margin-top: 4px;
+  margin-right: 4px;
+  float: right;
+  width: 110px;
+  height: 51px;
+  background: url(../img/poweredbyweld.png) top right no-repeat;
+}
+
 table {
 	border-width: 0px;
 	margin: 0px;
@@ -17,31 +73,15 @@ table tr td {
 }
 
 div#topseparator {
-	border-width: 0px;
-	height: 20px;
-	width: 100%;
-	background-color:#8784C6;
-}
-
-div#main {
-	width: 100%;
+	height: 10px;
+	background-color:#33343d;
+	border-top: 1px solid #dfdfdf;
 }
 
 div#bottomseparator {
 	height: 20px;
 	width: 100%;
 	background-color:#8784C6;
-}
-
-div#header {
-	width:100%;
-	height:60px;
-	background-color:#8784C6;
-	background-image: url('../img/small.png');
-	background-repeat: repeat-x;
-	vertical-align: top;
-	margin: 0px;
-	padding: 0px;
 }
 
 div#footer {
@@ -51,16 +91,6 @@ div#footer {
 	color: #CCDFFF;
 	vertical-align: top;
 	text-align: center;
-}
-
-span#menuitem {
-	margin: 2px;
-	padding-left: 7px;
-	padding-right: 7px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	border: 1px solid black;
-	background-color:#E9E9F8;
 }
 
 div#code {
