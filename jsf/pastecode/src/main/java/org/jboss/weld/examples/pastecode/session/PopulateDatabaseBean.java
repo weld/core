@@ -61,7 +61,7 @@ public class PopulateDatabaseBean
    private boolean populated;
 
    // TODO @PostConstruct
-   public void populate()
+   public synchronized void populate()
    {
       if (populated)
       {
