@@ -45,7 +45,11 @@
 				<h:outputText value="Code (truncated): " />
 				<div
 					style="height: 100px; width: 99%; border: 1px solid #7F7F7F; overflow: auto; padding: 1px;">
-				<pre>#{codeFragment.text}</pre></div>
+				<pre>
+				   <h:outputText value="#{codeFragment.text}">
+				     <f:converter converterId="truncatingConverter"/>   
+				   </h:outputText>
+				</pre></div>
 				<br />
 		                &nbsp;<br />
 			</h:column>
@@ -67,25 +71,27 @@
 			cellpadding="0" cellspacing="0" columns="2" width="100%">
 			<h:outputLabel for="user" value="User:"></h:outputLabel>
 			<h:inputText id="user" maxlength="30" style="width:97%;"
-				value="#{codeFragmentPrototype.user}" />
+				value="#{history.codeFragmentPrototype.user}" />
 			<h:outputLabel for="language" value="Language:" />
-			<h:selectOneMenu id="language" value="#{codeFragmentPrototype.language}">
+			<h:selectOneMenu id="language" value="#{history.codeFragmentPrototype.language}">
 			   <f:selectItem itemLabel="Any" itemValue="" />
 				<f:selectItems value="#{languages}" var="language"
 					itemLabel="#{language.name}" itemValue="#{language}" />
 			</h:selectOneMenu>
 			<h:outputLabel for="note" value="Note:"></h:outputLabel>
 			<h:inputText id="note" maxlength="30" style="width:97%;"
-				value="#{codeFragmentPrototype.note}" />
+				value="#{history.codeFragmentPrototype.note}" />
 			<h:outputLabel for="pasteDate" value="Date: " />
-			<h:inputText value="#{codeFragmentPrototype.datetime}" id="pasteDate"
+			<h:inputText value="#{history.codeFragmentPrototype.datetime}" id="pasteDate"
 				style="width:97%;" alt="yyyy-mm-dd" title="yyyy-mm-dd"
 				converterMessage="Enter date formatted as yyyy-mm-dd !">
 				<f:convertDateTime type="date" pattern="yyyy-MM-dd" />
 			</h:inputText>
 			<h:outputLabel for="code" value="Code:" style="width:100%;"></h:outputLabel>
 			<h:inputTextarea id="code" maxlength="30" rows="2" style="width:97%;"
-				value="#{codeFragmentPrototype.text}" />
+				value="#{history.codeFragmentPrototype.text}">
+				<f:validateBean disabled="true" />
+		   </h:inputTextarea>
 		</h:panelGrid>
 		<div style="width: 100%; text-align: right;"><h:commandButton
 			value="Search" action="#{history.newSearch}" /></div>

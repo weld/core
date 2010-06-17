@@ -26,5 +26,10 @@
       <converter-for-class>org.jboss.weld.examples.pastecode.model.Language</converter-for-class>
       <converter-class>org.jboss.weld.examples.pastecode.jsf.LanguageConverter</converter-class>
    </converter>
+   
+   <converter>
+      <converter-id>truncatingConverter</converter-id>
+      <converter-class>org.jboss.weld.examples.pastecode.jsf.TruncatingConverter</converter-class>
+   </converter>
 
 </faces-config>

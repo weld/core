@@ -22,7 +22,7 @@
 package org.jboss.weld.examples.pastecode.session;
 
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -35,8 +35,13 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
+import org.jboss.weld.examples.pastecode.model.CodeFragment_;
 
 @Stateless
 public class CodeFragmentManagerImpl implements CodeFragmentManager
@@ -160,44 +165,48 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
 
       return codes;
    }
-
-   public List<CodeFragment> searchCodeFragments(CodeFragment code, int page, Paginator paginator)
+   
+   private static boolean isEmpty(String string)
    {
-      StringBuilder sb = new StringBuilder().append("SELECT c FROM CodeFragment c WHERE c.hash=null");
-      
-      if (!code.getUser().trim().equals(""))
-      {
-         sb.append(" AND c.user = \'").append(code.getUser().trim().toLowerCase()).append("\'");
-      }
-      if (code.getLanguage() != null)
-      {
-         sb.append(" AND c.language = \'").append(code.getLanguage().name()).append(("\'"));
-      }
-      if (!code.getNote().trim().equals(""))
-      {
-         sb.append(" AND c.note LIKE \'%").append(code.getNote().trim().toLowerCase()).append("%\'");
-      }
-      if (!code.getText().trim().equals(""))
-      {
-         sb.append(" AND c.text LIKE \'%").append(code.getText().toLowerCase()).append("%\'");
-      }
-      if (code.getDatetime() != null)
-      {
-         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-         Date date2 = new Date();
-         date2.setTime(code.getDatetime().getTime() + 24 * 60 * 60 * 1000); // +1
-         // day
+      return string == null || string.equals("");
+   }
 
-         String formattedDate1 = formatter.format(code.getDatetime());
-         String formattedDate2 = formatter.format(date2);
+   public List<CodeFragment> searchCodeFragments(CodeFragment codeFragment, int page, Paginator paginator)
+   {
+      
+      CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+      CriteriaQuery<CodeFragment> criteria = builder.createQuery(CodeFragment.class);
+      
+      Root<CodeFragment> root = criteria.from(CodeFragment.class);
+      
+      List<Predicate> predicates = new ArrayList<Predicate>();
+      
+      predicates.add(builder.isNull(root.get(CodeFragment_.hash)));
 
-         sb.append(" AND c.datetime between \'").append(formattedDate1).append("\' and \'").append(formattedDate2).append("\'");
+      if (!isEmpty(codeFragment.getUser()))
+      {
+         predicates.add( builder.equal(root.get(CodeFragment_.user), codeFragment.getUser().toLowerCase().trim()) );
       }
-      sb.append(" ORDER BY datetime DESC");
-      String queryString = sb.toString();
+      if (codeFragment.getLanguage() != null)
+      {
+         predicates.add( builder.equal(root.get(CodeFragment_.language), codeFragment.getLanguage()) );
+      }
+      if (!isEmpty(codeFragment.getNote()))
+      {
+         predicates.add( builder.like(root.get(CodeFragment_.note), codeFragment.getNote().toLowerCase()) );
+      }
+      if (!isEmpty(codeFragment.getText()))
+      {
+         predicates.add( builder.like(root.get(CodeFragment_.text), codeFragment.getText().toLowerCase()) );
+      }
+      if (codeFragment.getDatetime() != null)
+      {
+         predicates.add( builder.between(root.get(CodeFragment_.datetime), codeFragment.getDatetime(), new Date()) );
+      }
       
-      Query q = entityManager.createQuery(queryString);
+      criteria.where(predicates.toArray(new Predicate[0])).orderBy(builder.desc(root.get(CodeFragment_.datetime)));
       
+      Query q = entityManager.createQuery(criteria);
       q.setFirstResult(page * PAGE_SIZE);
       q.setMaxResults(PAGE_SIZE);
       

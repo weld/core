@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -43,9 +42,6 @@ public class History implements Serializable
 {
 
    private static final long serialVersionUID = 20L;
-   
-   // The max length of the snippet we show
-   private static int TRIMMED_TEXT_LEN = 120;
 
    @Inject
    private CodeFragmentManager codeFragmentManager;
@@ -69,7 +65,6 @@ public class History implements Serializable
       return this.codes;
    }
 
-   @Produces @Named
    public CodeFragment getCodeFragmentPrototype()
    {
       return codeFragmentPrototype;
@@ -88,15 +83,9 @@ public class History implements Serializable
       this.paginator = new Paginator();
       this.codes = null;
       
-      // Perform a seach
+      // Perform a search
       
       this.codes = codeFragmentManager.searchCodeFragments(this.codeFragmentPrototype, this.page, this.paginator);
-
-      for (int i = 0; i != this.codes.size(); i++)
-      {
-         String s = this.codes.get(i).getText();
-         this.codes.get(i).setText(s.substring(0, s.length() > TRIMMED_TEXT_LEN ? TRIMMED_TEXT_LEN : s.length()) + "  .....");
-      }
       return "history";
    }
 
