@@ -207,6 +207,9 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       criteria.where(predicates.toArray(new Predicate[0])).orderBy(builder.desc(root.get(CodeFragment_.datetime)));
       
       Query q = entityManager.createQuery(criteria);
+      
+      int totalRecords = q.getResultList().size();
+      
       q.setFirstResult(page * PAGE_SIZE);
       q.setMaxResults(PAGE_SIZE);
       
@@ -214,8 +217,8 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       List<CodeFragment> codes = q.getResultList();
 
       paginator.setPage(page);
-      paginator.setRecordsCount(codes.size());
-      paginator.setPagesCount(codes.size() / PAGE_SIZE);
+      paginator.setRecordsCount(totalRecords);
+      paginator.setPagesCount(totalRecords / PAGE_SIZE);
 
       return codes;
    }
