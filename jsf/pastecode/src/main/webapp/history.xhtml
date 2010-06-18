@@ -13,51 +13,45 @@
 		</f:metadata>
 	</ui:define>
 
-	<ui:define name="themes">
-	</ui:define>
+	<ui:define name="themes"/>
 
 	<ui:define name="mainarea">
-		<div style="width: 100%; padding: 7px;">
+	
+		<div class="paging">
+		  <ui:include src="pagination.xhtml"/>
+		</div>
+		
+		<ui:repeat value="#{history.codes}" var="codeFragment">
+	   	<div class="contentHeader">
+	   	  <span>Posted by </span>
+	   	  <h:outputLink id="user" value="#{codeFragment.id}">
+  			  <!-- display.jsf?id= -->
+  				<h:outputText value="#{codeFragment.user}"></h:outputText>
+	  		</h:outputLink>
+	  		<span> on </span>
+				<h:outputText id="datetime" value="#{codeFragment.datetime}">
+          <f:convertDateTime type="both" pattern="d MMM yyyy 'at' h:mma" />
+				</h:outputText>
 
-		<div id="paging"
-			style="width: 98%; border-width: 0px; background-color: #C1C1E8;">
-		<!-- height: 40px; --> <ui:include src="pagination.xhtml"></ui:include>
-		</div>
-		<br />
-		<h:dataTable value="#{history.codes}" var="codeFragment" width="99%">
-			<h:column>
-				<div id="searched"><h:panelGroup>
-					<h:outputLabel for="user" value="User: " />
-					<h:outputLink id="user" value="#{codeFragment.id}">
-						<!-- display.jsf?id= -->
-						<h:outputText value="#{codeFragment.user}"></h:outputText>
-					</h:outputLink>
-				</h:panelGroup> &nbsp;&nbsp; <h:panelGroup>
-					<h:outputLabel for="language" value="Language: " />
-					<h:outputText id="language" value="#{codeFragment.language.name}"></h:outputText>
-				</h:panelGroup> &nbsp;&nbsp; <h:panelGroup>
-					<h:outputLabel for="datetime" value="Date: " />
-					<h:outputText id="datetime" value="#{codeFragment.datetime}">
-						<f:convertDateTime type="both" pattern="yyyy-MM-dd HH:mm:ss" />
-					</h:outputText>
-				</h:panelGroup></div>
-				<br />
-				<h:outputText value="Code (truncated): " />
-				<div
-					style="height: 100px; width: 99%; border: 1px solid #7F7F7F; overflow: auto; padding: 1px;">
-				<pre>
-				   <h:outputText value="#{codeFragment.text}">
-				     <f:converter converterId="truncatingConverter"/>   
-				   </h:outputText>
-				</pre></div>
-				<br />
-		                &nbsp;<br />
-			</h:column>
-		</h:dataTable> <br />
-		<div id="paging"
-			style="width: 98%; border-width: 0px; background-color: #C1C1E8;">
-		<!-- height: 40px; --> <ui:include src="pagination.xhtml"></ui:include>
-		</div>
+        <div style="float:right">
+					Language: #{codeFragment.language.name}
+			  </div>
+	   	</div>		
+		
+			<h:outputText value="Code (truncated): " />
+
+			<div class="historyCode">
+        <pre>
+	  	    <h:outputText value="#{codeFragment.text}">
+  		      <f:converter converterId="truncatingConverter"/>   
+			    </h:outputText>
+			  </pre>
+			</div>
+
+		</ui:repeat>
+		
+		<div class="paging">
+		  <ui:include src="pagination.xhtml"/>
 		</div>
 
 	</ui:define>

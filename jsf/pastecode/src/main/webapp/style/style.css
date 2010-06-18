@@ -149,7 +149,7 @@ div.validationError {
   color: #ff0000;
 }
 
-/** Recent pastes styles */
+/* Recent pastes styles */
 
 div.recentPastes {
   width: 230px;
@@ -190,7 +190,7 @@ span.recentPasteLang {
   color: #000000;
 }
 
-/** Search params styles */
+/* Search params styles */
 
 div.searchParams {
   width: 230px;
@@ -243,3 +243,44 @@ div.searchParamButtons {
   padding: 4px 8px 16px 2px;
 }
 
+/* Code listing styles */
+
+div.displayCode {
+  width: 99%;
+  border: 1px solid #7f7f7f;
+  height: 450px;
+  overflow: scroll;
+  padding: 1px;
+}
+
+div.historyCode {
+  width: 99%;
+  border: 1px solid #7f7f7f;
+  height: 120px;
+  overflow: auto;
+  padding: 1px;
+  margin-bottom: 22px;
+}
+
+/* Pagination styles */
+
+div.paging {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.currentPage {
+  text-decoration: underline;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+a.pagination, a.pagination:visited {
+  color: #aaaaaa;
+  text-decoration: none;
+}
+
+a.pagination:hover {
+  color: #777777;
+  text-decoration: none;
+}

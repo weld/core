@@ -49,7 +49,7 @@
 			<!--h:outputLabel for="unwrap" value="Unwrap code: "/>   
 			<h:selectBooleanCheckbox id="unwrap" onchange="unwrap('codearea');"/-->
 		   		
-   		<div id="codearea" style="width:99%; border: 1px solid #7F7F7F; height:450px; overflow:scroll;">			   		
+   		<div class="displayCode">
    			<pre class="brush: #{pasteWindow.codeFragment.language.brush}">#{pasteWindow.codeFragment.text}</pre>	
    		</div>
 		   		

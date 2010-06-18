@@ -6,27 +6,32 @@
 
 	<ui:composition>
 	
-		<h:panelGroup rendered="#{history.paginator.pagesCount gt 1}">
-		<div id="paging" style="width:99%;text-align:center;">
-				
-				<a href="history.jsf?page=#{(history.paginator.page-1)>=0?(history.paginator.page-1):0}" style="text-decoration:none;">
-					<span id="edgelink">&lt;&lt;</span>
-				</a>
-				&nbsp;
+		<ui:fragment rendered="#{history.paginator.pagesCount gt 1}">
+		
+      <span>Page #{history.paginator.page + 1} of #{history.paginator.pagesCount}</span>
+      
+		  <div style="float:right">				
+		    <ui:fragment rendered="#{history.paginator.page ge 1}">
+  				<a href="history.jsf?page=#{(history.paginator.page-1)}" class="pagination">Prev</a>
+  		  </ui:fragment>
 				
 				<ui:repeat var="page" value="#{history.paginator.indexes}">
-    				<a href="history.jsf?page=#{page}" style="text-decoration:none;">
-    					<span id="normallink" style="width:23px;display: inline-block;}">#{(history.paginator.page eq page)?'(':''}#{page+1}#{(history.paginator.page eq page)?')':''}</span>
-    				</a>
+				  <ui:fragment rendered="#{history.paginator.page eq page}">
+				    <span class="currentPage">#{page+1}</span>
+				  </ui:fragment>
+				  <ui:fragment rendered="#{history.paginator.page ne page}">
+    				<a href="history.jsf?page=#{page}" class="pagination">#{page+1}</a>
+				  </ui:fragment>
+
 				</ui:repeat>
 				
-				&nbsp;
-				<a href="history.jsf?page=#{(history.paginator.page+1)>history.paginator.pagesCount?history.paginator.pagesCount:(history.paginator.page+1)}" style="text-decoration:none;">
-					<span id="edgelink">&gt;&gt;</span>
-				</a>
+				<ui:fragment rendered="#{history.paginator.page lt (history.paginator.pagesCount-1)}">
+  				<a href="history.jsf?page=#{(history.paginator.page+1)}" class="pagination">Next</a>
+  			</ui:fragment>
 				
-		</div>
-		</h:panelGroup>
+		  </div>
+				
+		</ui:fragment>
 		
 	</ui:composition>
 	

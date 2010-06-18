@@ -97,7 +97,7 @@ public class Paginator
    public void setBoundedIndexes(int startIndex, int endIndex)
    {
       this.indexes = new ArrayList<Integer>(endIndex - startIndex);
-      for (int i = startIndex; i <= endIndex; i++)
+      for (int i = startIndex; i < endIndex; i++)
       {
          this.indexes.add(new Integer(i));
       }
