@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -43,7 +43,7 @@ import javax.persistence.criteria.Root;
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 import org.jboss.weld.examples.pastecode.model.CodeFragment_;
 
-@Stateless
+@Stateful
 public class CodeFragmentManagerImpl implements CodeFragmentManager
 {
 
@@ -194,7 +194,7 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       }
       if (!isEmpty(codeFragment.getText()))
       {
-         predicates.add( builder.like(root.get(CodeFragment_.text), codeFragment.getText().toLowerCase()) );
+         predicates.add( builder.like(root.get(CodeFragment_.text), "%" + codeFragment.getText().toLowerCase().trim() + "%") );
       }
       if (codeFragment.getDatetime() != null)
       {

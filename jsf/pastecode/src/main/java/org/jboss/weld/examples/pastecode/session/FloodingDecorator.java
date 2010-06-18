@@ -21,6 +21,8 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
+import java.io.Serializable;
+
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
@@ -28,8 +30,11 @@ import javax.inject.Inject;
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
 @Decorator
-public abstract class FloodingDecorator implements CodeFragmentManager
+public abstract class FloodingDecorator implements CodeFragmentManager, Serializable
 {
+
+   private static final long serialVersionUID = -4615837206290420112L;
+
    @Inject @Delegate 
    private CodeFragmentManager codeFragmentManager; 
    
