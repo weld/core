@@ -9,7 +9,7 @@
 	<ui:define name="viewMetadata">
 		<f:metadata>
 			<f:viewParam name="page" value="#{history.page}" />
-			<f:event type="preRenderView" listener="#{history.search}" />
+			<f:event type="preRenderView" listener="#{history.load}" />
 		</f:metadata>
 	</ui:define>
 

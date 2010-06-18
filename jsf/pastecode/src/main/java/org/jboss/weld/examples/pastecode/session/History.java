@@ -78,7 +78,7 @@ public class History implements Serializable
    }
 
    // Do the search, called as a "page action"
-   public String search()
+   public String load()
    {
       this.paginator = new Paginator();
       this.codes = null;
