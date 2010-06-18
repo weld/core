@@ -184,4 +184,10 @@ public class CodeFragment
    {
       this.user = user;
    }
+   
+   @Override
+   public String toString()
+   {
+      return "At " + getFriendlyDate() + " by " + getUser();
+   }
 }

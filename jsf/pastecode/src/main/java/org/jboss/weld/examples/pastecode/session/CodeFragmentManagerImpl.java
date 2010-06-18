@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -55,6 +56,9 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
    
    @Inject 
    private Logger log;
+   
+   @Inject
+   private Event<CodeFragment> event;
 
    @PersistenceContext
    private EntityManager entityManager;
@@ -83,7 +87,7 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
             String hashValue = hashComputer.getHashValue(code);
             code.setHash(hashValue);
             entityManager.persist(code);
-            log.info("Added private pastecode: " + hashValue);
+            event.fire(code);
             return hashValue;
          }
          catch (NoSuchAlgorithmException e)
@@ -96,9 +100,9 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       else
       {
          entityManager.persist(code);
+         event.fire(code);
          // Make sure we have the latest version (with the generated id!)
          entityManager.refresh(code);
-         log.info("Added pastecode: " + code.getId());
          return new Integer(code.getId()).toString();
       }
    }

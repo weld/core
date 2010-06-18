@@ -57,6 +57,9 @@ public class DatabasePopulater
    @Inject
    private CodeFragmentManager codeFragmentManager;
    
+   @Inject
+   private CodeFragmentPrinter codeFragmentPrinter;
+   
    private boolean populated;
 
    // TODO @PostConstruct
@@ -67,6 +70,9 @@ public class DatabasePopulater
          return;
       }
 
+      // Start the timer for the logger :-)
+      codeFragmentPrinter.startTimer();
+      
       try
       {
          String fileContent = readFileData(DATA_FILE_NAME);
@@ -92,7 +98,7 @@ public class DatabasePopulater
       }
       catch (Exception e)
       {
-         log.log(Level.WARNING, "Unable to read all records from " + DATA_FILE_NAME + " file");
+         log.log(Level.WARNING, "Unable to read all records from " + DATA_FILE_NAME + " file", e);
       }
 
       log.info("Successfully imported data!");
