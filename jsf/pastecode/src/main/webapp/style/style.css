@@ -116,7 +116,6 @@ div.contentHeader a, div.contentHeader a:visited, div.contentHeader a:hover {
 
 div.formRow {
   padding: 3px 4px 3px 2px;  
-/*  clear: both;*/
 }
 
 div.formRow label {
@@ -191,5 +190,56 @@ span.recentPasteLang {
   color: #000000;
 }
 
+/** Search params styles */
 
+div.searchParams {
+  width: 230px;
+  background-color: #ffffff;
+  padding: 0px;
+  border: 0px;
+}
+
+div.searchParamsHeader {
+  background-color: #cccccc;
+  color: #000000;
+  font-weight: bold;
+  padding: 4px;
+  border: 0px;
+}
+
+div.searchParam {
+  padding: 3px 4px 3px 2px;  
+}
+
+div.searchParam label {
+  float: left;
+  width: 100px; 
+  padding: 4px 2px 2px 2px;
+}
+
+div.searchParam input[type='text'] {
+  width: 100px;
+  background-color: #fafafc;
+	border: 1px solid #cccccc;  
+	padding: 4px;
+}
+
+div.searchParam textarea {
+  width: 210px;
+  background-color: #fafafc;
+	border: 1px solid #cccccc;  
+	padding: 4px;
+}
+
+div.searchParam select {
+  width: 110px;
+  background-color: #fafafc;
+	border: 1px solid #cccccc;  
+	padding: 4px;	
+}
+
+div.searchParamButtons {
+  float: right;
+  padding: 4px 8px 16px 2px;
+}
 
