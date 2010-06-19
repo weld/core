@@ -28,6 +28,13 @@ import javax.ejb.Stateless;
 
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
+/**
+ * Compute the hash for a {@link CodeFragment}
+ * 
+ * @author Martin Gencur
+ * @author Pete Muir
+ *
+ */
 @Stateless
 public class HashComputer
 {

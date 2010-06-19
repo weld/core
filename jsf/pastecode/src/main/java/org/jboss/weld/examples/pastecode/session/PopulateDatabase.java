@@ -45,7 +45,8 @@ import org.jboss.weld.examples.pastecode.model.Language;
  * Populate the database with data.sql. Needed because import.sql doesn't
  * support multi-line inserts
  * 
- * @author pmuir
+ * @author Pete Muir
+ * @author Martin Gencur
  * 
  */
 @Startup

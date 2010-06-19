@@ -6,6 +6,12 @@ import java.util.LinkedList;
 import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 
+/**
+ * Tracks the post made by the current user
+ * 
+ * @author Pete Muir
+ *
+ */
 @SessionScoped
 @Stateful // Adds passivation capabilities....
 public class PostTracker

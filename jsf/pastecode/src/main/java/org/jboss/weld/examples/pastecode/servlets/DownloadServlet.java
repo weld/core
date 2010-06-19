@@ -36,6 +36,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 import org.jboss.weld.examples.pastecode.session.CodeFragmentManager;
 
+/**
+ * Servlet that offers the code fragment for download as a file
+ * 
+ * @author Martin Gencur
+ *
+ */
 @WebServlet("/download")
 public class DownloadServlet extends HttpServlet
 {

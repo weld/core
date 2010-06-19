@@ -29,6 +29,12 @@ import javax.inject.Inject;
 
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
+/**
+ * Prohibit posting more than 2 fragments a minute
+ * 
+ * @author Pete Muir
+ *
+ */
 @Decorator
 public abstract class FloodingDecorator implements CodeFragmentManager, Serializable
 {
@@ -43,6 +49,7 @@ public abstract class FloodingDecorator implements CodeFragmentManager, Serializ
    
    public String addCodeFragment(CodeFragment code, boolean privateFragment)
    {
+      // Check if we are allowed to post
       if (postTracker.isNewPostAllowed())
       {
          postTracker.addPost();

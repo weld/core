@@ -24,7 +24,6 @@ package org.jboss.weld.examples.pastecode.session;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,12 +31,13 @@ import javax.inject.Named;
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
 /**
- * Session Bean implementation class HistoryBean
+ * The view controller for the history screen
+ * 
+ * @author Martin Gencur
+ * @author Pete Muir
  */
-
 @SessionScoped
 @Named("history")
-@Stateful
 public class History implements Serializable
 {
 

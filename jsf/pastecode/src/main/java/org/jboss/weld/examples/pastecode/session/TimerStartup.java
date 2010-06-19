@@ -5,6 +5,11 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
+/**
+ * Responsible for starting the timer for printing recently added code fragments
+ * @author Pete Muir
+ *
+ */
 @Startup @Singleton
 public class TimerStartup
 {

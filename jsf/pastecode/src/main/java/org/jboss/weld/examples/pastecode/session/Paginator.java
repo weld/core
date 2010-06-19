@@ -24,6 +24,12 @@ package org.jboss.weld.examples.pastecode.session;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Pagination support class
+ *
+ * @author Martin Gencur
+ *
+ */
 public class Paginator
 {
 

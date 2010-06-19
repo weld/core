@@ -5,6 +5,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
+/**
+ * JSF converter responsible for truncating output strings to {@value #TRIMMED_TEXT_LEN} length.
+ * 
+ * @author Pete Muir
+ *
+ */
 @FacesConverter("truncatingConverter")
 public class TruncatingConverter implements Converter
 {

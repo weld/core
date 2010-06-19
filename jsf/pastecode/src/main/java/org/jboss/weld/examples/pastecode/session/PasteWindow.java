@@ -29,8 +29,12 @@ import javax.inject.Named;
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
 /**
- * PasteWindow holds the code fragment and other selections when a code fragment is viewed and entered
- *
+ * PasteWindow holds the code fragment and other selections when a code fragment
+ * is viewed and entered
+ * 
+ * @author Pete Muir
+ * @author Martin Gencur
+ * 
  */
 @Named
 @RequestScoped

@@ -26,9 +26,6 @@ public class CodeFragmentPrinterImpl implements CodeFragmentPrinter
    @Inject 
    private Logger log;
    
-   /* (non-Javadoc)
-    * @see org.jboss.weld.examples.pastecode.session.CodeFragmentPrinter#startTimer()
-    */
    public void startTimer()
    {
       timerService.createTimer(ONE_MINUTE, ONE_MINUTE, null);
@@ -37,6 +34,7 @@ public class CodeFragmentPrinterImpl implements CodeFragmentPrinter
    @Timeout
    public void print()
    {
+      // Print the code fragments retrieved in the last minute to the log
       if (logger.getLog().size() > 0)
       {
          log.info("These code fragments pasted in the last minute: ");

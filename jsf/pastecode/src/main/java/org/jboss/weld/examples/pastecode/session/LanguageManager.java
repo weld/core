@@ -26,6 +26,12 @@ import javax.inject.Named;
 
 import org.jboss.weld.examples.pastecode.model.Language;
 
+/**
+ * Produces an array of supported languages
+ * 
+ * @author Pete Muir
+ *
+ */
 public class LanguageManager
 {
    

@@ -40,6 +40,9 @@ import javax.validation.constraints.Size;
 /**
  * The entity class for the pasted code "fragment". This is the main entity
  * class in the application.
+ * 
+ * @author Martin Gencur
+ * @author Pete Muir
  */
 @Entity
 public class CodeFragment

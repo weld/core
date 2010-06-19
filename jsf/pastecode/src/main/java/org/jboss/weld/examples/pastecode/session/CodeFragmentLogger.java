@@ -12,11 +12,19 @@ import javax.enterprise.event.Observes;
 
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
+/**
+ * Holds a log of code fragments added by all users
+ * 
+ * Threadsafe.
+ * 
+ * @author Pete Muir
+ * 
+ */
 @ApplicationScoped
 @Singleton
 public class CodeFragmentLogger
 {
-   
+
    private final List<CodeFragment> log;
 
    public CodeFragmentLogger()

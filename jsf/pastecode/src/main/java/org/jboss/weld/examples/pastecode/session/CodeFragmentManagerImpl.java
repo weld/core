@@ -43,12 +43,16 @@ import javax.persistence.criteria.Root;
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 import org.jboss.weld.examples.pastecode.model.CodeFragment_;
 
+/**
+ * Implementation of {@link CodeFragmentManager}
+ * 
+ * @author Pete Muir
+ * @author Martin Gencur
+ *
+ */
 @Stateful
 public class CodeFragmentManagerImpl implements CodeFragmentManager
 {
-
-   // The number of code fragments to return in our recentCodeFragments query
-   private static int MAX_RECENT_FRAGMENTS = 7;
 
    // The number of code fragments to display per page
    private static int PAGE_SIZE = 2;
@@ -174,7 +178,7 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
 
    public List<CodeFragment> searchCodeFragments(CodeFragment codeFragment, int page, Paginator paginator)
    {
-      
+      // Create a criteria, which we then populate using our prototype code fragment
       CriteriaBuilder builder = entityManager.getCriteriaBuilder();
       CriteriaQuery<CodeFragment> criteria = builder.createQuery(CodeFragment.class);
       
@@ -182,6 +186,7 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       
       List<Predicate> predicates = new ArrayList<Predicate>();
       
+      // Only search public code fragements
       predicates.add(builder.isNull(root.get(CodeFragment_.hash)));
 
       if (!isEmpty(codeFragment.getUser()))
@@ -207,6 +212,8 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       
       int totalRecords = q.getResultList().size();
       
+      
+      // Compute the page
       q.setFirstResult(page * PAGE_SIZE);
       q.setMaxResults(PAGE_SIZE);
       

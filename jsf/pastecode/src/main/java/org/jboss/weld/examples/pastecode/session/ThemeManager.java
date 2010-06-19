@@ -29,6 +29,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
+/**
+ * Exposes {@link Theme} as a list
+ * 
+ * @author Pete Muir
+ *
+ */
 @ApplicationScoped
 public class ThemeManager
 {

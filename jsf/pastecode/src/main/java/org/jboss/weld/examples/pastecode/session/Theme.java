@@ -1,5 +1,11 @@
 package org.jboss.weld.examples.pastecode.session;
 
+/**
+ * Closed set of the visual themes available for displaying code fragments
+ * 
+ * @author Pete Muir
+ *
+ */
 public enum Theme
 {
    
