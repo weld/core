@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.event.Event;
@@ -53,9 +52,6 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
 
    // The number of code fragments to display per page
    private static int PAGE_SIZE = 2;
-   
-   @Inject 
-   private Logger log;
    
    @Inject
    private Event<CodeFragment> event;
