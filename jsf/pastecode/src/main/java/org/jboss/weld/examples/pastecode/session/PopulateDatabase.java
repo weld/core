@@ -30,49 +30,44 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.inject.Inject;
-import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
 
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 import org.jboss.weld.examples.pastecode.model.Language;
 
 /**
- * This bean only populates database with preformatted data. This is due to need
- * for Hypersonic database which doesn't allow multi-line inserts. Hypersonic
- * database is embedded in JBoss AS and so there is no need to configure any
- * external database to run this example.
+ * Populate the database with data.sql. Needed because import.sql doesn't
+ * support multi-line inserts
+ * 
+ * @author pmuir
  * 
  */
-@ApplicationScoped
-@Named("database")
-// TODO @Singleton @Startup
-public class DatabasePopulater
+@Startup
+@Singleton
+public class PopulateDatabase
 {
-   
-   @Inject Logger log;
-   
+
    private static final String DATA_FILE_NAME = "data.sql";
 
    @Inject
-   private CodeFragmentManager codeFragmentManager;
-   
+   private Logger log;
+
+   @PersistenceContext
+   private EntityManager entityManager;
+
    @Inject
-   private CodeFragmentPrinter codeFragmentPrinter;
-   
-   private boolean populated;
+   private UserTransaction utx;
 
-   // TODO @PostConstruct
-   public synchronized void populate()
+   @PostConstruct
+   public void startup()
    {
-      if (populated)
-      {
-         return;
-      }
 
-      // Start the timer for the logger :-)
-      codeFragmentPrinter.startTimer();
-      
       try
       {
          String fileContent = readFileData(DATA_FILE_NAME);
@@ -93,7 +88,10 @@ public class DatabasePopulater
             st.nextToken();
             c.setText(st.nextToken());
 
-            codeFragmentManager.addCodeFragment(c, false);
+            // Manual TX control, commit each record independently
+            utx.begin();
+            entityManager.persist(c);
+            utx.commit();
          }
       }
       catch (Exception e)
@@ -102,17 +100,11 @@ public class DatabasePopulater
       }
 
       log.info("Successfully imported data!");
-      populated = true;
-   }
-   
-   public boolean isPopulated()
-   {
-      return populated;
    }
 
-   private String readFileData(String fileName) throws IOException
+   private static String readFileData(String fileName) throws IOException
    {
-      InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
+      InputStream is = PopulateDatabase.class.getClassLoader().getResourceAsStream(fileName);
       BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
       String line;

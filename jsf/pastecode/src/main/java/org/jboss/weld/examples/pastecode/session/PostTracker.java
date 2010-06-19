@@ -5,16 +5,13 @@ import java.util.LinkedList;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
 
 @SessionScoped
-@Stateful // Add passivation capabilities....
+@Stateful // Adds passivation capabilities....
 public class PostTracker
 {
    
    private LinkedList<Date> posts;
-   
-   @Inject DatabasePopulater databasePopulater;
    
    public PostTracker()
    {
@@ -28,13 +25,15 @@ public class PostTracker
    
    public boolean isNewPostAllowed()
    {
-      // if we are populating the database, skip
-      if (!databasePopulater.isPopulated())
+      if (posts.size() > 2)
+      {
+         long diff = new Date().getTime() - posts.get(2).getTime();
+         return diff > 20 * 1000;
+      }
+      else
       {
          return true;
       }
-      long diff = new Date().getTime() - posts.get(2).getTime();
-      return diff > 20 * 1000;
    }
 
 }
