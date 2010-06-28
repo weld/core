@@ -23,7 +23,7 @@
  02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 <Configure id="webAppCtx" class="org.mortbay.jetty.webapp.WebAppContext">
-   <New id="beanManager" class="org.mortbay.jetty.plus.naming.Resource">
+   <New class="org.mortbay.jetty.plus.naming.EnvEntry">
       <Arg><Ref id="webAppCtx"/></Arg>
       <Arg>BeanManager</Arg>
       <Arg>
@@ -33,5 +33,6 @@
             <Arg/>
          </New>
       </Arg>
+      <Arg type="boolean">true</Arg>
    </New>
 </Configure>
