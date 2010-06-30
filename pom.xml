@@ -15,7 +15,7 @@
 
 	<!-- Artifact Configuration -->
 	<groupId>org.jboss.arquillian.container</groupId>
-	<artifactId>arquillian-weld-ee-embedded-1_1</artifactId>
+	<artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
 	<name>Arquillian Container Weld EE Embedded 1.1.x</name>
 	<description>Weld EE 1.1.x Embedded Container integration for the Arquillian Project</description>
 
