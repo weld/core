@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <arquillian xmlns="http://jboss.com/arquillian"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xmlns:weld="urn:arq:org.jboss.arquillian.weldee">
+		xmlns:weld="urn:arq:org.jboss.arquillian.container.weld.ee.embedded_1_1">
 
 	<weld:container>
 		<weld:enableConversationScope>true</weld:enableConversationScope>
