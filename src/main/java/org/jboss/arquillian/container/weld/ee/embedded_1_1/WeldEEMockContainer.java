@@ -16,6 +16,11 @@
  */
 package org.jboss.arquillian.container.weld.ee.embedded_1_1;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockEELifecycle;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockHttpSession;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockServletContext;
@@ -80,15 +85,23 @@ public class WeldEEMockContainer implements DeployableContainer
       // TODO: Weld ConversationManager should communicate with a Service so it's possible to override the HttpSessionManager as part of Bootstrap.
       context.register(Before.class, new EventHandler<TestEvent>()
       {
+         private Map<String, HttpSession> sessionStore = new HashMap<String, HttpSession>();
+         
          public void callback(Context context, TestEvent event) throws Exception
          {
             WeldManager manager = context.get(WeldManager.class);
             CDISessionID id = context.get(CDISessionID.class);
             if(id != null)
             {
-               BeanUtils.getBeanReference(manager, HttpSessionManager.class)
-                     .setSession(
-                           new MockHttpSession(id.getId(), new MockServletContext("/")));
+               HttpSessionManager sessionManager = BeanUtils.getBeanReference(manager, HttpSessionManager.class);
+
+               HttpSession session = sessionStore.get(id.getId()); 
+               if(session == null)
+               {
+                  session = new MockHttpSession(id.getId(), new MockServletContext("/"));
+               }
+               sessionManager.setSession(session);
+               sessionStore.put(id.getId(), session);
             }
          }
       });

@@ -51,6 +51,6 @@ public class ConversationLifeCycleDestoryer implements EventHandler<Event> {
 
       ConversationManager2 conversationManager = BeanUtils.getBeanReference(manager, ConversationManager2.class);
       conversationManager.teardownConversation();
-      conversationManager.teardownContext();
+      //conversationManager.teardownContext();
    }
 }

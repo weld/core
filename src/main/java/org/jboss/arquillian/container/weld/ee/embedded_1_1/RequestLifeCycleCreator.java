@@ -49,7 +49,9 @@ public class RequestLifeCycleCreator implements EventHandler<Event>
       String requestId = UUID.randomUUID().toString();
       BeanStore beanStore = new ConcurrentHashMapBeanStore();
       
-      lifeCycle.beginRequest(requestId, beanStore);
+      lifeCycle.getDependentContext().setActive(true);
+      lifeCycle.getRequestContext().setActive(true);
+      lifeCycle.getRequestContext().setBeanStore(beanStore);
       
       context.add(CDIRequestID.class, new CDIRequestID(requestId, beanStore));
    }

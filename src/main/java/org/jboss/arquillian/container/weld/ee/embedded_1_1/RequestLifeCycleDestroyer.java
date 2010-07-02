@@ -38,7 +38,10 @@ public class RequestLifeCycleDestroyer implements EventHandler<Event> {
       CDIRequestID id = context.get(CDIRequestID.class);
       if(id != null)
       {
-         manager.getServices().get(ContextLifecycle.class).endRequest(id.getId(), id.getBeanStore());
+         ContextLifecycle lifeCycle = manager.getServices().get(ContextLifecycle.class);
+         
+         lifeCycle.getDependentContext().setActive(false);
+         lifeCycle.getRequestContext().setActive(false);
       }
    }
 }

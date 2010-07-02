@@ -16,30 +16,28 @@
  */
 package org.jboss.arquillian.container.weld.ee.embedded_1_1.beans;
 
-import java.io.Serializable;
-
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
 
 /**
- * MyBean
+ * Chicken
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-@ApplicationScoped
-public class MyBean implements Serializable
+@SessionScoped
+public class Chicken implements java.io.Serializable 
 {
    private static final long serialVersionUID = 1L;
 
-   private String name = "aslak";
+   private Integer age;
    
-   public String getName() 
+   public Integer getAge()
    {
-      return name;
+      return age;
    }
    
-   public void setName(String name)
+   public void setAge(Integer age)
    {
-      this.name = name;
+      this.age = age;
    }
 }

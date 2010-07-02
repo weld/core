@@ -47,7 +47,11 @@ public class ConversationLifeCycleCreator implements EventHandler<Event>
       {
          id = new CDIConversationID(null); // when null creates a new empty conversation id. 
       }
-      conversationManager.setupContext();
+      
+      if(!conversationManager.isContextActive())
+      {
+         conversationManager.setupContext();
+      }
       conversationManager.setupConversation(id.getId());
    }
 }
