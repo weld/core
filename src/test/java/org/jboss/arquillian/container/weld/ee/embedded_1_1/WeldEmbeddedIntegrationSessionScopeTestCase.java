@@ -25,8 +25,8 @@ import org.jboss.arquillian.container.weld.ee.embedded_1_1.beans.Chicken;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.impl.base.asset.ByteArrayAsset;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +44,7 @@ public class WeldEmbeddedIntegrationSessionScopeTestCase
    @Deployment
    public static JavaArchive createdeployment() 
    {
-      return ShrinkWrap.create("test.jar", JavaArchive.class)
+      return ShrinkWrap.create(JavaArchive.class, "test.jar")
                   .addClasses(
                         WeldEmbeddedIntegrationSessionScopeTestCase.class,
                         Chicken.class)
