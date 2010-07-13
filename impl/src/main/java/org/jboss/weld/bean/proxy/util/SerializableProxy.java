@@ -26,7 +26,6 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Set;
 
 import org.jboss.weld.Container;
@@ -103,7 +102,7 @@ public class SerializableProxy implements Serializable
    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
    {
       in.defaultReadObject();
-      Class<?> proxyBeanType = Container.instance().services().get(ProxyServices.class).loadProxySuperClass(proxySuperClassName);
+      Class<?> proxyBeanType = Container.instance().services().get(ProxyServices.class).loadBeanClass(proxySuperClassName);
       ArraySet<Type> proxyBeanInterfaces = loadInterfaces(); 
       Class<?> proxyClass = null;
       if (proxyClassName.endsWith(ProxyFactory.PROXY_SUFFIX))
@@ -131,7 +130,7 @@ public class SerializableProxy implements Serializable
       ArraySet<Type> interfaceClasses = new ArraySet<Type>(proxyInterfaces.size());
       for (String interfaceName : proxyInterfaces)
       {
-         interfaceClasses.add(proxyServices.loadProxySuperClass(interfaceName));
+         interfaceClasses.add(proxyServices.loadBeanClass(interfaceName));
       }
       return interfaceClasses;
    }

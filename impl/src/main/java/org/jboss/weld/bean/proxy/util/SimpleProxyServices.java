@@ -38,7 +38,7 @@ import org.jboss.weld.serialization.spi.ProxyServices;
 public class SimpleProxyServices implements ProxyServices
 {
 
-   public ClassLoader getClassLoader(final Class<?> type)
+   public ClassLoader getClassLoader(final Class<?> proxiedBeanType)
    {
       SecurityManager sm = System.getSecurityManager();
       if (sm != null)
@@ -47,26 +47,26 @@ public class SimpleProxyServices implements ProxyServices
          {
             public ClassLoader run()
             {
-               return _getClassLoader(type);
+               return _getClassLoader(proxiedBeanType);
             }
          });
       }
       else
       {
-         return _getClassLoader(type);
+         return _getClassLoader(proxiedBeanType);
       }      
    }
 
-   private ClassLoader _getClassLoader(Class<?> type)
+   private ClassLoader _getClassLoader(Class<?> proxiedBeanType)
    {
       // return Thread.currentThread().getContextClassLoader();
-      if (type.getName().startsWith("java"))
+      if (proxiedBeanType.getName().startsWith("java"))
       {
          return this.getClass().getClassLoader();
       }
       else
       {
-         return type.getClassLoader();
+         return proxiedBeanType.getClassLoader();
       }
    }
 
@@ -94,7 +94,7 @@ public class SimpleProxyServices implements ProxyServices
       return new SerializableProxy(proxyObject);
    }
 
-   public Class<?> loadProxySuperClass(final String className)
+   public Class<?> loadBeanClass(final String className)
    {
       try
       {
