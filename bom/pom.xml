@@ -3,7 +3,7 @@
    <groupId>org.jboss.weld</groupId>
    <artifactId>weld-core-bom</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.2-SNAPSHOT</version>
+   <version>1.1.0-SNAPSHOT</version>
    
    <parent>
       <groupId>org.jboss.weld</groupId>
@@ -33,7 +33,7 @@
    </developers>
 
    <properties>
-      <weld.api.version>1.0-SNAPSHOT</weld.api.version>
+      <weld.api.version>1.1-SNAPSHOT</weld.api.version>
       <!-- Override the API and compile with more recent EL API -->
       <google.collections.version>1.0</google.collections.version>
       <javassist.version>3.11.0.GA</javassist.version>
