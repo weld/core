@@ -136,6 +136,35 @@
       </dependencies>
    </dependencyManagement>
 
+   <!-- Dependency management, including extra repositories if needed -->
+   <repositories>
+      <repository>
+         <id>repository.jboss.org</id>
+         <name>JBoss Release Repository</name>
+         <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+         <releases>
+            <enabled>false</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+         </snapshots>
+      </repository>
+      <repository>
+         <id>oss.sonatype.org/snapshots</id>
+         <name>OSS Snapshots Repository</name>
+         <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+         <releases>
+            <enabled>false</enabled>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </snapshots>
+      </repository>
+   </repositories>
+
+
    <!-- SCM and distribution management -->
    <scm>
       <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/bom</connection>
