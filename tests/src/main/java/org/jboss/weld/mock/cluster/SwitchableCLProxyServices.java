@@ -44,7 +44,7 @@ public class SwitchableCLProxyServices extends SimpleProxyServices
    }
 
    @Override
-   public Class<?> loadProxySuperClass(String className)
+   public Class<?> loadBeanClass(String className)
    {
       try
       {
