@@ -62,6 +62,16 @@ public class MultipleBeansTest extends AbstractWeldTest
       consumer = getReference(BlogConsumer.class, new ConsumerLiteral("Bob"));
       assert consumer.blogContent.equals("+Bob's content+");
    }
+   /**
+    * makes sure that ProcessAnnotatedType is thrown for types
+    * added through BeforeBeanDiscovery.addAnnotatedType
+    */
+   @Test
+   public void testProcessAnnotatedTypeEventFiredForSPIAddedType()
+   {
+      MultipleBeansExtension ext = getReference(MultipleBeansExtension.class);
+      assert ext.isAddedBlogFormatterSeen();
+   }
 
    /**
     * Apparently it is not possible to add two beans that are exactly the same.

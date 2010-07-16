@@ -19,6 +19,7 @@ package org.jboss.weld.bootstrap;
 import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.decorator.Decorator;
@@ -91,6 +92,27 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
          addClass(clazz);
       }
       return this;
+   }
+
+   public void fireProcessAnnotatedTypeForTypesAddedThroughTheSPI()
+   {
+      Iterator<WeldClass<?>> it = classes.iterator();
+      ClassTransformer classTransformer = Container.instance().services().get(ClassTransformer.class);
+      Set<WeldClass<?>> transformed = new HashSet<WeldClass<?>>();
+      while (it.hasNext())
+      {
+         WeldClass<?> c = it.next();
+         if (!c.isDiscovered())
+         {
+            it.remove();
+            ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(getManager(), c);
+            if (!event.isVeto())
+            {
+               transformed.add(classTransformer.loadClass(event.getAnnotatedType()));
+            }
+         }
+      }
+      classes.addAll(transformed);
    }
 
    public BeanDeployer createBeans()

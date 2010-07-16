@@ -21,8 +21,11 @@ import java.lang.reflect.Method;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
@@ -37,6 +40,8 @@ import org.jboss.weld.tests.util.annotated.TestAnnotatedTypeBuilder;
 public class MultipleBeansExtension implements Extension
 {
 
+   private boolean addedBlogFormatterSeen = false;
+   
    public void addNewAnnotatedTypes(@Observes BeforeBeanDiscovery event) throws SecurityException, NoSuchFieldException, NoSuchMethodException
    {
       TestAnnotatedTypeBuilder<BlogFormatter> formatter = new TestAnnotatedTypeBuilder<BlogFormatter>(BlogFormatter.class);
@@ -60,6 +65,30 @@ public class MultipleBeansExtension implements Extension
       TestAnnotatedTypeBuilder<UselessBean> uselessBuilder = new TestAnnotatedTypeBuilder<UselessBean>(UselessBean.class);
       event.addAnnotatedType(uselessBuilder.create());
 
+   }
+   
+   public void observeProcessBlogFormatter(@Observes ProcessAnnotatedType<BlogFormatter> event)
+   {
+      AnnotatedType<BlogFormatter> type = event.getAnnotatedType();
+      for(AnnotatedField<? super BlogFormatter> f : type.getFields())
+      {
+         if(f.getJavaMember().getName().equals("content"))
+         {
+            if(f.isAnnotationPresent(Author.class))
+            {
+               if(f.getAnnotation(Author.class).name().equals("Bob"))
+               {
+                  addedBlogFormatterSeen = true;
+               }
+            }
+         }
+      }
+   }
+   
+
+   public boolean isAddedBlogFormatterSeen()
+   {
+      return addedBlogFormatterSeen;
    }
 
    private static class InjectLiteral extends AnnotationLiteral<Inject> implements Inject
