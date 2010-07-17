@@ -59,7 +59,6 @@ public class SimpleProxyServices implements ProxyServices
 
    private ClassLoader _getClassLoader(Class<?> proxiedBeanType)
    {
-      // return Thread.currentThread().getContextClassLoader();
       if (proxiedBeanType.getName().startsWith("java"))
       {
          return this.getClass().getClassLoader();
@@ -102,10 +101,7 @@ public class SimpleProxyServices implements ProxyServices
          {
             public Object run() throws Exception
             {
-               // ClassLoader cl =
-               // Thread.currentThread().getContextClassLoader();
-               ClassLoader cl = getClassLoader(this.getClass());
-               return Class.forName(className, true, cl);
+               return Class.forName(className, true, getClassLoader(this.getClass()));
             }
          });
       }
