@@ -18,7 +18,6 @@ package org.jboss.arquillian.container.weld.ee.embedded_1_1.shrinkwrap;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
@@ -41,11 +40,10 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.classloader.ShrinkWrapClassLoader;
 import org.jboss.shrinkwrap.impl.base.AssignableBase;
 import org.jboss.shrinkwrap.impl.base.Validate;
 import org.jboss.shrinkwrap.impl.base.asset.ArchiveAsset;
-import org.jboss.shrinkwrap.impl.base.asset.ClassAsset;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -63,16 +61,25 @@ public class ShrinkwrapBeanDeploymentArchiveImpl extends AssignableBase implemen
    
    private ServiceRegistry serviceRegistry = new SimpleServiceRegistry();
    
+   private ShrinkWrapClassLoader classLoader;
+   
    public ShrinkwrapBeanDeploymentArchiveImpl(Archive<?> archive)
    {
       Validate.notNull(archive, "Archive must be specified");
       this.archive = archive;
+      
+      this.classLoader = new ShrinkWrapClassLoader(archive.getClass().getClassLoader(), archive);
    }
 
    @Override
    protected Archive<?> getArchive()
    {
       return archive;
+   }
+
+   public ShrinkWrapClassLoader getClassLoader()
+   {
+      return classLoader;
    }
 
    public String getId()
@@ -164,36 +171,37 @@ public class ShrinkwrapBeanDeploymentArchiveImpl extends AssignableBase implemen
    {
       List<Class<?>> beanClasses = new ArrayList<Class<?>>();
 
-      Map<ArchivePath, Node> nestedArchives = archive.getContent(Filters.include(".*\\.jar|.*\\.war"));
-      for(final Map.Entry<ArchivePath, Node> nestedArchiveEntry : nestedArchives.entrySet())
+      try
       {
-         if( !(nestedArchiveEntry.getValue().getAsset() instanceof ArchiveAsset))
+         Map<ArchivePath, Node> nestedArchives = archive.getContent(Filters.include(".*\\.jar|.*\\.war|.*\\.rar"));
+         for(final Map.Entry<ArchivePath, Node> nestedArchiveEntry : nestedArchives.entrySet())
          {
-            continue;
-         }
-         ArchiveAsset nestedArchive = (ArchiveAsset)nestedArchiveEntry.getValue().getAsset();
-         Map<ArchivePath, Node> classes = nestedArchive.getArchive().getContent(Filters.include(".*\\.class"));
-         for(Map.Entry<ArchivePath, Node> classEntry : classes.entrySet()) 
-         {
-            if (classEntry.getValue().getAsset() instanceof ClassAsset)
+            if( !(nestedArchiveEntry.getValue().getAsset() instanceof ArchiveAsset))
             {
-               beanClasses.add(
-                     (Class<?>)extractFieldFromAsset(
-                           classEntry.getValue().getAsset(),
-                           "clazz"));
+               continue;
+            }
+            ArchiveAsset nestedArchive = (ArchiveAsset)nestedArchiveEntry.getValue().getAsset();
+            Map<ArchivePath, Node> classes = nestedArchive.getArchive().getContent(Filters.include(".*\\.class"));
+            for(Map.Entry<ArchivePath, Node> classEntry : classes.entrySet()) 
+            {
+               Class<?> loadedClass = getClassLoader().loadClass(
+                     getClassName(classEntry.getKey())); 
+   
+               beanClasses.add(loadedClass);
             }
          }
-      }
-      Map<ArchivePath, Node> classes = archive.getContent(Filters.include(".*\\.class"));
-      for(Map.Entry<ArchivePath, Node> classEntry : classes.entrySet()) 
-      {
-         if (classEntry.getValue().getAsset() instanceof ClassAsset)
+         Map<ArchivePath, Node> classes = archive.getContent(Filters.include(".*\\.class"));
+         for(Map.Entry<ArchivePath, Node> classEntry : classes.entrySet()) 
          {
-            beanClasses.add(
-                  (Class<?>)extractFieldFromAsset(
-                        classEntry.getValue().getAsset(),
-                        "clazz"));
+            Class<?> loadedClass = getClassLoader().loadClass(
+                  getClassName(classEntry.getKey())); 
+   
+            beanClasses.add(loadedClass);
          }
+      }
+      catch (ClassNotFoundException e) 
+      {
+         throw new RuntimeException("Could not load class from archive " + archive.getName(), e);
       }
       return beanClasses;
    }
@@ -226,19 +234,20 @@ public class ShrinkwrapBeanDeploymentArchiveImpl extends AssignableBase implemen
       return ejbs;
    }
    
-   private Object extractFieldFromAsset(Asset asset, String fieldName) 
+   /*
+    *  input:  /org/MyClass.class
+    *  output: org.MyClass
+    */
+   public String getClassName(ArchivePath path)
    {
-      try 
+      String className = path.get();
+      className = className.replaceAll("/WEB-INF/classes/", "");
+      if(className.charAt(0) == '/')
       {
-         Field field = asset.getClass().getDeclaredField(fieldName);
-         field.setAccessible(true);
-         
-         return field.get(asset);
-      } 
-      catch (Exception e) 
-      {
-         e.printStackTrace();
+         className = className.substring(1);
       }
-      return null;
+      className = className.replaceAll("\\.class", "");
+      className = className.replaceAll("/", ".");
+      return className;
    }
 }

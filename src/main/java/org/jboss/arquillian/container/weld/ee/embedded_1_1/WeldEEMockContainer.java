@@ -66,8 +66,13 @@ public class WeldEEMockContainer implements DeployableContainer
                                           .getContainerConfig(WeldEEMockConfiguration.class)
                                           .isEnableConversationScope();
       
-      MockEELifecycle lifecycle = new MockEELifecycle(
-            archive.as(ShrinkwrapBeanDeploymentArchive.class));
+      ShrinkwrapBeanDeploymentArchive beanArchive = archive.as(ShrinkwrapBeanDeploymentArchive.class);
+      MockEELifecycle lifecycle = new MockEELifecycle(beanArchive);
+
+      ContextClassLoaderManager classLoaderManager = new ContextClassLoaderManager(beanArchive.getClassLoader());
+      classLoaderManager.enable();
+
+      context.add(ContextClassLoaderManager.class, classLoaderManager);
 
       TestContainer container = new TestContainer(lifecycle);
       container.startContainer();
@@ -122,6 +127,8 @@ public class WeldEEMockContainer implements DeployableContainer
       {
          container.stopContainer();
       }
+      ContextClassLoaderManager classLoaderManager = context.get(ContextClassLoaderManager.class);
+      classLoaderManager.disable();
    }
 
    public void stop(Context context) throws LifecycleException
