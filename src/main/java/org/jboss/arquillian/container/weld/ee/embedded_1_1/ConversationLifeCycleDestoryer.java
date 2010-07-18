@@ -21,7 +21,6 @@ import javax.enterprise.context.Conversation;
 import org.jboss.arquillian.spi.Context;
 import org.jboss.arquillian.spi.event.Event;
 import org.jboss.arquillian.spi.event.suite.EventHandler;
-import org.jboss.weld.conversation.ConversationManager2;
 import org.jboss.weld.manager.api.WeldManager;
 
 /**
@@ -49,8 +48,9 @@ public class ConversationLifeCycleDestoryer implements EventHandler<Event> {
          context.add(CDIConversationID.class, new CDIConversationID(null));
       }
 
+      /* Revert until 1.1 Weld is released.. https://jira.jboss.org/browse/ARQ-185
       ConversationManager2 conversationManager = BeanUtils.getBeanReference(manager, ConversationManager2.class);
       conversationManager.teardownConversation();
-      //conversationManager.teardownContext();
+      */
    }
 }

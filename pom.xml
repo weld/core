@@ -24,7 +24,7 @@
 	<properties>
 
 		<!-- Versioning -->
-		<version.weld_core>1.0.2-SNAPSHOT</version.weld_core>
+		<version.weld_core>1.0.1-SP4</version.weld_core>
 
 	</properties>
 

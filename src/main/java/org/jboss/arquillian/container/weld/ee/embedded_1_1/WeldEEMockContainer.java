@@ -62,9 +62,12 @@ public class WeldEEMockContainer implements DeployableContainer
 
    public ContainerMethodExecutor deploy(Context context, Archive<?> archive) throws DeploymentException
    {
+      /* Revert until 1.1 Weld is released.. https://jira.jboss.org/browse/ARQ-185  
       boolean enableConversation = context.get(Configuration.class)
                                           .getContainerConfig(WeldEEMockConfiguration.class)
                                           .isEnableConversationScope();
+      */
+      boolean enableConversation = false;
       
       ShrinkwrapBeanDeploymentArchive beanArchive = archive.as(ShrinkwrapBeanDeploymentArchive.class);
       MockEELifecycle lifecycle = new MockEELifecycle(beanArchive);

@@ -4,7 +4,9 @@
 		xmlns:weld="urn:arq:org.jboss.arquillian.container.weld.ee.embedded_1_1">
 
 	<weld:container>
+<!-- Revert until 1.1 Weld is released.. https://jira.jboss.org/browse/ARQ-185 
 		<weld:enableConversationScope>true</weld:enableConversationScope>
+ -->		
 	</weld:container>	
 
 </arquillian>

@@ -38,6 +38,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
+// Revert until 1.1 Weld is released.. https://jira.jboss.org/browse/ARQ-185
 @Ignore // Can't guarantee method order in JUnit
 @RunWith(Arquillian.class)
 public class WeldEmbeddedIntegrationConversationScopeTestCase

@@ -30,13 +30,14 @@ public class WeldEEMockConfiguration implements ContainerConfiguration
    /**
     * Flag to enable the Conversation Scope outside a JSF Request 
     */
-   private boolean enableConversationScope = false;
+   //private boolean enableConversationScope = false;
    
    public ContainerProfile getContainerProfile()
    {
       return ContainerProfile.STANDALONE;
    }
 
+/* Revert until 1.1 Weld is released.. https://jira.jboss.org/browse/ARQ-185
    public void setEnableConversationScope(boolean enableConversationScope)
    {
       this.enableConversationScope = enableConversationScope;
@@ -46,4 +47,5 @@ public class WeldEEMockConfiguration implements ContainerConfiguration
    {
       return enableConversationScope;
    }
+*/   
 }
