@@ -140,13 +140,13 @@
    <repositories>
       <repository>
          <id>repository.jboss.org</id>
-         <name>JBoss Release Repository</name>
+         <name>JBoss Public Repository</name>
          <url>http://repository.jboss.org/nexus/content/groups/public/</url>
          <releases>
             <enabled>false</enabled>
          </releases>
          <snapshots>
-            <enabled>false</enabled>
+            <enabled>true</enabled>
             <updatePolicy>never</updatePolicy>
          </snapshots>
       </repository>
