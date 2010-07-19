@@ -106,9 +106,16 @@ public class ContextualStoreImpl implements ContextualStore
       }
       else
       {
-         String id = new StringBuilder().append(GENERATED_ID_PREFIX).append(idGenerator.incrementAndGet()).toString();
-         contextuals.put(contextual, id);
-         return id;
+         synchronized (contextual)
+         {
+            if (contextuals.containsKey(contextual))
+            {
+               return contextuals.get(contextual);
+            }
+            String id = new StringBuilder().append(GENERATED_ID_PREFIX).append(idGenerator.incrementAndGet()).toString();
+            contextuals.put(contextual, id);
+            return id;
+         }
       }
    }
 
