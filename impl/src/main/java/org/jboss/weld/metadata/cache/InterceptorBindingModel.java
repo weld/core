@@ -134,6 +134,11 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
       }
    }
 
+   /**
+    * Retrieves the transitive interceptor binding types that are inherited by this interceptor binding,
+    * as per section 9.1.1 of the specification, "Interceptor binding types with additional interceptor bindings"
+    * @return a set of transitive interceptor bindings, if any
+    */
    public Set<Annotation> getInheritedInterceptionBindingTypes()
    {
       return inheritedInterceptionBindingTypes;
