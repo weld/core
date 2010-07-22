@@ -16,31 +16,34 @@
  */
 package org.jboss.weld.tests.interceptors.hierarchical;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.jlr.WeldClassImpl;
+import org.jboss.weld.metadata.TypeStore;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.BeforeClass;
+import org.jboss.weld.util.Beans;
 import org.testng.annotations.Test;
 
 /**
  * @author Marius Bogoevici
  */
 @Artifact
-@BeansXml("beans.xml")
-public class InterceptorsWithHierarchyTest extends AbstractWeldTest
+public class SimpleWeldClassTest extends AbstractWeldTest
 {
-   @BeforeClass
-   public static void initialize()
-   {
-      Defender.invocationsCount = 0;
-   }
 
    @Test(groups = "broken")
-   public void testInterceptorsWithHierarchy()
+   public void testWeldClassForCovariantReturnType()
    {
-      Attacker player = this.getReference(Attacker.class);
-      player.cloneMe();
-      assert Defender.invocationsCount == 1;
+      WeldClass<Attacker> weldClass = WeldClassImpl.of(Attacker.class, new ClassTransformer(new TypeStore()));
+      Collection methods = weldClass.getWeldMethods();
+      assert methods.size() == 4;
+      List<WeldMethod<?,?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
+      assert methods.size() == 4;
    }
 
 }

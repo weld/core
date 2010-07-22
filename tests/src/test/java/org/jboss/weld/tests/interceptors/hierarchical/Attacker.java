@@ -28,6 +28,10 @@ public class Attacker extends Player
       // do nothing
    }
 
+   public void pass()
+   {
+      
+   }
 
    public Attacker cloneMe()
    {

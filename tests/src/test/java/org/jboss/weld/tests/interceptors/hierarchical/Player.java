@@ -26,6 +26,11 @@ public class Player
 
    }
 
+   public void receiveInstructions()
+   {
+      
+   }
+
    public Player cloneMe()
    {
       return this;
