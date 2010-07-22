@@ -87,12 +87,6 @@ public class SimpleProxyServices implements ProxyServices
 
    }
 
-   public Object wrapForSerialization(Object proxyObject)
-   {
-      // Simply use our own replacement object for proxies
-      return new SerializableProxy(proxyObject);
-   }
-
    public Class<?> loadBeanClass(final String className)
    {
       try
