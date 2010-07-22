@@ -386,7 +386,7 @@ public class ProxyFactory<T>
          // replacement object and the subsequent call get the proxy object.
          CtClass exception = classPool.get(ObjectStreamException.class.getName());
          CtClass objectClass = classPool.get(Object.class.getName());
-         String writeReplaceBody = "{ " + " if (firstSerializationPhaseComplete) {" + "    firstSerializationPhaseComplete = false; " + "    return $0; " + " } else {" + " firstSerializationPhaseComplete = true; " + " return ((org.jboss.weld.serialization.spi.ProxyServices)org.jboss.weld.Container.instance().services().get(org.jboss.weld.serialization.spi.ProxyServices.class)).wrapForSerialization($0);" + " } }";
+         String writeReplaceBody = "{ " + " if (firstSerializationPhaseComplete) {" + "    firstSerializationPhaseComplete = false; " + "    return $0; " + " } else {" + " firstSerializationPhaseComplete = true; " + " return new org.jboss.weld.bean.proxy.util.SerializableProxy($0);" + " } }";
          proxyClassType.addMethod(CtNewMethod.make(objectClass, "writeReplace", null, new CtClass[] { exception }, writeReplaceBody, proxyClassType));
 
          // Also add a static method that can be used to deserialize a proxy
