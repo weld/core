@@ -112,12 +112,12 @@ public class ImmutableArraySet<E> implements Set<E>
    {
       for (Object object : c)
       {
-         if (contains(object))
+         if (!contains(object))
          {
-            return true;
+            return false;
          }
       }
-      return false;
+      return true;
    }
 
    public boolean isEmpty()
