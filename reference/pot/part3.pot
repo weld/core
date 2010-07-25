@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-07-25T03:52:14\n"
-"PO-Revision-Date: 2010-07-25T03:52:14\n"
+"POT-Creation-Date: 2010-07-25T10:21:24\n"
+"PO-Revision-Date: 2010-07-25T10:21:24\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -69,7 +69,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You don't see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules—so-called \"configuration by convention\"—but because there are simply no strings there to begin with!"
+msgid "You don't see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules&#8212;so-called \"configuration by convention\"&#8212;but because there are simply no strings there to begin with!"
 msgstr ""
 
 #. Tag: para

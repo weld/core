@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-07-25T03:52:14\n"
+"POT-Creation-Date: 2010-07-25T10:21:23\n"
 "PO-Revision-Date: 2010-04-14 17:23-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
@@ -19,11 +19,11 @@ msgid "Dependency injection and programmatic lookup"
 msgstr "Injeção e pesquisa programática de dependências"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"One of the most significant features of CDI—certainly the most recognized—is "
-"dependency injection; excuse me, <emphasis>typesafe</emphasis> dependency "
-"injection."
+"One of the most significant features of CDI&#8212;certainly the most "
+"recognized&#8212;is dependency injection; excuse me, <emphasis>typesafe</"
+"emphasis> dependency injection."
 msgstr ""
 "Uma das características mais significativas do CDI—certamente a mais "
 "reconhecida—é injeção de dependência; desculpe-me, injeção de dependência "
@@ -652,12 +652,12 @@ msgstr ""
 "(com escopo <literal>@Dependent</literal>)."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Imagine that a bean bound to the application scope held a direct reference "
 "to a bean bound to the request scope. The application-scoped bean is shared "
 "between many different requests. However, each request should see a "
-"different instance of the request scoped bean—the current one!"
+"different instance of the request scoped bean&#8212;the current one!"
 msgstr ""
 "Imagine que um bean vinculado ao escopo da aplicação mantenha uma referência "
 "direta para um bean vinculado ao escopo da solicitação. O bean com escopo de "

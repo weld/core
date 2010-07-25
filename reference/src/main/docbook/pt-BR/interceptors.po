@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-07-25T03:52:14\n"
+"POT-Creation-Date: 2010-07-25T10:21:23\n"
 "PO-Revision-Date: 2009-12-19 18:05-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -264,8 +264,8 @@ msgid ""
 "Well, fortunately, CDI works around this missing feature of Java. We may "
 "annotate one interceptor binding type with other interceptor binding types "
 "(termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings "
-"are transitive — any bean with the first interceptor binding inherits the "
-"interceptor bindings declared as meta-annotations."
+"are transitive &#8212; any bean with the first interceptor binding inherits "
+"the interceptor bindings declared as meta-annotations."
 msgstr ""
 
 #. Tag: para
@@ -308,8 +308,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"the interceptor ordering is non-global — it is determined by the order in "
-"which interceptors are listed at the class level."
+"the interceptor ordering is non-global &#8212; it is determined by the order "
+"in which interceptors are listed at the class level."
 msgstr ""
 
 #. Tag: para

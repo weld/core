@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-07-25T03:52:14\n"
-"PO-Revision-Date: 2010-07-25T03:52:14\n"
+"POT-Creation-Date: 2010-07-25T10:21:23\n"
+"PO-Revision-Date: 2010-07-25T10:21:23\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -79,7 +79,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "An observer method need not specify any event qualifiers—in this case it is interested in <emphasis>all</emphasis> events of a particular type. If it does specify qualifiers, it's only interested in events which have those qualifiers."
+msgid "An observer method need not specify any event qualifiers&#8212;in this case it is interested in <emphasis>all</emphasis> events of a particular type. If it does specify qualifiers, it's only interested in events which have those qualifiers."
 msgstr ""
 
 #. Tag: para
