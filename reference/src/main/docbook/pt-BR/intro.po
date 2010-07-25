@@ -19,7 +19,7 @@ msgid "Introduction"
 msgstr "Introdução"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "So you're keen to get started writing your first bean? Or perhaps you're "
 "skeptical, wondering what kinds of hoops the CDI specification will make you "
@@ -48,7 +48,7 @@ msgstr ""
 "verdadeira identidade no ambiente do contêiner."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Prior to Java EE 6, there was no clear definition of the term \"bean\" in "
 "the Java EE platform. Of course, we've been calling Java classes used in web "
@@ -68,7 +68,7 @@ msgstr ""
 "comum."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Java EE 6 finally lays down that common definition in the Managed Beans "
 "specification. Managed Beans are defined as container-managed objects with "
@@ -90,7 +90,7 @@ msgstr ""
 "enxuto que está alinhado através da plataforma Java EE."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "With very few exceptions, almost every concrete Java class that has a "
 "constructor with no parameters (or a constructor designated with the "
@@ -113,7 +113,7 @@ msgstr ""
 "um arquivo indicador especial: <literal>META-INF/beans.xml</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The JavaBeans and EJBs you've been writing every day, up until now, have not "
 "been able to take advantage of the new services defined by the CDI "
@@ -134,7 +134,7 @@ msgstr ""
 "existente. No máximo, você precisará adicionar algumas anotações."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Now let's see how to create your first bean that actually uses CDI."
 msgstr ""
 "Agora vamos ver como criar seu primeiro bean que realmente utiliza CDI."
@@ -145,7 +145,7 @@ msgid "Getting our feet wet"
 msgstr "Arregaçando as mangas"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Suppose that we have two existing Java classes that we've been using for "
 "years in various applications. The first class parses a string into a list "
@@ -172,7 +172,7 @@ msgid "Where <literal>Translator</literal> is the EJB local interface:"
 msgstr "Onde <literal>Translator</literal> é a interface local do EJB:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Unfortunately, we don't have a class that translates whole text documents. "
 "So let's write a bean for this job:"
@@ -194,7 +194,7 @@ msgstr ""
 "anotado com <literal>@Inject</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "As you've guessed, the <literal>@Inject</literal> annotation has something "
 "to do with dependency injection! <literal>@Inject</literal> may be applied "
@@ -224,7 +224,7 @@ msgstr ""
 "método ou parâmetro."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Let's create a UI controller bean that uses field injection to obtain an "
 "instance of the <literal>TextTranslator</literal>, translating the text "
@@ -241,7 +241,7 @@ msgstr ""
 "Injeção de uma instância de <literal>TextTranslator</literal> em um campo"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Notice the controller bean is request-scoped and named. Since this "
 "combination is so common in web applications, there's a built-in annotation "
@@ -267,7 +267,7 @@ msgstr ""
 "instância de <literal>Instance</literal>, parametrizada com o tipo do bean:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Notice that it isn't necessary to create a getter or setter method to inject "
 "one bean into another. CDI can access an injected field directly (even if "
@@ -282,7 +282,7 @@ msgstr ""
 "que é injetado."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "At system initialization time, the container must validate that exactly one "
 "bean exists which satisfies each injection point. In our example, if no "
@@ -303,7 +303,7 @@ msgstr ""
 "ambígua</emphasis>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Before we get too deep in the details, let's pause and examine a bean's "
 "anatomy. What aspects of the bean are significant, and what gives it its "

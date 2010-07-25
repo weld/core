@@ -55,7 +55,7 @@ msgid "Prerequisites"
 msgstr "Pré-requisitos"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To run the examples with the provided build scripts, you'll need the "
 "following:"
@@ -107,7 +107,7 @@ msgstr ""
 "embutido"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "You'll need a full install of Ant 1.7.0. Some linux distributions only "
 "supply a partial installation of Ant which cause the build to fail. If you "
@@ -119,7 +119,7 @@ msgstr ""
 "jar está no classpath."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In the next few sections, you'll be using the Ant command (<literal>ant</"
 "literal>) to invoke the Ant build script in each example to compile, "
@@ -145,7 +145,7 @@ msgstr ""
 "ear) e, para o exemplo war, executá-lo em um contêiner embutido."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The sections below cover the steps for deploying with both Ant and Maven in "
 "detail. Let's start with JBoss AS."
@@ -159,7 +159,7 @@ msgid "Deploying to JBoss AS"
 msgstr "Implantando no JBoss AS"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To deploy the examples to JBoss AS, you'll need <ulink url=\"http://jboss."
 "org/jbossas/\">JBoss AS 6.0.0</ulink> or above. If a release of the JBoss AS "
@@ -182,7 +182,7 @@ msgstr ""
 "adicionais que você tenha que fazer no servidor. Está pronto para funcionar!"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "After you have downloaded JBoss AS, extract it. (We recommended renaming the "
 "folder to include the <literal>as</literal> qualifier so it's clear that "
@@ -214,7 +214,7 @@ msgstr ""
 "<literal>jboss.home</literal>, como a seguir:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "You're now ready to deploy your first example!"
 msgstr "Agora você está pronto para implantar seu primeiro exemplo!"
 
@@ -228,7 +228,7 @@ msgstr ""
 "alvo <literal>deploy</literal> no Ant:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you haven't already, start JBoss AS. You can either start JBoss AS from a "
 "Linux shell:"
@@ -336,7 +336,7 @@ msgstr ""
 "de tradutor e execute o alvo deploy:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The translator uses session beans, which are packaged in an EJB module "
 "within an ear. Java EE 6 will allow session beans to be deployed in war "
@@ -347,7 +347,7 @@ msgstr ""
 "implantados em módulos war, mas isto é um tópico para um capítulo posterior."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Again, wait a few seconds for the application to deploy (if you're really "
 "bored, read the log messages), and visit <ulink url=\"http://localhost:8080/"
@@ -365,7 +365,7 @@ msgid "Deploying to GlassFish"
 msgstr "Implantando no GlassFish"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Deploying to GlassFish should be easy and familiar, right? After all, it's "
 "the Java EE 6 reference implementation and Weld is the JSR-299 reference "
@@ -378,7 +378,7 @@ msgstr ""
 "GlassFish. Então, sim, é tudo muito fácil e familiar."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To deploy the examples to GlassFish, you'll need the final <ulink url="
 "\"https://glassfish.dev.java.net/downloads/v3-final.html\">GlassFish V3</"
@@ -395,7 +395,7 @@ msgstr ""
 "Unix, primeiramente, você precisará tornar o script executável."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "On Windows you can just click on the executable. Follow the instructions in "
 "the installer. It will create a single domain named <literal>domain1</"
@@ -411,7 +411,7 @@ msgstr ""
 "JBoss AS (ou Apache Tomcat)."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you've deployed either of the starter examples, <literal>weld-"
 "numberguess</literal> or <literal>weld-translator</literal>, to JBoss AS, "
@@ -424,7 +424,7 @@ msgstr ""
 "qualquer um dos dois diretórios e mande construí-lo."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The deployable archive for the <literal>weld-numberguess</literal>, named "
 "<literal>weld-numberguess.war</literal>, ends up in the example's "
@@ -458,7 +458,7 @@ msgstr ""
 "comando:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "After a few seconds you can visit the Admin Console in the browser at the "
 "URL <ulink url=\"http://localhost:4848\">http://localhost:4848</ulink>. In "
@@ -522,7 +522,7 @@ msgstr ""
 "Tomcat, incorporando uma implementação standalone de CDI, como o Weld."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Weld comes with a servlet listener which bootstraps the CDI environment, "
 "registers the <literal>BeanManager</literal> in JNDI and provides injection "
@@ -537,7 +537,7 @@ msgstr ""
 "transações gerenciadas pelo contêiner.)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Let's give the Weld servlet extension a spin on Apache Tomcat. First, you'll "
 "need to download Tomcat 6.0.18 or later from <ulink url=\"http://tomcat."
@@ -549,7 +549,7 @@ msgstr ""
 "descompactar."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "You have two choices for how you can deploy the application to Tomcat. You "
 "can deploy it by pushing the artifact to the hot deploy directory using Ant "
@@ -570,7 +570,7 @@ msgid "Deploying with Ant"
 msgstr "Implantando com o Ant"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In order for Ant to push the artifact to the Tomcat hot deploy directory, it "
 "needs to know where the Tomcat installation is located. Again, we need to "
@@ -588,7 +588,7 @@ msgstr ""
 "home</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Now you're ready to deploy the numberguess example to Tomcat!"
 msgstr "Agora você está pronto para implantar o exemplo numberguess no Tomcat!"
 
@@ -602,7 +602,7 @@ msgstr ""
 "e execute o alvo <literal>deploy</literal> no Ant para o Tomcat:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The Ant build script includes additional targets for Tomcat to deploy and "
 "undeploy the archive in either exploded or packaged format. They are the "
@@ -645,7 +645,7 @@ msgid "<literal>ant tomcat.undeploy</literal> - remove the example from Tomcat"
 msgstr "<literal>ant tomcat.undeploy</literal> - remove o exemplo do Tomcat"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you haven't already, start Tomcat. You can either start Tomcat from a "
 "Linux shell:"
@@ -674,7 +674,7 @@ msgid "Deploying with Maven"
 msgstr "Implantando com o Maven"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "You can also deploy the application to Tomcat using Maven. This section is a "
 "bit more advanced, so skip it unless you're itching to use Maven natively. "
@@ -688,7 +688,7 @@ msgstr ""
 "configurou o Ant."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The Maven plugin communicates with Tomcat over HTTP, so it doesn't care "
 "where you have installed Tomcat. However, the plugin configuration assumes "
@@ -769,7 +769,7 @@ msgstr ""
 "precisa executar uma recompilação:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "There are several other Maven goals that you can use if you are hacking on "
 "the example, which are documented in the example's <literal>readme.txt</"
@@ -800,7 +800,7 @@ msgstr ""
 "literal> está configurado para suportar o Jetty neste momento."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you've read through the entire Tomcat section, then you're all ready to "
 "go. The Maven build parallels the embedded Tomcat deployment. If not, don't "
@@ -813,7 +813,7 @@ msgstr ""
 "saber novamente nesta seção."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The Maven POM (<literal>pom.xml</literal>) includes a profile named "
 "<literal>jetty</literal> that activates the Maven Jetty plugin, which you "
@@ -922,7 +922,7 @@ msgstr ""
 "literal>:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Now, you are ready to run the server in Eclipse. Import the project into "
 "your Eclipse workspace using \"Import Existing Project into Workspace. Then, "
@@ -1066,7 +1066,6 @@ msgstr ""
 #~ msgid "<![CDATA[$> mvn war:inplace -Pjetty-ide]]>"
 #~ msgstr "<![CDATA[$> mvn war:inplace -Pjetty-ide]]>"
 
-#, fuzzy
 #~ msgid ""
 #~ "Getting started with Web Beans, the Reference Implementation of JSR-299"
 #~ msgstr "Web Beans, a Implementação de Referência da JSR-299"
@@ -1231,7 +1230,6 @@ msgstr ""
 #~ "Os scripts para criar os exemplos oferecem uma série de alvos para "
 #~ "Tomcat. São eles:"
 
-#, fuzzy
 #~ msgid ""
 #~ "<literal>ant tomcat.undeploy</literal> - remove the example (in "
 #~ "compressed jar format) from the server"
@@ -1239,7 +1237,6 @@ msgstr ""
 #~ "<literal>ant tomcat.deploy</literal> - publica o exemplo no formato jar "
 #~ "compactado"
 
-#, fuzzy
 #~ msgid ""
 #~ "<literal>ant tomcat.unexplode</literal> - remove the example (in exploded "
 #~ "format) from the server"
@@ -1336,7 +1333,6 @@ msgstr ""
 #~ msgid "Finally there is <literal>web.xml</literal>:"
 #~ msgstr "Finalmente no <literal>web.xml</literal>:"
 
-#, fuzzy
 #~ msgid ""
 #~ "<programlistingco> <areaspec> <area id=\"faces.servlet\" coords=\"12\"/> "
 #~ "<area id=\"faces.servlet.mapping\" coords=\"18\"/> <area id=\"faces."
@@ -1896,11 +1892,9 @@ msgstr ""
 #~ "   \n"
 #~ "}]]>"
 
-#, fuzzy
 #~ msgid "The numberguess example in Tomcat"
 #~ msgstr "O exemplo numberguess para o Tomcat"
 
-#, fuzzy
 #~ msgid ""
 #~ "The numberguess for Tomcat differs in a couple of ways. Firstly, Web "
 #~ "Beans should be deployed as a Web Application library in <literal>WEB-INF/"
@@ -1923,7 +1917,6 @@ msgstr ""
 #~ "(common annotations)  (<literal>jsr250-api.jar</literal>), que um "
 #~ "servidor JEE inclui por padrão."
 
-#, fuzzy
 #~ msgid ""
 #~ "Secondly, we need to explicitly specify the servlet listener (used to "
 #~ "boot Web Beans, and control it's interaction with requests) in "
@@ -2037,7 +2030,6 @@ msgstr ""
 #~ msgid "mvn -Drun"
 #~ msgstr "mvn -Drun"
 
-#, fuzzy
 #~ msgid ""
 #~ "There is an empty <literal>beans.xml</literal> file in the root package "
 #~ "(<literal>src/main/resources/beans.xml</literal>), which marks this "

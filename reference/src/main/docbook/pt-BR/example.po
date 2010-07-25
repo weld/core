@@ -19,7 +19,7 @@ msgid "JSF web application example"
 msgstr "Exemplo de aplicação web JSF "
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Let's illustrate these ideas with a full example. We're going to implement "
 "user login/logout for an application that uses JSF. First, we'll define a "
@@ -44,7 +44,7 @@ msgid "Users are represented by a JPA entity:"
 msgstr "Os usuários são representados por uma entidade JPA:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "(Note that we're also going to need a <literal>persistence.xml</literal> "
 "file to configure the JPA persistence unit containing <literal>User</"
@@ -98,7 +98,7 @@ msgid "Or we can reference the current user in a JSF view:"
 msgstr "Ou podemos referenciar o usuário atual em uma visão JSF:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Hopefully, this example gave you a taste of the CDI programming model. In "
 "the next chapter, we'll explore dependency injection in greater depth."

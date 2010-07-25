@@ -19,7 +19,7 @@ msgid "A note about naming and nomenclature"
 msgstr "Uma nota sobre nomeação e nomenclatura"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Shortly before the final draft of JSR-299 was submitted, the specification "
 "changed its name from \"Web Beans\" to \"Java Contexts and Dependency "
@@ -42,7 +42,7 @@ msgstr ""
 "atualize as referências que você puder. O jogo de dar nomes acabou."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "You'll also find that some of the functionality that once existed in the "
 "specification is now missing, such as defining beans in XML. These features "
@@ -55,7 +55,7 @@ msgstr ""
 "projeto Weld, e talvez em outras implementações."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Note that this reference guide was started while changes were still being "
 "made to the specification. We've done our best to update it for accuracy. If "

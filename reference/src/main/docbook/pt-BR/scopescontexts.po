@@ -19,7 +19,7 @@ msgid "Scopes and contexts"
 msgstr "Escopos e contextos"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "So far, we've seen a few examples of <emphasis>scope type annotations</"
 "emphasis>. The scope of a bean determines the lifecycle of instances of the "
@@ -68,7 +68,7 @@ msgstr ""
 "sessão, e será automaticamente destruída quando a sessão terminar."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "JPA entities aren't a great fit for this model. Entities have their whole "
 "own lifecycle and identity model which just doesn't map naturally to the "
@@ -92,7 +92,7 @@ msgid "Scope types"
 msgstr "Tipos de escopo"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CDI features an <emphasis>extensible context model</emphasis>. It's possible "
 "to define new scopes by creating a new scope type annotation:"
@@ -101,7 +101,7 @@ msgstr ""
 "definir novos escopos, criando uma nova anotação de tipo de escopo:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Of course, that's the easy part of the job. For this scope type to be "
 "useful, we will also need to define a <literal>Context</literal> object that "
@@ -127,7 +127,7 @@ msgstr ""
 "de um bean para especificar o escopo do bean:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Usually, you'll use one of CDI's built-in scopes."
 msgstr "Normalmente, você usará um dos escopos pré-definidos do CDI."
 
@@ -248,7 +248,7 @@ msgstr ""
 "o contêiner mantém a sessão HTTP resguardada ao longo do tempo."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Three of the four built-in scopes should be extremely familiar to every Java "
 "EE developer, so let's not waste time discussing them here. One of the "
@@ -294,7 +294,7 @@ msgstr ""
 "caso para o escopo de sessão)."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A conversation represents a task&#8212;a unit of work from the point of view "
 "of the user. The conversation context holds state associated with what the "
@@ -409,12 +409,12 @@ msgid "Therefore, the following link propagates the conversation:"
 msgstr "Portanto, o seguinte link propaga a conversação:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "It's probably better to use one of the link components in JSF 2:"
 msgstr "É provavelmente melhor usar um dos componentes de link em JSF 2:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The conversation context propagates across redirects, making it very easy to "
 "implement the common POST-then-redirect pattern, without resort to fragile "
@@ -433,7 +433,7 @@ msgid "Conversation timeout"
 msgstr "Tempo limite de conversação"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The container is permitted to destroy a conversation and all state held in "
 "its context at any time in order to conserve resources. A CDI implementation "
@@ -490,7 +490,7 @@ msgstr ""
 "definida no pacote <literal>javax.inject</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "You can guess what \"singleton\" means here. It means a bean that is "
 "instantiated once. Unfortunately, there's a little problem with this pseudo-"
@@ -514,7 +514,7 @@ msgstr ""
 "sessão com estado."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Now, if the singleton instance is a simple, immutable, serializable object "
 "like a string, a number or a date, we probably don't mind too much if it "
@@ -558,7 +558,7 @@ msgstr ""
 "bean singleton, ou"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "give the client a reference of type <literal>Instance&lt;X&gt;</literal> "
 "where <literal>X</literal> is the bean type of the singleton bean."
@@ -627,7 +627,7 @@ msgstr ""
 "instância não é reutilizada durante qualquer outra avaliação de expressão."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you need to access a bean directly by EL name in a JSF page, you probably "
 "need to give it a scope other than <literal>@Dependent</literal>. Otherwise, "
@@ -651,7 +651,7 @@ msgstr ""
 "exponha-o em EL por meio de um método getter."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Beans with scope <literal>@Dependent</literal> don't need a proxy object. "
 "The client holds a direct reference to its instance."
@@ -724,7 +724,7 @@ msgstr ""
 "<literal>PaymentCalc</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This feature is particularly useful with producer methods, as we'll see in "
 "the next chapter."

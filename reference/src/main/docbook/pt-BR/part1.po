@@ -192,7 +192,7 @@ msgid "Do I need to explicitly destroy it?"
 msgstr "Eu preciso explicitamente destruí-lo?"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Where should I keep the reference to it when I'm not currently using it?"
 msgstr ""
@@ -214,7 +214,7 @@ msgstr ""
 "Como devo proceder no compartilhamento deste objeto com outros objetos?"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CDI is more than a framework. It's a whole, rich programming model. The "
 "<emphasis>theme</emphasis> of CDI is <emphasis>loose-coupling with strong "
@@ -279,7 +279,7 @@ msgstr ""
 "compartimentadas."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "What's even more powerful (and comforting) is that CDI provides all these "
 "facilities in a <emphasis>typesafe</emphasis> way. CDI never relies on "
@@ -302,7 +302,7 @@ msgstr ""
 "simplesmente informação específica de implantação."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "But CDI isn't a restrictive programming model. It doesn't tell you how you "
 "should to structure your application into layers, how you should handle "
@@ -328,7 +328,7 @@ msgstr ""
 "serviços de CDI e interagindo com qualquer outro tipo de bean."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CDI was influenced by a number of existing Java frameworks, including Seam, "
 "Guice and Spring. However, CDI has its own, very distinct, character: more "

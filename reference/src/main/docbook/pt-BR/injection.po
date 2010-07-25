@@ -19,7 +19,7 @@ msgid "Dependency injection and programmatic lookup"
 msgstr "Injeção e pesquisa programática de dependências"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "One of the most significant features of CDI&#8212;certainly the most "
 "recognized&#8212;is dependency injection; excuse me, <emphasis>typesafe</"
@@ -117,7 +117,7 @@ msgstr ""
 "do bean."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Next, the container calls all initializer methods of bean (the call order is "
 "not portable, don't rely on it)."
@@ -165,7 +165,7 @@ msgstr ""
 "métodos produtores:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This is a case where the <literal>@Inject</literal> annotation <emphasis>is "
 "not</emphasis> required at the injection point. The same is true for "
@@ -183,7 +183,7 @@ msgid "What gets injected"
 msgstr "Como as injeções são obtidas"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The CDI specification defines a procedure, called <emphasis>typesafe "
 "resolution</emphasis>, that the container follows when identifying the bean "
@@ -236,7 +236,7 @@ msgid "allow the beans to be isolated into separate modules."
 msgstr "permitir que os beans sejam isolados dentro de módulos separados."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Obviously, if you have exactly one bean of a given type, and an injection "
 "point with that same type, then bean A is going to go into slot A. That's "
@@ -249,7 +249,7 @@ msgstr ""
 "terá provavelmente vários desses."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "But then, things start to get complicated. Let's explore how the container "
 "determines which bean to inject in more advanced cases. We'll start by "
@@ -335,7 +335,7 @@ msgstr ""
 "qualificador padrão, <literal>@Default</literal>, é assumido."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Now, you may be thinking, <emphasis>\"What's the different between using a "
 "qualifier and just specifying the exact implementation class you want?\"</"
@@ -361,7 +361,7 @@ msgstr ""
 "literal>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Whenever a bean or injection point does not explicitly declare a qualifier, "
 "the container assumes the qualifier <literal>@Default</literal>. From time "
@@ -478,7 +478,7 @@ msgstr ""
 "beans neste arquivo."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "When an ambiguous dependency exists at an injection point, the container "
 "attempts to resolve the ambiguity by looking for an enabled alternative "
@@ -514,7 +514,7 @@ msgstr ""
 "satisfeitas ou ambíguas."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "During the course of your development, you're going to encounter this "
 "situation. Let's learn how to resolve it."
@@ -611,12 +611,12 @@ msgstr ""
 "retorna o mesmo tipo de bean."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Just remember: \"There can be only one.\""
 msgstr "Apenas lembre-se: \"Só pode haver um.\""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "On the other hand, if you really do have an optional or multivalued "
 "injection point, you should change the type of your injection point to "
@@ -627,7 +627,7 @@ msgstr ""
 "<literal>Instance</literal>, como veremos na <xref linkend=\"lookup\" />."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Now there's one more issue you need to be aware of when using the dependency "
 "injection service."
@@ -652,7 +652,7 @@ msgstr ""
 "(com escopo <literal>@Dependent</literal>)."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Imagine that a bean bound to the application scope held a direct reference "
 "to a bean bound to the request scope. The application-scoped bean is shared "
@@ -725,7 +725,7 @@ msgid "The following Java types cannot be proxied by the container:"
 msgstr "Os seguintes tipos Java não podem ser \"proxied\" pelo contêiner:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "classes which don't have a non-private constructor with no parameters, and"
 msgstr "classes que não possuem um construtor não privado sem parâmetros, e"
@@ -745,7 +745,7 @@ msgid "arrays and primitive types."
 msgstr "arrays e tipos primitivos."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "It's usually very easy to fix an unproxyable dependency problem. If an "
 "injection point of type <literal>X</literal> results in an unproxyable "
@@ -761,7 +761,7 @@ msgid "add a constructor with no parameters to <literal>X</literal>,"
 msgstr "adicione um construtor sem parâmetros em <literal>X</literal>,"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "change the type of the injection point to <literal>Instance&lt;X&gt;</"
 "literal>,"
@@ -815,7 +815,7 @@ msgstr ""
 "literal>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "But we didn't get around to implementing this yet."
 msgstr "Mas não somos obrigados a implementar isto ainda."
 
@@ -920,7 +920,7 @@ msgstr ""
 "qualificador <literal>@Any</literal>.)"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Next, we need to obtain an instance of our qualifier type. Since annotatons "
 "are interfaces, we can't just write <literal>new Asynchronous()</literal>. "
@@ -941,7 +941,7 @@ msgid "In some cases, we can use an anonymous class:"
 msgstr "E alguns casos, podemos utilizar uma classe anônima:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We can't use an anonymous class to implement a qualifier type with members."
 msgstr ""
@@ -1014,7 +1014,7 @@ msgstr ""
 "ponto de injeção ao qual ele pertence."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Let's look at an example. The following code is verbose, and vulnerable to "
 "refactoring problems:"
@@ -1038,7 +1038,7 @@ msgid "We can now write:"
 msgstr "Podemos agora escrever:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Not convinced? Then here's a second example. To inject HTTP parameters, we "
 "need to define a qualifier type:"

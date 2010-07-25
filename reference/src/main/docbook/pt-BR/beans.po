@@ -36,7 +36,7 @@ msgstr ""
 "emphasis>. O ciclo de vida de um bean é sempre gerenciado pelo contêiner."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Let's back up a second. What does it really mean to be <emphasis>contextual</"
 "emphasis>? Since beans may be stateful, it matters <emphasis>which</"
@@ -108,7 +108,7 @@ msgstr ""
 "uma instância diferente (dependendo do relacionamento entre os contextos)."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "One great advantage of the contextual model is that it allows stateful beans "
 "to be treated like services! The client need not concern itself with "
@@ -150,7 +150,7 @@ msgstr ""
 "na <xref linkend=\"alternatives\" />."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Note that not all clients of a bean are beans themselves. Other objects such "
 "as servlets or message-driven beans&#8212;which are by nature not "
@@ -217,7 +217,7 @@ msgid "Furthermore, a bean may or may not be an alternative."
 msgstr "Além disso, um bean pode ou não pode ser um bean alternativo."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Let's see what all this new terminology means."
 msgstr "Vamos ver o que toda esta nova terminologia significa."
 
@@ -227,7 +227,7 @@ msgid "Bean types, qualifiers and dependency injection"
 msgstr "Tipos e qualificadores de bean e injeção de dependência"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Beans usually acquire references to other beans via dependency injection. "
 "Any injected attribute specifies a \"contract\" that must be satisfied by "
@@ -263,7 +263,7 @@ msgstr ""
 "quatro tipos de bean:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The bean types are <literal>BookShop</literal>, <literal>Business</literal> "
 "and <literal>Shop&lt;Book&gt;</literal>, as well as the implicit type "
@@ -289,7 +289,7 @@ msgstr ""
 "<literal>BookShopBean</literal>, não é um tipo visível ao cliente."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The bean types of a session bean include local interfaces and the bean class "
 "local view (if any). EJB remote interfaces are not considered bean types of "
@@ -305,7 +305,7 @@ msgstr ""
 "\"resources\" />."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Bean types may be restricted to an explicit set by annotating the bean with "
 "the <literal>@Typed</literal> annotation and listing the classes that should "
@@ -320,7 +320,7 @@ msgstr ""
 "<literal>java.lang.Object</literal>:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Sometimes, a bean type alone does not provide enough information for the "
 "container to know which bean to inject. For instance, suppose we have two "
@@ -343,7 +343,7 @@ msgstr ""
 "um qualificador."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A qualifier is a user-defined annotation that is itself annotated "
 "<literal>@Qualifer</literal>. A qualifier annotation is an extension of the "
@@ -357,7 +357,7 @@ msgstr ""
 "de qualificador:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "You may not be used to seeing the definition of an annotation. In fact, this "
 "might be the first time you've encountered one. With CDI, annotation "
@@ -370,7 +370,7 @@ msgstr ""
 "criando-os de vez em quando."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Pay attention to the names of the built-in annotations in CDI and EJB. "
 "You'll notice that they are often adjectives. We encourage you to follow "
@@ -405,7 +405,7 @@ msgstr ""
 "qualificador padrão, <literal>@Default</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For each injection point, the container searches for a bean which satisfies "
 "the contract, one which has the bean type and all the qualifiers. If it "
@@ -440,7 +440,7 @@ msgstr ""
 "qualificador padrão, <literal>@Default</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "That's not quite the end of the story. CDI also defines a simple "
 "<emphasis>resolution rule</emphasis> that helps the container decide what to "
@@ -492,7 +492,7 @@ msgstr ""
 "desta sessão."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Keep in mind that once a bean is bound to a context, it remains in that "
 "context until the context is destroyed. There is no way to manually remove a "
@@ -522,7 +522,7 @@ msgstr ""
 "vida deste objeto."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\" />."
 msgstr ""
 "Nós falaremos mais sobre escopos no <xref linkend=\"scopescontexts\" />."
@@ -594,7 +594,7 @@ msgid "Alternatives"
 msgstr "Alternativos"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We've already seen how qualifiers let us choose between multiple "
 "implementations of an interface at development time. But sometimes we have "
@@ -645,7 +645,7 @@ msgid "Interceptor binding types"
 msgstr "Tipos para vinculação de interceptador"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "You might be familiar with the use of interceptors in EJB 3.0. In Java EE 6, "
 "this functionality has been generalized to work with other managed beans. "
@@ -660,7 +660,7 @@ msgstr ""
 "disso? Bem, bastante realmente. Vamos dar algumas explicações."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The way that interceptors were defined in Java EE 5 was counter-intuitive. "
 "You were required to specify the <emphasis>implementation</emphasis> of the "
@@ -732,7 +732,7 @@ msgstr ""
 "mesmo tipo para vinculação de interceptador."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Notice that <literal>ShoppingCart</literal> and "
 "<literal>TransactionInterceptor</literal> don't know anything about each "
@@ -742,7 +742,7 @@ msgstr ""
 "<literal>TransactionInterceptor</literal> não sabem nada sobre o outro."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Interceptors are deployment-specific. (We don't need a "
 "<literal>TransactionInterceptor</literal> in our unit tests!) By default, an "
@@ -758,7 +758,7 @@ msgstr ""
 "especificamos a ordem dos interceptadores."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We'll discuss interceptors, and their cousins, decorators, in <xref linkend="
 "\"interceptors\" /> and <xref linkend=\"decorators\" />."
@@ -772,7 +772,7 @@ msgid "What kinds of classes are beans?"
 msgstr "Quais categorias de classes são beans?"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We've already seen two types of beans: JavaBeans and EJB session beans. Is "
 "that the whole story? Actually, it's just the beginning. Let's explore the "
@@ -788,7 +788,7 @@ msgid "Managed beans"
 msgstr "Managed beans"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A managed bean is a Java class. The basic lifecycle and semantics of a "
 "managed bean are defined by the Managed Beans specification. You can "
@@ -833,7 +833,7 @@ msgstr ""
 "Ela não implementa <literal>javax.enterprise.inject.spi.Extension</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "It has an appropriate constructor&#8212;either:"
 msgstr "Ela tem um construtor apropriado—ou seja:"
 
@@ -848,7 +848,7 @@ msgid "the class declares a constructor annotated <literal>@Inject</literal>."
 msgstr "a classe declara um construtor anotado com <literal>@Inject</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "According to this definition, JPA entities are technically managed beans. "
 "However, entities have their own special lifecycle, state and identity model "
@@ -968,7 +968,7 @@ msgstr ""
 "tipos de bean."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "There's no reason to explicitly declare the scope of a stateless session "
 "bean or singleton session bean. The EJB container controls the lifecycle of "
@@ -983,7 +983,7 @@ msgstr ""
 "lado, um stateful session bean pode possuir qualquer escopo."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Stateful session beans may define a <emphasis>remove method</emphasis>, "
 "annotated <literal>@Remove</literal>, that is used by the application to "
@@ -1041,7 +1041,7 @@ msgid "timers and asynchronous methods,"
 msgstr "temporizadores e métodos assíncronos."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "When we don't need any of these things, an ordinary managed bean will serve "
 "just fine."
@@ -1077,7 +1077,7 @@ msgstr ""
 "suporte a passivação e pooling de instâncias."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Finally, it's usually obvious when method-level transaction management, "
 "method-level security, timers, remote methods or asynchronous methods are "
@@ -1088,7 +1088,7 @@ msgstr ""
 "métodos assíncronos são utilizados."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The point we're trying to make is: use a session bean when you need the "
 "services it provides, not just because you want to use dependency injection, "
@@ -1107,7 +1107,7 @@ msgstr ""
 "literal>, <literal>@Stateful</literal> ou <literal>@Singleton</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "On the other hand, don't be scared to use session beans just because you've "
 "heard your friends say they're \"heavyweight\". It's nothing more than "
@@ -1174,7 +1174,7 @@ msgstr ""
 "a anotação <literal>@Produces</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We can't write a bean class that is itself a random number. But we can "
 "certainly write a method that returns a random number. By making the method "
@@ -1266,7 +1266,7 @@ msgstr ""
 "literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If the producer method has method parameters, the container will look for a "
 "bean that satisfies the type and qualifiers of each parameter and pass it to "
@@ -1277,7 +1277,7 @@ msgstr ""
 "método automaticamente—uma outra forma de injeção de dependência."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We'll talk much more about producer methods in <xref linkend="
 "\"producermethods\" />."
@@ -1291,7 +1291,7 @@ msgid "Producer fields"
 msgstr "Campos produtores"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A <emphasis>producer field</emphasis> is a simpler alternative to a producer "
 "method. A producer field is declared by annotating a field of a bean class "
@@ -1313,7 +1313,7 @@ msgstr ""
 "assemelham-se às regras para métodos produtores."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A producer field is really just a shortcut that lets us avoid writing a "
 "useless getter method. However, in addition to convenience, producer fields "
