@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-07-25T10:21:23\n"
-"PO-Revision-Date: 2010-07-25T10:21:23\n"
+"POT-Creation-Date: 2010-07-25T11:17:19\n"
+"PO-Revision-Date: 2010-07-25T11:17:19\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -69,7 +69,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We can replace one bean with another different bean that implements the same interface and has a different lifecycle (a different scope) without affecting the other bean implementation. In fact, CDI defines a simple facility for overriding bean implementations at deployment time, as we will see in <xref linkend=\"alternatives\" />."
+msgid "We can replace one bean with another different bean that implements the same interface and has a different lifecycle (a different scope) without affecting the other bean implementation. In fact, CDI defines a simple facility for overriding bean implementations at deployment time, as we will see in <xref linkend=\"alternatives\"/>."
 msgstr ""
 
 #. Tag: para
@@ -169,7 +169,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The bean types of a session bean include local interfaces and the bean class local view (if any). EJB remote interfaces are not considered bean types of a session bean. You can't inject an EJB using its remote interface unless you define a <emphasis>resource</emphasis>, which we'll meet in <xref linkend=\"resources\" />."
+msgid "The bean types of a session bean include local interfaces and the bean class local view (if any). EJB remote interfaces are not considered bean types of a session bean. You can't inject an EJB using its remote interface unless you define a <emphasis>resource</emphasis>, which we'll meet in <xref linkend=\"resources\"/>."
 msgstr ""
 
 #. Tag: para
@@ -224,7 +224,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "That's not quite the end of the story. CDI also defines a simple <emphasis>resolution rule</emphasis> that helps the container decide what to do if there is more than one bean that satisfies a particular contract. We'll get into the details in <xref linkend=\"injection\" />."
+msgid "That's not quite the end of the story. CDI also defines a simple <emphasis>resolution rule</emphasis> that helps the container decide what to do if there is more than one bean that satisfies a particular contract. We'll get into the details in <xref linkend=\"injection\"/>."
 msgstr ""
 
 #. Tag: title
@@ -259,7 +259,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\" />."
+msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
 msgstr ""
 
 #. Tag: title
@@ -314,7 +314,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We cover alternatives in more detail in <xref linkend=\"alternatives\" />."
+msgid "We cover alternatives in more detail in <xref linkend=\"alternatives\"/>."
 msgstr ""
 
 #. Tag: title
@@ -364,7 +364,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We'll discuss interceptors, and their cousins, decorators, in <xref linkend=\"interceptors\" /> and <xref linkend=\"decorators\" />."
+msgid "We'll discuss interceptors, and their cousins, decorators, in <xref linkend=\"interceptors\"/> and <xref linkend=\"decorators\"/>."
 msgstr ""
 
 #. Tag: title
@@ -604,7 +604,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We'll talk much more about producer methods in <xref linkend=\"producermethods\" />."
+msgid "We'll talk much more about producer methods in <xref linkend=\"producermethods\"/>."
 msgstr ""
 
 #. Tag: title
@@ -624,6 +624,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A producer field is really just a shortcut that lets us avoid writing a useless getter method. However, in addition to convenience, producer fields serve a specific purpose as an adaptor for Java EE component environment injection, but to learn more about that, you'll have to wait until <xref linkend=\"resources\" />. Because we can't wait to get to work on some examples."
+msgid "A producer field is really just a shortcut that lets us avoid writing a useless getter method. However, in addition to convenience, producer fields serve a specific purpose as an adaptor for Java EE component environment injection, but to learn more about that, you'll have to wait until <xref linkend=\"resources\"/>. Because we can't wait to get to work on some examples."
 msgstr ""
 

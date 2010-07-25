@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-07-25T05:36:26\n"
+"POT-Creation-Date: 2010-07-25T11:17:19\n"
 "PO-Revision-Date: 2009-11-11 15:00+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -106,7 +106,7 @@ msgid ""
 "interface and has a different lifecycle (a different scope) without "
 "affecting the other bean implementation. In fact, CDI defines a simple "
 "facility for overriding bean implementations at deployment time, as we will "
-"see in <xref linkend=\"alternatives\" />."
+"see in <xref linkend=\"alternatives\"/>."
 msgstr ""
 
 #. Tag: para
@@ -233,7 +233,7 @@ msgid ""
 "local view (if any). EJB remote interfaces are not considered bean types of "
 "a session bean. You can't inject an EJB using its remote interface unless "
 "you define a <emphasis>resource</emphasis>, which we'll meet in <xref "
-"linkend=\"resources\" />."
+"linkend=\"resources\"/>."
 msgstr ""
 
 #. Tag: para
@@ -334,7 +334,7 @@ msgid ""
 "That's not quite the end of the story. CDI also defines a simple "
 "<emphasis>resolution rule</emphasis> that helps the container decide what to "
 "do if there is more than one bean that satisfies a particular contract. "
-"We'll get into the details in <xref linkend=\"injection\" />."
+"We'll get into the details in <xref linkend=\"injection\"/>."
 msgstr ""
 
 #. Tag: title
@@ -387,7 +387,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\" />."
+msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
 msgstr ""
 
 #. Tag: title
@@ -470,7 +470,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"We cover alternatives in more detail in <xref linkend=\"alternatives\" />."
+"We cover alternatives in more detail in <xref linkend=\"alternatives\"/>."
 msgstr ""
 
 #. Tag: title
@@ -558,7 +558,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "We'll discuss interceptors, and their cousins, decorators, in <xref linkend="
-"\"interceptors\" /> and <xref linkend=\"decorators\" />."
+"\"interceptors\"/> and <xref linkend=\"decorators\"/>."
 msgstr ""
 
 #. Tag: title
@@ -934,7 +934,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "We'll talk much more about producer methods in <xref linkend="
-"\"producermethods\" />."
+"\"producermethods\"/>."
 msgstr ""
 
 #. Tag: title
@@ -965,6 +965,6 @@ msgid ""
 "useless getter method. However, in addition to convenience, producer fields "
 "serve a specific purpose as an adaptor for Java EE component environment "
 "injection, but to learn more about that, you'll have to wait until <xref "
-"linkend=\"resources\" />. Because we can't wait to get to work on some "
+"linkend=\"resources\"/>. Because we can't wait to get to work on some "
 "examples."
 msgstr ""

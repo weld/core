@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-07-25T10:21:23\n"
-"PO-Revision-Date: 2010-07-25T10:21:23\n"
+"POT-Creation-Date: 2010-07-25T11:17:19\n"
+"PO-Revision-Date: 2010-07-25T11:17:19\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -104,7 +104,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This is a case where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at the injection point. The same is true for observer methods (which we'll meet in <xref linkend=\"events\" />) and disposer methods."
+msgid "This is a case where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at the injection point. The same is true for observer methods (which we'll meet in <xref linkend=\"events\"/>) and disposer methods."
 msgstr ""
 
 #. Tag: title
@@ -339,7 +339,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "On the other hand, if you really do have an optional or multivalued injection point, you should change the type of your injection point to <literal>Instance</literal>, as we'll see in <xref linkend=\"lookup\" />."
+msgid "On the other hand, if you really do have an optional or multivalued injection point, you should change the type of your injection point to <literal>Instance</literal>, as we'll see in <xref linkend=\"lookup\"/>."
 msgstr ""
 
 #. Tag: para

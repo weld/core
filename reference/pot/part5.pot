@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-07-25T03:52:15\n"
-"PO-Revision-Date: 2010-07-25T03:52:15\n"
+"POT-Creation-Date: 2010-07-25T11:17:19\n"
+"PO-Revision-Date: 2010-07-25T11:17:19\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -24,6 +24,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you want to get started quickly using Weld (and, in turn, CDI) with JBoss AS, GlassFish or Tomcat and experiment with one of the examples, take a look at <xref linkend=\"gettingstarted\" />. Otherwise read on for a exhaustive discussion of using Weld in all the environments and application servers it supports and the Weld extensions."
+msgid "If you want to get started quickly using Weld (and, in turn, CDI) with JBoss AS, GlassFish or Tomcat and experiment with one of the examples, take a look at <xref linkend=\"gettingstarted\"/>. Otherwise read on for a exhaustive discussion of using Weld in all the environments and application servers it supports and the Weld extensions."
 msgstr ""
 

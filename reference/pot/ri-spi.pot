@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-07-25T10:21:24\n"
-"PO-Revision-Date: 2010-07-25T10:21:24\n"
+"POT-Creation-Date: 2010-07-25T11:17:19\n"
+"PO-Revision-Date: 2010-07-25T11:17:19\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -164,17 +164,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The integrator may choose to provide all EE resource injection services themselves, using another library or framework. In this case the integrator should use the <literal>EE</literal> environment, and implement the <xref linkend=\"injection.services\" /> SPI."
+msgid "The integrator may choose to provide all EE resource injection services themselves, using another library or framework. In this case the integrator should use the <literal>EE</literal> environment, and implement the <xref linkend=\"injection.services\"/> SPI."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Alternatively, the integrator may choose to use CDI to provide EE resource injection. In this case, the <literal>EE_INJECT</literal> environment should be used, and the integrator should implement the <xref linkend=\"ejb.services.resolution\" />, <xref linkend=\"resource.services\" /> and <xref linkend=\"jpa.services\" />."
+msgid "Alternatively, the integrator may choose to use CDI to provide EE resource injection. In this case, the <literal>EE_INJECT</literal> environment should be used, and the integrator should implement the <xref linkend=\"ejb.services.resolution\"/>, <xref linkend=\"resource.services\"/> and <xref linkend=\"jpa.services\"/>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "CDI only provides annotation-based EE resource injection; if you wish to provide deployment descriptor (e.g. <literal>ejb-jar.xml</literal>) injection, you must use <xref linkend=\"injection.services\" />."
+msgid "CDI only provides annotation-based EE resource injection; if you wish to provide deployment descriptor (e.g. <literal>ejb-jar.xml</literal>) injection, you must use <xref linkend=\"injection.services\"/>."
 msgstr ""
 
 #. Tag: para
@@ -204,7 +204,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>EJBResolutionServices.resolveEjb(InjectionPoint ij)</literal> allows the resolution of <literal>@EJB</literal> (for injection into managed beans). This service is not required if the implementation of <xref linkend=\"injection.services\" /> takes care of <literal>@EJB</literal> injection."
+msgid "<literal>EJBResolutionServices.resolveEjb(InjectionPoint ij)</literal> allows the resolution of <literal>@EJB</literal> (for injection into managed beans). This service is not required if the implementation of <xref linkend=\"injection.services\"/> takes care of <literal>@EJB</literal> injection."
 msgstr ""
 
 #. Tag: title
@@ -219,7 +219,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To allow JPA integration, the <literal>JpaServices</literal> interface should be implemented. This service is not required if the implementation of <xref linkend=\"injection.services\" /> takes care of <literal>@PersistenceContext</literal> injection."
+msgid "To allow JPA integration, the <literal>JpaServices</literal> interface should be implemented. This service is not required if the implementation of <xref linkend=\"injection.services\"/> takes care of <literal>@PersistenceContext</literal> injection."
 msgstr ""
 
 #. Tag: title
@@ -249,7 +249,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The resolution of <literal>@Resource</literal> (for injection into managed beans) is delegated to the container. You must provide an implementation of <literal>ResourceServices</literal> which provides these operations. This service is not required if the implementation of <xref linkend=\"injection.services\" /> takes care of <literal>@Resource</literal> injection."
+msgid "The resolution of <literal>@Resource</literal> (for injection into managed beans) is delegated to the container. You must provide an implementation of <literal>ResourceServices</literal> which provides these operations. This service is not required if the implementation of <xref linkend=\"injection.services\"/> takes care of <literal>@Resource</literal> injection."
 msgstr ""
 
 #. Tag: title
