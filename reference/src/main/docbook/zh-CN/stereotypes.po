@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-05-01T13:53:43\n"
+"POT-Creation-Date: 2010-07-25T03:52:15\n"
 "PO-Revision-Date: 2009-03-13 16:04+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
@@ -89,7 +89,7 @@ msgstr "我们注释来让Web Bean应用模板"
 #, no-c-format
 msgid ""
 "Of course, we need to apply some other annotations to our stereotype or else "
-"it wouldn&#39;t be adding much value."
+"it wouldn't be adding much value."
 msgstr ""
 
 #. Tag: title
@@ -112,7 +112,7 @@ msgstr "当然，如果必要的话，一个特殊的动作类仍旧可以重载
 #. Tag: para
 #, no-c-format
 msgid ""
-"Naturally, overriding a single default isn&#39;t much use. But remember, "
+"Naturally, overriding a single default isn't much use. But remember, "
 "stereotypes can define more than just the default scope."
 msgstr ""
 
@@ -189,8 +189,8 @@ msgstr "模板"
 #, no-c-format
 msgid ""
 "This may blow your mind a bit, but stereotypes may declare other "
-"stereotypes, which we&#39;ll call <emphasis>stereotype stacking</emphasis>. "
-"You may want to do this if you have two distinct stereotypes which are "
+"stereotypes, which we'll call <emphasis>stereotype stacking</emphasis>. You "
+"may want to do this if you have two distinct stereotypes which are "
 "meaningful on their own, but in other situation may be meaningful when "
 "combined."
 msgstr ""
@@ -198,7 +198,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Here&#39;s an example that combines the <literal>@Action</literal> and "
+"Here's an example that combines the <literal>@Action</literal> and "
 "<literal>@Auditable</literal> stereotypes:"
 msgstr ""
 
@@ -210,9 +210,8 @@ msgstr "标准的模板"
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-"We&#39;ve already met two standard stereotypes defined by the CDI "
-"specification: <literal>@Interceptor</literal> and <literal>@Decorator</"
-"literal>."
+"We've already met two standard stereotypes defined by the CDI specification: "
+"<literal>@Interceptor</literal> and <literal>@Decorator</literal>."
 msgstr ""
 "我们已经见到了Web Bean规范定义的两个标准的模板：<literal>@Interceptor</"
 "literal> 和 <literal>@Decorator</literal>。"

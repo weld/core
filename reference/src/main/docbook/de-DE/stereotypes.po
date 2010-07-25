@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stereotypes\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-05-01T13:53:43\n"
+"POT-Creation-Date: 2010-07-25T03:52:15\n"
 "PO-Revision-Date: 2009-03-06 16:50+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -98,7 +98,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Of course, we need to apply some other annotations to our stereotype or else "
-"it wouldn&#39;t be adding much value."
+"it wouldn't be adding much value."
 msgstr ""
 
 #. Tag: title
@@ -125,7 +125,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Naturally, overriding a single default isn&#39;t much use. But remember, "
+"Naturally, overriding a single default isn't much use. But remember, "
 "stereotypes can define more than just the default scope."
 msgstr ""
 
@@ -209,8 +209,8 @@ msgstr "Stereotypen"
 #, no-c-format
 msgid ""
 "This may blow your mind a bit, but stereotypes may declare other "
-"stereotypes, which we&#39;ll call <emphasis>stereotype stacking</emphasis>. "
-"You may want to do this if you have two distinct stereotypes which are "
+"stereotypes, which we'll call <emphasis>stereotype stacking</emphasis>. You "
+"may want to do this if you have two distinct stereotypes which are "
 "meaningful on their own, but in other situation may be meaningful when "
 "combined."
 msgstr ""
@@ -218,7 +218,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"Here&#39;s an example that combines the <literal>@Action</literal> and "
+"Here's an example that combines the <literal>@Action</literal> and "
 "<literal>@Auditable</literal> stereotypes:"
 msgstr ""
 
@@ -230,9 +230,8 @@ msgstr "Standard-Stereotypen"
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-"We&#39;ve already met two standard stereotypes defined by the CDI "
-"specification: <literal>@Interceptor</literal> and <literal>@Decorator</"
-"literal>."
+"We've already met two standard stereotypes defined by the CDI specification: "
+"<literal>@Interceptor</literal> and <literal>@Decorator</literal>."
 msgstr ""
 "Wir haben bereits zwei Standard-Stereotypen kennengelernt, die durch die Web "
 "Beans Spezifikation definiert werden: <literal>@Interceptor</literal> und "

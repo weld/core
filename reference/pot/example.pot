@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-05-01T14:44:09\n"
-"PO-Revision-Date: 2010-05-01T14:44:09\n"
+"POT-Creation-Date: 2010-07-25T03:52:14\n"
+"PO-Revision-Date: 2010-07-25T03:52:14\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Let&#39;s illustrate these ideas with a full example. We&#39;re going to implement user login/logout for an application that uses JSF. First, we&#39;ll define a request-scoped bean to hold the username and password entered during login, with constraints defined using annotations from the Bean Validation specification:"
+msgid "Let's illustrate these ideas with a full example. We're going to implement user login/logout for an application that uses JSF. First, we'll define a request-scoped bean to hold the username and password entered during login, with constraints defined using annotations from the Bean Validation specification:"
 msgstr ""
 
 #. Tag: para
@@ -34,7 +34,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "(Note that we&#39;re also going to need a <literal>persistence.xml</literal> file to configure the JPA persistence unit containing <literal>User</literal>.)"
+msgid "(Note that we're also going to need a <literal>persistence.xml</literal> file to configure the JPA persistence unit containing <literal>User</literal>.)"
 msgstr ""
 
 #. Tag: para
@@ -64,6 +64,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Hopefully, this example gave you a taste of the CDI programming model. In the next chapter, we&#39;ll explore dependency injection in greater depth."
+msgid "Hopefully, this example gave you a taste of the CDI programming model. In the next chapter, we'll explore dependency injection in greater depth."
 msgstr ""
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: part1\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-05-01T13:53:43\n"
+"POT-Creation-Date: 2010-07-25T03:52:14\n"
 "PO-Revision-Date: 2009-01-15 12:16+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -175,7 +175,7 @@ msgstr "我是否需要明確地將它毀掉呢？"
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-"Where should I keep the reference to it when I&#39;m not currently using it?"
+"Where should I keep the reference to it when I'm not currently using it?"
 msgstr "當我沒有在直接使用它時，我應該將它的參照保留在哪裡呢？"
 
 #. Tag: para
@@ -194,9 +194,9 @@ msgstr "我該如何在其它物件之間共享這個物件？"
 #. Tag: para
 #, no-c-format
 msgid ""
-"CDI is more than a framework. It&#39;s a whole, rich programming model. The "
+"CDI is more than a framework. It's a whole, rich programming model. The "
 "<emphasis>theme</emphasis> of CDI is <emphasis>loose-coupling with strong "
-"typing</emphasis>. Let&#39;s study what that phrase means."
+"typing</emphasis>. Let's study what that phrase means."
 msgstr ""
 
 #. Tag: para
@@ -251,8 +251,8 @@ msgstr "<emphasis>decorators</emphasis>（裝飾器）可將商業問題分為�
 #. Tag: para
 #, fuzzy, no-c-format
 msgid ""
-"What&#39;s even more powerful (and comforting) is that CDI provides all "
-"these facilities in a <emphasis>typesafe</emphasis> way. CDI never relies on "
+"What's even more powerful (and comforting) is that CDI provides all these "
+"facilities in a <emphasis>typesafe</emphasis> way. CDI never relies on "
 "string-based identifiers to determine how collaborating objects fit "
 "together. Instead, CDI uses the typing information that is already available "
 "in the Java object model, augmented using a new programming pattern, called "
@@ -271,10 +271,10 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid ""
-"But CDI isn&#39;t a restrictive programming model. It doesn&#39;t tell you "
-"how you should to structure your application into layers, how you should "
-"handle persistence, or what web framework you have to use. You&#39;ll have "
-"to decide those kinds of things for yourself."
+"But CDI isn't a restrictive programming model. It doesn't tell you how you "
+"should to structure your application into layers, how you should handle "
+"persistence, or what web framework you have to use. You'll have to decide "
+"those kinds of things for yourself."
 msgstr ""
 
 #. Tag: para
@@ -295,8 +295,8 @@ msgid ""
 "CDI was influenced by a number of existing Java frameworks, including Seam, "
 "Guice and Spring. However, CDI has its own, very distinct, character: more "
 "typesafe than Seam, more stateful and less XML-centric than Spring, more web "
-"and enterprise-application capable than Guice. But it couldn&#39;t have been "
-"any of these without inspiration from the frameworks mentioned and "
+"and enterprise-application capable than Guice. But it couldn't have been any "
+"of these without inspiration from the frameworks mentioned and "
 "<emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 "
 "Expert Group (EG)."
 msgstr ""

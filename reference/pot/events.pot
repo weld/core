@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-05-01T14:44:09\n"
-"PO-Revision-Date: 2010-05-01T14:44:09\n"
+"POT-Creation-Date: 2010-07-25T03:52:14\n"
+"PO-Revision-Date: 2010-07-25T03:52:14\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "observers can specify a combination of &#34;selectors&#34; to narrow the set of event notifications they will receive, and"
+msgid "observers can specify a combination of \"selectors\" to narrow the set of event notifications they will receive, and"
 msgstr ""
 
 #. Tag: para
@@ -44,7 +44,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI event notification facility uses more or less the same typesafe approach that we&#39;ve already seen with the dependency injection service."
+msgid "The CDI event notification facility uses more or less the same typesafe approach that we've already seen with the dependency injection service."
 msgstr ""
 
 #. Tag: title
@@ -59,7 +59,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "An event qualifier is just a normal qualifier, defined using <literal>@Qualifier</literal>. Here&#39;s an example:"
+msgid "An event qualifier is just a normal qualifier, defined using <literal>@Qualifier</literal>. Here's an example:"
 msgstr ""
 
 #. Tag: title
@@ -79,7 +79,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "An observer method need not specify any event qualifiers—in this case it is interested in <emphasis>all</emphasis> events of a particular type. If it does specify qualifiers, it&#39;s only interested in events which have those qualifiers."
+msgid "An observer method need not specify any event qualifiers—in this case it is interested in <emphasis>all</emphasis> events of a particular type. If it does specify qualifiers, it's only interested in events which have those qualifiers."
 msgstr ""
 
 #. Tag: para
@@ -159,7 +159,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The downside of annotating the injection point is that we can&#39;t specify the qualifier dynamically. CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>. That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>."
+msgid "The downside of annotating the injection point is that we can't specify the qualifier dynamically. CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>. That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>."
 msgstr ""
 
 #. Tag: para
@@ -174,7 +174,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "By default, if there is no instance of an observer in the current context, the container will instantiate the observer in order to deliver an event to it. This behavior isn&#39;t always desirable. We may want to deliver events only to instances of the observer that already exist in the current contexts."
+msgid "By default, if there is no instance of an observer in the current context, the container will instantiate the observer in order to deliver an event to it. This behavior isn't always desirable. We may want to deliver events only to instances of the observer that already exist in the current contexts."
 msgstr ""
 
 #. Tag: para

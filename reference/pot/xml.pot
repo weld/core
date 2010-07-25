@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-05-01T14:44:10\n"
-"PO-Revision-Date: 2010-05-01T14:44:10\n"
+"POT-Creation-Date: 2010-07-25T03:52:15\n"
+"PO-Revision-Date: 2010-07-25T03:52:15\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "So far, we&#39;ve seen plenty of examples of beans declared using annotations. However, there are a couple of occasions when we can&#39;t use annotations to define the bean:"
+msgid "So far, we've seen plenty of examples of beans declared using annotations. However, there are a couple of occasions when we can't use annotations to define the bean:"
 msgstr ""
 
 #. Tag: para
@@ -44,7 +44,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The advantage of this approach is that you can write an XML schema that prevents spelling errors in your XML document. It&#39;s even possible for a tool to generate the XML schema automatically from the compiled Java code. Or, an integrated development environment could perform the same validation without the need for the explicit intermediate generation step."
+msgid "The advantage of this approach is that you can write an XML schema that prevents spelling errors in your XML document. It's even possible for a tool to generate the XML schema automatically from the compiled Java code. Or, an integrated development environment could perform the same validation without the need for the explicit intermediate generation step."
 msgstr ""
 
 #. Tag: title
@@ -64,7 +64,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "For example, the element <literal>&#60;util:Date/&#62;</literal> in the following XML fragment refers to the class <literal>java.util.Date</literal>:"
+msgid "For example, the element <literal>&lt;util:Date/&gt;</literal> in the following XML fragment refers to the class <literal>java.util.Date</literal>:"
 msgstr ""
 
 #. Tag: para
@@ -124,12 +124,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>&#60;Name&#62;</literal> element declares a bean of scope <literal>@Dependent</literal> and class <literal>Name</literal>, with a set of initial field values. This bean has a special, container-generated qualifier and is therefore injectable only to the specific injection point at which it is declared."
+msgid "The <literal>&lt;Name&gt;</literal> element declares a bean of scope <literal>@Dependent</literal> and class <literal>Name</literal>, with a set of initial field values. This bean has a special, container-generated qualifier and is therefore injectable only to the specific injection point at which it is declared."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This simple but powerful feature allows the Weld XML format to be used to specify whole graphs of Java objects. It&#39;s not quite a full databinding solution, but it&#39;s close!"
+msgid "This simple but powerful feature allows the Weld XML format to be used to specify whole graphs of Java objects. It's not quite a full databinding solution, but it's close!"
 msgstr ""
 
 #. Tag: title
@@ -139,7 +139,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If we want our XML document format to be authored by people who aren&#39;t Java developers, or who don&#39;t have access to our code, we need to provide a schema. There&#39;s nothing specific to Weld about writing or using the schema."
+msgid "If we want our XML document format to be authored by people who aren't Java developers, or who don't have access to our code, we need to provide a schema. There's nothing specific to Weld about writing or using the schema."
 msgstr ""
 
 #. Tag: para

@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-05-01T14:44:09\n"
-"PO-Revision-Date: 2010-05-01T14:44:09\n"
+"POT-Creation-Date: 2010-07-25T03:52:15\n"
+"PO-Revision-Date: 2010-07-25T03:52:15\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Producer methods let us overcome certain limitations that arise when a container, instead of the application, is responsible for instantiating objects. They&#39;re also the easiest way to integrate objects which are not beans into the CDI environment."
+msgid "Producer methods let us overcome certain limitations that arise when a container, instead of the application, is responsible for instantiating objects. They're also the easiest way to integrate objects which are not beans into the CDI environment."
 msgstr ""
 
 #. Tag: para
@@ -74,7 +74,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In particular, producer methods let us use runtime polymorphism with CDI. As we&#39;ve seen, alternative beans are one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI implementation is fixed. A producer method has no such limitation:"
+msgid "In particular, producer methods let us use runtime polymorphism with CDI. As we've seen, alternative beans are one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI implementation is fixed. A producer method has no such limitation:"
 msgstr ""
 
 #. Tag: para
@@ -104,7 +104,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to the session context. The producer method won&#39;t be called again in the same session."
+msgid "Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to the session context. The producer method won't be called again in the same session."
 msgstr ""
 
 #. Tag: para
@@ -119,22 +119,22 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There&#39;s one potential problem with the code above. The implementations of <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal> operator. Objects instantiated directly by the application can&#39;t take advantage of dependency injection and don&#39;t have interceptors."
+msgid "There's one potential problem with the code above. The implementations of <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal> operator. Objects instantiated directly by the application can't take advantage of dependency injection and don't have interceptors."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If this isn&#39;t what we want, we can use dependency injection into the producer method to obtain bean instances:"
+msgid "If this isn't what we want, we can use dependency injection into the producer method to obtain bean instances:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer method has the effect of &#34;promoting&#34; the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the container before the session ends, but the reference to the object will be left &#34;hanging&#34; in the session scope. This error will <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean instances from producer methods!"
+msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer method has the effect of \"promoting\" the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the container before the session ends, but the reference to the object will be left \"hanging\" in the session scope. This error will <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean instances from producer methods!"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There&#39;s at least three ways we could go about fixing this bug. We could change the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
+msgid "There's at least three ways we could go about fixing this bug. We could change the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
 msgstr ""
 
 #. Tag: para
@@ -154,7 +154,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won&#39;t be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
+msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won't be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
 msgstr ""
 
 #. Tag: title

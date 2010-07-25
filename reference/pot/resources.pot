@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-05-01T14:44:09\n"
-"PO-Revision-Date: 2010-05-01T14:44:09\n"
+"POT-Creation-Date: 2010-07-25T03:52:15\n"
+"PO-Revision-Date: 2010-07-25T03:52:15\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably, component environment injection relies on string-based names to qualify ambiguous types, and there is no real consistency as to the nature of the names (sometimes a JNDI name, sometimes a persistence unit name, sometimes an EJB link, sometimes a nonportable &#34;mapped name&#34;). Producer fields turned out to be an elegant adaptor to reduce all this complexity to a common model and get component environment resources to participate in the CDI system just like any other kind of bean."
+msgid "Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably, component environment injection relies on string-based names to qualify ambiguous types, and there is no real consistency as to the nature of the names (sometimes a JNDI name, sometimes a persistence unit name, sometimes an EJB link, sometimes a nonportable \"mapped name\"). Producer fields turned out to be an elegant adaptor to reduce all this complexity to a common model and get component environment resources to participate in the CDI system just like any other kind of bean."
 msgstr ""
 
 #. Tag: para
@@ -89,7 +89,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "It might feel strange to be declaring resources in Java code. Isn&#39;t this stuff that might be deployment-specific? Certainly, and that&#39;s why it makes sense to declare your resources in a class annotated <literal>@Alternative</literal>."
+msgid "It might feel strange to be declaring resources in Java code. Isn't this stuff that might be deployment-specific? Certainly, and that's why it makes sense to declare your resources in a class annotated <literal>@Alternative</literal>."
 msgstr ""
 
 #. Tag: title
@@ -109,7 +109,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "It might seem like a pain to have to write these extra producer field declarations, just to gain an additional level of indirection. You could just as well use component environment injection directly, right? But remember that you&#39;re going to be using resources like the <literal>EntityManager</literal> in several different beans. Isn&#39;t it nicer and more typesafe to write"
+msgid "It might seem like a pain to have to write these extra producer field declarations, just to gain an additional level of indirection. You could just as well use component environment injection directly, right? But remember that you're going to be using resources like the <literal>EntityManager</literal> in several different beans. Isn't it nicer and more typesafe to write"
 msgstr ""
 
 #. Tag: para
