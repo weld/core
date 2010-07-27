@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-07-25T03:52:15\n"
-"PO-Revision-Date: 2010-07-25 17:53-0300\n"
+"PO-Revision-Date: 2010-07-26 22:47-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -333,7 +333,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "The numberguess example for Apache Wicket"
-msgstr ""
+msgstr "O exemplo numberguess para o Apache Wicket"
 
 #. Tag: para
 #, no-c-format
@@ -343,6 +343,10 @@ msgid ""
 "components and leverage the conversation context. In this section, we'll "
 "walk you through the Wicket version of the numberguess example."
 msgstr ""
+"O Weld inclui uma série de extensões portáveis para a JSR-299, incluindo uma "
+"extensão para o Wicket, permitindo que você injete beans dentro de "
+"componentes Wicket e influencie o contexto de conversação. Nesta seção, "
+"iremos orientá-lo através da versão com Wicket do exemplo numberguess."
 
 #. Tag: para
 #, no-c-format
@@ -351,6 +355,9 @@ msgid ""
 "wicket.apache.org/\">http://wicket.apache.org/</ulink> before reading this "
 "section, if you aren't already familiar with the framework."
 msgstr ""
+"Você pode querer rever a documentação do Wicket em <ulink url=\"http://"
+"wicket.apache.org/\">http://wicket.apache.org/</ulink> antes de ler esta "
+"seção, se você não está familiarizado com o framework."
 
 #. Tag: para
 #, no-c-format
@@ -361,6 +368,11 @@ msgid ""
 "You've seen already that Jetty is perfectly capable of running CDI "
 "applications with Weld add-ons, and this environment is no different."
 msgstr ""
+"Wicket é outro ambiente que se baseia na extensão servlet do Weld. O uso do "
+"<ulink url=\"http://jetty.mortbay.org\">Jetty</ulink> é comum na comunidade "
+"Wicket, e é aqui escolhida como o contêiner de execução. Você já viu que o "
+"Jetty é perfeitamente capaz de rodar aplicações CDI com complementos do "
+"Weld, e este ambiente não é diferente."
 
 #. Tag: para
 #, no-c-format
@@ -370,6 +382,10 @@ msgid ""
 "you'll likely need to do more than just deploy examples, we'll get setup in "
 "this full development environment."
 msgstr ""
+"Também utilizaremos a IDE Eclipse nestes exemplos. Instruções são fornecidas "
+"posteriormente para execução do exemplo a partir da linha de comando, mas "
+"uma vez que você precisará fazer mais do que apenas implantar exemplos, "
+"vamos começar a configurar este ambiente completo de desenvolvimento."
 
 #. Tag: title
 #, no-c-format
