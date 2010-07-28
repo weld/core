@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<beans>
-    <decorators>
-        <class>org.jboss.weld.tests.decorators.stackoverflow.SecurePaymentService</class>
-    </decorators>
-</beans>

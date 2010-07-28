@@ -1,5 +1,0 @@
-<beans> 
-   <decorators>
-      <class>org.jboss.weld.tests.decorators.abstractDecorator.broken.Frame</class>
-   </decorators>
-</beans>
