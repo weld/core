@@ -31,7 +31,7 @@ public class AlternativesTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create("test.jar", BeanArchive.class)
+      return ShrinkWrap.create(BeanArchive.class)
          .stereotype(TestAlternative.class)
          .addPackage(Alternatives2Test.class.getPackage());
    }

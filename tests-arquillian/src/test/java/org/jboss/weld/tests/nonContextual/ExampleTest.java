@@ -29,7 +29,6 @@ import org.jboss.metadata.validation.ValidationException;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,9 +39,8 @@ public class ExampleTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create("test.jar", BeanArchive.class)
-         .addClasses(External.class, WebBean.class)
-         .as(JavaArchive.class);
+      return ShrinkWrap.create(BeanArchive.class)
+         .addClasses(External.class, WebBean.class);
    }
    
    @Inject

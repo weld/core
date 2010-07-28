@@ -37,7 +37,7 @@ public class SimpleAbstractDecoratorTest
    @Deployment
    public static Archive<?> deploy()
    {
-      return ShrinkWrap.create("test.jar", BeanArchive.class)
+      return ShrinkWrap.create(BeanArchive.class)
             .decorate(FrameWithFieldInjectedDelegate.class)
             .addPackage(SimpleAbstractDecoratorTest.class.getPackage());
    }

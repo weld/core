@@ -37,7 +37,7 @@ public class SimpleAbstractDecoratorWithAbstractMethodAndInitializerMethodTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create("test.jar", BeanArchive.class)
+      return ShrinkWrap.create(BeanArchive.class)
          .decorate(
                FrameWithInitializerMethodInjectedDelegateAndAbstractMethod.class, 
                FrameWithFieldInjectedDelegate.class)

@@ -38,7 +38,7 @@ public class SimpleAbstractDecoratorWithInvalidAbstractMethodTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create("test.jar", BeanArchive.class)
+      return ShrinkWrap.create(BeanArchive.class)
          .decorate(Frame.class)
          .addPackage(SimpleAbstractDecoratorWithInvalidAbstractMethodTest.class.getPackage());
    }

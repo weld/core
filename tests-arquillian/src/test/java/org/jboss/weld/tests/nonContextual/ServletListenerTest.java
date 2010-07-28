@@ -21,8 +21,8 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.impl.base.asset.ByteArrayAsset;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,12 +36,12 @@ public class ServletListenerTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create("test.war", WebArchive.class)
+      return ShrinkWrap.create(WebArchive.class, "test.war")
          .addClasses(ServletContextListenerImpl.class, LogManager.class)
          .addWebResource(
                ServletListenerTest.class.getPackage(), "web.xml", ArchivePaths.create("web.xml"))
          .addWebResource(
-               new ByteArrayAsset("<beans/>".getBytes()), ArchivePaths.create("beans.xml"));
+               EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
       
    }
 

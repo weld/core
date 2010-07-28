@@ -17,6 +17,7 @@
 package org.jboss.weld.mock.cluster;
 
 import java.io.ByteArrayInputStream;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -41,11 +42,11 @@ import org.junit.BeforeClass;
 public class AbstractClusterTest
 {
 
-   private Singleton<Container> singleton;
+   private static Singleton<Container> singleton;
 
    @SuppressWarnings("unchecked")
    @BeforeClass
-   public void beforeClass() throws Exception
+   public static void beforeClass() throws Exception
    {
       singleton = (Singleton) getInstanceField().get(null);
       getInstanceField().set(null, new SwitchableSingletonProvider().create(Container.class));
@@ -59,7 +60,7 @@ public class AbstractClusterTest
    }
 
    @AfterClass
-   public void afterClass() throws Exception
+   public static void afterClass() throws Exception
    {
       getInstanceField().set(null, singleton);
    }

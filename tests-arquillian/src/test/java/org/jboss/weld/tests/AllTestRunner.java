@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.jboss.shrinkwrap.impl.base.URLPackageScanner;
+import org.jboss.weld.tests.annotatedType.ExampleTest;
 import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerBuilder;
@@ -22,8 +23,7 @@ public class AllTestRunner extends Suite
       final List<Class<?>> classes = new ArrayList<Class<?>>();
       final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       URLPackageScanner.newInstance(
-            AllTestRunner.class.getPackage(), 
-            true, 
+            true,
             classLoader, 
             new URLPackageScanner.Callback()
             {
@@ -46,7 +46,9 @@ public class AllTestRunner extends Suite
                      throw new RuntimeException(e);
                   }
                }
-            }).scanPackage();
+            },
+            AllTestRunner.class.getPackage()).scanPackage();
+            //ExampleTest.class.getPackage()).scanPackage();
       
       Collections.sort(classes, new Comparator<Class<?>>()
       {

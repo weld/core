@@ -27,7 +27,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.introspector.WeldAnnotated;
@@ -43,9 +42,8 @@ public class NewSimpleBeanTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create("test.jar", BeanArchive.class)
-         .addPackage(NewSimpleBeanTest.class.getPackage())
-         .as(JavaArchive.class);
+      return ShrinkWrap.create(BeanArchive.class)
+         .addPackage(NewSimpleBeanTest.class.getPackage());
    }
 
    private ManagedBean<WrappedSimpleBean> wrappedSimpleBean;

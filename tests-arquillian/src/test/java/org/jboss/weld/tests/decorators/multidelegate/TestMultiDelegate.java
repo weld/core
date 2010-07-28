@@ -30,7 +30,7 @@ public class TestMultiDelegate
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create("test.jar", BeanArchive.class)
+      return ShrinkWrap.create(BeanArchive.class)
          .decorate(AccountDecorator.class)
          .addPackage(TestMultiDelegate.class.getPackage());
    }

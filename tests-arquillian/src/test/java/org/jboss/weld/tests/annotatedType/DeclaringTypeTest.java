@@ -38,12 +38,11 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DeclaringTypeTest
 {
-
    @Deployment
    public static Archive<?> deploy()
    {
-      return ShrinkWrap.create("test.jar", BeanArchive.class)
-      .addPackage(DeclaringTypeTest.class.getPackage());
+      return ShrinkWrap.create(BeanArchive.class)
+         .addPackage(DeclaringTypeTest.class.getPackage());
    }
 
    @Inject

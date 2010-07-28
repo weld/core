@@ -36,7 +36,7 @@ public class CategoryArchiveAppender implements AuxiliaryArchiveAppender
     */
    public Archive<?> createAuxiliaryArchive()
    {
-      return ShrinkWrap.create("weld-core-test-categories.jar", JavaArchive.class)
+      return ShrinkWrap.create(JavaArchive.class, "weld-core-test-categories.jar")
                         .addPackage(Integration.class.getPackage());
    }
 }

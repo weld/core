@@ -44,7 +44,7 @@ public class AnnotatedTypeDecoratorTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create("test.jar", BeanArchive.class)
+      return ShrinkWrap.create(BeanArchive.class)
          .addPackage(AnnotatedTypeDecoratorTest.class.getPackage());
    }
    
