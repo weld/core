@@ -1,5 +1,0 @@
-<beans>
-    <decorators>
-        <decorator>org.jboss.weld.tests.decorators.generic.extend.ExtendsDecoratedDecorator</decorator>
-    </decorators>
-</beans>

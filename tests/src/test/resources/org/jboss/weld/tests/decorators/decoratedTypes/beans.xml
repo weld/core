@@ -1,5 +1,0 @@
-<beans>
-    <decorators>
-        <decorator>org.jboss.weld.tests.decorators.decoratedTypes.PartialDecorator</decorator>
-    </decorators>
-</beans>

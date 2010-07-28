@@ -1,8 +1,0 @@
-<beans>
-  <interceptors>
-    <class>org.jboss.weld.tests.extensions.injectionTarget.SecurityInterceptor</class>
-  </interceptors>
-  <decorators>
-  	<class>org.jboss.weld.tests.extensions.injectionTarget.AircraftDecorator</class>
-  </decorators>
-</beans>

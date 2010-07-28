@@ -1,5 +1,0 @@
-<beans>
-	<alternatives>
-		<class>foo.Bar</class>
-	</alternatives>
-</beans>
