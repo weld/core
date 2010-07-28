@@ -42,7 +42,7 @@
 
       <dependency>
          <groupId>org.jboss.metadata</groupId> 
-         <artifactId>jboss-metadata</artifactId> 
+         <artifactId>jboss-metadata</artifactId>
       </dependency>
 
       <dependency>
@@ -151,7 +151,6 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-               <test>org.jboss.weld.tests.NormalSuite</test>
                <!-- 
                	Set parallel none to force a more modern JUnitCore provider that understands Suites, 
                	http://old.nabble.com/Maven-Surefire-and-newer-junit-features-td28539796.html 
@@ -167,12 +166,16 @@
          <id>defualt</id>
          <activation>
             <activeByDefault>true</activeByDefault>
+            <property>
+               <name>default</name>
+            </property>
          </activation>
          <dependencies>
             <dependency>
                <groupId>org.jboss.arquillian.container</groupId>
-               <artifactId>arquillian-weld-embedded</artifactId>
-               <scope>test</scope>
+               <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+               <scope>provided</scope> <!-- should be test, but we need shrinkwrap-impl for compiling BeanArchive, 
+               having this in test scopes override the shrinkwrap-api scope. ?? --> 
             </dependency>
       	</dependencies>
          <build>
@@ -190,6 +193,7 @@
       <profile>
          <id>incontainer</id>
          <activation>
+			<activeByDefault>false</activeByDefault>
             <property>
                <name>incontainer</name>
             </property>
@@ -197,7 +201,13 @@
          <dependencies>
             <dependency>
                <groupId>org.jboss.arquillian.container</groupId>
-               <artifactId>arquillian-jbossas-remote-60</artifactId>
+               <artifactId>arquillian-jbossas-managed-6</artifactId>
+               <scope>test</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.jbossas</groupId>
+               <artifactId>jboss-server-manager</artifactId>
+               <version>1.0.3.GA</version>
                <scope>test</scope>
             </dependency>
             <dependency>
@@ -215,6 +225,7 @@
                   <artifactId>maven-surefire-plugin</artifactId>
                   <configuration>
                      <test>org.jboss.weld.tests.IntegrationSuite</test>
+                     <parallel>none</parallel>
                   </configuration>
                </plugin>
             </plugins>

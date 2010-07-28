@@ -77,7 +77,7 @@
       <!-- Testing deps -->
       <testng.version>5.10</testng.version>
       <jboss.test.harness.version>1.1.0-SNAPSHOT</jboss.test.harness.version>
-      <jboss.arquillian.version>1.0.0.Alpha2</jboss.arquillian.version>
+      <jboss.arquillian.version>1.0.0.Alpha3</jboss.arquillian.version>
       <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
       <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
       <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
@@ -143,19 +143,19 @@
 	
          <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-weld-embedded</artifactId>
+            <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
             <version>${jboss.arquillian.version}</version>
          </dependency>
 
          <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-jbossas-local-60</artifactId>
+            <artifactId>arquillian-jbossas-managed-6</artifactId>
             <version>${jboss.arquillian.version}</version>
          </dependency>
 
          <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-jbossas-remote-60</artifactId>
+            <artifactId>arquillian-jbossas-remote-6</artifactId>
             <version>${jboss.arquillian.version}</version>
          </dependency>
 
