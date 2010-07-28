@@ -28,9 +28,10 @@ public class Player
 
    public void receiveInstructions()
    {
-      
+
    }
 
+   @Play
    public Player cloneMe()
    {
       return this;
