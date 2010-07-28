@@ -1,0 +1,8 @@
+<beans>
+    <decorators>
+        <class>org.jboss.weld.tests.decorators.interceptor.ServiceDecorator</class>
+    </decorators>
+    <interceptors>
+       <class>org.jboss.weld.tests.decorators.interceptor.ServiceInterceptor</class>
+    </interceptors>
+</beans>

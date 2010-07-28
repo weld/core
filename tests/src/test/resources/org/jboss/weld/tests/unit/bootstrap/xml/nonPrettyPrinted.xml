@@ -1,0 +1,1 @@
+<beans><alternatives><class>org.jboss.weld.tests.unit.bootstrap.xml.Alt</class></alternatives></beans>

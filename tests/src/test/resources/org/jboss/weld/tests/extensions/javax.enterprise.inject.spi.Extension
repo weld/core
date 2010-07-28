@@ -1,0 +1,3 @@
+org.jboss.weld.tests.extensions.SimpleExtension
+org.jboss.weld.tests.extensions.ExtensionObserver
+org.jboss.weld.tests.extensions.WoodlandExtension
