@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<arquillian xmlns="http://jboss.com/arquillian"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:jboss="urn:arq:org.jboss.arquillian.container.jbossas.managed_6">
+
+	<engine>
+		<maxDeploymentsBeforeRestart>20</maxDeploymentsBeforeRestart>
+	</engine>
+	
+	<jboss:container>
+<!--		<jboss:jbossHome>/home/aslak/dev/servers/jboss-6.0.0.M3/</jboss:jbossHome> --> <!-- default %JBOSS_HOME% -->
+<!--		<jboss:javaHome>/usr/lib/jvm/java-6-openjdk</jboss:javaHome> -->  <!-- default %JAVA_HOME% -->
+	</jboss:container>	
+
+</arquillian>

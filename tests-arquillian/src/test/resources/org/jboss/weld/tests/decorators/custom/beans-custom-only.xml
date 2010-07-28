@@ -1,0 +1,5 @@
+<beans>
+   <decorators>
+      <decorator>org.jboss.weld.tests.decorators.custom.CustomWindowFrame</decorator>
+   </decorators>
+</beans>

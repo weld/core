@@ -1,0 +1,4 @@
+org.jboss.weld.tests.unit.deployment.structure.extensions.Observer1
+org.jboss.weld.tests.unit.deployment.structure.extensions.Observer2
+org.jboss.weld.tests.unit.deployment.structure.extensions.CountingObserver1
+org.jboss.weld.tests.unit.deployment.structure.extensions.CountingObserver2
