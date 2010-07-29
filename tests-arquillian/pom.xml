@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <artifactId>weld-core-parent</artifactId>
       <groupId>org.jboss.weld</groupId>
@@ -26,32 +27,40 @@
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
-         <scope>provided</scope> <!-- should be test, but we need junit for compiling AbstractClusterTest -->
+         <scope>provided</scope>
+         <!--
+            should be test, but we need junit for compiling
+            AbstractClusterTest
+         -->
       </dependency>
 
       <dependency>
          <groupId>org.jboss.arquillian</groupId>
          <artifactId>arquillian-junit</artifactId>
-         <scope>provided</scope><!-- should be test, but we need shrinkwrap-impl for compiling BeanArchive -->
+         <scope>provided</scope>
+         <!--
+            should be test, but we need shrinkwrap-impl for compiling
+            BeanArchive
+         -->
       </dependency>
 
       <dependency>
-         <groupId>org.jboss.spec.javax.servlet</groupId> 
-         <artifactId>jboss-servlet-api_3.0_spec</artifactId> 
+         <groupId>org.jboss.spec.javax.servlet</groupId>
+         <artifactId>jboss-servlet-api_3.0_spec</artifactId>
       </dependency>
 
       <dependency>
-         <groupId>org.jboss.metadata</groupId> 
+         <groupId>org.jboss.metadata</groupId>
          <artifactId>jboss-metadata</artifactId>
       </dependency>
 
       <dependency>
-      	<groupId>org.jboss</groupId>
-      	<artifactId>jboss-mdr</artifactId>
-      	<scope>test</scope>
+         <groupId>org.jboss</groupId>
+         <artifactId>jboss-mdr</artifactId>
+         <scope>test</scope>
       </dependency>
- 
- 
+
+
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-api</artifactId>
@@ -151,9 +160,10 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-               <!-- 
-               	Set parallel none to force a more modern JUnitCore provider that understands Suites, 
-               	http://old.nabble.com/Maven-Surefire-and-newer-junit-features-td28539796.html 
+               <!--
+                  Set parallel none to force a more modern JUnitCore
+                  provider that understands Suites,
+                  http://old.nabble.com/Maven-Surefire-and-newer-junit-features-td28539796.html
                -->
                <parallel>none</parallel>
             </configuration>
@@ -174,10 +184,14 @@
             <dependency>
                <groupId>org.jboss.arquillian.container</groupId>
                <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
-               <scope>provided</scope> <!-- should be test, but we need shrinkwrap-impl for compiling BeanArchive, 
-               having this in test scopes override the shrinkwrap-api scope. ?? --> 
+               <scope>provided</scope>
+               <!--
+                  should be test, but we need shrinkwrap-impl for
+                  compiling BeanArchive, having this in test scopes
+                  override the shrinkwrap-api scope. ??
+               -->
             </dependency>
-      	</dependencies>
+         </dependencies>
          <build>
             <plugins>
                <plugin>
@@ -193,7 +207,7 @@
       <profile>
          <id>incontainer</id>
          <activation>
-			<activeByDefault>false</activeByDefault>
+            <activeByDefault>false</activeByDefault>
             <property>
                <name>incontainer</name>
             </property>
@@ -231,54 +245,72 @@
             </plugins>
          </build>
       </profile>
-<!-- 
       <profile>
-         <id>write-artifacts-to-disk</id>
+         <id>surefireSnapshot</id>
          <activation>
-            <property>
-               <name>dumpArtifacts</name>
-            </property>
+            <activeByDefault>false</activeByDefault>
          </activation>
          <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>exec-maven-plugin</artifactId>
-                  <executions>
-                     <execution>
-                        <id>generate-test-artifacts</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                           <goal>java</goal>
-                        </goals>
-                     </execution>
-                  </executions>
-                  <configuration>
-                     <mainClass>org.jboss.testharness.api.TCK</mainClass>
-                     <classpathScope>test</classpathScope>
-                     <systemProperties>
-                        <systemProperty>
-                           <key>dumpArtifacts</key>
-                           <value>true</value>
-                        </systemProperty>
-                        <systemProperty>
-                           <key>org.jboss.testharness.outputDirectory</key>
-                           <value>target/test-artifacts</value>
-                        </systemProperty>
-                        <systemProperty>
-                           <key>org.jboss.testharness.libraryDirectory</key>
-                           <value>target/dependency/lib</value>
-                        </systemProperty>
-                     </systemProperties>
-                  </configuration>
-               </plugin>
-            </plugins>
+            <pluginManagement>
+               <plugins>
+                  <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-enforcer-plugin</artifactId>
+                     <executions>
+                        <execution>
+                           <id>enforce</id>
+                           <goals>
+                              <goal>enforce</goal>
+                           </goals>
+                           <configuration>
+                              <rules>
+                                 <requireMavenVersion>
+                                    <version>[${minimum.maven.version},)</version>
+                                 </requireMavenVersion>
+                                 <requirePluginVersions>
+                                    <unCheckedPlugins>
+                                       <unCheckedPlugin>org.apache.maven.plugins:maven-eclipse-plugin</unCheckedPlugin>
+                                       <unCheckedPlugin>org.codehaus.mojo:versions-maven-plugin</unCheckedPlugin>
+                                       <unCheckedPlugin>org.apache.maven.plugins:maven-surefire-plugin</unCheckedPlugin>
+                                    </unCheckedPlugins>
+                                 </requirePluginVersions>
+                              </rules>
+                           </configuration>
+                        </execution>
+                     </executions>
+                  </plugin>
+                  <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-surefire-plugin</artifactId>
+                     <version>2.6-SNAPSHOT</version>
+                  </plugin>
+               </plugins>
+            </pluginManagement>
          </build>
       </profile>
--->
+      <!--
+         <profile> <id>write-artifacts-to-disk</id> <activation>
+         <property> <name>dumpArtifacts</name> </property> </activation>
+         <build> <plugins> <plugin> <groupId>org.codehaus.mojo</groupId>
+         <artifactId>exec-maven-plugin</artifactId> <executions>
+         <execution> <id>generate-test-artifacts</id>
+         <phase>generate-test-sources</phase> <goals> <goal>java</goal>
+         </goals> </execution> </executions> <configuration>
+         <mainClass>org.jboss.testharness.api.TCK</mainClass>
+         <classpathScope>test</classpathScope> <systemProperties>
+         <systemProperty> <key>dumpArtifacts</key> <value>true</value>
+         </systemProperty> <systemProperty>
+         <key>org.jboss.testharness.outputDirectory</key>
+         <value>target/test-artifacts</value> </systemProperty>
+         <systemProperty>
+         <key>org.jboss.testharness.libraryDirectory</key>
+         <value>target/dependency/lib</value> </systemProperty>
+         </systemProperties> </configuration> </plugin> </plugins>
+         </build> </profile>
+      -->
    </profiles>
 
-   <scm> 
+   <scm>
       <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/tests-arquillian</connection>
       <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/tests-arquillian</developerConnection>
       <url>http://fisheye.jboss.org/browse/weld/core/trunk/tests-arquillian</url>
