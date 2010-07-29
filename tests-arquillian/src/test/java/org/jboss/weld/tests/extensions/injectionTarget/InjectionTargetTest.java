@@ -29,12 +29,14 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.Utils;
-import org.jboss.weld.tests.category.Integration;
+import org.jboss.weld.tests.category.Broken;
 import org.junit.Assert;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-@Category(Integration.class)
+//@Category(Integration.class)
+@Category(Broken.class)
 @RunWith(Arquillian.class)
 public class InjectionTargetTest 
 {
@@ -58,7 +60,7 @@ public class InjectionTargetTest
    /*
     * description = "WELD-557"
     */
-   //@Test
+   @Test
    public void testActualInstanceAndNotProxyPassedToInject()
    {
       InjectionTargetWrapper.clear();
@@ -70,7 +72,7 @@ public class InjectionTargetTest
    /*
     * description = "WELD-557"
     */
-   //@Test
+   @Test
    public void testActualInstanceAndNotProxyPassedToPostConstruct()
    {
       InjectionTargetWrapper.clear();
@@ -82,7 +84,8 @@ public class InjectionTargetTest
    /*
     * description = "WELD-557"
     */
-   //@Test
+   //
+   @Test
    public void testActualInstanceAndNotProxyPassedToPreDestroy()
    {
       // prepare instance
