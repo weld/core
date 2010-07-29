@@ -46,7 +46,7 @@ public class Checker
    {
       if (entityManager != null)
       {
-         return entityManager.isOpen();
+         return !entityManager.contains(new Foo());
       }
       else
       {
