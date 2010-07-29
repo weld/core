@@ -16,40 +16,25 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType.invalidParameters;
 
-import javax.enterprise.inject.spi.Extension;
+import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.testharness.impl.packaging.ExpectedDeploymentException;
+import org.jboss.testharness.impl.packaging.IntegrationTest;
+import org.jboss.testharness.impl.packaging.jsr299.Extension;
+import org.jboss.weld.test.AbstractWeldTest;
+import org.testng.annotations.Test;
 
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.tests.category.Integration;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-
-//@ExpectedDeploymentException(Exception.class)
-@Category(Integration.class)
-@RunWith(Arquillian.class)
-public class AnnotatedTypeExtensionTest
+@Artifact
+@IntegrationTest
+@ExpectedDeploymentException(Exception.class)
+@Extension("javax.enterprise.inject.spi.Extension")
+public class AnnotatedTypeExtensionTest extends AbstractWeldTest
 {
-   @Deployment
-   public static Archive<?> deploy() 
-   {
-      return ShrinkWrap.create(WebArchive.class, "test.war")
-                  .addWebResource(EmptyAsset.INSTANCE, "beans.xml")
-                  .addPackage(AnnotatedTypeExtensionTest.class.getPackage())
-                  .addServiceProvider(Extension.class, AnnotatedTypeExtension.class);
-   }
-
-   /*
-    * description = "WELD-371"
-    */
-   @Test
+   
+   @Test(description = "WELD-371")
    public void testIncorrectlyOverridenParameters()
    {
       assert false;
    }
+   
 
 }
