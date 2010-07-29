@@ -17,22 +17,44 @@
       
          <!-- Issues in the TCK -->
          
-         <!-- CDITCK-162 -->
-         <class name="org.jboss.jsr299.tck.tests.implementation.simple.resource.resource.InjectionOfResourceTest">
+         <!-- CDITCK-169 -->
+         <class name="org.jboss.jsr299.tck.tests.implementation.simple.resource.persistenceContext.PersistenceContextInjectionTest">
             <methods>
-               <exclude name="testInjectionOfResource" />
-               <exclude name="testProduceResourceProxy" />
+               <exclude name="testInjectionOfPersistenceContext" />
+               <exclude name="testPassivationOfPersistenceContext" />
             </methods>
          </class>
          
-         <!-- CDITCK-163 -->
-         <class name="org.jboss.jsr299.tck.tests.context.session.SessionContextTest">
+         <!-- CDITCK-170 -->
+         <class name="org.jboss.jsr299.tck.tests.event.observer.transactional.TransactionalObserversTest">
             <methods>
-               <exclude name="testSessionContextDestroyedWhenHttpSessionInvalidated" />
-               <exclude name="testSessionContextDestroyedWhenHttpSessionTimesOut" />
+               <exclude name="testObserverCanSetRollbackOnlyOnTransaction" />
             </methods>
          </class>
-         
+
+         <!-- CDITCK-171 -->
+         <class name="org.jboss.jsr299.tck.tests.implementation.simple.definition.SimpleBeanDefinitionTest">
+            <methods>
+               <exclude name="testAbstractClassDeclaredInJavaNotDiscovered" />
+               <exclude name="testDependentScopedBeanCanHavePublicField" />
+               <exclude name="testInitializerAnnotatedConstructor" />
+               <exclude name="testInitializerAnnotatedConstructorUsedOverEmptyConstuctor" />
+               <exclude name="testInterfaceNotDiscoveredAsSimpleBean" />
+               <exclude name="testNonStaticInnerClassDeclaredInJavaNotDiscovered" />
+               <exclude name="testSimpleBeanOnlyIfConstructorIsInitializer" />
+               <exclude name="testSimpleBeanOnlyIfConstructorParameterless" />
+               <exclude name="testStaticInnerClassDeclaredInJavaAllowed" />
+               <exclude name="testEmptyConstructorUsed" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.implementation.simple.definition.EnterpriseBeanNotDiscoveredAsManagedBeanTest">
+            <methods>
+               <exclude name="testClassesImplementingEnterpriseBeanInterfaceNotDiscoveredAsSimpleBean" />
+            </methods>
+         </class>
+
+
+
          <!-- Issues in Weld (the RI) -->
 
          <!-- WELD-401 -->
