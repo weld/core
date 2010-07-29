@@ -140,7 +140,7 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
    @Override
    public String toString()
    {
-      return Names.parameterToString(getJavaClass(), getAnnotations(), getActualTypeArguments());
+      return Names.parameterToString(getPosition(), getDeclaringCallable().getJavaMember(), getJavaClass(), getAnnotations(), getActualTypeArguments());
    }
 
    public AnnotatedCallable<X> getDeclaringCallable()

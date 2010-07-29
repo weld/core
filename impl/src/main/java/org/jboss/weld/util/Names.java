@@ -19,6 +19,7 @@ package org.jboss.weld.util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -95,9 +96,9 @@ public class Names
       return new NamesStringBuilder("constructor for " + constructor.getDeclaringClass().getName()).add(modifiersToString(constructor.getModifiers())).add(annotationsToString(annotations)).add(constructor.getName()).add(typesToString(actualTypeArguments)).add(parametersToString(parameters)).toString();
    }
 
-   public static String parameterToString(Class<?> rawType, Set<Annotation> annotations, Type[] actualTypeArguments)
+   public static String parameterToString(int position, Member member, Class<?> rawType, Set<Annotation> annotations, Type[] actualTypeArguments)
    {
-      return new NamesStringBuilder().add(modifiersToString(rawType.getModifiers())).add(annotationsToString(annotations)).add(rawType.getName()).add(typesToString(actualTypeArguments)).toString();
+      return new NamesStringBuilder().add("parameter " + position + " on " + member + "; " + modifiersToString(rawType.getModifiers())).add(annotationsToString(annotations)).add(rawType.getName()).add(typesToString(actualTypeArguments)).toString();
    }
 
    /**
