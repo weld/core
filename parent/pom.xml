@@ -84,6 +84,10 @@
       <apache.httpclient.version>3.1</apache.httpclient.version>
       <junit.version>4.8.1</junit.version>
       <htmlunit.version>2.4</htmlunit.version>
+
+      <version.jbossas_server_manager>1.0.3.GA</version.jbossas_server_manager>
+      <!-- <version.jbossas_client>6.0.0.20100429-M3</version.jbossas_client> -->
+      <version.jbossas_client>6.0.0.20100721-M4</version.jbossas_client>
    </properties>
 
 
@@ -163,6 +167,18 @@
             <groupId>org.jboss.spec.javax.servlet</groupId> 
             <artifactId>jboss-servlet-api_3.0_spec</artifactId> 
             <version>${jboss.spec.servlet.version}</version> 
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.jbossas</groupId>
+            <artifactId>jboss-server-manager</artifactId>
+            <version>${version.jbossas_server_manager}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.jbossas</groupId>
+            <artifactId>jboss-as-client</artifactId>
+            <version>${version.jbossas_client}</version>
+            <type>pom</type>
          </dependency>
 
          <dependency>
