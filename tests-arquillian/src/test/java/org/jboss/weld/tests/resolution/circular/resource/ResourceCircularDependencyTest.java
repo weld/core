@@ -43,6 +43,6 @@ public class ResourceCircularDependencyTest
    @Test
    public void testResourceProducerField(Baz baz) throws Exception
    {
-      Assert.assertTrue(baz.getFooDb().isOpen());
+      Assert.assertFalse(baz.getFooDb().contains(new Bar()));
    }
 }

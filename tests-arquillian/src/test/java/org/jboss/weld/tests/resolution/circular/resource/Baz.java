@@ -24,12 +24,18 @@ import javax.persistence.PersistenceContext;
 public class Baz
 {
 
-   @Produces @FooDB @PersistenceContext private EntityManager db;
-   @Inject @FooDB EntityManager fooDb; 
-   
+   @Produces
+   @FooDB
+   @PersistenceContext
+   private EntityManager db;
+
+   @Inject
+   @FooDB
+   private EntityManager fooDb;
+
    public EntityManager getFooDb()
    {
       return fooDb;
    }
-   
+
 }
