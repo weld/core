@@ -41,8 +41,6 @@ import org.jboss.weld.util.Types;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 
-import ch.qos.cal10n.IMessageConveyor;
-
 /**
  * Utility class for static reflection-type operations
  * 
@@ -54,9 +52,6 @@ public class Reflections
 
    static final LocLogger log = loggerFactory().getLogger(UTIL);
    static final XLogger xLog = loggerFactory().getXLogger(UTIL);
-
-   // Exception messages
-   private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
 
    public static final Type[] EMPTY_TYPES = {};
    public static final Annotation[] EMPTY_ANNOTATIONS = {};
@@ -391,7 +386,7 @@ public class Reflections
 
    public static boolean isAssignableFrom(Type type1, Type type2)
    {
-      if (type1 instanceof Class)
+      if (type1 instanceof Class<?>)
       {
          Class<?> clazz = (Class<?>) type1;
          if (isAssignableFrom(clazz, EMPTY_TYPES, type2))
@@ -402,7 +397,7 @@ public class Reflections
       if (type1 instanceof ParameterizedType)
       {
          ParameterizedType parameterizedType1 = (ParameterizedType) type1;
-         if (parameterizedType1.getRawType() instanceof Class)
+         if (parameterizedType1.getRawType() instanceof Class<?>)
          {
             if (isAssignableFrom((Class<?>) parameterizedType1.getRawType(), parameterizedType1.getActualTypeArguments(), type2))
             {
@@ -458,7 +453,7 @@ public class Reflections
       if (type1 instanceof ParameterizedType)
       {
          ParameterizedType parameterizedType1 = (ParameterizedType) type1;
-         if (parameterizedType1.getRawType() instanceof Class)
+         if (parameterizedType1.getRawType() instanceof Class<?>)
          {
             if (matches((Class<?>) parameterizedType1.getRawType(), parameterizedType1.getActualTypeArguments(), type2))
             {
@@ -525,7 +520,7 @@ public class Reflections
       if (type2 instanceof ParameterizedType)
       {
          ParameterizedType parameterizedType = (ParameterizedType) type2;
-         if (parameterizedType.getRawType() instanceof Class)
+         if (parameterizedType.getRawType() instanceof Class<?>)
          {
             if (isAssignableFrom(rawType1, actualTypeArguments1, (Class<?>) parameterizedType.getRawType(), parameterizedType.getActualTypeArguments()))
             {
@@ -533,7 +528,7 @@ public class Reflections
             }
          }
       }
-      else if (type2 instanceof Class)
+      else if (type2 instanceof Class<?>)
       {
          Class<?> clazz = (Class<?>) type2;
          if (isAssignableFrom(rawType1, actualTypeArguments1, clazz, EMPTY_TYPES))
@@ -541,9 +536,9 @@ public class Reflections
             return true;
          }
       }
-      else if (type2 instanceof TypeVariable)
+      else if (type2 instanceof TypeVariable<?>)
       {
-         TypeVariable typeVariable = (TypeVariable) type2;
+         TypeVariable<?> typeVariable = (TypeVariable<?>) type2;
          if (isTypeBounded(rawType1, actualTypeArguments1, typeVariable.getBounds()))
          {
             return true;
