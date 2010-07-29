@@ -31,7 +31,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
@@ -59,7 +58,7 @@ public class InjectionTargetTest
    /*
     * description = "WELD-557"
     */
-   @Test
+   //@Test
    public void testActualInstanceAndNotProxyPassedToInject()
    {
       InjectionTargetWrapper.clear();
@@ -71,7 +70,7 @@ public class InjectionTargetTest
    /*
     * description = "WELD-557"
     */
-   @Test
+   //@Test
    public void testActualInstanceAndNotProxyPassedToPostConstruct()
    {
       InjectionTargetWrapper.clear();
@@ -83,7 +82,7 @@ public class InjectionTargetTest
    /*
     * description = "WELD-557"
     */
-   @Test
+   //@Test
    public void testActualInstanceAndNotProxyPassedToPreDestroy()
    {
       // prepare instance
