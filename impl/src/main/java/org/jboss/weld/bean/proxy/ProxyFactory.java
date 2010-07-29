@@ -41,6 +41,7 @@ import javassist.CtMethod;
 import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
+import javassist.util.proxy.ProxyObject;
 
 import org.jboss.interceptor.proxy.LifecycleMixin;
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
@@ -176,7 +177,7 @@ public class ProxyFactory<T>
       {
          throw new DefinitionException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
       }
-      ((Proxy) proxy).proxy_setInstance(beanInstance);
+      ((ProxyObject) proxy).setHandler(new ProxyMethodHandler(beanInstance));
       return proxy;
    }
 
@@ -234,7 +235,7 @@ public class ProxyFactory<T>
     */
    public static boolean isProxy(Object proxySuspect)
    {
-      return proxySuspect instanceof Proxy;
+      return proxySuspect instanceof ProxyObject;
    }
 
    /**
@@ -245,10 +246,10 @@ public class ProxyFactory<T>
     */
    public static <T> void setBeanInstance(T proxy, BeanInstance beanInstance)
    {
-      if (proxy instanceof Proxy)
+      if (proxy instanceof ProxyObject)
       {
-         Proxy proxyView = (Proxy) proxy;
-         proxyView.proxy_setInstance(beanInstance);
+         ProxyObject proxyView = (ProxyObject) proxy;
+         proxyView.setHandler(new ProxyMethodHandler(beanInstance));
       }
    }
 
@@ -273,9 +274,9 @@ public class ProxyFactory<T>
    private Class<T> createProxyClass(String proxyClassName) throws Exception
    {
       ArraySet<Class<?>> specialInterfaces = new ArraySet<Class<?>>(3);
-      specialInterfaces.add(Proxy.class);
       specialInterfaces.add(LifecycleMixin.class);
       specialInterfaces.add(TargetInstanceProxy.class);
+      specialInterfaces.add(ProxyObject.class);
       // Remove special interfaces from main set (deserialization scenario)
       additionalInterfaces.removeAll(specialInterfaces);
 
@@ -347,7 +348,7 @@ public class ProxyFactory<T>
       {
          // The field representing the underlying instance or special method
          // handling
-         proxyClassType.addField(new CtField(classPool.get("org.jboss.weld.bean.proxy.BeanInstance"), "beanInstance", proxyClassType));
+         proxyClassType.addField(new CtField(classPool.get("javassist.util.proxy.MethodHandler"), "methodHandler", proxyClassType));
          // Special field used during serialization of a proxy
          proxyClassType.addField(new CtField(CtClass.booleanType, "firstSerializationPhaseComplete", proxyClassType), "false");
       }
@@ -386,7 +387,7 @@ public class ProxyFactory<T>
          // replacement object and the subsequent call get the proxy object.
          CtClass exception = classPool.get(ObjectStreamException.class.getName());
          CtClass objectClass = classPool.get(Object.class.getName());
-         String writeReplaceBody = "{ " + " if (firstSerializationPhaseComplete) {" + "    firstSerializationPhaseComplete = false; " + "    return $0; " + " } else {" + " firstSerializationPhaseComplete = true; " + " return new org.jboss.weld.bean.proxy.util.SerializableProxy($0);" + " } }";
+         String writeReplaceBody = createWriteReplaceBody(proxyClassType);
          proxyClassType.addMethod(CtNewMethod.make(objectClass, "writeReplace", null, new CtClass[] { exception }, writeReplaceBody, proxyClassType));
 
          // Also add a static method that can be used to deserialize a proxy
@@ -404,6 +405,22 @@ public class ProxyFactory<T>
          throw new WeldException(e);
       }
 
+   }
+
+   private String createWriteReplaceBody(CtClass proxyClassType)
+   {
+      StringBuilder bodyString = new StringBuilder();
+      bodyString.append("{\n");
+      bodyString.append(" if (firstSerializationPhaseComplete) {\n");
+      bodyString.append("    firstSerializationPhaseComplete = false;\n");
+      bodyString.append("    return $0;\n");
+      bodyString.append(" } else {\n");
+      bodyString.append("    firstSerializationPhaseComplete = true;\n");
+      bodyString.append("    return methodHandler.invoke($0,");
+      bodyString.append(proxyClassType.getName());
+      bodyString.append(".class.getMethod(\"writeReplace\", null), null, $args);\n");
+      bodyString.append(" }\n}");
+      return bodyString.toString();
    }
 
    protected void addMethodsFromClass(CtClass proxyClassType)
@@ -441,7 +458,7 @@ public class ProxyFactory<T>
 
    /**
     * Creates the given method on the proxy class where the implementation
-    * forwards the call directly to the bean instance.
+    * forwards the call directly to the method handler.
     * 
     * @param method any Javassist method
     * @return a string containing the method body code to be compiled
@@ -463,7 +480,7 @@ public class ProxyFactory<T>
          // Assume this is a void method
       }
 
-      bodyString.append("beanInstance.invoke(");
+      bodyString.append("methodHandler.invoke($0, ");
       bodyString.append(method.getDeclaringClass().getName());
       if (Modifier.isPublic(method.getModifiers()))
       {
@@ -478,7 +495,7 @@ public class ProxyFactory<T>
       bodyString.append(method.getName());
       bodyString.append("\", ");
       bodyString.append(getSignatureClasses(method));
-      bodyString.append("), $args); }");
+      bodyString.append("), null, $args); }");
 
       return bodyString.toString();
    }
@@ -530,10 +547,6 @@ public class ProxyFactory<T>
    {
       try
       {
-         // Add public getter/setter pair for the instance locator
-         proxyClassType.addMethod(CtNewMethod.make("public org.jboss.weld.bean.proxy.BeanInstance proxy_getInstance() { return beanInstance; }", proxyClassType));
-         proxyClassType.addMethod(CtNewMethod.make("public void proxy_setInstance(org.jboss.weld.bean.proxy.BeanInstance beanInstance) { this.beanInstance = beanInstance; }", proxyClassType));
-
          // Add special methods for interceptors
          CtClass lifecycleMixinClass = classPool.get(LifecycleMixin.class.getName());
          for (CtMethod method : lifecycleMixinClass.getDeclaredMethods())
@@ -544,8 +557,11 @@ public class ProxyFactory<T>
          CtClass targetInstanceProxyClass = classPool.get(TargetInstanceProxy.class.getName());
          CtMethod getInstanceMethod = targetInstanceProxyClass.getDeclaredMethod("getTargetInstance");
          CtMethod getInstanceClassMethod = targetInstanceProxyClass.getDeclaredMethod("getTargetClass");
-         proxyClassType.addMethod(CtNewMethod.make(getInstanceMethod.getReturnType(), getInstanceMethod.getName(), getInstanceMethod.getParameterTypes(), getInstanceMethod.getExceptionTypes(), "{ return beanInstance.getInstance(); }", proxyClassType));
-         proxyClassType.addMethod(CtNewMethod.make(getInstanceClassMethod.getReturnType(), getInstanceClassMethod.getName(), getInstanceClassMethod.getParameterTypes(), getInstanceClassMethod.getExceptionTypes(), "{ return beanInstance.getInstanceType(); }", proxyClassType));
+         proxyClassType.addMethod(CtNewMethod.make(getInstanceMethod.getReturnType(), getInstanceMethod.getName(), getInstanceMethod.getParameterTypes(), getInstanceMethod.getExceptionTypes(), createSpecialInterfaceBody(getInstanceMethod, TargetInstanceProxy.class), proxyClassType));
+         proxyClassType.addMethod(CtNewMethod.make(getInstanceClassMethod.getReturnType(), getInstanceClassMethod.getName(), getInstanceClassMethod.getParameterTypes(), getInstanceClassMethod.getExceptionTypes(), createSpecialInterfaceBody(getInstanceClassMethod, TargetInstanceProxy.class), proxyClassType));
+         CtClass proxyObjectClass = classPool.get(ProxyObject.class.getName());
+         CtMethod setMethodHandlerMethod = proxyObjectClass.getDeclaredMethod("setHandler");
+         proxyClassType.addMethod(CtNewMethod.make(setMethodHandlerMethod.getReturnType(), setMethodHandlerMethod.getName(), setMethodHandlerMethod.getParameterTypes(), setMethodHandlerMethod.getExceptionTypes(), "{ methodHandler = $1; }", proxyClassType));
       }
       catch (Exception e)
       {
@@ -565,13 +581,26 @@ public class ProxyFactory<T>
    protected String createSpecialInterfaceBody(CtMethod method, Class<?> interfaceClazz) throws NotFoundException
    {
       StringBuilder bodyString = new StringBuilder();
-      bodyString.append("{ beanInstance.invoke(");
+      bodyString.append("{\n");
+      try
+      {
+         if (method.getReturnType() != null)
+         {
+            bodyString.append("return ($r)");
+         }
+      }
+      catch (NotFoundException e)
+      {
+         // Assume this is a void method
+      }
+
+      bodyString.append("methodHandler.invoke($0, ");
       bodyString.append(interfaceClazz.getName());
       bodyString.append(".class.getDeclaredMethod(\"");
       bodyString.append(method.getName());
       bodyString.append("\", ");
       bodyString.append(getSignatureClasses(method));
-      bodyString.append("), $args); }");
+      bodyString.append("), null, $args); }");
 
       return bodyString.toString();
    }

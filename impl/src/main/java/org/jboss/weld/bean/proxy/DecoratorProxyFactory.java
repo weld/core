@@ -23,14 +23,11 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 
 import javassist.CtClass;
-import javassist.CtConstructor;
 import javassist.CtMethod;
-import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
 
-import javax.decorator.Delegate;
-
+import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
@@ -73,29 +70,23 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
       }
    }
 
-   @Override
-   protected void addConstructors(CtClass proxyClassType)
+   private void addHandlerInitializerMethod(CtClass proxyClassType) throws Exception
    {
-      try
-      {
-         CtClass baseType = getClassPool().get(getBeanType().getName());
-         for (CtConstructor constructor : baseType.getConstructors())
-         {
-            int delegateInjectionPosition = getDelegateInjectionPosition(constructor);
-            if (delegateInjectionPosition >= 0)
-            {
-               proxyClassType.addConstructor(CtNewConstructor.make(constructor.getParameterTypes(), constructor.getExceptionTypes(), createDelegateInitializerCode(null, delegateInjectionPosition), proxyClassType));
-            }
-            else
-            {
-               proxyClassType.addConstructor(CtNewConstructor.copy(constructor, proxyClassType, null));
-            }
-         }
-      }
-      catch (Exception e)
-      {
-         throw new WeldException(e);
-      }
+      CtClass objectClass = getClassPool().get(Object.class.getName());
+      proxyClassType.addMethod(CtNewMethod.make(Modifier.PRIVATE, CtClass.voidType, "_initMH", new CtClass[] { objectClass }, null, createMethodHandlerInitializerBody(proxyClassType), proxyClassType));
+   }
+
+   private String createMethodHandlerInitializerBody(CtClass proxyClassType)
+   {
+      StringBuilder bodyString = new StringBuilder();
+      bodyString.append("{ methodHandler = (javassist.util.proxy.MethodHandler) methodHandler.invoke($0, ");
+      bodyString.append(proxyClassType.getName());
+      bodyString.append(".class.getDeclaredMethod(\"");
+      bodyString.append("_initMH");
+      bodyString.append("\", new Class[]{Object.class}");
+      bodyString.append("), null, $args); }");
+      log.trace("Created MH initializer body for proxy:  " + bodyString.toString());
+      return bodyString.toString();
    }
 
    @Override
@@ -114,23 +105,27 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
       }
       try
       {
+         if (delegateParameterPosition >= 0)
+         {
+            addHandlerInitializerMethod(proxyClassType);
+         }
          for (CtMethod method : proxyClassType.getMethods())
          {
             if (!method.getDeclaringClass().getName().equals("java.lang.Object") || method.getName().equals("toString"))
             {
-               log.trace("Adding method " + method.getLongName());
                String methodBody = null;
                if ((delegateParameterPosition >= 0) && (initializerMethod.equals(method.getName())))
                {
                   methodBody = createDelegateInitializerCode(initializerMethod, delegateParameterPosition);
                }
-               else if (Modifier.isAbstract(method.getModifiers()))
+               if (Modifier.isAbstract(method.getModifiers()))
                {
                   methodBody = createAbstractMethodCode(method);
                }
 
                if (methodBody != null)
                {
+                  log.trace("Adding method " + method.getLongName() + " " + methodBody);
                   proxyClassType.addMethod(CtNewMethod.make(method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), methodBody, proxyClassType));
                }
             }
@@ -177,11 +172,12 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
       }
       else
       {
-         // Use the associated bean instance to invoke the method
-         bodyString.append("beanInstance.invoke(");
+         // Use the associated method handler to invoke the method
+         bodyString.append("methodHandler.invoke($0,");
          if (Modifier.isPublic(delegateMethod.getModifiers()))
          {
-            bodyString.append("beanInstance.getInstanceType().getMethod(\"");
+            bodyString.append(getTargetClass());
+            bodyString.append(".getMethod(\"");
             log.trace("Using getMethod in proxy for method " + method.getLongName());
          }
          else
@@ -193,10 +189,19 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
          bodyString.append(method.getName());
          bodyString.append("\", ");
          bodyString.append(getSignatureClasses(method));
-         bodyString.append("), $args); }");
+         bodyString.append("), null, $args); }");
       }
 
       return bodyString.toString();
+   }
+
+   private String getTargetClass()
+   {
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("((Class)methodHandler.invoke($0,");
+      buffer.append(TargetInstanceProxy.class.getName());
+      buffer.append(".class.getMethod(\"getTargetClass\", null), null, null))");
+      return buffer.toString();
    }
 
    private String createDelegateInitializerCode(String initializerName, int delegateParameterPosition)
@@ -209,30 +214,11 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
          buffer.append(initializerName);
       }
       buffer.append("($$);\n");
-      buffer.append("beanInstance = new ");
-      buffer.append(TargetBeanInstance.class.getName());
+      buffer.append("_initMH");
       buffer.append("($");
       buffer.append(delegateParameterPosition + 1);
       buffer.append("); }");
       return buffer.toString();
-   }
-
-   private int getDelegateInjectionPosition(CtConstructor constructor)
-   {
-      int position = -1;
-      Object[][] parameterAnnotations = constructor.getAvailableParameterAnnotations();
-      for (int i = 0; i < parameterAnnotations.length; i++)
-      {
-         for (int j = 0; j < parameterAnnotations[i].length; j++)
-         {
-            if (parameterAnnotations[i][j] instanceof Delegate)
-            {
-               position = i;
-               break;
-            }
-         }
-      }
-      return position;
    }
 
 }
