@@ -37,7 +37,8 @@ public class SerializationTest
    public static Archive<?> deploy() 
    {
       return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(SerializationTest.class.getPackage());
+         .addPackage(SerializationTest.class.getPackage())
+         .addClass(Utils.class);
    }
 
    /*

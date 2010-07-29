@@ -28,6 +28,8 @@ import javax.transaction.UserTransaction;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+import junit.framework.Assert;
+
 @SessionScoped
 public class Consumer implements Serializable
 {
@@ -60,15 +62,15 @@ public class Consumer implements Serializable
    
    public void check()
    {
-      assert Checker.checkBeanManager(beanManager);
+      Assert.assertTrue(Checker.checkBeanManager(beanManager));
 
       // Not working incontainer as there is no principal
       //assert Checker.checkPrincipal(principal);
-      assert Checker.checkUserTransaction(userTransaction);
-      assert Checker.checkValidator(validator);
-      assert Checker.checkValidatorFactory(validatorFactory);
-      assert Checker.checkInstance(cow);
-      assert Checker.checkEvent(event, observer);
+      Assert.assertTrue(Checker.checkUserTransaction(userTransaction));
+      Assert.assertTrue(Checker.checkValidator(validator));
+      Assert.assertTrue(Checker.checkValidatorFactory(validatorFactory));
+      Assert.assertTrue(Checker.checkInstance(cow));
+      Assert.assertTrue(Checker.checkEvent(event, observer));
    }
    
    

@@ -31,11 +31,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import javassist.util.proxy.ProxyObject;
+
 import javax.el.ELContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.util.TypeLiteral;
 
-import org.jboss.weld.bean.proxy.Proxy;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.el.EL;
@@ -172,6 +173,6 @@ public class Utils
 
    public static boolean isProxy(Object proxy)
    {
-      return proxy instanceof Proxy;
+      return proxy instanceof ProxyObject;
    }
 }
