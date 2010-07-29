@@ -168,6 +168,32 @@
                <parallel>none</parallel>
             </configuration>
          </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>enforce</id>
+                  <goals>
+                     <goal>enforce</goal>
+                  </goals>
+                  <configuration>
+                     <rules>
+                        <requireMavenVersion>
+                           <version>[${minimum.maven.version},)</version>
+                        </requireMavenVersion>
+                        <requirePluginVersions>
+                           <unCheckedPlugins>
+                              <unCheckedPlugin>org.apache.maven.plugins:maven-eclipse-plugin</unCheckedPlugin>
+                              <unCheckedPlugin>org.codehaus.mojo:versions-maven-plugin</unCheckedPlugin>
+                              <unCheckedPlugin>org.apache.maven.plugins:maven-surefire-plugin</unCheckedPlugin>
+                           </unCheckedPlugins>
+                        </requirePluginVersions>
+                     </rules>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
    </build>
 
@@ -248,37 +274,14 @@
       <profile>
          <id>surefireSnapshot</id>
          <activation>
-            <activeByDefault>false</activeByDefault>
+            <property>
+               <name>surefireSnapshot</name>
+               <value>true</value>
+            </property>
          </activation>
          <build>
             <pluginManagement>
                <plugins>
-                  <plugin>
-                     <groupId>org.apache.maven.plugins</groupId>
-                     <artifactId>maven-enforcer-plugin</artifactId>
-                     <executions>
-                        <execution>
-                           <id>enforce</id>
-                           <goals>
-                              <goal>enforce</goal>
-                           </goals>
-                           <configuration>
-                              <rules>
-                                 <requireMavenVersion>
-                                    <version>[${minimum.maven.version},)</version>
-                                 </requireMavenVersion>
-                                 <requirePluginVersions>
-                                    <unCheckedPlugins>
-                                       <unCheckedPlugin>org.apache.maven.plugins:maven-eclipse-plugin</unCheckedPlugin>
-                                       <unCheckedPlugin>org.codehaus.mojo:versions-maven-plugin</unCheckedPlugin>
-                                       <unCheckedPlugin>org.apache.maven.plugins:maven-surefire-plugin</unCheckedPlugin>
-                                    </unCheckedPlugins>
-                                 </requirePluginVersions>
-                              </rules>
-                           </configuration>
-                        </execution>
-                     </executions>
-                  </plugin>
                   <plugin>
                      <groupId>org.apache.maven.plugins</groupId>
                      <artifactId>maven-surefire-plugin</artifactId>
