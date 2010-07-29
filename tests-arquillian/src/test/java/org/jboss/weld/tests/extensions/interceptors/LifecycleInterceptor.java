@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.interceptors;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.interceptor.InvocationContext;
 
 /**
@@ -28,13 +30,13 @@ public class LifecycleInterceptor
    static private boolean preDestroyCalled = false;
    static private boolean postConstructCalled = false;
 
-   // PreDestroy
+   @PreDestroy
    public void preDestroy(InvocationContext ctx)
    {
       preDestroyCalled = true;
    }
 
-   // @PostConstruct
+   @PostConstruct
    public void postConstruct(InvocationContext ctx)
    {
       Object marathon = ctx.getTarget();

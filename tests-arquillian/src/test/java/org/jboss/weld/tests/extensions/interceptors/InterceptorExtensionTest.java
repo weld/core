@@ -28,7 +28,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.weld.test.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.jboss.weld.tests.util.annotated.TestAnnotatedTypeBuilder;
 import org.junit.Assert;
@@ -65,7 +64,7 @@ public class InterceptorExtensionTest
    @Test
    public void testInterceptorCalled(NumberSource ng)
    {
-      Assert.assertEquals(1, ng.value());
+      Assert.assertEquals(2, ng.value());
       Assert.assertTrue(IncrementingInterceptor.isDoAroundCalled());
    }
 
@@ -78,7 +77,7 @@ public class InterceptorExtensionTest
       Marathon m = (Marathon)bean.create(creationalContext);
       
       Assert.assertTrue(LifecycleInterceptor.isPostConstructCalled());
-      Assert.assertEquals(24, m.getLength());
+      Assert.assertEquals(42, m.getLength());
       bean.destroy(m, creationalContext);
       Assert.assertTrue(LifecycleInterceptor.isPreDestroyCalled());
    }

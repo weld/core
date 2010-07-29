@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.interceptors;
 
+import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 /**
@@ -28,7 +29,7 @@ public class IncrementingInterceptor
 {
    private static boolean doAroundCalled = false;
 
-   // @AroundInvoke
+   @AroundInvoke
    public Object doAround(InvocationContext context) throws Exception
    {
       doAroundCalled = true;
