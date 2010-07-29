@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.builtinBeans;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 
-@RequestScoped
+@ApplicationScoped
 public class Cow
 {
    
