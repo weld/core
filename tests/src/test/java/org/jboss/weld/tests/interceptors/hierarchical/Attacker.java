@@ -19,7 +19,7 @@ package org.jboss.weld.tests.interceptors.hierarchical;
 /**
  * @author Marius Bogoevici
  */
-@Play
+
 public class Attacker extends Player
 {
 
@@ -33,6 +33,7 @@ public class Attacker extends Player
       
    }
 
+   @Play
    public Attacker cloneMe()
    {
       return this;

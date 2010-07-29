@@ -31,7 +31,6 @@ public class Player
 
    }
 
-   @Play
    public Player cloneMe()
    {
       return this;

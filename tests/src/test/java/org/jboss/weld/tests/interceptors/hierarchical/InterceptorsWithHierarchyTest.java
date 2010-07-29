@@ -19,6 +19,7 @@ package org.jboss.weld.tests.interceptors.hierarchical;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
 import org.jboss.weld.test.AbstractWeldTest;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -40,7 +41,7 @@ public class InterceptorsWithHierarchyTest extends AbstractWeldTest
    {
       Attacker player = this.getReference(Attacker.class);
       player.cloneMe();
-      assert Defender.invocationsCount == 1;
+      Assert.assertEquals(Defender.invocationsCount, 1);
    }
 
 }
