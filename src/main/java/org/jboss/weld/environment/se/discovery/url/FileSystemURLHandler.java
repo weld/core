@@ -28,6 +28,7 @@ import java.util.zip.ZipFile;
 
 import org.jboss.weld.environment.se.discovery.MutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,6 +159,10 @@ public class FileSystemURLHandler
          catch (NoClassDefFoundError e)
          {
             log.error("Error loading " + name, e);
+         }
+         catch(ResourceLoadingException e)
+         {
+        	 log.error("Error loading " + name, e);
          }
       }
       else if (name.endsWith("beans.xml"))
