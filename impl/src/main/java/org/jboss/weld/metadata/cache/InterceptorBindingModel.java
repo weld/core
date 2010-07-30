@@ -57,6 +57,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
       super(type, transformer);
       if (isValid())
       {
+         checkTargetType();
          initNonBindingTypes();
          initInterceptionBindingTypes();
          checkArrayAndAnnotationValuedMembers();
@@ -86,25 +87,27 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
       inheritedInterceptionBindingTypes = getAnnotatedAnnotation().getMetaAnnotations(InterceptorBinding.class);
    }
 
-   @Override
-   protected void initValid()
+   private void checkTargetType()
    {
-      super.initValid();
       if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
       {
          this.valid = false;
-         log.debug(MISSING_TARGET, getAnnotatedAnnotation());
+         throw new DefinitionException(MISSING_TARGET, getAnnotatedAnnotation());
       }
       else
       {
-         ElementType[] targetElementTypes = getAnnotatedAnnotation().getAnnotation(Target.class).value();
-         if (!Arrays2.unorderedEquals(targetElementTypes, ElementType.TYPE, ElementType.METHOD)
-               && !Arrays2.unorderedEquals(targetElementTypes, ElementType.TYPE))
+         if (!isValidTargetType())
          {
             this.valid = false;
-            log.debug(MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE, getAnnotatedAnnotation());
+            throw new DefinitionException(MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE, getAnnotatedAnnotation());
          }
       }
+   }
+
+   private boolean isValidTargetType()
+   {
+      return Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), ElementType.TYPE, ElementType.METHOD)
+            || Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), ElementType.TYPE);
    }
 
    private void checkMetaAnnotations()
@@ -116,8 +119,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
             if (!Arrays2.containsAll(inheritedBinding.annotationType().getAnnotation(Target.class).value(), ElementType.METHOD))
             {
                this.valid = false;
-               log.debug(TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE, 
-                     getAnnotatedAnnotation(), inheritedBinding);
+               log.debug(TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE, getAnnotatedAnnotation(), inheritedBinding);
             }
          }
       }

@@ -19,11 +19,14 @@ package org.jboss.weld.metadata.cache;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.resources.ClassTransformer;
-
 import com.google.common.base.Function;
+import com.google.common.collect.ComputationException;
 import com.google.common.collect.MapMaker;
+import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.resources.ClassTransformer;
 
 /**
  * Metadata singleton for holding EJB metadata, scope models etc.
@@ -202,6 +205,22 @@ public class MetaAnnotationStore implements Service
 
    public <T extends Annotation> InterceptorBindingModel<T> getInterceptorBindingModel(final Class<T> interceptorBinding)
    {
-      return (InterceptorBindingModel<T>) interceptorBindings.get(interceptorBinding);
+      // Unwrap Definition/Deployment exceptions wrapped in a ComputationException
+      // TODO: generalize this and move to a higher level (MBG)
+      try
+      {
+         return (InterceptorBindingModel<T>) interceptorBindings.get(interceptorBinding);
+      }
+      catch (ComputationException e)
+      {
+         if (e.getCause() instanceof DeploymentException || e.getCause() instanceof DefinitionException)
+         {
+            throw (WeldException)e.getCause();
+         }
+         else
+         {
+            throw e;
+         }
+      }
    }
 }
