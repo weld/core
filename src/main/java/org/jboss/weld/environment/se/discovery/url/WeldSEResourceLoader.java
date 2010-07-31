@@ -23,6 +23,7 @@ import java.util.Collection;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.collections.EnumerationList;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * A simple resource loader.
@@ -41,14 +42,29 @@ public class WeldSEResourceLoader implements ResourceLoader
       
       try
       {
+         Class<?> clazz = null;
          if (Thread.currentThread().getContextClassLoader() != null)
          {
-            return Thread.currentThread().getContextClassLoader().loadClass(name);
+            clazz = Thread.currentThread().getContextClassLoader().loadClass(name);
          }
          else
          {
-            return Class.forName(name);
+            clazz = Class.forName(name);
          }
+         // if the class relies on optional dependencies that are not present
+         // then a CNFE can be thrown later in the deployment process when the
+         // Introspector is inspecting the class. We call getMethods, getFields
+         // and getConstructors now over the whole type heirachey to force 
+         // these errors to occur early
+         Class<?> obj = clazz;
+         while (obj != null && obj != Object.class)
+         {
+            obj.getDeclaredConstructors();
+            obj.getDeclaredFields();
+            obj.getDeclaredMethods();
+            obj = obj.getSuperclass();
+         }
+         return clazz;
       }
       catch (ClassNotFoundException e)
       {
