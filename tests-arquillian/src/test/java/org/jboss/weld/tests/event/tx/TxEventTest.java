@@ -17,33 +17,42 @@
 package org.jboss.weld.tests.event.tx;
 
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.Classes;
-import org.jboss.testharness.impl.packaging.IntegrationTest;
-import org.jboss.testharness.impl.packaging.Resource;
-import org.jboss.testharness.impl.packaging.Resources;
-import org.jboss.testharness.impl.packaging.war.WarArtifactDescriptor;
-import org.testng.annotations.Test;
+import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.api.Run;
+import org.jboss.arquillian.api.RunModeType;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.tests.category.Integration;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
-@Artifact(addCurrentPackage=false)
-@IntegrationTest(runLocally=true)
-@Resources({
-   @Resource(source="faces-config.xml", destination="WEB-INF/faces-config.xml"),
-   @Resource(source="web.xml", destination=WarArtifactDescriptor.WEB_XML_DESTINATION),
-   @Resource(source="home.xhtml", destination="home.xhtml")
-})
-@Classes({
-   Foo.class,
-   Updated.class
-})
+@Category(Integration.class)
+@RunWith(Arquillian.class)
+@Run(RunModeType.AS_CLIENT)
 public class TxEventTest extends AbstractHtmlUnitTest
 {
-   
-   @Test(description="WBRI-401")
+   @Deployment
+   public static WebArchive createDeployment() 
+   {
+      return ShrinkWrap.create(WebArchive.class, "test.war")
+               .addClasses(Foo.class, Updated.class)
+               .addWebResource(TxEventTest.class.getPackage(), "web.xml", "web.xml")
+               .addWebResource(TxEventTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addResource(TxEventTest.class.getPackage(), "home.xhtml", "home.xhtml")
+               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+   }
+
+   /*
+    * description = "WBRI-401"
+    */
+   @Test
    public void testRequestContextLifecycle() throws Exception
    {
       WebClient webClient = new WebClient();
@@ -51,5 +60,10 @@ public class TxEventTest extends AbstractHtmlUnitTest
       HtmlSubmitInput beginConversationButton = getFirstMatchingElement(home, HtmlSubmitInput.class, "SaveButton");
       beginConversationButton.click();
    }
-   
+ 
+   protected String getPath(String page)
+   {
+      // TODO: this should be moved out and be handled by Arquillian
+      return "http://localhost:8080/test/" + page;
+   }
 }

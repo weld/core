@@ -29,8 +29,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.tests.contexts.errorpage.ErrorPageTest;
+import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -45,14 +46,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  * @author Pete Muir
  *
  */
-//@Artifact(addCurrentPackage=false)
-//@Classes({Storm.class,SomeBean.class})
-//@IntegrationTest(runLocally=true)
-//@Resources({
-//   @Resource(destination=WarArtifactDescriptor.WEB_XML_DESTINATION, source="web.xml"),
-//   @Resource(destination="storm.jspx", source="storm.jsf"),
-//   @Resource(destination="/WEB-INF/faces-config.xml", source="faces-config.xml")
-//})
+@Category(Integration.class)
 @RunWith(Arquillian.class)
 @Run(RunModeType.AS_CLIENT)
 public class InvalidateSessionTest

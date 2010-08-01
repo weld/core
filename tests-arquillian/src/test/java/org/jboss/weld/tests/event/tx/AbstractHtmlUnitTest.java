@@ -19,12 +19,10 @@ package org.jboss.weld.tests.event.tx;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.weld.test.AbstractWeldTest;
-
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-public abstract class AbstractHtmlUnitTest extends AbstractWeldTest
+public abstract class AbstractHtmlUnitTest 
 {
 
    public AbstractHtmlUnitTest()
