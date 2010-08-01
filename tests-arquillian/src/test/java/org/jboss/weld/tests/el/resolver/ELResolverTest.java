@@ -16,15 +16,22 @@
  */
 package org.jboss.weld.tests.el.resolver;
 
-import static org.testng.Assert.assertEquals;
-
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
+import javax.inject.Inject;
 
-import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.el.EL;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.sun.el.ExpressionFactoryImpl;
 
 /**
  * Test the WeldELResolver and that it collaborates with the standard EL resolver chain.
@@ -32,9 +39,20 @@ import org.testng.annotations.Test;
  * @author Pete Muir
  * @author Dan Allen
  */
-@Artifact
-public class ELResolverTest extends AbstractWeldTest
+@RunWith(Arquillian.class)
+public class ELResolverTest
 {
+   @Deployment
+   public static JavaArchive createDeployment() 
+   {
+      return ShrinkWrap.create(BeanArchive.class)
+               .addPackage(ELResolverTest.class.getPackage())
+               .addClass(EL.class)
+               .addPackages(true, ExpressionFactoryImpl.class.getPackage());
+   }
+   
+   @Inject
+   private BeanManagerImpl beanManager;
    
    /**
     * Test that the WeldELResolver only works to resolve the base of an EL
@@ -47,10 +65,12 @@ public class ELResolverTest extends AbstractWeldTest
    @Test
    public void testResolveBeanPropertyOfNamedBean()
    {
-      ELContext elContext = EL.createELContext(getCurrentManager());
+      ELContext elContext = EL.createELContext(beanManager);
       ExpressionFactory exprFactory = EL.EXPRESSION_FACTORY;
       
-      assertEquals(exprFactory.createValueExpression(elContext, "#{beer.style}", String.class).getValue(elContext), "Belgium Strong Dark Ale");
+      Object value = exprFactory.createValueExpression(elContext, "#{beer.style}", String.class).getValue(elContext);
+      
+      Assert.assertEquals("Belgium Strong Dark Ale", value);
    }
 
    /**
@@ -64,10 +84,10 @@ public class ELResolverTest extends AbstractWeldTest
    @Test
    public void testResolveBeanPropertyOfProducerBean()
    {
-      ELContext elContext = EL.createELContext(getCurrentManager());
+      ELContext elContext = EL.createELContext(beanManager);
       ExpressionFactory exprFactory = EL.EXPRESSION_FACTORY;
       
-      assertEquals(exprFactory.createValueExpression(elContext, "#{beerOnTap.style}", String.class).getValue(elContext), "IPA");
+      Object value = exprFactory.createValueExpression(elContext, "#{beerOnTap.style}", String.class).getValue(elContext);
+      Assert.assertEquals("IPA", value);
    }
-   
 }
