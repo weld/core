@@ -20,14 +20,20 @@ package org.jboss.weld.tests.contexts.errorpage;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.Classes;
-import org.jboss.testharness.impl.packaging.IntegrationTest;
-import org.jboss.testharness.impl.packaging.Resource;
-import org.jboss.testharness.impl.packaging.Resources;
-import org.jboss.testharness.impl.packaging.war.WarArtifactDescriptor;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.Test;
+import junit.framework.Assert;
+
+import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.api.Run;
+import org.jboss.arquillian.api.RunModeType;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.tests.category.Broken;
+import org.jboss.weld.tests.category.Integration;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlDivision;
@@ -44,18 +50,28 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author David Allen
  *
  */
-@Artifact(addCurrentPackage=false)
-@Classes({Storm.class, Rain.class})
-@IntegrationTest(runLocally=true)
-@Resources({
-  @Resource(destination=WarArtifactDescriptor.WEB_XML_DESTINATION, source="web.xml"),
-  @Resource(destination="storm.jspx", source="storm.jsf"),
-  @Resource(destination="error.jspx", source="error.jsf"),
-  @Resource(destination="/WEB-INF/faces-config.xml", source="faces-config.xml")
-})
-public class ErrorPageTest extends AbstractWeldTest
+@Category(Integration.class)
+@RunWith(Arquillian.class)
+@Run(RunModeType.AS_CLIENT)
+public class ErrorPageTest 
 {
-   @Test(description = "WELD-29", groups = { "broken" })
+   @Deployment
+   public static WebArchive createDeployment() 
+   {
+      return ShrinkWrap.create(WebArchive.class, "test.war")
+               .addClasses(Storm.class, Rain.class)
+               .addWebResource(ErrorPageTest.class.getPackage(), "web.xml", "web.xml")
+               .addWebResource(ErrorPageTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addResource(ErrorPageTest.class.getPackage(), "error.jsf", "error.jspx")
+               .addResource(ErrorPageTest.class.getPackage(), "storm.jsf", "storm.jspx")
+               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+   }
+
+   /*
+    * description = "WELD-29"
+    */
+   @Category(Broken.class)
+   @Test
    public void testActionMethodExceptionDoesNotDestroyContext() throws Exception
    {
       WebClient client = new WebClient();
@@ -66,11 +82,19 @@ public class ErrorPageTest extends AbstractWeldTest
       HtmlTextInput strength = getFirstMatchingElement(page, HtmlTextInput.class, "stormStrength");
       strength.setValueAttribute("10");
       page = disasterButton.click();
-      assert "Application Error".equals(page.getTitleText());
+      Assert.assertEquals("Application Error", page.getTitleText());
+      
       HtmlDivision conversationValue = getFirstMatchingElement(page, HtmlDivision.class, "conversation");
-      assert conversationValue.asText().equals("10");
+      Assert.assertEquals("10", conversationValue.asText());
+      
       HtmlDivision requestValue = getFirstMatchingElement(page, HtmlDivision.class, "request");
-      assert requestValue.asText().equals("medium");
+      Assert.assertEquals("medium", requestValue.asText());
+   }
+
+   protected String getPath(String page)
+   {
+      // TODO: this should be moved out and be handled by Arquillian
+      return "http://localhost:8080/test/" + page;
    }
 
    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)
@@ -103,5 +127,4 @@ public class ErrorPageTest extends AbstractWeldTest
      }
      return null;
    }
-   
 }

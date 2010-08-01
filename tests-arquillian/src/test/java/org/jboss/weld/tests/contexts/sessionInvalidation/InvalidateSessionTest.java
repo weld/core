@@ -17,21 +17,22 @@
 
 package org.jboss.weld.tests.contexts.sessionInvalidation;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.Classes;
-import org.jboss.testharness.impl.packaging.IntegrationTest;
-import org.jboss.testharness.impl.packaging.Resource;
-import org.jboss.testharness.impl.packaging.Resources;
-import org.jboss.testharness.impl.packaging.war.WarArtifactDescriptor;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.Test;
+import junit.framework.Assert;
 
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.api.Run;
+import org.jboss.arquillian.api.RunModeType;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.tests.contexts.errorpage.ErrorPageTest;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -44,17 +45,33 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  * @author Pete Muir
  *
  */
-@Artifact(addCurrentPackage=false)
-@Classes({Storm.class,SomeBean.class})
-@IntegrationTest(runLocally=true)
-@Resources({
-   @Resource(destination=WarArtifactDescriptor.WEB_XML_DESTINATION, source="web.xml"),
-   @Resource(destination="storm.jspx", source="storm.jsf"),
-   @Resource(destination="/WEB-INF/faces-config.xml", source="faces-config.xml")
-})
-public class InvalidateSessionTest extends AbstractWeldTest
+//@Artifact(addCurrentPackage=false)
+//@Classes({Storm.class,SomeBean.class})
+//@IntegrationTest(runLocally=true)
+//@Resources({
+//   @Resource(destination=WarArtifactDescriptor.WEB_XML_DESTINATION, source="web.xml"),
+//   @Resource(destination="storm.jspx", source="storm.jsf"),
+//   @Resource(destination="/WEB-INF/faces-config.xml", source="faces-config.xml")
+//})
+@RunWith(Arquillian.class)
+@Run(RunModeType.AS_CLIENT)
+public class InvalidateSessionTest
 {
-   @Test(description = "WELD-380, WELD-403")
+   @Deployment
+   public static WebArchive createDeployment() 
+   {
+      return ShrinkWrap.create(WebArchive.class, "test.war")
+               .addClasses(Storm.class, SomeBean.class)
+               .addWebResource(InvalidateSessionTest.class.getPackage(), "web.xml", "web.xml")
+               .addWebResource(InvalidateSessionTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addResource(InvalidateSessionTest.class.getPackage(), "storm.jsf", "storm.jspx")
+               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+   }
+
+   /*
+    * description = "WELD-380, WELD-403"
+    */
+   @Test
    public void testInvalidateSessionCalled() throws Exception
    {
       WebClient client = new WebClient();
@@ -64,16 +81,19 @@ public class InvalidateSessionTest extends AbstractWeldTest
       HtmlSubmitInput invalidateSessionButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "invalidateSessionButton");
       page = invalidateSessionButton.click();
       HtmlInput inputField = getFirstMatchingElement(page, HtmlInput.class, "prop");
-      assert Storm.PROPERTY_VALUE.equals(inputField.getValueAttribute());
+      Assert.assertEquals(Storm.PROPERTY_VALUE, inputField.getValueAttribute());
       
       // Make another request to verify that the session bean value is not the
       // one from the previous invalidated session.
       page = client.getPage(getPath("/storm.jsf"));
       inputField = getFirstMatchingElement(page, HtmlInput.class, "prop");
-      assert SomeBean.DEFAULT_PROPERTY_VALUE.equals(inputField.getValueAttribute());
+      Assert.assertEquals(SomeBean.DEFAULT_PROPERTY_VALUE, inputField.getValueAttribute());
    }
 
-   @Test(description="WELD-461")
+   /*
+    * description = "WELD-461"
+    */
+   @Test
    public void testNoDoubleDestructionOnExternalRedirect() throws Exception
    {
 	   WebClient client = new WebClient();
@@ -82,6 +102,12 @@ public class InvalidateSessionTest extends AbstractWeldTest
 	   button.click();
    }
    
+   protected String getPath(String page)
+   {
+      // TODO: this should be moved out and be handled by Arquillian
+      return "http://localhost:8080/test/" + page;
+   }
+
    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)
    {
      Set<T> result = new HashSet<T>();

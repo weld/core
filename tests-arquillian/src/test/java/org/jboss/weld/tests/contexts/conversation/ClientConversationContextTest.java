@@ -33,14 +33,18 @@ package org.jboss.weld.tests.contexts.conversation;
  * limitations under the License.
  */
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.Classes;
-import org.jboss.testharness.impl.packaging.IntegrationTest;
-import org.jboss.testharness.impl.packaging.Resource;
-import org.jboss.testharness.impl.packaging.Resources;
-import org.jboss.testharness.impl.packaging.war.WebXml;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.Test;
+import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.api.Run;
+import org.jboss.arquillian.api.RunModeType;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -49,15 +53,10 @@ import com.gargoylesoftware.htmlunit.WebClient;
  * @author Nicklas Karlsson
  * @author Dan Allen
  */
-@Artifact(addCurrentPackage = false)
-@Classes( { ConversationTestPhaseListener.class, Cloud.class })
-@IntegrationTest(runLocally = true)
-@Resources( { 
-   @Resource(destination = "cloud.jspx", source = "cloud.jsf"),
-   @Resource(destination="/WEB-INF/faces-config.xml", source="faces-config.xml")
-})
-@WebXml("web.xml")
-public class ClientConversationContextTest extends AbstractWeldTest
+@Category(Integration.class)
+@RunWith(Arquillian.class)
+@Run(RunModeType.AS_CLIENT)
+public class ClientConversationContextTest 
 {
 
    public static final String CID_REQUEST_PARAMETER_NAME = "cid";
@@ -66,28 +65,40 @@ public class ClientConversationContextTest extends AbstractWeldTest
 
    public static final String LONG_RUNNING_HEADER_NAME = "org.jboss.jsr299.tck.longRunning";
 
-   @Test(groups = { "contexts" })
+   @Deployment
+   public static WebArchive createDeployment() 
+   {
+      return ShrinkWrap.create(WebArchive.class, "test.war")
+               .addClasses(ConversationTestPhaseListener.class, Cloud.class)
+               .addWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
+               .addWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
+               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+   }
+   
+   @Test
    public void testConversationPropagationToNonExistentConversationLeadsException() throws Exception
    {
       WebClient client = new WebClient();
       client.setThrowExceptionOnFailingStatusCode(false);
       Page page = client.getPage(getPath("/cloud.jsf", "org.jboss.jsr299"));
-      assert page.getWebResponse().getStatusCode() == 500;
+      
+      Assert.assertEquals(500, page.getWebResponse().getStatusCode());
    }
 
-   protected Boolean isLongRunning(Page page)
-   {
-      return Boolean.valueOf(page.getWebResponse().getResponseHeaderValue(LONG_RUNNING_HEADER_NAME));
-   }
+//   protected Boolean isLongRunning(Page page)
+//   {
+//      return Boolean.valueOf(page.getWebResponse().getResponseHeaderValue(LONG_RUNNING_HEADER_NAME));
+//   }
 
    protected String getPath(String viewId, String cid)
    {
-      return getContextPath() + viewId + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
+      // TODO: this should be moved out and be handled by Arquillian
+      return "http://localhost:8080/test/" + viewId + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
    }
 
-   protected String getCid(Page page)
-   {
-      return page.getWebResponse().getResponseHeaderValue(CID_HEADER_NAME);
-   }
-
+//   protected String getCid(Page page)
+//   {
+//      return page.getWebResponse().getResponseHeaderValue(CID_HEADER_NAME);
+//   }
 }

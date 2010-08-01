@@ -25,10 +25,6 @@
       <param-value>.jspx</param-value>
    </context-param>
    
-   <listener>
-      <listener-class>org.jboss.testharness.impl.runner.servlet.HarnessServletListener</listener-class>
-   </listener>
-
    <session-config>
       <session-timeout>10</session-timeout>
    </session-config>
