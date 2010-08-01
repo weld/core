@@ -36,7 +36,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 @Category(Integration.class)
 @RunWith(Arquillian.class)
 @Run(RunModeType.AS_CLIENT)
-public class TxEventTest extends AbstractHtmlUnitTest
+public class TxEventTest extends AbstractHtmlUnit
 {
    @Deployment
    public static WebArchive createDeployment() 

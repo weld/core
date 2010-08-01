@@ -22,10 +22,10 @@ import java.util.Set;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-public abstract class AbstractHtmlUnitTest 
+public abstract class AbstractHtmlUnit 
 {
 
-   public AbstractHtmlUnitTest()
+   public AbstractHtmlUnit()
    {
       super();
    }
