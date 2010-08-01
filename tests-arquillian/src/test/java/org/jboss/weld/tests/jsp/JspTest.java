@@ -32,14 +32,19 @@ package org.jboss.weld.tests.jsp;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import junit.framework.Assert;
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.IntegrationTest;
-import org.jboss.testharness.impl.packaging.Resource;
-import org.jboss.testharness.impl.packaging.Resources;
-import org.jboss.testharness.impl.packaging.war.WebXml;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.Test;
+import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.api.Run;
+import org.jboss.arquillian.api.RunModeType;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.tests.category.Integration;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -48,31 +53,36 @@ import com.gargoylesoftware.htmlunit.WebClient;
  * @author Nicklas Karlsson
  * @author Dan Allen
  */
-@Artifact(addCurrentPackage = false)
-@IntegrationTest(runLocally = true)
-@Resources( { 
-   @Resource(destination = "index.jsp", source = "index.jsp"),
-   @Resource(destination = "home.jspx", source = "home.jspx"),
-   @Resource(destination="/WEB-INF/faces-config.xml", source="faces-config.xml")
-})
-@WebXml("web.xml")
-public class JspTest extends AbstractWeldTest
+@Category(Integration.class)
+@RunWith(Arquillian.class)
+@Run(RunModeType.AS_CLIENT)
+public class JspTest
 {
+   @Deployment
+   public static WebArchive createDeployment() 
+   {
+      return ShrinkWrap.create(WebArchive.class, "test.war")
+               .addWebResource(JspTest.class.getPackage(), "web.xml", "web.xml")
+               .addWebResource(JspTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addResource(JspTest.class.getPackage(), "index.jsp", "index.jsp")
+               .addResource(JspTest.class.getPackage(), "home.jspx", "home.jspx")
+               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+   }
 
-   @Test(groups = { "contexts" })
+   @Test
    public void testConversationPropagationToNonExistentConversationLeadsException() throws Exception
    {
       WebClient client = new WebClient();
       client.setThrowExceptionOnFailingStatusCode(false);
       Page page = client.getPage(getPath("/index.jsp"));
-      assert page.getWebResponse().getStatusCode() == 200;
-      assert page.getWebResponse().getRequestUrl().toString().contains("home.jsf");
+
+      Assert.assertEquals(200, page.getWebResponse().getStatusCode());
+      Assert.assertTrue(page.getWebResponse().getRequestUrl().toString().contains("home.jsf"));
    }
 
-   @Override
-   protected String getPath(String viewId)
+   protected String getPath(String page)
    {
-      return getContextPath() + viewId;
+      // TODO: this should be moved out and be handled by Arquillian
+      return "http://localhost:8080/test/" + page;
    }
-
 }
