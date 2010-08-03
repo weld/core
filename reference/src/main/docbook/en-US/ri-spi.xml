@@ -617,7 +617,7 @@
             <listitem>
                <para>
                   You should bind the bean manager for the bean deployment archive into JNDI at
-                  <literal>java:comp/Manager</literal>. The type should be
+                  <literal>java:comp/BeanManager</literal>. The type should be
                   <literal>javax.enterprise.inject.spi.BeanManager</literal>. To obtain the correct bean manager for the
                   bean deployment archive, you may call
                   <literal>bootstrap.getBeanManager(beanDeploymentArchive)</literal>  
