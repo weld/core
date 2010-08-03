@@ -1,0 +1,5 @@
+<beans>
+	<interceptors>
+		<class>org.jboss.weld.tests.interceptors.invalidContract.ServiceInterceptor</class>
+	</interceptors>
+</beans>
