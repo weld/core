@@ -35,7 +35,7 @@
    <properties>
       <weld.api.version>1.1-SNAPSHOT</weld.api.version>
       <!-- Override the API and compile with more recent EL API -->
-      <google.collections.version>1.0</google.collections.version>
+      <google.guava.version>r06</google.guava.version>
       <javassist.version>3.11.0.GA</javassist.version>
       <cdi.tck.version>1.0.2.CR1</cdi.tck.version>
       <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
@@ -104,9 +104,9 @@
          </dependency>
          
          <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
-            <version>${google.collections.version}</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${google.guava.version}</version>
          </dependency>
  
          <dependency>
