@@ -302,7 +302,6 @@
          <activation>
             <property>
                <name>surefireSnapshot</name>
-               <value>true</value>
             </property>
          </activation>
          <build>
