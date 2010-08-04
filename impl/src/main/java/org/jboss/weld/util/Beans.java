@@ -507,12 +507,12 @@ public class Beans
    {
       for (Annotation requiredQualifier : requiredQualifiers)
       {
-         QualifierModel<?> bindingType = beanManager.getServices().get(MetaAnnotationStore.class).getBindingTypeModel(requiredQualifier.annotationType());
+         QualifierModel<?> qualifierModel = beanManager.getServices().get(MetaAnnotationStore.class).getBindingTypeModel(requiredQualifier.annotationType());
          boolean matchFound = false;
          // Do a full check as we need to consider @NonBinding
          for (Annotation qualifier : qualifiers)
          {
-            if (bindingType.isEqual(requiredQualifier, qualifier))
+            if (qualifierModel.isEqual(requiredQualifier, qualifier))
             {
                matchFound = true;
             }
