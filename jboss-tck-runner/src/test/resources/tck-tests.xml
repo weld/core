@@ -16,6 +16,19 @@
       <classes>
       
          <!-- Issues in the TCK -->
+                     
+         <!-- CDITCK-168 -->
+         <class name="org.jboss.jsr299.tck.tests.extensions.processBean.ProcessBeanTest">
+            <methods>
+               <exclude name="testProcessProducerFieldEvent" />
+               <exclude name="testProcessProducerMethodEvent" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.extensions.processBean.ProcessSessionBeanTest">
+            <methods>
+               <exclude name="testProcessSessionBeanEvent" />   
+            </methods>
+         </class>
          
          <!-- CDITCK-169 -->
          <class name="org.jboss.jsr299.tck.tests.implementation.simple.resource.persistenceContext.PersistenceContextInjectionTest">
@@ -53,8 +66,6 @@
             </methods>
          </class>
 
-
-
          <!-- Issues in Weld (the RI) -->
 
          <!-- WELD-401 -->
@@ -74,21 +85,13 @@
          </class>
          
          <!-- Requires EJB 3.1 -->
+         <!-- TODO Check these -->
          
+         <!-- JBAS-8306 -->
          <class name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
             <methods>
                <exclude name="testRequestScopeActiveDuringCallToEjbTimeoutMethod" />
                <exclude name="testRequestScopeDestroyedAfterCallToEjbTimeoutMethod" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.broken.singletonWithRequestScope.SingletonWithRequestScopeTest">
-            <methods>
-               <exclude name="testSingletonWithRequestScopeFails" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.broken.singletonWithSessionScope.SingletonWithSessionScopeTest">
-            <methods>
-               <exclude name="testSingletonWithSessionScopeFails" />
             </methods>
          </class>
          <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.definition.EnterpriseBeanDefinitionTest">
@@ -119,7 +122,7 @@
          <!-- JBAS-7046 -->
          <class name="org.jboss.jsr299.tck.tests.lookup.injection.enterprise.SessionBeanInjectionTest">
             <methods>
-               <exclude name="" />
+               <exclude name="testInjectionOnEJBInterceptor" />
             </methods>
          </class>
          <!-- JBAS-7046 -->
@@ -149,22 +152,6 @@
          <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.InjectionIntoNonContextualComponentTest">
             <methods>
                <exclude name="testInjectionIntoTagHandler" />
-            </methods>
-         </class>
-         <!-- WELDINT-19 -->
-         <class name="org.jboss.jsr299.tck.tests.lookup.manager.jndi.ManagerTest">
-            <methods>
-               <exclude name="testManagerLookupInJndi" />
-            </methods>
-         </class>
-         
-         <!-- JBAS-7676 -->
-         <class name="org.jboss.jsr299.tck.tests.definition.qualifier.enterprise.EnterpriseQualifierDefinitionTest">
-            <methods>
-               <exclude name="testQualifierDeclaredInheritedIsInherited" />
-               <exclude name="testQualifierNotDeclaredInheritedIsNotInherited" />
-               <exclude name="testQualifierDeclaredInheritedIsIndirectlyInherited" />
-               <exclude name="testQualifierNotDeclaredInheritedIsNotIndirectlyInherited" />
             </methods>
          </class>
          
