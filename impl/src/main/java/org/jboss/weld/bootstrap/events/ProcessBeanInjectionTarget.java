@@ -23,23 +23,23 @@ import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 
-public class ProcessBeanInjectionTarget<T> extends AbstractProcessInjectionTarget<T> implements ProcessInjectionTarget<T>
+public class ProcessBeanInjectionTarget<X> extends AbstractProcessInjectionTarget<X> implements ProcessInjectionTarget<X>
 {
    
-   private final AbstractClassBean<T> classBean;
+   private final AbstractClassBean<X> classBean;
 
-   public ProcessBeanInjectionTarget(BeanManagerImpl beanManager, AbstractClassBean<T> bean)
+   public ProcessBeanInjectionTarget(BeanManagerImpl beanManager, AbstractClassBean<X> bean)
    {
       super(beanManager, bean.getWeldAnnotated());
       this.classBean = bean;
    }
 
-   public InjectionTarget<T> getInjectionTarget()
+   public InjectionTarget<X> getInjectionTarget()
    {
       return classBean.getInjectionTarget();
    }
 
-   public void setInjectionTarget(InjectionTarget<T> injectionTarget)
+   public void setInjectionTarget(InjectionTarget<X> injectionTarget)
    {
       classBean.setInjectionTarget(injectionTarget);
    }

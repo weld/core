@@ -24,7 +24,7 @@ import javax.enterprise.inject.spi.ProcessBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public abstract class AbstractProcessProducerBean<X, T, B extends AbstractProducerBean<X, T, ? >> extends AbstractDefinitionContainerEvent implements ProcessBean<T>
+public abstract class AbstractProcessProducerBean<T, X, B extends AbstractProducerBean<T, X, ? >> extends AbstractDefinitionContainerEvent implements ProcessBean<X>
 {
 
    private final B bean;

@@ -59,6 +59,8 @@ public class ExtensionObserver implements Extension
    private boolean processProducerMethod;
    private boolean processSessionBean;
    private boolean processAnnotatedType;
+   
+   private ProcessProducerMethod<?, ?> processProducerMethodInstance;
 
    public void observeAll(@Observes Object event)
    {
@@ -145,6 +147,7 @@ public class ExtensionObserver implements Extension
    public void observeProcessProducerMethod(@Observes ProcessProducerMethod<?, ?> event)
    {
       processProducerMethod = true;
+      this.processProducerMethodInstance = event;
    }
    
    public void observeProcessProducerField(@Observes ProcessProducerField<?, ?> event)
@@ -280,6 +283,11 @@ public class ExtensionObserver implements Extension
    public boolean isProcessProducerMethod()
    {
       return processProducerMethod;
+   }
+   
+   public ProcessProducerMethod<?, ?> getProcessProducerMethodInstance()
+   {
+      return processProducerMethodInstance;
    }
 
    public boolean isProcessSessionBean()

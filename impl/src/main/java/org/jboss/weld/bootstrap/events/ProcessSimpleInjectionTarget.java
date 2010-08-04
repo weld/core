@@ -23,23 +23,23 @@ import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 
-public class ProcessSimpleInjectionTarget<T> extends AbstractProcessInjectionTarget<T> implements ProcessInjectionTarget<T>
+public class ProcessSimpleInjectionTarget<X> extends AbstractProcessInjectionTarget<X> implements ProcessInjectionTarget<X>
 {
    
-   private InjectionTarget<T> injectionTarget;
+   private InjectionTarget<X> injectionTarget;
 
-   public ProcessSimpleInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<T> annotatedType, InjectionTarget<T> injectionTarget)
+   public ProcessSimpleInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget)
    {
       super(beanManager, annotatedType);
       this.injectionTarget = injectionTarget;
    }
 
-   public InjectionTarget<T> getInjectionTarget()
+   public InjectionTarget<X> getInjectionTarget()
    {
       return injectionTarget;
    }
 
-   public void setInjectionTarget(InjectionTarget<T> injectionTarget)
+   public void setInjectionTarget(InjectionTarget<X> injectionTarget)
    {
       this.injectionTarget = injectionTarget;
    }

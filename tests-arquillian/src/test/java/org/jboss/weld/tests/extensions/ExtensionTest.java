@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.extensions;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.api.Deployment;
@@ -23,114 +26,48 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.weld.tests.category.Integration;
-import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-@Category(Integration.class)
 @RunWith(Arquillian.class)
 public class ExtensionTest 
 {
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
-               ShrinkWrap.create(BeanArchive.class)
-                  .addPackage(ExtensionTest.class.getPackage())
-                  .addServiceProvider(Extension.class, 
-                        SimpleExtension.class, 
-                        ExtensionObserver.class,
-                        WoodlandExtension.class)
-         );
+      return ShrinkWrap.create(BeanArchive.class)
+               .addPackage(ExtensionTest.class.getPackage())
+               .addServiceProvider(Extension.class, 
+                     SimpleExtension.class, 
+                     ExtensionObserver.class,
+                     WoodlandExtension.class);
    }
 
    /*
     * description = "WELD-234"
     */
-   @Test
+   @Test 
    public void testExtensionInjectableAsBean(SimpleExtension extension)
    {
-      Assert.assertTrue(extension.isObservedBeforeBeanDiscovery());
+      assertTrue(extension.isObservedBeforeBeanDiscovery());
    }
    
    /*
-    * description = "WELD-243"
+    * description = "WELD-572"
     */
    @Test
-   public void testContainerEventsOnlySentToExtensionBeans(ExtensionObserver extensionObserver, OtherObserver otherObserver)
+   public void testGetNonExistentDisposalMethod(ExtensionObserver extensionObserver)
    {
-      Assert.assertTrue(extensionObserver.isBeforeBeanDiscovery());
-      Assert.assertTrue(extensionObserver.isAllBeforeBeanDiscovery());
-      Assert.assertFalse(otherObserver.isBeforeBeanDiscovery());
-      Assert.assertFalse(otherObserver.isAllBeforeBeanDiscovery());
-      
-      Assert.assertTrue(extensionObserver.isAfterBeanDiscovery());
-      Assert.assertTrue(extensionObserver.isAllAfterBeanDiscovery());
-      Assert.assertFalse(otherObserver.isAfterBeanDiscovery());
-      Assert.assertFalse(otherObserver.isAllAfterBeanDiscovery());
-      
-      Assert.assertTrue(extensionObserver.isProcessAnnotatedType());
-      Assert.assertTrue(extensionObserver.isAllProcessAnnnotatedType());
-      Assert.assertFalse(otherObserver.isProcessAnnotatedType());
-      Assert.assertFalse(otherObserver.isAllProcessAnnotatedType());
-      
-      Assert.assertTrue(extensionObserver.isProcessBean());
-      Assert.assertTrue(extensionObserver.isAllProcessBean());
-      Assert.assertFalse(otherObserver.isProcessBean());
-      Assert.assertFalse(otherObserver.isAllProcessBean());
-      
-      Assert.assertTrue(extensionObserver.isProcessInjectionTarget());
-      Assert.assertTrue(extensionObserver.isAllProcessInjectionTarget());
-      Assert.assertFalse(otherObserver.isProcessInjectionTarget());
-      Assert.assertFalse(otherObserver.isAllProcessInjectionTarget());
-      
-      Assert.assertTrue(extensionObserver.isProcessManagedBean());
-      Assert.assertTrue(extensionObserver.isAllProcessManagedBean());
-      Assert.assertFalse(otherObserver.isProcessManagedBean());
-      Assert.assertFalse(otherObserver.isAllProcessManagedBean());
-      
-      Assert.assertTrue(extensionObserver.isProcessObserverMethod());
-      Assert.assertTrue(extensionObserver.isAllProcessObserverMethod());
-      Assert.assertFalse(otherObserver.isProcessObserverMethod());
-      Assert.assertFalse(otherObserver.isAllProcessObserverMethod());
-      
-      Assert.assertTrue(extensionObserver.isProcessProducer());
-      Assert.assertTrue(extensionObserver.isAllProcessProducer());
-      Assert.assertFalse(otherObserver.isProcessProducer());
-      Assert.assertFalse(otherObserver.isAllProcessProducer());
-      
-      Assert.assertTrue(extensionObserver.isProcessProducerField());
-      Assert.assertTrue(extensionObserver.isAllProcessProducerField());
-      Assert.assertFalse(otherObserver.isProcessProducerField());
-      Assert.assertFalse(otherObserver.isAllProcessProducerField());
-      
-      Assert.assertTrue(extensionObserver.isProcessProducerMethod());
-      Assert.assertTrue(extensionObserver.isAllProcessProducerField());
-      Assert.assertFalse(otherObserver.isProcessProducerMethod());
-      Assert.assertFalse(otherObserver.isAllProcessProducerMethod());
-      
-      Assert.assertTrue(extensionObserver.isProcessSessionBean());
-      Assert.assertTrue(extensionObserver.isAllProcessSessionBean());
-      Assert.assertFalse(otherObserver.isProcessSessionBean());
-      Assert.assertFalse(otherObserver.isAllProcessSessionBean());
-      
-      Assert.assertTrue(extensionObserver.isAfterDeploymentValidation());
-      Assert.assertTrue(extensionObserver.isAllAfterDeploymentValidation());
-      Assert.assertFalse(otherObserver.isAfterDeploymentValidation());
-      Assert.assertFalse(otherObserver.isAllAfterDeploymentValidation());
+      assertNull(extensionObserver.getProcessProducerMethodInstance().getAnnotatedDisposedParameter());
    }
-   
+      
    @Test
    public void testInjectionTargetWrapped(Capercaillie capercaillie)
    {
-      Assert.assertTrue(Woodland.isPostConstructCalled());
-      Assert.assertTrue(WoodlandExtension.isInjectCalled());
-      Assert.assertTrue(WoodlandExtension.isPostConstructCalled());
-      Assert.assertTrue(WoodlandExtension.isPreDestroyCalled());
-      Assert.assertTrue(WoodlandExtension.isProduceCalled());
+      assertTrue(Woodland.isPostConstructCalled());
+      assertTrue(WoodlandExtension.isInjectCalled());
+      assertTrue(WoodlandExtension.isPostConstructCalled());
+      assertTrue(WoodlandExtension.isPreDestroyCalled());
+      assertTrue(WoodlandExtension.isProduceCalled());
    }
 }

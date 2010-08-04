@@ -27,18 +27,19 @@ import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 
-public class ProcessProducerImpl<X, T> extends AbstractDefinitionContainerEvent implements ProcessProducer<X, T>
+public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessProducer<T, X>
 {
    
-   public static <X, T> void fire(BeanManagerImpl beanManager, AbstractProducerBean<X, T, Member> producer)
+   @SuppressWarnings("unchecked")
+   public static <T, X> void fire(BeanManagerImpl beanManager, AbstractProducerBean<T, X, Member> producer)
    {
-      new ProcessProducerImpl<X, T>(beanManager, (AnnotatedMember<X>) producer.getWeldAnnotated(), producer) {}.fire();
+      new ProcessProducerImpl<T, X>(beanManager, (AnnotatedMember<T>) producer.getWeldAnnotated(), producer) {}.fire();
    }
    
-   private final AnnotatedMember<X> annotatedMember;
-   private AbstractProducerBean<X, T, ?> bean;
+   private final AnnotatedMember<T> annotatedMember;
+   private AbstractProducerBean<T, X, ?> bean;
 
-   public ProcessProducerImpl(BeanManagerImpl beanManager, AnnotatedMember<X> annotatedMember, AbstractProducerBean<X, T, ?> bean)
+   public ProcessProducerImpl(BeanManagerImpl beanManager, AnnotatedMember<T> annotatedMember, AbstractProducerBean<T, X, ?> bean)
    {
       super(beanManager, ProcessProducer.class, new Type[] { bean.getWeldAnnotated().getDeclaringType().getBaseType(), bean.getWeldAnnotated().getBaseType() });
       this.bean = bean;
@@ -50,17 +51,17 @@ public class ProcessProducerImpl<X, T> extends AbstractDefinitionContainerEvent 
       getErrors().add(t);
    }
 
-   public AnnotatedMember<X> getAnnotatedMember()
+   public AnnotatedMember<T> getAnnotatedMember()
    {
       return annotatedMember;
    }
 
-   public Producer<T> getProducer()
+   public Producer<X> getProducer()
    {
       return bean.getProducer();
    }
 
-   public void setProducer(Producer<T> producer)
+   public void setProducer(Producer<X> producer)
    {
       this.bean.setProducer(producer);
    }

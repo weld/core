@@ -24,23 +24,30 @@ import javax.enterprise.inject.spi.ProcessProducerField;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public class ProcessProducerFieldImpl<X, T> extends AbstractProcessProducerBean<X, T, ProducerField<X, T>> implements ProcessProducerField<X, T>
+public class ProcessProducerFieldImpl<T, X> extends AbstractProcessProducerBean<T, X, ProducerField<T, X>> implements ProcessProducerField<T, X>
 {
 
-   
-   public static <X, T> void fire(BeanManagerImpl beanManager, ProducerField<X, T> bean)
+   public static <T, X> void fire(BeanManagerImpl beanManager, ProducerField<T, X> bean)
    {
-      new ProcessProducerFieldImpl<X, T>(beanManager, bean) {}.fire();
+      new ProcessProducerFieldImpl<T, X>(beanManager, bean) {}.fire();
    }
    
-   public ProcessProducerFieldImpl(BeanManagerImpl beanManager, ProducerField<X, T> bean)
+   public ProcessProducerFieldImpl(BeanManagerImpl beanManager, ProducerField<T, X> bean)
    {
       super(beanManager, ProcessProducerField.class, new Type[] { bean.getWeldAnnotated().getDeclaringType().getBaseType(), bean.getWeldAnnotated().getBaseType() }, bean);
    }
 
-   public AnnotatedField<X> getAnnotatedProducerField()
+   @SuppressWarnings("unchecked")
+   public AnnotatedField<T> getAnnotatedProducerField()
    {
-      return (AnnotatedField<X>) getBean().getWeldAnnotated();
+      if (getBean().getWeldAnnotated() != null)
+      {
+         return (AnnotatedField<T>) getBean().getWeldAnnotated();
+      }
+      else
+      {
+         return null;
+      }
    }
 
 }
