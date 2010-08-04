@@ -31,10 +31,10 @@ import org.testng.annotations.Test;
 public class BadInterceptorBindingTest extends AbstractWeldTest
 {
 
-   @Test
+   @Test(groups="incontainer-broken")
    public void testBadInterceptorBinding()
    {
-
+      assert false;
    }
 
 }
