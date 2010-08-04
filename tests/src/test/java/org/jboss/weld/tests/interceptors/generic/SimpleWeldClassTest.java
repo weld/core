@@ -37,6 +37,7 @@ public class SimpleWeldClassTest extends AbstractWeldTest
 {
 
    @Test(groups = "broken")
+   // Aslak Issue is still open, so test can be ported as is
    public void testWeldClassForGenericSuperclass()
    {
       WeldClass<StringProcessor> weldClass = WeldClassImpl.of(StringProcessor.class, new ClassTransformer(new TypeStore()));

@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
 public class EJBTest extends AbstractWeldTest
 {
    
-   @Test(groups="broken")
+   @Test
    public void testNoInterface()
    {
       Cow cow = getReference(Cow.class);

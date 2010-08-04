@@ -40,7 +40,7 @@ import org.testng.annotations.Test;
 public class EnterpriseBeanInterceptionTest extends AbstractWeldTest
 {
 
-   @Test(groups = { "interceptors", "incontainer-broken"})
+   @Test(groups = { "interceptors" })
    public void testInterceptors() throws Exception
    {
       SessionBean<Ball> ballSessionBean = (SessionBean<Ball>)getCurrentManager().getBeans(Ball.class).iterator().next();

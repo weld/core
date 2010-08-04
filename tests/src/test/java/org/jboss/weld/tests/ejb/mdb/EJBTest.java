@@ -41,6 +41,7 @@ public class EJBTest extends AbstractWeldTest
    
    @Test(groups="broken")
    // TODO Need a way to deploy test-destinations-service.xml to JBoss AS
+   // Port the test as broken
    public void testMdbUsable() throws Exception
    {
       InitialContext ctx = new InitialContext();

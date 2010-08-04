@@ -37,12 +37,13 @@ public class SimpleWeldClassTest extends AbstractWeldTest
 {
 
    @Test(groups = "broken")
+   // Aslak Issue is still open, so test can be ported as is
    public void testWeldClassForCovariantReturnType()
    {
       WeldClass<Attacker> weldClass = WeldClassImpl.of(Attacker.class, new ClassTransformer(new TypeStore()));
       Collection methods = weldClass.getWeldMethods();
       assert methods.size() == 4;
-      List<WeldMethod<?,?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
+      List<WeldMethod<?, ?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
       assert interceptableMethods.size() == 4;
    }
 

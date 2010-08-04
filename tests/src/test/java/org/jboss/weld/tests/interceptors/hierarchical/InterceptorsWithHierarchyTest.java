@@ -37,6 +37,7 @@ public class InterceptorsWithHierarchyTest extends AbstractWeldTest
    }
 
    @Test(groups = "broken")
+   // Aslak Issue is still open, so test can be ported as is
    public void testInterceptorsWithHierarchy()
    {
       Attacker player = this.getReference(Attacker.class);
