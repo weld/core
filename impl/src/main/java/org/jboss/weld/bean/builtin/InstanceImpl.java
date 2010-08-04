@@ -105,12 +105,16 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
       Collection<T> instances = new ArrayList<T>();
       for (Bean<?> bean : getBeans())
       {
-         Object object = getBeanManager().getReference(bean, getType(), getBeanManager().createCreationalContext(bean));
-         
-         @SuppressWarnings("unchecked")
-         T instance = (T) object;
-         
-         instances.add(instance);
+         // Don't return the InjectionPoint bean, it's not a possible to inject an instance of that!
+         if (!InjectionPoint.class.isAssignableFrom(bean.getBeanClass()))
+         {
+            Object object = getBeanManager().getReference(bean, getType(), getBeanManager().createCreationalContext(bean));
+            
+            @SuppressWarnings("unchecked")
+            T instance = (T) object;
+            
+            instances.add(instance);
+         }
       }
       return instances.iterator();
    }
