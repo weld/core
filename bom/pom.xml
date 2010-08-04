@@ -92,6 +92,14 @@
          </dependency>
          
          <dependency>
+            <groupId>org.jboss.jsr299.tck</groupId>
+            <artifactId>jsr299-tck-impl</artifactId>
+            <version>${cdi.tck.version}</version>
+            <classifier>suite</classifier>
+            <type>xml</type>
+         </dependency>
+         
+         <dependency>
             <groupId>org.atinject</groupId>
             <artifactId>inject-tck</artifactId>
             <version>${atinject.tck.version}</version>

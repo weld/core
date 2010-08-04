@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <artifactId>weld-core-parent</artifactId>
       <groupId>org.jboss.weld</groupId>
@@ -20,13 +21,13 @@
    </licenses>
    <url>http://www.seamframework.org/Weld</url>
 
-   
+
    <dependencies>
       <dependency>
          <groupId>javax.enterprise</groupId>
          <artifactId>cdi-api</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>org.jboss.weld</groupId>
          <artifactId>weld-core</artifactId>
@@ -36,14 +37,14 @@
          <groupId>org.jboss.weld</groupId>
          <artifactId>weld-porting-package</artifactId>
       </dependency>
-      
+
       <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
          <classifier>jdk15</classifier>
          <scope>test</scope>
       </dependency>
-      
+
       <dependency>
          <groupId>org.jboss.test-harness</groupId>
          <artifactId>jboss-test-harness-jboss-as-60</artifactId>
@@ -55,15 +56,29 @@
             </exclusion>
          </exclusions>
       </dependency>
-      
+
       <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-simple</artifactId>
          <scope>test</scope>
       </dependency>
-      
+
+
+      <dependency>
+         <groupId>org.jboss.jsr299.tck</groupId>
+         <artifactId>jsr299-tck-impl</artifactId>
+         <type>xml</type>
+         <classifier>suite</classifier>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.glassfish.web</groupId>
+         <artifactId>el-impl</artifactId>
+         <scope>test</scope>
+      </dependency>
    </dependencies>
-   
+
    <build>
       <plugins>
          <plugin>
@@ -71,40 +86,46 @@
             <artifactId>maven-dependency-plugin</artifactId>
             <executions>
                <execution>
-                  <id>copy</id>
+                  <id>copy-tck-dependencies</id>
                   <phase>process-resources</phase>
                   <goals>
-                     <goal>copy</goal>
+                     <goal>copy-dependencies</goal>
                   </goals>
                   <configuration>
+                     <includeGroupIds>org.jboss.jsr299.tck</includeGroupIds>
+                     <includeArtifactIds>jsr299-tck-impl</includeArtifactIds>
+                     <includeTypes>xml</includeTypes>
+                     <includeClassifiers>suite</includeClassifiers>
                      <stripVersion>true</stripVersion>
-                     <artifactItems>
-                        <artifactItem>
-                           <groupId>org.jboss.jsr299.tck</groupId>
-                           <artifactId>jsr299-tck-impl</artifactId>
-                           <type>xml</type>
-                           <classifier>suite</classifier>
-                           <overWrite>true</overWrite>
-                        </artifactItem>
-                        <artifactItem>
-                           <groupId>org.jboss.weld</groupId>
-                           <artifactId>weld-porting-package</artifactId>
-                           <overWrite>true</overWrite>
-                           <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
-                        </artifactItem>
-                        <artifactItem>
-                           <groupId>org.jboss.weld</groupId>
-                           <artifactId>weld-core-test</artifactId>
-                           <overWrite>true</overWrite>
-                           <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
-                        </artifactItem>
-                        <artifactItem>
-                           <groupId>org.glassfish.web</groupId>
-                           <artifactId>el-impl</artifactId>
-                           <overWrite>true</overWrite>
-                           <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
-                        </artifactItem>
-                     </artifactItems>
+                     <overWriteReleases>true</overWriteReleases>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>copy-weld-dependencies</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                     <goal>copy-dependencies</goal>
+                  </goals>
+                  <configuration>
+                     <includeGroupIds>org.jboss.weld</includeGroupIds>
+                     <includeArtifactIds>weld-porting-package,weld-core-test</includeArtifactIds>
+                     <stripVersion>true</stripVersion>
+                     <overWriteReleases>true</overWriteReleases>
+                     <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>copy-el-dependencies</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                     <goal>copy-dependencies</goal>
+                  </goals>
+                  <configuration>
+                     <includeGroupIds>org.glassfish.web</includeGroupIds>
+                     <includeArtifactIds>el-impl</includeArtifactIds>
+                     <stripVersion>true</stripVersion>
+                     <overWriteReleases>true</overWriteReleases>
+                     <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                   </configuration>
                </execution>
             </executions>
@@ -157,7 +178,7 @@
          </plugin>
       </plugins>
    </build>
-   
+
    <profiles>
       <profile>
          <id>run</id>
@@ -167,12 +188,12 @@
             </property>
          </activation>
          <dependencies>
-                  
-		      <dependency>
-		         <groupId>org.jboss.jsr299.tck</groupId>
-		         <artifactId>jsr299-tck-impl</artifactId>
-		      </dependency>
-		      
+
+            <dependency>
+               <groupId>org.jboss.jsr299.tck</groupId>
+               <artifactId>jsr299-tck-impl</artifactId>
+            </dependency>
+
          </dependencies>
       </profile>
       <profile>
@@ -235,10 +256,10 @@
                         <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                      </suiteXmlFiles>
                      <systemProperties>
-								<property>
-									<name>java.io.tmpdir</name>
-									<value>${project.build.outputDirectory}</value>
-								</property>
+                        <property>
+                           <name>java.io.tmpdir</name>
+                           <value>${project.build.outputDirectory}</value>
+                        </property>
                         <property>
                            <name>org.jboss.testharness.standalone</name>
                            <value>false</value>
@@ -284,9 +305,9 @@
                   <executions>
                      <execution>
                         <id>generate-jsr-299-artifacts</id>
-                        <phase>generate-test-sources</phase> 
+                        <phase>generate-test-sources</phase>
                         <goals>
-                        <goal>java</goal>
+                           <goal>java</goal>
                         </goals>
                      </execution>
                   </executions>
@@ -313,10 +334,10 @@
       </profile>
    </profiles>
 
-   <scm> 
+   <scm>
       <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/core/trunk/jboss-tck-runner</connection>
       <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/core/trunk/jboss-tck-runner</developerConnection>
       <url>http://fisheye.jboss.org/browse/weld/core/trunk/jboss-tck-runner</url>
    </scm>
-   
+
 </project>
