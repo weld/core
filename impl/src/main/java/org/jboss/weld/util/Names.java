@@ -17,19 +17,22 @@
 package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jboss.weld.introspector.WeldCallable;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldConstructor;
+import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Utility class to produce friendly names e.g. for debugging
@@ -70,51 +73,82 @@ public class Names
       }
       return result.toString();
    }
-
-   public static String classToString(Class<?> rawType, Set<Annotation> annotations, Type[] actualTypeArguments)
+   
+   public static String toString(Type baseType)
    {
-      return new NamesStringBuilder("class").add(modifiersToString(rawType.getModifiers())).add(annotationsToString(annotations)).add(rawType.getName()).add(typesToString(actualTypeArguments)).toString();
+      return new StringBuilder().append(Reflections.getRawType(baseType).getSimpleName()).append(toString(Reflections.getActualTypeArguments(baseType))).toString();
+      
+   }
+   
+   public static String toString(WeldClass<?> clazz)
+   {
+      return new StringBuilder().append(modifiersToString(clazz.getJavaClass().getModifiers())).append(toString(clazz.getAnnotations())).append(" class ").append(clazz.getName()).append(toString(clazz.getActualTypeArguments())).toString().trim();
    }
 
-   public static String fieldToString(Field field, Set<Annotation> annotations, Type[] actualTypeArguments)
+   public static String toString(WeldField<?, ?> field)
    {
-      return new NamesStringBuilder("field in " + field.getDeclaringClass().getName()).add(modifiersToString(field.getModifiers())).add(annotationsToString(annotations)).add(field.getType().getName()).add(typesToString(actualTypeArguments)).add(field.getName()).toString();
+      return new StringBuilder().append("[field] ").append(addSpaceIfNeeded(toString(field.getAnnotations()))).append(addSpaceIfNeeded(modifiersToString(field.getJavaMember().getModifiers()))).append(field.getDeclaringType().getName()).append(".").append(field.getName()).toString().trim();
    }
-
-   public static String methodToString(Method method, Set<Annotation> annotations, Type[] actualTypeArguments, List<?> parameters)
+   
+   public static String toString(WeldCallable<?, ?, ? extends Member> callable)
    {
-      return new NamesStringBuilder("method in " + method.getDeclaringClass().getName()).add(modifiersToString(method.getModifiers())).add(annotationsToString(annotations)).add(method.getName()).add(typesToString(actualTypeArguments)).add(parametersToString(parameters)).toString();
-   }
-
-   private static String parametersToString(List<?> parameters)
-   {
-      return "(" + iterableToString(parameters, ", ") + ")";
-   }
-
-   public static String constructorToString(Constructor<?> constructor, Set<Annotation> annotations, Type[] actualTypeArguments, List<?> parameters)
-   {
-      return new NamesStringBuilder("constructor for " + constructor.getDeclaringClass().getName()).add(modifiersToString(constructor.getModifiers())).add(annotationsToString(annotations)).add(constructor.getName()).add(typesToString(actualTypeArguments)).add(parametersToString(parameters)).toString();
-   }
-
-   public static String parameterToString(int position, Member member, Class<?> rawType, Set<Annotation> annotations, Type[] actualTypeArguments)
-   {
-      return new NamesStringBuilder().add("parameter " + position + " on " + member + "; " + modifiersToString(rawType.getModifiers())).add(annotationsToString(annotations)).add(rawType.getName()).add(typesToString(actualTypeArguments)).toString();
-   }
-
-   /**
-    * Counts item in an iteratble
-    * 
-    * @param iterable The iteraboe
-    * @return The count
-    */
-   public static int count(final Iterable<?> iterable)
-   {
-      int count = 0;
-      for (Iterator<?> i = iterable.iterator(); i.hasNext();)
+      if (callable instanceof WeldMethod<?, ?>)
       {
-         count++;
+         return toString((WeldMethod<?, ?>) callable);
       }
-      return count;
+      else if (callable instanceof WeldConstructor<?>)
+      {
+         return toString((WeldConstructor<?>) callable);
+      }
+      else
+      {
+         throw new IllegalArgumentException("Unable to produce a toString representation of classes of type " + callable.getClass().getName());
+      }
+   }
+   
+   public static String toString(WeldMethod<?, ?> method)
+   {
+      return new StringBuilder().append("[method] ").append(addSpaceIfNeeded(toString(method.getAnnotations()))).append(addSpaceIfNeeded(modifiersToString(method.getJavaMember().getModifiers()))).append(method.getDeclaringType().getName()).append(".").append(method.getName()).append(parametersToTypeString(method.getWeldParameters())).toString().trim();
+   }
+   
+   public static String toString(WeldConstructor<?> constructor)
+   {
+      return new StringBuilder().append("[constructor] ").append(addSpaceIfNeeded(toString(constructor.getAnnotations()))).append(addSpaceIfNeeded(modifiersToString(constructor.getJavaMember().getModifiers()))).append(constructor.getDeclaringType().getName()).append(parametersToTypeString(constructor.getWeldParameters())).toString().trim();
+   }
+   
+   private static String addSpaceIfNeeded(String string)
+   {
+      if (string.length() > 0)
+      {
+         return new StringBuilder().append(string).append(" ").toString();
+      }
+      else
+      {
+         return string;
+      }
+   }
+   
+   
+   private static String parametersToTypeString(Iterable<? extends WeldParameter<?, ?>> parameters)
+   {
+      StringBuilder stringBuilder = new StringBuilder();
+      stringBuilder.append("(");
+      int i = 0;
+      for (WeldParameter<?, ?> parameter : parameters)
+      {
+         if (i > 0)
+         {
+            stringBuilder.append(", ");
+         }
+         stringBuilder.append(toString(parameter.getBaseType()));
+         i++;
+      }
+      return stringBuilder.append(")").toString();
+   }
+
+   public static String toString(WeldParameter<?, ?> parameter)
+   {
+      return new StringBuilder().append("[parameter ").append(parameter.getPosition() + 1).append("] of ").append(toString(parameter.getDeclaringWeldCallable())).toString();
    }
 
    private static String modifiersToString(int modifiers)
@@ -124,18 +158,18 @@ public class Names
 
    private static String iterableToString(Iterable<?> items, String delimiter)
    {
-      StringBuffer stringBuffer = new StringBuffer();
+      StringBuilder stringBuilder = new StringBuilder();
       int i = 0;
       for (Object item : items)
       {
          if (i > 0)
          {
-            stringBuffer.append(delimiter);
+            stringBuilder.append(delimiter);
          }
-         stringBuffer.append(item);
+         stringBuilder.append(item);
          i++;
       }
-      return stringBuffer.toString();
+      return stringBuilder.toString();
    }
 
    /**
@@ -198,7 +232,7 @@ public class Names
       return modifiers;
    }
 
-   public static String typesToString(Type[] actualTypeArguments)
+   public static String toString(Type[] actualTypeArguments)
    {
       if (actualTypeArguments.length == 0)
       {
@@ -227,7 +261,7 @@ public class Names
       return buffer.toString();
    }
 
-   public static String annotationsToString(Iterable<Annotation> annotations)
+   public static String toString(Iterable<Annotation> annotations)
    {
       StringBuilder builder = new StringBuilder();
       for (Annotation annotation : annotations)
@@ -244,9 +278,9 @@ public class Names
     * @param annotations The annotations
     * @return The string representation
     */
-   public static String annotationsToString(Annotation[] annotations)
+   public static String toString(Annotation[] annotations)
    {
-      return annotationsToString(Arrays.asList(annotations));
+      return toString(Arrays.asList(annotations));
    }
 
    public static String version(Package pkg)

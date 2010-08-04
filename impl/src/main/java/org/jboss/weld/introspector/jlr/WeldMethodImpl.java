@@ -214,7 +214,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    @Override
    public String toString()
    {
-      return Names.methodToString(getDelegate(), getAnnotations(), getActualTypeArguments(), getParameters());
+      return Names.toString(this);
    }
 
    public MethodSignature getSignature()

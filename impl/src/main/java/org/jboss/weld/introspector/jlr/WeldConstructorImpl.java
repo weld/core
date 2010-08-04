@@ -293,7 +293,7 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
    @Override
    public String toString()
    {
-      return Names.constructorToString(getDelegate(), getAnnotations(), getActualTypeArguments(), getParameters());
+      return Names.toString(this);
    }
 
    public ConstructorSignature getSignature()

@@ -133,7 +133,7 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
    @Override
    public String toString()
    {
-      return Names.fieldToString(getDelegate(), getAnnotations(), getActualTypeArguments());
+      return Names.toString(this);
    }
    
    public boolean isGeneric()

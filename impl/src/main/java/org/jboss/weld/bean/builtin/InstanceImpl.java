@@ -92,7 +92,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    @Override
    public String toString()
    {
-      return new StringBuilder().append(Names.annotationsToString(getQualifiers())).append(" Instance<").append(getType()).append(">").toString();
+      return new StringBuilder().append(Names.toString(getQualifiers())).append(" Instance<").append(getType()).append(">").toString();
    }
    
    private Set<Bean<?>> getBeans()

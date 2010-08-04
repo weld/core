@@ -86,7 +86,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
    @Override
    public String toString()
    {
-      return new StringBuilder().append(Names.annotationsToString(getQualifiers())).append(" Event<").append(getType()).append(">").toString();
+      return new StringBuilder().append(Names.toString(getQualifiers())).append(" Event<").append(getType()).append(">").toString();
    }
 
    public void fire(T event)

@@ -241,6 +241,25 @@ public class Reflections
          return EMPTY_TYPES;
       }
    }
+   
+   /**
+    * Gets the actual type arguments of a Type
+    * 
+    * @param type The type to examine
+    * @return The type arguments
+    */
+   public static Type[] getActualTypeArguments(Type type)
+   {
+      Type resolvedType = new HierarchyDiscovery(type).getResolvedType();
+      if (resolvedType instanceof ParameterizedType)
+      {
+         return ((ParameterizedType) resolvedType).getActualTypeArguments();
+      }
+      else
+      {
+         return EMPTY_TYPES;
+      }
+   }
 
    /**
     * Checks if raw type is array type
