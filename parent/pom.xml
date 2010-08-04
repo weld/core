@@ -85,9 +85,8 @@
       <junit.version>4.8.1</junit.version>
       <htmlunit.version>2.4</htmlunit.version>
 
-      <version.jbossas_server_manager>1.0.3.GA</version.jbossas_server_manager>
-      <!-- <version.jbossas_client>6.0.0.20100429-M3</version.jbossas_client> -->
-      <version.jbossas_client>6.0.0.20100721-M4</version.jbossas_client>
+      <jbossas.server.manager.version>1.0.3.GA</jbossas.server.manager.version>
+      <jbossas.client.version>6.0.0.20100721-M4</jbossas.client.version>
    </properties>
 
 
@@ -172,12 +171,12 @@
          <dependency>
             <groupId>org.jboss.jbossas</groupId>
             <artifactId>jboss-server-manager</artifactId>
-            <version>${version.jbossas_server_manager}</version>
+            <version>${jbossas.server.manager.version}</version>
          </dependency>
          <dependency>
             <groupId>org.jboss.jbossas</groupId>
             <artifactId>jboss-as-client</artifactId>
-            <version>${version.jbossas_client}</version>
+            <version>${jbossas.client.version}</version>
             <type>pom</type>
          </dependency>
 
