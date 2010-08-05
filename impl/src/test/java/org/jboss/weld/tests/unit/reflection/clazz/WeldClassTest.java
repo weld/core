@@ -28,10 +28,10 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.tests.category.Broken;
+import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 //@Artifact
 public class WeldClassTest
@@ -43,7 +43,7 @@ public class WeldClassTest
     * description = "WELD-216"
     */
    @Test
-   @Category(Broken.class)
+   @Ignore // Broken
    public void testMemberClassWithGenericTypes()
    {
       AnnotatedType at = WeldClassImpl.of(new Kangaroo().procreate().getClass(), transformer);
@@ -54,6 +54,13 @@ public class WeldClassTest
     * description = "WELD-216"
     */
    @Test
+   @Ignore 
+   /*
+    *  Not isolated, depends on someone else initializing Containers.
+    *  
+    *  getUnproxyableClassException() catch(NoSuchMethodException)
+    *           InstantiatorFactory.useInstantiators() <-- Needs Containers
+    */
    public void testLocalClassWithGenericTypes()
    {
       AnnotatedType at = WeldClassImpl.of(new Koala().procreate().getClass(), transformer);
@@ -64,6 +71,13 @@ public class WeldClassTest
     * description = "WELD-216"
     */
    @Test
+   @Ignore 
+   /*
+    *  Not isolated, depends on someone else initializing Containers.
+    *  
+    *  getUnproxyableClassException() catch(NoSuchMethodException)
+    *           InstantiatorFactory.useInstantiators() <-- Needs Containers
+    */
    public void testAnonymousClassWithGenericTypes()
    {
       AnnotatedType at = WeldClassImpl.of(new Possum().procreate().getClass(), transformer);
