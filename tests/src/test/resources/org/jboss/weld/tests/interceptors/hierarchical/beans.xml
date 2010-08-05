@@ -1,5 +1,0 @@
-<beans>
-  <interceptors>
-    <class>org.jboss.weld.tests.interceptors.hierarchical.Defender</class>
-  </interceptors>
-</beans>

@@ -14,27 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.ejb;
+package org.jboss.weld.tests.interceptors.hierarchical;
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.IntegrationTest;
-import org.jboss.testharness.impl.packaging.Packaging;
-import org.jboss.testharness.impl.packaging.PackagingType;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.Test;
-
-@Artifact
-@Packaging(PackagingType.EAR)
-@IntegrationTest
-public class EJBTest extends AbstractWeldTest
+/**
+ * @author Marius Bogoevici
+ */
+public class Player
 {
-   
-   @Test
-   public void testNoInterface()
+   public void playBall()
    {
-      Cow cow = getReference(Cow.class);
-      cow.ping();
-      assert cow.isPinged();
+
    }
-   
+
+   public void receiveInstructions()
+   {
+
+   }
+
+   public Player cloneMe()
+   {
+      return this;
+   }
 }

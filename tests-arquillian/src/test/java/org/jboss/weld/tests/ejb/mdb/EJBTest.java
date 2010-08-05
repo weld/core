@@ -24,25 +24,43 @@ import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.naming.InitialContext;
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.IntegrationTest;
-import org.jboss.testharness.impl.packaging.Packaging;
-import org.jboss.testharness.impl.packaging.PackagingType;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.Test;
+import junit.framework.Assert;
 
-@Artifact
-@Packaging(PackagingType.EAR)
-@IntegrationTest
-public class EJBTest extends AbstractWeldTest
+import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.tests.category.Broken;
+import org.jboss.weld.tests.category.Integration;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+
+@Category(Integration.class)
+@RunWith(Arquillian.class)
+public class EJBTest 
 {
-   
    public static final String MESSAGE = "Hello!";
    
-   @Test(groups="broken")
+   @Deployment
+   public static Archive<?> deploy() 
+   {
+      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+         .addModule(
+               ShrinkWrap.create(JavaArchive.class)
+                  .addPackage(EJBTest.class.getPackage())
+                  .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+                  //.addManifestResource(EJBTest.class.getPackage(), "test-destinations-service.xml", "test-destinations-service.xml")
+         );
+   }
+
+   @Category(Broken.class)
+   @Test
    // TODO Need a way to deploy test-destinations-service.xml to JBoss AS
-   // Port the test as broken
-   public void testMdbUsable() throws Exception
+   public void testMdbUsable(Control control) throws Exception
    {
       InitialContext ctx = new InitialContext();
       QueueConnectionFactory factory = (QueueConnectionFactory) ctx.lookup("ConnectionFactory");
@@ -51,9 +69,11 @@ public class EJBTest extends AbstractWeldTest
       Queue queue = (Queue) ctx.lookup("queue/testQueue");
       QueueSender sender = session.createSender(queue);
       sender.send(session.createTextMessage(MESSAGE));
+      
+      // TODO: rewrite to use CountDownLatch, avoid Thread.sleep in tests
       Thread.sleep(1000);
-      assert getReference(Control.class).isMessageDelivered();
-      assert getReference(Control.class).isContextSet();
+      Assert.assertTrue(control.isMessageDelivered());
+      Assert.assertTrue(control.isContextSet());
    }
    
 }
