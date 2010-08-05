@@ -266,7 +266,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    @Override
    public String toString()
    {
-      return id;
+      return observerMethod.toString();
    }
    
    public String getId()

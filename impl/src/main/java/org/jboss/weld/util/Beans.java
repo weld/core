@@ -25,10 +25,10 @@ import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_POST_CONSTRU
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_PRE_DESTROY_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_POST_CONSTRUCT_METHODS;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_PRE_DESTROY_METHODS;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
 import static org.jboss.weld.logging.messages.UtilMessage.AMBIGUOUS_CONSTRUCTOR;
 import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_NOT_QUALIFIER;
 import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_DISPOSAL_METHOD;
-import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_OBSERVER;
 import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_PRODUCER;
 import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_METHOD_IS_GENERIC;
 import static org.jboss.weld.logging.messages.UtilMessage.INVALID_QUANTITY_INJECTABLE_FIELDS_AND_INITIALIZER_METHODS;
@@ -408,7 +408,7 @@ public class Beans
                }
                else if (method.getWeldParameters(Observes.class).size() > 0)
                {
-                  throw new DefinitionException(INITIALIZER_CANNOT_BE_OBSERVER, method, type);
+                  throw new DefinitionException(INVALID_INITIALIZER, method);
                }
                else if (method.isGeneric())
                {
