@@ -17,6 +17,7 @@
 
 package org.jboss.weld.util.collections;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -37,7 +38,7 @@ import java.util.Set;
  * 
  * @author David Allen
  */
-public class ImmutableArraySet<E> implements Set<E>
+public class ImmutableArraySet<E> implements Set<E>, Serializable
 {
 
    private Object[] elements;
