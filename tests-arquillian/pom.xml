@@ -280,7 +280,6 @@
             <dependency>
                <groupId>org.jboss.jbossas</groupId>
                <artifactId>jboss-as-client</artifactId>
-               <version>${version.jbossas_client}</version>
                <type>pom</type>
                <scope>test</scope>
             </dependency>
