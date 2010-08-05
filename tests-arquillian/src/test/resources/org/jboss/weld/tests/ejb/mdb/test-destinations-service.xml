@@ -1,0 +1,17 @@
+<server>
+	<mbean code="org.jboss.mq.server.jmx.Topic"
+		   name="jboss.mq.destination:service=Topic,name=testTopic">
+		<depends optional-attribute-name="ServerPeer">
+			jboss.messaging:service=ServerPeer
+		</depends>
+		<depends>jboss.messaging:service=PostOffice</depends>
+	</mbean>
+	
+	<mbean code="org.jboss.mq.server.jmx.Queue"
+		   name="jboss.mq.destination:service=Queue,name=testQueue">
+		<depends optional-attribute-name="ServerPeer">
+			jboss.messaging:service=ServerPeer
+		</depends>
+		<depends>jboss.messaging:service=PostOffice</depends>
+	</mbean>
+</server>
