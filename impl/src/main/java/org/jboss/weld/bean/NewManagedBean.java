@@ -124,4 +124,10 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
       return false;
    }
    
+   @Override
+   public String toString()
+   {
+      return "@New " + super.toString();
+   }
+   
 }

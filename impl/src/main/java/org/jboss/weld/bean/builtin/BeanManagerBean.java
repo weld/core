@@ -59,7 +59,7 @@ public class BeanManagerBean extends AbstractBuiltInBean<BeanManagerImpl>
    @Override
    public String toString()
    {
-      return "Built-in javax.inject.manager.Manager bean";
+      return "Built-in Bean [javax.enterprise.inject.spi.BeanManager] with qualifiers [@Default]";
    }
    
    

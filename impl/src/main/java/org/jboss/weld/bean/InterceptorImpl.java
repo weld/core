@@ -37,6 +37,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
  * @author Marius Bogoevici
@@ -114,4 +115,9 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
       // Lifecycle callbacks not supported
    }
    
+   @Override
+   public String toString()
+   {
+      return "Interceptor [" + getBeanClass() + " intercepts " +  Formats.formatAnnotations(getInterceptorBindings()) + "]";
+   }
 }

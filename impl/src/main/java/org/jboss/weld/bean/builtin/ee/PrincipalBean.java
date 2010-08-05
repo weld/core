@@ -52,18 +52,18 @@ public class PrincipalBean extends AbstractEEBean<Principal>
             throw new IllegalStateException(SECURITY_SERVICES_NOT_AVAILABLE);
          }
       }
-      
-      @Override
-      public String toString()
-      {
-         return "Built-in Principal bean";
-      }
 
    }
 
    public PrincipalBean(BeanManagerImpl beanManager)
    {
       super(Principal.class, new PrincipalCallable(beanManager), beanManager);
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "Built-in Bean [java.security.Principal] with qualifiers [@Default]";
    }
 
 }

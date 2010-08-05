@@ -37,8 +37,8 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.Names;
 import org.jboss.weld.util.Observers;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
  * Implementation of the Event interface
@@ -86,7 +86,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
    @Override
    public String toString()
    {
-      return new StringBuilder().append(Names.toString(getQualifiers())).append(" Event<").append(getType()).append(">").toString();
+      return Formats.formatAnnotations(getQualifiers()) + " Event<" + Formats.formatType(getType()) + ">";
    }
 
    public void fire(T event)

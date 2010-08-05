@@ -69,6 +69,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
@@ -594,6 +595,12 @@ public class ManagedBean<T> extends AbstractClassBean<T>
          throw new DeploymentException(e);
       }
       return instance;
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "Managed Bean [" + getBeanClass().toString() + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "]";
    }
 
 }

@@ -59,7 +59,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -103,8 +102,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.Names;
 import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -289,11 +288,11 @@ public class Validator implements Service
       Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
       if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager))
       {
-         throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Names.toString(bindings), Names.toString(ij.getType()));
+         throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Formats.formatAnnotations(bindings), Formats.formatType(ij.getType()));
       }
       if (resolvedBeans.size() > 1 && !ij.isDelegate())
       {
-         throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Arrays.toString(bindings) + "; Possible dependencies: " + resolvedBeans);
+         throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Formats.formatAnnotations(bindings), Formats.formatType(ij.getType()), resolvedBeans);
       }
       // Account for the case this is disabled decorator
       if (!resolvedBeans.isEmpty())

@@ -76,7 +76,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    @Override
    public String toString()
    {
-      return "Built-in implicit javax.event.Event bean";
+      return "Implicit Bean [javax.enterprise.event.Event] with qualifiers [@Default]";
    }
    
 }

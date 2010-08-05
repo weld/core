@@ -56,7 +56,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
       private transient T                instance;
       private final CreationalContext<T> creationalContext;
 
-      public EEResourceCallable(BeanManagerImpl beanManager, ProducerField<?, T> producerField, CreationalContext<T> creationalContext)
+      private EEResourceCallable(BeanManagerImpl beanManager, ProducerField<?, T> producerField, CreationalContext<T> creationalContext)
       {
          super(beanManager);
          this.beanId = producerField.getId();
@@ -86,7 +86,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
       @Override
       public String toString()
       {
-         return beanId;
+         return instance == null ? "null" : instance.toString();
       }
 
    }
@@ -156,6 +156,12 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
    public boolean isPassivationCapableBean()
    {
       return true;
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "Resource " + super.toString();
    }
 
 }

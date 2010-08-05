@@ -131,4 +131,10 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
    {
       // No - op
    }
+   
+   @Override
+   public String toString()
+   {
+      return "@New " + super.toString();
+   }
 }

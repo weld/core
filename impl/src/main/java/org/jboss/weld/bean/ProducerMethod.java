@@ -41,6 +41,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
@@ -298,6 +299,12 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    public String getId()
    {
       return id;
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "Producer Method [" + Formats.formatType(getWeldAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getWeldAnnotated() + "]";
    }
 
 }

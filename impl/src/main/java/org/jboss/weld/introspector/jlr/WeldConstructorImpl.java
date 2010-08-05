@@ -40,7 +40,7 @@ import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Names;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
@@ -293,7 +293,7 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
    @Override
    public String toString()
    {
-      return Names.toString(this);
+      return "[constructor] " + Formats.addSpaceIfNeeded(Formats.formatAnnotations(getAnnotations())) + Formats.addSpaceIfNeeded(Formats.formatModifiers(getJavaMember().getModifiers())) + getDeclaringType().getName() + Formats.formatAsFormalParameterList(getWeldParameters());
    }
 
    public ConstructorSignature getSignature()

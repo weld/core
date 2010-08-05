@@ -53,17 +53,17 @@ public class DefaultValidatorFactoryBean extends AbstractEEBean<ValidatorFactory
          }
       }
       
-      @Override
-      public String toString()
-      {
-         return "Built-in ValidatorFactory bean";
-      }
-      
    }
    
    public DefaultValidatorFactoryBean(BeanManagerImpl beanManager)
    {
       super(ValidatorFactory.class, new ValidatorFactoryCallable(beanManager), beanManager);
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "Built-in Bean [javax.validator.ValidatorFactory] with qualifiers [@Default]";
    }
 
 }

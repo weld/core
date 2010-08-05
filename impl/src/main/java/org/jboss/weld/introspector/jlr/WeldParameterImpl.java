@@ -30,7 +30,6 @@ import org.jboss.weld.introspector.WeldCallable;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Names;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
@@ -140,7 +139,7 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
    @Override
    public String toString()
    {
-      return Names.toString(this);
+      return "[parameter " + (getPosition() + 1) + "] of "+ getDeclaringWeldCallable().toString();
    }
 
    public AnnotatedCallable<X> getDeclaringCallable()

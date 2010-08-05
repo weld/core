@@ -47,9 +47,9 @@ import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Names;
 import org.jboss.weld.util.collections.ArraySetSupplier;
 import org.jboss.weld.util.collections.ImmutableArraySet;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
@@ -579,7 +579,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    @Override
    public String toString()
    {
-      return Names.toString(this);
+      return Formats.formatModifiers(getJavaClass().getModifiers()) + Formats.formatAnnotations(getAnnotations()) + " class " + getName() + Formats.formatActualTypeArguments(getActualTypeArguments());
    }
 
    public String getSimpleName()

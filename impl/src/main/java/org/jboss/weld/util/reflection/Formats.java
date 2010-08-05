@@ -1,0 +1,343 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jboss.weld.util.reflection;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
+import org.jboss.weld.introspector.WeldParameter;
+
+/**
+ * Utility class to produce friendly names e.g. for debugging
+ * 
+ * @author Pete Muir
+ * @author Nicklas Karlsson
+ * 
+ */
+public class Formats
+{
+
+   /**
+    * A transformation from one object to a String.
+    * 
+    * @param <F> the type of the function input
+    */
+   private interface Function<F>
+   {
+      /**
+       * Applies the function to an object of type {@code F}, resulting in an
+       * object of type String.
+       * 
+       * @param from the source object
+       * @param position the position in the list the object is at
+       * @return the resulting object
+       */
+      String apply(F from, int position);
+
+   }
+
+   private static final Function<?> SPACE_DELIMITER_FUNCTION = new Function<Object>()
+   {
+
+      public String apply(Object from, int position)
+      {
+         if (position > 0)
+         {
+            return " " + (from == null ? "null" : from.toString());
+         }
+         else
+         {
+            return from == null ? "null" : from.toString();
+         }
+      }
+   };
+
+   private static final Function<?> COMMA_DELIMITER_FUNCTION = new Function<Object>()
+   {
+
+      public String apply(Object from, int position)
+      {
+         if (position > 0)
+         {
+            return ", " + (from == null ? "null" : from.toString());
+         }
+         else
+         {
+            return from == null ? "null" : from.toString();
+         }
+      }
+   };
+   
+   private static final Function<Annotation> ANNOTATION_LIST_FUNCTION = new Function<Annotation>()
+   {
+      
+      public String apply(Annotation from, int position)
+      {
+         return spaceDelimiterFunction().apply("@" + from.annotationType().getSimpleName(), position);
+      }
+      
+   };
+
+   @SuppressWarnings("unchecked")
+   private static <T> Function<T> spaceDelimiterFunction()
+   {
+      return (Function<T>) SPACE_DELIMITER_FUNCTION;
+   }
+
+   @SuppressWarnings("unchecked")
+   private static <T> Function<T> commaDelimiterFunction()
+   {
+      return (Function<T>) COMMA_DELIMITER_FUNCTION;
+   }
+
+   public static String formatType(Type baseType)
+   {
+      return Reflections.getRawType(baseType).getSimpleName() + formatActualTypeArguments(Reflections.getActualTypeArguments(baseType));
+   }
+
+   public static String formatTypes(Iterable<? extends Type> baseTypes)
+   {
+      return formatIterable(baseTypes, new Function<Type>()
+      {
+
+         public String apply(Type from, int position)
+         {
+            return commaDelimiterFunction().apply(formatType(from), position);
+         }
+
+      });
+   }
+   
+   public static String formatBusinessInterfaceDescriptors(Iterable<? extends BusinessInterfaceDescriptor<?>> businessInterfaceDescriptors)
+   {
+      return formatIterable(businessInterfaceDescriptors, new Function<BusinessInterfaceDescriptor<?>>()
+      {
+
+         public String apply(BusinessInterfaceDescriptor<?> from, int position)
+         {
+            return commaDelimiterFunction().apply(formatType(from.getInterface()), position);
+         }
+
+      });
+   }
+
+   public static String addSpaceIfNeeded(String string)
+   {
+      if (string.length() > 0)
+      {
+         return string + " ";
+      }
+      else
+      {
+         return string;
+      }
+   }
+
+   public static String formatAsFormalParameterList(Iterable<? extends WeldParameter<?, ?>> parameters)
+   {
+      return "(" + formatIterable(parameters, new Function<WeldParameter<?, ?>>()
+      {
+
+         public String apply(WeldParameter<?, ?> from, int position)
+         {
+            return commaDelimiterFunction().apply(formatType(from.getBaseType()), position);
+         }
+
+      }) + ")";
+   }
+
+   public static String formatModifiers(int modifiers)
+   {
+      return formatIterable(parseModifiers(modifiers), spaceDelimiterFunction());
+   }
+
+   private static <F> String formatIterable(Iterable<? extends F> items, Function<F> function)
+   {
+      StringBuilder stringBuilder = new StringBuilder();
+      int i = 0;
+      for (F item : items)
+      {
+         stringBuilder.append(function.apply(item, i));
+         i++;
+      }
+      return stringBuilder.toString();
+   }
+
+   private static <F> String formatIterable(F[] items, Function<F> function)
+   {
+      StringBuilder stringBuilder = new StringBuilder();
+      int i = 0;
+      for (F item : items)
+      {
+         stringBuilder.append(function.apply(item, i));
+         i++;
+      }
+      return stringBuilder.toString();
+   }
+
+   /**
+    * Parses a reflection modifier to a list of string
+    * 
+    * @param modifiers The modifier to parse
+    * @return The resulting string list
+    */
+   private static List<String> parseModifiers(int modifiers)
+   {
+      List<String> result = new ArrayList<String>();
+      if (Modifier.isPrivate(modifiers))
+      {
+         result.add("private");
+      }
+      if (Modifier.isProtected(modifiers))
+      {
+         result.add("protected");
+      }
+      if (Modifier.isPublic(modifiers))
+      {
+         result.add("public");
+      }
+      if (Modifier.isAbstract(modifiers))
+      {
+         result.add("abstract");
+      }
+      if (Modifier.isFinal(modifiers))
+      {
+         result.add("final");
+      }
+      if (Modifier.isNative(modifiers))
+      {
+         result.add("native");
+      }
+      if (Modifier.isStatic(modifiers))
+      {
+         result.add("static");
+      }
+      if (Modifier.isStrict(modifiers))
+      {
+         result.add("strict");
+      }
+      if (Modifier.isSynchronized(modifiers))
+      {
+         result.add("synchronized");
+      }
+      if (Modifier.isTransient(modifiers))
+      {
+         result.add("transient");
+      }
+      if (Modifier.isVolatile(modifiers))
+      {
+         result.add("volatile");
+      }
+      if (Modifier.isInterface(modifiers))
+      {
+         result.add("interface");
+      }
+      return result;
+   }
+
+   public static String formatActualTypeArguments(Type[] actualTypeArguments)
+   {
+      return wrapIfNeccessary(formatIterable(actualTypeArguments, new Function<Type>()
+      {
+
+         public String apply(Type from, int position)
+         {
+            return commaDelimiterFunction().apply(formatType(from), position);
+         }
+         
+      }), "<", ">");
+   }
+   
+   public static String wrapIfNeccessary(String string, String prepend, String append)
+   {
+      if (string != null && string.length() > 0)
+      {
+         return prepend + string + append;
+      }
+      else
+      {
+         return string;
+      }
+   }
+
+   public static String formatAnnotations(Iterable<Annotation> annotations)
+   {
+      return formatIterable(annotations, ANNOTATION_LIST_FUNCTION);
+   }
+
+   /**
+    * Gets a string representation from an array of annotations
+    * 
+    * @param annotations The annotations
+    * @return The string representation
+    */
+   public static String formatAnnotations(Annotation[] annotations)
+   {
+      return formatIterable(annotations, ANNOTATION_LIST_FUNCTION);
+   }
+
+   public static String version(Package pkg)
+   {
+      if (pkg == null)
+      {
+         throw new IllegalArgumentException("Package can not be null");
+      }
+      else
+      {
+         return version(pkg.getImplementationVersion());
+      }
+   }
+
+   public static String version(String version)
+   {
+      if (version != null)
+      {
+         StringBuilder builder = new StringBuilder();
+         if (version.indexOf(".") > 0)
+         {
+            builder.append(version.substring(0, version.indexOf("."))).append(".");
+            version = version.substring(version.indexOf(".") + 1);
+         }
+         if (version.indexOf(".") > 0)
+         {
+            builder.append(version.substring(0, version.indexOf("."))).append(".");
+            version = version.substring(version.indexOf(".") + 1);
+         }
+         if (version.indexOf("-") > 0)
+         {
+            builder.append(version.substring(0, version.indexOf("-"))).append(" (");
+            builder.append(version.substring(version.indexOf("-") + 1)).append(")");
+         }
+         else if (version.indexOf(".") > 0)
+         {
+            builder.append(version.substring(0, version.indexOf("."))).append(" (");
+            builder.append(version.substring(version.indexOf(".") + 1)).append(")");
+         }
+         else
+         {
+            builder.append(version);
+         }
+         return builder.toString();
+      }
+      return "SNAPSHOT";
+   }
+
+}

@@ -53,17 +53,17 @@ public class UserTransactionBean extends AbstractEEBean<UserTransaction>
          }
       }
       
-      @Override
-      public String toString()
-      {
-         return "Built-in UserTransaction bean";
-      }
-      
    }
    
    public UserTransactionBean(BeanManagerImpl beanManager)
    {
       super(UserTransaction.class, new UserTransactionCallable(beanManager), beanManager);
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "Built-in Bean [javax.transaction.UserTransaction] with qualifiers [@Default]";
    }
 
 }

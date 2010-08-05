@@ -37,10 +37,7 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Decorator;
 import javax.inject.Inject;
 
-import org.jboss.weld.bean.proxy.AbstractDecoratorMethodHandler;
 import org.jboss.weld.bean.proxy.DecoratorProxyFactory;
-import org.jboss.weld.bean.proxy.ProxyFactory;
-import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
@@ -50,11 +47,11 @@ import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.introspector.jlr.WeldConstructorImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Decorators;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
@@ -283,5 +280,11 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    public Set<MethodSignature> getDecoratedMethodSignatures()
    {
       return decoratedMethodSignatures;
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "Decorator [" + getBeanClass().toString() + "] decorates [" + Formats.formatTypes(getDecoratedTypes()) + "] with delegate type [" + Formats.formatType(getDelegateType()) + "] and delegate qualifiers [" + Formats.formatAnnotations(getDelegateQualifiers()) + "]";
    }
 }

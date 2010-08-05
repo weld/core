@@ -76,7 +76,7 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    @Override
    public String toString()
    {
-      return "Built-in implicit javax.inject.Instance bean";
+      return "Implicit Bean [javax.enterprise.inject.Instance] with qualifiers [@Default]";
    }
    
 }

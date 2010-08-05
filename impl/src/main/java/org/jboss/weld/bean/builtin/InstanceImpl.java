@@ -41,7 +41,7 @@ import org.jboss.weld.injection.SimpleInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.Names;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
  * Helper implementation for Instance for getting instances
@@ -92,7 +92,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    @Override
    public String toString()
    {
-      return new StringBuilder().append(Names.toString(getQualifiers())).append(" Instance<").append(getType()).append(">").toString();
+      return Formats.formatAnnotations(getQualifiers()) + " Instance<" + Formats.formatType(getType()) + ">";
    }
    
    private Set<Bean<?>> getBeans()

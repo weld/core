@@ -268,5 +268,11 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    {
       return Collections.emptySet();
    }
+   
+   @Override
+   public String toString()
+   {
+      return "Disposer method [" + getDisposesParameter().getDeclaringCallable() + "]";
+   }
 
 }

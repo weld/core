@@ -86,5 +86,11 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
    {
       return ApplicationScoped.class;
    }
+   
+   @Override
+   public String toString()
+   {
+      return "Extension Bean [" + getType().toString() + "] with qualifiers [@Default]";
+   }
 
 }

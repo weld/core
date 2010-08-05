@@ -35,6 +35,7 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.reflection.Formats;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -197,6 +198,12 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
    public boolean isSpecializing()
    {
       return false;
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "Producer Field [" + Formats.formatType(getWeldAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getWeldAnnotated() + "]";
    }
 
 }

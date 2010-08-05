@@ -76,7 +76,7 @@ public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint>
    @Override
    public String toString()
    {
-      return "Built-in javax.inject.manager.InjectionPoint bean";
+      return "Implicit Bean [javax.enterprise.inject.spi.InjectionPoint] with qualifiers [@Default]";
    }
    
 }

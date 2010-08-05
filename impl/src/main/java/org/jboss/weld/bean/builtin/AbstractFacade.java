@@ -84,18 +84,6 @@ public abstract class AbstractFacade<T, X>
    {
       return injectionPoint;
    }
-   
-
-   /**
-    * Gets a string representation
-    * 
-    * @return A string representation
-    */
-   @Override
-   public String toString()
-   {
-      return "Abstract facade implmentation";
-   }
 
    @Override
    public boolean equals(Object obj)

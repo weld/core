@@ -94,8 +94,8 @@ import org.jboss.weld.servlet.HttpSessionManager;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
-import org.jboss.weld.util.Names;
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.serviceProvider.DefaultServiceLoaderFactory;
 import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.jboss.weld.ws.WSApiAbstraction;
@@ -225,7 +225,7 @@ public class WeldBootstrap implements Bootstrap
 
    static
    {
-      loggerFactory().getLogger(VERSION).info(VersionMessage.VERSION, Names.version(WeldBootstrap.class.getPackage()));
+      loggerFactory().getLogger(VERSION).info(VersionMessage.VERSION, Formats.version(WeldBootstrap.class.getPackage()));
    }
 
    // The Bean manager
