@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>weld-servlet-parent</artifactId>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <version>1.0.2-SNAPSHOT</version>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld.servlet</groupId>
+   <artifactId>weld-servlet</artifactId>
+   <version>1.0.2-SNAPSHOT</version>
+   <packaging>jar</packaging>
+   <name>Weld Servlet module</name>
+   <url>http://www.seamframework.org/Weld</url>
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>    
+   
+   <dependencies>
+   
+      <dependency>
+         <groupId>org.jboss.weld.servlet</groupId>
+         <artifactId>weld-servlet-int</artifactId>
+         <optional>true</optional>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core</artifactId>
+         <optional>true</optional>
+      </dependency>
+      
+      <dependency>
+         <groupId>javassist</groupId>
+         <artifactId>javassist</artifactId>
+         <optional>true</optional>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-jdk14</artifactId>
+         <optional>true</optional>
+      </dependency>
+   
+   </dependencies>
+   
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <configuration>
+               <finalName>not-really</finalName>
+               <attach>false</attach>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+               <execution>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>shade</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <createSourcesJar>true</createSourcesJar>
+               <artifactSet>
+                  <excludes>
+                     <exclude>xml-apis:xml-apis</exclude>
+                     <exclude>org.apache.tomcat:catalina</exclude>
+                     <exclude>org.apache.tomcat:servlet-api</exclude>
+                     <exclude>org.apache.tomcat:juli</exclude>
+                     <exclude>org.apache.tomcat:annotations-api</exclude>
+                     <exclude>javax.faces:jsf-api</exclude>
+                     <exclude>javax.el:el-api</exclude>
+                     <exclude>org.mortbay.jetty:jetty</exclude>
+                  </excludes>
+               </artifactSet>
+            </configuration>
+         </plugin> 
+      </plugins>
+   </build>
+
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/trunk/build</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/trunk/build</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/servlet/trunk/build</url>
+   </scm>
+
+
+</project>

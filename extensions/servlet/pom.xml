@@ -1,0 +1,215 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld.servlet</groupId>
+   <artifactId>weld-servlet-parent</artifactId>
+   <version>1.0.2-SNAPSHOT</version>
+   <packaging>pom</packaging>
+   
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-parent</artifactId>
+      <version>12</version>
+  </parent>
+
+   <name>Weld Servlet support build aggregator</name>
+   <url>http://www.seamframework.org/Weld</url>
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+   
+   <modules>
+      <module>int</module>
+      <module>build</module>
+      <module>tests</module>
+   </modules>
+   
+   <issueManagement>
+      <system>JIRA</system>
+      <url>https://jira.jboss.org/jira/browse/WELDX/component/12312750</url>
+   </issueManagement>
+
+   <description>
+      Support for Weld in Servlet Containers
+   </description>
+
+   <developers>
+      <developer>
+         <name>Pete Muir</name>
+         <roles>
+            <role>Project Lead</role>
+         </roles>
+         <email>pete.muir@jboss.org</email>
+         <organization>Red Hat, Inc.</organization>
+         <url>http://in.relation.to/Bloggers/Pete</url>
+      </developer>
+      <developer>
+         <name>Dan Allen</name>
+         <organization>Red Hat, Inc.</organization>
+         <url>http://in.relation.to/Bloggers/Dan</url>
+      </developer>
+   </developers>
+
+   <properties>
+      <weld.api.version>1.0-SP1</weld.api.version>
+      <weld.core.version>1.0.1-Final</weld.core.version>
+      <!-- Use JSF 2 for all extensions support, despite core using JSF 1.2 -->
+      <jsf.version>2.0.0-RC</jsf.version>
+      <tomcat.version>6.0.20</tomcat.version>
+      <jetty.version>6.1.21</jetty.version>
+      <uel.glassfish.version>2.1.2-b04</uel.glassfish.version>
+      <slf4j.version>1.5.10</slf4j.version>
+      <!-- Testing deps -->
+      <testng.version>5.10</testng.version>
+      <jboss.test.harness.version>1.1.0-CR3</jboss.test.harness.version>
+      <apache.httpclient.version>3.1</apache.httpclient.version>
+      <junit.version>4.7</junit.version>
+      <htmlunit.version>2.4</htmlunit.version>
+   </properties>
+
+   <!-- Dependency management, including extra repositories if needed -->
+   <repositories>
+      <repository>
+        <id>oss.sonatype.org/jboss-snapshots</id>
+        <name>JBoss (Nexus) Snapshots Repository</name>
+        <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
+        <releases>
+          <enabled>false</enabled>
+        </releases>
+        <snapshots>
+          <enabled>true</enabled>
+          <updatePolicy>never</updatePolicy>
+        </snapshots>
+      </repository>
+   </repositories>
+
+   <!-- Import the BOMs -->
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api-bom</artifactId>
+            <version>${weld.api.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-bom</artifactId>
+            <version>${weld.core.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+         <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+            <version>${jsf.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+            <version>${jsf.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+            <version>${testng.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket</artifactId>
+            <version>${wicket.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-int</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>catalina</artifactId>
+            <version>${tomcat.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>jasper</artifactId>
+            <version>${tomcat.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>${jetty.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>el-impl</artifactId>
+            <version>${uel.glassfish.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-as-50</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-as-52</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-embedded</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-tomcat</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.1</version>
+         </dependency>
+
+
+      </dependencies>
+   </dependencyManagement>
+
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/trunk</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/trunk</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/servlet/trunk</url>
+   </scm>
+
+   
+</project>
