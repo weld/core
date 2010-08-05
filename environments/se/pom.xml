@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>weld-parent</artifactId>
+      <groupId>org.jboss.weld</groupId>
+      <version>12</version>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-se</artifactId>
+   <version>1.0.2-SNAPSHOT</version>
+   <packaging>jar</packaging>
+   <name>Weld SE Support</name>
+
+   <description>Weld support for Java SE</description>
+   
+   <url>http://www.seamframework.org/Weld</url>
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+
+   <developers>
+      <developer>
+         <name>Pete Royle</name>
+         <roles>
+            <role>Module lead</role>
+         </roles>
+      </developer>
+   </developers>
+
+
+   <properties>
+      <!-- Testing deps -->
+      <testng.version>5.10</testng.version>
+      <weld.api.version>1.0-SP1</weld.api.version>
+      <weld.core.version>1.0.1-Final</weld.core.version>
+      <slf4j.version>1.5.10</slf4j.version>
+   </properties>
+   
+   <!-- Dependency management, including extra repositories if needed -->
+   <repositories>
+      <repository>
+         <id>oss.sonatype.org/jboss-snapshots</id>
+         <name>JBoss (Nexus) Snapshots Repository</name>
+         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
+         <releases>
+            <enabled>false</enabled>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </snapshots>
+      </repository>
+   </repositories>
+   
+   <!-- Import the BOMs -->
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api-bom</artifactId>
+            <version>${weld.api.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-bom</artifactId>
+            <version>${weld.core.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+            <version>${testng.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-se</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+   <!-- Set up local dependecies -->
+
+   <dependencies>
+      <dependency>
+         <groupId>org.testng</groupId>
+         <artifactId>testng</artifactId>
+         <scope>test</scope>
+         <classifier>jdk15</classifier>
+         <exclusions>
+            <exclusion>
+               <artifactId>junit</artifactId>
+               <groupId>junit</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-spi</artifactId>
+         <exclusions>
+            <exclusion>
+               <groupId>javax.jms</groupId>
+               <artifactId>jms</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>javax.ejb</groupId>
+               <artifactId>ejb-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>javax.jta</groupId>
+               <artifactId>transaction-api</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.enterprise</groupId>
+         <artifactId>cdi-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.el</groupId>
+         <artifactId>el-api</artifactId>
+      </dependency>
+      
+      <!-- WELD-203 -->
+      <dependency>
+         <groupId>javax.annotation</groupId>
+         <artifactId>jsr250-api</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-simple</artifactId>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+               <execution>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>shade</goal>
+                  </goals>
+                  <configuration>
+                  </configuration>
+               </execution>
+            </executions>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.slf4j:slf4j-simple</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+               <archive>
+                  <manifest>
+                     <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
+                  </manifest>
+               </archive>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/java-se/trunk</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/java-se/trunk</developerConnection>
+      <url>http://fisheye.jboss.org/browse/weld/java-se/trunk</url>
+   </scm>
+
+   
+</project>
+
+
+
