@@ -198,17 +198,6 @@
    </dependencyManagement>
 
    <build>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <configuration>
-               <tagBase>https://svn.jboss.org/repos/weld/examples/tags</tagBase>
-            </configuration>
-         </plugin>
-
-      </plugins>
-
       <pluginManagement>
          <plugins>
             <plugin>
