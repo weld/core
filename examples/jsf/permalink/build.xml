@@ -1,0 +1,19 @@
+<project basedir="." name="Numberguess Example Build" default="restart">
+	
+	<property name="example.name" value="weld-permalink" />
+
+	<import file="../../build.xml" />
+	
+   <target name="package">
+      <maven target="install" basedir="${basedir}">
+         <arg line="-Pjboss5" />
+      </maven>
+   </target>
+   
+   <target name="clean">
+      <maven target="clean" basedir="${basedir}">
+      	<arg line="-Pjboss5" />
+      </maven>
+   </target>
+	
+</project>

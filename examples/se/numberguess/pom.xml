@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>weld-examples-parent</artifactId>
+      <groupId>org.jboss.weld.examples</groupId>
+      <version>1.0.2-SNAPSHOT</version>
+      <relativePath>../../pom.xml</relativePath>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld.examples.se</groupId>
+   <artifactId>weld-se-numberguess</artifactId>
+   <packaging>jar</packaging>
+   <name>Number Guess SE</name>
+   <url>http://www.seamframework.org/Weld</url>
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-se</artifactId>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+               <archive>
+                  <manifest>
+                     <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
+                  </manifest>
+               </archive>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-eclipse-plugin</artifactId>
+            <configuration>
+               <!-- This is needed so that we get StartMain on the RunAs list -->
+               <useProjectReferences>false</useProjectReferences>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+   <profiles>
+      <profile>
+         <id>run</id>
+         <activation>
+            <property>
+               <name>run</name>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <executions>
+                     <execution>
+                        <id>run</id>
+                        <phase>package</phase>
+                        <goals>
+                           <goal>java</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>exec-maven-plugin</artifactId>
+                  <configuration>
+                     <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
+
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/se/numberguess</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/se/numberguess</developerConnection>
+     <url>http://fisheye.jboss.org/browse/weld/examples/trunk/se/numberguess</url>
+  </scm>
+
+</project>

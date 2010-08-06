@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ JBoss, Home of Professional Open Source
+ Copyright 2009, Red Hat Middleware LLC, and individual contributors
+ by the @authors tag. See the copyright.txt in the distribution for a
+ full listing of individual contributors.
+ 
+ This is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as
+ published by the Free Software Foundation; either version 2.1 of
+ the License, or (at your option) any later version.
+ 
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free
+ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html">
+
+                <ui:remove><!-- The check for phase prevents a "ghost" form submit --></ui:remove>
+                <h:panelGroup rendered="#{facesContext.currentPhaseId.ordinal == 6 and empty blog.entry}">
+                    <p>Sorry, no post exists with that identifier.</p>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not empty blog.entry or facesContext.currentPhaseId.ordinal != 6}">
+                <ui:include src="entryContent.xhtml">
+                    <ui:param name="_entry" value="#{blog.entry}"/>
+                </ui:include>
+                </h:panelGroup>
+                <div class="post-navigation">
+                    <h:panelGroup rendered="#{not empty blog.category}">
+                        <h:button outcome="category" value="Back to #{blog.category}" fragment="entry-#{blog.entry.id}" includeViewParams="true"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{empty blog.category}">
+                        <h:button outcome="home" value="Back to main page" fragment="entry-#{blog.entry.id}" includeViewParams="true"/>
+                    </h:panelGroup>
+                    #{' '}<h:button outcome="entry" value="Hide comments" disabled="true" includeViewParams="true">
+                        <f:param name="comments" value="false"/>
+                    </h:button>
+                    <ui:remove><!--
+                    <h:panelGroup rendered="#{not empty blog.category}">
+                        &#171; <h:link outcome="category" value="Back to #{blog.category}" includeViewParams="true"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{empty blog.category}">
+                        &#171; <h:link outcome="home" value="Back to main page" includeViewParams="true"/>
+                    </h:panelGroup>
+                    --></ui:remove>
+                </div>
+
+</ui:composition>

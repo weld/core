@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+ JBoss, Home of Professional Open Source
+ Copyright 2009, Red Hat Middleware LLC, and individual contributors
+ by the @authors tag. See the copyright.txt in the distribution for a
+ full listing of individual contributors.
+ 
+ This is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as
+ published by the Free Software Foundation; either version 2.1 of
+ the License, or (at your option) any later version.
+ 
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free
+ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:h="http://java.sun.com/jsf/html">
+   <f:view>
+      <ui:insert name="viewMetadata"/>
+   <head>
+      <title>Permalink</title>
+      <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
+      <link rel="stylesheet" href="#{request.contextPath}/css/style.css" type="text/css" media="screen" />
+      <!--[if lte IE 6]>
+      <link rel="stylesheet" href="#{request.contextPath}/css/legacy.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+      <![endif]-->
+   </head>
+   <body>
+      <div id="header">
+         <div class="inner clear">
+            <h1><h:link outcome="home">Permalink</h:link></h1>
+            <p>Direct links to the news you crave</p>
+         </div>
+      </div>
+      <div id="search">
+         <div class="inner clear">
+            <a id="rss-link" href="http://in.relation.to/service/Feed/atom"><strong>Subscribe to this Feed</strong></a>
+            <a id="technorati-link" href="http://technorati.com/faves?add=http://in.relation.to"><strong>Add to your Favorites</strong></a>
+            <h:form id="search" prependId="false">
+               <div>
+                  <label for="q">Search</label>
+                  #{' '}<h:inputText id="q" value="#{blog.searchString}"/><h:commandButton id="s" action="#{blog.search}" image="/img/search.png" title="Search"/>
+               </div>
+            </h:form>
+         </div>
+      </div>
+      <div id="wrapper" class="clear">
+         <div id="content">
+            <h:messages id="messages" globalOnly="true"/>
+            <ui:insert name="content">
+               <ui:include src="../fragments/entryList.xhtml"/>
+            </ui:insert>
+         </div>
+         <ul id="sidebar">
+            <li>
+               <ui:insert name="categories">
+                  <ui:include src="../fragments/categories.xhtml"/>
+               </ui:insert>
+            </li>
+            <li>
+               <h2>Blogroll</h2>
+               <ul>
+                  <li><a href="http://in.relation.to">In Relation To...</a></li>
+                  <li><a href="http://blogs.steeplesoft.com">Coming Up for Air</a></li>
+                  <li><a href="http://weblogs.java.net/blog/edburns">Ed Burn's Blog</a></li>
+                  <li><a href="http://blogs.sun.com/rlubke">Ryan Lubke's Blog</a></li>
+               </ul>
+            </li>
+         </ul>
+      </div>
+      <div id="footer">
+         <p id="blog-name">Permalink JSF Demo</p>
+         <p id="webrevolutionary-link">
+            <a href="http://webrevolutionary.com/coldblue/">ColdBlue</a> v1.0 -
+            A theme by <a href="http://webrevolutionary.com/">WebRevolutionary</a> &amp;
+            <a href="http://www.forwebdesigners.com/">ForWebdesigners</a>
+         </p>
+      </div>
+   </body>
+   </f:view>
+</html>

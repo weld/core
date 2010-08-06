@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ JBoss, Home of Professional Open Source
+ Copyright 2009, Red Hat Middleware LLC, and individual contributors
+ by the @authors tag. See the copyright.txt in the distribution for a
+ full listing of individual contributors.
+ 
+ This is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as
+ published by the Free Software Foundation; either version 2.1 of
+ the License, or (at your option) any later version.
+ 
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free
+ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html">
+
+                        <ul id="comments" class="post-comments clear">
+                            <h3>#{_entry.numComments} Comment#{_entry.numComments != 1 ? 's' : ''}</h3>
+                            <ui:repeat var="_comment" varStatus="it" value="#{_entry.comments}">
+                            <li class="comment clear #{it.even ? 'alt' : ''}">
+                                <cite class="comment-author">#{_comment.author}</cite>
+                                <div class="comment-content"><p>#{_comment.body}</p></div>
+                            </li>
+                            </ui:repeat>
+                        </ul>
+                        <h3>Any thoughts?</h3>
+                        <h:form id="comment" prependId="false">
+                            <p>
+                                <h:inputText id="author" value="#{comment.author}" size="20" tabindex="1" required="true" label="Author"/>
+                                <h:outputLabel for="author" value="Name (required)"/>
+                                <br/>
+                                <h:message for="author" style="color: #FF0000;"/>
+                            </p>
+                            <p>
+                                <h:inputTextarea id="body" value="#{comment.body}" cols="60" rows="7" tabindex="2" required="true" label="Comment text"/>
+                                <h:message for="body" style="color: #FF0000;"/>
+                            </p>
+                            <p>
+                                <h:commandButton id="post" action="#{commentBoard.post}" tabindex="3" value="Submit"/>
+                            </p>
+                        </h:form>
+
+</ui:composition>

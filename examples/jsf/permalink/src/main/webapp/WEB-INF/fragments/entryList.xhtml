@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ JBoss, Home of Professional Open Source
+ Copyright 2009, Red Hat Middleware LLC, and individual contributors
+ by the @authors tag. See the copyright.txt in the distribution for a
+ full listing of individual contributors.
+ 
+ This is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as
+ published by the Free Software Foundation; either version 2.1 of
+ the License, or (at your option) any later version.
+ 
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free
+ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html">
+
+                <c:if test="#{view.viewId == '/category.xhtml'}">
+                <div class="category">
+                    <ui:remove><span>#{not empty blog.category ? fn:concat('Category: ', blog.category) : 'INVALID CATEGORY!'}</span></ui:remove>
+                    <span>#{not empty blog.category ? 'Category: ' : ''}#{not empty blog.category ? blog.category : 'INVALID CATEGORY!'}</span>
+                </div>
+                </c:if>
+                <ui:repeat var="_entry" value="#{blog.entriesForPage}">
+                    <ui:include src="entryContent.xhtml"/>
+                </ui:repeat>
+                <div class="post-navigation">
+                    <span class="arrow">&#171;&#171;</span> #{' '}<h:link id="first" value="First Page" disabled="#{not blog.previousPageAvailable}" includeViewParams="true"
+                        ><f:param name="page" disable="true"
+                    /></h:link>
+                    <span class="arrow">&#171;</span> #{' '}<h:link id="previous" value="Newer Entries" disabled="#{not blog.previousPageAvailable}" includeViewParams="true"
+                        ><f:param name="page" value="#{blog.previousPage}"
+                    /></h:link>
+                    <span style="font-size: smaller;">&#8211;</span>
+                    #{' '}<h:link outcome="#{view.viewId}" id="next" value="Older Entries" disabled="#{not blog.nextPageAvailable}" includeViewParams="true"
+                        ><f:param name="page" value="#{blog.nextPage}"
+                    /></h:link> <span class="arrow">&#187;</span>
+                </div>
+
+</ui:composition>
