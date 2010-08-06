@@ -1,0 +1,399 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2010-07-25T10:21:24\n"
+"PO-Revision-Date: 2010-07-25T10:21:24\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Scopes and contexts"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "So far, we've seen a few examples of <emphasis>scope type annotations</emphasis>. The scope of a bean determines the lifecycle of instances of the bean. The scope also determines which clients refer to which instances of the bean. According to the CDI specification, a scope determines:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "When a new instance of any bean with that scope is created"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "When an existing instance of any bean with that scope is destroyed"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Which injected references refer to any instance of a bean with that scope"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "For example, if we have a session-scoped bean, <literal>CurrentUser</literal>, all beans that are called in the context of the same <literal>HttpSession</literal> will see the same instance of <literal>CurrentUser</literal>. This instance will be automatically created the first time a <literal>CurrentUser</literal> is needed in that session, and automatically destroyed when the session ends."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "JPA entities aren't a great fit for this model. Entities have their whole own lifecycle and identity model which just doesn't map naturally to the model used in CDI. Therefore, we recommend against treating entities as CDI beans. You're certainly going to run into problems if you try to give an entity a scope other than the default scope <literal>@Dependent</literal>. The client proxy will get in the way if you try to pass an injected instance to the JPA <literal>EntityManager</literal>."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Scope types"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "CDI features an <emphasis>extensible context model</emphasis>. It's possible to define new scopes by creating a new scope type annotation:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Of course, that's the easy part of the job. For this scope type to be useful, we will also need to define a <literal>Context</literal> object that implements the scope! Implementing a <literal>Context</literal> is usually a very technical task, intended for framework development only. You can expect an implementation of the business scope, for instance, in a future version of Seam."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "We can apply a scope type annotation to a bean implementation class to specify the scope of the bean:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Usually, you'll use one of CDI's built-in scopes."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Built-in scopes"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "CDI defines four built-in scopes:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>@RequestScoped</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>@SessionScoped</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>@ApplicationScoped</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>@ConversationScoped</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "For a web application that uses CDI:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "any servlet request has access to active request, session and application scopes, and, additionally"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "any JSF request has access to an active conversation scope."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A CDI extension can implement support for the conversation scope in other web frameworks."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The request and application scopes are also active:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "during invocations of EJB remote methods,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "during invocations of EJB asynchronous methods,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "during EJB timeouts,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "during message delivery to a message-driven bean,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "during message delivery to a <literal>MessageListener</literal>, and"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "during web service invocations."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If the application tries to invoke a bean with a scope that does not have an active context, a <literal>ContextNotActiveException</literal> is thrown by the container at runtime."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Managed beans with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal> must be serializable, since the container passivates the HTTP session from time to time."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Three of the four built-in scopes should be extremely familiar to every Java EE developer, so let's not waste time discussing them here. One of the scopes, however, is new."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "The conversation scope"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The conversation scope is a bit like the traditional session scope in that it holds state associated with a user of the system, and spans multiple requests to the server. However, unlike the session scope, the conversation scope:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "is demarcated explicitly by the application, and"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "holds state associated with a particular web browser tab in a JSF application (browsers tend to share domain cookies, and hence the session cookie, between tabs, so this is not the case for the session scope)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A conversation represents a task&#8212;a unit of work from the point of view of the user. The conversation context holds state associated with what the user is currently working on. If the user is doing multiple things at the same time, there are multiple conversations."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The conversation context is active during any JSF request. Most conversations are destroyed at the end of the request. If a conversation should hold state across multiple requests, it must be explicitly promoted to a <emphasis>long-running conversation</emphasis>."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Conversation demarcation"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "CDI provides a built-in bean for controlling the lifecycle of conversations in a JSF application. This bean may be obtained by injection:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "To promote the conversation associated with the current request to a long-running conversation, call the <literal>begin()</literal> method from application code. To schedule the current long-running conversation context for destruction at the end of the current request, call <literal>end()</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "In the following example, a conversation-scoped bean controls the conversation with which it is associated:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This bean is able to control its own lifecycle through use of the <literal>Conversation</literal> API. But some other beans have a lifecycle which depends completely upon another object."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Conversation propagation"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The conversation context automatically propagates with any JSF faces request (JSF form submission) or redirect. It does not automatically propagate with non-faces requests, for example, navigation via a link."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "We can force the conversation to propagate with a non-faces request by including the unique identifier of the conversation as a request parameter. The CDI specification reserves the request parameter named <literal>cid</literal> for this use. The unique identifier of the conversation may be obtained from the <literal>Conversation</literal> object, which has the EL bean name <literal>conversation</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Therefore, the following link propagates the conversation:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "It's probably better to use one of the link components in JSF 2:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The conversation context propagates across redirects, making it very easy to implement the common POST-then-redirect pattern, without resort to fragile constructs such as a \"flash\" object. The container automatically adds the conversation id to the redirect URL as a request parameter."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Conversation timeout"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The container is permitted to destroy a conversation and all state held in its context at any time in order to conserve resources. A CDI implementation will normally do this on the basis of some kind of timeout&#8212;though this is not required by the specification. The timeout is the period of inactivity before the conversation is destroyed (as opposed to the amount of time the conversation is active)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The <literal>Conversation</literal> object provides a method to set the timeout. This is a hint to the container, which is free to ignore the setting."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "The singleton pseudo-scope"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "In addition to the four built-in scopes, CDI also supports two <emphasis>pseudo-scopes</emphasis>. The first is the <emphasis>singleton pseudo-scope</emphasis>, which we specify using the annotation <literal>@Singleton</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Unlike the other scopes, which belong to the package <literal>javax.enterprise.context</literal>, the <literal>@Singleton</literal> annotation is defined in the package <literal>javax.inject</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "You can guess what \"singleton\" means here. It means a bean that is instantiated once. Unfortunately, there's a little problem with this pseudo-scope. Beans with scope <literal>@Singleton</literal> don't have a proxy object. Clients hold a direct reference to the singleton instance. So we need to consider the case of a client that can be serialized, for example, any bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, any dependent object of a bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, or any stateful session bean."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Now, if the singleton instance is a simple, immutable, serializable object like a string, a number or a date, we probably don't mind too much if it gets duplicated via serialization. However, that makes it no stop being a true singleton, and we may as well have just declared it with the default scope."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "There are several ways to ensure that the singleton bean remains a singleton when its client gets serialized:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "have the singleton bean implement <literal>writeResolve()</literal> and <literal>readReplace()</literal> (as defined by the Java serialization specification),"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "make sure the client keeps only a transient reference to the singleton bean, or"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "give the client a reference of type <literal>Instance&lt;X&gt;</literal> where <literal>X</literal> is the bean type of the singleton bean."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A fourth, better solution is to instead use <literal>@ApplicationScoped</literal>, allowing the container to proxy the bean, and take care of serialization problems automatically."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "The dependent pseudo-scope"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Finally, CDI features the so-called <emphasis>dependent pseudo-scope</emphasis>. This is the default scope for a bean which does not explicitly declare a scope type."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "For example, this bean has the scope type <literal>@Dependent</literal>:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "An instance of a dependent bean is never shared between different clients or different injection points. It is strictly a <emphasis>dependent object</emphasis> of some other object. It is instantiated when the object it belongs to is created, and destroyed when the object it belongs to is destroyed."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If a Unified EL expression refers to a dependent bean by EL name, an instance of the bean is instantiated every time the expression is evaluated. The instance is not reused during any other expression evaluation."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If you need to access a bean directly by EL name in a JSF page, you probably need to give it a scope other than <literal>@Dependent</literal>. Otherwise, any value that gets set to the bean by a JSF input will be lost immediately. That's why CDI features the <literal>@Model</literal> stereotype; it lets you give a bean a name, and set its scope to <literal>@RequestScoped</literal> in one stroke. If you need to access a bean that really <emphasis>has</emphasis> to have the scope <literal>@Dependent</literal> from a JSF page, inject it into a different bean, and expose it to EL via a getter method."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Beans with scope <literal>@Dependent</literal> don't need a proxy object. The client holds a direct reference to its instance."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "CDI makes it easy to obtain a dependent instance of a bean, even if the bean is already declared as a bean with some other scope type."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "The <literal>@New</literal> qualifier"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The built-in qualifier <literal>@New</literal> allows us to obtain a dependent object of a specified class."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The class must be a valid managed bean or session bean, but need not be an enabled bean."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This works even if <literal>Calculator</literal> is <emphasis>already</emphasis> declared with a different scope type, for example:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "So the following injected attributes each get a different instance of <literal>Calculator</literal>:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The <literal>calculator</literal> field has a conversation-scoped instance of <literal>Calculator</literal> injected. The <literal>newCalculator</literal> field has a new instance of <literal>Calculator</literal> injected, with a lifecycle that is bound to the owning <literal>PaymentCalc</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This feature is particularly useful with producer methods, as we'll see in the next chapter."
+msgstr ""
+

@@ -1,0 +1,377 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<chapter id="events">
+   <title>Events</title>
+
+   <para>
+      Dependency injection enables loose-coupling by allowing the implementation of the injected bean type to vary,
+      either a deployment time or runtime. Events go one step further, allowing beans to interact with no compile
+      time dependency at all. Event <emphasis>producers</emphasis> raise events that are delivered to event 
+      <emphasis>observers</emphasis> by the container.
+   </para>
+
+   <para>This basic schema might sound like the familiar observer/observable pattern, but there are a couple of 
+   twists:</para>
+   
+   <itemizedlist>
+      <listitem>
+         <para>not only are event producers decoupled from observers; observers are completely decoupled from 
+         producers,</para>
+      </listitem>
+      <listitem>
+         <para>
+            observers can specify a combination of "selectors" to narrow the set of event notifications they will 
+            receive, and
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            observers can be notified immediately, or can specify that delivery of the event should be delayed until 
+            the  end of the current transaction.
+         </para>
+      </listitem>
+   </itemizedlist>
+      
+   <para>The CDI event notification facility uses more or less the same typesafe approach that we've already 
+   seen with the dependency injection service.</para>
+   
+   <section>
+      <title>Event payload</title>
+      
+      <para>
+         The event object carries state from producer to consumer. The event object is nothing more than an instance of 
+         a concrete Java class. (The only restriction is that an event type may not contain type variables). An event 
+         may be assigned qualifiers, which allows observers to distinguish it from other events of the same type. The 
+         qualifiers function like topic selectors, allowing an observer to narrow the set of events it observes.
+      </para>
+
+      <para>
+         An event qualifier is just a normal qualifier, defined using <literal>@Qualifier</literal>. Here's an example:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Qualifier
+@Target({FIELD, PARAMETER})
+@Retention(RUNTIME)
+public @interface Updated {}]]></programlisting>
+
+   </section>
+
+   <section>
+      <title>Event observers</title>
+
+      <para>
+         An <emphasis>observer method</emphasis> is a method of a bean with a parameter annotated
+         <literal>@Observes</literal>.
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }]]></programlisting>
+
+      <para>
+         The annotated parameter is called the <emphasis>event parameter</emphasis>. The type of the event parameter is
+         the observed <emphasis>event type</emphasis>, in this case <literal>Document</literal>. The event parameter may
+         also specify qualifiers.
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]></programlisting>
+
+      <para>
+         An observer method need not specify any event qualifiers&#8212;in this case it is interested in
+         <emphasis>all</emphasis> events of a particular type. If it does specify qualifiers, it's only interested
+         in events which have those qualifiers.
+      </para>
+
+      <para>
+         The observer method may have additional parameters, which are injection points:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document, User user) { ... }]]></programlisting>
+
+   </section>
+
+   <section>
+      <title>Event producers</title>
+
+      <para>
+         Event producers fire events using an instance of the parameterized <literal>Event</literal> interface.
+         An instance of this interface is obtained by injection:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Inject @Any Event<Document> documentEvent;]]></programlisting>
+
+      <para>
+         A producer raises events by calling the <literal>fire()</literal> method of the <literal>Event</literal>
+         interface, passing the event object:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[documentEvent.fire(document);]]></programlisting>
+
+      <para>
+         This particular event will be delivered to every observer method that:
+      </para>
+  
+      <itemizedlist>
+        <listitem>
+          <para>has an event parameter to which the event object (the <literal>Document</literal>) is assignable, 
+          and</para>
+        </listitem>
+        <listitem>
+          <para>specifies no qualifiers.</para>
+        </listitem>
+      </itemizedlist>
+  
+      <para>
+         The container simply calls all the observer methods, passing the event object as the value of the event
+         parameter. If any observer method throws an exception, the container stops calling observer methods, and the
+         exception is rethrown by the <literal>fire()</literal> method.
+      </para>
+
+      <para>
+         Qualifiers can be applied to an event in one of two ways:
+      </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>by annotating the <literal>Event</literal> injection point, or</para>
+        </listitem>
+        <listitem>
+          <para>by passing qualifiers to the <literal>select()</literal> of <literal>Event</literal>.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>
+         Specifying the qualifiers at the injection point is far simpler:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Inject @Updated Event<Document> documentUpdatedEvent;]]></programlisting>
+
+      <para>
+         Then, every event fired via this instance of <literal>Event</literal> has the event qualifier
+         <literal>@Updated</literal>. The event is delivered to every observer method that:
+      </para>
+  
+      <itemizedlist>
+         <listitem>
+            <para>has an event parameter to which the event object is assignable, and</para>
+         </listitem>
+         <listitem>
+            <para>
+               does not have any event qualifier <emphasis>except</emphasis> for the event qualifiers that match 
+               those specified at the <literal>Event</literal> injection point. 
+            </para>
+         </listitem>
+      </itemizedlist>
+
+      <para>
+         The downside of annotating the injection point is that we can't specify the qualifier dynamically. CDI 
+         lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>. 
+         That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>.
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[documentEvent.select(new AnnotationLiteral<Updated>(){}).fire(document);]]></programlisting>
+
+      <para>
+         Events can have multiple event qualifiers, assembled using any combination of annotations at the 
+         <literal>Event</literal> injection point and qualifier instances passed to the <literal>select()</literal> 
+         method.
+      </para>
+
+   </section>
+
+   <section>
+      <title>Conditional observer methods</title>
+
+      <para>
+         By default, if there is no instance of an observer in the current context, the container will instantiate the 
+         observer in order to deliver an event to it. This behavior isn't always desirable. We may want to deliver events 
+         only to instances of the observer that already exist in the current contexts.
+      </para>
+
+      <para>
+         A conditional observer is specified by adding <literal>receive = IF_EXISTS</literal> to the <literal>@Observes</literal> 
+         annotation.
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = IF_EXISTS) @Updated Document d) { ... }]]></programlisting> 
+
+      <para>
+         A bean with scope <literal>@Dependent</literal> cannot be a conditional observer, since it would never be called!
+      </para>
+
+   </section>
+
+   <section>
+      <title>Event qualifiers with members</title>
+
+      <para>An event qualifier type may have annotation members:</para>
+
+<programlisting role="JAVA"><![CDATA[@Qualifier
+@Target({PARAMETER, FIELD})
+@Retention(RUNTIME)
+public @interface Role {
+   RoleType value();
+}]]></programlisting>
+
+      <para>The member value is used to narrow the messages delivered to the observer:</para>
+
+      <programlisting role="JAVA"><![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) { ... }]]></programlisting>
+
+      <para>
+         Event qualifier type members may be specified statically by the event producer, via annotations at the event
+         notifier injection point:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;]]></programlisting>
+
+      <para>
+         Alternatively, the value of the event qualifier type member may be determined dynamically by the event
+         producer. We start by writing an abstract subclass of <literal>AnnotationLiteral</literal>:
+      </para>
+  
+<programlisting role="JAVA"><![CDATA[abstract class RoleBinding 
+   extends AnnotationLiteral<Role> 
+   implements Role {}]]></programlisting>
+    
+      <para>The event producer passes an instance of this class to <literal>select()</literal>:</para>
+
+      <programlisting role="JAVA"><![CDATA[documentEvent.select(new RoleBinding() {
+   public void value() { return user.getRole(); }
+}).fire(document);]]></programlisting>
+
+   </section>
+
+   <section>
+      <title>Multiple event qualifiers</title>
+
+      <para>Event qualifier types may be combined, for example:</para>
+
+      <programlisting role="JAVA"><![CDATA[@Inject @Blog Event<Document> blogEvent;
+...
+if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire(document);]]></programlisting>
+
+      <para>When this event occurs, all of the following observer methods will be notified:</para>
+
+      <programlisting role="JAVA"><![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }]]></programlisting>
+      <programlisting role="JAVA"><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]></programlisting>
+      <programlisting role="JAVA"><![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) { ... }]]></programlisting>
+      <programlisting role="JAVA"><![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }}}]]></programlisting>
+
+   </section>
+
+   <section>
+      <title>Transactional observers</title>
+
+      <para>
+         Transactional observers receive their event notifications during the before or after completion phase of the
+         transaction in which the event was raised. For example, the following observer method needs to refresh a query
+         result set that is cached in the application context, but only when transactions that update the
+         <literal>Category</literal> tree succeed:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[public void refreshCategoryTree(@Observes(during = AFTER_SUCCESS) CategoryUpdateEvent event) { ... }]]></programlisting>
+
+      <para>There are five kinds of transactional observers:</para>
+
+      <itemizedlist>
+         <listitem>
+            <para>
+               <literal>IN_PROGESS</literal> observers are called immediately (default)
+            </para>
+            <para>
+               <literal>AFTER_SUCCESS</literal> observers are called during the after completion phase of the
+               transaction, but only if the transaction completes successfully
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>AFTER_FAILURE</literal> observers are called during the after completion phase of the
+               transaction, but only if the transaction fails to complete successfully
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>AFTER_COMPLETION</literal> observers are called during the after completion phase of
+               the transaction
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>BEFORE_COMPLETION</literal> observers are called during the before completion phase
+               of the transaction
+            </para>
+         </listitem>
+      </itemizedlist>
+
+      <para>
+         Transactional observers are very important in a stateful object model because state is often held for 
+         longer  than a single atomic transaction.
+      </para>
+  
+      <para>Imagine that we have cached a JPA query result set in the application scope:</para>
+  
+  <programlisting role="JAVA"><![CDATA[@ApplicationScoped @Singleton
+public class Catalog {
+
+   @PersistenceContext EntityManager em;
+    
+   List<Product> products;
+
+   @Produces @Catalog 
+   List<Product> getCatalog() {
+      if (products==null) {
+         products = em.createQuery("select p from Product p where p.deleted = false")
+            .getResultList();
+      }
+      return products;
+   }
+    
+}]]></programlisting>
+
+      <para>
+         From time to time, a <literal>Product</literal> is created or deleted. When this occurs, we need to refresh the
+         <literal>Product</literal> catalog. But we should wait until <emphasis>after</emphasis> the transaction
+         completes successfully before performing this refresh!
+      </para>
+  
+      <para>
+         The bean that creates and deletes <literal>Product</literal>s could raise events, for example:
+      </para>
+  
+     <programlisting role="JAVA"><![CDATA[@Stateless
+public class ProductManager {
+   @PersistenceContext EntityManager em;
+   @Inject @Any Event<Product> productEvent;
+
+   public void delete(Product product) {
+      em.delete(product);
+      productEvent.select(new AnnotationLiteral<Deleted>(){}).fire(product);
+   }
+    
+   public void persist(Product product) {
+      em.persist(product);
+      productEvent.select(new AnnotationLiteral<Created>(){}).fire(product);
+   }
+   ...
+}]]></programlisting>
+
+      <para>
+         And now <literal>Catalog</literal> can observe the events after successful completion of the transaction:
+      </para>
+  
+  <programlisting role="JAVA"><![CDATA[@ApplicationScoped @Singleton
+public class Catalog {
+   ...
+   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product product) {
+      products.add(product);
+   }
+    
+   void removeProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product product) {
+      products.remove(product);
+   }
+}]]></programlisting>
+
+   </section>
+
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
+</chapter>

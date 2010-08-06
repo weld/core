@@ -1,0 +1,658 @@
+# translation of interceptors.po to Traditional Chinese
+# Language zh-TW translations for Introduction_to_Web_Beans package.
+#
+# Automatically generated, 2009.
+# Terry Chuang <tchuang@redhat.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: interceptors\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-07-25T05:36:26\n"
+"PO-Revision-Date: 2009-01-15 12:13+1000\n"
+"Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
+"Language-Team: Traditional Chinese <zh@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Interceptors"
+msgstr "攔截器（Interceptor）"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Interceptor functionality is defined in the Java Interceptors specification. "
+"CDI enhances this functionality with a more sophisticated, semantic, "
+"annotation-based approach to binding interceptors to beans."
+msgstr "針對於將攔截器綁定至 Web Bean，Web Bean 含有較為復雜的標記導向方式。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The Interceptors specification defines two kinds of interception points:"
+msgstr "EJB 格式定義了兩種類型的攔截點："
+
+#. Tag: para
+#, no-c-format
+msgid "business method interception, and"
+msgstr "business method 的攔截，以及"
+
+#. Tag: para
+#, no-c-format
+msgid "lifecycle callback interception."
+msgstr "lifecycle callback 的攔截。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "In addition, the EJB specification defines timeout method interception."
+msgstr "EJB 格式定義了兩種類型的攔截點："
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A <emphasis>business method interceptor</emphasis> applies to invocations of "
+"methods of the bean by clients of the bean:"
+msgstr ""
+"<emphasis>business method 攔截器</emphasis>可適用於來自 Web Bean 客戶端的 "
+"Web Bean 的 method 調用："
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A <emphasis>lifecycle callback interceptor</emphasis> applies to invocations "
+"of lifecycle callbacks by the container:"
+msgstr ""
+"<emphasis>lifecycle callback 攔截器</emphasis>可適用於來自 container 的 "
+"lifecycle callback 的調用："
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"An interceptor class may intercept both lifecycle callbacks and business "
+"methods."
+msgstr "攔截器 class 可攔截 lifecycle callback 以及 business method。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A <emphasis>timeout method interceptor</emphasis> applies to invocations of "
+"EJB timeout methods by the container:"
+msgstr ""
+"<emphasis>lifecycle callback 攔截器</emphasis>可適用於來自 container 的 "
+"lifecycle callback 的調用："
+
+#. Tag: title
+#, no-c-format
+msgid "Interceptor bindings"
+msgstr "攔截器綁定"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Suppose we want to declare that some of our beans are transactional. The "
+"first thing we need is an <emphasis>interceptor binding type</emphasis> to "
+"specify exactly which beans we're interested in:"
+msgstr ""
+"假設我們希望宣告我們有些 Web Bean 屬於交易性的 Web Bean。我們首先需要的就是一"
+"個 <emphasis>攔截器綁定標記（interceptor binding annotation）</emphasis>來明"
+"確指定我們要專注的 Web Bean 是哪個："
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Now we can easily specify that our <literal>ShoppingCart</literal> is a "
+"transactional object:"
+msgstr ""
+"現在我們能輕易地指定我們的 <literal>ShoppingCart</literal> 屬於一個交易性的物"
+"件："
+
+#. Tag: para
+#, no-c-format
+msgid "Or, if we prefer, we can specify that just one method is transactional:"
+msgstr "或是，若我們想要的話，我們能夠指定只有一個 method 屬於交易性："
+
+#. Tag: title
+#, no-c-format
+msgid "Implementing interceptors"
+msgstr "實做攔截器"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"That's great, but somewhere along the line we're going to have to actually "
+"implement the interceptor that provides this transaction management aspect. "
+"All we need to do is create a standard interceptor, and annotate it "
+"<literal>@Interceptor</literal> and <literal>@Transactional</literal>."
+msgstr ""
+"我們必須在某個階段實際地實做提供此交易管理功能的攔截器。我們只需要建立一個標"
+"準的 EJB 攔截器並將它標記為 <literal>@Interceptor</literal> 和 "
+"<literal>@Transactional</literal>。"
+
+#. Tag: para
+#, no-c-format
+msgid "Interceptors can take advantage of dependency injection:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Multiple interceptors may use the same interceptor binding type."
+msgstr "多個攔截器可能會使用相同的攔截器綁定類型。"
+
+#. Tag: title
+#, no-c-format
+msgid "Enabling interceptors"
+msgstr "啟用攔截器"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"By default, all interceptors are disabled. We need to <emphasis>enable</"
+"emphasis> our interceptor in the <literal>beans.xml</literal> descriptor of "
+"a bean archive. This activation only applies to the beans in that archive."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Whoah! Why the angle bracket stew?"
+msgstr "為何會有尖括弧？"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Well, having the XML declaration is actually a <emphasis>good thing</"
+"emphasis>. It solves two problems:"
+msgstr "XML 宣告可解決兩項問題："
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"it enables us to specify a total ordering for all the interceptors in our "
+"system, ensuring deterministic behavior, and"
+msgstr ""
+"它可讓我們為我們系統中的所有攔截器指定全排序（total ordering），並確保決定型"
+"的特性，並且"
+
+#. Tag: para
+#, no-c-format
+msgid "it lets us enable or disable interceptor classes at deployment time."
+msgstr "它讓我們能夠在進行建置時啟用或停用攔截器 class。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"For example, we could specify that our security interceptor runs before our "
+"transaction interceptor."
+msgstr ""
+"比方說，我們能夠指定我們的安全性攔截器能比我們的 "
+"<literal>TransactionInterceptor</literal> 還要早執行。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Or we could turn them both off in our test environment by simply not "
+"mentioning them in <literal>beans.xml</literal>! Ah, so simple."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Interceptor bindings with members"
+msgstr "與成員綁定的攔截器"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Suppose we want to add some extra information to our "
+"<literal>@Transactional</literal> annotation:"
+msgstr ""
+"假設我們希望新增一些額外的資訊至我們的 <literal>@Transactional</literal> 標記"
+"中："
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"CDI will use the value of <literal>requiresNew</literal> to choose between "
+"two different interceptors, <literal>TransactionInterceptor</literal> and "
+"<literal>RequiresNewTransactionInterceptor</literal>."
+msgstr ""
+"Web Bean 將會使用 <literal>requiresNew</literal> 的值來在兩個不同的攔截器"
+"（<literal>TransactionInterceptor</literal> 與 "
+"<literal>RequiresNewTransactionInterceptor</literal>）之間作選擇。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Now we can use <literal>RequiresNewTransactionInterceptor</literal> like "
+"this:"
+msgstr ""
+"現在我們可如下使用 <literal>RequiresNewTransactionInterceptor</literal>："
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"But what if we only have one interceptor and we want the container to ignore "
+"the value of <literal>requiresNew</literal> when binding interceptors? "
+"Perhaps this information is only useful for the interceptor implementation. "
+"We can use the <literal>@Nonbinding</literal> annotation:"
+msgstr ""
+"當綁定攔截器時，若我們只有一個攔截器而我們希望管理員忽略 "
+"<literal>requiresNew</literal> 的值時該怎麼辦呢？這時我們可使用 "
+"<literal>@NonBinding</literal> 標記："
+
+#. Tag: title
+#, no-c-format
+msgid "Multiple interceptor binding annotations"
+msgstr "多重攔截器綁定標記"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Usually we use combinations of interceptor bindings types to bind multiple "
+"interceptors to a bean. For example, the following declaration would be used "
+"to bind <literal>TransactionInterceptor</literal> and "
+"<literal>SecurityInterceptor</literal> to the same bean:"
+msgstr ""
+"通常，我們會使用不同攔截器綁定類型的組合來將多重攔截器綁定至 Web Bean。比方"
+"說，下列宣告會被用來將 <literal>TransactionInterceptor</literal> 和 "
+"<literal>SecurityInterceptor</literal> 綁定至相同的 Web Bean："
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"However, in very complex cases, an interceptor itself may specify some "
+"combination of interceptor binding types:"
+msgstr "不過，在非常複雜的情況下，攔截器本身會指定一些攔截器綁定類型的組合："
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Then this interceptor could be bound to the <literal>checkout()</literal> "
+"method using any one of the following combinations:"
+msgstr ""
+"然後這個攔截器便可透過使用下列任何一個組合來綁定至 <literal>checkout()</"
+"literal> 這個 method："
+
+#. Tag: title
+#, no-c-format
+msgid "Interceptor binding type inheritance"
+msgstr "攔截器綁定類型的 inheritance"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"One limitation of the Java language support for annotations is the lack of "
+"annotation inheritance. Really, annotations should have reuse built in, to "
+"allow this kind of thing to work:"
+msgstr ""
+"Java 語言對於標記上的支援有個限制，那就是缺少了標記的 inheritance。實際上，標"
+"記應該要內建 reuse，以便允許這類型的功能有效："
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Well, fortunately, CDI works around this missing feature of Java. We may "
+"annotate one interceptor binding type with other interceptor binding types "
+"(termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings "
+"are transitive &#8212; any bean with the first interceptor binding inherits "
+"the interceptor bindings declared as meta-annotations."
+msgstr ""
+"幸運的是，Web Bean 有方法來解決 Java 所缺少的這項功能上的問題。我們可利用其它"
+"攔截器綁定類型來標記某個攔截器綁定類型。攔截器綁定為可轉變的 &#151; 任何含有"
+"第一個攔截器綁定的 Web Bean 都會繼承宣告為 meta-annotation 的攔截器綁定。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Now, any bean annotated <literal>@Action</literal> will be bound to both "
+"<literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</"
+"literal>. (And even <literal>TransactionalSecureInterceptor</literal>, if it "
+"exists.)"
+msgstr ""
+"任何標記為 <literal>@Action</literal> 的 Web Bean 都會被綁定至 "
+"<literal>TransactionInterceptor</literal> 和 <literal>SecurityInterceptor</"
+"literal>。（甚至是 <literal>TransactionalSecureInterceptor</literal>，若它存"
+"在的話。）"
+
+#. Tag: title
+#, no-c-format
+msgid "Use of <literal>@Interceptors</literal>"
+msgstr "使用 <literal>@Interceptors</literal>"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The <literal>@Interceptors</literal> annotation defined by the interceptor "
+"specification (and used by the managed bean and EJB specifications) is still "
+"supported in CDI."
+msgstr ""
+"企業級與基本的 Web Bean 皆支援 EJB 規格所定義的 <literal>@Interceptors</"
+"literal> 標記，例如："
+
+#. Tag: para
+#, no-c-format
+msgid "However, this approach suffers the following drawbacks:"
+msgstr "不過，這個方式有下列缺點："
+
+#. Tag: para
+#, no-c-format
+msgid "the interceptor implementation is hardcoded in business code,"
+msgstr "攔截器的實做會被 hardcode 在 business code 之中、"
+
+#. Tag: para
+#, no-c-format
+msgid "interceptors may not be easily disabled at deployment time, and"
+msgstr "攔截器無法在進行建置時輕易地被停用，以及"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"the interceptor ordering is non-global &#8212; it is determined by the order "
+"in which interceptors are listed at the class level."
+msgstr ""
+"攔截器的順序會是非全域性的 &#151; 會由攔截器被列於 class 層級的順序來取決。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "Therefore, we recommend the use of CDI-style interceptor bindings."
+msgstr "因此，我們建議使用 Web Bean 形式的攔截器綁定。"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class TransactionInterceptor {\n"
+#~ "   @AroundInvoke \n"
+#~ "   public Object manageTransaction(InvocationContext ctx) throws "
+#~ "Exception { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class TransactionInterceptor {\n"
+#~ "    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+#~ "{ ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class DependencyInjectionInterceptor {\n"
+#~ "   @PostConstruct \n"
+#~ "   public void injectDependencies(InvocationContext ctx) { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class DependencyInjectionInterceptor {\n"
+#~ "    @PostConstruct public void injectDependencies(InvocationContext ctx) "
+#~ "{ ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class TimeoutInterceptor {\n"
+#~ "   @AroundTimeout \n"
+#~ "   public Object manageTransaction(InvocationContext ctx) throws "
+#~ "Exception { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class TransactionInterceptor {\n"
+#~ "    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+#~ "{ ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@InterceptorBinding\n"
+#~ "@Target({METHOD, TYPE})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Transactional {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@InterceptorBindingType\n"
+#~ "@Target({METHOD, TYPE})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Transactional {}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Transactional\n"
+#~ "public class ShoppingCart { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Transactional\n"
+#~ "public class ShoppingCart { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class ShoppingCart {\n"
+#~ "   @Transactional public void checkout() { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class ShoppingCart {\n"
+#~ "    @Transactional public void checkout() { ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Transactional @Interceptor\n"
+#~ "public class TransactionInterceptor {\n"
+#~ "   @AroundInvoke \n"
+#~ "   public Object manageTransaction(InvocationContext ctx) throws "
+#~ "Exception { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Transactional @Interceptor\n"
+#~ "public class TransactionInterceptor {\n"
+#~ "    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+#~ "{ ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Transactional @Interceptor\n"
+#~ "public class TransactionInterceptor {\n"
+#~ "\n"
+#~ "    @Resource UserTransaction transaction;\n"
+#~ "\n"
+#~ "    @AroundInvoke \n"
+#~ "    public Object manageTransaction(InvocationContext ctx) throws "
+#~ "Exception { ... }\n"
+#~ "    \n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ApplicationScoped @Transactional @Interceptor\n"
+#~ "public class TransactionInterceptor {\n"
+#~ "\n"
+#~ "    @Resource Transaction transaction;\n"
+#~ "\n"
+#~ "    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+#~ "{ ... }\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@InterceptorBinding\n"
+#~ "@Target({METHOD, TYPE})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Transactional {\n"
+#~ "   boolean requiresNew() default false;\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@InterceptorBindingType\n"
+#~ "@Target({METHOD, TYPE})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Transactional {\n"
+#~ "    boolean requiresNew() default false;\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Transactional(requiresNew = true) @Interceptor\n"
+#~ "public class RequiresNewTransactionInterceptor {\n"
+#~ "   @AroundInvoke \n"
+#~ "   public Object manageTransaction(InvocationContext ctx) throws "
+#~ "Exception { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Transactional(requiresNew=true) @Interceptor\n"
+#~ "public class RequiresNewTransactionInterceptor {\n"
+#~ "    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+#~ "{ ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Transactional(requiresNew = true)\n"
+#~ "public class ShoppingCart { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Transactional(requiresNew=true)\n"
+#~ "public class ShoppingCart { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@InterceptorBinding\n"
+#~ "@Target({METHOD, TYPE})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Secure {\n"
+#~ "   @Nonbinding String[] rolesAllowed() default {};\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@InterceptorBindingType\n"
+#~ "@Target({METHOD, TYPE})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Secure {\n"
+#~ "    @NonBinding String[] rolesAllowed() default {};\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
+#~ "public class ShoppingCart { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
+#~ "public class ShoppingCart { ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Transactional @Secure @Interceptor\n"
+#~ "public class TransactionalSecureInterceptor { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Transactional @Secure @Interceptor\n"
+#~ "public class TransactionalSecureInterceptor { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public class ShoppingCart {\n"
+#~ "   @Transactional @Secure public void checkout() { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public class ShoppingCart {\n"
+#~ "    @Transactional @Secure public void checkout() { ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Secure\n"
+#~ "public class ShoppingCart {\n"
+#~ "   @Transactional public void checkout() { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Secure\n"
+#~ "public class ShoppingCart {\n"
+#~ "    @Transactional public void checkout() { ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Transactional\n"
+#~ "public class ShoppingCart {\n"
+#~ "   @Secure public void checkout() { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Transactionl\n"
+#~ "public class ShoppingCart {\n"
+#~ "    @Secure public void checkout() { ... }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Transactional @Secure\n"
+#~ "public class ShoppingCart {\n"
+#~ "   public void checkout() { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Transactional @Secure\n"
+#~ "public class ShoppingCart {\n"
+#~ "    public void checkout() { ... }\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public @interface Action extends Transactional, Secure { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public @interface Action extends Transactional, Secure { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Transactional @Secure\n"
+#~ "@InterceptorBinding\n"
+#~ "@Target(TYPE)\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Action { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Transactional @Secure\n"
+#~ "@InterceptorBindingType\n"
+#~ "@Target(TYPE)\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Action { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Interceptors({TransactionInterceptor.class, SecurityInterceptor."
+#~ "class})\n"
+#~ "public class ShoppingCart {\n"
+#~ "   public void checkout() { ... }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Interceptors({TransactionInterceptor.class, SecurityInterceptor."
+#~ "class})\n"
+#~ "public class ShoppingCart {\n"
+#~ "    public void checkout() { ... }\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "Web Beans re-uses the basic interceptor architecture of EJB 3.0, "
+#~ "extending the functionality in two directions:"
+#~ msgstr ""
+#~ "Web Bean 會重新使用 EJB 3.0 的基本攔截器架構，並朝兩個方向來延伸該功能："
+
+#~ msgid "Any Web Bean may have interceptors, not just session beans."
+#~ msgstr "不只是 session bean，任何 Web Bean 都能有攔截器。"
+
+#~ msgid ""
+#~ "All Web Beans interceptors are simple Web Beans, and can take advantage "
+#~ "of dependency injection and contextual lifecycle management."
+#~ msgstr ""
+#~ "所有的 Web Bean 攔截器皆為基本的 Web Bean，並且能夠有效利用依賴注入"
+#~ "（dependency injection）以及 contextual lifecycle 管理。"
+
+#~ msgid ""
+#~ "Finally, we need to <emphasis>enable</emphasis> our interceptor in "
+#~ "<literal>web-beans.xml</literal>."
+#~ msgstr ""
+#~ "最後，我們需要在 <literal>web-beans.xml</literal> 中<emphasis>啟用</"
+#~ "emphasis>我們的攔截器。"
+
+#~ msgid ""
+#~ "<![CDATA[<Interceptors>\n"
+#~ "    <tx:TransactionInterceptor/>\n"
+#~ "</Interceptors>]]>"
+#~ msgstr ""
+#~ "<![CDATA[<Interceptors>\n"
+#~ "    <tx:TransactionInterceptor/>\n"
+#~ "</Interceptors>]]>"
+
+#~ msgid ""
+#~ "<![CDATA[<Interceptors>\n"
+#~ "    <sx:SecurityInterceptor/>\n"
+#~ "    <tx:TransactionInterceptor/>\n"
+#~ "</Interceptors>]]>"
+#~ msgstr ""
+#~ "<![CDATA[<Interceptors>\n"
+#~ "    <sx:SecurityInterceptor/>\n"
+#~ "    <tx:TransactionInterceptor/>\n"
+#~ "</Interceptors>]]>"
+
+#~ msgid "Or we could turn them both off in our test environment!"
+#~ msgstr "或是我們可在測試環境中將它們兩者同時關閉！"

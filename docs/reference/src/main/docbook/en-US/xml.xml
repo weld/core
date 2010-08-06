@@ -1,0 +1,207 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<chapter id="xml">
+
+   <title>Defining beans using XML</title>
+
+   <para>
+      So far, we've seen plenty of examples of beans declared using annotations. However, there are a couple of
+      occasions when we can't use annotations to define the bean:
+   </para>
+
+   <itemizedlist>
+      <listitem>
+         <para>
+            when the implementation class comes from some preexisting library, or
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            when there should be multiple beans with the same implementation class.
+         </para>
+      </listitem>
+   </itemizedlist>
+
+   <para>
+      One way to address these problems is to write a producer method. Weld offers another option: declare the bean
+      using XML. This feature will hopefully one day be part of the CDI specification. Until then, it remains a portable
+      extension.
+   </para>
+
+   <para>
+      Many frameworks use XML to provide metadata relating to Java classes. However, Weld uses a very different approach
+      to specifying the names of Java classes, fields or methods to most other frameworks. Instead of writing class and
+      member names as the string values of XML elements and attributes, Weld lets you use the class or member name as
+      the name of the XML element.
+   </para> 
+
+   <para>
+      The advantage of this approach is that you can write an XML schema that prevents spelling errors in your XML
+      document. It's even possible for a tool to generate the XML schema automatically from the compiled Java code. Or,
+      an integrated development environment could perform the same validation without the need for the explicit
+      intermediate generation step.
+   </para>
+
+   <section>
+      <title>Declaring beans</title>
+  
+      <para>
+         For each Java package, Weld defines a corresponding XML namespace. The namespace is formed by prepending
+         <literal>urn:java:</literal> to the Java package name. For the package <literal>com.mydomain.myapp</literal>,
+         the XML namespace is <literal>urn:java:com.mydomain.myapp</literal>.
+      </para>
+
+      <para>
+         Java types belonging to a package are referred to using an XML element in the namespace corresponding to the
+         package. The name of the element is the name of the Java type. Fields and methods of the type are specified by
+         child elements in the same namespace. If the type is an annotation, members are specified by attributes of the
+         element.
+      </para>
+
+      <para>
+         For example, the element <literal>&lt;util:Date/&gt;</literal> in the following XML fragment refers to the
+         class <literal>java.util.Date</literal>:
+      </para>
+
+      <programlisting role="XML"><![CDATA[<beans xmlns="urn:java:javax.beans"
+   xmlns:util="urn:java:java.util">
+   <util:Date/>
+</beans>]]></programlisting>
+
+      <para>
+         And this is all the code we need to declare that <literal>Date</literal> is a bean! An instance of
+         <literal>Date</literal> may now be injected by any other bean:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[private @Inject Date date;]]></programlisting>
+
+   </section>
+
+   <section>
+      <title>Declaring bean metadata</title>
+
+      <para>
+         We can declare the scope, deployment type and interceptor binding types using direct child elements of the bean
+         declaration:
+      </para>
+
+      <programlisting role="XML"><![CDATA[<myapp:ShoppingCart>
+   <SessionScoped/>
+   <myfwk:Transactional requiresNew="true"/>
+   <myfwk:Secure/>
+</myapp:ShoppingCart>]]></programlisting>
+
+      <para>We use exactly the same approach to specify names and qualifiers:</para>
+
+      <programlisting role="XML"><![CDATA[<util:Date>
+   <Named>currentTime</Named>
+</util:Date>
+
+<util:Date>
+   <SessionScoped/>
+   <myapp:Login/>
+   <Named>loginTime</Named>
+</util:Date>
+
+<util:Date>
+   <ApplicationScoped/>
+   <myapp:SystemStart/>
+   <Named>systemStartTime</Named>
+</util:Date>]]></programlisting>
+
+      <para>
+         Where <literal>@Login</literal> and <literal>@SystemStart</literal> are qualifier annotations types.
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[private @Inject Date currentTime;
+private @Login Date loginTime;
+private @SystemStart Date systemStartTime;]]></programlisting>
+
+      <para>As usual, a bean may support multiple qualifier types:</para>
+
+      <programlisting role="XML"><![CDATA[<myapp:AsynchronousChequePaymentProcessor>
+   <myapp:PayByCheque/>
+   <myapp:Asynchronous/>
+</myapp:AsynchronousChequePaymentProcessor>]]></programlisting>
+
+      <para>
+         Interceptors and decorators are beans as well, so they may be declared just like any other bean:
+      </para>
+
+      <programlisting role="XML"><![CDATA[<myfwk:TransactionInterceptor>
+   <Interceptor/>
+   <myfwk:Transactional/>
+</myfwk:TransactionInterceptor>]]></programlisting>
+
+   </section>
+
+   <section>
+      <title>Declaring bean members</title>
+  
+      <para>
+         TODO!
+      </para>
+  
+   </section>
+
+   <section>
+      <title>Declaring inline beans</title>
+  
+      <para>Weld lets us define a bean at an injection point. For example:</para>
+  
+      <programlisting role="XML"><![CDATA[<myapp:System>
+   <ApplicationScoped/>
+   <myapp:admin>
+      <myapp:Name>
+         <myapp:firstname>Gavin</myapp:firstname>
+         <myapp:lastname>King</myapp:lastname>
+         <myapp:email>gavin@hibernate.org</myapp:email>
+      </myapp:Name>
+   </myapp:admin>
+</myapp:System>]]></programlisting>
+
+      <para>
+         The <literal>&lt;Name&gt;</literal> element declares a bean of scope <literal>@Dependent</literal> and class
+         <literal>Name</literal>, with a set of initial field values. This bean has a special, container-generated
+         qualifier and is therefore injectable only to the specific injection point at which it is declared.
+      </para>
+  
+      <para>
+         This simple but powerful feature allows the Weld XML format to be used to specify whole graphs of Java objects.
+         It's not quite a full databinding solution, but it's close!
+      </para> 
+ 
+   </section>
+
+   <section>
+      <title>Using a schema</title>
+
+      <para>
+         If we want our XML document format to be authored by people who aren't Java developers, or who don't have
+         access to our code, we need to provide a schema. There's nothing specific to Weld about writing or using the
+         schema.
+      </para>
+  
+<programlisting role="XML"><![CDATA[<beans xmlns="urn:java:javax.beans"
+   xmlns:myapp="urn:java:com.mydomain.myapp"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:java:javax.beans http://java.sun.com/jee/beans-1.0.xsd
+   urn:java:com.mydomain.myapp http://mydomain.com/xsd/myapp-1.2.xsd">
+
+   <myapp:System>
+      ...
+   </myapp:System>
+
+</beans>]]></programlisting>
+
+   <para>
+      Writing an XML schema is quite tedious. Therefore, the Weld project will provide a tool which automatically
+      generates the XML schema from compiled Java code.
+   </para>  
+
+</section>
+
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
+</chapter>

@@ -1,0 +1,236 @@
+# Language ja-JP translations for master.xml package.
+# Automatically generated, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: master.xml\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-05-01T13:53:43\n"
+"PO-Revision-Date: 2009-07-02 12:31+0900\n"
+"Last-Translator: minamoto <minamoto@redhat.com>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The first major theme of CDI is <emphasis>loose coupling</emphasis>. We&#39;"
+"ve already seen three means of achieving loose coupling:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<emphasis>alternatives</emphasis> enable deployment time polymorphism,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis>contextual lifecycle management</emphasis> decouples bean "
+"lifecycles."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"These techniques serve to enable loose coupling of client and server. The "
+"client is no longer tightly bound to an implementation of an interface, nor "
+"is it required to manage the lifecycle of the implementation. This approach "
+"lets <emphasis>stateful objects interact as if they were services</emphasis>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system "
+"can respond to change in a well-defined manner. In the past, frameworks that "
+"attempted to provide the facilities listed above invariably did it by "
+"sacrificing type safety (most notably by using XML descriptors). CDI is the "
+"first technology, and certainly the first specification in the Java EE "
+"platform, that achieves this level of loose coupling in a typesafe way."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"CDI provides three extra important facilities that further the goal of loose "
+"coupling:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis>interceptors</emphasis> decouple technical concerns from business "
+"logic,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis>decorators</emphasis> may be used to decouple some business "
+"concerns, and"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis>event notifications</emphasis> decouple event producers from event "
+"consumers."
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The second major theme of CDI is <emphasis>strong typing</emphasis>. The "
+"information about the dependencies, interceptors and decorators of a bean, "
+"and the information about event consumers for an event producer, is "
+"contained in typesafe Java constructs that may be validated by the compiler."
+msgstr ""
+"Web Beans における第二のテーマは、 <emphasis>強い型付け</emphasis> です。依存"
+"（インターセプタと Web　Bean のデコレータとイベントプロデューサのためのイベン"
+"トコンシューマに関する情報）に関する情報は、コンパイラによって妥当性が確認さ"
+"れることがありえるタイプセーフな Java のコンストラクトに含まれます。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"You don&#39;t see string-based identifiers in CDI code, not because the "
+"framework is hiding them from you using clever defaulting rules—so-called "
+"&#34;configuration by convention&#34;—but because there are simply no "
+"strings there to begin with!"
+msgstr ""
+"Web Beans コードでストリングベースの識別子を認知しません。上手なデフォルティ"
+"ングを使うことで、&#151;いわゆる\"規則による構成\"&#151;を除外します。フレー"
+"ムワークがそれらを隠しているのでではありませんが、単純に文字列が存在しませ"
+"ん。　"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The obvious benefit of this approach is that <emphasis>any</emphasis> IDE "
+"can provide autocompletion, validation and refactoring without the need for "
+"special tooling. But there is a second, less-immediately-obvious, benefit. "
+"It turns out that when you start thinking of identifying objects, events or "
+"interceptors via annotations instead of names, you have an opportunity to "
+"lift the semantic level of your code."
+msgstr ""
+"このアプローチの明白な利点は、 <emphasis>どんな</emphasis> IDE でも特別なツー"
+"リングを使うことなく自動完結、確認とリファクタリングを提供することができると"
+"いうことです。しかし、第二の（わかりにくい）利益が、あります。名前の代わりに"
+"注釈を通してオブジェクト、イベントまたはインターセプタを特定する考えに取りか"
+"かるとき、コードの意味上のレベルを良くする機会があることがわかります。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"CDI encourages you develop annotations that model concepts, for example,"
+msgstr ""
+"Web Beans は、概念をモデル化する注釈を展開することを勧めます。たとえば、以下"
+"のものです。"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>@Asynchronous</literal>,"
+msgstr "<literal>@Asynchronous</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>@Mock</literal>,"
+msgstr "<literal>@Mock</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>@Secure</literal> or"
+msgstr "<literal>@Secure</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>@Updated</literal>,"
+msgstr "<literal>@Updated</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid "instead of using compound names like"
+msgstr "名前が合う複合語を使う代わりに、以下のものを使います。"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>asyncPaymentProcessor</literal>,"
+msgstr "<literal>asyncPaymentProcessor</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>mockPaymentProcessor</literal>,"
+msgstr "<literal>mockPaymentProcessor</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>SecurityInterceptor</literal> or"
+msgstr "<literal>SecurityInterceptor</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>DocumentUpdatedEvent</literal>."
+msgstr "<literal>DocumentUpdatedEvent</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The annotations are reusable. They help describe common qualities of "
+"disparate parts of the system. They help us categorize and understand our "
+"code. They help us deal with common concerns in a common way. They make our "
+"code more literate and more understandable."
+msgstr ""
+"注釈は再使用できます。それらは、システムの異なる部分のありふれた特性を解説す"
+"るのを助けます。コードを分類して、理解するのを助け、一般的な方法で一般の懸念"
+"に対処するのを助けます。また、コードをより明晰でより理解できるようにします。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"CDI <emphasis>stereotypes</emphasis> take this idea a step further. A "
+"stereotype models a common <emphasis>role</emphasis> in your application "
+"architecture. It encapsulates various properties of the role, including "
+"scope, interceptor bindings, qualifiers, etc, into a single reusable "
+"package. (Of course, there is also the benefit of tucking some of those "
+"annotations away)."
+msgstr ""
+"Web　Beans <emphasis>ステレオタイプ</emphasis> は、一歩先に、この考えを採用し"
+"ます。ステレオタイプは、アプリケーション設計での一般の <emphasis>ロール</"
+"emphasis> をモデル化します。一つの再使用できるパッケージに、それはスコープ、"
+"インターセプタバインディング、デプロイメントタイプ、その他を含むロールのいろ"
+"いろな特性をカプセル化します。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"We&#39;re now ready to meet some more advanced features of CDI. Bear in mind "
+"that these features exist to make our code both easier to validate and more "
+"understandable. Most of the time you don&#39;t ever really <emphasis>need</"
+"emphasis> to use these features, but if you use them wisely, you&#39;ll come "
+"to appreciate their power."
+msgstr ""
+"現在、もう既に Web Beans のいくつかの先進機能に会う準備が整っています。これら"
+"の特徴がコードを妥当性を検査するのがより簡単で、より理解できるようにするため"
+"に存在することを覚えておいてください。ほとんどの場合、決して実際はこれらの機"
+"能を使う <emphasis>必要はありません</emphasis> 、しかし、賢明にそれらを使用す"
+"るならば、それらの力を理解必要があります。"
+
+#~ msgid ""
+#~ "Even Web Beans XML metadata is strongly typed! There's no compiler for "
+#~ "XML, so Web Beans takes advantage of XML schemas to validate the Java "
+#~ "types and attributes that appear in XML. This approach turns out to make "
+#~ "the XML more literate, just like annotations made our Java code more "
+#~ "literate."
+#~ msgstr ""
+#~ "Web Beans XML メタデータでさえ、強硬に型を検査されます。コンパイラは XML "
+#~ "の解析を行わないので、 Web Beans は XML に現れる Java タイプと特質の妥当性"
+#~ "を検査するために XML スキーマを利用します。注釈が Java コードをより明晰に"
+#~ "したように、このアプローチは XML をより明晰にすることがわかります。"

@@ -1,0 +1,23 @@
+<!DOCTYPE bookinfo PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<bookinfo>
+   <title>Weld - JSR-299 Reference Implementation</title>
+   <subtitle>
+      JSR-299: The new Java standard for dependency injection and
+      contextual lifecycle management
+   </subtitle>
+   <edition>1.0</edition>
+   <pubsnumber>1</pubsnumber>
+   <productname>Weld</productname>
+   <productnumber>1.0</productnumber>
+   <copyright>
+      <year>&YEAR;
+      </year>
+      <holder>&HOLDER;
+      </holder>
+   </copyright>
+   <xi:include href="Author_Group.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+   <!--
+vim:et:ts=3:sw=3:tw=120
+-->
+</bookinfo>

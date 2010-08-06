@@ -1,0 +1,104 @@
+# Language fr-FR translations for master.xml package.
+# Automatically generated, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: master.xml\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-05-01T13:53:43\n"
+"PO-Revision-Date: 2009-02-05 00:03+0100\n"
+"Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "A note about naming and nomenclature"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Shortly before the final draft of JSR-299 was submitted, the specification "
+"changed its name from &#34;Web Beans&#34; to &#34;Java Contexts and "
+"Dependency Injection for the Java EE platform&#34;, abbreviated CDI. For a "
+"brief period after the renaming, the reference implementation adopted the "
+"name &#34;Web Beans&#34;. However, this ended up causing more confusion than "
+"it solved and Red Hat decided to change the name of the reference "
+"implementation to &#34;Weld&#34;. You may still find other documentation, "
+"blogs, forum posts, etc. that use the old nomenclature. Please update any "
+"references you can. The naming game is over."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"You&#39;ll also find that some of the functionality that once existed in the "
+"specification is now missing, such as defining beans in XML. These features "
+"will be available as portable extensions for CDI in the Weld project, and "
+"perhaps other implementations."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Note that this reference guide was started while changes were still being "
+"made to the specification. We&#39;ve done our best to update it for "
+"accuracy. If you discover a conflict between what is written in this guide "
+"and the specification, the specification is the authority—assume it is "
+"correct. If you believe you have found an error in the specification, please "
+"report it to the JSR-299 EG."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Beans"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Weld, the CDI Reference Implementation"
+msgstr ""
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Loose coupling with strong typing"
+msgstr "Tirer meilleur parti du typage fort"
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "CDI and the Java EE ecosystem"
+msgstr "Web Beans et l'écosystème Java EE"
+
+#. Tag: title
+#, no-c-format
+msgid "Weld reference"
+msgstr ""
+
+#~ msgid "Note"
+#~ msgstr "Note"
+
+#, fuzzy
+#~ msgid ""
+#~ "JSR-299 has recently changed its name from \"Web Beans\" to \"Java "
+#~ "Contexts and Dependency Injection\". The reference guide still refers to "
+#~ "JSR-299 as \"Web Beans\" and the JSR-299 Reference Implementation as the "
+#~ "\"Web Beans RI\". Other documentation, blogs, forum posts etc. may use "
+#~ "the new nomenclature, including the new name for the JSR-299 Reference "
+#~ "Implementation - \"Web Beans\"."
+#~ msgstr ""
+#~ "La JSR-299 a récemment été renommée de \"Web Beans\" vers \"Java Contexts "
+#~ "and Dependency Injection\". Ce guide de référence réfère toujours la JSR-"
+#~ "299 comme \"Web Beans\" et l'implémentation de référence de la JSR-299 "
+#~ "comme \"Web Beans RI\". D'autres documentations, blogs, articles de "
+#~ "forums etc. peuvent utiliser la nouvelle nomenclature, y compris le "
+#~ "nouveau nom pour l'implémentation de référence de la JSR-299 - \"Web Beans"
+#~ "\"."
+
+#~ msgid "Using contextual objects"
+#~ msgstr "Utiliser des objets contextuels"
+
+#~ msgid "Developing loosely-coupled code"
+#~ msgstr "Développer du code faiblement couplé"

@@ -1,0 +1,29 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2010-07-25T03:52:14\n"
+"PO-Revision-Date: 2010-07-25T03:52:14\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: para
+#, no-c-format
+msgid "Weld, the JSR-299 Reference Implementation (RI), is being developed as part of the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. You can download the latest community release of Weld from the <ulink url=\"http://seamframework.org/Download\">download page</ulink>. Information about the Weld source code repository and instructions about how to obtain and build the source can be found on the same page."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Weld provides a complete SPI allowing Java EE containers such as JBoss AS and GlassFish to use Weld as their built-in CDI implementation. Weld also runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE environment."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Weld comes with an extensive library of examples, which are a great starting point from which to learn CDI."
+msgstr ""
+

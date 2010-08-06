@@ -1,0 +1,130 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<chapter id="resources">
+
+         <title>Java EE component environment resources</title>
+         
+         <para>
+            Java EE 5 already introduced some limited support for dependency injection, in the form of component 
+            environment injection. A component environment resource is a Java EE component, for example a JDBC 
+            datasource, JMS queue or topic, JPA persistence context, remote EJB or web service.
+         </para>
+         
+         <para>
+            Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably,
+            component environment injection relies on string-based names to qualify ambiguous types, and there is no 
+            real consistency as to the nature of the names (sometimes a JNDI name, sometimes a persistence unit name, 
+            sometimes an EJB link, sometimes a nonportable "mapped name"). Producer fields turned out to be an elegant 
+            adaptor to reduce all this complexity to a common model and get component environment resources to 
+            participate in the CDI system just like any other kind of bean.
+         </para>
+         
+         <para>
+            Fields have a duality in that they can both be the target of Java EE component environment injection and be 
+            declared as a CDI producer field. Therefore, they can define a mapping from a string-based name in the 
+            component environment, to a combination of type and qualifiers used in the world of typesafe injection. We 
+            call a producer field that represents a reference to an object in the Java EE component environment a 
+            <emphasis>resource</emphasis>.
+         </para>
+         
+         <section>
+            <title>Defining a resource</title>
+            
+            <para>The CDI specification uses the term <emphasis>resource</emphasis> to refer, generically, to any of
+            the following kinds of object which might be available in the Java EE component environment:</para>
+            
+            <itemizedlist>
+               <listitem>
+                  <para>JDBC <literal>Datasource</literal>s, JMS <literal>Queue</literal>s, <literal>Topic</literal>s
+                  and <literal>ConnectionFactory</literal>s, JavaMail <literal>Session</literal>s and other transactional 
+                  resources including JCA connectors,</para>
+               </listitem>
+               <listitem>
+                  <para>JPA <literal>EntityManager</literal>s and <literal>EntityManagerFactory</literal>s,</para>
+               </listitem>
+               <listitem>
+                  <para>remote EJBs, and</para>
+               </listitem>
+               <listitem>
+                  <para>web services</para>
+               </listitem>
+            </itemizedlist>
+            
+            <para>We declare a resource by annotating a producer field with a component environment injection
+            annotation: <literal>@Resource</literal>, <literal>@EJB</literal>, <literal>@PersistenceContext</literal>,
+            <literal>@PersistenceUnit</literal> or <literal>@WebServiceRef</literal>.</para>
+
+         <programlisting role="JAVA"><![CDATA[@Produces @WebServiceRef(lookup="java:app/service/Catalog")
+Catalog catalog;]]></programlisting> 
+
+         <programlisting role="JAVA"><![CDATA[@Produces @Resource(lookup="java:global/env/jdbc/CustomerDatasource") 
+@CustomerDatabase Datasource customerDatabase;]]></programlisting> 
+
+         <programlisting role="JAVA"><![CDATA[@Produces @PersistenceContext(unitName="CustomerDatabase")
+@CustomerDatabase EntityManager customerDatabasePersistenceContext;]]></programlisting>
+
+          <programlisting role="JAVA"><![CDATA[@Produces @PersistenceUnit(unitName="CustomerDatabase") 
+@CustomerDatabase EntityManagerFactory customerDatabasePersistenceUnit;]]></programlisting>
+
+          <programlisting role="JAVA"><![CDATA[@Produces @EJB(ejbLink="../their.jar#PaymentService") 
+PaymentService paymentService;]]></programlisting>
+
+            <para>The field may be static (but not final).</para>
+            
+            <para>A resource declaration really contains two pieces of information:</para>
+            
+            <itemizedlist>
+               <listitem>
+                  <para>the JNDI name, EJB link, persistence unit name, or other metadata needed to obtain a 
+                  reference to the resource from the component environment, and</para>
+               </listitem>
+               <listitem>
+                  <para>the type and qualifiers that we will use to inject the reference into our beans.</para>
+               </listitem>
+            </itemizedlist>
+            
+            <tip>
+               <para>It might feel strange to be declaring resources in Java code. Isn't this stuff that might be
+               deployment-specific? Certainly, and that's why it makes sense to declare your resources in a class
+               annotated <literal>@Alternative</literal>.</para>
+            </tip>
+
+         </section>
+         
+         <section>
+            <title>Typesafe resource injection</title>
+ 
+         <para>
+            These resources can now be injected in the usual way.
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[@Inject Catalog catalog;]]></programlisting> 
+         <programlisting role="JAVA"><![CDATA[@Inject @CustomerDatabase Datasource customerDatabase;]]></programlisting> 
+         <programlisting role="JAVA"><![CDATA[@Inject @CustomerDatabase EntityManager customerDatabaseEntityManager;]]></programlisting> 
+         <programlisting role="JAVA"><![CDATA[@Inject @CustomerDatabase EntityManagerFactory customerDatabaseEntityManagerFactory;]]></programlisting> 
+         <programlisting role="JAVA"><![CDATA[@Inject PaymentService paymentService;]]></programlisting> 
+
+         <para>
+            The bean type and qualifiers of the resource are determined by the producer field declaration.
+         </para>
+
+         <para>
+            It might seem like a pain to have to write these extra producer field declarations, just to gain an additional
+            level of indirection. You could just as well use component environment injection directly, right? But remember
+            that you're going to be using resources like the <literal>EntityManager</literal> in several different beans. 
+            Isn't it nicer and more typesafe to write 
+         </para>
+         
+            <programlisting>@Inject @CustomerDatabase EntityManager</programlisting> 
+            
+         <para>instead of</para>
+            
+            <programlisting>@PersistenceContext(unitName="CustomerDatabase") EntityManager</programlisting> 
+            
+         <para>
+            all over the place?
+         </para>
+
+         </section>
+
+</chapter>

@@ -1,0 +1,226 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<chapter id="stereotypes">
+
+   <title>Stereotypes</title>
+  
+   <para>The CDI specification defines a stereotype as follows:</para>
+  
+   <blockquote>
+  
+      <para>
+         In many systems, use of architectural patterns produces a set of recurring bean roles. A stereotype allows a
+         framework developer to identify such a role and declare some common metadata for beans with that role in a
+         central place.
+      </para>
+  
+      <para>A stereotype encapsulates any combination of:</para>
+  
+      <itemizedlist>
+         <listitem>
+            <para>a default scope, and</para>
+         </listitem>
+         <listitem>
+            <para>a set of interceptor bindings.</para>
+         </listitem>
+      </itemizedlist>
+
+      <para>
+         A stereotype may also specify that: 
+      </para>
+
+      <itemizedlist>
+         <listitem>
+            <para>all beans with the stereotype have defaulted bean EL names, or that</para>
+         </listitem>
+         <listitem>
+            <para>all beans with the stereotype are alternatives.</para>
+         </listitem>
+      </itemizedlist>
+  
+      <para>
+         A bean may declare zero, one or multiple stereotypes. Stereotype annotations may be applied to a bean class or
+         producer method or field.
+      </para>
+  
+   </blockquote>
+  
+   <para>
+      A stereotype is an annotation, annotated <literal>@Stereotype</literal>, that packages several other annotations. 
+      For instance, the following stereotype identifies action classes in some MVC framework:
+   </para>
+  
+   <programlisting role="JAVA"><![CDATA[@Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
+...
+public @interface Action {}]]></programlisting>
+
+   <para>
+      We use the stereotype by applying the annotation to a bean.
+   </para>
+  
+   <programlisting role="JAVA"><![CDATA[@Action 
+public class LoginAction { ... }]]></programlisting>
+
+   <para>
+      Of course, we need to apply some other annotations to our stereotype or else it wouldn't be adding much value.
+   </para>
+
+   <section>
+      <title>Default scope for a stereotype</title>
+  
+      <para>
+         A stereotype may specify a default scope for beans annotated with the stereotype. For example:
+      </para>
+    
+      <programlisting role="JAVA"><![CDATA[@RequestScoped
+@Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Action {}]]></programlisting>
+
+      <para>
+         A particular action may still override this default if necessary:
+      </para>
+    
+      <programlisting role="JAVA"><![CDATA[@Dependent @Action 
+public class DependentScopedLoginAction { ... }]]></programlisting>
+
+      <para>
+         Naturally, overriding a single default isn't much use. But remember, stereotypes can define more than just the
+         default scope.
+      </para>
+
+   </section>
+  
+   <section>
+      <title>Interceptor bindings for stereotypes</title>
+    
+      <para>
+         A stereotype may specify a set of interceptor bindings to be inherited by all beans with that stereotype.
+      </para>
+    
+<programlisting role="JAVA"><![CDATA[@RequestScoped
+@Transactional(requiresNew=true)
+@Secure
+@Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Action {}]]></programlisting>
+
+      <para>
+         This helps us get technical concerns, like transactions and security, even further away from the business code!
+      </para>
+
+   </section>
+  
+   <section>
+      <title>Name defaulting with stereotypes</title>
+    
+      <para>
+         We can specify that all beans with a certain stereotype have a defaulted EL name when a name is not explicitly
+         defined for that bean. All we need to do is add an empty <literal>@Named</literal> annotation:
+      </para>
+    
+      <programlisting role="JAVA"><![CDATA[@RequestScoped
+@Transactional(requiresNew=true)
+@Secure
+@Named
+@Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Action {}]]></programlisting>
+
+      <para>
+         Now, the <literal>LoginAction</literal> bean will have the defaulted name <literal>loginAction</literal>.
+      </para>
+    
+   </section>
+
+   <section>
+      <title>Alternative stereotypes</title>
+
+      <para>
+         A stereotype can indicate that all beans to which it is applied are <literal>@Alternative</literal>s.
+         An <emphasis>alternative stereotype</emphasis> lets us classify beans by deployment scenario.
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Alternative
+@Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Mock {}]]></programlisting>
+
+      <para>
+         We can apply an alternative stereotype to a whole set of beans, and activate them all with one line
+         of code in <literal>beans.xml</literal>.
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Mock
+public class MockLoginAction extends LoginAction { ... }]]></programlisting>
+<!-- 
+      <programlisting role="JAVA"><![CDATA[<beans>
+   <alternatives>
+      <stereotype>org.mycompany.testing.Mock</stereotype>
+   </alternatives>
+</beans>]]></programlisting>
+-->
+
+   </section>
+
+   <section>
+      <title>Stereotype stacking</title>
+
+      <para>
+         This may blow your mind a bit, but stereotypes may declare other stereotypes, which we'll call
+         <emphasis>stereotype stacking</emphasis>. You may want to do this if you have two distinct
+         stereotypes which are meaningful on their own, but in other situation may be meaningful when
+         combined.
+      </para>
+
+      <para>
+         Here's an example that combines the <literal>@Action</literal> and <literal>@Auditable</literal> 
+         stereotypes:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Auditable
+@Action
+@Stereotype
+@Target(TYPE)
+@Retention(RUNTIME)
+public @interface AuditableAction {}]]></programlisting> 
+
+   </section>
+  
+   <section>
+      <title>Built-in stereotypes</title>
+    
+      <para>
+         We've already met two standard stereotypes defined by the CDI specification: <literal>@Interceptor</literal>
+         and <literal>@Decorator</literal>.
+      </para>
+    
+      <para>
+         CDI defines one further standard stereotype, <literal>@Model</literal>, which is expected to be used frequently
+         in web applications:
+      </para>
+    
+<programlisting role="JAVA"><![CDATA[@Named 
+@RequestScoped 
+@Stereotype 
+@Target({TYPE, METHOD}) 
+@Retention(RUNTIME) 
+public @interface Model {}]]></programlisting>
+
+      <para>
+         Instead of using JSF managed beans, just annotate a bean <literal>@Model</literal>, and use it directly in
+         your JSF view!
+      </para>
+    
+  </section>
+
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
+</chapter>

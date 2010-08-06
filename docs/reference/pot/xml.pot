@@ -1,0 +1,149 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2010-07-25T03:52:15\n"
+"PO-Revision-Date: 2010-07-25T03:52:15\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Defining beans using XML"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "So far, we've seen plenty of examples of beans declared using annotations. However, there are a couple of occasions when we can't use annotations to define the bean:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "when the implementation class comes from some preexisting library, or"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "when there should be multiple beans with the same implementation class."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "One way to address these problems is to write a producer method. Weld offers another option: declare the bean using XML. This feature will hopefully one day be part of the CDI specification. Until then, it remains a portable extension."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Many frameworks use XML to provide metadata relating to Java classes. However, Weld uses a very different approach to specifying the names of Java classes, fields or methods to most other frameworks. Instead of writing class and member names as the string values of XML elements and attributes, Weld lets you use the class or member name as the name of the XML element."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The advantage of this approach is that you can write an XML schema that prevents spelling errors in your XML document. It's even possible for a tool to generate the XML schema automatically from the compiled Java code. Or, an integrated development environment could perform the same validation without the need for the explicit intermediate generation step."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Declaring beans"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "For each Java package, Weld defines a corresponding XML namespace. The namespace is formed by prepending <literal>urn:java:</literal> to the Java package name. For the package <literal>com.mydomain.myapp</literal>, the XML namespace is <literal>urn:java:com.mydomain.myapp</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Java types belonging to a package are referred to using an XML element in the namespace corresponding to the package. The name of the element is the name of the Java type. Fields and methods of the type are specified by child elements in the same namespace. If the type is an annotation, members are specified by attributes of the element."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "For example, the element <literal>&lt;util:Date/&gt;</literal> in the following XML fragment refers to the class <literal>java.util.Date</literal>:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "And this is all the code we need to declare that <literal>Date</literal> is a bean! An instance of <literal>Date</literal> may now be injected by any other bean:"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Declaring bean metadata"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "We can declare the scope, deployment type and interceptor binding types using direct child elements of the bean declaration:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "We use exactly the same approach to specify names and qualifiers:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Where <literal>@Login</literal> and <literal>@SystemStart</literal> are qualifier annotations types."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "As usual, a bean may support multiple qualifier types:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Interceptors and decorators are beans as well, so they may be declared just like any other bean:"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Declaring bean members"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "TODO!"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Declaring inline beans"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Weld lets us define a bean at an injection point. For example:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The <literal>&lt;Name&gt;</literal> element declares a bean of scope <literal>@Dependent</literal> and class <literal>Name</literal>, with a set of initial field values. This bean has a special, container-generated qualifier and is therefore injectable only to the specific injection point at which it is declared."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This simple but powerful feature allows the Weld XML format to be used to specify whole graphs of Java objects. It's not quite a full databinding solution, but it's close!"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Using a schema"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If we want our XML document format to be authored by people who aren't Java developers, or who don't have access to our code, we need to provide a schema. There's nothing specific to Weld about writing or using the schema."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Writing an XML schema is quite tedious. Therefore, the Weld project will provide a tool which automatically generates the XML schema from compiled Java code."
+msgstr ""
+

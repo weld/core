@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+   <modelVersion>4.0.0</modelVersion>
+
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-docbook-xslt</artifactId>
+   <packaging>jar</packaging>
+   <version>1.1.1-SNAPSHOT</version>
+
+   <name>Weld DocBook XSLT</name>
+   <description>
+      The main project to transform DocBook XML into XHTML and other formats for
+      Weld documentation @ SeamFramework.org.
+   </description>
+   <url>http://www.seamframework.org</url>
+
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-parent</artifactId>
+      <version>12</version>
+   </parent>
+
+   <scm>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/doc/trunk/xslt</developerConnection>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/doc/trunk/xslt</connection>
+     <url>http://fisheye.jboss.org/browse/Weld/build/tags/weld-parent-3/weld-docbook-xslt</url>
+  </scm>
+
+   <contributors>
+      <contributor>
+         <name>Pete Muir</name>
+      </contributor>
+      <contributor>
+         <name>Mark Newton</name>
+      </contributor>
+   </contributors>
+
+   <repositories>
+      <repository>
+         <id>repository.jboss.org</id>
+         <name>JBoss Repository</name>
+         <url>http://repository.jboss.org/maven2</url>
+      </repository>
+   </repositories>
+
+</project>

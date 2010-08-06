@@ -1,0 +1,241 @@
+# Language fr-FR translations for master.xml package.
+# Automatically generated, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: master.xml \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-05-01T13:53:43\n"
+"PO-Revision-Date: 2008-12-19 20:26+0000\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Specialization, inheritance and alternatives"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When you first start developing with CDI, you&#39;ll likely be dealing only "
+"with a single bean implementation for each bean type. In this case, it&#39;s "
+"easy to understand how beans get selected for injection. As the complexity "
+"of your application grows, multiple occurrences of the same bean type start "
+"appearing, either because you have multiple implementations or two beans "
+"share a common (Java) inheritance. That&#39;s when you have to begin "
+"studying the specialization, inheritance and alternative rules to work "
+"through unsatisfied or ambiguous dependencies or to avoid certain beans from "
+"being called."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The CDI specification recognizes two distinct scenarios in which one bean "
+"extends another:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The second bean <emphasis>specializes</emphasis> the first bean in certain "
+"deployment scenarios. In these deployments, the second bean completely "
+"replaces the first, fulfilling the same role in the system."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The second bean is simply reusing the Java implementation, and otherwise "
+"bears no relation to the first bean. The first bean may not even have been "
+"designed for use as a contextual object."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The second case is the default assumed by CDI. It&#39;s possible to have two "
+"beans in the system with the same part bean type (interface or parent "
+"class). As you&#39;ve learned, you select between the two implementations "
+"using qualifiers."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The first case is the exception, and also requires more care. In any given "
+"deployment, only one bean can fulfill a given role at a time. That means one "
+"bean needs to be enabled and the other disabled. There are a two modifiers "
+"involved: <literal>@Alternative</literal> and <literal>@Specializes</"
+"literal>. We&#39;ll start by looking at alternatives and then show the "
+"guarantees that specialization adds."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Using alternative stereotypes"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"CDI lets you <emphasis>override</emphasis> the implementation of a bean type "
+"at deployment time using an alternative. For example, the following bean "
+"provides a default implementation of the <literal>PaymentProcessor</literal> "
+"interface:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"But in our staging environment, we don&#39;t really want to submit payments "
+"to the external system, so we override that implementation of "
+"<literal>PaymentProcessor</literal> with a different bean:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "or"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"We&#39;ve already seen how we can enable this alternative by listing its "
+"class in the <literal>beans.xml</literal> descriptor."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"But suppose we have many alternatives in the staging environment. It would "
+"be much more convenient to be able to enable them all at once. So let&#39;s "
+"make <literal>@Staging</literal> an <literal>@Alternative</literal> "
+"stereotype and annotate the staging beans with this stereotype instead. "
+"You&#39;ll see how this level of indirection pays off. First, we create the "
+"stereotype:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Then we replace the <literal>@Alternative</literal> annotation on our bean "
+"with <literal>@Staging</literal>:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Finally, we activate the <literal>@Staging</literal> stereotype in the "
+"<literal>beans.xml</literal> descriptor:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Now, no matter how many staging beans we have, they will all be enabled at "
+"once."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "A minor problem with alternatives"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When we enable an alternative, does that mean the default implementation is "
+"disabled? Well, not exactly. If the default implementation has a qualifier, "
+"for instance <literal>@LargeTransaction</literal>, and the alternative does "
+"not, you could still inject the default implementation."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"So we haven&#39;t completely replaced the default implementation in this "
+"deployment of the system. The only way one bean can completely override a "
+"second bean at all injection points is if it implements all the bean types "
+"and declares all the qualifiers of the second bean. However, if the second "
+"bean declares a producer method or observer method, then even this is not "
+"enough to ensure that the second bean is never called! We need something "
+"extra."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"CDI provides a special feature, called <emphasis>specialization</emphasis>, "
+"that helps the developer avoid these traps. Specialization is a way of "
+"informing the system of your intent to completely replace and disable an "
+"implementation of a bean."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Using specialization"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When the goal is to replace one bean implementation with a second, to help "
+"prevent developer error, the first bean may:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "directly extend the bean class of the second bean, or"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"directly override the producer method, in the case that the second bean is a "
+"producer method, and then"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"explicitly declare that it <emphasis>specializes</emphasis> the second bean:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When an enabled bean specializes another bean, the other bean is never "
+"instantiated or called by the container. Even if the other bean defines a "
+"producer or observer method, the method will never be called."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"So why does specialization work, and what does it have to do with "
+"inheritance?"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Since we&#39;re informing the container that our alternative bean is meant "
+"to stand in as a replacement for the default implementation, the alternative "
+"implementation automatically inherits all qualifiers of the default "
+"implementation. Thus, in our example, "
+"<literal>MockCreditCardPaymentProcessor</literal> inherits the qualifiers "
+"<literal>@Default</literal> and <literal>@CreditCard</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Furthermore, if the default implementation declares a bean EL name using "
+"<literal>@Named</literal>, the name is inherited by the specialized "
+"alternative bean."
+msgstr ""

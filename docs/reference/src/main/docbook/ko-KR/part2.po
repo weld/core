@@ -1,0 +1,128 @@
+# translation of part2.po to Korean
+# Language ko-KR translations for Introduction_to_Web_Beans package.
+#
+# Automatically generated, 2009.
+# Eunju Kim <eukim@redhat.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: part2\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-03-02T13:07:18\n"
+"PO-Revision-Date: 2009-01-23 11:18+1000\n"
+"Last-Translator: Eunju Kim <eukim@redhat.com>\n"
+"Language-Team: Korean <ko@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"\n"
+"\n"
+"\n"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Weld, the JSR-299 Reference Implementation (RI), is being developed as part "
+"of the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. "
+"You can download the latest community release of Weld from the <ulink url="
+"\"http://seamframework.org/Download\">download page</ulink>. Information "
+"about the Weld source code repository and instructions about how to obtain "
+"and build the source can be found on the same page."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Weld provides a complete SPI allowing Java EE containers such as JBoss AS "
+"and GlassFish to use Weld as their built-in CDI implementation. Weld also "
+"runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE "
+"environment."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Weld comes with an extensive library of examples, which are a great starting "
+"point from which to learn CDI."
+msgstr ""
+
+#~ msgid ""
+#~ "The first major theme of Web Beans is <emphasis>loose coupling</"
+#~ "emphasis>. We've already seen three means of achieving loose coupling:"
+#~ msgstr ""
+#~ "Web Beans의 첫번째 주요 기능은 <emphasis>느슨한 연결 (loose coupling)</"
+#~ "emphasis>입니다. 이러한 느슨한 연결 기능을 실행하기 위한 세가지 방식은 이"
+#~ "미 알려져 있습니다: "
+
+#~ msgid ""
+#~ "<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
+#~ msgstr ""
+#~ "<emphasis>배치 유형</emphasis>은 배치 시간 다형성을 활성화합니다    "
+
+#~ msgid ""
+#~ "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
+#~ msgstr "<emphasis>생산자 방식</emphasis>은 런타임 다형성을 활성화합니다  "
+
+#~ msgid ""
+#~ "<emphasis>contextual lifecycle management</emphasis> decouples Web Bean "
+#~ "lifecycles."
+#~ msgstr ""
+#~ "<emphasis>컨텍스트 수명주기 관리</emphasis>는 Web Bean 수명 주기를 연결 해"
+#~ "제합니다. "
+
+#~ msgid ""
+#~ "These techniques serve to enable loose coupling of client and server. The "
+#~ "client is no longer tightly bound to an implementation of an API, nor is "
+#~ "it required to manage the lifecycle of the server object. This approach "
+#~ "lets <emphasis>stateful objects interact as if they were services</"
+#~ "emphasis>."
+#~ msgstr ""
+#~ "이러한 기술로 클라이언트 및 서버의 느슨한 연결을 활성화할 수 있습니다. 클"
+#~ "라이언트는 더이상 API 구현으로 바운딩할 수 없으며, 서버 객체의 수명주기를 "
+#~ "관리할 수 없습니다. 이러한 접근으로 <emphasis>상태 유지 객체가 서비스하는 "
+#~ "것 처럼 상호 작용</emphasis>하게 합니다.   "
+
+#~ msgid ""
+#~ "Loose coupling makes a system more <emphasis>dynamic</emphasis>. The "
+#~ "system can respond to change in a well-defined manner. In the past, "
+#~ "frameworks that attempted to provide the facilities listed above "
+#~ "invariably did it by sacrificing type safety. Web Beans is the first "
+#~ "technology that achieves this level of loose coupling in a typesafe way."
+#~ msgstr ""
+#~ "느슨한 연결로 시스템이 보다 <emphasis>동적</emphasis>으로 되게 할 수 있습"
+#~ "니다. 시스템은 잘 정의된 방식에서의 변경 사항에 대응할 수 있습니다. 위에 "
+#~ "나열된 기능을 변함없이 제공하기 위한 이전의 프레임워크는 타입 안정성을 희"
+#~ "생하여 이를 실행하였습니다. Web Beans는 타입 안정적 방식에서의 느슨한 연결"
+#~ "을 실행하기 위한 첫번째 기술입니다. "
+
+#~ msgid ""
+#~ "Web Beans provides three extra important facilities that further the goal "
+#~ "of loose coupling:"
+#~ msgstr ""
+#~ "Web Beans는 느슨한 연결 기능을 촉진하기 위해 세 가지 중요한 기능을 추가로 "
+#~ "제공합니다: "
+
+#~ msgid ""
+#~ "<emphasis>interceptors</emphasis> decouple technical concerns from "
+#~ "business logic,"
+#~ msgstr ""
+#~ "<emphasis>인터셉터</emphasis>는 비지니스 로직으로 부터의 기술적 문제를 연"
+#~ "결 해제합니다  "
+
+#~ msgid ""
+#~ "<emphasis>decorators</emphasis> may be used to decouple some business "
+#~ "concerns, and"
+#~ msgstr ""
+#~ "<emphasis>데코레이터</emphasis>는 일부 비지니스 문제를 연결 해제하기 위해 "
+#~ "사용될 수 있습니다. "
+
+#~ msgid ""
+#~ "<emphasis>event notifications</emphasis> decouple event producers from "
+#~ "event consumers."
+#~ msgstr ""
+#~ "<emphasis>이벤트 통지</emphasis>는 이벤트 소비자로 부터 이벤트 생산자를 연"
+#~ "결 해제합니다. "
+
+#~ msgid "Let's explore interceptors first."
+#~ msgstr "먼저 인터셉터에 대해 살펴봅시다. "

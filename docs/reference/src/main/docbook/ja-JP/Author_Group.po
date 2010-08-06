@@ -1,0 +1,103 @@
+# translation of Author_Group.po to Japanese
+# Language ja-JP translations for webbeans-reference-guide package.
+#
+# Automatically generated, 2009.
+# Noriko Mizumoto <noriko@fedoraproject.org>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: Author_Group\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-05-01T13:53:42\n"
+"PO-Revision-Date: 2009-07-06 12:25+1000\n"
+"Last-Translator: Noriko Mizumoto <noriko@fedoraproject.org>\n"
+"Language-Team: Japanese <fedora-trans-ja@redhat.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Tag: contrib
+#, no-c-format
+msgid "JSR-299: Contexts and Dependency Injection Lead"
+msgstr ""
+
+#. Tag: contrib
+#, no-c-format
+msgid "Weld (JSR-299 RI) Lead"
+msgstr ""
+
+#. Tag: contrib
+#, no-c-format
+msgid "Italian Translation"
+msgstr "イタリア語翻訳"
+
+#. Tag: contrib
+#, no-c-format
+msgid "Spanish Translation"
+msgstr "スペイン語翻訳"
+
+#. Tag: contrib
+#, no-c-format
+msgid "Korean Translation"
+msgstr "韓国語翻訳"
+
+#. Tag: contrib
+#, no-c-format
+msgid "Traditional Chinese Translation"
+msgstr "繁體中文翻訳"
+
+#. Tag: contrib
+#, no-c-format
+msgid "Simplified Chinese Translation"
+msgstr "簡体中文翻訳"
+
+#~ msgid "<firstname>Gavin</firstname> <surname>King</surname>"
+#~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+
+#~ msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
+#~ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+
+#, fuzzy
+#~ msgid "<firstname>Dan</firstname> <surname>Allen</surname>"
+#~ msgstr "<firstname>David</firstname> <surname>Allen</surname>"
+
+#~ msgid "<firstname>David</firstname> <surname>Allen</surname>"
+#~ msgstr "<firstname>David</firstname> <surname>Allen</surname>"
+
+#~ msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
+#~ msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
+
+#~ msgid "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
+#~ msgstr "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
+
+#~ msgid "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
+#~ msgstr "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
+
+#~ msgid "<firstname>Terry</firstname> <surname>Chuang</surname>"
+#~ msgstr "<firstname>Terry</firstname> <surname>Chuang</surname>"
+
+#~ msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+#~ msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+
+#~ msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
+#~ msgstr "<firstname>Sean</firstname> <surname>Wu</surname>"
+
+#~ msgid ""
+#~ "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat "
+#~ "Middleware LLC</orgname>"
+#~ msgstr ""
+#~ "<jobtitle>JSR-299 スペックリード</jobtitle> <orgname>Red Hat Middleware "
+#~ "LLC</orgname>"
+
+#~ msgid ""
+#~ "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
+#~ "<orgname>Red Hat Middleware LLC</orgname>"
+#~ msgstr ""
+#~ "<jobtitle>Web Beans (JSR-299 参照実装) リード </jobtitle> <orgname>Red "
+#~ "Hat Middleware LLC</orgname>"
+
+#~ msgid "Red Hat Middleware LLC"
+#~ msgstr "Red Hat Middleware LLC"
+
+#~ msgid "Kava Community"
+#~ msgstr "Kava Community"

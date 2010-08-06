@@ -1,0 +1,284 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<chapter id="ee">
+   <title>Java EE integration</title>
+  
+   <para>
+      CDI is fully integrated into the Java EE environment. Beans have access to Java EE resources and JPA persistence
+      contexts. They may be used in Unified EL expressions in JSF and JSP pages. They may even be injected into other
+      platform components, such as servlets and message-driven Beans, which are not beans themselves.
+   </para>
+  
+      <section>
+         <title>Built-in beans</title>
+
+         <para>
+            In the Java EE environment, the container provides the following built-in beans, all with the qualifier 
+            <literal>@Default</literal>:
+         </para>
+
+         <itemizedlist>
+            <listitem>
+               <para>
+                  the current JTA <literal>UserTransaction</literal>,
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  a <literal>Principal</literal> representing the current caller identity,
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  the default <ulink url="http://jcp.org/en/jsr/detail?id=303">Bean Validation</ulink> 
+                  <literal>ValidationFactory</literal>, and
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  a <literal>Validator</literal> for the default <literal>ValidationFactory</literal>.
+               </para>
+            </listitem>
+         </itemizedlist>
+         
+         <note>
+            <para>
+               The CDI specification does not require the servlet context objects, <literal>HttpServletRequest</literal>,
+               <literal>HttpSession</literal> and <literal>ServletContext</literal> to be exposed as injectable beans. If 
+               you really want to be able to inject these objects, it's easy to create a portable extension to expose them 
+               as beans. However, we recommend that direct access to these objects be limited to servlets, servlet filters 
+               and servlet event listeners, where they may be obtained in the usual way as defined by the Java Servlets spec.
+               The <literal>FacesContext</literal> is also not injectable. You can get at it by calling 
+               <literal>FacesContext.getCurrentInstance()</literal>.
+            </para>
+         </note>
+         
+         <tip>
+            <para>
+               Oh, you <emphasis>really</emphasis> want to inject the <literal>FacesContext</literal>? Alright then, try
+               this producer method:
+            </para>
+            <programlisting role="JAVA"><![CDATA[class FacesContextProducer {
+   @Produces @RequestScoped FacesContext getFacesContext() {
+      return FacesContext.getCurrentInstance();
+   }
+}]]></programlisting>
+         </tip>
+         
+      </section>
+
+   <section>
+      <title>Injecting Java EE resources into a bean</title>
+    
+      <para>
+         All managed beans may take advantage of Java EE component environment injection using <literal>@Resource</literal>,
+         <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PeristenceUnit</literal> and
+         <literal>@WebServiceRef</literal>. We've already seen a couple of examples of this, though we didn't pay 
+         much attention at the time:
+      </para>
+    
+      <programlisting role="JAVA"><![CDATA[@Transactional @Interceptor
+public class TransactionInterceptor {
+   @Resource UserTransaction transaction;
+
+   @AroundInvoke public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
+}]]></programlisting>
+
+      <programlisting role="JAVA"><![CDATA[@SessionScoped
+public class Login implements Serializable {
+   @Inject Credentials credentials;
+   @PersistenceContext EntityManager userDatabase;
+    ...
+}]]></programlisting>
+    
+      <para>
+         The Java EE <literal>@PostConstruct</literal> and <literal>@PreDestroy</literal> callbacks are also supported
+         for all managed beans. The <literal>@PostConstruct</literal> method is called after <emphasis>all</emphasis>
+         injection has been performed.
+      </para>
+      
+      <para>
+         Of course, we advise that component environment injection be used to define CDI resources, and that typesafe
+         injection be used in application code.
+      </para>
+    
+   </section>
+  
+   <section>
+      <title>Calling a bean from a servlet</title>
+    
+      <para>
+         It's easy to use a bean from a servlet in Java EE 6. Simply inject the bean using field or initializer method
+         injection.
+      </para>
+    
+      <programlisting role="JAVA"><![CDATA[public class Login extends HttpServlet {
+   @Inject Credentials credentials;
+   @Inject Login login;
+
+   @Override
+   public void service(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+      credentials.setUsername(request.getParameter("username")):
+      credentials.setPassword(request.getParameter("password")):
+      login.login();
+      if ( login.isLoggedIn() ) {
+         response.sendRedirect("/home.jsp");
+      }
+      else {
+         response.sendRedirect("/loginError.jsp");
+      }
+   }
+            
+}]]></programlisting>
+
+      <para>
+         Since instances of servlets are shared across all incoming threads, the bean client proxy takes care of routing
+         method invocations from the servlet to the correct instances of <literal>Credentials</literal> and
+         <literal>Login</literal> for the current request and HTTP session.
+      </para> 
+    
+   </section>
+  
+   <section>
+      <title>Calling a bean from a message-driven bean</title>
+    
+      <para>
+         CDI injection applies to all EJBs, even when they aren't managed beans. In particular, you can use CDI
+         injection in message-driven beans, which are by nature not contextual objects.
+      </para>
+    
+      <para>You can even use CDI interceptor bindings for message-driven Beans.</para>
+
+      <programlisting role="JAVA"><![CDATA[@Transactional @MessageDriven
+public class ProcessOrder implements MessageListener {
+   @Inject Inventory inventory;
+   @PersistenceContext EntityManager em;
+
+   public void onMessage(Message message) {
+      ...
+   }
+}]]></programlisting>
+
+      <para>
+         Please note that there is no session or conversation context available when a message is delivered to a 
+         message-driven bean. Only <literal>@RequestScoped</literal> and <literal>@ApplicationScoped</literal> 
+         beans are available.
+      </para>
+    
+      <para>
+         But how about beans which <emphasis>send</emphasis> JMS messages?
+      </para>
+
+   </section>
+  
+   <section id="jms">
+      <title>JMS endpoints</title>
+    
+      <para>
+         Sending messages using JMS can be quite complex, because of the number of different objects you need to deal
+         with. For queues we have <literal>Queue</literal>, <literal>QueueConnectionFactory</literal>,
+         <literal>QueueConnection</literal>, <literal>QueueSession</literal> and <literal>QueueSender</literal>. For
+         topics we have <literal>Topic</literal>, <literal>TopicConnectionFactory</literal>,
+         <literal>TopicConnection</literal>, <literal>TopicSession</literal> and <literal>TopicPublisher</literal>. Each
+         of these objects has its own lifecycle and threading model that we need to worry about.
+      </para>
+    
+      <para>
+         You can use producer fields and methods to prepare all of these resources for injection into a bean:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[public class OrderResources {
+   @Resource(name="jms/ConnectionFactory")
+   private ConnectionFactory connectionFactory;
+  
+   @Resource(name="jms/OrderQueue")
+   private Queue orderQueue;
+  
+   @Produces @OrderConnection
+   public Connection createOrderConnection() throws JMSException {
+    return connectionFactory.createConnection();
+   }
+  
+   public void closeOrderConnection(@Disposes @OrderConnection Connection connection)
+         throws JMSException {
+      connection.close();
+   }
+  
+   @Produces @OrderSession
+   public Session createOrderSession(@OrderConnection Connection connection)
+         throws JMSException {
+      return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+   }
+  
+   public void closeOrderSession(@Disposes @OrderSession Session session)
+         throws JMSException {
+      session.close();
+   }
+  
+   @Produces @OrderMessageProducer
+   public MessageProducer createOrderMessageProducer(@OrderSession Session session)
+         throws JMSException {
+      return session.createProducer(orderQueue);
+   }
+  
+   public void closeOrderMessageProducer(@Disposes @OrderMessageProducer MessageProducer producer)
+         throws JMSException {
+      producer.close();
+   }
+}]]></programlisting> 
+
+      <para>
+         In this example, we can just inject the prepared <literal>MessageProducer</literal>,
+         <literal>Connection</literal> or <literal>QueueSession</literal>:
+      </para>
+    
+      <programlisting role="JAVA"><![CDATA[@Inject Order order;
+@Inject @OrderMessageProducer MessageProducer producer;
+@Inject @OrderSession QueueSession orderSession;
+
+public void sendMessage() {
+   MapMessage msg = orderSession.createMapMessage();
+   msg.setLong("orderId", order.getId());
+   ...
+   producer.send(msg);
+}]]></programlisting>
+    
+      <!--
+      <programlisting role="JAVA"><![CDATA[@Inject @StockPrices TopicPublisher pricePublisher;
+@Inject @StockPrices TopicSession priceSession;
+
+public void sendMessage(String price) {
+   pricePublisher.send(priceSession.createTextMessage(price));
+}]]></programlisting>
+      -->
+
+      <para>
+         The lifecycle of the injected JMS objects is completely controlled by the container.
+      </para> 
+    
+   </section>
+  
+   <section>
+      <title>Packaging and deployment</title>
+    
+      <para>
+         CDI doesn't define any special deployment archive. You can package beans in jars, ejb jars or wars&#8212;any
+         deployment location in the application classpath. However, the archive must be a "bean archive". That means
+         each archive that contains beans <emphasis>must</emphasis> include a file named <literal>beans.xml</literal> in
+         the <literal>META-INF</literal> directory of the classpath or <literal>WEB-INF</literal> directory of the web
+         root (for war archives). The file may be empty. Beans deployed in archives that do not have a
+         <literal>beans.xml</literal> file will not be available for use in the application.
+      </para>
+    
+      <para>
+         In an embeddable EJB container, beans may be deployed in any location in which EJBs may be deployed. Again, each 
+         location must contain a <literal>beans.xml</literal> file.
+      </para>
+    
+   </section>
+  
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
+</chapter>

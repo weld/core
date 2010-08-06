@@ -1,0 +1,862 @@
+# translation of events.po to Korean
+# Language ko-KR translations for Introduction_to_Web_Beans package.
+#
+# Automatically generated, 2009.
+# Eunju Kim <eukim@redhat.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: events\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-07-25T05:36:26\n"
+"PO-Revision-Date: 2009-01-23 11:16+1000\n"
+"Last-Translator: Eunju Kim <eukim@redhat.com>\n"
+"Language-Team: Korean <ko@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Events"
+msgstr "이벤트 "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Dependency injection enables loose-coupling by allowing the implementation "
+"of the injected bean type to vary, either a deployment time or runtime. "
+"Events go one step further, allowing beans to interact with no compile time "
+"dependency at all. Event <emphasis>producers</emphasis> raise events that "
+"are delivered to event <emphasis>observers</emphasis> by the container."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This basic schema might sound like the familiar observer/observable pattern, "
+"but there are a couple of twists:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"not only are event producers decoupled from observers; observers are "
+"completely decoupled from producers,"
+msgstr ""
+"이벤트 생산자만 옵저버에서 연결 해제되는 것이 아니라; 옵저버도 생산자에서 완"
+"전하게 연결 해제됩니다. "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"observers can specify a combination of \"selectors\" to narrow the set of "
+"event notifications they will receive, and"
+msgstr ""
+"옵저버는 \"선택자\" 조합을 지정하여 이벤트 통지 모음의 범위를 좁힙니다. "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"observers can be notified immediately, or can specify that delivery of the "
+"event should be delayed until the end of the current transaction."
+msgstr ""
+"옵저버는 바로 통지하거나 또는 현재 트랜젝션이 끝날때 까지 이벤트 전송이 지연"
+"되도록 지정할 수 있습니다.  "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The CDI event notification facility uses more or less the same typesafe "
+"approach that we've already seen with the dependency injection service."
+msgstr ""
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Event payload"
+msgstr "이벤트 생산자 "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The event object carries state from producer to consumer. The event object "
+"is nothing more than an instance of a concrete Java class. (The only "
+"restriction is that an event type may not contain type variables). An event "
+"may be assigned qualifiers, which allows observers to distinguish it from "
+"other events of the same type. The qualifiers function like topic selectors, "
+"allowing an observer to narrow the set of events it observes."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"An event qualifier is just a normal qualifier, defined using "
+"<literal>@Qualifier</literal>. Here's an example:"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Event observers"
+msgstr "이벤트 옵저버 "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"An <emphasis>observer method</emphasis> is a method of a bean with a "
+"parameter annotated <literal>@Observes</literal>."
+msgstr ""
+"<emphasis>옵저버 방식</emphasis>은 매개변수 어노테이션 <literal>@Observes</"
+"literal>를 사용하는 Web Bean 방식입니다. "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The annotated parameter is called the <emphasis>event parameter</emphasis>. "
+"The type of the event parameter is the observed <emphasis>event type</"
+"emphasis>, in this case <literal>Document</literal>. The event parameter may "
+"also specify qualifiers."
+msgstr ""
+"어노테이션된 매개 변수는 <emphasis>이벤트 매개 변수</emphasis>라고 부릅니다. "
+"이벤트 매개 변수의 유형은 옵저버된 <emphasis>이벤트 유형</emphasis>입니다. 옵"
+"저버 방식은  Web Beans 바인딩 유형의 인스터스인 \"선택자\"를 지정할 수 있습니"
+"다. 바인딩 유형이 이벤트 선택자로 사용될 경우, 이를 <emphasis>이벤트 바인딩 "
+"유형</emphasis>이라고 부릅니다.  "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"An observer method need not specify any event qualifiers&#8212;in this case "
+"it is interested in <emphasis>all</emphasis> events of a particular type. If "
+"it does specify qualifiers, it's only interested in events which have those "
+"qualifiers."
+msgstr ""
+"옵저버 방식은 어떤 이벤트 바인딩도 지정할 필요가 없습니다 &#151; 이러한 경우 "
+"특정 유형의 <emphasis>모든</emphasis> 이벤트에 관심을 갖게 됩니다. 이벤트 바"
+"인딩을 지정하지 않을 경우, 이러한 이벤트 바인딩이 있는 이벤트에만 관심을 갖"
+"게 됩니다.  "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The observer method may have additional parameters, which are injection "
+"points:"
+msgstr ""
+"옵저버 방식은 추가 매개 변수를 갖을 수 있으며, 이는 일반적인 Web Beans 방식 "
+"매개 변수 삽입 시멘틱에 따라 삽입됩니다: "
+
+#. Tag: title
+#, no-c-format
+msgid "Event producers"
+msgstr "이벤트 생산자 "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Event producers fire events using an instance of the parameterized "
+"<literal>Event</literal> interface. An instance of this interface is "
+"obtained by injection:"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A producer raises events by calling the <literal>fire()</literal> method of "
+"the <literal>Event</literal> interface, passing the event object:"
+msgstr ""
+"생산자는 <literal>Event</literal> 인터페이스의 <literal>fire()</literal> 방식"
+"을 호출하여 이벤트를 제기하고, <emphasis>이벤트 객체</emphasis>를 전달합니"
+"다: "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "This particular event will be delivered to every observer method that:"
+msgstr "이벤트는 모든 옵저버 방식으로 전달됩니다: "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"has an event parameter to which the event object (the <literal>Document</"
+"literal>) is assignable, and"
+msgstr "이벤트 객체를 할당할 수 있는 이벤트 매개 변수를 갖습니다, "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "specifies no qualifiers."
+msgstr "이벤트 바인딩 없음을 지정합니다. "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The container simply calls all the observer methods, passing the event "
+"object as the value of the event parameter. If any observer method throws an "
+"exception, the container stops calling observer methods, and the exception "
+"is rethrown by the <literal>fire()</literal> method."
+msgstr ""
+"Web Bean 관리자는 모든 옵저버 방식을 호출하여, 이벤트 매개 변수 값으로 이벤"
+"트 객체를 전달합니다. 옵저버 방식이 예외 처리를 넘기게 될 경우, Web Bean 관리"
+"자는 옵저버 방식 호출을 중단하고 예외 처리는 <literal>fire()</literal> 방식"
+"에 의해 다시 넘기게 됩니다. "
+
+#. Tag: para
+#, no-c-format
+msgid "Qualifiers can be applied to an event in one of two ways:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "by annotating the <literal>Event</literal> injection point, or"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"by passing qualifiers to the <literal>select()</literal> of <literal>Event</"
+"literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Specifying the qualifiers at the injection point is far simpler:"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Then, every event fired via this instance of <literal>Event</literal> has "
+"the event qualifier <literal>@Updated</literal>. The event is delivered to "
+"every observer method that:"
+msgstr ""
+"이러한 <literal>Event</literal> 인스턴스를 통해 해제된 모든 이벤트는 어노테이"
+"션된 이벤트 바인딩을 갖습니다. 이벤트는 모든 옵저버 방식에 전달됩니다:   "
+
+#. Tag: para
+#, no-c-format
+msgid "has an event parameter to which the event object is assignable, and"
+msgstr "이벤트 객체를 할당할 수 있는 이벤트 매개 변수를 갖습니다, "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"does not have any event qualifier <emphasis>except</emphasis> for the event "
+"qualifiers that match those specified at the <literal>Event</literal> "
+"injection point."
+msgstr ""
+"이는 <literal>fire()</literal>에 전달된 이벤트 바인딩에 대한 모든 이벤트 바인"
+"딩 <emphasis>예외 사항</emphasis>을 지정하지 않습니다. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The downside of annotating the injection point is that we can't specify the "
+"qualifier dynamically. CDI lets us obtain a qualifier instance by "
+"subclassing the helper class <literal>AnnotationLiteral</literal>. That way, "
+"we can pass the qualifier to the <literal>select()</literal> method of "
+"<literal>Event</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Events can have multiple event qualifiers, assembled using any combination "
+"of annotations at the <literal>Event</literal> injection point and qualifier "
+"instances passed to the <literal>select()</literal> method."
+msgstr ""
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Conditional observer methods"
+msgstr "트랜잭션 옵저버 "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"By default, if there is no instance of an observer in the current context, "
+"the container will instantiate the observer in order to deliver an event to "
+"it. This behavior isn't always desirable. We may want to deliver events only "
+"to instances of the observer that already exist in the current contexts."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A conditional observer is specified by adding <literal>receive = IF_EXISTS</"
+"literal> to the <literal>@Observes</literal> annotation."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A bean with scope <literal>@Dependent</literal> cannot be a conditional "
+"observer, since it would never be called!"
+msgstr ""
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Event qualifiers with members"
+msgstr "멤버와 이벤트 바인딩    "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "An event qualifier type may have annotation members:"
+msgstr "이벤트 바인딩 유형은 어노테이션 멤버를 갖을 수 있습니다:  "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The member value is used to narrow the messages delivered to the observer:"
+msgstr "멤버 값은 옵저버에게 전달되는 메세지의 범위를 좁히는데 사용됩니다:  "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Event qualifier type members may be specified statically by the event "
+"producer, via annotations at the event notifier injection point:"
+msgstr ""
+"이벤트 바인딩 유형 멤버는 이벤트 통지 삽입 지점에 있는 어노테이션을 통해 이벤"
+"트 생산자에의해 정적으로 지정될 수 있습니다:  "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Alternatively, the value of the event qualifier type member may be "
+"determined dynamically by the event producer. We start by writing an "
+"abstract subclass of <literal>AnnotationLiteral</literal>:"
+msgstr ""
+"다른 방법으로, 이벤트 바인딩 유형 멤버 값은 이벤트 생산자에 의해 동적으로 지"
+"정될 수 있습니다. <literal>AnnotationLiteral</literal>의 추상화 하부클래스를 "
+"작성하여 시작합니다: "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The event producer passes an instance of this class to <literal>select()</"
+"literal>:"
+msgstr ""
+"이벤트 생산자는 이러한 클래스의 인스턴스를 <literal>fire()</literal>로 전달합"
+"니다:  "
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Multiple event qualifiers"
+msgstr "여러 이벤트 바인딩 "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "Event qualifier types may be combined, for example:"
+msgstr "이벤트 바인딩 유형은 통합할 수 있습니다, 예: "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When this event occurs, all of the following observer methods will be "
+"notified:"
+msgstr ""
+"이러한 이벤트가 발생하면, 다음과 같은 옵저버 방식 모두가 통지되게 됩니다: "
+
+#. Tag: title
+#, no-c-format
+msgid "Transactional observers"
+msgstr "트랜잭션 옵저버 "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Transactional observers receive their event notifications during the before "
+"or after completion phase of the transaction in which the event was raised. "
+"For example, the following observer method needs to refresh a query result "
+"set that is cached in the application context, but only when transactions "
+"that update the <literal>Category</literal> tree succeed:"
+msgstr ""
+"트랜잭션 옵저버는 이벤크가 제기된 트랜잭션의 완료 단계 이전 또는 이후 동안 이"
+"벤트 통지를 받습니다. 예를 들어, 다음과 같은 옵저버 방식은 트랜잭션이 "
+"<literal>Category</literal> 크리를 성공적으로 업데이트했을 경우에만 애플리케"
+"이션 컨텍스트에서 캐시된 쿼리 결과 모음을 새로고침해야 합니다:  "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "There are five kinds of transactional observers:"
+msgstr "세 가지 종류의 트랜잭션 옵저버가 있습니다:  "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>IN_PROGESS</literal> observers are called immediately (default)"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<literal>AFTER_SUCCESS</literal> observers are called during the after "
+"completion phase of the transaction, but only if the transaction completes "
+"successfully"
+msgstr ""
+"트랜잭션의 완료 단계 이후 동안 트랜잭션이 성공적으로 완료했을 경우에만, "
+"<literal>@AfterTransactionSuccess</literal> 옵저버를 호출합니다.        "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<literal>AFTER_FAILURE</literal> observers are called during the after "
+"completion phase of the transaction, but only if the transaction fails to "
+"complete successfully"
+msgstr ""
+"트랜잭션의 완료 단계 이후 동안 트랜잭션이 성공적으로 완료하지 않을 경우에만, "
+"<literal>@AfterTransactionFailure</literal> 옵저버를 호출합니다.   "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<literal>AFTER_COMPLETION</literal> observers are called during the after "
+"completion phase of the transaction"
+msgstr ""
+"트랜잭션의 완료 단계 이후 동안 <literal>@AfterTransactionCompletion</"
+"literal> 옵저버를 호출합니다  "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<literal>BEFORE_COMPLETION</literal> observers are called during the before "
+"completion phase of the transaction"
+msgstr ""
+"트랜잭션의 완료 단계 이전 동안 <literal>@BeforeTransactionCompletion</"
+"literal> 옵저버를 호출합니다 "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Transactional observers are very important in a stateful object model "
+"because state is often held for longer than a single atomic transaction."
+msgstr ""
+"트랜잭션 옵저버는 Web Beans와 같은 상태 유지 객체 모델에서 아주 중요합니다. "
+"이는 단일 원자성 트랜잭션보다 오래 지속되기 때문입니다.    "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Imagine that we have cached a JPA query result set in the application scope:"
+msgstr "애플리케이션 범위에 있는 JPA 쿼리 결과 모음을 캐시했다고 가정합니다:  "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"From time to time, a <literal>Product</literal> is created or deleted. When "
+"this occurs, we need to refresh the <literal>Product</literal> catalog. But "
+"we should wait until <emphasis>after</emphasis> the transaction completes "
+"successfully before performing this refresh!"
+msgstr ""
+"때때로 <literal>Product</literal>는 생성 또는 삭제됩니다. 이러한 상황이 발생"
+"하면, <literal>Product</literal> 카탈로그를 새로고침해야 합니다. 하지만, 이러"
+"한 새로 고침을 실행하기 전 트랜젝션이 성공적으로 <emphasis>완료할 때</"
+"emphasis> 까지 기다리셔야 합니다! "
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The bean that creates and deletes <literal>Product</literal>s could raise "
+"events, for example:"
+msgstr ""
+"<literal>Product</literal>를 생성 및 삭제하는 Web Bean은 이벤트를 제기할 수 "
+"있습니다, 예:  "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"And now <literal>Catalog</literal> can observe the events after successful "
+"completion of the transaction:"
+msgstr ""
+"<literal>Catalog</literal>는 트랜잭션을 성공적으로 완료한 후에 이벤트를 옵저"
+"버할 수 있습니다: "
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Qualifier\n"
+#~ "@Target({FIELD, PARAMETER})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Updated {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@BindingType\n"
+#~ "@Target({PARAMETER, FIELD})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Updated { ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+#~ "{ ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+#~ "{ ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document) { ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document, User user) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document, User user) { ... }]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Any Event<Document> documentEvent;]]>"
+#~ msgstr "<![CDATA[@Observable Event<Document> documentEvent]]>"
+
+#~ msgid "<![CDATA[documentEvent.fire(document);]]>"
+#~ msgstr "<![CDATA[documentEvent.fire(document);]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Updated Event<Document> documentUpdatedEvent;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[documentEvent.select(new AnnotationLiteral<Updated>(){}).fire"
+#~ "(document);]]>"
+#~ msgstr ""
+#~ "<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>()"
+#~ "{} );]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = "
+#~ "IF_EXISTS) @Updated Document d) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+#~ "document) { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Qualifier\n"
+#~ "@Target({PARAMETER, FIELD})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Role {\n"
+#~ "   RoleType value();\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@BindingType\n"
+#~ "@Target({PARAMETER, FIELD})\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface Role {\n"
+#~ "    RoleType value();\n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
+#~ "{ ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
+#~ "{ ... }]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[abstract class RoleBinding \n"
+#~ "   extends AnnotationLiteral<Role> \n"
+#~ "   implements Role {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[abstract class RoleBinding \n"
+#~ "    extends AnnotationLiteral<Role> \n"
+#~ "    implements Role {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[documentEvent.select(new RoleBinding() {\n"
+#~ "   public void value() { return user.getRole(); }\n"
+#~ "}).fire(document);]]>"
+#~ msgstr ""
+#~ "<![CDATA[documentEvent.fire( document, new RoleBinding() { public void "
+#~ "value() { return user.getRole(); } } );]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Inject @Blog Event<Document> blogEvent;\n"
+#~ "...\n"
+#~ "if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>()"
+#~ "{}).fire(document);]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Observable @Blog Event<Document> blogEvent;\n"
+#~ "...\n"
+#~ "if (document.isBlog()) blogEvent.fire(document, new "
+#~ "AnnotationLiteral<Updated>(){});]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
+#~ "document) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
+#~ "document) { ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
+#~ "{ ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
+#~ "{ ... }]]>"
+
+#~ msgid ""
+#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+#~ "{ ... }}}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+#~ "{ ... }}}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public void refreshCategoryTree(@Observes(during = "
+#~ "AFTER_SUCCESS) CategoryUpdateEvent event) { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess "
+#~ "@Observes CategoryUpdateEvent event) { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@ApplicationScoped @Singleton\n"
+#~ "public class Catalog {\n"
+#~ "\n"
+#~ "   @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "   List<Product> products;\n"
+#~ "\n"
+#~ "   @Produces @Catalog \n"
+#~ "   List<Product> getCatalog() {\n"
+#~ "      if (products==null) {\n"
+#~ "         products = em.createQuery(\"select p from Product p where p."
+#~ "deleted = false\")\n"
+#~ "            .getResultList();\n"
+#~ "      }\n"
+#~ "      return products;\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ApplicationScoped @Singleton\n"
+#~ "public class Catalog {\n"
+#~ "\n"
+#~ "    @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "    List<Product> products;\n"
+#~ "\n"
+#~ "    @Produces @Catalog \n"
+#~ "    List<Product> getCatalog() {\n"
+#~ "        if (products==null) {\n"
+#~ "            products = em.createQuery(\"select p from Product p where p."
+#~ "deleted = false\")\n"
+#~ "                .getResultList();\n"
+#~ "        }\n"
+#~ "        return products;\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Stateless\n"
+#~ "public class ProductManager {\n"
+#~ "   @PersistenceContext EntityManager em;\n"
+#~ "   @Inject @Any Event<Product> productEvent;\n"
+#~ "\n"
+#~ "   public void delete(Product product) {\n"
+#~ "      em.delete(product);\n"
+#~ "      productEvent.select(new AnnotationLiteral<Deleted>(){}).fire"
+#~ "(product);\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "   public void persist(Product product) {\n"
+#~ "      em.persist(product);\n"
+#~ "      productEvent.select(new AnnotationLiteral<Created>(){}).fire"
+#~ "(product);\n"
+#~ "   }\n"
+#~ "   ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Stateless\n"
+#~ "public class ProductManager {\n"
+#~ "\n"
+#~ "    @PersistenceContext EntityManager em;\n"
+#~ "    @Observable Event<Product> productEvent;\n"
+#~ "\n"
+#~ "    public void delete(Product product) {\n"
+#~ "        em.delete(product);\n"
+#~ "        productEvent.fire(product, new AnnotationLiteral<Deleted>(){});\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    public void persist(Product product) {\n"
+#~ "        em.persist(product);\n"
+#~ "        productEvent.fire(product, new AnnotationLiteral<Created>(){});\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    ...\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@ApplicationScoped @Singleton\n"
+#~ "public class Catalog {\n"
+#~ "   ...\n"
+#~ "   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product "
+#~ "product) {\n"
+#~ "      products.add(product);\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "   void addProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product "
+#~ "product) {\n"
+#~ "      products.remove(product);\n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@ApplicationScoped @Singleton\n"
+#~ "public class Catalog {\n"
+#~ "\n"
+#~ "    ...\n"
+#~ "    \n"
+#~ "    void addProduct(@AfterTransactionSuccess @Observes @Created Product "
+#~ "product) {\n"
+#~ "        products.add(product);\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    void addProduct(@AfterTransactionSuccess @Observes @Deleted Product "
+#~ "product) {\n"
+#~ "        products.remove(product);\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "The Web Beans event notification facility allows Web Beans to interact in "
+#~ "a totally decoupled manner. Event <emphasis>producers</emphasis> raise "
+#~ "events that are then delivered to event <emphasis>observers</emphasis> by "
+#~ "the Web Bean manager. This basic schema might sound like the familiar "
+#~ "observer/observable pattern, but there are a couple of twists:"
+#~ msgstr ""
+#~ "Web Beans 이벤트 통지 기능은 Web Beans가 완전 연결 해제 방식으로 상호 작용"
+#~ "하게 합니다. 이벤트 <emphasis>생산자</emphasis>는 이벤트를 제기한 후 Web "
+#~ "Bean 관리자에 의해 이벤트 <emphasis>옵저버</emphasis>로 전달합니다. 이러"
+#~ "한 기본적인 스키마는 옵저버/옵저버 패턴과 유사하게 들이지만, 몇 가지 다른 "
+#~ "부분이 있습니다:  "
+
+#~ msgid ""
+#~ "We specify the event bindings of the observer method by annotating the "
+#~ "event parameter:"
+#~ msgstr ""
+#~ "이벤트 매개 변수를 어노테이션하여 옵저버 방식의 이벤트 바인딩을 지정합니"
+#~ "다:  "
+
+#~ msgid ""
+#~ "The event producer may obtain an <emphasis>event notifier</emphasis> "
+#~ "object by injection:"
+#~ msgstr ""
+#~ "이벤트 생산자는 삽입을 통해 <emphasis>이벤트 통지</emphasis> 객체를 갖을 "
+#~ "수 있습니다: "
+
+#~ msgid ""
+#~ "The <literal>@Observable</literal> annotation implicitly defines a Web "
+#~ "Bean with scope <literal>@Dependent</literal> and deployment type "
+#~ "<literal>@Standard</literal>, with an implementation provided by the Web "
+#~ "Bean manager."
+#~ msgstr ""
+#~ "<literal>@Observable</literal> 어노테이션은 <literal>@Dependent</literal> "
+#~ "범위 및 <literal>@Standard</literal> 배치 유형, Web Bean 관리자에 의해 제"
+#~ "공되는 구현으로 Web Bean을 정의합니다.   "
+
+#~ msgid ""
+#~ "An event object may be an instance of any Java class that has no type "
+#~ "variables or wildcard type parameters. The event will be delivered to "
+#~ "every observer method that:"
+#~ msgstr ""
+#~ "이벤트 객체는 와일드카드 유형 매개변수나 또는 유형 변수가 없는 Java 클래스"
+#~ "의 인스턴스가 될 수 도 있습니다. 이벤트는 다음과 같은 사항을 갖는 모든 옵"
+#~ "저버 방식에 전달됩니다:     "
+
+#~ msgid ""
+#~ "To specify a \"selector\", the event producer may pass an instance of the "
+#~ "event binding type to the <literal>fire()</literal> method:"
+#~ msgstr ""
+#~ "\"선택자\"를 지정하려면, 이벤트 생산자가 이벤트 바인딩 유형을 "
+#~ "<literal>fire()</literal> 방식에 전달해야 합니다: "
+
+#~ msgid ""
+#~ "The helper class <literal>AnnotationLiteral</literal> makes it possible "
+#~ "to instantiate binding types inline, since this is otherwise difficult to "
+#~ "do in Java."
+#~ msgstr ""
+#~ "Java에서 실행하기 어려웠던 도우미 클래스 <literal>AnnotationLiteral</"
+#~ "literal>은 바인딩 유형 인라인을 인스턴스화할 수 있게 합니다. "
+
+#~ msgid ""
+#~ "Alternatively, event bindings may be specified by annotating the event "
+#~ "notifier injection point:"
+#~ msgstr ""
+#~ "다른 방법으로 이벤트 바인딩은 이벤트 통지 삽입 지점을 어노테이션하여 지정"
+#~ "될 수 도 있습니다:  "
+
+#~ msgid ""
+#~ "does not specify any event binding <emphasis>except</emphasis> for the "
+#~ "event bindings passed to <literal>fire()</literal> or the annotated event "
+#~ "bindings of the event notifier injection point."
+#~ msgstr ""
+#~ "이는 이벤트 통지 삽입 지점의 어노트에션된 이벤트 바인딩이나 또는 "
+#~ "<literal>fire()</literal>에 전달된 이벤트 바인딩에 대한 모든 이벤트 바인"
+#~ "딩 <emphasis>예외 사항</emphasis>을 지정하지 않습니다.  "
+
+#~ msgid "Registering observers dynamically"
+#~ msgstr "옵저버를 동적으로 등록 "
+
+#~ msgid ""
+#~ "It's often useful to register an event observer dynamically. The "
+#~ "application may implement the <literal>Observer</literal> interface and "
+#~ "register an instance with an event notifier by calling the "
+#~ "<literal>observe()</literal> method."
+#~ msgstr ""
+#~ "종종 이벤트 옵저버를 동적으로 등록하는 것이 유용합니다. 애플리케이션은 "
+#~ "<literal>Observer</literal> 인터페이스를 구현하고 <literal>observe()</"
+#~ "literal> 방식을 호출하여 이벤트 통지와 함께 인스턴스를 등록할 수 있습니"
+#~ "다. "
+
+#~ msgid ""
+#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void "
+#~ "notify(Document doc) { ... } } );]]>"
+#~ msgstr ""
+#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void "
+#~ "notify(Document doc) { ... } } );]]>"
+
+#~ msgid ""
+#~ "Event binding types may be specified by the event notifier injection "
+#~ "point or by passing event binding type instances to the <literal>observe()"
+#~ "</literal> method:"
+#~ msgstr ""
+#~ "이벤트 바인딩 유형은 인벤트 통지 삽입 지점에 의해 지정되거나 "
+#~ "<literal>observe()</literal> 방식에 이벤트 바인딩 유형 인스턴스를 전달하"
+#~ "여 지정할 수 있습니다:  "
+
+#~ msgid ""
+#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void "
+#~ "notify(Document doc) { ... } }, \n"
+#~ "                                                new "
+#~ "AnnotationLiteral<Updated>(){} );]]>"
+#~ msgstr ""
+#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void "
+#~ "notify(Document doc) { ... } }, \n"
+#~ "                                                new "
+#~ "AnnotationLiteral<Updated>(){} );]]>"

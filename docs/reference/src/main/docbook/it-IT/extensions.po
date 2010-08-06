@@ -1,0 +1,142 @@
+# Language it-IT translations for Web_Beans:_Java_Contexts_and_Dependency_Injection package.
+# Automatically generated, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection "
+"VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-07-25T03:52:14\n"
+"PO-Revision-Date: 2009-11-23 21:21+0100\n"
+"Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "CDI extensions available as part of Weld"
+msgstr "Estensioni CDI disponibili come parte di Weld"
+
+#. Tag: para
+#, no-c-format
+msgid "These modules are usable on any JSR-299 implementation, not just Weld!"
+msgstr ""
+"Questi moduli sono utilizzabili su qualsiasi implementazione JSR-299, non "
+"solo Weld!"
+
+#. Tag: title
+#, no-c-format
+msgid "Weld Logger"
+msgstr "Weld Logger"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Adding logging to your application is now even easier with simple injection "
+"of a logger object into any CDI bean. Simply create an injection point of "
+"type <literal>org.slf4j.Logger</literal> and an appropriate logger object "
+"will be injected into any instance of the bean."
+msgstr ""
+"Aggiungere la parte di logging alla propria applicazione adesso è "
+"facilissimo con la semplice injection di un oggetto logger in un qualsiasi "
+"bean JSR-299. Semplicemente si annoti un membro di tipo org.jboss.webbeans."
+"log.Log con <emphasis>@Logger</emphasis> ed un oggetto logger appropriato "
+"verrà iniettato in una qualsiasi istanza del bean."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The example shows how objects can be interpolated into a message. If you use "
+"this approach, you do not need to surround a call to the logger with a "
+"condition like <literal>if ( log.isDebugEnabled() )</literal> to avoid "
+"string concatenation."
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"You can add Weld logging to your project by including weld-logger.jar, sl4j-"
+"api.jar and sl4j-jdk14.jar to your project. Alternatively, express a "
+"dependency on the <literal>org.jboss.weld:weld-logger</literal> Maven "
+"artifact."
+msgstr ""
+"Si può aggiungere il Logger Web Bean al proprio progetto includendo nel "
+"progetto webbeans-logger.jar e webbeans-logging.jar. In alternativa, si può "
+"esprimere un dipendenza nell'artifact Maven <literal>org.jboss.webbeans:"
+"webbeans-logger</literal>."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"If you are using Weld as your JSR-299 implementation, there's no need to "
+"include sl4j as it's already included (and used internally)."
+msgstr ""
+"Se si usa Web Beans come implementazione JSR-299, non c'è alcun bisogno di "
+"includere <literal>webbeans-logging.jar</literal> poiché lo è già."
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[import org.slf4j.Logger;\n"
+#~ "import javax.inject.Inject;\n"
+#~ "\n"
+#~ "public class Checkout {\n"
+#~ "   private @Inject Logger log;\n"
+#~ "\n"
+#~ "   public void invoiceItems() {\n"
+#~ "      ShoppingCart cart;\n"
+#~ "      ...\n"
+#~ "      log.debug(\"Items invoiced for {}\", cart);\n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[import org.jboss.weld.annotation.Logger;\n"
+#~ "import org.jboss.weld.log.Log;\n"
+#~ "\n"
+#~ "public class Checkout {\n"
+#~ "   private @Inject @Logger Log log;\n"
+#~ "\n"
+#~ "   public void invoiceItems() {\n"
+#~ "      ShoppingCart cart;\n"
+#~ "      ...\n"
+#~ "      log.debug(\"Items invoiced for {0}\", cart);\n"
+#~ "   }\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "The example shows how objects can be interpolated into a message. This "
+#~ "interpolation is done using <emphasis>java.text.MessageFormat</emphasis>, "
+#~ "so see the JavaDoc for that class for more details. In this case, the "
+#~ "<literal>ShoppingCart</literal> should have implemented the "
+#~ "<emphasis>toString()</emphasis> method to produce a human readable value "
+#~ "that is meaningful in messages. Normally, this call would have involved "
+#~ "evaluating cart.toString() with String concatenation to produce a single "
+#~ "String argument. Thus it was necessary to surround the call with an if-"
+#~ "statement using the condition <emphasis>log.isDebugEnabled()</emphasis> "
+#~ "to avoid the expensive String concatenation if the message was not "
+#~ "actually going to be used. However, when using <literal>@Logger</literal>-"
+#~ "injected logging, the conditional test can be left out since the object "
+#~ "arguments are not evaluated unless the message is going to be logged."
+#~ msgstr ""
+#~ "L'esempio mostra come un oggetto può essere interpolato in un messaggio. "
+#~ "Quest'interpolazione è fatta usando <emphasis>java.text.MessageFormat</"
+#~ "emphasis>, quindi si veda JavaDoc di questa class per ulteriori dettagli. "
+#~ "In questo caso ShoppingCart dovrebbe aver implementato il metodo "
+#~ "<emphasis>toString()</emphasis> per produrre un valore leggibile che sia "
+#~ "significativo nei messaggi.Normalmente questa chiamata comporterebbe la "
+#~ "valutazione di cart.toString() con una concatenazione di stringa per "
+#~ "produrre un singolo argomento stringa. Questo è necessario per "
+#~ "racchiudere la chiamata con uno statement if usando la condizione "
+#~ "<emphasis>log.isDebugEnabled()</emphasis>per evitare la costosa "
+#~ "concatenazione stringa se il messaggio in realtà non viene usato. "
+#~ "Comunque quando si usa il logging iniettato con @Logger, il test "
+#~ "condizionale può essere tralasciato poiché gli argomenti dell'oggetto non "
+#~ "vengono valutati amenoché il messaggio non venga loggato."
+
+#~ msgid "TODO"
+#~ msgstr "DA FARE"
+
+#~ msgid "XSD Generator for JSR-299 XML deployment descriptors"
+#~ msgstr "Generatore XSD per descrittori di deploy XML JSR-299"

@@ -1,0 +1,109 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2010-07-25T03:52:14\n"
+"PO-Revision-Date: 2010-07-25T03:52:14\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Weld project dependencies"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This section lists compile-time and runtime dependencies for Weld. This list is currently maintained in the <ulink url=\"https://jira.jboss.org/jira/browse/WELD-222\">WELD-222</ulink> issue report as well as here in this appendix."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Artifacts coming from Sun"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Artifact"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Scope"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.ejb:ejb-api:3.1</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "compile"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.faces:jsf-api:2.0</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.el:el-api:2.1</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.persistence:persistence-api:2.0</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.servlet:servlet-api:3.0</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.interceptor:interceptor-api:1.1</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>org.glasfish.web:el-impl:2.1.2</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "runtime"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.faces:jsf-impl:2.0.x</literal>"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Artifacts coming from Hibernate"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Notes"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.validation:validation-api</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://opensource.atlassian.com/projects/hibernate/browse/BVAL-193\">BVAL-193</ulink>"
+msgstr ""
+

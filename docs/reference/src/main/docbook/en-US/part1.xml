@@ -1,0 +1,205 @@
+<!DOCTYPE partintro PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<partintro>
+
+   <!-- This part could probably be split into a chapter of it's own, perhaps "Overview" with subsection for Concepts
+   and History -->
+
+<!--               this specification defines an SPI that allows alternative, non-platform technologies to integrate
+with the con-
+tainer, for example, alternative web presentation technologies.
+-->
+
+   <!-- NOTE synchronize this intro with the intro on http://seamframework.org/Weld -->
+   <para>
+      The <ulink url="http://jcp.org/en/jsr/detail?id=299">JSR-299</ulink> specification (CDI) defines a set of 
+      complementary services that help improve the structure of application code. CDI layers an enhanced lifecycle 
+      and interaction model over existing Java component types, including managed beans and Enterprise Java Beans. 
+      The CDI services provide:
+   </para>
+
+   <itemizedlist>
+      <listitem>
+         <para>
+            an improved lifecycle for stateful objects, bound to well-defined <emphasis>contexts</emphasis>,
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            a typesafe approach to <emphasis>dependency injection</emphasis>,
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            object interaction via an <emphasis>event notification facility</emphasis>,
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            a better approach to binding <emphasis>interceptors</emphasis> to objects, along with a new kind of
+            interceptor, called a <emphasis>decorator</emphasis>, that is more appropriate for use in solving 
+            business problems, and
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            an <emphasis>SPI</emphasis> for developing portable extensions to the container.
+         </para>
+      </listitem>
+   </itemizedlist>
+  
+   <para>
+      The CDI services are a core aspect of the Java EE platform and include full support for Java EE modularity 
+      and the Java EE component architecture. But the specification does not limit the use of CDI to the Java EE 
+      environment. In the Java SE environment, the services might be provided by a standalone CDI implementation 
+      like Weld (see <xref linkend="weld-se"/>), or even by a container that also implements the subset of EJB 
+      defined for embedded usage by the EJB 3.1 specification. CDI is especially useful in the context of web 
+      application development, but the problems it solves are general development concerns and it is therefore 
+      applicable to a wide variety of application.
+   </para>
+  
+   <para>
+      An object bound to a lifecycle context is called a bean. CDI includes built-in support for several different 
+      kinds of bean, including the following Java EE component types:
+   </para>
+   
+   <itemizedlist>
+      <listitem>
+         <para>managed beans, and</para>
+      </listitem>
+      <listitem>
+         <para>EJB session beans.</para>
+      </listitem>
+   </itemizedlist>
+    
+   <para>
+     Both managed beans and EJB session beans may inject other beans. But some other objects, which are not 
+     themselves beans in the sense used here, may also have beans injected via CDI. In the Java EE platform, 
+     the following kinds of component may have beans injected:
+   </para>
+    
+   <itemizedlist>
+      <listitem>
+         <para>message-driven beans,</para>
+      </listitem>
+      <listitem>
+         <para>interceptors,</para>
+      </listitem>
+      <listitem>
+         <para>servlets, servlet filters and servlet event listeners,</para>
+      </listitem>
+      <listitem>
+         <para>JAX-WS service endpoints and handlers, and</para>
+      </listitem>
+      <listitem>
+         <para>JSP tag handlers and tag library event listeners.</para>
+      </listitem>
+   </itemizedlist>
+  
+   <para>
+      CDI relieves the user of an unfamiliar API of the need to answer the following questions:
+   </para>
+
+   <itemizedlist>
+      <listitem>
+         <para>What is the lifecycle of this object?</para>
+      </listitem>
+      <listitem>
+         <para>How many simultaneous clients can it have?</para>
+      </listitem>
+      <listitem>
+         <para>Is it multithreaded?</para>
+      </listitem>
+      <listitem>
+         <para>How do I get access to it from a client?</para>
+      </listitem>
+      <listitem>
+         <para>Do I need to explicitly destroy it?</para>
+      </listitem>
+      <listitem>
+         <para>
+            Where should I keep the reference to it when I'm not currently using it?
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            How can I define an alternative implementation, so that the implementation can vary 
+            at deployment time?
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            How should I go about sharing this object between other objects?
+         </para>
+      </listitem>
+   </itemizedlist>
+
+   <para>
+      CDI is more than a framework. It's a whole, rich programming model. The <emphasis>theme</emphasis> of CDI is 
+      <emphasis>loose-coupling with strong typing</emphasis>. Let's study what that phrase means.
+   </para>
+  
+   <para>
+      A bean specifies only the type and semantics of other beans it depends upon. It need not be aware of the actual
+      lifecycle, concrete implementation, threading model or other clients of any bean it interacts with. Even better, 
+      the concrete implementation, lifecycle and threading model of a bean may vary according to the deployment scenario, 
+      without affecting any client. This loose-coupling makes your code easier to maintain. 
+   </para>
+  
+   <para>
+      Events, interceptors and decorators enhance the loose-coupling inherent in this model:
+   </para>
+  
+   <itemizedlist>
+      <listitem>
+         <para>
+            <emphasis>event notifications</emphasis> decouple event producers from event consumers,</para>
+      </listitem>
+      <listitem>
+         <para>
+            <emphasis>interceptors</emphasis> decouple technical concerns from business logic, and</para>
+      </listitem>
+      <listitem>
+         <para>
+            <emphasis>decorators</emphasis> allow business concerns to be compartmentalized.</para>
+      </listitem>
+   </itemizedlist>
+  
+   <para>
+      What's even more powerful (and comforting) is that CDI provides all these facilities in a
+      <emphasis>typesafe</emphasis> way. CDI never relies on string-based identifiers to determine how collaborating
+      objects fit together. Instead, CDI uses the typing information that is already available in the Java object 
+      model, augmented using a new programming pattern, called <emphasis>qualifier annotations</emphasis>, to wire 
+      together beans, their dependencies, their interceptors and decorators, and their event consumers. Usage of
+      XML descriptors is minimized to truly deployment-specific information.
+   </para>
+  
+   <para>
+      But CDI isn't a restrictive programming model. It doesn't tell you how you should to structure your application
+      into layers, how you should handle persistence, or what web framework you have to use. You'll have to decide 
+      those kinds of things for yourself.
+   </para>
+  
+   <para>
+      CDI even provides a comprehensive SPI, allowing other kinds of object defined by future Java EE specifications 
+      or by third-party frameworks to be cleanly integrated with CDI, take advantage of the CDI services, and interact 
+      with any other kind of bean.
+   </para>
+  
+   <para>
+      CDI was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, CDI has 
+      its own, very distinct, character: more typesafe than Seam, more stateful and less XML-centric than Spring, more 
+      web and enterprise-application capable than Guice. But it couldn't have been any of these without inspiration from 
+      the frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 Expert Group
+      (EG).
+   </para>
+  
+   <para>
+      Finally, CDI is a <ulink url="http://jcp.org">Java Community Process</ulink> (JCP) standard. Java EE 6 requires 
+      that all compliant application servers provide support for JSR-299 (even in the web profile).
+   </para>
+  
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
+</partintro>

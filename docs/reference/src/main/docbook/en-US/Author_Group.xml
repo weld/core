@@ -1,0 +1,80 @@
+<!DOCTYPE authorgroup PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
+<authorgroup>
+   <author>
+      <firstname>Gavin</firstname>
+      <surname>King</surname>
+      <contrib>JSR-299: Contexts and Dependency Injection Lead</contrib>
+<!--      <affiliation>-->
+<!--         <jobtitle>JSR-299 specification lead</jobtitle>-->
+<!--         <orgname>Red Hat, Inc.</orgname>-->
+<!--      </affiliation>-->
+   </author>
+   <author>
+      <firstname>Pete</firstname>
+      <surname>Muir</surname>
+      <contrib>Weld (JSR-299 RI) Lead</contrib>
+<!--      <affiliation>-->
+<!--         <jobtitle>Weld (JSR-299 Reference Implementation) lead-->
+<!--         </jobtitle>-->
+<!--         <orgname>Red Hat, Inc.</orgname>-->
+<!--      </affiliation>-->
+   </author>
+   <author>
+      <firstname>Dan</firstname>
+      <surname>Allen</surname>
+<!--      <affiliation>-->
+<!--         <orgname>Red Hat, Inc.</orgname>-->
+<!--      </affiliation>-->
+   </author>
+   <author>
+      <firstname>David</firstname>
+      <surname>Allen</surname>
+   </author>
+   <othercredit>
+      <firstname>Nicola</firstname>
+      <surname>Benaglia</surname>
+      <contrib>Italian Translation</contrib>
+   </othercredit>
+   <othercredit>
+      <firstname>Gladys</firstname>
+      <surname>Guerrero</surname>
+      <contrib>Spanish Translation</contrib>
+<!--      <affiliation>-->
+<!--         <orgname>Red Hat, Inc.</orgname>-->
+<!--      </affiliation>-->
+   </othercredit>
+   <othercredit>
+      <firstname>Eun-Ju</firstname>
+      <surname>Ki,</surname>
+      <contrib>Korean Translation</contrib>
+<!--      <affiliation>-->
+<!--         <orgname>Red Hat, Inc.</orgname>-->
+<!--      </affiliation>-->
+   </othercredit>
+   <othercredit>
+      <firstname>Terry</firstname>
+      <surname>Chuang</surname>
+      <contrib>Traditional Chinese Translation</contrib>
+<!--      <affiliation>-->
+<!--         <orgname>Red Hat, Inc.</orgname>-->
+<!--      </affiliation>-->
+   </othercredit>
+   <othercredit>
+      <firstname>Francesco</firstname>
+      <surname>Milesi</surname>
+      <contrib>Italian Translation</contrib>
+   </othercredit>
+   <othercredit>
+      <firstname>Sean</firstname>
+      <surname>Wu</surname>
+      <contrib>Simplified Chinese Translation</contrib>
+<!--      <affiliation>-->
+<!--         <orgname>Kava Community</orgname>-->
+<!--      </affiliation>-->
+   </othercredit>
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
+</authorgroup>

@@ -1,0 +1,29 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2010-07-25T11:17:19\n"
+"PO-Revision-Date: 2010-07-25T11:17:19\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: para
+#, no-c-format
+msgid "Weld is the reference implementation of JSR-299, and is used by JBoss AS and Glassfish to provide CDI services for Java Enterprise Edition (Java EE) applications. Weld also goes beyond the environments and APIs defined by the JSR-299 specification by providing support for a number of other environments (such as a servlet container such as Tomcat, or Java SE) and additional APIs and modules (such as logging and bean utilities)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Some of the extensions in Weld are portable across JSR-299 implementations (like the logging and bean utilities) and some are specific to Weld (such as the servlet container support). Weld also provides an SPI on which to build extensions, so there are several layers involved."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If you want to get started quickly using Weld (and, in turn, CDI) with JBoss AS, GlassFish or Tomcat and experiment with one of the examples, take a look at <xref linkend=\"gettingstarted\"/>. Otherwise read on for a exhaustive discussion of using Weld in all the environments and application servers it supports and the Weld extensions."
+msgstr ""
+

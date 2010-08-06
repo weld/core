@@ -1,0 +1,25 @@
+<!DOCTYPE partintro PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<partintro>
+
+   <para>
+      Weld, the JSR-299 Reference Implementation (RI), is being developed as part of the <ulink
+      url="http://seamframework.org/Weld">Seam project</ulink>. You can download the latest community release of Weld
+      from the <ulink url="http://seamframework.org/Download">download page</ulink>. Information about the Weld source
+      code repository and instructions about how to obtain and build the source can be found on the same page.
+   </para>
+   
+   <para>
+      Weld provides a complete SPI allowing Java EE containers such as JBoss AS and GlassFish to use Weld as their 
+      built-in CDI implementation. Weld also runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE 
+      environment.
+   </para>
+   
+   <para>
+      Weld comes with an extensive library of examples, which are a great starting point from which to learn CDI.
+   </para>
+   
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
+</partintro>

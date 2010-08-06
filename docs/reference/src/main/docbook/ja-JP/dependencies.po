@@ -1,0 +1,115 @@
+# Language ja-JP translations for Weld_-_JSR-299_Reference_Implementation package.
+# Automatically generated, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-03-02T13:07:17\n"
+"PO-Revision-Date: 2009-11-11 15:00+0000\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Weld project dependencies"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This section lists compile-time and runtime dependencies for Weld. This list "
+"is currently maintained in the <ulink url=\"https://jira.jboss.org/jira/"
+"browse/WELD-222\">WELD-222</ulink> issue report as well as here in this "
+"appendix."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Artifacts coming from Sun"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Artifact"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Scope"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.ejb:ejb-api:3.1</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "compile"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.faces:jsf-api:2.0</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.el:el-api:2.1</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.persistence:persistence-api:2.0</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.servlet:servlet-api:3.0</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.interceptor:interceptor-api:1.1</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>org.glasfish.web:el-impl:2.1.2</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "runtime"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.faces:jsf-impl:2.0.x</literal>"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Artifacts coming from Hibernate"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Notes"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>javax.validation:validation-api</literal>"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<ulink url=\"http://opensource.atlassian.com/projects/hibernate/browse/BVAL-"
+"193\">BVAL-193</ulink>"
+msgstr ""

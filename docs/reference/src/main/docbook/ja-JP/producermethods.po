@@ -1,0 +1,428 @@
+# Language ja-JP translations for master.xml package.
+# Automatically generated, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: master.xml\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-05-01T13:53:43\n"
+"PO-Revision-Date: 2009-06-23 23:39+0900\n"
+"Last-Translator: TANABE Junnichi <jun@lmns.biz>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Bookmarks: -1,1,-1,-1,-1,-1,-1,-1,-1,-1\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Producer methods"
+msgstr "プロデューサメソッド"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Producer methods let us overcome certain limitations that arise when a "
+"container, instead of the application, is responsible for instantiating "
+"objects. They&#39;re also the easiest way to integrate objects which are not "
+"beans into the CDI environment."
+msgstr ""
+"Web Beanマネージャがアプリケーションの代わりにオブジェクトのインスタンス化に"
+"対して責務を負うときいくらかの発生する制限をプロデューサメソッドは、克服して"
+"くれます。それらはWeb BeansでないオブジェクトをWeb Beans環境に統合する最も簡"
+"単な方法でもあります。（我々は<xref linkend=\"xml\"/>で2番目のアプローチを見"
+"ることになるでしょう。）"
+
+#. Tag: para
+#, no-c-format
+msgid "According to the spec:"
+msgstr "仕様によると、"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "A producer method acts as a source of objects to be injected, where:"
+msgstr ""
+"Web Beansのプロデューサメソッドは、次のような場合にインジェクトされるオブジェ"
+"クトを生成するものとして動作します。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "the objects to be injected are not required to be instances of beans,"
+msgstr ""
+"インジェクトされるオブジェクトはWeb Beansのインスタンスである必要はない。"
+
+#. Tag: para
+#, no-c-format
+msgid "the concrete type of the objects to be injected may vary at runtime or"
+msgstr ""
+"インジェクトされるオブジェクトの具象型は実行時によって変わるかもしれない。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"the objects require some custom initialization that is not performed by the "
+"bean constructor"
+msgstr ""
+"オブジェクトはWeb Beanコンストラクタにより実行されないカスタムの初期化を必要"
+"とする。"
+
+#. Tag: para
+#, no-c-format
+msgid "For example, producer methods let us:"
+msgstr "例えば、プロデューサメソッドによって以下のことをすることができます。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "expose a JPA entity as a bean,"
+msgstr "JPAエンティティをWeb Beanとして公開する。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "expose any JDK class as a bean,"
+msgstr "あらゆるJDKクラスをWeb Beanとして公開する。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"define multiple beans, with different scopes or initialization, for the same "
+"implementation class, or"
+msgstr ""
+"同じ実装クラスに対して、異なるスコープや初期化をされた状態で複数のWeb Beansを"
+"定義する。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "vary the implementation of a bean type at runtime."
+msgstr "実行時にAPIタイプの実装を変える。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"In particular, producer methods let us use runtime polymorphism with CDI. As "
+"we&#39;ve seen, alternative beans are one solution to the problem of "
+"deployment-time polymorphism. But once the system is deployed, the CDI "
+"implementation is fixed. A producer method has no such limitation:"
+msgstr ""
+"特に、プロデューサメソッドによってWeb Beanを利用した実行時ポリモフィズムを利"
+"用できるようになります。見てきたように、デプロイメントタイプはデプロイメント"
+"の多態性の問題に対するパワフルなソリューションです。しかし、一旦そのシステム"
+"がデプロイされると、そのWeb Beanの実装は固定されてしまいます。プロデューサメ"
+"ソッドにはそのような制限はありません。"
+
+#. Tag: para
+#, no-c-format
+msgid "Consider an injection point:"
+msgstr "インジェクションポイントを見てみましょう。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"This injection point has the same type and qualifier annotations as the "
+"producer method, so it resolves to the producer method using the usual CDI "
+"injection rules. The producer method will be called by the container to "
+"obtain an instance to service this injection point."
+msgstr ""
+"このインジェクションポイントはプロデューサメソッドと同じ型とバインディングア"
+"ノテーションを持ち、そして通常のWeb Beansのインジェクションルールを利用するプ"
+"ロデューサメソッドを解決します。プロデューサメソッドはこのインジェクションポ"
+"イントをサービスするインスタンスを得るためにWeb Beanマネージャによって呼び出"
+"されるでしょう。"
+
+#. Tag: title
+#, no-c-format
+msgid "Scope of a producer method"
+msgstr "プロデューサメソッドのスコープ"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The scope of the producer method defaults to <literal>@Dependent</literal>, "
+"and so it will be called <emphasis>every time</emphasis> the container "
+"injects this field or any other field that resolves to the same producer "
+"method. Thus, there could be multiple instances of the "
+"<literal>PaymentStrategy</literal> object for each user session."
+msgstr ""
+"プロデューサメソッドのスコープはデフォルトでは<literal>@Dependent</literal>に"
+"なります。そして、Web Beanマネージャがこのフィールドあるいは、同じプロデュー"
+"サメソッドに解決される他のフィールドをインジェクトする度に<emphasis>毎回</"
+"emphasis>呼び出されます。したがって、それぞれのユーザセッション毎に"
+"<literal>PaymentStrategy</literal>オブジェクトの複数のインスタンスがあるかも"
+"しれません。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"To change this behavior, we can add a <literal>@SessionScoped</literal> "
+"annotation to the method."
+msgstr ""
+"この振る舞いを変えるために、私たちはメソッドに<literal>@SessionScoped</"
+"literal>アノテーションを追記することができます。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Now, when the producer method is called, the returned "
+"<literal>PaymentStrategy</literal> will be bound to the session context. The "
+"producer method won&#39;t be called again in the same session."
+msgstr ""
+"今度プロデューサメソッドが呼び出されると、戻された<literal>PaymentStrategy</"
+"literal>はセッションコンテキストに属することになります。プロデューサメソッド"
+"が同じセッションで再び呼び出されることは無いでしょう。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A producer method does <emphasis>not</emphasis> inherit the scope of the "
+"bean that declares the method. There are two different beans here: the "
+"producer method, and the bean which declares it. The scope of the producer "
+"method determines how often the method will be called, and the lifecycle of "
+"the objects returned by the method. The scope of the bean that declares the "
+"producer method determines the lifecycle of the object upon which the "
+"producer method is invoked."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Injection into producer methods"
+msgstr "プロデューサメソッドへのインジェクション"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"There&#39;s one potential problem with the code above. The implementations "
+"of <literal>CreditCardPaymentStrategy</literal> are instantiated using the "
+"Java <literal>new</literal> operator. Objects instantiated directly by the "
+"application can&#39;t take advantage of dependency injection and don&#39;t "
+"have interceptors."
+msgstr ""
+"上のコードには１つの潜在的な問題があります。"
+"<literal>CreditCardPaymentStrategy</literal>の実装はJavaの<literal>new</"
+"literal>演算子を使ってインスタンス化されています。アプリケーションにより直接"
+"インスタンス化されたオブジェクトは依存性注入の恩恵を受けることができず、イン"
+"ターセプタを持ちません。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"If this isn&#39;t what we want, we can use dependency injection into the "
+"producer method to obtain bean instances:"
+msgstr ""
+"これが望むことでないのであれば、私たちはWeb Beanインスタンスを取得するために"
+"プロデューサメソッドに依存性注入することができます。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-"
+"scoped bean? Then the producer method has the effect of &#34;promoting&#34; "
+"the current request scoped instance into session scope. This is almost "
+"certainly a bug! The request scoped object will be destroyed by the "
+"container before the session ends, but the reference to the object will be "
+"left &#34;hanging&#34; in the session scope. This error will <emphasis>not</"
+"emphasis> be detected by the container, so please take extra care when "
+"returning bean instances from producer methods!"
+msgstr ""
+"待って！もし<literal>CreditCardPaymentStrategy</literal>がリクエストスコープ"
+"のWeb Beanだとしたら？その場合、プロデューサメソッドは現在のリクエストスコー"
+"プをセッションスコープに\"プロモート\"する効果を持ちます。これはほぼ確実なバ"
+"グ！リクエストスコープのオブジェクトはセッションが終わる前にWeb Beanマジェー"
+"ジャによって破棄されることになるでしょうが、オブジェクトのリファレンスはセッ"
+"ションスコープに\"ぶら下がった\"ままになるでしょう。このエラーはWeb Beanマ"
+"ジェージャには検知され<emphasis>ない</emphasis>でしょうから、Web Beanインスタ"
+"ンスをプロデューサメソッドから戻すときには気をつけてください。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"There&#39;s at least three ways we could go about fixing this bug. We could "
+"change the scope of the <literal>CreditCardPaymentStrategy</literal> "
+"implementation, but this would affect other clients of that bean. A better "
+"option would be to change the scope of the producer method to "
+"<literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
+msgstr ""
+"私たちがこのバグを解決する方法が少なくとも3つあります。私たちは"
+"<literal>CreditCardPaymentStrategy</literal>を実装したスコープを変えることが"
+"できますが、これはWeb Beanの他のクライアントに影響を与えるでしょう。より良い"
+"選択肢はプロデューサメソッドのスコープを<literal>@Dependent</literal>か"
+"<literal>@RequestScoped</literal>に変えることでしょう。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"But a more common solution is to use the special <literal>@New</literal> "
+"qualifier annotation."
+msgstr ""
+"しかし、より一般的なソリューションは特別な<literal>@New</literal>バインディン"
+"グアノテーションを使用することです。"
+
+#. Tag: title
+#, no-c-format
+msgid "Use of <literal>@New</literal> with producer methods"
+msgstr "プロデューサメソッドへの<literal>@New</literal>アノテーションの使用"
+
+#. Tag: para
+#, no-c-format
+msgid "Consider the following producer method:"
+msgstr "以下のプロデューサメソッドを見てみましょう。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Then a new <emphasis>dependent</emphasis> instance of "
+"<literal>CreditCardPaymentStrategy</literal> will be created, passed to the "
+"producer method, returned by the producer method and finally bound to the "
+"session context. The dependent object won&#39;t be destroyed until the "
+"<literal>Preferences</literal> object is destroyed, at the end of the "
+"session."
+msgstr ""
+"今度は、<literal>CreditCardPaymentStrategy</literal>の新たな<emphasis>依存</"
+"emphasis>インスタンスが作成され、プロデューサメソッドに渡され、プロデューサメ"
+"ソッドにより戻され、そして最終的にセッションコンテキストに属することになりま"
+"す。そのセッションの最後で<literal>Preferences</literal>オブジェクトが破棄さ"
+"れるまで依存オブジェクトは破棄されることは無いでしょう。"
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Disposer methods"
+msgstr "プロデューサメソッド"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Some producer methods return objects that require explicit destruction. For "
+"example, somebody needs to close this JDBC connection:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Destruction can be performed by a matching <emphasis>disposer method</"
+"emphasis>, defined by the same class as the producer method:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The disposer method must have at least one parameter, annotated "
+"<literal>@Disposes</literal>, with the same type and qualifiers as the "
+"producer method. The disposer method is called automatically when the "
+"context ends (in this case, at the end of the request), and this parameter "
+"receives the object produced by the producer method. If the disposer method "
+"has additional method parameters, the container will look for a bean that "
+"satisfies the type and qualifiers of each parameter and pass it to the "
+"method automatically."
+msgstr ""
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@SessionScoped\n"
+#~ "public class Preferences implements Serializable {\n"
+#~ "   private PaymentStrategyType paymentStrategy;\n"
+#~ "   ...\n"
+#~ "   @Produces @Preferred \n"
+#~ "   public PaymentStrategy getPaymentStrategy() {\n"
+#~ "       switch (paymentStrategy) {\n"
+#~ "           case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
+#~ "           case CHECK: return new CheckPaymentStrategy();\n"
+#~ "           case PAYPAL: return new PayPalPaymentStrategy();\n"
+#~ "           default: return null;\n"
+#~ "       } \n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@SessionScoped\n"
+#~ "public class Preferences {\n"
+#~ "    \n"
+#~ "    private PaymentStrategyType paymentStrategy;\n"
+#~ "    \n"
+#~ "    ...\n"
+#~ "    \n"
+#~ "    @Produces @Preferred \n"
+#~ "    public PaymentStrategy getPaymentStrategy() {\n"
+#~ "        switch (paymentStrategy) {\n"
+#~ "            case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
+#~ "            case CHEQUE: return new ChequePaymentStrategy();\n"
+#~ "            case PAYPAL: return new PayPalPaymentStrategy();\n"
+#~ "            default: return null;\n"
+#~ "        } \n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Preferred PaymentStrategy paymentStrategy;]]>"
+#~ msgstr "<![CDATA[@Preferred PaymentStrategy paymentStrat;]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy() {\n"
+#~ "   ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy() {\n"
+#~ "    ...\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy "
+#~ "ccps,\n"
+#~ "                                          CheckPaymentStrategy cps,\n"
+#~ "                                          PayPalPaymentStrategy ppps) {\n"
+#~ "   switch (paymentStrategy) {\n"
+#~ "      case CREDIT_CARD: return ccps;\n"
+#~ "      case CHEQUE: return cps;\n"
+#~ "      case PAYPAL: return ppps;\n"
+#~ "      default: return null;\n"
+#~ "   } \n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy "
+#~ "ccps,\n"
+#~ "                                          ChequePaymentStrategy cps,\n"
+#~ "                                          PayPalPaymentStrategy ppps) {\n"
+#~ "    switch (paymentStrategy) {\n"
+#~ "        case CREDIT_CARD: return ccps;\n"
+#~ "        case CHEQUE: return cps;\n"
+#~ "        case PAYPAL: return ppps;\n"
+#~ "        default: return null;\n"
+#~ "    } \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy "
+#~ "ccps,\n"
+#~ "                                          @New CheckPaymentStrategy cps,\n"
+#~ "                                          @New PayPalPaymentStrategy "
+#~ "ppps) {\n"
+#~ "   switch (paymentStrategy) {\n"
+#~ "      case CREDIT_CARD: return ccps;\n"
+#~ "      case CHEQUE: return cps;\n"
+#~ "      case PAYPAL: return ppps;\n"
+#~ "      default: return null;\n"
+#~ "   } \n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy "
+#~ "ccps,\n"
+#~ "                                          @New ChequePaymentStrategy "
+#~ "cps,\n"
+#~ "                                          @New PayPalPaymentStrategy "
+#~ "ppps) {\n"
+#~ "    switch (paymentStrategy) {\n"
+#~ "        case CREDIT_CARD: return ccps;\n"
+#~ "        case CHEQUE: return cps;\n"
+#~ "        case PAYPAL: return ppps;\n"
+#~ "        default: return null;\n"
+#~ "    } \n"
+#~ "}]]>"
+
+#~ msgid "<chapter>.</chapter>"
+#~ msgstr "<chapter>.</chapter>"

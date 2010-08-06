@@ -1,0 +1,337 @@
+# Language zh-CN translations for master.xml package.
+# Automatically generated, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: master.xml\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-07-25T03:52:14\n"
+"PO-Revision-Date: 2009-02-10 11:18+0800\n"
+"Last-Translator: Sean Wu <alartin@gmail.com>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Decorators"
+msgstr "装饰器"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Interceptors are a powerful way to capture and separate concerns which are "
+"<emphasis>orthogonal</emphasis> to the application (and type system). Any "
+"interceptor is able to intercept invocations of any Java type. This makes "
+"them perfect for solving technical concerns such as transaction management, "
+"security and call logging. However, by nature, interceptors are unaware of "
+"the actual semantics of the events they intercept. Thus, interceptors aren't "
+"an appropriate tool for separating business-related concerns."
+msgstr ""
+"拦截器能够以一种强大的方式来捕获和分离关注点，拦截器和类型系统的关系是正交"
+"的。任何拦截器都能够拦截任何Java类型的调用。这种特性能够让拦截器很好的处理技"
+"术关注点，例如事务管理和安全。不过，拦截器无法领会其所拦截时间的真实语义。因"
+"此，拦截器并不是分离业务相关的关注点的好工具。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The reverse is true of <emphasis>decorators</emphasis>. A decorator "
+"intercepts invocations only for a certain Java interface, and is therefore "
+"aware of all the semantics attached to that interface. Since decorators "
+"directly implement operations with business semantics, it makes them the "
+"perfect tool for modeling some kinds of business concerns. It also means "
+"that a decorator doesn't have the generality of an interceptor. Decorators "
+"aren't able to solve technical concerns that cut across many disparate "
+"types. Interceptors and decorators, though similar in many ways, are "
+"complementary. Let's look at some cases where decorators fit the bill."
+msgstr ""
+"对装饰器来说，反之亦然。一个装饰器只拦截特定Java接口的调用，因此它能够领会这"
+"个接口关联的语义。装饰器的特性使其成为某些业务关注点的理想的建模工具。这也意"
+"味着装饰器并不拥有一个拦截器的普遍性。装饰器无法解决跨越多个不同类型的技术关"
+"注点。"
+
+#. Tag: para
+#, no-c-format
+msgid "Suppose we have an interface that represents accounts:"
+msgstr "假定我们有一个表现帐户的接口："
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Several different beans in our system implement the <literal>Account</"
+"literal> interface. However, we have a common legal requirement that; for "
+"any kind of account, large transactions must be recorded by the system in a "
+"special log. This is a perfect job for a decorator."
+msgstr ""
+"我们系统实现中可以有多个不同的Web Beans实现 <literal>Account</literal> 接口。"
+"然而我们有一个通用的法律要求对于任何帐户，大的交易必须由系统在一个特定的日志"
+"中记录。装饰器非常适合处理这种工作。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A decorator is a bean (possibly even an abstract class) that implements the "
+"type it decorates and is annotated <literal>@Decorator</literal>."
+msgstr ""
+"装饰器是一个简单的Web Bean，能够实现其装饰的类型。装饰器使用 "
+"<literal>@Decorator</literal> 注释。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The decorator implements the methods of the decorated type that it wants to "
+"intercept."
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Unlike other beans, a decorator may be an abstract class. Therefore, if "
+"there's nothing special the decorator needs to do for a particular method of "
+"the decorated interface, you don't need to implement that method."
+msgstr ""
+"和其他简单的Web Beans不同，一个装饰器可以是一个抽象类。如果被装饰的接口中一个"
+"特殊方法对装饰器没有用处，那么装饰器可以不实现这个方法。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Interceptors for a method are called before decorators that apply to the "
+"method."
+msgstr "一个方法的拦截器在这个方法的装饰器调用之前调用。"
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Delegate object"
+msgstr "委托属性"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Decorators have a special injection point, called the <emphasis>delegate "
+"injection point</emphasis>, with the same type as the beans they decorate, "
+"and the annotation <literal>@Delegate</literal>. There must be exactly one "
+"delegate injection point, which can be a constructor parameter, initializer "
+"method parameter or injected field."
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "A decorator is bound to any bean which:"
+msgstr "一个装饰器可以绑定到任何符合下面条件的Web Bean上："
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "has the type of the delegate injection point as a bean type, and"
+msgstr "有一个作为API类型的委托属性类型，以及"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "has all qualifiers that are declared at the delegate injection point."
+msgstr "具备委托属性声明的说有绑定类型。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"This delegate injection point specifies that the decorator is bound to all "
+"beans that implement <literal>Account</literal>:"
+msgstr ""
+"下面的委托属性指定了装饰器绑定到所有实现 <literal>Account</literal> 接口的"
+"Web Beans："
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A delegate injection point may specify any number of qualifier annotations. "
+"The decorator will only be bound to beans with the same qualifiers."
+msgstr ""
+"一个委托属性能够指定一个绑定注释。装饰器只能绑定具有相同绑定的Web Beans。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The decorator may invoke the delegate object, which has much the same effect "
+"as calling <literal>InvocationContext.proceed()</literal> from an "
+"interceptor. The main difference is that the decorator can invoke "
+"<emphasis>any</emphasis> business method on the delegate object."
+msgstr ""
+"装饰器可以调用委托属性，这和从一个拦截器中调用 <literal>InvocationContext."
+"proceed()</literal> 具有相同效果。"
+
+#. Tag: title
+#, no-c-format
+msgid "Enabling decorators"
+msgstr "激活装饰器"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"By default, all decorators are disabled. We need to <emphasis>enable</"
+"emphasis> our decorator in the <literal>beans.xml</literal> descriptor of a "
+"bean archive. This activation only applies to the beans in that archive."
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"This declaration serves the same purpose for decorators that the "
+"<literal>&lt;interceptors&gt;</literal> declaration serves for interceptors:"
+msgstr ""
+"这个声明对于装饰器来说和<literal>&lt;Interceptors&gt;</literal>声明对于拦截器"
+"来说是一样的："
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"it enables us to specify a total ordering for all decorators in our system, "
+"ensuring deterministic behavior, and"
+msgstr "它能让我们在系统中指定所有装饰器的排序，确保具有确定的行为，并且"
+
+#. Tag: para
+#, no-c-format
+msgid "it lets us enable or disable decorator classes at deployment time."
+msgstr "它能让我们在部署时期中激活或者关闭装饰器类。"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[public interface Account {\n"
+#~ "   public BigDecimal getBalance();\n"
+#~ "   public User getOwner();\n"
+#~ "   public void withdraw(BigDecimal amount);\n"
+#~ "   public void deposit(BigDecimal amount);\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[public interface Account {\n"
+#~ "    public BigDecimal getBalance();\n"
+#~ "    public User getOwner();\n"
+#~ "    public void withdraw(BigDecimal amount);\n"
+#~ "    public void deposit(BigDecimal amount);\n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Decorator\n"
+#~ "public abstract class LargeTransactionDecorator\n"
+#~ "      implements Account {\n"
+#~ "   ...\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[<Decorators>\n"
+#~ "    <myapp:LargeTransactionDecorator/>\n"
+#~ "</Decorators>]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Decorator\n"
+#~ "public abstract class LargeTransactionDecorator\n"
+#~ "      implements Account {\n"
+#~ "   @Inject @Delegate @Any Account account;\n"
+#~ "\n"
+#~ "   @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "   public void withdraw(BigDecimal amount) {\n"
+#~ "      ...\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "   public void deposit(BigDecimal amount);\n"
+#~ "      ...\n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Decorator\n"
+#~ "public abstract class LargeTransactionDecorator \n"
+#~ "        implements Account {\n"
+#~ "    \n"
+#~ "    @Decorates Account account;\n"
+#~ "    \n"
+#~ "    @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "    public void withdraw(BigDecimal amount) {\n"
+#~ "        account.withdraw(amount);\n"
+#~ "        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+#~ "            em.persist( new LoggedWithdrawl(amount) );\n"
+#~ "        }\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    public void deposit(BigDecimal amount);\n"
+#~ "        account.deposit(amount);\n"
+#~ "        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+#~ "            em.persist( new LoggedDeposit(amount) );\n"
+#~ "        }\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Delegate @Any Account account;]]>"
+#~ msgstr "<![CDATA[@Decorates Account account;]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Inject @Delegate @Foreign Account account;]]>"
+#~ msgstr "<![CDATA[@Decorates @Foreign Account account;]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Decorator\n"
+#~ "public abstract class LargeTransactionDecorator\n"
+#~ "      implements Account {\n"
+#~ "   @Inject @Delegate @Any Account account;\n"
+#~ "\n"
+#~ "   @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "   public void withdraw(BigDecimal amount) {\n"
+#~ "      account.withdraw(amount);\n"
+#~ "      if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+#~ "         em.persist( new LoggedWithdrawl(amount) );\n"
+#~ "      }\n"
+#~ "   }\n"
+#~ "    \n"
+#~ "   public void deposit(BigDecimal amount);\n"
+#~ "      account.deposit(amount);\n"
+#~ "      if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+#~ "         em.persist( new LoggedDeposit(amount) );\n"
+#~ "      }\n"
+#~ "   }\n"
+#~ "}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Decorator\n"
+#~ "public abstract class LargeTransactionDecorator \n"
+#~ "        implements Account {\n"
+#~ "    \n"
+#~ "    @Decorates Account account;\n"
+#~ "    \n"
+#~ "    @PersistenceContext EntityManager em;\n"
+#~ "    \n"
+#~ "    public void withdraw(BigDecimal amount) {\n"
+#~ "        account.withdraw(amount);\n"
+#~ "        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+#~ "            em.persist( new LoggedWithdrawl(amount) );\n"
+#~ "        }\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "    public void deposit(BigDecimal amount);\n"
+#~ "        account.deposit(amount);\n"
+#~ "        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
+#~ "            em.persist( new LoggedDeposit(amount) );\n"
+#~ "        }\n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]>"
+
+#~ msgid ""
+#~ "All decorators have a <emphasis>delegate attribute</emphasis>. The type "
+#~ "and binding types of the delegate attribute determine which Web Beans the "
+#~ "decorator is bound to. The delegate attribute type must implement or "
+#~ "extend all interfaces implemented by the decorator."
+#~ msgstr ""
+#~ "所有装饰器都有一个 <emphasis>委托属性</emphasis> 。委托属性的类型和绑定类"
+#~ "型决定了装饰器绑定到哪个Web Bean上。委托属性类型必须实现或者继承装饰器实现"
+#~ "的所有接口。"
+
+#~ msgid ""
+#~ "We need to <emphasis>enable</emphasis> our decorator in <literal>web-"
+#~ "beans.xml</literal>."
+#~ msgstr ""
+#~ "我们需要在 <literal>web-beans.xml</literal> 文件中激活我们的装饰器。"

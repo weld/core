@@ -1,0 +1,49 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2010-07-25T03:52:14\n"
+"PO-Revision-Date: 2010-07-25T03:52:14\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "CDI extensions available as part of Weld"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "These modules are usable on any JSR-299 implementation, not just Weld!"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Weld Logger"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Adding logging to your application is now even easier with simple injection of a logger object into any CDI bean. Simply create an injection point of type <literal>org.slf4j.Logger</literal> and an appropriate logger object will be injected into any instance of the bean."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The example shows how objects can be interpolated into a message. If you use this approach, you do not need to surround a call to the logger with a condition like <literal>if ( log.isDebugEnabled() )</literal> to avoid string concatenation."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "You can add Weld logging to your project by including weld-logger.jar, sl4j-api.jar and sl4j-jdk14.jar to your project. Alternatively, express a dependency on the <literal>org.jboss.weld:weld-logger</literal> Maven artifact."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If you are using Weld as your JSR-299 implementation, there's no need to include sl4j as it's already included (and used internally)."
+msgstr ""
+

@@ -1,0 +1,502 @@
+# Language it-IT translations for master.xml package.
+# Automatically generated, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: master.xml\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-07-25T03:52:15\n"
+"PO-Revision-Date: 2008-12-25 22:17+0100\n"
+"Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Stereotypes"
+msgstr "Stereotipi"
+
+#. Tag: para
+#, no-c-format
+msgid "The CDI specification defines a stereotype as follows:"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"In many systems, use of architectural patterns produces a set of recurring "
+"bean roles. A stereotype allows a framework developer to identify such a "
+"role and declare some common metadata for beans with that role in a central "
+"place."
+msgstr ""
+"In molti sistemi l'uso di pattern architetturali produce un set di ruoli Web "
+"Bean ricorrenti. Uno stereotipo consente allo sviluppatore di framework di "
+"identificare tale ruolo e di dichiarare alcuni metadati comuni per i Web "
+"Bean con tale ruolo come parte principale."
+
+#. Tag: para
+#, no-c-format
+msgid "A stereotype encapsulates any combination of:"
+msgstr "Uno stereotipo incapsula qualsiasi combinazione di:"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "a default scope, and"
+msgstr "un tipo di scope di default,"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "a set of interceptor bindings."
+msgstr "un set di annotazioni di interceptor binding."
+
+#. Tag: para
+#, no-c-format
+msgid "A stereotype may also specify that:"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "all beans with the stereotype have defaulted bean EL names, or that"
+msgstr ""
+"Uno stereotipo può anche specificare che tutti i Web Beans con tale "
+"stereotipo abbiano nomi Web Bean di default."
+
+#. Tag: para
+#, no-c-format
+msgid "all beans with the stereotype are alternatives."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A bean may declare zero, one or multiple stereotypes. Stereotype annotations "
+"may be applied to a bean class or producer method or field."
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A stereotype is an annotation, annotated <literal>@Stereotype</literal>, "
+"that packages several other annotations. For instance, the following "
+"stereotype identifies action classes in some MVC framework:"
+msgstr ""
+"Uno stereotipo è un tipo di annotazione Java. Questo stereotipo identifica "
+"le classi di azione in alcuni framework MVC:"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "We use the stereotype by applying the annotation to a bean."
+msgstr "Lo stereotipo viene impiegato applicando l'annotazione al Web Bean."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Of course, we need to apply some other annotations to our stereotype or else "
+"it wouldn't be adding much value."
+msgstr ""
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Default scope for a stereotype"
+msgstr "Scope di default e tipo di deploy per uno stereotipo"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A stereotype may specify a default scope for beans annotated with the "
+"stereotype. For example:"
+msgstr ""
+"Uno stereotipo può anche specificare che tutti i Web Beans con tale "
+"stereotipo abbiano nomi Web Bean di default."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "A particular action may still override this default if necessary:"
+msgstr ""
+"Certamente una particolare azione può comunque fare l'override di questi "
+"valore se necessario:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Naturally, overriding a single default isn't much use. But remember, "
+"stereotypes can define more than just the default scope."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Interceptor bindings for stereotypes"
+msgstr "Interceptor binding per gli stereotipi"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A stereotype may specify a set of interceptor bindings to be inherited by "
+"all beans with that stereotype."
+msgstr ""
+"Uno stereotipo può specificare un set di interceptor binding da ereditare da "
+"tutti i Web Bean con quello stereotipo."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"This helps us get technical concerns, like transactions and security, even "
+"further away from the business code!"
+msgstr ""
+"Questo aiuta ad ottenere concern tecnici anche lontano dal codice di "
+"business!"
+
+#. Tag: title
+#, no-c-format
+msgid "Name defaulting with stereotypes"
+msgstr "Assegnare nomi di default con gli stereotipi"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"We can specify that all beans with a certain stereotype have a defaulted EL "
+"name when a name is not explicitly defined for that bean. All we need to do "
+"is add an empty <literal>@Named</literal> annotation:"
+msgstr ""
+"Infine è possibile specificare che tutti i Web Bean con certi stereotipi "
+"abbiamo un certo nome Web Bean, messo di default dal manager Web Bean. Le "
+"azioni sono spesso referenziate nelle pagine JSP, e quindi sono un caso "
+"d'uso perfetto per questa funzionalità. Basta aggiungere un'annotazione "
+"vuota <literal>@Named</literal>:"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Now, the <literal>LoginAction</literal> bean will have the defaulted name "
+"<literal>loginAction</literal>."
+msgstr ""
+"Ora, <literal>LoginAction</literal> avrà nome <literal>loginAction</literal>."
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Alternative stereotypes"
+msgstr "Stereotipi standard"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A stereotype can indicate that all beans to which it is applied are "
+"<literal>@Alternative</literal>s. An <emphasis>alternative stereotype</"
+"emphasis> lets us classify beans by deployment scenario."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"We can apply an alternative stereotype to a whole set of beans, and activate "
+"them all with one line of code in <literal>beans.xml</literal>."
+msgstr ""
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Stereotype stacking"
+msgstr "Stereotipi"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This may blow your mind a bit, but stereotypes may declare other "
+"stereotypes, which we'll call <emphasis>stereotype stacking</emphasis>. You "
+"may want to do this if you have two distinct stereotypes which are "
+"meaningful on their own, but in other situation may be meaningful when "
+"combined."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Here's an example that combines the <literal>@Action</literal> and "
+"<literal>@Auditable</literal> stereotypes:"
+msgstr ""
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Built-in stereotypes"
+msgstr "Stereotipi standard"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"We've already met two standard stereotypes defined by the CDI specification: "
+"<literal>@Interceptor</literal> and <literal>@Decorator</literal>."
+msgstr ""
+"Si sono già visti due stereotipi standard definiti dalla specifica Web Bean: "
+"<literal>@Interceptor</literal> e <literal>@Decorator</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"CDI defines one further standard stereotype, <literal>@Model</literal>, "
+"which is expected to be used frequently in web applications:"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Instead of using JSF managed beans, just annotate a bean <literal>@Model</"
+"literal>, and use it directly in your JSF view!"
+msgstr ""
+"Questo stereotipo è inteso per l'uso con JSF. Invece di usare bean gestiti "
+"da JSF, basta annotare un Web Bean con <literal>@Model</literal>, e usarlo "
+"direttamente nelle pagine JSF."
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "...\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Action \n"
+#~ "public class LoginAction { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Action \n"
+#~ "public class LoginAction { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@RequestScoped\n"
+#~ "@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Dependent @Action \n"
+#~ "public class DependentScopedLoginAction { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Dependent @Mock @Action \n"
+#~ "public class MockLoginAction { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@RequestScoped\n"
+#~ "@Transactional(requiresNew=true)\n"
+#~ "@Secure\n"
+#~ "@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@Transactional(requiresNew=true)\n"
+#~ "@Secure\n"
+#~ "@WebTier\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@RequestScoped\n"
+#~ "@Transactional(requiresNew=true)\n"
+#~ "@Secure\n"
+#~ "@Named\n"
+#~ "@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@Transactional(requiresNew=true)\n"
+#~ "@Secure\n"
+#~ "@Named\n"
+#~ "@WebTier\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Alternative\n"
+#~ "@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "public @interface Mock {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Mock\n"
+#~ "public class MockLoginAction extends LoginAction { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Action \n"
+#~ "public class LoginAction { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Auditable\n"
+#~ "@Action\n"
+#~ "@Stereotype\n"
+#~ "@Target(TYPE)\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface AuditableAction {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Named \n"
+#~ "@RequestScoped \n"
+#~ "@Stereotype \n"
+#~ "@Target({TYPE, METHOD}) \n"
+#~ "@Retention(RUNTIME) \n"
+#~ "public @interface Model {} ]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Named \n"
+#~ "@RequestScoped \n"
+#~ "@Stereotype \n"
+#~ "@Target({TYPE, METHOD}) \n"
+#~ "@Retention(RUNTIME) \n"
+#~ "public @interface Model {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Named \n"
+#~ "@RequestScoped \n"
+#~ "@Stereotype \n"
+#~ "@Target({TYPE, METHOD}) \n"
+#~ "@Retention(RUNTIME) \n"
+#~ "public @interface Model {} ]]>"
+
+#~ msgid "According to the Web Beans specification:"
+#~ msgstr "Secondo la specifica Web Beans:"
+
+#~ msgid "a default deployment type,"
+#~ msgstr "un tipo di deploy di default,"
+
+#~ msgid "a restriction upon the Web Bean scope,"
+#~ msgstr "una restrizione sullo scope del Web Bean,"
+
+#~ msgid ""
+#~ "a requirement that the Web Bean implement or extend a certain type, and"
+#~ msgstr "un requisito che il Web Bean implementi o estenda un certo tipo, e"
+
+#~ msgid "A Web Bean may declare zero, one or multiple stereotypes."
+#~ msgstr "Un Web Bean può dichiarare zero, uno o più stereotipi."
+
+#~ msgid ""
+#~ "A stereotype may specify a default scope and/or default deployment type "
+#~ "for Web Beans with that stereotype. For example, if the deployment type "
+#~ "<literal>@WebTier</literal> identifies Web Beans that should only be "
+#~ "deployed when the system executes as a web application, we might specify "
+#~ "the following defaults for action classes:"
+#~ msgstr ""
+#~ "Uno stereotipo può specificare uno scope di default e/o un tipo di deploy "
+#~ "di default per Web Bean con tale stereotipo. Per esempio, se il tipo di "
+#~ "deploy <literal>@WebTier</literal> identifica Web Bean che dovrebbero "
+#~ "essere deployati quando il sistema viene eseguito come applicazione web, "
+#~ "si potrebbero specificare i seguenti valori di default per le classi "
+#~ "d'azione:"
+
+#~ msgid ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#~ msgid ""
+#~ "If we want to force all actions to a particular scope, we can do that too."
+#~ msgstr ""
+#~ "Se si vuole forzare tutte le azioni ad un particolare scope, è possibile."
+
+#~ msgid "Restricting scope and type with a stereotype"
+#~ msgstr "Restringere lo scope ed il tipo con uno stereotipo"
+
+#~ msgid ""
+#~ "Suppose that we wish to prevent actions from declaring certain scopes. "
+#~ "Web Beans lets us explicitly specify the set of allowed scopes for Web "
+#~ "Beans with a certain stereotype. For example:"
+#~ msgstr ""
+#~ "Si supponga di voler prevenire le azioni dal dichiarare certi scope. Web "
+#~ "Beans consente esplicitamente di specificare un set di scope consentiti "
+#~ "per Web Bean con certi stereotipi. Per esempio:"
+
+#~ msgid ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype(supportedScopes=RequestScoped.class)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype(supportedScopes=RequestScoped.class)\n"
+#~ "public @interface Action {}]]>"
+
+#~ msgid ""
+#~ "If a particular action class attempts to specify a scope other than the "
+#~ "Web Beans request scope, an exception will be thrown by the Web Bean "
+#~ "manager at initialization time."
+#~ msgstr ""
+#~ "Se una particolare classe d'azione tenta di specificare uno scope diverso "
+#~ "dallo scope di richiesta Web Bean, verrà lanciata un'eccezione dal "
+#~ "manager Web Bean in fase di inizializzazione."
+
+#~ msgid ""
+#~ "We can also force all Web Bean with a certain stereotype to implement an "
+#~ "interface or extend a class:"
+#~ msgstr ""
+#~ "Tutti i Web Bean con certi stereotipi possono venire forzati ad "
+#~ "implementare un'interfaccia o ad estendere una classe:"
+
+#~ msgid ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype(requiredTypes=AbstractAction.class)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype(requiredTypes=AbstractAction.class)\n"
+#~ "public @interface Action {}]]>"
+
+#~ msgid ""
+#~ "If a particular action class does not extend the class "
+#~ "<literal>AbstractAction</literal>, an exception will be thrown by the Web "
+#~ "Bean manager at initialization time."
+#~ msgstr ""
+#~ "Se una particolare classe d'azione non estende la classe "
+#~ "<literal>AbstractAction</literal>, verrà lanciata un'eccezione dal "
+#~ "manager Web Bean in fase di inizializzazione."
+
+#~ msgid "Web Beans defines one further standard stereotype:"
+#~ msgstr "Web Bean definisce un ulteriore stereotipo standard:"

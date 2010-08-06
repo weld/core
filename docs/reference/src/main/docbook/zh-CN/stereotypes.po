@@ -1,0 +1,481 @@
+# Language zh-CN translations for master.xml package.
+# Automatically generated, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: master.xml\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-07-25T03:52:15\n"
+"PO-Revision-Date: 2009-03-13 16:04+0800\n"
+"Last-Translator: Sean Wu <alartin@gmail.com>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Stereotypes"
+msgstr "模板"
+
+#. Tag: para
+#, no-c-format
+msgid "The CDI specification defines a stereotype as follows:"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"In many systems, use of architectural patterns produces a set of recurring "
+"bean roles. A stereotype allows a framework developer to identify such a "
+"role and declare some common metadata for beans with that role in a central "
+"place."
+msgstr ""
+"在很多系统中，体系模式的使用会产生一套重复发生的Web Bean角色。一个模板允许一"
+"个框架开发者来识别这样的一个角色，并且在一个中心地方为拥有这个角色的Web Bean"
+"声明一些通用的元数据。"
+
+#. Tag: para
+#, no-c-format
+msgid "A stereotype encapsulates any combination of:"
+msgstr "一个模板封装了下面的任何组合："
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "a default scope, and"
+msgstr "一个默认的范围类型，"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "a set of interceptor bindings."
+msgstr "一套拦截器绑定注释。"
+
+#. Tag: para
+#, no-c-format
+msgid "A stereotype may also specify that:"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "all beans with the stereotype have defaulted bean EL names, or that"
+msgstr "一个模板也可以指定所有使用这个模板的Web Bean拥有的默认的Web Bean名称。"
+
+#. Tag: para
+#, no-c-format
+msgid "all beans with the stereotype are alternatives."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A bean may declare zero, one or multiple stereotypes. Stereotype annotations "
+"may be applied to a bean class or producer method or field."
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A stereotype is an annotation, annotated <literal>@Stereotype</literal>, "
+"that packages several other annotations. For instance, the following "
+"stereotype identifies action classes in some MVC framework:"
+msgstr "一个模板其实就是一个Java注释类型。这个模板在一些MVC框架中识别动作类："
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "We use the stereotype by applying the annotation to a bean."
+msgstr "我们注释来让Web Bean应用模板"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Of course, we need to apply some other annotations to our stereotype or else "
+"it wouldn't be adding much value."
+msgstr ""
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Default scope for a stereotype"
+msgstr "一个模板默认的范围和部署类型"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A stereotype may specify a default scope for beans annotated with the "
+"stereotype. For example:"
+msgstr "一个模板也可以指定所有使用这个模板的Web Bean拥有的默认的Web Bean名称。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "A particular action may still override this default if necessary:"
+msgstr "当然，如果必要的话，一个特殊的动作类仍旧可以重载这些默认值："
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Naturally, overriding a single default isn't much use. But remember, "
+"stereotypes can define more than just the default scope."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Interceptor bindings for stereotypes"
+msgstr "模板的拦截器绑定"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A stereotype may specify a set of interceptor bindings to be inherited by "
+"all beans with that stereotype."
+msgstr "一个模板指定一套拦截器绑定让使用该模板的Web Bean继承。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"This helps us get technical concerns, like transactions and security, even "
+"further away from the business code!"
+msgstr "这将能够帮助我们从业务代码中剥离技术关注点！"
+
+#. Tag: title
+#, no-c-format
+msgid "Name defaulting with stereotypes"
+msgstr "模板的默认命名"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"We can specify that all beans with a certain stereotype have a defaulted EL "
+"name when a name is not explicitly defined for that bean. All we need to do "
+"is add an empty <literal>@Named</literal> annotation:"
+msgstr ""
+"最后，我们可以为所有使用模板的Web Bean指定一个Web Bean名称，Web Bean管理器将"
+"其设为默认名称。JSP页面中常常引用动作类，所以它们是这个特性的最好的例子。我们"
+"所需做的就是添加一个空的 <literal>@Named</literal> 注释："
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Now, the <literal>LoginAction</literal> bean will have the defaulted name "
+"<literal>loginAction</literal>."
+msgstr ""
+"现在， <literal>LoginAction</literal> 将拥有一个名为 <literal>loginAction</"
+"literal> Web Bean名称."
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Alternative stereotypes"
+msgstr "标准的模板"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A stereotype can indicate that all beans to which it is applied are "
+"<literal>@Alternative</literal>s. An <emphasis>alternative stereotype</"
+"emphasis> lets us classify beans by deployment scenario."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"We can apply an alternative stereotype to a whole set of beans, and activate "
+"them all with one line of code in <literal>beans.xml</literal>."
+msgstr ""
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Stereotype stacking"
+msgstr "模板"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This may blow your mind a bit, but stereotypes may declare other "
+"stereotypes, which we'll call <emphasis>stereotype stacking</emphasis>. You "
+"may want to do this if you have two distinct stereotypes which are "
+"meaningful on their own, but in other situation may be meaningful when "
+"combined."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Here's an example that combines the <literal>@Action</literal> and "
+"<literal>@Auditable</literal> stereotypes:"
+msgstr ""
+
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Built-in stereotypes"
+msgstr "标准的模板"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"We've already met two standard stereotypes defined by the CDI specification: "
+"<literal>@Interceptor</literal> and <literal>@Decorator</literal>."
+msgstr ""
+"我们已经见到了Web Bean规范定义的两个标准的模板：<literal>@Interceptor</"
+"literal> 和 <literal>@Decorator</literal>。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"CDI defines one further standard stereotype, <literal>@Model</literal>, "
+"which is expected to be used frequently in web applications:"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Instead of using JSF managed beans, just annotate a bean <literal>@Model</"
+"literal>, and use it directly in your JSF view!"
+msgstr ""
+"这个模板是为了JSF使用的。我们可以直接在一个Web Bean上使用 <literal>@Model</"
+"literal> 注释就可以让这个Web Bean替代JSF的管理Bean。你可以直接在JSF页面中使用"
+"这个Web Bean。"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "...\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#~ msgid ""
+#~ "<![CDATA[@Action \n"
+#~ "public class LoginAction { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Action \n"
+#~ "public class LoginAction { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@RequestScoped\n"
+#~ "@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Dependent @Action \n"
+#~ "public class DependentScopedLoginAction { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Dependent @Mock @Action \n"
+#~ "public class MockLoginAction { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@RequestScoped\n"
+#~ "@Transactional(requiresNew=true)\n"
+#~ "@Secure\n"
+#~ "@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@Transactional(requiresNew=true)\n"
+#~ "@Secure\n"
+#~ "@WebTier\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@RequestScoped\n"
+#~ "@Transactional(requiresNew=true)\n"
+#~ "@Secure\n"
+#~ "@Named\n"
+#~ "@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@Transactional(requiresNew=true)\n"
+#~ "@Secure\n"
+#~ "@Named\n"
+#~ "@WebTier\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Alternative\n"
+#~ "@Stereotype\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "public @interface Mock {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Mock\n"
+#~ "public class MockLoginAction extends LoginAction { ... }]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Action \n"
+#~ "public class LoginAction { ... }]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Auditable\n"
+#~ "@Action\n"
+#~ "@Stereotype\n"
+#~ "@Target(TYPE)\n"
+#~ "@Retention(RUNTIME)\n"
+#~ "public @interface AuditableAction {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Named \n"
+#~ "@RequestScoped \n"
+#~ "@Stereotype \n"
+#~ "@Target({TYPE, METHOD}) \n"
+#~ "@Retention(RUNTIME) \n"
+#~ "public @interface Model {} ]]>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<![CDATA[@Named \n"
+#~ "@RequestScoped \n"
+#~ "@Stereotype \n"
+#~ "@Target({TYPE, METHOD}) \n"
+#~ "@Retention(RUNTIME) \n"
+#~ "public @interface Model {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Named \n"
+#~ "@RequestScoped \n"
+#~ "@Stereotype \n"
+#~ "@Target({TYPE, METHOD}) \n"
+#~ "@Retention(RUNTIME) \n"
+#~ "public @interface Model {} ]]>"
+
+#~ msgid "According to the Web Beans specification:"
+#~ msgstr "根据Web Bean规范："
+
+#~ msgid "a default deployment type,"
+#~ msgstr "一个默认的部署类型，"
+
+#~ msgid "a restriction upon the Web Bean scope,"
+#~ msgstr "一个对于Web Bean范围的限制"
+
+#~ msgid ""
+#~ "a requirement that the Web Bean implement or extend a certain type, and"
+#~ msgstr "一个Web Bean实现或者继承一个特定类型的需求，以及"
+
+#~ msgid "A Web Bean may declare zero, one or multiple stereotypes."
+#~ msgstr "一个Web Bean可以声明零个，一个或者多个模板。"
+
+#~ msgid ""
+#~ "A stereotype may specify a default scope and/or default deployment type "
+#~ "for Web Beans with that stereotype. For example, if the deployment type "
+#~ "<literal>@WebTier</literal> identifies Web Beans that should only be "
+#~ "deployed when the system executes as a web application, we might specify "
+#~ "the following defaults for action classes:"
+#~ msgstr ""
+#~ "一个模板可以为使用该模板的Web Bean指定一个默认的范围或者默认的部署类型。例"
+#~ "如，如果<literal>@WebTier</literal> 部署类型识别那些只应该在系统作为一个"
+#~ "Web应用运行时才应该部署的Web Bean，我们可以为动作类指定下面的默认值："
+
+#~ msgid ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype\n"
+#~ "public @interface Action {}]]>"
+
+#~ msgid ""
+#~ "If we want to force all actions to a particular scope, we can do that too."
+#~ msgstr ""
+#~ "如果我们想要敬爱那个所有动作类强制在某个特殊的范围，我们也可以这样做。"
+
+#~ msgid "Restricting scope and type with a stereotype"
+#~ msgstr "通过模板来限制范围和类型"
+
+#~ msgid ""
+#~ "Suppose that we wish to prevent actions from declaring certain scopes. "
+#~ "Web Beans lets us explicitly specify the set of allowed scopes for Web "
+#~ "Beans with a certain stereotype. For example:"
+#~ msgstr ""
+#~ "假定我们希望那个通过特定的范围声明来阻止一个动作。Web Bean可以让我们显式地"
+#~ "为使用特定模板的Web Bean指定一套允许的范围。例如："
+
+#~ msgid ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype(supportedScopes=RequestScoped.class)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype(supportedScopes=RequestScoped.class)\n"
+#~ "public @interface Action {}]]>"
+
+#~ msgid ""
+#~ "If a particular action class attempts to specify a scope other than the "
+#~ "Web Beans request scope, an exception will be thrown by the Web Bean "
+#~ "manager at initialization time."
+#~ msgstr ""
+#~ "如果一个特殊的动作类试图指定超越Web Bean请求范围的范围，Web Bean管理器在初"
+#~ "始化时就会抛出一个异常。"
+
+#~ msgid ""
+#~ "We can also force all Web Bean with a certain stereotype to implement an "
+#~ "interface or extend a class:"
+#~ msgstr ""
+#~ "我们也可以强制所有的使用特定模板的Web Bean实现一个接口或者继承一个类："
+
+#~ msgid ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype(requiredTypes=AbstractAction.class)\n"
+#~ "public @interface Action {}]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Retention(RUNTIME)\n"
+#~ "@Target(TYPE)\n"
+#~ "@RequestScoped\n"
+#~ "@WebTier\n"
+#~ "@Stereotype(requiredTypes=AbstractAction.class)\n"
+#~ "public @interface Action {}]]>"
+
+#~ msgid ""
+#~ "If a particular action class does not extend the class "
+#~ "<literal>AbstractAction</literal>, an exception will be thrown by the Web "
+#~ "Bean manager at initialization time."
+#~ msgstr ""
+#~ "如果一个特殊的动作类没有继承 <literal>AbstractAction</literal>，Web Bean管"
+#~ "理器会在初始化时抛出一个异常。"
+
+#~ msgid "Web Beans defines one further standard stereotype:"
+#~ msgstr "Web Bean还定义了另一个标准模板："

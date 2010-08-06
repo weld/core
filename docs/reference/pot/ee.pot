@@ -1,0 +1,164 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2010-07-25T10:21:23\n"
+"PO-Revision-Date: 2010-07-25T10:21:23\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Java EE integration"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "CDI is fully integrated into the Java EE environment. Beans have access to Java EE resources and JPA persistence contexts. They may be used in Unified EL expressions in JSF and JSP pages. They may even be injected into other platform components, such as servlets and message-driven Beans, which are not beans themselves."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Built-in beans"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "In the Java EE environment, the container provides the following built-in beans, all with the qualifier <literal>@Default</literal>:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "the current JTA <literal>UserTransaction</literal>,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a <literal>Principal</literal> representing the current caller identity,"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "the default <ulink url=\"http://jcp.org/en/jsr/detail?id=303\">Bean Validation</ulink> <literal>ValidationFactory</literal>, and"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "a <literal>Validator</literal> for the default <literal>ValidationFactory</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The CDI specification does not require the servlet context objects, <literal>HttpServletRequest</literal>, <literal>HttpSession</literal> and <literal>ServletContext</literal> to be exposed as injectable beans. If you really want to be able to inject these objects, it's easy to create a portable extension to expose them as beans. However, we recommend that direct access to these objects be limited to servlets, servlet filters and servlet event listeners, where they may be obtained in the usual way as defined by the Java Servlets spec. The <literal>FacesContext</literal> is also not injectable. You can get at it by calling <literal>FacesContext.getCurrentInstance()</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Oh, you <emphasis>really</emphasis> want to inject the <literal>FacesContext</literal>? Alright then, try this producer method:"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Injecting Java EE resources into a bean"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "All managed beans may take advantage of Java EE component environment injection using <literal>@Resource</literal>, <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PeristenceUnit</literal> and <literal>@WebServiceRef</literal>. We've already seen a couple of examples of this, though we didn't pay much attention at the time:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The Java EE <literal>@PostConstruct</literal> and <literal>@PreDestroy</literal> callbacks are also supported for all managed beans. The <literal>@PostConstruct</literal> method is called after <emphasis>all</emphasis> injection has been performed."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Of course, we advise that component environment injection be used to define CDI resources, and that typesafe injection be used in application code."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Calling a bean from a servlet"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "It's easy to use a bean from a servlet in Java EE 6. Simply inject the bean using field or initializer method injection."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Since instances of servlets are shared across all incoming threads, the bean client proxy takes care of routing method invocations from the servlet to the correct instances of <literal>Credentials</literal> and <literal>Login</literal> for the current request and HTTP session."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Calling a bean from a message-driven bean"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "CDI injection applies to all EJBs, even when they aren't managed beans. In particular, you can use CDI injection in message-driven beans, which are by nature not contextual objects."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "You can even use CDI interceptor bindings for message-driven Beans."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Please note that there is no session or conversation context available when a message is delivered to a message-driven bean. Only <literal>@RequestScoped</literal> and <literal>@ApplicationScoped</literal> beans are available."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "But how about beans which <emphasis>send</emphasis> JMS messages?"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "JMS endpoints"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Sending messages using JMS can be quite complex, because of the number of different objects you need to deal with. For queues we have <literal>Queue</literal>, <literal>QueueConnectionFactory</literal>, <literal>QueueConnection</literal>, <literal>QueueSession</literal> and <literal>QueueSender</literal>. For topics we have <literal>Topic</literal>, <literal>TopicConnectionFactory</literal>, <literal>TopicConnection</literal>, <literal>TopicSession</literal> and <literal>TopicPublisher</literal>. Each of these objects has its own lifecycle and threading model that we need to worry about."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "You can use producer fields and methods to prepare all of these resources for injection into a bean:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "In this example, we can just inject the prepared <literal>MessageProducer</literal>, <literal>Connection</literal> or <literal>QueueSession</literal>:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The lifecycle of the injected JMS objects is completely controlled by the container."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Packaging and deployment"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "CDI doesn't define any special deployment archive. You can package beans in jars, ejb jars or wars&#8212;any deployment location in the application classpath. However, the archive must be a \"bean archive\". That means each archive that contains beans <emphasis>must</emphasis> include a file named <literal>beans.xml</literal> in the <literal>META-INF</literal> directory of the classpath or <literal>WEB-INF</literal> directory of the web root (for war archives). The file may be empty. Beans deployed in archives that do not have a <literal>beans.xml</literal> file will not be available for use in the application."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "In an embeddable EJB container, beans may be deployed in any location in which EJBs may be deployed. Again, each location must contain a <literal>beans.xml</literal> file."
+msgstr ""
+

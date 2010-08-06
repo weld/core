@@ -1,0 +1,1358 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<chapter id="weldexamples">
+
+   <title>Diving into the Weld examples</title>
+
+   <para>
+      It's time to pull the covers back and dive into the internals of Weld example applications. Let's start with the 
+      simpler of the two examples, <literal>weld-numberguess</literal>.
+   </para>
+
+   <section id="numberguess">
+      <title>The numberguess example in depth</title>
+      
+      <para>
+         In the numberguess application you get 10 attempts to guess a number between 1 and 100. After each
+         attempt, you're told whether your guess was too high or too low.
+      </para>
+      
+      <para>
+         The numberguess example is comprised of a number of beans, configuration files and Facelets (JSF) views,
+         packaged as a war module. Let's start by examining the configuration files.
+      </para>
+      
+      <para>
+          All the configuration files for this example are located in <literal>WEB-INF/</literal>, which can be found in
+          the <literal>src/main/webapp</literal> directory of the example. First, we have the JSF 2.0 version of
+          <literal>faces-config.xml</literal>. A standardized version of Facelets is the default view handler in JSF
+          2.0, so there's really nothing that we have to configure. Thus, the configuration consists of only the root
+          element.
+      </para>
+      
+      <programlisting role="XML"><![CDATA[<faces-config version="2.0"
+   xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://java.sun.com/xml/ns/javaee
+      http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+</faces-config>]]></programlisting>
+
+      <para>
+         There's also an empty <literal>beans.xml</literal> file, which tells the container to look for beans in this
+         application and to activate the CDI services.
+      </para>
+      
+      <para>
+         Finally, there's the familiar <literal>web.xml</literal>:
+      </para>
+      
+      <programlistingco>
+         <areaspec>
+            <area id="faces.servlet" coords="10" />
+            <area id="faces.servlet.mapping" coords="16" />
+            <area id="faces.default.suffix" coords="21" />
+            <area id="session.timeout" coords="26" />
+         </areaspec>
+         <programlisting role="XML"><![CDATA[<web-app version="2.5"
+   xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://java.sun.com/xml/ns/javaee
+      http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+   
+   <display-name>weld-jsf-numberguess-war</display-name>
+   <description>Weld JSF numberguess example (war)</description>
+
+   <servlet>
+      <servlet-name>Faces Servlet</servlet-name>
+      <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+   </servlet>
+
+   <servlet-mapping>
+      <servlet-name>Faces Servlet</servlet-name>
+      <url-pattern>*.jsf</url-pattern>
+   </servlet-mapping>
+   
+   <context-param>
+      <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+      <param-value>.xhtml</param-value>
+   </context-param>
+
+   <session-config>
+      <session-timeout>10</session-timeout>
+   </session-config>
+
+</web-app>]]></programlisting>
+         <calloutlist>
+            <callout arearefs="faces.servlet">
+               <para>
+                  Enable and initialize the JSF servlet
+               </para>
+            </callout>
+            <callout arearefs="faces.servlet.mapping">
+               <para>
+                  Configure requests for URLs ending in <literal>.jsf</literal> to be
+                  handled by JSF
+               </para>
+            </callout>
+            <callout arearefs="faces.default.suffix">
+               <para>
+                  Tell JSF that we will be giving our JSF views (Facelets templates) an
+                  extension of <literal>.xhtml</literal>
+               </para>
+            </callout>
+            <callout arearefs="session.timeout">
+               <para>
+                  Configure a session timeout of 10 minutes
+               </para>
+            </callout>
+         </calloutlist>
+      </programlistingco>
+      
+      <note>
+         <para>
+            This demo uses JSF 2 as the view framework, but you can use Weld with any servlet-based web framework, such
+            as JSF 1.2 or Wicket.
+         </para>
+      </note>
+      
+      <para>
+         Let's take a look at the main JSF view, <literal>src/main/webapp/home.xhtml</literal>.
+      </para>
+      
+      <programlistingco>
+         <areaspec>
+            <area id="template" coords="8" />
+            <area id="statusMessages" coords="12" />
+            <area id="instructions" coords="20" />
+            <area id="guess" coords="27" />
+            <area id="validator" coords="29" />
+            <area id="submit" coords="30" />
+         </areaspec>
+         <programlisting role="XML"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:f="http://java.sun.com/jsf/core">
+
+   <ui:composition template="/template.xhtml">
+      <ui:define name="content">
+         <h1>Guess a number...</h1>
+         <h:form id="numberGuess">
+            <div style="color: red">
+               <h:messages id="messages" globalOnly="false"/>
+               <h:outputText id="Higher" value="Higher!"
+                  rendered="#{game.number gt game.guess and game.guess ne 0}"/>
+               <h:outputText id="Lower" value="Lower!"
+                  rendered="#{game.number lt game.guess and game.guess ne 0}"/>
+            </div>
+    
+            <div>
+               I'm thinking of a number between #{game.smallest} and #{game.biggest}.
+               You have #{game.remainingGuesses} guesses remaining.
+            </div>
+       
+            <div>
+               Your guess: 
+               <h:inputText id="inputGuess" value="#{game.guess}"
+                  size="3" required="true" disabled="#{game.number eq game.guess}"
+                  validator="#{game.validateNumberRange}"/>
+               <h:commandButton id="guessButton" value="Guess" 
+                  action="#{game.check}" disabled="#{game.number eq game.guess}"/>
+            </div>
+            <div>
+              <h:commandButton id="restartButton" value="Reset" action="#{game.reset}" immediate="true"/>
+            </div>
+         </h:form>
+      </ui:define>
+   </ui:composition>
+</html>]]></programlisting>
+         <calloutlist>
+            <callout arearefs="template">
+               <para>
+                  Facelets is the built-in templating language for JSF. Here we are 
+                  wrapping our page in a template which defines the layout.
+               </para>
+            </callout>
+            <callout arearefs="statusMessages">
+               <para>
+                  There are a number of messages which can be sent to the user,
+                  "Higher!", "Lower!" and "Correct!"
+               </para>
+            </callout>
+            <callout arearefs="instructions">
+               <para>
+                  As the user guesses, the range of numbers they can guess gets
+                  smaller - this sentence changes to make sure they know the
+                  number range of a valid guess.
+               </para>
+            </callout>
+            <callout arearefs="guess">
+               <para>
+                  This input field is bound to a bean property using a value
+                  expression.
+               </para>
+            </callout>
+            <callout arearefs="validator">
+               <para>
+                  A validator binding is used to make sure the user doesn't
+                  accidentally input a number outside of the range in which they
+                  can guess - if the validator wasn't here, the user might use
+                  up a guess on an out of bounds number.
+               </para>
+            </callout>
+            <callout arearefs="submit">
+               <para>
+                  And, of course, there must be a way for the user to send their
+                  guess to the server. Here we bind to an action method on the bean.
+               </para>
+            </callout>
+         </calloutlist>
+      </programlistingco>
+      
+      <para>
+         The example exists of 4 classes, the first two of which are qualifiers.  First, there is the
+         <literal>@Random</literal> qualifier, used for injecting a random number:
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[@Qualifier
+@Target( { TYPE, METHOD, PARAMETER, FIELD })
+@Retention(RUNTIME)
+public @interface Random {}]]></programlisting>
+
+      <para>
+         There is also the <literal>@MaxNumber</literal> qualifier, used for
+         injecting the maximum number that can be injected:
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[@Qualifier
+@Target( { TYPE, METHOD, PARAMETER, FIELD })
+@Retention(RUNTIME)
+public @interface MaxNumber {}
+]]></programlisting>
+
+      <para>
+         The application-scoped <literal>Generator</literal> class is responsible for creating the random number, via a
+         producer method. It also exposes the maximum possible number via a producer method:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@ApplicationScoped
+public class Generator implements Serializable {
+
+   private java.util.Random random = new java.util.Random(System.currentTimeMillis());
+   
+   private int maxNumber = 100;
+   
+   java.util.Random getRandom() {
+      return random;
+   }
+   
+   @Produces @Random int next() { 
+      return getRandom().nextInt(maxNumber); 
+   }
+   
+   @Produces @MaxNumber int getMaxNumber() {
+      return maxNumber;
+   }
+
+}]]></programlisting>
+
+      <para>
+         The <literal>Generator</literal> is application scoped, so we don't get a different random each time.
+      </para>
+
+      <note>
+         <para>
+            The package declaration and imports have been excluded from these listings. The complete listing is
+            available in the example source code.
+         </para>
+      </note>
+      
+      <para>
+         The final bean in the application is the session-scoped <literal>Game</literal> class. This is the primary
+         entry point of the application. It's responsible for setting up or resetting the game, capturing and validating
+         the user's guess and providing feedback to the user with a <literal>FacesMessage</literal>. We've used the
+         post-construct lifecycle method to initialize the game by retrieving a random number from the <literal>@Random
+         Instance&lt;Integer&gt;</literal> bean.
+      </para>
+
+      <para>
+         You'll notice that we've also added the <literal>@Named</literal> annotation to this class. This annotation is
+         only required when you want to make the bean accessible to a JSF view via EL (i.e., #{game}).
+      </para>
+         
+      <programlisting role="JAVA"><![CDATA[@Named
+@SessionScoped
+public class Game implements Serializable {
+
+   private int number;
+   private int guess;
+   private int smallest;
+   private int biggest;
+   private int remainingGuesses;
+
+   @Inject @MaxNumber private int maxNumber;
+   @Inject @Random Instance<Integer> randomNumber;
+   
+   public Game() {}
+   
+   public void check() {
+      if (guess > number) {
+         biggest = guess - 1;
+      }
+      else if (guess < number) {
+         smallest = guess + 1;
+      }
+      else if (guess == number) {
+         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Correct!"));
+      }
+      remainingGuesses--;
+   }
+   
+   @PostConstruct
+   public void reset() {
+      this.smallest = 0;
+      this.guess = 0;
+      this.remainingGuesses = 10;
+      this.biggest = maxNumber;
+      this.number = randomNumber.get();
+   }
+   
+   public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value) {
+      if (remainingGuesses <= 0) {
+         FacesMessage message = new FacesMessage("No guesses left!");
+         context.addMessage(toValidate.getClientId(context), message);
+         ((UIInput) toValidate).setValid(false);
+         return;
+      }
+      int input = (Integer) value;
+
+      if (input < smallest || input > biggest) {
+         ((UIInput) toValidate).setValid(false);
+
+         FacesMessage message = new FacesMessage("Invalid guess");
+         context.addMessage(toValidate.getClientId(context), message);
+      }
+   }
+
+   public int getNumber() {
+      return number;
+   }
+   
+   public int getGuess() {
+      return guess;
+   }
+   
+   public void setGuess(int guess) {
+      this.guess = guess;
+   }
+   
+   public int getSmallest() {
+      return smallest;
+   }
+   
+   public int getBiggest() {
+      return biggest;
+   }
+   
+   public int getRemainingGuesses() {
+      return remainingGuesses;
+   }
+
+}]]></programlisting>
+
+      <section id="numberguess-servlet">
+         <title>The numberguess example in Apache Tomcat or Jetty</title>
+         
+         <para>
+            A couple of modifications must be made to the numberguess artifact in order to deploy it to Tomcat or Jetty.
+            First, Weld must be deployed as a Web Application library under <literal>WEB-INF/lib</literal> since the
+            servlet container does not provide the CDI services. For your convenience we provide a single jar suitable
+            for running Weld in any servlet container (including Jetty), <literal>weld-servlet.jar</literal>.
+         </para>
+         
+         <tip>
+            <para>
+               You must also include the jars for JSF, EL, and the common annotations
+               (<literal>jsr250-api.jar</literal>), all of which are provided by the Java EE platform (a Java EE
+               application server). Are you starting to appreciate why a Java EE platform is worth using?
+            </para>
+         </tip>
+         
+         <para>
+            Second, we need to explicitly specify the servlet listener in <literal>web.xml</literal>, again because the
+            container isn't doing this stuff for you. The servlet listener boots Weld and controls it's interaction with
+            requests.
+         </para>
+         
+         <programlisting role="XML"><![CDATA[<listener>
+   <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+</listener>]]></programlisting>
+
+         <para>
+            When Weld boots, it places the <literal>javax.enterprise.inject.spi.BeanManager</literal>, the portable SPI
+            for obtaining bean instances, in the ServletContext under a variable name equal to the fully-qualified
+            interface name. You generally don't need to access this interface, but Weld makes use of it.
+         </para>
+
+      </section>   
+
+   </section>
+   
+      <section id="numberguess-wicket">
+         <title>The numberguess example for Apache Wicket</title>
+         <para>
+            Weld includes a number of portable extensions for JSR-299, including an extension for Wicket, which allows
+            you to inject beans into Wicket components and leverage the conversation context. In this section, we'll
+            walk you through the Wicket version of the numberguess example.
+         </para>
+         
+         <tip>
+            <para>   
+               You may want to review the Wicket documentation at <ulink
+               url="http://wicket.apache.org/">http://wicket.apache.org/</ulink> before reading this section, if you
+               aren't already familiar with the framework.
+            </para>
+         </tip>
+
+         <para>
+            Wicket is another environment that relies on the Weld servlet extension. The use of <ulink
+            url="http://jetty.mortbay.org">Jetty</ulink> is common in the Wicket community, and is thus chosen here as
+            the runtime container. You've seen already that Jetty is perfectly capable of running CDI applications with
+            Weld add-ons, and this environment is no different.
+         </para>
+         
+         <note>
+            <para>
+               We'll also be using the Eclipse IDE in these examples. Instructions are provided later for running the
+               example from the command line, but since you'll likely need to do more than just deploy examples, we'll get
+               setup in this full development environment.
+            </para>
+         </note>
+            
+         <section>
+            <title>Creating the Eclipse project</title>
+         
+            <para>
+               To use the Wicket example in Eclipse, you have one of two choices. You can either use a Maven plugin to
+               generate a regular Eclipse Web project, or you can open the example natively using the <ulink
+               url="http://m2eclipse.sonatype.org/">m2eclipse plugin</ulink>.  Since the Weld source code relies so
+               heavily on Maven, we encourage you to bite the bullet and adopt the m2eclipse plugin. Both approaches are
+               described here for your convenience..
+            </para>
+
+            <para>
+               If you have m2eclipse installed, you can open any Maven project directly. From within Eclipse, select
+               <emphasis>File -> Import... -> Maven Projects</emphasis>. Then, browse to the location of the Wicket
+               numberguess example. You should see that Eclipse recognizes the existence of a Maven project.
+            </para>
+
+            <mediaobject>
+               <imageobject>
+                  <imagedata fileref="images/m2eclipse-wicket-numberguess-import.png" format="PNG"/> 
+               </imageobject>
+            </mediaobject>
+
+            <para>
+               This will create a project in your workspace called <literal>weld-wicket-numberguess</literal>.
+            </para>
+
+            <para>
+               You'll notice after importing, the project has a build error. That's because we need to enable a Maven
+               profile. Right-click on the project and select <emphasis>Properties</emphasis>, then select the
+               <emphasis>Maven</emphasis> tab in the window that appears. In the form field labeled "Active Maven
+               Profiles (comma separated):", type <literal>jetty</literal>. That will enable some extra dependencies
+               that allow the project to compile. Additionally, <emphasis>uncheck</emphasis> the box labeled "Skip Maven
+               compile plugin when processing resources (recommended)". That solves an incompatiblity between the
+               m2eclipse plugin and the Maven enforcer plugin that we use for the Weld project. Now, you're ready to
+               develop!
+            </para>
+
+            <note>
+               <para>
+                  Be sure to uncheck the box "Skip Maven compile plugin when processing resources (recommended)" in the
+                  Maven properties screen or else the example might not run in Eclipse because beans.xml will be missing
+                  from the classpath! See the <ulink
+                  url="https://issues.sonatype.org/browse/MNGECLIPSE-768">MNGECLIPSE-768</ulink> issue report for
+                  details.
+               </para>
+            </note>
+
+            <para>
+               If you are not using the m2eclipse plugin, you have to follow different steps to import the project.
+               First, switch into the Wicket numberguess example, then execute the Maven Eclipse plugin with the jetty
+               profile activated, as follows:
+            </para>
+         
+            <programlisting><![CDATA[$> cd examples/wicket/numberguess
+mvn -Pjetty eclipse:eclipse]]></programlisting>
+         
+            <para>
+               Then, from Eclipse, choose <emphasis>File -> Import... -> General -> Existing Projects into
+               Workspace</emphasis>, select the root directory of the numberguess example, and click Finish. This will
+               create a project in your workspace called <literal>weld-wicket-numberguess</literal>.
+            </para>
+   
+            <mediaobject>
+               <imageobject>
+                  <imagedata fileref="images/wicket-numberguess-project.png" format="PNG"/> 
+               </imageobject>
+            </mediaobject>
+
+            <para>
+               It's time to get the example running!
+            </para>
+
+         </section>
+   
+         <section>
+            <title>Running the example from Eclipse</title>
+         
+            <para>
+               This project follows the <literal>wicket-quickstart</literal> approach of creating an instance of Jetty
+               in the <literal>Start</literal> class. So running the example is as simple as right-clicking on that
+               Start class in <literal>src/test/java</literal> in the <emphasis>Package Explorer</emphasis> and choosing
+               <emphasis>Run as Java Application</emphasis>. You should see console output related to Jetty starting up;
+               then visit able <ulink url="http://localhost:9090">http://localhost:9090</ulink> to view the app. To debug 
+               choose <emphasis>Debug as Java Application</emphasis> instead.
+            </para>
+         </section>
+      
+         <section>
+            <title>Running the example from the command line in JBoss AS or Tomcat</title>
+         
+            <para>
+               This example can also be deployed from the command line in a (similar to the other examples). Assuming
+               you have set up the <literal>local.build.properties</literal> file in the <literal>examples</literal>
+               directory to specify the location of JBoss AS or Tomcat, as previously described, you can run:
+            </para>
+
+            <programlisting><![CDATA[$> ant deploy]]></programlisting> 
+
+            <para>to deploy the example to JBoss AS, and:</para>
+
+            <programlisting><![CDATA[$> ant tomcat.deploy]]></programlisting> 
+
+            <para>
+               to deploy the example to Tomcat. You can then access application at
+               <ulink url="http://localhost:8080/weld-numberguess-wicket">http://localhost:8080/weld-numberguess-wicket</ulink>.
+            </para>
+
+            <para>
+               Alternatively, you can run the application in place on an embedded Jetty container using the following
+               Maven command:
+            </para>
+
+            <programlisting><![CDATA[$> mvn jetty:run -Pjetty]]></programlisting> 
+
+            <para>
+               Enough toying with deployment, let's dive into the code.
+            </para>
+
+         </section>
+   
+         <section>
+            <title>Understanding the code</title>
+         
+            <para>
+               The code in the wicket numberguess example is very similar to the JSF-based numberguess example. The
+               business layer is identical! Where things differ is in view binding. JSF uses Unified EL expressions to
+               bind XML-based view layer components in JSF views to beans. In contrast, Wicket defines its components in
+               Java. These Java-based view components have a one-to-one mapping with HTML elements in an adjacent (pure)
+               HTML file. All view logic, including binding of components to models and controlling the response of view
+               actions, is handled in Java.
+            </para>
+            
+            <para>
+               The integration of Weld with Wicket takes advantage of the same qualifier annotations used in your
+               business layer to provide injection into your <literal>WebPage</literal> subclass (or into other custom
+               Wicket component subclasses).
+            </para>
+
+            <para>    
+               Here's where things differ from the JSF numberguess example:
+            </para>
+
+            <itemizedlist>
+               <listitem>
+                  <para>
+                     Each wicket application must have a <literal>WeldApplication</literal> subclass. In our case, our
+                     application class is <literal>NumberGuessApplication</literal>:
+                  </para>
+                  <programlisting role="JAVA"><![CDATA[public class NumberGuessApplication extends WeldApplication {
+   @Override public Class getHomePage() {
+      return HomePage.class;
+   }
+}]]></programlisting>
+                  <para>
+                     This class specifies which page Wicket should treat as our home page, in our case,
+                     <literal>HomePage.class</literal>
+                  </para>
+               </listitem>
+               <listitem>
+                  <para>
+                     In <literal>HomePage</literal>, we see typical Wicket code to set up page elements. The bit that is
+                     interesting is the injection of the <literal>Game</literal> bean:
+                  </para>
+                  
+                  <programlisting role="JAVA"><![CDATA[@Inject Game game;]]></programlisting>
+               
+                  <para>
+                     The <literal>Game</literal> bean is can then be used, for example, by the code for submitting a
+                     guess:
+                  </para>
+               
+                  <programlisting role="JAVA"><![CDATA[final Component guessButton = new AjaxButton("GuessButton") {
+   protected void onSubmit(AjaxRequestTarget target, Form form) {
+      if (game.check()) {
+         info("Correct!");
+         setVisible(false);
+         prompt.setVisible(false);
+         guessLabel.setVisible(false);
+         inputGuess.setVisible(false);
+      }
+      else if (game.getRemainingGuesses() == 0) {
+         info("Sorry, the answer was " + game.getNumber());
+         setVisible(false);
+         guessLabel.setVisible(false);
+         inputGuess.setVisible(false);
+      }
+      else if (game.getNumber() > game.getGuess()) {
+         info("Higher!");
+      }
+      else if (game.getNumber() < game.getGuess()) {
+         info("Lower");
+      }
+      target.addComponent(form);
+   } 
+};      ]]></programlisting>
+      
+                  <note>
+                     <para>
+                        All injections may be serialized; actual storage of the bean is managed by JSR-299. Note that
+                        Wicket components, like the <literal>HomePage</literal> and it subcomponents, are
+                        <emphasis>not</emphasis> JSR-299 beans.
+                     </para>
+                     <para>
+                        Wicket components allow injection, but they <emphasis>cannot</emphasis> use interceptors,
+                        decorators or lifecycle callbacks such as <literal>@PostConstruct</literal> or methods. The 
+                        components would need to delegate to actual beans to leverage these features.
+                     </para>
+                  </note>
+               </listitem>
+               <listitem>
+                  <para>
+                     The example uses AJAX for processing of button events, and dynamically hides buttons that are no
+                     longer relevant, for example when the user has won the game.
+                  </para>
+               </listitem>
+
+               <listitem>
+                  <para>
+                     In order to activate Wicket for this webapp, the Wicket filter is added to <literal>web.xml</literal>, 
+                     and our application class is specified in <literal>web.xml</literal>:
+                  </para>
+
+                  <programlisting role="XML"><![CDATA[<filter>
+   <filter-name>Wicket Filter</filter-name>
+   <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+   <init-param>
+      <param-name>applicationClassName</param-name>
+      <param-value>org.jboss.weld.examples.wicket.NumberGuessApplication</param-value>
+   </init-param>
+</filter>
+
+<filter-mapping>
+   <filter-name>Wicket Filter</filter-name>
+   <url-pattern>/*</url-pattern>
+</filter-mapping>]]></programlisting>
+
+                  <para>
+                     The servlet listener is still required, as in the Tomcat example, to bootstrap CDI when Jetty
+                     starts and to hook CDI into the Jetty servlet request and session lifecycles. However, rather than
+                     putting it into the web.xml, it is placed into an override file,
+                     <literal>src/main/webapp/WEB-INF/jetty-additions-to-web.xml</literal>, that is passed to Jetty as 
+                     an extra descriptor to be appended to the <literal>web.xml</literal> configuration.
+                  </para>
+
+                  <programlisting role="XML"><![CDATA[<web-app version="2.4" ...>
+   <listener>
+      <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+   </listener>
+</web-app>]]></programlisting> 
+
+               </listitem>
+  
+            </itemizedlist>
+         </section>
+      </section>
+      
+      <section id="numberguess-se">
+         <title>The numberguess example for Java SE with Swing</title>
+
+         <para>
+            This example shows how to use the Weld SE extension to in a
+            Java SE based Swing application with no EJB or servlet dependencies.
+            This example can be found in the <literal>examples/se/numberguess</literal>
+            folder of the Weld distribution.
+         </para>
+            
+         <para>
+            To run the example:
+         </para>
+       
+         <itemizedlist>
+            <listitem>
+               <para>
+                  Ensure that Maven 2 (version 2.0.10+) is installed and in your PATH
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  Ensure that the <literal>JAVA_HOME</literal> environment 
+                  variable is pointing to your JDK installation
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  Open a command line or terminal window in the
+                  <literal>examples/se/numberguess</literal> directory
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  Execute the following command
+               </para>
+               <programlisting>mvn -Drun</programlisting>
+            </listitem>
+         </itemizedlist>
+
+        <para>
+            Let's have a look at the significant code and configuration
+            files that make up this example.
+        </para>
+
+        <para>
+            As usual, there is an empty <literal>beans.xml</literal> file in the root
+            package (<literal>src/main/resources/beans.xml</literal>), which 
+            marks this application as a CDI application.
+         </para>
+
+         <para>
+            The game's main logic is located in <literal>Game.java</literal>. 
+            Here is the code for that class, highlighting the ways in which this
+            differs from the web application version:
+         </para>
+
+         <programlistingco>
+            <areaspec>
+               <area id="scope" coords="1" />
+               <area id="name" coords="2" />
+               <area id="messages1" coords="26" />
+               <area id="validation" coords="41" />
+               <area id="reset" coords="73" />
+             </areaspec>
+             <programlisting role="JAVA"><![CDATA[@ApplicationScoped
+public class Game
+{
+
+   public static final int MAX_NUM_GUESSES = 10;
+
+   private Integer number;
+   private int guess = 0;
+   private int smallest = 0;
+
+   @Inject
+   @MaxNumber
+   private int maxNumber;
+
+   private int biggest;
+   private int remainingGuesses = MAX_NUM_GUESSES;
+   private boolean validNumberRange = true;
+
+   @Inject
+   Generator rndGenerator;
+
+   public Game()
+   {
+   }
+
+   ...
+
+   public boolean isValidNumberRange()
+   {
+      return validNumberRange;
+   }
+
+   public boolean isGameWon()
+   {
+      return guess == number;
+   }
+
+   public boolean isGameLost()
+   {
+      return guess != number && remainingGuesses <= 0;
+   }
+
+   public boolean check()
+   {
+      boolean result = false;
+
+      if (checkNewNumberRangeIsValid())
+      {
+         if (guess > number)
+         {
+            biggest = guess - 1;
+         }
+
+         if (guess < number)
+         {
+            smallest = guess + 1;
+         }
+
+         if (guess == number)
+         {
+            result = true;
+         }
+
+         remainingGuesses--;
+      }
+
+      return result;
+   }
+
+   private boolean checkNewNumberRangeIsValid()
+   {
+      return validNumberRange = ((guess >= smallest) && (guess <= biggest));
+   }
+
+   @PostConstruct
+   public void reset()
+   {
+      this.smallest = 0;
+      this.guess = 0;
+      this.remainingGuesses = 10;
+      this.biggest = maxNumber;
+      this.number = rndGenerator.next();
+   }
+}]]></programlisting>
+            <calloutlist>
+               <callout arearefs="scope">
+                  <para>
+                     The bean is application scoped rather than session scoped,
+                     since an instance of a Swing application typically represents
+                     a single 'session'.
+                 </para>
+               </callout>
+               <callout arearefs="name">
+                  <para>
+                     Notice that the bean is not named, since it doesn't need to
+                     be accessed via EL.
+                  </para>
+               </callout>
+               <callout arearefs="messages1">
+                  <para>
+                     In Java SE there is no JSF <literal>FacesContext</literal>
+                     to which messages can be added. Instead the <literal>Game</literal>
+                     class provides additional information about the state of the
+                     current game including:
+                  </para>
+
+                  <itemizedlist>
+                     <listitem>
+                        <para>
+                           If the game has been won or lost
+                        </para>
+                     </listitem>
+                     <listitem>
+                        <para>
+                           If the most recent guess was invalid
+                        </para>
+                     </listitem>
+                  </itemizedlist>
+
+                  <para>
+                     This allows the Swing UI to query the state of the game, 
+                     which it does indirectly via a class called 
+                     <literal>MessageGenerator</literal>, in order to determine
+                     the appropriate messages to display to the user during the 
+                     game.
+                  </para>
+               </callout>
+               <callout arearefs="validation">
+                  <para>
+                     Since there is no dedicated validation phase, validation of
+                     user input is performed during the <literal>check()</literal> method.
+                  </para>
+               </callout>
+               <callout arearefs="reset">
+                  <para>
+                     The <literal>reset()</literal> method makes a call to the 
+                     injected <literal>rndGenerator</literal> in order to get 
+                     the random number at the start of each game. Note that it
+                     can't use <literal>Instance.get()</literal>  like the JSF 
+                     example does because there will not be any active contexts 
+                     like there are during a JSF request.
+                  </para>
+               </callout>
+            </calloutlist>
+         </programlistingco>
+
+         <para>
+            The <literal>MessageGenerator</literal> class depends on the 
+            current instance of <literal>Game</literal> and queries its 
+            state in order to determine the appropriate messages to provide 
+            as the prompt for the user's next guess and the response to the 
+            previous guess. The code for <literal>MessageGenerator</literal> 
+            is as follows:
+         </para>
+
+         <programlistingco>
+         <areaspec>
+            <area id="game" coords="3" />
+            <area id="challenge" coords="6" />
+            <area id="result" coords="17" />
+         </areaspec>
+         <programlisting role="JAVA"><![CDATA[public class MessageGenerator
+{
+   @Inject
+   private Game game;
+
+   public String getChallengeMessage()
+   {
+      StringBuilder challengeMsg = new StringBuilder("I'm thinking of a number between ");
+      challengeMsg.append(game.getSmallest());
+      challengeMsg.append(" and ");
+      challengeMsg.append(game.getBiggest());
+      challengeMsg.append(". Can you guess what it is?");
+
+      return challengeMsg.toString();
+   }
+
+   public String getResultMessage()
+   {
+      if (game.isGameWon())
+      {
+         return "You guessed it! The number was " + game.getNumber();
+      }
+      else if (game.isGameLost())
+      {
+         return "You are fail! The number was " + game.getNumber();
+      }
+      else if (!game.isValidNumberRange())
+      {
+         return "Invalid number range!";
+      }
+      else if (game.getRemainingGuesses() == Game.MAX_NUM_GUESSES)
+      {
+         return "What is your first guess?";
+      }
+      else
+      {
+         String direction = null;
+
+         if (game.getGuess() < game.getNumber())
+         {
+            direction = "Higher";
+         }
+         else
+         {
+            direction = "Lower";
+         }
+
+         return direction + "! You have " + game.getRemainingGuesses() + " guesses left.";
+      }
+   }
+}]]></programlisting>
+               <calloutlist>
+               <callout arearefs="game">
+                  <para>
+                     The instance of <literal>Game</literal> for the application
+                      is injected here.
+                  </para>
+               </callout>
+               <callout arearefs="challenge">
+                  <para>
+                     The <literal>Game</literal>'s state is interrogated to 
+                     determine the appropriate challenge message ...
+                  </para>
+               </callout>
+              <callout arearefs="result">
+                  <para>
+                     ... and again to determine whether to congratulate, console or
+                     encourage the user to continue.
+                  </para>
+               </callout>
+            </calloutlist>
+         </programlistingco>
+
+         <para>
+            Finally we come to the <literal>NumberGuessFrame</literal> class 
+            which provides the Swing front end to our guessing game. 
+         </para>
+
+         <programlistingco>
+            <areaspec>
+               <area id="gameIn" coords="3" />
+               <area id="messagesIn" coords="6" />
+               <area id="start" coords="9" />
+               <area id="init" coords="21" />
+               <area id="guess1" coords="38" />
+               <area id="replay" coords="48" />
+            </areaspec>
+            <programlisting role="JAVA"><![CDATA[public class NumberGuessFrame extends javax.swing.JFrame
+{
+   @Inject
+   private Game game;
+
+   @Inject
+   private MessageGenerator msgGenerator;
+
+   public void start(@Observes ContainerInitialized event)
+   {
+      java.awt.EventQueue.invokeLater(new Runnable()
+      {
+         public void run()
+         {
+            initComponents();
+            setVisible(true);
+         }
+      });
+   }
+
+   private void initComponents()
+   {
+
+      buttonPanel = new javax.swing.JPanel();
+      mainMsgPanel = new javax.swing.JPanel();
+      mainLabel = new javax.swing.JLabel();
+      messageLabel = new javax.swing.JLabel();
+      guessText = new javax.swing.JTextField();
+      ...
+      mainLabel.setText(msgGenerator.getChallengeMessage());
+      mainMsgPanel.add(mainLabel);
+
+      messageLabel.setText(msgGenerator.getResultMessage());
+      mainMsgPanel.add(messageLabel);
+      ...
+   }
+
+   private void guessButtonActionPerformed( java.awt.event.ActionEvent evt )
+   {
+      int guess =  Integer.parseInt(guessText.getText());
+      game.setGuess( guess );
+      game.check();
+      refreshUI();
+   }
+
+   private void replayBtnActionPerformed(java.awt.event.ActionEvent evt)
+   {
+      game.reset();
+      refreshUI();
+   }
+
+   private void refreshUI() {
+      mainLabel.setText( msgGenerator.getChallengeMessage() );
+      messageLabel.setText( msgGenerator.getResultMessage() );
+      guessText.setText( "" );
+      guessesLeftBar.setValue( game.getRemainingGuesses() );
+      guessText.requestFocus();
+   }
+
+   // swing components
+   private javax.swing.JPanel borderPanel;
+   ...
+   private javax.swing.JButton replayBtn;
+
+}]]></programlisting>
+            <calloutlist>
+               <callout arearefs="gameIn">
+                  <para>
+                     The injected instance of the game (logic and state).
+                  </para>
+               </callout>
+               <callout arearefs="messagesIn">
+                  <para>
+                     The injected message generator for UI messages.
+                  </para>
+               </callout>
+               <callout arearefs="start">
+                  <para>
+                    This application is started in the prescribed Weld SE way,
+                    by observing the <literal>ContainerInitialized</literal> event.
+                  </para>
+               </callout>
+               <callout arearefs="init">
+                  <para>
+                     This method initializes all of the Swing components. Note 
+                     the use of the <literal>msgGenerator</literal> here.
+                  </para>
+               </callout>
+               <callout arearefs="guess1">
+                  <para>
+                     <literal>guessButtonActionPerformed</literal> is called 
+                     when the 'Guess' button is clicked, and it does the 
+                     following:
+                  </para>
+
+                  <itemizedlist>
+                     <listitem>
+                        <para>
+                           Gets the guess entered by the user and sets it as the
+                           current guess in the <literal>Game</literal>
+                        </para>
+                     </listitem>
+                     <listitem>
+                        <para>
+                           Calls <literal>game.check()</literal> to validate and
+                           perform one 'turn' of the game
+                        </para>
+                     </listitem>
+                     <listitem>
+                        <para>
+                           Calls <literal>refreshUI</literal>. If there were 
+                           validation errors with the input, this will have been 
+                           captured during <literal>game.check()</literal> and 
+                           as such will be reflected in the messages returned by
+                           <literal>MessageGenerator</literal> and subsequently
+                           presented to the user. If there are no validation 
+                           errors then the user will be told to guess again 
+                           (higher or lower) or that the game has ended either 
+                           in a win (correct guess) or a loss (ran out of 
+                           guesses).
+                        </para>
+                     </listitem>
+                  </itemizedlist>
+               </callout>
+               <callout arearefs="replay">
+                  <para>
+                     <literal>replayBtnActionPerformed</literal> simply calls 
+                     <literal>game.reset()</literal> to start a new game and 
+                     refreshes the messages in the UI.
+                  </para>
+               </callout>
+            </calloutlist>
+         </programlistingco>
+
+      </section>
+   
+   <section id="translator">
+      <title>The translator example in depth</title>
+      
+      <para>
+         The translator example will take any sentences you enter, and translate them to Latin. (Well, not really, but
+         the stub is there for you to implement, at least. Good luck!)
+      </para>
+      
+      <para>
+         The translator example is built as an ear and contains EJBs. As a result, it's structure is more complex than
+         the numberguess example.
+      </para>
+      
+      <note>
+         <para>
+            Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a war, which will make this structure much
+            simpler! Still, there are other advantages of using an ear.
+         </para>
+      </note>
+      
+      <para>
+         First, let's take a look at the ear aggregator, which is located in the example's <literal>ear</literal> directory. Maven
+         automatically generates the <literal>application.xml</literal> for us from this plugin configuration:
+      </para>
+      
+      <programlisting role="XML"><![CDATA[<plugin>
+   <groupId>org.apache.maven.plugins</groupId>
+   <artifactId>maven-ear-plugin</artifactId>
+   <configuration>
+      <modules>
+         <webModule>
+            <groupId>org.jboss.weld.examples.jsf.translator</groupId>
+            <artifactId>weld-jsf-translator-war</artifactId>
+            <contextRoot>/weld-translator</contextRoot>
+         </webModule>
+      </modules>
+   </configuration>
+</plugin>]]></programlisting>
+
+      <para>
+         This configuration overrides the web context path, resulting in this application URL: <ulink
+         url="http://localhost:8080/weld-translator">http://localhost:8080/weld-translator</ulink>.
+      </para>
+      
+      <tip>
+         <para>
+            If you weren't using Maven to generate these files, you would need
+            <literal>META-INF/application.xml</literal>:
+         </para>
+         
+         <programlisting role="XML"><![CDATA[<application version="5"
+   xmlns="http://java.sun.com/xml/ns/javaee" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://java.sun.com/xml/ns/javaee
+      http://java.sun.com/xml/ns/javaee/application_5.xsd">
+
+  <display-name>weld-jsf-translator-ear</display-name>
+  <description>The Weld JSF translator example (ear)</description>
+  
+  <module>
+    <web>
+      <web-uri>weld-translator.war</web-uri>
+      <context-root>/weld-translator</context-root>
+    </web>
+  </module>
+  <module>
+    <ejb>weld-translator.jar</ejb>
+  </module>
+</application>]]></programlisting>
+      </tip>
+      
+      <para>
+         Next, lets look at the war, which is located in the example's <literal>war</literal> directory. Just as in the
+         numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.0 and a <literal>web.xml</literal>
+         (to activate JSF) under WEB-INF, both sourced from <literal>src/main/webapp/WEB-INF</literal>.
+      </para>
+      
+      <para>
+         More interesting is the JSF view used to translate text. Just as in the numberguess example we have a template,
+         which surrounds the form (ommitted here for brevity):
+      </para>
+      
+      <programlisting role="XML"><![CDATA[<h:form id="translator">
+
+   <table>
+      <tr align="center" style="font-weight: bold">
+         <td>
+            Your text
+         </td>
+         <td>
+            Translation
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <h:inputTextarea id="text" value="#{translator.text}" required="true" rows="5" cols="80"/>
+         </td>
+         <td>
+            <h:outputText value="#{translator.translatedText}"/>
+         </td>
+      </tr>
+   </table>
+   <div>
+      <h:commandButton id="button" value="Translate" action="#{translator.translate}"/>
+   </div>
+   
+</h:form>]]></programlisting>
+
+      <para>
+         The user can enter some text in the left-hand textarea, and hit the translate button to see the result to the
+         right.
+      </para>
+      
+      <para>
+         Finally, let's look at the EJB module, which is located in the example's <literal>ejb</literal> directory.  In
+         <literal>src/main/resources/META-INF</literal> there is just an empty <literal>beans.xml</literal>, used to
+         mark the archive as containing beans.
+      </para>
+      
+      <para>
+         We've saved the most interesting bit to last, the code! The project has two simple beans,
+         <literal>SentenceParser</literal> and <literal>TextTranslator</literal> and two session beans,
+         <literal>TranslatorControllerBean</literal> and <literal>SentenceTranslator</literal>. You should be getting
+         quite familiar with what a bean looks like by now, so we'll just highlight the most interesting bits here.
+      </para>
+      
+      <para>
+         Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> are dependent beans, and
+         <literal>TextTranslator</literal> uses constructor injection:
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[public class TextTranslator implements Serializable { 
+
+   private SentenceParser sentenceParser; 
+
+   @EJB private Translator translator; 
+   
+   @Inject public TextTranslator(SentenceParser sentenceParser) { 
+      this.sentenceParser = sentenceParser; 
+   }
+   
+   public String translate(String text) { 
+      StringBuilder sb = new StringBuilder(); 
+      for (String sentence: sentenceParser.parse(text)) { 
+         sb.append(translator.translate(sentence)).append(". "); 
+      } 
+      return sb.toString().trim(); 
+   }
+
+}]]></programlisting>
+      
+      <para>
+         <literal>TextTranslator</literal> uses the simple bean (really just a plain Java class!)
+         <literal>SentenceParser</literal> to parse the sentence and then calls on the stateless bean with the local
+         business interface <literal>Translator</literal> to perform the translation. That's where the magic happens.
+         Of course, we couldn't develop a full translator, but it's convincing enough to anyone who doesn't understand
+         Latin!
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@Stateless
+public class SentenceTranslator implements Translator { 
+
+   public String translate(String sentence) { 
+      return "Lorem ipsum dolor sit amet"; 
+   }
+
+}]]></programlisting> 
+
+      <para>
+         Finally, there is UI orientated controller. This is a request scoped, named, stateful session bean, which
+         injects the translator. It collects the text from the user and dispatches it to the translator. The bean also
+         has getters and setters for all the fields on the page.
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[@Stateful
+@RequestScoped
+@Named("translator")
+public class TranslatorControllerBean implements TranslatorController {
+
+   @Inject private TextTranslator translator;
+   
+   private String inputText;
+   
+   private String translatedText;
+   
+   public void translate() {
+      translatedText = translator.translate(inputText);
+   }
+   
+   public String getText() {
+      return inputText;
+   }
+   
+   public void setText(String text) {
+      this.inputText = text;
+   }
+   
+   public String getTranslatedText() {
+      return translatedText;
+   }
+   
+   @Remove public void remove() {}
+
+}]]></programlisting>
+
+   </section>
+   
+   <para>
+      That concludes our short tour of the Weld starter examples. For more information on Weld, please visit <ulink
+      url="http://www.seamframework.org/Weld">http://www.seamframework.org/Weld</ulink>.
+   </para>
+
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
+</chapter>

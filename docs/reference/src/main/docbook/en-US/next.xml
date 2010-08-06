@@ -1,0 +1,73 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<chapter id="next">
+   <title>Next steps</title>
+  
+   <para>
+      Because CDI is so new, there's not yet a lot of information available online. That will change over time.
+      Regardless, the CDI specification remains the authority for information on CDI. The spec is less than 100 pages and 
+      is quite readable (don't worry, it's not like your Blu-ray player manual). Of course, it covers many details we've 
+      skipped over here. The spec is available on the
+      <ulink url="http://jcp.org/en/jsr/detail?id=299">JSR-299 page</ulink> at the JCP website.
+   </para>
+  
+   <para>
+      The CDI reference implementation, Weld, is being developed at the <ulink url="http://seamframework.org/Weld">Seam
+      project</ulink>. The RI development team and the CDI spec lead blog at <ulink
+      url="http://in.relation.to">in.relation.to</ulink>. This guide was originally based on a series of blog entries
+      published there while the specification was being developed. It's probably the best source of information about
+      the future of CDI, Weld and Seam.
+   </para>
+
+   <para>
+      We encourage you to follow the <ulink url="https://lists.jboss.org/mailman/listinfo/weld-dev">weld-dev</ulink>
+      mailing list and to get involved in <ulink url="http://seamframework.org/Weld/Development">development</ulink>. If
+      you are reading this guide, you likely have something to offer.
+   </para>
+
+   <para>
+      We are eager to find volunteers to help revise, proofread or translate this guide. The first step is getting the
+      source of this guide checked out. To build against the trunk (latest source), follow these steps:
+   </para>
+
+   <itemizedlist>
+      <listitem>
+         <para>
+            Checkout source from <ulink
+            url="http://anonsvn.jboss.org/repos/weld/doc/trunk/reference">http://anonsvn.jboss.org/repos/weld/doc/trunk/reference</ulink>
+            using SVN
+         </para>
+         <programlisting><![CDATA[$> svn co http://anonsvn.jboss.org/repos/weld/doc/trunk/reference weld-reference]]></programlisting> 
+      </listitem>
+      <listitem>
+         <para>
+            Edit the <literal>pom.xml</literal> file in the root of the checkout and remove the "<literal>-SNAPSHOT</literal>" 
+            from the version element (so you don't have to build other Weld modules).
+         </para>
+      </listitem>
+      <listitem>
+         <para>
+            Build using Maven 2
+         </para>
+         <programlisting><![CDATA[$> mvn]]></programlisting> 
+         <note>
+            <para>
+               If you experience an out of memory error, try setting this environment variable:
+               <literal>MAVEN_OPTS=-Xmx1024m</literal>
+            </para>
+         </note>
+      </listitem>
+      <listitem>
+         <para>The PDF version of the reference guide will appear the current directory. You can find the HTML version
+         in <literal>target/docbook/publish/en-US/html</literal>.</para>
+      </listitem>
+   </itemizedlist>
+
+   <para>
+      We look forward to your participation! 
+   </para>
+
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
+</chapter>
