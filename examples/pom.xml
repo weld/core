@@ -85,12 +85,12 @@
    </modules>
 
    <properties>
+      <!-- Override JSF version to 2.0 -->
       <jsf.version>2.0.2-FCS</jsf.version>
-      <weld.api.version>1.0-SP1</weld.api.version>
       <jetty.version>6.1.21</jetty.version>
-      <uel.glassfish.version>2.1.2-b04</uel.glassfish.version>
+      <!-- UEL Impl -->
+      <uel.version>2.2</uel.version>
       <!-- Testing deps -->
-      <testng.version>5.10</testng.version>
       <selenium.java.client.version>1.0.1</selenium.java.client.version>
       <selenium.maven.plugin.version>1.0</selenium.maven.plugin.version>
       <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
@@ -123,24 +123,6 @@
          </dependency>
 
          <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-api-bom</artifactId>
-            <version>${weld.api.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-         </dependency>
-
-
-
-
-         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
-            <classifier>jdk15</classifier>
-         </dependency>
-
-         <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty</artifactId>
             <version>${jetty.version}</version>
@@ -161,7 +143,8 @@
          <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>el-impl</artifactId>
-            <version>${uel.glassfish.version}</version>
+            <version>${uel.version}</version>
+         </dependency>
 
          <dependency>
             <groupId>org.seleniumhq.selenium.client-drivers</groupId>
