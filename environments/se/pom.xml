@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
-      <artifactId>weld-parent</artifactId>
+      <artifactId>weld-core-parent</artifactId>
       <groupId>org.jboss.weld</groupId>
-      <version>12</version>
+      <version>1.1.0-SNAPSHOT</version>
+      <relativePath>../../parent/pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld</groupId>
+   <groupId>org.jboss.weld.se</groupId>
    <artifactId>weld-se</artifactId>
-   <version>1.0.2-SNAPSHOT</version>
    <packaging>jar</packaging>
    <name>Weld SE Support</name>
 
@@ -31,68 +31,6 @@
          </roles>
       </developer>
    </developers>
-
-
-   <properties>
-      <!-- Testing deps -->
-      <testng.version>5.10</testng.version>
-      <weld.api.version>1.0-SP1</weld.api.version>
-      <weld.core.version>1.0.1-Final</weld.core.version>
-      <slf4j.version>1.5.10</slf4j.version>
-   </properties>
-   
-   <!-- Dependency management, including extra repositories if needed -->
-   <repositories>
-      <repository>
-         <id>oss.sonatype.org/jboss-snapshots</id>
-         <name>JBoss (Nexus) Snapshots Repository</name>
-         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
-         <releases>
-            <enabled>false</enabled>
-         </releases>
-         <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-         </snapshots>
-      </repository>
-   </repositories>
-   
-   <!-- Import the BOMs -->
-   <dependencyManagement>
-      <dependencies>
-         <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-api-bom</artifactId>
-            <version>${weld.api.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-         </dependency>
-         <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-core-bom</artifactId>
-            <version>${weld.core.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-         </dependency>
-         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <classifier>jdk15</classifier>
-            <version>${testng.version}</version>
-         </dependency>
-         <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-se</artifactId>
-            <version>${project.version}</version>
-         </dependency>
-         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>${slf4j.version}</version>
-         </dependency>
-      </dependencies>
-   </dependencyManagement>
-   <!-- Set up local dependecies -->
 
    <dependencies>
       <dependency>
