@@ -96,6 +96,8 @@
             <artifactId>weld-se</artifactId>
             <version>${project.version}</version>
          </dependency>
+         
+         <dependency>
             <groupId>org.jboss.jsr299.tck</groupId>
             <artifactId>jsr299-tck-api</artifactId>
             <version>${cdi.tck.version}</version>
