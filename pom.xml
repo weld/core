@@ -91,6 +91,17 @@
          </modules>
       </profile>
       <profile>
+         <id>docs</id>
+         <activation>
+            <property>
+               <name>release</name>
+            </property>
+         </activation>
+         <modules>
+            <module>docs/reference</module>
+         </modules>
+      </profile>
+      <profile>
          <id>environments</id>
          <activation>
             <property>
