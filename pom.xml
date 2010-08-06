@@ -72,6 +72,7 @@
             </property>
          </activation>
          <modules>
+            <module>porting-package</module>
             <module>tests</module>
             <module>tests-arquillian</module>
             <module>inject-tck-runner</module>
