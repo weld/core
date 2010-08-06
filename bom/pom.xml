@@ -144,22 +144,6 @@
       </dependencies>
    </dependencyManagement>
 
-   <!-- Dependency management, including extra repositories if needed -->
-   <repositories>
-      <repository>
-         <id>jboss-snapshots-repository</id>
-         <name>JBoss Public Repository</name>
-         <url>http://repository.jboss.org/nexus/content/repositories/snapshots</url>
-         <releases>
-            <enabled>false</enabled>
-         </releases>
-         <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-         </snapshots>
-      </repository>
-   </repositories>
-
    <profiles>
       <profile>
          <id>jboss-public-repository</id>
