@@ -82,13 +82,11 @@
       <module>jsf/permalink</module>
       <module>se/numberguess</module>
       <module>se/hello-world</module>
-      <module>wicket/numberguess</module>
    </modules>
 
    <properties>
       <jsf.version>2.0.2-FCS</jsf.version>
       <weld.api.version>1.0-SP1</weld.api.version>
-      <weld.wicket.version>1.0.1-Final</weld.wicket.version>
       <weld.se.version>1.0.1-Final</weld.se.version>
       <weld.servlet.version>1.0.1-Final</weld.servlet.version>
       <jetty.version>6.1.21</jetty.version>
@@ -149,20 +147,6 @@
             <version>${weld.api.version}</version>
             <type>pom</type>
             <scope>import</scope>
-         </dependency>
-         
-         <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-wicket</artifactId>
-            <version>${weld.wicket.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-         </dependency>
-         
-         <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-wicket</artifactId>
-            <version>${weld.wicket.version}</version>
          </dependency>
 
          <dependency>
