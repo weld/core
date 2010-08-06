@@ -195,9 +195,5 @@
       <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/java-se/trunk</developerConnection>
       <url>http://fisheye.jboss.org/browse/weld/java-se/trunk</url>
    </scm>
-
    
 </project>
-
-
-
