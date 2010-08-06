@@ -160,11 +160,6 @@
       </profile>
    </profiles>
 
-   <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/login</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/jsf/login</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/login</url>
-   </scm>
 
 </project>
 

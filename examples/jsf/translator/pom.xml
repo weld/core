@@ -60,11 +60,5 @@
       </pluginManagement>
    </build>
 
-   <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/translator</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/jsf/translator</developerConnection>
-     <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/translator</url>
-  </scm>
-
 </project>
 

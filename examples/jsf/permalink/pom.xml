@@ -479,10 +479,4 @@
       </profile>
    </profiles>
 
-   <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/permalink</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/jsf/permalink</developerConnection>
-     <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/permalink</url>
-  </scm>
-
 </project>
