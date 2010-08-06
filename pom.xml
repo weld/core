@@ -81,6 +81,11 @@
       </profile>
       <profile>
          <id>bundles</id>
+         <activation>
+            <property>
+               <name>release</name>
+            </property>
+         </activation>
          <modules>
             <module>bundles/osgi</module>
          </modules>
