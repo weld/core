@@ -80,6 +80,11 @@
          </dependency>
 
          <dependency>
+         <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se</artifactId>
+            <version>${project.version}</version>
+         </dependency>
             <groupId>org.jboss.jsr299.tck</groupId>
             <artifactId>jsr299-tck-api</artifactId>
             <version>${cdi.tck.version}</version>

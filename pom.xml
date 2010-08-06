@@ -91,6 +91,18 @@
          </modules>
       </profile>
       <profile>
+         <id>environments</id>
+         <activation>
+            <property>
+               <name>weld.default.build</name>
+               <value>!false</value>
+            </property>
+         </activation>
+         <modules>
+            <module>environments/se</module>
+         </modules>
+      </profile>
+      <profile>
          <id>bundles</id>
          <activation>
             <property>

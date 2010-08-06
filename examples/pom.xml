@@ -87,7 +87,6 @@
    <properties>
       <jsf.version>2.0.2-FCS</jsf.version>
       <weld.api.version>1.0-SP1</weld.api.version>
-      <weld.se.version>1.0.1-Final</weld.se.version>
       <weld.servlet.version>1.0.1-Final</weld.servlet.version>
       <jetty.version>6.1.21</jetty.version>
       <uel.glassfish.version>2.1.2-b04</uel.glassfish.version>
@@ -138,12 +137,6 @@
             <version>${weld.servlet.version}</version>
          </dependency>
 
-
-         <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-se</artifactId>
-            <version>${weld.se.version}</version>
-         </dependency>
 
 
          <dependency>
