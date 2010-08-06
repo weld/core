@@ -110,46 +110,6 @@
          </plugin>
 
          <plugin>
-            <artifactId>maven-eclipse-plugin</artifactId>
-            <configuration>
-               <additionalBuildcommands>
-                  <!--
-                     annoyingly creates a bin directory <buildCommand>
-                     <name>org.eclipse.wst.jsdt.core.javascriptValidator</name>
-                     </buildCommand>
-                  -->
-                  <buildCommand>
-                     <name>org.jboss.tools.common.verification.verifybuilder</name>
-                  </buildCommand>
-               </additionalBuildcommands>
-               <additionalConfig>
-                  <file>
-                     <name>.settings/org.maven.ide.eclipse.prefs</name>
-                     <content>activeProfiles=jdk5
-                        eclipse.preferences.version=1
-                        fullBuildGoals=process-test-resources
-                        includeModules=false
-                        resolveWorkspaceProjects=true
-                        resourceFilterGoals=process-resources
-                        resources\:testResources
-                        skipCompilerPlugin=true
-                        version=1</content>
-                  </file>
-               </additionalConfig>
-               <additionalProjectFacets>
-                  <jst.jsf>1.2</jst.jsf> <!-- 2.0 is not yet supported -->
-               </additionalProjectFacets>
-               <additionalProjectnatures>
-                  <projectnature>org.eclipse.wst.jsdt.core.jsNature</projectnature>
-                  <projectnature>org.jboss.tools.jsf.jsfnature</projectnature>
-               </additionalProjectnatures>
-               <workspace>${user.home}/.eclipse/workspace</workspace>
-               <wtpdefaultserver>JBoss</wtpdefaultserver>
-               <wtpversion>1.5</wtpversion>
-            </configuration>
-         </plugin>
-
-         <plugin>
             <artifactId>maven-war-plugin</artifactId>
             <configuration>
                <!--

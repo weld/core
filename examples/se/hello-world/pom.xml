@@ -45,7 +45,7 @@
                   <configuration>
                      <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
                      <arguments>
-                        <argument>${name}</argument>
+                        <argument>${project.name}</argument>
                      </arguments>
                   </configuration>
                </plugin>
@@ -63,14 +63,6 @@
 
    <build>
       <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-eclipse-plugin</artifactId>
-            <configuration>
-               <!-- This is needed so that we get StartMain on the RunAs list -->
-               <useProjectReferences>false</useProjectReferences>
-            </configuration>
-         </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jar-plugin</artifactId>
