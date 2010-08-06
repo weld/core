@@ -80,6 +80,17 @@
          </modules>
       </profile>
       <profile>
+         <id>examples</id>
+         <activation>
+            <property>
+               <name>release</name>
+            </property>
+         </activation>
+         <modules>
+            <module>examples</module>
+         </modules>
+      </profile>
+      <profile>
          <id>bundles</id>
          <activation>
             <property>
