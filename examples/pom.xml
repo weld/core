@@ -211,12 +211,6 @@
       </pluginManagement>
    </build>
 
-   <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk</developerConnection>
-     <url>http://fisheye.jboss.org/browse/weld/examples/trunk</url>
-  </scm>
-
    <profiles>
       <profile>
          <id>ftest-jboss-remote-51</id>
