@@ -88,11 +88,4 @@
       </plugins>
    </build>
 
-   <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/servlet/trunk/build</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/servlet/trunk/build</developerConnection>
-      <url>http://fisheye.jboss.org/browse/weld/servlet/trunk/build</url>
-   </scm>
-
-
 </project>
