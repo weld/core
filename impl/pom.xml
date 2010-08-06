@@ -174,10 +174,10 @@
       </profile>
       <profile>
          <id>cal10n-verify</id>
+         <!-- Only run when requested - the plugin doesn't work with Maven 3 -->
          <activation>
             <property>
                <name>cal10n-verify</name>
-               <value>!false</value>
             </property>
          </activation>
          <build>
