@@ -11,7 +11,7 @@
    <groupId>org.jboss.weld.examples.jsf.translator</groupId>
    <artifactId>weld-jsf-translator-ejb</artifactId>
    <packaging>ejb</packaging>
-   <name>Weld Examples: Translator (ejb)</name>
+   <name>Weld Examples: Translator [ejb] (JSF)</name>
    <url>http://www.seamframework.org/Weld</url>
    <licenses>
       <license>

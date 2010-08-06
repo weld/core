@@ -11,7 +11,7 @@
    <groupId>org.jboss.weld.examples.jsf.translator</groupId>
    <artifactId>weld-jsf-translator-war</artifactId>
    <packaging>war</packaging>
-   <name>Weld Examples: Translator (war)</name>
+   <name>Weld Examples: Translator [war] (JSF)</name>
    <url>http://www.seamframework.org/Weld</url>
    <licenses>
       <license>

@@ -13,7 +13,7 @@
    <groupId>org.jboss.weld.examples.jsf</groupId>
    <artifactId>weld-jsf-login</artifactId>
    <packaging>war</packaging>
-   <name>Weld Examples: Login</name>
+   <name>Weld Examples: Login (JSF)</name>
 
    <url>http://www.seamframework.org/Weld</url>
    <licenses>

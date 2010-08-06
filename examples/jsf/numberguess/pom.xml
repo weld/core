@@ -12,7 +12,7 @@
    <groupId>org.jboss.weld.examples.jsf</groupId>
    <artifactId>weld-jsf-numberguess</artifactId>
    <packaging>war</packaging>
-   <name>Weld Examples: Numberguess</name>
+   <name>Weld Examples: Numberguess (JSF)</name>
 
    <url>http://www.seamframework.org/Weld</url>
    <licenses>

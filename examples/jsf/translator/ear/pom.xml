@@ -11,7 +11,7 @@
    <groupId>org.jboss.weld.examples.jsf.translator</groupId>
    <artifactId>weld-jsf-translator-ear</artifactId>
    <packaging>ear</packaging>
-   <name>Weld Examples: Translator (ear)</name>
+   <name>Weld Examples: Translator [ear] (JSF)</name>
    
    <url>http://www.seamframework.org/Weld</url>
    <licenses>

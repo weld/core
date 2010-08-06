@@ -10,7 +10,7 @@
    <groupId>org.jboss.weld.examples.se</groupId>
    <artifactId>weld-se-numberguess</artifactId>
    <packaging>jar</packaging>
-   <name>Number Guess SE</name>
+   <name>Weld Examples: Numberguess (Java SE)</name>
    <url>http://www.seamframework.org/Weld</url>
    <licenses>
       <license>

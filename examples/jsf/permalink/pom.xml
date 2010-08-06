@@ -12,7 +12,7 @@
    <groupId>org.jboss.weld.examples.jsf</groupId>
    <artifactId>weld-jsf-permalink</artifactId>
    <packaging>war</packaging>
-   <name>Weld Permalink Example (Servlet)</name>
+   <name>Weld Examples: Permalink (JSF)</name>
    <description>The Weld permalink example for deployment to a servlet environment</description>
    <url>http://www.seamframework.org/Weld</url>
    <licenses>
