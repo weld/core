@@ -87,7 +87,6 @@
    <properties>
       <jsf.version>2.0.2-FCS</jsf.version>
       <weld.api.version>1.0-SP1</weld.api.version>
-      <weld.servlet.version>1.0.1-Final</weld.servlet.version>
       <jetty.version>6.1.21</jetty.version>
       <uel.glassfish.version>2.1.2-b04</uel.glassfish.version>
       <!-- Testing deps -->
@@ -131,11 +130,6 @@
             <scope>import</scope>
          </dependency>
 
-         <dependency>
-            <groupId>org.jboss.weld.servlet</groupId>
-            <artifactId>weld-servlet</artifactId>
-            <version>${weld.servlet.version}</version>
-         </dependency>
 
 
 
