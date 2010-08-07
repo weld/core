@@ -106,6 +106,7 @@ public class BeanDeployment
    public void deployBeans(Environment environment)
    {
       beanDeployer.addClasses(beanDeploymentArchive.getBeanClasses());
+      beanDeployer.fireProcessAnnotatedTypeForTypesAddedThroughTheSPI();
       beanDeployer.getEnvironment().addBuiltInBean(new InjectionPointBean(beanManager));
       beanDeployer.getEnvironment().addBuiltInBean(new EventBean(beanManager));
       beanDeployer.getEnvironment().addBuiltInBean(new InstanceBean(beanManager));

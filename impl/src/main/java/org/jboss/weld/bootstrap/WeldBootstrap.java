@@ -390,7 +390,6 @@ public class WeldBootstrap implements Bootstrap
          for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
          {
             entry.getValue().deployBeans(environment);
-            entry.getValue().getBeanDeployer().fireProcessAnnotatedTypeForTypesAddedThroughTheSPI();
          }
          AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments);
          for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
