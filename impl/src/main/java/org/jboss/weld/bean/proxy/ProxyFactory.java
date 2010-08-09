@@ -28,7 +28,6 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -74,7 +73,6 @@ public class ProxyFactory<T>
    private final Class<?>           beanType;
    private final Set<Class<?>>      additionalInterfaces = new HashSet<Class<?>>();
    private final ClassLoader        classLoader;
-   private final ProtectionDomain   protectionDomain;
    private final ClassPool          classPool;
    private final String             baseProxyName;
 
@@ -112,7 +110,6 @@ public class ProxyFactory<T>
          this.classLoader = Container.instance().services().get(ProxyServices.class).getClassLoader(superClass);
       }
       this.beanType = superClass;
-      this.protectionDomain = Container.instance().services().get(ProxyServices.class).getProtectionDomain(beanType);
       this.classPool = new ClassPool();
       this.classPool.appendClassPath(new ClassloaderClassPath(classLoader));
       addDefaultAdditionalInterfaces();
@@ -307,7 +304,7 @@ public class ProxyFactory<T>
          proxyClassType.addInterface(classPool.get(specialInterface.getName()));
       }
 
-      Class<T> proxyClass = proxyClassType.toClass(classLoader, protectionDomain);
+      Class<T> proxyClass = proxyClassType.toClass(classLoader, null);
       proxyClassType.detach();
       log.trace("Created Proxy class of type " + proxyClass + " supporting interfaces " + Arrays.toString(proxyClass.getInterfaces()));
       return proxyClass;

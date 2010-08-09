@@ -69,18 +69,6 @@ public class SimpleProxyServices implements ProxyServices
       }
    }
 
-   public ProtectionDomain getProtectionDomain(Class<?> type)
-   {
-      if (type.getName().startsWith("java"))
-      {
-         return this.getClass().getProtectionDomain();
-      }
-      else
-      {
-         return type.getProtectionDomain();
-      }
-   }
-
    public void cleanup()
    {
       // This implementation requires no cleanup
