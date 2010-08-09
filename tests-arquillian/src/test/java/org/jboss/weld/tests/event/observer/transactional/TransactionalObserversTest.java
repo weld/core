@@ -54,11 +54,10 @@ public class TransactionalObserversTest
                   .addPackage(TransactionalObserversTest.class.getPackage())
                   .addClass(Utils.class)
                   .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                  .addManifestResource(TransactionalObserversTest.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml")
          );
    }
 
-   @Inject
+   @Inject @Tame
    private PomeranianInterface dog;
 
    @Inject
@@ -76,7 +75,6 @@ public class TransactionalObserversTest
    }
 
    @Test
-   @Category(Broken.class)
    public void testAfterTransactionCompletionObserver() throws InterruptedException
    {
       dog.setCorrectContext(false);
@@ -87,7 +85,6 @@ public class TransactionalObserversTest
    }
 
    @Test
-   @Category(Broken.class)
    public void testAfterTransactionSuccessObserver() throws InterruptedException
    {
       dog.setCorrectContext(false);
@@ -98,7 +95,6 @@ public class TransactionalObserversTest
    }
 
    @Test
-   @Category(Broken.class)
    public void testAfterTransactionFailureObserver() throws Exception
    {
       dog.setCorrectContext(false);

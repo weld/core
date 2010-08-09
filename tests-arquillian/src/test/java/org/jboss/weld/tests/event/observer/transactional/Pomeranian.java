@@ -130,11 +130,11 @@ public class Pomeranian implements PomeranianInterface
             setCorrectTransactionState(true);
          }
          
-         if (context.getCallerPrincipal().getName().equals("Bubba"))
-         {
-            setCorrectContext(true);
-         }
-         log.finer("Principal caller is " + context.getCallerPrincipal().getName());
+//         if (context.getCallerPrincipal().getName().equals("Bubba"))
+//         {
+//            setCorrectContext(true);
+//         }
+//         log.finer("Principal caller is " + context.getCallerPrincipal().getName());
       }
       catch (SystemException e)
       {
@@ -152,11 +152,11 @@ public class Pomeranian implements PomeranianInterface
             setCorrectTransactionState(true);
          }
          
-         if (context.getCallerPrincipal().getName().equals("Bubba"))
-         {
-            setCorrectContext(true);
-         }
-         log.finer("Principal caller is " + context.getCallerPrincipal().getName());
+//         if (context.getCallerPrincipal().getName().equals("Bubba"))
+//         {
+//            setCorrectContext(true);
+//         }
+//         log.finer("Principal caller is " + context.getCallerPrincipal().getName());
       }
       catch (SystemException e)
       {
