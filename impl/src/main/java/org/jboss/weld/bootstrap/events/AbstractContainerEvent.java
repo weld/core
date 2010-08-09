@@ -61,7 +61,7 @@ public abstract class AbstractContainerEvent
    
    protected void fire()
    {
-      Type eventType = new ParameterizedTypeImpl(getRawType(), getEmptyTypeArray(), null);
+      Type eventType = new ParameterizedTypeImpl(getRawType(), getActualTypeArguments(), null);
       try
       {
          beanManager.fireEvent(eventType, this);
@@ -78,7 +78,7 @@ public abstract class AbstractContainerEvent
       {
          // Collect all observers to remove dupes
          Set<ObserverMethod<Object>> observers = new HashSet<ObserverMethod<Object>>();
-         Type eventType = new ParameterizedTypeImpl(getRawType(), getEmptyTypeArray(), null);
+         Type eventType = new ParameterizedTypeImpl(getRawType(), getActualTypeArguments(), null);
          for (BeanDeployment beanDeployment : beanDeployments.values())
          {
             observers.addAll(beanDeployment.getBeanManager().resolveObserverMethods(eventType));
@@ -99,7 +99,7 @@ public abstract class AbstractContainerEvent
       return rawType;
    }
 
-   protected Type[] getEmptyTypeArray()
+   protected Type[] getActualTypeArguments()
    {
       return actualTypeArguments;
    }
