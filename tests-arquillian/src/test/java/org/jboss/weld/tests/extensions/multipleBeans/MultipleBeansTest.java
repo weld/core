@@ -25,7 +25,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.Utils;
 import org.jboss.weld.tests.category.Broken;
@@ -50,14 +49,11 @@ public class MultipleBeansTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
-               ShrinkWrap.create(BeanArchive.class)
+      return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(MultipleBeansTest.class.getPackage())
                   .addPackage(TestAnnotatedTypeBuilder.class.getPackage())
                   .addClass(Utils.class)
-                  .addServiceProvider(Extension.class, MultipleBeansExtension.class)
-         );
+                  .addServiceProvider(Extension.class, MultipleBeansExtension.class);
    }
    
    @Inject
