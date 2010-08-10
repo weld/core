@@ -110,7 +110,14 @@ public class Formats
 
    public static String formatType(Type baseType)
    {
-      return Reflections.getRawType(baseType).getSimpleName() + formatActualTypeArguments(Reflections.getActualTypeArguments(baseType));
+      if (baseType == null)
+      {
+         return "null";
+      }
+      else
+      {
+         return Reflections.getRawType(baseType).getSimpleName() + formatActualTypeArguments(Reflections.getActualTypeArguments(baseType));
+      }
    }
 
    public static String formatTypes(Iterable<? extends Type> baseTypes)
