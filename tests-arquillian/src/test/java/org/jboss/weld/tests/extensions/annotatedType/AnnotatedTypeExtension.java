@@ -79,13 +79,19 @@ public class AnnotatedTypeExtension implements Extension
 
          public <T extends Annotation> T getAnnotation(Class<T> annotationType)
          {
-            // Class has no annotations
-            return null;
+            if (annotationType.equals(Marker.class))
+            {
+               return (T) MarkerLiteral.INSTANCE;
+            }
+            else
+            {
+               return null;
+            }
          }
 
          public Set<Annotation> getAnnotations()
          {
-            return Collections.emptySet();
+            return Collections.<Annotation>singleton(MarkerLiteral.INSTANCE);
          }
 
          public Type getBaseType()
@@ -100,8 +106,14 @@ public class AnnotatedTypeExtension implements Extension
 
          public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
          {
-            // Class has no annotations
-            return false;
+            if (annotationType.equals(Marker.class))
+            {
+               return true;
+            }
+            else
+            {
+               return false;
+            }
          }
          
       };
@@ -557,7 +569,10 @@ public class AnnotatedTypeExtension implements Extension
    
    public void vetoOriginalTumbleDryer(@Observes ProcessAnnotatedType<TumbleDryer> event)
    {
-      event.veto();
+      if (!event.getAnnotatedType().isAnnotationPresent(Marker.class))
+      {
+         event.veto();
+      }
    }
 
 }
