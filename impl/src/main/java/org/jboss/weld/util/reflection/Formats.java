@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
@@ -85,15 +86,15 @@ public class Formats
          }
       }
    };
-   
+
    private static final Function<Annotation> ANNOTATION_LIST_FUNCTION = new Function<Annotation>()
    {
-      
+
       public String apply(Annotation from, int position)
       {
          return spaceDelimiterFunction().apply("@" + from.annotationType().getSimpleName(), position);
       }
-      
+
    };
 
    @SuppressWarnings("unchecked")
@@ -132,7 +133,7 @@ public class Formats
 
       });
    }
-   
+
    public static String formatBusinessInterfaceDescriptors(Iterable<? extends BusinessInterfaceDescriptor<?>> businessInterfaceDescriptors)
    {
       return formatIterable(businessInterfaceDescriptors, new Function<BusinessInterfaceDescriptor<?>>()
@@ -269,10 +270,10 @@ public class Formats
          {
             return commaDelimiterFunction().apply(formatType(from), position);
          }
-         
+
       }), "<", ">");
    }
-   
+
    public static String wrapIfNeccessary(String string, String prepend, String append)
    {
       if (string != null && string.length() > 0)
@@ -309,42 +310,79 @@ public class Formats
       }
       else
       {
-         return version(pkg.getImplementationVersion());
+         return version(pkg.getSpecificationVersion(), pkg.getImplementationVersion());
       }
    }
 
-   public static String version(String version)
+   public static String version(String version, String timestamp)
    {
-      if (version != null)
+      String major = null;
+      String minor = null;
+      String micro = null;
+      String qualifier = null;
+      List<String> split = new ArrayList<String>(Arrays.asList(version.split("\\.")));
+      
+      String[] split2 = split.get(split.size() - 1).split("\\-");
+      if (split2.length > 1)
       {
-         StringBuilder builder = new StringBuilder();
-         if (version.indexOf(".") > 0)
+         // We split it, so swap out the last digit
+         split.remove(split.size() - 1);
+         split.add(split.size(), split2[0]);
+         qualifier = split2[1];
+      }
+      else if (split2.length > 0)
+      {
+         // We didn't split it
+         split.remove(split.size() - 1);
+         qualifier = split2[0];
+      }
+      
+      if (split.size() > 0)
+      {
+         major = split.get(0);
+      }
+      if (split.size() > 1)
+      {
+         minor = split.get(1);
+      }
+      if (split.size() > 2)
+      {
+         micro = split.get(2);
+      }
+      if (major == null && timestamp != null)
+      {
+         // Handle the case we only have a timestamp
+         return timestamp;
+      }
+      if (major == null && timestamp == null)
+      {
+         // Handle the case we have nothing
+         return "SNAPSHOT";
+      }
+      
+      StringBuilder builder = new StringBuilder();
+      builder.append(major);
+      if (minor != null)
+      {
+         builder.append(".").append(minor);
+      }
+      if (minor != null && micro != null)
+      {
+         builder.append(".").append(micro);
+      }
+      if (qualifier != null)
+      {
+         builder.append(" (");
+         if (qualifier.equals("SNAPSHOT") && timestamp != null)
          {
-            builder.append(version.substring(0, version.indexOf("."))).append(".");
-            version = version.substring(version.indexOf(".") + 1);
-         }
-         if (version.indexOf(".") > 0)
-         {
-            builder.append(version.substring(0, version.indexOf("."))).append(".");
-            version = version.substring(version.indexOf(".") + 1);
-         }
-         if (version.indexOf("-") > 0)
-         {
-            builder.append(version.substring(0, version.indexOf("-"))).append(" (");
-            builder.append(version.substring(version.indexOf("-") + 1)).append(")");
-         }
-         else if (version.indexOf(".") > 0)
-         {
-            builder.append(version.substring(0, version.indexOf("."))).append(" (");
-            builder.append(version.substring(version.indexOf(".") + 1)).append(")");
+            builder.append(timestamp);
          }
          else
          {
-            builder.append(version);
+            builder.append(qualifier);
          }
-         return builder.toString();
+         builder.append(")");
       }
-      return "SNAPSHOT";
+      return builder.toString();
    }
-
 }

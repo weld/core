@@ -21,6 +21,10 @@
    </licenses>
    <url>http://www.seamframework.org/Weld</url>
 
+   <properties>
+      <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+   </properties>
+
 
    <dependencies>
 
@@ -129,8 +133,8 @@
          <optional>true</optional>
       </dependency>
 
-<!-- test dependencies -->
-	
+      <!-- test dependencies -->
+
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
@@ -151,9 +155,41 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-            	<includes>
-            		<include>**/*Test.java</include>
-            	</includes>
+               <includes>
+                  <include>**/*Test.java</include>
+               </includes>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+               <archive>
+                  <manifestEntries>
+                     <Implementation-URL>${project.url}</Implementation-URL>
+                     <Implementation-Title>${project.name}</Implementation-Title>
+                     <Implementation-Version>${maven.build.timestamp}</Implementation-Version>
+                     <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                     <Specification-Title>${project.name}</Specification-Title>
+                     <Specification-Version>${parsedVersion.osgiVersion}</Specification-Version>
+                     <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                  </manifestEntries>
+                  <manifestSections>
+                     <manifestSection>
+                        <name>Build-Information</name>
+                        <manifestEntries>
+                           <Maven-Version>${maven.version}</Maven-Version>
+                           <Java-Version>${java.version}</Java-Version>
+                           <Java-Vendor>${java.vendor}</Java-Vendor>
+                           <Os-Name>${os.name}</Os-Name>
+                           <Os-Arch>${os.arch}</Os-Arch>
+                           <Os-Version>${os.version}</Os-Version>
+                           <SCM>r${buildNumber}</SCM>
+                           <Build-Time>${maven.build.timestamp}</Build-Time>
+                        </manifestEntries>
+                     </manifestSection>
+                  </manifestSections>
+               </archive>
             </configuration>
          </plugin>
       </plugins>
