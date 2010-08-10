@@ -39,8 +39,8 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 
-import org.jboss.weld.bootstrap.events.ExternalAnnotatedType;
 import org.jboss.weld.introspector.ConstructorSignature;
+import org.jboss.weld.introspector.ExternalAnnotatedType;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;

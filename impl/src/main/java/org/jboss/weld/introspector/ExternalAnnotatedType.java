@@ -14,9 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bootstrap.events;
+package org.jboss.weld.introspector;
 
-public interface ExternalAnnotatedType
+import javax.enterprise.inject.spi.AnnotatedType;
+
+public class ExternalAnnotatedType<X> extends ForwardingAnnotatedType<X>
 {
+   
+   public static <X> AnnotatedType<X> of(AnnotatedType<X> annotatedType)
+   {
+      return new ExternalAnnotatedType<X>(annotatedType);
+   }
+   
+   private final AnnotatedType<X> delegate;
+
+   private ExternalAnnotatedType(AnnotatedType<X> delegate)
+   {
+      this.delegate = delegate;
+   }
+   
+   @Override
+   protected AnnotatedType<X> delegate()
+   {
+      return delegate;
+   }
 
 }
