@@ -117,7 +117,15 @@ public class Formats
       }
       else
       {
-         return Reflections.getRawType(baseType).getSimpleName() + formatActualTypeArguments(Reflections.getActualTypeArguments(baseType));
+         Class<?> rawType = Reflections.getRawType(baseType);
+         if (rawType != null)
+         {
+            return rawType.getSimpleName() + formatActualTypeArguments(Reflections.getActualTypeArguments(baseType));
+         }
+         else
+         {
+            return baseType.toString();
+         }
       }
    }
 
