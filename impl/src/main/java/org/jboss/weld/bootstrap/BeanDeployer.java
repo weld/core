@@ -31,6 +31,7 @@ import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.introspector.ExternalAnnotatedType;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
@@ -108,7 +109,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
             ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(getManager(), c);
             if (!event.isVeto())
             {
-               transformed.add(classTransformer.loadClass(event.getAnnotatedType()));
+               transformed.add(classTransformer.loadClass(ExternalAnnotatedType.of(event.getAnnotatedType())));
             }
          }
       }
