@@ -456,7 +456,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    @SuppressWarnings("unchecked")
    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... qualifiers)
    {
-      return (Set) observerResolver.resolve(new ResolvableBuilder().addTypes(new HierarchyDiscovery(eventType).getTypeClosure()).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create());
+      return (Set) observerResolver.resolve(new ResolvableBuilder().addTypes(new HierarchyDiscovery(eventType).getTypeClosure()).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create());
    }
 
    /**
