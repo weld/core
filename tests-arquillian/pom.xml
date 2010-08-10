@@ -232,6 +232,9 @@
                <name>incontainer</name>
             </property>
          </activation>
+         <properties>
+            <test>org.jboss.weld.tests.IntegrationSuite</test>
+         </properties>
          <dependencies>
             <dependency>
                <groupId>org.jboss.arquillian.container</groupId>
@@ -256,7 +259,7 @@
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-surefire-plugin</artifactId>
                   <configuration>
-                     <test>org.jboss.weld.tests.IntegrationSuite</test>
+                     <test>${test}</test>
                      <parallel>none</parallel>
                   </configuration>
                </plugin>
