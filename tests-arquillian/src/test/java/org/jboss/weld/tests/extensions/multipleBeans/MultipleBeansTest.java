@@ -64,6 +64,7 @@ public class MultipleBeansTest
    private BeanManagerImpl beanManager;
 
    @Test
+   // WELD-406
    public void testFormatterRegistered()
    {
       // test that we have added two beans with the same qualifiers
@@ -75,6 +76,7 @@ public class MultipleBeansTest
    }
 
    @Test
+   // WELD-406
    public void testBlogConsumed()
    {
       // test that the two different BlogConsumers have been registered
@@ -92,6 +94,7 @@ public class MultipleBeansTest
     */
    @Test
    @Category(Broken.class)
+   // WELD-406
    public void testTwoBeansExactlyTheSame()
    {
       Assert.assertEquals(2, beanManager.getBeans(UselessBean.class).size());
