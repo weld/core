@@ -111,7 +111,7 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       return localInterfaces;
    }
    
-   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces()
+   public Collection<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces()
    {
       return Collections.emptyList();
    }
