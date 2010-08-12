@@ -10,48 +10,16 @@
       <version>1.1.0-SNAPSHOT</version>
       <relativePath>../../parent/pom.xml</relativePath>
   </parent>
-
-   <name>Weld Servlet support build aggregator</name>
-   <url>http://www.seamframework.org/Weld</url>
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
    
    <modules>
       <module>int</module>
       <module>build</module>
       <module>tests</module>
    </modules>
-   
-   <issueManagement>
-      <system>JIRA</system>
-      <url>https://jira.jboss.org/jira/browse/WELDX/component/12312750</url>
-   </issueManagement>
 
    <description>
       Support for Weld in Servlet Containers
    </description>
-
-   <developers>
-      <developer>
-         <name>Pete Muir</name>
-         <roles>
-            <role>Project Lead</role>
-         </roles>
-         <email>pete.muir@jboss.org</email>
-         <organization>Red Hat, Inc.</organization>
-         <url>http://in.relation.to/Bloggers/Pete</url>
-      </developer>
-      <developer>
-         <name>Dan Allen</name>
-         <organization>Red Hat, Inc.</organization>
-         <url>http://in.relation.to/Bloggers/Dan</url>
-      </developer>
-   </developers>
 
    <properties>
       <!-- Use JSF 2 for all extensions support, despite core using JSF 1.2 -->
