@@ -39,8 +39,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.apple.laf.AquaButtonBorder.Dynamic;
-
 /**
  * Mock implementation of the servlet context for testing purposes. This implementation supports all
  * of the standard context methods except that request dispatching just indicates what is being
@@ -558,21 +556,6 @@ public class MockServletContext implements ServletContext
 	public String getContextPath()
 	{
 		return "";
-	}
-
-	public Dynamic addFilter(String arg0, String arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Dynamic addFilter(String arg0, Filter arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Dynamic addFilter(String arg0, Class<? extends Filter> arg1) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public void addListener(String arg0) {
