@@ -148,11 +148,11 @@ public class Listener extends ForwardingServletListener
          try
          {
             WeldForwardingAnnotationProcessor.replaceAnnotationProcessor(sce, manager);
-            log.info("Tomcat 6 detected, JSR-299 injection will be available in Servlets, Filters etc.");
+            log.info("Tomcat 6 detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported");
          }
          catch (Exception e)
          {
-            log.error("Unable to replace Tomcat AnnotationProcessor. JSR-299 injection will not be available in Servlets, Filters etc.", e);
+            log.error("Unable to replace Tomcat AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
          }
       }
 
@@ -174,16 +174,16 @@ public class Listener extends ForwardingServletListener
             Class<?> clazz = Reflections.classForName(JettyWeldInjector.class.getName());
             Object injector = clazz.getConstructor(WeldManager.class).newInstance(manager);
             sce.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, injector);
-            log.info("Jetty detected, JSR-299 injection will be available in Servlets, Filters etc.");
+            log.info("Jetty detected, JSR-299 injection will be available in Servlets and Filters. Injection into Listeners is not supported.");
          }
          catch (Exception e)
          {
-            log.error("Unable to create JettyWeldInjector. JSR-299 injection will not be available in Servlets, Filters etc.", e);
+            log.error("Unable to create JettyWeldInjector. CDI injection will not be available in Servlets, Filters or Listeners", e);
          }
       }
 
       if (!tomcat && !jetty) {
-         log.info("No supported servlet container detected, JSR-299 injection will NOT be available in Servlets, Filters etc.");
+         log.info("No supported servlet container detected, CDI injection will NOT be available in Servlets, Filtersor or Listeners");
       }
 
       // Push the manager into the servlet context so we can access in JSF
