@@ -9,7 +9,7 @@
    <groupId>org.jboss.weld.servlet</groupId>
    <artifactId>weld-servlet</artifactId>
    <packaging>jar</packaging>
-   <name>Weld Servlet module</name>
+   <name>Weld Servlet (Uber Jar)</name>
    <url>http://www.seamframework.org/Weld</url>
    <licenses>
       <license>

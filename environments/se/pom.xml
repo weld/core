@@ -10,7 +10,7 @@
    <groupId>org.jboss.weld.se</groupId>
    <artifactId>weld-se</artifactId>
    <packaging>jar</packaging>
-   <name>Weld SE Support</name>
+   <name>Weld SE</name>
 
    <description>Weld support for Java SE</description>
    

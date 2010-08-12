@@ -12,7 +12,7 @@
    <artifactId>weld-servlet-core</artifactId>
    <version>1.1.0-SNAPSHOT</version>
    <packaging>jar</packaging>
-   <name>Weld Servlet Integration</name>
+   <name>Weld Servlet Core</name>
    <url>http://www.seamframework.org/Weld</url>
    <licenses>
       <license>

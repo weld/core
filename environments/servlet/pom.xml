@@ -3,6 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld.servlet</groupId>
    <artifactId>weld-servlet-parent</artifactId>
+   <name>Weld Servlet Parent</name>
    <packaging>pom</packaging>
 
    <parent>

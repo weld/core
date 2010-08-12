@@ -8,7 +8,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld</groupId>
    <artifactId>weld-core-test</artifactId>
-   <name>Weld Core Tests</name>
+   <name>Weld Integration Tests - JBoss Test Harness (JBoss AS)</name>
    <description>Tests for Weld, not including the CDI and AtInject TCKs</description>
 
    <licenses>

@@ -9,7 +9,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld</groupId>
    <artifactId>weld-jboss-tck-runner</artifactId>
-   <name>CDI TCK runner for Weld</name>
+   <name>CDI TCK runner for Weld (JBoss AS)</name>
    <description>Aggregates dependencies and runs the CDI TCK (both standalone and on JBoss AS)</description>
 
    <licenses>

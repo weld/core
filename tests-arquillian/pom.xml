@@ -9,7 +9,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld</groupId>
    <artifactId>weld-core-test-arquillian</artifactId>
-   <name>Weld Core Tests Arquillian</name>
+   <name>Weld Integration Tests (JBoss AS)</name>
    <description>Tests for Weld, not including the CDI and AtInject TCKs</description>
 
    <licenses>
