@@ -1,7 +1,0 @@
-<Context>
-   <Resource name="BeanManager" auth="Container"
-            type="javax.inject.manager.BeanManager"
-            factory="org.jboss.weld.resources.ManagerObjectFactory"/>
-
-            
-</Context>

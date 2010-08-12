@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <artifactId>weld-servlet-parent</artifactId>
       <groupId>org.jboss.weld.servlet</groupId>
@@ -20,20 +21,8 @@
          <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
       </license>
    </licenses>
-   
+
    <dependencies>
-      <dependency>
-         <groupId>org.testng</groupId>
-         <artifactId>testng</artifactId>
-         <scope>test</scope>
-         <classifier>jdk15</classifier>
-         <exclusions>
-            <exclusion>
-               <artifactId>junit</artifactId>
-               <groupId>junit</groupId>
-            </exclusion>
-         </exclusions>
-      </dependency>
 
       <dependency>
          <groupId>org.jboss.weld</groupId>
@@ -85,6 +74,18 @@
       <dependency>
          <groupId>org.javassist</groupId>
          <artifactId>javassist</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-simple</artifactId>
+         <scope>test</scope>
       </dependency>
 
    </dependencies>

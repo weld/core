@@ -10,20 +10,9 @@
    <artifactId>weld-servlet-test</artifactId>
    <packaging>jar</packaging>
    <name>Weld Servlet Integration Tests</name>
+
    <dependencies>
-      <dependency>
-         <groupId>org.testng</groupId>
-         <artifactId>testng</artifactId>
-         <scope>test</scope>
-         <classifier>jdk15</classifier>
-         <exclusions>
-            <exclusion>
-               <artifactId>junit</artifactId>
-               <groupId>junit</groupId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-   
+
       <dependency>
          <groupId>javax.servlet</groupId>
          <artifactId>servlet-api</artifactId>
@@ -49,54 +38,13 @@
             </exclusion>
          </exclusions>
       </dependency>
-      
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-core-test</artifactId>
-         <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.jboss.test-harness</groupId>
-         <artifactId>jboss-test-harness</artifactId>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.jboss.test-harness</groupId>
-         <artifactId>jboss-test-harness-tomcat</artifactId>
-         <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-core</artifactId>
-         <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-spi</artifactId>
-         <scope>test</scope>
-      </dependency>
 
       <dependency>
          <groupId>org.jboss.weld.servlet</groupId>
          <artifactId>weld-servlet-int</artifactId>
          <scope>test</scope>
       </dependency>
-      
-      <dependency>
-         <groupId>javax.el</groupId>
-         <artifactId>el-api</artifactId>
-         <scope>test</scope>
-      </dependency>
-      
-       <dependency>
-         <groupId>org.glassfish.web</groupId>
-         <artifactId>el-impl</artifactId>
-         <scope>test</scope>
-      </dependency>
-  
+
       <dependency>
          <groupId>org.apache.tomcat</groupId>
          <artifactId>catalina</artifactId>
@@ -107,33 +55,29 @@
                <artifactId>servlet-api</artifactId>
             </exclusion>
          </exclusions>
-      </dependency>    
-      
-      <dependency>
-      	<groupId>commons-httpclient</groupId>
-    		<artifactId>commons-httpclient</artifactId>
-    	</dependency>
+      </dependency>
 
       <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-simple</artifactId>
+         <groupId>commons-httpclient</groupId>
+         <artifactId>commons-httpclient</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.arquillian</groupId>
+         <artifactId>arquillian-junit</artifactId>
          <scope>test</scope>
       </dependency>
- 
+
    </dependencies>
-   
+
    <build>
       <defaultGoal>test</defaultGoal>
       <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-               <suiteXmlFiles>
-                  <suiteXmlFile>unit-tests.xml</suiteXmlFile>
-               </suiteXmlFiles>
-            </configuration>
-         </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-report-plugin</artifactId>
@@ -151,10 +95,69 @@
                <outputName>test-report</outputName>
             </configuration>
          </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <!--
+                  Set parallel none to force a more modern JUnitCore
+                  provider that understands Suites,
+                  http://old.nabble.com/Maven-Surefire-and-newer-junit-features-td28539796.html
+               -->
+               <parallel>none</parallel>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>enforce</id>
+                  <goals>
+                     <goal>enforce</goal>
+                  </goals>
+                  <configuration>
+                     <rules>
+                        <requireMavenVersion>
+                           <version>[${minimum.maven.version},)</version>
+                        </requireMavenVersion>
+                        <requirePluginVersions>
+                           <unCheckedPlugins>
+                              <unCheckedPlugin>org.apache.maven.plugins:maven-eclipse-plugin</unCheckedPlugin>
+                              <unCheckedPlugin>org.codehaus.mojo:versions-maven-plugin</unCheckedPlugin>
+                              <unCheckedPlugin>org.apache.maven.plugins:maven-surefire-plugin</unCheckedPlugin>
+                           </unCheckedPlugins>
+                        </requirePluginVersions>
+                     </rules>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
    </build>
-   
+
    <profiles>
+      <profile>
+         <id>defualt</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+            <property>
+               <name>default</name>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <!-- Skip the tests by default, they are all "incontainer" -->
+                     <skipTests>true</skipTests>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
       <profile>
          <id>incontainer</id>
          <activation>
@@ -162,123 +165,70 @@
                <name>incontainer</name>
             </property>
          </activation>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-dependency-plugin</artifactId>
-                  <executions>
-                     <execution>
-                        <id>copy</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                           <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                           <stripVersion>true</stripVersion>
-                           <artifactItems>
-                              <artifactItem>
-                                 <groupId>org.jboss.test-harness</groupId>
-                                 <artifactId>jboss-test-harness</artifactId>
-                                 <overWrite>true</overWrite>
-                                 <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
-                              </artifactItem>
-                              <artifactItem>
-                                 <groupId>org.glassfish.web</groupId>
-                                 <artifactId>el-impl</artifactId>
-                                 <overWrite>true</overWrite>
-                                 <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
-                              </artifactItem>
-                              <artifactItem>
-                                 <groupId>org.jboss.weld.servlet</groupId>
-                                 <artifactId>weld-servlet</artifactId>
-                                 <overWrite>true</overWrite>
-                                 <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
-                              </artifactItem>
-                           </artifactItems>
-                        </configuration>
-                     </execution>
-                  </executions>
-               </plugin>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-surefire-plugin</artifactId>
-                  <configuration>
-                     <suiteXmlFiles>
-                        <suiteXmlFile>unit-tests.xml</suiteXmlFile>
-                     </suiteXmlFiles>
-                     <systemProperties>
-                        <property>
-                           <name>org.jboss.testharness.standalone</name>
-                           <value>false</value>
-                        </property>
-                        <property>
-                           <name>org.jboss.testharness.container.extraConfigurationDir</name>
-                           <value>../</value>
-                        </property>
-                        <property>
-                           <name>org.jboss.testharness.container.forceRestart</name>
-                           <value>true</value>
-                        </property>
-                        <property>
-                           <name>org.jboss.testharness.runIntegrationTests</name>
-                           <value>true</value>
-                        </property>
-                        <property>
-                           <name>org.jboss.testharness.libraryDirectory</name>
-                           <value>target/dependency/lib</value>
-                        </property>
-                        <property>
-                           <name>org.jboss.testharness.outputDirectory</name>
-                           <value>target</value>
-                        </property>
-                     </systemProperties>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.arquillian.container</groupId>
+               <artifactId>arquillian-tomcat-embedded-6</artifactId>
+               <scope>test</scope>
+            </dependency>
+
+            <dependency>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>catalina</artifactId>
+               <scope>test</scope>
+            </dependency>
+
+            <dependency>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>coyote</artifactId>
+               <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>jasper</artifactId>
+               <scope>provided</scope>
+            </dependency>
+
+            <!-- Weld servlet, EL and JSP required for testing CDI injections -->
+            <dependency>
+               <groupId>org.jboss.weld.servlet</groupId>
+               <artifactId>weld-servlet</artifactId>
+               <scope>test</scope>
+            </dependency>
+
+            <dependency>
+               <groupId>org.glassfish.web</groupId>
+               <artifactId>el-impl</artifactId>
+               <scope>test</scope>
+            </dependency>
+
+            <dependency>
+               <groupId>javax.servlet.jsp</groupId>
+               <artifactId>jsp-api</artifactId>
+               <scope>test</scope>
+            </dependency>
+
+         </dependencies>
       </profile>
+
       <profile>
-         <id>write-artifacts-to-disk</id>
+         <id>surefireSnapshot</id>
          <activation>
             <property>
-               <name>dumpArtifacts</name>
+               <name>surefireSnapshot</name>
             </property>
          </activation>
          <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>exec-maven-plugin</artifactId>
-                  <executions>
-                     <execution>
-                        <id>generate-test-artifacts</id>
-                        <phase>generate-test-sources</phase> 
-                        <goals>
-                        <goal>java</goal>
-                        </goals>
-                     </execution>
-                  </executions>
-                  <configuration>
-                     <mainClass>org.jboss.testharness.api.TCK</mainClass>
-                     <classpathScope>test</classpathScope>
-                     <systemProperties>
-                        <systemProperty>
-                           <key>dumpArtifacts</key>
-                           <value>true</value>
-                        </systemProperty>
-                        <systemProperty>
-                           <key>org.jboss.testharness.outputDirectory</key>
-                           <value>target/test-artifacts</value>
-                        </systemProperty>
-                        <systemProperty>
-                           <key>org.jboss.testharness.libraryDirectory</key>
-                           <value>target/dependency/lib</value>
-                        </systemProperty>
-                     </systemProperties>
-                  </configuration>
-               </plugin>
-            </plugins>
+            <pluginManagement>
+               <plugins>
+                  <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-surefire-plugin</artifactId>
+                     <version>2.6-SNAPSHOT</version>
+                  </plugin>
+               </plugins>
+            </pluginManagement>
          </build>
       </profile>
    </profiles>

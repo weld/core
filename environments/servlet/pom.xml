@@ -24,7 +24,7 @@
    <properties>
       <!-- Use JSF 2 for all extensions support, despite core using JSF 1.2 -->
       <jsf.version>2.0.0-RC</jsf.version>
-      <tomcat.version>6.0.20</tomcat.version>
+      <tomcat.version>6.0.26</tomcat.version>
       <jetty.version>6.1.21</jetty.version>
       <uel.glassfish.version>2.1.2-b04</uel.glassfish.version>
       <!-- Testing deps -->
@@ -47,23 +47,6 @@
             <version>${jsf.version}</version>
          </dependency>
          <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <classifier>jdk15</classifier>
-            <version>${testng.version}</version>
-         </dependency>
-         <dependency>
-            <groupId>org.jboss.weld.servlet</groupId>
-            <artifactId>weld-servlet</artifactId>
-            <version>${project.version}</version>
-         </dependency>
-         <dependency>
-            <groupId>org.jboss.weld.servlet</groupId>
-            <artifactId>weld-servlet-int</artifactId>
-            <version>${project.version}</version>
-         </dependency>
-
-         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>catalina</artifactId>
             <version>${tomcat.version}</version>
@@ -72,6 +55,12 @@
          <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>jasper</artifactId>
+            <version>${tomcat.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>coyote</artifactId> 
             <version>${tomcat.version}</version>
          </dependency>
 
@@ -86,14 +75,7 @@
             <artifactId>el-impl</artifactId>
             <version>${uel.glassfish.version}</version>
          </dependency>
-
-         <dependency>
-            <groupId>org.jboss.test-harness</groupId>
-            <artifactId>jboss-test-harness-tomcat</artifactId>
-            <version>${jboss.test.harness.version}</version>
-         </dependency>
-
       </dependencies>
    </dependencyManagement>
-   
+
 </project>
