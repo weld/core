@@ -324,6 +324,14 @@ public class Formats
 
    public static String version(String version, String timestamp)
    {
+      if (version == null && timestamp != null)
+      {
+         return timestamp;
+      }
+      else if (version == null && timestamp == null)
+      {
+         return "SNAPSHOT";
+      }
       String major = null;
       String minor = null;
       String micro = null;
