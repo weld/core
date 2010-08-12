@@ -12,7 +12,7 @@
   </parent>
    
    <modules>
-      <module>int</module>
+      <module>core</module>
       <module>build</module>
       <module>tests</module>
    </modules>
