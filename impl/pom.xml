@@ -114,6 +114,13 @@
       <dependency>
          <groupId>org.jboss.interceptor</groupId>
          <artifactId>jboss-interceptor</artifactId>
+         <exclusions>
+            <!-- Exclude the old groupId for Javassist -->
+            <exclusion>
+               <groupId>javassist</groupId>
+               <artifactId>javassist</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <dependency>
