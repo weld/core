@@ -19,6 +19,8 @@ package org.jboss.weld.bean;
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
 import static org.jboss.weld.logging.messages.BeanMessage.ONLY_ONE_SCOPE_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
@@ -418,12 +420,26 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
                if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
                {
                   List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, methodBindingAnnotations.toArray(new Annotation[] {}));
-                  builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+                  if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0)
+                  {
+                     if (method.isFinal())
+                     {
+                        throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, methodBoundInterceptors.get(0).getBeanClass().getName());
+                     }
+                     builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+                  }
                }
                else
                {
                   List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[] {}));
-                  builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+                  if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0)
+                  {
+                     if (method.isFinal())
+                     {
+                        throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, methodBoundInterceptors.get(0).getBeanClass().getName());
+                     }
+                     builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+                  }
                }
             }
          }
@@ -431,6 +447,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          // if there is at least one applicable interceptor, register it
          if (serializableContextualInterceptionModel.getAllInterceptors().size() > 0)
          {
+            if (getWeldAnnotated().isFinal())
+            {
+               throw new DefinitionException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, this);
+            }
             beanManager.getCdiInterceptorsRegistry().registerInterceptionModel(getType(), serializableContextualInterceptionModel);
          }
       }
@@ -550,8 +570,12 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             {
                builder.ignoreGlobalInterceptors(((AnnotatedMethod) method).getJavaMember());
             }
-            if (methodDeclaredInterceptors != null)
+            if (methodDeclaredInterceptors != null && methodDeclaredInterceptors.length > 0)
             {
+               if (method.isFinal())
+               {
+                  throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, methodDeclaredInterceptors[0]);
+               }
                if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
                {
                   builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
@@ -567,6 +591,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          hasSerializationOrInvocationInterceptorMethods = !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_INVOKE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_TIMEOUT).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.PRE_PASSIVATE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.POST_ACTIVATE).isEmpty();
          if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods)
          {
+            if (getWeldAnnotated().isFinal())
+            {
+               throw new DefinitionException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, this);
+            }
             beanManager.getClassDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
          }
       }

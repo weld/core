@@ -22,7 +22,9 @@ import static org.jboss.weld.logging.messages.BeanMessage.BEAN_MUST_BE_DEPENDENT
 import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_INJECTION_POINT_NOT_FOUND;
 import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_DECORATED_BEAN_METHOD_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
 import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
@@ -501,7 +503,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
                WeldMethod<?, ?> method = getWeldAnnotated().getWeldMethod(decoratorMethod.getSignature());
                if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal())
                {
-                  throw new DefinitionException(FINAL_DECORATED_BEAN_METHOD_NOT_ALLOWED, method, decoratorMethod);
+                  throw new DefinitionException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, method, decoratorMethod);
                }
             }
          }
