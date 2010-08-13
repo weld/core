@@ -460,7 +460,22 @@ public class HelloWorld
             <para>Weld SE comes packaged as a 'shaded' jar which includes the CDI API,
             Weld Core and all dependant classes bundled into a single jar. Therefore the
             only Weld jar you need on the classpath, in addition to your application's
-            classes and dependant jars, is the Weld SE jar.
+            classes and dependant jars, is the Weld SE jar. If you are working with a pure
+            Java SE application you launch using <literal>java</literal>, this may be simpler
+            for you.
+            </para>
+            
+            <para>
+               If you prefer to work with individual dependencies, then you can use the
+               <literal>weld-core</literal> jar which just contains the Weld SE classes.
+               Of course in this mode you will need to assemble the classpath yourself.
+               This mode is useful, for example, if you wish to use an alternative slf4j
+               log binding.
+            </para>
+            
+            <para>
+               If you work with a dependency management solution such as
+               Maven you can declare a dependency on <literal>org.jboss.weld.se:weld-se-core</literal>. 
             </para>
 
         </section>

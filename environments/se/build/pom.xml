@@ -4,16 +4,13 @@
       <artifactId>weld-core-parent</artifactId>
       <groupId>org.jboss.weld</groupId>
       <version>1.1.0-SNAPSHOT</version>
-      <relativePath>../../parent/pom.xml</relativePath>
+      <relativePath>../../../parent/pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld.se</groupId>
    <artifactId>weld-se</artifactId>
    <packaging>jar</packaging>
-   <name>Weld SE</name>
-
-   <description>Weld support for Java SE</description>
-   
+   <name>Weld SE (Uber Jar)</name>
    <url>http://www.seamframework.org/Weld</url>
    <licenses>
       <license>
@@ -21,78 +18,46 @@
          <distribution>repo</distribution>
          <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
       </license>
-   </licenses>
-
-   <developers>
-      <developer>
-         <name>Pete Royle</name>
-         <roles>
-            <role>Module lead</role>
-         </roles>
-      </developer>
-   </developers>
-
+   </licenses>    
+   
    <dependencies>
+   
       <dependency>
-         <groupId>org.testng</groupId>
-         <artifactId>testng</artifactId>
-         <scope>test</scope>
-         <classifier>jdk15</classifier>
-         <exclusions>
-            <exclusion>
-               <artifactId>junit</artifactId>
-               <groupId>junit</groupId>
-            </exclusion>
-         </exclusions>
+         <groupId>org.jboss.weld.se</groupId>
+         <artifactId>weld-se-core</artifactId>
+         <optional>true</optional>
       </dependency>
-
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-spi</artifactId>
-         <exclusions>
-            <exclusion>
-               <groupId>javax.jms</groupId>
-               <artifactId>jms</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>javax.ejb</groupId>
-               <artifactId>ejb-api</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>javax.jta</groupId>
-               <artifactId>transaction-api</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-
+      
       <dependency>
          <groupId>org.jboss.weld</groupId>
          <artifactId>weld-core</artifactId>
-      </dependency>
-
-      <dependency>
-         <groupId>javax.enterprise</groupId>
-         <artifactId>cdi-api</artifactId>
-      </dependency>
-
-      <dependency>
-         <groupId>javax.el</groupId>
-         <artifactId>el-api</artifactId>
+         <optional>true</optional>
       </dependency>
       
-      <!-- WELD-203 -->
       <dependency>
-         <groupId>javax.annotation</groupId>
-         <artifactId>jsr250-api</artifactId>
+         <groupId>org.javassist</groupId>
+         <artifactId>javassist</artifactId>
+         <optional>true</optional>
       </dependency>
+      
       <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-simple</artifactId>
+         <optional>true</optional>
       </dependency>
+   
    </dependencies>
-
+   
    <build>
       <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <configuration>
+               <finalName>not-really</finalName>
+               <attach>false</attach>
+            </configuration>
+         </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
@@ -102,18 +67,16 @@
                   <goals>
                      <goal>shade</goal>
                   </goals>
-                  <configuration>
-                  </configuration>
                </execution>
             </executions>
             <configuration>
-              <artifactSet>
-                <excludes>
-                  <exclude>org.slf4j:slf4j-simple</exclude>
-                </excludes>
-              </artifactSet>
+               <createSourcesJar>true</createSourcesJar>
+               <artifactSet>
+                  <excludes>
+                  </excludes>
+               </artifactSet>
             </configuration>
-         </plugin>
+         </plugin> 
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jar-plugin</artifactId>
@@ -127,5 +90,5 @@
          </plugin>
       </plugins>
    </build>
-   
+
 </project>

@@ -110,7 +110,8 @@
             </property>
          </activation>
          <modules>
-            <module>environments/se</module>
+            <module>environments/se/core</module>
+            <module>environments/se/build</module>
             <module>environments/servlet</module>
          </modules>
       </profile>
