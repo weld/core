@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns="http://jboss.com/arquillian"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:jetty6="urn:arq:org.jboss.arquillian.container.jetty.embedded_6_1">
+
+   <jetty6:container>
+      <jetty6:bindHttpPort>8888</jetty6:bindHttpPort>
+   </jetty6:container>
+
+</arquillian>

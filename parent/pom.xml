@@ -169,9 +169,15 @@
          </dependency>
 
          <dependency>
-            <groupId>org.jboss.spec.javax.servlet</groupId> 
-            <artifactId>jboss-servlet-api_3.0_spec</artifactId> 
-            <version>${jboss.spec.servlet.version}</version> 
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jetty-embedded-6.1</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <version>${jboss.spec.servlet.version}</version>
          </dependency>
 
          <dependency>
@@ -187,9 +193,9 @@
          </dependency>
 
          <dependency>
-            <groupId>org.jboss.metadata</groupId> 
-            <artifactId>jboss-metadata</artifactId> 
-            <version>${jboss.metadata.version}</version> 
+            <groupId>org.jboss.metadata</groupId>
+            <artifactId>jboss-metadata</artifactId>
+            <version>${jboss.metadata.version}</version>
          </dependency>
 
          <dependency>
