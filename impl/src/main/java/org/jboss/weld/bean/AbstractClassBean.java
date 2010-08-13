@@ -424,7 +424,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
                   {
                      if (method.isFinal())
                      {
-                        throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, methodBoundInterceptors.get(0).getBeanClass().getName());
+                        throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
                      }
                      builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
                   }
@@ -436,7 +436,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
                   {
                      if (method.isFinal())
                      {
-                        throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, methodBoundInterceptors.get(0).getBeanClass().getName());
+                        throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
                      }
                      builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
                   }
@@ -574,7 +574,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             {
                if (method.isFinal())
                {
-                  throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, methodDeclaredInterceptors[0]);
+                  throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodDeclaredInterceptors[0].getName());
                }
                if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
                {
