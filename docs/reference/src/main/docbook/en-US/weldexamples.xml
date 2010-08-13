@@ -689,25 +689,118 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
             </itemizedlist>
          </section>
       </section>
-      
-      <section id="numberguess-se">
-         <title>The numberguess example for Java SE with Swing</title>
+   </section>
+
+   <section id="numberguess-se">
+      <title>The numberguess example for Java SE with Swing</title>
+
+      <para>
+         This example shows how to use the Weld SE extension to in a
+         Java SE based Swing application with no EJB or servlet
+         dependencies.
+         This example can be found in the
+         <literal>examples/se/numberguess</literal>
+         folder of the Weld distribution.
+      </para>
+
+      <section>
+         <title>Creating the Eclipse project</title>
 
          <para>
-            This example shows how to use the Weld SE extension to in a
-            Java SE based Swing application with no EJB or servlet dependencies.
-            This example can be found in the <literal>examples/se/numberguess</literal>
-            folder of the Weld distribution.
+            To use the Weld SE numberguess example in Eclipse, you can
+            open the example natively using the
+            <ulink url="http://m2eclipse.sonatype.org/">m2eclipse plugin</ulink>
+            .
          </para>
-            
+
          <para>
-            To run the example:
+            If you have m2eclipse installed, you can open any Maven
+            project directly. From within Eclipse, select
+            <emphasis>File -> Import... -> Maven Projects</emphasis>
+            . Then, browse to the location of the Weld SE
+            numberguess example. You should see that Eclipse recognizes the existence of a
+            Maven project.
          </para>
-       
+
+         <para>
+            This will create a project in your workspace called
+            <literal>weld-se-numberguess</literal>
+            .
+         </para>
+
+         <para>
+            If you are not using the m2eclipse plugin, you have to follow
+            different steps to import the project.
+            First, switch into the Wicket numberguess example, then execute the Maven
+            Eclipse plugin with the jetty
+            profile activated, as follows:
+            </para>
+
+         <para>
+            It's time to get the example running!
+            </para>
+
+      </section>
+
+      <section>
+         <title>Running the example from Eclipse</title>
+         
+         <para>
+            Disable m2eclipse's <emphasis>Workspace Resolution</emphasis>, to make sure that Eclipse
+            can find <literal>StartMain</literal>. Right click on the project, and choose
+            <emphasis>Properties -> Maven</emphasis>, and uncheck 
+            <emphasis>Resolve dependencies from Workspace projects</emphasis>:
+         </para>
+         
+         <mediaobject>
+            <imageobject>
+               <imagedata fileref="images/weld-se-numberguess-m2eclipse-1.png"
+                  format="PNG" />
+            </imageobject>
+         </mediaobject>
+
+         <para>
+            Right click on the project, and choose <emphasis>Run As -> Run As Application</emphasis>:
+         </para>
+
+         <mediaobject>
+            <imageobject>
+               <imagedata fileref="images/weld-se-numberguess-m2eclipse-2.png"
+                  format="PNG" />
+            </imageobject>
+         </mediaobject>
+         
+         <para>
+            Locate the <literal>StartMain</literal> class:
+         </para>
+         
+         <mediaobject>
+            <imageobject>
+               <imagedata fileref="images/weld-se-numberguess-m2eclipse-3.png"
+                  format="PNG" />
+            </imageobject>
+         </mediaobject>
+         
+         <para>
+            The application should now launch!
+         </para>
+         
+         <mediaobject>
+            <imageobject>
+               <imagedata fileref="images/weld-se-numberguess-m2eclipse-4.png"
+                  format="PNG" />
+            </imageobject>
+         </mediaobject>
+         
+      </section>
+
+      <section>
+         <title>Running the example from the command line</title>
+
          <itemizedlist>
             <listitem>
                <para>
-                  Ensure that Maven 2 (version 2.0.10+) is installed and in your PATH
+                  Ensure that Maven 3 is installed and in your PATH
                </para>
             </listitem>
             <listitem>
@@ -730,8 +823,14 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
             </listitem>
          </itemizedlist>
 
-        <para>
-            Let's have a look at the significant code and configuration
+      </section>
+
+      <section>
+         <title>Understanding the code</title>
+
+         <para>
+            Let's have a look at the significant code and
+            configuration
             files that make up this example.
         </para>
 
