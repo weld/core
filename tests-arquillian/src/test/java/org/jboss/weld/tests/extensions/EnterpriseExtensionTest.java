@@ -46,7 +46,8 @@ public class EnterpriseExtensionTest
                   .addServiceProvider(Extension.class, 
                         SimpleExtension.class, 
                         ExtensionObserver.class,
-                        WoodlandExtension.class)
+                        WoodlandExtension.class,
+                        TrainlineExtension.class)
          );
    }
    
@@ -115,6 +116,17 @@ public class EnterpriseExtensionTest
       assertTrue(extensionObserver.isAllAfterDeploymentValidation());
       assertFalse(otherObserver.isAfterDeploymentValidation());
       assertFalse(otherObserver.isAllAfterDeploymentValidation());
+   }
+   
+   /*
+    * WELD-503
+    */
+   @Test
+   public void testProcessStarOnlyCalledForEnableSessionBeans(TrainlineExtension extension)
+   {
+      assertFalse(extension.isProcessTerminusBean());
+      assertFalse(extension.isProcessTerminusSessionBean());
+      assertFalse(extension.isProcessTerminusInjectionTarget());
    }
 
 }

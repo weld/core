@@ -31,7 +31,10 @@ public abstract class AbstractProcessInjectionTarget<T> extends AbstractDefiniti
 
    public static <X> void fire(BeanManagerImpl beanManager, AbstractClassBean<X> bean)
    {
-      new ProcessBeanInjectionTarget<X>(beanManager, bean) {}.fire();
+      if (beanManager.isBeanEnabled(bean))
+      {
+         new ProcessBeanInjectionTarget<X>(beanManager, bean) {}.fire();
+      }
    }
    
    public static <X> InjectionTarget<X> fire(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget)

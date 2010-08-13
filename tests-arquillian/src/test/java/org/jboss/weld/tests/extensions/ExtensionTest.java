@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.extensions;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -29,6 +30,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+// TODO Move to TCK in 1.1
 @RunWith(Arquillian.class)
 public class ExtensionTest 
 {
@@ -40,7 +42,8 @@ public class ExtensionTest
                .addServiceProvider(Extension.class, 
                      SimpleExtension.class, 
                      ExtensionObserver.class,
-                     WoodlandExtension.class);
+                     WoodlandExtension.class,
+                     TrainlineExtension.class);
    }
 
    /*
@@ -70,4 +73,91 @@ public class ExtensionTest
       assertTrue(WoodlandExtension.isPreDestroyCalled());
       assertTrue(WoodlandExtension.isProduceCalled());
    }
+   
+   /*
+    * WELD-503
+    */
+   @Test
+   public void testProcessStarOnlyCalledForEnabledManagedBeans(TrainlineExtension extension)
+   {
+      assertTrue(extension.isProcessTrainBean());
+      assertFalse(extension.isProcessStationBean());
+      assertFalse(extension.isProcessSignalBoxBean());
+      assertTrue(extension.isProcessTrainManagedBean());
+      assertFalse(extension.isProcessStationManagedBean());
+      assertFalse(extension.isProcessSignalBoxManagedBean());
+      assertTrue(extension.isProcessTrainInjectionTarget());
+      assertFalse(extension.isProcessStationInjectionTarget());
+      assertFalse(extension.isProcessSignalBoxInjectionTarget());
+   }
+   
+   /*
+    * WELD-503
+    */
+   @Test
+   public void testProcessStarOnlyCalledForEnabledProducerMethods(TrainlineExtension extension)
+   {  
+      assertTrue(extension.isProcessDriverBean());
+      assertFalse(extension.isProcessPassengerBean());
+      assertFalse(extension.isProcessSignalManBean());
+      assertTrue(extension.isProcessDriverProducerMethod());
+      assertFalse(extension.isProcessPassengerProducerMethod());
+      assertFalse(extension.isProcessSignalManProducerMethod());
+      assertTrue(extension.isProcessDriverProducer());
+      assertFalse(extension.isProcessPassengerProducer());
+      assertFalse(extension.isProcessSignalManProducer());
+      
+      assertFalse(extension.isProcessStokerBean());
+      assertFalse(extension.isProcessGuardBean());
+      assertFalse(extension.isProcessStokerProducerMethod());
+      assertFalse(extension.isProcessGuardProducerMethod());
+      assertFalse(extension.isProcessStokerProducer());
+      assertFalse(extension.isProcessGuardProducer());
+   }
+   
+   /*
+    * WELD-503
+    */
+   @Test
+   public void testProcessStarOnlyCalledForEnabledProducerFields(TrainlineExtension extension)
+   {  
+      assertTrue(extension.isProcessFerretBean());
+      assertFalse(extension.isProcessCatBean());
+      assertFalse(extension.isProcessMouseBean());
+      assertTrue(extension.isProcessFerretProducerField());
+      assertFalse(extension.isProcessCatProducerField());
+      assertFalse(extension.isProcessMouseProducerField());
+      assertTrue(extension.isProcessFerretProducer());
+      assertFalse(extension.isProcessCatProducer());
+      assertFalse(extension.isProcessMouseProducer());
+      
+      assertFalse(extension.isProcessRabbitBean());
+      assertFalse(extension.isProcessWeaselBean());
+      assertFalse(extension.isProcessRabbitProducerField());
+      assertFalse(extension.isProcessWeaselProducerField());
+      assertFalse(extension.isProcessRabbitProducer());
+      assertFalse(extension.isProcessWeaselProducer());
+   }
+   
+   /*
+    * WELD-503
+    */
+   @Test
+   public void testProcessStarOnlyCalledForEnabledObserverMethods(TrainlineExtension extension)
+   {
+      assertTrue(extension.isProcessObseversCoalSupply());
+      assertFalse(extension.isProcessObseversFatController());
+      assertFalse(extension.isProcessObseversSignals());
+   }
+   
+   /*
+    * WELD-503
+    */
+   @Test
+   public void testProcessBeanOnlyCalledForEnabledInterceptorsAndDecorators(TrainlineExtension extension)
+   {
+      assertFalse(extension.isProcessSafetyInterceptor());
+      assertFalse(extension.isProcessEngineeringWorks());
+   }
+   
 }

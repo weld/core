@@ -164,6 +164,11 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    {
       return declaringBean.getType();
    }
+   
+   public RIBean<X> getDeclaringBean()
+   {
+      return declaringBean;
+   }
 
    public Annotation[] getBindingsAsArray()
    {

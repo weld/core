@@ -31,7 +31,10 @@ public abstract class ProcessBeanImpl<X> extends AbstractDefinitionContainerEven
 
    public static <X> void fire(BeanManagerImpl beanManager, Bean<X> bean)
    {
-      new ProcessBeanImpl<X>(beanManager, bean) {}.fire();
+      if (beanManager.isBeanEnabled(bean))
+      {
+         new ProcessBeanImpl<X>(beanManager, bean) {}.fire();
+      }
    }
    
    private final Bean<X> bean;

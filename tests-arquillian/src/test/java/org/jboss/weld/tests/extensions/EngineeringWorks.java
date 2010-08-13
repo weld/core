@@ -13,25 +13,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ */ 
+package org.jboss.weld.tests.extensions;
 
-package org.jboss.weld.tests.decorators.interceptor;
+import javax.decorator.Decorator;
+import javax.decorator.Delegate;
+import javax.inject.Inject;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-
-@Intercepted @Interceptor
-public class ServiceInterceptor
+@Decorator
+public abstract class EngineeringWorks implements Station
 {
+   @Inject @Delegate
+   Station delegate;
    
-   public static int invocationCount = 0;
-
-   @AroundInvoke
-   public Object interceptService(InvocationContext invocationContext) throws Exception
-   {
-      invocationCount++;
-      return invocationContext.proceed();
-   }
-
+   
 }

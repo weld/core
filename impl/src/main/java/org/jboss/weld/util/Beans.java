@@ -68,6 +68,7 @@ import org.jboss.interceptor.model.InterceptionType;
 import org.jboss.interceptor.model.InterceptionTypeRegistry;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.DecoratorImpl;
+import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.EJBApiAbstraction;
@@ -91,6 +92,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.BeanManagers;
+import org.jboss.weld.manager.EnabledClasses;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -589,7 +591,7 @@ public class Beans
          Set<T> result = new HashSet<T>();
          for (T bean : beans)
          {
-            if (isBeanEnabled(bean, beanManager.getEnabledClasses().getAlternativeClasses(), beanManager.getEnabledClasses().getAlternativeStereotypes()) && !isSpecialized(bean, beans, beanManager))
+            if (isBeanEnabled(bean, beanManager.getEnabledClasses()) && !isSpecialized(bean, beans, beanManager))
             {
                result.add(bean);
             }
@@ -598,11 +600,11 @@ public class Beans
       }
    }
 
-   public static boolean isBeanEnabled(Bean<?> bean, Collection<Class<?>> enabledAlternativeClasses, Collection<Class<? extends Annotation>> enabledAlternativeSterotypes)
+   public static boolean isBeanEnabled(Bean<?> bean, EnabledClasses enabledClasses)
    {
       if (bean.isAlternative())
       {
-         if (enabledAlternativeClasses.contains(bean.getBeanClass()))
+         if (enabledClasses.getAlternativeClasses().contains(bean.getBeanClass()))
          {
             return true;
          }
@@ -610,12 +612,20 @@ public class Beans
          {
             for (Class<? extends Annotation> stereotype : bean.getStereotypes())
             {
-               if (enabledAlternativeSterotypes.contains(stereotype))
+               if (enabledClasses.getAlternativeStereotypes().contains(stereotype))
                {
                   return true;
                }
             }
          }
+      }
+      else if (bean instanceof DecoratorImpl<?>)
+      {
+         return enabledClasses.getDecorators().contains(bean.getBeanClass());
+      }
+      else if (bean instanceof InterceptorImpl<?>)
+      {
+         return enabledClasses.getInterceptors().contains(bean.getBeanClass());
       }
       else
       {

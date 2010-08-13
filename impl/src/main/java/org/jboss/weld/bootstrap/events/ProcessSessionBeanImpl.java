@@ -33,7 +33,10 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
    
    public static <X> void fire(BeanManagerImpl beanManager, SessionBean<Object> bean)
    {
-      new ProcessSessionBeanImpl<X>(beanManager, bean) {}.fire();
+      if (beanManager.isBeanEnabled(bean))
+      {
+         new ProcessSessionBeanImpl<X>(beanManager, bean) {}.fire();
+      }
    }
 
    public ProcessSessionBeanImpl(BeanManagerImpl beanManager, SessionBean<Object> bean)

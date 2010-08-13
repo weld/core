@@ -480,7 +480,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    public boolean isBeanEnabled(Bean<?> bean)
    {
-      return Beans.isBeanEnabled(bean, getEnabledClasses().getAlternativeClasses(), getEnabledClasses().getAlternativeStereotypes());   
+      return Beans.isBeanEnabled(bean, getEnabledClasses());   
    }
    
    public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers)

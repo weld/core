@@ -31,9 +31,12 @@ public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent 
 {
    
    @SuppressWarnings("unchecked")
-   public static <T, X> void fire(BeanManagerImpl beanManager, AbstractProducerBean<T, X, Member> producer)
+   public static <T, X> void fire(BeanManagerImpl beanManager, AbstractProducerBean<T, X, Member> bean)
    {
-      new ProcessProducerImpl<T, X>(beanManager, (AnnotatedMember<T>) producer.getWeldAnnotated(), producer) {}.fire();
+      if (beanManager.isBeanEnabled(bean))
+      {
+         new ProcessProducerImpl<T, X>(beanManager, (AnnotatedMember<T>) bean.getWeldAnnotated(), bean) {}.fire();
+      }
    }
    
    private final AnnotatedMember<T> annotatedMember;

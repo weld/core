@@ -29,7 +29,10 @@ public class ProcessProducerFieldImpl<T, X> extends AbstractProcessProducerBean<
 
    public static <T, X> void fire(BeanManagerImpl beanManager, ProducerField<T, X> bean)
    {
-      new ProcessProducerFieldImpl<T, X>(beanManager, bean) {}.fire();
+      if (beanManager.isBeanEnabled(bean))
+      {
+         new ProcessProducerFieldImpl<T, X>(beanManager, bean) {}.fire();
+      }
    }
    
    public ProcessProducerFieldImpl(BeanManagerImpl beanManager, ProducerField<T, X> bean)

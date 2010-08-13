@@ -15,22 +15,19 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.decorators.interceptor;
+package org.jboss.weld.tests.extensions;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-@Intercepted @Interceptor
-public class ServiceInterceptor
+@SafetyInspected @Interceptor
+public class SafetyInterceptor
 {
-   
-   public static int invocationCount = 0;
 
    @AroundInvoke
    public Object interceptService(InvocationContext invocationContext) throws Exception
    {
-      invocationCount++;
       return invocationContext.proceed();
    }
 

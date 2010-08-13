@@ -29,7 +29,10 @@ public class ProcessManagedBeanImpl<X> extends AbstractProcessClassBean<X, Manag
 
    public static <X> void fire(BeanManagerImpl beanManager, ManagedBean<X> bean)
    {
-      new ProcessManagedBeanImpl<X>(beanManager, bean) {}.fire();
+      if (beanManager.isBeanEnabled(bean))
+      {
+         new ProcessManagedBeanImpl<X>(beanManager, bean) {}.fire();
+      }
    }
    
    public ProcessManagedBeanImpl(BeanManagerImpl beanManager, ManagedBean<X> bean)

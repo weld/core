@@ -31,7 +31,10 @@ public class ProcessProducerMethodImpl<T, X> extends AbstractProcessProducerBean
    
    public static <T, X> void fire(BeanManagerImpl beanManager, ProducerMethod<T, X> bean)
    {
-      new ProcessProducerMethodImpl<T, X>(beanManager, bean) {}.fire();
+      if (beanManager.isBeanEnabled(bean))
+      {
+         new ProcessProducerMethodImpl<T, X>(beanManager, bean) {}.fire();
+      }
    }
 
    public ProcessProducerMethodImpl(BeanManagerImpl beanManager, ProducerMethod<T, X> bean)
