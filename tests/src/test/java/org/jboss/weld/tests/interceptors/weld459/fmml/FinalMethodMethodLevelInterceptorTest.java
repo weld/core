@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.weld459;
+package org.jboss.weld.tests.interceptors.weld459.fmml;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.ExpectedDeploymentException;
-import org.jboss.testharness.impl.packaging.IntegrationTest;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
@@ -29,12 +28,13 @@ import org.testng.annotations.Test;
 
 @Artifact
 @ExpectedDeploymentException(DefinitionException.class)
+//@IntegrationTest
 @BeansXml("beans.xml")
 @Packaging(PackagingType.EAR)
-public class FinalClassMethodLevelInterceptorTest extends AbstractWeldTest
+public class FinalMethodMethodLevelInterceptorTest extends AbstractWeldTest
 {
    @Test
-   public void testFinalClassWithMethodLevelInterceptor() throws Exception
+   public void testFinalMethodWithMethodLevelInterceptor() throws Exception
    {
       assert false;
    }

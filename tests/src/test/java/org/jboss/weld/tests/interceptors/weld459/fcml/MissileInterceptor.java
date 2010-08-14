@@ -14,27 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.weld459;
+package org.jboss.weld.tests.interceptors.weld459.fcml;
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.ExpectedDeploymentException;
-import org.jboss.testharness.impl.packaging.Packaging;
-import org.jboss.testharness.impl.packaging.PackagingType;
-import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.Test;
+import java.io.Serializable;
 
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
-@Artifact
-@ExpectedDeploymentException(DefinitionException.class)
-@BeansXml("beans.xml")
-@Packaging(PackagingType.EAR)
-public class FinalClassClassLevelInterceptorTest extends AbstractWeldTest
+@Interceptor @FooBinding
+public class MissileInterceptor implements Serializable
 {
-   @Test
-   public void testFinalClassWithClassLevelInterceptor() throws Exception
+   public static boolean intercepted = false;
+   
+   
+   @AroundInvoke public Object alwaysReturnThis(InvocationContext ctx) throws Exception
    {
-      assert false;
+      intercepted = true;
+      return ctx.proceed();
    }
 }
