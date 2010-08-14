@@ -11,4 +11,3 @@ examples/jsf/translator/ear/src/main/application/META-INF/application.xml
 docs/reference/weld-reference.pdf
 jboss-as/local.build.properties
 test-output
-.DS_Store
