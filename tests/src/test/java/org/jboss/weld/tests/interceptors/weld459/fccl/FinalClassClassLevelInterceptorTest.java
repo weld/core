@@ -18,6 +18,7 @@ package org.jboss.weld.tests.interceptors.weld459.fccl;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.ExpectedDeploymentException;
+import org.jboss.testharness.impl.packaging.IntegrationTest;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
@@ -32,7 +33,7 @@ import org.testng.annotations.Test;
 @Packaging(PackagingType.EAR)
 public class FinalClassClassLevelInterceptorTest extends AbstractWeldTest
 {
-   @Test
+   @Test(groups="incontainer-broken")
    public void testFinalClassWithClassLevelInterceptor() throws Exception
    {
       assert false;

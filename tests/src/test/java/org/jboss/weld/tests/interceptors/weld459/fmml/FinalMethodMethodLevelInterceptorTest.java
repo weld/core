@@ -18,6 +18,7 @@ package org.jboss.weld.tests.interceptors.weld459.fmml;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.ExpectedDeploymentException;
+import org.jboss.testharness.impl.packaging.IntegrationTest;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
@@ -28,12 +29,11 @@ import org.testng.annotations.Test;
 
 @Artifact
 @ExpectedDeploymentException(DefinitionException.class)
-//@IntegrationTest
 @BeansXml("beans.xml")
 @Packaging(PackagingType.EAR)
 public class FinalMethodMethodLevelInterceptorTest extends AbstractWeldTest
 {
-   @Test
+   @Test(groups="incontainer-broken")
    public void testFinalMethodWithMethodLevelInterceptor() throws Exception
    {
       assert false;

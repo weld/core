@@ -29,11 +29,12 @@ import org.testng.annotations.Test;
 
 @Artifact
 @ExpectedDeploymentException(DefinitionException.class)
+@IntegrationTest(runLocally = true)
 @BeansXml("beans.xml")
 @Packaging(PackagingType.EAR)
 public class FinalClassMethodLevelInterceptorTest extends AbstractWeldTest
 {
-   @Test
+   @Test(groups="incontainer-broken")
    public void testFinalClassWithMethodLevelInterceptor() throws Exception
    {
       assert false;
