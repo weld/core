@@ -18,6 +18,9 @@
 package org.jboss.weld.tests.enterprise;
 
 import javax.ejb.EJBException;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.spi.Bean;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.api.Deployment;
@@ -57,6 +60,8 @@ public class EnterpriseBeanTest
    @Inject
    private BeanManagerImpl beanManager;
    
+   @Inject
+   private Event<Fuel> refuel;
    /*
     * description="WBRI-179"
     */
@@ -107,18 +112,6 @@ public class EnterpriseBeanTest
    }
    
    /*
-    * description = "WELD-364"
-    */
-   @Test
-   @Category(Broken.class)
-   public void testEJBRemoteInterfacesOkForObservers(Scottish scottish)
-   {
-      Feed feed = new Feed();
-      beanManager.fireEvent(feed);
-      Assert.assertEquals(feed, scottish.getFeed());
-   }
-   
-   /*
     * description = "WELD-381"
     */
    @Test
@@ -149,6 +142,28 @@ public class EnterpriseBeanTest
       castle.ping();
       Assert.assertTrue(castle.isPinged());
       Assert.assertTrue(Utils.getBean(beanManager, Castle.class) instanceof SessionBean<?>);
+   }
+   
+   @Test
+   // WELD-364
+   public void testRemoteEjbMethodCanObserve(FarmMachine farmMachine)
+   {
+      Fuel fuel = new Fuel("Unleaded");
+      refuel.fire(fuel);
+      assert farmMachine.getObservedFuel().getType().equals("Unleaded");
+   }
+   
+   @Test
+   // WELD-364
+   public void testRemoteEjbMethodCanProduceAndDispose()
+   {
+      Bean<Fumes> fumesBean = Utils.getBean(beanManager, Fumes.class);
+      CreationalContext<Fumes> ctx = beanManager.createCreationalContext(fumesBean);
+      Fumes fumes = fumesBean.create(ctx);
+      assert fumes.getVolume() == 10;
+      fumesBean.destroy(fumes, ctx);
+      assert fumes.getVolume() == 5;
+      
    }
    
 }

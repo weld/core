@@ -41,7 +41,6 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
 {
@@ -206,26 +205,16 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
       }
       if (getDeclaringBean() instanceof SessionBean<?>)
       {
-         boolean methodDeclaredOnTypes = false;
-         // TODO use annotated item?
-         for (Type type : getDeclaringBean().getTypes())
+         SessionBean<?> declaringSessionBean = (SessionBean<?>) getDeclaringBean();
+         if (!declaringSessionBean.getEjbDescriptor().isBusinessMethod(disposalMethodInjectionPoint))
          {
-            if (type instanceof Class<?>)
-            {
-               Class<?> clazz = (Class<?>) type;
-               if (SecureReflections.isMethodExists(clazz, disposalMethodInjectionPoint.getName(), disposalMethodInjectionPoint.getParameterTypesAsArray()))
-               {
-                  methodDeclaredOnTypes = true;
-                  continue;
-               }
-            }
-         }
-         if (!methodDeclaredOnTypes)
-         {
-            throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, this, getDeclaringBean());
+            throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, disposalMethodInjectionPoint, getDeclaringBean());
          }
       }
    }
+   
+
+
    
    @Override
    protected void checkType()

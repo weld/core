@@ -24,7 +24,9 @@ import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.helpers.ForwardingEjbDescriptor;
 import org.jboss.weld.introspector.MethodSignature;
+import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * More powerful version of {@link EjbDescriptor} that exposes Maps for some
@@ -69,6 +71,30 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> impleme
    public Collection<MethodSignature> getRemoveMethodSignatures()
    {
       return removeMethodSignatures;
+   }
+   
+   public boolean isBusinessMethod(WeldMethod<?, ?> method)
+   {
+      for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : getLocalBusinessInterfaces())
+      {
+         if (isBusinessMethod(method, businessInterfaceDescriptor))
+         {
+            return true;
+         }
+      }
+      for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : getRemoteBusinessInterfaces())
+      {
+         if (isBusinessMethod(method, businessInterfaceDescriptor))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   private static boolean isBusinessMethod(WeldMethod<?, ?> method, BusinessInterfaceDescriptor<?> businessInterfaceDescriptor)
+   {
+      return SecureReflections.isMethodExists(businessInterfaceDescriptor.getInterface(), method.getName(), method.getParameterTypesAsArray());
    }
    
    private static Class<?> findObjectInterface(Collection<BusinessInterfaceDescriptor<?>> interfaces)
