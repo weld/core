@@ -16,6 +16,25 @@
       <classes>
       
          <!-- Issues in the TCK -->
+         
+         <!-- CDITCK-174 -->
+         <class name="org.jboss.jsr299.tck.tests.extensions.observer.ProcessObserverMethodEventTest">
+            <methods>
+               <exclude name="testGetAnnotatedMethod" />
+               <exclude name="testGetObserverMethod" />
+               <exclude name="testProcessObserverMethodEventsSent" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.extensions.observer.broken.definitionError.ProcessObserverMethodErrorTest">
+            <methods>
+               <exclude name="testAddDefinitionError" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.extensions.observer.broken.exception.ProcessObserverMethodExceptionTest">
+            <methods>
+               <exclude name="testExceptionIsDefinitionError" />
+            </methods>
+         </class>
 
          <!-- Issues in Weld (the RI) -->
 
