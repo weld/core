@@ -93,7 +93,7 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
    
    public abstract boolean isPrimitive();
 
-   public abstract Set<WeldInjectionPoint<?, ?>> getWeldInjectionPoints();
+   public abstract Set<WeldInjectionPoint<?, ?, ?>> getWeldInjectionPoints();
    
    public Set<InjectionPoint> getInjectionPoints()
    {

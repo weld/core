@@ -101,7 +101,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    private WeldClass<T> proxyClassForAbstractDecorators;
    private WeldConstructor<T> constructorForAbstractDecorator;
    private Set<MethodSignature> decoratedMethodSignatures;
-   private WeldInjectionPoint<?, ?> delegateInjectionPoint;
+   private WeldInjectionPoint<?, ?, ?> delegateInjectionPoint;
    private Set<Annotation> delegateBindings;
    private Type delegateType;
    private Set<Type> delegateTypes;
@@ -153,7 +153,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    @Override
    protected void checkDelegateInjectionPoints()
    {
-      for (WeldInjectionPoint<?, ?> injectionPoint : getDelegateInjectionPoints())
+      for (WeldInjectionPoint<?, ?, ?> injectionPoint : getDelegateInjectionPoints())
       {
          if (injectionPoint instanceof MethodInjectionPoint<?, ?> && !injectionPoint.isAnnotationPresent(Inject.class))
          {
@@ -251,7 +251,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
       return decoratedTypes;
    }
    
-   public WeldInjectionPoint<?, ?> getDelegateInjectionPoint()
+   public WeldInjectionPoint<?, ?, ?> getDelegateInjectionPoint()
    {
       return delegateInjectionPoint;
    }

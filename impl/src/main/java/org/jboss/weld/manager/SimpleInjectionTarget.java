@@ -55,10 +55,10 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
    private final List<WeldMethod<?, ? super T>> postConstructMethods;
    private final List<WeldMethod<?, ? super T>> preDestroyMethods;
    private final Set<InjectionPoint> injectionPoints;
-   protected final Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
-   protected final Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
-   protected final Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
-   protected final Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
+   protected final Set<WeldInjectionPoint<?, ?, ?>> ejbInjectionPoints;
+   protected final Set<WeldInjectionPoint<?, ?, ?>> persistenceContextInjectionPoints;
+   protected final Set<WeldInjectionPoint<?, ?, ?>> persistenceUnitInjectionPoints;
+   protected final Set<WeldInjectionPoint<?, ?, ?>> resourceInjectionPoints;
 
    public SimpleInjectionTarget(WeldClass<T> type, BeanManagerImpl beanManager)
    {

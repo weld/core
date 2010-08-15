@@ -30,6 +30,7 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -104,7 +105,7 @@ public class ExtensionBeanDeployer
    
    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldMethod<T, ? super X> method, Set<ObserverMethodImpl<?, ?>> observerMethods)
    {
-      ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager);
+      ObserverMethodImpl<T, X> observer = ObserverFactory.create(MethodInjectionPoint.of(declaringBean, method), declaringBean, beanManager);
       observerMethods.add(observer);
    }
 

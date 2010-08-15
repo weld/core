@@ -59,6 +59,7 @@ import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
@@ -231,7 +232,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, WeldMethod<T, ? super X> declaredMethod)
    {
       // Create the observer method for the business method of the declared method
-      ObserverMethodImpl<T, ?> observer = ObserverFactory.create(locateBusinessMethod(declaringBean, declaredMethod), declaringBean, manager);
+      ObserverMethodImpl<T, ?> observer = ObserverFactory.create(MethodInjectionPoint.of(declaringBean, declaredMethod, locateBusinessMethod(declaringBean, declaredMethod)), declaringBean, manager);
       getEnvironment().addObserverMethod(observer);
    }
 

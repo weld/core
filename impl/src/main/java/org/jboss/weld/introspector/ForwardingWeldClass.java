@@ -19,7 +19,6 @@ package org.jboss.weld.introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Set;
 
 public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, Class<T>> implements WeldClass<T>
 {
@@ -130,7 +129,7 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
       return delegate().getDeclaredWeldMethod(method);
    }
    
-   public <F> WeldField<F, ?> getDeclaredWeldField(String fieldName)
+   public <F> WeldField<F, T> getDeclaredWeldField(String fieldName)
    {
       return delegate().getDeclaredWeldField(fieldName);
    }

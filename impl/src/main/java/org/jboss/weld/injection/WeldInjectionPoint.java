@@ -27,29 +27,29 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
-public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<T, S>
+public interface WeldInjectionPoint<T, X, S> extends InjectionPoint, WeldAnnotated<T, S>
 {
    
-   static abstract class WeldInjectionPointSerializationProxy<T, S> implements Serializable
+   static abstract class WeldInjectionPointSerializationProxy<T, X, S> implements Serializable
    {
       
       private static final long serialVersionUID = -5488095196637387378L;
       
       private final String declaringBeanId;
-      private final Class<?> declaringClass;
+      private final Class<X> declaringClass;
       
-      public WeldInjectionPointSerializationProxy(WeldInjectionPoint<T, S> injectionPoint)
+      public WeldInjectionPointSerializationProxy(WeldInjectionPoint<T, X, S> injectionPoint)
       {
          this.declaringBeanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(injectionPoint.getBean());
          this.declaringClass = injectionPoint.getDeclaringType().getJavaClass();
       }
 
-      protected Bean<T> getDeclaringBean()
+      protected Bean<X> getDeclaringBean()
       {
-         return Container.instance().services().get(ContextualStore.class).<Bean<T>, T>getContextual(declaringBeanId);
+         return Container.instance().services().get(ContextualStore.class).<Bean<X>, X>getContextual(declaringBeanId);
       }
       
-      protected WeldClass<?> getDeclaringWeldClass()
+      protected WeldClass<X> getDeclaringWeldClass()
       {
          return Container.instance().services().get(ClassTransformer.class).loadClass(declaringClass);
       }
@@ -61,7 +61,7 @@ public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<
 
    }
    
-   public WeldClass<?> getDeclaringType();
+   public WeldClass<X> getDeclaringType();
    
    /**
     * Injects an instance

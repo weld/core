@@ -20,7 +20,7 @@ import javax.enterprise.event.TransactionPhase;
 import javax.transaction.Synchronization;
 
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
@@ -40,9 +40,9 @@ class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X>
     * @param observerBean The bean declaring the observer method
     * @param manager The JCDI manager in use
     */
-   protected TransactionalObserverMethodImpl(WeldMethod<T, ?> observer, RIBean<X> observerBean, TransactionPhase transactionPhase, BeanManagerImpl manager)
+   protected TransactionalObserverMethodImpl(MethodInjectionPoint<T, ? super X> observerMethod, RIBean<X> observerBean, TransactionPhase transactionPhase, BeanManagerImpl manager)
    {
-      super(observer, observerBean, manager);
+      super(observerMethod, observerBean, manager);
       this.transactionPhase = transactionPhase;
    }
 

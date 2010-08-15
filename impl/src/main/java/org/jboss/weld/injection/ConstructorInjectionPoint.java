@@ -50,7 +50,7 @@ import org.jboss.weld.util.AnnotatedTypes;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
-public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> implements WeldInjectionPoint<T, Constructor<T>>, Serializable
+public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> implements WeldInjectionPoint<T, T, Constructor<T>>, Serializable
 {
 
    private static abstract class ForwardingParameterInjectionPointList<T, X> extends AbstractList<ParameterInjectionPoint<T, X>>
@@ -245,7 +245,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
       throw new InvalidObjectException(PROXY_REQUIRED);
    }
    
-   private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Constructor<T>>
+   private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, T, Constructor<T>>
    {
 
       private static final long serialVersionUID = 9181171328831559650L;
@@ -278,7 +278,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
       @Override
       protected WeldClass<T> getDeclaringWeldClass()
       {
-         return (WeldClass<T>) super.getDeclaringWeldClass();
+         return super.getDeclaringWeldClass();
       }
       
    }

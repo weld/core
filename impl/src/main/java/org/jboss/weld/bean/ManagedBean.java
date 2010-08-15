@@ -266,10 +266,10 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    private static final XLogger xLog = loggerFactory().getXLogger(BEAN);
 
    // The Java EE style injection points
-   private Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
-   private Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
-   private Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
-   private Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
+   private Set<WeldInjectionPoint<?, ?, ?>> ejbInjectionPoints;
+   private Set<WeldInjectionPoint<?, ?, ?>> persistenceContextInjectionPoints;
+   private Set<WeldInjectionPoint<?, ?, ?>> persistenceUnitInjectionPoints;
+   private Set<WeldInjectionPoint<?, ?, ?>> resourceInjectionPoints;
 
    private ManagedBean<?> specializedBean;
 

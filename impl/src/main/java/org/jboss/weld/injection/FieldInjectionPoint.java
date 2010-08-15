@@ -46,7 +46,7 @@ import org.jboss.weld.util.AnnotatedTypes;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
-public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> implements WeldInjectionPoint<T, Field>, Serializable
+public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> implements WeldInjectionPoint<T, X, Field>, Serializable
 {
 
    @SuppressWarnings(value="SE_BAD_FIELD", justification="If the bean is not serializable, we won't ever try to serialize the injection point")
@@ -172,7 +172,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
    
    private Object writeReplace() throws ObjectStreamException
    {
-      return new SerializationProxy<T>(this);
+      return new SerializationProxy<T, X>(this);
    }
    
    private void readObject(ObjectInputStream stream) throws InvalidObjectException
@@ -180,14 +180,14 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
       throw new InvalidObjectException(PROXY_REQUIRED);
    }
    
-   private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Field>
+   private static class SerializationProxy<T, X> extends WeldInjectionPointSerializationProxy<T, X, Field>
    {
       
       private static final long serialVersionUID = -3491482804822264969L;
       
       private final String fieldName;
 
-      public SerializationProxy(FieldInjectionPoint<T, ?> injectionPoint)
+      public SerializationProxy(FieldInjectionPoint<T, X> injectionPoint)
       {
          super(injectionPoint);
          this.fieldName = injectionPoint.getName();
@@ -195,8 +195,8 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
       
       private Object readResolve()
       {
-         WeldField<T, ?> field = getWeldField();
-         Bean<T> bean = getDeclaringBean();
+         WeldField<T, X> field = getWeldField();
+         Bean<X> bean = getDeclaringBean();
          if (field == null || bean == null)
          {
             throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), fieldName);
@@ -204,7 +204,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
          return FieldInjectionPoint.of(getDeclaringBean(), getWeldField());
       }
       
-      protected WeldField<T, ?> getWeldField()
+      protected WeldField<T, X> getWeldField()
       {
          return getDeclaringWeldClass().getDeclaredWeldField(fieldName);
       }

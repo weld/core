@@ -19,7 +19,6 @@ package org.jboss.weld.introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 
@@ -60,7 +59,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * @param fieldName the field name
     * @return the field
     */
-   public <F> WeldField<F, ?> getDeclaredWeldField(String fieldName);
+   public <F> WeldField<F, T> getDeclaredWeldField(String fieldName);
 
    /**
     * Gets all fields which are annotated with the given annotation type on this
@@ -142,7 +141,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * @param signature the name of the method
     * @return the method, or null if it doesn't exist
     */
-   public <M> WeldMethod<M, ?> getDeclaredWeldMethod(MethodSignature signature);
+   public <M> WeldMethod<M, T> getDeclaredWeldMethod(MethodSignature signature);
    
    /**
     * Get a method by name

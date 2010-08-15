@@ -49,7 +49,6 @@ import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
@@ -81,7 +80,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    private final MethodInjectionPoint<T, ?> observerMethod;
    private final String id;
 
-   private final Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
+   private final Set<WeldInjectionPoint<?, ?, ?>> newInjectionPoints;
 
    /**
     * Creates an Observer which describes and encapsulates an observer method
@@ -91,18 +90,18 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
     * @param declaringBean The observer bean
     * @param manager The Bean manager
     */
-   protected ObserverMethodImpl(final WeldMethod<T, ?> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
+   protected ObserverMethodImpl(MethodInjectionPoint<T, ? super X> observerMethod, final RIBean<X> declaringBean, final BeanManagerImpl manager)
    {
       this.beanManager = manager;
       this.declaringBean = declaringBean;
-      this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
+      this.observerMethod = observerMethod;
       this.eventType = observerMethod.getWeldParameters(Observes.class).get(0).getBaseType();
-      this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
+      this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observerMethod.getSignature()).toString();
       this.bindings = new HashSet<Annotation>(observerMethod.getWeldParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
       Observes observesAnnotation = observerMethod.getWeldParameters(Observes.class).get(0).getAnnotation(Observes.class);
       this.notifyType = observesAnnotation.receive();
-      this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
-      for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod))
+      this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?, ?>>();
+      for (WeldInjectionPoint<?, ?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod))
       {
          if (injectionPoint.isAnnotationPresent(New.class))
          {
@@ -111,7 +110,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       }
    }
 
-   public Set<WeldInjectionPoint<?, ?>> getNewInjectionPoints()
+   public Set<WeldInjectionPoint<?, ?, ?>> getNewInjectionPoints()
    {
       return newInjectionPoints;
    }

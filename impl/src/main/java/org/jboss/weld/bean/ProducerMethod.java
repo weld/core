@@ -22,7 +22,6 @@ import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METH
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_NOT_SPECIALIZING;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -42,7 +41,6 @@ import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Represents a producer method bean
@@ -185,22 +183,10 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
       }
       else if (getDeclaringBean() instanceof SessionBean<?>)
       {
-         boolean methodDeclaredOnTypes = false;
-         // TODO use annotated item?
-         for (Type type : getDeclaringBean().getTypes())
+         SessionBean<?> declaringSessionBean = (SessionBean<?>) getDeclaringBean();
+         if (!declaringSessionBean.getEjbDescriptor().isBusinessMethod(method))
          {
-            if (type instanceof Class<?>)
-            {
-               if (SecureReflections.isMethodExists((Class<?>) type, getWeldAnnotated().getName(), getWeldAnnotated().getParameterTypesAsArray()))
-               {
-                  methodDeclaredOnTypes = true;
-                  continue;
-               }
-            }
-         }
-         if (!methodDeclaredOnTypes)
-         {
-            throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, this, getDeclaringBean());
+            throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, method, getDeclaringBean());
          }
       }
    }

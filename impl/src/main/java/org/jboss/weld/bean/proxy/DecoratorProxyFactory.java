@@ -44,11 +44,11 @@ import org.jboss.weld.injection.WeldInjectionPoint;
 public class DecoratorProxyFactory<T> extends ProxyFactory<T>
 {
    public static final String             PROXY_SUFFIX = "DecoratorProxy";
-   private final WeldInjectionPoint<?, ?> delegateInjectionPoint;
+   private final WeldInjectionPoint<?, ?, ?> delegateInjectionPoint;
    private final CtClass                  delegateClass;
    private final Field                    delegateField;
 
-   public DecoratorProxyFactory(Class<T> proxyType, WeldInjectionPoint<?, ?> delegateInjectionPoint)
+   public DecoratorProxyFactory(Class<T> proxyType, WeldInjectionPoint<?, ?, ?> delegateInjectionPoint)
    {
       super(proxyType, Collections.EMPTY_SET);
       this.delegateInjectionPoint = delegateInjectionPoint;

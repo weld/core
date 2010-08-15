@@ -35,17 +35,20 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.introspector.ForwardingWeldMethod;
 import org.jboss.weld.introspector.MethodSignature;
+import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.AnnotatedTypes;
 
-public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> implements WeldInjectionPoint<T, Method>
+public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> implements WeldInjectionPoint<T, X, Method>
 {
 
    private static abstract class ForwardingParameterInjectionPointList<T, X> extends AbstractList<ParameterInjectionPoint<T, X>>
@@ -70,17 +73,47 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    }
 
    private final Bean<?> declaringBean;
-   private final WeldMethod<T, X> method;
+   private final WeldMethod<T, X> declaredMethod;
+   private final WeldMethod<T, ?> invokableMethod;
 
-   public static <T, X> MethodInjectionPoint<T, X> of(Bean<?> declaringBean, WeldMethod<T, X> method)
+   /**
+    * Create a new MethodInjectionPoint where the invokable method is
+    * (potentially) not the same as the method which declares the injection
+    * point.
+    * 
+    * @param declaringBean The bean declaring the injection point
+    * @param declaredMethod The method declaring the injection point
+    * @param invokableMethod The invokable method
+    * @return
+    */
+   public static <T, X> MethodInjectionPoint<T, X> of(Bean<?> declaringBean, WeldMethod<T, X> declaredMethod, WeldMethod<T, ?> invokableMethod)
    {
-      return new MethodInjectionPoint<T, X>(declaringBean, method);
+      return new MethodInjectionPoint<T, X>(declaringBean, declaredMethod, invokableMethod);
    }
 
-   protected MethodInjectionPoint(Bean<?> declaringBean, WeldMethod<T, X> method)
+   /**
+    * Create a new MethodInjectionPoint where the invokable method is the same
+    * as the method which declares the injection point.
+    * 
+    * @param declaringBean The bean declaring the injection point
+    * @param method The method declaring the injection point
+    * @return
+    */
+   public static <T, X> MethodInjectionPoint<T, X> of(Bean<?> declaringBean, WeldMethod<T, X> method)
+   {
+      return new MethodInjectionPoint<T, X>(declaringBean, method, method);
+   }
+
+   protected MethodInjectionPoint(Bean<?> declaringBean, WeldMethod<T, X> declaredMethod, WeldMethod<T, ?> method)
    {
       this.declaringBean = declaringBean;
-      this.method = method;
+      this.declaredMethod = declaredMethod;
+      this.invokableMethod = method;
+   }
+
+   protected WeldMethod<T, ?> getInvokableMethod()
+   {
+      return invokableMethod;
    }
 
    @Override
@@ -89,7 +122,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
       if (obj instanceof MethodInjectionPoint<?, ?>)
       {
          MethodInjectionPoint<?, ?> ip = (MethodInjectionPoint<?, ?>) obj;
-         if (AnnotatedTypes.compareAnnotatedCallable(method, ip.method))
+         if (AnnotatedTypes.compareAnnotatedCallable(declaredMethod, ip.declaredMethod))
          {
             return true;
          }
@@ -100,13 +133,13 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    @Override
    public int hashCode()
    {
-      return method.hashCode();
+      return declaredMethod.hashCode();
    }
 
    @Override
    protected WeldMethod<T, X> delegate()
    {
-      return method;
+      return declaredMethod;
    }
 
    public Bean<?> getBean()
@@ -124,7 +157,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    {
       try
       {
-         return delegate().invoke(declaringInstance, getParameterValues(getWeldParameters(), null, null, manager, creationalContext));
+         return getInvokableMethod().invoke(declaringInstance, getParameterValues(getWeldParameters(), null, null, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -146,7 +179,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    {
       try
       {
-         return invoke(declaringInstance, getParameterValues(getWeldParameters(), annotatedParameter, parameter, manager, creationalContext));
+         return getInvokableMethod().invoke(declaringInstance, getParameterValues(getWeldParameters(), annotatedParameter, parameter, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -167,7 +200,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    {
       try
       {
-         return delegate().invokeOnInstance(declaringInstance, getParameterValues(getWeldParameters(), null, null, manager, creationalContext));
+         return getInvokableMethod().invokeOnInstance(declaringInstance, getParameterValues(getWeldParameters(), null, null, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -197,7 +230,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    {
       try
       {
-         return invokeOnInstance(declaringInstance, getParameterValues(getWeldParameters(), annotatedParameter, parameter, manager, creationalContext));
+         return getInvokableMethod().invokeOnInstance(declaringInstance, getParameterValues(getWeldParameters(), annotatedParameter, parameter, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {
@@ -248,7 +281,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    {
       try
       {
-         delegate().invoke(declaringInstance, value);
+         getInvokableMethod().invoke(declaringInstance, value);
       }
       catch (IllegalArgumentException e)
       {
@@ -324,7 +357,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
    
    private Object writeReplace() throws ObjectStreamException
    {
-      return new SerializationProxy<T>(this);
+      return new SerializationProxy<T, X>(this);
    }
    
    private void readObject(ObjectInputStream stream) throws InvalidObjectException
@@ -332,35 +365,44 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
       throw new InvalidObjectException(PROXY_REQUIRED);
    }
    
-   private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Method>
+   private static class SerializationProxy<T, X> extends WeldInjectionPointSerializationProxy<T, X, Method>
    {
 
       private static final long serialVersionUID = 9181171328831559650L;
       
       private final MethodSignature signature;
+      private final Class<?> invokableClass;
 
-      public SerializationProxy(MethodInjectionPoint<T, ?> injectionPoint)
+      public SerializationProxy(MethodInjectionPoint<T, X> injectionPoint)
       {
          super(injectionPoint);
          this.signature = injectionPoint.getSignature();
+         this.invokableClass = injectionPoint.getInvokableMethod().getDeclaringType().getJavaClass();
       }
       
       private Object readResolve()
       {
-         WeldMethod<T, ?> method = getWeldMethod();
-         Bean<T> bean = getDeclaringBean();
-         if (method == null || bean == null)
+         WeldMethod<T, X> declaredMethod = getDeclaredWeldMethod();
+         WeldMethod<T, ?> method = getInvokableWeldMethod();
+         Bean<X> bean = getDeclaringBean();
+         if (declaredMethod == null || method == null || bean == null)
          {
             throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_METHOD_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), signature);
          }
-         return MethodInjectionPoint.of(getDeclaringBean(), getWeldMethod());
+         return MethodInjectionPoint.of(getDeclaringBean(), declaredMethod, method);
       }
       
-      protected WeldMethod<T, ?> getWeldMethod()
+      protected WeldMethod<T, X> getDeclaredWeldMethod()
       {
          return getDeclaringWeldClass().getDeclaredWeldMethod(signature);
       }
       
+      protected WeldMethod<T, ?> getInvokableWeldMethod()
+      {
+         WeldClass<?> clazz = Container.instance().services().get(ClassTransformer.class).loadClass(invokableClass);
+         return clazz.getDeclaredWeldMethod(signature);
+      }
+
    }
 
 }

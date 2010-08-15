@@ -309,12 +309,12 @@ public class Beans
       return annotatedMethods;
    }
 
-   public static Set<WeldInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager)
+   public static Set<WeldInjectionPoint<?, ?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager)
    {
       if (manager.getServices().contains(EjbInjectionServices.class))
       {
          Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
-         Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+         Set<WeldInjectionPoint<?, ?, ?>> ejbInjectionPoints = new HashSet<WeldInjectionPoint<?, ?, ?>>();
          for (WeldField<?, ?> field : type.getWeldFields(ejbAnnotationType))
          {
             ejbInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
@@ -327,11 +327,11 @@ public class Beans
       }
    }
 
-   public static Set<WeldInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager)
+   public static Set<WeldInjectionPoint<?, ?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager)
    {
       if (manager.getServices().contains(JpaInjectionServices.class))
       {
-         Set<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+         Set<WeldInjectionPoint<?, ?, ?>> jpaInjectionPoints = new HashSet<WeldInjectionPoint<?, ?, ?>>();
          Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
          for (WeldField<?, ?> field : type.getWeldFields(persistenceContextAnnotationType))
          {
@@ -345,11 +345,11 @@ public class Beans
       }
    }
 
-   public static Set<WeldInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager)
+   public static Set<WeldInjectionPoint<?, ?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager)
    {
       if (manager.getServices().contains(JpaInjectionServices.class))
       {
-         Set<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+         Set<WeldInjectionPoint<?, ?, ?>> jpaInjectionPoints = new HashSet<WeldInjectionPoint<?, ?, ?>>();
          Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
          for (WeldField<?, ?> field : type.getWeldFields(persistenceUnitAnnotationType))
          {
@@ -363,12 +363,12 @@ public class Beans
       }
    }
 
-   public static Set<WeldInjectionPoint<?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager)
+   public static Set<WeldInjectionPoint<?, ?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager)
    {
       if (manager.getServices().contains(ResourceInjectionServices.class))
       {
          Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
-         Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+         Set<WeldInjectionPoint<?, ?, ?>> resourceInjectionPoints = new HashSet<WeldInjectionPoint<?, ?, ?>>();
          for (WeldField<?, ?> field : type.getWeldFields(resourceAnnotationType))
          {
             resourceInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
@@ -730,7 +730,7 @@ public class Beans
    /**
     * Injects EJBs and common fields
     */
-   public static <T> void injectEEFields(T beanInstance, BeanManagerImpl manager, Iterable<WeldInjectionPoint<?, ?>> ejbInjectionPoints, Iterable<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints, Iterable<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints, Iterable<WeldInjectionPoint<?, ?>> resourceInjectionPoints)
+   public static <T> void injectEEFields(T beanInstance, BeanManagerImpl manager, Iterable<WeldInjectionPoint<?, ?, ?>> ejbInjectionPoints, Iterable<WeldInjectionPoint<?, ?, ?>> persistenceContextInjectionPoints, Iterable<WeldInjectionPoint<?, ?, ?>> persistenceUnitInjectionPoints, Iterable<WeldInjectionPoint<?, ?, ?>> resourceInjectionPoints)
    {
       EjbInjectionServices ejbServices = manager.getServices().get(EjbInjectionServices.class);
       JpaInjectionServices jpaServices = manager.getServices().get(JpaInjectionServices.class);
@@ -738,7 +738,7 @@ public class Beans
 
       if (ejbServices != null)
       {
-         for (WeldInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
+         for (WeldInjectionPoint<?, ?, ?> injectionPoint : ejbInjectionPoints)
          {
             Object ejbInstance = ejbServices.resolveEjb(injectionPoint);
             injectionPoint.inject(beanInstance, ejbInstance);
@@ -747,12 +747,12 @@ public class Beans
 
       if (jpaServices != null)
       {
-         for (WeldInjectionPoint<?, ?> injectionPoint : persistenceContextInjectionPoints)
+         for (WeldInjectionPoint<?, ?, ?> injectionPoint : persistenceContextInjectionPoints)
          {
             Object pcInstance = jpaServices.resolvePersistenceContext(injectionPoint);
             injectionPoint.inject(beanInstance, pcInstance);
          }
-         for (WeldInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
+         for (WeldInjectionPoint<?, ?, ?> injectionPoint : persistenceUnitInjectionPoints)
          {
             Object puInstance = jpaServices.resolvePersistenceUnit(injectionPoint);
             injectionPoint.inject(beanInstance, puInstance);
@@ -761,7 +761,7 @@ public class Beans
 
       if (resourceServices != null)
       {
-         for (WeldInjectionPoint<?, ?> injectionPoint : resourceInjectionPoints)
+         for (WeldInjectionPoint<?, ?, ?> injectionPoint : resourceInjectionPoints)
          {
             Object resourceInstance = resourceServices.resolveResource(injectionPoint);
             injectionPoint.inject(beanInstance, resourceInstance);

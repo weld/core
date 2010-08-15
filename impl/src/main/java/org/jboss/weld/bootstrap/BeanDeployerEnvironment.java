@@ -215,9 +215,9 @@ public class BeanDeployerEnvironment
       addNewBeansFromInjectionPoints(bean.getNewInjectionPoints());
    }
 
-   private void addNewBeansFromInjectionPoints(Set<WeldInjectionPoint<?, ?>> newInjectionPoints)
+   private void addNewBeansFromInjectionPoints(Set<WeldInjectionPoint<?, ?, ?>> newInjectionPoints)
    {
-      for (WeldInjectionPoint<?, ?> injectionPoint : newInjectionPoints)
+      for (WeldInjectionPoint<?, ?, ?> injectionPoint : newInjectionPoints)
       {
          // FIXME: better check
          if (injectionPoint.getJavaClass() == Instance.class || injectionPoint.getJavaClass() == Event.class)

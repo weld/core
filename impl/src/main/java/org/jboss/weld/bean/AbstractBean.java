@@ -78,9 +78,9 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    protected boolean alternative;
    protected Class<T> type;
    protected Set<Type> types;
-   private Set<WeldInjectionPoint<?, ?>> injectionPoints;
-   private Set<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
-   private Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
+   private Set<WeldInjectionPoint<?, ?, ?>> injectionPoints;
+   private Set<WeldInjectionPoint<?, ?, ?>> delegateInjectionPoints;
+   private Set<WeldInjectionPoint<?, ?, ?>> newInjectionPoints;
    protected BeanManagerImpl beanManager;
    private boolean initialized;
 
@@ -93,9 +93,9 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    {
       super(idSuffix, beanManager);
       this.beanManager = beanManager;
-      this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
-      this.delegateInjectionPoints = new HashSet<WeldInjectionPoint<?,?>>();
-      this.newInjectionPoints = new HashSet<WeldInjectionPoint<?,?>>();
+      this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?, ?>>();
+      this.delegateInjectionPoints = new HashSet<WeldInjectionPoint<?, ?, ?>>();
+      this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?, ?>>();
    }
 
    /**
@@ -140,7 +140,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    
    protected abstract void checkType();
    
-   protected void addInjectionPoint(WeldInjectionPoint<?, ?> injectionPoint)
+   protected void addInjectionPoint(WeldInjectionPoint<?, ?, ?> injectionPoint)
    {
       if (injectionPoint.isAnnotationPresent(Delegate.class))
       {
@@ -153,15 +153,15 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       injectionPoints.add(injectionPoint);
    }
    
-   protected void addInjectionPoints(Iterable<? extends WeldInjectionPoint<?, ?>> injectionPoints)
+   protected void addInjectionPoints(Iterable<? extends WeldInjectionPoint<?, ?, ?>> injectionPoints)
    {
-      for (WeldInjectionPoint<?, ?> injectionPoint : injectionPoints)
+      for (WeldInjectionPoint<?, ?, ?> injectionPoint : injectionPoints)
       {
          addInjectionPoint(injectionPoint);
       }
    }
 
-   protected Set<WeldInjectionPoint<?, ?>> getDelegateInjectionPoints()
+   protected Set<WeldInjectionPoint<?, ?, ?>> getDelegateInjectionPoints()
    {
       return delegateInjectionPoints;
    }
@@ -338,12 +338,12 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    public abstract AbstractBean<?, ?> getSpecializedBean();
 
    @Override
-   public Set<WeldInjectionPoint<?, ?>> getWeldInjectionPoints()
+   public Set<WeldInjectionPoint<?, ?, ?>> getWeldInjectionPoints()
    {
       return injectionPoints;
    }
    
-   public Set<WeldInjectionPoint<?, ?>> getNewInjectionPoints()
+   public Set<WeldInjectionPoint<?, ?, ?>> getNewInjectionPoints()
    {
       return newInjectionPoints;
    }

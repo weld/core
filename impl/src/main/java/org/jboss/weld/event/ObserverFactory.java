@@ -20,6 +20,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -41,16 +42,16 @@ public class ObserverFactory
     * @param manager The Bean manager
     * @return An observer implementation built from the method abstraction
     */
-   public static <T, X> ObserverMethodImpl<T, X> create(WeldMethod<T, ?> method, RIBean<X> declaringBean, BeanManagerImpl manager)
+   public static <T, X> ObserverMethodImpl<T, X> create(MethodInjectionPoint<T, ? super X> observerMethod, RIBean<X> declaringBean, BeanManagerImpl manager)
    {
-      TransactionPhase transactionPhase = getTransactionalPhase(method);
+      TransactionPhase transactionPhase = getTransactionalPhase(observerMethod);
       if (manager.getServices().contains(TransactionServices.class) && !transactionPhase.equals(TransactionPhase.IN_PROGRESS))
       {
-         return new TransactionalObserverMethodImpl<T, X>(method, declaringBean, transactionPhase, manager);
+         return new TransactionalObserverMethodImpl<T, X>(observerMethod, declaringBean, transactionPhase, manager);
       }
       else
       {
-         return new ObserverMethodImpl<T, X>(method, declaringBean, manager);
+         return new ObserverMethodImpl<T, X>(observerMethod, declaringBean, manager);
       }
    }
    
