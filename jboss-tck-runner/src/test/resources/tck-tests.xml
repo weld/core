@@ -35,6 +35,38 @@
                <exclude name="testExceptionIsDefinitionError" />
             </methods>
          </class>
+         
+         <!-- CDITCK-176 -->
+         <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.decoratorWithNonPassivatingBeanConstructor.DecoratorWithNonPassivatingBeanConstructorTest">
+            <methods>
+               <exclude name="testPassivationCapableBeanWithNonPassivatingDecoratorBeanConstructorFails" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.decoratorWithNonPassivatingInitializerMethod.DecoratorWithNonPassivatingInitializerMethodTest">
+            <methods>
+               <exclude name="testPassivationCapableBeanWithNonPassivatingInitializerInDecoratorFails" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.decoratorWithNonPassivatingInjectedField.DecoratorWithNonPassivatingInjectedFieldTest">
+            <methods>
+               <exclude name="testPassivationCapableBeanWithNonPassivatingDecoratorInjectedFieldFails" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingDecorator.EnterpriseBeanWithNonPassivatingDecoratorTest">
+            <methods>
+               <exclude name="testEnterpriseBeanWithNonPassivatingDecoratorFails" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.decorators.definition.broken.decoratorListedTwiceInBeansXml.DecoratorListedTwiceInBeansXmlTest">
+            <methods>
+               <exclude name="testDecoratorListedTwiceInBeansXmlNotOK" />
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.decorators.definition.broken.nonExistantClassInBeansXml.NonExistantDecoratorClassInBeansXmlTest">
+            <methods>
+               <exclude name="testNonExistantDecoratorClassInBeansXmlNotOK" />
+            </methods>
+         </class>
 
          <!-- Issues in Weld (the RI) -->
 
