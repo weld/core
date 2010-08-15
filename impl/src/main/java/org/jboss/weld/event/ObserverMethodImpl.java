@@ -96,10 +96,10 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       this.beanManager = manager;
       this.declaringBean = declaringBean;
       this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
-      this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
+      this.eventType = observerMethod.getWeldParameters(Observes.class).get(0).getBaseType();
       this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
-      this.bindings = new HashSet<Annotation>(observerMethod.getAnnotatedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
-      Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
+      this.bindings = new HashSet<Annotation>(observerMethod.getWeldParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
+      Observes observesAnnotation = observerMethod.getWeldParameters(Observes.class).get(0).getAnnotation(Observes.class);
       this.notifyType = observesAnnotation.receive();
       this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
       for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod))
@@ -123,7 +123,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    private void checkObserverMethod()
    {
       // Make sure exactly one and only one parameter is annotated with Observes
-      List<?> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
+      List<?> eventObjects = this.observerMethod.getWeldParameters(Observes.class);
       if (this.notifyType.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class))
       {
          throw new DefinitionException(INVALID_SCOPED_CONDITIONAL_OBSERVER, this);
@@ -133,7 +133,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
          throw new DefinitionException(MULTIPLE_EVENT_PARAMETERS, this);
       }
       // Check for parameters annotated with @Disposes
-      List<?> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
+      List<?> disposeParams = this.observerMethod.getWeldParameters(Disposes.class);
       if (disposeParams.size() > 0)
       {
          throw new DefinitionException(INVALID_DISPOSES_PARAMETER, this);

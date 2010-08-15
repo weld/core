@@ -29,11 +29,6 @@ public abstract class ForwardingWeldMethod<T, X> extends ForwardingWeldMember<T,
    @Override
    protected abstract WeldMethod<T, X> delegate();
 
-   public List<WeldParameter<?, X>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType)
-   {
-      return delegate().getWeldParameters(metaAnnotationType);
-   }
-
    public Class<?>[] getParameterTypesAsArray()
    {
       return delegate().getParameterTypesAsArray();

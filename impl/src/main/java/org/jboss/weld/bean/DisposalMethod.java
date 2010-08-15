@@ -85,7 +85,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    @SuppressWarnings("unchecked")
    protected void initType()
    {
-      this.type = (Class<T>) disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getJavaClass();
+      this.type = (Class<T>) disposalMethodInjectionPoint.getWeldParameters(Disposes.class).get(0).getJavaClass();
    }
 
    @Override
@@ -110,7 +110,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    protected void initTypes()
    {
       Set<Type> types = new HashSet<Type>();
-      types.addAll(disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getTypeClosure());
+      types.addAll(disposalMethodInjectionPoint.getWeldParameters(Disposes.class).get(0).getTypeClosure());
       types.add(Object.class);
       super.types = types;
    }
@@ -187,11 +187,11 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
       {
          throw new DefinitionException(DISPOSE_NOT_FIRST_PARAM, disposalMethodInjectionPoint);
       }
-      if (disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).size() > 1)
+      if (disposalMethodInjectionPoint.getWeldParameters(Disposes.class).size() > 1)
       {
          throw new DefinitionException(MULTIPLE_DISPOSE_PARAMS, disposalMethodInjectionPoint);
       }
-      if (disposalMethodInjectionPoint.getAnnotatedParameters(Observes.class).size() > 0)
+      if (disposalMethodInjectionPoint.getWeldParameters(Observes.class).size() > 0)
       {
          throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Observes", "@Disposes", disposalMethodInjectionPoint);
       }
