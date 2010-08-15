@@ -30,6 +30,8 @@ import org.jboss.weld.transaction.spi.TransactionServices;
  */
 class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X>
 {
+   
+   private final TransactionPhase transactionPhase;
 
    /**
     * Creates a new instance of a transactional observer method implicit object.
@@ -49,6 +51,12 @@ class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X>
    {
       super.initialize();
    }
+   
+   @Override
+   public TransactionPhase getTransactionPhase()
+   {
+      return transactionPhase;
+   }
 
    @Override
    public void notify(T event)
@@ -57,7 +65,7 @@ class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X>
       {
          return;
       }
-      if ((manager.getServices().get(TransactionServices.class) != null)  && (manager.getServices().get(TransactionServices.class).isTransactionActive()))
+      if ((getBeanManager().getServices().get(TransactionServices.class) != null)  && (getBeanManager().getServices().get(TransactionServices.class).isTransactionActive()))
       {
          deferEvent(event);
       }
@@ -94,7 +102,7 @@ class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X>
       {
          synchronization = new TransactionSynchronizedRunnable(deferredEvent, Status.FAILURE);
       }
-      manager.getServices().get(TransactionServices.class).registerSynchronization(synchronization);
+      getBeanManager().getServices().get(TransactionServices.class).registerSynchronization(synchronization);
    }
 
 }

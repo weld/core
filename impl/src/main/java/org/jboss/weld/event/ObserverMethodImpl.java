@@ -75,11 +75,10 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    
    private final Set<Annotation> bindings;
    private final Type eventType;
-   protected BeanManagerImpl manager;
+   private BeanManagerImpl beanManager;
    private final Reception notifyType;
-   protected final RIBean<X> declaringBean;
-   protected final MethodInjectionPoint<T, ?> observerMethod;
-   protected TransactionPhase transactionPhase;
+   private final RIBean<X> declaringBean;
+   private final MethodInjectionPoint<T, ?> observerMethod;
    private final String id;
 
    private final Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
@@ -94,7 +93,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
     */
    protected ObserverMethodImpl(final WeldMethod<T, ?> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
    {
-      this.manager = manager;
+      this.beanManager = manager;
       this.declaringBean = declaringBean;
       this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
       this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
@@ -102,7 +101,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       this.bindings = new HashSet<Annotation>(observerMethod.getAnnotatedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
       Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
       this.notifyType = observesAnnotation.receive();
-      transactionPhase = TransactionPhase.IN_PROGRESS;
       this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
       for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod))
       {
@@ -192,7 +190,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
 
    public TransactionPhase getTransactionPhase()
    {
-      return transactionPhase;
+      return TransactionPhase.IN_PROGRESS;
    }
 
    /**
@@ -234,16 +232,16 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       {
          if (notifyType.equals(Reception.ALWAYS))
          {
-            creationalContext = manager.createCreationalContext(declaringBean);
+            creationalContext = beanManager.createCreationalContext(declaringBean);
          }
-         instance = manager.getReference(declaringBean, creationalContext, false);
+         instance = beanManager.getReference(declaringBean, creationalContext, false);
          if (instance == null)
          {
             return;
          }
          // As we are working with the contextual instance, we may not have the
          // actual object, but a container proxy (e.g. EJB)
-         observerMethod.invokeOnInstanceWithSpecialValue(instance, Observes.class, event, manager, creationalContext, ObserverException.class);
+         observerMethod.invokeOnInstanceWithSpecialValue(instance, Observes.class, event, beanManager, creationalContext, ObserverException.class);
       }
       finally
       {
@@ -297,6 +295,11 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    public int hashCode()
    {
       return getId().hashCode();
+   }
+   
+   public BeanManagerImpl getBeanManager()
+   {
+      return beanManager;
    }
 
 }
