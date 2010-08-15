@@ -16,8 +16,12 @@
  */
 package org.jboss.weld.tests.contexts;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Conversation;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.api.Deployment;
@@ -25,8 +29,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.Container;
-import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.Utils;
 import org.junit.Assert;
@@ -53,113 +55,130 @@ public class ContextTest
    @Test
    public void testCallToConversationWithContextNotActive()
    {
-      boolean alreadyActive = false;
-      try
+      new WorkInInactiveConversationContext()
       {
-         alreadyActive = Container.instance().services().get(ContextLifecycle.class).isConversationActive();
-         if (alreadyActive)
+         
+         @Override
+         protected void work()
          {
-            Container.instance().services().get(ContextLifecycle.class).getConversationContext().setActive(false);
+            try
+            {
+               Utils.getReference(beanManager, Conversation.class).getId();
+               Assert.fail();
+            }
+            catch (ContextNotActiveException e) 
+            {
+               // Expected
+            }
+            catch (Exception e) 
+            {
+               Assert.fail();
+            }
+            try
+            {
+               Utils.getReference(beanManager, Conversation.class).getTimeout();
+               Assert.fail();
+            }
+            catch (ContextNotActiveException e) 
+            {
+               // Expected
+            }
+            catch (Exception e) 
+            {
+               Assert.fail();
+            }
+            try
+            {
+               Utils.getReference(beanManager, Conversation.class).begin();
+               Assert.fail();
+            }
+            catch (ContextNotActiveException e) 
+            {
+               // Expected
+            }
+            catch (Exception e) 
+            {
+               Assert.fail();
+            }
+            try
+            {
+               Utils.getReference(beanManager, Conversation.class).begin("foo");
+               Assert.fail();
+            }
+            catch (ContextNotActiveException e) 
+            {
+               // Expected
+            }
+            catch (Exception e) 
+            {
+               Assert.fail();
+            }
+            try
+            {
+               Utils.getReference(beanManager, Conversation.class).end();
+               Assert.fail();
+            }
+            catch (ContextNotActiveException e) 
+            {
+               // Expected
+            }
+            catch (Exception e) 
+            {
+               Assert.fail();
+            }
+            try
+            {
+               Utils.getReference(beanManager, Conversation.class).isTransient();
+               Assert.fail();
+            }
+            catch (ContextNotActiveException e) 
+            {
+               // Expected
+            }
+            catch (Exception e) 
+            {
+               Assert.fail();
+            }
+            try
+            {
+               Utils.getReference(beanManager, Conversation.class).setTimeout(0);
+               assert false;
+            }
+            catch (ContextNotActiveException e) 
+            {
+               // Expected
+            }
+            catch (Exception e) 
+            {
+               Assert.fail();
+            }
          }
-         try
-         {
-            Utils.getReference(beanManager, Conversation.class).getId();
-            Assert.fail();
-         }
-         catch (ContextNotActiveException e) 
-         {
-            // Expected
-         }
-         catch (Exception e) 
-         {
-            Assert.fail();
-         }
-         try
-         {
-            Utils.getReference(beanManager, Conversation.class).getTimeout();
-            Assert.fail();
-         }
-         catch (ContextNotActiveException e) 
-         {
-            // Expected
-         }
-         catch (Exception e) 
-         {
-            Assert.fail();
-         }
-         try
-         {
-            Utils.getReference(beanManager, Conversation.class).begin();
-            Assert.fail();
-         }
-         catch (ContextNotActiveException e) 
-         {
-            // Expected
-         }
-         catch (Exception e) 
-         {
-            Assert.fail();
-         }
-         try
-         {
-            Utils.getReference(beanManager, Conversation.class).begin("foo");
-            Assert.fail();
-         }
-         catch (ContextNotActiveException e) 
-         {
-            // Expected
-         }
-         catch (Exception e) 
-         {
-            Assert.fail();
-         }
-         try
-         {
-            Utils.getReference(beanManager, Conversation.class).end();
-            Assert.fail();
-         }
-         catch (ContextNotActiveException e) 
-         {
-            // Expected
-         }
-         catch (Exception e) 
-         {
-            Assert.fail();
-         }
-         try
-         {
-            Utils.getReference(beanManager, Conversation.class).isTransient();
-            Assert.fail();
-         }
-         catch (ContextNotActiveException e) 
-         {
-            // Expected
-         }
-         catch (Exception e) 
-         {
-            Assert.fail();
-         }
-         try
-         {
-            Utils.getReference(beanManager, Conversation.class).setTimeout(0);
-            assert false;
-         }
-         catch (ContextNotActiveException e) 
-         {
-            // Expected
-         }
-         catch (Exception e) 
-         {
-            Assert.fail();
-         }
-      }
-      finally
-      {
-         if (alreadyActive)
-         {
-            Container.instance().services().get(ContextLifecycle.class).getConversationContext().setActive(true);
-         }
-      }
+      }.run();
       
+   } 
+   
+   @Inject
+   private Event<Mouse> mouseEvent; 
+   
+   /*
+    * description = "WELD-480"
+    */
+   @Test
+   public void testConditionalObserverOnNonActiveContext(Cat cat, final House house)
+   {
+      new WorkInInactiveRequestContext()
+      {
+         
+         @Override
+         protected void work()
+         {
+            Mouse mouse = new Mouse("Jerry");
+            house.setMouse(mouse);
+            mouseEvent.fire(mouse);
+         }
+         
+      }.run();
+      assertNull(cat.getMouse());
+      assertNotNull(house.getMouse());
    }
 }

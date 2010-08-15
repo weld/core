@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.event;
 
+import static javax.enterprise.event.Reception.ALWAYS;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_DISPOSES_PARAMETER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
@@ -29,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.ObserverException;
@@ -228,28 +230,64 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
     */
    protected void sendEvent(final T event)
    {
-      Object instance = null;
-      CreationalContext<?> creationalContext = null;
+      
+      CreationalContext<?> creationalContext = createCreationalContext();
       try
       {
-         if (notifyType.equals(Reception.ALWAYS))
-         {
-            creationalContext = manager.createCreationalContext(declaringBean);
-         }
-         instance = manager.getReference(declaringBean, creationalContext, false);
+         Object instance = getReceiver(creationalContext);
+         // The observer is conditional, and there is no existing bean
          if (instance == null)
          {
             return;
          }
-         // As we are working with the contextual instance, we may not have the
-         // actual object, but a container proxy (e.g. EJB)
-         observerMethod.invokeOnInstanceWithSpecialValue(instance, Observes.class, event, manager, creationalContext, ObserverException.class);
+         else
+         {
+            // As we are working with the contextual instance, we may not have the
+            // actual object, but a container proxy (e.g. EJB)
+            observerMethod.invokeOnInstanceWithSpecialValue(instance, Observes.class, event, manager, creationalContext, ObserverException.class);
+         }
       }
       finally
       {
          if (creationalContext != null && Dependent.class.equals(declaringBean.getScope()))
          {
             creationalContext.release();
+         }
+      }
+   }
+
+   /**
+    * Creates the creational context if the observer method is not conditional
+    * 
+    * @return
+    */
+   private CreationalContext<?> createCreationalContext()
+   {
+      if (notifyType.equals(ALWAYS))
+      {
+         return manager.createCreationalContext(declaringBean);
+      }
+      else
+      {
+         return null;
+      }
+   }
+   
+   private Object getReceiver(CreationalContext<?> creationalContext)
+   {
+      if (notifyType.equals(ALWAYS))
+      {
+         return manager.getReference(declaringBean, creationalContext, false);
+      }
+      else
+      {
+         try
+         {
+            return manager.getReference(declaringBean, creationalContext, false);
+         }
+         catch (ContextNotActiveException e) 
+         {
+            return null;
          }
       }
    }
