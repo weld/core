@@ -19,12 +19,12 @@ package org.jboss.arquillian.container.weld.ee.embedded_1_1.mock;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 import javax.ejb.Local;
 import javax.ejb.MessageDriven;
+import javax.ejb.Remote;
 import javax.ejb.Remove;
 import javax.ejb.Singleton;
 import javax.ejb.Stateful;
@@ -38,6 +38,7 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
    private final Class<T> beanClass;
    private final String ejbName;
    private final List<BusinessInterfaceDescriptor<?>> localInterfaces;
+   private final List<BusinessInterfaceDescriptor<?>> remoteInterfaces;
    private final HashSet<Method> removeMethods;
    
    public static <T> MockEjbDescriptor<T> of(Class<T> type)
@@ -49,8 +50,8 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
    {
       this.beanClass = type;
       this.ejbName = type.getSimpleName();
-      this.localInterfaces = new ArrayList<BusinessInterfaceDescriptor<?>>();
       
+      this.localInterfaces = new ArrayList<BusinessInterfaceDescriptor<?>>();
       Local localAnnotation = type.getAnnotation(Local.class);
       if (localAnnotation != null)
       {
@@ -67,6 +68,25 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
             localInterfaces.add(createBusinessInterfaceDescriptor(clazz));
          }
       }
+      
+      this.remoteInterfaces = new ArrayList<BusinessInterfaceDescriptor<?>>();
+      Remote remoteAnnotation = type.getAnnotation(Remote.class);
+      if (remoteAnnotation != null)
+      {
+         for (final Class<?> clazz : remoteAnnotation.value())
+         {
+            remoteInterfaces.add(createBusinessInterfaceDescriptor(clazz));
+         }
+      }
+      
+      for (final Class<?> clazz : type.getInterfaces())
+      {
+         if (clazz.isAnnotationPresent(Remote.class))
+         {
+            remoteInterfaces.add(createBusinessInterfaceDescriptor(clazz));
+         }
+      }
+      
       // cope with EJB 3.1 style no-interface views
       if (localInterfaces.size() == 0)
       {
@@ -111,14 +131,13 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       return localInterfaces;
    }
    
-   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces()
+   public Collection<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces()
    {
-      return Collections.emptyList();
+      return remoteInterfaces;
    }
 
    public Collection<Method> getRemoveMethods()
    {
-
       return removeMethods;
    }
 
