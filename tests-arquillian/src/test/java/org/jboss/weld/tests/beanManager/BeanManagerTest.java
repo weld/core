@@ -1,5 +1,10 @@
 package org.jboss.weld.tests.beanManager;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.Inject;
@@ -49,5 +54,16 @@ public class BeanManagerTest
    {
       Bean<Foo> bean = Utils.getBean(beanManager, Foo.class);
       beanManager.getReference(bean, Foo.class, null);
+   }
+   
+   @Test
+   // WELD-576
+   public void testObjectIsValidTypeForGetReference()
+   {
+      Set<Bean<?>> beans = beanManager.getBeans("myBean");
+      Bean<?> sourceBean = beans.iterator().next();
+      Object myBean = beanManager.getReference(sourceBean, Object.class, beanManager.createCreationalContext(sourceBean));
+      assertTrue(myBean instanceof UserInfo);
+      assertEquals(((UserInfo) myBean).getUsername(), "pmuir");
    }
 }
