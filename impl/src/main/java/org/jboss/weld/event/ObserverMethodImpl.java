@@ -78,7 +78,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    protected BeanManagerImpl manager;
    private final Reception notifyType;
    protected final RIBean<X> declaringBean;
-   protected final MethodInjectionPoint<T, ? super X> observerMethod;
+   protected final MethodInjectionPoint<T, ?> observerMethod;
    protected TransactionPhase transactionPhase;
    private final String id;
 
@@ -92,7 +92,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
     * @param declaringBean The observer bean
     * @param manager The Bean manager
     */
-   protected ObserverMethodImpl(final WeldMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
+   protected ObserverMethodImpl(final WeldMethod<T, ?> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
    {
       this.manager = manager;
       this.declaringBean = declaringBean;
@@ -198,7 +198,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    /**
     * @return the observerMethod
     */
-   public MethodInjectionPoint<T, ? super X> getMethod()
+   public MethodInjectionPoint<T, ?> getMethod()
    {
       return observerMethod;
    }

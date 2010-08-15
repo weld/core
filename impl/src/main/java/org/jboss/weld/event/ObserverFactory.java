@@ -41,19 +41,17 @@ public class ObserverFactory
     * @param manager The Bean manager
     * @return An observer implementation built from the method abstraction
     */
-   public static <T, X> ObserverMethodImpl<T, X> create(WeldMethod<T, ? super X> method, RIBean<X> declaringBean, BeanManagerImpl manager)
+   public static <T, X> ObserverMethodImpl<T, X> create(WeldMethod<T, ?> method, RIBean<X> declaringBean, BeanManagerImpl manager)
    {
-      ObserverMethodImpl<T, X> result = null;
       TransactionPhase transactionPhase = getTransactionalPhase(method);
       if (manager.getServices().contains(TransactionServices.class) && !transactionPhase.equals(TransactionPhase.IN_PROGRESS))
       {
-         result = new TransactionalObserverMethodImpl<T, X>(method, declaringBean, transactionPhase, manager);
+         return new TransactionalObserverMethodImpl<T, X>(method, declaringBean, transactionPhase, manager);
       }
       else
       {
-         result = new ObserverMethodImpl<T, X>(method, declaringBean, manager);
+         return new ObserverMethodImpl<T, X>(method, declaringBean, manager);
       }
-      return result;
    }
    
    /**

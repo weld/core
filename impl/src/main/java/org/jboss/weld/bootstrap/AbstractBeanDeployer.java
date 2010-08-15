@@ -22,6 +22,7 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DECORATOR;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_INTERCEPTOR;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
+import static org.jboss.weld.util.Beans.locateBusinessMethod;
 
 import java.lang.reflect.Member;
 import java.util.Set;
@@ -227,9 +228,10 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       }
    }
    
-   protected <T, X> void createObserverMethod(RIBean<X> declaringBean, WeldMethod<T, ? super X> method)
+   protected <T, X> void createObserverMethod(RIBean<X> declaringBean, WeldMethod<T, ? super X> declaredMethod)
    {
-      ObserverMethodImpl<T, ? super X> observer = ObserverFactory.create(method, declaringBean, manager);
+      // Create the observer method for the business method of the declared method
+      ObserverMethodImpl<T, ?> observer = ObserverFactory.create(locateBusinessMethod(declaringBean, declaredMethod), declaringBean, manager);
       getEnvironment().addObserverMethod(observer);
    }
 

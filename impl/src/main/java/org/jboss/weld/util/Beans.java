@@ -37,6 +37,7 @@ import static org.jboss.weld.logging.messages.UtilMessage.REDUNDANT_QUALIFIER;
 import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_POST_CONSTRUCT_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_PRE_DESTROY_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_CONSTRUCTOR;
+import static org.jboss.weld.util.reflection.SecureReflections.isMethodExists;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -72,6 +73,7 @@ import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.EJBApiAbstraction;
+import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
@@ -98,6 +100,7 @@ import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -869,5 +872,43 @@ public class Beans
          }
       }
       return null;
+   }
+
+   /**
+    * If the bean is a Session Bean, we will need to call the method against
+    * it's business interface, not against the declaring bean as the EJB
+    * container will likely not return a proxy which is assignable to the bean
+    * class.
+    * 
+    * Otherwise we can use the declaring bean.
+    * 
+    * @param declaringBean the bean declaring the method
+    * @param declaredMethod the method
+    * @return the business method to invoke against
+    */
+   public static <T, X> WeldMethod<T, ?> locateBusinessMethod(RIBean<X> declaringBean, WeldMethod<T, ? super X> declaredMethod)
+   {
+      if (declaringBean instanceof SessionBean<?>)
+      {
+         SessionBean<X> sessionBean = (SessionBean<X>) declaringBean;
+         /*
+          * If the method is declared on multiple interfaces, it doesn't matter
+          * which we choose, as we control the invocation of the method, and
+          * thus which interface it is invoked against.
+          */
+         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : sessionBean.getEjbDescriptor().getBusinessInterfaces())
+         {
+            if (isMethodExists(businessInterfaceDescriptor.getInterface(), declaredMethod.getName(), declaredMethod.getParameterTypesAsArray()))
+            {
+               WeldClass<?> businessInterface = Container.instance().services().get(ClassTransformer.class).loadClass(businessInterfaceDescriptor.getInterface());
+               return businessInterface.getWeldMethod(declaredMethod.getSignature());
+            }
+         }
+         throw new IllegalStateException("Unable to locate business method for [" + declaredMethod + "] on business interfaces [" + sessionBean.getEjbDescriptor().getBusinessInterfaces() + "]");
+      }
+      else
+      {
+         return declaredMethod;
+      }
    }
 }

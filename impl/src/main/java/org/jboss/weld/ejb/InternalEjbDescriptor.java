@@ -26,6 +26,7 @@ import org.jboss.weld.ejb.spi.helpers.ForwardingEjbDescriptor;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
+import org.jboss.weld.util.collections.CollectionCollection;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
@@ -90,6 +91,11 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> impleme
          }
       }
       return false;
+   }
+   
+   public Collection<BusinessInterfaceDescriptor<?>> getBusinessInterfaces()
+   {
+      return new CollectionCollection<BusinessInterfaceDescriptor<?>>(getLocalBusinessInterfaces(), getRemoteBusinessInterfaces());
    }
    
    private static boolean isBusinessMethod(WeldMethod<?, ?> method, BusinessInterfaceDescriptor<?> businessInterfaceDescriptor)
