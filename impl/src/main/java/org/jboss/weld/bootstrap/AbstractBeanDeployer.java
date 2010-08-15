@@ -61,10 +61,8 @@ import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
-import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
@@ -291,19 +289,9 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    protected boolean isTypeManagedBeanOrDecoratorOrInterceptor(WeldClass<?> clazz)
    {
       Class<?> javaClass = clazz.getJavaClass();
-      EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
-      JsfApiAbstraction jsfApiAbstraction = manager.getServices().get(JsfApiAbstraction.class);
-      ServletApiAbstraction servletApiAbstraction = manager.getServices().get(ServletApiAbstraction.class);
       return !Extension.class.isAssignableFrom(clazz.getJavaClass()) &&
              !(clazz.isAnonymousClass() || (clazz.isMemberClass() && !clazz.isStatic())) &&
-             !Reflections.isParamerterizedTypeWithWildcard(javaClass) && 
-             !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(javaClass) && 
-             !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(javaClass) && 
-             !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(javaClass) && 
-             !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(javaClass) && 
-             !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(javaClass) && 
-             !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(javaClass) && 
-             !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(javaClass) && 
+             !Reflections.isParamerterizedTypeWithWildcard(javaClass) &&
              hasSimpleWebBeanConstructor(clazz);
    }
    

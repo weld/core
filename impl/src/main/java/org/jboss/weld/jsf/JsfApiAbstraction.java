@@ -29,8 +29,6 @@ import org.jboss.weld.util.ApiAbstraction;
  */
 public class JsfApiAbstraction extends ApiAbstraction implements Service
 {
-   // An UI component
-   public final Class<?> UICOMPONENT_CLASS;
    
    // JSF FacesContext
    public final Class<?> FACES_CONTEXT;
@@ -42,7 +40,6 @@ public class JsfApiAbstraction extends ApiAbstraction implements Service
    public JsfApiAbstraction(ResourceLoader resourceLoader)
    {
       super(resourceLoader);
-      this.UICOMPONENT_CLASS = classForName("javax.faces.component.UIComponent");
       this.FACES_CONTEXT = classForName("javax.faces.context.FacesContext");
       this.BEHAVIOR_CLASS = classForName("javax.faces.component.behavior.Behavior");
       if (this.BEHAVIOR_CLASS.getName().equals("javax.faces.component.behavior.Behavior"))

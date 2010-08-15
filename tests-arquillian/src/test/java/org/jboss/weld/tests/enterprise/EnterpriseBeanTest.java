@@ -17,6 +17,8 @@
  */
 package org.jboss.weld.tests.enterprise;
 
+import static org.junit.Assert.assertNotNull;
+
 import javax.ejb.EJBException;
 import javax.inject.Inject;
 
@@ -149,6 +151,15 @@ public class EnterpriseBeanTest
       castle.ping();
       Assert.assertTrue(castle.isPinged());
       Assert.assertTrue(Utils.getBean(beanManager, Castle.class) instanceof SessionBean<?>);
+   }
+   
+   @Test
+   @Category(Broken.class)
+   // WELD-492
+   // ARQ-258
+   public void testImplementsEnterpriesBean(Grault grault)
+   {
+      assertNotNull(grault);
    }
    
 }

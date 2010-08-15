@@ -91,7 +91,6 @@ import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.servlet.HttpSessionManager;
-import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.collections.Arrays2;
@@ -319,7 +318,6 @@ public class WeldBootstrap implements Bootstrap
       services.add(JsfApiAbstraction.class, new JsfApiAbstraction(resourceLoader));
       services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
       services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
-      services.add(ServletApiAbstraction.class, new ServletApiAbstraction(resourceLoader));
       // Temporary workaround to provide context for building annotated class
       // TODO expose AnnotatedClass on SPI and allow container to provide impl
       // of this via ResourceLoader
