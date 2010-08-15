@@ -19,8 +19,10 @@ package org.jboss.weld.bootstrap;
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_CLASS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.AMBIGUOUS_EL_NAME;
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREFIX;
@@ -74,6 +76,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
@@ -82,6 +85,7 @@ import javax.inject.Named;
 import javax.inject.Scope;
 
 import org.jboss.interceptor.model.InterceptionModel;
+import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DisposalMethod;
@@ -98,8 +102,10 @@ import org.jboss.weld.exceptions.InconsistentSpecializationException;
 import org.jboss.weld.exceptions.NullableDependencyException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnserializableDependencyException;
+import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
@@ -510,7 +516,11 @@ public class Validator implements Service
       List<Class<?>> seenAlternatives = new ArrayList<Class<?>>();
       for (Class<? extends Annotation> stereotype : beanManager.getEnabledClasses().getAlternativeStereotypes())
       {
-         if (!stereotype.isAnnotationPresent(Alternative.class))
+         if (!beanManager.isStereotype(stereotype))
+         {
+            throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, stereotype);
+         }
+         if (!isAlternative(beanManager, stereotype))
          {
             throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, stereotype);
          }
@@ -522,7 +532,12 @@ public class Validator implements Service
       }
       for (Class<?> clazz : beanManager.getEnabledClasses().getAlternativeClasses())
       {
-         if (!clazz.isAnnotationPresent(Alternative.class))
+         if (clazz.isAnnotation() || clazz.isInterface())
+         {
+            throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, clazz);
+         }
+         WeldClass<?> weldClass = Container.instance().services().get(ClassTransformer.class).loadClass(clazz);
+         if (!weldClass.isAnnotationPresent(Alternative.class))
          {
             throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, clazz);
          }
@@ -532,6 +547,18 @@ public class Validator implements Service
          }
          seenAlternatives.add(clazz);
       }
+   }
+   
+   private static boolean isAlternative(BeanManager beanManager, Class<? extends Annotation> stereotype)
+   {
+      for (Annotation annotation : beanManager.getStereotypeDefinition(stereotype))
+      {
+         if (annotation.annotationType().equals(Alternative.class))
+         {
+            return true;
+         }
+      }
+      return false;
    }
 
    private void validateDisposalMethods(BeanDeployerEnvironment environment)

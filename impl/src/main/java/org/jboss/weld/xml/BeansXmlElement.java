@@ -38,40 +38,42 @@ class BeansXmlElement
 {
    private final URL file;
    private final Element element;
+   private final String localName;
+   private final String namespaceURI;
 
-   BeansXmlElement(URL file, Element element)
+   BeansXmlElement(URL file, Element element, String localName, String namespaceURI)
    {
       super();
       this.file = file;
       this.element = element;
+      this.localName = localName;
+      this.namespaceURI = namespaceURI;
    }
 
-   private String getClassNameFromNode(Node node)
+   private static String getClassNameFromElement(Element element)
    {
-      if (node instanceof Element)
+      if (element.getChildNodes().getLength() == 1 && element.getChildNodes().item(0) instanceof Text)
       {
-         if (node.getChildNodes().getLength() == 1 && node.getChildNodes().item(0) instanceof Text)
-         {
-            String className = ((Text) node.getChildNodes().item(0)).getData();
-            return className;
-         }
+         String className = ((Text) element.getChildNodes().item(0)).getData();
+         return className;
       }
       return null;
    }
 
-   public List<Class<?>> getClasses(ResourceLoader resourceLoader)
+   public <T> List<Class<T>> getClasses(ResourceLoader resourceLoader)
    {
-      List<Class<?>> classes = new ArrayList<Class<?>>();
-      for (Node child : new NodeListIterable(element.getChildNodes()))
+      List<Class<T>> classes = new ArrayList<Class<T>>();
+      for (Node child : new NodeListIterable(element.getElementsByTagNameNS(namespaceURI, localName)))
       {
-         String className = getClassNameFromNode(child);
+         // Unsafe looking cast is actually safe as the NodeList only contains Elements
+         String className = getClassNameFromElement((Element) child);
          if (className == null)
          {
             continue;
          }
          try
          {
-            classes.add(resourceLoader.classForName(className));
+            classes.add((Class<T>) resourceLoader.classForName(className));
          }
          catch (ResourceLoadingException e)
          {

@@ -37,46 +37,52 @@ import org.w3c.dom.NodeList;
  */
 class MergedElements
 {
-   private List<BeansXmlElement> alternativesElements;
+   private List<BeansXmlElement> alternativeClassElements;
+   private List<BeansXmlElement> alternativeStereotypeElements;
    private List<BeansXmlElement> decoratorsElements;
    private List<BeansXmlElement> interceptorsElements;
-   
+
    public MergedElements()
    {
-      this.alternativesElements = new ArrayList<BeansXmlElement>();
+      this.alternativeClassElements = new ArrayList<BeansXmlElement>();
+      this.alternativeStereotypeElements = new ArrayList<BeansXmlElement>();
       this.decoratorsElements = new ArrayList<BeansXmlElement>();
       this.interceptorsElements = new ArrayList<BeansXmlElement>();
    }
 
-
-   public void merge(URL url, Document beansXmlDocument, String namespace)
+   public void merge(URL url, Document beansXmlDocument, String namespaceURI)
    {
       Element documentElement = beansXmlDocument.getDocumentElement();
-      alternativesElements.addAll(findNamedElement(url, documentElement, namespace, "alternatives", MULTIPLE_ALTERNATIVES));
-      interceptorsElements.addAll(findNamedElement(url, documentElement, namespace, "interceptors", MULTIPLE_INTERCEPTORS));
-      decoratorsElements.addAll(findNamedElement(url, documentElement, namespace, "decorators", MULTIPLE_DECORATORS));
+      alternativeClassElements.addAll(findNamedElement(url, documentElement, namespaceURI, "alternatives", "class", MULTIPLE_ALTERNATIVES));
+      alternativeStereotypeElements.addAll(findNamedElement(url, documentElement, namespaceURI, "alternatives", "stereotype", MULTIPLE_ALTERNATIVES));
+      interceptorsElements.addAll(findNamedElement(url, documentElement, namespaceURI, "interceptors", "class", MULTIPLE_INTERCEPTORS));
+      decoratorsElements.addAll(findNamedElement(url, documentElement, namespaceURI, "decorators", "class", MULTIPLE_DECORATORS));
    }
 
-   private List<BeansXmlElement> findNamedElement(URL url, Element beans, String namespace, String name, XmlMessage multipleViolationMessage)
+   private List<BeansXmlElement> findNamedElement(URL url, Element beans, String namespaceURI, String localGroupName, String localName, XmlMessage multipleViolationMessage)
    {
       List<BeansXmlElement> elements = new ArrayList<BeansXmlElement>();
-      NodeList nodeList = beans.getElementsByTagNameNS(namespace, name);
+      NodeList nodeList = beans.getElementsByTagNameNS(namespaceURI, localGroupName);
       if (nodeList.getLength() > 1)
       {
          throw new WeldXmlException(multipleViolationMessage);
       }
       else if (nodeList.getLength() == 1)
       {
-         BeansXmlElement element = new BeansXmlElement(url, (Element) nodeList.item(0));
+         BeansXmlElement element = new BeansXmlElement(url, (Element) nodeList.item(0), localName, namespaceURI);
          elements.add(element);
       }
       return elements;
    }
 
-   
-   public List<BeansXmlElement> getAlternativesElements()
+   public List<BeansXmlElement> getAlternativeClassElements()
    {
-      return Collections.unmodifiableList(alternativesElements);
+      return Collections.unmodifiableList(alternativeClassElements);
+   }
+
+   public List<BeansXmlElement> getAlternativeStereotypeElements()
+   {
+      return Collections.unmodifiableList(alternativeStereotypeElements);
    }
 
    public List<BeansXmlElement> getDecoratorsElements()

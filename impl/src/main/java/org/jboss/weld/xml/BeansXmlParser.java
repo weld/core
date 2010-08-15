@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
 public class BeansXmlParser
 {
    
-   public static final String NAMESPACE = "http://java.sun.com/xml/ns/javaee";
+   public static final String NAMESPACE_URI = "http://java.sun.com/xml/ns/javaee";
    
    private final Iterable<URL> beansXmls;
    private final ResourceLoader resourceLoader;
@@ -67,13 +67,13 @@ public class BeansXmlParser
             continue;
          }
          Document document = loadDocument(documentBuilder, beansXml);
-         if (document.getNamespaceURI() == null)
+         if (document.getDocumentElement().getNamespaceURI() == null)
          {
             mergedElements.merge(beansXml, document, "*");
          }
          else
          {
-            mergedElements.merge(beansXml, document, NAMESPACE);
+            mergedElements.merge(beansXml, document, NAMESPACE_URI);
          }
          
       }
@@ -81,19 +81,13 @@ public class BeansXmlParser
       List<Class<? extends Annotation>> enabledAlternativeStereotypes = new ArrayList<Class<? extends Annotation>>();
       List<Class<?>> enabledDecoratorClasses = new ArrayList<Class<?>>();
       List<Class<?>> enabledInterceptorClasses = new ArrayList<Class<?>>();
-      for (BeansXmlElement element : mergedElements.getAlternativesElements())
+      for (BeansXmlElement element : mergedElements.getAlternativeClassElements())
       {
-         for (Class<?> clazz : element.getClasses(resourceLoader))
-         {
-            if (clazz.isAnnotation())
-            {
-               enabledAlternativeStereotypes.add(clazz.asSubclass(Annotation.class));
-            }
-            else
-            {
-               enabledAlternativeClasses.add(clazz);
-            }
-         }
+         enabledAlternativeClasses.addAll(element.getClasses(resourceLoader));
+      }
+      for (BeansXmlElement element : mergedElements.getAlternativeStereotypeElements())
+      {
+         enabledAlternativeStereotypes.addAll(element.<Annotation>getClasses(resourceLoader));
       }
       for (BeansXmlElement element : mergedElements.getDecoratorsElements())
       {
