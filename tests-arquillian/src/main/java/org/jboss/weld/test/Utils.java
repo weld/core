@@ -35,6 +35,7 @@ import javassist.util.proxy.ProxyObject;
 
 import javax.el.ELContext;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
@@ -124,7 +125,7 @@ public class Utils
       return false;
    }
    
-   public static <T> Bean<T> getBean(BeanManagerImpl beanManager, Type beanType, Annotation... bindings)
+   public static <T> Bean<T> getBean(BeanManager beanManager, Type beanType, Annotation... bindings)
    {
       Set<Bean<?>> beans = beanManager.getBeans(beanType, bindings);
       Bean<?> bean = beanManager.resolve(beans);
@@ -140,7 +141,7 @@ public class Utils
    }
 
    @SuppressWarnings("unchecked")
-   public static <T> Set<Bean<T>> getBeans(BeanManagerImpl beanManager, Class<T> type, Annotation... bindings)
+   public static <T> Set<Bean<T>> getBeans(BeanManager beanManager, Class<T> type, Annotation... bindings)
    {
       return (Set) beanManager.getBeans(type, bindings);
    }

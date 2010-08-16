@@ -30,4 +30,5 @@ public class CustomWindowFrame implements Window
       window.draw();
       drawn = true;   
    }
+   
 }

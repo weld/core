@@ -32,26 +32,30 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class CustomDecoratorTest
+public class CustomDecorator2Test
 {
-
+   
    @Deployment
    public static Archive<?> deployment()
    {
       return ShrinkWrap.create(BeanArchive.class)
+         .decorate(OuterWindowFrame.class)
          .decorate(CustomWindowFrame.class)
+         .decorate(InnerWindowFrame.class)
          .addManifestResource(new ByteArrayAsset("org.jboss.weld.tests.decorators.custom.CustomDecoratorDeploymentObserver".getBytes()), "services/javax.enterprise.inject.spi.Extension")
-         .addPackage(CustomDecoratorTest.class.getPackage())
+         .addPackage(CustomDecorator2Test.class.getPackage())
          .addClass(Utils.class);
    }
-   
+
    @Test
-   public <T> void testCustomDecoratorAppliedByItself(Window window)
+   public void testCustomDecoratorAppliedWithWeldDecorators(Window window)
    {
       WindowImpl.reset();
       
       window.draw();
       Assert.assertTrue(WindowImpl.drawn);
+      Assert.assertTrue(OuterWindowFrame.drawn);
+      Assert.assertTrue(InnerWindowFrame.drawn);
       Assert.assertTrue(CustomWindowFrame.drawn);
    }
 
