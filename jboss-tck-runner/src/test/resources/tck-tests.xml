@@ -67,6 +67,13 @@
                <exclude name="testNonExistantDecoratorClassInBeansXmlNotOK" />
             </methods>
          </class>
+         
+         <!-- CDITCK-177 -->
+         <class name="org.jboss.jsr299.tck.tests.implementation.simple.definition.EnterpriseBeanNotDiscoveredAsManagedBeanTest">
+            <methods>
+               <exclude name="testClassesImplementingEnterpriseBeanInterfaceNotDiscoveredAsSimpleBean" />
+            </methods>
+         </class>
 
          <!-- Issues in Weld (the RI) -->
 
