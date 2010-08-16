@@ -1,9 +1,8 @@
-package org.jboss.weld.environment.servlet.test.tomcat.lookup;
+package org.jboss.weld.environment.servlet.test.injection;
 
 
 
-import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETTY_ENV;
-import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETTY_WEB;
+import static org.jboss.weld.environment.servlet.test.util.TomcatDeployments.CONTEXT_XML;
 
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -18,7 +17,7 @@ public class LookupTest extends LookupTestBase
    @Deployment
    public static WebArchive deployment()
    {
-      return LookupTestBase.deployment().addWebResource(JETTY_ENV, "jetty-env.xml").addWebResource(JETTY_WEB, "jetty-web.xml");
+      return LookupTestBase.deployment().add(CONTEXT_XML, "META-INF/context.xml");
    }
    
 }

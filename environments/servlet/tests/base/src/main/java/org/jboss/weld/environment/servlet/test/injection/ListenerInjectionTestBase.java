@@ -2,6 +2,7 @@ package org.jboss.weld.environment.servlet.test.injection;
 
 import static org.jboss.weld.environment.servlet.test.util.Deployments.CONTEXT_PATH;
 import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
+import static org.jboss.weld.environment.servlet.test.util.Deployments.extendDefaultWebXml;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,7 +18,7 @@ import org.junit.Test;
 public class ListenerInjectionTestBase
 {
    
-   public static final Asset WEB_XML = new ByteArrayAsset(("<web-app> <listener><listener-class>org.jboss.weld.environment.servlet.Listener</listener-class></listener> <listener><listener-class>" + BatListener.class.getName() + "</listener-class></listener> <servlet><servlet-name>Bat Servlet</servlet-name><servlet-class>org.jboss.weld.test.tomcat.lookup.BatServlet</servlet-class></servlet> <servlet-mapping><servlet-name>Bat Servlet</servlet-name><url-pattern>/bat</url-pattern></servlet-mapping> </web-app>").getBytes());
+   public static final Asset WEB_XML = new ByteArrayAsset(extendDefaultWebXml("<listener><listener-class>" + BatListener.class.getName() + "</listener-class></listener> <servlet><servlet-name>Bat Servlet</servlet-name><servlet-class>" + BatServlet.class.getName() + "</servlet-class></servlet> <servlet-mapping><servlet-name>Bat Servlet</servlet-name><url-pattern>/bat</url-pattern></servlet-mapping>").getBytes());
    
    public static WebArchive deployment()
    {
