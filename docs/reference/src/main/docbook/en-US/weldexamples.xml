@@ -689,7 +689,6 @@ mvn -Pjetty eclipse:eclipse]]></programlisting>
             </itemizedlist>
          </section>
       </section>
-   </section>
 
    <section id="numberguess-se">
       <title>The numberguess example for Java SE with Swing</title>
@@ -1237,6 +1236,7 @@ public class Game
          </programlistingco>
 
       </section>
+   </section>
    
    <section id="translator">
       <title>The translator example in depth</title>
