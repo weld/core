@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.Category.VERSION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -26,6 +27,7 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.JTA_UNAVAILABLE;
 import static org.jboss.weld.logging.messages.BootstrapMessage.MANAGER_NOT_INITIALIZED;
 import static org.jboss.weld.logging.messages.BootstrapMessage.UNSPECIFIED_REQUIRED_SERVICE;
 import static org.jboss.weld.logging.messages.BootstrapMessage.VALIDATING_BEANS;
+import static org.jboss.weld.manager.Enabled.EMPTY_ENABLED;
 
 import java.net.URL;
 import java.util.Collection;
@@ -55,6 +57,7 @@ import org.jboss.weld.bootstrap.events.AfterDeploymentValidationImpl;
 import org.jboss.weld.bootstrap.events.BeforeBeanDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.BeforeShutdownImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.context.AbstractApplicationContext;
 import org.jboss.weld.context.ApplicationContext;
@@ -78,7 +81,6 @@ import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.logging.messages.VersionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.EnabledClasses;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
@@ -98,6 +100,7 @@ import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.serviceProvider.DefaultServiceLoaderFactory;
 import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.jboss.weld.ws.WSApiAbstraction;
+import org.jboss.weld.xml.BeansXmlParser;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -155,9 +158,9 @@ public class WeldBootstrap implements Bootstrap
                return Collections.emptySet();
             }
 
-            public Collection<URL> getBeansXml()
+            public BeansXml getBeansXml()
             {
-               return Collections.emptySet();
+               return EMPTY_BEANS_XML;
             }
 
             public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
@@ -233,6 +236,12 @@ public class WeldBootstrap implements Bootstrap
    private Environment environment;
    private Deployment deployment;
    private DeploymentVisitor deploymentVisitor;
+   private final BeansXmlParser beansXmlParser;
+   
+   public WeldBootstrap()
+   {
+      this.beansXmlParser = new BeansXmlParser();
+   }
 
    public Bootstrap startContainer(Environment environment, Deployment deployment, BeanStore applicationBeanStore)
    {
@@ -291,7 +300,7 @@ public class WeldBootstrap implements Bootstrap
          deploymentServices.add(TypeStore.class, implementationServices.get(TypeStore.class));
 
          this.environment = environment;
-         this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices, new EnabledClasses());
+         this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices, EMPTY_ENABLED);
 
          Container.initialize(deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
          Container.instance().setState(ContainerState.STARTING);
@@ -488,6 +497,16 @@ public class WeldBootstrap implements Bootstrap
             throw new IllegalStateException(UNSPECIFIED_REQUIRED_SERVICE, serviceType.getName());
          }
       }
+   }
+   
+   public BeansXml parse(Iterable<URL> urls)
+   {
+      return beansXmlParser.parse(urls);
+   }
+   
+   public BeansXml parse(URL url)
+   {
+      return beansXmlParser.parse(url);
    }
 
 }

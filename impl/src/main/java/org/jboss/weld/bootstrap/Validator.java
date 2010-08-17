@@ -477,9 +477,9 @@ public class Validator implements Service
       {
          interceptorBeanClasses.add(interceptor.getBeanClass());
       }
-      for (Class<?> enabledInterceptorClass : beanManager.getEnabledClasses().getInterceptors())
+      for (Class<?> enabledInterceptorClass : beanManager.getEnabled().getInterceptors())
       {
-         if (beanManager.getEnabledClasses().getInterceptors().indexOf(enabledInterceptorClass) < beanManager.getEnabledClasses().getInterceptors().lastIndexOf(enabledInterceptorClass))
+         if (beanManager.getEnabled().getInterceptors().indexOf(enabledInterceptorClass) < beanManager.getEnabled().getInterceptors().lastIndexOf(enabledInterceptorClass))
          {
             throw new DeploymentException(INTERCEPTOR_SPECIFIED_TWICE, enabledInterceptorClass + " specified twice");
          }
@@ -498,9 +498,9 @@ public class Validator implements Service
       {
          decoratorBeanClasses.add(bean.getBeanClass());
       }
-      for (Class<?> clazz : beanManager.getEnabledClasses().getDecorators())
+      for (Class<?> clazz : beanManager.getEnabled().getDecorators())
       {
-         if (beanManager.getEnabledClasses().getDecorators().indexOf(clazz) < beanManager.getEnabledClasses().getDecorators().lastIndexOf(clazz))
+         if (beanManager.getEnabled().getDecorators().indexOf(clazz) < beanManager.getEnabled().getDecorators().lastIndexOf(clazz))
          {
             throw new DeploymentException(DECORATOR_SPECIFIED_TWICE, clazz);
          }
@@ -514,7 +514,7 @@ public class Validator implements Service
    private void validateEnabledAlternatives(BeanManagerImpl beanManager)
    {
       List<Class<?>> seenAlternatives = new ArrayList<Class<?>>();
-      for (Class<? extends Annotation> stereotype : beanManager.getEnabledClasses().getAlternativeStereotypes())
+      for (Class<? extends Annotation> stereotype : beanManager.getEnabled().getAlternativeStereotypes())
       {
          if (!beanManager.isStereotype(stereotype))
          {
@@ -530,7 +530,7 @@ public class Validator implements Service
          }
          seenAlternatives.add(stereotype);
       }
-      for (Class<?> clazz : beanManager.getEnabledClasses().getAlternativeClasses())
+      for (Class<?> clazz : beanManager.getEnabled().getAlternativeClasses())
       {
          if (clazz.isAnnotation() || clazz.isInterface())
          {
@@ -598,7 +598,7 @@ public class Validator implements Service
    {
       if (ij.getBean() instanceof Decorator<?>)
       {
-         if (beanManager.getEnabledClasses().getDecorators().contains(ij.getBean().getBeanClass()))
+         if (beanManager.getEnabled().getDecorators().contains(ij.getBean().getBeanClass()))
          {
             return resolvedBeans.size() > 0;
          }

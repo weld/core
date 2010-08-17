@@ -45,7 +45,7 @@ public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<Decorator<?>
    {
       return Reflections.matches(Collections.singleton(bean.getDelegateType()), resolvable.getTypes())
             && Beans.containsAllQualifiers(bean.getDelegateQualifiers(), resolvable.getQualifiers(), getBeanManager())
-            && getBeanManager().getEnabledClasses().getDecorators().contains(bean.getBeanClass());
+            && getBeanManager().getEnabled().getDecorators().contains(bean.getBeanClass());
    }
    
    @Override
@@ -56,7 +56,7 @@ public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<Decorator<?>
          
          public int compare(Decorator<?> o1, Decorator<?> o2)
          {
-            List<Class<?>> enabledDecorators = getBeanManager().getEnabledClasses().getDecorators();
+            List<Class<?>> enabledDecorators = getBeanManager().getEnabled().getDecorators();
             int p1 = enabledDecorators.indexOf(((Decorator<?>) o1).getBeanClass());
             int p2 = enabledDecorators.indexOf(((Decorator<?>) o2).getBeanClass());
             return p1 - p2;

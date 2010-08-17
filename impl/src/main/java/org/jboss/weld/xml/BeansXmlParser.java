@@ -16,24 +16,26 @@
  */
 package org.jboss.weld.xml;
 
-import static org.jboss.weld.logging.messages.XmlMessage.CONFIGURATION_ERROR;
+import static java.util.Collections.emptyList;
+import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
 import static org.jboss.weld.logging.messages.XmlMessage.LOAD_ERROR;
+import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_ALTERNATIVES;
+import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_DECORATORS;
+import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_INTERCEPTORS;
 import static org.jboss.weld.logging.messages.XmlMessage.PARSING_ERROR;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.jboss.weld.manager.EnabledClasses;
-import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.messages.XmlMessage;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -44,137 +46,97 @@ import org.xml.sax.SAXException;
  */
 public class BeansXmlParser
 {
-   
+
    public static final String NAMESPACE_URI = "http://java.sun.com/xml/ns/javaee";
-   
-   private final Iterable<URL> beansXmls;
-   private final ResourceLoader resourceLoader;
 
-   public BeansXmlParser(ResourceLoader resourceLoader, Iterable<URL> beansXmls)
+   public BeansXml parse(final URL beansXml)
    {
-      this.beansXmls = beansXmls;
-      this.resourceLoader = resourceLoader;
-   }
-
-   public EnabledClasses parse()
-   {
-      DocumentBuilder documentBuilder = createDocumentBuilder();
-      MergedElements mergedElements = new MergedElements();
-      for (URL beansXml : beansXmls)
+      Document document = new BeansXmlDocumentLoader(beansXml)
       {
-         if (!isBeansXmlOK(beansXml))
+
+         @Override
+         protected Document loadDocument(InputStream in)
          {
-            continue;
+            if (isDocumentEmpty(in))
+            {
+               return null;
+            }
+            try
+            {
+               Document document = createDocumentBuilder().parse(in);
+               document.normalize();
+               return document;
+            }
+            catch (SAXException e)
+            {
+               throw new org.jboss.weld.exceptions.IllegalStateException(PARSING_ERROR, e, beansXml.toString());
+            }
+            catch (IOException e)
+            {
+               throw new org.jboss.weld.exceptions.IllegalStateException(LOAD_ERROR, e, beansXml.toString());
+            }
          }
-         Document document = loadDocument(documentBuilder, beansXml);
+      }.run();
+
+      if (document == null)
+      {
+         return EMPTY_BEANS_XML;
+      }
+      else
+      {
          if (document.getDocumentElement().getNamespaceURI() == null)
          {
-            mergedElements.merge(beansXml, document, "*");
+            return parseDocument(beansXml, document.getDocumentElement(), "*");
          }
          else
          {
-            mergedElements.merge(beansXml, document, NAMESPACE_URI);
+            return parseDocument(beansXml, document.getDocumentElement(), NAMESPACE_URI);
          }
-         
-      }
-      List<Class<?>> enabledAlternativeClasses = new ArrayList<Class<?>>();
-      List<Class<? extends Annotation>> enabledAlternativeStereotypes = new ArrayList<Class<? extends Annotation>>();
-      List<Class<?>> enabledDecoratorClasses = new ArrayList<Class<?>>();
-      List<Class<?>> enabledInterceptorClasses = new ArrayList<Class<?>>();
-      for (BeansXmlElement element : mergedElements.getAlternativeClassElements())
-      {
-         enabledAlternativeClasses.addAll(element.getClasses(resourceLoader));
-      }
-      for (BeansXmlElement element : mergedElements.getAlternativeStereotypeElements())
-      {
-         enabledAlternativeStereotypes.addAll(element.<Annotation>getClasses(resourceLoader));
-      }
-      for (BeansXmlElement element : mergedElements.getDecoratorsElements())
-      {
-         enabledDecoratorClasses.addAll(element.getClasses(resourceLoader));
-      }
-      for (BeansXmlElement element : mergedElements.getInterceptorsElements())
-      {
-         enabledInterceptorClasses.addAll(element.getClasses(resourceLoader));
-      }
-      return new EnabledClasses(enabledAlternativeStereotypes, enabledAlternativeClasses, enabledDecoratorClasses, enabledInterceptorClasses);
-   }
-
-   private Document loadDocument(DocumentBuilder documentBuilder, URL beansXml)
-   {
-      Document document;
-      InputStream in = null;
-      try
-      {
-         in = beansXml.openStream();
-         document = documentBuilder.parse(in);
-         document.normalize();
-      }
-      catch (SAXException e)
-      {
-         throw new WeldXmlException(PARSING_ERROR, e, beansXml.toString());
-      }
-      catch (IOException e)
-      {
-         throw new WeldXmlException(LOAD_ERROR, e, beansXml.toString());
-      }
-      finally
-      {
-         closeStream(in);
-      }
-      return document;
-   }
-
-   private void closeStream(InputStream in)
-   {
-      if (in == null)
-      {
-         return;
-      }
-      try
-      {
-         in.close();
-      }
-      catch (IOException e)
-      {
-         e.printStackTrace();
       }
    }
 
-   private boolean isBeansXmlOK(URL beansXml)
+   private BeansXml parseDocument(URL url, Element documentElement, String namespaceURI)
    {
-      if (beansXml == null)
+      return new BeansXmlImpl(
+            findClassNames(url, documentElement, namespaceURI, "alternatives", "class", MULTIPLE_ALTERNATIVES),
+            findClassNames(url, documentElement, namespaceURI, "alternatives", "stereotype", MULTIPLE_ALTERNATIVES),
+            findClassNames(url, documentElement, namespaceURI, "decorators", "class", MULTIPLE_DECORATORS),
+            findClassNames(url, documentElement, namespaceURI, "interceptors", "class", MULTIPLE_INTERCEPTORS)
+         ); 
+   }
+   
+   private static List<String> findClassNames(URL url, Element beans, String namespaceURI, String localGroupName, String localName, XmlMessage multipleViolationMessage)
+   {
+      NodeList nodeList = beans.getElementsByTagNameNS(namespaceURI, localGroupName);
+      if (nodeList.getLength() > 1)
       {
-         throw new WeldXmlException(LOAD_ERROR, "URL: null");
+         throw new DefinitionException(multipleViolationMessage);
       }
-      InputStream in = null;
-      try
+      else if (nodeList.getLength() == 1)
       {
-         in = beansXml.openStream();
-         return in.available() > 0;
+         return new BeansXmlElement(url, (Element) nodeList.item(0), localName, namespaceURI).getClassNames();
       }
-      catch (IOException e)
+      else
       {
-         throw new WeldXmlException(LOAD_ERROR, e, beansXml.toString());
-      }
-      finally
-      {
-         closeStream(in);
+         return emptyList();
       }
    }
 
-   private DocumentBuilder createDocumentBuilder()
+   public BeansXml parse(Iterable<URL> urls)
    {
-      try
+      List<String> alternativeStereotypes = new ArrayList<String>();
+      List<String> alternativeClasses = new ArrayList<String>();
+      List<String> decorators = new ArrayList<String>();
+      List<String> interceptors = new ArrayList<String>();
+      for (URL url : urls)
       {
-         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-         factory.setNamespaceAware(true);
-         return factory.newDocumentBuilder();
+         BeansXml beansXml = parse(url);
+         alternativeStereotypes.addAll(beansXml.getEnabledAlternativeStereotypes());
+         alternativeClasses.addAll(beansXml.getEnabledAlternativeClasses());
+         decorators.addAll(beansXml.getEnabledDecorators());
+         interceptors.addAll(beansXml.getEnabledInterceptors());
       }
-      catch (ParserConfigurationException e)
-      {
-         throw new WeldXmlException(CONFIGURATION_ERROR, e);
-      }
+      return new BeansXmlImpl(alternativeClasses, alternativeStereotypes, decorators, interceptors);
    }
 
 }

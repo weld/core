@@ -92,7 +92,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.BeanManagers;
-import org.jboss.weld.manager.EnabledClasses;
+import org.jboss.weld.manager.Enabled;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -591,7 +591,7 @@ public class Beans
          Set<T> result = new HashSet<T>();
          for (T bean : beans)
          {
-            if (isBeanEnabled(bean, beanManager.getEnabledClasses()) && !isSpecialized(bean, beans, beanManager))
+            if (isBeanEnabled(bean, beanManager.getEnabled()) && !isSpecialized(bean, beans, beanManager))
             {
                result.add(bean);
             }
@@ -600,11 +600,11 @@ public class Beans
       }
    }
 
-   public static boolean isBeanEnabled(Bean<?> bean, EnabledClasses enabledClasses)
+   public static boolean isBeanEnabled(Bean<?> bean, Enabled enabled)
    {
       if (bean.isAlternative())
       {
-         if (enabledClasses.getAlternativeClasses().contains(bean.getBeanClass()))
+         if (enabled.getAlternativeClasses().contains(bean.getBeanClass()))
          {
             return true;
          }
@@ -612,7 +612,7 @@ public class Beans
          {
             for (Class<? extends Annotation> stereotype : bean.getStereotypes())
             {
-               if (enabledClasses.getAlternativeStereotypes().contains(stereotype))
+               if (enabled.getAlternativeStereotypes().contains(stereotype))
                {
                   return true;
                }
@@ -621,11 +621,11 @@ public class Beans
       }
       else if (bean instanceof DecoratorImpl<?>)
       {
-         return enabledClasses.getDecorators().contains(bean.getBeanClass());
+         return enabled.getDecorators().contains(bean.getBeanClass());
       }
       else if (bean instanceof InterceptorImpl<?>)
       {
-         return enabledClasses.getInterceptors().contains(bean.getBeanClass());
+         return enabled.getInterceptors().contains(bean.getBeanClass());
       }
       else
       {

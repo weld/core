@@ -42,11 +42,11 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.Enabled;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.validation.spi.ValidationServices;
-import org.jboss.weld.xml.BeansXmlParser;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -70,10 +70,10 @@ public class BeanDeployment
       ServiceRegistry services = new SimpleServiceRegistry();
       services.addAll(deploymentServices.entrySet());
       services.addAll(beanDeploymentArchive.getServices().entrySet());
-      this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services, new BeansXmlParser(services.get(ResourceLoader.class), beanDeploymentArchive.getBeansXml()).parse());
-      log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabledClasses().getAlternativeClasses(), beanManager.getEnabledClasses().getAlternativeStereotypes());
-      log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabledClasses().getDecorators());
-      log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabledClasses().getInterceptors());
+      this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services, Enabled.of(beanDeploymentArchive.getBeansXml(), services.get(ResourceLoader.class)));
+      log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabled().getAlternativeClasses(), beanManager.getEnabled().getAlternativeStereotypes());
+      log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabled().getDecorators());
+      log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabled().getInterceptors());
       if (beanManager.getServices().contains(EjbServices.class))
       {
          // Must populate EJB cache first, as we need it to detect whether a

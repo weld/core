@@ -44,7 +44,7 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
    @Override
    protected boolean matches(InterceptorResolvable resolvable, Interceptor<?> bean)
    {
-      return bean.intercepts(resolvable.getInterceptionType()) && bean.getInterceptorBindings().size() > 0 && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager()) && getManager().getEnabledClasses().getInterceptors().contains(bean.getBeanClass());
+      return bean.intercepts(resolvable.getInterceptionType()) && bean.getInterceptorBindings().size() > 0 && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager()) && getManager().getEnabled().getInterceptors().contains(bean.getBeanClass());
    }
 
    @Override
@@ -55,8 +55,8 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
 
          public int compare(Interceptor<?> o1, Interceptor<?> o2)
          {
-            int p1 = getManager().getEnabledClasses().getInterceptors().indexOf(((InterceptorImpl<?>) o1).getType());
-            int p2 = getManager().getEnabledClasses().getInterceptors().indexOf(((InterceptorImpl<?>) o2).getType());
+            int p1 = getManager().getEnabled().getInterceptors().indexOf(((InterceptorImpl<?>) o1).getType());
+            int p2 = getManager().getEnabled().getInterceptors().indexOf(((InterceptorImpl<?>) o2).getType());
             return p1 - p2;
          }
 

@@ -168,7 +168,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     * archive accessibility, and the configuration for this bean deployment
     * archive
     */
-   private transient final EnabledClasses enabledClasses;
+   private transient final Enabled enabled;
    private transient final Set<CurrentActivity> currentActivities;   
 
    /*
@@ -231,7 +231,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     * @param serviceRegistry
     * @return
     */
-   public static BeanManagerImpl newRootManager(String id, ServiceRegistry serviceRegistry, EnabledClasses enabledClasses)
+   public static BeanManagerImpl newRootManager(String id, ServiceRegistry serviceRegistry, Enabled enabled)
    {  
       ListMultimap<Class<? extends Annotation>, Context> contexts = Multimaps.newListMultimap(new ConcurrentHashMap<Class<? extends Annotation>, Collection<Context>>(), CopyOnWriteArrayListSupplier.<Context>instance());
 
@@ -248,7 +248,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             contexts, 
             new CopyOnWriteArraySet<CurrentActivity>(), 
             new HashMap<Contextual<?>, Contextual<?>>(), 
-            enabledClasses,
+            enabled,
             id,
             new AtomicInteger());
    }
@@ -259,7 +259,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     * @param serviceRegistry
     * @return
     */
-   public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services, EnabledClasses enabledClasses)
+   public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services, Enabled enabled)
    {  
       return new BeanManagerImpl(
             services, 
@@ -274,7 +274,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             rootManager.getContexts(), 
             new CopyOnWriteArraySet<CurrentActivity>(), 
             new HashMap<Contextual<?>, Contextual<?>>(), 
-            enabledClasses,
+            enabled,
             id,
             new AtomicInteger());
    }
@@ -310,7 +310,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
             parentManager.getContexts(), 
             parentManager.getCurrentActivities(), 
             parentManager.getSpecializedBeans(),
-            parentManager.getEnabledClasses(),
+            parentManager.getEnabled(),
             new StringBuilder().append(parentManager.getChildIds().incrementAndGet()).toString(),
             parentManager.getChildIds());
    }
@@ -334,7 +334,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
          ListMultimap<Class<? extends Annotation>, Context> contexts, 
          Set<CurrentActivity> currentActivities, 
          Map<Contextual<?>, Contextual<?>> specializedBeans, 
-         EnabledClasses enabledClasses,
+         Enabled enabled,
          String id,
          AtomicInteger childIds)
    {
@@ -349,7 +349,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       this.currentActivities = currentActivities;
       this.specializedBeans = specializedBeans;
       this.observers = observers;
-      this.enabledClasses = enabledClasses;
+      this.enabled = enabled;
       this.namespaces = namespaces;
       this.id = id;
       this.childIds = new AtomicInteger();
@@ -458,29 +458,20 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       return (Set) observerResolver.resolve(new ResolvableBuilder().addTypes(new HierarchyDiscovery(eventType).getTypeClosure()).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create());
    }
-
-   /**
-    * A collection of enabled alternative classes
-    * 
-    */
-   public Collection<Class<?>> getEnabledAlternativeClasses()
-   {
-      return getEnabledClasses().getAlternativeClasses();
-   }
    
    /**
     * Enabled Alternatives, Interceptors and Decorators
     * 
     * @return
     */
-   public EnabledClasses getEnabledClasses()
+   public Enabled getEnabled()
    {
-      return enabledClasses;
+      return enabled;
    }
    
    public boolean isBeanEnabled(Bean<?> bean)
    {
-      return Beans.isBeanEnabled(bean, getEnabledClasses());   
+      return Beans.isBeanEnabled(bean, getEnabled());   
    }
    
    public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers)
@@ -840,7 +831,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Manager\n");
-      buffer.append("Enabled alternatives: " + getEnabledClasses().getAlternativeClasses() + " " + getEnabledClasses().getAlternativeStereotypes() + "\n");
+      buffer.append("Enabled alternatives: " + getEnabled().getAlternativeClasses() + " " + getEnabled().getAlternativeStereotypes() + "\n");
       buffer.append("Registered contexts: " + contexts.keySet() + "\n");
       buffer.append("Registered beans: " + getBeans().size() + "\n");
       buffer.append("Specialized beans: " + specializedBeans.size() + "\n");

@@ -16,14 +16,10 @@
  */
 package org.jboss.weld.xml;
 
-import static org.jboss.weld.logging.messages.XmlMessage.CANNOT_LOAD_CLASS;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.dom.NodeListIterable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -32,19 +28,20 @@ import org.w3c.dom.Text;
 /**
  * 
  * @author Nicklas Karlsson
+ * @author Pete Muir
  * 
  */
 class BeansXmlElement
 {
-   private final URL file;
+   
+   private final URL url;
    private final Element element;
    private final String localName;
    private final String namespaceURI;
 
-   BeansXmlElement(URL file, Element element, String localName, String namespaceURI)
+   BeansXmlElement(URL url, Element element, String localName, String namespaceURI)
    {
-      super();
-      this.file = file;
+      this.url = url;
       this.element = element;
       this.localName = localName;
       this.namespaceURI = namespaceURI;
@@ -60,43 +57,27 @@ class BeansXmlElement
       return null;
    }
 
-   public <T> List<Class<T>> getClasses(ResourceLoader resourceLoader)
+   public List<String> getClassNames()
    {
-      List<Class<T>> classes = new ArrayList<Class<T>>();
+      List<String> classes = new ArrayList<String>();
       for (Node child : new NodeListIterable(element.getElementsByTagNameNS(namespaceURI, localName)))
       {
          // Unsafe looking cast is actually safe as the NodeList only contains Elements
          String className = getClassNameFromElement((Element) child);
-         if (className == null)
+         if (className != null)
          {
-            continue;
-         }
-         try
-         {
-            classes.add((Class<T>) resourceLoader.classForName(className));
-         }
-         catch (ResourceLoadingException e)
-         {
-            throw new WeldXmlException(CANNOT_LOAD_CLASS, className, file);
+            classes.add(className);
          }
       }
       return classes;
    }
 
-   public URL getFile()
-   {
-      return file;
-   }
-
-   public Element getElement()
-   {
-      return element;
-   }
-
    @Override
    public String toString()
    {
-      return "File: " + getFile() + "; Node: " + getElement();
+      return element + " in " + url;
    }
+   
+   
 
 }
