@@ -264,7 +264,7 @@ public class OrderBuilder {
          </para>
 
          <programlisting role="XML"><![CDATA[<h:link outcome="/addProduct.xhtml" value="Add Product">
-   <f:param name="cid" value="#{conversation.id}"/>
+   <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
 </h:link>]]></programlisting>
          
          <tip>
