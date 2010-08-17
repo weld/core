@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.mock;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,6 +32,7 @@ import javax.ejb.Stateless;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 
 /**
@@ -44,7 +44,7 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
    
 
    private Collection<Class<?>> beanClasses;
-   private Collection<URL> beansXmlFiles;
+   private BeansXml beansXml;
    private List<EjbDescriptor<?>> ejbs;
    private final ServiceRegistry services;
    private final Collection<BeanDeploymentArchive> bdas;
@@ -59,7 +59,6 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
    {
       this.services = new SimpleServiceRegistry();
       this.beanClasses = Arrays.asList(classes);
-      this.beansXmlFiles = new HashSet<URL>();
       this.bdas = new HashSet<BeanDeploymentArchive>();
       this.id = id;
    }
@@ -79,14 +78,14 @@ public class MockBeanDeploymentArchive implements BeanDeploymentArchive
       }
    }
 
-   public Collection<URL> getBeansXml()
+   public BeansXml getBeansXml()
    {
-      return beansXmlFiles;
+      return beansXml;
    }
    
-   public void setBeansXmlFiles(Collection<URL> beansXmlFiles)
+   public void setBeansXml(BeansXml beansXml)
    {
-      this.beansXmlFiles = beansXmlFiles;
+      this.beansXml = beansXml;
    }
 
    public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()

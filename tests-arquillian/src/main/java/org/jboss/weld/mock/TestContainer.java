@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -89,13 +90,14 @@ public class TestContainer
    /**
     * Configure's the archive with the classes and beans.xml
     */
-   protected TestContainer configureArchive(Collection<Class<?>> classes, Collection<URL> beansXml)
+   protected TestContainer configureArchive(Collection<Class<?>> classes, Collection<URL> beansXmlUrls)
    {
       MockBeanDeploymentArchive archive = lifecycle.getWar();
       archive.setBeanClasses(classes);
-      if (beansXml != null)
+      if (beansXmlUrls != null)
       {
-         archive.setBeansXmlFiles(beansXml);
+         BeansXml beansXml = lifecycle.getBootstrap().parse(beansXmlUrls);
+         archive.setBeansXml(beansXml);
       }
       return this;
    }

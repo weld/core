@@ -82,9 +82,6 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
       return applicationBeanStore;
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.weld.mock.MockLifecycle#initialize()
-    */
    public void initialize()
    {
       try
@@ -113,58 +110,37 @@ public class MockServletLifecycle extends ForwardingLifecycle implements MockLif
       return bootstrap;
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.weld.mock.MockLifecycle#beginApplication()
-    */
    public void beginApplication()
    {
       bootstrap.startInitialization().deployBeans().validateBeans().endInitialization();
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.weld.mock.MockLifecycle#endApplication()
-    */
    @Override
    public void endApplication()
    {
       bootstrap.shutdown();
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.weld.mock.MockLifecycle#resetContexts()
-    */
    public void resetContexts()
    {
       
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.weld.mock.MockLifecycle#beginRequest()
-    */
    public void beginRequest()
    {
       super.beginRequest("Mock", getRequestBeanStore());
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.weld.mock.MockLifecycle#endRequest()
-    */
    public void endRequest()
    {
       super.endRequest("Mock", getRequestBeanStore());
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.weld.mock.MockLifecycle#beginSession()
-    */
    public void beginSession()
    {
       super.restoreSession("Mock", getSessionBeanStore());
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.weld.mock.MockLifecycle#endSession()
-    */
    public void endSession()
    {
       // TODO Conversation handling breaks this :-(
