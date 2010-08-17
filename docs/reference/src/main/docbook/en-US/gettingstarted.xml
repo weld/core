@@ -5,12 +5,12 @@
    <title>Getting started with Weld</title>
 
    <para>
-      Weld comes with two starter example applications, in addition to more specialized examples. The first,
-      <literal>weld-numberguess</literal>, is a web (war) example containing only non-transactional managed beans.
-      This example can be run on a wide range of servers, including JBoss AS, GlassFish, Apache Tomcat, Jetty, Google
-      App Engine, and any compliant Java EE 6 container. The second example, <literal>weld-translator</literal>, is
-      an enterprise (ear) example that contains session beans. This example must be run on JBoss AS 6.0, Glassfish 3.0 
-      or any compliant Java EE 6 container.
+      Weld comes with a number of examples. We recommend you start with <literal>examples/jsf/numberguess</literal>
+      and <literal>examples/jsf/translator</literal>. Numberguess is a web (war) example containing
+      only non-transactional managed beans. This example can be run on a wide range of servers, including JBoss 
+      AS, GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java EE 6 container. 
+      Translator is an enterprise (ear) example that contains session beans. This example
+      must be run on JBoss AS 6.0, Glassfish 3.0 or any compliant Java EE 6 container.
    </para>
    
    <para>
