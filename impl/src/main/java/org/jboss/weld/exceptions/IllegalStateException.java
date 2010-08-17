@@ -44,6 +44,12 @@ public class IllegalStateException extends java.lang.IllegalStateException
    {
       message = new WeldExceptionKeyMessage(key, args);
    }
+   
+   public <E extends Enum<?>> IllegalStateException(E key, Throwable throwable, Object... args)
+   {
+      super(throwable);
+      this.message = new WeldExceptionKeyMessage(key, args);
+   }
 
    /**
     * Creates a new exception with the given cause.

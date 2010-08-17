@@ -43,6 +43,13 @@ public class IllegalArgumentException extends java.lang.IllegalArgumentException
       super(throwable);
       message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
    }
+   
+
+   public <E extends Enum<?>> IllegalArgumentException(E key, Throwable throwable, Object... args)
+   {
+      super(throwable);
+      this.message = new WeldExceptionKeyMessage(key, args);
+   }
 
    /**
     * Creates a new exception with the given localized message key and optional
