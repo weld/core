@@ -34,16 +34,9 @@
 
    <dependencies>
       <dependency>
-         <groupId>org.testng</groupId>
-         <artifactId>testng</artifactId>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
          <scope>test</scope>
-         <classifier>jdk15</classifier>
-         <exclusions>
-            <exclusion>
-               <artifactId>junit</artifactId>
-               <groupId>junit</groupId>
-            </exclusion>
-         </exclusions>
       </dependency>
 
       <dependency>

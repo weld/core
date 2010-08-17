@@ -17,15 +17,15 @@
 
 package org.jboss.weld.environment.se.test.beans;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.Serializable;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-
 import javax.inject.Inject;
 
 import org.jboss.weld.environment.se.bindings.Parameters;
-import org.testng.Assert;
 
 /**
  * 
@@ -47,7 +47,7 @@ public class ParametersTestBean implements Serializable
       this.parameters = params;
       // even if no args are given, it should will always at least be an empty
       // array
-      Assert.assertNotNull(params);
+      assertNotNull(params);
    }
 
    public List<String> getParameters()

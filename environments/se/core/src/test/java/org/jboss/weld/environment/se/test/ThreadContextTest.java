@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 package org.jboss.weld.environment.se.test;
+import static org.junit.Assert.assertEquals;
 
-import org.jboss.weld.environment.se.test.beans.threading.ThreadRunner;
 import java.util.ArrayList;
-
 import java.util.List;
+
 import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertEquals;
+import org.jboss.weld.environment.se.test.beans.threading.ThreadRunner;
+import org.junit.Test;
 
 /**
  * Tests for ThreadContext, @ThreadScoped and the RunnableDecorator. The

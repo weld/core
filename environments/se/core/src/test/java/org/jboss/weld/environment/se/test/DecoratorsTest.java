@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.environment.se.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
@@ -23,8 +27,7 @@ import org.jboss.weld.environment.se.test.decorators.AbstractDoor;
 import org.jboss.weld.environment.se.test.decorators.CarDoor;
 import org.jboss.weld.environment.se.test.decorators.CarDoorAlarm;
 import org.jboss.weld.environment.se.test.decorators.HouseDoor;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * 
@@ -42,36 +45,36 @@ public class DecoratorsTest
       WeldContainer weld = new Weld().initialize();
 
       CarDoor carDoor = weld.instance().select(CarDoor.class).get();
-      Assert.assertNotNull(carDoor);
+      assertNotNull(carDoor);
 
       // the car door is alarmed
       CarDoorAlarm.alarmActivated = false;
-      Assert.assertFalse(CarDoorAlarm.alarmActivated);
+      assertFalse(CarDoorAlarm.alarmActivated);
       testDoor(carDoor);
-      Assert.assertTrue(CarDoorAlarm.alarmActivated);
+      assertTrue(CarDoorAlarm.alarmActivated);
 
       HouseDoor houseDoor = weld.instance().select(HouseDoor.class).get();
-      Assert.assertNotNull(carDoor);
+      assertNotNull(carDoor);
 
       // the house door is not alarmed
       CarDoorAlarm.alarmActivated = false;
-      Assert.assertFalse(CarDoorAlarm.alarmActivated);
+      assertFalse(CarDoorAlarm.alarmActivated);
       testDoor(houseDoor);
-      Assert.assertFalse(CarDoorAlarm.alarmActivated);
+      assertFalse(CarDoorAlarm.alarmActivated);
 
       shutdownManager(weld);
    }
 
    private void testDoor(AbstractDoor door)
    {
-      Assert.assertTrue(door.open());
-      Assert.assertTrue(door.isOpen());
-      Assert.assertFalse(door.close());
-      Assert.assertFalse(door.isOpen());
-      Assert.assertTrue(door.lock());
-      Assert.assertTrue(door.isLocked());
-      Assert.assertFalse(door.open());
-      Assert.assertFalse(door.isOpen());
+      assertTrue(door.open());
+      assertTrue(door.isOpen());
+      assertFalse(door.close());
+      assertFalse(door.isOpen());
+      assertTrue(door.lock());
+      assertTrue(door.isLocked());
+      assertFalse(door.open());
+      assertFalse(door.isOpen());
    }
 
    private void shutdownManager(WeldContainer weld)

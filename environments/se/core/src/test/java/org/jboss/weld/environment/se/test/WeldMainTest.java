@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.environment.se.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
@@ -24,8 +28,7 @@ import org.jboss.weld.environment.se.test.beans.InitObserverTestBean;
 import org.jboss.weld.environment.se.test.beans.MainTestBean;
 import org.jboss.weld.environment.se.test.beans.ObserverTestBean;
 import org.jboss.weld.environment.se.test.beans.ParametersTestBean;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * 
@@ -44,11 +47,11 @@ public class WeldMainTest
       WeldContainer weld = new Weld().initialize();
 
       MainTestBean mainTestBean = weld.instance().select(MainTestBean.class).get();
-      Assert.assertNotNull(mainTestBean);
+      assertNotNull(mainTestBean);
 
       ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();
-      Assert.assertNotNull(paramsBean);
-      Assert.assertNotNull(paramsBean.getParameters());
+      assertNotNull(paramsBean);
+      assertNotNull(paramsBean.getParameters());
 
       shutdownManager(weld);
    }
@@ -66,11 +69,11 @@ public class WeldMainTest
       WeldContainer weld = new Weld().initialize();
       weld.event().select(CustomEvent.class).fire(new CustomEvent());
 
-      Assert.assertTrue(ObserverTestBean.isBuiltInObserved());
-      Assert.assertTrue(ObserverTestBean.isCustomObserved());
-      Assert.assertFalse(ObserverTestBean.isInitObserved());
+      assertTrue(ObserverTestBean.isBuiltInObserved());
+      assertTrue(ObserverTestBean.isCustomObserved());
+      assertFalse(ObserverTestBean.isInitObserved());
 
-      Assert.assertFalse(InitObserverTestBean.isInitObserved());
+      assertFalse(InitObserverTestBean.isInitObserved());
    }
 
    private void shutdownManager(WeldContainer weld)

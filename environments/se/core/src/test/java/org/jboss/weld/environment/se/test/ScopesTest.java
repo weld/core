@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.se.test;
 
+
+import static org.junit.Assert.assertEquals;
+
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.se.ShutdownManager;
@@ -23,7 +26,7 @@ import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.test.scopes.Bar;
 import org.jboss.weld.environment.se.test.scopes.Foo;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * 
@@ -35,15 +38,16 @@ public class ScopesTest
    /**
     * Test that decorators work as expected in SE.
     */
-   @Test(description="WELD-322")
+   @Test
+   // WELD-322
    public void testScopes()
    {
 
       WeldContainer weld = new Weld().initialize();
       BeanManager manager = weld.getBeanManager();
 
-      assert manager.getBeans(Bar.class).size() == 1;
-      assert manager.getBeans(Foo.class).size() == 2;
+      assertEquals(1, manager.getBeans(Bar.class).size());
+      assertEquals(2, manager.getBeans(Foo.class).size());
 
       shutdownManager(weld);
    }

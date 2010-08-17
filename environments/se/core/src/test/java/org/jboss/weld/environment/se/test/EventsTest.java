@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.environment.se.test;
 
+import static org.junit.Assert.assertFalse;
+
 import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.test.events.Foo;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * 
@@ -30,13 +32,14 @@ import org.testng.annotations.Test;
 public class EventsTest
 {
 
-   @Test(description="forum post check")
+   // forum post check
+   @Test
    public void testEventQualifiersCorrect()
    {
       Foo.reset();
       WeldContainer weld = new Weld().initialize();
       weld.event().select(ContainerInitialized.class).fire(new ContainerInitialized());
-      assert !Foo.isObservedEventTest();
+      assertFalse(Foo.isObservedEventTest());
       shutdownManager(weld);
    }
 

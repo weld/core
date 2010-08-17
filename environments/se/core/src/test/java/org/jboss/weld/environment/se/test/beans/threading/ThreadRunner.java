@@ -16,12 +16,13 @@
  */
 package org.jboss.weld.environment.se.test.beans.threading;
 
-import org.jboss.weld.environment.se.test.*;
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
-import static org.testng.Assert.assertEquals;
+import org.jboss.weld.environment.se.test.ThreadContextTest;
 
 /**
  * An bean which implements Runnable and therefore can be run in a separate thread.

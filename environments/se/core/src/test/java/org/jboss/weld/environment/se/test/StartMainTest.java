@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.environment.se.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.se.ShutdownManager;
@@ -26,8 +30,7 @@ import org.jboss.weld.environment.se.test.beans.InitObserverTestBean;
 import org.jboss.weld.environment.se.test.beans.MainTestBean;
 import org.jboss.weld.environment.se.test.beans.ObserverTestBean;
 import org.jboss.weld.environment.se.test.beans.ParametersTestBean;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * 
@@ -53,17 +56,17 @@ public class StartMainTest
       BeanManager manager = weld.getBeanManager();
 
       MainTestBean mainTestBean = weld.instance().select(MainTestBean.class).get();
-      Assert.assertNotNull(mainTestBean);
+      assertNotNull(mainTestBean);
 
       ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();
-      Assert.assertNotNull(paramsBean);
-      Assert.assertNotNull(paramsBean.getParameters());
-      Assert.assertNotNull(paramsBean.getParameters().get(0));
-      Assert.assertEquals(ARGS[0], paramsBean.getParameters().get(0));
-      Assert.assertNotNull(paramsBean.getParameters().get(1));
-      Assert.assertEquals(ARGS[1], paramsBean.getParameters().get(1));
-      Assert.assertNotNull(paramsBean.getParameters().get(2));
-      Assert.assertEquals(ARGS[2], paramsBean.getParameters().get(2));
+      assertNotNull(paramsBean);
+      assertNotNull(paramsBean.getParameters());
+      assertNotNull(paramsBean.getParameters().get(0));
+      assertEquals(ARGS[0], paramsBean.getParameters().get(0));
+      assertNotNull(paramsBean.getParameters().get(1));
+      assertEquals(ARGS[1], paramsBean.getParameters().get(1));
+      assertNotNull(paramsBean.getParameters().get(2));
+      assertEquals(ARGS[2], paramsBean.getParameters().get(2));
 
       shutdownManager(weld);
    }
@@ -79,11 +82,11 @@ public class StartMainTest
       BeanManager manager = weld.getBeanManager();
 
       MainTestBean mainTestBean = weld.instance().select(MainTestBean.class).get();
-      Assert.assertNotNull(mainTestBean);
+      assertNotNull(mainTestBean);
 
       ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();
-      Assert.assertNotNull(paramsBean);
-      Assert.assertNotNull(paramsBean.getParameters());
+      assertNotNull(paramsBean);
+      assertNotNull(paramsBean.getParameters());
 
       shutdownManager(weld);
    }
@@ -98,11 +101,11 @@ public class StartMainTest
       BeanManager manager = weld.getBeanManager();
       manager.fireEvent(new CustomEvent());
 
-      Assert.assertTrue(ObserverTestBean.isBuiltInObserved());
-      Assert.assertTrue(ObserverTestBean.isCustomObserved());
-      Assert.assertTrue(ObserverTestBean.isInitObserved());
+      assertTrue(ObserverTestBean.isBuiltInObserved());
+      assertTrue(ObserverTestBean.isCustomObserved());
+      assertTrue(ObserverTestBean.isInitObserved());
 
-      Assert.assertTrue(InitObserverTestBean.isInitObserved());
+      assertTrue(InitObserverTestBean.isInitObserved());
    }
 
    private void shutdownManager(WeldContainer weld)

@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 package org.jboss.weld.environment.se.test;
-
-import javax.enterprise.inject.spi.BeanManager;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
@@ -24,8 +25,7 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.test.beans.InterceptorTestBean;
 import org.jboss.weld.environment.se.test.interceptors.AggregatingInterceptor;
 import org.jboss.weld.environment.se.test.interceptors.RecordingInterceptor;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * 
@@ -41,21 +41,20 @@ public class InterceptorsTest
    public void testInterceptors()
    {
       WeldContainer weld = new Weld().initialize();
-      BeanManager manager = weld.getBeanManager();
 
       InterceptorTestBean intTestBean = weld.instance().select(InterceptorTestBean.class).get();
-      Assert.assertNotNull(intTestBean);
+      assertNotNull(intTestBean);
 
       intTestBean.doSomethingRecorded();
       System.out.println(RecordingInterceptor.methodsRecorded);
       System.out.println(AggregatingInterceptor.methodsCalled);
-      Assert.assertTrue(RecordingInterceptor.methodsRecorded.contains("doSomethingRecorded"));
+      assertTrue(RecordingInterceptor.methodsRecorded.contains("doSomethingRecorded"));
 
       intTestBean.doSomethingRecordedAndAggregated();
       System.out.println(RecordingInterceptor.methodsRecorded);
       System.out.println(AggregatingInterceptor.methodsCalled);
 
-      Assert.assertEquals(1, AggregatingInterceptor.methodsCalled);
+      assertEquals(1, AggregatingInterceptor.methodsCalled);
 
       shutdownManager(weld);
    }
