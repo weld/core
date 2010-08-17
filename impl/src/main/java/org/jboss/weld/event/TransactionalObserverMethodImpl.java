@@ -57,7 +57,7 @@ class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X>
       {
          return;
       }
-      if ((manager.getServices().get(TransactionServices.class) != null)  && (manager.getServices().get(TransactionServices.class).isTransactionActive()))
+      if ((beanManager.getServices().get(TransactionServices.class) != null)  && (beanManager.getServices().get(TransactionServices.class).isTransactionActive()))
       {
          deferEvent(event);
       }
@@ -94,7 +94,7 @@ class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X>
       {
          synchronization = new TransactionSynchronizedRunnable(deferredEvent, Status.FAILURE);
       }
-      manager.getServices().get(TransactionServices.class).registerSynchronization(synchronization);
+      beanManager.getServices().get(TransactionServices.class).registerSynchronization(synchronization);
    }
 
 }

@@ -77,8 +77,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    
    private final Set<Annotation> bindings;
    private final Type eventType;
-   protected BeanManagerImpl manager;
-   private final Reception notifyType;
+   protected BeanManagerImpl beanManager;
+   private final Reception reception;
    protected final RIBean<X> declaringBean;
    protected final MethodInjectionPoint<T, ? super X> observerMethod;
    protected TransactionPhase transactionPhase;
@@ -96,14 +96,14 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
     */
    protected ObserverMethodImpl(final WeldMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
    {
-      this.manager = manager;
+      this.beanManager = manager;
       this.declaringBean = declaringBean;
       this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
       this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
       this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
       this.bindings = new HashSet<Annotation>(observerMethod.getAnnotatedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
       Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
-      this.notifyType = observesAnnotation.receive();
+      this.reception = observesAnnotation.receive();
       transactionPhase = TransactionPhase.IN_PROGRESS;
       this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
       for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod))
@@ -128,7 +128,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    {
       // Make sure exactly one and only one parameter is annotated with Observes
       List<?> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
-      if (this.notifyType.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class))
+      if (this.reception.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class))
       {
          throw new DefinitionException(INVALID_SCOPED_CONDITIONAL_OBSERVER, this);
       }
@@ -179,7 +179,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
 
    public Reception getReception()
    {
-      return notifyType;
+      return reception;
    }
 
    public Set<Annotation> getObservedQualifiers()
@@ -244,7 +244,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
          {
             // As we are working with the contextual instance, we may not have the
             // actual object, but a container proxy (e.g. EJB)
-            observerMethod.invokeOnInstanceWithSpecialValue(instance, Observes.class, event, manager, creationalContext, ObserverException.class);
+            observerMethod.invokeOnInstanceWithSpecialValue(instance, Observes.class, event, beanManager, creationalContext, ObserverException.class);
          }
       }
       finally
@@ -263,9 +263,9 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
     */
    private CreationalContext<?> createCreationalContext()
    {
-      if (notifyType.equals(ALWAYS))
+      if (reception.equals(ALWAYS))
       {
-         return manager.createCreationalContext(declaringBean);
+         return beanManager.createCreationalContext(declaringBean);
       }
       else
       {
@@ -275,15 +275,15 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    
    private Object getReceiver(CreationalContext<?> creationalContext)
    {
-      if (notifyType.equals(ALWAYS))
+      if (reception.equals(ALWAYS))
       {
-         return manager.getReference(declaringBean, creationalContext, false);
+         return beanManager.getReference(declaringBean, creationalContext, false);
       }
       else
       {
          try
          {
-            return manager.getReference(declaringBean, creationalContext, false);
+            return beanManager.getReference(declaringBean, creationalContext, false);
          }
          catch (ContextNotActiveException e) 
          {
