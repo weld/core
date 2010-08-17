@@ -22,10 +22,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.messages.XmlMessage;
 import org.jboss.weld.mock.MockEELifecycle;
 import org.jboss.weld.mock.TestContainer;
-import org.jboss.weld.xml.WeldXmlException;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -59,15 +61,23 @@ public class BeansXmlTest
          }
       }
 
-      public void runAndExpect(WeldXmlException expected)
+      public void runAndExpect(Exception expected)
       {
-         String errorCode = expected.getMessage().substring(0, 11);
          try
          {
             run();
          }
-         catch (WeldXmlException e)
+         catch (Exception e)
          {
+            if (!expected.getClass().isAssignableFrom(e.getClass()))
+            {
+               assert false;
+            }
+            if (expected.getMessage() == null)
+            {
+               return;
+            }
+            String errorCode = expected.getMessage().substring(0, 11);
             if (e.getMessage().startsWith(errorCode))
             {
                return;
@@ -78,7 +88,7 @@ public class BeansXmlTest
 
    }
 
-   private static void checkWithBeansXmlAndExpectException(String beansXml, WeldXmlException e)
+   private static void checkWithBeansXmlAndExpectException(String beansXml, Exception e)
    {
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, Plain.class, IntBind.class);
       List<URL> beansXmls = Arrays.asList(BeansXmlTest.class.getResource(beansXml));
@@ -90,19 +100,19 @@ public class BeansXmlTest
    @Test
    public void testMultipleAlternativeBlocksFail()
    {
-      checkWithBeansXmlAndExpectException("multipleAlternativeBlocks.xml", new WeldXmlException(XmlMessage.MULTIPLE_ALTERNATIVES));
+      checkWithBeansXmlAndExpectException("multipleAlternativeBlocks.xml", new DefinitionException(XmlMessage.MULTIPLE_ALTERNATIVES));
    }
 
    @Test
    public void testMultipleDecoratorBlocksFail()
    {
-      checkWithBeansXmlAndExpectException("multipleDecoratorBlocks.xml", new WeldXmlException(XmlMessage.MULTIPLE_DECORATORS));
+      checkWithBeansXmlAndExpectException("multipleDecoratorBlocks.xml", new DefinitionException(XmlMessage.MULTIPLE_DECORATORS));
    }
 
    @Test
    public void testMultipleInterceptorBlocksFail()
    {
-      checkWithBeansXmlAndExpectException("multipleInterceptorsBlocks.xml", new WeldXmlException(XmlMessage.MULTIPLE_INTERCEPTORS));
+      checkWithBeansXmlAndExpectException("multipleInterceptorsBlocks.xml", new DefinitionException(XmlMessage.MULTIPLE_INTERCEPTORS));
    }
 
    @Test
@@ -111,8 +121,8 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("alternative.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      Assert.assertEquals(1, container.getBeanManager().getEnabledClasses().getAlternativeClasses().size());
-      Assert.assertEquals(Alt.class, container.getBeanManager().getEnabledClasses().getAlternativeClasses().iterator().next());
+      Assert.assertEquals(1, container.getBeanManager().getEnabled().getAlternativeClasses().size());
+      Assert.assertEquals(Alt.class, container.getBeanManager().getEnabled().getAlternativeClasses().iterator().next());
       container.stopContainer();
    }
 
@@ -122,8 +132,8 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("decorator.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      Assert.assertEquals(1, container.getBeanManager().getEnabledClasses().getDecorators().size());
-      Assert.assertEquals(Dec.class, container.getBeanManager().getEnabledClasses().getDecorators().iterator().next());
+      Assert.assertEquals(1, container.getBeanManager().getEnabled().getDecorators().size());
+      Assert.assertEquals(Dec.class, container.getBeanManager().getEnabled().getDecorators().iterator().next());
       container.stopContainer();
    }
 
@@ -133,8 +143,8 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("interceptor.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      Assert.assertEquals(1, container.getBeanManager().getEnabledClasses().getInterceptors().size());
-      Assert.assertEquals(Int.class, container.getBeanManager().getEnabledClasses().getInterceptors().iterator().next());
+      Assert.assertEquals(1, container.getBeanManager().getEnabled().getInterceptors().size());
+      Assert.assertEquals(Int.class, container.getBeanManager().getEnabled().getInterceptors().iterator().next());
       container.stopContainer();
    }
 
@@ -144,19 +154,19 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("alternative.xml"), getClass().getResource("decorator.xml"), getClass().getResource("interceptor.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      Assert.assertEquals(1, container.getBeanManager().getEnabledClasses().getAlternativeClasses().size());
-      Assert.assertEquals(Alt.class, container.getBeanManager().getEnabledClasses().getAlternativeClasses().iterator().next());
-      Assert.assertEquals(1, container.getBeanManager().getEnabledClasses().getInterceptors().size());
-      Assert.assertEquals(Int.class, container.getBeanManager().getEnabledClasses().getInterceptors().iterator().next());
-      Assert.assertEquals(1, container.getBeanManager().getEnabledClasses().getDecorators().size());
-      Assert.assertEquals(Dec.class, container.getBeanManager().getEnabledClasses().getDecorators().iterator().next());
+      Assert.assertEquals(1, container.getBeanManager().getEnabled().getAlternativeClasses().size());
+      Assert.assertEquals(Alt.class, container.getBeanManager().getEnabled().getAlternativeClasses().iterator().next());
+      Assert.assertEquals(1, container.getBeanManager().getEnabled().getInterceptors().size());
+      Assert.assertEquals(Int.class, container.getBeanManager().getEnabled().getInterceptors().iterator().next());
+      Assert.assertEquals(1, container.getBeanManager().getEnabled().getDecorators().size());
+      Assert.assertEquals(Dec.class, container.getBeanManager().getEnabled().getDecorators().iterator().next());
       container.stopContainer();
    }
 
    @Test
    public void testBeansXmlDoesntExist()
    {
-      checkWithBeansXmlAndExpectException("nope.xml", new WeldXmlException(XmlMessage.LOAD_ERROR));
+      checkWithBeansXmlAndExpectException("nope.xml", new IllegalStateException(XmlMessage.LOAD_ERROR));
    }
    
    // WELD-467
@@ -166,8 +176,8 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("namespaced.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      Assert.assertEquals(1, container.getBeanManager().getEnabledClasses().getAlternativeClasses().size());
-      Assert.assertEquals(Alt.class, container.getBeanManager().getEnabledClasses().getAlternativeClasses().iterator().next());
+      Assert.assertEquals(1, container.getBeanManager().getEnabled().getAlternativeClasses().size());
+      Assert.assertEquals(Alt.class, container.getBeanManager().getEnabled().getAlternativeClasses().iterator().next());
       container.stopContainer();
    }
    
@@ -178,8 +188,8 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("nonDefaultNamespaced.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      Assert.assertEquals(1, container.getBeanManager().getEnabledClasses().getAlternativeClasses().size());
-      Assert.assertEquals(Alt.class, container.getBeanManager().getEnabledClasses().getAlternativeClasses().iterator().next());
+      Assert.assertEquals(1, container.getBeanManager().getEnabled().getAlternativeClasses().size());
+      Assert.assertEquals(Alt.class, container.getBeanManager().getEnabled().getAlternativeClasses().iterator().next());
       container.stopContainer();
    }
 
@@ -192,8 +202,8 @@ public class BeansXmlTest
       List<Class<?>> beans = Arrays.asList(Alt.class, Dec.class, Int.class, IntBind.class, Plain.class);
       List<URL> beansXmls = Arrays.asList(getClass().getResource("nonPrettyPrinted.xml"));
       TestContainer container = new TestContainer(new MockEELifecycle(), beans, beansXmls).startContainer().ensureRequestActive();
-      Assert.assertEquals(1, container.getBeanManager().getEnabledClasses().getAlternativeClasses().size());
-      Assert.assertEquals(Alt.class, container.getBeanManager().getEnabledClasses().getAlternativeClasses().iterator().next());
+      Assert.assertEquals(1, container.getBeanManager().getEnabled().getAlternativeClasses().size());
+      Assert.assertEquals(Alt.class, container.getBeanManager().getEnabled().getAlternativeClasses().iterator().next());
       container.stopContainer();
    }
 
@@ -201,19 +211,19 @@ public class BeansXmlTest
    public void testCannotLoadFile() throws MalformedURLException
    {
       List<Class<?>> beans = Collections.emptyList();
-      new FailedDeployment(beans, Arrays.asList(new URL("http://foo.bar/beans.xml"))).runAndExpect(new WeldXmlException(XmlMessage.LOAD_ERROR));
+      new FailedDeployment(beans, Arrays.asList(new URL("http://foo.bar/beans.xml"))).runAndExpect(new IllegalStateException(XmlMessage.LOAD_ERROR));
    }
 
    @Test
    public void testParsingError()
    {
-      checkWithBeansXmlAndExpectException("unparseable.xml", new WeldXmlException(XmlMessage.PARSING_ERROR));
+      checkWithBeansXmlAndExpectException("unparseable.xml", new IllegalStateException(XmlMessage.PARSING_ERROR));
    }
 
    @Test
    public void testCannotLoadClass()
    {
-      checkWithBeansXmlAndExpectException("unloadable.xml", new WeldXmlException(XmlMessage.CANNOT_LOAD_CLASS));
+      checkWithBeansXmlAndExpectException("unloadable.xml", new ResourceLoadingException());
    }
 
 }

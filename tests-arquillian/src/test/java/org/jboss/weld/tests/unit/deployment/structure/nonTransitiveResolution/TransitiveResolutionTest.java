@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -25,6 +28,7 @@ import org.jboss.weld.mock.MockDeployment;
 import org.jboss.weld.mock.MockServletLifecycle;
 import org.jboss.weld.mock.TestContainer;
 import org.jboss.weld.test.Utils;
+import org.jboss.weld.xml.BeansXmlImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,7 +42,7 @@ public class TransitiveResolutionTest
    {
       MockBeanDeploymentArchive jar1 = new MockBeanDeploymentArchive("first-jar", Alt.class);
       MockBeanDeploymentArchive jar2 = new MockBeanDeploymentArchive("second-jar", Alt.class);
-      jar1.getBeansXml().add(getClass().getResource("beans.xml"));
+      jar1.setBeansXml(new BeansXmlImpl(Arrays.asList(Alt.class.getName()), Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList()));
       MockBeanDeploymentArchive war = new MockBeanDeploymentArchive("war");
       war.getBeanDeploymentArchives().add(jar1);
       war.getBeanDeploymentArchives().add(jar2);
@@ -52,9 +56,9 @@ public class TransitiveResolutionTest
          BeanManagerImpl warBeanManager = container.getBeanManager();
          BeanManagerImpl jar1BeanManager = container.getLifecycle().getBootstrap().getManager(jar1);         
          BeanManagerImpl jar2BeanManager = container.getLifecycle().getBootstrap().getManager(jar2);
-         Assert.assertTrue(warBeanManager.getEnabledClasses().getAlternativeClasses().isEmpty());
-         Assert.assertFalse(jar1BeanManager.getEnabledClasses().getAlternativeClasses().isEmpty());
-         Assert.assertTrue(jar2BeanManager.getEnabledClasses().getAlternativeClasses().isEmpty());
+         Assert.assertTrue(warBeanManager.getEnabled().getAlternativeClasses().isEmpty());
+         Assert.assertFalse(jar1BeanManager.getEnabled().getAlternativeClasses().isEmpty());
+         Assert.assertTrue(jar2BeanManager.getEnabled().getAlternativeClasses().isEmpty());
       }
       finally
       {
@@ -73,8 +77,8 @@ public class TransitiveResolutionTest
    {
       MockBeanDeploymentArchive jar1 = new MockBeanDeploymentArchive("first-jar", Alt.class);
       MockBeanDeploymentArchive jar2 = new MockBeanDeploymentArchive("second-jar", Alt.class);
-      jar1.getBeansXml().add(getClass().getResource("beans.xml"));
-      jar2.getBeansXml().add(getClass().getResource("beans.xml"));
+      jar1.setBeansXml(new BeansXmlImpl(Arrays.asList(Alt.class.getName()), Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList()));
+      jar2.setBeansXml(new BeansXmlImpl(Arrays.asList(Alt.class.getName()), Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList()));
       MockBeanDeploymentArchive war = new MockBeanDeploymentArchive("war");
       war.getBeanDeploymentArchives().add(jar1);
       war.getBeanDeploymentArchives().add(jar2);
@@ -88,9 +92,9 @@ public class TransitiveResolutionTest
          BeanManagerImpl warBeanManager = container.getBeanManager();
          BeanManagerImpl jar1BeanManager = container.getLifecycle().getBootstrap().getManager(jar1);         
          BeanManagerImpl jar2BeanManager = container.getLifecycle().getBootstrap().getManager(jar2);
-         Assert.assertTrue(warBeanManager.getEnabledClasses().getAlternativeClasses().isEmpty());
-         Assert.assertFalse(jar1BeanManager.getEnabledClasses().getAlternativeClasses().isEmpty());
-         Assert.assertFalse(jar2BeanManager.getEnabledClasses().getAlternativeClasses().isEmpty());
+         Assert.assertTrue(warBeanManager.getEnabled().getAlternativeClasses().isEmpty());
+         Assert.assertFalse(jar1BeanManager.getEnabled().getAlternativeClasses().isEmpty());
+         Assert.assertFalse(jar2BeanManager.getEnabled().getAlternativeClasses().isEmpty());
       }
       finally
       {
