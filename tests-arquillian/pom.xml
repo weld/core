@@ -202,7 +202,7 @@
          </activation>
          <dependencies>
             <dependency>
-               <groupId>org.jboss.arquillian.container</groupId>
+               <groupId>org.jboss.weld.arquillian.container</groupId>
                <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
                <scope>provided</scope>
                <!--
