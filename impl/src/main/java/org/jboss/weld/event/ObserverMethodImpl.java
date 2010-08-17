@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.event;
 
-import static javax.enterprise.event.Reception.ALWAYS;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_DISPOSES_PARAMETER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
@@ -230,21 +229,45 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
     */
    protected void sendEvent(final T event)
    {
-      
-      CreationalContext<?> creationalContext = createCreationalContext();
-      try
+      if (observerMethod.isStatic())
       {
-         Object instance = getReceiver(creationalContext);
+         sendEvent(event, null, beanManager.createCreationalContext(declaringBean));
+      }
+      else if (reception.equals(Reception.IF_EXISTS))
+      {
+         Object receiver = getReceiverIfExists();
          // The observer is conditional, and there is no existing bean
-         if (instance == null)
+         if (receiver == null)
          {
             return;
          }
          else
          {
+            sendEvent(event, receiver, null);
+         }
+      }
+      else
+      {
+         CreationalContext<?> creationalContext = beanManager.createCreationalContext(declaringBean);
+         Object receiver = beanManager.getReference(declaringBean, creationalContext, false);
+         sendEvent(event, receiver, creationalContext);
+      }
+
+   }
+
+   private void sendEvent(T event, Object receiver, CreationalContext<?> creationalContext)
+   {
+      try
+      {
+         if (receiver == null)
+         {
+            observerMethod.invokeWithSpecialValue(receiver, Observes.class, event, beanManager, creationalContext, ObserverException.class);
+         }
+         else
+         {
             // As we are working with the contextual instance, we may not have the
             // actual object, but a container proxy (e.g. EJB)
-            observerMethod.invokeOnInstanceWithSpecialValue(instance, Observes.class, event, beanManager, creationalContext, ObserverException.class);
+            observerMethod.invokeOnInstanceWithSpecialValue(receiver, Observes.class, event, beanManager, creationalContext, ObserverException.class);
          }
       }
       finally
@@ -255,40 +278,16 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
          }
       }
    }
-
-   /**
-    * Creates the creational context if the observer method is not conditional
-    * 
-    * @return
-    */
-   private CreationalContext<?> createCreationalContext()
+   
+   private Object getReceiverIfExists()
    {
-      if (reception.equals(ALWAYS))
+      try
       {
-         return beanManager.createCreationalContext(declaringBean);
+         return beanManager.getReference(declaringBean, null, false);
       }
-      else
+      catch (ContextNotActiveException e)
       {
          return null;
-      }
-   }
-   
-   private Object getReceiver(CreationalContext<?> creationalContext)
-   {
-      if (reception.equals(ALWAYS))
-      {
-         return beanManager.getReference(declaringBean, creationalContext, false);
-      }
-      else
-      {
-         try
-         {
-            return beanManager.getReference(declaringBean, creationalContext, false);
-         }
-         catch (ContextNotActiveException e) 
-         {
-            return null;
-         }
       }
    }
    
