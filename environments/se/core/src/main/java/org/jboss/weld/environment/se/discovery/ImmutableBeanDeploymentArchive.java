@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.environment.se.discovery;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 
 /**
@@ -42,10 +42,10 @@ public class ImmutableBeanDeploymentArchive extends AbstractWeldSEBeanDeployment
 {
 
    private final Collection<Class<?>> beanClasses;
-   private final Collection<URL> beansXml;
+   private final BeansXml beansXml;
    private final Collection<BeanDeploymentArchive> beanDeploymentArchives;
 
-   public ImmutableBeanDeploymentArchive(String id, Collection<Class<?>> beanClasses, Collection<URL> beansXml, Collection<BeanDeploymentArchive> beanDeploymentArchives)
+   public ImmutableBeanDeploymentArchive(String id, Collection<Class<?>> beanClasses, BeansXml beansXml, Collection<BeanDeploymentArchive> beanDeploymentArchives)
    {
       super(id);
       this.beanClasses = beanClasses;
@@ -53,7 +53,7 @@ public class ImmutableBeanDeploymentArchive extends AbstractWeldSEBeanDeployment
       this.beanDeploymentArchives = beanDeploymentArchives;
    }
 
-   public ImmutableBeanDeploymentArchive(String id, Collection<Class<?>> beanClasses, Collection<URL> beansXml)
+   public ImmutableBeanDeploymentArchive(String id, Collection<Class<?>> beanClasses, BeansXml beansXml)
    {
       this(id, beanClasses, beansXml, new ArrayList<BeanDeploymentArchive>());
    }
@@ -68,8 +68,8 @@ public class ImmutableBeanDeploymentArchive extends AbstractWeldSEBeanDeployment
       return Collections.unmodifiableCollection(beanDeploymentArchives);
    }
 
-   public Collection<URL> getBeansXml()
+   public BeansXml getBeansXml()
    {
-      return Collections.unmodifiableCollection(beansXml);
+      return beansXml;
    }
 }

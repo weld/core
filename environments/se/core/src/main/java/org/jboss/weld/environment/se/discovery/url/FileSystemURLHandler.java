@@ -22,11 +22,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import org.jboss.weld.environment.se.discovery.MutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ public class FileSystemURLHandler
       this.resourceLoader = resourceLoader;
    }
 
-   public void handle(Collection<String> paths, MutableBeanDeploymentArchive beanDeploymentArchive)
+   public void handle(Collection<String> paths, List<Class<?>> discoveredClasses, List<URL> discoveredBeansXmlUrls)
    {
       for (String urlPath : paths)
       {
@@ -69,11 +69,11 @@ public class FileSystemURLHandler
             File file = new File(urlPath);
             if (file.isDirectory())
             {
-               handleDirectory(file, null, beanDeploymentArchive);
+               handleDirectory(file, null, discoveredClasses, discoveredBeansXmlUrls);
             }
             else
             {
-               handleArchiveByFile(file, beanDeploymentArchive);
+               handleArchiveByFile(file, discoveredClasses, discoveredBeansXmlUrls);
             }
          }
          catch (IOException ioe)
@@ -83,7 +83,7 @@ public class FileSystemURLHandler
       }
    }
 
-   private void handleArchiveByFile(File file, MutableBeanDeploymentArchive beanDeploymentArchive) throws IOException
+   private void handleArchiveByFile(File file, List<Class<?>> discoveredClasses, List<URL> discoveredBeansXmlUrls) throws IOException
    {
       try
       {
@@ -97,7 +97,7 @@ public class FileSystemURLHandler
          {
             ZipEntry entry = entries.nextElement();
             String name = entry.getName();
-            handle(name, new URL(archiveUrl + name), beanDeploymentArchive);
+            handle(name, new URL(archiveUrl + name), discoveredClasses, discoveredBeansXmlUrls);
          }
       }
       catch (ZipException e)
@@ -106,12 +106,12 @@ public class FileSystemURLHandler
       }
    }
 
-   protected void handleDirectory(File file, String path, MutableBeanDeploymentArchive beanDeploymentArchive)
+   protected void handleDirectory(File file, String path, List<Class<?>> discoveredClasses, List<URL> discoveredBeansXmlUrls)
    {
-      handleDirectory(file, path, new File[0], beanDeploymentArchive);
+      handleDirectory(file, path, new File[0], discoveredClasses, discoveredBeansXmlUrls);
    }
 
-   private void handleDirectory(File file, String path, File[] excludedDirectories, MutableBeanDeploymentArchive beanDeploymentArchive)
+   private void handleDirectory(File file, String path, File[] excludedDirectories, List<Class<?>> discoveredClasses, List<URL> discoveredBeansXmlUrls)
    {
       for (File excludedDirectory : excludedDirectories)
       {
@@ -131,13 +131,13 @@ public class FileSystemURLHandler
 
          if (child.isDirectory())
          {
-            handleDirectory(child, newPath, excludedDirectories, beanDeploymentArchive);
+            handleDirectory(child, newPath, excludedDirectories, discoveredClasses, discoveredBeansXmlUrls);
          }
          else
          {
             try
             {
-               handle(newPath, child.toURI().toURL(), beanDeploymentArchive);
+               handle(newPath, child.toURI().toURL(), discoveredClasses, discoveredBeansXmlUrls);
             }
             catch (MalformedURLException e)
             {
@@ -147,14 +147,14 @@ public class FileSystemURLHandler
       }
    }
 
-   protected void handle(String name, URL url, MutableBeanDeploymentArchive beanDeploymentArchive)
+   protected void handle(String name, URL url, List<Class<?>> discoveredClasses, List<URL> discoveredBeansXmlUrls)
    {
       if (name.endsWith(".class"))
       {
          String className = filenameToClassname(name);
          try
          {
-            beanDeploymentArchive.getBeanClasses().add(getResourceLoader().classForName(className));
+            discoveredClasses.add(getResourceLoader().classForName(className));
          }
          catch (NoClassDefFoundError e)
          {
@@ -167,7 +167,7 @@ public class FileSystemURLHandler
       }
       else if (name.endsWith("beans.xml"))
       {
-         beanDeploymentArchive.getBeansXml().add(url);
+         discoveredBeansXmlUrls.add(url);
       }
    }
 

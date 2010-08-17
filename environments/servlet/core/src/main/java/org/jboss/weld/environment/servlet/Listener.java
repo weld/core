@@ -115,7 +115,7 @@ public class Listener extends ForwardingServletListener
       BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
       sce.getServletContext().setAttribute(APPLICATION_BEAN_STORE_ATTRIBUTE_NAME, applicationBeanStore);
       
-      ServletDeployment deployment = new ServletDeployment(sce.getServletContext());
+      ServletDeployment deployment = new ServletDeployment(sce.getServletContext(), bootstrap);
       try
       {
     	  deployment.getWebAppBeanDeploymentArchive().getServices().add(

@@ -19,16 +19,18 @@ package org.jboss.weld.environment.servlet.deployment;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.Servlets;
@@ -47,48 +49,28 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive
    public static final String WEB_INF_BEANS_XML = "/WEB-INF/beans.xml";
    public static final String WEB_INF_CLASSES = "/WEB-INF/classes";
    
-   private final Set<Class<?>> classes;
-   private final Set<URL> beansXml;
+   private final List<Class<?>> classes;
+   private final BeansXml beansXml;
    private final ServiceRegistry services;
    
-   public WebAppBeanDeploymentArchive(ServletContext servletContext)
+   public WebAppBeanDeploymentArchive(ServletContext servletContext, Bootstrap bootstrap)
    {
-      this.classes = new HashSet<Class<?>>();
-      this.beansXml = new HashSet<URL>();
       this.services = new SimpleServiceRegistry();
-      scan(servletContext);
-   }
-   
-   public Iterable<Class<?>> discoverWeldClasses()
-   {
-      return Collections.unmodifiableSet(classes);
-   }
-   
-   public Iterable<URL> discoverWeldXml()
-   {
-      return Collections.unmodifiableSet(beansXml);
-   }
-   
-   public Set<URL> getWeldUrls()
-   {
-      return beansXml;
-   }
-   
-   private void scan(ServletContext servletContext)
-   {
-      Scanner scanner = new URLScanner(Reflections.getClassLoader(), this);
-      scanner.scanResources(new String[] { META_INF_BEANS_XML });
+      this.classes = new ArrayList<Class<?>>();
+      List<URL> urls = new ArrayList<URL>();
+      URLScanner scanner = new URLScanner(Reflections.getClassLoader());
+      scanner.scanResources(new String[] { META_INF_BEANS_XML }, classes, urls);
       try
       {
          URL beans = servletContext.getResource(WEB_INF_BEANS_XML);
          if (beans != null)
          {
-       	   beansXml.add(beans); // this is consistent with how the JBoss weld.deployer works
+       	   urls.add(beans); // this is consistent with how the JBoss weld.deployer works
             File webInfClasses = Servlets.getRealFile(servletContext, WEB_INF_CLASSES);
             if (webInfClasses != null)
             {
                File[] files = { webInfClasses };
-               scanner.scanDirectories(files);
+               scanner.scanDirectories(files, classes, urls);
             }
          }
       }
@@ -96,6 +78,7 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive
       {
          throw new IllegalStateException("Error loading resources from servlet context ", e);
       }
+      this.beansXml = bootstrap.parse(urls);
    }
 
    public Collection<Class<?>> getBeanClasses()
@@ -108,7 +91,7 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive
       return Collections.emptySet();
    }
 
-   public Collection<URL> getBeansXml()
+   public BeansXml getBeansXml()
    {
       return beansXml;
    }

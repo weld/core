@@ -20,10 +20,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -33,32 +33,57 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of {@link Scanner} which can scan a {@link URLClassLoader}
  * 
- * @author Thomas Heute
- * @author Gavin King
- * @author Norman Richards
+ * This class provides file-system orientated scanning
+ * 
  * @author Pete Muir
  * 
  */
-public class URLScanner extends AbstractScanner
+public class URLScanner
 {
+
    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
+
+   private final ClassLoader classLoader;
    
-   public URLScanner(ClassLoader classLoader, WebAppBeanDeploymentArchive webBeanDiscovery)
+   public URLScanner(ClassLoader classLoader)
    {
-      super(classLoader, webBeanDiscovery);
+      this.classLoader = classLoader;
    }
 
-   public void scanDirectories(File[] directories)
+   protected void handle(String name, URL url, List<Class<?>> classes, List<URL> urls)
    {
-      for (File directory : directories)
+      if (name.endsWith(".class"))
       {
-         handleDirectory(directory, null);
+         String className = filenameToClassname(name);
+         try
+         {
+            classes.add(classLoader.loadClass(className));
+         }
+         catch (NoClassDefFoundError e)
+         {
+            log.error("Error loading " + name, e);
+         }
+         catch (ClassNotFoundException e)
+         {
+            log.error("Error loading " + name, e);
+         }
+      }
+      else if (name.equals(WebAppBeanDeploymentArchive.META_INF_BEANS_XML))
+      {
+         urls.add(url);
       }
    }
    
-   public void scanResources(String[] resources)
+   public void scanDirectories(File[] directories, List<Class<?>> classes, List<URL> urls)
+   {
+      for (File directory : directories)
+      {
+         handleDirectory(directory, null, classes, urls);
+      }
+   }
+
+   public void scanResources(String[] resources, List<Class<?>> classes, List<URL> urls)
    {
       Set<String> paths = new HashSet<String>();
       
@@ -66,7 +91,7 @@ public class URLScanner extends AbstractScanner
       {
          try
          {
-            Enumeration<URL> urlEnum = getClassLoader().getResources(resourceName);
+            Enumeration<URL> urlEnum = classLoader.getResources(resourceName);
             
             while (urlEnum.hasMoreElements())
             {
@@ -104,10 +129,10 @@ public class URLScanner extends AbstractScanner
          }
       }
       
-      handle(paths);
+      handle(paths, classes, urls);
    }
-   
-   protected void handle(Set<String> paths)
+
+   protected void handle(Set<String> paths, List<Class<?>> classes, List<URL> urls)
    {
       for (String urlPath : paths)
       {
@@ -119,11 +144,11 @@ public class URLScanner extends AbstractScanner
             
             if (file.isDirectory())
             {
-               handleDirectory(file, null);
+               handleDirectory(file, null, classes, urls);
             }
             else
             {
-               handleArchiveByFile(file);
+               handleArchiveByFile(file, classes, urls);
             }
          }
          catch (IOException ioe)
@@ -132,8 +157,8 @@ public class URLScanner extends AbstractScanner
          }
       }
    }
-   
-   private void handleArchiveByFile(File file) throws IOException
+
+   private void handleArchiveByFile(File file, List<Class<?>> classes, List<URL> urls) throws IOException
    {
       try
       {
@@ -146,7 +171,7 @@ public class URLScanner extends AbstractScanner
          {
             ZipEntry entry = entries.nextElement();
             String name = entry.getName();
-            handle(name, getClassLoader().getResource(name));
+            handle(name, classLoader.getResource(name), classes, urls);
          }
       }
       catch (ZipException e)
@@ -154,13 +179,13 @@ public class URLScanner extends AbstractScanner
          throw new RuntimeException("Error handling file " + file, e);
       }
    }
-   
-   private void handleDirectory(File file, String path)
+
+   private void handleDirectory(File file, String path, List<Class<?>> classes, List<URL> urls)
    {
-      handleDirectory(file, path, new File[0]);
+      handleDirectory(file, path, new File[0], classes, urls);
    }
-   
-   private void handleDirectory(File file, String path, File[] excludedDirectories)
+
+   private void handleDirectory(File file, String path, File[] excludedDirectories, List<Class<?>> classes, List<URL> urls)
    {
       for (File excludedDirectory : excludedDirectories)
       {
@@ -180,13 +205,13 @@ public class URLScanner extends AbstractScanner
          
          if (child.isDirectory())
          {
-            handleDirectory(child, newPath, excludedDirectories);
+            handleDirectory(child, newPath, excludedDirectories, classes, urls);
          }
          else
          {
             try
             {
-               handle(newPath, child.toURI().toURL());
+               handle(newPath, child.toURI().toURL(), classes, urls);
             }
             catch (MalformedURLException e)
             {
@@ -194,6 +219,15 @@ public class URLScanner extends AbstractScanner
             }
          }
       }
+   }
+
+   /**
+    * Convert a path to a class file to a class name
+    */
+   public static String filenameToClassname(String filename)
+   {
+      return filename.substring( 0, filename.lastIndexOf(".class") )
+            .replace('/', '.').replace('\\', '.');
    }
    
 }

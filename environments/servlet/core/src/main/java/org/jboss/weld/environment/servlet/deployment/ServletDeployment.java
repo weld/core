@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.servlet.ServletContext;
 
+import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -17,9 +18,9 @@ public class ServletDeployment implements Deployment
    private final Collection<BeanDeploymentArchive> beanDeploymentArchives;
    private final ServiceRegistry services;
 
-   public ServletDeployment(ServletContext servletContext)
+   public ServletDeployment(ServletContext servletContext, Bootstrap bootstrap)
    {
-      this.webAppBeanDeploymentArchive = new WebAppBeanDeploymentArchive(servletContext);
+      this.webAppBeanDeploymentArchive = new WebAppBeanDeploymentArchive(servletContext, bootstrap);
       this.beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>();
       this.beanDeploymentArchives.add(webAppBeanDeploymentArchive);
       this.services = new SimpleServiceRegistry();

@@ -19,19 +19,20 @@ package org.jboss.weld.environment.se.discovery.url;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.environment.se.discovery.MutableBeanDeploymentArchive;
+import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of {@link Scanner} which can scan a {@link URLClassLoader}
+ * Scan the classloader
  * 
  * @author Thomas Heute
  * @author Gavin King
@@ -46,17 +47,20 @@ public class URLScanner
    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
    private final String[] resources;
    private final ResourceLoader resourceLoader;
+   private final Bootstrap bootstrap;
 
-   public URLScanner(ResourceLoader resourceLoader, String... resources)
+   public URLScanner(ResourceLoader resourceLoader, Bootstrap bootstrap, String... resources)
    {
       this.resources = resources;
       this.resourceLoader = resourceLoader;
+      this.bootstrap = bootstrap;
    }
 
    public BeanDeploymentArchive scan()
    {
       FileSystemURLHandler handler = new FileSystemURLHandler(resourceLoader);
-      MutableBeanDeploymentArchive beanDeploymentArchive = new MutableBeanDeploymentArchive("classpath");
+      List<Class<?>> discoveredClasses = new ArrayList<Class<?>>();
+      List<URL> discoveredBeanXmlUrls = new ArrayList<URL>();
       Collection<String> paths = new ArrayList<String>();
       for (String resourceName : resources)
       {
@@ -110,9 +114,9 @@ public class URLScanner
 
             paths.add(urlPath);
          }
-         handler.handle(paths, beanDeploymentArchive);
+         handler.handle(paths, discoveredClasses, discoveredBeanXmlUrls);
       }
-      return beanDeploymentArchive;
+      return new ImmutableBeanDeploymentArchive("classpath", discoveredClasses, bootstrap.parse(discoveredBeanXmlUrls));
    }
    
 }

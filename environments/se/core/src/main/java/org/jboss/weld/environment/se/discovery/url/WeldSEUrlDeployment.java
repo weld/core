@@ -19,6 +19,7 @@ package org.jboss.weld.environment.se.discovery.url;
 import java.util.Collections;
 import java.util.List;
 
+import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -33,10 +34,10 @@ public class WeldSEUrlDeployment extends AbstractWeldSEDeployment
 
    private final BeanDeploymentArchive beanDeploymentArchive;
    
-   public WeldSEUrlDeployment(ResourceLoader resourceLoader)
+   public WeldSEUrlDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap)
    {
       getServices().add(ResourceLoader.class, resourceLoader);
-      this.beanDeploymentArchive = new URLScanner(resourceLoader, RESOURCES).scan();
+      this.beanDeploymentArchive = new URLScanner(resourceLoader, bootstrap, RESOURCES).scan();
    }
 
    public List<BeanDeploymentArchive> getBeanDeploymentArchives()

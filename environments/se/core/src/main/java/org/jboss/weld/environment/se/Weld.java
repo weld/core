@@ -67,12 +67,11 @@ public class Weld
    {
 
       BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
-      Deployment deployment = createDeployment();
-
+      ResourceLoader resourceLoader = new WeldSEResourceLoader();
       Bootstrap bootstrap = null;
       try
       {
-         bootstrap = (Bootstrap) deployment.getServices().get(ResourceLoader.class).classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
+         bootstrap = (Bootstrap) resourceLoader.classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
       }
       catch (InstantiationException ex)
       {
@@ -83,6 +82,7 @@ public class Weld
          throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
       }
 
+      Deployment deployment = createDeployment(resourceLoader, bootstrap);
       // Set up the container
       bootstrap.startContainer(Environments.SE, deployment, applicationBeanStore);
 
@@ -127,9 +127,9 @@ public class Weld
     * </pre>
     * 
     */
-   protected Deployment createDeployment()
+   protected Deployment createDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap)
    {
-      return new WeldSEUrlDeployment(new WeldSEResourceLoader());
+      return new WeldSEUrlDeployment(resourceLoader, bootstrap);
    }
 
    /**
