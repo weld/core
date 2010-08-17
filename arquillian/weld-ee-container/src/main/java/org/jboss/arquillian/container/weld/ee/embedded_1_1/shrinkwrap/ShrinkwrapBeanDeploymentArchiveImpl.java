@@ -44,9 +44,11 @@ import org.jboss.shrinkwrap.classloader.ShrinkWrapClassLoader;
 import org.jboss.shrinkwrap.impl.base.AssignableBase;
 import org.jboss.shrinkwrap.impl.base.Validate;
 import org.jboss.shrinkwrap.impl.base.asset.ArchiveAsset;
+import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 
 /**
@@ -62,12 +64,12 @@ public class ShrinkwrapBeanDeploymentArchiveImpl extends AssignableBase implemen
    private ServiceRegistry serviceRegistry = new SimpleServiceRegistry();
    
    private ShrinkWrapClassLoader classLoader;
+   private Bootstrap bootstrap;
    
    public ShrinkwrapBeanDeploymentArchiveImpl(Archive<?> archive)
    {
       Validate.notNull(archive, "Archive must be specified");
       this.archive = archive;
-      
       this.classLoader = new ShrinkWrapClassLoader(archive.getClass().getClassLoader(), archive);
    }
 
@@ -81,6 +83,11 @@ public class ShrinkwrapBeanDeploymentArchiveImpl extends AssignableBase implemen
    {
       return classLoader;
    }
+   
+   public void setBootstrap(Bootstrap bootstrap)
+   {
+      this.bootstrap = bootstrap;
+   }
 
    public String getId()
    {
@@ -92,8 +99,12 @@ public class ShrinkwrapBeanDeploymentArchiveImpl extends AssignableBase implemen
       return serviceRegistry;
    }
    
-   public Collection<URL> getBeansXml()
+   public BeansXml getBeansXml()
    {
+      if (bootstrap == null)
+      {
+         throw new IllegalStateException("must call setBootstrap() before calling getBeansXml()");
+      }
       List<URL> beanClasses = new ArrayList<URL>();
       Map<ArchivePath, Node> nestedArchives = archive.getContent(Filters.include(".*\\.jar|.*\\.war"));
       for(final Map.Entry<ArchivePath, Node> nestedArchiveEntry : nestedArchives.entrySet())
@@ -164,7 +175,7 @@ public class ShrinkwrapBeanDeploymentArchiveImpl extends AssignableBase implemen
             e.printStackTrace();
          }
       }
-      return beanClasses;
+      return bootstrap.parse(beanClasses);
    }
 
    public Collection<Class<?>> getBeanClasses()

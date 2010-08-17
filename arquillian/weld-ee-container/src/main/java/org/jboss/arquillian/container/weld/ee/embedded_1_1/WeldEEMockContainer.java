@@ -71,6 +71,7 @@ public class WeldEEMockContainer implements DeployableContainer
       
       ShrinkwrapBeanDeploymentArchive beanArchive = archive.as(ShrinkwrapBeanDeploymentArchive.class);
       MockEELifecycle lifecycle = new MockEELifecycle(beanArchive);
+      beanArchive.setBootstrap(lifecycle.getBootstrap());
 
       ContextClassLoaderManager classLoaderManager = new ContextClassLoaderManager(beanArchive.getClassLoader());
       classLoaderManager.enable();
