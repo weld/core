@@ -1,16 +1,18 @@
 package org.jboss.weld.environment.tomcat;
 
-import org.apache.AnnotationProcessor;
-import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.core.ApplicationContext;
-import org.apache.catalina.core.ApplicationContextFacade;
-import org.jboss.weld.manager.api.WeldManager;
-import org.jboss.weld.environment.servlet.util.Reflections;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Field;
+
+import org.apache.AnnotationProcessor;
+import org.apache.catalina.core.ApplicationContext;
+import org.apache.catalina.core.ApplicationContextFacade;
+import org.apache.catalina.core.StandardContext;
+import org.jboss.weld.environment.servlet.util.Reflections;
+import org.jboss.weld.manager.api.WeldManager;
 
 /**
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
@@ -59,7 +61,7 @@ public class WeldForwardingAnnotationProcessor extends ForwardingAnnotationProce
    public static void replaceAnnotationProcessor(ServletContextEvent sce, WeldManager manager)
    {
       StandardContext stdContext = getStandardContext(sce);
-      stdContext.setAnnotationProcessor(createInstance(manager, stdContext));
+      setAnnotationProcessor(stdContext, createInstance(manager, stdContext));
    }
 
    private static WeldForwardingAnnotationProcessor createInstance(WeldManager manager, StandardContext stdContext)
@@ -68,7 +70,7 @@ public class WeldForwardingAnnotationProcessor extends ForwardingAnnotationProce
       {
          Class<?> clazz = Reflections.classForName(WeldAnnotationProcessor.class.getName());
          AnnotationProcessor weldProcessor = (AnnotationProcessor) clazz.getConstructor(WeldManager.class).newInstance(manager);
-         return new WeldForwardingAnnotationProcessor(stdContext.getAnnotationProcessor(), weldProcessor);
+         return new WeldForwardingAnnotationProcessor(getAnnotationProcessor(stdContext), weldProcessor);
       }
       catch (Exception e)
       {
@@ -101,10 +103,107 @@ public class WeldForwardingAnnotationProcessor extends ForwardingAnnotationProce
    public static void restoreAnnotationProcessor(ServletContextEvent sce)
    {
       StandardContext stdContext = getStandardContext(sce);
-      AnnotationProcessor ap = stdContext.getAnnotationProcessor();
+      AnnotationProcessor ap = getAnnotationProcessor(stdContext);
       if (ap instanceof WeldForwardingAnnotationProcessor)
       {
-         stdContext.setAnnotationProcessor(((WeldForwardingAnnotationProcessor)ap).firstProcessor);
+        setAnnotationProcessor(stdContext,((WeldForwardingAnnotationProcessor)ap).firstProcessor);
+      }
+   }
+
+   private static AnnotationProcessor getAnnotationProcessor(StandardContext stdContext)
+   {
+      // try the getter first
+      try
+      {
+         Method getter = stdContext.getClass().getDeclaredMethod("getAnnotationProcessor");
+         getter.setAccessible(true);
+         return (AnnotationProcessor)getter.invoke(stdContext);
+      }
+      catch (SecurityException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (InvocationTargetException e)
+      {
+         if (e.getCause() instanceof RuntimeException)
+            throw (RuntimeException) e.getCause();
+         else
+            throw new RuntimeException(e.getCause());
+      }
+      catch (NoSuchMethodException e)
+      {
+         // ignore and try the field instead 
+      }
+      try
+      {
+         Field field = stdContext.getClass().getDeclaredField("annotationProcessor");
+         field.setAccessible(true);
+         return (AnnotationProcessor) field.get(stdContext);
+      }
+      catch (SecurityException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (NoSuchFieldException e)
+      {
+         // TODO Auto-generated catch block
+         throw new RuntimeException("neither field nor setter found for annotationProcessor");
+      }
+   }
+   
+   private static void setAnnotationProcessor(StandardContext stdContext, AnnotationProcessor annotationProcessor)
+   {
+      //try setter first
+      try
+      {
+         Method setter = stdContext.getClass().getDeclaredMethod("setAnnotationProcessor");
+         setter.setAccessible(true);
+         setter.invoke(stdContext, annotationProcessor);
+      }
+      catch (SecurityException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (InvocationTargetException e)
+      {
+         if (e.getCause() instanceof RuntimeException)
+            throw (RuntimeException) e.getCause();
+         else
+            throw new RuntimeException(e.getCause());
+      }
+      catch (NoSuchMethodException e)
+      {
+         // ignore and try the method instead
+      }
+      try
+      {
+         Field field = stdContext.getClass().getDeclaredField("annotationProcessor");
+         field.setAccessible(true);
+         field.set(stdContext, annotationProcessor);
+      }
+      catch (SecurityException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (NoSuchFieldException e)
+      {
+         throw new RuntimeException("neither field nor setter found for annotationProcessor");
       }
    }
 }
