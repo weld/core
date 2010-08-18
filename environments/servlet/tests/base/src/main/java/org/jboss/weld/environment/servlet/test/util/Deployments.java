@@ -7,8 +7,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 public class Deployments
 {
-
-   public static final String WELD_SERVLET_ARTIFACT_NAME = "org.jboss.weld.servlet:weld-servlet";
    public static final String CONTEXT_PATH = "http://localhost:8888/test";
 
    private static final String DEFAULT_WEB_XML_PREFIX = "<web-app> <servlet><servlet-name>ServletTestRunner</servlet-name><servlet-class>org.jboss.arquillian.protocol.servlet_3.ServletTestRunner</servlet-class></servlet> <servlet-mapping><servlet-name>ServletTestRunner</servlet-name><url-pattern>/ArquillianServletRunner</url-pattern></servlet-mapping> <listener><listener-class>org.jboss.weld.environment.servlet.Listener</listener-class></listener> <resource-env-ref><resource-env-ref-name>BeanManager</resource-env-ref-name><resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type></resource-env-ref> ";
@@ -18,7 +16,9 @@ public class Deployments
 
    public static WebArchive baseDeployment(BeansXml beansXml, Asset webXml)
    {
-      return ShrinkWrap.create(WebArchive.class, "test.war").addWebResource(beansXml, "beans.xml").addLibrary(MavenArtifactResolver.resolve(WELD_SERVLET_ARTIFACT_NAME)).setWebXML(webXml);
+      return ShrinkWrap.create(WebArchive.class, "test.war")
+         .addWebResource(beansXml, "beans.xml")
+         .setWebXML(webXml);
    }
    
    public static WebArchive baseDeployment(BeansXml beansXml)

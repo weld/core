@@ -63,6 +63,24 @@
          <scope>test</scope>
       </dependency>
 
+      <dependency>
+         <groupId>javax.faces</groupId>
+         <artifactId>jsf-api</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.faces</groupId>
+         <artifactId>jsf-impl</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>jstl</artifactId>
+         <scope>test</scope>
+      </dependency>
+
    </dependencies>
 
    <build>
@@ -153,7 +171,13 @@
             <!-- Weld servlet, EL and JSP required for testing CDI injections -->
             <dependency>
                <groupId>org.jboss.weld.servlet</groupId>
-               <artifactId>weld-servlet</artifactId>
+               <artifactId>weld-servlet-core</artifactId>
+               <scope>test</scope>
+            </dependency>
+
+            <dependency>
+               <groupId>org.jboss.weld</groupId>
+               <artifactId>weld-core</artifactId>
                <scope>test</scope>
             </dependency>
 
