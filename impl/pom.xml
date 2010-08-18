@@ -173,36 +173,22 @@
             </configuration>
          </plugin>
          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <configuration>
-               <archive>
-                  <manifestEntries>
-                     <Implementation-URL>${project.url}</Implementation-URL>
-                     <Implementation-Title>${project.name}</Implementation-Title>
-                     <Implementation-Version>${maven.build.timestamp}</Implementation-Version>
-                     <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                     <Specification-Title>${project.name}</Specification-Title>
-                     <Specification-Version>${parsedVersion.osgiVersion}</Specification-Version>
-                     <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                  </manifestEntries>
-                  <manifestSections>
-                     <manifestSection>
-                        <name>Build-Information</name>
-                        <manifestEntries>
-                           <Maven-Version>${maven.version}</Maven-Version>
-                           <Java-Version>${java.version}</Java-Version>
-                           <Java-Vendor>${java.vendor}</Java-Vendor>
-                           <Os-Name>${os.name}</Os-Name>
-                           <Os-Arch>${os.arch}</Os-Arch>
-                           <Os-Version>${os.version}</Os-Version>
-                           <SCM>r${buildNumber}</SCM>
-                           <Build-Time>${maven.build.timestamp}</Build-Time>
-                        </manifestEntries>
-                     </manifestSection>
-                  </manifestSections>
-               </archive>
-            </configuration>
+            <artifactId>maven-remote-resources-plugin</artifactId>
+            <version>1.1</version>
+            <executions>
+               <execution>
+                  <id>attach-license</id>
+                  <goals>
+                     <goal>process</goal>
+                  </goals>
+                  <inherited>true</inherited>
+                  <configuration>
+                     <resourceBundles>
+                        <resourceBundle>org.jboss.weld:weld-license:1-SNAPSHOT</resourceBundle>
+                     </resourceBundles>
+                  </configuration>
+               </execution>
+            </executions>
          </plugin>
       </plugins>
    </build>
