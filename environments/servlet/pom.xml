@@ -31,10 +31,10 @@
          Use JSF 2 for all extensions support, despite core using JSF
          1.2
       -->
-      <jsf.version>2.0.0-RC</jsf.version>
+      <jsf.version>2.0.2-FCS</jsf.version>
       <tomcat.version>6.0.26</tomcat.version>
       <jetty.version>6.1.21</jetty.version>
-      <uel.glassfish.version>2.1.2-b04</uel.glassfish.version>
+      <uel.glassfish.version>2.2</uel.glassfish.version>
       <!-- Testing deps -->
       <apache.httpclient.version>3.1</apache.httpclient.version>
       <junit.version>4.7</junit.version>
@@ -91,6 +91,12 @@
          <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty-naming</artifactId>
+            <version>${jetty.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jsp-2.1-jetty</artifactId>
             <version>${jetty.version}</version>
          </dependency>
 

@@ -60,6 +60,11 @@
          <groupId>org.jboss.arquillian</groupId>
          <artifactId>arquillian-junit</artifactId>
       </dependency>
+      
+      <dependency>
+         <groupId>net.sourceforge.htmlunit</groupId>
+         <artifactId>htmlunit</artifactId>
+      </dependency>
 
    </dependencies>
 
