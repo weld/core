@@ -473,7 +473,7 @@ public class Validator implements Service
    private void validateEnabledInterceptorClasses(BeanManagerImpl beanManager)
    {
       Set<Class<?>> interceptorBeanClasses = new HashSet<Class<?>>();
-      for (Interceptor<?> interceptor : beanManager.getInterceptors())
+      for (Interceptor<?> interceptor : beanManager.getAccessibleInterceptors())
       {
          interceptorBeanClasses.add(interceptor.getBeanClass());
       }
@@ -494,7 +494,7 @@ public class Validator implements Service
    {
       // TODO Move building this list to the boot or sth
       Set<Class<?>> decoratorBeanClasses = new HashSet<Class<?>>();
-      for (Decorator<?> bean : beanManager.getDecorators())
+      for (Decorator<?> bean : beanManager.getAccessibleDecorators())
       {
          decoratorBeanClasses.add(bean.getBeanClass());
       }

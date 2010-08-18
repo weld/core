@@ -16,10 +16,22 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static org.jboss.weld.test.Utils.getReference;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+
+import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.AbstractMockDeployment;
@@ -151,6 +163,152 @@ public class TransitiveResolutionTest
       Assert.assertNotNull(bar.getBeanManager());
       Assert.assertEquals(warBeanManager, bar.getBeanManager());
       Assert.assertEquals(ejbJarBeanManager, bar.getFoo().getBeanManager());
+   }
+   
+   /*
+    * WELD-507
+    */
+   @Test
+   public void testInterceptorEnabledInWarButPackagedInEjbJar()
+   {
+
+      // Create the BDA in which we will deploy Foo. This is equivalent to a ejb
+      // jar
+      final MockBeanDeploymentArchive ejbJar = new MockBeanDeploymentArchive("ejb-jar", Basic.class, BasicInterceptor.class, Simple.class);
+
+      // Create the BDA in which we will deploy Bar. This is equivalent to a war
+      MockBeanDeploymentArchive war = new MockBeanDeploymentArchive("war", Complex.class);
+      war.setBeansXml(new BeansXml()
+      {
+         
+         public List<String> getEnabledInterceptors()
+         {
+            return asList(BasicInterceptor.class.getName());
+         }
+         
+         public List<String> getEnabledDecorators()
+         {
+            return emptyList();
+         }
+         
+         public List<String> getEnabledAlternativeStereotypes()
+         {
+            return emptyList();
+         }
+         
+         public List<String> getEnabledAlternativeClasses()
+         {
+            return emptyList();
+         }
+      });
+
+      // The war can access the ejb jar
+      war.getBeanDeploymentArchives().add(ejbJar);
+
+      // Create a deployment, any other classes are put into the ejb-jar (not
+      // relevant to test)
+      Deployment deployment = new AbstractMockDeployment(war, ejbJar)
+      {
+
+         public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
+         {
+            return ejbJar;
+         }
+
+      };
+
+      TestContainer container = new TestContainer(new MockServletLifecycle(deployment, war));
+      container.startContainer();
+      container.ensureRequestActive();
+
+      // Get the bean manager for war and ejb jar
+      BeanManagerImpl warBeanManager = container.getBeanManager();
+      BeanManagerImpl ejbJarBeanManager = container.getLifecycle().getBootstrap().getManager(ejbJar);
+
+      
+      BasicInterceptor.reset();
+      Simple simple = getReference(ejbJarBeanManager, Simple.class);
+      simple.ping("14");
+      assertNull(BasicInterceptor.getTarget());
+      
+      BasicInterceptor.reset();
+      Complex complex = getReference(warBeanManager, Complex.class);
+      complex.ping("14");
+      assertNotNull(BasicInterceptor.getTarget());
+      assertTrue(BasicInterceptor.getTarget() instanceof Complex);
+      assertEquals("14", ((Complex) BasicInterceptor.getTarget()).getId());
+   }
+   
+   /*
+    * WELD-507
+    */
+   @Test
+   public void testDecoratorEnabledInWarButPackagedInEjbJar()
+   {
+
+      // Create the BDA in which we will deploy Foo. This is equivalent to a ejb
+      // jar
+      final MockBeanDeploymentArchive ejbJar = new MockBeanDeploymentArchive("ejb-jar", Blah.class, BlahDecorator.class, BlahImpl.class);
+
+      // Create the BDA in which we will deploy Bar. This is equivalent to a war
+      MockBeanDeploymentArchive war = new MockBeanDeploymentArchive("war", BlahImpl2.class);
+      war.setBeansXml(new BeansXml()
+      {
+         
+         public List<String> getEnabledInterceptors()
+         {
+            return emptyList();
+         }
+         
+         public List<String> getEnabledDecorators()
+         {
+            return asList(BlahDecorator.class.getName());
+         }
+         
+         public List<String> getEnabledAlternativeStereotypes()
+         {
+            return emptyList();
+         }
+         
+         public List<String> getEnabledAlternativeClasses()
+         {
+            return emptyList();
+         }
+      });
+
+      // The war can access the ejb jar
+      war.getBeanDeploymentArchives().add(ejbJar);
+
+      // Create a deployment, any other classes are put into the ejb-jar (not
+      // relevant to test)
+      Deployment deployment = new AbstractMockDeployment(war, ejbJar)
+      {
+
+         public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
+         {
+            return ejbJar;
+         }
+
+      };
+
+      TestContainer container = new TestContainer(new MockServletLifecycle(deployment, war));
+      container.startContainer();
+      container.ensureRequestActive();
+
+      // Get the bean manager for war and ejb jar
+      BeanManagerImpl warBeanManager = container.getBeanManager();
+      BeanManagerImpl ejbJarBeanManager = container.getLifecycle().getBootstrap().getManager(ejbJar);
+
+      
+      BasicInterceptor.reset();
+      Blah blah = getReference(ejbJarBeanManager, Blah.class);
+      blah.ping(10);
+      assertEquals(10, blah.getI());
+      
+      BasicInterceptor.reset();
+      blah = getReference(warBeanManager, Blah.class, new AnnotationLiteral<Baz>() {});
+      blah.ping(10);
+      assertEquals(11, blah.getI());
    }
 
 }

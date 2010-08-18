@@ -547,6 +547,16 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       return createDynamicAccessibleIterable(new BeanTransform(this));
    }
+   
+   public Iterable<Interceptor<?>> getAccessibleInterceptors()
+   {
+      return createDynamicAccessibleIterable(new InterceptorTransform());
+   }
+   
+   public Iterable<Decorator<?>> getAccessibleDecorators()
+   {
+      return createDynamicAccessibleIterable(new DecoratorTransform());
+   }
 
    public void addContext(Context context)
    {
