@@ -95,20 +95,7 @@
                   http://old.nabble.com/Maven-Surefire-and-newer-junit-features-td28539796.html
                -->
                <parallel>none</parallel>
-               <skip>true</skip>
             </configuration>
-            <executions>
-               <execution>
-                  <id>surefire-it</id>
-                  <phase>integration-test</phase>
-                  <goals>
-                     <goal>test</goal>
-                  </goals>
-                  <configuration>
-                     <skip>false</skip>
-                  </configuration>
-               </execution>
-            </executions>
          </plugin>
       </plugins>
    </build>
@@ -184,7 +171,7 @@
 
             <dependency>
                <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-simple</artifactId>
+               <artifactId>slf4j-jdk14</artifactId>
                <scope>test</scope>
             </dependency>
 

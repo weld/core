@@ -16,12 +16,6 @@
    <dependencies>
 
       <dependency>
-         <groupId>javax.servlet</groupId>
-         <artifactId>servlet-api</artifactId>
-         <scope>provided</scope>
-      </dependency>
-
-      <dependency>
          <groupId>org.jboss.ejb3</groupId>
          <artifactId>jboss-ejb3-api</artifactId>
          <scope>test</scope>
@@ -37,18 +31,6 @@
             <exclusion>
                <artifactId>jboss-transaction-api</artifactId>
                <groupId>org.jboss.javaee</groupId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-
-      <dependency>
-         <groupId>org.apache.tomcat</groupId>
-         <artifactId>catalina</artifactId>
-         <scope>provided</scope>
-         <exclusions>
-            <exclusion>
-               <groupId>org.apache.tomcat</groupId>
-               <artifactId>servlet-api</artifactId>
             </exclusion>
          </exclusions>
       </dependency>
@@ -114,20 +96,7 @@
                   http://old.nabble.com/Maven-Surefire-and-newer-junit-features-td28539796.html
                -->
                <parallel>none</parallel>
-               <skip>true</skip>
             </configuration>
-            <executions>
-               <execution>
-                  <id>surefire-it</id>
-                  <phase>integration-test</phase>
-                  <goals>
-                     <goal>test</goal>
-                  </goals>
-                  <configuration>
-                     <skip>false</skip>
-                  </configuration>
-               </execution>
-            </executions>
          </plugin>
       </plugins>
    </build>
@@ -179,13 +148,8 @@
                <artifactId>coyote</artifactId>
                <scope>provided</scope>
             </dependency>
-
-            <dependency>
-               <groupId>org.apache.tomcat</groupId>
-               <artifactId>jasper</artifactId>
-               <scope>provided</scope>
-            </dependency>
-
+            
+            <!-- Make sure this comes before Tomcat's EL on the classpath -->
             <dependency>
                <groupId>org.glassfish.web</groupId>
                <artifactId>el-impl</artifactId>
@@ -193,9 +157,15 @@
             </dependency>
 
             <dependency>
-               <groupId>javax.servlet.jsp</groupId>
-               <artifactId>jsp-api</artifactId>
-               <scope>test</scope>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>jasper</artifactId>
+               <scope>provided</scope>
+               <exclusions>
+                  <exclusion>
+                     <groupId>org.apache.tomcat</groupId>
+                     <artifactId>el-api</artifactId>
+                  </exclusion>
+               </exclusions>
             </dependency>
 
          </dependencies>

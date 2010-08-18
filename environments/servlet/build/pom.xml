@@ -78,7 +78,6 @@
                      <exclude>org.apache.tomcat:juli</exclude>
                      <exclude>org.apache.tomcat:annotations-api</exclude>
                      <exclude>javax.faces:jsf-api</exclude>
-                     <exclude>javax.el:el-api</exclude>
                      <exclude>org.mortbay.jetty:jetty</exclude>
                   </excludes>
                </artifactSet>
