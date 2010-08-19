@@ -172,24 +172,6 @@
                </includes>
             </configuration>
          </plugin>
-         <plugin>
-            <artifactId>maven-remote-resources-plugin</artifactId>
-            <version>1.1</version>
-            <executions>
-               <execution>
-                  <id>attach-license</id>
-                  <goals>
-                     <goal>process</goal>
-                  </goals>
-                  <inherited>true</inherited>
-                  <configuration>
-                     <resourceBundles>
-                        <resourceBundle>org.jboss.weld:weld-license:1-SNAPSHOT</resourceBundle>
-                     </resourceBundles>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
       </plugins>
    </build>
 
