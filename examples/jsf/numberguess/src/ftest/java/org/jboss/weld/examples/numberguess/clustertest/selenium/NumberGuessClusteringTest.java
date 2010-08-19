@@ -26,12 +26,25 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
+import org.jboss.test.selenium.cookie.Cookie;
 import org.jboss.test.selenium.framework.AjaxSelenium;
+import org.jboss.test.selenium.framework.TypedSeleniumImpl;
 import org.jboss.test.selenium.locator.XpathLocator;
 import org.jboss.test.selenium.AbstractTestCase;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import static org.jboss.test.selenium.locator.LocatorFactory.*;
+import static org.jboss.test.selenium.guard.request.RequestTypeGuardFactory.*;
+import org.jboss.test.selenium.locator.Attribute;
+import org.jboss.test.selenium.locator.AttributeLocator;
+import org.jboss.test.selenium.locator.XpathLocator;
+import org.jboss.test.selenium.locator.IdLocator;
+import org.jboss.test.selenium.framework.AjaxSelenium;
+import org.jboss.test.selenium.guard.request.RequestTypeGuardFactory;
 
 /**
  * This class tests Weld numberguess example in a cluster. Two instances of JBoss AS are
@@ -59,18 +72,18 @@ import org.testng.annotations.Test;
  */
 public class NumberGuessClusteringTest extends AbstractTestCase
 {
-
    protected String MAIN_PAGE = "/home.jsf";
-   protected String GUESS_MESSAGES = "id=numberGuess:messages";
-   protected String GUESS_STATUS = "xpath=//div[contains(text(),'I'm thinking of ')]";
-
-   protected String GUESS_FIELD = "id=numberGuess:inputGuess";
-   protected String GUESS_FIELD_WITH_VALUE = "xpath=//input[@id='numberGuess:inputGuess'][@value=3]";
    
-   protected String GUESS_SUBMIT = "id=numberGuess:guessButton";
-   protected String GUESS_RESTART = "id=numberGuess:restartButton";
-   protected String GUESS_SMALLEST = "id=numberGuess:smallest";
-   protected String GUESS_BIGGEST = "id=numberGuess:biggest";
+   protected IdLocator GUESS_MESSAGES = id("numberGuess:messages");
+   protected XpathLocator GUESS_STATUS = xp("//div[contains(text(),'I'm thinking of ')]");
+
+   protected IdLocator GUESS_FIELD = id("numberGuess:inputGuess");
+   protected XpathLocator GUESS_FIELD_WITH_VALUE = xp("//input[@id='numberGuess:inputGuess'][@value=3]");
+   
+   protected IdLocator GUESS_SUBMIT = id("numberGuess:guessButton");
+   protected IdLocator GUESS_RESTART = id("numberGuess:restartButton");
+   protected IdLocator GUESS_SMALLEST = id("numberGuess:smallest");
+   protected IdLocator GUESS_BIGGEST = id("numberGuess:biggest");
 
    protected String WIN_MSG = "Correct!";
    protected String LOSE_MSG = "No guesses left!";
@@ -78,56 +91,57 @@ public class NumberGuessClusteringTest extends AbstractTestCase
    
    private final String SECOND_INSTANCE_BROWSER_URL = "http://localhost:8180";
    private final long JBOSS_SHUTDOWN_TIMEOUT = 20000;
+   
+   String jboss = System.getProperty("JBOSS_HOME");
       
-   private AjaxSelenium browser2;
+   //private AjaxSelenium browser2;
 
-   @BeforeMethod(dependsOnGroups = "seleniumSetUp")
-   public void open()
+   @BeforeMethod
+   public void openStartURL() throws MalformedURLException 
    {
-//      selenium.open(contextPath + MAIN_PAGE); // done in parent class
-//      selenium.waitForPageToLoad(); // done in parent class
-//      deleteCookies(selenium); // not required in rfs because session is always clear?
-      browser2 = startSecondBrowser();
-//      deleteCookies(browser2); // not required in rfs because session is always clear?
+       selenium.open(new URL(contextPath.toString() + MAIN_PAGE));
    }
 
    @Test
-   public void guessingWithFailoverTest()
+   public void guessingWithFailoverTest() throws MalformedURLException
    {
-	   preFailurePart(selenium);
+	  preFailurePart();
 	   
-      String newAddress = getAddressForSecondInstance(selenium);
+      String newAddress = getAddressForSecondInstance();
        
       shutdownMasterJBossInstance();
 
-      browser2.open(newAddress);
+      /* stop and start browser -> simulate different web browser with different session */
+      super.finalizeBrowser();
+      super.initializeBrowser();
+      selenium.open(new URL(newAddress));
 
-      assertTrue(browser2.isTextPresent(HIGHER_MSG), "Page should contain message Higher!");
-      assertEquals(Integer.parseInt(selenium.getText(new XpathLocator(GUESS_SMALLEST))),4, "Page should contain smallest number equal to 4");
-      assertEquals(Integer.parseInt(selenium.getText(new XpathLocator(GUESS_BIGGEST))),100, "Page should contain biggest number equal to 100");
-      assertTrue(browser2.isElementPresent(new XpathLocator(GUESS_FIELD_WITH_VALUE)), "Page should contain input field with value of 3");
+      assertTrue(selenium.isTextPresent(HIGHER_MSG), "Page should contain message Higher!");
+      assertEquals(Integer.parseInt(selenium.getText(GUESS_SMALLEST)),4, "Page should contain smallest number equal to 4");
+      assertEquals(Integer.parseInt(selenium.getText(GUESS_BIGGEST)),100, "Page should contain biggest number equal to 100");
+      assertTrue(selenium.isElementPresent(GUESS_FIELD_WITH_VALUE), "Page should contain input field with value of 3");
        
-      postFailurePart(browser2);       
+      postFailurePart();       
        
-      assertTrue(isOnWinPage(browser2), "Win page expected after playing smart.");    
+      assertTrue(isOnWinPage(), "Win page expected after playing smart.");    
    }
    
-   protected void preFailurePart(AjaxSelenium selenium)
+   protected void preFailurePart()
    {
 	   int numberOfGuesses = 3;
 	   int guess = 0;
 	   
 	   //enter several guesses (3)
 	   while (true){
-		   while (isOnGuessPage(selenium) && guess < numberOfGuesses)
+		   while (isOnGuessPage() && guess < numberOfGuesses)
 		   {
-			   enterGuess(selenium, ++guess);
+			   enterGuess(++guess);
 		   }
 		   
 		   //we always want to enter at least 3 guesses so that we can continue in the other browser window with expected results
 		   if (guess < numberOfGuesses)
 		   {
-			   resetForm(selenium);
+			   resetForm();
 			   guess = 0;
 		   }
 		   else
@@ -137,76 +151,65 @@ public class NumberGuessClusteringTest extends AbstractTestCase
 	   }
    }
    
-   protected void postFailurePart(AjaxSelenium selenium)
+   protected void postFailurePart()
    {	   
 	   int min, max, guess;
 	   int i = 0;
 	   
-	   while (isOnGuessPage(selenium))
-      {
-		   deleteCookies(selenium);
-		   /*3+8 = 11  -> even though we have 10 attempts, it is possible to enter value 11 times, but
-		   the 11th time it is actually not guessing but only validating that 10 times has gone and the game
-		   is finished (no 11th guessing)*/
-		   if (i >= 8)
+	   selenium.deleteAllVisibleCookies();
+	   
+	   while (isOnGuessPage())
+       {
+		 /*3+8 = 11  -> even though we have 10 attempts, it is possible to enter value 11 times, but
+		 the 11th time it is actually not guessing but only validating that 10 times has gone and the game
+		 is finished (no 11th guessing)*/
+		 if (i >= 8)
          {
             fail("Game should not be longer than 7 guesses in the second selenium after failover");
          }
 
-         assertTrue(selenium.isElementPresent(new XpathLocator(GUESS_SMALLEST)), "Expected smallest number on page");
-         assertTrue(selenium.isElementPresent(new XpathLocator(GUESS_BIGGEST)), "Expected biggest number on page");
+         assertTrue(selenium.isElementPresent(GUESS_SMALLEST), "Expected smallest number on page");
+         assertTrue(selenium.isElementPresent(GUESS_BIGGEST), "Expected biggest number on page");
 
-         min = Integer.parseInt(selenium.getText(new XpathLocator(GUESS_SMALLEST)));
-         max = Integer.parseInt(selenium.getText(new XpathLocator(GUESS_BIGGEST)));
+         min = Integer.parseInt(selenium.getText(GUESS_SMALLEST));
+         max = Integer.parseInt(selenium.getText(GUESS_BIGGEST));
          guess = min + ((max - min) / 2);
-         enterGuess(selenium, guess);
+         enterGuess(guess);
          i++;
       }
    }
    
-   protected void resetForm(AjaxSelenium selenium)
+   protected void resetForm()
    {
-	   selenium.click(new XpathLocator(GUESS_RESTART));
-	   selenium.waitForPageToLoad();
+      RequestTypeGuardFactory.waitHttp(selenium).click(GUESS_RESTART);
    }
    
-   protected void enterGuess(AjaxSelenium selenium, int guess)
+   protected void enterGuess(int guess)
    {
-      selenium.type(new XpathLocator(GUESS_FIELD), String.valueOf(guess));
-      selenium.click(new XpathLocator(GUESS_SUBMIT));
-      selenium.waitForPageToLoad();
+      selenium.type(GUESS_FIELD, String.valueOf(guess));
+      RequestTypeGuardFactory.waitHttp(selenium).click(GUESS_SUBMIT);
    }
 
-   protected boolean isOnGuessPage(AjaxSelenium selenium)
+   protected boolean isOnGuessPage()
    {
-      return !(isOnWinPage(selenium) || isOnLosePage(selenium));
+      return !(isOnWinPage() || isOnLosePage());
    }
 
-   protected boolean isOnWinPage(AjaxSelenium selenium)
+   protected boolean isOnWinPage()
    {
-      String text = selenium.getText(new XpathLocator(GUESS_MESSAGES));
+      String text = selenium.getText(GUESS_MESSAGES);
       return WIN_MSG.equals(text);
    }
 
-   protected boolean isOnLosePage(AjaxSelenium selenium)
+   protected boolean isOnLosePage()
    {
-      String text = selenium.getText(new XpathLocator(GUESS_MESSAGES));
+      String text = selenium.getText(GUESS_MESSAGES);
       return LOSE_MSG.equals(text);
    }   
    
-   public AjaxSelenium startSecondBrowser() 
+   public String getAddressForSecondInstance()
    {
-// NEEDS TO BE ADJUSTED FOR RFS
-//      String url = SECOND_INSTANCE_BROWSER_URL;
-//      return super.startBrowser(super.host, super.port, super.browserType, url);
-      selenium.finalizeBrowser();
-      selenium.initializeBrowser();
-      return selenium;
-   }       
-      
-   public String getAddressForSecondInstance(AjaxSelenium selenium)
-   {
-	   String loc = selenium.getLocation(); 
+	  String loc = selenium.getLocation().toString(); 
       String[] parsedStrings = loc.split("/");
       StringBuilder sb = new StringBuilder();
       for (int i = 3; i != parsedStrings.length; i++){
@@ -214,10 +217,10 @@ public class NumberGuessClusteringTest extends AbstractTestCase
       }      
       
       String sid;
-// NEEDS TO BE ADJUSTED FOR RFS
+      
       if (selenium.isCookiePresent("JSESSIONID"))
       {
-    	   sid = selenium.getCookieByName("JSESSIONID");  
+    	   sid = selenium.getCookieByName("JSESSIONID").getValue();  
       }
       else 
       {    	  
@@ -228,26 +231,15 @@ public class NumberGuessClusteringTest extends AbstractTestCase
       String newAddress = sb.toString();
       String firstPart = newAddress.substring(0, newAddress.indexOf(";"));
 
-      //construct a new address for second browser
+      
       newAddress = firstPart + ";jsessionid=" + sid;
    
       return newAddress;      
    }
-   
-   private void deleteCookies(AjaxSelenium selenium)
-   {
-// NEEDS TO BE ADJUSTED FOR RFS
-      if (selenium.isCookiePresent("JSESSIONID"))
-      {
-    	   selenium.deleteCookie("JSESSIONID", "path=" + contextPath + ", domain=localhost, recurse=true");
-      }
-   } 
-   
+      
    public void shutdownMasterJBossInstance()
    {
-// NEEDS TO BE ADJUSTED FOR RFS
-// all ok, but super.jbossConfig has to point to a certain folder - ask mgencur for the folder (server/default?); lfryc for method to obtain it
-      String command = super.jbossConfig + "/../../bin/shutdown.sh -s localhost:1099 -S";
+	  String command = jboss + "/bin/shutdown.sh -s localhost:1099 -S";
       try
       {
          Process process = Runtime.getRuntime().exec(command);
