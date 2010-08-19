@@ -17,16 +17,16 @@
 package org.jboss.weld.tests.enterprise.lifecycle;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.Container;
 import org.jboss.weld.context.ContextLifecycle;
 import org.jboss.weld.context.RequestContext;
@@ -62,10 +62,10 @@ public class EnterpriseBeanLifecycleTest
    {
       return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
          .addModule(
-               ShrinkWrap.create(JavaArchive.class, "test.jar")
+               ShrinkWrap.create(BeanArchive.class, "test.jar")
+                  .decorate(AlarmedChickenHutch.class)
                   .addPackage(EnterpriseBeanLifecycleTest.class.getPackage())
                   .addClass(Utils.class)
-                  .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
          );
    }
 
@@ -123,6 +123,20 @@ public class EnterpriseBeanLifecycleTest
       CreationalContext<BeanLocal> creationalContext = beanManager.createCreationalContext(bean);
       BeanLocal instance = bean.create(creationalContext);
       bean.destroy(instance, creationalContext);
+   }
+   
+   @Inject @MassProduced Instance<ChickenHutch> chickenHutchInstance;
+   
+   @Test
+   // WELD-556
+   public void testDecoratedSFSBsAreRemoved()
+   {
+      StandardChickenHutch.reset();
+      AlarmedChickenHutch.reset();
+      chickenHutchInstance.get();
+      assert StandardChickenHutch.isPing();
+      assert AlarmedChickenHutch.isPing();
+      assert StandardChickenHutch.isPredestroy(); 
    }
  
 }
