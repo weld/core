@@ -162,11 +162,11 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
       }
       if (getDelegateInjectionPoints().size() == 0)
       {
-         throw new DefinitionException(NO_DELEGATE_FOR_DECORATOR, this);
+         throw new DefinitionException(NO_DELEGATE_FOR_DECORATOR, getWeldAnnotated());
       }
       else if (getDelegateInjectionPoints().size() > 1)
       {
-         throw new DefinitionException(TOO_MANY_DELEGATES_FOR_DECORATOR, this);
+         throw new DefinitionException(TOO_MANY_DELEGATES_FOR_DECORATOR, getWeldAnnotated());
       }
    }
 
