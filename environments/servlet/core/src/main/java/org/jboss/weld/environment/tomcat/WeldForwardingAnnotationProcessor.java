@@ -1,5 +1,11 @@
 package org.jboss.weld.environment.tomcat;
 
+import static org.jboss.weld.environment.servlet.util.Reflections.findDeclaredField;
+import static org.jboss.weld.environment.servlet.util.Reflections.findDeclaredMethod;
+import static org.jboss.weld.environment.servlet.util.Reflections.getFieldValue;
+import static org.jboss.weld.environment.servlet.util.Reflections.invokeMethod;
+import static org.jboss.weld.environment.servlet.util.Reflections.setFieldValue;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -113,97 +119,33 @@ public class WeldForwardingAnnotationProcessor extends ForwardingAnnotationProce
    private static AnnotationProcessor getAnnotationProcessor(StandardContext stdContext)
    {
       // try the getter first
-      try
+      Method method = findDeclaredMethod(stdContext.getClass(), "getAnnotationProcessor");
+      if (method != null)
       {
-         Method getter = stdContext.getClass().getDeclaredMethod("getAnnotationProcessor");
-         getter.setAccessible(true);
-         return (AnnotationProcessor)getter.invoke(stdContext);
+         return invokeMethod(method, AnnotationProcessor.class, stdContext);
       }
-      catch (SecurityException e)
+      Field field = findDeclaredField(stdContext.getClass(), "annotationProcessor");
+      if (field != null)
       {
-         throw new RuntimeException(e);
+         return getFieldValue(field, stdContext, AnnotationProcessor.class);
       }
-      catch (IllegalAccessException e)
-      {
-         throw new RuntimeException(e);
-      }
-      catch (InvocationTargetException e)
-      {
-         if (e.getCause() instanceof RuntimeException)
-            throw (RuntimeException) e.getCause();
-         else
-            throw new RuntimeException(e.getCause());
-      }
-      catch (NoSuchMethodException e)
-      {
-         // ignore and try the field instead 
-      }
-      try
-      {
-         Field field = stdContext.getClass().getDeclaredField("annotationProcessor");
-         field.setAccessible(true);
-         return (AnnotationProcessor) field.get(stdContext);
-      }
-      catch (SecurityException e)
-      {
-         throw new RuntimeException(e);
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new RuntimeException(e);
-      }
-      catch (NoSuchFieldException e)
-      {
-         // TODO Auto-generated catch block
-         throw new RuntimeException("neither field nor setter found for annotationProcessor");
-      }
+      throw new RuntimeException("neither field nor setter found for annotationProcessor");
    }
    
    private static void setAnnotationProcessor(StandardContext stdContext, AnnotationProcessor annotationProcessor)
    {
       //try setter first
-      try
+      Method method = findDeclaredMethod(stdContext.getClass(), "setAnnotationProcessor", AnnotationProcessor.class);
+      if (method != null)
       {
-         Method setter = stdContext.getClass().getDeclaredMethod("setAnnotationProcessor");
-         setter.setAccessible(true);
-         setter.invoke(stdContext, annotationProcessor);
+         invokeMethod(method, void.class, stdContext, annotationProcessor);
+         return;
       }
-      catch (SecurityException e)
+      Field field = findDeclaredField(stdContext.getClass(), "annotationProcessor");
+      if (field != null)
       {
-         throw new RuntimeException(e);
+         setFieldValue(field, stdContext, annotationProcessor);
       }
-      catch (IllegalAccessException e)
-      {
-         throw new RuntimeException(e);
-      }
-      catch (InvocationTargetException e)
-      {
-         if (e.getCause() instanceof RuntimeException)
-            throw (RuntimeException) e.getCause();
-         else
-            throw new RuntimeException(e.getCause());
-      }
-      catch (NoSuchMethodException e)
-      {
-         // ignore and try the method instead
-      }
-      try
-      {
-         Field field = stdContext.getClass().getDeclaredField("annotationProcessor");
-         field.setAccessible(true);
-         field.set(stdContext, annotationProcessor);
-      }
-      catch (SecurityException e)
-      {
-         throw new RuntimeException(e);
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new RuntimeException(e);
-      }
-      catch (NoSuchFieldException e)
-      {
-         throw new RuntimeException("neither field nor setter found for annotationProcessor");
-      }
+      throw new RuntimeException("neither field nor setter found for annotationProcessor");
    }
 }
