@@ -75,7 +75,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
    
    private EventImpl(Type type, Annotation[] qualifiers, InjectionPoint injectionPoint, BeanManagerImpl beanManager)
    {
-      super(type, qualifiers, injectionPoint, beanManager);
+      super(type, qualifiers, injectionPoint, null, beanManager);
    }
 
    /**
@@ -119,7 +119,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
    
    private Object writeReplace() throws ObjectStreamException
    {
-      return new SerializationProxy(this);
+      return new SerializationProxy<T>(this);
    }
    
    private void readObject(ObjectInputStream stream) throws InvalidObjectException
@@ -127,12 +127,12 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
       throw new InvalidObjectException(PROXY_REQUIRED);
    }
    
-   private static class SerializationProxy extends AbstractFacadeSerializationProxy
+   private static class SerializationProxy<T> extends AbstractFacadeSerializationProxy<T, Event<T>>
    {
 
       private static final long serialVersionUID = 9181171328831559650L;
 
-      public SerializationProxy(EventImpl<?> event)
+      public SerializationProxy(EventImpl<T> event)
       {
          super(event);
       }

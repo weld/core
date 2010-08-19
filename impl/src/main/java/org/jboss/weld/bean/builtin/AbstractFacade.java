@@ -24,6 +24,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -56,11 +57,15 @@ public abstract class AbstractFacade<T, X>
    private final InjectionPoint injectionPoint;
    private final Type type;
    private final Annotation[] qualifiers;
+   // The CreationalContext used to create the facade which was injected.
+   // This allows us to propagate the CreationalContext when get() is called
+   private final CreationalContext<? super T> creationalContext;
    
-   protected AbstractFacade(Type type, Annotation[] qualifiers, InjectionPoint injectionPoint, BeanManagerImpl beanManager)
+   protected AbstractFacade(Type type, Annotation[] qualifiers, InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager)
    {
       this.beanManager = beanManager;
       this.injectionPoint = injectionPoint;
+      this.creationalContext = creationalContext;
       this.type = type;
       this.qualifiers = qualifiers;
    }
@@ -83,6 +88,11 @@ public abstract class AbstractFacade<T, X>
    protected InjectionPoint getInjectionPoint()
    {
       return injectionPoint;
+   }
+   
+   protected CreationalContext<? super T> getCreationalContext()
+   {
+      return creationalContext;
    }
 
    @Override
@@ -110,18 +120,20 @@ public abstract class AbstractFacade<T, X>
    
    // Serialization
 
-   protected static class AbstractFacadeSerializationProxy implements Serializable
+   protected static class AbstractFacadeSerializationProxy<T, X> implements Serializable
    {
       
       private static final long serialVersionUID = -9118965837530101152L;
       
       private final InjectionPoint injectionPoint;
+      private final CreationalContext<? super T> creationalContext;
       private final BeanManagerImpl beanManager;
       
-      protected AbstractFacadeSerializationProxy(AbstractFacade<?, ?> facade)
+      protected AbstractFacadeSerializationProxy(AbstractFacade<T, X> facade)
       {
          this.injectionPoint = facade.getInjectionPoint();
          this.beanManager = facade.getBeanManager();
+         this.creationalContext = facade.getCreationalContext();
       }
       
       protected BeanManagerImpl getBeanManager()
@@ -132,6 +144,11 @@ public abstract class AbstractFacade<T, X>
       protected InjectionPoint getInjectionPoint()
       {
          return injectionPoint;
+      }
+      
+      protected CreationalContext<? super T> getCreationalContext()
+      {
+         return creationalContext;
       }
       
    }

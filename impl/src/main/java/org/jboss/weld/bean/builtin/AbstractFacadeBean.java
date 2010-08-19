@@ -43,7 +43,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
       InjectionPoint injectionPoint = Container.instance().services().get(CurrentInjectionPoint.class).peek();
       if (injectionPoint != null)
       {
-         return newInstance(injectionPoint);
+         return newInstance(injectionPoint, creationalContext);
       }
       else
       {
@@ -54,9 +54,9 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
    
    public void destroy(T instance, CreationalContext<T> creationalContext)
    {
-      // TODO Auto-generated method stub
+      creationalContext.release();
    }
    
-   protected abstract T newInstance(InjectionPoint injectionPoint);
+   protected abstract T newInstance(InjectionPoint injectionPoint, CreationalContext<T> creationalContext);
    
 }

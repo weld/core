@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
@@ -68,7 +69,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    }
 
    @Override
-   protected Event<?> newInstance(InjectionPoint injectionPoint)
+   protected Event<?> newInstance(InjectionPoint injectionPoint, CreationalContext<Event<?>> creationalContext)
    {
       return EventImpl.of(injectionPoint, getBeanManager());
    }

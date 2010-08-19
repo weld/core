@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -56,14 +57,14 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
    private static final long serialVersionUID = -376721889693284887L;
 
-   public static <I> Instance<I> of(InjectionPoint injectionPoint, BeanManagerImpl beanManager)
+   public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext, BeanManagerImpl beanManager)
    {
-      return new InstanceImpl<I>(getFacadeType(injectionPoint), injectionPoint.getQualifiers().toArray(EMPTY_ANNOTATIONS), injectionPoint, beanManager);
+      return new InstanceImpl<I>(getFacadeType(injectionPoint), injectionPoint.getQualifiers().toArray(EMPTY_ANNOTATIONS), injectionPoint, creationalContext, beanManager);
    }
    
-   private InstanceImpl(Type type, Annotation[] qualifiers, InjectionPoint injectionPoint, BeanManagerImpl beanManager)
+   private InstanceImpl(Type type, Annotation[] qualifiers, InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager)
    {
-      super(type, qualifiers, injectionPoint, beanManager);
+      super(type, qualifiers, injectionPoint, creationalContext, beanManager);
    }
    
    public T get()
@@ -75,7 +76,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
       {   
          Container.instance().services().get(CurrentInjectionPoint.class).push(ip);
          @SuppressWarnings("unchecked")
-         T instance = (T) getBeanManager().getReference(bean, getType(), getBeanManager().createCreationalContext(bean));
+         T instance = (T) getBeanManager().getReference(bean, getType(), getCreationalContext());
          return instance;
       }
       finally
@@ -150,6 +151,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
             subtype,
             Beans.mergeInQualifiers(getQualifiers(), newQualifiers), 
             getInjectionPoint(),
+            getCreationalContext(),
             getBeanManager());
    }
    
@@ -157,7 +159,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    
    private Object writeReplace() throws ObjectStreamException
    {
-      return new SerializationProxy(this);
+      return new SerializationProxy<T>(this);
    }
    
    private void readObject(ObjectInputStream stream) throws InvalidObjectException
@@ -165,19 +167,19 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
       throw new InvalidObjectException(PROXY_REQUIRED);
    }
    
-   private static class SerializationProxy extends AbstractFacadeSerializationProxy
+   private static class SerializationProxy<T> extends AbstractFacadeSerializationProxy<T, Instance<T>>
    {
 
       private static final long serialVersionUID = 9181171328831559650L;
 
-      public SerializationProxy(InstanceImpl<?> instance)
+      public SerializationProxy(InstanceImpl<T> instance)
       {
          super(instance);
       }
       
       private Object readResolve()
       {
-         return InstanceImpl.of(getInjectionPoint(), getBeanManager());
+         return InstanceImpl.of(getInjectionPoint(), getCreationalContext(), getBeanManager());
       }
       
    }

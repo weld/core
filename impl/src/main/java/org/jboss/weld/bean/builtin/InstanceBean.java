@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
@@ -68,9 +69,9 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    }
 
    @Override
-   protected Instance<?> newInstance(InjectionPoint injectionPoint)
+   protected Instance<?> newInstance(InjectionPoint injectionPoint, CreationalContext<Instance<?>> creationalContext)
    {
-      return InstanceImpl.of(injectionPoint, getBeanManager());
+      return InstanceImpl.of(injectionPoint, creationalContext, getBeanManager());
    }
    
    @Override
