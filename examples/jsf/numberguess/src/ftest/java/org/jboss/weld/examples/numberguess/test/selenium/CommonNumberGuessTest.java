@@ -25,10 +25,13 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import org.jboss.test.selenium.AbstractTestCase;
-import org.jboss.test.selenium.locator.XpathLocator;
 import org.jboss.test.selenium.guard.request.RequestTypeGuardFactory;
+import org.jboss.test.selenium.locator.IdLocator;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import static org.jboss.test.selenium.locator.LocatorFactory.id;
 
 /**
  * Tests numberguess examples in Weld
@@ -41,17 +44,30 @@ public class CommonNumberGuessTest extends AbstractTestCase
 {
 
    protected String MAIN_PAGE = "/home.jsf";
-   protected String GUESS_MESSAGES = "id=numberGuess:messages";
+   protected IdLocator GUESS_MESSAGES = id("numberGuess:messages");
 
-   protected String GUESS_FIELD = "id=numberGuess:inputGuess";
-   protected String GUESS_SUBMIT = "id=numberGuess:guessButton";
-   protected String GUESS_RESET = "id=numberGuess:resetButton";
-   protected String GUESS_SMALLEST = "id=numberGuess:smallest";
-   protected String GUESS_BIGGEST = "id=numberGuess:biggest";
+   protected IdLocator GUESS_FIELD = id("numberGuess:inputGuess");
+   protected IdLocator GUESS_SUBMIT = id("numberGuess:guessButton");
+   protected IdLocator GUESS_RESET = id("numberGuess:resetButton");
+   protected IdLocator GUESS_SMALLEST = id("numberGuess:smallest");
+   protected IdLocator GUESS_BIGGEST = id("numberGuess:biggest");
 
    protected String WIN_MSG = "Correct!";
    protected String LOSE_MSG = "No guesses left!";
 
+   @BeforeMethod
+   public void openStartUrl()
+   {
+      selenium.open(contextPath);
+      waitModel.until(elementPresent.locator(GUESS_FIELD));
+   }
+   
+   @AfterMethod
+   public void resetSession() 
+   {
+      selenium.deleteAllVisibleCookies();
+   }
+   
    @Test
    public void smartTest()
    {
@@ -68,11 +84,11 @@ public class CommonNumberGuessTest extends AbstractTestCase
             fail("Game should not be longer than 10 guesses");
          }
 
-         assertTrue(selenium.isElementPresent(new XpathLocator(GUESS_SMALLEST)), "Expected smallest number on page");
-         assertTrue(selenium.isElementPresent(new XpathLocator(GUESS_BIGGEST)), "Expected biggest number on page");
+         assertTrue(selenium.isElementPresent(GUESS_SMALLEST), "Expected smallest number on page");
+         assertTrue(selenium.isElementPresent(GUESS_BIGGEST), "Expected biggest number on page");
 
-         min = Integer.parseInt(selenium.getText(new XpathLocator(GUESS_SMALLEST)));
-         max = Integer.parseInt(selenium.getText(new XpathLocator(GUESS_BIGGEST)));
+         min = Integer.parseInt(selenium.getText(GUESS_SMALLEST));
+         max = Integer.parseInt(selenium.getText(GUESS_BIGGEST));
          guess = min + ((max - min) / 2);
          enterGuess(guess);
          i++;
@@ -103,8 +119,8 @@ public class CommonNumberGuessTest extends AbstractTestCase
 
    protected void enterGuess(int guess)
    {
-      selenium.type(new XpathLocator(GUESS_FIELD), String.valueOf(guess));
-      RequestTypeGuardFactory.waitHttp(selenium).click(new XpathLocator(GUESS_SUBMIT));
+      selenium.type(GUESS_FIELD, String.valueOf(guess));
+      RequestTypeGuardFactory.waitHttp(selenium).click(GUESS_SUBMIT);
    }
 
    protected boolean isOnGuessPage()
@@ -114,13 +130,13 @@ public class CommonNumberGuessTest extends AbstractTestCase
 
    protected boolean isOnWinPage()
    {
-      String text = selenium.getText(new XpathLocator(GUESS_MESSAGES));
+      String text = selenium.getText(GUESS_MESSAGES);
       return WIN_MSG.equals(text);
    }
 
    protected boolean isOnLosePage()
    {
-      String text = selenium.getText(new XpathLocator(GUESS_MESSAGES));
+      String text = selenium.getText(GUESS_MESSAGES);
       return LOSE_MSG.equals(text);
    }
 
