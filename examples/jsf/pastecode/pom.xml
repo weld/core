@@ -175,6 +175,72 @@
 			</plugin>
 		</plugins>
 	</build>
+   
+   <profiles>
+      <profile>
+         <id>ftest-jboss-remote-60</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-compiler-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.cargo</groupId>
+                  <artifactId>cargo-maven2-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>selenium-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>failsafe-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>deploy-datasource</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                        <configuration>
+                           <tasks>
+                              <fail message="JBOSS_HOME must be set">
+                                <condition>
+                                  <not><isset property="env.JBOSS_HOME"/></not>
+                                </condition>
+                              </fail>
+                              <copy file="${basedir}/weld-pastecode-ds.xml" todir="${env.JBOSS_HOME}/server/default/deploy" />
+                              <!-- waiting for datasource to be ready-->
+                              <sleep seconds="6"/>
+                           </tasks>
+                        </configuration>
+                     </execution>
+                     <execution>
+                        <id>undeploy-datasource</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                        <configuration>
+                           <tasks>
+                              <delete file="${env.JBOSS_HOME}/server/default/deploy/weld-pastecode-ds.xml" failonerror="false" />
+                           </tasks>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
 
 	<scm>
 		<connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/pastecode</connection>
