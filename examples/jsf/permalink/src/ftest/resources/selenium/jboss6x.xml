@@ -16,14 +16,16 @@
 		Boston, MA 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 	--> 
 <!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
-<suite name="Weld JSF Numberguess example" verbose="2" parallel="false">
+<suite name="Weld JSF Permalink example" verbose="2" parallel="false">
+   <!-- DEPRECATED BY RFS?
     <listeners>
 		<listener class-name="org.jboss.weld.example.common.test.selenium.WeldFunctionalTestListener" />
 	</listeners>
-	<test name="numberguess_jboss5x">
-		<parameter name="example.context.path" value="/weld-numberguess" />
+   -->
+	<test name="permalink_jboss6x">
+		<parameter name="example.context.path" value="/weld-permalink" />
 		<packages>
-			<package name="org.jboss.weld.example.numberguess.test.selenium" />
+			<package name="org.jboss.weld.examples.permalink.test.selenium" />
 		</packages>
 	</test>
 </suite>

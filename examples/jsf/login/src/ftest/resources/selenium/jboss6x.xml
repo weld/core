@@ -16,14 +16,11 @@
 		Boston, MA 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 	--> 
 <!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
-<suite name="Weld JSF Translator example" verbose="2" parallel="false">
-    <listeners>
-		<listener class-name="org.jboss.weld.example.common.test.selenium.WeldFunctionalTestListener" />
-	</listeners>
-	<test name="translator_jboss5x">
-		<parameter name="example.context.path" value="/weld-translator" />
+<suite name="Weld JSF Login example" verbose="2" parallel="false">
+	<test name="login_jboss6x">
+		<parameter name="example.context.path" value="/weld-login" />
 		<packages>
-			<package name="org.jboss.weld.example.translator.test.selenium" />
+			<package name="org.jboss.weld.examples.login.test.selenium" />
 		</packages>
 	</test>
 </suite>

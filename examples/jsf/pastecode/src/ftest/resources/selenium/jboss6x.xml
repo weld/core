@@ -16,14 +16,11 @@
 		Boston, MA 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 	--> 
 <!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
-<suite name="Weld JSF Permalink example" verbose="2" parallel="false">
-    <listeners>
-		<listener class-name="org.jboss.weld.example.common.test.selenium.WeldFunctionalTestListener" />
-	</listeners>
-	<test name="permalink_jboss5x">
-		<parameter name="example.context.path" value="/weld-permalink" />
+<suite name="Weld JSF Pastecode example" verbose="2" parallel="false">
+	<test name="pastecode_jboss6x">
+		<parameter name="example.context.path" value="/weld-pastecode" />
 		<packages>
-			<package name="org.jboss.weld.example.permalink.test.selenium" />
+			<package name="org.jboss.weld.examples.pastecode.test.selenium" />
 		</packages>
 	</test>
 </suite>
