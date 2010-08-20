@@ -206,10 +206,6 @@
    <profiles>
       <profile>
          <id>ftest-jboss-remote-60</id>
-         <activation>
-            <activeByDefault>false</activeByDefault>
-         </activation>
-
          <properties>
             <ftest.testsuite>jboss5x.xml</ftest.testsuite>
          </properties>
@@ -440,9 +436,6 @@
       <!-- PROFILE USED TO RUN CLUSTERING FTESTS ON JBOSS AS 6.0.* -->
       <profile>
          <id>ftest-jboss-cluster-60</id>
-         <activation>
-            <activeByDefault>false</activeByDefault>
-         </activation>
 
          <properties>
             <ftest.testsuite>jboss6x-cluster.xml</ftest.testsuite>
