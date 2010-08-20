@@ -87,6 +87,10 @@
 
       <jbossas.server.manager.version>1.0.3.GA</jbossas.server.manager.version>
       <jbossas.client.version>6.0.0.20100721-M4</jbossas.client.version>
+
+      <!-- TODO move to weld-parent -->
+      <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
+      <cargo.maven2.plugin.version>1.0.1</cargo.maven2.plugin.version>
    </properties>
 
 
@@ -255,5 +259,23 @@
 
       </dependencies>
    </dependencyManagement>
+
+   <build>
+      <!-- TODO Move to weld-parent -->
+      <pluginManagement>
+         <plugins>
+            <plugin>
+               <groupId>org.codehaus.cargo</groupId>
+               <artifactId>cargo-maven2-plugin</artifactId>
+               <version>${cargo.maven2.plugin.version}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>selenium-maven-plugin</artifactId>
+               <version>${selenium.maven.plugin.version}</version>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
 
 </project>

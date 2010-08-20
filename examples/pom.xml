@@ -93,10 +93,6 @@
       <uel.version>2.2</uel.version>
       <!-- Testing deps -->
       <selenium.java.client.version>1.0.1</selenium.java.client.version>
-      <maven.compiler.plugin.version>2.3.1</maven.compiler.plugin.version>
-      <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version> <!-- needed by ftests to be able to use firefox 3.6.* -->
-      <cargo.maven2.plugin.version>1.0.1</cargo.maven2.plugin.version> <!-- needed to recognize "jboss6x" containerId  -->
-      <failsafe.maven.plugin.version>2.4.3-alpha-1</failsafe.maven.plugin.version>
       <ant.junit.version>1.6.2</ant.junit.version>
       <ftest.version.discriminator />
       <selenium.browser>*firefoxproxy</selenium.browser>
@@ -194,17 +190,14 @@
             <plugin>
                <groupId>org.codehaus.cargo</groupId>
                <artifactId>cargo-maven2-plugin</artifactId>
-               <version>${cargo.maven2.plugin.version}</version>
             </plugin>
             <plugin>
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>selenium-maven-plugin</artifactId>
-               <version>${selenium.maven.plugin.version}</version>
             </plugin>
             <plugin>
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>failsafe-maven-plugin</artifactId>
-               <version>${failsafe.maven.plugin.version}</version>
             </plugin>
          </plugins>
       </pluginManagement>
@@ -251,7 +244,6 @@
                   <plugin>
                      <groupId>org.apache.maven.plugins</groupId>
                      <artifactId>maven-compiler-plugin</artifactId>
-                     <version>${maven.compiler.plugin.version}</version>
                      <executions>
                         <execution>
                            <id>ftest-compile</id>
@@ -267,7 +259,6 @@
                   <plugin>
                      <groupId>org.codehaus.cargo</groupId>
                      <artifactId>cargo-maven2-plugin</artifactId>
-                     <version>${cargo.maven2.plugin.version}</version>
                      <configuration>
                         <container>
                            <containerId>jboss6x</containerId>
@@ -299,7 +290,6 @@
                   <plugin>
                      <groupId>org.codehaus.mojo</groupId>
                      <artifactId>selenium-maven-plugin</artifactId>
-                     <version>${selenium.maven.plugin.version}</version>
                      <executions>
                         <execution>
                            <id>start-selenium</id>
@@ -323,7 +313,6 @@
                   <plugin>
                      <groupId>org.codehaus.mojo</groupId>
                      <artifactId>failsafe-maven-plugin</artifactId>
-                     <version>${failsafe.maven.plugin.version}</version>
                      <configuration>
                         <testClassesDirectory>${ftest-classes-dir}</testClassesDirectory>
                         <suiteXmlFiles>
@@ -491,7 +480,6 @@
                   <plugin>
                      <groupId>org.apache.maven.plugins</groupId>
                      <artifactId>maven-compiler-plugin</artifactId>
-                     <version>${maven.compiler.plugin.version}</version>
                      <executions>
                         <execution>
                            <id>ftest-compile</id>
@@ -507,7 +495,6 @@
                   <plugin>
                      <groupId>org.codehaus.mojo</groupId>
                      <artifactId>selenium-maven-plugin</artifactId>
-                     <version>${selenium.maven.plugin.version}</version>
                      <executions>
                         <execution>
                            <id>start-selenium</id>
@@ -531,7 +518,6 @@
                   <plugin>
                      <groupId>org.codehaus.mojo</groupId>
                      <artifactId>failsafe-maven-plugin</artifactId>
-                     <version>${failsafe.maven.plugin.version}</version>
                      <configuration>
                         <testClassesDirectory>${ftest-classes-dir}</testClassesDirectory>
                         <suiteXmlFiles>
