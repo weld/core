@@ -53,7 +53,7 @@
 
    <profiles>
       <profile>
-         <id>jboss5</id>
+         <id>jboss6</id>
          <activation>
             <activeByDefault>true</activeByDefault>
          </activation>
