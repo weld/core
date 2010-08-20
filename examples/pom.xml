@@ -108,7 +108,7 @@
       <selenium.debug>false</selenium.debug>
       <selenium.log.dir>${project.build.directory}/ftest-logs</selenium.log.dir>
       <application.deploy.timeout>300</application.deploy.timeout>      
-      <richfaces-selenium.version>1.5.0.Final</richfaces-selenium.version>
+      <richfaces.selenium.version>1.5.0.Final</richfaces.selenium.version>
       <ftest-classes-dir>${project.build.directory}/ftest</ftest-classes-dir>
       <ftest-sources-dir>src/ftest/java</ftest-sources-dir>
       <suite-xml-dir>src/ftest/resources/selenium</suite-xml-dir>
@@ -230,7 +230,7 @@
             <dependency>
                <groupId>org.jboss.test</groupId>
                <artifactId>richfaces-selenium</artifactId>
-               <version>${richfaces-selenium.version}</version>
+               <version>${richfaces.selenium.version}</version>
                <scope>test</scope>
             </dependency>
          </dependencies>
@@ -470,7 +470,7 @@
             <dependency>
                <groupId>org.jboss.test</groupId>
                <artifactId>richfaces-selenium</artifactId>
-               <version>${richfaces-selenium.version}</version>
+               <version>${richfaces.selenium.version}</version>
                <scope>test</scope>
             </dependency>
          </dependencies>
