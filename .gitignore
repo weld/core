@@ -15,3 +15,6 @@ examples/jsf/translator/ear/src/main/application/META-INF/application.xml
 docs/reference/weld-reference.pdf
 jboss-as/local.build.properties
 test-output
+examples/jsf/numberguess/src/main/webapp/WEB-INF/web.xml
+examples/jsf/pastecode/src/main/webapp/META-INF/MANIFEST.MF
+examples/jsf/permalink/src/main/webapp/META-INF/MANIFEST.MF
