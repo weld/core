@@ -65,7 +65,7 @@ public class Proxies
       {
          if (classes.isEmpty())
          {
-            return null;
+            return Object.class;
          }
          Iterator<Class<?>> it = classes.iterator();
          Class<?> superclass = it.next();
