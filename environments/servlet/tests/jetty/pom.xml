@@ -22,23 +22,9 @@
       </dependency>
 
       <dependency>
-         <groupId>org.jboss.ejb3</groupId>
-         <artifactId>jboss-ejb3-api</artifactId>
+         <groupId>org.jboss.spec.javax.ejb</groupId>
+         <artifactId>jboss-ejb-api_3.1_spec</artifactId>
          <scope>test</scope>
-         <exclusions>
-            <exclusion>
-               <artifactId>jboss-jaxrpc</artifactId>
-               <groupId>jbossws</groupId>
-            </exclusion>
-            <exclusion>
-               <artifactId>jboss-jaxrpc</artifactId>
-               <groupId>jboss.jbossws</groupId>
-            </exclusion>
-            <exclusion>
-               <artifactId>jboss-transaction-api</artifactId>
-               <groupId>org.jboss.javaee</groupId>
-            </exclusion>
-         </exclusions>
       </dependency>
 
       <dependency>
