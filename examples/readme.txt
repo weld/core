@@ -28,12 +28,12 @@ directory:
 When running the functional tests on an individual example, use the following command in
 the example's directory (except for jsf/numberguess as explained below):
 
-  mvn -U -Pftest-jboss-remote-60 clean verify
+  mvn -Pftest-jboss-remote-60 clean verify
 
 The jsf/numberguess example needs the jboss6 profile to be active, so, in the jsf/numberguess
 directory, run:
 
-  mvn -U -Pftest-jboss-remote-60,jboss6 clean verify
+  mvn -Pftest-jboss-remote-60,jboss6 clean verify
 
 The jsf/numberguess example can be also tested in a cluster. Follow these steps:
 
@@ -42,4 +42,4 @@ The jsf/numberguess example can be also tested in a cluster. Follow these steps:
 2) set up JBOSS_HOME environment property to point to JBossAS distribution
 3) run the following command:
 
-  mvn -U -Pjboss6cluster,ftest-jboss-cluster-60 clean verify  -Djboss.master.configuration=${env.JBOSS_HOME}/server/all
+  mvn -Pjboss6cluster,ftest-jboss-cluster-60 clean verify  -Djboss.master.configuration=${env.JBOSS_HOME}/server/all
