@@ -145,6 +145,7 @@ public class WeldForwardingAnnotationProcessor extends ForwardingAnnotationProce
       if (field != null)
       {
          setFieldValue(field, stdContext, annotationProcessor);
+         return;
       }
       throw new RuntimeException("neither field nor setter found for annotationProcessor");
    }
