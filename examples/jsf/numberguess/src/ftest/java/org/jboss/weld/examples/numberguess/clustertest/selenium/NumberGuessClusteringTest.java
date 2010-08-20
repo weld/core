@@ -24,14 +24,9 @@ package org.jboss.weld.examples.numberguess.clustertest.selenium;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import org.jboss.test.selenium.cookie.Cookie;
-import org.jboss.test.selenium.framework.AjaxSelenium;
-import org.jboss.test.selenium.framework.TypedSeleniumImpl;
 import org.jboss.test.selenium.locator.XpathLocator;
 import org.jboss.test.selenium.AbstractTestCase;
 import org.testng.annotations.BeforeMethod;
@@ -216,8 +211,9 @@ public class NumberGuessClusteringTest extends AbstractTestCase
          sb.append("/").append(parsedStrings[i]);
       }      
       
-      String sid;
+      String sid = "";
       
+      /* ---------- uncomment this when richfaces-selenium updates propagate to no-SNAPSHOT version ------
       if (selenium.isCookiePresent("JSESSIONID"))
       {
     	   sid = selenium.getCookieByName("JSESSIONID").getValue();  
@@ -226,7 +222,7 @@ public class NumberGuessClusteringTest extends AbstractTestCase
       {    	  
     	   //get sessionid directly from browser URL if JSESSIONID cookie is not present
     	   sid = loc.substring(loc.indexOf("jsessionid=") + "jsessionid=".length(), loc.length());
-      }
+      }*/
       
       String newAddress = sb.toString();
       String firstPart = newAddress.substring(0, newAddress.indexOf(";"));
