@@ -1,0 +1,8 @@
+<beans>
+	<decorators>
+		<class>org.jboss.weld.tests.unit.bootstrap.Foo</class>
+	</decorators>
+	<decorators>
+		<class>org.jboss.weld.tests.unit.bootstrap.Bar</class>
+	</decorators>
+</beans>

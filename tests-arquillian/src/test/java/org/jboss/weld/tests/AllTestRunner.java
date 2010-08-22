@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.jboss.shrinkwrap.impl.base.URLPackageScanner;
-import org.jboss.weld.tests.annotatedType.ExampleTest;
 import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerBuilder;

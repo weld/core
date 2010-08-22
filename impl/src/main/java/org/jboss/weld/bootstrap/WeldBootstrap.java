@@ -263,6 +263,10 @@ public class WeldBootstrap implements Bootstrap
          {
             deployment.getServices().add(ProxyServices.class, new SimpleProxyServices());
          }
+         if (!deployment.getServices().contains(ServiceLoaderFactory.class))
+         {
+            deployment.getServices().add(ServiceLoaderFactory.class, new DefaultServiceLoaderFactory());
+         }
 
          verifyServices(deployment.getServices(), environment.getRequiredDeploymentServices());
 
@@ -335,7 +339,6 @@ public class WeldBootstrap implements Bootstrap
       services.add(ClassTransformer.class, new ClassTransformer(services.get(TypeStore.class)));
       services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
       services.add(ContextualStore.class, new ContextualStoreImpl());
-      services.add(ServiceLoaderFactory.class, new DefaultServiceLoaderFactory());
       services.add(InterceptionMetadataService.class, new InterceptionMetadataService());
       services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
       return services;

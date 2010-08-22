@@ -58,6 +58,12 @@
       </dependency>
 
       <dependency>
+         <groupId>org.jboss.weld.arquillian.container</groupId>
+         <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-simple</artifactId>
          <scope>test</scope>

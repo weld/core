@@ -26,7 +26,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.util.AnnotationLiteral;
 
-import org.jboss.weld.tests.util.annotated.TestAnnotatedTypeBuilder;
+import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
 
 public class AnnotatedTypeEjbExtension implements Extension
 {

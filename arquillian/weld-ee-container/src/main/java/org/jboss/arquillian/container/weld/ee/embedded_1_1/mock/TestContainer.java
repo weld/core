@@ -16,34 +16,178 @@
  */
 package org.jboss.arquillian.container.weld.ee.embedded_1_1.mock;
 
+import static java.util.Arrays.asList;
+
+import java.net.URL;
+import java.util.Collection;
+import java.util.List;
+
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldManager;
 
 /**
- * Control of the container, used for tests. Wraps up common operations.
+ * <p>
+ * Wrapper over Weld, exposing operations commonly required for executing tests
+ * with Weld. {@link TestContainer} exposes a "Mock Java EE 6" view of Weld,
+ * allowing Weld to discover EE components, but not to invoke them.
+ * </p>
  * 
- * If you require more control over the container bootstrap lifecycle you should
- * use the {@link #getLifecycle()} method. For example:
+ * <p>
+ * In general, we recommend using Arquillian to test CDI/Weld applications,
+ * however sometimes it useful to have greater control over the test, and in
+ * that case you may wish to use {@link TestContainer}.
+ * </p>
  * 
- * <code>TestContainer container = new TestContainer(...);
+ * <p>
+ * If you require more control over the container bootstrap lifecycle than that
+ * offered by {@link TestContainer} you should use the {@link #getLifecycle()}
+ * method. For example:
+ * <p>
+ * 
+ * <pre>
+ * TestContainer container = new TestContainer(...);
  * container.getLifecycle().initialize();
- * container.getLifecycle().getBootstrap().startInitialization();
+ * container.getLifecycle().getBootstrap().startInitialization(container.getDeployment());
  * container.getLifecycle().getBootstrap().deployBeans();
  * container.getLifecycle().getBootstrap().validateBeans();
  * container.getLifecycle().getBootstrap().endInitialization();
- * container.getLifecycle().stopContainer();</code>
+ * container.getLifecycle().stopContainer();
+ * </pre>
  * 
- * Note that we can easily mix fine-grained calls to bootstrap, and coarse grained calls to {@link TestContainer}.
+ * <p>
+ * Note that we can easily mix fine-grained calls to bootstrap, and coarse
+ * grained calls to {@link TestContainer}.
+ * </p>
  * 
- * @author pmuir
- *
+ * @author Pete Muir
+ * 
  */
 public class TestContainer
 {
-   
-   private final MockServletLifecycle lifecycle;
-   
+
+   /**
+    * A further wrapper over TestContainer, allowing a test to be run.
+    * 
+    * @author Pete Muir
+    * 
+    */
+   public static class Runner
+   {
+      
+      public static interface Runnable
+      {
+         
+         public abstract void run(WeldManager beanManager);
+         
+      }
+
+      private static Runnable NO_OP = new Runnable()
+      {
+
+         public void run(WeldManager beanManager)
+         {
+         }
+
+      };
+
+      private final List<URL> beansXml;
+
+      private final List<Class<?>> classes;
+
+      public Runner(List<URL> beansXml, List<Class<?>> classes)
+      {
+         this.beansXml = beansXml;
+         this.classes = classes;
+      }
+
+      /**
+       * Bootstrap and shutdown the container.
+       * 
+       */
+      public void run() throws Exception
+      {
+         run(NO_OP);
+      }
+
+      /**
+       * Bootstrap and shutdown the container.
+       * 
+       * @param runnable a {@link Runnable} to be called whilst the container is
+       *           active
+       * 
+       */
+      public void run(Runnable runnable) throws Exception
+      {
+         TestContainer container = null;
+         try
+         {
+            container = new TestContainer(beansXml, classes);
+            container.startContainer().ensureRequestActive();
+            runnable.run(container.getBeanManager(container.getDeployment().getBeanDeploymentArchives().iterator().next()));
+         }
+         finally
+         {
+            if (container != null)
+            {
+               container.stopContainer();
+            }
+         }
+      }
+
+      /**
+       * Bootstrap and shutdown the container If the expected exception must be
+       * thrown (including message).
+       * 
+       * @throws AssertionError if the exception that was expected is not
+       *            thrown.
+       */
+      public void runAndExpect(Exception expected)
+      {
+         runAndExpect(NO_OP, expected);
+      }
+
+      /**
+       * Bootstrap and shutdown the container. If the expected exception must be
+       * thrown (including message).
+       * 
+       *@param runnable a {@link Runnable} to be called whilst the container is
+       *           active
+       * @throws AssertionError if the exception that was expected is not
+       *            thrown.
+       */
+      public void runAndExpect(Runnable runnable, Exception expected)
+      {
+         try
+         {
+            run();
+         }
+         catch (Exception e)
+         {
+            if (!expected.getClass().isAssignableFrom(e.getClass()))
+            {
+               throw new AssertionError("Expected exception " + expected + " but got " + e);
+            }
+            if (expected.getMessage() == null)
+            {
+               return;
+            }
+            String errorCode = expected.getMessage().substring(0, 11);
+            if (e.getMessage().startsWith(errorCode))
+            {
+               return;
+            }
+         }
+         throw new AssertionError("Expected exception " + expected + " but none was thrown");
+      }
+
+   }
+
+   private final MockLifecycle lifecycle;
+   private final Deployment deployment;
+
    /**
     * Create a container, specifying the classes and beans.xml to deploy
     * 
@@ -51,69 +195,91 @@ public class TestContainer
     * @param classes
     * @param beansXml
     */
-//   public TestContainer(MockServletLifecycle lifecycle, Collection<Class<?>> classes, Collection<URL> beansXml)
-//   {
-//      this(lifecycle);
-//      configureArchive(classes, beansXml);
-//   }
-   
-   public TestContainer(MockServletLifecycle lifecycle)
+   public TestContainer(BeansXml beansXml, Collection<Class<?>> classes)
    {
-      this.lifecycle = lifecycle;
+      this(new FlatDeployment(new BeanDeploymentArchiveImpl(beansXml, classes)));
+   }
+
+   public TestContainer(Collection<URL> beansXml, Collection<Class<?>> classes)
+   {
+      this.lifecycle = new MockLifecycle();
+      this.deployment = new FlatDeployment(new BeanDeploymentArchiveImpl(lifecycle.getBootstrap().parse(beansXml), classes));
    }
    
-//   public TestContainer(MockServletLifecycle lifecycle, Class<?>[] classes, URL[] beansXml)
-//   {
-//      this(lifecycle, classes == null ? null : Arrays.asList(classes), beansXml == null ? null : Arrays.asList(beansXml));
-//   }
-//   
-//   public TestContainer(MockServletLifecycle lifecycle, Class<?>... classes)
-//   {
-//      this(lifecycle, classes == null ? null : Arrays.asList(classes), null);
-//   }
-   
+   public TestContainer(String beanArchiveId, Collection<URL> beansXml, Collection<Class<?>> classes)
+   {
+      this.lifecycle = new MockLifecycle();
+      this.deployment = new FlatDeployment(new BeanDeploymentArchiveImpl(beanArchiveId, lifecycle.getBootstrap().parse(beansXml), classes));
+   }
+
+   /**
+    * Create a container, specifying the classes and beans.xml to deploy
+    * 
+    * @param lifecycle
+    * @param classes
+    * @param beansXml
+    */
+   public TestContainer(BeansXml beansXml, Class<?>... classes)
+   {
+      this(new FlatDeployment(new BeanDeploymentArchiveImpl(beansXml, asList(classes))));
+   }
+
+   public TestContainer(Class<?>... classes)
+   {
+      this(new FlatDeployment(new BeanDeploymentArchiveImpl(null, asList(classes))));
+   }
+
+   public TestContainer(Deployment deployment)
+   {
+      this.deployment = deployment;
+      this.lifecycle = new MockLifecycle();
+   }
+
+   public TestContainer ensureRequestActive()
+   {
+      if (!getLifecycle().isSessionActive())
+      {
+         getLifecycle().beginSession();
+      }
+      if (!getLifecycle().isConversationActive())
+      {
+         ((ConversationContext) getLifecycle().getConversationContext()).setActive(true);
+      }
+      if (!getLifecycle().isRequestActive())
+      {
+         getLifecycle().beginRequest();
+      }
+      return this;
+   }
+
    /**
     * Starts the container and begins the application
     */
    public TestContainer startContainer()
    {
-      getLifecycle().initialize();
+      getLifecycle().initialize(deployment);
       getLifecycle().beginApplication();
       return this;
    }
-   
-   /**
-    * Configure's the archive with the classes and beans.xml
-    */
-//   protected TestContainer configureArchive(Collection<Class<?>> classes, Collection<URL> beansXml)
-//   {
-//      BeanDeploymentArchive archive = lifecycle.getWar();
-//      archive.setBeanClasses(classes);
-//      if (beansXml != null)
-//      {
-//         archive.setBeansXmlFiles(beansXml);
-//      }
-//      return this;
-//   }
    
    /**
     * Get the context lifecycle, allowing fine control over the contexts' state
     * 
     * @return
     */
-   public MockServletLifecycle getLifecycle()
+   public MockLifecycle getLifecycle()
    {
       return lifecycle;
    }
-   
-   public BeanManagerImpl getBeanManager()
+
+   public WeldManager getBeanManager(BeanDeploymentArchive beanDeploymentArchive)
    {
-      return getLifecycle().getBootstrap().getManager(getLifecycle().getWar());
+      return getLifecycle().getBootstrap().getManager(beanDeploymentArchive);
    }
    
    public Deployment getDeployment()
    {
-      return getLifecycle().getDeployment();
+      return deployment;
    }
    
    /**

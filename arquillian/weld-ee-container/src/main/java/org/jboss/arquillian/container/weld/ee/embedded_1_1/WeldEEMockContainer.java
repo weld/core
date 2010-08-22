@@ -16,16 +16,18 @@
  */
 package org.jboss.arquillian.container.weld.ee.embedded_1_1;
 
+import static org.jboss.arquillian.container.weld.ee.embedded_1_1.Utils.findArchiveId;
+import static org.jboss.arquillian.container.weld.ee.embedded_1_1.Utils.findBeanClasses;
+import static org.jboss.arquillian.container.weld.ee.embedded_1_1.Utils.findBeansXml;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockEELifecycle;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockHttpSession;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockServletContext;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.shrinkwrap.ShrinkwrapBeanDeploymentArchive;
 import org.jboss.arquillian.protocol.local.LocalMethodExecutor;
 import org.jboss.arquillian.spi.Configuration;
 import org.jboss.arquillian.spi.ContainerMethodExecutor;
@@ -40,7 +42,8 @@ import org.jboss.arquillian.spi.event.suite.Before;
 import org.jboss.arquillian.spi.event.suite.EventHandler;
 import org.jboss.arquillian.spi.event.suite.TestEvent;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.weld.bootstrap.WeldBootstrap;
+import org.jboss.shrinkwrap.classloader.ShrinkWrapClassLoader;
+import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.servlet.HttpSessionManager;
 
@@ -69,21 +72,21 @@ public class WeldEEMockContainer implements DeployableContainer
       */
       boolean enableConversation = false;
       
-      ShrinkwrapBeanDeploymentArchive beanArchive = archive.as(ShrinkwrapBeanDeploymentArchive.class);
-      MockEELifecycle lifecycle = new MockEELifecycle(beanArchive);
-      beanArchive.setBootstrap(lifecycle.getBootstrap());
+      ShrinkWrapClassLoader classLoader = new ShrinkWrapClassLoader(archive.getClass().getClassLoader(), archive);
+      TestContainer container = new TestContainer(findArchiveId(archive), findBeansXml(archive), findBeanClasses(archive, classLoader));
+      Bootstrap bootstrap = container.getLifecycle().getBootstrap();
 
-      ContextClassLoaderManager classLoaderManager = new ContextClassLoaderManager(beanArchive.getClassLoader());
+      ContextClassLoaderManager classLoaderManager = new ContextClassLoaderManager(classLoader);
       classLoaderManager.enable();
 
       context.add(ContextClassLoaderManager.class, classLoaderManager);
 
-      TestContainer container = new TestContainer(lifecycle);
       container.startContainer();
       
       context.add(TestContainer.class, container);
-      context.add(WeldBootstrap.class, lifecycle.getBootstrap());
-      context.add(WeldManager.class, container.getBeanManager());
+      context.add(Bootstrap.class, bootstrap);
+      // Assume a flat structure
+      context.add(WeldManager.class, container.getBeanManager(container.getDeployment().getBeanDeploymentArchives().iterator().next()));
 
       context.register(AfterDeploy.class, new SessionLifeCycleCreator());
       context.register(BeforeUnDeploy.class, new SessionLifeCycleDestoryer());
@@ -102,7 +105,7 @@ public class WeldEEMockContainer implements DeployableContainer
             CDISessionID id = context.get(CDISessionID.class);
             if(id != null)
             {
-               HttpSessionManager sessionManager = BeanUtils.getBeanReference(manager, HttpSessionManager.class);
+               HttpSessionManager sessionManager = Utils.getBeanReference(manager, HttpSessionManager.class);
 
                HttpSession session = sessionStore.get(id.getId()); 
                if(session == null)

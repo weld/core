@@ -1,0 +1,5 @@
+<beans>
+	<alternatives>
+		<class>org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution.Alt</class>
+	</alternatives>
+</beans>

@@ -29,8 +29,7 @@ import org.atinject.tck.auto.Seat;
 import org.atinject.tck.auto.Tire;
 import org.atinject.tck.auto.V8Engine;
 import org.atinject.tck.auto.accessories.Cupholder;
-import org.jboss.weld.mock.MockEELifecycle;
-import org.jboss.weld.mock.TestContainer;
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 
 /**
  * Configure the AtInject TCK for use with the 299 RI
@@ -50,7 +49,7 @@ public class AtInjectTCK
    {
       // Create and start the TestContainer, which takes care of starting the container, deploying the
       // classes, starting the contexts etc.
-      TestContainer container = new TestContainer(new MockEELifecycle(),
+      TestContainer container = new TestContainer(
             
             // The classes to deploy as beans
             Convertible.class,
@@ -64,7 +63,8 @@ public class AtInjectTCK
          );
       container.startContainer();
       
-      BeanManager beanManager = container.getBeanManager();
+      // Our entry point is the single bean deployment archive
+      BeanManager beanManager = container.getBeanManager(container.getDeployment().getBeanDeploymentArchives().iterator().next());
       
       // Obtain a reference to the Car and pass it to the TCK to generate the testsuite
       Bean<?> bean = beanManager.resolve(beanManager.getBeans(Car.class));

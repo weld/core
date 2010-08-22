@@ -38,7 +38,7 @@ public class ConversationLifeCycleDestoryer implements EventHandler<Event> {
    {
       WeldManager manager = context.get(WeldManager.class);
       
-      Conversation conversation = BeanUtils.getBeanReference(manager, Conversation.class);
+      Conversation conversation = Utils.getBeanReference(manager, Conversation.class);
       if(!conversation.isTransient()) 
       {
          context.add(CDIConversationID.class, new CDIConversationID(conversation.getId()));

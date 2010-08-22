@@ -19,10 +19,9 @@ package org.jboss.weld.test.harness;
 import java.net.URL;
 import java.util.Collection;
 
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.testharness.api.DeploymentException;
 import org.jboss.testharness.spi.StandaloneContainers;
-import org.jboss.weld.mock.MockServletLifecycle;
-import org.jboss.weld.mock.TestContainer;
 
 public abstract class AbstractStandaloneContainersImpl implements StandaloneContainers
 {
@@ -33,7 +32,7 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
 
    public boolean deploy(Collection<Class<?>> classes, Collection<URL> beansXml)
    {
-      this.testContainer = new TestContainer(newLifecycle(), classes, beansXml);
+      this.testContainer = new TestContainer(beansXml, classes);
       
       try
       {
@@ -47,8 +46,6 @@ public abstract class AbstractStandaloneContainersImpl implements StandaloneCont
       testContainer.ensureRequestActive();
       return true;
    }
-
-   protected abstract MockServletLifecycle newLifecycle();
 
    public void deploy(Collection<Class<?>> classes) throws DeploymentException
    {

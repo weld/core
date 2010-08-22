@@ -26,7 +26,7 @@ import javax.servlet.ServletContext;
 import org.jboss.testharness.AbstractTest;
 import org.jboss.testharness.impl.runner.servlet.ServletTestRunner;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.mock.el.EL;
+import org.jboss.weld.test.el.EL;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;

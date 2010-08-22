@@ -16,25 +16,112 @@
  */
 package org.jboss.arquillian.container.weld.ee.embedded_1_1.mock;
 
+import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.WeldBootstrap;
+import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.api.Environment;
+import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.Lifecycle;
+import org.jboss.weld.bootstrap.api.helpers.ForwardingLifecycle;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.context.ContextLifecycle;
+import org.jboss.weld.context.api.BeanStore;
+import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
+import org.jboss.weld.manager.BeanManagerImpl;
 
-public interface MockLifecycle extends Lifecycle
+public class MockLifecycle extends ForwardingLifecycle
 {
 
-   public abstract void initialize();
+   private final WeldBootstrap bootstrap;
+   private final BeanStore applicationBeanStore;
+   private final BeanStore sessionBeanStore;
+   private final BeanStore requestBeanStore;
 
-   public abstract void beginApplication();
+   public MockLifecycle()
+   {
+      this.bootstrap = new WeldBootstrap();
+      this.applicationBeanStore = new ConcurrentHashMapBeanStore();
+      this.sessionBeanStore = new ConcurrentHashMapBeanStore();
+      this.requestBeanStore = new ConcurrentHashMapBeanStore();
+   }
 
-   public abstract void endApplication();
+   protected BeanStore getSessionBeanStore()
+   {
+      return sessionBeanStore;
+   }
 
-   public abstract void resetContexts();
+   protected BeanStore getRequestBeanStore()
+   {
+      return requestBeanStore;
+   }
 
-   public abstract void beginRequest();
+   protected BeanStore getApplicationBeanStore()
+   {
+      return applicationBeanStore;
+   }
 
-   public abstract void endRequest();
+   public void initialize(Deployment deployment)
+   {
+      bootstrap.startContainer(getEnvironment(), deployment, getApplicationBeanStore());
+   }
 
-   public abstract void beginSession();
+   @Override
+   protected Lifecycle delegate()
+   {
+      return Container.instance().services().get(ContextLifecycle.class);
+   }
 
-   public abstract void endSession();
+   public Bootstrap getBootstrap()
+   {
+      return bootstrap;
+   }
+   
+   public BeanManagerImpl getBeanManager(BeanDeploymentArchive bda)
+   {
+      return bootstrap.getManager(bda);
+   }
+
+   public void beginApplication()
+   {
+      bootstrap.startInitialization().deployBeans().validateBeans().endInitialization();
+   }
+
+   @Override
+   public void endApplication()
+   {
+      bootstrap.shutdown();
+   }
+
+   public void resetContexts()
+   {
+
+   }
+
+   public void beginRequest()
+   {
+      delegate().beginRequest("Mock", getRequestBeanStore());
+   }
+
+   public void endRequest()
+   {
+      delegate().endRequest("Mock", getRequestBeanStore());
+   }
+
+   public void beginSession()
+   {
+      delegate().restoreSession("Mock", getSessionBeanStore());
+   }
+
+   public void endSession()
+   {
+      // TODO Conversation handling breaks this :-(
+      //super.endSession("Mock", sessionBeanStore);
+   }
+
+   public Environment getEnvironment()
+   {
+      return Environments.EE_INJECT;
+   }
 
 }

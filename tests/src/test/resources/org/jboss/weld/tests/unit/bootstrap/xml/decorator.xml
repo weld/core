@@ -1,0 +1,5 @@
+<beans>
+	<decorators>
+		<class>org.jboss.weld.tests.unit.bootstrap.xml.Dec</class>
+	</decorators>
+</beans>

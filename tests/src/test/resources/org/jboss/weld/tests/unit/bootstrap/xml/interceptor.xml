@@ -1,0 +1,5 @@
+<beans>
+	<interceptors>
+		<class>org.jboss.weld.tests.unit.bootstrap.xml.Int</class>
+	</interceptors>
+</beans>

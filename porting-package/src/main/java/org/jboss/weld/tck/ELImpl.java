@@ -22,7 +22,7 @@ import org.jboss.jsr299.tck.api.JSR299Configuration;
 import org.jboss.testharness.api.Configurable;
 import org.jboss.testharness.api.Configuration;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.mock.el.EL;
+import org.jboss.weld.test.el.EL;
 
 public class ELImpl implements org.jboss.jsr299.tck.spi.EL, Configurable
 {

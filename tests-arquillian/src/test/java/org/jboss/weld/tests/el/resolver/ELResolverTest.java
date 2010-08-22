@@ -26,7 +26,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.mock.el.EL;
+import org.jboss.weld.test.el.EL;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

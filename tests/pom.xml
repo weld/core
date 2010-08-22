@@ -27,12 +27,6 @@
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
          <classifier>jdk15</classifier>
-         <exclusions>
-            <exclusion>
-               <artifactId>junit</artifactId>
-               <groupId>junit</groupId>
-            </exclusion>
-         </exclusions>
       </dependency>
 
       <dependency>
@@ -123,6 +117,12 @@
       <dependency>
          <groupId>net.sourceforge.htmlunit</groupId>
          <artifactId>htmlunit</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.weld.arquillian.container</groupId>
+         <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+         <scope>provided</scope>
       </dependency>
 
    </dependencies>

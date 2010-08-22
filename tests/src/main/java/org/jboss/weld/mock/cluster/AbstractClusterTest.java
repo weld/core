@@ -26,6 +26,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.FlatDeployment;
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.context.ContextLifecycle;
@@ -33,7 +36,6 @@ import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.HashMapBeanStore;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.mock.TestContainer;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -69,11 +71,17 @@ public class AbstractClusterTest
       // Bootstrap container
       SwitchableSingletonProvider.use(id);
 
-      TestContainer container = new TestContainer(new SwitchableMockEELifecycle(), classes, null);
+      TestContainer container = new TestContainer(new FlatDeployment(new BeanDeploymentArchiveImpl(classes)));
+      container.getDeployment().getServices().add(ProxyServices.class, new SwitchableCLProxyServices());
       container.startContainer();
       container.ensureRequestActive();
 
       return container;
+   }
+   
+   protected static BeanManagerImpl getBeanManager(TestContainer container)
+   {
+      return (BeanManagerImpl) container.getBeanManager(container.getDeployment().getBeanDeploymentArchives().iterator().next());
    }
 
    protected void use(int id)

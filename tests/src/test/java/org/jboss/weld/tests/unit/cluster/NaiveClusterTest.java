@@ -21,8 +21,8 @@ import java.util.Collection;
 
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.mock.TestContainer;
 import org.jboss.weld.mock.cluster.AbstractClusterTest;
 import org.testng.annotations.Test;
 
@@ -34,11 +34,11 @@ public class NaiveClusterTest extends AbstractClusterTest
    {
       
       TestContainer container1 = bootstrapContainer(1, Arrays.<Class<?>>asList(Foo.class));
-      BeanManagerImpl beanManager1 = container1.getBeanManager();
+      BeanManagerImpl beanManager1 = getBeanManager(container1);
       Bean<?> fooBean1 = beanManager1.resolve(beanManager1.getBeans(Foo.class));
       
       TestContainer container2 = bootstrapContainer(2, Arrays.<Class<?>>asList(Foo.class));
-      BeanManagerImpl beanManager2 = container2.getBeanManager();
+      BeanManagerImpl beanManager2= getBeanManager(container2);
       Bean<?> fooBean2 = beanManager2.resolve(beanManager2.getBeans(Foo.class));
       
       use(1);
@@ -62,11 +62,11 @@ public class NaiveClusterTest extends AbstractClusterTest
    {
       Collection<Class<?>> classes = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
       TestContainer container1 = bootstrapContainer(1, classes);
-      BeanManagerImpl beanManager1 = container1.getBeanManager();
+      BeanManagerImpl beanManager1 = getBeanManager(container1);
       Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));
       
       TestContainer container2 = bootstrapContainer(2, classes);
-      BeanManagerImpl beanManager2 = container2.getBeanManager();
+      BeanManagerImpl beanManager2= getBeanManager(container2);
       Bean<?> stableBean2 = beanManager2.resolve(beanManager2.getBeans(Stable.class));
       
       use(1);
@@ -109,11 +109,11 @@ public class NaiveClusterTest extends AbstractClusterTest
       Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
       Collection<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class, Foo.class);
       TestContainer container1 = bootstrapContainer(1, classes1);
-      BeanManagerImpl beanManager1 = container1.getBeanManager();
+      BeanManagerImpl beanManager1= getBeanManager(container1);
       Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));
       
       TestContainer container2 = bootstrapContainer(2, classes2);
-      BeanManagerImpl beanManager2 = container2.getBeanManager();
+      BeanManagerImpl beanManager2= getBeanManager(container2);
       Bean<?> stableBean2 = beanManager2.resolve(beanManager2.getBeans(Stable.class));
       
       use(1);

@@ -29,7 +29,7 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import org.jboss.weld.tests.util.annotated.TestAnnotatedTypeBuilder;
+import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
 
 /**
  * Extension that registers addition types via the SPI

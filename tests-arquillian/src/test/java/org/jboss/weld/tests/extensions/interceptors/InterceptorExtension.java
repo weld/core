@@ -29,7 +29,7 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import org.jboss.weld.tests.util.annotated.TestAnnotatedTypeBuilder;
+import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
 
 /**
  * 
