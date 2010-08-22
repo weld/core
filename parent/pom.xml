@@ -124,6 +124,12 @@
             <groupId>org.jboss.test-harness</groupId>
             <artifactId>jboss-test-harness-jboss-as-60</artifactId>
             <version>${jboss.test.harness.version}</version>
+            <exclusions>
+               <exclusion>
+                  <groupId>woodstox</groupId>
+                  <artifactId>wstx-asl</artifactId>
+               </exclusion>
+            </exclusions>
          </dependency>
 
          <dependency>
