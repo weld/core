@@ -17,14 +17,15 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.CtNewMethod;
+import javassist.bytecode.AccessFlag;
+import javassist.bytecode.ClassFile;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.util.bytecode.MethodUtils;
 
 /**
  * This factory produces client proxies specific for enterprise beans, in
@@ -46,19 +47,18 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
    }
 
    @Override
-   protected void addSpecialMethods(CtClass proxyClassType)
+   protected void addSpecialMethods(ClassFile proxyClassType)
    {
       super.addSpecialMethods(proxyClassType);
 
       // Add methods for the EnterpriseBeanInstance interface
       try
       {
-         CtClass enterpriseBeanInstanceInterface = getClassPool().get(EnterpriseBeanInstance.class.getName());
-         proxyClassType.addInterface(enterpriseBeanInstanceInterface);
-         for (CtMethod method : enterpriseBeanInstanceInterface.getDeclaredMethods())
+         proxyClassType.addInterface(EnterpriseBeanInstance.class.getName());
+         for (Method method : EnterpriseBeanInstance.class.getDeclaredMethods())
          {
-            log.trace("Adding method " + method.getLongName());
-            proxyClassType.addMethod(CtNewMethod.make(method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), createSpecialInterfaceBody(method, EnterpriseBeanInstance.class), proxyClassType));
+            log.trace("Adding method " + method);
+            proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), createInterceptorBody(proxyClassType, method), proxyClassType.getConstPool()));
          }
       }
       catch (Exception e)
