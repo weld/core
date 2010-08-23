@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <parent>
       <groupId>org.jboss.weld</groupId>
@@ -103,7 +104,7 @@
       <selenium.timeout>30000</selenium.timeout>
       <selenium.debug>false</selenium.debug>
       <selenium.log.dir>${project.build.directory}/ftest-logs</selenium.log.dir>
-      <application.deploy.timeout>300</application.deploy.timeout>      
+      <application.deploy.timeout>300</application.deploy.timeout>
       <richfaces.selenium.version>1.5.0.Final</richfaces.selenium.version>
       <ftest-classes-dir>${project.build.directory}/ftest</ftest-classes-dir>
       <ftest-sources-dir>src/ftest/java</ftest-sources-dir>
@@ -127,7 +128,7 @@
       <selenium.timeout.model>30000</selenium.timeout.model>
       <test.source.dir>${basedir}/src/test/java</test.source.dir>
       <test.output.dir>${basedir}/target/test-classes</test.output.dir>
-   </properties> 
+   </properties>
 
    <dependencyManagement>
       <dependencies>
@@ -229,14 +230,17 @@
                <plugins>
                   <!-- skip unit tests when running functional tests -->
                   <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                      <skip>true</skip> 
-                    </configuration>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-surefire-plugin</artifactId>
+                     <configuration>
+                        <skip>true</skip>
+                     </configuration>
                   </plugin>
-                  
-                  <!-- compile functional tests (testSourceDirectory and testOutputDirectory are used) -->
+
+                  <!--
+                     compile functional tests (testSourceDirectory and
+                     testOutputDirectory are used)
+                  -->
                   <plugin>
                      <groupId>org.apache.maven.plugins</groupId>
                      <artifactId>maven-compiler-plugin</artifactId>
@@ -304,7 +308,7 @@
                         </execution>
                      </executions>
                   </plugin>
-                  
+
                   <!-- run functional tests -->
                   <plugin>
                      <groupId>org.codehaus.mojo</groupId>
@@ -418,8 +422,12 @@
                            <phase>post-integration-test</phase>
                            <configuration>
                               <tasks>
-                                 <echo taskname="selenium-shutdown" message="DGF Errors during shutdown are expected" />
-                                 <get taskname="selenium-shutdown" src="http://${selenium.server.host}:${selenium.server.port}/selenium-server/driver/?cmd=shutDownSeleniumServer" ignoreerrors="true" dest="${selenium.log.dir}/selenium.stop.msg" />
+                                 <echo taskname="selenium-shutdown"
+                                    message="DGF Errors during shutdown are expected" />
+                                 <get taskname="selenium-shutdown"
+                                    src="http://${selenium.server.host}:${selenium.server.port}/selenium-server/driver/?cmd=shutDownSeleniumServer"
+                                    ignoreerrors="true"
+                                    dest="${selenium.log.dir}/selenium.stop.msg" />
                               </tasks>
                            </configuration>
                            <goals>
@@ -432,7 +440,7 @@
             </pluginManagement>
          </build>
       </profile>
-      
+
       <!-- PROFILE USED TO RUN CLUSTERING FTESTS ON JBOSS AS 6.0.* -->
       <profile>
          <id>ftest-jboss-cluster-60</id>
@@ -442,7 +450,7 @@
 
             <test.source.dir>${ftest-sources-dir}</test.source.dir>
             <test.output.dir>${ftest-classes-dir}</test.output.dir>
-         </properties>         
+         </properties>
          <dependencies>
             <dependency>
                <groupId>org.seleniumhq.selenium.client-drivers</groupId>
@@ -462,14 +470,17 @@
                <plugins>
                   <!-- skip unit tests when running functional tests -->
                   <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                      <skip>true</skip> 
-                    </configuration>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-surefire-plugin</artifactId>
+                     <configuration>
+                        <skip>true</skip>
+                     </configuration>
                   </plugin>
-                  
-                  <!-- compile functional tests (testSourceDirectory and testOutputDirectory are used) -->
+
+                  <!--
+                     compile functional tests (testSourceDirectory and
+                     testOutputDirectory are used)
+                  -->
                   <plugin>
                      <groupId>org.apache.maven.plugins</groupId>
                      <artifactId>maven-compiler-plugin</artifactId>
@@ -506,7 +517,7 @@
                         </execution>
                      </executions>
                   </plugin>
-                  
+
                   <!-- run functional tests -->
                   <plugin>
                      <groupId>org.codehaus.mojo</groupId>
@@ -618,17 +629,27 @@
                      <artifactId>maven-antrun-plugin</artifactId>
 
                      <executions>
-                        <!-- deploy application to farm directory and waiting for the application to be ready				  -->
+                        <!--
+                           deploy application to farm directory and
+                           waiting for the application to be ready
+                        -->
                         <execution>
                            <id>farm-example</id>
                            <phase>pre-integration-test</phase>
                            <configuration>
                               <tasks>
-                                 <property name="url.to.wait" value="http://localhost:8180/${project.build.finalName}" />
-                                 <copy file="${project.build.directory}/${project.build.finalName}.${project.packaging}" toDir="${jboss.master.configuration}/farm" />
-                                 <echo message="Waiting for application at ${url.to.wait}" />
-                                 <waitfor maxwait="${application.deploy.timeout}" maxwaitunit="second">
-                                    <http url="${url.to.wait}" errorsBeginAt="404" />
+                                 <property name="url.to.wait"
+                                    value="http://localhost:8180/${project.build.finalName}" />
+                                 <copy
+                                    file="${project.build.directory}/${project.build.finalName}.${project.packaging}"
+                                    toDir="${jboss.master.configuration}/farm" />
+                                 <echo
+                                    message="Waiting for application at ${url.to.wait}" />
+                                 <waitfor
+                                    maxwait="${application.deploy.timeout}"
+                                    maxwaitunit="second">
+                                    <http url="${url.to.wait}"
+                                       errorsBeginAt="404" />
                                  </waitfor>
                               </tasks>
                            </configuration>
@@ -636,7 +657,7 @@
                               <goal>run</goal>
                            </goals>
                         </execution>
-                        
+
                         <!-- this ant script runs testng natively -->
                         <execution>
                            <id>stop-selenium</id>
@@ -644,23 +665,28 @@
                            <configuration>
                               <tasks>
                                  <echo message="Undeploying application." />
-                                 <delete file="${jboss.master.configuration}/farm/${project.build.finalName}.${project.packaging}" />
-                                 <get taskname="selenium-shutdown" src="http://${selenium.host}:${selenium.port}/selenium-server/driver/?cmd=shutDownSeleniumServer" ignoreerrors="true" dest="${selenium.log.dir}/selenium.stop.msg" />
-                                 <echo taskname="selenium-shutdown" message="DGF Errors during shutdown are expected." />
+                                 <delete
+                                    file="${jboss.master.configuration}/farm/${project.build.finalName}.${project.packaging}" />
+                                 <get taskname="selenium-shutdown"
+                                    src="http://${selenium.host}:${selenium.port}/selenium-server/driver/?cmd=shutDownSeleniumServer"
+                                    ignoreerrors="true"
+                                    dest="${selenium.log.dir}/selenium.stop.msg" />
+                                 <echo taskname="selenium-shutdown"
+                                    message="DGF Errors during shutdown are expected." />
                               </tasks>
                            </configuration>
                            <goals>
                               <goal>run</goal>
                            </goals>
                         </execution>
-                        
+
                      </executions>
                   </plugin>
                </plugins>
             </pluginManagement>
          </build>
       </profile>
-      
+
    </profiles>
 </project>
 
