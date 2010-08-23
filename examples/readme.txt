@@ -26,12 +26,7 @@ directory:
   mvn -Pftest-jboss-remote-60,jboss6 clean verify
 
 When running the functional tests on an individual example, use the following command in
-the example's directory (except for jsf/numberguess as explained below):
-
-  mvn -Pftest-jboss-remote-60 clean verify
-
-The jsf/numberguess example needs the jboss6 profile to be active, so, in the jsf/numberguess
-directory, run:
+the example's directory:
 
   mvn -Pftest-jboss-remote-60,jboss6 clean verify
 
