@@ -765,6 +765,50 @@ public class Beans
          }
       }
    }
+   
+   /**
+    * Inspect an injection point, and try to retrieve a EE resource for it
+    */
+   public static Object resolveEEResource(BeanManagerImpl manager, WeldInjectionPoint<?, ?> injectionPoint)
+   {
+      EjbInjectionServices ejbServices = manager.getServices().get(EjbInjectionServices.class);
+      JpaInjectionServices jpaServices = manager.getServices().get(JpaInjectionServices.class);
+      ResourceInjectionServices resourceServices = manager.getServices().get(ResourceInjectionServices.class);
+
+      if (ejbServices != null)
+      {
+         Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
+         if (injectionPoint.isAnnotationPresent(ejbAnnotationType))
+         {
+            return ejbServices.resolveEjb(injectionPoint);
+         }
+      }
+      
+      if (jpaServices != null)
+      {
+         Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
+         if (injectionPoint.isAnnotationPresent(persistenceUnitAnnotationType))
+         {
+            return jpaServices.resolvePersistenceUnit(injectionPoint);
+         }
+         
+         Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
+         if (injectionPoint.isAnnotationPresent(persistenceContextAnnotationType))
+         {
+            return jpaServices.resolvePersistenceContext(injectionPoint);
+         }
+      }
+
+      if (resourceServices != null)
+      {
+         Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
+         if (injectionPoint.isAnnotationPresent(resourceAnnotationType))
+         {
+            return resourceServices.resolveResource(injectionPoint);
+         }
+      }
+      return null;
+   }
 
    /**
     * Gets the declared bean type

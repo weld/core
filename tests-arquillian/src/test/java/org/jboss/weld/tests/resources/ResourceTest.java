@@ -35,7 +35,7 @@ public class ResourceTest
    public static Archive<?> deploy() 
    {
       return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ResourceTest.class.getPackage());
+         .addClasses(ResourceTest.class, UTConsumer.class);
    }
    
    /*

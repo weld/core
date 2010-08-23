@@ -37,10 +37,13 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.injection.FieldInjectionPoint;
+import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 
@@ -106,10 +109,13 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
    {
       return new EEResourceProducerField<X, T>(field, declaringBean, manager);
    }
+   
+   private final WeldInjectionPoint<?, ?> injectionPoint;
 
    protected EEResourceProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
    {
       super(field, declaringBean, manager);
+      this.injectionPoint = FieldInjectionPoint.of(declaringBean, field);
    }
 
    @Override
@@ -156,7 +162,15 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
     */
    private T createUnderlying(CreationalContext<T> creationalContext)
    {
-      return super.create(creationalContext);
+      // Treat static fields as a special case, as they won't be injected, as the no bean is resolved, and normally there is no injection on static fields
+      if (getWeldAnnotated().isStatic())
+      {
+         return (T) Beans.resolveEEResource(getBeanManager(), injectionPoint);
+      }
+      else
+      {
+         return super.create(creationalContext);
+      }
    }
 
    @Override
