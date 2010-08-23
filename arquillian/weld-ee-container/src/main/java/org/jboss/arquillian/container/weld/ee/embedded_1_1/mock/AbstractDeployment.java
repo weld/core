@@ -22,6 +22,8 @@ import static java.util.Collections.singleton;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -37,12 +39,24 @@ public abstract class AbstractDeployment implements Deployment
 
    private final Collection<BeanDeploymentArchive> beanDeploymentArchives;
    private final ServiceRegistry services;
+   private final Iterable<Extension> extensions;
 
-   public AbstractDeployment(Collection<BeanDeploymentArchive> beanDeploymentArchives)
+   public AbstractDeployment(Collection<BeanDeploymentArchive> beanDeploymentArchives, Iterable<Extension> extensions)
    {
       this.services = new SimpleServiceRegistry();
       this.beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>(beanDeploymentArchives);
+      this.extensions = extensions;
       configureServices();
+   }
+   
+   public AbstractDeployment(BeanDeploymentArchive... beanDeploymentArchives)
+   {
+      this(asList(beanDeploymentArchives), ServiceLoader.load(Extension.class));
+   }
+   
+   public AbstractDeployment(BeanDeploymentArchive beanDeploymentArchive, Extension... extensions)
+   {
+      this(singleton(beanDeploymentArchive), asList(extensions));
    }
    
    protected void configureServices()
@@ -53,16 +67,6 @@ public abstract class AbstractDeployment implements Deployment
       services.add(EjbServices.class, new MockEjBServices());
       services.add(ResourceLoader.class, new MockResourceLoader());
    }
-   
-   public AbstractDeployment(BeanDeploymentArchive... beanDeploymentArchives)
-   {
-      this(asList(beanDeploymentArchives));
-   }
-   
-   public AbstractDeployment(BeanDeploymentArchive beanDeploymentArchives)
-   {
-      this(singleton(beanDeploymentArchives));
-   }
 
    public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
    {
@@ -72,6 +76,11 @@ public abstract class AbstractDeployment implements Deployment
    public ServiceRegistry getServices()
    {
       return services;
+   }
+   
+   public Iterable<Extension> getExtensions()
+   {
+      return extensions;
    }
    
 }

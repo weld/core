@@ -17,7 +17,6 @@
 package org.jboss.weld.tests.unit.deployment.structure.extensions;
 
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.AbstractDeployment;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
@@ -27,8 +26,6 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.test.Utils;
-import org.jboss.weld.util.serviceProvider.PackageServiceLoaderFactory;
-import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
@@ -48,7 +45,7 @@ public class NonBdaExtensionTest
       final BeanDeploymentArchive bda2 = new BeanDeploymentArchiveImpl("2", Observer2.class);
       
       // Create a deployment, that we can use to mirror the structure of one Extension inside a BDA, and one outside
-      Deployment deployment = new AbstractDeployment(bda1)
+      Deployment deployment = new AbstractDeployment(bda1, new Observer1(), new Observer2(), new CountingObserver1(), new CountingObserver2())
       {
          
          public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
@@ -74,10 +71,6 @@ public class NonBdaExtensionTest
          }
 
       };
-      
-      // Add custom ServiceLoader so that we can load Extension services from current package, not META-INF/services
-      deployment.getServices().add(ServiceLoaderFactory.class, new PackageServiceLoaderFactory(NonBdaExtensionTest.class.getPackage(), Extension.class));
-      
       TestContainer container = new TestContainer(deployment);
       // Cause the container to deploy the beans etc.
       container.startContainer();
@@ -123,7 +116,7 @@ public class NonBdaExtensionTest
       final BeanDeploymentArchive bda2 = new BeanDeploymentArchiveImpl("2", CountingObserver2.class);
       
       // Create a deployment, that we can use to mirror the structure of one Extension inside a BDA, and one outside
-      Deployment deployment = new AbstractDeployment(bda1)
+      Deployment deployment = new AbstractDeployment(bda1, new Observer1(), new Observer2(), new CountingObserver1(), new CountingObserver2())
       {
          
          public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
@@ -150,10 +143,6 @@ public class NonBdaExtensionTest
 
       };
       
-      
-      // Add custom ServiceLoader so that we can load Extension services from current package, not META-INF/services
-      // We do this after startContainer() so we replace the default impl
-      deployment.getServices().add(ServiceLoaderFactory.class, new PackageServiceLoaderFactory(NonBdaExtensionTest.class.getPackage(), Extension.class));
       TestContainer container = new TestContainer(deployment);
       
       // Cause the container to deploy the beans etc.

@@ -18,8 +18,6 @@ package org.jboss.weld.logging;
 
 import java.util.Locale;
 
-import org.jboss.weld.util.serviceProvider.DefaultServiceLoader;
-
 import ch.qos.cal10n.IMessageConveyor;
 
 public abstract class MessageConveyorFactory
@@ -29,17 +27,6 @@ public abstract class MessageConveyorFactory
    
    private static MessageConveyorFactory load()
    {
-      DefaultServiceLoader<MessageConveyorFactory> serviceLoader = DefaultServiceLoader.load(MessageConveyorFactory.class);
-      int i = 0;
-      for (MessageConveyorFactory f : serviceLoader)
-      {
-         if (i > 0)
-         {
-            throw new IllegalStateException("Maximum one service provider for MessageConveyerFactory allowed, got " + serviceLoader);
-         }
-         return f;
-      }
-      // Return the default
       return new WeldMessageConveyerFactory();
    }
    

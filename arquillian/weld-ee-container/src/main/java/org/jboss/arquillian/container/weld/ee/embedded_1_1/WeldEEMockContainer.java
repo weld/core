@@ -73,11 +73,11 @@ public class WeldEEMockContainer implements DeployableContainer
       boolean enableConversation = false;
       
       ShrinkWrapClassLoader classLoader = new ShrinkWrapClassLoader(archive.getClass().getClassLoader(), archive);
-      TestContainer container = new TestContainer(findArchiveId(archive), findBeansXml(archive), findBeanClasses(archive, classLoader));
-      Bootstrap bootstrap = container.getLifecycle().getBootstrap();
-
       ContextClassLoaderManager classLoaderManager = new ContextClassLoaderManager(classLoader);
       classLoaderManager.enable();
+      
+      TestContainer container = new TestContainer(findArchiveId(archive), findBeansXml(archive), findBeanClasses(archive, classLoader));
+      Bootstrap bootstrap = container.getLifecycle().getBootstrap();
 
       context.add(ContextClassLoaderManager.class, classLoaderManager);
 

@@ -38,8 +38,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.inject.spi.Extension;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
@@ -97,8 +95,6 @@ import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.serviceProvider.DefaultServiceLoaderFactory;
-import org.jboss.weld.util.serviceProvider.ServiceLoaderFactory;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.jboss.weld.xml.BeansXmlParser;
 import org.slf4j.cal10n.LocLogger;
@@ -263,10 +259,6 @@ public class WeldBootstrap implements Bootstrap
          {
             deployment.getServices().add(ProxyServices.class, new SimpleProxyServices());
          }
-         if (!deployment.getServices().contains(ServiceLoaderFactory.class))
-         {
-            deployment.getServices().add(ServiceLoaderFactory.class, new DefaultServiceLoaderFactory());
-         }
 
          verifyServices(deployment.getServices(), environment.getRequiredDeploymentServices());
 
@@ -369,7 +361,7 @@ public class WeldBootstrap implements Bootstrap
          }
 
          ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, beanDeployments);
-         extensionBeanDeployer.addExtensions(deployment.getServices().get(ServiceLoaderFactory.class).load(Extension.class));
+         extensionBeanDeployer.addExtensions(deployment.getExtensions());
          extensionBeanDeployer.deployBeans();
 
          // Add the Deployment BeanManager Bean to the Deployment BeanManager

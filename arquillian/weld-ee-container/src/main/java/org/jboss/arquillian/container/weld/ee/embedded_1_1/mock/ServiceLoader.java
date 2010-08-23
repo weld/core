@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2010, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,33 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.util.serviceProvider;
+package org.jboss.arquillian.container.weld.ee.embedded_1_1.mock;
 
-import static org.jboss.weld.logging.Category.UTIL;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.UtilMessage.COULD_NOT_READ_SERVICES_FILE;
-import static org.jboss.weld.logging.messages.UtilMessage.COULD_NOT_READ_SERVICES_LIST;
-import static org.jboss.weld.logging.messages.UtilMessage.DECLARED_EXTENSION_DOES_NOT_IMPLEMENT_EXTENSION;
-import static org.jboss.weld.logging.messages.UtilMessage.EXTENSION_CLASS_NOT_FOUND;
-import static org.jboss.weld.logging.messages.UtilMessage.SECURITY_EXCEPTION_SCANNING;
+import static java.util.logging.Level.WARNING;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
-import org.jboss.weld.util.collections.EnumerationList;
-import org.jboss.weld.util.reflection.SecureReflections;
-import org.slf4j.cal10n.LocLogger;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLogger.Level;
+import java.util.logging.Logger;
 
 /**
  * This class handles looking up service providers on the class path. It
@@ -58,12 +49,11 @@ import org.slf4j.ext.XLogger.Level;
  * @author <a href="mailto:dev@avalon.apache.org">Avalon Development Team</a>
  * @author Nicklas Karlsson
  */
-public class DefaultServiceLoader<S> implements Iterable<S>
+public class ServiceLoader<S> implements Iterable<S>
 {
-   private static LocLogger log = loggerFactory().getLogger(UTIL);
-   private static XLogger logX = loggerFactory().getXLogger(UTIL);
-
    private static final String SERVICES = "META-INF/services";
+
+   private static final Logger log = Logger.getLogger("ServiceLoader");
 
    /**
     * Creates a new service loader for the given service type, using the current
@@ -81,23 +71,9 @@ public class DefaultServiceLoader<S> implements Iterable<S>
     * @param service The interface or abstract class representing the service
     * @return A new service loader
     */
-   public static <S> DefaultServiceLoader<S> load(Class<S> service)
+   public static <S> ServiceLoader<S> load(Class<S> service)
    {
-      return load(SERVICES, service, Thread.currentThread().getContextClassLoader());
-   }
-
-   public static <S> DefaultServiceLoader<S> load(String directoryName, Class<S> service)
-   {
-      return load(directoryName, service, Thread.currentThread().getContextClassLoader());
-   }
-
-   public static <S> DefaultServiceLoader<S> load(String directoryName, Class<S> service, ClassLoader loader)
-   {
-      if (loader == null)
-      {
-         loader = service.getClassLoader();
-      }
-      return new DefaultServiceLoader<S>(directoryName, service, loader);
+      return load(service, Thread.currentThread().getContextClassLoader());
    }
 
    /**
@@ -109,9 +85,13 @@ public class DefaultServiceLoader<S> implements Iterable<S>
     *           (or, failing that, the bootstrap class loader) is to be used
     * @return A new service loader
     */
-   public static <S> DefaultServiceLoader<S> load(Class<S> service, ClassLoader loader)
+   public static <S> ServiceLoader<S> load(Class<S> service, ClassLoader loader)
    {
-      return load(SERVICES, service, loader);
+      if (loader == null)
+      {
+         loader = service.getClassLoader();
+      }
+      return new ServiceLoader<S>(service, loader);
    }
 
    /**
@@ -135,9 +115,9 @@ public class DefaultServiceLoader<S> implements Iterable<S>
     * @param service The interface or abstract class representing the service
     * @return A new service loader
     */
-   public static <S> DefaultServiceLoader<S> loadInstalled(Class<S> service)
+   public static <S> ServiceLoader<S> loadInstalled(Class<S> service)
    {
-      throw new UnsupportedOperationException();
+      throw new UnsupportedOperationException("Not implemented");
    }
 
    private final String serviceFile;
@@ -146,10 +126,10 @@ public class DefaultServiceLoader<S> implements Iterable<S>
 
    private Set<S> providers;
 
-   private DefaultServiceLoader(String prefix, Class<S> service, ClassLoader loader)
+   private ServiceLoader(Class<S> service, ClassLoader loader)
    {
       this.loader = loader;
-      this.serviceFile = prefix + "/" + service.getName();
+      this.serviceFile = SERVICES + "/" + service.getName();
       this.expectedType = service;
    }
 
@@ -173,26 +153,31 @@ public class DefaultServiceLoader<S> implements Iterable<S>
       }
    }
 
-   @SuppressWarnings("unchecked")
    private List<URL> loadServiceFiles()
    {
+      List<URL> serviceFiles = new ArrayList<URL>();
       try
       {
-         return new EnumerationList(loader.getResources(serviceFile));
+         Enumeration<URL> serviceFileEnumerator = loader.getResources(serviceFile);
+         while (serviceFileEnumerator.hasMoreElements())
+         {
+            serviceFiles.add(serviceFileEnumerator.nextElement());
+         }
       }
       catch (IOException e)
       {
-         log.warn(COULD_NOT_READ_SERVICES_LIST, serviceFile, e);
-         return Collections.emptyList();
+         throw new RuntimeException("Could not load resources from " + serviceFile, e);
       }
+      return serviceFiles;
    }
 
    private void loadServiceFile(URL serviceFile)
    {
-      BufferedReader reader = null;
+      InputStream is = null;
       try
       {
-         reader = new BufferedReader(new InputStreamReader(serviceFile.openStream(), "UTF-8"));
+         is = serviceFile.openStream();
+         BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
          String serviceClassName = null;
          while ((serviceClassName = reader.readLine()) != null)
          {
@@ -205,20 +190,21 @@ public class DefaultServiceLoader<S> implements Iterable<S>
       }
       catch (IOException e)
       {
-         logX.throwing(Level.ERROR, e);
-         throw new IllegalStateException(COULD_NOT_READ_SERVICES_FILE, serviceFile);
+         // FIXME: correct exception
+         throw new RuntimeException("Could not read services file " + serviceFile);
       }
       finally
       {
-         if (reader != null)
+         if (is != null)
          {
             try
             {
-               reader.close();
+               is.close();
             }
             catch (IOException e)
             {
-               log.warn(COULD_NOT_READ_SERVICES_FILE, serviceFile, e);
+               // FIXME: correct exception
+               throw new RuntimeException("Could not close services file " + serviceFile, e);
             }
          }
       }
@@ -238,15 +224,16 @@ public class DefaultServiceLoader<S> implements Iterable<S>
    private void loadService(String serviceClassName)
    {
       Class<? extends S> serviceClass = loadClass(serviceClassName);
-      S serviceInstance = null;
-      if (serviceClass != null)
+      if (serviceClass == null)
       {
-         serviceInstance = prepareInstance(serviceClass);
+         return;
       }
-      if (serviceInstance != null)
+      S serviceInstance = prepareInstance(serviceClass);
+      if (serviceInstance == null)
       {
-         providers.add(serviceInstance);
+         return;
       }
+      providers.add(serviceInstance);
    }
 
    private Class<? extends S> loadClass(String serviceClassName)
@@ -260,27 +247,53 @@ public class DefaultServiceLoader<S> implements Iterable<S>
       }
       catch (ClassNotFoundException e)
       {
-         log.warn(EXTENSION_CLASS_NOT_FOUND, serviceClassName);
+         log.warning("Could not load service class " + serviceClassName);
       }
       catch (ClassCastException e)
       {
-         log.warn(DECLARED_EXTENSION_DOES_NOT_IMPLEMENT_EXTENSION, serviceClassName);
+         throw new RuntimeException("Service class " + serviceClassName + " didn't implement the Extension interface");
       }
       return serviceClass;
    }
 
-   @SuppressWarnings("unchecked")
    private S prepareInstance(Class<? extends S> serviceClass)
    {
       try
       {
-         return (S) SecureReflections.ensureAccessible(SecureReflections.getDeclaredConstructor(serviceClass)).newInstance();
+         // TODO Support the SM
+         Constructor<? extends S> constructor = serviceClass.getDeclaredConstructor();
+         constructor.setAccessible(true);
+         return constructor.newInstance();
       }
-      catch (Exception e)
+      catch (NoClassDefFoundError e) 
       {
-         log.warn(SECURITY_EXCEPTION_SCANNING, serviceClass.getName());
+         log.log(WARNING, "Could not instantiate service class " + serviceClass.getName(), e);
+         return null;
       }
-      return null;
+      catch (InvocationTargetException e)
+      {
+         throw new RuntimeException("Error instantiating " + serviceClass, e.getCause());
+      }
+      catch (IllegalArgumentException e)
+      {
+         throw new RuntimeException("Error instantiating " + serviceClass, e);
+      }
+      catch (InstantiationException e)
+      {
+         throw new RuntimeException("Error instantiating " + serviceClass, e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new RuntimeException("Error instantiating " + serviceClass, e);
+      }
+      catch (SecurityException e)
+      {
+         throw new RuntimeException("Error instantiating " + serviceClass, e);
+      }
+      catch (NoSuchMethodException e)
+      {
+         throw new RuntimeException("Error instantiating " + serviceClass, e);
+      }
    }
 
    /**
