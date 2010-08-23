@@ -38,12 +38,10 @@ public class CallableMethodHandler implements MethodHandler, Serializable
    private static final long serialVersionUID = -1348302663981663427L;
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
-   // Can't make this final, need to deallocate on shutdown
    private final Callable<?> callable;
    
    public CallableMethodHandler(Callable<?> callable)
    {
-      super();
       this.callable = callable;
    }
 
