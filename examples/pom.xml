@@ -106,9 +106,8 @@
       <selenium.log.dir>${project.build.directory}/ftest-logs</selenium.log.dir>
       <application.deploy.timeout>300</application.deploy.timeout>
       <richfaces.selenium.version>1.5.0.Final</richfaces.selenium.version>
-      <ftest-classes-dir>${project.build.directory}/ftest</ftest-classes-dir>
-      <ftest-sources-dir>src/ftest/java</ftest-sources-dir>
-      <suite-xml-dir>src/ftest/resources/selenium</suite-xml-dir>
+      <ftest.sources.directory>src/ftest/java</ftest.sources.directory>
+      <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
       <!-- richfaces-selenium -->
       <browserSessionReuse>true</browserSessionReuse>
       <cargo.jvmargs.additional />
@@ -120,14 +119,11 @@
       <deployable.location />
       <deployable.type>war</deployable.type>
       <method>*</method>
-      <resources.dir>${ftest-classes-dir}</resources.dir>
       <selenium.maximize>false</selenium.maximize>
       <selenium.timeout.ajax>15000</selenium.timeout.ajax>
       <selenium.timeout.default>30000</selenium.timeout.default>
       <selenium.timeout.gui>5000</selenium.timeout.gui>
       <selenium.timeout.model>30000</selenium.timeout.model>
-      <test.source.dir>${basedir}/src/test/java</test.source.dir>
-      <test.output.dir>${basedir}/target/test-classes</test.output.dir>
    </properties>
 
    <dependencyManagement>
@@ -208,7 +204,7 @@
       <profile>
          <id>ftest-jboss-remote-60</id>
          <properties>
-            <ftest.testsuite>jboss5x.xml</ftest.testsuite>
+            <ftest.suite.xml>jboss6x.xml</ftest.suite.xml>
          </properties>
 
          <dependencies>
@@ -237,23 +233,24 @@
                      </configuration>
                   </plugin>
 
-                  <!--
-                     compile functional tests (testSourceDirectory and
-                     testOutputDirectory are used)
-                  -->
                   <plugin>
-                     <groupId>org.apache.maven.plugins</groupId>
-                     <artifactId>maven-compiler-plugin</artifactId>
+                     <groupId>org.codehaus.mojo</groupId>
+                     <artifactId>build-helper-maven-plugin</artifactId>
                      <executions>
                         <execution>
-                           <id>ftest-compile</id>
-                           <phase>test-compile</phase>
+                           <id>add-ftest-source</id>
                            <goals>
-                              <goal>testCompile</goal>
+                              <goal>add-test-source</goal>
                            </goals>
+                           <configuration>
+                              <sources>
+                                 <source>${ftest.sources.directory}</source>
+                              </sources>
+                           </configuration>
                         </execution>
                      </executions>
                   </plugin>
+
 
                   <!-- deploy/undeploy application archive to/from container -->
                   <plugin>
@@ -314,9 +311,8 @@
                      <groupId>org.codehaus.mojo</groupId>
                      <artifactId>failsafe-maven-plugin</artifactId>
                      <configuration>
-                        <testClassesDirectory>${ftest-classes-dir}</testClassesDirectory>
                         <suiteXmlFiles>
-                           <suiteXmlFile>${suite-xml-dir}/${ftest.testsuite}</suiteXmlFile>
+                           <suiteXmlFile>${ftest.resources.directory}/${ftest.suite.xml}</suiteXmlFile>
                         </suiteXmlFiles>
                         <argLine>-Xmx748m</argLine>
                         <forkMode>once</forkMode>
@@ -446,10 +442,9 @@
          <id>ftest-jboss-cluster-60</id>
 
          <properties>
-            <ftest.testsuite>jboss6x-cluster.xml</ftest.testsuite>
-
-            <test.source.dir>${ftest-sources-dir}</test.source.dir>
-            <test.output.dir>${ftest-classes-dir}</test.output.dir>
+            <ftest.suite.xml>jboss6x-cluster.xml</ftest.suite.xml>
+            <test.source.dir>${ftest.sources.directory}</test.source.dir>
+            <test.output.dir>${ftest.classes.directory}</test.output.dir>
          </properties>
          <dependencies>
             <dependency>
@@ -523,9 +518,9 @@
                      <groupId>org.codehaus.mojo</groupId>
                      <artifactId>failsafe-maven-plugin</artifactId>
                      <configuration>
-                        <testClassesDirectory>${ftest-classes-dir}</testClassesDirectory>
+                        <testClassesDirectory>${ftest.classes.directory}</testClassesDirectory>
                         <suiteXmlFiles>
-                           <suiteXmlFile>${suite-xml-dir}/${ftest.testsuite}</suiteXmlFile>
+                           <suiteXmlFile>${ftest.resources.directory}/${ftest.suite.xml}</suiteXmlFile>
                         </suiteXmlFiles>
                         <argLine>-Xmx748m</argLine>
                         <forkMode>once</forkMode>
@@ -689,4 +684,3 @@
 
    </profiles>
 </project>
-
