@@ -15,8 +15,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Implements the Weld Extensions {@link BeanManagerProvider} SPI. Used to get {@link BeanManager}
- * from outside a Servlet context.
- * 
+ * from outside a Servlet context.<br/>
+ * <br/>
+ * This Provider has a Precedence of 101, it needs to be loaded before any other in a Google App Engine Environment. The default provided
+ * JNDI based providers will fail in Google App Engine with a NoClassDefFoundError, reference to InitialContext is not allowed:<br/>
+ * java.lang.NoClassDefFoundError: javax.naming.InitialContext is a restricted class. Please see the Google  App Engine developer's guide for more details.   
+ * <br/>
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  * @see BeanManagerAccessor
@@ -38,7 +42,7 @@ public class WeldServletBeanManagerProvider implements BeanManagerProvider, Exte
    
    public int getPrecedence()
    {
-      return 50;
+      return 101;
    }
 
    public BeanManager getBeanManager()
