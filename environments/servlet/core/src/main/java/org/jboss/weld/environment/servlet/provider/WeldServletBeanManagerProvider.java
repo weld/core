@@ -112,7 +112,7 @@ public class WeldServletBeanManagerProvider implements BeanManagerProvider, Exte
       return Reflections.invokeMethod(deploymentManager, Map.class, container);
    }
    
-   // BeanDeploymentArchive.getId()
+   // for each BeanDeploymentArchive.getId()
    private BeanManager findBeanDeploymentArchiveById(Map<?, ?> beanDeploymentArchives, String id)
    {
       for(Entry<?, ?> beanDeploymentEntry : beanDeploymentArchives.entrySet())
