@@ -368,9 +368,29 @@
          <build>
             <plugins>
                <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-compiler-plugin</artifactId>
+                  <groupId>org.codehaus.cargo</groupId>
+                  <artifactId>cargo-maven2-plugin</artifactId>
                </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>selenium-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>failsafe-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      
+      <profile>
+         <id>ftest-tomcat-6</id>
+         <build>
+            <plugins>
                <plugin>
                   <groupId>org.codehaus.cargo</groupId>
                   <artifactId>cargo-maven2-plugin</artifactId>
@@ -391,6 +411,33 @@
          </build>
       </profile>
 
+      <profile>
+         <id>ftest-jetty-6</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.mortbay.jetty</groupId>
+                  <artifactId>maven-jetty-plugin</artifactId>
+                  <configuration>
+                     <overrideWebXml>src/main/webapp-jetty/WEB-INF/override-web.xml</overrideWebXml>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>selenium-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>failsafe-maven-plugin</artifactId>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      
       <profile>
          <id>restart-embedded</id>
          <build>
