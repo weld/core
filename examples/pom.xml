@@ -440,12 +440,12 @@
       <!-- PROFILE USED TO RUN CLUSTERING FTESTS ON JBOSS AS 6.0.* -->
       <profile>
          <id>ftest-jboss-cluster-60</id>
-
          <properties>
             <ftest.suite.xml>jboss6x-cluster.xml</ftest.suite.xml>
             <test.source.dir>${ftest.sources.directory}</test.source.dir>
             <test.output.dir>${ftest.classes.directory}</test.output.dir>
          </properties>
+         
          <dependencies>
             <dependency>
                <groupId>org.seleniumhq.selenium.client-drivers</groupId>
