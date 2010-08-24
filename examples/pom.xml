@@ -442,8 +442,6 @@
          <id>ftest-jboss-cluster-60</id>
          <properties>
             <ftest.suite.xml>jboss6x-cluster.xml</ftest.suite.xml>
-            <test.source.dir>${ftest.sources.directory}</test.source.dir>
-            <test.output.dir>${ftest.classes.directory}</test.output.dir>
          </properties>
          
          <dependencies>
@@ -472,20 +470,20 @@
                      </configuration>
                   </plugin>
 
-                  <!--
-                     compile functional tests (testSourceDirectory and
-                     testOutputDirectory are used)
-                  -->
                   <plugin>
-                     <groupId>org.apache.maven.plugins</groupId>
-                     <artifactId>maven-compiler-plugin</artifactId>
+                     <groupId>org.codehaus.mojo</groupId>
+                     <artifactId>build-helper-maven-plugin</artifactId>
                      <executions>
                         <execution>
-                           <id>ftest-compile</id>
-                           <phase>test-compile</phase>
+                           <id>add-ftest-source</id>
                            <goals>
-                              <goal>testCompile</goal>
+                              <goal>add-test-source</goal>
                            </goals>
+                           <configuration>
+                              <sources>
+                                 <source>${ftest.sources.directory}</source>
+                              </sources>
+                           </configuration>
                         </execution>
                      </executions>
                   </plugin>
