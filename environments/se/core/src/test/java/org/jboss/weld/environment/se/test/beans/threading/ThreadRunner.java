@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
 
 import org.jboss.weld.environment.se.test.ThreadContextTest;
@@ -59,7 +60,6 @@ public class ThreadRunner implements Runnable
          {
             final int appCount = appCounter.increment();
             final int threadCount = threadCounter.increment();
-            System.out.println(name + " : " + appCount + ", " + threadCount);
             assertEquals(loop, threadCount);
          }
          // ... and end at the number of loops
