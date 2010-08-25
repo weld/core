@@ -36,9 +36,10 @@ public class MessageDrivenInjectionTarget<T> extends SimpleInjectionTarget<T>
       super(type, beanManager);
    }
    
+   @Override
    public void inject(final T instance, final CreationalContext<T> ctx)
    {
-      new InjectionContextImpl<T>(beanManager, this, instance)
+      new InjectionContextImpl<T>(beanManager, this, getType(), instance)
       {
          public void proceed()
          {

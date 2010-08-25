@@ -179,7 +179,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
 
             public void inject(final T instance, final CreationalContext<T> ctx)
             {
-               new InjectionContextImpl<T>(getBeanManager(), this, instance)
+               new InjectionContextImpl<T>(getBeanManager(), this, getWeldAnnotated(), instance)
                {
                   
                   public void proceed()

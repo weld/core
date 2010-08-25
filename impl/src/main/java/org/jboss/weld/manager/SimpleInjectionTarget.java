@@ -113,7 +113,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
 
    public void inject(final T instance, final CreationalContext<T> ctx)
    {
-      new InjectionContextImpl<T>(beanManager, this, instance)
+      new InjectionContextImpl<T>(beanManager, this, getType(), instance)
       {
 
          public void proceed()
@@ -172,6 +172,11 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
    public Set<InjectionPoint> getInjectionPoints()
    {
       return injectionPoints;
+   }
+   
+   protected WeldClass<T> getType()
+   {
+      return type;
    }
 
 }
