@@ -24,7 +24,7 @@ import org.jboss.weld.injection.spi.ResourceInjectionServices;
  * @author Pete Muir
  *
  */
-public class MockResourceInjetionServices implements ResourceInjectionServices
+public class MockResourceInjectionServices implements ResourceInjectionServices
 {
 
    public Object resolveResource(InjectionPoint injectionPoint)

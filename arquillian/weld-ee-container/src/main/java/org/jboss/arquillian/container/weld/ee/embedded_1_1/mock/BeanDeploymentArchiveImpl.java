@@ -18,6 +18,7 @@ package org.jboss.arquillian.container.weld.ee.embedded_1_1.mock;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,30 +46,7 @@ import org.jboss.weld.injection.spi.ResourceInjectionServices;
  *
  */
 public class BeanDeploymentArchiveImpl implements BeanDeploymentArchive
-{
-   
-   private static final BeansXml EMPTY_BEANS_XML = new BeansXml() {
-
-      public List<String> getEnabledAlternativeClasses()
-      {
-         return emptyList();
-      }
-
-      public List<String> getEnabledAlternativeStereotypes()
-      {
-         return emptyList();
-      }
-
-      public List<String> getEnabledDecorators()
-      {
-         return emptyList();
-      }
-
-      public List<String> getEnabledInterceptors()
-      {
-         return emptyList();
-      }};
-   
+{  
    
    private final Collection<Class<?>> beanClasses;
    private final BeansXml beansXml;
@@ -116,7 +94,7 @@ public class BeanDeploymentArchiveImpl implements BeanDeploymentArchive
    {
       this.services.add(EjbInjectionServices.class, new MockEjbInjectionServices());
       this.services.add(JpaInjectionServices.class, new MockJpaInjectionServices());
-      this.services.add(ResourceInjectionServices.class, new MockResourceInjetionServices());
+      this.services.add(ResourceInjectionServices.class, new MockResourceInjectionServices());
    }
 
    public Collection<Class<?>> getBeanClasses()

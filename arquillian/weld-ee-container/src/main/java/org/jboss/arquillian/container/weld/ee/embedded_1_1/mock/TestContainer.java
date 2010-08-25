@@ -229,7 +229,7 @@ public class TestContainer
 
    public TestContainer(Class<?>... classes)
    {
-      this(new FlatDeployment(new BeanDeploymentArchiveImpl(null, asList(classes))));
+      this(new FlatDeployment(new BeanDeploymentArchiveImpl(asList(classes))));
    }
 
    public TestContainer(Deployment deployment)
