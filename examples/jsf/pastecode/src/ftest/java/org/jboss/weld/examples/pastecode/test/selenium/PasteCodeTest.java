@@ -38,11 +38,9 @@ import org.testng.annotations.Test;
 import static org.jboss.test.selenium.locator.LocatorFactory.*;
 import static org.jboss.test.selenium.guard.request.RequestTypeGuardFactory.*;
 
-/* ---------- uncomment this when richfaces-selenium updates propagate to no-SNAPSHOT version ------
 import org.jboss.test.selenium.locator.option.OptionLabelLocator;
 import org.jboss.test.selenium.locator.option.OptionLocator;
 import static org.jboss.test.selenium.locator.option.OptionLocatorFactory.*;
- */
  
 
 /**
@@ -66,18 +64,16 @@ public class PasteCodeTest extends AbstractTestCase
    protected XpathLocator POST_AREA = xp("//textarea[contains(@class,'pastecode')]");
    protected XpathLocator SYNTAX_SELECT = xp("//select[contains(@id,'language')]");
    protected XpathLocator EXPOSURE_SELECT = xp("//select[contains(@id,'exposure')]");
-   /* ---------- uncomment this when richfaces-selenium updates propagate to no-SNAPSHOT version ------
    protected OptionLocator<OptionLabelLocator> ANY_SYNTAX = optionLabel("Any");
    protected OptionLocator<OptionLabelLocator> JS_SYNTAX = optionLabel("JavaScript");
    protected OptionLocator<OptionLabelLocator> PRIVATE_EXPOSURE = optionLabel("Private");
-   */
    protected XpathLocator NAME_INPUT = xp("//input[contains(@id,'user')]");
    //resulting page after new post submitting
    protected XpathLocator DOWNLOAD_LINK = xp("//a[contains(text(),'DOWNLOAD')]");
    protected XpathLocator PUBLIC_TESTER_LINK = xp("//div[contains(@class,'recentPaste')]/a[contains(text(),'PublicTester')]");
    protected XpathLocator PRIVATE_TESTER_LINK = xp("//div[contains(@class,'recentPaste')]/a[contains(text(),'PrivateTester')]");
    //TODO: change Plain text to JavaScript when it's possible to choose it during posting of code-fragment
-   protected XpathLocator JS_TEXT = xp("//span[contains(@class,'recentPasteLang')][contains(text(),'Plain text')]");
+   protected XpathLocator JS_TEXT = xp("//span[contains(@class,'recentPasteLang')][contains(text(),'JavaScript')]");
    //recent posts test elements
    protected XpathLocator CRAZYMAN_LINK = xp("//a[contains(text(),'crazyman')][contains(@href,'24')]");
    //history page elements
@@ -109,9 +105,7 @@ public class PasteCodeTest extends AbstractTestCase
    public void newPublicPostTest()
    {
 	   selenium.type(POST_AREA, CODE_FRAGMENT);
-	   /* ---------- uncomment this when richfaces-selenium updates propagate to no-SNAPSHOT version ------
 	   selenium.select(SYNTAX_SELECT, JS_SYNTAX);
-	   */
 	   selenium.type(NAME_INPUT, "PublicTester");
 	   waitHttp(selenium).click(SUBMIT_BUTTON);
 
@@ -127,7 +121,6 @@ public class PasteCodeTest extends AbstractTestCase
 	   assertTrue(selenium.isElementPresent(JS_TEXT), "A page should contain element 'JavaScript'");
    }
    
-   /* ---------- uncomment this when richfaces-selenium updates propagate to no-SNAPSHOT version (unable to select PRIVATE option)------
    @Test(dependsOnMethods={"newPublicPostTest"})
    public void newPrivatePostTest()
    {
@@ -143,7 +136,7 @@ public class PasteCodeTest extends AbstractTestCase
 	   assertTrue(selenium.isElementPresent(DOWNLOAD_LINK), "A page should contain element 'DOWNLOAD'");
 	   assertFalse(selenium.isElementPresent(PRIVATE_TESTER_LINK), "A page shouldn't contain element 'PrivateTester'");
    }
-   */
+   
    
    @Test
    public void recentPostsTest()
@@ -161,10 +154,8 @@ public class PasteCodeTest extends AbstractTestCase
 	   assertFalse(selenium.isTextPresent("Posted by PrivateTester"), "A page shouldn't contain 'Posted by PrivateTester'");
 	   
 	   selenium.type(USER_SEARCH_INPUT, "graham");
-	   /* ---------- uncomment this when richfaces-selenium updates propagate to no-SNAPSHOT version ------
-	   selenium.select(SYNTAX_SELECT, JS_SYNTAX);
-	   */
 	   selenium.type(DATE_SEARCH_INPUT, "2009-02-02");
+	   selenium.select(SYNTAX_SELECT, JS_SYNTAX);
 	   selenium.type(CODE_SEARCH_INPUT, "toggle_visibility(id)");
 	   waitHttp(selenium).click(SEARCH_BUTTON);
 	   
@@ -179,9 +170,7 @@ public class PasteCodeTest extends AbstractTestCase
    {
 	   waitHttp(selenium).click(HISTORY_LINK);
 	   selenium.type(USER_SEARCH_INPUT, "martin");
-	   /* ---------- uncomment this when richfaces-selenium updates propagate to no-SNAPSHOT version ------
 	   selenium.select(SYNTAX_SELECT, ANY_SYNTAX);
-	   */
 	   selenium.type(DATE_SEARCH_INPUT, "");
 	   selenium.type(CODE_SEARCH_INPUT, "");
 	   waitHttp(selenium).click(SEARCH_BUTTON);

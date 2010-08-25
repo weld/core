@@ -105,7 +105,7 @@
       <selenium.debug>false</selenium.debug>
       <selenium.log.dir>${project.build.directory}/ftest-logs</selenium.log.dir>
       <application.deploy.timeout>300</application.deploy.timeout>
-      <richfaces.selenium.version>1.5.0.Final</richfaces.selenium.version>
+      <richfaces.selenium.version>1.5.1.Final</richfaces.selenium.version>
       <ftest.sources.directory>src/ftest/java</ftest.sources.directory>
       <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
       <!-- richfaces-selenium -->
