@@ -168,7 +168,7 @@ public class PasteCodeTest extends AbstractTestCase
 	   selenium.type(CODE_SEARCH_INPUT, "toggle_visibility(id)");
 	   waitHttp(selenium).click(SEARCH_BUTTON);
 	   
-	   assertTrue(selenium.isTextPresent("Posted by graham on 3 Feb 2009 at 12:01AM"), "A page should contain 'Posted by graham ...'");
+	   assertTrue(selenium.isTextPresent("Posted by graham on 3 Feb 2009"), "A page should contain 'Posted by graham ...'");
 	   assertTrue(selenium.isTextPresent("Language: JavaScript"), "A page should contain 'Language: JavaScript'");
 	   assertTrue(selenium.isTextPresent("var e = document.ge"), "A page should contain the code fragment found");
 	   assertFalse(selenium.isElementPresent(ACTIVE_FIRST_PAGE_LINK)); //assert that only one record was found
