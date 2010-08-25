@@ -40,14 +40,21 @@ public class ManagerObjectFactory implements ObjectFactory
 
    public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception
    {
-      for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance().beanDeploymentArchives().entrySet())
+      if (Container.available())
       {
-         if (entry.getKey().getId().equals("flat"))
+         for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance().beanDeploymentArchives().entrySet())
          {
-            return entry.getValue().getCurrent();
+            if (entry.getKey().getId().equals("flat"))
+            {
+               return entry.getValue().getCurrent();
+            }
          }
+         throw new NamingException(messageConveyer.getMessage(CANNOT_LOCATE_BEAN_MANAGER));
       }
-      throw new NamingException(messageConveyer.getMessage(CANNOT_LOCATE_BEAN_MANAGER));
+      else
+      {
+         throw new NamingException(messageConveyer.getMessage(CANNOT_LOCATE_BEAN_MANAGER));
+      }
    }
    
 }
