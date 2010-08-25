@@ -541,7 +541,7 @@
 
       <!-- functional tests -->
       <profile>
-         <id>ftest-jboss-remote-60</id>
+         <id>ftest-jboss-remote-6</id>
          <build>
             <plugins>
                 <plugin>
@@ -565,7 +565,7 @@
       </profile>
       
       <profile>
-         <id>ftest-jboss-cluster-60</id>
+         <id>ftest-jboss-cluster-6</id>
          <build>
             <plugins>
                <plugin>

@@ -202,7 +202,7 @@
 
    <profiles>
       <profile>
-         <id>ftest-jboss-remote-60</id>
+         <id>ftest-jboss-remote-6</id>
          <properties>
             <ftest.suite.xml>jboss6x.xml</ftest.suite.xml>
          </properties>
@@ -439,7 +439,7 @@
 
       <!-- PROFILE USED TO RUN CLUSTERING FTESTS ON JBOSS AS 6.0.* -->
       <profile>
-         <id>ftest-jboss-cluster-60</id>
+         <id>ftest-jboss-cluster-6</id>
          <properties>
             <ftest.suite.xml>jboss6x-cluster.xml</ftest.suite.xml>
          </properties>

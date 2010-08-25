@@ -23,12 +23,12 @@ must to be installed and running to run the functional tests.
 When running the testsuite against all the examples, use the following command in the examples
 directory:
 
-  mvn -Pftest-jboss-remote-60,jboss6 clean verify
+  mvn -Pftest-jboss-remote-6,jboss6 clean verify
 
 When running the functional tests on an individual example, use the following command in
 the example's directory:
 
-  mvn -Pftest-jboss-remote-60,jboss6 clean verify
+  mvn -Pftest-jboss-remote-6,jboss6 clean verify
 
 The jsf/numberguess example can be also tested in a cluster. Follow these steps:
 

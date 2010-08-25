@@ -58,7 +58,7 @@
 
    <profiles>
       <profile>
-         <id>ftest-jboss-remote-60</id>
+         <id>ftest-jboss-remote-6</id>
          <build>
             <plugins>
                <plugin>
