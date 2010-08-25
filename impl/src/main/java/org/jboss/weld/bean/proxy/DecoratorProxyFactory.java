@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
+import java.util.Set;
 
 import javassist.NotFoundException;
 import javassist.bytecode.AccessFlag;
@@ -70,6 +71,12 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
    private void addHandlerInitializerMethod(ClassFile proxyClassType) throws Exception
    {
       proxyClassType.addMethod(MethodUtils.makeMethod(Modifier.PRIVATE, void.class, "_initMH", new Class[] { Object.class }, new Class[] {}, createMethodHandlerInitializerBody(proxyClassType), proxyClassType.getConstPool()));
+   }
+
+   @Override
+   protected void addAdditionalInterfaces(Set<Class<?>> interfaces)
+   {
+      interfaces.add(DecoratorProxy.class);
    }
 
    /**

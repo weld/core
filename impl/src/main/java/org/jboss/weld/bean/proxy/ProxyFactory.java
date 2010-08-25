@@ -274,6 +274,15 @@ public class ProxyFactory<T>
       additionalInterfaces.add(Serializable.class);
    }
 
+   /**
+    * Sub classes may override to specify additional interfaces the proxy should
+    * implement
+    */
+   protected void addAdditionalInterfaces(Set<Class<?>> interfaces)
+   {
+
+   }
+
    @SuppressWarnings("unchecked")
    private Class<T> createProxyClass(String proxyClassName) throws Exception
    {
@@ -281,6 +290,7 @@ public class ProxyFactory<T>
       specialInterfaces.add(LifecycleMixin.class);
       specialInterfaces.add(TargetInstanceProxy.class);
       specialInterfaces.add(ProxyObject.class);
+      addAdditionalInterfaces(specialInterfaces);
       // Remove special interfaces from main set (deserialization scenario)
       additionalInterfaces.removeAll(specialInterfaces);
 

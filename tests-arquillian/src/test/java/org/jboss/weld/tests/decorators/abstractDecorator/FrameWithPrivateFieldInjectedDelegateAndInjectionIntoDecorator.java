@@ -14,30 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jboss.weld.tests.decorators.abstractDecorator;
 
+import javax.decorator.Decorator;
+import javax.decorator.Delegate;
 import javax.inject.Inject;
 
 /**
- *
- * @author Marius Bogoevici
+ * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class WindowImpl implements Window
+@Decorator
+public abstract class FrameWithPrivateFieldInjectedDelegateAndInjectionIntoDecorator implements Window
 {
-   @Inject
-   WindowPane pane;
 
    static boolean drawn;
 
-   static boolean moved;
+   @Inject @Delegate
+   private Window window;
+
+   @Inject
+   WindowPane pane;
 
    public void draw()
    {
-      drawn = true;
+     drawn = true;
+     window.draw();
    }
-
-   public void move()
-   {
-      moved = true; 
-   }
+   
 }

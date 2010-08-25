@@ -14,30 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.decorators.abstractDecorator;
 
-import javax.inject.Inject;
+package org.jboss.weld.bean.proxy;
 
 /**
- *
- * @author Marius Bogoevici
+ * Marker interface to identify Decorator proxies
+ * 
+ * @author Stuart Douglas
+ * 
  */
-public class WindowImpl implements Window
+public interface DecoratorProxy
 {
-   @Inject
-   WindowPane pane;
 
-   static boolean drawn;
-
-   static boolean moved;
-
-   public void draw()
-   {
-      drawn = true;
-   }
-
-   public void move()
-   {
-      moved = true; 
-   }
 }

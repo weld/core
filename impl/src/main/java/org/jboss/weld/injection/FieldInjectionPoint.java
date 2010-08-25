@@ -36,6 +36,7 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.inject.Inject;
 
 import org.jboss.interceptor.util.InterceptionUtils;
+import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.introspector.ForwardingWeldField;
@@ -109,7 +110,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
       try
       {
          Object instanceToInject = declaringInstance;
-         if (!isDelegate())
+         if (!(instanceToInject instanceof DecoratorProxy))
          {
             // if declaringInstance is a proxy, unwrap it
             instanceToInject = InterceptionUtils.getRawInstance(declaringInstance);
@@ -131,7 +132,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
       try
       {
          Object instanceToInject = declaringInstance;
-         if (!isDelegate())
+         if (!(instanceToInject instanceof DecoratorProxy))
          {
             // if declaringInstance is a proxy, unwrap it
             instanceToInject = InterceptionUtils.getRawInstance(declaringInstance);
