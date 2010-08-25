@@ -387,7 +387,7 @@ public class HelloWorld
                <para>In this case your application can be started by calling the provided
                main method like so:</para>
 
-               <programlisting role="JAVA"><![CDATA[java org.jboss.weld.environments.se.StartMain <args>]]></programlisting>
+               <programlisting role="JAVA"><![CDATA[java org.jboss.weld.environment.se.StartMain <args>]]></programlisting>
 
             </section>
 
