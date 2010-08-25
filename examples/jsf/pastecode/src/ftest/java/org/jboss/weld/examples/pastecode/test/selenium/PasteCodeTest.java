@@ -92,6 +92,7 @@ public class PasteCodeTest extends AbstractTestCase
    @BeforeMethod
    public void openStartURL() throws MalformedURLException 
    {
+       selenium.setSpeed(200);
        selenium.open(new URL(contextPath.toString() + MAIN_PAGE));
    }
    
