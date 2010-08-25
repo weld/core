@@ -185,11 +185,11 @@ public class PasteCodeTest extends AbstractTestCase
 	   selenium.type(DATE_SEARCH_INPUT, "");
 	   selenium.type(CODE_SEARCH_INPUT, "");
 	   waitHttp(selenium).click(SEARCH_BUTTON);
-	   assertTrue(selenium.isTextPresent("Posted by martin on 15 Feb 2009 at 12:01AM"), "A page should contain 'Posted by martin ...'");
+	   assertTrue(selenium.isTextPresent("Posted by martin on 15 Feb 2009"), "A page should contain 'Posted by martin ...'");
 	   waitHttp(selenium).click(SECOND_PAGE_LINK);
-	   assertTrue(selenium.isTextPresent("Posted by martin on 1 Feb 2009 at 12:01AM"), "A page should contain 'Posted by martin ...'");
+	   assertTrue(selenium.isTextPresent("Posted by martin on 1 Feb 2009"), "A page should contain 'Posted by martin ...'");
 	   waitHttp(selenium).click(THIRD_PAGE_LINK);
-	   assertTrue(selenium.isTextPresent("Posted by martin on 9 Jan 2009 at 12:01AM"), "A page should contain 'Posted by martin ...'");
+	   assertTrue(selenium.isTextPresent("Posted by martin on 9 Jan 2009"), "A page should contain 'Posted by martin ...'");
 	   assertTrue(selenium.isTextPresent("function build_calendar($month,$year,$dateArray)"), "A page should contain code fragment");
    }
    
