@@ -107,7 +107,7 @@ public class SerializableProxy implements Serializable
       Class<?> proxyClass = null;
       if (proxyClassName.endsWith(ProxyFactory.PROXY_SUFFIX))
       {
-         proxyClass = generateClientProxyClass(proxyBeanType, proxyBeanInterfaces);
+         proxyClass = generateClientProxyClass(proxyBeanType, proxyBeanInterfaces, proxyClassName);
       }
       else
       {
@@ -151,8 +151,8 @@ public class SerializableProxy implements Serializable
       return writeProxy ? proxyObject : this;
    }
 
-   private <T> Class<?> generateClientProxyClass(Class<T> beanType, Set<Type> interfaces)
+   private <T> Class<?> generateClientProxyClass(Class<T> beanType, Set<Type> interfaces, String proxyClassName)
    {
-      return new ProxyFactory<T>(beanType, interfaces).getProxyClass();
+      return new ProxyFactory<T>(beanType, interfaces, proxyClassName).getProxyClass();
    }
 }

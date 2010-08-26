@@ -246,7 +246,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
 
    protected void initProxyClass()
    {
-      this.proxyClass = new EnterpriseProxyFactory<T>(getWeldAnnotated().getJavaClass(), getTypes()).getProxyClass();
+      this.proxyClass = new EnterpriseProxyFactory<T>(getWeldAnnotated().getJavaClass(), this).getProxyClass();
    }
 
    /**

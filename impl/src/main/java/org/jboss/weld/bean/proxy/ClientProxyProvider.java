@@ -86,7 +86,7 @@ public class ClientProxyProvider
    {
       ContextBeanInstance<T> beanInstance = new ContextBeanInstance<T>(bean, id);
       TypeInfo typeInfo = TypeInfo.of(bean.getTypes());
-      return new ProxyFactory<T>(typeInfo.getSuperClass(), bean.getTypes()).create(beanInstance);
+      return new ProxyFactory<T>(typeInfo.getSuperClass(), bean.getTypes(), bean).create(beanInstance);
    }
 
    /**

@@ -141,7 +141,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
       this.delegateInjectionPoint = getDelegateInjectionPoints().iterator().next();
       if (getWeldAnnotated().isAbstract())
       {
-         Class<T> clazz = new DecoratorProxyFactory<T>(getWeldAnnotated().getJavaClass(), delegateInjectionPoint).getProxyClass();
+         Class<T> clazz = new DecoratorProxyFactory<T>(getWeldAnnotated().getJavaClass(), delegateInjectionPoint, this).getProxyClass();
          proxyClassForAbstractDecorators = beanManager.getServices().get(ClassTransformer.class).loadClass(clazz);
          constructorForAbstractDecorator = WeldConstructorImpl.of(
                proxyClassForAbstractDecorators.getDeclaredWeldConstructor(getConstructor().getSignature()),

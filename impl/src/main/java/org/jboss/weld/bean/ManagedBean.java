@@ -591,7 +591,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             MethodHandler methodHandler = interceptorProxyCreator.createMethodHandler(instance, getType(), getBeanManager().getServices().get(InterceptionMetadataService.class).getInterceptorMetadataRegistry().getInterceptorClassMetadata(WeldClassReference.of(getWeldAnnotated()), true));
             TargetBeanInstance targetInstance = new TargetBeanInstance(this, instance);
             targetInstance.setInterceptorsHandler(methodHandler);
-            instance = new ProxyFactory<T>(getType(), getTypes()).create(targetInstance);
+            instance = new ProxyFactory<T>(getType(), getTypes(), this).create(targetInstance);
          }
 
       }

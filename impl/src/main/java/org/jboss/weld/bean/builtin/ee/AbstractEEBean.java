@@ -43,7 +43,7 @@ public abstract class AbstractEEBean<T> extends AbstractBuiltInBean<T>
       this.types = new HashSet<Type>();
       this.types.add(Object.class);
       this.types.add(type);
-      this.proxy = new ProxyFactory<T>(type, types).create(new EnterpriseTargetBeanInstance(type, new CallableMethodHandler(callable)));
+      this.proxy = new ProxyFactory<T>(type, types, this).create(new EnterpriseTargetBeanInstance(type, new CallableMethodHandler(callable)));
    }
 
    public T create(CreationalContext<T> creationalContext)

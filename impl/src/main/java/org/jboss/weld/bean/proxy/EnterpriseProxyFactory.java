@@ -18,11 +18,11 @@
 package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Set;
 
 import javassist.bytecode.AccessFlag;
 import javassist.bytecode.ClassFile;
+
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.bytecode.MethodUtils;
@@ -41,9 +41,9 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
     * 
     * @param proxiedBeanType the actual enterprise bean
     */
-   public EnterpriseProxyFactory(Class<T> proxiedBeanType, Set<Type> localBusinessInterfaces)
+   public EnterpriseProxyFactory(Class<T> proxiedBeanType, Bean<T> bean)
    {
-      super(proxiedBeanType, localBusinessInterfaces);
+      super(proxiedBeanType, bean.getTypes(), bean);
    }
 
    @Override

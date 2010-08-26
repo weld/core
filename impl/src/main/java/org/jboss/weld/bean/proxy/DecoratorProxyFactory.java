@@ -30,6 +30,8 @@ import javassist.bytecode.ClassFile;
 import javassist.bytecode.Opcode;
 import javassist.util.proxy.MethodHandler;
 
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.FieldInjectionPoint;
@@ -54,9 +56,9 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
    private final WeldInjectionPoint<?, ?> delegateInjectionPoint;
    private final Field delegateField;
 
-   public DecoratorProxyFactory(Class<T> proxyType, WeldInjectionPoint<?, ?> delegateInjectionPoint)
+   public DecoratorProxyFactory(Class<T> proxyType, WeldInjectionPoint<?, ?> delegateInjectionPoint, Bean<?> bean)
    {
-      super(proxyType, Collections.EMPTY_SET);
+      super(proxyType, Collections.EMPTY_SET, bean);
       this.delegateInjectionPoint = delegateInjectionPoint;
       if (delegateInjectionPoint instanceof FieldInjectionPoint<?, ?>)
       {

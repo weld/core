@@ -46,11 +46,14 @@ import javassist.bytecode.Opcode;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
 
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.interceptor.proxy.LifecycleMixin;
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.util.Proxies.TypeInfo;
 import org.jboss.weld.util.bytecode.Boxing;
@@ -79,6 +82,7 @@ public class ProxyFactory<T>
    protected static final LocLogger log = loggerFactory().getLogger(BEAN);
    // Default proxy class name suffix
    public static final String PROXY_SUFFIX = "Proxy";
+   public static final String DEFAULT_PROXY_PACKAGE = "org.jboss.weld.proxies";
 
    private final Class<?> beanType;
    private final Set<Class<?>> additionalInterfaces = new HashSet<Class<?>>();
@@ -88,13 +92,30 @@ public class ProxyFactory<T>
    private static final String FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME = "firstSerializationPhaseComplete";
 
    /**
-    * Creates a new proxy factory with only the type of proxy specified.
+    * created a new proxy factory from a bean instance. The proxy name is
+    * generated from the bean id
+    * 
+    * @param proxiedBeanType
+    * @param businessInterfaces
+    * @param bean
+    */
+   public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean)
+   {
+      this(proxiedBeanType, typeClosure, getProxyName(proxiedBeanType, typeClosure, bean));
+   }
+
+   /**
+    * Creates a new proxy factory when the name of the proxy class is already
+    * known, such as during de-serialization
     * 
     * @param proxiedBeanType the super-class for this proxy class
+    * @param typeClosure the bean types of the bean
+    * @param the name of the proxy class
+    * 
     */
-   public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> businessInterfaces)
+   public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName)
    {
-      for (Type type : businessInterfaces)
+      for (Type type : typeClosure)
       {
          Class<?> c = Reflections.getRawType(type);
          // Ignore no-interface views, they are dealt with proxiedBeanType
@@ -104,7 +125,7 @@ public class ProxyFactory<T>
             addInterface(c);
          }
       }
-      TypeInfo typeInfo = TypeInfo.of(businessInterfaces);
+      TypeInfo typeInfo = TypeInfo.of(typeClosure);
       Class<?> superClass = typeInfo.getSuperClass();
       superClass = superClass == null ? Object.class : superClass;
       if (superClass.equals(Object.class))
@@ -122,6 +143,13 @@ public class ProxyFactory<T>
       }
       this.beanType = superClass;
       addDefaultAdditionalInterfaces();
+      baseProxyName = proxyName;
+   }
+
+   private static String getProxyName(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean)
+   {
+      TypeInfo typeInfo = TypeInfo.of(typeClosure);
+      String proxyPackage;
       if (proxiedBeanType.equals(Object.class))
       {
          Class<?> superInterface = typeInfo.getSuperInterface();
@@ -131,13 +159,16 @@ public class ProxyFactory<T>
          }
          else
          {
-            baseProxyName = superInterface.getName();
+            proxyPackage=DEFAULT_PROXY_PACKAGE;
          }
       }
       else
       {
-         baseProxyName = proxiedBeanType.getName();
+         proxyPackage = proxiedBeanType.getPackage().getName();
       }
+      String beanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
+      String className = beanId.replace('.', '$').replace(' ', '_');
+      return proxyPackage + '.' + className;
    }
 
    /**
@@ -207,7 +238,12 @@ public class ProxyFactory<T>
    @SuppressWarnings("unchecked")
    public Class<T> getProxyClass()
    {
-      String proxyClassName = getBaseProxyName() + "_$$_Weld" + getProxyNameSuffix();
+      String suffix = "_$$_Weld" + getProxyNameSuffix();
+      String proxyClassName = getBaseProxyName();
+      if (!proxyClassName.endsWith(suffix))
+      {
+         proxyClassName = proxyClassName + suffix;
+      }
       if (proxyClassName.startsWith("java"))
       {
          proxyClassName = proxyClassName.replaceFirst("java", "org.jboss.weld");
@@ -538,7 +574,6 @@ public class ProxyFactory<T>
       {
          // Add all methods from the class heirachy
          Class<?> cls = beanType;
-         Set<Class> interfaces = new HashSet<Class>();
          while (cls != null)
          {
             for (Method method : cls.getDeclaredMethods())

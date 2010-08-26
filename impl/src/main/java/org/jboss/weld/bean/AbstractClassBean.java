@@ -201,7 +201,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       T proxy = null;
       TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
-      ProxyFactory<T> proxyFactory = new ProxyFactory<T>(getType(), getTypes());
+      ProxyFactory<T> proxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
       DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, proxyFactory.getProxyClass(), beanManager, decorators);
 
       DecorationHelper.getHelperStack().push(decorationHelper);
