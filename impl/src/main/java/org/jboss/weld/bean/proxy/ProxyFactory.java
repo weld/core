@@ -19,6 +19,7 @@ package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.FAILED_TO_SET_THREAD_LOCAL_ON_PROXY;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 
@@ -27,6 +28,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -167,6 +169,17 @@ public class ProxyFactory<T>
          if (InstantiatorFactory.useInstantiators())
          {
             proxy = SecureReflections.newUnsafeInstance(proxyClass);
+            //we need to inialize the ThreadLocal via reflection
+            try
+            {
+               Field sfield = proxyClass.getField(FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME);
+               sfield.setAccessible(true);
+               sfield.set(proxy, new ThreadLocal());
+            }
+            catch(Exception e)
+            {
+               throw new DefinitionException(FAILED_TO_SET_THREAD_LOCAL_ON_PROXY, e, this);
+            }
          }
          else
          {
@@ -371,11 +384,15 @@ public class ProxyFactory<T>
          // handling
          proxyClassType.addField(new FieldInfo(proxyClassType.getConstPool(), "methodHandler", "Ljavassist/util/proxy/MethodHandler;"));
          // Special field used during serialization of a proxy
-         proxyClassType.addField(new FieldInfo(proxyClassType.getConstPool(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Z"));
-         // we need to initialize this to false
+         FieldInfo sfield = new FieldInfo(proxyClassType.getConstPool(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
+         sfield.setAccessFlags(AccessFlag.TRANSIENT | AccessFlag.PRIVATE);
+         proxyClassType.addField(sfield);
+         // we need to initialize this to a new ThreadLocal
          initialValueBytecode.addAload(0);
-         initialValueBytecode.addIconst(0);
-         initialValueBytecode.addPutfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Z");
+         initialValueBytecode.addNew("java/lang/ThreadLocal");
+         initialValueBytecode.add(Opcode.DUP);
+         initialValueBytecode.addInvokespecial("java.lang.ThreadLocal", "<init>", "()V");
+         initialValueBytecode.addPutfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
       }
       catch (Exception e)
       {
@@ -438,6 +455,13 @@ public class ProxyFactory<T>
       Bytecode b = new Bytecode(file.getConstPool(), 3, 2);
       b.addAload(0);
       b.addInvokevirtual("java.io.ObjectInputStream", "readObject", "()Ljava/lang/Object;");
+      // initialize the transient threadlocal
+      b.add(Opcode.DUP);
+      b.addCheckcast(file.getName());
+      b.addNew("java/lang/ThreadLocal");
+      b.add(Opcode.DUP);
+      b.addInvokespecial("java.lang.ThreadLocal", "<init>", "()V");
+      b.addPutfield(file.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
       b.addOpcode(Opcode.ARETURN);
       return b;
    }
@@ -446,15 +470,19 @@ public class ProxyFactory<T>
     * creates serialization code. In java this code looks like:
     * 
     * <pre>
-    *  if (firstSerializationPhaseComplete) {
-    *   firstSerializationPhaseComplete = false;\n");
+    *  Boolean value = firstSerializationPhaseComplete.get();
+    *  if (firstSerializationPhaseComplete!=null) {
+    *   firstSerializationPhaseComplete.remove();\n");
     *   return $0;
     *  } else {
-    *    firstSerializationPhaseComplete = true;
+    *    firstSerializationPhaseComplete.set(Boolean.TRUE);
     *    return methodHandler.invoke($0,$proxyClassTypeName.class.getMethod("writeReplace", null), null, $args);
     *  }
     * }
     * </pre>
+    * 
+    * the use TRUE,null rather than TRUE,FALSE to avoid the need to subclass
+    * ThreadLocal, which would be problematic
     */
    private Bytecode createWriteReplaceBody(ClassFile proxyClassType)
    {
@@ -463,18 +491,18 @@ public class ProxyFactory<T>
       Bytecode runSecondPhase = new Bytecode(proxyClassType.getConstPool());
       // set firstSerializationPhaseComplete=false
       runSecondPhase.add(Opcode.ALOAD_0);
-      runSecondPhase.add(Opcode.ICONST_0);
-      runSecondPhase.addPutfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Z");
+      runSecondPhase.addGetfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
+      runSecondPhase.addInvokevirtual("java.lang.ThreadLocal", "remove", "()V");
       // return this
       runSecondPhase.add(Opcode.ALOAD_0);
       runSecondPhase.add(Opcode.ARETURN);
       byte[] runSecondBytes = runSecondPhase.get();
       Bytecode b = new Bytecode(proxyClassType.getConstPool());
-      b.add(Opcode.ICONST_0);
       b.add(Opcode.ALOAD_0);
-      b.addGetfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Z");
-      b.add(Opcode.IF_ICMPEQ);
-      // +3 because the IF_ICMPNE sequence is 3 bytes long
+      b.addGetfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
+      b.addInvokevirtual("java.lang.ThreadLocal", "get", "()Ljava/lang/Object;");
+      b.add(Opcode.IFNULL);
+      // +3 because the IFNULL sequence is 3 bytes long
       BytecodeUtils.add16bit(b, runSecondBytes.length + 3);
       for (int i = 0; i < runSecondBytes.length; ++i)
       {
@@ -483,8 +511,9 @@ public class ProxyFactory<T>
       // now create the rest of the bytecode
       // set firstSerializationPhaseComplete=true
       b.add(Opcode.ALOAD_0);
-      b.add(Opcode.ICONST_1);
-      b.addPutfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Z");
+      b.addGetfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
+      b.addGetstatic("java.lang.Boolean", "TRUE", "Ljava/lang/Boolean;");
+      b.addInvokevirtual("java.lang.ThreadLocal", "set", "(Ljava/lang/Object;)V");
 
       b.add(Opcode.ALOAD_0);
       b.addGetfield(proxyClassType.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
