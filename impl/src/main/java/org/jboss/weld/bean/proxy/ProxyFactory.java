@@ -170,9 +170,10 @@ public class ProxyFactory<T>
          {
             proxy = SecureReflections.newUnsafeInstance(proxyClass);
             //we need to inialize the ThreadLocal via reflection
+            // TODO: there is probably a better way to to this
             try
             {
-               Field sfield = proxyClass.getField(FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME);
+               Field sfield = proxyClass.getDeclaredField(FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME);
                sfield.setAccessible(true);
                sfield.set(proxy, new ThreadLocal());
             }
