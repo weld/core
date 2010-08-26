@@ -62,6 +62,19 @@
          <build>
             <plugins>
                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-compiler-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>compile-functional-tests</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                           <goal>testCompile</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
                   <groupId>org.codehaus.cargo</groupId>
                   <artifactId>cargo-maven2-plugin</artifactId>
                </plugin>
