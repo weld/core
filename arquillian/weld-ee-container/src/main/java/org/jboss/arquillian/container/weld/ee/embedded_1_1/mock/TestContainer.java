@@ -168,7 +168,10 @@ public class TestContainer
          {
             if (!expected.getClass().isAssignableFrom(e.getClass()))
             {
-               throw new AssertionError("Expected exception " + expected + " but got " + e);
+               Error t = new AssertionError("Expected exception " + expected + " but got " + e);
+               t.initCause(e);
+               throw t;
+               
             }
             if (expected.getMessage() == null)
             {
