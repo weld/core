@@ -2,7 +2,6 @@ package org.jboss.weld.environment.servlet.deployment;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.ServiceLoader;
 
 import javax.enterprise.inject.spi.Extension;
 import javax.servlet.ServletContext;
