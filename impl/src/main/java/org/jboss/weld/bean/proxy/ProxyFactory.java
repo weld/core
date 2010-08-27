@@ -167,7 +167,7 @@ public class ProxyFactory<T>
          proxyPackage = proxiedBeanType.getPackage().getName();
       }
       String beanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
-      String className = beanId.replace('.', '$').replace(' ', '_');
+      String className = beanId.replace('.', '$').replace(' ', '_').replace('/', '$').replace(';', '$');
       return proxyPackage + '.' + className;
    }
 
