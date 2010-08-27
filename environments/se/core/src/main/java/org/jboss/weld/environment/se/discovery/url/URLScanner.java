@@ -58,8 +58,8 @@ public class URLScanner
 
    public BeanDeploymentArchive scan()
    {
-      FileSystemURLHandler handler = new FileSystemURLHandler(resourceLoader);
-      List<Class<?>> discoveredClasses = new ArrayList<Class<?>>();
+      FileSystemURLHandler handler = new FileSystemURLHandler();
+      List<String> discoveredClasses = new ArrayList<String>();
       List<URL> discoveredBeanXmlUrls = new ArrayList<URL>();
       Collection<String> paths = new ArrayList<String>();
       for (String resourceName : resources)

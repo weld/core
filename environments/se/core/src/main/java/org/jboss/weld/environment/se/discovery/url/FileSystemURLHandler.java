@@ -27,8 +27,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,14 +40,8 @@ public class FileSystemURLHandler
 {
 
    private static final Logger log = LoggerFactory.getLogger(FileSystemURLHandler.class);
-   private final ResourceLoader resourceLoader;
 
-   public FileSystemURLHandler(ResourceLoader resourceLoader)
-   {
-      this.resourceLoader = resourceLoader;
-   }
-
-   public void handle(Collection<String> paths, List<Class<?>> discoveredClasses, List<URL> discoveredBeansXmlUrls)
+   public void handle(Collection<String> paths, List<String> discoveredClasses, List<URL> discoveredBeansXmlUrls)
    {
       for (String urlPath : paths)
       {
@@ -83,7 +75,7 @@ public class FileSystemURLHandler
       }
    }
 
-   private void handleArchiveByFile(File file, List<Class<?>> discoveredClasses, List<URL> discoveredBeansXmlUrls) throws IOException
+   private void handleArchiveByFile(File file, List<String> discoveredClasses, List<URL> discoveredBeansXmlUrls) throws IOException
    {
       try
       {
@@ -106,12 +98,12 @@ public class FileSystemURLHandler
       }
    }
 
-   protected void handleDirectory(File file, String path, List<Class<?>> discoveredClasses, List<URL> discoveredBeansXmlUrls)
+   protected void handleDirectory(File file, String path, List<String> discoveredClasses, List<URL> discoveredBeansXmlUrls)
    {
       handleDirectory(file, path, new File[0], discoveredClasses, discoveredBeansXmlUrls);
    }
 
-   private void handleDirectory(File file, String path, File[] excludedDirectories, List<Class<?>> discoveredClasses, List<URL> discoveredBeansXmlUrls)
+   private void handleDirectory(File file, String path, File[] excludedDirectories, List<String> discoveredClasses, List<URL> discoveredBeansXmlUrls)
    {
       for (File excludedDirectory : excludedDirectories)
       {
@@ -147,36 +139,16 @@ public class FileSystemURLHandler
       }
    }
 
-   protected void handle(String name, URL url, List<Class<?>> discoveredClasses, List<URL> discoveredBeansXmlUrls)
+   protected void handle(String name, URL url, List<String> discoveredClasses, List<URL> discoveredBeansXmlUrls)
    {
       if (name.endsWith(".class"))
       {
-         String className = filenameToClassname(name);
-         try
-         {
-            discoveredClasses.add(getResourceLoader().classForName(className));
-         }
-         catch (NoClassDefFoundError e)
-         {
-            log.error("Error loading " + name, e);
-         }
-         catch(ResourceLoadingException e)
-         {
-        	 log.error("Error loading " + name, e);
-         }
+         discoveredClasses.add(filenameToClassname(name));
       }
       else if (name.endsWith("beans.xml"))
       {
          discoveredBeansXmlUrls.add(url);
       }
-   }
-
-   /**
-    * @return the resourceLoader
-    */
-   public ResourceLoader getResourceLoader()
-   {
-      return resourceLoader;
    }
 
    /**

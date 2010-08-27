@@ -17,13 +17,11 @@
 
 package org.jboss.weld.resolution;
 
-import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
 import javax.enterprise.inject.spi.Interceptor;
 
-import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 
@@ -44,23 +42,13 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
    @Override
    protected boolean matches(InterceptorResolvable resolvable, Interceptor<?> bean)
    {
-      return bean.intercepts(resolvable.getInterceptionType()) && bean.getInterceptorBindings().size() > 0 && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager()) && getManager().getEnabled().getInterceptors().contains(bean.getBeanClass());
+      return bean.intercepts(resolvable.getInterceptionType()) && bean.getInterceptorBindings().size() > 0 && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager()) && getManager().getEnabled().getInterceptor(bean.getBeanClass()) != null;
    }
 
    @Override
    protected Set<Interceptor<?>> sortResult(Set<Interceptor<?>> matchedInterceptors)
    {
-      Set<Interceptor<?>> sortedBeans = new TreeSet<Interceptor<?>>(new Comparator<Interceptor<?>>()
-      {
-
-         public int compare(Interceptor<?> o1, Interceptor<?> o2)
-         {
-            int p1 = getManager().getEnabled().getInterceptors().indexOf(((InterceptorImpl<?>) o1).getType());
-            int p2 = getManager().getEnabled().getInterceptors().indexOf(((InterceptorImpl<?>) o2).getType());
-            return p1 - p2;
-         }
-
-      });
+      Set<Interceptor<?>> sortedBeans = new TreeSet<Interceptor<?>>(getManager().getEnabled().getInterceptorComparator());
       sortedBeans.addAll(matchedInterceptors);
       return sortedBeans;
    }

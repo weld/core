@@ -20,10 +20,8 @@ import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_CLASS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.AMBIGUOUS_EL_NAME;
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREFIX;
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_SPECIALIZED_TOO_MANY_TIMES;
@@ -31,7 +29,6 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_SPECIFIED_TWICE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DISPOSAL_METHODS_WITHOUT_PRODUCER;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_BEAN;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_DEPENDENT_BEAN;
@@ -47,7 +44,6 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANN
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_SPECIFIED_TWICE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NEW_WITH_QUALIFIERS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN;
@@ -95,6 +91,7 @@ import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalProductException;
@@ -477,13 +474,9 @@ public class Validator implements Service
       {
          interceptorBeanClasses.add(interceptor.getBeanClass());
       }
-      for (Class<?> enabledInterceptorClass : beanManager.getEnabled().getInterceptors())
+      for (Metadata<Class<?>> enabledInterceptorClass : beanManager.getEnabled().getInterceptors())
       {
-         if (beanManager.getEnabled().getInterceptors().indexOf(enabledInterceptorClass) < beanManager.getEnabled().getInterceptors().lastIndexOf(enabledInterceptorClass))
-         {
-            throw new DeploymentException(INTERCEPTOR_SPECIFIED_TWICE, enabledInterceptorClass + " specified twice");
-         }
-         if (!interceptorBeanClasses.contains(enabledInterceptorClass))
+         if (!interceptorBeanClasses.contains(enabledInterceptorClass.getValue()))
          {
             throw new DeploymentException(INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED, enabledInterceptorClass);
          }
@@ -498,13 +491,9 @@ public class Validator implements Service
       {
          decoratorBeanClasses.add(bean.getBeanClass());
       }
-      for (Class<?> clazz : beanManager.getEnabled().getDecorators())
+      for (Metadata<Class<?>> clazz : beanManager.getEnabled().getDecorators())
       {
-         if (beanManager.getEnabled().getDecorators().indexOf(clazz) < beanManager.getEnabled().getDecorators().lastIndexOf(clazz))
-         {
-            throw new DeploymentException(DECORATOR_SPECIFIED_TWICE, clazz);
-         }
-         if (!decoratorBeanClasses.contains(clazz))
+         if (!decoratorBeanClasses.contains(clazz.getValue()))
          {
             throw new DeploymentException(DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR, clazz, decoratorBeanClasses);
          }
@@ -513,39 +502,28 @@ public class Validator implements Service
 
    private void validateEnabledAlternatives(BeanManagerImpl beanManager)
    {
-      List<Class<?>> seenAlternatives = new ArrayList<Class<?>>();
-      for (Class<? extends Annotation> stereotype : beanManager.getEnabled().getAlternativeStereotypes())
+      for (Metadata<Class<? extends Annotation>> stereotype : beanManager.getEnabled().getAlternativeStereotypes())
       {
-         if (!beanManager.isStereotype(stereotype))
+         if (!beanManager.isStereotype(stereotype.getValue()))
          {
             throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, stereotype);
          }
-         if (!isAlternative(beanManager, stereotype))
+         if (!isAlternative(beanManager, stereotype.getValue()))
          {
             throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, stereotype);
          }
-         if (seenAlternatives.contains(stereotype))
-         {
-            throw new DeploymentException(ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES, stereotype);
-         }
-         seenAlternatives.add(stereotype);
       }
-      for (Class<?> clazz : beanManager.getEnabled().getAlternativeClasses())
+      for (Metadata<Class<?>> clazz : beanManager.getEnabled().getAlternativeClasses())
       {
-         if (clazz.isAnnotation() || clazz.isInterface())
+         if (clazz.getValue().isAnnotation() || clazz.getValue().isInterface())
          {
             throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, clazz);
          }
-         WeldClass<?> weldClass = Container.instance().services().get(ClassTransformer.class).loadClass(clazz);
+         WeldClass<?> weldClass = Container.instance().services().get(ClassTransformer.class).loadClass(clazz.getValue());
          if (!weldClass.isAnnotationPresent(Alternative.class))
          {
             throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, clazz);
          }
-         if (seenAlternatives.contains(clazz))
-         {
-            throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES, clazz);
-         }
-         seenAlternatives.add(clazz);
       }
    }
    
@@ -598,7 +576,7 @@ public class Validator implements Service
    {
       if (ij.getBean() instanceof Decorator<?>)
       {
-         if (beanManager.getEnabled().getDecorators().contains(ij.getBean().getBeanClass()))
+         if (beanManager.getEnabled().getDecorator(ij.getBean().getBeanClass()) != null)
          {
             return resolvedBeans.size() > 0;
          }

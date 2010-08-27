@@ -21,6 +21,7 @@ import static java.util.Collections.singleton;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.enterprise.inject.spi.Extension;
 
@@ -28,6 +29,7 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
@@ -39,9 +41,9 @@ public abstract class AbstractDeployment implements Deployment
 
    private final Collection<BeanDeploymentArchive> beanDeploymentArchives;
    private final ServiceRegistry services;
-   private final Iterable<Extension> extensions;
+   private final Iterable<Metadata<Extension>> extensions;
 
-   public AbstractDeployment(Collection<BeanDeploymentArchive> beanDeploymentArchives, Iterable<Extension> extensions)
+   public AbstractDeployment(Collection<BeanDeploymentArchive> beanDeploymentArchives, Iterable<Metadata<Extension>> extensions)
    {
       this.services = new SimpleServiceRegistry();
       this.beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>(beanDeploymentArchives);
@@ -56,7 +58,7 @@ public abstract class AbstractDeployment implements Deployment
    
    public AbstractDeployment(BeanDeploymentArchive beanDeploymentArchive, Extension... extensions)
    {
-      this(singleton(beanDeploymentArchive), asList(extensions));
+      this(singleton(beanDeploymentArchive), transform(extensions));
    }
    
    protected void configureServices()
@@ -78,9 +80,32 @@ public abstract class AbstractDeployment implements Deployment
       return services;
    }
    
-   public Iterable<Extension> getExtensions()
+   public Iterable<Metadata<Extension>> getExtensions()
    {
       return extensions;
+   }
+   
+   public static Iterable<Metadata<Extension>> transform(Extension... extensions)
+   {
+      List<Metadata<Extension>> result = new ArrayList<Metadata<Extension>>();
+      for (final Extension extension : extensions)
+      {
+         result.add(new Metadata<Extension>()
+         {
+            
+            public String getLocation()
+            {
+               return "unknown";
+            }
+            
+            public Extension getValue()
+            {
+               return extension;
+            }
+            
+         });
+      }
+      return result;
    }
    
 }

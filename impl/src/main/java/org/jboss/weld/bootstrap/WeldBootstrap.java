@@ -28,6 +28,7 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.MANAGER_NOT_INITI
 import static org.jboss.weld.logging.messages.BootstrapMessage.UNSPECIFIED_REQUIRED_SERVICE;
 import static org.jboss.weld.logging.messages.BootstrapMessage.VALIDATING_BEANS;
 import static org.jboss.weld.manager.Enabled.EMPTY_ENABLED;
+import static org.jboss.weld.util.collections.Arrays2.asSet;
 
 import java.net.URL;
 import java.util.Collection;
@@ -37,6 +38,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
@@ -57,6 +60,7 @@ import org.jboss.weld.bootstrap.events.BeforeShutdownImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.context.AbstractApplicationContext;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.ContextLifecycle;
@@ -93,7 +97,7 @@ import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.servlet.HttpSessionManager;
 import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
-import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.jboss.weld.xml.BeansXmlParser;
@@ -120,6 +124,55 @@ public class WeldBootstrap implements Bootstrap
     */
    private static class DeploymentVisitor
    {
+      
+      private static class WeldCoreBeanDeploymentArchive implements BeanDeploymentArchive
+      {
+         private final ServiceRegistry serviceRegistry;
+         private final Set<String> beanClasses;
+         
+         public WeldCoreBeanDeploymentArchive(Deployment deployment)
+         {
+            this.serviceRegistry = new SimpleServiceRegistry();
+            if (deployment.getServices().contains(ServletServices.class))
+            {
+               this.beanClasses = asSet(ConversationImpl.class.getName(), ServletConversationManager.class.getName(), NumericConversationIdGenerator.class.getName(), HttpSessionManager.class.getName());
+            }
+            else
+            {
+               this.beanClasses = Collections.emptySet();
+            }
+         }
+
+         public ServiceRegistry getServices()
+         {
+            return serviceRegistry;
+         }
+
+         public String getId()
+         {
+            return "weld";
+         }
+
+         public Collection<EjbDescriptor<?>> getEjbs()
+         {
+            return Collections.emptySet();
+         }
+
+         public BeansXml getBeansXml()
+         {
+            return EMPTY_BEANS_XML;
+         }
+
+         public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
+         {
+            return Collections.emptySet();
+         }
+
+         public Collection<String> getBeanClasses()
+         {
+            return beanClasses;
+         }
+      }
 
       private final BeanManagerImpl deploymentManager;
       private final Environment environment;
@@ -133,42 +186,7 @@ public class WeldBootstrap implements Bootstrap
          this.environment = environment;
          this.deployment = deployment;
          this.managerAwareBeanDeploymentArchives = new ConcurrentHashMap<BeanDeploymentArchive, BeanDeployment>();
-         this.implementationBeanDeploymentArchive = new BeanDeploymentArchive()
-         {
-
-            private final ServiceRegistry serviceRegistry = new SimpleServiceRegistry();
-            private final Set<Class<?>> beanClasses = (deployment.getServices().contains(ServletServices.class)) ? Arrays2.<Class<?>> asSet(ConversationImpl.class, ServletConversationManager.class, NumericConversationIdGenerator.class, HttpSessionManager.class) : Collections.<Class<?>> emptySet();
-
-            public ServiceRegistry getServices()
-            {
-               return serviceRegistry;
-            }
-
-            public String getId()
-            {
-               return "weld";
-            }
-
-            public Collection<EjbDescriptor<?>> getEjbs()
-            {
-               return Collections.emptySet();
-            }
-
-            public BeansXml getBeansXml()
-            {
-               return EMPTY_BEANS_XML;
-            }
-
-            public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
-            {
-               return Collections.emptySet();
-            }
-
-            public Collection<Class<?>> getBeanClasses()
-            {
-               return beanClasses;
-            }
-         };
+         this.implementationBeanDeploymentArchive = new WeldCoreBeanDeploymentArchive(deployment);
       }
 
       public Map<BeanDeploymentArchive, BeanDeployment> visit()
@@ -502,6 +520,11 @@ public class WeldBootstrap implements Bootstrap
    public BeansXml parse(URL url)
    {
       return beansXmlParser.parse(url);
+   }
+   
+   public Iterable<Metadata<Extension>> loadExtensions(ClassLoader classLoader)
+   {
+      return ServiceLoader.load(Extension.class, classLoader);
    }
 
 }

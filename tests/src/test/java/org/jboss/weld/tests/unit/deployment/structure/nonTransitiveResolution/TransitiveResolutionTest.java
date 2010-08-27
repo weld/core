@@ -17,7 +17,6 @@
 package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static org.jboss.weld.test.Utils.getReference;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -26,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
@@ -42,7 +40,6 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.test.Utils;
-import org.jboss.weld.xml.BeansXmlImpl;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
@@ -54,7 +51,7 @@ public class TransitiveResolutionTest
    @Test
    public void testBeansXmlIsolation()
    {
-      BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList()), Alt.class);
+      BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), null, null, null), Alt.class);
       BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", Alt.class);
       BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
       war.getBeanDeploymentArchives().add(jar1);
@@ -88,8 +85,8 @@ public class TransitiveResolutionTest
    @Test
    public void testBeansXmlMultipleEnabling()
    {
-      BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList()), Alt.class);
-      BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList()), Alt.class);
+      BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), null, null, null), Alt.class);
+      BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), Collections.<String>emptyList(), null, null), Alt.class);
       BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
       war.getBeanDeploymentArchives().add(jar1);
       war.getBeanDeploymentArchives().add(jar2);
@@ -183,29 +180,7 @@ public class TransitiveResolutionTest
       final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Basic.class, BasicInterceptor.class, Simple.class);
 
       // Create the BDA in which we will deploy Bar. This is equivalent to a war
-      BeansXml beansXml = new BeansXml()
-      {
-         
-         public List<String> getEnabledInterceptors()
-         {
-            return asList(BasicInterceptor.class.getName());
-         }
-         
-         public List<String> getEnabledDecorators()
-         {
-            return emptyList();
-         }
-         
-         public List<String> getEnabledAlternativeStereotypes()
-         {
-            return emptyList();
-         }
-         
-         public List<String> getEnabledAlternativeClasses()
-         {
-            return emptyList();
-         }
-      };
+      BeansXml beansXml = new BeansXmlImpl(null, null, null, asList(BasicInterceptor.class.getName()));
       final BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war", beansXml, Complex.class);
 
       // The war can access the ejb jar
@@ -264,29 +239,7 @@ public class TransitiveResolutionTest
       final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Blah.class, BlahDecorator.class, BlahImpl.class);
 
       // Create the BDA in which we will deploy Bar. This is equivalent to a war
-      BeansXml beansXml = new BeansXml()
-      {
-         
-         public List<String> getEnabledInterceptors()
-         {
-            return emptyList();
-         }
-         
-         public List<String> getEnabledDecorators()
-         {
-            return asList(BlahDecorator.class.getName());
-         }
-         
-         public List<String> getEnabledAlternativeStereotypes()
-         {
-            return emptyList();
-         }
-         
-         public List<String> getEnabledAlternativeClasses()
-         {
-            return emptyList();
-         }
-      };
+      BeansXml beansXml = new BeansXmlImpl(null, null, asList(BlahDecorator.class.getName()), null);
       final BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war", beansXml, BlahImpl2.class);
 
       // The war can access the ejb jar

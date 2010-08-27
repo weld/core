@@ -41,11 +41,11 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 public class ImmutableBeanDeploymentArchive extends AbstractWeldSEBeanDeploymentArchive
 {
 
-   private final Collection<Class<?>> beanClasses;
+   private final Collection<String> beanClasses;
    private final BeansXml beansXml;
    private final Collection<BeanDeploymentArchive> beanDeploymentArchives;
 
-   public ImmutableBeanDeploymentArchive(String id, Collection<Class<?>> beanClasses, BeansXml beansXml, Collection<BeanDeploymentArchive> beanDeploymentArchives)
+   public ImmutableBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Collection<BeanDeploymentArchive> beanDeploymentArchives)
    {
       super(id);
       this.beanClasses = beanClasses;
@@ -53,12 +53,12 @@ public class ImmutableBeanDeploymentArchive extends AbstractWeldSEBeanDeployment
       this.beanDeploymentArchives = beanDeploymentArchives;
    }
 
-   public ImmutableBeanDeploymentArchive(String id, Collection<Class<?>> beanClasses, BeansXml beansXml)
+   public ImmutableBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml)
    {
       this(id, beanClasses, beansXml, new ArrayList<BeanDeploymentArchive>());
    }
 
-   public Collection<Class<?>> getBeanClasses()
+   public Collection<String> getBeanClasses()
    {
       return Collections.unmodifiableCollection(beanClasses);
    }

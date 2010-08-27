@@ -23,6 +23,7 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
@@ -35,13 +36,13 @@ public class WeldSEUrlDeployment extends AbstractWeldSEDeployment
 { 
 
    private final BeanDeploymentArchive beanDeploymentArchive;
-   private final Iterable<Extension> extensions;
+   private final Iterable<Metadata<Extension>> extensions;
    
    public WeldSEUrlDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap)
    {
       getServices().add(ResourceLoader.class, resourceLoader);
       this.beanDeploymentArchive = new URLScanner(resourceLoader, bootstrap, RESOURCES).scan();
-      this.extensions = ServiceLoader.load(Extension.class);
+      this.extensions = bootstrap.loadExtensions(WeldSEResourceLoader.getClassLoader());
    }
 
    public List<BeanDeploymentArchive> getBeanDeploymentArchives()
@@ -54,7 +55,7 @@ public class WeldSEUrlDeployment extends AbstractWeldSEDeployment
       return beanDeploymentArchive;
    }
    
-   public Iterable<Extension> getExtensions()
+   public Iterable<Metadata<Extension>> getExtensions()
    {
       return extensions;
    }

@@ -40,6 +40,7 @@ public enum XmlMessage
    @MessageId("001203") MULTIPLE_ALTERNATIVES,
    @MessageId("001204") MULTIPLE_DECORATORS,
    @MessageId("001205") MULTIPLE_INTERCEPTORS,
-   @MessageId("001206") CANNOT_LOAD_CLASS;
+   @MessageId("001206") CANNOT_LOAD_CLASS,
+   @MessageId("001207") MULTIPLE_SCANNING;
 
 }

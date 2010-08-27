@@ -28,6 +28,7 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.introspector.WeldClass;
@@ -44,14 +45,14 @@ public class ExtensionBeanDeployer
 {
    
    private final BeanManagerImpl beanManager;
-   private final Set<Extension> extensions;
+   private final Set<Metadata<Extension>> extensions;
    private final Deployment deployment;
    private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
    
    public ExtensionBeanDeployer(BeanManagerImpl manager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
    {
       this.beanManager = manager;
-      this.extensions = new HashSet<Extension>();
+      this.extensions = new HashSet<Metadata<Extension>>();
       this.deployment = deployment;
       this.beanDeployments = beanDeployments;
    }
@@ -59,10 +60,10 @@ public class ExtensionBeanDeployer
    public ExtensionBeanDeployer deployBeans()
    {
       ClassTransformer classTransformer = Container.instance().services().get(ClassTransformer.class);
-      for (Extension extension : extensions)
+      for (Metadata<Extension> extension : extensions)
       {
          @SuppressWarnings("unchecked")
-         WeldClass<Extension> clazz = (WeldClass<Extension>) classTransformer.loadClass(extension.getClass());
+         WeldClass<Extension> clazz = (WeldClass<Extension>) classTransformer.loadClass(extension.getValue().getClass());
          
          // Locate the BeanDeployment for this extension
          BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, clazz.getJavaClass());
@@ -81,15 +82,15 @@ public class ExtensionBeanDeployer
    }
    
    
-   public void addExtensions(Iterable<Extension> extensions)
+   public void addExtensions(Iterable<Metadata<Extension>> extensions)
    {
-      for (Extension extension : extensions)
+      for (Metadata<Extension> extension : extensions)
       {
          addExtension(extension);
       }
    }
    
-   public void addExtension(Extension extension)
+   public void addExtension(Metadata<Extension> extension)
    {
       this.extensions.add(extension);
    }

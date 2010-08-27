@@ -16,12 +16,17 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Collections2.transform;
+import static java.util.Collections.emptyList;
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_ALTERNATIVES;
 import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_DECORATORS;
 import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPTORS;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.enterprise.inject.spi.Bean;
@@ -39,15 +44,22 @@ import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.Filter;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.Enabled;
+import org.jboss.weld.metadata.FilterPredicate;
+import org.jboss.weld.metadata.ScanningPredicate;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.validation.spi.ValidationServices;
 import org.slf4j.cal10n.LocLogger;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 
 /**
  * @author pmuir
@@ -101,11 +113,62 @@ public class BeanDeployment
       return beanDeploymentArchive;
    }
    
+   protected Iterable<String> loadClasses()
+   {
+      Function<Metadata<Filter>, Predicate<String>> filterToPredicateFunction = new Function<Metadata<Filter>, Predicate<String>>()
+      {
+         
+         ResourceLoader resourceLoader = getBeanManager().getServices().get(ResourceLoader.class);
+         
+         public Predicate<String> apply(Metadata<Filter> from)
+         {
+            return new FilterPredicate(from, resourceLoader);
+         }
+         
+      };
+      Collection<String> classNames;
+      if (getBeanDeploymentArchive().getBeansXml() != null && getBeanDeploymentArchive().getBeansXml().getScanning() != null)
+      {
+         Collection<Metadata<Filter>> includeFilters;
+         if (getBeanDeploymentArchive().getBeansXml().getScanning().getIncludes() != null)
+         {
+            includeFilters = getBeanDeploymentArchive().getBeansXml().getScanning().getIncludes();
+         }
+         else
+         {
+            includeFilters = emptyList();
+         }
+         Collection<Metadata<Filter>> excludeFilters;
+         if (getBeanDeploymentArchive().getBeansXml().getScanning().getExcludes() != null)
+         {
+            excludeFilters = getBeanDeploymentArchive().getBeansXml().getScanning().getExcludes();
+         }
+         else
+         {
+            excludeFilters = emptyList();
+         }
+      
+         /*
+          * Take a copy of the transformed collection, this means that the
+          * filter predicate is only built once per filter predicte
+          */
+         Collection<Predicate<String>> includes = new ArrayList<Predicate<String>>(transform(includeFilters, filterToPredicateFunction));
+         Collection<Predicate<String>> excludes = new ArrayList<Predicate<String>>(transform(excludeFilters, filterToPredicateFunction));
+         Predicate<String> filters = new ScanningPredicate<String>(includes, excludes);
+         classNames = filter(beanDeploymentArchive.getBeanClasses(), filters);
+      }
+      else
+      {
+         classNames = beanDeploymentArchive.getBeanClasses();
+      }
+      return classNames;
+   }
+   
    // TODO Move class stuff into startContainer phase
    // TODO read EJB descriptors after reading classes
    public void deployBeans(Environment environment)
    {
-      beanDeployer.addClasses(beanDeploymentArchive.getBeanClasses());
+      beanDeployer.addClasses(loadClasses());
       beanDeployer.fireProcessAnnotatedTypeForTypesAddedThroughTheSPI();
       beanDeployer.getEnvironment().addBuiltInBean(new InjectionPointBean(beanManager));
       beanDeployer.getEnvironment().addBuiltInBean(new EventBean(beanManager));

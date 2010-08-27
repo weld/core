@@ -17,8 +17,6 @@
 package org.jboss.weld.resolution;
 
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -29,7 +27,7 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * @author pmuir
+ * @author Pete Muir
  *
  */
 public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<Decorator<?>>
@@ -45,24 +43,13 @@ public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<Decorator<?>
    {
       return Reflections.matches(Collections.singleton(bean.getDelegateType()), resolvable.getTypes())
             && Beans.containsAllQualifiers(bean.getDelegateQualifiers(), resolvable.getQualifiers(), getBeanManager())
-            && getBeanManager().getEnabled().getDecorators().contains(bean.getBeanClass());
+            && getBeanManager().getEnabled().getDecorator(bean.getBeanClass()) != null;
    }
    
    @Override
    protected Set<Decorator<?>> sortResult(Set<Decorator<?>> matchedDecorators)
    {
-      Set<Decorator<?>> sortedBeans = new TreeSet<Decorator<?>>(new Comparator<Decorator<?>>()
-      {
-         
-         public int compare(Decorator<?> o1, Decorator<?> o2)
-         {
-            List<Class<?>> enabledDecorators = getBeanManager().getEnabled().getDecorators();
-            int p1 = enabledDecorators.indexOf(((Decorator<?>) o1).getBeanClass());
-            int p2 = enabledDecorators.indexOf(((Decorator<?>) o2).getBeanClass());
-            return p1 - p2;
-         }
-   
-      });
+      Set<Decorator<?>> sortedBeans = new TreeSet<Decorator<?>>(getBeanManager().getEnabled().getDecoratorComparator());
       sortedBeans.addAll(matchedDecorators);
       return sortedBeans;
    }

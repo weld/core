@@ -24,6 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -37,10 +38,10 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
    private static final String ID_PREFIX = "Extension";
    
    private final WeldClass<Extension> clazz;
-   private final Extension instance;
+   private final Metadata<Extension> instance;
    private final boolean passivationCapable;
    
-   public ExtensionBean(BeanManagerImpl manager, WeldClass<Extension> clazz, Extension instance)
+   public ExtensionBean(BeanManagerImpl manager, WeldClass<Extension> clazz, Metadata<Extension> instance)
    {
       super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
       this.clazz = clazz;
@@ -73,7 +74,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
 
    public Extension create(CreationalContext<Extension> creationalContext)
    {
-      return instance;
+      return instance.getValue();
    }
 
    public void destroy(Extension instance, CreationalContext<Extension> creationalContext)
@@ -90,7 +91,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
    @Override
    public String toString()
    {
-      return "Extension Bean [" + getType().toString() + "] with qualifiers [@Default]";
+      return "Extension [" + getType().toString() + "] with qualifiers [@Default]; " + instance.getLocation();
    }
 
 }

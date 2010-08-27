@@ -17,12 +17,28 @@
 package org.jboss.weld.manager;
 
 import static com.google.common.collect.Lists.transform;
+import static java.util.Collections.unmodifiableCollection;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_SPECIFIED_TWICE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_SPECIFIED_TWICE;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.logging.messages.ValidatorMessage;
+import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 import com.google.common.base.Function;
@@ -35,7 +51,7 @@ import com.google.common.base.Function;
 public class Enabled
 {
    
-   private static class ClassLoader<T> implements Function<String, Class<? extends T>>
+   private static class ClassLoader<T> implements Function<Metadata<String>, Metadata<Class<? extends T>>>
    {
       
       private final ResourceLoader resourceLoader;
@@ -45,9 +61,9 @@ public class Enabled
          this.resourceLoader = resourceLoader;
       }
 
-      public Class<? extends T> apply(String from)
+      public Metadata<Class<? extends T>> apply(Metadata<String> from)
       {
-         return (Class<? extends T>) resourceLoader.classForName(from);
+         return new MetadataImpl<Class<? extends T>>((Class<? extends T>) resourceLoader.classForName(from.getValue()), from.getLocation());
       }
       
    }
@@ -62,47 +78,113 @@ public class Enabled
       {
          ClassLoader<Object> classLoader = new ClassLoader<Object>(resourceLoader);
          ClassLoader<Annotation> annotationLoader = new ClassLoader<Annotation>(resourceLoader);
-         return new Enabled(
-               transform(beansXml.getEnabledAlternativeStereotypes(), annotationLoader),
-               transform(beansXml.getEnabledAlternativeClasses(), classLoader),
-               transform(beansXml.getEnabledDecorators(), classLoader),
-               transform(beansXml.getEnabledInterceptors(), classLoader)
-            );
+         return new Enabled(transform(beansXml.getEnabledAlternativeStereotypes(), annotationLoader), transform(beansXml.getEnabledAlternativeClasses(), classLoader), transform(beansXml.getEnabledDecorators(), classLoader), transform(beansXml.getEnabledInterceptors(), classLoader));
       }
    }
-   
-   public static final Enabled EMPTY_ENABLED = new Enabled(Collections.<Class<? extends Annotation>>emptyList(), Collections.<Class<?>>emptyList(), Collections.<Class<?>>emptyList(), Collections.<Class<?>>emptyList());
 
-   private final List<Class<? extends Annotation>> alternativeStereotypes;
-   private final List<Class<?>> alternativeClasses;
-   private final List<Class<?>> decorators;
-   private final List<Class<?>> interceptors;
+   public static final Enabled EMPTY_ENABLED = new Enabled(Collections.<Metadata<Class<? extends Annotation>>> emptyList(), Collections.<Metadata<Class<?>>> emptyList(), Collections.<Metadata<Class<?>>> emptyList(), Collections.<Metadata<Class<?>>> emptyList());
 
-   private Enabled(List<Class<? extends Annotation>> alternativeStereotypes, List<Class<?>> alternativeClasses, List<Class<?>> decorators, List<Class<?>> interceptors)
+   private final Map<Class<? extends Annotation>, Metadata<Class<? extends Annotation>>> alternativeStereotypes;
+   private final Map<Class<?>, Metadata<Class<?>>> alternativeClasses;
+   private final Map<Class<?>, Metadata<Class<?>>> decorators;
+   private final Map<Class<?>, Metadata<Class<?>>> interceptors;
+   private final Comparator<Decorator<?>> decoratorComparator;
+   private final Comparator<Interceptor<?>> interceptorComparator;
+
+   private Enabled(List<Metadata<Class<? extends Annotation>>> alternativeStereotypes, List<Metadata<Class<?>>> alternativeClasses, List<Metadata<Class<?>>> decorators, List<Metadata<Class<?>>> interceptors)
    {
-      this.alternativeStereotypes = alternativeStereotypes;
-      this.alternativeClasses = alternativeClasses;
-      this.decorators = decorators;
-      this.interceptors = interceptors;
+      this.alternativeStereotypes = createMetadataMap(alternativeStereotypes, ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES);
+      this.alternativeClasses = createMetadataMap(alternativeClasses, ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES);
+      this.decorators = createMetadataMap(decorators, DECORATOR_SPECIFIED_TWICE);
+      this.interceptors = createMetadataMap(interceptors, INTERCEPTOR_SPECIFIED_TWICE);
+      final List<Class<?>> decoratorTypes = transform(decorators, new RemoveMetadataWrapperFunction<Class<?>>());
+      final List<Class<?>> interceptorTypes = transform(interceptors, new RemoveMetadataWrapperFunction<Class<?>>());
+      this.decoratorComparator = new Comparator<Decorator<?>>()
+      {
+
+         public int compare(Decorator<?> o1, Decorator<?> o2)
+         {
+            int p1 = decoratorTypes.indexOf(o1.getBeanClass());
+            int p2 = decoratorTypes.indexOf(o2.getBeanClass());
+            return p1 - p2;
+         }
+
+      };
+      this.interceptorComparator = new Comparator<Interceptor<?>>()
+      {
+         
+         public int compare(Interceptor<?> o1, Interceptor<?> o2)
+         {
+            int p1 = interceptorTypes.indexOf(o1.getBeanClass());
+            int p2 = interceptorTypes.indexOf(o2.getBeanClass());
+            return p1 - p2;
+         }
+         
+      };
    }
 
-   public List<Class<? extends Annotation>> getAlternativeStereotypes()
+   private static <T> Map<T, Metadata<T>> createMetadataMap(List<Metadata<T>> metadata, ValidatorMessage specifiedTwiceMessage)
    {
-      return Collections.unmodifiableList(alternativeStereotypes);
+      Map<T, Metadata<T>> result = new HashMap<T, Metadata<T>>();
+      for (Metadata<T> value : metadata)
+      {
+         if (result.containsKey(value.getValue()))
+         {
+            throw new DeploymentException(specifiedTwiceMessage, metadata);
+         }
+         result.put(value.getValue(), value);
+      }
+      return result;
    }
 
-   public List<Class<?>> getAlternativeClasses()
+   public Collection<Metadata<Class<? extends Annotation>>> getAlternativeStereotypes()
    {
-      return Collections.unmodifiableList(alternativeClasses);
+      return unmodifiableCollection(alternativeStereotypes.values());
    }
 
-   public List<Class<?>> getDecorators()
+   public Metadata<Class<? extends Annotation>> getAlternativeStereotype(Class<? extends Annotation> annotationType)
    {
-      return Collections.unmodifiableList(decorators);
+      return alternativeStereotypes.get(annotationType);
    }
 
-   public List<Class<?>> getInterceptors()
+   public Collection<Metadata<Class<?>>> getAlternativeClasses()
    {
-      return Collections.unmodifiableList(interceptors);
+      return unmodifiableCollection(alternativeClasses.values());
    }
+
+   public Metadata<Class<?>> getAlternativeClass(Class<?> clazz)
+   {
+      return alternativeClasses.get(clazz);
+   }
+
+   public Collection<Metadata<Class<?>>> getDecorators()
+   {
+      return unmodifiableCollection(decorators.values());
+   }
+
+   public Metadata<Class<?>> getDecorator(Class<?> clazz)
+   {
+      return decorators.get(clazz);
+   }
+
+   public Collection<Metadata<Class<?>>> getInterceptors()
+   {
+      return unmodifiableCollection(interceptors.values());
+   }
+
+   public Metadata<Class<?>> getInterceptor(Class<?> clazz)
+   {
+      return interceptors.get(clazz);
+   }
+
+   public Comparator<Decorator<?>> getDecoratorComparator()
+   {
+      return decoratorComparator;
+   }
+
+   public Comparator<Interceptor<?>> getInterceptorComparator()
+   {
+      return interceptorComparator;
+   }
+
 }

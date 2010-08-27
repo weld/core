@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.jboss.weld.bootstrap.spi.Metadata;
+
 /**
  * This class handles looking up service providers on the class path. It
  * implements the <a href="http://java.sun.com/javase/6/docs/technotes/guides/jar/jar.html#Service%20Provider"
@@ -43,14 +45,41 @@ import java.util.logging.Logger;
  * 
  * The API is copied from <a
  * href="http://java.sun.com/javase/6/docs/api/java/util/ServiceLoader.html"
- * >java.util.ServiceLoader</a>
+ * >java.util.ServiceLoader</a> and enhanced to support the {@link Metadata}
+ * contract.
  * 
  * @author Pete Muir
  * @author <a href="mailto:dev@avalon.apache.org">Avalon Development Team</a>
  * @author Nicklas Karlsson
  */
-public class ServiceLoader<S> implements Iterable<S>
+public class ServiceLoader<S> implements Iterable<Metadata<S>>
 {
+   
+   private static class ServiceLoaderMetadata<S> implements Metadata<S>
+   {
+      
+      private final URL file;
+      private final int lineNumber;
+      private final S value;
+      public ServiceLoaderMetadata(S value, URL file, int lineNumber)
+      {
+         this.file = file;
+         this.lineNumber = lineNumber;
+         this.value = value;
+      }
+      
+      public String getLocation()
+      {
+         return file + "@" + lineNumber;
+      }
+      
+      public S getValue()
+      {
+         return value;
+      }
+
+   }
+   
    private static final String SERVICES = "META-INF/services";
 
    private static final Logger log = Logger.getLogger("ServiceLoader");
@@ -124,7 +153,7 @@ public class ServiceLoader<S> implements Iterable<S>
    private Class<S> expectedType;
    private final ClassLoader loader;
 
-   private Set<S> providers;
+   private Set<Metadata<S>> providers;
 
    private ServiceLoader(Class<S> service, ClassLoader loader)
    {
@@ -145,7 +174,7 @@ public class ServiceLoader<S> implements Iterable<S>
     */
    public void reload()
    {
-      providers = new HashSet<S>();
+      providers = new HashSet<Metadata<S>>();
 
       for (URL serviceFile : loadServiceFiles())
       {
@@ -179,12 +208,14 @@ public class ServiceLoader<S> implements Iterable<S>
          is = serviceFile.openStream();
          BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
          String serviceClassName = null;
+         int i = 0;
          while ((serviceClassName = reader.readLine()) != null)
          {
+            i++;
             serviceClassName = trim(serviceClassName);
             if (serviceClassName.length() > 0)
             {
-               loadService(serviceClassName);
+               loadService(serviceClassName, serviceFile, i);
             }
          }
       }
@@ -221,7 +252,7 @@ public class ServiceLoader<S> implements Iterable<S>
       return line.trim();
    }
 
-   private void loadService(String serviceClassName)
+   private void loadService(String serviceClassName, URL file, int lineNumber)
    {
       Class<? extends S> serviceClass = loadClass(serviceClassName);
       if (serviceClass == null)
@@ -233,7 +264,7 @@ public class ServiceLoader<S> implements Iterable<S>
       {
          return;
       }
-      providers.add(serviceInstance);
+      providers.add(new ServiceLoaderMetadata<S>(serviceInstance, file, lineNumber));
    }
 
    private Class<? extends S> loadClass(String serviceClassName)
@@ -265,7 +296,7 @@ public class ServiceLoader<S> implements Iterable<S>
          constructor.setAccessible(true);
          return constructor.newInstance();
       }
-      catch (NoClassDefFoundError e) 
+      catch (NoClassDefFoundError e)
       {
          log.log(WARNING, "Could not instantiate service class " + serviceClass.getName(), e);
          return null;
@@ -332,7 +363,7 @@ public class ServiceLoader<S> implements Iterable<S>
     * 
     * @return An iterator that lazily loads providers for this loader's service
     */
-   public Iterator<S> iterator()
+   public Iterator<Metadata<S>> iterator()
    {
       if (providers == null)
       {

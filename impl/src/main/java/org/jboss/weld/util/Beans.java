@@ -604,7 +604,7 @@ public class Beans
    {
       if (bean.isAlternative())
       {
-         if (enabled.getAlternativeClasses().contains(bean.getBeanClass()))
+         if (enabled.getAlternativeClass(bean.getBeanClass()) != null)
          {
             return true;
          }
@@ -612,7 +612,7 @@ public class Beans
          {
             for (Class<? extends Annotation> stereotype : bean.getStereotypes())
             {
-               if (enabled.getAlternativeStereotypes().contains(stereotype))
+               if (enabled.getAlternativeStereotype(stereotype) != null)
                {
                   return true;
                }
@@ -621,11 +621,11 @@ public class Beans
       }
       else if (bean instanceof DecoratorImpl<?>)
       {
-         return enabled.getDecorators().contains(bean.getBeanClass());
+         return enabled.getDecorator(bean.getBeanClass()) != null;
       }
       else if (bean instanceof InterceptorImpl<?>)
       {
-         return enabled.getInterceptors().contains(bean.getBeanClass());
+         return enabled.getInterceptor(bean.getBeanClass()) != null;
       }
       else
       {

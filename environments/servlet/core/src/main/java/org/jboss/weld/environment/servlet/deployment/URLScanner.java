@@ -51,23 +51,11 @@ public class URLScanner
       this.classLoader = classLoader;
    }
 
-   protected void handle(String name, URL url, List<Class<?>> classes, List<URL> urls)
+   protected void handle(String name, URL url, List<String> classes, List<URL> urls)
    {
       if (name.endsWith(".class"))
       {
-         String className = filenameToClassname(name);
-         try
-         {
-            classes.add(classLoader.loadClass(className));
-         }
-         catch (NoClassDefFoundError e)
-         {
-            log.error("Error loading " + name, e);
-         }
-         catch (ClassNotFoundException e)
-         {
-            log.error("Error loading " + name, e);
-         }
+         classes.add(filenameToClassname(name));
       }
       else if (name.equals(WebAppBeanDeploymentArchive.META_INF_BEANS_XML))
       {
@@ -75,7 +63,7 @@ public class URLScanner
       }
    }
    
-   public void scanDirectories(File[] directories, List<Class<?>> classes, List<URL> urls)
+   public void scanDirectories(File[] directories, List<String> classes, List<URL> urls)
    {
       for (File directory : directories)
       {
@@ -83,7 +71,7 @@ public class URLScanner
       }
    }
 
-   public void scanResources(String[] resources, List<Class<?>> classes, List<URL> urls)
+   public void scanResources(String[] resources, List<String> classes, List<URL> urls)
    {
       Set<String> paths = new HashSet<String>();
       
@@ -132,7 +120,7 @@ public class URLScanner
       handle(paths, classes, urls);
    }
 
-   protected void handle(Set<String> paths, List<Class<?>> classes, List<URL> urls)
+   protected void handle(Set<String> paths, List<String> classes, List<URL> urls)
    {
       for (String urlPath : paths)
       {
@@ -158,7 +146,7 @@ public class URLScanner
       }
    }
 
-   private void handleArchiveByFile(File file, List<Class<?>> classes, List<URL> urls) throws IOException
+   private void handleArchiveByFile(File file, List<String> classes, List<URL> urls) throws IOException
    {
       try
       {
@@ -180,12 +168,12 @@ public class URLScanner
       }
    }
 
-   private void handleDirectory(File file, String path, List<Class<?>> classes, List<URL> urls)
+   private void handleDirectory(File file, String path, List<String> classes, List<URL> urls)
    {
       handleDirectory(file, path, new File[0], classes, urls);
    }
 
-   private void handleDirectory(File file, String path, File[] excludedDirectories, List<Class<?>> classes, List<URL> urls)
+   private void handleDirectory(File file, String path, File[] excludedDirectories, List<String> classes, List<URL> urls)
    {
       for (File excludedDirectory : excludedDirectories)
       {

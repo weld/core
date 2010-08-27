@@ -11,6 +11,7 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.bootstrap.spi.Metadata;
 
 public class ServletDeployment implements Deployment
 {
@@ -18,7 +19,7 @@ public class ServletDeployment implements Deployment
    private final WebAppBeanDeploymentArchive webAppBeanDeploymentArchive;
    private final Collection<BeanDeploymentArchive> beanDeploymentArchives;
    private final ServiceRegistry services;
-   private final Iterable<Extension> extensions;
+   private final Iterable<Metadata<Extension>> extensions;
 
    public ServletDeployment(ServletContext servletContext, Bootstrap bootstrap)
    {
@@ -26,7 +27,7 @@ public class ServletDeployment implements Deployment
       this.beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>();
       this.beanDeploymentArchives.add(webAppBeanDeploymentArchive);
       this.services = new SimpleServiceRegistry();
-      this.extensions = ServiceLoader.load(Extension.class);
+      this.extensions = bootstrap.loadExtensions(Thread.currentThread().getContextClassLoader());
    }
 
    public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
@@ -49,7 +50,7 @@ public class ServletDeployment implements Deployment
       return webAppBeanDeploymentArchive;
    }
    
-   public Iterable<Extension> getExtensions()
+   public Iterable<Metadata<Extension>> getExtensions()
    {
       return extensions;
    }

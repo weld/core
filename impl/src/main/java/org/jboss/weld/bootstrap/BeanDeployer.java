@@ -35,6 +35,7 @@ import org.jboss.weld.introspector.ExternalAnnotatedType;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -47,6 +48,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
 {
    
    private final Set<WeldClass<?>> classes;
+   private final ResourceLoader resourceLoader;
+   private final ClassTransformer classTransformer;
 
    /**
     * @param manager
@@ -56,11 +59,13 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    {
       super(manager, new BeanDeployerEnvironment(ejbDescriptors, manager));
       this.classes = new HashSet<WeldClass<?>>();
+      this.resourceLoader = Container.instance().services().get(ResourceLoader.class);
+      this.classTransformer = Container.instance().services().get(ClassTransformer.class);
    }
 
-   public BeanDeployer addClass(Class<?> clazz)
+   public BeanDeployer addClass(String className)
    {
-      ClassTransformer classTransformer = Container.instance().services().get(ClassTransformer.class);
+      Class<?> clazz = resourceLoader.classForName(className);
       if (!clazz.isAnnotation() && !clazz.isEnum())
       {
          ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(getManager(), classTransformer.loadClass(clazz));
@@ -81,16 +86,15 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    
    public BeanDeployer addClass(AnnotatedType<?> clazz)
    {
-      ClassTransformer classTransformer = Container.instance().services().get(ClassTransformer.class);
       classes.add(classTransformer.loadClass(clazz));
       return this;
    }
 
-   public BeanDeployer addClasses(Iterable<Class<?>> classes)
+   public BeanDeployer addClasses(Iterable<String> classes)
    {
-      for (Class<?> clazz : classes)
+      for (String className : classes)
       {
-         addClass(clazz);
+         addClass(className);
       }
       return this;
    }
@@ -98,7 +102,6 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    public void fireProcessAnnotatedTypeForTypesAddedThroughTheSPI()
    {
       Iterator<WeldClass<?>> it = classes.iterator();
-      ClassTransformer classTransformer = Container.instance().services().get(ClassTransformer.class);
       Set<WeldClass<?>> transformed = new HashSet<WeldClass<?>>();
       while (it.hasNext())
       {

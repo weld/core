@@ -49,14 +49,14 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive
    public static final String WEB_INF_BEANS_XML = "/WEB-INF/beans.xml";
    public static final String WEB_INF_CLASSES = "/WEB-INF/classes";
    
-   private final List<Class<?>> classes;
+   private final List<String> classes;
    private final BeansXml beansXml;
    private final ServiceRegistry services;
    
    public WebAppBeanDeploymentArchive(ServletContext servletContext, Bootstrap bootstrap)
    {
       this.services = new SimpleServiceRegistry();
-      this.classes = new ArrayList<Class<?>>();
+      this.classes = new ArrayList<String>();
       List<URL> urls = new ArrayList<URL>();
       URLScanner scanner = new URLScanner(Reflections.getClassLoader());
       scanner.scanResources(new String[] { META_INF_BEANS_XML }, classes, urls);
@@ -81,7 +81,7 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive
       this.beansXml = bootstrap.parse(urls);
    }
 
-   public Collection<Class<?>> getBeanClasses()
+   public Collection<String> getBeanClasses()
    {
       return classes;
    }

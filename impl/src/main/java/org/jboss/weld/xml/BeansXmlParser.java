@@ -16,118 +16,84 @@
  */
 package org.jboss.weld.xml;
 
-import static java.util.Collections.emptyList;
 import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
+import static org.jboss.weld.logging.messages.XmlMessage.CONFIGURATION_ERROR;
 import static org.jboss.weld.logging.messages.XmlMessage.LOAD_ERROR;
-import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_ALTERNATIVES;
-import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_DECORATORS;
-import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_INTERCEPTORS;
 import static org.jboss.weld.logging.messages.XmlMessage.PARSING_ERROR;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.logging.messages.XmlMessage;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.jboss.weld.bootstrap.spi.Filter;
+import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.metadata.BeansXmlImpl;
+import org.jboss.weld.metadata.ScanningImpl;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Simple parser for beans.xml
  * 
+ * This class is NOT threadsafe, and should only be called in a single thread
+ * 
  * @author Pete Muir
- * @author Nicklas Karlsson
  */
 public class BeansXmlParser
 {
 
-   public static final String NAMESPACE_URI = "http://java.sun.com/xml/ns/javaee";
-
    public BeansXml parse(final URL beansXml)
    {
-      Document document = new BeansXmlDocumentLoader(beansXml)
+      if (beansXml == null)
       {
-
-         @Override
-         protected Document loadDocument(InputStream in)
+         throw new IllegalStateException(LOAD_ERROR, "unknown");
+      }
+      XMLReader xmlReader;
+      try
+      {
+         xmlReader = XMLReaderFactory.createXMLReader();
+      }
+      catch (SAXException e)
+      {
+         throw new IllegalStateException(CONFIGURATION_ERROR, e);
+      }
+      try
+      {
+         InputSource source = new InputSource(beansXml.openStream());
+         if (source.getByteStream().available() == 0)
          {
-            if (isDocumentEmpty(in))
-            {
-               return null;
-            }
-            try
-            {
-               Document document = createDocumentBuilder().parse(in);
-               document.normalize();
-               return document;
-            }
-            catch (SAXException e)
-            {
-               throw new org.jboss.weld.exceptions.IllegalStateException(PARSING_ERROR, e, beansXml.toString());
-            }
-            catch (IOException e)
-            {
-               throw new org.jboss.weld.exceptions.IllegalStateException(LOAD_ERROR, e, beansXml.toString());
-            }
+            // The file is just acting as a marker file
+            return EMPTY_BEANS_XML;
          }
-      }.run();
-
-      if (document == null)
-      {
-         return EMPTY_BEANS_XML;
+         BeansXmlHandler handler = new BeansXmlHandler(beansXml);
+         xmlReader.setContentHandler(handler);
+         xmlReader.setErrorHandler(handler);
+         xmlReader.parse(source);
+         return handler.createBeansXml();
       }
-      else
+      catch (IOException e)
       {
-         if (document.getDocumentElement().getNamespaceURI() == null)
-         {
-            return parseDocument(beansXml, document.getDocumentElement(), "*");
-         }
-         else
-         {
-            return parseDocument(beansXml, document.getDocumentElement(), NAMESPACE_URI);
-         }
+         throw new IllegalStateException(LOAD_ERROR, e, beansXml);
       }
-   }
-
-   private BeansXml parseDocument(URL url, Element documentElement, String namespaceURI)
-   {
-      return new BeansXmlImpl(
-            findClassNames(url, documentElement, namespaceURI, "alternatives", "class", MULTIPLE_ALTERNATIVES),
-            findClassNames(url, documentElement, namespaceURI, "alternatives", "stereotype", MULTIPLE_ALTERNATIVES),
-            findClassNames(url, documentElement, namespaceURI, "decorators", "class", MULTIPLE_DECORATORS),
-            findClassNames(url, documentElement, namespaceURI, "interceptors", "class", MULTIPLE_INTERCEPTORS)
-         ); 
-   }
-   
-   private static List<String> findClassNames(URL url, Element beans, String namespaceURI, String localGroupName, String localName, XmlMessage multipleViolationMessage)
-   {
-      NodeList nodeList = beans.getElementsByTagNameNS(namespaceURI, localGroupName);
-      if (nodeList.getLength() > 1)
+      catch (SAXException e)
       {
-         throw new DefinitionException(multipleViolationMessage);
-      }
-      else if (nodeList.getLength() == 1)
-      {
-         return new BeansXmlElement(url, (Element) nodeList.item(0), localName, namespaceURI).getClassNames();
-      }
-      else
-      {
-         return emptyList();
+         throw new IllegalStateException(PARSING_ERROR, beansXml, e);
       }
    }
 
    public BeansXml parse(Iterable<URL> urls)
    {
-      List<String> alternativeStereotypes = new ArrayList<String>();
-      List<String> alternativeClasses = new ArrayList<String>();
-      List<String> decorators = new ArrayList<String>();
-      List<String> interceptors = new ArrayList<String>();
+      List<Metadata<String>> alternativeStereotypes = new ArrayList<Metadata<String>>();
+      List<Metadata<String>> alternativeClasses = new ArrayList<Metadata<String>>();
+      List<Metadata<String>> decorators = new ArrayList<Metadata<String>>();
+      List<Metadata<String>> interceptors = new ArrayList<Metadata<String>>();
+      List<Metadata<Filter>> includes = new ArrayList<Metadata<Filter>>();
+      List<Metadata<Filter>> excludes = new ArrayList<Metadata<Filter>>();
       for (URL url : urls)
       {
          BeansXml beansXml = parse(url);
@@ -135,8 +101,10 @@ public class BeansXmlParser
          alternativeClasses.addAll(beansXml.getEnabledAlternativeClasses());
          decorators.addAll(beansXml.getEnabledDecorators());
          interceptors.addAll(beansXml.getEnabledInterceptors());
+         includes.addAll(beansXml.getScanning().getIncludes());
+         excludes.addAll(beansXml.getScanning().getExcludes());
       }
-      return new BeansXmlImpl(alternativeClasses, alternativeStereotypes, decorators, interceptors);
+      return new BeansXmlImpl(alternativeClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes));
    }
 
 }

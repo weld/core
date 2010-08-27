@@ -17,20 +17,12 @@
 package org.jboss.arquillian.container.weld.ee.embedded_1_1.mock;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
+import static org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.Ejbs.createEjbDescriptors;
 import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.ejb.EnterpriseBean;
-import javax.ejb.MessageDriven;
-import javax.ejb.Singleton;
-import javax.ejb.Stateful;
-import javax.ejb.Stateless;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
@@ -48,19 +40,19 @@ import org.jboss.weld.injection.spi.ResourceInjectionServices;
 public class BeanDeploymentArchiveImpl implements BeanDeploymentArchive
 {  
    
-   private final Collection<Class<?>> beanClasses;
+   private final Collection<String> beanClasses;
    private final BeansXml beansXml;
-   private final List<EjbDescriptor<?>> ejbs;
+   private final Collection<EjbDescriptor<?>> ejbs;
    private final ServiceRegistry services;
    private final Collection<BeanDeploymentArchive> bdas;
    private final String id;
    
-   public BeanDeploymentArchiveImpl(BeansXml beansXml, Collection<Class<?>> classes)
+   public BeanDeploymentArchiveImpl(BeansXml beansXml, Iterable<Class<?>> classes)
    {
       this("test", beansXml, classes);
    }
    
-   public BeanDeploymentArchiveImpl(Collection<Class<?>> classes)
+   public BeanDeploymentArchiveImpl(Iterable<Class<?>> classes)
    {
       this("test", EMPTY_BEANS_XML, classes);
    }
@@ -75,18 +67,18 @@ public class BeanDeploymentArchiveImpl implements BeanDeploymentArchive
       this(id, beansXml, asList(classes));
    }
    
-   public BeanDeploymentArchiveImpl(String id, BeansXml beansXml, Collection<Class<?>> beanClasses)
+   public BeanDeploymentArchiveImpl(String id, BeansXml beansXml, Iterable<Class<?>> beanClasses)
    {
       this.services = new SimpleServiceRegistry();
       configureServices();
       this.bdas = new HashSet<BeanDeploymentArchive>();
-      this.beanClasses = beanClasses;
-      this.beansXml = beansXml;
-      ejbs = new ArrayList<EjbDescriptor<?>>();
-      for (Class<?> ejbClass : discoverEjbs(getBeanClasses()))
+      this.beanClasses = new ArrayList<String>();
+      for (Class<?> clazz : beanClasses)
       {
-         ejbs.add(MockEjbDescriptor.of(ejbClass));
+         this.beanClasses.add(clazz.getName());
       }
+      this.beansXml = beansXml;
+      this.ejbs = createEjbDescriptors(beanClasses);
       this.id = id;
    }
    
@@ -97,7 +89,7 @@ public class BeanDeploymentArchiveImpl implements BeanDeploymentArchive
       this.services.add(ResourceInjectionServices.class, new MockResourceInjectionServices());
    }
 
-   public Collection<Class<?>> getBeanClasses()
+   public Collection<String> getBeanClasses()
    {
       return beanClasses;
    }
@@ -114,19 +106,6 @@ public class BeanDeploymentArchiveImpl implements BeanDeploymentArchive
    
    public Collection<EjbDescriptor<?>> getEjbs()
    {
-      return ejbs;
-   }
-   
-   protected static Iterable<Class<?>> discoverEjbs(Iterable<Class<?>> webBeanClasses)
-   {
-      Set<Class<?>> ejbs = new HashSet<Class<?>>();
-      for (Class<?> clazz : webBeanClasses)
-      {
-         if (clazz.isAnnotationPresent(Stateless.class) || clazz.isAnnotationPresent(Stateful.class) || clazz.isAnnotationPresent(MessageDriven.class) || clazz.isAnnotationPresent(Singleton.class) || EnterpriseBean.class.isAssignableFrom(clazz)) 
-         {
-            ejbs.add(clazz);
-         }
-      }
       return ejbs;
    }
    
