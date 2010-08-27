@@ -90,7 +90,7 @@
 
       <!-- TODO move to weld-parent -->
       <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
-      <cargo.maven2.plugin.version>1.0.1</cargo.maven2.plugin.version>
+      <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
    </properties>
 
 
