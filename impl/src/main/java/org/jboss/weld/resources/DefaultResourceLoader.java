@@ -52,11 +52,15 @@ public class DefaultResourceLoader implements ResourceLoader
       }
       catch (ClassNotFoundException e)
       {
-         throw new ResourceLoadingException(e);
+         throw new ResourceLoadingException("Error loading class " + name, e);
       }
       catch (NoClassDefFoundError e)
       {
-         throw new ResourceLoadingException(e);
+         throw new ResourceLoadingException("Error loading class " + name, e);
+      }
+      catch (TypeNotPresentException e) 
+      {
+         throw new ResourceLoadingException("Error loading class " + name, e);
       }
    }
    
@@ -87,7 +91,7 @@ public class DefaultResourceLoader implements ResourceLoader
       }
       catch (IOException e)
       {
-         throw new ResourceLoadingException(e);
+         throw new ResourceLoadingException("Error loading resource " + name, e);
       }
    }
    

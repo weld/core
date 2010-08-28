@@ -16,7 +16,11 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
+import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_CLASS_DUE_TO_LOADING_ERROR;
+import static org.slf4j.ext.XLogger.Level.DEBUG;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,6 +40,9 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.slf4j.cal10n.LocLogger;
+import org.slf4j.ext.XLogger;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -46,6 +53,9 @@ import com.google.common.collect.Multimap;
  */
 public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
 {
+   
+   private transient LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
+   private transient XLogger xlog = loggerFactory().getXLogger(BOOTSTRAP);
    
    private final Set<WeldClass<?>> classes;
    private final ResourceLoader resourceLoader;
@@ -65,19 +75,43 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
 
    public BeanDeployer addClass(String className)
    {
-      Class<?> clazz = resourceLoader.classForName(className);
-      if (!clazz.isAnnotation() && !clazz.isEnum())
+      Class<?> clazz = null;
+      try
       {
-         ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(getManager(), classTransformer.loadClass(clazz));
-         if (!event.isVeto())
+         clazz = resourceLoader.classForName(className);
+      }
+      catch (ResourceLoadingException e) 
+      {
+         log.debug(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
+         xlog.catching(DEBUG, e);
+      }
+      
+      if (clazz != null && !clazz.isAnnotation() && !clazz.isEnum())
+      {
+         WeldClass<?> weldClass = null;
+         try
          {
-            if (event.getAnnotatedType() instanceof WeldClass<?>)
+            weldClass = classTransformer.loadClass(clazz);
+         }
+         catch (ResourceLoadingException e)
+         {
+            log.debug(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
+            xlog.catching(DEBUG, e);
+         }
+         
+         if (weldClass != null)
+         {
+            ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(getManager(), weldClass);
+            if (!event.isVeto())
             {
-               classes.add((WeldClass<?>) event.getAnnotatedType());
-            }
-            else
-            {
-               classes.add(classTransformer.loadClass(event.getAnnotatedType()));
+               if (event.getAnnotatedType() instanceof WeldClass<?>)
+               {
+                  classes.add((WeldClass<?>) event.getAnnotatedType());
+               }
+               else
+               {
+                  classes.add(classTransformer.loadClass(event.getAnnotatedType()));
+               }
             }
          }
       }

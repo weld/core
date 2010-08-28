@@ -28,8 +28,10 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.WeldAnnotationImpl;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.metadata.TypeStore;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ComputationException;
 import com.google.common.collect.MapMaker;
 
 public class ClassTransformer implements Service
@@ -155,13 +157,41 @@ public class ClassTransformer implements Service
    @SuppressWarnings("unchecked")
    public <T> WeldClass<T> loadClass(final Class<T> rawType, final Type baseType)
    {
-      return (WeldClass<T>) classes.get(new TypeHolder<T>(rawType, baseType));
+      try
+      {
+         return (WeldClass<T>) classes.get(new TypeHolder<T>(rawType, baseType));
+      }
+      catch (ComputationException e)
+      {
+         if (e.getCause() instanceof NoClassDefFoundError || e.getCause() instanceof TypeNotPresentException)
+         {
+            throw new ResourceLoadingException("Error loading class " + rawType.getName(), e.getCause());
+         }
+         else
+         {
+            throw e;
+         }
+      }
    }
    
    @SuppressWarnings("unchecked")
    public <T> WeldClass<T> loadClass(final Class<T> clazz)
    {
-      return (WeldClass<T>) classes.get(new TypeHolder<T>(clazz, clazz));
+      try
+      {
+         return (WeldClass<T>) classes.get(new TypeHolder<T>(clazz, clazz));
+      }
+      catch (ComputationException e)
+      {
+         if (e.getCause() instanceof NoClassDefFoundError || e.getCause() instanceof TypeNotPresentException)
+         {
+            throw new ResourceLoadingException("Error loading class " + clazz.getName(), e.getCause());
+         }
+         else
+         {
+            throw e;
+         }
+      }
    }
    
    @SuppressWarnings("unchecked")
