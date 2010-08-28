@@ -106,9 +106,18 @@
          <para>
             <literal>BeanDeploymentArchive</literal> provides three methods which allow it's contents to be discovered
             by Weld&#8212;<literal>BeanDeploymentArchive.getBeanClasses()</literal> must return all the classes in the
-            BDA, <literal>BeanDeploymentArchive.getBeansXml()</literal> must return all the deployment descriptors in
-            the archive, and <literal>BeanDeploymentArchive.getEjbs()</literal> must provide an EJB descriptor for every
-            EJB in the BDA, or an empty list if it is not an EJB archive. 
+            BDA, <literal>BeanDeploymentArchive.getBeansXml()</literal> must return a data structure representing the 
+            <code>beans.xml</code> deployment descriptor for the archive, and 
+            <literal>BeanDeploymentArchive.getEjbs()</literal> must provide an EJB descriptor for every EJB in the BDA,
+            or an empty list if it is not an EJB archive. 
+         </para>
+         
+         <para>
+            To aid container integrator, Weld provides a built-in <code>beans.xml</code> parser. To parse a 
+            <code>beans.xml</code> into the data-structure required by <code>BeanDeploymentArchive</code>, the container
+            should call <code>Bootstrap.parseBeansXml(URL)</code>. Weld can also parse multiple <code>beans.xml</code>
+            files, merging them to become a single data-structure. This can be achieved by calling 
+            <code>Bootstrap.parseBeansXml(Iterable&lt;URL&gt;)</code>.
          </para>
          
          <para>
@@ -145,6 +154,13 @@
             Certain services are provided for the whole deployment, whilst some are provided per-BDA. BDA services are
             provided using <literal>BeanDeploymentArchive.getServices()</literal> and only apply to the BDA on which
             they are provided.
+         </para>
+         
+         <para>
+            The contract for <code>Deployment</code> requires the container to specify the portable extensions (see chapter
+            12 of the CDI specification) which should be loaded by the application. To aid the container integrator, Weld
+            provides the method <code>Bootstrap.loadExtensions(ClassLoader)</code> which will load the extensions for the
+            specified classloader.
          </para>
          
       </section>
