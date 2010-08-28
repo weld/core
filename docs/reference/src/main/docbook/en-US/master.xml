@@ -89,15 +89,7 @@
       <xi:include href="part5.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       
       <xi:include href="environments.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      <xi:include href="extensions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      <!--
-      <xi:include href="xml.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      -->
-      <xi:include href="viewlayers.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="ri-spi.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      <!--
-      <xi:include href="dependencies.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      -->
      
    </part>
    

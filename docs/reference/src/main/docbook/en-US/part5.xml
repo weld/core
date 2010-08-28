@@ -6,13 +6,14 @@
       Weld is the reference implementation of JSR-299, and is used by JBoss AS and Glassfish to provide CDI services for
       Java Enterprise Edition (Java EE) applications. Weld also goes beyond the environments and APIs defined by the
       JSR-299 specification by providing support for a number of other environments (such as a servlet container such as
-      Tomcat, or Java SE) and additional APIs and modules (such as logging and bean utilities).
+      Tomcat, or Java SE).
    </para>
 
    <para>
-      Some of the extensions in Weld are portable across JSR-299 implementations (like the logging and bean utilities)
-      and some are specific to Weld (such as the servlet container support). Weld also provides an SPI on which to build
-      extensions, so there are several layers involved.
+      You might also want to check out the Weld Extensions project which provides portable extensions to CDI (such as log
+      injection and additional annotations for creating beans), and Seam, which provides integrations with other view layers
+      (such as GWT and Wicket), other frameworks (such as Drools) as well as extensions to the ecosystem (such as support
+      for security).
    </para>
    
    <para>
