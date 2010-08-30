@@ -39,7 +39,7 @@
       <apache.httpclient.version>3.1</apache.httpclient.version>
       <junit.version>4.7</junit.version>
       <htmlunit.version>2.4</htmlunit.version>
-      <weld.extensions.version>1.0.0-SNAPSHOT</weld.extensions.version>
+      <weld.extensions.version>1.0.0.Alpha2</weld.extensions.version>
    </properties>
 
    <!-- Import the BOMs -->
