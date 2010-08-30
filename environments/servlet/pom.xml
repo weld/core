@@ -1,17 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld.servlet</groupId>
    <artifactId>weld-servlet-parent</artifactId>
    <name>Weld Servlet Parent</name>
    <packaging>pom</packaging>
-   <version>1.1.0-SNAPSHOT</version>
+   <version>1.1.0.Beta1</version>
 
    <parent>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-core-parent</artifactId>
       <relativePath>../../parent/pom.xml</relativePath>
-      <version>1.1.0-SNAPSHOT</version>
+      <version>1.1.0.Beta1</version>
    </parent>
 
    <modules>
