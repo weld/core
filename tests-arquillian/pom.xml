@@ -48,8 +48,13 @@
       </dependency>
 
       <dependency>
-         <groupId>org.jboss.metadata</groupId>
-         <artifactId>jboss-metadata</artifactId>
+         <groupId>javax.jms</groupId>
+         <artifactId>jms</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.ejb3</groupId>
+         <artifactId>jboss-ejb3-ext-api</artifactId>
       </dependency>
 
       <dependency>
@@ -57,7 +62,6 @@
          <artifactId>jboss-mdr</artifactId>
          <scope>test</scope>
       </dependency>
-
 
       <dependency>
          <groupId>javax.el</groupId>
