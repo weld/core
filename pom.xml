@@ -22,19 +22,6 @@
    <!-- Minimal metadata -->
    <description>The build aggregator for Weld, which takes care of calling the modules which make up Weld</description>
 
-   <!--
-      Workaround bug in Maven 2.? where it can't download a unique
-      version snapshot on import scope
-   -->
-   <dependencies>
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-api-bom</artifactId>
-         <version>1.1-SNAPSHOT</version>
-         <type>pom</type>
-      </dependency>
-   </dependencies>
-
    <!-- SCM and distribution management -->
    <scm>
       <connection>scm:git:git://github.com/weld/core.git</connection>
