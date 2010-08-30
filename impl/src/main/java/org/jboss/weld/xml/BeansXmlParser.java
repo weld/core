@@ -22,9 +22,15 @@ import static org.jboss.weld.logging.messages.XmlMessage.LOAD_ERROR;
 import static org.jboss.weld.logging.messages.XmlMessage.PARSING_ERROR;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.enterprise.inject.spi.BeanManager;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Filter;
@@ -34,8 +40,6 @@ import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.metadata.ScanningImpl;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Simple parser for beans.xml
@@ -46,19 +50,28 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class BeansXmlParser
 {
+   
+   private static final InputSource[] EMPTY_INPUT_SOURCE_ARRAY = new InputSource[0];
 
    public BeansXml parse(final URL beansXml)
    {
+      SAXParserFactory factory = SAXParserFactory.newInstance();
+      factory.setValidating(true);
+      factory.setNamespaceAware(true);
       if (beansXml == null)
       {
          throw new IllegalStateException(LOAD_ERROR, "unknown");
       }
-      XMLReader xmlReader;
+      SAXParser parser;
       try
       {
-         xmlReader = XMLReaderFactory.createXMLReader();
+         parser = factory.newSAXParser();
       }
       catch (SAXException e)
+      {
+         throw new IllegalStateException(CONFIGURATION_ERROR, e);
+      }
+      catch (ParserConfigurationException e)
       {
          throw new IllegalStateException(CONFIGURATION_ERROR, e);
       }
@@ -71,9 +84,19 @@ public class BeansXmlParser
             return EMPTY_BEANS_XML;
          }
          BeansXmlHandler handler = new BeansXmlHandler(beansXml);
-         xmlReader.setContentHandler(handler);
-         xmlReader.setErrorHandler(handler);
-         xmlReader.parse(source);
+         
+         try
+         {
+            parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
+            parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource", loadXsds());
+         }
+         catch (IllegalArgumentException e)
+         {
+            // No op, we just don't validate the XML
+         }
+         
+         parser.parse(source, handler);
+         
          return handler.createBeansXml();
       }
       catch (IOException e)
@@ -106,5 +129,38 @@ public class BeansXmlParser
       }
       return new BeansXmlImpl(alternativeClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes));
    }
+   
+   private static InputSource[] loadXsds()
+   {
+      List<InputSource> xsds = new ArrayList<InputSource>();
+      // The Weld xsd
+      InputSource weldXsd = loadXsd("beans_1_1.xsd", BeansXmlParser.class.getClassLoader());
+      // The CDI Xsd
+      InputSource cdiXsd = loadXsd("beans_1_0.xsd", BeanManager.class.getClassLoader()); 
+      if (weldXsd != null)
+      {
+         xsds.add(weldXsd);         
+      }
+      if (cdiXsd != null)
+      {
+         xsds.add(cdiXsd);
+      }
+      return xsds.toArray(EMPTY_INPUT_SOURCE_ARRAY);
+   }
+   
+   
+   private static InputSource loadXsd(String name, ClassLoader classLoader)
+   {
+      InputStream in = classLoader.getResourceAsStream(name);
+      if (in == null)
+      {
+         return null;
+      }
+      else
+      {
+         return new InputSource(in);
+      }
+   }
+
 
 }

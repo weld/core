@@ -1,7 +1,9 @@
 package org.jboss.weld.xml;
 
 import static java.util.Arrays.asList;
-import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_ALTERNATIVES;
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.XmlMessage.*;
 import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_DECORATORS;
 import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_INTERCEPTORS;
 import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_SCANNING;
@@ -22,9 +24,11 @@ import org.jboss.weld.metadata.ClassAvailableActivationImpl;
 import org.jboss.weld.metadata.FilterImpl;
 import org.jboss.weld.metadata.ScanningImpl;
 import org.jboss.weld.metadata.SystemPropertyActivationImpl;
+import org.slf4j.cal10n.LocLogger;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -37,6 +41,8 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class BeansXmlHandler extends DefaultHandler
 {
+   
+   static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
    public static abstract class Container
    {
@@ -116,6 +122,7 @@ public class BeansXmlHandler extends DefaultHandler
    private final List<Metadata<String>> alternativeStereotypes;
    private final List<Metadata<Filter>> includes;
    private final List<Metadata<Filter>> excludes;
+   private final URL file;
 
    /*
     * Parser State
@@ -127,6 +134,7 @@ public class BeansXmlHandler extends DefaultHandler
 
    public BeansXmlHandler(final URL file)
    {
+      this.file = file;
       this.interceptors = new ArrayList<Metadata<String>>();
       this.decorators = new ArrayList<Metadata<String>>();
       this.alternativeClasses = new ArrayList<Metadata<String>>();
@@ -359,6 +367,18 @@ public class BeansXmlHandler extends DefaultHandler
    public void setDocumentLocator(Locator locator)
    {
       this.locator = locator;
+   }
+   
+   @Override
+   public void warning(SAXParseException e) throws SAXException
+   {
+      log.warn(XSD_VALIDATION_WARNING, file, e.getLineNumber(), e.getMessage());
+   }
+   
+   @Override
+   public void error(SAXParseException e) throws SAXException
+   {
+      log.warn(XSD_VALIDATION_ERROR, file, e.getLineNumber(), e.getMessage());
    }
 
 }
