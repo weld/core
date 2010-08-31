@@ -512,6 +512,24 @@
                </resource>
             </resources>
             <plugins>
+               <!-- Automatically add the src/jetty directory dir as a source dir -->
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>build-helper-maven-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>add-jetty-source</id>
+                        <goals>
+                           <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                           <sources>
+                              <source>src/jetty/java</source>
+                           </sources>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-war-plugin</artifactId>

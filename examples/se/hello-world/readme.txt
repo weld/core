@@ -19,7 +19,7 @@
 Running the Example
 -------------------
 
-As with all Web Beans SE applications, this example is executed
+As with all Weld SE applications, this example is executed
 by starting Java with org.jboss.weld.environment.se.StartMain
 as the main class. Of course you will need all of the relevant jar dependencies
 on your classpath, which is most easily done by loading the project into your
