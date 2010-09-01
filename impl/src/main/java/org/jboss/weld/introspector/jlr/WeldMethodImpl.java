@@ -37,12 +37,11 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
-
-import com.google.common.collect.ArrayListMultimap;
 
 /**
  * Represents an annotated method
@@ -63,18 +62,20 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    private final ArrayList<WeldParameter<?, X>> parameters;
    // A mapping from annotation type to parameter abstraction with that
    // annotation present
-   private final ArrayListMultimap<Class<? extends Annotation>, WeldParameter<?, X>> annotatedParameters;
+   private final ArraySetMultimap<Class<? extends Annotation>, WeldParameter<?, X>> annotatedParameters;
 
    // The property name
    private final String propertyName;
 
    private final MethodSignature signature;
 
+   @SuppressWarnings("unchecked")
    public static <T, X> WeldMethodImpl<T, X> of(Method method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       return new WeldMethodImpl<T, X>(method, (Class<T>) method.getReturnType(), method.getGenericReturnType(), new HierarchyDiscovery(method.getGenericReturnType()).getTypeClosure(), null, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getDeclaredAnnotations()), declaringClass, classTransformer);
    }
 
+   @SuppressWarnings("unchecked")
    public static <T, X> WeldMethodImpl<T, X> of(AnnotatedMethod<? super X> method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       return new WeldMethodImpl<T, X>(method.getJavaMember(), (Class<T>) method.getJavaMember().getReturnType(), method.getBaseType(), method.getTypeClosure(), method, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getAnnotations()), declaringClass, classTransformer);
@@ -95,7 +96,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       super(annotationMap, declaredAnnotationMap, classTransformer, method, rawType, type, typeClosure, declaringClass);
       this.method = method;
       this.parameters = new ArrayList<WeldParameter<?, X>>(method.getParameterTypes().length);
-      this.annotatedParameters = ArrayListMultimap.<Class<? extends Annotation>, WeldParameter<?, X>> create(2, method.getParameterTypes().length);
+      this.annotatedParameters = new ArraySetMultimap<Class<? extends Annotation>, WeldParameter<?, X>>();
 
       if (annotatedMethod == null)
       {
@@ -149,7 +150,6 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       }
       this.parameters.trimToSize();
       this.annotatedParameters.trimToSize();
-
 
       String propertyName = Reflections.getPropertyName(getDelegate());
       if (propertyName == null)
@@ -222,6 +222,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       return signature;
    }
 
+   @SuppressWarnings("unchecked")
    public List<AnnotatedParameter<X>> getParameters()
    {
       return Collections.unmodifiableList((List) parameters);

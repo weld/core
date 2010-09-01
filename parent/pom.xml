@@ -81,6 +81,7 @@
       <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
       <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
       <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
+      <jboss.spec.ejb.version>1.0.0.CR2</jboss.spec.ejb.version>
       <apache.httpclient.version>3.1</apache.httpclient.version>
       <junit.version>4.8.1</junit.version>
       <htmlunit.version>2.4</htmlunit.version>
@@ -190,6 +191,12 @@
             <groupId>org.jboss.spec.javax.servlet</groupId>
             <artifactId>jboss-servlet-api_3.0_spec</artifactId>
             <version>${jboss.spec.servlet.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <version>${jboss.spec.ejb.version}</version>
          </dependency>
 
          <dependency>
