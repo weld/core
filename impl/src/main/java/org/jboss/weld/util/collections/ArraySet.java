@@ -20,7 +20,9 @@ package org.jboss.weld.util.collections;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -43,6 +45,11 @@ public class ArraySet<E> implements Set<E>, Serializable
 {
    // Underlying array of set elements
    private ArrayList<E> elements;
+
+   public ArraySet(ArrayList<E> initialList)
+   {
+      elements = initialList;
+   }
 
    public ArraySet(Collection<E> initialElements)
    {
@@ -89,6 +96,11 @@ public class ArraySet<E> implements Set<E>, Serializable
       }
       elements.trimToSize();
       return modified;
+   }
+
+   public List<E> asList()
+   {
+      return Collections.unmodifiableList(elements);
    }
 
    public void clear()
