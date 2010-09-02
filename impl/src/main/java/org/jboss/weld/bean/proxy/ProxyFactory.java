@@ -354,6 +354,7 @@ public class ProxyFactory<T>
       {
          proxyClassType = new ClassFile(false, proxyClassName, beanType.getName());
       }
+      proxyClassType.setVersionToJava5();
       proxyClassType.setAccessFlags(AccessFlag.PUBLIC);
       // Add interfaces which require method generation
       for (Class<?> clazz : additionalInterfaces)
