@@ -67,7 +67,7 @@ public class WeldServletBeanManagerProvider implements BeanManagerProvider, Exte
          }
          else
          {
-            log.warn(ERROR_CONTAINER_NOT_AVAILABLE);
+            log.debug(ERROR_CONTAINER_NOT_AVAILABLE);
          }
       }
       catch (Exception e) 
