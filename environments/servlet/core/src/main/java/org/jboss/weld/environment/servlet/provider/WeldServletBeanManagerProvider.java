@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.extensions.beanManager.BeanManagerAccessor;
 import org.jboss.weld.extensions.beanManager.BeanManagerProvider;
@@ -32,7 +33,6 @@ public class WeldServletBeanManagerProvider implements BeanManagerProvider, Exte
    private static String CONTAINER_INSTANCE_METHOD = "instance";
    private static String CONTAINER_AVAILABLE_METHOD = "available";
    private static String CONTAINER_BEAN_DEPLOYMENT_METHOD = "beanDeploymentArchives";
-   private static String BEAN_DEPLOYMENT_ARCHIVE_ID_METHOD = "getId";
    private static String BEAN_DEPLOYMENT_ARCHIVE_ID = "flat";
    
    private static String ERROR_GETTING_BEAN_DEPLOYMENT_ARCHIVES = "Could not get BeanDeploymentArchives from Container";
@@ -118,15 +118,12 @@ public class WeldServletBeanManagerProvider implements BeanManagerProvider, Exte
       for(Entry<?, ?> beanDeploymentEntry : beanDeploymentArchives.entrySet())
       {
          Object beanManagerDeployment = beanDeploymentEntry.getKey();
-         Class<?> beanManagerDeploymentClass = beanManagerDeployment.getClass();
-         
-         Method getId = Reflections.findDeclaredMethod(beanManagerDeploymentClass, BEAN_DEPLOYMENT_ARCHIVE_ID_METHOD);
-         if(getId == null)
+         if (!(beanManagerDeployment instanceof BeanDeploymentArchive))
          {
-            throw new IllegalArgumentException("Method " + BEAN_DEPLOYMENT_ARCHIVE_ID_METHOD + " could not be found on " + beanManagerDeploymentClass);
+            throw new IllegalStateException("beanDeploymentArchive is not a BeanDeploymentArchive");
          }
 
-         String beanArchiveId = Reflections.invokeMethod(getId, String.class, beanManagerDeployment);
+         String beanArchiveId = BeanDeploymentArchive.class.cast(beanManagerDeployment).getId();
          if(id.equals(beanArchiveId))
          {
             return BeanManager.class.cast(beanDeploymentEntry.getValue());
