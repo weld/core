@@ -31,6 +31,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE_FROM_STERE
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -55,7 +56,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.collections.ImmutableArraySet;
+import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -116,7 +117,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       initName();
       initScope();
       checkDelegateInjectionPoints();
-      this.qualifiers = new ImmutableArraySet<Annotation>(qualifiers);
+      this.qualifiers = Collections.unmodifiableSet(new ArraySet<Annotation>(qualifiers));
    }
    
    protected void initStereotypes()
@@ -170,17 +171,19 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    {
       if (getWeldAnnotated().isAnnotationPresent(Typed.class))
       {
-         this.types = new ImmutableArraySet<Type>(getTypedTypes(Reflections.buildTypeMap(getWeldAnnotated().getTypeClosure()), getWeldAnnotated().getJavaClass(), getWeldAnnotated().getAnnotation(Typed.class)));
+         this.types = Collections.unmodifiableSet(new ArraySet<Type>(getTypedTypes(Reflections.buildTypeMap(getWeldAnnotated().getTypeClosure()), getWeldAnnotated().getJavaClass(), getWeldAnnotated().getAnnotation(Typed.class))));
       }
       else
       {
          if (getType().isInterface())
          {
-            this.types = new ImmutableArraySet<Type>(getWeldAnnotated().getTypeClosure(), Object.class);
+            this.types = new ArraySet<Type>(getWeldAnnotated().getTypeClosure());
+            this.types.add(Object.class);
+            this.types = Collections.unmodifiableSet(this.types);
          }
          else
          {
-            this.types = new ImmutableArraySet<Type>(getWeldAnnotated().getTypeClosure());
+            this.types = getWeldAnnotated().getTypeClosure();
          }
       }
    }

@@ -47,15 +47,15 @@ import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
-import org.jboss.weld.util.collections.HierarchicalSet;
-import org.jboss.weld.util.collections.ImmutableArraySet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Sets;
 
 /**
  * Represents an annotated class
@@ -86,12 +86,12 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    private final WeldClass<?> superclass;
 
    // The set of abstracted fields
-   private final ArrayList<WeldField<?, ?>> fields;
+   private final Set<WeldField<?, ?>> fields;
    // The map from annotation type to abstracted field with annotation
    private final ArrayListMultimap<Class<? extends Annotation>, WeldField<?, ?>> annotatedFields;
 
    // The set of abstracted fields
-   private final ArrayList<WeldField<?, ?>> declaredFields;
+   private final ArraySet<WeldField<?, ?>> declaredFields;
    private final Map<String, WeldField<?, ?>> declaredFieldsByName;
    // The map from annotation type to abstracted field with annotation
    private final ArrayListMultimap<Class<? extends Annotation>, WeldField<?, ? super T>> declaredAnnotatedFields;
@@ -99,14 +99,14 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    private final ArrayListMultimap<Class<? extends Annotation>, WeldField<?, ?>> declaredMetaAnnotatedFields;
 
    // The set of abstracted methods
-//   private final ArrayList<WeldMethod<?, ?>> methods;
+   private final Set<WeldMethod<?, ?>> methods;
    private final Map<MethodSignature, WeldMethod<?, ?>> declaredMethodsBySignature;
    private final Map<MethodSignature, WeldMethod<?, ?>> methodsBySignature;
    // The map from annotation type to abstracted method with annotation
    private final ArrayListMultimap<Class<? extends Annotation>, WeldMethod<?, ?>> annotatedMethods;
 
    // The set of abstracted methods
-   private final ArrayList<WeldMethod<?, ?>> declaredMethods;
+   private final ArraySet<WeldMethod<?, ?>> declaredMethods;
    // The map from annotation type to abstracted method with annotation
    private final ArrayListMultimap<Class<? extends Annotation>, WeldMethod<?, ? super T>> declaredAnnotatedMethods;
    // The map from annotation type to method with a parameter with annotation
@@ -141,6 +141,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       return new WeldClassImpl<T>(rawType, type, null, new HierarchyDiscovery(type).getTypeClosure(), buildAnnotationMap(rawType.getAnnotations()), buildAnnotationMap(rawType.getDeclaredAnnotations()), classTransformer);
    }
 
+   @SuppressWarnings("unchecked")
    protected WeldClassImpl(Class<T> rawType, Type type, AnnotatedType<T> annotatedType, Set<Type> typeClosure, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer)
    {
       super(annotationMap, declaredAnnotationMap, classTransformer, rawType, type, typeClosure);
@@ -164,53 +165,49 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       }
 
       // Assign class field information
-      this.fields = new ArrayList<WeldField<?, ?>>();
-      this.annotatedFields = ArrayListMultimap.<Class<? extends Annotation>, WeldField<?, ?>> create();
-      this.declaredFields = new ArrayList<WeldField<?, ?>>(rawType.getDeclaredFields().length);
       this.declaredFieldsByName = new HashMap<String, WeldField<?, ?>>();
       this.declaredAnnotatedFields = ArrayListMultimap.<Class<? extends Annotation>, WeldField<?, ? super T>> create();
       this.declaredMetaAnnotatedFields = ArrayListMultimap.<Class<? extends Annotation>, WeldField<?, ?>> create();
 
+      Set<WeldField<?, ?>> fieldsTemp = null;
+      ArrayList<WeldField<?, ?>> declaredFieldsTemp = new ArrayList<WeldField<?, ?>>();
       if (annotatedType == null)
       {
-         for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
-         {
-            for (Field field : SecureReflections.getDeclaredFields(c))
+         this.annotatedFields = null;
+         if (rawType != Object.class) {
+            for (Field field : SecureReflections.getDeclaredFields(rawType))
             {
                WeldField<?, T> annotatedField = WeldFieldImpl.of(field, this.<T> getDeclaringWeldClass(field, classTransformer), classTransformer);
-               this.fields.add(annotatedField);
-               if (c == rawType)
-               {
-                  this.declaredFields.add(annotatedField);
-                  this.declaredFieldsByName.put(annotatedField.getName(), annotatedField);
-               }
+               declaredFieldsTemp.add(annotatedField);
+               this.declaredFieldsByName.put(annotatedField.getName(), annotatedField);
                for (Annotation annotation : annotatedField.getAnnotations())
                {
-                  this.annotatedFields.put(annotation.annotationType(), annotatedField);
-                  if (c == rawType)
-                  {
-                     this.declaredAnnotatedFields.put(annotation.annotationType(), annotatedField);
-                  }
+                  this.declaredAnnotatedFields.put(annotation.annotationType(), annotatedField);
                   for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
                   {
-                     if (c == rawType)
-                     {
-                        this.declaredMetaAnnotatedFields.put(metaAnnotation.annotationType(), annotatedField);
-                     }
+                     this.declaredMetaAnnotatedFields.put(metaAnnotation.annotationType(), annotatedField);
                   }
                }
             }
+            fieldsTemp = new ArraySet<WeldField<?, ?>>(declaredFieldsTemp).trimToSize();
+            if ((superclass != null) && (superclass.getJavaClass() != Object.class))
+            {
+               fieldsTemp = Sets.union(fieldsTemp, (Set<WeldField<?, ?>>) ((Set<?>)superclass.getFields()));
+            }
          }
+         this.declaredFields = new ArraySet<WeldField<?, ?>>(declaredFieldsTemp);
       }
       else
       {
+         this.annotatedFields = ArrayListMultimap.<Class<? extends Annotation>, WeldField<?, ?>> create();
+         fieldsTemp = new HashSet<WeldField<?, ?>>();
          for (AnnotatedField<? super T> annotatedField : annotatedType.getFields())
          {
             WeldField<?, ? super T> weldField = WeldFieldImpl.of(annotatedField, this, classTransformer);
-            this.fields.add(weldField);
+            fieldsTemp.add(weldField);
             if (annotatedField.getDeclaringType().getJavaClass() == rawType)
             {
-               this.declaredFields.add(weldField);
+               declaredFieldsTemp.add(weldField);
                this.declaredFieldsByName.put(weldField.getName(), weldField);
             }
             for (Annotation annotation : weldField.getAnnotations())
@@ -226,8 +223,11 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
                }
             }
          }
+         this.declaredFields = new ArraySet<WeldField<?, ?>>(declaredFieldsTemp);
+         fieldsTemp = new ArraySet<WeldField<?, ?>>(fieldsTemp).trimToSize();
+         this.annotatedFields.trimToSize();
       }
-      this.fields.trimToSize();
+      this.fields = fieldsTemp;
       this.declaredFields.trimToSize();
       this.declaredAnnotatedFields.trimToSize();
       this.declaredMetaAnnotatedFields.trimToSize();
@@ -242,7 +242,6 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       {
          for (Constructor<?> constructor : SecureReflections.getDeclaredConstructors(rawType))
          {
-            @SuppressWarnings("unchecked")
             Constructor<T> c = (Constructor<T>) constructor;
 
             WeldConstructor<T> annotatedConstructor = WeldConstructorImpl.of(c, this.<T> getDeclaringWeldClass(c, classTransformer), classTransformer);
@@ -274,56 +273,56 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       this.annotatedConstructors.trimToSize();
 
       // Assign method information
-      this.annotatedMethods = ArrayListMultimap.<Class<? extends Annotation>, WeldMethod<?, ?>> create();
-      this.declaredMethods = new ArrayList<WeldMethod<?, ?>>();
       this.declaredAnnotatedMethods = ArrayListMultimap.<Class<? extends Annotation>, WeldMethod<?, ? super T>> create();
       this.declaredMethodsByAnnotatedParameters = ArrayListMultimap.<Class<? extends Annotation>, WeldMethod<?, ? super T>> create();
       this.declaredMethodsBySignature = new HashMap<MethodSignature, WeldMethod<?, ?>>();
-      this.methodsBySignature = new HashMap<MethodSignature, WeldMethod<?, ?>>();
 
+      Set<WeldMethod<?, ?>> methodsTemp = null;
+      ArrayList<WeldMethod<?, ?>> declaredMethodsTemp = new ArrayList<WeldMethod<?, ?>>();
       if (annotatedType == null)
       {
-         for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
+         this.annotatedMethods = null;
+         this.methodsBySignature = null;
+         if (rawType != Object.class)
          {
-            for (Method method : SecureReflections.getDeclaredMethods(c))
+            for (Method method : SecureReflections.getDeclaredMethods(rawType))
             {
                WeldMethod<?, T> weldMethod  = WeldMethodImpl.of(method, this.<T> getDeclaringWeldClass(method, classTransformer), classTransformer);
-               this.methodsBySignature.put(weldMethod.getSignature(), weldMethod);
-               if (c == rawType)
-               {
-                  this.declaredMethods.add(weldMethod);
-                  this.declaredMethodsBySignature.put(weldMethod.getSignature(), weldMethod);
-               }
+               declaredMethodsTemp.add(weldMethod);
+               this.declaredMethodsBySignature.put(weldMethod.getSignature(), weldMethod);
                for (Annotation annotation : weldMethod.getAnnotations())
                {
-                  annotatedMethods.put(annotation.annotationType(), weldMethod);
-                  if (c == rawType)
-                  {
-                     this.declaredAnnotatedMethods.put(annotation.annotationType(), weldMethod);
-                  }
+                  this.declaredAnnotatedMethods.put(annotation.annotationType(), weldMethod);
                }
                for (Class<? extends Annotation> annotationType : WeldMethod.MAPPED_PARAMETER_ANNOTATIONS)
                {
                   if (weldMethod.getWeldParameters(annotationType).size() > 0)
                   {
-                     if (c == rawType)
-                     {
-                        this.declaredMethodsByAnnotatedParameters.put(annotationType, weldMethod);
-                     }
+                     this.declaredMethodsByAnnotatedParameters.put(annotationType, weldMethod);
                   }
                }
             }
+            methodsTemp = new ArraySet<WeldMethod<?, ?>>(declaredMethodsTemp).trimToSize();
+            if ((superclass != null) && (superclass.getJavaClass() != Object.class))
+            {
+               methodsTemp = Sets.union(methodsTemp, (Set<WeldMethod<?, ?>>) superclass.getDeclaredWeldMethods());
+            }
          }
+         this.declaredMethods = new ArraySet<WeldMethod<?, ?>>(declaredMethodsTemp);
       }
       else
       {
+         this.annotatedMethods = ArrayListMultimap.<Class<? extends Annotation>, WeldMethod<?, ?>> create();
+         this.methodsBySignature = new HashMap<MethodSignature, WeldMethod<?, ?>>();
+         methodsTemp = new HashSet<WeldMethod<?, ?>>();
          for (AnnotatedMethod<? super T> method : annotatedType.getMethods())
          {
             WeldMethod<?, ? super T> weldMethod = WeldMethodImpl.of(method, this, classTransformer);
+            methodsTemp.add(weldMethod);
             this.methodsBySignature.put(weldMethod.getSignature(), weldMethod);
             if (method.getDeclaringType().getJavaClass() == rawType)
             {
-               this.declaredMethods.add(weldMethod);
+               declaredMethodsTemp.add(weldMethod);
                this.declaredMethodsBySignature.put(weldMethod.getSignature(), weldMethod);
             }
             for (Annotation annotation : weldMethod.getAnnotations())
@@ -345,8 +344,12 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
                }
             }
          }
+         this.declaredMethods = new ArraySet<WeldMethod<?, ?>>(declaredMethodsTemp);
+         methodsTemp = new ArraySet<WeldMethod<?, ?>>(methodsTemp).trimToSize();
+         this.annotatedMethods.trimToSize();
       }
-      this.annotatedMethods.trimToSize();
+      this.methods = methodsTemp;
+      this.declaredMethods.trimToSize();
       this.declaredAnnotatedMethods.trimToSize();
       this.declaredMethodsByAnnotatedParameters.trimToSize();
 
@@ -439,7 +442,21 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
     */
    public Collection<WeldField<?, ?>> getWeldFields(Class<? extends Annotation> annotationType)
    {
-      return Collections.unmodifiableCollection(annotatedFields.get(annotationType));
+      if (annotatedFields == null)
+      {
+         // Build collection from class hierarchy
+         ArrayList<WeldField<?, ?>> aggregatedFields = new ArrayList<WeldField<?, ?>>(this.declaredAnnotatedFields.get(annotationType));
+         if ((superclass != null) && (superclass.getJavaClass() != Object.class))
+         {
+            aggregatedFields.addAll(superclass.getWeldFields(annotationType));
+         }
+         return Collections.unmodifiableCollection(aggregatedFields);
+      }
+      else
+      {
+         // Return results collected directly from AnnotatedType
+         return Collections.unmodifiableCollection(annotatedFields.get(annotationType));
+      }
    }
 
    public boolean isLocalClass()
@@ -485,7 +502,19 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
     */
    public Collection<WeldMethod<?, ?>> getWeldMethods(Class<? extends Annotation> annotationType)
    {
-      return Collections.unmodifiableCollection(annotatedMethods.get(annotationType));
+      if (annotatedMethods == null)
+      {
+         ArrayList<WeldMethod<?, ?>> aggregateMethods = new ArrayList<WeldMethod<?, ?>>(this.declaredAnnotatedMethods.get(annotationType));
+         if ((superclass != null) && (superclass.getJavaClass() != Object.class))
+         {
+            aggregateMethods.addAll(superclass.getDeclaredWeldMethods(annotationType));
+         }
+         return Collections.unmodifiableCollection(aggregateMethods);
+      }
+      else
+      {
+         return Collections.unmodifiableCollection(annotatedMethods.get(annotationType));
+      }
    }
 
    public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethods(Class<? extends Annotation> annotationType)
@@ -531,12 +560,9 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       return null;
    }
 
-   @SuppressWarnings("unchecked")
    public Collection<WeldMethod<?, ?>> getWeldMethods()
    {
-      HierarchicalSet<?> superMethods = superclass == null ? null : (HierarchicalSet<?>) superclass.getMethods();
-      Collection<?> myMethods = declaredMethods;
-      return new HierarchicalSet<WeldMethod<?, ?>>((HierarchicalSet<WeldMethod<?, ?>>) superMethods, (Collection<WeldMethod<?, ?>>) myMethods);
+      return Collections.unmodifiableSet(methods);
    }
 
    public WeldMethod<?, ?> getDeclaredWeldMethod(Method method)
@@ -554,7 +580,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
 
    public Collection<WeldMethod<?, ?>> getDeclaredWeldMethods()
    {
-      return declaredMethods;
+      return Collections.unmodifiableSet(declaredMethods);
    }
 
    @SuppressWarnings("unchecked")
@@ -566,7 +592,19 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    @SuppressWarnings("unchecked")
    public <M> WeldMethod<M, ?> getWeldMethod(MethodSignature signature)
    {
-      return (WeldMethod<M, ?>) methodsBySignature.get(signature);
+      if (methodsBySignature == null)
+      {
+         WeldMethod<M, ?> method = (WeldMethod<M, ?>) declaredMethodsBySignature.get(signature);
+         if ((method == null) && (superclass != null) && (superclass.getJavaClass() != Object.class))
+         {
+            method = superclass.getWeldMethod(signature);
+         }
+         return method;
+      }
+      else
+      {
+         return (WeldMethod<M, ?>) methodsBySignature.get(signature);
+      }
    }
 
    /**
@@ -675,29 +713,24 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
 
    public Set<AnnotatedConstructor<T>> getConstructors()
    {
-      return Collections.unmodifiableSet(new HierarchicalSet<AnnotatedConstructor<T>>(null, constructors));
+      return Collections.unmodifiableSet(new ArraySet<AnnotatedConstructor<T>>(constructors));
    }
 
    @SuppressWarnings("unchecked")
    public Set<AnnotatedField<? super T>> getFields()
    {
-      HierarchicalSet<?> superFields = superclass == null ? null : (HierarchicalSet<?>) superclass.getFields();
-      Collection<?> myFields = declaredFields;
-      return new HierarchicalSet<AnnotatedField<? super T>>((HierarchicalSet<AnnotatedField<? super T>>) superFields, (Collection<AnnotatedField<? super T>>) myFields);
+      return (Set<AnnotatedField<? super T>>) ((Collection<?>)fields);
    }
 
    @SuppressWarnings("unchecked")
    public Set<AnnotatedMethod<? super T>> getMethods()
    {
-      HierarchicalSet<?> superMethods = superclass == null ? null : (HierarchicalSet<?>) superclass.getMethods();
-      Collection<?> myMethods = declaredMethods;
-      return new HierarchicalSet<AnnotatedMethod<? super T>>((HierarchicalSet<AnnotatedMethod<? super T>>) superMethods, (Collection<AnnotatedMethod<? super T>>) myMethods);
+      return (Set<AnnotatedMethod<? super T>>) ((Collection<?>)methods);
    }
 
-   @SuppressWarnings("unchecked")
    public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return new ImmutableArraySet(declaredMetaAnnotationMap.get(metaAnnotationType));
+      return Collections.unmodifiableSet(new ArraySet<Annotation>(declaredMetaAnnotationMap.get(metaAnnotationType)));
    }
 
    public boolean isDiscovered()

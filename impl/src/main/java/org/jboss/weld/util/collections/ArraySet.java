@@ -158,9 +158,10 @@ public class ArraySet<E> implements Set<E>, Serializable
       return elements.toArray(a);
    }
 
-   public void trimToSize()
+   public ArraySet<E> trimToSize()
    {
       elements.trimToSize();
+      return this;
    }
 
    // Needed to provide set equals semantics

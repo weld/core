@@ -23,6 +23,7 @@ import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +38,7 @@ import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.ImmutableArraySet;
@@ -129,7 +131,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
    private final Class<T> rawType;
    private final Type[] actualTypeArguments; 
    private final Type type;
-   private final ImmutableArraySet<Type> typeClosure;
+   private final Set<Type> typeClosure;
    private final boolean proxyable;
 
    /**
@@ -170,7 +172,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
       {
          this.actualTypeArguments = new Type[0];
       }
-      this.typeClosure = new ImmutableArraySet<Type>(typeClosure);
+      this.typeClosure = Collections.unmodifiableSet(new ArraySet<Type>(typeClosure));
       this.proxyable = Proxies.isTypesProxyable(typeClosure);
    }
 
@@ -257,12 +259,12 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
    
    public Set<Annotation> getAnnotations()
    {
-      return new ImmutableArraySet<Annotation>(annotationMap.values());
+      return Collections.unmodifiableSet(new ArraySet<Annotation>(annotationMap.values()));
    }
 
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return new ImmutableArraySet<Annotation>(metaAnnotationMap.get(metaAnnotationType));
+      return Collections.unmodifiableSet(new ArraySet<Annotation>(metaAnnotationMap.get(metaAnnotationType)));
    }
 
    @Deprecated
