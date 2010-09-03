@@ -41,7 +41,6 @@ import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.Arrays2;
-import org.jboss.weld.util.collections.ImmutableArraySet;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
