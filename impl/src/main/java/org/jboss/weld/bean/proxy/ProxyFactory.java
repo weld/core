@@ -42,6 +42,7 @@ import javassist.bytecode.Bytecode;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.DuplicateMemberException;
 import javassist.bytecode.FieldInfo;
+import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
@@ -394,10 +395,12 @@ public class ProxyFactory<T>
          }
          else
          {
+            boolean constructorFound = false;
             for (Constructor<?> constructor : beanType.getDeclaredConstructors())
             {
                if ((constructor.getModifiers() & Modifier.PRIVATE) == 0)
                {
+                  constructorFound = true;
                   String[] exceptions = new String[constructor.getExceptionTypes().length];
                   for (int i = 0; i < exceptions.length; ++i)
                   {
@@ -405,6 +408,12 @@ public class ProxyFactory<T>
                   }
                   ConstructorUtils.addConstructor(DescriptorUtils.getConstructorDescriptor(constructor), exceptions, proxyClassType, initialValueBytecode);
                }
+            }
+            if (!constructorFound)
+            {
+               // the bean only has private constructors, we need to generate
+               // two fake constructors that call each other
+               addConstructorsForBeanWithPrivateConstructors(proxyClassType);
             }
          }
       }
@@ -827,6 +836,45 @@ public class ProxyFactory<T>
          code.add(Opcode.AASTORE);
       }
       code.addInvokevirtual("java.lang.Class", "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
+   }
+
+   /**
+    * Adds two constructors to the class that call each other in order to bypass
+    * the JVM class file verifier.
+    * 
+    * This would result in a stack overflow if they were actually called,
+    * however the proxy is directly created without calling the constructor
+    * 
+    */
+   private void addConstructorsForBeanWithPrivateConstructors(ClassFile proxyClassType)
+   {
+      try
+      {
+         MethodInfo ctor = new MethodInfo(proxyClassType.getConstPool(), "<init>", "(Ljava/lang/Byte;)V");
+         Bytecode b = new Bytecode(proxyClassType.getConstPool(), 3, 3);
+         b.add(Opcode.ALOAD_0);
+         b.add(Opcode.ACONST_NULL);
+         b.add(Opcode.ACONST_NULL);
+         b.addInvokespecial(proxyClassType.getName(), "<init>", "(Ljava/lang/Byte;Ljava/lang/Byte;)V");
+         b.add(Opcode.RETURN);
+         ctor.setCodeAttribute(b.toCodeAttribute());
+         ctor.setAccessFlags(AccessFlag.PUBLIC);
+         proxyClassType.addMethod(ctor);
+
+         ctor = new MethodInfo(proxyClassType.getConstPool(), "<init>", "(Ljava/lang/Byte;Ljava/lang/Byte;)V");
+         b = new Bytecode(proxyClassType.getConstPool(), 3, 3);
+         b.add(Opcode.ALOAD_0);
+         b.add(Opcode.ACONST_NULL);
+         b.addInvokespecial(proxyClassType.getName(), "<init>", "(Ljava/lang/Byte;)V");
+         b.add(Opcode.RETURN);
+         ctor.setCodeAttribute(b.toCodeAttribute());
+         ctor.setAccessFlags(AccessFlag.PUBLIC);
+         proxyClassType.addMethod(ctor);
+      }
+      catch (DuplicateMemberException e)
+      {
+         throw new RuntimeException(e);
+      }
    }
 
    public Class<?> getBeanType()

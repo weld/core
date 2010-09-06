@@ -225,7 +225,14 @@ public class Proxies
       }
       else if (Modifier.isPrivate(constructor.getModifiers()))
       {
-         return new UnproxyableResolutionException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, clazz, constructor);
+         if (!InstantiatorFactory.useInstantiators())
+         {
+            return new UnproxyableResolutionException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, clazz, constructor);
+         }
+         else
+         {
+            return null;
+         }
       }
       else if (Reflections.isTypeOrAnyMethodFinal(clazz))
       {
