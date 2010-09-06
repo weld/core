@@ -70,7 +70,16 @@ public class HierarchyDiscovery
    private void init()
    {
       this.types = HashBiMap.create();
-      discoverTypes(type);
+      try
+      {
+         discoverTypes(type);
+      }
+      catch (StackOverflowError e) 
+      {
+         System.out.println("type" + type);
+         Thread.dumpStack();
+         throw e;
+      }
    }
 
    public Type getResolvedType()
@@ -129,10 +138,10 @@ public class HierarchyDiscovery
    {
       try
       {
-         discoverTypes(resolveType(type, clazz.getGenericSuperclass()));
+         discoverTypes(resolveType(type, type, clazz.getGenericSuperclass()));
          for (Type c : clazz.getGenericInterfaces())
          {
-            discoverTypes(resolveType(type, c));
+            discoverTypes(resolveType(type, type, c));
          }
       }
       catch (AccessControlException e)
@@ -150,7 +159,7 @@ public class HierarchyDiscovery
     * @param type
     * @return actual type
     */
-   private Type resolveType(Type beanType, Type type)
+   private Type resolveType(Type beanType, Type beanType2, Type type)
    {
       if (type instanceof ParameterizedType)
       {
@@ -160,7 +169,7 @@ public class HierarchyDiscovery
          }
          if (beanType instanceof Class<?>)
          {
-            return resolveType(((Class<?>) beanType).getGenericSuperclass(), type);
+            return resolveType(((Class<?>) beanType).getGenericSuperclass(), beanType2, type);
          }
       }
 
@@ -168,11 +177,11 @@ public class HierarchyDiscovery
       {
          if (beanType instanceof ParameterizedType)
          {
-            return resolveTypeParameter((ParameterizedType) beanType, (TypeVariable<?>) type);
+            return resolveTypeParameter((ParameterizedType) beanType, beanType2, (TypeVariable<?>) type);
          }
          if (beanType instanceof Class<?>)
          {
-            return resolveType(((Class<?>) beanType).getGenericSuperclass(), type);
+            return resolveType(((Class<?>) beanType).getGenericSuperclass(), beanType2, type);
          }
       }
       return type;
@@ -183,46 +192,49 @@ public class HierarchyDiscovery
       Type rawType = parameterizedType.getRawType();
       Type[] actualTypes = parameterizedType.getActualTypeArguments();
 
-      Type resolvedRawType = resolveType(beanType, rawType);
+      Type resolvedRawType = resolveType(beanType, beanType, rawType);
       Type[] resolvedActualTypes = new Type[actualTypes.length];
 
       for (int i = 0; i < actualTypes.length; i++)
       {
-         resolvedActualTypes[i] = resolveType(beanType, actualTypes[i]);
+         resolvedActualTypes[i] = resolveType(beanType, beanType, actualTypes[i]);
       }
       // reconstruct ParameterizedType by types resolved TypeVariable.
       return new ParameterizedTypeImpl(resolvedRawType, resolvedActualTypes, parameterizedType.getOwnerType());
    }
 
-   private Type resolveTypeParameter(ParameterizedType beanType, TypeVariable<?> typeVariable)
+   private Type resolveTypeParameter(ParameterizedType type, Type beanType, TypeVariable<?> typeVariable)
    {
       // step1. raw type
-      Class<?> actualType = (Class<?>) beanType.getRawType();
+      Class<?> actualType = (Class<?>) type.getRawType();
       TypeVariable<?>[] typeVariables = actualType.getTypeParameters();
-      Type[] actualTypes = beanType.getActualTypeArguments();
+      Type[] actualTypes = type.getActualTypeArguments();
       for (int i = 0; i < typeVariables.length; i++)
       {
          if (typeVariables[i].equals(typeVariable) && !actualTypes[i].equals(typeVariable))
          {
-            return resolveType(type, actualTypes[i]);
+            return resolveType(this.type, beanType, actualTypes[i]);
          }
       }
 
       // step2. generic super class
       Type genericSuperType = actualType.getGenericSuperclass();
-      Type type = resolveType(genericSuperType, typeVariable);
-      if (!(type instanceof TypeVariable<?>))
+      Type resolvedGenericSuperType = resolveType(genericSuperType, beanType, typeVariable);
+      if (!(resolvedGenericSuperType instanceof TypeVariable<?>))
       {
-         return type;
+         return resolvedGenericSuperType;
       }
 
       // step3. generic interfaces
-      for (Type interfaceType : actualType.getGenericInterfaces())
+      if (beanType instanceof ParameterizedType)
       {
-         Type resolvedType = resolveType(interfaceType, typeVariable);
-         if (!(resolvedType instanceof TypeVariable<?>))
+         for (Type interfaceType : ((Class<?>) ((ParameterizedType) beanType).getRawType()).getGenericInterfaces())
          {
-            return resolvedType;
+            Type resolvedType = resolveType(interfaceType, interfaceType, typeVariable);
+            if (!(resolvedType instanceof TypeVariable<?>))
+            {
+               return resolvedType;
+            }
          }
       }
 

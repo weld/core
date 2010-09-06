@@ -17,7 +17,10 @@
 package org.jboss.weld.tests.unit.reflection.clazz;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.Stereotype;
@@ -28,7 +31,7 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -112,6 +115,15 @@ public class WeldClassTest
       Assert.assertEquals(0, annotatedElement.getMetaAnnotations(Stereotype.class).size());
       WeldClass<Antelope> classWithNoAnnotations = WeldClassImpl.of(Antelope.class, transformer);
       Assert.assertEquals(0, classWithNoAnnotations.getAnnotations().size());
+   }
+   
+   @Test
+   public void testStackOverflow() throws Throwable
+   {
+      Type type = AdvancedMap.class.getMethod("getReallyAdvancedMap").getGenericReturnType();
+      HierarchyDiscovery discovery = new HierarchyDiscovery(type);
+      
+      discovery.getTypeClosure();
    }
 
 }
