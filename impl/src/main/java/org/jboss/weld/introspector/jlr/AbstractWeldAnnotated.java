@@ -117,7 +117,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
       // Only map meta-annotations we are interested in
       if (declared ? MAPPED_DECLARED_METAANNOTATIONS.contains(metaAnnotationType) : MAPPED_METAANNOTATIONS.contains(metaAnnotationType))
       {
-         metaAnnotationMap.put(metaAnnotationType, annotation);
+         metaAnnotationMap.putSingleElement(metaAnnotationType, annotation);
       }
    }
    

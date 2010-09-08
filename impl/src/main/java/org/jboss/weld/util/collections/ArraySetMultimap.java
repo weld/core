@@ -56,7 +56,8 @@ public class ArraySetMultimap<K, V> extends AbstractMap<K, List<V>>
       return result;
    }
 
-   public List<V> put(K key, V value)
+   // Workaround bug in Helios
+   public List<V> putSingleElement(K key, V value)
    {
       List<V> result = super.get(key);
       if (result == null)

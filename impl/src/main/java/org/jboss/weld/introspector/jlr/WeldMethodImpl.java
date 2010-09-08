@@ -112,7 +112,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
                {
                   if (MAPPED_PARAMETER_ANNOTATIONS.contains(annotation.annotationType()))
                   {
-                     annotatedParameters.put(annotation.annotationType(), parameter);
+                     annotatedParameters.putSingleElement(annotation.annotationType(), parameter);
                   }
                }
             }
@@ -141,7 +141,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
                {
                   if (MAPPED_PARAMETER_ANNOTATIONS.contains(annotation.annotationType()))
                   {
-                     annotatedParameters.put(annotation.annotationType(), parameter);
+                     annotatedParameters.putSingleElement(annotation.annotationType(), parameter);
                   }
                }
             }
