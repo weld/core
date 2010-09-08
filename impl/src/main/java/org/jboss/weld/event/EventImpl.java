@@ -91,7 +91,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
 
    public void fire(T event)
    {
-      getBeanManager().fireEvent(event, getQualifiers());
+      getBeanManager().fireEvent(getType(), event, getQualifiers());
    }
    
    public Event<T> select(Annotation... qualifiers)
