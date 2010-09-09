@@ -34,6 +34,7 @@ import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServi
 import org.jboss.weld.environment.servlet.services.ServletServicesImpl;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.tomcat.WeldForwardingAnnotationProcessor;
+import org.jboss.weld.environment.tomcat7.WeldForwardingInstanceManager;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.servlet.api.ServletListener;
@@ -134,6 +135,7 @@ public class Listener extends ForwardingServletListener
       manager = bootstrap.getManager(deployment.getWebAppBeanDeploymentArchive());
 
       boolean tomcat = true;
+      boolean tomcat7 = false;
       try
       {
          Reflections.classForName("org.apache.AnnotationProcessor");
@@ -154,6 +156,15 @@ public class Listener extends ForwardingServletListener
          {
             log.error("Unable to replace Tomcat AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
          }
+      }
+      try
+      {
+         Reflections.classForName("org.apache.tomcat.InstanceManager");
+         tomcat7 = true;
+      }
+      catch (IllegalArgumentException e)
+      {
+         tomcat7 = false;
       }
 
       boolean jetty = true;
@@ -181,8 +192,19 @@ public class Listener extends ForwardingServletListener
             log.error("Unable to create JettyWeldInjector. CDI injection will not be available in Servlets, Filters or Listeners", e);
          }
       }
-
-      if (!tomcat && !jetty) {
+      if (tomcat7)
+      {
+         try
+         {
+            WeldForwardingInstanceManager.replaceAnnotationProcessor(sce, manager);
+            log.info("Tomcat 7 detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported");
+         }
+         catch (Exception e)
+         {
+            log.error("Unable to replace Tomcat 7 AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
+         }
+      }
+      if (!tomcat && !jetty&&!tomcat7) {
          log.info("No supported servlet container detected, CDI injection will NOT be available in Servlets, Filtersor or Listeners");
       }
 
