@@ -61,8 +61,8 @@ public class HashComputer
          if ((buf[i] & 0xff) < 0x10)
          {
             strBuf.append("0");
-            strBuf.append(Long.toString(buf[i] & 0xff, 16));
          }
+         strBuf.append(Long.toString(buf[i] & 0xff, 16));
       }
       if (strBuf.length() <= 6)
       {
