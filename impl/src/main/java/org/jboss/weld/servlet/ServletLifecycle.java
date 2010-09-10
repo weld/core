@@ -202,11 +202,18 @@ public class ServletLifecycle
 
    private void teardownConversation()
    {
-      conversationManager(getServletContext()).teardownConversation();
-      if (isSessionBeanStoreInvalid(getSessionBeanStore()))
-      {
-         conversationManager(getServletContext()).teardownContext();
-      }
+       ServletContext context = null;
+       try {
+           context = getServletContext();
+           conversationManager(context).teardownConversation();
+       } catch (Exception e) {
+           log.warn("ServletContext not provided, ignored: "+e.getMessage());
+       }
+
+       if (context!=null && isSessionBeanStoreInvalid(getSessionBeanStore()))
+       {
+           conversationManager(context).teardownContext();
+       }
    }
 
    private ServletContext getServletContext()
