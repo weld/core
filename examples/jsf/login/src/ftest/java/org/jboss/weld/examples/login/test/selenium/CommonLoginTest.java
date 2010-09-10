@@ -55,6 +55,7 @@ public class CommonLoginTest extends AbstractTestCase
    @BeforeMethod
    public void openStartUrl()
    {
+      selenium.deleteAllVisibleCookies();
       selenium.open(contextPath);
    }
 
@@ -72,6 +73,12 @@ public class CommonLoginTest extends AbstractTestCase
    @Test
    public void logoutTest()
    {
+      waitModel.until(elementPresent.locator(USERNAME_FIELD));
+      assertFalse(selenium.isElementPresent(LOGOUT_BUTTON), "User should not be logged in!");
+      selenium.type(USERNAME_FIELD, "demo");
+      selenium.type(PASSWORD_FIELD, "demo");
+      RequestTypeGuardFactory.waitHttp(selenium).click(LOGIN_BUTTON);
+      assertTrue(selenium.isElementPresent(LOGGED_IN), "User should be logged in!");
       RequestTypeGuardFactory.waitHttp(selenium).click(LOGOUT_BUTTON);
       assertTrue(selenium.isElementPresent(LOGGED_OUT), "User should not be logged in!");
    }
