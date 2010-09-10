@@ -4,7 +4,7 @@
    <artifactId>weld-servlet-parent</artifactId>
    <name>Weld Servlet Parent</name>
    <packaging>pom</packaging>
-   <version>1.1.0.Beta1</version>
+   <version>1.1.0.Beta1-SP1</version>
 
    <parent>
       <groupId>org.jboss.weld</groupId>

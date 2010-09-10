@@ -35,6 +35,8 @@ import org.jboss.weld.context.api.BeanStore;
 import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.weld.conversation.ServletConversationManager;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the Weld lifecycle that can react to servlet events and
@@ -47,7 +49,9 @@ import org.jboss.weld.exceptions.IllegalStateException;
  */
 public class ServletLifecycle
 {
-   private final ContextLifecycle lifecycle;
+    private static final Logger log = LoggerFactory.getLogger(ServletLifecycle.class);
+
+    private final ContextLifecycle lifecycle;
 
    private static class RequestBeanStoreCache
    {
@@ -106,13 +110,13 @@ public class ServletLifecycle
     * Restore the session from the underlying session object. Also allow the
     * session to be injected by the Session manager
     * 
-    * @param session
+    * @param request
     * @return the session bean store
     */
    protected BeanStore restoreSessionContext(HttpServletRequest request)
    {
       HttpPassThruSessionBeanStore sessionBeanStore = HttpPassThruOnDemandSessionBeanStore.of(request);
-      HttpSession session = request.getSession();
+      HttpSession session = request.getSession(false);
       String sessionId = session == null ? "Inactive session" : session.getId();
       lifecycle.restoreSession(sessionId, sessionBeanStore);
       if (session != null)
@@ -126,7 +130,9 @@ public class ServletLifecycle
    private void restoreConversationContext(HttpServletRequest request)
    {
       // FIXME: HC "cid"
-      conversationManager(request.getSession().getServletContext()).setupConversation(request.getParameter("cid"));
+       HttpSession session = request.getSession(false);
+       if(session!=null)
+           conversationManager(session.getServletContext()).setupConversation(request.getParameter("cid"));
    }
 
    /**

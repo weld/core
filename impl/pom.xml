@@ -10,6 +10,7 @@
    <artifactId>weld-core</artifactId>
    <name>Weld Implementation</name>
    <description>Weld's implementation of CDI</description>
+    <version>1.1.0.Beta1-SP1</version>
 
    <licenses>
       <license>
