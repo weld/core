@@ -511,7 +511,6 @@
                      <groupId>org.codehaus.mojo</groupId>
                      <artifactId>failsafe-maven-plugin</artifactId>
                      <configuration>
-                        <testClassesDirectory>${ftest.classes.directory}</testClassesDirectory>
                         <suiteXmlFiles>
                            <suiteXmlFile>${ftest.resources.directory}/${ftest.suite.xml}</suiteXmlFile>
                         </suiteXmlFiles>
@@ -647,7 +646,7 @@
                               <tasks>
                                  <echo message="Undeploying application." />
                                  <delete file="${jboss.master.configuration}/farm/${project.build.finalName}.${project.packaging}" />
-                                 <get taskname="selenium-shutdown" src="http://${selenium.host}:${selenium.port}/selenium-server/driver/?cmd=shutDownSeleniumServer" ignoreerrors="true" dest="${selenium.log.dir}/selenium.stop.msg" />
+                                 <get taskname="selenium-shutdown" src="http://${selenium.server.host}:${selenium.server.port}/selenium-server/driver/?cmd=shutDownSeleniumServer" ignoreerrors="true" dest="${selenium.log.dir}/selenium.stop.msg" />
                                  <echo taskname="selenium-shutdown" message="DGF Errors during shutdown are expected." />
                               </tasks>
                            </configuration>
