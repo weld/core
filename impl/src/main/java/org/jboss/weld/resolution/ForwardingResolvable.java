@@ -79,14 +79,4 @@ public abstract class ForwardingResolvable implements Resolvable
    {
       return delegate().toString();
    }
-
-   public int getHashCode()
-   {
-      return delegate().getHashCode();
-   }
-
-   public boolean isEqualTo(Resolvable r)
-   {
-      return delegate().isEqualTo(r);
-   }
 }

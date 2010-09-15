@@ -138,15 +138,6 @@ public class ResolvableBuilder
       }
    }
 
-   public Resolvable createDisposerResolvable()
-   {
-      if (qualifiers.size() == 0)
-      {
-         this.qualifiers.add(DefaultLiteral.INSTANCE);
-      }
-      return new DisposerResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean);
-   }
-
    private Resolvable createFacade(Class<?> rawType)
    {
       Set<Annotation> qualifiers = Collections.<Annotation> singleton(AnyLiteral.INSTANCE);
@@ -285,7 +276,7 @@ public class ResolvableBuilder
          return "Types: " + getTypes() + "; Bindings: " + getQualifiers();
       }
 
-      public int getHashCode()
+      public int hashCode()
       {
          int result = 17;
          result = 31 * result + this.getTypes().hashCode();
@@ -293,27 +284,12 @@ public class ResolvableBuilder
          return result;
       }
 
-      public boolean isEqualTo(Resolvable r)
+      public boolean equals(Object o)
       {
-         return this.getTypes().equals(r.getTypes())
-               &&  this.getQualifiers().equals(r.getQualifiers());         
-
-      }
-   }
-
-   protected static class DisposerResolvableImpl extends ResolvableImpl
-   {
-      public DisposerResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Set<Annotation> qualifiers, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean)
-      {
-         super(rawType, typeClosure, qualifiers, mappedQualifiers, declaringBean);
-      }
-
-      @Override
-      public boolean isEqualTo(Resolvable r)
-      {
-         if (super.isEqualTo(r))
+         if (o instanceof ResolvableImpl)
          {
-            return r.getDeclaringBean().equals(getDeclaringBean());
+            Resolvable r = (Resolvable) o;
+            return this.getTypes().equals(r.getTypes()) && this.getQualifiers().equals(r.getQualifiers());
          }
          return false;
       }

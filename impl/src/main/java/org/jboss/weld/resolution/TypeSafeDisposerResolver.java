@@ -44,6 +44,40 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, Dispo
          return resolvable.getDeclaringBean().equals(disposer.getDeclaringBean()) && Reflections.isAssignableFrom(disposer.getType(), resolvable.getTypes()) && Beans.containsAllQualifiers(disposer.getQualifiers(), resolvable.getQualifiers(), manager);
    }
    
+   @Override
+   protected Resolvable wrap(final Resolvable resolvable)
+   {
+      return new ForwardingResolvable()
+      {
+
+         @Override
+         protected Resolvable delegate()
+         {
+            return resolvable;
+         }
+
+         @Override
+         public boolean equals(Object o)
+         {
+            if (o instanceof Resolvable)
+            {
+               if (super.equals(o))
+               {
+                  Resolvable r = (Resolvable) o;
+                  return r.getDeclaringBean().equals(getDeclaringBean());
+               }
+            }
+            return false;
+         }
+
+         @Override
+         public int hashCode()
+         {
+            return 31 * super.hashCode() + getDeclaringBean().hashCode();
+         }
+      };
+   }
+
    /**
     * @return the manager
     */

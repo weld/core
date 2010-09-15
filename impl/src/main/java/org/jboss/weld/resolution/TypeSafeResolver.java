@@ -33,53 +33,8 @@ import com.google.common.collect.MapMaker;
 public abstract class TypeSafeResolver<R extends Resolvable, T>
 {  
    
-   private static class Key<R extends Resolvable>
+   private static class ResolvableToBeanSet<R extends Resolvable, T> implements Function<R, Set<T>>
    {
-      
-      private final R resolvable;
-      
-      private Key(R resolvable)
-      {
-         this.resolvable = resolvable;
-      }
-      
-      public R getResolvable()
-      {
-         return resolvable;
-      }
-
-      @Override
-      public boolean equals(Object obj)
-      {
-         if (obj instanceof Key)
-         {
-            Key that = (Key) obj;
-            return that.getResolvable().getClass().equals(this.getResolvable().getClass())
-                  && that.getResolvable().isEqualTo(this.getResolvable());
-         }
-         else
-         {
-            return false;
-         }
-      }
-      
-      @Override
-      public int hashCode()
-      {
-         return this.getResolvable().getHashCode();
-      }
-      
-      @Override
-      public String toString()
-      {
-         return getResolvable().toString();
-      }
-      
-   }
-   
-   private static class ResolvableToBeanSet<R extends Resolvable, T> implements Function<Key<R>, Set<T>>
-   {
-      
 
       private final TypeSafeResolver<R, T> resolver;
 
@@ -88,15 +43,15 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
          this.resolver = resolver;
       }
 
-      public Set<T> apply(Key<R> from)
+      public Set<T> apply(R from)
       {
-         return resolver.sortResult(resolver.filterResult(resolver.findMatching(from.getResolvable())));
+         return resolver.sortResult(resolver.filterResult(resolver.findMatching(from)));
       }
       
    }
    
    // The resolved injection points
-   private final ConcurrentMap<Key<R>, Set<T>> resolved;
+   private final ConcurrentMap<R, Set<T>> resolved;
    // The beans to search
    private final Iterable<? extends T> allBeans;
    
@@ -128,7 +83,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
     */
    public Set<T> resolve(R resolvable)
    {
-      return Collections.unmodifiableSet(resolved.get(new Key<R>(resolvable)));
+      return Collections.unmodifiableSet(resolved.get(wrap(resolvable)));
    }
    
    /**
@@ -157,6 +112,14 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
    protected abstract Set<T> sortResult(Set<T> matched);
 
    protected abstract boolean matches(R resolvable, T t);
+
+   /**
+    * allows subclasses to wrap a resolvable before it is resolved
+    */
+   protected R wrap(R resolvable)
+   {
+      return resolvable;
+   }
 
    /**
     * Gets a string representation
