@@ -66,7 +66,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
       @Override
       public int hashCode()
       {
-         return this.getResolvable().hashCode();
+         return this.getResolvable().getHashCode();
       }
       
       @Override
