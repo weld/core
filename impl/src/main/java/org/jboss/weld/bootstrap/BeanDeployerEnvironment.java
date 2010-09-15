@@ -292,7 +292,7 @@ public class BeanDeployerEnvironment
     */
    public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> qualifiers, AbstractClassBean<X> declaringBean)
    {
-      Set<DisposalMethod<X, ?>> beans = (Set) disposalMethodResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).setDeclaringBean(declaringBean).create());
+      Set<DisposalMethod<X, ?>> beans = (Set) disposalMethodResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).setDeclaringBean(declaringBean).createDisposerResolvable());
       resolvedDisposalBeans.addAll(beans);
       return Collections.unmodifiableSet(beans);
    }
