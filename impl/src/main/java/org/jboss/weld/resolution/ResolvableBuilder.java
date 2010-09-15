@@ -138,6 +138,15 @@ public class ResolvableBuilder
       }
    }
 
+   public Resolvable createDisposerResolvable()
+   {
+      if (qualifiers.size() == 0)
+      {
+         this.qualifiers.add(DefaultLiteral.INSTANCE);
+      }
+      return new DisposerResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean);
+   }
+
    private Resolvable createFacade(Class<?> rawType)
    {
       Set<Annotation> qualifiers = Collections.<Annotation> singleton(AnyLiteral.INSTANCE);
@@ -289,6 +298,24 @@ public class ResolvableBuilder
          return this.getTypes().equals(r.getTypes())
                &&  this.getQualifiers().equals(r.getQualifiers());         
 
+      }
+   }
+
+   protected static class DisposerResolvableImpl extends ResolvableImpl
+   {
+      public DisposerResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Set<Annotation> qualifiers, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean)
+      {
+         super(rawType, typeClosure, qualifiers, mappedQualifiers, declaringBean);
+      }
+
+      @Override
+      public boolean isEqualTo(Resolvable r)
+      {
+         if (super.isEqualTo(r))
+         {
+            return r.getDeclaringBean().equals(getDeclaringBean());
+         }
+         return false;
       }
    }
 
