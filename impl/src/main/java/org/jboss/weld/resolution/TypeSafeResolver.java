@@ -55,7 +55,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
          {
             Key that = (Key) obj;
             return that.getResolvable().getClass().equals(this.getResolvable().getClass())
-                  && that.getResolvable().isEqualTo(that.getResolvable());
+                  && that.getResolvable().isEqualTo(this.getResolvable());
          }
          else
          {
