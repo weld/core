@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.resolution;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
@@ -118,8 +119,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    @SuppressWarnings("unchecked")
    public <X> Set<Bean<? extends X>> resolve(final Set<Bean<? extends X>> beans)
    {
-      return (Set) disambiguatedBeans.get(beans);
-      
+      return (Set) Collections.unmodifiableSet(disambiguatedBeans.get(new HashSet(beans)));
    }
    
    @Override
