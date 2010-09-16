@@ -58,10 +58,6 @@
             <activeByDefault>true</activeByDefault>
          </activation>
          
-         <properties>
-         	<distributable.flag />
-         </properties>
-         
          <dependencies>
 
             <dependency>
@@ -109,10 +105,6 @@
       </profile>
        <profile>
          <id>jboss5-servlet</id>
-         
-         <properties>
-         	<distributable.flag />
-         </properties>
          
          <dependencies>
 
@@ -185,10 +177,6 @@
             <activeByDefault>false</activeByDefault>
          </activation>
          
-         <properties>
-         	<distributable.flag>&lt;distributable/&gt;</distributable.flag>
-         </properties>
-         
          <dependencies>
 
             <dependency>
@@ -224,7 +212,7 @@
                   <configuration>
                      <webResources>
                         <resource>
-                           <directory>src/main/webapp-jboss5</directory>
+                           <directory>src/main/webapp-jboss5-cluster</directory>
                            <filtering>true</filtering>
                         </resource>
                      </webResources>
