@@ -37,7 +37,7 @@ The jsf/numberguess example can be also tested in a cluster. Follow these steps:
 2) set up JBOSS_HOME environment property to point to JBossAS distribution
 3) run the following command:
 
-  mvn -Pjboss6cluster,ftest-jboss-cluster-60 clean verify  -Djboss.master.configuration=${env.JBOSS_HOME}/server/all
+  mvn -Pjboss6cluster,ftest-jboss-cluster-6 clean verify -Djboss.master.configuration=${env.JBOSS_HOME}/server/all
 
 The jsf/numberguess and jsf/permalink examples can be also tested with Tomcat and Jetty containers.
 
