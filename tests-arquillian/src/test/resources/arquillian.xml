@@ -2,7 +2,8 @@
 
 <arquillian xmlns="http://jboss.com/arquillian"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xmlns:jboss="urn:arq:org.jboss.arquillian.container.jbossas.managed_6">
+		xmlns:jboss="urn:arq:org.jboss.arquillian.container.jbossas.managed_6"
+		xmlns:glassfish="urn:arq:org.jboss.arquillian.container.glassfish.remote_3">
 
 	<engine>
 		<maxDeploymentsBeforeRestart>20</maxDeploymentsBeforeRestart>
@@ -15,4 +16,15 @@
       <jboss:javaVmArguments>-Xmx512m -XX:MaxPermSize=256m</jboss:javaVmArguments>
 	</jboss:container>	
 
+	<glassfish:container>
+		<glassfish:deploymentUri>deployer:Sun:AppServer::localhost:4848</glassfish:deploymentUri>
+		<glassfish:deploymentFactoryClass>org.glassfish.deployapi.SunDeploymentFactory</glassfish:deploymentFactoryClass>
+		<glassfish:remoteServerAddress>localhost</glassfish:remoteServerAddress>
+		<glassfish:remoteServerHttpPort>8080</glassfish:remoteServerHttpPort>
+		<glassfish:deploymentUsername>admin</glassfish:deploymentUsername>
+		
+		<!-- Set if admin password is set  
+		<glassfish:deploymentUsername>admin</glassfish:deploymentUsername>
+		 -->
+	</glassfish:container>
 </arquillian>
