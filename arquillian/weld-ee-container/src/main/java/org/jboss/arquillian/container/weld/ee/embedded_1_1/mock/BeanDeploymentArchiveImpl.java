@@ -32,6 +32,7 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * @author pmuir
@@ -87,6 +88,7 @@ public class BeanDeploymentArchiveImpl implements BeanDeploymentArchive
       this.services.add(EjbInjectionServices.class, new MockEjbInjectionServices());
       this.services.add(JpaInjectionServices.class, new MockJpaInjectionServices());
       this.services.add(ResourceInjectionServices.class, new MockResourceInjectionServices());
+      this.services.add(ResourceLoader.class, new MockResourceLoader());
    }
 
    public Collection<String> getBeanClasses()

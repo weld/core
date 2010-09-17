@@ -69,7 +69,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    {
       super(manager, new BeanDeployerEnvironment(ejbDescriptors, manager));
       this.classes = new HashSet<WeldClass<?>>();
-      this.resourceLoader = Container.instance().services().get(ResourceLoader.class);
+      this.resourceLoader = manager.getServices().get(ResourceLoader.class);
       this.classTransformer = Container.instance().services().get(ClassTransformer.class);
    }
 

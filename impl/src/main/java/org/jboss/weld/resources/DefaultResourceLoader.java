@@ -35,7 +35,13 @@ import org.jboss.weld.util.collections.EnumerationList;
  */
 public class DefaultResourceLoader implements ResourceLoader
 {
-   
+   public static DefaultResourceLoader INSTANCE = new DefaultResourceLoader();
+
+   protected DefaultResourceLoader()
+   {
+
+   }
+
    public Class<?> classForName(String name)
    {
       

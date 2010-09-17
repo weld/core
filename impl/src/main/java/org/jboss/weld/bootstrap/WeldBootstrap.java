@@ -85,17 +85,14 @@ import org.jboss.weld.context.unbound.DependentContextImpl;
 import org.jboss.weld.context.unbound.RequestContextImpl;
 import org.jboss.weld.context.unbound.SingletonContextImpl;
 import org.jboss.weld.context.unbound.UnboundLiteral;
-import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.logging.messages.VersionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.SingleThreadScheduledExecutorServiceFactory;
@@ -108,7 +105,6 @@ import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.ws.WSApiAbstraction;
 import org.jboss.weld.xml.BeansXmlParser;
 import org.slf4j.cal10n.LocLogger;
 
@@ -160,6 +156,12 @@ public class WeldBootstrap implements Bootstrap
 
       private BeanDeployment visit(BeanDeploymentArchive beanDeploymentArchive, Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives, Set<BeanDeploymentArchive> seenBeanDeploymentArchives, boolean validate)
       {
+         // for certain services we can fall back to deployment-level settings or defaults
+         if (!beanDeploymentArchive.getServices().contains(ResourceLoader.class)
+                 && deployment.getServices().contains(ResourceLoader.class))
+         {
+            beanDeploymentArchive.getServices().add(ResourceLoader.class, deployment.getServices().get(ResourceLoader.class));
+         }
          // Check that the required services are specified
          if (validate)
          {
@@ -225,7 +227,7 @@ public class WeldBootstrap implements Bootstrap
          }
          if (!deployment.getServices().contains(ResourceLoader.class))
          {
-            deployment.getServices().add(ResourceLoader.class, new DefaultResourceLoader());
+            deployment.getServices().add(ResourceLoader.class, DefaultResourceLoader.INSTANCE);
          }
          if (!deployment.getServices().contains(ScheduledExecutorServiceFactory.class))
          {
@@ -258,7 +260,7 @@ public class WeldBootstrap implements Bootstrap
          // }
 
          this.deployment = deployment;
-         ServiceRegistry implementationServices = getImplementationServices(deployment.getServices().get(ResourceLoader.class));
+         ServiceRegistry implementationServices = getImplementationServices();
 
          deployment.getServices().addAll(implementationServices.entrySet());
 
@@ -284,13 +286,9 @@ public class WeldBootstrap implements Bootstrap
       }
    }
 
-   private ServiceRegistry getImplementationServices(ResourceLoader resourceLoader)
+   private ServiceRegistry getImplementationServices()
    {
       ServiceRegistry services = new SimpleServiceRegistry();
-      services.add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
-      services.add(JsfApiAbstraction.class, new JsfApiAbstraction(resourceLoader));
-      services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
-      services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
       // Temporary workaround to provide context for building annotated class
       // TODO expose AnnotatedClass on SPI and allow container to provide impl
       // of this via ResourceLoader

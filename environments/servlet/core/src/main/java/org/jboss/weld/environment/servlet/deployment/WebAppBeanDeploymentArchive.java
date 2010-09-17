@@ -34,6 +34,7 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.Servlets;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * The means by which Web Beans are discovered on the classpath. This will only

@@ -22,6 +22,7 @@ import java.util.List;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
+import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
@@ -38,8 +39,8 @@ public class WeldSEUrlDeployment extends AbstractWeldSEDeployment
    public WeldSEUrlDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap)
    {
       super(bootstrap);
-      getServices().add(ResourceLoader.class, resourceLoader);
       this.beanDeploymentArchive = new URLScanner(resourceLoader, bootstrap, RESOURCES).scan();
+      this.beanDeploymentArchive.getServices().add(ResourceLoader.class, resourceLoader);
 
    }
 

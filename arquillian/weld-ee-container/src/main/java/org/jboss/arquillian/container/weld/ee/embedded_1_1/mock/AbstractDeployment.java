@@ -67,7 +67,6 @@ public abstract class AbstractDeployment implements Deployment
       services.add(SecurityServices.class, new MockSecurityServices());
       services.add(ValidationServices.class, new MockValidationServices());
       services.add(EjbServices.class, new MockEjBServices());
-      services.add(ResourceLoader.class, new MockResourceLoader());
    }
 
    public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()

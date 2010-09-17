@@ -50,16 +50,21 @@ import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
+import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.Enabled;
 import org.jboss.weld.metadata.FilterPredicate;
 import org.jboss.weld.metadata.ScanningPredicate;
+import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.validation.spi.ValidationServices;
+import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Function;
@@ -84,10 +89,19 @@ public class BeanDeployment
       this.beanDeploymentArchive = beanDeploymentArchive;
       EjbDescriptors ejbDescriptors = new EjbDescriptors();
       beanDeploymentArchive.getServices().add(EjbDescriptors.class, ejbDescriptors);
+      if (beanDeploymentArchive.getServices().get(ResourceLoader.class) == null)
+      {
+         beanDeploymentArchive.getServices().add(ResourceLoader.class, DefaultResourceLoader.INSTANCE);
+      }
       ServiceRegistry services = new SimpleServiceRegistry();
       services.addAll(deploymentServices.entrySet());
       services.addAll(beanDeploymentArchive.getServices().entrySet());
-      this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services, Enabled.of(beanDeploymentArchive.getBeansXml(), services.get(ResourceLoader.class)));
+
+      services.add(EJBApiAbstraction.class, new EJBApiAbstraction(beanDeploymentArchive.getServices().get(ResourceLoader.class)));
+      services.add(JsfApiAbstraction.class, new JsfApiAbstraction(beanDeploymentArchive.getServices().get(ResourceLoader.class)));
+      services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(beanDeploymentArchive.getServices().get(ResourceLoader.class)));
+      services.add(WSApiAbstraction.class, new WSApiAbstraction(beanDeploymentArchive.getServices().get(ResourceLoader.class)));
+      this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services, Enabled.of(beanDeploymentArchive.getBeansXml(), beanDeploymentArchive.getServices().get(ResourceLoader.class)));
       log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabled().getAlternativeClasses(), beanManager.getEnabled().getAlternativeStereotypes());
       log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabled().getDecorators());
       log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabled().getInterceptors());
@@ -103,7 +117,7 @@ public class BeanDeployment
       beanManager.addBean(new BeanManagerBean(beanManager));
       this.contexts = contexts;
    }
-   
+
    public BeanManagerImpl getBeanManager()
    {
       return beanManager;

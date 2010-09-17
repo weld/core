@@ -67,7 +67,7 @@ public class JsfApiAbstractionTest
 
    private ResourceLoader getResourceLoader()
    {
-      return new DefaultResourceLoader();
+      return DefaultResourceLoader.INSTANCE;
    }
 
    private ResourceLoader getResourceLoaderHidingJsf20Classes()

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
@@ -53,7 +54,8 @@ public class InstantiatorFactory implements Service
             break;
          }
       }
-      enabled = Container.instance().services().get(ResourceLoader.class).getResource("META-INF/org.jboss.weld.enableUnsafeProxies") != null;
+      //TODO convert InstantiatorFactory to a per-BeanManager service
+      enabled = DefaultResourceLoader.INSTANCE.getResource("META-INF/org.jboss.weld.enableUnsafeProxies") != null;
    }
 
    public static Instantiator getInstantiator()
