@@ -16,7 +16,11 @@
  */
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_ID_CREATION_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.CREATED_NEW_CLIENT_PROXY_TYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.LOOKED_UP_CLIENT_PROXY;
 
 import java.util.concurrent.ConcurrentMap;
 
@@ -26,6 +30,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies.TypeInfo;
+import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
@@ -39,7 +44,8 @@ import com.google.common.collect.MapMaker;
  */
 public class ClientProxyProvider
 {
-   
+   private static final LocLogger log = loggerFactory().getLogger(BEAN);
+
    private static final Function<Bean<Object>, Object> CREATE_CLIENT_PROXY = new Function<Bean<Object>, Object> ()
    {
 
@@ -86,7 +92,9 @@ public class ClientProxyProvider
    {
       ContextBeanInstance<T> beanInstance = new ContextBeanInstance<T>(bean, id);
       TypeInfo typeInfo = TypeInfo.of(bean.getTypes());
-      return new ProxyFactory<T>(typeInfo.getSuperClass(), bean.getTypes(), bean).create(beanInstance);
+      T proxy = new ProxyFactory<T>(typeInfo.getSuperClass(), bean.getTypes(), bean).create(beanInstance);
+      log.trace(CREATED_NEW_CLIENT_PROXY_TYPE, proxy.getClass(), bean, id);
+      return proxy;
    }
 
    /**
@@ -101,7 +109,9 @@ public class ClientProxyProvider
    @SuppressWarnings("unchecked")
    public <T> T getClientProxy(final Bean<T> bean)
    {
-      return (T) pool.get(bean);
+      T proxy = (T) pool.get(bean);
+      log.trace(LOOKED_UP_CLIENT_PROXY, proxy.getClass(), bean);
+      return proxy;
    }
 
    /**
