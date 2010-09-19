@@ -101,13 +101,7 @@ public class ClientProxyProvider
    @SuppressWarnings("unchecked")
    public <T> T getClientProxy(final Bean<T> bean)
    {
-      String id = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
-      if (id == null)
-      {
-         throw new DefinitionException(BEAN_ID_CREATION_FAILED, bean);
-      }
-      return createClientProxy(bean, id);
-      // return (T) pool.get(bean);
+      return (T) pool.get(bean);
    }
 
    /**
