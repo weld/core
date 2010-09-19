@@ -187,6 +187,10 @@ public class Formats
 
    private static <F> String formatIterable(Iterable<? extends F> items, Function<F> function)
    {
+      if (items == null)
+      {
+         return "";
+      }
       StringBuilder stringBuilder = new StringBuilder();
       int i = 0;
       for (F item : items)
