@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.resolution;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
@@ -82,8 +83,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
     */
    public Set<T> resolve(R resolvable)
    {
-      R r = wrap(resolvable);
-      return sortResult(filterResult(findMatching(r)));
+      return Collections.unmodifiableSet(resolved.get(wrap(resolvable)));
    }
    
    /**
