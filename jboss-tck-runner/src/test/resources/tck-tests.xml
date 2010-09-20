@@ -70,6 +70,13 @@
          
          <!-- CDITCK-177 -->
          <class name="org.jboss.jsr299.tck.tests.implementation.simple.definition.EnterpriseBeanNotDiscoveredAsManagedBeanTest">
+         <!-- CDITCK-181 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.lookup.clientProxy.ClientProxyTest">
+            <methods>
+               <exclude name="testInactiveScope" />
+            </methods>
+         </class>
             <methods>
                <exclude name="testClassesImplementingEnterpriseBeanInterfaceNotDiscoveredAsSimpleBean" />
             </methods>
