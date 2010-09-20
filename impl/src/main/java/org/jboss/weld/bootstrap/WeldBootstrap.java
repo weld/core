@@ -16,11 +16,9 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.Category.VERSION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_STORE_MISSING;
 import static org.jboss.weld.logging.messages.BootstrapMessage.DEPLOYMENT_ARCHIVE_NULL;
 import static org.jboss.weld.logging.messages.BootstrapMessage.DEPLOYMENT_REQUIRED;
 import static org.jboss.weld.logging.messages.BootstrapMessage.JTA_UNAVAILABLE;
@@ -28,27 +26,28 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.MANAGER_NOT_INITI
 import static org.jboss.weld.logging.messages.BootstrapMessage.UNSPECIFIED_REQUIRED_SERVICE;
 import static org.jboss.weld.logging.messages.BootstrapMessage.VALIDATING_BEANS;
 import static org.jboss.weld.manager.Enabled.EMPTY_ENABLED;
-import static org.jboss.weld.util.collections.Arrays2.asSet;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
+import org.jboss.weld.bean.builtin.ContextBean;
 import org.jboss.weld.bean.interceptor.InterceptionMetadataService;
 import org.jboss.weld.bean.proxy.util.SimpleProxyServices;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
-import org.jboss.weld.bootstrap.api.Lifecycle;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.ServiceRegistries;
@@ -61,22 +60,34 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.context.AbstractApplicationContext;
 import org.jboss.weld.context.ApplicationContext;
-import org.jboss.weld.context.ContextLifecycle;
-import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.RequestContext;
-import org.jboss.weld.context.SessionContext;
 import org.jboss.weld.context.SingletonContext;
-import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.context.beanstore.HashMapBeanStore;
-import org.jboss.weld.conversation.ConversationImpl;
-import org.jboss.weld.conversation.NumericConversationIdGenerator;
-import org.jboss.weld.conversation.ServletConversationManager;
+import org.jboss.weld.context.bound.BoundConversationContext;
+import org.jboss.weld.context.bound.BoundConversationContextImpl;
+import org.jboss.weld.context.bound.BoundLiteral;
+import org.jboss.weld.context.bound.BoundRequestContext;
+import org.jboss.weld.context.bound.BoundRequestContextImpl;
+import org.jboss.weld.context.bound.BoundSessionContext;
+import org.jboss.weld.context.bound.BoundSessionContextImpl;
+import org.jboss.weld.context.ejb.EjbLiteral;
+import org.jboss.weld.context.ejb.EjbRequestContext;
+import org.jboss.weld.context.ejb.EjbRequestContextImpl;
+import org.jboss.weld.context.http.HttpConversationContext;
+import org.jboss.weld.context.http.HttpConversationContextImpl;
+import org.jboss.weld.context.http.HttpLiteral;
+import org.jboss.weld.context.http.HttpRequestContext;
+import org.jboss.weld.context.http.HttpRequestContextImpl;
+import org.jboss.weld.context.http.HttpSessionContext;
+import org.jboss.weld.context.http.HttpSessionContextImpl;
+import org.jboss.weld.context.unbound.ApplicationContextImpl;
+import org.jboss.weld.context.unbound.DependentContextImpl;
+import org.jboss.weld.context.unbound.RequestContextImpl;
+import org.jboss.weld.context.unbound.SingletonContextImpl;
+import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.ejb.EJBApiAbstraction;
-import org.jboss.weld.ejb.EjbDescriptors;
-import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
@@ -94,11 +105,10 @@ import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
-import org.jboss.weld.servlet.HttpSessionManager;
-import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.jboss.weld.xml.BeansXmlParser;
 import org.slf4j.cal10n.LocLogger;
@@ -124,76 +134,24 @@ public class WeldBootstrap implements Bootstrap
     */
    private static class DeploymentVisitor
    {
-      
-      private static class WeldCoreBeanDeploymentArchive implements BeanDeploymentArchive
-      {
-         private final ServiceRegistry serviceRegistry;
-         private final Set<String> beanClasses;
-         
-         public WeldCoreBeanDeploymentArchive(Deployment deployment)
-         {
-            this.serviceRegistry = new SimpleServiceRegistry();
-            if (deployment.getServices().contains(ServletServices.class))
-            {
-               this.beanClasses = asSet(ConversationImpl.class.getName(), ServletConversationManager.class.getName(), NumericConversationIdGenerator.class.getName(), HttpSessionManager.class.getName());
-            }
-            else
-            {
-               this.beanClasses = Collections.emptySet();
-            }
-         }
-
-         public ServiceRegistry getServices()
-         {
-            return serviceRegistry;
-         }
-
-         public String getId()
-         {
-            return "weld";
-         }
-
-         public Collection<EjbDescriptor<?>> getEjbs()
-         {
-            return Collections.emptySet();
-         }
-
-         public BeansXml getBeansXml()
-         {
-            return EMPTY_BEANS_XML;
-         }
-
-         public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
-         {
-            return Collections.emptySet();
-         }
-
-         public Collection<String> getBeanClasses()
-         {
-            return beanClasses;
-         }
-      }
 
       private final BeanManagerImpl deploymentManager;
       private final Environment environment;
       private final Deployment deployment;
       private final Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives;
-      private final BeanDeploymentArchive implementationBeanDeploymentArchive;
+      private final Collection<ContextHolder<? extends Context>> contexts;
 
-      public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, final Deployment deployment)
+      public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, final Deployment deployment, Collection<ContextHolder<? extends Context>> contexts)
       {
          this.deploymentManager = deploymentManager;
          this.environment = environment;
          this.deployment = deployment;
+         this.contexts = contexts;
          this.managerAwareBeanDeploymentArchives = new ConcurrentHashMap<BeanDeploymentArchive, BeanDeployment>();
-         this.implementationBeanDeploymentArchive = new WeldCoreBeanDeploymentArchive(deployment);
       }
 
       public Map<BeanDeploymentArchive, BeanDeployment> visit()
       {
-         // Add the impl beans
-         visit(implementationBeanDeploymentArchive, managerAwareBeanDeploymentArchives, new HashSet<BeanDeploymentArchive>(), false);
-
          for (BeanDeploymentArchive archvive : deployment.getBeanDeploymentArchives())
          {
             visit(archvive, managerAwareBeanDeploymentArchives, new HashSet<BeanDeploymentArchive>(), true);
@@ -218,8 +176,10 @@ public class WeldBootstrap implements Bootstrap
          BeanDeployment parent = managerAwareBeanDeploymentArchives.get(beanDeploymentArchive);
          if (parent == null)
          {
-            // Create the BeanDeployment and attach
-            parent = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices());
+            // Create the BeanDeployment
+            parent = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts);
+            
+            // Attach it
             managerAwareBeanDeploymentArchives.put(beanDeploymentArchive, parent);
          }
          seenBeanDeploymentArchives.add(beanDeploymentArchive);
@@ -232,8 +192,6 @@ public class WeldBootstrap implements Bootstrap
                parent.getBeanManager().addAccessibleBeanManager(child.getBeanManager());
             }
          }
-         // Make the implementation beans accessible
-         parent.getBeanManager().addAccessibleBeanManager(managerAwareBeanDeploymentArchives.get(implementationBeanDeploymentArchive).getBeanManager());
          return parent;
       }
 
@@ -251,13 +209,14 @@ public class WeldBootstrap implements Bootstrap
    private Deployment deployment;
    private DeploymentVisitor deploymentVisitor;
    private final BeansXmlParser beansXmlParser;
-   
+   private Collection<ContextHolder<? extends Context>> contexts;
+
    public WeldBootstrap()
    {
       this.beansXmlParser = new BeansXmlParser();
    }
 
-   public Bootstrap startContainer(Environment environment, Deployment deployment, BeanStore applicationBeanStore)
+   public Bootstrap startContainer(Environment environment, Deployment deployment)
    {
       synchronized (this)
       {
@@ -298,10 +257,6 @@ public class WeldBootstrap implements Bootstrap
          // {
          // log.info("@Resource injection not available.");
          // }
-         if (applicationBeanStore == null)
-         {
-            throw new IllegalStateException(BEAN_STORE_MISSING);
-         }
 
          this.deployment = deployment;
          ServiceRegistry implementationServices = getImplementationServices(deployment.getServices().get(ResourceLoader.class));
@@ -319,12 +274,8 @@ public class WeldBootstrap implements Bootstrap
          Container.initialize(deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
          Container.instance().setState(ContainerState.STARTING);
 
-         createContexts();
-         initializeContexts();
-         // Start the application context
-         Container.instance().services().get(ContextLifecycle.class).beginApplication(applicationBeanStore);
-         new ExtensionBeanDeployerEnvironment(EjbDescriptors.EMPTY, deploymentManager);
-         this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment);
+         this.contexts = createContexts();
+         this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, contexts);
 
          // Read the deployment structure, this will be the physical structure
          // as caused by the presence of beans.xml
@@ -360,7 +311,7 @@ public class WeldBootstrap implements Bootstrap
       {
          if (beanDeployments.containsKey(beanDeploymentArchive))
          {
-            return beanDeployments.get(beanDeploymentArchive).getBeanManager();
+            return beanDeployments.get(beanDeploymentArchive).getBeanManager().getCurrent();
          }
          else
          {
@@ -378,7 +329,7 @@ public class WeldBootstrap implements Bootstrap
             throw new IllegalStateException(MANAGER_NOT_INITIALIZED);
          }
 
-         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, beanDeployments);
+         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, beanDeployments, contexts);
          extensionBeanDeployer.addExtensions(deployment.getExtensions());
          extensionBeanDeployer.deployBeans();
 
@@ -390,7 +341,7 @@ public class WeldBootstrap implements Bootstrap
          // physical BDA
          beanDeployments = deploymentVisitor.visit();
 
-         BeforeBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments);
+         BeforeBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts);
 
          // Re-Read the deployment structure, this will be the physical
          // structure, extensions and any classes added using addAnnotatedType
@@ -411,7 +362,7 @@ public class WeldBootstrap implements Bootstrap
          {
             entry.getValue().deployBeans(environment);
          }
-         AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments);
+         AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts);
          for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
          {
             entry.getValue().afterBeanDiscovery(environment);
@@ -451,27 +402,51 @@ public class WeldBootstrap implements Bootstrap
       return this;
    }
 
-   protected void initializeContexts()
+   protected Collection<ContextHolder<? extends Context>> createContexts()
    {
-      Lifecycle lifecycle = deployment.getServices().get(ContextLifecycle.class);
-      deploymentManager.addContext(lifecycle.getDependentContext());
-      deploymentManager.addContext(lifecycle.getRequestContext());
-      deploymentManager.addContext(lifecycle.getConversationContext());
-      deploymentManager.addContext(lifecycle.getSessionContext());
-      deploymentManager.addContext(lifecycle.getApplicationContext());
-      deploymentManager.addContext(lifecycle.getSingletonContext());
-   }
+      List<ContextHolder<? extends Context>> contexts = new ArrayList<ContextHolder<? extends Context>>();
 
-   protected void createContexts()
-   {
-      AbstractApplicationContext applicationContext = new ApplicationContext();
-      AbstractApplicationContext singletonContext = new SingletonContext();
-      SessionContext sessionContext = new SessionContext();
-      ConversationContext conversationContext = new ConversationContext();
-      RequestContext requestContext = new RequestContext();
-      DependentContext dependentContext = new DependentContext();
+      /*
+       * Register a full set of bound and unbound contexts. Although we may not use all of
+       * these (e.g. if we are running in a servlet environment) they may be
+       * useful for an application.
+       */
+      contexts.add(new ContextHolder<ApplicationContext>(new ApplicationContextImpl(), ApplicationContext.class, UnboundLiteral.INSTANCE));
+      contexts.add(new ContextHolder<SingletonContext>(new SingletonContextImpl(), SingletonContext.class, UnboundLiteral.INSTANCE));
+      contexts.add(new ContextHolder<BoundSessionContext>(new BoundSessionContextImpl(), BoundSessionContext.class, BoundLiteral.INSTANCE));
+      contexts.add(new ContextHolder<BoundConversationContext>(new BoundConversationContextImpl(), BoundConversationContext.class, BoundLiteral.INSTANCE));
+      contexts.add(new ContextHolder<BoundRequestContext>(new BoundRequestContextImpl(), BoundRequestContext.class, BoundLiteral.INSTANCE));
+      contexts.add(new ContextHolder<RequestContext>(new RequestContextImpl(), RequestContext.class, UnboundLiteral.INSTANCE));
+      contexts.add(new ContextHolder<DependentContext>(new DependentContextImpl(), DependentContext.class, UnboundLiteral.INSTANCE));
 
-      deployment.getServices().add(ContextLifecycle.class, new ContextLifecycle(applicationContext, singletonContext, sessionContext, conversationContext, requestContext, dependentContext));
+      if (Reflections.isClassLoadable("javax.servlet.ServletContext", deployment.getServices().get(ResourceLoader.class)))
+      {
+         // Register the Http contexts if not in 
+         contexts.add(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(), HttpSessionContext.class, HttpLiteral.INSTANCE));
+         contexts.add(new ContextHolder<HttpConversationContext>(new HttpConversationContextImpl(), HttpConversationContext.class, HttpLiteral.INSTANCE));
+         contexts.add(new ContextHolder<HttpRequestContext>(new HttpRequestContextImpl(), HttpRequestContext.class, HttpLiteral.INSTANCE));
+      }
+      
+      if (deployment.getServices().contains(EjbServices.class))
+      {
+         // Register the EJB Request context if EjbServices are available
+         contexts.add(new ContextHolder<EjbRequestContext>(new EjbRequestContextImpl(), EjbRequestContext.class, EjbLiteral.INSTANCE));
+      }
+
+      /*
+       * Register the contexts with the bean manager and add the beans to the
+       * deployment manager so that they are easily accessible (contexts are app
+       * scoped)
+       */
+      for (ContextHolder<? extends Context> context : contexts)
+      {
+         deploymentManager.addContext(context.getContext());
+         deploymentManager.addBean(ContextBean.of(context, deploymentManager));
+      }
+      
+
+      
+      return contexts;
    }
 
    public void shutdown()
@@ -480,13 +455,11 @@ public class WeldBootstrap implements Bootstrap
       {
          try
          {
-            Container.instance().services().get(ContextLifecycle.class).endApplication();
+            ApplicationContext applicationContext = deploymentManager.instance().select(ApplicationContext.class).get();
             try
             {
-               // Create a fake application context to service this request
-               Container.instance().services().get(ContextLifecycle.class).beginApplication(new HashMapBeanStore());
+               applicationContext.invalidate();
                BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
-               Container.instance().services().get(ContextLifecycle.class).endApplication();
             }
             finally
             {
@@ -511,17 +484,17 @@ public class WeldBootstrap implements Bootstrap
          }
       }
    }
-   
+
    public BeansXml parse(Iterable<URL> urls)
    {
       return beansXmlParser.parse(urls);
    }
-   
+
    public BeansXml parse(URL url)
    {
       return beansXmlParser.parse(url);
    }
-   
+
    public Iterable<Metadata<Extension>> loadExtensions(ClassLoader classLoader)
    {
       return ServiceLoader.load(Extension.class, classLoader);

@@ -21,10 +21,8 @@ import java.io.Serializable;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.bootstrap.api.Lifecycle;
-import org.jboss.weld.context.ContextLifecycle;
-import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.context.beanstore.HashMapBeanStore;
+import org.jboss.weld.context.RequestContext;
+import org.jboss.weld.context.ejb.EjbRequestContext;
 
 /**
  * Interceptor for ensuring the request context is active during requests to EJBs.
@@ -42,25 +40,39 @@ public class SessionBeanInterceptor implements Serializable
 
    public Object aroundInvoke(InvocationContext invocation) throws Exception
    {
-      if (Container.instance().services().get(ContextLifecycle.class).isRequestActive())
+      
+      if (isRequestContextActive())
       {
          return invocation.proceed();
       }
       else
       {
-         Lifecycle lifecycle = Container.instance().services().get(ContextLifecycle.class);
-         BeanStore beanStore = new HashMapBeanStore();
-         String id = invocation.getTarget().getClass().getName() + "." + invocation.getMethod().getName() + "()";
-         lifecycle.beginRequest(id, beanStore);
+         EjbRequestContext requestContext = Container.instance().deploymentManager().instance().select(EjbRequestContext.class).get();
+         requestContext.associate(invocation);
+         requestContext.activate();
          try
          {
             return invocation.proceed();
          }
          finally
          {
-            lifecycle.endRequest(id, beanStore);
+            requestContext.invalidate();
+            requestContext.deactivate();
+            requestContext.dissociate(invocation);
          }
       }
+   }
+   
+   private boolean isRequestContextActive()
+   {
+      for (RequestContext requestContext : Container.instance().deploymentManager().instance().select(RequestContext.class))
+      {
+         if (requestContext.isActive())
+         {
+            return true;
+         }
+      }
+      return false;
    }
    
 }

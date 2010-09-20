@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import static org.jboss.weld.injection.SimpleInjectionPoint.EMPTY_INJECTION_POINT;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
@@ -60,6 +61,11 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext, BeanManagerImpl beanManager)
    {
       return new InstanceImpl<I>(getFacadeType(injectionPoint), injectionPoint.getQualifiers().toArray(EMPTY_ANNOTATIONS), injectionPoint, creationalContext, beanManager);
+   }
+   
+   public static <I> Instance<I> of(Type type, Annotation[] qualifiers, CreationalContext<I> creationalContext, BeanManagerImpl beanManager)
+   {
+      return new InstanceImpl<I>(type, qualifiers, EMPTY_INJECTION_POINT, creationalContext, beanManager);
    }
    
    private InstanceImpl(Type type, Annotation[] qualifiers, InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager)

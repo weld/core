@@ -19,9 +19,13 @@ package org.jboss.weld.bootstrap.events;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
 
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Map;
 
+import javax.enterprise.context.spi.Context;
+
 import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -36,12 +40,14 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
    
    private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
    private final Deployment deployment;
+   private final Collection<ContextHolder<? extends Context>> contexts;
    
-   public AbstractBeanDiscoveryEvent(BeanManagerImpl beanManager, Type rawType, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Deployment deployment)
+   public AbstractBeanDiscoveryEvent(BeanManagerImpl beanManager, Type rawType, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts)
    {
       super(beanManager, rawType, EMPTY_TYPES);
       this.beanDeployments = beanDeployments;
       this.deployment = deployment;
+      this.contexts = contexts;
    }
    
    /**
@@ -68,7 +74,7 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
 
    protected BeanDeployment getOrCreateBeanDeployment(Class<?> clazz)
    {
-      return DeploymentStructures.getOrCreateBeanDeployment(deployment, getBeanManager(), beanDeployments, clazz);
+      return DeploymentStructures.getOrCreateBeanDeployment(deployment, getBeanManager(), beanDeployments, contexts, clazz);
    }
    
 }

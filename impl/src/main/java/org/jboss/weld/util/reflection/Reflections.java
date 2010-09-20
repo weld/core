@@ -37,6 +37,8 @@ import java.util.Set;
 
 import javax.inject.Qualifier;
 
+import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.Types;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
@@ -79,6 +81,12 @@ public class Reflections
          }
       }
       return map;
+   }
+   
+   @SuppressWarnings("unchecked")
+   public static <T> T cast(Object obj)
+   {
+      return (T) obj;
    }
 
    /**
@@ -687,6 +695,19 @@ public class Reflections
          }
       }
       return null;
+   }
+   
+   public static boolean isClassLoadable(String className, ResourceLoader resourceLoader)
+   {
+      try
+      {
+         resourceLoader.classForName(className);
+         return true;
+      }
+      catch (ResourceLoadingException e)
+      {
+         return false;
+      }
    }
 
 }

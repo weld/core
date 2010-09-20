@@ -112,11 +112,6 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
          {
             return (Class<Object>) clazz;
          }
-  
-         public String getJndiName()
-         {
-            return clazz.getSimpleName() + "/local";
-         }
       
       };
    }

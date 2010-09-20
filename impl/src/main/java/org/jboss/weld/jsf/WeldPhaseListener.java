@@ -22,20 +22,28 @@
  */
 package org.jboss.weld.jsf;
 
-import static org.jboss.weld.jsf.JsfHelper.getConversationId;
-import static org.jboss.weld.jsf.JsfHelper.getServletContext;
+import static javax.faces.event.PhaseId.ANY_PHASE;
+import static javax.faces.event.PhaseId.RENDER_RESPONSE;
+import static javax.faces.event.PhaseId.RESTORE_VIEW;
 import static org.jboss.weld.logging.Category.JSF;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ConversationMessage.CLEANING_UP_TRANSIENT_CONVERSATION;
+import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_ID_ALREADY_IN_USE;
 import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATION;
-import static org.jboss.weld.logging.messages.JsfMessage.INITIATING_CONVERSATION;
-import static org.jboss.weld.servlet.BeanProvider.conversationManager;
+import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
+import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.Instance;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
-import org.jboss.weld.conversation.ConversationManager2;
+import org.jboss.weld.Container;
+import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.NonexistentConversationException;
+import org.jboss.weld.context.http.HttpConversationContext;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -47,12 +55,17 @@ import org.slf4j.cal10n.LocLogger;
  * </p>
  * 
  * <p>
- * It's expected that over time, this phase listener may take on more work, but
- * for now the work is focused solely on conversation management. The phase
- * listener restores the long-running conversation if the conversation id token
- * is detected in the request, activates the conversation context in either case
- * (long-running or transient), and finally passivates the conversation after
- * the response has been committed.
+ * The phase listener restores the long-running conversation if the conversation
+ * id token is detected in the request, activates the conversation context in
+ * either case (long-running or transient), and finally passivates the
+ * conversation after the response has been committed.
+ * </p>
+ * 
+ * <p>
+ * Execute before every phase in the JSF life cycle. The order this phase
+ * listener executes in relation to other phase listeners is determined by the
+ * ordering of the faces-config.xml descriptors. This phase listener should take
+ * precedence over extensions.
  * </p>
  * 
  * @author Nicklas Karlsson
@@ -64,90 +77,58 @@ public class WeldPhaseListener implements PhaseListener
 
    private static final LocLogger log = loggerFactory().getLogger(JSF);
 
-   private ConversationManager2 conversationManager;
-
-   private ConversationManager2 getConversationManager()
-   {
-      if (conversationManager == null)
-      {
-         conversationManager = conversationManager(getServletContext(FacesContext.getCurrentInstance()));
-      }
-      return conversationManager;
-   }
-
-   /**
-    * Execute before every phase in the JSF life cycle. The order this phase
-    * listener executes in relation to other phase listeners is determined by
-    * the ordering of the faces-config.xml descriptors. This phase listener
-    * should take precedence over extensions.
-    * 
-    * @param phaseEvent The phase event
-    */
    public void beforePhase(PhaseEvent phaseEvent)
    {
-      if (phaseEvent.getPhaseId().equals(PhaseId.RESTORE_VIEW))
+      if (phaseEvent.getPhaseId().equals(RESTORE_VIEW))
       {
-         beforeRestoreView(phaseEvent.getFacesContext());
+         activateConversations(phaseEvent.getFacesContext());
       }
    }
 
-   /**
-    * Execute after every phase in the JSF life cycle. The order this phase
-    * listener executes in relation to other phase listeners is determined by
-    * the ordering of the faces-config.xml descriptors. This phase listener
-    * should take precedence over extensions.
-    * 
-    * @param phaseEvent The phase event
-    */
    public void afterPhase(PhaseEvent phaseEvent)
    {
-      if (phaseEvent.getPhaseId().equals(PhaseId.RENDER_RESPONSE))
+      if (phaseEvent.getPhaseId().equals(RENDER_RESPONSE))
       {
-         afterRenderResponse(phaseEvent.getFacesContext());
+         deactivateConversations(phaseEvent.getFacesContext(), RENDER_RESPONSE);
       }
-      // be careful with this else as it assumes only one if condition right now
       else if (phaseEvent.getFacesContext().getResponseComplete())
       {
-         afterResponseComplete(phaseEvent.getFacesContext(), phaseEvent.getPhaseId());
+         deactivateConversations(phaseEvent.getFacesContext(), phaseEvent.getPhaseId());
       }
    }
 
-   /**
-    * Execute before the Restore View phase.
-    */
-   private void beforeRestoreView(FacesContext facesContext)
+   private void activateConversations(FacesContext facesContext)
    {
-      log.trace(INITIATING_CONVERSATION, "Restore View");
-      //initiateSessionAndConversation(facesContext);
+      ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
+      String cid = getConversationId(facesContext, conversationContext);
+      log.debug(RESUMING_CONVERSATION, cid);
+      if (cid != null && conversationContext.getConversation(cid) == null)
+      {
+         // Make sure that the conversation already exists
+         throw new NonexistentConversationException(CONVERSATION_ID_ALREADY_IN_USE, cid);
+      }
+      conversationContext.activate(cid);
    }
 
    /**
     * Execute after the Render Response phase.
     */
-   private void afterRenderResponse(FacesContext facesContext)
+   private void deactivateConversations(FacesContext facesContext, PhaseId phaseId)
    {
-      log.trace(CLEANING_UP_CONVERSATION, "Render Response", "response complete");
-      //getConversationManager().teardownConversation();
-   }
-
-   /**
-    * Execute after any phase that marks the response as complete.
-    */
-   private void afterResponseComplete(FacesContext facesContext, PhaseId phaseId)
-   {
-      log.trace(CLEANING_UP_CONVERSATION, phaseId, "the response has been marked complete");
-      //getConversationManager().teardownConversation();
-   }
-
-   /**
-    * Retrieve the HTTP session from the FacesContext and assign it to the Web
-    * Beans HttpSessionManager. Restore the long-running conversation if the
-    * conversation id token is present in the request and, in either case,
-    * activate the conversation context (long-running or transient).
-    */
-   private void initiateSessionAndConversation(FacesContext facesContext)
-   {
-      getConversationManager().setupConversation(getConversationId(facesContext));
+      ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
+      if (log.isTraceEnabled())
+      {
+         if (conversationContext.getCurrentConversation().isTransient())
+         {
+            log.trace(CLEANING_UP_TRANSIENT_CONVERSATION, phaseId);
+         }
+         else
+         {
+            log.trace(CLEANING_UP_CONVERSATION, conversationContext.getCurrentConversation().getId(), phaseId);
+         }
+      }
+      conversationContext.invalidate();
+      conversationContext.deactivate();
    }
 
    /**
@@ -156,7 +137,25 @@ public class WeldPhaseListener implements PhaseListener
     */
    public PhaseId getPhaseId()
    {
-      return PhaseId.ANY_PHASE;
+      return ANY_PHASE;
+   }
+   
+   private static Instance<Context> instance()
+   {
+      return Container.instance().deploymentManager().instance().select(Context.class);
+   }
+   
+   /**
+    * Gets the propagated conversation id parameter from the request
+    * 
+    * @return The conversation id (or null if not found)
+    */
+   public static String getConversationId(FacesContext facesContext, ConversationContext conversationContext)
+   {
+      String cidName = conversationContext.getParameterName();
+      String cid = facesContext.getExternalContext().getRequestParameterMap().get(cidName);
+      log.trace(FOUND_CONVERSATION_FROM_REQUEST, cid);
+      return cid;
    }
 
 }

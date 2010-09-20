@@ -1,36 +1,44 @@
 package org.jboss.weld.tests.contexts;
 
+import org.jboss.weld.context.ManagedContext;
+
 
 public abstract class WorkInInactiveContext
 {
    
+   private final ManagedContext context;
+   
+   public WorkInInactiveContext(ManagedContext context)
+   {
+      this.context = context;
+   }
+
    public void run()
    {
-      boolean alreadyActive = false;
+      boolean wasActive = false;
       try
       {
-         alreadyActive = isContextActive();
-         if (alreadyActive)
+         wasActive = context.isActive();
+         if (wasActive)
          {
-            deactivateContext();
+            context.deactivate();
          }
          work();
       }
       finally
       {
-         if (alreadyActive)
+         if (wasActive)
          {
-            activateContext();
+            context.activate();
          }
       }
    }
    
    protected abstract void work();
    
-   protected abstract boolean isContextActive();
-   
-   protected abstract void activateContext();
-   
-   protected abstract void deactivateContext();
+   public ManagedContext getContext()
+   {
+      return context;
+   }
 
 }

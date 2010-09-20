@@ -19,7 +19,7 @@ package org.jboss.arquillian.container.weld.ee.embedded_1_1;
 import org.jboss.arquillian.spi.Context;
 import org.jboss.arquillian.spi.event.Event;
 import org.jboss.arquillian.spi.event.suite.EventHandler;
-import org.jboss.weld.context.ContextLifecycle;
+import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.manager.api.WeldManager;
 
 /**
@@ -29,19 +29,17 @@ import org.jboss.weld.manager.api.WeldManager;
  */
 public class RequestLifeCycleDestroyer implements EventHandler<Event> {
    
-   /* (non-Javadoc)
-    * @see org.jboss.arquillian.spi.event.EventHandler#callback(org.jboss.arquillian.spi.Context, java.lang.Object)
-    */
+
    public void callback(Context context, Event event) throws Exception
    {
       WeldManager manager = context.get(WeldManager.class);
-      CDIRequestID id = context.get(CDIRequestID.class);
-      if(id != null)
+      BoundRequestContext requestContext = manager.instance().select(BoundRequestContext.class).get();
+      CDIRequestMap map = context.get(CDIRequestMap.class);
+      if (map != null)
       {
-         ContextLifecycle lifeCycle = manager.getServices().get(ContextLifecycle.class);
-         
-         lifeCycle.getDependentContext().setActive(false);
-         lifeCycle.getRequestContext().setActive(false);
+         requestContext.invalidate();
+         requestContext.deactivate();
+         requestContext.dissociate(map);
       }
    }
 }

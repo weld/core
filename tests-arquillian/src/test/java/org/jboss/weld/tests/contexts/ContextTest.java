@@ -29,6 +29,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.RequestContext;
+import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.Utils;
 import org.junit.Assert;
@@ -36,28 +39,35 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class ContextTest 
+public class ContextTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ContextTest.class.getPackage())
-         .addClass(Utils.class);
+      return ShrinkWrap.create(BeanArchive.class).addPackage(ContextTest.class.getPackage()).addClass(Utils.class);
    }
-   
+
    @Inject
    private BeanManagerImpl beanManager;
-   
+
    /*
     * description = "WELD-348"
     */
    @Test
    public void testCallToConversationWithContextNotActive()
    {
-      new WorkInInactiveConversationContext()
+      ConversationContext conversationContext;
+      try
       {
-         
+          conversationContext = Utils.getActiveContext(beanManager, ConversationContext.class);
+      }
+      catch (ContextNotActiveException e)
+      {
+         conversationContext = Utils.getReference(beanManager, HttpConversationContext.class);
+      }
+      new WorkInInactiveContext(conversationContext)
+      {
+
          @Override
          protected void work()
          {
@@ -66,12 +76,13 @@ public class ContextTest
                Utils.getReference(beanManager, Conversation.class).getId();
                Assert.fail();
             }
-            catch (ContextNotActiveException e) 
+            catch (ContextNotActiveException e)
             {
                // Expected
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
+               e.printStackTrace();
                Assert.fail();
             }
             try
@@ -79,11 +90,11 @@ public class ContextTest
                Utils.getReference(beanManager, Conversation.class).getTimeout();
                Assert.fail();
             }
-            catch (ContextNotActiveException e) 
+            catch (ContextNotActiveException e)
             {
                // Expected
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                Assert.fail();
             }
@@ -92,11 +103,11 @@ public class ContextTest
                Utils.getReference(beanManager, Conversation.class).begin();
                Assert.fail();
             }
-            catch (ContextNotActiveException e) 
+            catch (ContextNotActiveException e)
             {
                // Expected
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                Assert.fail();
             }
@@ -105,11 +116,11 @@ public class ContextTest
                Utils.getReference(beanManager, Conversation.class).begin("foo");
                Assert.fail();
             }
-            catch (ContextNotActiveException e) 
+            catch (ContextNotActiveException e)
             {
                // Expected
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                Assert.fail();
             }
@@ -118,11 +129,11 @@ public class ContextTest
                Utils.getReference(beanManager, Conversation.class).end();
                Assert.fail();
             }
-            catch (ContextNotActiveException e) 
+            catch (ContextNotActiveException e)
             {
                // Expected
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                Assert.fail();
             }
@@ -131,11 +142,11 @@ public class ContextTest
                Utils.getReference(beanManager, Conversation.class).isTransient();
                Assert.fail();
             }
-            catch (ContextNotActiveException e) 
+            catch (ContextNotActiveException e)
             {
                // Expected
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                Assert.fail();
             }
@@ -144,31 +155,31 @@ public class ContextTest
                Utils.getReference(beanManager, Conversation.class).setTimeout(0);
                assert false;
             }
-            catch (ContextNotActiveException e) 
+            catch (ContextNotActiveException e)
             {
                // Expected
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                Assert.fail();
             }
          }
       }.run();
-      
-   } 
-   
+
+   }
+
    @Inject
-   private Event<Mouse> mouseEvent; 
-   
+   private Event<Mouse> mouseEvent;
+
    /*
     * description = "WELD-480"
     */
    @Test
    public void testConditionalObserverOnNonActiveContext(Cat cat, final House house)
    {
-      new WorkInInactiveRequestContext()
+      new WorkInInactiveContext(Utils.getActiveContext(beanManager, RequestContext.class))
       {
-         
+
          @Override
          protected void work()
          {
@@ -176,9 +187,10 @@ public class ContextTest
             house.setMouse(mouse);
             mouseEvent.fire(mouse);
          }
-         
+
       }.run();
       assertNull(cat.getMouse());
       assertNotNull(house.getMouse());
    }
+
 }

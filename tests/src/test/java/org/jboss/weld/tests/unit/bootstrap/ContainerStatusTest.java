@@ -19,6 +19,7 @@ package org.jboss.weld.tests.unit.bootstrap;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
+import org.jboss.weld.bootstrap.api.Environments;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
@@ -30,16 +31,16 @@ public class ContainerStatusTest
    {
       TestContainer container = new TestContainer();
       Assert.assertFalse(Container.available());
-      container.getLifecycle().initialize(container.getDeployment());
+      container.getBootstrap().startContainer(Environments.SE, container.getDeployment());
       Assert.assertFalse(Container.available());
       Assert.assertEquals(ContainerState.STARTING, Container.instance().getState());
-      container.getLifecycle().getBootstrap().startInitialization();
+      container.getBootstrap().startInitialization();
       Assert.assertFalse(Container.available());
       Assert.assertEquals(ContainerState.STARTING, Container.instance().getState());
-      container.getLifecycle().getBootstrap().deployBeans();
+      container.getBootstrap().deployBeans();
       Assert.assertTrue(Container.available());
       Assert.assertEquals(ContainerState.INITIALIZED, Container.instance().getState());
-      container.getLifecycle().getBootstrap().validateBeans().endInitialization();
+      container.getBootstrap().validateBeans().endInitialization();
       Assert.assertTrue(Container.available());
       Assert.assertEquals(ContainerState.VALIDATED, Container.instance().getState());
       container.stopContainer();

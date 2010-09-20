@@ -21,14 +21,12 @@ import java.io.IOException;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.jboss.weld.servlet.HttpSessionManager;
+import javax.servlet.http.HttpSession;
 
 @Named
 public class Storm
 {
    
-   @Inject HttpSessionManager sessionManager;
    @Inject SomeBean    someBean;
    
    public static final String PROPERTY_VALUE = "some value";
@@ -36,7 +34,7 @@ public class Storm
    public String invalidateSession()
    {
       someBean.setProp(PROPERTY_VALUE);
-      sessionManager.getSession().invalidate();
+      ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true)).invalidate();
       return "success";
    }
    

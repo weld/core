@@ -31,6 +31,7 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVI
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -54,6 +55,7 @@ import javax.el.ExpressionFactory;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
@@ -63,6 +65,7 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.interceptor.registry.InterceptorRegistry;
 import org.jboss.weld.Container;
@@ -71,6 +74,7 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
+import org.jboss.weld.bean.builtin.InstanceImpl;
 import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bootstrap.Validator;
@@ -136,6 +140,8 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
    private static final long serialVersionUID = 3021562879133838561L;
    
+   private static final Class<Instance<Object>> INSTANCE_TYPE = new TypeLiteral<Instance<Object>>() {}.getRawType();
+   
    /*
     * Application scoped services 
     * ***************************
@@ -170,6 +176,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    private transient final Enabled enabled;
    private transient final Set<CurrentActivity> currentActivities;   
+   
 
    /*
     * Activity scoped services 
@@ -1175,4 +1182,10 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       return AbstractProcessInjectionTarget.fire(this, annotatedType, createInjectionTarget(annotatedType));
    }
+   
+   public Instance<Object> instance()
+   {
+      return InstanceImpl.of(Object.class, EMPTY_ANNOTATIONS, createCreationalContext(null), this);
+   }
+   
 }

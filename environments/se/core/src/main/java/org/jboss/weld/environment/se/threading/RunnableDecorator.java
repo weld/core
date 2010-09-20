@@ -19,7 +19,7 @@ package org.jboss.weld.environment.se.threading;
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
-import org.jboss.weld.context.beanstore.HashMapBeanStore;
+
 import org.jboss.weld.environment.se.WeldSEBeanRegistrant;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
 
@@ -41,11 +41,18 @@ public class RunnableDecorator implements Runnable {
    {
       // set up context for this thread
       final ThreadContext threadContext = WeldSEBeanRegistrant.THREAD_CONTEXT;
-      threadContext.setBeanStore(new HashMapBeanStore());
-      threadContext.setActive(true);
-      // run the original thread
-      runnable.run();
-      threadContext.destroy();
+      try
+      {
+         threadContext.activate();
+         // run the original thread
+         runnable.run();
+      }
+      finally
+      {
+         threadContext.invalidate();
+         threadContext.deactivate();
+      }
+         
    }
 
 

@@ -27,8 +27,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
 import org.jboss.weld.environment.se.discovery.url.WeldSEUrlDeployment;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -65,8 +63,6 @@ public class Weld
     */
    public WeldContainer initialize()
    {
-
-      BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
       ResourceLoader resourceLoader = new WeldSEResourceLoader();
       Bootstrap bootstrap = null;
       try
@@ -84,7 +80,7 @@ public class Weld
 
       Deployment deployment = createDeployment(resourceLoader, bootstrap);
       // Set up the container
-      bootstrap.startContainer(Environments.SE, deployment, applicationBeanStore);
+      bootstrap.startContainer(Environments.SE, deployment);
 
       // Start the container
       bootstrap.startInitialization();

@@ -17,10 +17,15 @@
 
 package org.jboss.weld.tests.interceptors.simple;
 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 import javax.interceptor.InterceptorBinding;
-import java.lang.annotation.*;
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>

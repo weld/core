@@ -19,6 +19,9 @@ package org.jboss.arquillian.container.weld.ee.embedded_1_1;
 import org.jboss.arquillian.spi.Context;
 import org.jboss.arquillian.spi.event.Event;
 import org.jboss.arquillian.spi.event.suite.EventHandler;
+import org.jboss.weld.context.bound.BoundConversationContext;
+import org.jboss.weld.context.bound.BoundRequest;
+import org.jboss.weld.context.bound.MutableBoundRequest;
 import org.jboss.weld.manager.api.WeldManager;
 
 /**
@@ -29,9 +32,7 @@ import org.jboss.weld.manager.api.WeldManager;
  */
 public class ConversationLifeCycleCreator implements EventHandler<Event>
 {
-   /* (non-Javadoc)
-    * @see org.jboss.arquillian.spi.EventHandler#callback(org.jboss.arquillian.spi.Context, java.lang.Object)
-    */
+
    public void callback(Context context, Event event) throws Exception 
    {
       WeldManager manager = context.get(WeldManager.class);
@@ -40,19 +41,17 @@ public class ConversationLifeCycleCreator implements EventHandler<Event>
          throw new IllegalStateException("No " + WeldManager.class.getName() + " found in context");
       }
       
-      /* Revert until 1.1 Weld is released.. https://jira.jboss.org/browse/ARQ-185
-      ConversationManager2 conversationManager = BeanUtils.getBeanReference(manager, ConversationManager2.class);      
       CDIConversationID id = context.get(CDIConversationID.class);
       if(id == null)
       {
          id = new CDIConversationID(null); // when null creates a new empty conversation id. 
       }
       
-      if(!conversationManager.isContextActive())
-      {
-         conversationManager.setupContext();
-      }
-      conversationManager.setupConversation(id.getId());
-      */
+      BoundRequest boundRequest = new MutableBoundRequest(context.get(CDIRequestMap.class), context.get(CDISessionMap.class));
+      context.add(BoundRequest.class, boundRequest);
+      
+      BoundConversationContext conversationContext = manager.instance().select(BoundConversationContext.class).get();
+      conversationContext.associate(boundRequest);
+      conversationContext.activate(id.getId());
    }
 }

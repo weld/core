@@ -22,10 +22,9 @@ import static org.jboss.weld.logging.messages.EventMessage.ASYNC_FIRE;
 import static org.jboss.weld.logging.messages.EventMessage.ASYNC_OBSERVER_FAILURE;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.bootstrap.api.Lifecycle;
-import org.jboss.weld.context.ContextLifecycle;
-import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
+import org.jboss.weld.context.RequestContext;
+import org.jboss.weld.context.ejb.EjbRequestContext;
+import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
@@ -39,7 +38,7 @@ public class DeferredEventNotification<T> implements Runnable
 {
    private static final LocLogger log = loggerFactory().getLogger(EVENT);
    private static final XLogger xLog = loggerFactory().getXLogger(EVENT);
-   
+
    // The observer
    protected final ObserverMethodImpl<T, ?> observer;
    // The event object
@@ -64,15 +63,15 @@ public class DeferredEventNotification<T> implements Runnable
          log.debug(ASYNC_FIRE, event, observer);
          new RunInRequest()
          {
-            
+
             @Override
             protected void execute()
             {
                observer.sendEvent(event);
             }
-            
+
          }.run();
-         
+
       }
       catch (Exception e)
       {
@@ -86,34 +85,47 @@ public class DeferredEventNotification<T> implements Runnable
    {
       return "Deferred event [" + event + "] for [" + observer + "]";
    }
-   
+
    private abstract static class RunInRequest
    {
-      
+
       protected abstract void execute();
-      
+
       public void run()
       {
-         Lifecycle lifecycle = Container.instance().services().get(ContextLifecycle.class);
-         boolean requestActive = lifecycle.isRequestActive();
-         BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
-         try
+         
+         if (isRequestContextActive())
          {
-            if (!requestActive)
-            {
-               lifecycle.beginRequest("async invocation", requestBeanStore);
-            }
             execute();
          }
-         finally
+         else
          {
-            if (!requestActive)
+            RequestContext requestContext = Container.instance().deploymentManager().instance().select(EjbRequestContext.class, UnboundLiteral.INSTANCE).get();
+            try
             {
-               lifecycle.endRequest("async invocation", requestBeanStore);
+               requestContext.activate();
+               execute();
+            }
+            finally
+            {
+               requestContext.invalidate();
+               requestContext.deactivate();
             }
          }
       }
-      
+
+      private boolean isRequestContextActive()
+      {
+         for (RequestContext requestContext : Container.instance().deploymentManager().instance().select(RequestContext.class))
+         {
+            if (requestContext.isActive())
+            {
+               return true;
+            }
+         }
+         return false;
+      }
+
    }
-   
+
 }

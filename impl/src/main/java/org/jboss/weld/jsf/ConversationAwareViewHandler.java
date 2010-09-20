@@ -16,14 +16,16 @@
  */
 package org.jboss.weld.jsf;
 
-import static org.jboss.weld.jsf.JsfHelper.getServletContext;
-import static org.jboss.weld.servlet.BeanProvider.conversation;
-
+import javax.enterprise.context.Conversation;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.Instance;
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.context.FacesContext;
 
-import org.jboss.weld.conversation.ConversationImpl;
+import org.jboss.weld.Container;
+import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.http.HttpConversationContext;
 
 /**
  * <p>
@@ -65,13 +67,14 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
     * @see {@link ViewHandler#getActionURL(FacesContext, String)}
     */
    @Override
-   public String getActionURL(FacesContext context, String viewId)
+   public String getActionURL(FacesContext facesContext, String viewId)
    {
-      String actionUrl = super.getActionURL(context, viewId);
-      ConversationImpl conversation = conversation(getServletContext(context));  
+      ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
+      String actionUrl = super.getActionURL(facesContext, viewId);
+      Conversation conversation = conversationContext.getCurrentConversation();
       if (!conversation.isTransient())
       {
-         return new FacesUrlTransformer(actionUrl, context).appendConversationIdIfNecessary(conversation.getId()).getUrl();
+         return new FacesUrlTransformer(actionUrl, facesContext).appendConversationIdIfNecessary(conversationContext.getParameterName(), conversation.getId()).getUrl();
       }
       else
       {
@@ -86,6 +89,11 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
    public ViewHandler getWrapped()
    {
       return delegate;
+   }
+   
+   private static Instance<Context> instance()
+   {
+      return Container.instance().deploymentManager().instance().select(Context.class);
    }
 
 }

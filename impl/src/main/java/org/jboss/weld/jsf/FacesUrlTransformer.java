@@ -15,9 +15,6 @@
  * limitations under the License.
  */
 package org.jboss.weld.jsf;
-import static org.jboss.weld.jsf.JsfHelper.getServletContext;
-import static org.jboss.weld.servlet.BeanProvider.conversationIdName;
-
 import javax.faces.context.FacesContext;
 
 /**
@@ -45,15 +42,14 @@ public class FacesUrlTransformer
       this.context = facesContext;
    }
 
-   public FacesUrlTransformer appendConversationIdIfNecessary(String cid)
+   public FacesUrlTransformer appendConversationIdIfNecessary(String cidParameterName, String cid)
    {
-      String cidParamName = conversationIdName(getServletContext(context));
       int queryStringIndex = url.indexOf(QUERY_STRING_DELIMITER);
       // if there is no query string or there is a query string but the cid param is absent, then append it
-      if (queryStringIndex < 0 || url.indexOf(cidParamName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0)
+      if (queryStringIndex < 0 || url.indexOf(cidParameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0)
       {
          url = new StringBuilder(url).append(queryStringIndex < 0 ? QUERY_STRING_DELIMITER : PARAMETER_PAIR_DELIMITER)
-            .append(cidParamName).append(PARAMETER_ASSIGNMENT_OPERATOR).append(cid).toString();
+            .append(cidParameterName).append(PARAMETER_ASSIGNMENT_OPERATOR).append(cid).toString();
       }
       return this;
    }

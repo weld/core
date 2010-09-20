@@ -29,10 +29,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
+import org.jboss.weld.bean.builtin.ContextBean;
+import org.jboss.weld.bean.builtin.ConversationBean;
 import org.jboss.weld.bean.builtin.EventBean;
 import org.jboss.weld.bean.builtin.InjectionPointBean;
 import org.jboss.weld.bean.builtin.InstanceBean;
@@ -73,8 +76,9 @@ public class BeanDeployment
    private final BeanDeploymentArchive beanDeploymentArchive;
    private final BeanManagerImpl beanManager;
    private final BeanDeployer beanDeployer;
+   private final Collection<ContextHolder<? extends Context>> contexts;
    
-   public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices)
+   public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts)
    {
       this.beanDeploymentArchive = beanDeploymentArchive;
       EjbDescriptors ejbDescriptors = new EjbDescriptors();
@@ -96,6 +100,7 @@ public class BeanDeployment
       
       // Must at the Manager bean straight away, as it can be injected during startup!
       beanManager.addBean(new BeanManagerBean(beanManager));
+      this.contexts = contexts;
    }
    
    public BeanManagerImpl getBeanManager()
@@ -173,6 +178,7 @@ public class BeanDeployment
       beanDeployer.getEnvironment().addBuiltInBean(new InjectionPointBean(beanManager));
       beanDeployer.getEnvironment().addBuiltInBean(new EventBean(beanManager));
       beanDeployer.getEnvironment().addBuiltInBean(new InstanceBean(beanManager));
+      beanDeployer.getEnvironment().addBuiltInBean(new ConversationBean(beanManager));
       if (beanManager.getServices().contains(TransactionServices.class))
       {
          beanDeployer.getEnvironment().addBuiltInBean(new UserTransactionBean(beanManager));
@@ -186,6 +192,12 @@ public class BeanDeployment
          beanDeployer.getEnvironment().addBuiltInBean(new DefaultValidatorBean(beanManager));
          beanDeployer.getEnvironment().addBuiltInBean(new DefaultValidatorFactoryBean(beanManager));
       }
+      // Register the context beans
+      for (ContextHolder<? extends Context> context : contexts)
+      {
+         beanDeployer.getEnvironment().addBuiltInBean(ContextBean.of(context, beanManager));
+      }
+      // TODO Register the context beans
       beanDeployer.createBeans().deploy();
    }
    

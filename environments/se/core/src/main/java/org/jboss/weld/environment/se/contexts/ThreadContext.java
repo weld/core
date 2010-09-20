@@ -22,7 +22,10 @@
  */
 package org.jboss.weld.environment.se.contexts;
 
-import org.jboss.weld.context.AbstractThreadLocalMapContext;
+import java.lang.annotation.Annotation;
+
+import org.jboss.weld.context.AbstractUnboundContext;
+import org.jboss.weld.context.beanstore.HashMapBeanStore;
 
 /**
  * The thread context. Works with @ThreadScoped beans, maintaining a separate
@@ -31,29 +34,24 @@ import org.jboss.weld.context.AbstractThreadLocalMapContext;
  * @author Nicklas Karlsson
  * @author Peter Royle
  */
-public class ThreadContext extends AbstractThreadLocalMapContext
+public class ThreadContext extends AbstractUnboundContext
 {
 
-   /**
-    * Constructor
-    */
    public ThreadContext()
    {
-      super(ThreadScoped.class);
-   }   
-
-   @Override
-   public String toString()
-   {
-      String active = isActive() ? "Active " : "Inactive ";
-      String beanStoreInfo = getBeanStore() == null ? "" : getBeanStore().toString();
-      return active + "thread context " + beanStoreInfo;
+      super(false);
    }
 
-   @Override
-   protected boolean isCreationLockRequired()
+   public Class<? extends Annotation> getScope()
    {
-      return false;
+      return ThreadScoped.class;
+   }
+   
+   @Override
+   public void activate()
+   {
+      super.activate();
+      setBeanStore(new HashMapBeanStore());
    }
 
 }

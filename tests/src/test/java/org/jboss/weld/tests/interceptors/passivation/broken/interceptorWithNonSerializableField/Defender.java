@@ -18,10 +18,10 @@ package org.jboss.weld.tests.interceptors.passivation.broken.interceptorWithNonS
 
 import java.io.Serializable;
 
-import javax.interceptor.Interceptor;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
 import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
 /**
  * @author Marius Bogoevici

@@ -34,6 +34,8 @@ import java.util.Set;
 import javassist.util.proxy.ProxyObject;
 
 import javax.el.ELContext;
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.TypeLiteral;
@@ -176,4 +178,18 @@ public class Utils
    {
       return proxy instanceof ProxyObject;
    }
+   
+   
+   public static <T extends Context> T getActiveContext(BeanManagerImpl beanManager, Class<T> type)
+   {
+      for (T context : beanManager.instance().select(type))
+      {
+         if (context.isActive())
+         {
+            return context;
+         }
+      }
+      throw new ContextNotActiveException();
+   }
+   
 }

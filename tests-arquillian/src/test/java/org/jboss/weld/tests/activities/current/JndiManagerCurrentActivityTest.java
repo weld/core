@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.activities.current;
 
+import static org.jboss.weld.test.Utils.getReference;
+import static org.junit.Assert.assertEquals;
+
 import java.lang.annotation.Annotation;
 
 import javax.enterprise.context.spi.Context;
@@ -31,8 +34,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.test.Utils;
+import org.jboss.weld.tests.category.Broken;
 import org.jboss.weld.tests.category.Integration;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -89,14 +92,15 @@ public class JndiManagerCurrentActivityTest
    @Inject
    private BeanManagerImpl beanManager;
 
-   @Test
+   @Test 
+   @Category(Broken.class) // JBAS-8436
    public void testJndiManagerIsCurrentActivity()
    {
       Context dummyContext = new DummyContext();
       beanManager.addContext(dummyContext);
-      Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
+      assertEquals(1, beanManager.getBeans(Cow.class).size());
       WeldManager childActivity = beanManager.createActivity();
       childActivity.setCurrent(dummyContext.getScope());
-      Assert.assertEquals(childActivity, Utils.getReference(beanManager, Donkey.class).getManager());
+      assertEquals(childActivity, getReference(beanManager, Donkey.class).getManager());
    }
 }

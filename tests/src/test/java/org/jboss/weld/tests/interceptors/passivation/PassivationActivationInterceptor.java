@@ -19,10 +19,10 @@ package org.jboss.weld.tests.interceptors.passivation;
 
 import java.io.Serializable;
 
+import javax.ejb.PostActivate;
+import javax.ejb.PrePassivate;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import javax.ejb.PrePassivate;
-import javax.ejb.PostActivate;
 
 /**
  * @author Marius Bogoevici

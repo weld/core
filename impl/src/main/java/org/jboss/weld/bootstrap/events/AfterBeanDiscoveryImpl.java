@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -36,14 +38,14 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery
 {
    
-   public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
+   public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts)
    {
-      new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments).fire(beanDeployments);
+      new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire(beanDeployments);
    }
    
-   protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
+   protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts)
    {
-      super(beanManager, AfterBeanDiscovery.class, beanDeployments, deployment);
+      super(beanManager, AfterBeanDiscovery.class, beanDeployments, deployment, contexts);
    }
 
    public void addDefinitionError(Throwable t)

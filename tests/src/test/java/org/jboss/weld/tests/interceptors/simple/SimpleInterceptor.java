@@ -17,12 +17,11 @@
 
 package org.jboss.weld.tests.interceptors.simple;
 
-import javax.interceptor.Interceptor;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.util.concurrent.atomic.AtomicInteger;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>

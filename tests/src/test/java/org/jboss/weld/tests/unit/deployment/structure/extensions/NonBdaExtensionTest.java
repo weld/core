@@ -20,11 +20,9 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.AbstractDeployment;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockServletServices;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.test.Utils;
 import org.junit.Assert;
 import org.testng.annotations.Test;
@@ -61,13 +59,6 @@ public class NonBdaExtensionTest
             {
                return bda1;
             }
-         }
-         
-         @Override
-         protected void configureServices()
-         {
-            super.configureServices();
-            getServices().add(ServletServices.class, new MockServletServices(bda1));
          }
 
       };
@@ -132,13 +123,6 @@ public class NonBdaExtensionTest
             {
                return bda1;
             }
-         }
-         
-         @Override
-         protected void configureServices()
-         {
-            super.configureServices();
-            getServices().add(ServletServices.class, new MockServletServices(bda1));
          }
 
       };

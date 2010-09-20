@@ -49,7 +49,7 @@ final class Utils
    @SuppressWarnings("unchecked")
    static <T> T getBeanReference(BeanManager manager, Class<T> type) 
    {
-      Bean bean = manager.resolve(manager.getBeans(type));
+      Bean<?> bean = manager.resolve(manager.getBeans(type));
       return (T)manager.getReference(
             bean, 
             type,

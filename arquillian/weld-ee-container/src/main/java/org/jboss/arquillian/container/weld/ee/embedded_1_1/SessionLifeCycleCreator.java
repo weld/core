@@ -16,40 +16,35 @@
  */
 package org.jboss.arquillian.container.weld.ee.embedded_1_1;
 
-import java.util.UUID;
-
 import org.jboss.arquillian.spi.Context;
 import org.jboss.arquillian.spi.event.Event;
 import org.jboss.arquillian.spi.event.suite.EventHandler;
-import org.jboss.weld.context.ContextLifecycle;
-import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
+import org.jboss.weld.context.bound.BoundSessionContext;
 import org.jboss.weld.manager.api.WeldManager;
 
 /**
  * SessionLifeCycleController
- *
+ * 
  * @author <a href="mailto:aknutsen@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
 public class SessionLifeCycleCreator implements EventHandler<Event>
 {
-   /* (non-Javadoc)
-    * @see org.jboss.arquillian.spi.EventHandler#callback(org.jboss.arquillian.spi.Context, java.lang.Object)
-    */
-   public void callback(Context context, Event event) throws Exception 
+
+   public void callback(Context context, Event event) throws Exception
    {
       WeldManager manager = context.get(WeldManager.class);
-      if(manager == null)
+      if (manager == null)
       {
          throw new IllegalStateException("No " + WeldManager.class.getName() + " found in context");
       }
-      ContextLifecycle lifeCycle = manager.getServices().get(ContextLifecycle.class);
 
-      String sessionId = UUID.randomUUID().toString();
-      BeanStore beanStore = new ConcurrentHashMapBeanStore();
-      
-      lifeCycle.restoreSession(sessionId, beanStore);
-      context.add(CDISessionID.class, new CDISessionID(sessionId, beanStore));
+      BoundSessionContext sessionContext = manager.instance().select(BoundSessionContext.class).get();
+
+      CDISessionMap map = new CDISessionMap();
+      sessionContext.associate(map);
+      sessionContext.activate();
+      context.add(CDISessionMap.class, map);
    }
+   
 }

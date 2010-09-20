@@ -32,13 +32,11 @@ import javax.enterprise.util.AnnotationLiteral;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.AbstractDeployment;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.FlatDeployment;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockServletServices;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.test.Utils;
 import org.junit.Assert;
 import org.testng.annotations.Test;
@@ -98,8 +96,8 @@ public class TransitiveResolutionTest
       {
          container = new TestContainer(deployment).startContainer().ensureRequestActive();
          BeanManagerImpl warBeanManager = (BeanManagerImpl) container.getBeanManager(war);
-         BeanManagerImpl jar1BeanManager = (BeanManagerImpl) container.getLifecycle().getBootstrap().getManager(jar1);         
-         BeanManagerImpl jar2BeanManager = (BeanManagerImpl) container.getLifecycle().getBootstrap().getManager(jar2);
+         BeanManagerImpl jar1BeanManager = (BeanManagerImpl) container.getBeanManager(jar1);         
+         BeanManagerImpl jar2BeanManager = (BeanManagerImpl) container.getBeanManager(jar2);
          Assert.assertTrue(warBeanManager.getEnabled().getAlternativeClasses().isEmpty());
          Assert.assertFalse(jar1BeanManager.getEnabled().getAlternativeClasses().isEmpty());
          Assert.assertFalse(jar2BeanManager.getEnabled().getAlternativeClasses().isEmpty());
@@ -139,13 +137,6 @@ public class TransitiveResolutionTest
          {
             return ejbJar;
          }
-                  
-         @Override
-         protected void configureServices()
-         {
-            super.configureServices();
-            getServices().add(ServletServices.class, new MockServletServices(war));
-         }
 
       };
 
@@ -155,7 +146,7 @@ public class TransitiveResolutionTest
 
       // Get the bean manager for war and ejb jar
       BeanManager warBeanManager = container.getBeanManager(war);
-      BeanManager ejbJarBeanManager = container.getLifecycle().getBootstrap().getManager(ejbJar);
+      BeanManager ejbJarBeanManager = container.getBeanManager(ejbJar);
 
       Assert.assertEquals(1, warBeanManager.getBeans(Bar.class).size());
       Assert.assertEquals(1, warBeanManager.getBeans(Foo.class).size());
@@ -195,13 +186,6 @@ public class TransitiveResolutionTest
          {
             return ejbJar;
          }
-                  
-         @Override
-         protected void configureServices()
-         {
-            super.configureServices();
-            getServices().add(ServletServices.class, new MockServletServices(war));
-         }
 
       };
 
@@ -211,7 +195,7 @@ public class TransitiveResolutionTest
 
       // Get the bean manager for war and ejb jar
       BeanManager warBeanManager = container.getBeanManager(war);
-      BeanManager ejbJarBeanManager = container.getLifecycle().getBootstrap().getManager(ejbJar);
+      BeanManager ejbJarBeanManager = container.getBeanManager(ejbJar);
 
       
       BasicInterceptor.reset();
@@ -254,13 +238,6 @@ public class TransitiveResolutionTest
          {
             return ejbJar;
          }
-         
-         @Override
-         protected void configureServices()
-         {
-            super.configureServices();
-            getServices().add(ServletServices.class, new MockServletServices(war));
-         }
 
       };
 
@@ -270,7 +247,7 @@ public class TransitiveResolutionTest
 
       // Get the bean manager for war and ejb jar
       BeanManager warBeanManager = container.getBeanManager(war);
-      BeanManager ejbJarBeanManager = container.getLifecycle().getBootstrap().getManager(ejbJar);
+      BeanManager ejbJarBeanManager = container.getBeanManager(ejbJar);
 
       
       BasicInterceptor.reset();

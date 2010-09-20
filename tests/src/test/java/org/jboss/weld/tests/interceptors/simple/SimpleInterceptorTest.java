@@ -17,21 +17,20 @@
 
 package org.jboss.weld.tests.interceptors.simple;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+
+import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.test.AbstractWeldTest;
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
-
-import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.context.spi.CreationalContext;
-
-import java.util.Set;
-import java.lang.annotation.Annotation;
+import org.testng.annotations.Test;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>

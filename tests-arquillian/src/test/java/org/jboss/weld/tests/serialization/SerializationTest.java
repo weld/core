@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.serialization;
 
+import static org.junit.Assert.fail;
+
 import java.io.Serializable;
 
 import javax.enterprise.inject.IllegalProductException;
@@ -34,44 +36,33 @@ import org.junit.runner.RunWith;
 public class SerializationTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(SerializationTest.class.getPackage())
-         .addClass(Utils.class);
+      return ShrinkWrap.create(BeanArchive.class).addPackage(SerializationTest.class.getPackage()).addClass(Utils.class);
    }
 
    /*
-    * description = "WELD-363"
+    * description =
+    * "http://lists.jboss.org/pipermail/weld-dev/2010-February/002265.html"
     */
    @Test
-   public void testConversationManagerSerializable(@Mock TestConversationManager cMgr)
-      throws Exception
-   {
-      Assert.assertNotNull(cMgr.getConversationInstance());
-      
-      Object deserialized = Utils.deserialize(Utils.serialize(cMgr));
-      
-      Assert.assertTrue(deserialized instanceof TestConversationManager);
-      TestConversationManager deserializedCMgr = (TestConversationManager) deserialized;
-      Assert.assertNotNull(deserializedCMgr.getConversationInstance());
-   }
-   
-   /*
-    * description = "http://lists.jboss.org/pipermail/weld-dev/2010-February/002265.html"
-    */
-   @Test
-   public void testNonSerializableProductInjectedIntoSessionScopedBean(LoggerConsumer consumer)
+   public void testNonSerializableProductInjectedIntoSessionScopedBean(LoggerConsumer consumer) throws Exception
    {
       try
       {
          consumer.ping();
       }
-      catch (Exception e) 
+      catch (Exception e)
       {
-         // If Logger isn't serializable, we get here 
-         Assert.assertTrue(e instanceof IllegalProductException);
-         return;
+         // If Logger isn't serializable, we get here
+         if (e instanceof IllegalProductException)
+         {
+            return;
+         }
+         else
+         {
+            throw e;
+         }
       }
       // If Logger is serializable we get here
       Assert.assertTrue(consumer.getLog() instanceof Serializable);

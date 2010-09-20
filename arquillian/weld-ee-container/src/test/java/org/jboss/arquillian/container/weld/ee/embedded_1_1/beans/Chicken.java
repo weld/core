@@ -16,6 +16,7 @@
  */
 package org.jboss.arquillian.container.weld.ee.embedded_1_1.beans;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 
 /**
@@ -40,4 +41,5 @@ public class Chicken implements java.io.Serializable
    {
       this.age = age;
    }
+
 }

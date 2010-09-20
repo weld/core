@@ -22,8 +22,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.context.beanstore.HashMapBeanStore;
 import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
@@ -50,12 +48,9 @@ public class WeldSEBeanRegistrant implements Extension
    public void registerWeldSEContexts(@Observes AfterBeanDiscovery event)
    {
       // set up this thread's bean store
-      BeanStore beanStore = new HashMapBeanStore();
       final ThreadContext threadContext = new ThreadContext();
-      threadContext.setBeanStore(beanStore);
 
       // activate and add context
-      threadContext.setActive(true);
       event.addContext(threadContext);
       THREAD_CONTEXT = threadContext;
    }

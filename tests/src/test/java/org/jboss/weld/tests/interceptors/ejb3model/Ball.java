@@ -17,10 +17,10 @@
 
 package org.jboss.weld.tests.interceptors.ejb3model;
 
-import javax.interceptor.Interceptors;
-import javax.interceptor.ExcludeClassInterceptors;
-import javax.interceptor.InvocationContext;
 import javax.interceptor.AroundInvoke;
+import javax.interceptor.ExcludeClassInterceptors;
+import javax.interceptor.Interceptors;
+import javax.interceptor.InvocationContext;
 
 /**
  * @author Marius Bogoevici

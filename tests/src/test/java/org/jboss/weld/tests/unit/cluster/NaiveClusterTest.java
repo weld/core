@@ -46,7 +46,7 @@ public class NaiveClusterTest extends AbstractClusterTest
       Foo foo1 = (Foo) beanManager1.getReference(fooBean1, Foo.class, beanManager1.createCreationalContext(fooBean1));
       foo1.setName("container 1");
       
-      replicateSession(1, beanManager1, 2, beanManager2);
+      replicateSession(1, container1, 2, container2);
       
       use(2);
       Foo foo2 = (Foo) beanManager2.getReference(fooBean2, Foo.class, beanManager2.createCreationalContext(fooBean2));
@@ -75,7 +75,7 @@ public class NaiveClusterTest extends AbstractClusterTest
       stable1.getFodder().setAmount(10);
       stable1.getHorse().setName("George");
       
-      replicateSession(1, beanManager1, 2, beanManager2);
+      replicateSession(1, container1, 2, container2);
       
       use(2);
       
@@ -91,9 +91,11 @@ public class NaiveClusterTest extends AbstractClusterTest
       
       stable2.getFodder().setAmount(11);
       
-      replicateSession(2, beanManager2, 1, beanManager1);
+      replicateSession(2, container2, 1, container1);
       
       use(1);
+      
+      int i = stable1.getFodder().getAmount();
       
       assert stable1.getFodder().getAmount() == 11;
       use(1);
@@ -122,7 +124,7 @@ public class NaiveClusterTest extends AbstractClusterTest
       stable1.getFodder().setAmount(10);
       stable1.getHorse().setName("George");
       
-      replicateSession(1, beanManager1, 2, beanManager2);
+      replicateSession(1, container1, 2, container2);
       
       use(2);
       

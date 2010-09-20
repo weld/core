@@ -20,12 +20,23 @@ import static java.util.Arrays.asList;
 
 import java.net.URL;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.Instance;
+
+import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.WeldBootstrap;
+import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.RequestContext;
+import org.jboss.weld.context.bound.BoundSessionContext;
+import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.manager.api.WeldManager;
 
 /**
@@ -40,22 +51,6 @@ import org.jboss.weld.manager.api.WeldManager;
  * however sometimes it useful to have greater control over the test, and in
  * that case you may wish to use {@link TestContainer}.
  * </p>
- * 
- * <p>
- * If you require more control over the container bootstrap lifecycle than that
- * offered by {@link TestContainer} you should use the {@link #getLifecycle()}
- * method. For example:
- * <p>
- * 
- * <pre>
- * TestContainer container = new TestContainer(...);
- * container.getLifecycle().initialize();
- * container.getLifecycle().getBootstrap().startInitialization(container.getDeployment());
- * container.getLifecycle().getBootstrap().deployBeans();
- * container.getLifecycle().getBootstrap().validateBeans();
- * container.getLifecycle().getBootstrap().endInitialization();
- * container.getLifecycle().stopContainer();
- * </pre>
  * 
  * <p>
  * Note that we can easily mix fine-grained calls to bootstrap, and coarse
@@ -76,12 +71,12 @@ public class TestContainer
     */
    public static class Runner
    {
-      
+
       public static interface Runnable
       {
-         
+
          public abstract void run(WeldManager beanManager);
-         
+
       }
 
       private static Runnable NO_OP = new Runnable()
@@ -153,7 +148,7 @@ public class TestContainer
        * Bootstrap and shutdown the container. If the expected exception must be
        * thrown (including message).
        * 
-       *@param runnable a {@link Runnable} to be called whilst the container is
+       * @param runnable a {@link Runnable} to be called whilst the container is
        *           active
        * @throws AssertionError if the exception that was expected is not
        *            thrown.
@@ -171,7 +166,7 @@ public class TestContainer
                Error t = new AssertionError("Expected exception " + expected + " but got " + e);
                t.initCause(e);
                throw t;
-               
+
             }
             if (expected.getMessage() == null)
             {
@@ -188,8 +183,10 @@ public class TestContainer
 
    }
 
-   private final MockLifecycle lifecycle;
    private final Deployment deployment;
+   private final Bootstrap bootstrap;
+   
+   private Map<String, Object> sessionStore;
 
    /**
     * Create a container, specifying the classes and beans.xml to deploy
@@ -205,14 +202,15 @@ public class TestContainer
 
    public TestContainer(Collection<URL> beansXml, Collection<Class<?>> classes)
    {
-      this.lifecycle = new MockLifecycle();
-      this.deployment = new FlatDeployment(new BeanDeploymentArchiveImpl(lifecycle.getBootstrap().parse(beansXml), classes));
+      this.bootstrap = new WeldBootstrap();
+      this.deployment = new FlatDeployment(new BeanDeploymentArchiveImpl(bootstrap.parse(beansXml), classes));
+      
    }
-   
+
    public TestContainer(String beanArchiveId, Collection<URL> beansXml, Collection<Class<?>> classes)
    {
-      this.lifecycle = new MockLifecycle();
-      this.deployment = new FlatDeployment(new BeanDeploymentArchiveImpl(beanArchiveId, lifecycle.getBootstrap().parse(beansXml), classes));
+      this.bootstrap = new WeldBootstrap();
+      this.deployment = new FlatDeployment(new BeanDeploymentArchiveImpl(beanArchiveId, bootstrap.parse(beansXml), classes));
    }
 
    /**
@@ -234,24 +232,20 @@ public class TestContainer
 
    public TestContainer(Deployment deployment)
    {
+      this.bootstrap = new WeldBootstrap();
       this.deployment = deployment;
-      this.lifecycle = new MockLifecycle();
    }
 
    public TestContainer ensureRequestActive()
    {
-      if (!getLifecycle().isSessionActive())
-      {
-         getLifecycle().beginSession();
-      }
-      if (!getLifecycle().isConversationActive())
-      {
-         ((ConversationContext) getLifecycle().getConversationContext()).setActive(true);
-      }
-      if (!getLifecycle().isRequestActive())
-      {
-         getLifecycle().beginRequest();
-      }
+      RequestContext requestContext = instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get();
+      requestContext.activate();
+      
+      // TODO deactivate the conversation context
+      
+      BoundSessionContext sessionContext = instance().select(BoundSessionContext.class).get();
+      sessionContext.associate(sessionStore);
+      sessionContext.activate();
       return this;
    }
 
@@ -260,54 +254,68 @@ public class TestContainer
     */
    public TestContainer startContainer()
    {
-      getLifecycle().initialize(deployment);
-      getLifecycle().beginApplication();
+      this.sessionStore = new HashMap<String, Object>();
+      bootstrap
+         .startContainer(Environments.EE_INJECT, deployment)
+         .startInitialization()
+         .deployBeans()
+         .validateBeans()
+         .endInitialization();
       return this;
-   }
-   
-   /**
-    * Get the context lifecycle, allowing fine control over the contexts' state
-    * 
-    * @return
-    */
-   public MockLifecycle getLifecycle()
-   {
-      return lifecycle;
    }
 
    public WeldManager getBeanManager(BeanDeploymentArchive beanDeploymentArchive)
    {
-      return getLifecycle().getBootstrap().getManager(beanDeploymentArchive);
+      return bootstrap.getManager(beanDeploymentArchive);
    }
-   
+
    public Deployment getDeployment()
    {
       return deployment;
    }
-   
+
    /**
     * Clean up the container, ending any active contexts
     * 
     */
    public TestContainer stopContainer()
    {
-      if (getLifecycle().isRequestActive())
+      RequestContext requestContext = instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get();
+      if (requestContext.isActive())
       {
-         getLifecycle().endRequest();
+         requestContext.invalidate();
+         requestContext.deactivate();
       }
-      if (getLifecycle().isConversationActive())
+      
+      // TODO deactivate the conversation context
+      
+      BoundSessionContext sessionContext = instance().select(BoundSessionContext.class).get();
+      if (sessionContext.isActive())
       {
-         ((ConversationContext) getLifecycle().getConversationContext()).setActive(false);
+         sessionContext.invalidate();
+         sessionContext.deactivate();
+         sessionContext.dissociate(sessionStore);
       }
-      if (getLifecycle().isSessionActive())
-      {
-         getLifecycle().endSession();
-      }
-      if (getLifecycle().isApplicationActive())
-      {
-         getLifecycle().endApplication();
-      }
+      
+      bootstrap.shutdown();
+      
       return this;
+   }
+   
+   public Instance<Context> instance()
+   {
+      // This is safe -- context beans are *always* available
+      return Container.instance().deploymentManager().instance().select(Context.class);
+   }
+   
+   public Bootstrap getBootstrap()
+   {
+      return bootstrap;
+   }
+   
+   public Map<String, Object> getSessionStore()
+   {
+      return sessionStore;
    }
 
 }

@@ -20,24 +20,21 @@ import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyFactory.ClassLoaderProvider;
 
 import javax.el.ELContextListener;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
-import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.weld.environment.jetty.JettyWeldInjector;
 import org.jboss.weld.environment.servlet.deployment.ServletDeployment;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
-import org.jboss.weld.environment.servlet.services.ServletServicesImpl;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.tomcat.WeldForwardingAnnotationProcessor;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.servlet.api.ServletListener;
-import org.jboss.weld.servlet.api.ServletServices;
 import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,10 +48,10 @@ public class Listener extends ForwardingServletListener
    
    private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
    private static final String WELD_LISTENER_CLASS_NAME = "org.jboss.weld.servlet.WeldListener";
-   private static final String APPLICATION_BEAN_STORE_ATTRIBUTE_NAME = Listener.class.getName() + ".applicationBeanStore";
    private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
    private static final String JETTY_REQUIRED_CLASS_NAME = "org.mortbay.jetty.servlet.ServletHandler";
    public  static final String INJECTOR_ATTRIBUTE_NAME = "org.jboss.weld.environment.jetty.JettyWeldInjector";
+   public static final String BEAN_MANAGER_ATTRIBUTE_NAME = Listener.class.getPackage().getName() + "." + BeanManager.class.getName();
 
    private final transient Bootstrap bootstrap;
    private final transient ServletListener weldListener;
@@ -112,8 +109,6 @@ public class Listener extends ForwardingServletListener
          }
          
       };
-      BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
-      sce.getServletContext().setAttribute(APPLICATION_BEAN_STORE_ATTRIBUTE_NAME, applicationBeanStore);
       
       ServletDeployment deployment = new ServletDeployment(sce.getServletContext(), bootstrap);
       try
@@ -127,10 +122,7 @@ public class Listener extends ForwardingServletListener
     	 log.warn("@Resource injection not available in simple beans");
       }
       
-      deployment.getServices().add(ServletServices.class,
-            new ServletServicesImpl(deployment.getWebAppBeanDeploymentArchive()));
-      
-      bootstrap.startContainer(Environments.SERVLET, deployment, applicationBeanStore).startInitialization();
+      bootstrap.startContainer(Environments.SERVLET, deployment).startInitialization();
       manager = bootstrap.getManager(deployment.getWebAppBeanDeploymentArchive());
 
       boolean tomcat = true;
@@ -187,6 +179,7 @@ public class Listener extends ForwardingServletListener
       }
 
       // Push the manager into the servlet context so we can access in JSF
+      sce.getServletContext().setAttribute(BEAN_MANAGER_ATTRIBUTE_NAME, manager);
       
       if (JspFactory.getDefaultFactory() != null)
       {

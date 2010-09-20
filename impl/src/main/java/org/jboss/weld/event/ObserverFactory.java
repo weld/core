@@ -26,7 +26,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
 /**
- * Basic factory class that produces implicit observers for observer methods.
+ * Bound factory class that produces implicit observers for observer methods.
  * 
  * @author David Allen
  * 

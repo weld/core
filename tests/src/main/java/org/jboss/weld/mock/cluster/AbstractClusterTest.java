@@ -23,7 +23,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
@@ -31,12 +30,10 @@ import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.FlatDeployment;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Singleton;
-import org.jboss.weld.context.ContextLifecycle;
-import org.jboss.weld.context.api.BeanStore;
-import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.context.beanstore.HashMapBeanStore;
+import org.jboss.weld.context.bound.BoundSessionContext;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.ProxyServices;
+import org.jboss.weld.util.reflection.Reflections;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
@@ -89,36 +86,23 @@ public class AbstractClusterTest
       SwitchableSingletonProvider.use(id);
    }
 
-   private Map<String, ContextualInstance<?>> getContextualInstances(BeanStore beanStore)
+   protected void replicateSession(int fromId, TestContainer fromContainer, int toId, TestContainer toContainer) throws Exception
    {
-      Map<String, ContextualInstance<?>> instances = new HashMap<String, ContextualInstance<?>>();
-      for (String id : beanStore.getContextualIds())
-      {
-         instances.put(id, beanStore.get(id));
-      }
-      return instances;
-   }
-
-   private BeanStore setContextualInstances(Map<String, ContextualInstance<?>> instances)
-   {
-      BeanStore beanStore = new HashMapBeanStore();
-      for (Map.Entry<String, ContextualInstance<?>> i : instances.entrySet())
-      {
-         beanStore.put(i.getKey(), i.getValue());
-      }
-      return beanStore;
-   }
-
-   @SuppressWarnings("unchecked")
-   protected void replicateSession(int fromId, BeanManagerImpl fromBeanManager, int toId, BeanManagerImpl toBeanManager) throws Exception
-   {
-      // Mimic replicating the session
-      BeanStore sessionBeanStore = fromBeanManager.getServices().get(ContextLifecycle.class).getSessionContext().getBeanStore();
-      Map<String, ContextualInstance<?>> contextuals = getContextualInstances(sessionBeanStore);
-      byte[] bytes = serialize(contextuals);
+      // Mimic replicating the session - first serialize the objects
+      byte[] bytes = serialize(fromContainer.getSessionStore());
       use(toId);
-      BeanStore replicatedSessionBeanStore = setContextualInstances((Map<String, ContextualInstance<?>>) deserialize(bytes));
-      toBeanManager.getServices().get(ContextLifecycle.class).getSessionContext().setBeanStore(replicatedSessionBeanStore);
+      
+      // Deactivate the other store
+      BoundSessionContext sessionContext = toContainer.instance().select(BoundSessionContext.class).get();
+      sessionContext.deactivate();
+      sessionContext.dissociate(toContainer.getSessionStore());
+      
+      // then copy them into the other session store
+      toContainer.getSessionStore().putAll(Reflections.<Map<String, Object>>cast(deserialize(bytes)));
+      sessionContext.associate(toContainer.getSessionStore());
+      
+      // then activate again
+      sessionContext.activate();
       use(fromId);
    }
 

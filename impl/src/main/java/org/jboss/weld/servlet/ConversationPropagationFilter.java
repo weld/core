@@ -16,16 +16,15 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.servlet.BeanProvider.conversation;
-import static org.jboss.weld.servlet.BeanProvider.conversationManager;
-
 import java.io.IOException;
 
+import javax.enterprise.context.Conversation;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.Instance;
 import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -34,29 +33,29 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.context.ContextLifecycle;
-import org.jboss.weld.conversation.ConversationImpl;
+import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.jsf.FacesUrlTransformer;
 
 /**
- * <p>A Filter for handling conversation propagation over redirects.</p>
+ * <p>
+ * A Filter for handling conversation propagation over redirects.
+ * </p>
  * 
- * <p>This fiter intercepts the call to {@link HttpServletResponse#sendRedirect(String)} and
- * appends the conversation id request parameter to the URL if the conversation is long-running,
- * but only if the request parameter is not already present.</p>
- * 
- * FIXME This filter is specifically for JSF and should be repackaged or split up to support non-JSF environments.
+ * <p>
+ * This fiter intercepts the call to
+ * {@link HttpServletResponse#sendRedirect(String)} and appends the conversation
+ * id request parameter to the URL if the conversation is long-running, but only
+ * if the request parameter is not already present.
+ * </p>
  * 
  * @author Nicklas Karlsson
  */
 public class ConversationPropagationFilter implements Filter
 {
    
-   private ServletContext ctx;
-   
    public void init(FilterConfig config) throws ServletException
    {
-      ctx = config.getServletContext();
    }
 
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
@@ -67,7 +66,7 @@ public class ConversationPropagationFilter implements Filter
       }
       chain.doFilter(request, response);
    }
-   
+
    public void destroy()
    {
    }
@@ -79,18 +78,23 @@ public class ConversationPropagationFilter implements Filter
          @Override
          public void sendRedirect(String path) throws IOException
          {
-            if (Container.instance().services().get(ContextLifecycle.class).isConversationActive())
+            ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
+            if (conversationContext.isActive())
             {
-               ConversationImpl conversation = conversation(ctx);
+               Conversation conversation = conversationContext.getCurrentConversation();
                if (!conversation.isTransient())
                {
-                  path = new FacesUrlTransformer(path, FacesContext.getCurrentInstance()).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversation.getId()).encode();
-                  conversationManager(ctx).teardownConversation();
+                  path = new FacesUrlTransformer(path, FacesContext.getCurrentInstance()).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversationContext.getParameterName(), conversation.getId()).encode();
                }
             }
             super.sendRedirect(path);
          }
       };
    }
-
+   
+   
+   private static Instance<Context> instance()
+   {
+      return Container.instance().deploymentManager().instance().select(Context.class);
+   }
 }

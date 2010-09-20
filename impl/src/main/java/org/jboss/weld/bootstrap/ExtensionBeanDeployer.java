@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.bootstrap;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.context.spi.Context;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Extension;
 
@@ -48,13 +50,15 @@ public class ExtensionBeanDeployer
    private final Set<Metadata<Extension>> extensions;
    private final Deployment deployment;
    private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
+   private final Collection<ContextHolder<? extends Context>> contexts;
    
-   public ExtensionBeanDeployer(BeanManagerImpl manager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
+   public ExtensionBeanDeployer(BeanManagerImpl manager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts)
    {
       this.beanManager = manager;
       this.extensions = new HashSet<Metadata<Extension>>();
       this.deployment = deployment;
       this.beanDeployments = beanDeployments;
+      this.contexts = contexts;
    }
    
    public ExtensionBeanDeployer deployBeans()
@@ -66,7 +70,7 @@ public class ExtensionBeanDeployer
          WeldClass<Extension> clazz = (WeldClass<Extension>) classTransformer.loadClass(extension.getValue().getClass());
          
          // Locate the BeanDeployment for this extension
-         BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, clazz.getJavaClass());
+         BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, contexts, clazz.getJavaClass());
          
          ExtensionBean bean = new ExtensionBean(beanDeployment.getBeanManager(), clazz, extension);
          Set<ObserverMethodImpl<?, ?>> observerMethods = new HashSet<ObserverMethodImpl<?,?>>();

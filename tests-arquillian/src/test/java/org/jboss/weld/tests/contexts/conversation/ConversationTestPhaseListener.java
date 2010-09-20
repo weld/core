@@ -22,12 +22,11 @@ import javax.enterprise.context.ConversationScoped;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.weld.jsf.JsfHelper;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.servlet.ServletHelper;
-import org.jboss.weld.test.Utils;
 
 public class ConversationTestPhaseListener implements PhaseListener
 {
@@ -52,8 +51,16 @@ public class ConversationTestPhaseListener implements PhaseListener
    }
 
    public void beforePhase(PhaseEvent event)
-   {
-      BeanManagerImpl beanManager = ServletHelper.getModuleBeanManager(JsfHelper.getServletContext(event.getFacesContext()));
+   { 
+      BeanManagerImpl beanManager;
+      try
+      {
+         beanManager = (BeanManagerImpl) new InitialContext().lookup("java:comp/BeanManager");
+      }
+      catch (NamingException e)
+      {
+         throw new RuntimeException("Error looking up java:comp/BeanManager ", e);
+      }
       if (event.getPhaseId().equals(PhaseId.APPLY_REQUEST_VALUES))
       {
          try
@@ -68,11 +75,11 @@ public class ConversationTestPhaseListener implements PhaseListener
       }
       if (event.getPhaseId().equals(PhaseId.RENDER_RESPONSE))
       {
-         Conversation conversation = Utils.getReference(beanManager, Conversation.class);
+         Conversation conversation = beanManager.instance().select(Conversation.class).get();
          HttpServletResponse response = (HttpServletResponse) event.getFacesContext().getExternalContext().getResponse();
          response.addHeader(CID_HEADER_NAME, conversation.getId() == null ? " null" : conversation.getId());
          response.addHeader(LONG_RUNNING_HEADER_NAME, String.valueOf(!conversation.isTransient()));
-         response.addHeader(Cloud.RAINED_HEADER_NAME, new Boolean(Utils.getReference(beanManager, Cloud.class).isRained()).toString());
+         response.addHeader(Cloud.RAINED_HEADER_NAME, new Boolean(beanManager.instance().select(Cloud.class).get().isRained()).toString());
          response.addHeader(ACTIVE_BEFORE_APPLY_REQUEST_VALUES_HEADER_NAME, new Boolean(activeBeforeApplyRequestValues).toString());
       }
    }

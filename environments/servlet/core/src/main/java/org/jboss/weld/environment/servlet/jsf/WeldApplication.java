@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.environment.servlet.jsf;
 
+import static org.jboss.weld.environment.servlet.Listener.BEAN_MANAGER_ATTRIBUTE_NAME;
+
 import javax.el.ELContextListener;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
@@ -24,6 +26,7 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
+import org.jboss.weld.environment.servlet.Listener;
 import org.jboss.weld.environment.servlet.util.ForwardingELResolver;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.TransparentELResolver;
@@ -116,11 +119,11 @@ public class WeldApplication extends ForwardingApplication
             throw new IllegalStateException("Not in a servlet environment!");
          }
          ServletContext ctx = (ServletContext) facesContext.getExternalContext().getContext();
-         if (ctx.getAttribute(BeanManager.class.getName()) == null)
+         if (ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME) == null)
          {
             return null;
          }
-         this.beanManager = (BeanManager) ctx.getAttribute(BeanManager.class.getName());
+         this.beanManager = (BeanManager) ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
       }
       
       return beanManager;

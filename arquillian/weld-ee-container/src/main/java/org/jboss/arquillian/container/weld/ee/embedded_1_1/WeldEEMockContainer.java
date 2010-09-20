@@ -20,13 +20,6 @@ import static org.jboss.arquillian.container.weld.ee.embedded_1_1.Utils.findArch
 import static org.jboss.arquillian.container.weld.ee.embedded_1_1.Utils.findBeanClasses;
 import static org.jboss.arquillian.container.weld.ee.embedded_1_1.Utils.findBeansXml;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockHttpSession;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockServletContext;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.arquillian.protocol.local.LocalMethodExecutor;
 import org.jboss.arquillian.spi.Configuration;
@@ -39,13 +32,10 @@ import org.jboss.arquillian.spi.event.container.AfterDeploy;
 import org.jboss.arquillian.spi.event.container.BeforeUnDeploy;
 import org.jboss.arquillian.spi.event.suite.After;
 import org.jboss.arquillian.spi.event.suite.Before;
-import org.jboss.arquillian.spi.event.suite.EventHandler;
-import org.jboss.arquillian.spi.event.suite.TestEvent;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.classloader.ShrinkWrapClassLoader;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.manager.api.WeldManager;
-import org.jboss.weld.servlet.HttpSessionManager;
 
 /**
  * WeldEEMockConainer
@@ -64,20 +54,17 @@ public class WeldEEMockContainer implements DeployableContainer
    }
 
    public ContainerMethodExecutor deploy(Context context, Archive<?> archive) throws DeploymentException
-   {
-      /* Revert until 1.1 Weld is released.. https://jira.jboss.org/browse/ARQ-185  
+   {  
       boolean enableConversation = context.get(Configuration.class)
                                           .getContainerConfig(WeldEEMockConfiguration.class)
                                           .isEnableConversationScope();
-      */
-      boolean enableConversation = false;
       
       ShrinkWrapClassLoader classLoader = new ShrinkWrapClassLoader(archive.getClass().getClassLoader(), archive);
       ContextClassLoaderManager classLoaderManager = new ContextClassLoaderManager(classLoader);
       classLoaderManager.enable();
       
       TestContainer container = new TestContainer(findArchiveId(archive), findBeansXml(archive), findBeanClasses(archive, classLoader));
-      Bootstrap bootstrap = container.getLifecycle().getBootstrap();
+      Bootstrap bootstrap = container.getBootstrap();
 
       context.add(ContextClassLoaderManager.class, classLoaderManager);
 
@@ -89,38 +76,14 @@ public class WeldEEMockContainer implements DeployableContainer
       context.add(WeldManager.class, container.getBeanManager(container.getDeployment().getBeanDeploymentArchives().iterator().next()));
 
       context.register(AfterDeploy.class, new SessionLifeCycleCreator());
-      context.register(BeforeUnDeploy.class, new SessionLifeCycleDestoryer());
+      context.register(BeforeUnDeploy.class, new SessionLifeCycleDestroyer());
       
       context.register(Before.class, new RequestLifeCycleCreator());
 
-      // handler to 'Produce' a fake HTTPSession
-      // TODO: Weld ConversationManager should communicate with a Service so it's possible to override the HttpSessionManager as part of Bootstrap.
-      context.register(Before.class, new EventHandler<TestEvent>()
-      {
-         private Map<String, HttpSession> sessionStore = new HashMap<String, HttpSession>();
-         
-         public void callback(Context context, TestEvent event) throws Exception
-         {
-            WeldManager manager = context.get(WeldManager.class);
-            CDISessionID id = context.get(CDISessionID.class);
-            if(id != null)
-            {
-               HttpSessionManager sessionManager = Utils.getBeanReference(manager, HttpSessionManager.class);
-
-               HttpSession session = sessionStore.get(id.getId()); 
-               if(session == null)
-               {
-                  session = new MockHttpSession(id.getId(), new MockServletContext("/"));
-               }
-               sessionManager.setSession(session);
-               sessionStore.put(id.getId(), session);
-            }
-         }
-      });
       if(enableConversation)
       {
          context.register(Before.class, new ConversationLifeCycleCreator());         
-         context.register(After.class, new ConversationLifeCycleDestoryer());
+         context.register(After.class, new ConversationLifeCycleDestroyer());
       }
       context.register(After.class, new RequestLifeCycleDestroyer());
       

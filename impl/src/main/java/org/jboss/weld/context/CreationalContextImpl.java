@@ -23,6 +23,8 @@ import java.util.Map;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.weld.util.reflection.Reflections;
+
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreationalContext<T>, Serializable
@@ -64,7 +66,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
    
    public <S> S getIncompleteInstance(Contextual<S> bean)
    {
-      return incompleteInstances == null ? null : (S) incompleteInstances.get(bean);
+      return incompleteInstances == null ? null : Reflections.<S>cast(incompleteInstances.get(bean));
    }
    
    public boolean containsIncompleteInstance(Contextual<?> bean)

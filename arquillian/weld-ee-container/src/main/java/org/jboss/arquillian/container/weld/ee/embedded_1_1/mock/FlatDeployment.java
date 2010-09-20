@@ -17,7 +17,6 @@
 package org.jboss.arquillian.container.weld.ee.embedded_1_1.mock;
 
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.servlet.api.ServletServices;
 
 public class FlatDeployment extends AbstractDeployment
 {
@@ -31,7 +30,6 @@ public class FlatDeployment extends AbstractDeployment
    protected void configureServices()
    {
       super.configureServices();
-      getServices().add(ServletServices.class, new MockServletServices(getWar()));
    }
 
    public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
