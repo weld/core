@@ -75,6 +75,14 @@
             </methods>
          </class>
 
+         <!-- CDITCK-181 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.lookup.clientProxy.ClientProxyTest">
+            <methods>
+               <exclude name="testInactiveScope" />
+            </methods>
+         </class>
+
          <!-- Issues in Weld (the RI) -->
 
          <!-- WELD-401 -->
