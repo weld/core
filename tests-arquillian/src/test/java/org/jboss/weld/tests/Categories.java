@@ -59,148 +59,183 @@ import org.junit.runners.model.RunnerBuilder;
  * }
  * </pre>
  */
-public class Categories extends Suite {
+public class Categories extends Suite
+{
    @Retention(RetentionPolicy.RUNTIME)
-   public @interface IncludeCategory {
-       public Class<?>[] value();
+   public @interface IncludeCategory 
+   {
+      public Class<?>[] value();
    }
 
    @Retention(RetentionPolicy.RUNTIME)
-   public @interface ExcludeCategory {
-       public Class<?>[] value();
+   public @interface ExcludeCategory 
+   {
+      public Class<?>[] value();
    }
 
-   public static class CategoryFilter extends Filter {
-       public static CategoryFilter include(Class<?>... categoryType) {
-           return new CategoryFilter(categoryType, null);
-       }
-       public static CategoryFilter include(Class<?> categoryType) {
-           return new CategoryFilter(new Class<?>[] {categoryType}, null);
-       }
+   public static class CategoryFilter extends Filter
+   {
+      public static CategoryFilter include(Class<?>... categoryType)
+      {
+         return new CategoryFilter(categoryType, null);
+      }
 
-       private final Class<?>[] fIncluded;
+      public static CategoryFilter include(Class<?> categoryType)
+      {
+         return new CategoryFilter(new Class<?>[]{categoryType}, null);
+      }
 
-       private final Class<?>[] fExcluded;
+      private final Class<?>[] fIncluded;
 
-       public CategoryFilter(Class<?>[] includedCategory,
-               Class<?>[] excludedCategory) {
-           fIncluded= includedCategory;
-           fExcluded= excludedCategory;
-       }
+      private final Class<?>[] fExcluded;
 
-       @Override
-       public String describe() {
-           return ((fIncluded == null || fIncluded.length == 1) ? "category ":"categories ") + join(", ", fIncluded);
-       }
-       
-       private String join(String seperator, Class<?>... values)
-       {
-           if(values == null || values.length == 0)
-           {
-               return "";
-           }
-           StringBuilder sb = new StringBuilder(values[0].toString());
-           for(int i = 1; i < values.length; i++)
-           {
-               sb.append(seperator).append(values[i].toString());
-           }
-           return sb.toString();
-       }
+      public CategoryFilter(Class<?>[] includedCategory, Class<?>[] excludedCategory)
+      {
+         fIncluded = includedCategory;
+         fExcluded = excludedCategory;
+      }
 
-       @Override
-       public boolean shouldRun(Description description) {
-           if (hasCorrectCategoryAnnotation(description))
+      @Override
+      public String describe()
+      {
+         return ((fIncluded == null || fIncluded.length == 1) ? "category " : "categories ") + join(", ", fIncluded);
+      }
+
+      private String join(String seperator, Class<?>... values)
+      {
+         if (values == null || values.length == 0)
+         {
+            return "";
+         }
+         StringBuilder sb = new StringBuilder(values[0].toString());
+         for (int i = 1; i < values.length; i++)
+         {
+            sb.append(seperator).append(values[i].toString());
+         }
+         return sb.toString();
+      }
+
+      @Override
+      public boolean shouldRun(Description description)
+      {
+         if (hasCorrectCategoryAnnotation(description))
+         {
+            return true;
+         }
+         for (Description each : description.getChildren())
+         {
+            if (shouldRun(each))
+            {
                return true;
-           for (Description each : description.getChildren())
-               if (shouldRun(each))
-                   return true;
-           return false;
-       }
+            }
+         }
+         return false;
+      }
 
-       private boolean hasCorrectCategoryAnnotation(Description description) {
-           List<Class<?>> categories= categories(description);
-           if (categories.isEmpty())
-               return fIncluded == null;
-           
-           if(!methodContainsAnyExcludedCategories(categories, fExcluded))
-           {
-               return methodContainsAllIncludedCategories(categories, fIncluded);
-           }
-           return false;
-       }
+      private boolean hasCorrectCategoryAnnotation(Description description)
+      {
+         List<Class<?>> categories = categories(description);
+         if (categories.isEmpty())
+         {
+            return fIncluded == null;
+         }
 
-       private List<Class<?>> categories(Description description) {
-           ArrayList<Class<?>> categories= new ArrayList<Class<?>>();
-           categories.addAll(Arrays.asList(directCategories(description)));
-           categories.addAll(Arrays.asList(directCategories(parentDescription(description))));
-           return categories;
-       }
+         if (!methodContainsAnyExcludedCategories(categories, fExcluded))
+         {
+            return methodContainsAllIncludedCategories(categories, fIncluded);
+         }
+         return false;
+      }
 
-       private Description parentDescription(Description description) {
-           // TODO: how heavy are we cringing?
-           return Description.createSuiteDescription(description.getTestClass());
-       }
+      private List<Class<?>> categories(Description description)
+      {
+         ArrayList<Class<?>> categories = new ArrayList<Class<?>>();
+         categories.addAll(Arrays.asList(directCategories(description)));
+         categories.addAll(Arrays.asList(directCategories(parentDescription(description))));
+         return categories;
+      }
 
-       private Class<?>[] directCategories(Description description) {
-           Category annotation= description.getAnnotation(Category.class);
-           if (annotation == null)
-               return new Class<?>[0];
-           return annotation.value();
-       }
-       
-       private boolean methodContainsAnyExcludedCategories(
-               List<Class<?>> categories, Class<?>[] excludedCategories) {
-           if (excludedCategories != null) {
-               for (Class<?> eachExcluded : excludedCategories) {
-                   if (containsCategory(categories, eachExcluded)) {
-                       return true;
-                   }
+      private Description parentDescription(Description description)
+      {
+         // TODO: how heavy are we cringing?
+         return Description.createSuiteDescription(description.getTestClass());
+      }
+
+      private Class<?>[] directCategories(Description description)
+      {
+         Category annotation = description.getAnnotation(Category.class);
+         if (annotation == null) 
+         {
+            return new Class<?>[0];
+         }
+         return annotation.value();
+      }
+
+      private boolean methodContainsAnyExcludedCategories(List<Class<?>> categories, Class<?>[] excludedCategories)
+      {
+         if (excludedCategories != null)
+         {
+            for (Class<?> eachExcluded : excludedCategories)
+            {
+               if (containsCategory(categories, eachExcluded))
+               {
+                  return true;
                }
-           }
-           return false;
-       }
+            }
+         }
+         return false;
+      }
 
-       private boolean methodContainsAllIncludedCategories(
-               List<Class<?>> categories, Class<?>[] includedCategories) {
-           if (includedCategories != null) {
-               for (Class<?> eachIncluded : includedCategories) {
-                   if (!containsCategory(categories, eachIncluded)) {
-                       return false;
-                   }
+      private boolean methodContainsAllIncludedCategories(List<Class<?>> categories, Class<?>[] includedCategories)
+      {
+         if (includedCategories != null)
+         {
+            for (Class<?> eachIncluded : includedCategories)
+            {
+               if (!containsCategory(categories, eachIncluded))
+               {
+                  return false;
                }
-           }
-           return true;
-       }
+            }
+         }
+         return true;
+      }
 
-       private boolean containsCategory(List<Class<?>> categories,
-               Class<?> categoryToMatch) {
-           for (Class<?> each : categories) {
-               if (categoryToMatch.isAssignableFrom(each)) {
-                   return true;
-               }
-           }
-           return false;
-       }
+      private boolean containsCategory(List<Class<?>> categories, Class<?> categoryToMatch)
+      {
+         for (Class<?> each : categories)
+         {
+            if (categoryToMatch.isAssignableFrom(each))
+            {
+               return true;
+            }
+         }
+         return false;
+      }
    }
 
-   public Categories(Class<?> klass, RunnerBuilder builder)
-           throws InitializationError {
-       super(klass, builder);
-       try {
-           filter(new CategoryFilter(getIncludedCategory(klass),
-                   getExcludedCategory(klass)));
-       } catch (NoTestsRemainException e) {
-           throw new InitializationError(e);
-       }
+   public Categories(Class<?> klass, RunnerBuilder builder) throws InitializationError
+   {
+      super(klass, builder);
+      try
+      {
+         filter(new CategoryFilter(getIncludedCategory(klass), getExcludedCategory(klass)));
+      }
+      catch (NoTestsRemainException e)
+      {
+         throw new InitializationError(e);
+      }
    }
 
-   private Class<?>[] getIncludedCategory(Class<?> klass) {
-       IncludeCategory annotation= klass.getAnnotation(IncludeCategory.class);
-       return annotation == null ? null : annotation.value();
+   private Class<?>[] getIncludedCategory(Class<?> klass)
+   {
+      IncludeCategory annotation = klass.getAnnotation(IncludeCategory.class);
+      return annotation == null ? null : annotation.value();
    }
 
-   private Class<?>[] getExcludedCategory(Class<?> klass) {
-       ExcludeCategory annotation= klass.getAnnotation(ExcludeCategory.class);
-       return annotation == null ? null : annotation.value();
+   private Class<?>[] getExcludedCategory(Class<?> klass)
+   {
+      ExcludeCategory annotation = klass.getAnnotation(ExcludeCategory.class);
+      return annotation == null ? null : annotation.value();
    }
 }
