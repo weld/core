@@ -180,6 +180,8 @@
    </build>
 
    <profiles>
+	
+	<!-- Default standalone profile using weld-ee-embedded container. Used to run fast embedded tests. -->
       <profile>
          <id>defualt</id>
          <activation>
@@ -212,6 +214,8 @@
             </plugins>
          </build>
       </profile>
+	
+	<!-- InContainer profile using JBoss AS Managed. Runs the full integration test suite, used by e.g. Hudson. -->
       <profile>
          <id>incontainer</id>
          <activation>
@@ -254,6 +258,8 @@
             </plugins>
          </build>
       </profile>
+
+	<!-- InContainer profile using JBoss AS Remote container. Used for debugging single tests, -Dtest=.. -->      
       <profile>
          <id>incontainer-remote</id>
          <activation>
@@ -293,6 +299,85 @@
                   <directory>src/test/resources</directory>
                </testResource>
             </testResources>
+         </build>
+      </profile>
+
+	<!-- Performance test related profiles -->
+	
+	<!-- Standalone performance test profile using weld-ee-embedded container -->
+      <profile>
+         <id>standalone-perf</id>
+         <activation>
+            <property>
+               <name>standalone-perf</name>
+            </property>
+         </activation>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.weld.arquillian.container</groupId>
+               <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+               <scope>provided</scope>
+               <!--
+                  should be test, but we need shrinkwrap-impl for compiling
+                  BeanArchive, having this in test scopes override the
+                  shrinkwrap-api scope. ??
+               -->
+            </dependency>
+         </dependencies>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <test>org.jboss.weld.tests.NormalPerformanceSuite</test>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+
+	<!-- InContianer Performance test profile using JBoss AS Managed container -->
+      <profile>
+         <id>incontainer-perf</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+            <property>
+               <name>incontainer-perf</name>
+            </property>
+         </activation>
+         <properties>
+            <test>org.jboss.weld.tests.IntegrationPerformanceSuite</test>
+         </properties>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.arquillian.container</groupId>
+               <artifactId>arquillian-jbossas-managed-6</artifactId>
+               <scope>test</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.jbossas</groupId>
+               <artifactId>jboss-server-manager</artifactId>
+               <scope>test</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.jbossas</groupId>
+               <artifactId>jboss-as-client</artifactId>
+               <type>pom</type>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <test>${test}</test>
+                     <parallel>none</parallel>
+                  </configuration>
+               </plugin>
+            </plugins>
          </build>
       </profile>
 
