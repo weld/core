@@ -14,12 +14,9 @@
   </head>
   <body>
    <f:view>
-      <h:outputText value="#{cloud.name}" id="cloudName" />
+      <h:outputText value="#{thunderstorm.name}" id="thunderstormName" />
       <h:form>
-         <h:commandButton action="#{cloud.thunderstorm}" value="Start Conversation" id="beginConversation" />
-      </h:form>
-      <h:form>
-         <h:commandButton action="#{cloud.hailstorm}" value="Start Conversation2" id="hail" />
+         <h:commandButton action="#{thunderstorm.cloud}" value="cloud" id="cloud" />
       </h:form>
    </f:view>
   </body>

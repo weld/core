@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.context.unbound;
 
-import java.lang.annotation.Annotation;
-
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.weld.context.AbstractSharedContext;
@@ -26,7 +24,7 @@ import org.jboss.weld.context.ApplicationContext;
 public class ApplicationContextImpl extends AbstractSharedContext implements ApplicationContext
 {
    
-   public Class<? extends Annotation> getScope()
+   public Class<ApplicationScoped> getScope()
    {
       return ApplicationScoped.class;
    }

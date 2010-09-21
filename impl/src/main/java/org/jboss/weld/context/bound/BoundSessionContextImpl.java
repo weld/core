@@ -32,8 +32,8 @@ public class BoundSessionContextImpl extends AbstractBoundContext<Map<String, Ob
    {
       if (getBeanStore() == null)
       {
-         setBeanStore(new MapBeanStore(namingScheme, storage));
          storage.put(IDENTIFIER, IDENTIFIER);
+         setBeanStore(new MapBeanStore(namingScheme, storage));
          return true;
       }
       else
@@ -46,16 +46,24 @@ public class BoundSessionContextImpl extends AbstractBoundContext<Map<String, Ob
    {
       if (storage.containsKey(IDENTIFIER))
       {
-         storage.remove(IDENTIFIER);
-         setBeanStore(null);
-         return true;
+         try
+         {
+            storage.remove(IDENTIFIER);
+            setBeanStore(null);
+            return true;
+         }
+         finally
+         {
+            cleanup();
+         }
+
       }
       else
       {
          return false;
       }
    }
-   
+
    @Override
    public void invalidate()
    {

@@ -13,15 +13,6 @@
   <head>
   </head>
   <body>
-   <f:view>
-      <h:outputText value="#{cloud.name}" id="cloudName" />
-      <h:form>
-         <h:commandButton action="#{cloud.thunderstorm}" value="Start Conversation" id="beginConversation" />
-      </h:form>
-      <h:form>
-         <h:commandButton action="#{cloud.hailstorm}" value="Start Conversation2" id="hail" />
-      </h:form>
-   </f:view>
   </body>
   </html>
 </jsp:root>

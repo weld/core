@@ -31,8 +31,8 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
       if (request.getAttribute(IDENTIFIER) == null)
       {
          // Don't reassociate
-         setBeanStore(new LazySessionBeanStore(request, namingScheme));
          request.setAttribute(IDENTIFIER, IDENTIFIER);
+         setBeanStore(new LazySessionBeanStore(request, namingScheme));
          return true;
       }
       else
@@ -43,33 +43,50 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
 
    public boolean dissociate(HttpServletRequest request)
    {
+
       if (request.getAttribute(IDENTIFIER) != null)
       {
-         setBeanStore(null);
-         request.removeAttribute(IDENTIFIER);
-         return true;
+         try
+         {
+            setBeanStore(null);
+            request.removeAttribute(IDENTIFIER);
+            return true;
+         }
+         finally
+         {
+            cleanup();
+         }
       }
       else
       {
          return false;
       }
+
    }
 
    public boolean destroy(HttpSession session)
    {
-      HttpConversationContext conversationContext = getConversationContext();
       if (getBeanStore() == null)
       {
-         setBeanStore(new EagerSessionBeanStore(namingScheme, session));
-         activate();
-         invalidate();
-         conversationContext.destroy(session);
-         deactivate();
-         setBeanStore(null);
-         return true;
+         try
+         {
+            HttpConversationContext conversationContext = getConversationContext();
+            setBeanStore(new EagerSessionBeanStore(namingScheme, session));
+            activate();
+            invalidate();
+            conversationContext.destroy(session);
+            deactivate();
+            setBeanStore(null);
+            return true;
+         }
+         finally
+         {
+            cleanup();
+         }
       }
       else
       {
+         HttpConversationContext conversationContext = getConversationContext();
          // We are in a request, invalidate it
          invalidate();
          if (conversationContext.isActive())
@@ -89,7 +106,7 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
    {
       return SessionScoped.class;
    }
-   
+
    protected HttpConversationContext getConversationContext()
    {
       return Container.instance().deploymentManager().instance().select(HttpConversationContext.class).get();

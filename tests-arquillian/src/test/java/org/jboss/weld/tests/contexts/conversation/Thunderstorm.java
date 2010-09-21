@@ -19,80 +19,36 @@ package org.jboss.weld.tests.contexts.conversation;
 import java.io.Serializable;
 
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 @Named
 @ConversationScoped
-public class Cloud implements Serializable
+public class Thunderstorm implements Serializable
 {
-   /**
-	 * 
-	 */
+   
+   @Inject Cloud cloud;
+   
+   public static final String NAME = Thunderstorm.class.getName();
+
 	private static final long serialVersionUID = 5765109971012677278L;
-
-	public static final String NAME = Cloud.class.getName() + ".Pete";
-   
-   public static final String RAINED_HEADER_NAME = Cloud.class.getName() + ".rained";
-   
-   private static boolean destroyed = false;
-
-   private boolean rained;
-   
-   private String name = NAME;
-   
-   @Inject Conversation conversation;
    
    @PreDestroy
    public void destroy()
    {
-      destroyed = true;
-   }
-   
-   public static boolean isDestroyed()
-   {
-      return destroyed;
-   }
-   
-   public static void setDestroyed(boolean destroyed)
-   {
-      Cloud.destroyed = destroyed;
+      throw new RuntimeException();
    }
    
    public String getName()
    {
-      return name;
+      return NAME;
    }
    
-   public void rain()
+   public String cloud()
    {
-      rained = true;
-      System.out.println("rain!");
-   }
-   
-   public boolean isRained()
-   {
-      return rained;
-   }
-   
-   public void setName(String name)
-   {
-      this.name = name;
-   }
-   
-   public String thunderstorm()
-   {
-      conversation.begin();
-      return "thunder";
-   }
-   
-   public String hailstorm()
-   {
-      conversation.begin();
-      return "hail";
+      cloud.setName("bob");
+      return "cloud";
    }
    
 }

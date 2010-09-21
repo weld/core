@@ -91,6 +91,7 @@ public class WeldEmbeddedIntegrationConversationScopeTestCase
       conversation.begin();
    }
 
+   // This works most of the time, you can uncomment to test manually
    @Test @Ignore // Can't do dependent methods in JUnit
    public void shouldBeAbleToReadAgeAfterConversationWasStarted() throws Exception 
    {

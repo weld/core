@@ -32,9 +32,9 @@ public class BoundRequestContextImpl extends AbstractBoundContext<Map<String, Ob
    {
       if (getBeanStore() == null)
       {
+         storage.put(IDENTIFIER, IDENTIFIER);
          setBeanStore(new MapBeanStore(namingScheme, storage));
          getBeanStore().attach();
-         storage.put(IDENTIFIER, IDENTIFIER);
          return true;
       }
       else
@@ -47,17 +47,24 @@ public class BoundRequestContextImpl extends AbstractBoundContext<Map<String, Ob
    {
       if (storage.containsKey(IDENTIFIER))
       {
-         storage.remove(IDENTIFIER);
-         setBeanStore(null);
-         
-         return true;
+         try
+         {
+            storage.remove(IDENTIFIER);
+            setBeanStore(null);
+
+            return true;
+         }
+         finally
+         {
+            cleanup();
+         }
       }
       else
       {
          return false;
       }
    }
-   
+
    @Override
    public void invalidate()
    {

@@ -68,6 +68,7 @@ public abstract class AbstractManagedContext extends AbstractContext implements 
    {
       super.cleanup();
       active.remove();
+      valid.remove();
    }
 
 }

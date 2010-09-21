@@ -34,9 +34,9 @@ import org.jboss.weld.context.beanstore.http.RequestBeanStore;
 
 public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest> implements HttpRequestContext
 {
-   
+
    private static final String IDENTIFIER = HttpRequestContextImpl.class.getName();
-   
+
    private final NamingScheme namingScheme;
 
    /**
@@ -47,14 +47,14 @@ public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest>
       super(false);
       this.namingScheme = new SimpleNamingScheme(HttpRequestContext.class.getName());
    }
-   
+
    public boolean associate(ServletRequest request)
    {
       if (request.getAttribute(IDENTIFIER) == null)
       {
+         request.setAttribute(IDENTIFIER, IDENTIFIER);
          setBeanStore(new RequestBeanStore(request, namingScheme));
          getBeanStore().attach();
-         request.setAttribute(IDENTIFIER, IDENTIFIER);
          return true;
       }
       else
@@ -62,21 +62,29 @@ public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest>
          return false;
       }
    }
-   
+
    public boolean dissociate(ServletRequest request)
    {
       if (request.getAttribute(IDENTIFIER) != null)
       {
-         setBeanStore(null);
-         request.removeAttribute(IDENTIFIER);
-         return true;
+         try
+         {
+            setBeanStore(null);
+            request.removeAttribute(IDENTIFIER);
+            return true;
+         }
+         finally
+         {
+            cleanup();
+         }
       }
       else
       {
          return false;
       }
+
    }
-   
+
    public Class<? extends Annotation> getScope()
    {
       return RequestScoped.class;

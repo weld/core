@@ -158,28 +158,35 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
    public boolean dissociate(R request)
    {
-      if (isAssociated() && getRequestAttribute(request, IDENTIFIER) != null)
-      {
-         /*
-          * If the session is available, store the conversation id generator and
-          * convertsations if necessary.
-          */
-         if (getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false) == null)
+         if (isAssociated() && getRequestAttribute(request, IDENTIFIER) != null)
          {
-            setSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, getRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME), false);
+            try
+            {
+               /*
+                * If the session is available, store the conversation id generator and
+                * convertsations if necessary.
+                */
+               if (getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false) == null)
+               {
+                  setSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, getRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME), false);
+               }
+               if (getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null)
+               {
+                  setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME), false);
+               }
+               this.associated.set(null);
+               removeRequestAttribute(request, IDENTIFIER);
+               return true;
+            }
+            finally
+            {
+               cleanup();
+            }
          }
-         if (getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null)
+         else
          {
-            setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME), false);
+            return false;
          }
-         this.associated.set(null);
-         removeRequestAttribute(request, IDENTIFIER);
-         return true;
-      }
-      else
-      {
-         return false;
-      }
    }
 
    @Override
@@ -304,22 +311,29 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
    
    public boolean destroy(S session)
    {
-      // We are outside of request, destroy now
-      if (getSessionAttributeFromSession(session, CONVERSATIONS_ATTRIBUTE_NAME) instanceof Map<?, ?>)
+      try
       {
-         // There are no conversations to destroy
-         Map<String, ManagedConversation> conversations = cast(getSessionAttributeFromSession(session, CONVERSATIONS_ATTRIBUTE_NAME));
-         // Set the context active
-         setActive(true);
-         for (ManagedConversation conversation : conversations.values())
+         // We are outside of request, destroy now
+         if (getSessionAttributeFromSession(session, CONVERSATIONS_ATTRIBUTE_NAME) instanceof Map<?, ?>)
          {
-            String id = conversation.getId();
-            conversation.end();
-            destroyConversation(session, id);
+            // There are no conversations to destroy
+            Map<String, ManagedConversation> conversations = cast(getSessionAttributeFromSession(session, CONVERSATIONS_ATTRIBUTE_NAME));
+            // Set the context active
+            setActive(true);
+            for (ManagedConversation conversation : conversations.values())
+            {
+               String id = conversation.getId();
+               conversation.end();
+               destroyConversation(session, id);
+            }
+            setActive(false);
          }
-         setActive(false);
+         return true;
       }
-      return true;
+      finally
+      {
+         cleanup();
+      }
    }
    
    protected void destroyConversation(S session, String id)

@@ -37,9 +37,16 @@ public class RequestLifeCycleDestroyer implements EventHandler<Event> {
       CDIRequestMap map = context.get(CDIRequestMap.class);
       if (map != null)
       {
-         requestContext.invalidate();
-         requestContext.deactivate();
-         requestContext.dissociate(map);
+         try
+         {
+            requestContext.invalidate();
+            requestContext.deactivate();
+         }
+         finally
+         {
+            requestContext.dissociate(map);
+            map.clear();
+         }
       }
    }
 }

@@ -13,11 +13,11 @@ import org.jboss.weld.context.http.HttpSessionContextImpl;
 
 public class EjbRequestContextImpl extends AbstractBoundContext<InvocationContext> implements EjbRequestContext
 {
-   
+
    private static final String IDENTIFIER = HttpSessionContextImpl.class.getName();
 
    private final NamingScheme namingScheme;
-   
+
    public EjbRequestContextImpl()
    {
       super(false);
@@ -34,8 +34,9 @@ public class EjbRequestContextImpl extends AbstractBoundContext<InvocationContex
       if (!ctx.getContextData().containsKey(IDENTIFIER))
       {
          // Don't reassociate
-         setBeanStore(new InvocationContextBeanStore(namingScheme, ctx));
          ctx.getContextData().put(IDENTIFIER, IDENTIFIER);
+         setBeanStore(new InvocationContextBeanStore(namingScheme, ctx));
+
          return true;
       }
       else
@@ -48,16 +49,22 @@ public class EjbRequestContextImpl extends AbstractBoundContext<InvocationContex
    {
       if (ctx.getContextData().containsKey(IDENTIFIER))
       {
-         setBeanStore(null);
-         ctx.getContextData().remove(IDENTIFIER);
-         return true;
+         try
+         {
+            setBeanStore(null);
+            ctx.getContextData().remove(IDENTIFIER);
+            return true;
+         }
+         finally
+         {
+            cleanup();
+         }
       }
       else
       {
          return false;
       }
-   }
 
-   
+   }
 
 }

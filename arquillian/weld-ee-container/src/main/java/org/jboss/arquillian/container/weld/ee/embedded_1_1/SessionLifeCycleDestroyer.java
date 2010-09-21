@@ -22,9 +22,15 @@ public class SessionLifeCycleDestroyer implements EventHandler<Event> {
       CDISessionMap map = context.get(CDISessionMap.class);
       if(map != null)
       {
-         sessionContext.invalidate();
-         sessionContext.deactivate();
-         sessionContext.dissociate(map);
+         try
+         {
+            sessionContext.invalidate();
+            sessionContext.deactivate();
+         }
+         finally
+         {
+            sessionContext.dissociate(map);
+         }
       }
    }
 }

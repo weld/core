@@ -48,8 +48,14 @@ public class ConversationLifeCycleDestroyer implements EventHandler<Event>
 
       BoundRequest request = context.get(BoundRequest.class);
 
-      conversationContext.invalidate();
-      conversationContext.deactivate();
-      conversationContext.dissociate(request);
+      try
+      {
+         conversationContext.invalidate();
+         conversationContext.deactivate();
+      }
+      finally
+      {
+         conversationContext.dissociate(request);
+      }
    }
 }

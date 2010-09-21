@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.contexts.conversation;
+package org.jboss.weld.tests.contexts.conversation.exceptionInPhaseListener;
 
 import java.io.Serializable;
 
@@ -86,6 +86,7 @@ public class Cloud implements Serializable
    public String thunderstorm()
    {
       conversation.begin();
+      setName("gavin");
       return "thunder";
    }
    

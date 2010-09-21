@@ -48,16 +48,23 @@ public class SessionBeanInterceptor implements Serializable
       else
       {
          EjbRequestContext requestContext = Container.instance().deploymentManager().instance().select(EjbRequestContext.class).get();
-         requestContext.associate(invocation);
-         requestContext.activate();
          try
          {
-            return invocation.proceed();
+            requestContext.associate(invocation);
+            requestContext.activate();
+            try
+            {
+               return invocation.proceed();
+            }
+            finally
+            {
+               requestContext.invalidate();
+               requestContext.deactivate();
+               
+            }
          }
          finally
          {
-            requestContext.invalidate();
-            requestContext.deactivate();
             requestContext.dissociate(invocation);
          }
       }

@@ -32,7 +32,6 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.Instance;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.Container;
@@ -64,14 +63,11 @@ public class WeldListener extends AbstractServletListener
       // JBoss AS will still start the deployment even if WB fails
       if (Container.available())
       {
-         HttpSession session = event.getSession();
-         Instance<Context> instance = instance();
-         HttpSessionContext sessionContext = instance.select(HttpSessionContext.class).get();
-         HttpConversationContext conversationContext = instance.select(HttpConversationContext.class).get();
+         HttpSessionContext sessionContext = instance().select(HttpSessionContext.class).get();
 
          // Mark the session context and conversation contexts to destroy
          // instances when appropriate
-         sessionContext.destroy(session);
+         sessionContext.destroy(event.getSession());
       }
    }
 
@@ -90,18 +86,23 @@ public class WeldListener extends AbstractServletListener
             HttpRequestContext requestContext = instance.select(HttpRequestContext.class).get();
             HttpSessionContext sessionContext = instance.select(HttpSessionContext.class).get();
             HttpConversationContext conversationContext = instance.select(HttpConversationContext.class).get();
-
-            requestContext.invalidate();
-            requestContext.deactivate();
-            sessionContext.deactivate();
-            /*
-             * The conversation context is invalidated and deactivated in the
-             * WeldPhaseListener
-             */
-
-            requestContext.dissociate(request);
-            sessionContext.dissociate(request);
-            conversationContext.dissociate(request);
+            
+            try
+            {
+               requestContext.invalidate();
+               requestContext.deactivate();
+               sessionContext.deactivate();
+               /*
+                * The conversation context is invalidated and deactivated in the
+                * WeldPhaseListener
+                */
+            }
+            finally
+            {
+               requestContext.dissociate(request);
+               sessionContext.dissociate(request);
+               conversationContext.dissociate(request);
+            }
          }
          else
          {

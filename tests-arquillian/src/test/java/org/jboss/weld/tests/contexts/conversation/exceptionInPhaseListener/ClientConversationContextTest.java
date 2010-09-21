@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.contexts.conversation;
+package org.jboss.weld.tests.contexts.conversation.exceptionInPhaseListener;
 
 /*
  * JBoss, Home of Professional Open Source
@@ -78,31 +78,22 @@ public class ClientConversationContextTest
    public static WebArchive createDeployment() 
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class)
+               .addClasses(ConversationTestPhaseListener.class, Cloud.class)
                .addWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
                .addWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
                .addResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
                .addResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
-               .addResource(ClientConversationContextTest.class.getPackage(), "hailstorm.jsf", "hailstorm.jspx")
                .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
    }
    
    @Test
-   public void testConversationPropagationToNonExistentConversationLeadsException() throws Exception
+   public void testExceptionPhaseListener() throws Exception
    {
       WebClient client = new WebClient();
       client.setThrowExceptionOnFailingStatusCode(false);
-      Page page = client.getPage(getPath("/cloud.jsf", "org.jboss.jsr299"));
-      
-      Assert.assertEquals(500, page.getWebResponse().getStatusCode());
-   }
-   
-   @Test
-   public void testExceptionInPreDestroy() throws Exception
-   {
-      WebClient client = new WebClient();
       
       // First, try a transient conversation
+      
       
       // Access a page that throws an exception
       client.getPage(getPath("/thunderstorm.jsf"));
@@ -114,37 +105,9 @@ public class ClientConversationContextTest
       
       // Now start a conversation and access the page that throws an exception again
       HtmlPage thunderstorm = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "beginConversation").click();
+      // This page will error
       
-      String thunderstormName = getFirstMatchingElement(thunderstorm, HtmlSpan.class, "thunderstormName").getTextContent();
-      assertEquals(Thunderstorm.NAME, thunderstormName);
-      cloud = getFirstMatchingElement(thunderstorm, HtmlSubmitInput.class, "cloud").click();
-      
-      // And navigate to another page, checking the conversation exists by verifying that state is maintained
-      cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
-      assertEquals("bob", cloudName);
-   }
-   
-   @Test
-   public void testExceptionInPostConstruct() throws Exception
-   {
-      WebClient client = new WebClient();
-      
-      // First, try a transient conversation
-      
-      client.setThrowExceptionOnFailingStatusCode(false);
-      
-      // Access a page that throws an exception
-      client.getPage(getPath("/hailstorm.jsf"));
-      
-      // Then access another page that doesn't and check the contexts are ok
-      HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
-      String cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
-      assertEquals(Cloud.NAME, cloudName);
-      
-      // Now start a conversation and access the page that throws an exception again
-      HtmlPage hailstorm = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "hail").click();
-      
-      String cid = getCid(hailstorm);
+      String cid = getCid(thunderstorm);
       
       cloud = client.getPage(getPath("/cloud.jsf", cid));
       
@@ -165,6 +128,12 @@ public class ClientConversationContextTest
       return "http://localhost:8080/test/" + viewId;
    }
    
+   protected String getCid(Page page)
+   {
+      String url = page.getWebResponse().getRequestUrl().toString();
+      return url.substring(url.indexOf("cid=") + 4);
+   }
+   
    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)
    {
      Set<T> result = new HashSet<T>();
@@ -180,12 +149,6 @@ public class ClientConversationContextTest
      }
      return result;
      
-   }
-   
-   protected String getCid(Page page)
-   {
-      String url = page.getWebResponse().getRequestUrl().toString();
-      return url.substring(url.indexOf("cid=") + 4);
    }
  
    protected <T extends HtmlElement> T getFirstMatchingElement(HtmlPage page, Class<T> elementClass, String id)
