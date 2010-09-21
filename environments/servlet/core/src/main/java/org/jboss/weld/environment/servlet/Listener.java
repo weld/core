@@ -188,7 +188,7 @@ public class Listener extends ForwardingServletListener
       {
          try
          {
-            WeldForwardingInstanceManager.replaceAnnotationProcessor(sce, manager);
+            WeldForwardingInstanceManager.replacInstanceManager(sce, manager);
             log.info("Tomcat 7 detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported");
          }
          catch (Exception e)
