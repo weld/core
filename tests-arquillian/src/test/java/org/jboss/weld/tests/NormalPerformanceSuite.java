@@ -14,15 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.category;
+package org.jboss.weld.tests;
+
+import org.jboss.weld.tests.Categories.ExcludeCategory;
+import org.jboss.weld.tests.Categories.IncludeCategory;
+import org.jboss.weld.tests.category.Broken;
+import org.jboss.weld.tests.category.Integration;
+import org.jboss.weld.tests.category.Performance;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * Marker Interface for JUnit Category marking tests that need a full container to run
+ * IntegrationSuite
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public interface Integration extends Slow
+@RunWith(Categories.class)
+@IncludeCategory(Performance.class)
+@ExcludeCategory({Broken.class, Integration.class})
+@SuiteClasses(AllTests.class) 
+public class NormalPerformanceSuite
 {
-
 }

@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests;
 
-import org.jboss.weld.tests.category.ExcludeFromNormalSuite;
-import org.junit.experimental.categories.Categories;
-import org.junit.experimental.categories.Categories.ExcludeCategory;
+import org.jboss.weld.tests.Categories.ExcludeCategory;
+import org.jboss.weld.tests.category.Broken;
+import org.jboss.weld.tests.category.Slow;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
 
@@ -29,7 +29,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @version $Revision: $
  */
 @RunWith(Categories.class)
-@ExcludeCategory(ExcludeFromNormalSuite.class)
+@ExcludeCategory({Broken.class, Slow.class})
 @SuiteClasses(AllTests.class) 
 public class NormalSuite
 {

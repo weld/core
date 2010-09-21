@@ -16,13 +16,16 @@
  */
 package org.jboss.weld.tests.category;
 
+import org.jboss.weld.tests.NormalSuite;
+
 /**
- * Maker interface to work around JUnits single Category pr suite limitation
+ * Marker Interface for JUnit Category marking a Slow running test. <br/>
+ * Used to exclude Integration and Performance tests from {@link NormalSuite} 
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public interface ExcludeFromNormalSuite
+public interface Slow
 {
 
 }
