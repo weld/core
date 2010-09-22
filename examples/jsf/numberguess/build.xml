@@ -1,12 +1,13 @@
 <project basedir="." name="Numberguess Example Build" default="restart">
 	
 	<property name="example.name" value="weld-numberguess" />
+	<property name="profile" value="jboss6" />
 
 	<import file="../../build.xml" />
 	
    <target name="package">
       <maven target="install" basedir="${basedir}">
-         <arg line="-Pjboss6" />
+         <arg line="-P${profile}" />
       </maven>
    </target>
    
