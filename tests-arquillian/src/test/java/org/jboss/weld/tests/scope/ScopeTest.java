@@ -20,7 +20,6 @@ import static org.jboss.weld.test.Utils.getActiveContext;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.Bean;
@@ -32,9 +31,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.Container;
 import org.jboss.weld.context.RequestContext;
-import org.jboss.weld.context.beanstore.HashMapBeanStore;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.Utils;
 import org.junit.Assert;
@@ -52,9 +49,7 @@ public class ScopeTest
          .addPackage(ScopeTest.class.getPackage())
          .addClass(Utils.class);
    }
-   
-   private static Annotation USELESS_LITERAL = new AnnotationLiteral<Useless>() {};
-   private static Annotation SPECIAL_LITERAL = new AnnotationLiteral<Special>() {};
+
    
    @Inject 
    private BeanManagerImpl beanManager;
@@ -66,45 +61,6 @@ public class ScopeTest
    public void testScopeDeclaredOnSubclassOverridesScopeOnSuperClass()
    {
       Assert.assertEquals(Dependent.class, beanManager.resolve(beanManager.getBeans(Bar.class)).getScope());
-   }
-   
-   /*
-    * description = "WELD-311"
-    */
-   @Test
-   @Ignore
-   public void testScopeOfProducerMethod()
-   {
-      Bean<Temp> specialTempBean = Utils.getBean(beanManager, Temp.class, SPECIAL_LITERAL);
-      Bean<Temp> uselessTempBean = Utils.getBean(beanManager, Temp.class, USELESS_LITERAL);
-      Assert.assertEquals(RequestScoped.class, specialTempBean.getScope());
-      Assert.assertEquals(RequestScoped.class, uselessTempBean.getScope());
-      Assert.assertEquals(10, Utils.getReference(beanManager, specialTempBean).getNumber());
-      Assert.assertEquals(11, Utils.getReference(beanManager, uselessTempBean).getNumber());
-      
-      TempConsumer tempConsumer = Utils.getReference(beanManager, TempConsumer.class);
-      tempConsumer.getSpecialTemp().setNumber(101);
-      tempConsumer.getUselessTemp().setNumber(102);
-      
-      Assert.assertEquals(101, tempConsumer.getSpecialTemp().getNumber());
-      Assert.assertEquals(102, tempConsumer.getUselessTemp().getNumber());
-      Assert.assertEquals(101, Utils.getReference(beanManager, specialTempBean).getNumber());
-      Assert.assertEquals(102, Utils.getReference(beanManager, uselessTempBean).getNumber());
-      
-      newRequest();
-      
-      Assert.assertEquals(10, tempConsumer.getSpecialTemp().getNumber());
-      Assert.assertEquals(102, tempConsumer.getUselessTemp().getNumber());
-      Assert.assertEquals(10, Utils.getReference(beanManager, specialTempBean).getNumber());
-      Assert.assertEquals(102, Utils.getReference(beanManager, uselessTempBean).getNumber());
-   }
-   
-   private void newRequest()
-   {
-      RequestContext ctx = getActiveContext(beanManager, RequestContext.class);
-      ctx.invalidate();
-      ctx.deactivate();
-      ctx.activate();
    }
 
 }

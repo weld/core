@@ -42,6 +42,7 @@ import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.test.el.EL;
 import org.jboss.weld.util.collections.EnumerationList;
 
@@ -180,7 +181,7 @@ public class Utils
    }
    
    
-   public static <T extends Context> T getActiveContext(BeanManagerImpl beanManager, Class<T> type)
+   public static <T extends Context> T getActiveContext(WeldManager beanManager, Class<T> type)
    {
       for (T context : beanManager.instance().select(type))
       {

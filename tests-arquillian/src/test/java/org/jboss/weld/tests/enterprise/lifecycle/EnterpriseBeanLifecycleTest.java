@@ -16,11 +16,6 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
-import static org.jboss.weld.test.Utils.getActiveContext;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
@@ -32,7 +27,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.Utils;
 import org.jboss.weld.tests.category.Integration;
@@ -102,26 +96,6 @@ public class EnterpriseBeanLifecycleTest
       Assert.assertTrue(stadtInstance instanceof SchoeneStadt);
    }
 
-   @Test
-   public void testDestroyRemovesSFSB(GrossStadt frankfurt) throws Exception
-   {
-      RequestContext requestContext = getActiveContext(beanManager, RequestContext.class);
-      Bean<KleinStadt> stadtBean = Utils.getBean(beanManager, KleinStadt.class);
-      assertNotNull("Expected a bean for stateful session bean Kassel", stadtBean);
-      CreationalContext<KleinStadt> creationalContext = new MockCreationalContext<KleinStadt>();
-      KleinStadt kassel = requestContext.get(stadtBean, creationalContext);
-      stadtBean.destroy(kassel, creationalContext);
-      
-      assertTrue("Expected SFSB bean to be destroyed", frankfurt.isKleinStadtDestroyed());
-      
-      // TODO Make this into a remote test
-      /*requestContext.invalidate();
-      requestContext.deactivate();
-      requestContext.activate();
-      kassel = requestContext.get(stadtBean);
-      assertNull("SFSB bean should not exist after being destroyed", kassel);*/
-   }
-   
    @Test
    public void testDestroyDoesntTryToRemoveSLSB()
    {
