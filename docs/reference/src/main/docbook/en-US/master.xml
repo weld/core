@@ -46,7 +46,7 @@
    </part>
 
    <part id="2">
-      <title>Weld, the CDI Reference Implementation</title>
+      <title>Getting Start with Weld, the CDI Reference Implementation</title>
       
       <xi:include href="part2.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       
@@ -84,11 +84,12 @@
    <xi:include href="next.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
    
    <part id="5">
-      <title>Weld reference</title>
+      <title>Weld Reference Guide</title>
       
       <xi:include href="part5.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       
       <xi:include href="environments.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="contexts.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="configure.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="ri-spi.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
      
