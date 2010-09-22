@@ -28,6 +28,10 @@ using this command:
    ant restart
 
 Now you can view the application at <http://localhost:8080/weld-numberguess>.
+
+Alternatively, you can deploy the application using JavaServer Faces 1.2 implementation:
+
+   ant restart -Dprofile=jboss6-jsf12
    
 
 Deploying to standalone Tomcat
