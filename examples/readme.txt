@@ -30,14 +30,27 @@ the example's directory:
 
   mvn -Pftest-jboss-remote-6,jboss6 clean verify
 
-The jsf/numberguess example can be also tested in a cluster. Follow these steps:
+The jsf/numberguess example can be also tested in a cluster. Prior to executing this test
+it is needed to start both JBoss AS instances manually.  Follow these steps:
 
-1) start two JBossAS instances (read the guide in NumberGuessClusteringTest.java file under
-   numberguess/src/ftest folder)
-2) set up JBOSS_HOME environment property to point to JBossAS distribution
-3) run the following command:
+1. Create a second all profile in your JBoss AS distribution
 
-  mvn -Pjboss6cluster,ftest-jboss-cluster-6 clean verify -Djboss.master.configuration=${env.JBOSS_HOME}/server/all
+    cp -r server/all server/all2
+    
+2. Start both servers. The "all" profile is the *master* jboss instance (and is bound to
+   default ports); the application is deployed to this profile.
+     
+     ./run.sh -c all -g DocsPartition -u 239.255.101.101 -b localhost \
+       -Djboss.messaging.ServerPeerID=1 -Djboss.service.binding.set=ports-default
+    
+    ./run.sh -c all2 -g DocsPartition -u 239.255.101.101 -b localhost \
+       -Djboss.messaging.ServerPeerID=2 -Djboss.service.binding.set=ports-01 
+       
+3. Make sure you have set the `JBOSS_HOME` environment property to point to your JBoss AS
+   distribution
+4. Run the test suite
+
+    mvn -Pjboss6cluster,ftest-jboss-cluster-6 clean verify
 
 The jsf/numberguess and jsf/permalink examples can be also tested with Tomcat and Jetty containers.
 

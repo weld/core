@@ -49,27 +49,16 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
+ * <p>
  * This class tests Weld numberguess example in a cluster. Two instances of
  * JBoss AS are being used. First part of test is executed at first (master)
  * instance. Then the first instance is killed and a second (slave) instance
  * takes over executing of the application. This behaviour simulates recovery
  * from breakdown and session replication.
+ * </p>
  * 
- * The first version of application server that can be used is JBoss 6.0.0.M1,
- * nevertheless this version of AS has to be updated with current version of
- * Weld core.
- * 
- * Prior to executing this test it is needed to start both JBoss AS instances
- * manually. For example (assuming you have created second "all" configuration
- * ("all2")): ./run.sh -c all -g DocsPartition -u 239.255.101.101 -b localhost
- * -Djboss.messaging.ServerPeerID=1 -Djboss.service.binding.set=ports-default
- * ./run.sh -c all2 -g DocsPartition -u 239.255.101.101 -b localhost
- * -Djboss.messaging.ServerPeerID=2 -Djboss.service.binding.set=ports-01 The
- * configuration all is considered to be master jboss instance (related to
- * jboss.service.binding.set=ports-default) and the application is deployed to
- * farm directory under chosen jboss configuration directory specified with
- * jboss.master.configuration property.
- * 
+ * <p>
+ * See <code>examples/readme.txt</code> for instructions to run the test.
  * 
  * @author mgencur
  * @author kpiwko

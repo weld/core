@@ -115,6 +115,7 @@
       <context.root>http://${context.host}:8080/</context.root>
       <context.path>/${project.build.finalName}/</context.path>
       <context.deploy.path>${context.path}</context.deploy.path>
+      <jboss.master.configuration>${env.JBOSS_HOME}/server/all</jboss.master.configuration>
       <deployable.location />
       <deployable.type>war</deployable.type>
       <method>*</method>
