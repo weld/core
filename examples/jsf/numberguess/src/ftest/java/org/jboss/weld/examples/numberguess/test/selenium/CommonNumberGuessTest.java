@@ -21,6 +21,7 @@
  */
 package org.jboss.weld.examples.numberguess.test.selenium;
 
+import static org.jboss.test.selenium.locator.LocatorFactory.id;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -30,8 +31,6 @@ import org.jboss.test.selenium.locator.IdLocator;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import static org.jboss.test.selenium.locator.LocatorFactory.id;
 
 /**
  * Tests numberguess examples in Weld
@@ -61,13 +60,13 @@ public class CommonNumberGuessTest extends AbstractTestCase
       selenium.open(contextPath);
       waitModel.until(elementPresent.locator(GUESS_FIELD));
    }
-   
+
    @AfterMethod
-   public void resetSession() 
+   public void resetSession()
    {
       selenium.deleteAllVisibleCookies();
    }
-   
+
    @Test
    public void smartTest()
    {
