@@ -39,7 +39,7 @@
       <cdi.tck.version>1.0.2.CR2</cdi.tck.version>
       <javassist.version>3.13.0-GA</javassist.version>
       <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
-      <jboss.interceptor.version>1.0.0-CR11</jboss.interceptor.version>
+      <jboss.interceptor.version>2.0.0.Alpha1</jboss.interceptor.version>
       <slf4j.version>1.5.10</slf4j.version>
       <cal10n.version>0.7.2</cal10n.version>
    </properties>
@@ -131,7 +131,13 @@
          
          <dependency>
             <groupId>org.jboss.interceptor</groupId>
-            <artifactId>jboss-interceptor</artifactId>
+            <artifactId>jboss-interceptor-spi</artifactId>
+            <version>${jboss.interceptor.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-core</artifactId>
             <version>${jboss.interceptor.version}</version>
          </dependency>
          

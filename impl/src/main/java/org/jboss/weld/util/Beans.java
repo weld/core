@@ -64,8 +64,8 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
-import org.jboss.interceptor.model.InterceptionType;
-import org.jboss.interceptor.model.InterceptionTypeRegistry;
+import org.jboss.interceptor.spi.model.InterceptionType;
+import org.jboss.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;

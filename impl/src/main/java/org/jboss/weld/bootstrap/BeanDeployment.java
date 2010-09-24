@@ -32,6 +32,7 @@ import java.util.List;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.interceptor.reader.cache.MetadataCachingReader;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.builtin.ContextBean;

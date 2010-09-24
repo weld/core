@@ -27,11 +27,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 
-import org.jboss.interceptor.model.InterceptionModel;
+import org.jboss.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.ejb.spi.InterceptorBindings;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
@@ -42,9 +45,9 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 public class InterceptorBindingsAdapter implements InterceptorBindings
 {
 
-   private InterceptionModel<Class<?>, SerializableContextual<Interceptor<?>, ?>> interceptionModel;
+   private InterceptionModel<ClassMetadata<?>,?> interceptionModel;
 
-   public InterceptorBindingsAdapter(InterceptionModel<Class<?>, SerializableContextual<Interceptor<?>, ?>> interceptionModel)
+   public InterceptorBindingsAdapter(InterceptionModel<ClassMetadata<?>,?> interceptionModel)
    {
       if (interceptionModel == null)
       {
@@ -55,8 +58,8 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
 
    public Collection<Interceptor<?>> getAllInterceptors()
    {
-      Collection<SerializableContextual<Interceptor<?>, ?>> contextualSet = interceptionModel.getAllInterceptors();
-      return toInterceptorList(contextualSet);
+      Set<? extends InterceptorMetadata<?>> interceptorMetadataSet = interceptionModel.getAllInterceptors();
+      return extractSerializableContextualInterceptors(interceptorMetadataSet);
    }
 
    public List<Interceptor<?>> getMethodInterceptors(InterceptionType interceptionType, Method method)
@@ -71,14 +74,14 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
          throw new IllegalArgumentException(METHOD_NULL);
       }
 
-      org.jboss.interceptor.model.InterceptionType internalInterceptionType = org.jboss.interceptor.model.InterceptionType.valueOf(interceptionType.name());
+      org.jboss.interceptor.spi.model.InterceptionType internalInterceptionType = org.jboss.interceptor.spi.model.InterceptionType.valueOf(interceptionType.name());
 
       if (internalInterceptionType.isLifecycleCallback())
       {
          throw new IllegalArgumentException(INTERCEPTION_TYPE_LIFECYCLE, interceptionType.name());
       }
 
-      return toInterceptorList(interceptionModel.getInterceptors(internalInterceptionType, method));
+      return extractSerializableContextualInterceptors(interceptionModel.getInterceptors(internalInterceptionType, method));
 
    }
 
@@ -89,22 +92,27 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
          throw new IllegalArgumentException(INTERCEPTION_TYPE_NULL);
       }
 
-      org.jboss.interceptor.model.InterceptionType internalInterceptionType = org.jboss.interceptor.model.InterceptionType.valueOf(interceptionType.name());
+      org.jboss.interceptor.spi.model.InterceptionType internalInterceptionType = org.jboss.interceptor.spi.model.InterceptionType.valueOf(interceptionType.name());
 
       if (!internalInterceptionType.isLifecycleCallback())
       {
          throw new IllegalArgumentException(INTERCEPTION_TYPE_NOT_LIFECYCLE, interceptionType.name());
       }
 
-      return toInterceptorList(interceptionModel.getInterceptors(internalInterceptionType, null));
+      return extractSerializableContextualInterceptors(interceptionModel.getInterceptors(internalInterceptionType, null));
    }
 
-   private List<Interceptor<?>> toInterceptorList(Collection<SerializableContextual<Interceptor<?>, ?>> contextualSet)
+   private List<Interceptor<?>> extractSerializableContextualInterceptors(Collection<? extends InterceptorMetadata<?>> interceptorMetadatas)
    {
+      // ignore interceptors which are not CDI interceptors
       ArrayList<Interceptor<?>> interceptors = new ArrayList<Interceptor<?>>();
-      for (SerializableContextual<Interceptor<?>, ?> serializableContextual : contextualSet)
+      for (InterceptorMetadata<?> interceptorMetadata: interceptorMetadatas)
       {
-         interceptors.add(serializableContextual.get());
+         Object interceptor = interceptorMetadata.getInterceptorReference().getInterceptor();
+         if (interceptor instanceof SerializableContextual)
+         {
+            interceptors.add(((SerializableContextual<Interceptor<?>, ?>)interceptor).get());
+         }
       }
       return interceptors;
    }

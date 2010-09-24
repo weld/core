@@ -50,7 +50,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.interceptor.Interceptor;
 
-import org.jboss.interceptor.model.InterceptionModel;
+import org.jboss.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.EnterpriseBeanProxyMethodHandler;
@@ -464,7 +465,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
 
    protected void registerInterceptors()
    {
-      InterceptionModel<Class<?>, SerializableContextual<javax.enterprise.inject.spi.Interceptor<?>, ?>> model = beanManager.getCdiInterceptorsRegistry().getInterceptionModel(ejbDescriptor.getBeanClass());
+      InterceptionModel<ClassMetadata<?>,?> model = beanManager.getInterceptorModelRegistry().get(ejbDescriptor.getBeanClass());
       if (model != null)
       {
          getBeanManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor().delegate(), new InterceptorBindingsAdapter(model));

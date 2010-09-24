@@ -29,8 +29,6 @@ import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL
 import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javassist.util.proxy.MethodHandler;
@@ -40,18 +38,15 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.PassivationCapable;
 
-import org.jboss.interceptor.proxy.InterceptionHandlerFactory;
+import org.jboss.interceptor.proxy.DefaultInvocationContextFactory;
 import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
-import org.jboss.interceptor.registry.InterceptorRegistry;
+import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.Container;
-import org.jboss.weld.bean.interceptor.CdiInterceptorHandlerFactory;
-import org.jboss.weld.bean.interceptor.ClassInterceptionHandlerFactory;
-import org.jboss.weld.bean.interceptor.InterceptionMetadataService;
-import org.jboss.weld.bean.interceptor.WeldClassReference;
+import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
+import org.jboss.weld.bean.interceptor.WeldInterceptorInstantiator;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
@@ -66,7 +61,6 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Formats;
@@ -397,22 +391,11 @@ public class ManagedBean<T> extends AbstractClassBean<T>
             }
          }
       }
-      if (this.passivationCapableBean && hasCdiBoundInterceptors())
+      if (this.passivationCapableBean && hasInterceptors())
       {
-         for (SerializableContextual<Interceptor<?>, ?> interceptor : getBeanManager().getCdiInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors())
+         for (InterceptorMetadata<?> interceptorMetadata : getBeanManager().getInterceptorModelRegistry().get(getType()).getAllInterceptors())
          {
-            if (!(PassivationCapable.class.isAssignableFrom(interceptor.get().getClass())) || !((InterceptorImpl<?>) interceptor.get()).isSerializable())
-            {
-               this.passivationCapableBean = false;
-               break;
-            }
-         }
-      }
-      if (this.passivationCapableBean && hasDirectlyDefinedInterceptors())
-      {
-         for (Class<?> interceptorClass : getBeanManager().getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors())
-         {
-            if (!Reflections.isSerializable(interceptorClass))
+            if (!Reflections.isSerializable(interceptorMetadata.getInterceptorClass().getJavaClass()))
             {
                this.passivationCapableBean = false;
                break;
@@ -573,26 +556,12 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    {
       try
       {
-         List<InterceptorRegistry<Class<?>, ?>> interceptionRegistries = new ArrayList<InterceptorRegistry<Class<?>, ?>>();
-         List<InterceptionHandlerFactory<?>> interceptionHandlerFactories = new ArrayList<InterceptionHandlerFactory<?>>();
-         if (hasDirectlyDefinedInterceptors())
-         {
-            interceptionRegistries.add(beanManager.getClassDeclaredInterceptorsRegistry());
-            interceptionHandlerFactories.add(new ClassInterceptionHandlerFactory(creationalContext, getBeanManager()));
-         }
-         if (hasCdiBoundInterceptors())
-         {
-            interceptionRegistries.add(beanManager.getCdiInterceptorsRegistry());
-            interceptionHandlerFactories.add(new CdiInterceptorHandlerFactory<T>(creationalContext, beanManager));
-         }
-         if (interceptionRegistries.size() > 0)
-         {
-            InterceptorProxyCreatorImpl interceptorProxyCreator = new InterceptorProxyCreatorImpl(interceptionRegistries, interceptionHandlerFactories);
-            MethodHandler methodHandler = interceptorProxyCreator.createMethodHandler(instance, getType(), getBeanManager().getServices().get(InterceptionMetadataService.class).getInterceptorMetadataRegistry().getInterceptorClassMetadata(WeldClassReference.of(getWeldAnnotated()), true));
-            TargetBeanInstance targetInstance = new TargetBeanInstance(this, instance);
-            targetInstance.setInterceptorsHandler(methodHandler);
-            instance = new ProxyFactory<T>(getType(), getTypes(), this).create(targetInstance);
-         }
+         WeldInterceptorInstantiator<T> interceptorInstantiator = new WeldInterceptorInstantiator<T>(beanManager, creationalContext);
+         InterceptorProxyCreatorImpl interceptorProxyCreator = new InterceptorProxyCreatorImpl(interceptorInstantiator, new DefaultInvocationContextFactory(), beanManager.getInterceptorModelRegistry().get(getType()));
+         MethodHandler methodHandler = interceptorProxyCreator.createMethodHandler(instance, WeldInterceptorClassMetadata.of(getWeldAnnotated()));
+         TargetBeanInstance targetInstance = new TargetBeanInstance(this, instance);
+         targetInstance.setInterceptorsHandler(methodHandler);
+         instance = new ProxyFactory<T>(getType(), getTypes(), this).create(targetInstance);
 
       }
       catch (Exception e)

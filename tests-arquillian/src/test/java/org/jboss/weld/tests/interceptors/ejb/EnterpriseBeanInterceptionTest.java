@@ -61,7 +61,7 @@ public class EnterpriseBeanInterceptionTest
    public void testInterceptors() throws Exception
    {
       SessionBean<Ball> ballSessionBean = (SessionBean<Ball>)beanManager.getBeans(Ball.class).iterator().next();
-      InterceptorBindings interceptorBindings = new InterceptorBindingsAdapter(beanManager.getCdiInterceptorsRegistry().getInterceptionModel(ballSessionBean.getType()));
+      InterceptorBindings interceptorBindings = new InterceptorBindingsAdapter(beanManager.getInterceptorModelRegistry().get(ballSessionBean.getType()));
       List<javax.enterprise.inject.spi.Interceptor> interceptors =
             new ArrayList<javax.enterprise.inject.spi.Interceptor>(interceptorBindings.getAllInterceptors());
 

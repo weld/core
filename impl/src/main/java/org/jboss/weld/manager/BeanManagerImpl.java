@@ -67,7 +67,10 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.TypeLiteral;
 
-import org.jboss.interceptor.registry.InterceptorRegistry;
+import org.jboss.interceptor.reader.cache.DefaultMetadataCachingReader;
+import org.jboss.interceptor.reader.cache.MetadataCachingReader;
+import org.jboss.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
@@ -112,7 +115,6 @@ import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resolution.TypeSafeResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
@@ -229,8 +231,8 @@ public class BeanManagerImpl implements WeldManager, Serializable
    /**
     * Interception model
     */
-   private transient final InterceptorRegistry<Class<?>, SerializableContextual<Interceptor<?>, ?>> boundInterceptorsRegistry = new InterceptorRegistry<Class<?>, SerializableContextual<Interceptor<?>,?>>();
-   private transient final InterceptorRegistry<Class<?>, Class<?>> declaredInterceptorsRegistry = new InterceptorRegistry<Class<?>, Class<?>>();
+   private transient final Map<Class<?>, InterceptionModel<ClassMetadata<?>,?>> interceptorModelRegistry = new ConcurrentHashMap<Class<?>, InterceptionModel<ClassMetadata<?>,?>>();
+   private transient final MetadataCachingReader interceptorMetadataReader = new DefaultMetadataCachingReader();
 
    /**
     * Create a new, root, manager
@@ -1168,16 +1170,16 @@ public class BeanManagerImpl implements WeldManager, Serializable
       this.specializedBeans.clear();
    }
 
-   public InterceptorRegistry<Class<?>, SerializableContextual<Interceptor<?>, ?>> getCdiInterceptorsRegistry()
+   public Map<Class<?>, InterceptionModel<ClassMetadata<?>,?>> getInterceptorModelRegistry()
    {
-      return boundInterceptorsRegistry;
+      return interceptorModelRegistry;
    }
 
-   public InterceptorRegistry<Class<?>, Class<?>> getClassDeclaredInterceptorsRegistry()
+   public MetadataCachingReader getInterceptorMetadataReader()
    {
-      return declaredInterceptorsRegistry;
+      return interceptorMetadataReader;
    }
-   
+
    public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType)
    {
       return AbstractProcessInjectionTarget.fire(this, annotatedType, createInjectionTarget(annotatedType));

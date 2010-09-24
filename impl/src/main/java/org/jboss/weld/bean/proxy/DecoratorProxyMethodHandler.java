@@ -22,8 +22,6 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.inject.Inject;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.jboss.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
 import org.jboss.weld.bean.WeldDecorator;

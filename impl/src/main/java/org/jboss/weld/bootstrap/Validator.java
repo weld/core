@@ -80,7 +80,9 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Named;
 import javax.inject.Scope;
 
-import org.jboss.interceptor.model.InterceptionModel;
+import org.jboss.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
@@ -168,63 +170,51 @@ public class Validator implements Service
                validateDecorators(beanManager, classBean);
             }
             // validate CDI-defined interceptors
-            if (classBean.hasCdiBoundInterceptors())
+            if (classBean.hasInterceptors())
             {
-               validateCdiBoundInterceptors(beanManager, classBean);
-            }
-            // validate EJB-defined interceptors
-            if (((AbstractClassBean<?>) bean).hasDirectlyDefinedInterceptors())
-            {
-               validateDirectlyDefinedInterceptorClasses(beanManager, classBean);
+               validateInterceptors(beanManager, classBean);
             }
          }
       }
    }
 
-   @SuppressWarnings("unchecked")
-   private void validateDirectlyDefinedInterceptorClasses(BeanManagerImpl beanManager, AbstractClassBean<?> classBean)
+   private void validateInterceptors(BeanManagerImpl beanManager, AbstractClassBean<?> classBean)
    {
-      InterceptionModel<Class<?>, Class<?>> ejbInterceptorModel = beanManager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(classBean.getType());
-      if (ejbInterceptorModel != null)
+      InterceptionModel<ClassMetadata<?>, ?> interceptionModel = beanManager.getInterceptorModelRegistry().get(classBean.getType());
+      if (interceptionModel != null)
       {
-         Class<?>[] classDeclaredInterceptors = ejbInterceptorModel.getAllInterceptors().toArray(new Class<?>[ejbInterceptorModel.getAllInterceptors().size()]);
-         if (classDeclaredInterceptors != null)
-         {
-            for (Class<?> interceptorClass : classDeclaredInterceptors)
-            {
-               if (!Reflections.isSerializable(interceptorClass))
-               {
-                  throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, this, interceptorClass.getName());
-               }
-               InjectionTarget<Object> injectionTarget = (InjectionTarget<Object>) beanManager.createInjectionTarget(beanManager.createAnnotatedType(interceptorClass));
-               for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints())
-               {
-                  Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
-                  validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
-               }
-            }
-         }
-      }
-   }
-
-   private void validateCdiBoundInterceptors(BeanManagerImpl beanManager, AbstractClassBean<?> classBean)
-   {
-      InterceptionModel<Class<?>, SerializableContextual<Interceptor<?>, ?>> cdiInterceptorModel = beanManager.getCdiInterceptorsRegistry().getInterceptionModel(classBean.getType());
-      if (cdiInterceptorModel != null)
-      {
-         Collection<SerializableContextual<Interceptor<?>, ?>> interceptors = cdiInterceptorModel.getAllInterceptors();
+         Set<? extends InterceptorMetadata<?>> interceptors = interceptionModel.getAllInterceptors();
          if (interceptors.size() > 0)
          {
-            for (SerializableContextual<Interceptor<?>, ?> serializableContextual : interceptors)
+            for (InterceptorMetadata<?> interceptorMetadata : interceptors)
             {
-               if (!((InterceptorImpl<?>) serializableContextual.get()).isSerializable())
+               if (interceptorMetadata.getInterceptorReference().getInterceptor() instanceof SerializableContextual)
                {
-                  throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, serializableContextual.get());
+                  SerializableContextual<Interceptor<?>, ?> serializableContextual = (SerializableContextual<Interceptor<?>, ?>) interceptorMetadata.getInterceptorReference().getInterceptor();
+
+                  if (!((InterceptorImpl<?>) serializableContextual.get()).isSerializable())
+                  {
+                     throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, serializableContextual.get());
+                  }
+                  for (InjectionPoint injectionPoint : serializableContextual.get().getInjectionPoints())
+                  {
+                     Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
+                     validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+                  }
                }
-               for (InjectionPoint injectionPoint : serializableContextual.get().getInjectionPoints())
+               if (interceptorMetadata.getInterceptorReference().getInterceptor() instanceof ClassMetadata<?>)
                {
-                  Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
-                  validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+                  ClassMetadata<?> classMetadata = (ClassMetadata<?>) interceptorMetadata.getInterceptorReference().getInterceptor();
+                  if (!Reflections.isSerializable(classMetadata.getJavaClass()))
+                  {
+                     throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, this, classMetadata.getJavaClass().getName());
+                  }
+                  InjectionTarget<Object> injectionTarget = (InjectionTarget<Object>) beanManager.createInjectionTarget(beanManager.createAnnotatedType(classMetadata.getJavaClass()));
+                  for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints())
+                  {
+                     Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
+                     validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+                  }
                }
             }
          }

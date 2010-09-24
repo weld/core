@@ -30,6 +30,7 @@ import javax.enterprise.inject.spi.Producer;
 import javax.inject.Inject;
 
 import org.jboss.interceptor.util.InterceptionUtils;
+import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.introspector.WeldField;
@@ -129,7 +130,12 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
             public T produce(CreationalContext<T> creationalContext)
             {
                // unwrap if we have a proxy
-               return field.get(InterceptionUtils.getRawInstance(getReceiver(creationalContext)));
+               Object receiver = getReceiver(creationalContext);
+               if (receiver instanceof TargetInstanceProxy)
+               {
+                  receiver = ((TargetInstanceProxy)receiver).getTargetInstance();
+               }
+               return field.get(receiver);
             }
             
             @Override
