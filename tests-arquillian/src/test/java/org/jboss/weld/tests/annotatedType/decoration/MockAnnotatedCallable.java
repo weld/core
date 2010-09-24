@@ -25,9 +25,8 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
-
-import org.jboss.annotation.factory.AnnotationCreator;
 
 /**
  * 
@@ -36,18 +35,13 @@ import org.jboss.annotation.factory.AnnotationCreator;
  */
 public abstract class MockAnnotatedCallable<X> extends MockAnnotatedMember<X> implements AnnotatedCallable<X>
 {
-   private final static Inject INITIALIZER;
-   static
+   
+   private static class InjectLiteral extends AnnotationLiteral<Inject> implements Inject
    {
-      try
-      {
-         INITIALIZER = (Inject)AnnotationCreator.createAnnotation("@" + Inject.class.getName(), Inject.class);
-      }
-      catch(Exception e)
-      {
-         throw new RuntimeException(e);
-      }
+      
    }
+   
+   private final static Inject INITIALIZER = new InjectLiteral();
 
    private final List<AnnotatedParameter<X>> parameters;
 
