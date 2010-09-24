@@ -25,7 +25,6 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bean.interceptor.InterceptionMetadataService;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
@@ -55,7 +54,6 @@ public class AccessibleManagerResolutionTest
       this.services = new SimpleServiceRegistry();
       this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
       this.services.add(ContextualStore.class, new ContextualStoreImpl());
-      this.services.add(InterceptionMetadataService.class, new InterceptionMetadataService());
       this.services.add(ClassTransformer.class, classTransformer);
    }
    

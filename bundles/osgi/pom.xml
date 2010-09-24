@@ -186,7 +186,12 @@
 
       <dependency>
          <groupId>org.jboss.interceptor</groupId>
-         <artifactId>jboss-interceptor</artifactId>
+         <artifactId>jboss-interceptor-spi</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.interceptor</groupId>
+         <artifactId>jboss-interceptor-core</artifactId>
       </dependency>
       
       <!-- We bundle jdk binding inside this OSGi bundle -->

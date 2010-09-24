@@ -21,17 +21,17 @@ import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTO
 import static org.jboss.weld.logging.messages.BeanMessage.MISSING_BINDING_ON_INTERCEPTOR;
 
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import org.jboss.interceptor.model.InterceptorMetadata;
-import org.jboss.interceptor.proxy.DirectClassInterceptionHandler;
-import org.jboss.weld.bean.interceptor.InterceptionMetadataService;
-import org.jboss.weld.bean.interceptor.WeldClassReference;
+import org.jboss.interceptor.proxy.InterceptorInvocation;
+import org.jboss.interceptor.proxy.SimpleInterceptionChain;
+import org.jboss.interceptor.reader.ClassMetadataInterceptorReference;
+import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldClass;
@@ -45,7 +45,7 @@ import org.jboss.weld.util.reflection.Formats;
 public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 {
    
-   private final InterceptorMetadata interceptorClassMetadata;
+   private final InterceptorMetadata<?> interceptorMetadata;
 
    private final Set<Annotation> interceptorBindingTypes;
    
@@ -59,7 +59,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
    protected InterceptorImpl(WeldClass<T> type, BeanManagerImpl beanManager)
    {
       super(type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager);
-      this.interceptorClassMetadata = beanManager.getServices().get(InterceptionMetadataService.class).getInterceptorMetadataRegistry().getInterceptorClassMetadata(WeldClassReference.of(type));
+      this.interceptorMetadata = beanManager.getInterceptorMetadataReader().getInterceptorMetadata(ClassMetadataInterceptorReference.of(WeldInterceptorClassMetadata.of(type)));
       this.serializable = type.isSerializable();
       this.interceptorBindingTypes = new HashSet<Annotation>();
       interceptorBindingTypes.addAll(flattenInterceptorBindings(beanManager, getWeldAnnotated().getAnnotations()));
@@ -82,12 +82,21 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
       return interceptorBindingTypes;
    }
 
+   public InterceptorMetadata<?> getInterceptorMetadata()
+   {
+      return interceptorMetadata;
+   }
+
    public Object intercept(InterceptionType type, T instance, InvocationContext ctx)
    {
       try
       {
-         return new DirectClassInterceptionHandler<T>(instance, interceptorClassMetadata).invoke(ctx.getTarget(), org.jboss.interceptor.model.InterceptionType.valueOf(type.name()), ctx);
-      } catch (Exception e)
+        org.jboss.interceptor.spi.model.InterceptionType interceptionType = org.jboss.interceptor.spi.model.InterceptionType.valueOf(type.name());
+        Set<InterceptorInvocation<Object>> invocationSet = Collections.singleton(new InterceptorInvocation<Object>(instance, interceptorMetadata, interceptionType));
+        Collection<InterceptorInvocation<?>> invocations = new ArrayList<InterceptorInvocation<?>>();
+        invocations.add(new InterceptorInvocation(instance, interceptorMetadata, interceptionType));
+        return new SimpleInterceptionChain( invocations, interceptionType, instance, ctx.getMethod()).invokeNextInterceptor(ctx);
+      } catch (Throwable e)
       {
          throw new WeldException(e);
       }
@@ -95,7 +104,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
    public boolean intercepts(InterceptionType type)
    {
-      return interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.valueOf(type.name())).size() > 0;
+      return interceptorMetadata.getInterceptorMethods(org.jboss.interceptor.spi.model.InterceptionType.valueOf(type.name())).size() > 0;
    }
 
    public boolean isSerializable()

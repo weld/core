@@ -112,7 +112,19 @@
 
       <dependency>
          <groupId>org.jboss.interceptor</groupId>
-         <artifactId>jboss-interceptor</artifactId>
+         <artifactId>jboss-interceptor-spi</artifactId>
+         <exclusions>
+            <!-- Exclude the old groupId for Javassist -->
+            <exclusion>
+               <groupId>javassist</groupId>
+               <artifactId>javassist</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.interceptor</groupId>
+         <artifactId>jboss-interceptor-core</artifactId>
          <exclusions>
             <!-- Exclude the old groupId for Javassist -->
             <exclusion>

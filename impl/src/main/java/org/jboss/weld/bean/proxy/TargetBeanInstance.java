@@ -93,7 +93,14 @@ public class TargetBeanInstance extends AbstractBeanInstance implements Serializ
       if (interceptorsHandler != null)
       {
          log.trace("Invoking interceptor chain for method " + method.toGenericString() + " on " + getInstance());
-         return interceptorsHandler.invoke(getInstance(), method, method, arguments);
+         if (method.getDeclaringClass().isInterface())
+         {
+            return interceptorsHandler.invoke(getInstance(), method, null, arguments);
+         }
+         else
+         {
+            return interceptorsHandler.invoke(getInstance(), method, method, arguments);
+         }
       }
       else
       {

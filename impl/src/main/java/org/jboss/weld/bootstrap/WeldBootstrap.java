@@ -44,7 +44,6 @@ import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.builtin.ContextBean;
-import org.jboss.weld.bean.interceptor.InterceptionMetadataService;
 import org.jboss.weld.bean.proxy.util.SimpleProxyServices;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
@@ -300,7 +299,6 @@ public class WeldBootstrap implements Bootstrap
       services.add(ClassTransformer.class, new ClassTransformer(services.get(TypeStore.class)));
       services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
       services.add(ContextualStore.class, new ContextualStoreImpl());
-      services.add(InterceptionMetadataService.class, new InterceptionMetadataService());
       services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
       return services;
    }

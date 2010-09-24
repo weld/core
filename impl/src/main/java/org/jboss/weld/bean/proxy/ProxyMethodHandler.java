@@ -28,7 +28,6 @@ import javassist.util.proxy.MethodHandler;
 
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.logging.messages.BeanMessage;
 import org.slf4j.cal10n.LocLogger;
 
 /**

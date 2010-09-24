@@ -42,20 +42,16 @@ import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.*;
 import javax.inject.Scope;
 
-import org.jboss.interceptor.model.InterceptionModel;
-import org.jboss.interceptor.model.InterceptionModelBuilder;
-import org.jboss.interceptor.model.InterceptorMetadata;
+import org.jboss.interceptor.builder.InterceptionModelBuilder;
+import org.jboss.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.interceptor.util.InterceptionUtils;
-import org.jboss.weld.bean.interceptor.InterceptionMetadataService;
-import org.jboss.weld.bean.interceptor.WeldClassReference;
+import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
+import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
@@ -110,14 +106,16 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       return foundInterceptionBindingTypes;
    }
 
-   private static SerializableContextual[] toSerializableContextualArray(List<Interceptor<?>> interceptors)
+   private InterceptorMetadata<SerializableContextual<?,?>>[] toSerializableContextualArray(List<Interceptor<?>> interceptors)
    {
-      List<SerializableContextual> serializableContextuals = new ArrayList<SerializableContextual>();
+      List<InterceptorMetadata<SerializableContextual<Interceptor<?>,?>>> serializableContextuals = new ArrayList<InterceptorMetadata<SerializableContextual<Interceptor<?>,?>>>();
       for (Interceptor<?> interceptor : interceptors)
       {
-         serializableContextuals.add(new SerializableContextualImpl(interceptor));
+
+         SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(interceptor);
+         serializableContextuals.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, beanManager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass()))));
       }
-      return serializableContextuals.toArray(new SerializableContextual[] {});
+      return serializableContextuals.toArray(new InterceptorMetadata[] {});
    }
 
    // Logger
@@ -173,11 +171,147 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       super.initialize(environment);
       checkBeanImplementation();
-      if (isInterceptionCandidate())
+      initTargetClassInterceptors();
+      if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(getType()))
       {
-         initCdiBoundInterceptors();
-         initDirectlyDefinedInterceptors();
+         initInterceptionModelForType();
       }
+   }
+
+   private void initInterceptionModelForType()
+   {
+      ClassMetadata<?> classMetadata = beanManager.getInterceptorMetadataReader().getClassMetadata(getType());
+
+      InterceptionModelBuilder<ClassMetadata<?>, ?> builder = InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(classMetadata);
+
+      // initialize CDI interceptors
+      Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(beanManager, getWeldAnnotated().getAnnotations());
+      for (Class<? extends Annotation> annotation : getStereotypes())
+      {
+         classBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, beanManager.getStereotypeDefinition(annotation)));
+      }
+      if (classBindingAnnotations.size() > 0)
+      {
+         if (Beans.findInterceptorBindingConflicts(beanManager, classBindingAnnotations))
+         {
+            throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType());
+         }
+
+         Annotation[] classBindingAnnotationsArray = classBindingAnnotations.toArray(new Annotation[0]);
+
+         List<Interceptor<?>> resolvedPostConstructInterceptors = beanManager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray);
+         builder.interceptPostConstruct().with(toSerializableContextualArray(resolvedPostConstructInterceptors));
+
+         List<Interceptor<?>> resolvedPreDestroyInterceptors = beanManager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotationsArray);
+         builder.interceptPreDestroy().with(toSerializableContextualArray(resolvedPreDestroyInterceptors));
+
+         List<Interceptor<?>> resolvedPrePassivateInterceptors = beanManager.resolveInterceptors(InterceptionType.PRE_PASSIVATE, classBindingAnnotationsArray);
+         builder.interceptPrePassivate().with(toSerializableContextualArray(resolvedPrePassivateInterceptors));
+
+         List<Interceptor<?>> resolvedPostActivateInterceptors = beanManager.resolveInterceptors(InterceptionType.POST_ACTIVATE, classBindingAnnotationsArray);
+         builder.interceptPostActivate().with(toSerializableContextualArray(resolvedPostActivateInterceptors));
+
+      }
+      List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getWeldAnnotated());
+      for (WeldMethod<?, ?> method : businessMethods)
+      {
+         Set<Annotation> methodBindingAnnotations = new HashSet<Annotation>(classBindingAnnotations);
+         methodBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, method.getAnnotations()));
+         if (methodBindingAnnotations.size() > 0)
+         {
+            if (Beans.findInterceptorBindingConflicts(beanManager, classBindingAnnotations))
+            {
+               throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType() + "." + method.getName() + "()");
+            }
+
+            if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
+            {
+               List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, methodBindingAnnotations.toArray(new Annotation[]{}));
+               if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0)
+               {
+                  if (method.isFinal())
+                  {
+                     throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
+                  }
+                  builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+               }
+            }
+            else
+            {
+               List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
+               if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0)
+               {
+                  if (method.isFinal())
+                  {
+                     throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
+                  }
+                  builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+               }
+            }
+         }
+      }
+
+      // initialize EJB3 interceptors
+      Class<?>[] classDeclaredInterceptors = null;
+      if (getWeldAnnotated().isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
+      {
+         Annotation interceptorsAnnotation = getType().getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass());
+         classDeclaredInterceptors = SecureReflections.extractValues(interceptorsAnnotation);
+      }
+
+      if (classDeclaredInterceptors != null)
+      {
+         for (Class<?> clazz : classDeclaredInterceptors)
+         {
+            builder.interceptAll().with(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(clazz));
+         }
+      }
+
+      for (WeldMethod<?, ?> method : businessMethods)
+      {
+         boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
+         Class<?>[] methodDeclaredInterceptors = null;
+         if (method.isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
+         {
+            methodDeclaredInterceptors = SecureReflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));
+         }
+         if (excludeClassInterceptors)
+         {
+            builder.ignoreGlobalInterceptors(((AnnotatedMethod) method).getJavaMember());
+         }
+         if (methodDeclaredInterceptors != null && methodDeclaredInterceptors.length > 0)
+         {
+            List<InterceptorMetadata<?>> methodDeclaredInterceptorMetadatas = new ArrayList<InterceptorMetadata<?>>();
+            for (Class<?> clazz : methodDeclaredInterceptors)
+            {
+               methodDeclaredInterceptorMetadatas.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(clazz));
+            }
+            if (method.isFinal())
+            {
+               throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodDeclaredInterceptors[0].getName());
+            }
+            if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
+            {
+               builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptorMetadatas.toArray(new InterceptorMetadata[]{}));
+            }
+            else
+            {
+               builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptorMetadatas.toArray(new InterceptorMetadata[]{}));
+            }
+         }
+      }
+      InterceptionModel<ClassMetadata<?>, ?> interceptionModel = builder.build();
+
+      if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods)
+      {
+         if (getWeldAnnotated().isFinal())
+         {
+            throw new DefinitionException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, this);
+         }
+         beanManager.getInterceptorModelRegistry().put(getType(), ((InterceptionModel<ClassMetadata<?>,?>) interceptionModel));
+      }
+
+
    }
 
    @Override
@@ -377,85 +511,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    protected abstract boolean isInterceptionCandidate();
 
-   protected void initCdiBoundInterceptors()
-   {
-      if (beanManager.getCdiInterceptorsRegistry().getInterceptionModel(getType()) == null)
-      {
-         InterceptionModelBuilder<Class<?>, SerializableContextual<Interceptor<?>, ?>> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) SerializableContextual.class);
-         Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(beanManager, getWeldAnnotated().getAnnotations());
-         for (Class<? extends Annotation> annotation : getStereotypes())
-         {
-            classBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, beanManager.getStereotypeDefinition(annotation)));
-         }
-         if (classBindingAnnotations.size() > 0)
-         {
-            if (Beans.findInterceptorBindingConflicts(beanManager, classBindingAnnotations))
-               throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType());
-
-            Annotation[] classBindingAnnotationsArray = classBindingAnnotations.toArray(new Annotation[0]);
-
-            List<Interceptor<?>> resolvedPostConstructInterceptors = beanManager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray);
-            builder.interceptPostConstruct().with(toSerializableContextualArray(resolvedPostConstructInterceptors));
-
-            List<Interceptor<?>> resolvedPreDestroyInterceptors = beanManager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotationsArray);
-            builder.interceptPreDestroy().with(toSerializableContextualArray(resolvedPreDestroyInterceptors));
-
-            List<Interceptor<?>> resolvedPrePassivateInterceptors = beanManager.resolveInterceptors(InterceptionType.PRE_PASSIVATE, classBindingAnnotationsArray);
-            builder.interceptPrePassivate().with(toSerializableContextualArray(resolvedPrePassivateInterceptors));
-
-            List<Interceptor<?>> resolvedPostActivateInterceptors = beanManager.resolveInterceptors(InterceptionType.POST_ACTIVATE, classBindingAnnotationsArray);
-            builder.interceptPostActivate().with(toSerializableContextualArray(resolvedPostActivateInterceptors));
-
-         }
-         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getWeldAnnotated());
-         for (WeldMethod<?, ?> method : businessMethods)
-         {
-            Set<Annotation> methodBindingAnnotations = new HashSet<Annotation>(classBindingAnnotations);
-            methodBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, method.getAnnotations()));
-            if (methodBindingAnnotations.size() > 0)
-            {
-               if (Beans.findInterceptorBindingConflicts(beanManager, classBindingAnnotations))
-                  throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType() + "." + method.getName() + "()");
-
-               if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
-               {
-                  List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, methodBindingAnnotations.toArray(new Annotation[] {}));
-                  if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0)
-                  {
-                     if (method.isFinal())
-                     {
-                        throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
-                     }
-                     builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
-                  }
-               }
-               else
-               {
-                  List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[] {}));
-                  if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0)
-                  {
-                     if (method.isFinal())
-                     {
-                        throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
-                     }
-                     builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
-                  }
-               }
-            }
-         }
-         InterceptionModel<Class<?>, SerializableContextual<Interceptor<?>, ?>> serializableContextualInterceptionModel = builder.build();
-         // if there is at least one applicable interceptor, register it
-         if (serializableContextualInterceptionModel.getAllInterceptors().size() > 0)
-         {
-            if (getWeldAnnotated().isFinal())
-            {
-               throw new DefinitionException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, this);
-            }
-            beanManager.getCdiInterceptorsRegistry().registerInterceptionModel(getType(), serializableContextualInterceptionModel);
-         }
-      }
-   }
-
    public void setInjectionTarget(InjectionTarget<T> injectionTarget)
    {
       this.injectionTarget = injectionTarget;
@@ -510,99 +565,15 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       }
    }
 
-   public boolean hasCdiBoundInterceptors()
-   {
-      if (beanManager.getCdiInterceptorsRegistry().getInterceptionModel(getType()) != null)
-      {
-         return beanManager.getCdiInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
-      }
-      else
-      {
-         return false;
-      }
-   }
-
-   public boolean hasDirectlyDefinedInterceptors()
-   {
-      if (beanManager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()) != null)
-      {
-         return hasSerializationOrInvocationInterceptorMethods || beanManager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()).getAllInterceptors().size() > 0;
-      }
-      else
-      {
-         return false;
-      }
-   }
-
    public boolean hasInterceptors()
    {
-      return this.isInterceptionCandidate() && (this.hasCdiBoundInterceptors() || this.hasDirectlyDefinedInterceptors());
+      return this.isInterceptionCandidate() && (hasSerializationOrInvocationInterceptorMethods || beanManager.getInterceptorModelRegistry().get(getType()) != null);
    }
 
-   protected void initDirectlyDefinedInterceptors()
+   private void initTargetClassInterceptors()
    {
-      if (beanManager.getClassDeclaredInterceptorsRegistry().getInterceptionModel(getType()) == null && InterceptionUtils.supportsEjb3InterceptorDeclaration())
-      {
-         InterceptionModelBuilder<Class<?>, Class<?>> builder = InterceptionModelBuilder.newBuilderFor(getType(), (Class) Class.class);
-
-         Class<?>[] classDeclaredInterceptors = null;
-         if (getWeldAnnotated().isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
-         {
-            Annotation interceptorsAnnotation = getType().getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass());
-            classDeclaredInterceptors = SecureReflections.extractValues(interceptorsAnnotation);
-         }
-
-         if (classDeclaredInterceptors != null)
-         {
-            builder.interceptAll().with(classDeclaredInterceptors);
-         }
-
-         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getWeldAnnotated());
-         for (WeldMethod<?, ?> method : businessMethods)
-         {
-            boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
-            Class<?>[] methodDeclaredInterceptors = null;
-            if (method.isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass()))
-            {
-               methodDeclaredInterceptors = SecureReflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));
-            }
-            if (excludeClassInterceptors)
-            {
-               builder.ignoreGlobalInterceptors(((AnnotatedMethod) method).getJavaMember());
-            }
-            if (methodDeclaredInterceptors != null && methodDeclaredInterceptors.length > 0)
-            {
-               if (method.isFinal())
-               {
-                  throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodDeclaredInterceptors[0].getName());
-               }
-               if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
-               {
-                  builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
-               }
-               else
-               {
-                  builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptors);
-               }
-            }
-         }
-         InterceptionModel<Class<?>, Class<?>> interceptionModel = builder.build();
-         InterceptorMetadata interceptorClassMetadata = beanManager.getServices().get(InterceptionMetadataService.class).getInterceptorMetadataRegistry().getInterceptorClassMetadata(WeldClassReference.of(getWeldAnnotated()), true);
-         hasSerializationOrInvocationInterceptorMethods = !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_INVOKE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_TIMEOUT).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.PRE_PASSIVATE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.POST_ACTIVATE).isEmpty();
-         if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods)
-         {
-            if (getWeldAnnotated().isFinal())
-            {
-               throw new DefinitionException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, this);
-            }
-            beanManager.getClassDeclaredInterceptorsRegistry().registerInterceptionModel(getType(), builder.build());
-         }
-      }
-      else
-      {
-         InterceptorMetadata interceptorClassMetadata =  beanManager.getServices().get(InterceptionMetadataService.class).getInterceptorMetadataRegistry().getInterceptorClassMetadata(WeldClassReference.of(getWeldAnnotated()), true);
-         hasSerializationOrInvocationInterceptorMethods = !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_INVOKE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.AROUND_TIMEOUT).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.PRE_PASSIVATE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.model.InterceptionType.POST_ACTIVATE).isEmpty();
-      }
+      InterceptorMetadata interceptorClassMetadata = beanManager.getInterceptorMetadataReader().getTargetClassInterceptorMetadata(WeldInterceptorClassMetadata.of(getWeldAnnotated()));
+      hasSerializationOrInvocationInterceptorMethods = !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.spi.model.InterceptionType.AROUND_INVOKE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.spi.model.InterceptionType.AROUND_TIMEOUT).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.spi.model.InterceptionType.PRE_PASSIVATE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.spi.model.InterceptionType.POST_ACTIVATE).isEmpty();
    }
 
    protected void checkConstructor()

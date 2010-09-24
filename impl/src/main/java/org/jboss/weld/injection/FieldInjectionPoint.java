@@ -35,7 +35,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.inject.Inject;
 
-import org.jboss.interceptor.util.InterceptionUtils;
+import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InvalidObjectException;
@@ -113,7 +113,10 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
          if (!(instanceToInject instanceof DecoratorProxy))
          {
             // if declaringInstance is a proxy, unwrap it
-            instanceToInject = InterceptionUtils.getRawInstance(declaringInstance);
+            if (declaringInstance instanceof TargetInstanceProxy)
+            {
+               instanceToInject = ((TargetInstanceProxy)declaringInstance).getTargetInstance();
+            }
          }
          delegate().set(instanceToInject, manager.getInjectableReference(this, creationalContext));
       }
@@ -135,7 +138,8 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
          if (!(instanceToInject instanceof DecoratorProxy))
          {
             // if declaringInstance is a proxy, unwrap it
-            instanceToInject = InterceptionUtils.getRawInstance(declaringInstance);
+            if (instanceToInject instanceof TargetInstanceProxy)
+            instanceToInject = ((TargetInstanceProxy)declaringInstance).getTargetInstance();
          }
          delegate().set(instanceToInject, value);
       }
