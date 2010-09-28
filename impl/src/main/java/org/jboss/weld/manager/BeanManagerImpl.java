@@ -423,8 +423,8 @@ public class BeanManagerImpl implements WeldManager, Serializable
       {
          childActivity.addBean(bean);
       }
-      // New beans and most built in beans aren't resolvable transtively
-      if (bean instanceof ExtensionBean || (!(bean instanceof NewBean) && !(bean instanceof AbstractBuiltInBean<?>)))
+      // New beans (except for SessionBeans) and most built in beans aren't resolvable transtively
+      if (bean instanceof ExtensionBean || bean instanceof SessionBean || (!(bean instanceof NewBean) && !(bean instanceof AbstractBuiltInBean<?>)))
       {
          this.transitiveBeans.add(bean);
       }
