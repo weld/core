@@ -7,6 +7,11 @@
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
       <jta-data-source>java:/pastecodeDatasource</jta-data-source>
       <properties>
+<!--
+         <property name="hibernate.cache.provider_class" value="org.hibernate.cache.SwarmCacheProvider" />
+         -->
+         <property name="hibernate.cache.use_second_level_cache" value="true" />
+         <property name="hibernate.ejb.classcache.org.jboss.weld.examples.pastecode.model.CodeFragment" value="read"/>
          <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
          <property name="hibernate.show_sql" value="false"/>
       </properties>
