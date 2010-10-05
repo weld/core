@@ -100,6 +100,7 @@ public class CodeFragmentManagerImpl implements CodeFragmentManager
       else
       {
          entityManager.persist(code);
+         entityManager.flush();
          event.fire(code);
          // Make sure we have the latest version (with the generated id!)
          entityManager.refresh(code);
