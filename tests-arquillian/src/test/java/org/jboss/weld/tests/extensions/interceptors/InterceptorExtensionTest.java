@@ -27,7 +27,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
@@ -48,14 +47,11 @@ public class InterceptorExtensionTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
-               ShrinkWrap.create(BeanArchive.class)
+      return ShrinkWrap.create(BeanArchive.class)
                   .intercept(IncrementingInterceptor.class, LifecycleInterceptor.class)
                   .addPackage(InterceptorExtensionTest.class.getPackage())
                   .addPackage(TestAnnotatedTypeBuilder.class.getPackage())
-                  .addServiceProvider(Extension.class, InterceptorExtension.class)
-         );
+                  .addServiceProvider(Extension.class, InterceptorExtension.class);
    }
    
    @Inject

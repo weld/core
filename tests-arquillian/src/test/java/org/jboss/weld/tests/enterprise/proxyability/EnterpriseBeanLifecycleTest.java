@@ -19,10 +19,8 @@ package org.jboss.weld.tests.enterprise.proxyability;
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,12 +34,8 @@ public class EnterpriseBeanLifecycleTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
-               ShrinkWrap.create(JavaArchive.class)
-                  .addPackage(EnterpriseBeanLifecycleTest.class.getPackage())
-                  .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-         );
+      return ShrinkWrap.create(BeanArchive.class)
+                  .addPackage(EnterpriseBeanLifecycleTest.class.getPackage());
    }
 
    /*

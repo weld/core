@@ -28,7 +28,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.junit.Assert;
@@ -41,11 +40,8 @@ public class BootstrapTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
-               ShrinkWrap.create(BeanArchive.class)
-                  .addPackage(BootstrapTest.class.getPackage())
-         );
+      return ShrinkWrap.create(BeanArchive.class)
+                  .addPackage(BootstrapTest.class.getPackage());
    }
    
    @Inject

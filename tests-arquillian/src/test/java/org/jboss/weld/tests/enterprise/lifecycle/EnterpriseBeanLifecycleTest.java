@@ -26,7 +26,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.Utils;
 import org.jboss.weld.tests.category.Integration;
@@ -57,13 +56,10 @@ public class EnterpriseBeanLifecycleTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
-               ShrinkWrap.create(BeanArchive.class, "test.jar")
+      return ShrinkWrap.create(BeanArchive.class)
                   .decorate(AlarmedChickenHutch.class)
                   .addPackage(EnterpriseBeanLifecycleTest.class.getPackage())
-                  .addClass(Utils.class)
-         );
+                  .addClass(Utils.class);
    }
 
    @Inject 
