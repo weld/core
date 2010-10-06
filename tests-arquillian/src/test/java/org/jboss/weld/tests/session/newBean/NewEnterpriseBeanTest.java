@@ -26,10 +26,9 @@ import javax.inject.Inject;
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.introspector.WeldAnnotated;
@@ -46,12 +45,9 @@ public class NewEnterpriseBeanTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
-               ShrinkWrap.create(JavaArchive.class)
+      return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(NewEnterpriseBeanTest.class.getPackage())
-                  .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-         );
+                  .addManifestResource(EmptyAsset.INSTANCE, "beans.xml");
    }
    
    private static final New NEW_LITERAL = new NewLiteral()

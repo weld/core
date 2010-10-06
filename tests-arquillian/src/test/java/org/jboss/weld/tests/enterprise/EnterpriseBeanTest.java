@@ -25,10 +25,8 @@ import javax.inject.Inject;
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.Utils;
@@ -46,14 +44,9 @@ public class EnterpriseBeanTest
    @Deployment
    public static Archive<?> deploy() 
    {
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
-               ShrinkWrap.create(JavaArchive.class)
+      return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(EnterpriseBeanTest.class.getPackage())
-                  .addClass(Utils.class)
-                  .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                  .addManifestResource(EjbDescriptorLookupTest.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml")
-         );
+                  .addClass(Utils.class);
    }
 
    @Inject
