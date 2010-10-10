@@ -61,6 +61,99 @@
                </execution>
             </executions>
          </plugin>
+
+           <!--
+           		Special treatment for JSF API dependent classses
+           		Because the API is not shared, we need to attach JSF extensions separately
+           		Therefore, weld-core will be split in two: one jar is shared, one jar is
+           		attached to the deployment's DU via a classloading deployer
+           -->
+           <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-shade-plugin</artifactId>
+              <executions>
+                 <execution>
+                    <id>core-no-jsf</id>
+                    <phase>package</phase>
+                    <goals>
+                       <goal>shade</goal>
+                    </goals>
+                     <configuration>
+                     <createSourcesJar>true</createSourcesJar>
+                     <finalName>weld-core-no-jsf</finalName>
+                     <outputFile>target/weld-core-no-jsf.jar</outputFile>
+                     <artifactSet>
+                          <includes>
+                            <include>org.jboss.weld:weld-core</include>
+                          </includes>
+                     </artifactSet>
+                     <filters>
+                        <filter>
+                           <artifact>org.jboss.weld:weld-core</artifact>
+                            <includes>
+                               <include>org/jboss/weld/**</include>
+                            </includes>
+                            <excludes>
+                             <exclude>org/jboss/weld/jsf/ConversationAwareViewHandler*</exclude>
+                             <exclude>org/jboss/weld/jsf/FacesUrlTransformer*</exclude>
+                             <exclude>org/jboss/weld/jsf/JsfHelper*</exclude>
+                             <exclude>org/jboss/weld/jsf/WeldPhaseListener*</exclude>
+                             <exclude>org/jboss/weld/servlet/ConversationPropagationFilter*</exclude>
+                           </excludes>
+                        </filter>
+                     </filters>
+                         <transformers>
+                             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                               <manifestEntries>
+                                 <Specification-Title>Weld Implementation (JSF utilities excluded)</Specification-Title>
+                                 <Specification-Vendor>Seam Framework</Specification-Vendor>
+                                 <Specification-Version>${project.version}</Specification-Version>
+                               </manifestEntries>
+                             </transformer>
+                         </transformers>
+                  </configuration>
+               </execution>
+               <execution>
+                    <id>core-jsf-only</id>
+                    <phase>package</phase>
+                    <goals>
+                       <goal>shade</goal>
+                    </goals>
+                     <configuration>
+                     <createSourcesJar>true</createSourcesJar>
+                     <finalName>weld-core-jsf-only</finalName>
+                     <shadedClassifierName>jsf-only</shadedClassifierName>
+                     <outputFile>target/weld-core-jsf-only.jar</outputFile>
+                     <artifactSet>
+                        <includes>
+                          <include>org.jboss.weld:weld-core</include>
+                        </includes>
+                     </artifactSet>
+                      <filters>
+                        <filter>
+                           <artifact>org.jboss.weld:weld-core</artifact>
+                            <includes>
+                             <include>org/jboss/weld/jsf/ConversationAwareViewHandler*</include>
+                             <include>org/jboss/weld/jsf/FacesUrlTransformer*</include>
+                             <include>org/jboss/weld/jsf/JsfHelper*</include>
+                             <include>org/jboss/weld/jsf/WeldPhaseListener*</include>
+                             <include>org/jboss/weld/servlet/ConversationPropagationFilter*</include>
+                           </includes>
+                        </filter>
+                     </filters>
+                         <transformers>
+                             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                               <manifestEntries>
+                                 <Specification-Title>Weld Implementation (JSF utilities only)</Specification-Title>
+                                 <Specification-Vendor>Seam Framework</Specification-Vendor>
+                                 <Specification-Version>${project.version}</Specification-Version>
+                               </manifestEntries>
+                             </transformer>
+                         </transformers>
+                </configuration>
+               </execution>
+              </executions>
+           </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
@@ -79,19 +172,41 @@
                         <property name="all.deployer.dir" value="${jboss.home}/server/all/deployers/weld.deployer" />
                         <property name="default.deployer.dir" value="${jboss.home}/server/default/deployers/weld.deployer" />
 
+                        <delete>
+                           <fileset dir="${all.deployer.dir}/lib-int/"
+                              includes="weld-core.jar"/>
+                           <fileset dir="${default.deployer.dir}/lib-int/"
+                              includes="weld-core.jar"/>
+                        </delete>
+
                         <copy todir="${all.deployer.dir}/lib-int/"
                            overwrite="true">
-                           <fileset dir="target/dependency/lib">
-                              <include name="weld-core.jar" />
+                           <fileset dir="target">
+                              <include name="weld-core-jsf-only.jar"/>
                            </fileset>
                         </copy>
-                        
+
                         <copy todir="${default.deployer.dir}/lib-int/"
                            overwrite="true">
-                           <fileset dir="target/dependency/lib">
-                              <include name="weld-core.jar" />
+                           <fileset dir="target">
+                              <include name="weld-core-jsf-only.jar" />
                            </fileset>
                         </copy>
+
+                         <copy todir="${all.deployer.dir}"
+                           overwrite="true">
+                           <fileset dir="target">
+                              <include name="weld-core-no-jsf.jar" />
+                           </fileset>
+                        </copy>
+
+                        <copy todir="${default.deployer.dir}"
+                           overwrite="true">
+                           <fileset dir="target">
+                              <include name="weld-core-no-jsf.jar" />
+                           </fileset>
+                        </copy>
+
 
                         <copy todir="${all.deployer.dir}/"
                            overwrite="true">
@@ -99,7 +214,7 @@
                               <include name="weld-spi.jar" />
                            </fileset>
                         </copy>
-                        
+
                         <copy todir="${default.deployer.dir}/"
                            overwrite="true">
                            <fileset dir="target/dependency/lib">
@@ -114,7 +229,7 @@
                               <include name="cdi-api.jar" />
                            </fileset>
                         </copy>
-                        
+
                         <copy todir="${jboss.home}/common/lib"
                            overwrite="true">
                            <fileset dir="target/dependency/lib">
@@ -122,7 +237,7 @@
                               <include name="cdi-api.jar" />
                            </fileset>
                         </copy>
-                                          
+
                      </tasks>
                   </configuration>
                </execution>
