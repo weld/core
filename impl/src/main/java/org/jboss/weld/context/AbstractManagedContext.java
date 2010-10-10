@@ -56,11 +56,11 @@ public abstract class AbstractManagedContext extends AbstractContext implements 
 
    public void deactivate()
    {
-      setActive(false);
       if (!valid.get().booleanValue())
       {
          destroy();
       }
+      setActive(false);
    }
 
    @Override
