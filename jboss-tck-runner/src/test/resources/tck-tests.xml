@@ -89,6 +89,13 @@
                <exclude name="testInactiveScope" />
             </methods>
          </class>
+         
+         <!-- CDITCK-182 -->
+         <class name="org.jboss.jsr299.tck.tests.policy.enterprise.SessionBeanPolicyTest">
+            <methods>
+               <exclude name="testEnabledPolicyAvailable" />
+            </methods>
+         </class>
 
          <!-- Issues in Weld (the RI) -->
 
