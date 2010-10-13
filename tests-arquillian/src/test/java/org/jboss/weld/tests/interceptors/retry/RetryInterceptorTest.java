@@ -42,10 +42,10 @@ public class RetryInterceptorTest
          .addPackage(RetryInterceptorTest.class.getPackage());
    }
 
-   @Category(Broken.class)
    @Test
    public void testRetry(FailingProcessor processor)
    {
+      System.out.println(processor);
       Assert.assertEquals(3, processor.tryToProcess());
       Assert.assertEquals(3, TransactionalInterceptor.invocationCount);
    }

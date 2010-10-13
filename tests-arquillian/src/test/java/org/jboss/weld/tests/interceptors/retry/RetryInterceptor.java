@@ -32,6 +32,7 @@ public class RetryInterceptor
    public Object retryOnFailure(InvocationContext invocationContext) throws Exception
    {
       int attempts = 0;
+      System.out.println("Retry " + attempts);
       do
       {
          try
